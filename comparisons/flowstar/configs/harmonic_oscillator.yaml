@@ -1,0 +1,19 @@
+system: harmonic_oscillator
+description: "Plant-only harmonic oscillator: dx/dt = y, dy/dt = -x."
+state_vars: [x, y]
+metric_vars: [x, y]
+initial:
+  x: [0.9, 1.1]
+  y: [-0.1, 0.1]
+ode:
+  x: "y"
+  y: "-x"
+torch_ode: harmonic_oscillator
+h: [0.01, 0.02, 0.05]
+steps: [1, 5, 10, 20]
+order: [3, 4, 5]
+flowstar:
+  remainder_estimation: 1.0e-10
+  cutoff: 1.0e-15
+  precision: 53
+  plot_vars: [x, y]
