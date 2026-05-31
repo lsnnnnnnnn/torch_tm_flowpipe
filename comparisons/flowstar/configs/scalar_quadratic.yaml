@@ -1,0 +1,17 @@
+system: scalar_quadratic
+description: "Plant-only scalar polynomial ODE: dx/dt = 1 + x^2."
+state_vars: [x]
+metric_vars: [x]
+initial:
+  x: [0.0, 0.1]
+ode:
+  x: "1 + x^2"
+torch_ode: scalar_quadratic
+h: [0.01, 0.02, 0.05]
+steps: [1, 5, 10, 20]
+order: [3, 4, 5]
+flowstar:
+  remainder_estimation: 1.0e-10
+  cutoff: 1.0e-15
+  precision: 53
+  plot_vars: [x]

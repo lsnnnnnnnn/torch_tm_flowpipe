@@ -1,0 +1,19 @@
+system: van_der_pol
+description: "Plant-only polynomial Van der Pol oscillator: dx/dt = y, dy/dt = y - x - x^2*y."
+state_vars: [x, y]
+metric_vars: [x, y]
+initial:
+  x: [1.1, 1.4]
+  y: [2.35, 2.45]
+ode:
+  x: "y"
+  y: "y - x - x^2*y"
+torch_ode: van_der_pol
+h: [0.0025, 0.005, 0.01]
+steps: [1, 5, 10]
+order: [4, 5, 6]
+flowstar:
+  remainder_estimation: 1.0e-10
+  cutoff: 1.0e-15
+  precision: 53
+  plot_vars: [x, y]
