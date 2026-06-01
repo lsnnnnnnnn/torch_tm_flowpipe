@@ -80,7 +80,7 @@ def plot_torch_over_flowstar(rows: list[dict[str, str]], out: Path, *, h: float,
     for r in rows:
         if key_filter(r, h, steps) and r.get("tool") == "flowstar" and r.get("status") == "completed":
             order = to_int(r.get("order"))
-            width = to_float(r.get("final_width_sum"))
+            width = to_float(r.get("last_segment_width_sum") or r.get("flowpipe_width_sum"))
             if order is not None and width and width > 0:
                 flow[order] = width
     ratios: dict[str, dict[int, float]] = defaultdict(dict)
@@ -88,7 +88,7 @@ def plot_torch_over_flowstar(rows: list[dict[str, str]], out: Path, *, h: float,
         if not key_filter(r, h, steps) or r.get("tool") != "torch_tm_flowpipe" or r.get("status") != "validated":
             continue
         order = to_int(r.get("order"))
-        width = to_float(r.get("final_width_sum"))
+        width = to_float(r.get("last_segment_width_sum") or r.get("final_width_sum"))
         if order is None or width is None or order not in flow:
             continue
         ratios[r.get("mode", "torch")][order] = width / flow[order]
@@ -99,7 +99,7 @@ def plot_torch_over_flowstar(rows: list[dict[str, str]], out: Path, *, h: float,
             ax.plot(xs, [by_order[x] for x in xs], marker="o", label=label)
         ax.axhline(1.0, linestyle="--", linewidth=1, color="black")
         ax.set_xlabel("requested order")
-        ax.set_ylabel("torch final width sum / Flow* final width sum")
+        ax.set_ylabel("torch last-segment width sum / Flow* last-segment width sum")
         ax.set_title(f"Van der Pol h={h:g}, steps={steps}")
         ax.legend(fontsize=8)
     else:
@@ -143,24 +143,28 @@ def plot_dependency_ratio(rows: list[dict[str, str]], out: Path, *, h: float, st
 
 
 def plot_status(rows: list[dict[str, str]], out: Path) -> None:
-    counts: dict[int, Counter[str]] = defaultdict(Counter)
+    counts: dict[tuple[int, str], Counter[str]] = defaultdict(Counter)
     for r in rows:
         if r.get("system") == "van_der_pol" and r.get("tool") == "flowstar":
             order = to_int(r.get("order"))
             if order is not None:
-                counts[order][r.get("status", "")] += 1
+                counts[(order, r.get("setting_label") or "default")][r.get("status", "")] += 1
     statuses = sorted({s for c in counts.values() for s in c})
-    xs = sorted(counts)
-    fig, ax = plt.subplots(figsize=(8, 4.8))
-    bottom = [0] * len(xs)
-    if xs and statuses:
+    keys = sorted(counts)
+    labels = [f"{o}\n{lab}" for o, lab in keys]
+    fig, ax = plt.subplots(figsize=(max(8, len(labels) * 0.45), 4.8))
+    bottom = [0] * len(keys)
+    if keys and statuses:
+        xs = list(range(len(keys)))
         for status in statuses:
-            vals = [counts[x][status] for x in xs]
+            vals = [counts[k][status] for k in keys]
             ax.bar(xs, vals, bottom=bottom, label=status)
             bottom = [b + v for b, v in zip(bottom, vals)]
-        ax.set_xlabel("requested order")
+        ax.set_xticks(xs)
+        ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=7)
+        ax.set_xlabel("requested order / setting")
         ax.set_ylabel("Flow* case count")
-        ax.set_title("Van der Pol Flow* status by order")
+        ax.set_title("Van der Pol Flow* status by order and setting")
         ax.legend(fontsize=8)
     else:
         ax.text(0.5, 0.5, "No Flow* rows", ha="center", va="center", transform=ax.transAxes)
@@ -171,12 +175,45 @@ def plot_status(rows: list[dict[str, str]], out: Path) -> None:
     plt.close(fig)
 
 
+def plot_poly_remainder_stacked(rows: list[dict[str, str]], out: Path, *, h: float, steps: int) -> None:
+    selected = [r for r in rows if key_filter(r, h, steps) and r.get("mode") == "dependency_preserving"]
+    orders = sorted({to_int(r.get("order") or r.get("requested_order")) for r in selected if to_int(r.get("order") or r.get("requested_order")) is not None})
+    fig, ax = plt.subplots(figsize=(8, 4.8))
+    if orders:
+        poly = []
+        rem = []
+        for order in orders:
+            matching = [r for r in selected if to_int(r.get("order") or r.get("requested_order")) == order]
+            poly.append(sum(to_float(r.get("poly_range_width_sum")) or 0.0 for r in matching) / len(matching))
+            rem.append(sum(to_float(r.get("remainder_width_sum")) or 0.0 for r in matching) / len(matching))
+        ax.bar(orders, poly, label="polynomial interval range")
+        ax.bar(orders, rem, bottom=poly, label="remainder")
+        ax.set_xlabel("requested order")
+        ax.set_ylabel("width sum")
+        ax.set_title(f"Van der Pol dependency-preserving h={h:g}, steps={steps}")
+        ax.legend(fontsize=8)
+    else:
+        ax.text(0.5, 0.5, "No matching diagnostic rows", ha="center", va="center", transform=ax.transAxes)
+        ax.set_xticks([])
+        ax.set_yticks([])
+    fig.tight_layout()
+    fig.savefig(out, dpi=180)
+    plt.close(fig)
+
+
 def write_status_table(rows: list[dict[str, str]], out: Path) -> None:
     vdp = [r for r in rows if r.get("system") == "van_der_pol" and r.get("tool") == "flowstar"]
-    lines = ["| order | h | steps | status | final_width_sum | runtime_s | failure_reason |", "| --- | --- | --- | --- | --- | --- | --- |"]
-    for r in sorted(vdp, key=lambda x: (to_int(x.get("order")) or -1, to_float(x.get("h")) or -1, to_int(x.get("steps")) or -1)):
+    lines = [
+        "| setting | order | h | steps | status | last_segment_width_sum | tube_width_sum | internal_reach_s | wall_total_s | failure_reason |",
+        "| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for r in sorted(vdp, key=lambda x: (x.get("setting_label") or "", to_int(x.get("order")) or -1, to_float(x.get("h")) or -1, to_int(x.get("steps")) or -1)):
         reason = (r.get("failure_reason") or "").replace("|", "/")
-        lines.append(f"| {r.get('order','')} | {r.get('h','')} | {r.get('steps','')} | {r.get('status','')} | {r.get('final_width_sum','')} | {r.get('runtime_s','')} | {reason} |")
+        lines.append(
+            f"| {r.get('setting_label','')} | {r.get('order','')} | {r.get('h','')} | {r.get('steps','')} | "
+            f"{r.get('status','')} | {r.get('last_segment_width_sum','')} | {r.get('tube_width_sum','')} | "
+            f"{r.get('flowstar_internal_reach_s') or r.get('runtime_s','')} | {r.get('flowstar_wall_total_s','')} | {reason} |"
+        )
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -199,12 +236,16 @@ def main() -> None:
     comp_rows = read_rows(args.comparison_csv)
     combined = comp_rows + diag_rows
 
-    plot_metric_by_order(combined, "final_width_sum", out_dir / "van_der_pol_width_vs_order.png", "final width sum", h=args.h, steps=args.steps)
-    plot_metric_by_order(combined, "runtime_s", out_dir / "van_der_pol_runtime_vs_order.png", "runtime (s)", h=args.h, steps=args.steps)
-    plot_metric_by_order(diag_rows, "remainder_width_sum", out_dir / "van_der_pol_remainder_vs_order.png", "remainder width sum", h=args.h, steps=args.steps, torch_only=True)
-    plot_torch_over_flowstar(comp_rows, out_dir / "torch_over_flowstar_width_ratio_by_order.png", h=args.h, steps=args.steps)
+    plot_metric_by_order(combined, "endpoint_width_sum", out_dir / "van_der_pol_endpoint_width_vs_order.png", "endpoint width sum", h=args.h, steps=args.steps)
+    plot_metric_by_order(combined, "last_segment_width_sum", out_dir / "van_der_pol_last_segment_width_vs_order.png", "last segment width sum", h=args.h, steps=args.steps)
+    plot_metric_by_order(combined, "tube_width_sum", out_dir / "van_der_pol_tube_width_vs_order.png", "tube width sum", h=args.h, steps=args.steps)
+    plot_metric_by_order(combined, "runtime_s", out_dir / "van_der_pol_runtime_internal_vs_order.png", "runtime (s)", h=args.h, steps=args.steps)
+    plot_metric_by_order(comp_rows, "flowstar_wall_total_s", out_dir / "van_der_pol_runtime_wall_vs_order.png", "Flow* wall runtime (s)", h=args.h, steps=args.steps)
+    plot_metric_by_order(diag_rows, "remainder_width_frac", out_dir / "van_der_pol_remainder_frac_vs_order.png", "remainder fraction", h=args.h, steps=args.steps, torch_only=True)
+    plot_poly_remainder_stacked(diag_rows, out_dir / "van_der_pol_poly_vs_remainder_stacked_by_order.png", h=args.h, steps=args.steps)
+    plot_torch_over_flowstar(comp_rows, out_dir / "torch_over_flowstar_last_segment_width_ratio_by_order.png", h=args.h, steps=args.steps)
     plot_dependency_ratio(comp_rows, out_dir / "dependency_vs_range_ratio_by_order.png", h=args.h, steps=args.steps)
-    plot_status(comp_rows, out_dir / "flowstar_status_by_order.png")
+    plot_status(comp_rows, out_dir / "flowstar_status_by_order_and_setting.png")
     write_status_table(comp_rows, out_dir / "order_flowstar_status_table.md")
     print(f"wrote plots and {out_dir / 'order_flowstar_status_table.md'}")
 

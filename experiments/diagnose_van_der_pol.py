@@ -32,7 +32,8 @@ FIELDS = [
     "remainder_radius_by_dim", "max_final_degree", "degree_by_dim",
     "term_count_by_dim", "runtime_s", "validation_attempts",
     "containment_failures", "sampled_width_sum", "sampled_width_by_dim",
-    "width_over_sampled_ratio",
+    "remainder_width_frac", "poly_range_width_frac", "width_over_sampled_ratio",
+    "quality_label",
 ]
 
 
@@ -81,6 +82,23 @@ def sample_true_widths(T: float, grid: int, substeps: int) -> tuple[list[float],
     return [boxes[0][1] - boxes[0][0], boxes[1][1] - boxes[1][0]], boxes
 
 
+
+
+def quality_label(status: str, final_sum: float, poly_sum: float, rem_sum: float, sampled_sum: float) -> str:
+    if status != "validated" or final_sum <= 0.0:
+        return "failed"
+    rem_frac = rem_sum / final_sum
+    poly_frac = poly_sum / final_sum
+    ratio = final_sum / sampled_sum if sampled_sum > 0.0 else float("inf")
+    if ratio > 10.0:
+        return "very_loose"
+    if rem_frac >= 0.5:
+        return "remainder_dominated"
+    if poly_frac >= rem_frac:
+        return "polynomial_range_dominated"
+    return "ok"
+
+
 def _containment_failures(final_box: list[Interval], sample_boxes: list[tuple[float, float]]) -> int:
     failures = 0
     for dim, (lo, hi) in enumerate(sample_boxes):
@@ -115,6 +133,9 @@ def diagnostic_rows(h: float, steps: int, order: int, grid: int, substeps: int) 
             rem_radii.append(radius(model.remainder))
             degrees.append(model.polynomial.degree())
             term_counts.append(len(model.polynomial.terms))
+        final_sum = sum(final_widths)
+        poly_sum = sum(poly_widths)
+        rem_sum = sum(rem_widths)
         rows.append({
             "system": "van_der_pol",
             "mode": mode,
@@ -122,11 +143,11 @@ def diagnostic_rows(h: float, steps: int, order: int, grid: int, substeps: int) 
             "steps": steps,
             "requested_order": order,
             "status": result.status,
-            "final_width_sum": sum(final_widths),
+            "final_width_sum": final_sum,
             "final_width_by_dim": repr(final_widths),
-            "poly_range_width_sum": sum(poly_widths),
+            "poly_range_width_sum": poly_sum,
             "poly_range_width_by_dim": repr(poly_widths),
-            "remainder_width_sum": sum(rem_widths),
+            "remainder_width_sum": rem_sum,
             "remainder_width_by_dim": repr(rem_widths),
             "remainder_radius_by_dim": repr(rem_radii),
             "max_final_degree": max(degrees) if degrees else 0,
@@ -137,7 +158,10 @@ def diagnostic_rows(h: float, steps: int, order: int, grid: int, substeps: int) 
             "containment_failures": _containment_failures(final_box, true_boxes),
             "sampled_width_sum": true_sum,
             "sampled_width_by_dim": repr(true_widths),
-            "width_over_sampled_ratio": sum(final_widths) / true_sum if true_sum > 0 else "",
+            "remainder_width_frac": rem_sum / final_sum if final_sum > 0 else "",
+            "poly_range_width_frac": poly_sum / final_sum if final_sum > 0 else "",
+            "width_over_sampled_ratio": final_sum / true_sum if true_sum > 0 else "",
+            "quality_label": quality_label(result.status, final_sum, poly_sum, rem_sum, true_sum),
         })
     return rows
 

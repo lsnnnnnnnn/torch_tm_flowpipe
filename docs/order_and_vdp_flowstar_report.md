@@ -2,7 +2,7 @@
 
 ## Scope
 
-This report is limited to diagnostics, experiment harnesses, plots, and documentation for the existing `torch_tm_flowpipe` Taylor-model prototype.  It does not add CROWN-Reach, Flow* bindings, adaptive Flow*, hybrid transitions, branch-and-bound, sin/cos support, or sensitivity/Jacobian bounds.
+This report is limited to diagnostics, experiment harnesses, metrics, plots, tests, and documentation for the existing `torch_tm_flowpipe` Taylor-model prototype. It does not add CROWN-Reach, auto_LiRPA, Jacobian bounds, sin/cos support, hybrid guards or jumps, Flow* bindings in the core library, or adaptive Flow* as the main baseline.
 
 The Van der Pol benchmark is:
 
@@ -14,104 +14,140 @@ x0 in [1.1, 1.4], y0 in [2.35, 2.45]
 
 ## Reproduction
 
-Use the `py11` conda environment:
+Use the `py11` conda environment and the chenxin415 Flow* toolbox root:
 
 ```bash
+cd /srv/local/shengenli/torch_tm_flowpipe
+export FLOWSTAR_ROOT=/srv/local/shengenli/flowstar
 conda run -n py11 python -m pip install -e '.[test]'
 conda run -n py11 pytest -q
-conda run -n py11 python experiments/tm_order_audit.py --all --csv outputs/tm_order_audit_all_systems.csv
-conda run -n py11 python experiments/tm_order_audit.py --system van_der_pol --orders 2 3 4 5 6 7 8 --h 0.0025 0.005 0.01 --steps 1 5 10 --csv outputs/tm_order_audit.csv
-conda run -n py11 python experiments/diagnose_van_der_pol.py --orders 2 3 4 5 6 7 8 --h-values 0.0025 0.005 0.01 --steps-values 1 5 10 --csv outputs/van_der_pol_diagnostics_by_order.csv
-conda run -n py11 python comparisons/flowstar/compare_against_torch_tm.py --systems van_der_pol --orders 2 3 4 5 6 7 8 --h-values 0.0025 0.005 0.01 --steps-values 1 5 10 --flowstar-root /srv/local/shengenli/flowstar --csv outputs/flowstar_comparison_by_order.csv --flowstar-timeout-s 120 --no-plots
-conda run -n py11 python experiments/plot_order_results.py --diagnostics-csv outputs/van_der_pol_diagnostics_by_order.csv --comparison-csv outputs/flowstar_comparison_by_order.csv --out-dir outputs --h 0.01 --steps 10
+
+conda run -n py11 python experiments/tm_order_audit.py --systems van_der_pol --orders 2 3 4 5 6 7 8 --h-values 0.0025 0.005 0.01 --steps-values 1 5 10 --csv outputs/tm_order_audit_vdp_order2_8.csv
+conda run -n py11 python experiments/diagnose_van_der_pol.py --orders 2 3 4 5 6 7 8 --h-values 0.0025 0.005 0.01 --steps-values 1 5 10 --csv outputs/van_der_pol_diagnostics_by_order_v2.csv
+bash scripts/run_vdp_order_flowstar_study.sh
 ```
 
-If `FLOWSTAR_ROOT` is not exported, either pass `--flowstar-root /path/to/flowstar` as above or run:
+The generated C++ Flow* cases are linked against `flowstar-toolbox/libflowstar.a`.
 
-```bash
-export FLOWSTAR_ROOT=/path/to/flowstar
-```
+## Order Semantics
 
-## Taylor order audit
+The torch `order` parameter is a requested total-degree cutoff. Actual retained degree can be lower than requested because the ODE structure, truncation, validation, and endpoint substitution may not populate every degree.
 
-The torch `order` parameter is a requested total-degree cutoff.  Actual retained endpoint degree can be lower than the requested order because the dynamics, truncation, and endpoint substitution may not populate all degrees.
+The audit CSV now records the dependency reference explicitly:
 
-For Van der Pol over the requested grid, `outputs/tm_order_audit.csv` has 126 rows: two torch modes times 3 step sizes times 3 step counts times 7 requested orders.  The audit records `order_semantics=total_degree_cutoff`, final and flowpipe widths, actual degree, term counts, active variables, remainder radii, runtime, and whether local segment `tau` leaked after endpoint substitution.
+| mode | dependency_scope | actual_degree_reference |
+| --- | --- | --- |
+| `dependency_preserving` | `original_initial_variables` | `degree_wrt_original_initial_vars` |
+| `range_only` | `current_step_box_variables_after_collapse` | `degree_wrt_current_step_box_vars_not_original_initial_vars` |
 
-Observed behavior:
+This means `range_only actual_degree=1` is not evidence that range-only retained only degree 1 dependency with respect to the original initial set. It means each collapsed step restarts with current-step box variables, so the degree is measured in the fresh local box variables.
 
-| mode | actual endpoint degree pattern |
+The Van der Pol audit has 126 rows: 2 torch modes x 3 step sizes x 3 step counts x 7 orders. `range_only` endpoint degree stays 1 in its local variables. `dependency_preserving` reaches degree 7 at requested order 8 in multi-step cases. No segment-local `tau` variable remains active after endpoint substitution.
+
+Torch and Flow* are aligned on ODE, initial set, step size, step count, and requested fixed order. Their internal Taylor-model dependency representation is not identical, so the comparison is a harness-level fixed-order comparison, not a coefficient-by-coefficient equivalence check.
+
+## Width Semantics
+
+The comparison CSV now separates three box meanings:
+
+| field group | meaning |
 | --- | --- |
-| range_only | final endpoint polynomials stay degree 1 for all requested orders 2-8, because each step collapses to a box and restarts with identity TMs |
-| dependency_preserving | reaches degree 7 at requested order 8 for multi-step cases; requested order is a cutoff, not a guarantee of equal actual degree |
+| `endpoint_width_sum/max` | endpoint box at final time, when a true endpoint box is available |
+| `last_segment_width_sum/max` | range box over the final flowpipe segment |
+| `tube_width_sum/max` | hull over all parsed flowpipe segment boxes |
 
-No `segment_tau_active_after_drop` cases were observed in the generated audit CSV.
+For torch, endpoint uses `final_tm.range_box()`, last segment uses the last segment Taylor model over `tau in [0,h]`, and tube is the hull over all segments.
 
-## Van der Pol decomposition
+For Flow*, GNUPLOT rectangles are flowpipe segment boxes. They are not endpoint boxes. The current parser therefore leaves Flow* `endpoint_width_*` blank, marks `endpoint_box_available=False`, records the last parsed GNUPLOT segment in `last_segment_width_*`, and records the GNUPLOT hull in `tube_width_*`. Flow* rows use `box_source=flowstar_gnuplot_last_segment_and_tube` when plot boxes are parsed, and no endpoint ratio is plotted or claimed.
 
-For h=0.01 and steps=10, the diagnostic decomposition shows why dependency-preserving can look backwards:
+A brief Flow* API search found endpoint-related members such as `Result_of_Reachability::fp_end_of_time`, `tmv_fp_end_of_time`, `tmv_flowpipes`, and `evaluate_time`/`intEval` hooks. A reliable generated-C++ endpoint printer was not a small, low-risk harness edit, so endpoint extraction remains documented as unavailable from GNUPLOT.
 
-| order | mode | final width sum | polynomial range width | remainder width | actual degree | term counts | runtime s |
-| --- | --- | ---: | ---: | ---: | ---: | --- | ---: |
-| 4 | range_only | 0.730158 | 0.730158 | ~0 | 1 | [1, 1] | 1.31 |
-| 4 | dependency_preserving | 0.801724 | 0.703102 | 0.098622 | 3 | [6, 6] | 3.71 |
-| 5 | range_only | 0.729515 | 0.729515 | ~0 | 1 | [1, 1] | 2.94 |
-| 5 | dependency_preserving | 0.783200 | 0.710039 | 0.073162 | 3 | [6, 6] | 7.12 |
-| 6 | range_only | 0.719083 | 0.719083 | ~0 | 1 | [1, 1] | 5.51 |
-| 6 | dependency_preserving | 0.769764 | 0.753662 | 0.016102 | 5 | [12, 12] | 15.64 |
-| 7 | range_only | 0.718068 | 0.718068 | ~0 | 1 | [1, 1] | 9.16 |
-| 7 | dependency_preserving | 0.769151 | 0.759914 | 0.009238 | 5 | [12, 12] | 26.78 |
-| 8 | range_only | 0.718028 | 0.718028 | ~0 | 1 | [1, 1] | 14.64 |
-| 8 | dependency_preserving | 0.767345 | 0.764985 | 0.002360 | 7 | [20, 20] | 47.43 |
+## Runtime Semantics
 
-The hypothesis is supported but refined.  Higher order does reduce dependency-preserving remainder width sharply, from 0.0986 at order 4 to 0.00236 at order 8.  However, the interval evaluation of the larger retained polynomial grows looser, so polynomial range width increases from 0.703 to 0.765.  Range-only avoids propagated remainder multiplication by collapsing to a fresh box each step; it loses symbolic dependency, but its final range remains narrower on this horizon.
+Flow* rows now distinguish:
 
-All torch rows in `outputs/flowstar_comparison_by_order.csv` are `validated` and had zero sampling containment failures.
+| field | meaning |
+| --- | --- |
+| `flowstar_internal_reach_s` | parsed `FLOWSTAR_RUNTIME_S`, i.e. Flow* reachability clock time printed by generated C++ |
+| `flowstar_wall_compile_s` | Python wall time spent compiling the generated C++ case |
+| `flowstar_wall_run_s` | Python wall time spent running the compiled case |
+| `flowstar_wall_total_s` | compile plus run wall time |
+| `runtime_s` for Flow* | internal reach time when available, otherwise wall total |
+| `runtime_s` for torch | Python algorithm wall time |
 
-## Flow* fixed-order comparison
+## Van der Pol Decomposition
 
-The Flow* toolbox was found at `/srv/local/shengenli/flowstar`; `FLOWSTAR_ROOT` was not exported in the shell.  The harness compiles plant-only C++ cases against `flowstar-toolbox/libflowstar.a`, uses fixed step size and fixed Taylor order, and writes Flow* rows as `tool=flowstar, mode=fixed`.
+For `h=0.01`, `steps=10`, dependency-preserving is wider than range-only because two effects move in opposite directions. Higher order reduces remainder width sharply, but interval evaluation of the retained polynomial becomes the dominant source of looseness.
 
-Final Flow* status counts over 63 Van der Pol cases:
+| order | mode | final width | polynomial range | remainder width | remainder frac | quality |
+| ---: | --- | ---: | ---: | ---: | ---: | --- |
+| 2 | dependency_preserving | 1.108536 | 0.450401 | 0.658135 | 0.593698 | remainder_dominated |
+| 3 | dependency_preserving | 0.808607 | 0.450432 | 0.358175 | 0.442953 | polynomial_range_dominated |
+| 4 | dependency_preserving | 0.801724 | 0.703102 | 0.098622 | 0.123013 | polynomial_range_dominated |
+| 5 | dependency_preserving | 0.783200 | 0.710039 | 0.073162 | 0.093414 | polynomial_range_dominated |
+| 6 | dependency_preserving | 0.769764 | 0.753662 | 0.016102 | 0.020919 | polynomial_range_dominated |
+| 7 | dependency_preserving | 0.769151 | 0.759914 | 0.009238 | 0.012010 | polynomial_range_dominated |
+| 8 | dependency_preserving | 0.767345 | 0.764985 | 0.002360 | 0.003076 | polynomial_range_dominated |
 
-| status | count | meaning |
-| --- | ---: | --- |
-| failed | 54 | Flow* reported `FLOWSTAR_COMPLETED 0`, usually with `Flowpipe computation is terminated due to the large overestimation.` |
-| completed | 9 | Flow* completed and generated parseable plot intervals |
+The reversal is therefore not simply "dependency preservation is worse." Low orders are remainder dominated because the nonlinear term `x^2*y` multiplies propagated remainder uncertainty. Higher orders reduce that remainder, but the larger retained polynomial is still bounded by ordinary interval range evaluation, which can loosen enough that the final width stays above range-only on this horizon.
 
-Completed Flow* cases were only:
+## Flow* Setting Sweep
 
-| order | h | steps | final width sum |
-| ---: | ---: | ---: | ---: |
-| 7 | 0.0025 | 1 | 0.415557 |
-| 8 | 0.0025 | 1 | 0.415557 |
-| 7 | 0.0025 | 5 | 0.438618 |
-| 8 | 0.0025 | 5 | 0.438618 |
-| 7 | 0.0025 | 10 | 0.466777 |
-| 8 | 0.0025 | 10 | 0.466777 |
-| 8 | 0.005 | 1 | 0.431219 |
-| 8 | 0.005 | 5 | 0.477538 |
-| 8 | 0.005 | 10 | 0.532188 |
+The previous report was wrong to imply only orders 2 and 3 failed. Under the strict old setting, orders 2-6 all failed for every tested horizon, order 7 completed only 3/9 cases, and order 8 completed 6/9 cases.
 
-Flow* did have problems below order 4: every order-2 and order-3 case failed explicitly.  Orders 4-6 also failed on this generated fixed-order setup.  This does not prove Flow* cannot handle Van der Pol in general; it says this fixed-order plant-only harness with the current generated settings fails by large overestimation for most cases and only completes at high order on the smaller horizons.
+Flow* status counts over 63 Van der Pol cases per setting:
 
-## Generated deliverables
+| setting_label | completed | failed |
+| --- | ---: | ---: |
+| `rem1e-10_cut1e-15` | 9 | 54 |
+| `rem1e-8_cut1e-15` | 24 | 39 |
+| `rem1e-6_cut1e-12` | 38 | 25 |
+| `rem1e-4_cut1e-10` | 51 | 12 |
 
-Primary files:
+Status by order, each cell is `completed/9`:
 
-- `outputs/tm_order_audit.csv`
-- `outputs/van_der_pol_diagnostics_by_order.csv`
-- `outputs/flowstar_comparison_by_order.csv`
-- `outputs/van_der_pol_width_vs_order.png`
-- `outputs/van_der_pol_runtime_vs_order.png`
-- `outputs/van_der_pol_remainder_vs_order.png`
-- `outputs/torch_over_flowstar_width_ratio_by_order.png`
+| setting_label | o2 | o3 | o4 | o5 | o6 | o7 | o8 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `rem1e-10_cut1e-15` | 0 | 0 | 0 | 0 | 0 | 3 | 6 |
+| `rem1e-8_cut1e-15` | 0 | 0 | 0 | 0 | 6 | 9 | 9 |
+| `rem1e-6_cut1e-12` | 0 | 0 | 3 | 8 | 9 | 9 | 9 |
+| `rem1e-4_cut1e-10` | 0 | 6 | 9 | 9 | 9 | 9 | 9 |
+
+Failure below order 4 is setting-dependent for order 3: it fails under the first three settings but completes 6/9 cases under `rem1e-4_cut1e-10`. Order 2 failed in all settings tested. Orders 4-6 were highly setting-dependent: strict settings made them fail, while looser settings often completed.
+
+The Flow* last-segment widths at `h=0.01`, `steps=10` are about `0.65423` for completed orders/settings, with tube widths about `1.05781`. These are last-segment/tube GNUPLOT boxes, not endpoint boxes.
+
+## Generated Artifacts
+
+Primary CSVs:
+
+- `outputs/tm_order_audit_vdp_order2_8.csv`
+- `outputs/van_der_pol_diagnostics_by_order_v2.csv`
+- `outputs/flowstar_vdp_by_order_rem1e-10_cut1e-15_v2.csv`
+- `outputs/flowstar_vdp_by_order_rem1e-8_cut1e-15_v2.csv`
+- `outputs/flowstar_vdp_by_order_rem1e-6_cut1e-12_v2.csv`
+- `outputs/flowstar_vdp_by_order_rem1e-4_cut1e-10_v2.csv`
+- `outputs/flowstar_vdp_remainder_cutoff_sweep.csv`
+
+Plots:
+
+- `outputs/van_der_pol_endpoint_width_vs_order.png`
+- `outputs/van_der_pol_last_segment_width_vs_order.png`
+- `outputs/van_der_pol_tube_width_vs_order.png`
+- `outputs/van_der_pol_runtime_internal_vs_order.png`
+- `outputs/van_der_pol_runtime_wall_vs_order.png`
+- `outputs/van_der_pol_remainder_frac_vs_order.png`
+- `outputs/van_der_pol_poly_vs_remainder_stacked_by_order.png`
+- `outputs/flowstar_status_by_order_and_setting.png`
+- `outputs/torch_over_flowstar_last_segment_width_ratio_by_order.png`
 - `outputs/order_flowstar_status_table.md`
-- `docs/order_and_vdp_flowstar_report.md`
 
-Additional useful files:
+Auxiliary generated files:
 
-- `outputs/tm_order_audit_all_systems.csv`
-- `outputs/flowstar_comparison_by_order_summary.md`
-- `outputs/flowstar_status_by_order.png`
-- `outputs/dependency_vs_range_ratio_by_order.png`
+- `outputs/flowstar_vdp_torch_h0.01_s10_v2.csv`
+- `outputs/flowstar_vdp_plot_input_v2.csv`
+- `scripts/run_vdp_order_flowstar_study.sh`
+
+## Next Work
+
+The highest-leverage follow-ups are symbolic remainder support, centered or normalized variables, Bernstein or subdivision range bounding for retained polynomials, an explicit maximum remainder budget, and a separate Flow*_adaptive baseline. Those are intentionally outside this fixed-order diagnostic pass.

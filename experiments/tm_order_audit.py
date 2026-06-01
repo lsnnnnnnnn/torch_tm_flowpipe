@@ -43,7 +43,7 @@ DEFAULT_CONFIGS = [
 
 FIELDS = [
     "system", "mode", "h", "steps", "requested_order", "order_semantics",
-    "status", "final_width_sum", "final_width_max", "flowpipe_width_sum",
+    "dependency_scope", "actual_degree_reference", "status", "final_width_sum", "final_width_max", "flowpipe_width_sum",
     "flowpipe_width_max", "max_final_degree", "degree_by_dim",
     "term_count_total", "term_count_by_dim", "remainder_radius_max",
     "remainder_radius_by_dim", "active_vars_by_dim", "segment_max_degree",
@@ -132,6 +132,8 @@ def audit_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         "steps": steps,
         "requested_order": order,
         "order_semantics": "total_degree_cutoff",
+        "dependency_scope": "original_initial_variables" if mode == "dependency_preserving" else "current_step_box_variables_after_collapse",
+        "actual_degree_reference": "degree_wrt_original_initial_vars" if mode == "dependency_preserving" else "degree_wrt_current_step_box_vars_not_original_initial_vars",
         "status": result.status,
         "final_width_sum": sum(final_widths),
         "final_width_max": max(final_widths) if final_widths else 0.0,
@@ -170,11 +172,11 @@ def _select_configs(config_paths: list[Path], systems: list[str] | None) -> list
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit retained Taylor-model polynomial dependency degree.")
     parser.add_argument("--config", nargs="*", default=None, help="config paths; defaults to bundled Flow* comparison configs")
-    parser.add_argument("--system", nargs="+", default=None, help="system name(s) from bundled configs")
+    parser.add_argument("--system", "--systems", dest="system", nargs="+", default=None, help="system name(s) from bundled configs")
     parser.add_argument("--all", action="store_true", help="run full configured grids; otherwise first h/steps/order per config")
     parser.add_argument("--orders", type=int, nargs="+", default=None)
-    parser.add_argument("--h", type=float, nargs="+", default=None)
-    parser.add_argument("--steps", type=int, nargs="+", default=None)
+    parser.add_argument("--h", "--h-values", dest="h", type=float, nargs="+", default=None)
+    parser.add_argument("--steps", "--steps-values", dest="steps", type=int, nargs="+", default=None)
     parser.add_argument("--csv", default="outputs/tm_order_audit.csv")
     args = parser.parse_args()
 

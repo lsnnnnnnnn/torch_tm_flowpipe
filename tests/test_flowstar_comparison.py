@@ -18,6 +18,7 @@ def test_toolbox_export_matches_current_flowstar_cpp_api():
     assert 'int t_id = vars.declareVar("t");' in text
     assert 'ODE<Real> ode({"1 + x^2", "1"}, vars);' in text
     assert "setting.setFixedStepsize(0.01, 4);" in text
+    assert "setting.setCutoffThreshold(1.0000000000000001e-15);" in text
     assert "ode.reach(result, initialSet, 0.050000000000000003, setting, safeSet);" in text
     assert "result.transformToTaylorModels(setting);" in text
     assert "plot_2D_interval_GNUPLOT" in text
@@ -64,8 +65,44 @@ def test_flowstar_parser_reads_gnuplot_numeric_pairs(tmp_path):
     """, encoding="utf-8")
     parsed = parse_files([plot], variables=["x"], numeric_plot_vars=["x"])
     assert parsed.status == "parsed"
+    assert parsed.endpoint_box == {}
+    assert parsed.last_segment_box == {"x": (0.2, 0.4)}
+    assert parsed.tube_box == {"x": (0.0, 0.4)}
     assert parsed.flowpipe_box == {"x": (0.0, 0.4)}
     assert parsed.final_box == {"x": (0.2, 0.4)}
+
+
+def test_toolbox_export_accepts_remainder_and_cutoff_overrides():
+    cfg = load_config(ROOT / "comparisons" / "flowstar" / "configs" / "scalar_quadratic.yaml")
+    text = render_toolbox_cpp(cfg, h=0.01, steps=5, order=4, output_prefix="case", remainder_radius=1e-6, cutoff=1e-12)
+    assert "setting.setCutoffThreshold(9.9999999999999998e-13);" in text
+    assert "Interval(-9.9999999999999995e-07, 9.9999999999999995e-07)" in text
+
+
+def test_flowstar_runtime_parser_and_new_width_columns(tmp_path):
+    from compare_against_torch_tm import _flowstar_internal_runtime, write_csv
+    from run_flowstar import FlowstarRunResult
+
+    stdout = tmp_path / "case.stdout.txt"
+    stdout.write_text("FLOWSTAR_RUNTIME_S 0.125\n", encoding="utf-8")
+    run = FlowstarRunResult(status="completed", runtime_s=1.0, compile_s=0.4, run_s=0.6, stdout_path=stdout)
+    assert _flowstar_internal_runtime(run) == 0.125
+
+    csv_path = tmp_path / "rows.csv"
+    write_csv(csv_path, [{
+        "system": "van_der_pol",
+        "tool": "flowstar",
+        "mode": "fixed",
+        "setting_label": "loose",
+        "status": "completed",
+        "last_segment_width_sum": 1.0,
+        "tube_width_sum": 2.0,
+        "box_source": "flowstar_gnuplot_last_segment_and_tube",
+    }])
+    text = csv_path.read_text(encoding="utf-8")
+    assert "last_segment_width_sum" in text
+    assert "flowstar_internal_reach_s" in text
+    assert "loose" in text
 
 
 def test_find_flowstar_root_accepts_repo_or_toolbox_path(tmp_path):

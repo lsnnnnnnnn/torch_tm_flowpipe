@@ -44,30 +44,15 @@ from run_flowstar import find_flowstar_executable, find_flowstar_root, run_flows
 from summarize_comparison import generate_summary
 
 CSV_FIELDS = [
-    "system",
-    "tool",
-    "mode",
-    "h",
-    "steps",
-    "order",
-    "status",
-    "final_width_sum",
-    "final_width_max",
-    "flowpipe_width_sum",
-    "flowpipe_width_max",
-    "runtime_s",
-    "num_segments",
-    "validation_attempts",
-    "term_count",
-    "actual_degree",
-    "remainder_radius",
-    "containment_failures",
-    "flowstar_compile_s",
-    "flowstar_run_s",
-    "flowstar_model_path",
-    "flowstar_stdout_path",
-    "flowstar_stderr_path",
-    "failure_reason",
+    "system", "tool", "mode", "h", "steps", "order", "setting_label", "status",
+    "endpoint_width_sum", "endpoint_width_max", "last_segment_width_sum", "last_segment_width_max",
+    "tube_width_sum", "tube_width_max", "box_source", "endpoint_box_available",
+    "last_segment_box_available", "tube_box_available", "final_width_sum", "final_width_max",
+    "flowpipe_width_sum", "flowpipe_width_max", "runtime_s", "num_segments",
+    "validation_attempts", "term_count", "actual_degree", "remainder_radius",
+    "containment_failures", "flowstar_internal_reach_s", "flowstar_wall_compile_s",
+    "flowstar_wall_run_s", "flowstar_wall_total_s", "flowstar_compile_s", "flowstar_run_s",
+    "flowstar_model_path", "flowstar_stdout_path", "flowstar_stderr_path", "failure_reason",
 ]
 
 CONFIG_DIR = Path(__file__).resolve().parent / "configs"
@@ -77,6 +62,18 @@ DEFAULT_CONFIGS = [
     CONFIG_DIR / "van_der_pol.yaml",
     CONFIG_DIR / "affine_controlled.yaml",
 ]
+
+_RUNTIME_RE = re.compile(r"FLOWSTAR_RUNTIME_S\s+(?P<runtime>[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)")
+
+
+def _flowstar_internal_runtime(run) -> float | str:
+    if run.stdout_path is None or not Path(run.stdout_path).exists():
+        return ""
+    text = Path(run.stdout_path).read_text(encoding="utf-8", errors="ignore")
+    matches = list(_RUNTIME_RE.finditer(text))
+    if not matches:
+        return ""
+    return float(matches[-1].group("runtime"))
 
 
 def _interval_box_from_config(cfg: Mapping[str, Any]) -> list[Interval]:
@@ -308,8 +305,10 @@ def torch_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         mode=mode,
     )
     runtime = time.perf_counter() - start
-    final_sum, final_max = _box_width_metrics(result.final_tm.range_box(), indices)
-    flow_sum, flow_max = _box_width_metrics(_flowpipe_tube_box(result, len(state_vars)), indices)
+    endpoint_sum, endpoint_max = _box_width_metrics(result.final_tm.range_box(), indices)
+    last_segment_box = result.segments[-1].tm.range_box() if result.segments else result.final_tm.range_box()
+    last_segment_sum, last_segment_max = _box_width_metrics(last_segment_box, indices)
+    tube_sum, tube_max = _box_width_metrics(_flowpipe_tube_box(result, len(state_vars)), indices)
     return {
         "system": cfg["system"],
         "tool": "torch_tm_flowpipe",
@@ -318,10 +317,21 @@ def torch_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         "steps": steps,
         "order": order,
         "status": result.status,
-        "final_width_sum": final_sum,
-        "final_width_max": final_max,
-        "flowpipe_width_sum": flow_sum,
-        "flowpipe_width_max": flow_max,
+        "setting_label": "torch_default",
+        "endpoint_width_sum": endpoint_sum,
+        "endpoint_width_max": endpoint_max,
+        "last_segment_width_sum": last_segment_sum,
+        "last_segment_width_max": last_segment_max,
+        "tube_width_sum": tube_sum,
+        "tube_width_max": tube_max,
+        "box_source": "torch_endpoint_last_segment_tube",
+        "endpoint_box_available": True,
+        "last_segment_box_available": True,
+        "tube_box_available": True,
+        "final_width_sum": endpoint_sum,
+        "final_width_max": endpoint_max,
+        "flowpipe_width_sum": tube_sum,
+        "flowpipe_width_max": tube_max,
         "runtime_s": runtime,
         "num_segments": len(result.segments),
         "validation_attempts": result.validation_attempts,
@@ -329,6 +339,10 @@ def torch_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         "actual_degree": _actual_degree(result, indices),
         "remainder_radius": _remainder_radius(result, indices),
         "containment_failures": torch_containment_failures(result, cfg, h, steps),
+        "flowstar_internal_reach_s": "",
+        "flowstar_wall_compile_s": "",
+        "flowstar_wall_run_s": "",
+        "flowstar_wall_total_s": "",
         "flowstar_compile_s": "",
         "flowstar_run_s": "",
         "flowstar_model_path": "",
@@ -352,6 +366,9 @@ def flowstar_row(
     skip_flowstar: bool,
     timeout_s: float | None,
     build_flowstar_lib: bool,
+    flowstar_remainder_radius: float | None = None,
+    flowstar_cutoff: float | None = None,
+    flowstar_setting_label: str = "default",
 ) -> dict[str, Any]:
     system = str(cfg["system"])
     base = f"{system}_h{h:g}_s{steps}_o{order}"
@@ -364,12 +381,23 @@ def flowstar_row(
     # Always export the Flow* input artifact, even when Flow* itself is not
     # installed.  This makes skipped rows actionable: users can copy/compile the
     # generated C++ case on a server with Flow* and reproduce the exact case.
-    export_model(config_path, model_path, h=h, steps=steps, order=order, plot_output_name=plot_name, target=flowstar_target)
+    export_model(
+        config_path,
+        model_path,
+        h=h,
+        steps=steps,
+        order=order,
+        plot_output_name=plot_name,
+        target=flowstar_target,
+        remainder_radius=flowstar_remainder_radius,
+        cutoff=flowstar_cutoff,
+    )
     if skip_flowstar:
         return {
             "system": system,
             "tool": "flowstar",
             "mode": "fixed",
+            "setting_label": flowstar_setting_label,
             "h": h,
             "steps": steps,
             "order": order,
@@ -408,6 +436,7 @@ def flowstar_row(
             "system": system,
             "tool": "flowstar",
             "mode": "fixed",
+            "setting_label": flowstar_setting_label,
             "h": h,
             "steps": steps,
             "order": order,
@@ -423,8 +452,12 @@ def flowstar_row(
             "actual_degree": "",
             "remainder_radius": "",
             "containment_failures": "",
-            "flowstar_compile_s": run.runtime_s if run.status in {"compile_failed", "compile_timeout", "failed"} else "",
-            "flowstar_run_s": run.runtime_s if run.status in {"run_failed", "timeout"} else "",
+            "flowstar_internal_reach_s": "",
+            "flowstar_wall_compile_s": run.compile_s,
+            "flowstar_wall_run_s": run.run_s,
+            "flowstar_wall_total_s": run.runtime_s,
+            "flowstar_compile_s": run.compile_s,
+            "flowstar_run_s": run.run_s,
             "flowstar_model_path": str(model_path),
             "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
             "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
@@ -433,10 +466,13 @@ def flowstar_row(
 
     declared_failure = _flowstar_declared_failure(run)
     if declared_failure:
+        internal_runtime = _flowstar_internal_runtime(run)
+        runtime_s = internal_runtime if internal_runtime != "" else run.runtime_s
         return {
             "system": system,
             "tool": "flowstar",
             "mode": "fixed",
+            "setting_label": flowstar_setting_label,
             "h": h,
             "steps": steps,
             "order": order,
@@ -445,15 +481,19 @@ def flowstar_row(
             "final_width_max": "",
             "flowpipe_width_sum": "",
             "flowpipe_width_max": "",
-            "runtime_s": run.runtime_s,
+            "runtime_s": runtime_s,
             "num_segments": steps,
             "validation_attempts": "",
             "term_count": "",
             "actual_degree": "",
             "remainder_radius": "",
             "containment_failures": "",
-            "flowstar_compile_s": "",
-            "flowstar_run_s": run.runtime_s,
+            "flowstar_internal_reach_s": internal_runtime,
+            "flowstar_wall_compile_s": run.compile_s,
+            "flowstar_wall_run_s": run.run_s,
+            "flowstar_wall_total_s": run.runtime_s,
+            "flowstar_compile_s": run.compile_s,
+            "flowstar_run_s": run.run_s,
             "flowstar_model_path": str(model_path),
             "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
             "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
@@ -473,33 +513,51 @@ def flowstar_row(
         numeric_plot_vars=cfg.get("flowstar", {}).get("plot_vars", cfg["state_vars"]),
     )
     metric_vars = _metric_vars(cfg)
-    final_widths = parsed_widths(parsed.final_box, metric_vars)
-    tube_widths = parsed_widths(parsed.flowpipe_box, metric_vars)
-    if parsed.status != "parsed" or not final_widths:
+    endpoint_widths = parsed_widths(parsed.endpoint_box, metric_vars)
+    last_segment_widths = parsed_widths(parsed.last_segment_box, metric_vars)
+    tube_widths = parsed_widths(parsed.tube_box, metric_vars)
+    if parsed.status != "parsed" or not (endpoint_widths or last_segment_widths or tube_widths):
         status = "unparsed"
     else:
         status = "completed"
+    internal_runtime = _flowstar_internal_runtime(run)
+    runtime_s = internal_runtime if internal_runtime != "" else run.runtime_s
     return {
         "system": system,
         "tool": "flowstar",
         "mode": "fixed",
+        "setting_label": flowstar_setting_label,
         "h": h,
         "steps": steps,
         "order": order,
         "status": status,
-        "final_width_sum": sum(final_widths) if final_widths else "",
-        "final_width_max": max(final_widths) if final_widths else "",
+        "endpoint_width_sum": sum(endpoint_widths) if endpoint_widths else "",
+        "endpoint_width_max": max(endpoint_widths) if endpoint_widths else "",
+        "last_segment_width_sum": sum(last_segment_widths) if last_segment_widths else "",
+        "last_segment_width_max": max(last_segment_widths) if last_segment_widths else "",
+        "tube_width_sum": sum(tube_widths) if tube_widths else "",
+        "tube_width_max": max(tube_widths) if tube_widths else "",
+        "box_source": "flowstar_gnuplot_last_segment_and_tube" if last_segment_widths else "endpoint_unavailable_from_gnuplot",
+        "endpoint_box_available": bool(endpoint_widths),
+        "last_segment_box_available": bool(last_segment_widths),
+        "tube_box_available": bool(tube_widths),
+        "final_width_sum": sum(endpoint_widths) if endpoint_widths else "",
+        "final_width_max": max(endpoint_widths) if endpoint_widths else "",
         "flowpipe_width_sum": sum(tube_widths) if tube_widths else "",
         "flowpipe_width_max": max(tube_widths) if tube_widths else "",
-        "runtime_s": run.runtime_s,
+        "runtime_s": runtime_s,
         "num_segments": steps,
         "validation_attempts": "",
         "term_count": "",
         "actual_degree": "",
         "remainder_radius": "",
-        "containment_failures": flowstar_containment_failures(parsed.final_box, cfg, h, steps),
-        "flowstar_compile_s": "",
-        "flowstar_run_s": run.runtime_s,
+        "containment_failures": flowstar_containment_failures(parsed.endpoint_box, cfg, h, steps) if endpoint_widths else "",
+        "flowstar_internal_reach_s": internal_runtime,
+        "flowstar_wall_compile_s": run.compile_s,
+        "flowstar_wall_run_s": run.run_s,
+        "flowstar_wall_total_s": run.runtime_s,
+        "flowstar_compile_s": run.compile_s,
+        "flowstar_run_s": run.run_s,
         "flowstar_model_path": str(model_path),
         "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
         "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
@@ -612,14 +670,14 @@ def make_plots(csv_path: str | Path, output_dir: str | Path) -> list[Path]:
     flow_by_case: dict[tuple[str, str, str, str], float] = {}
     for r in rows:
         if r.get("tool") == "flowstar" and r.get("status") == "completed":
-            val = _to_float(r.get("final_width_sum"))
+            val = _to_float(r.get("last_segment_width_sum") or r.get("final_width_sum"))
             if val and val > 0.0:
                 flow_by_case[(r["system"], r["h"], r["steps"], r["order"])] = val
     ratio_by_label: dict[str, dict[int, list[float]]] = {}
     for r in rows:
         if r.get("tool") != "torch_tm_flowpipe" or r.get("status") != "validated":
             continue
-        val = _to_float(r.get("final_width_sum"))
+        val = _to_float(r.get("last_segment_width_sum") or r.get("final_width_sum"))
         flow_val = flow_by_case.get((r["system"], r["h"], r["steps"], r["order"]))
         if val is None or flow_val is None or flow_val <= 0.0:
             continue
@@ -632,13 +690,13 @@ def make_plots(csv_path: str | Path, output_dir: str | Path) -> list[Path]:
             ax.plot(xs, ys, marker="o", label=label)
         ax.axhline(1.0, linestyle="--", linewidth=1)
         ax.set_xlabel("steps")
-        ax.set_ylabel("torch final width sum / Flow* final width sum")
-        ax.set_title("Width ratio: torch over Flow*")
+        ax.set_ylabel("torch last-segment width sum / Flow* last-segment width sum")
+        ax.set_title("Last-segment width ratio: torch over Flow*")
         ax.legend(fontsize=7, ncol=2)
     else:
-        _plot_placeholder(ax, "Width ratio: torch over Flow*", "No parsed Flow* width data")
+        _plot_placeholder(ax, "Last-segment width ratio: torch over Flow*", "No parsed Flow* last-segment width data")
     fig.tight_layout()
-    path = out_dir / "width_ratio_torch_over_flowstar.png"
+    path = out_dir / "torch_over_flowstar_last_segment_width_ratio.png"
     fig.savefig(path, dpi=180)
     plt.close(fig)
     paths.append(path)
@@ -733,14 +791,15 @@ def run_comparison(args: argparse.Namespace) -> list[dict[str, Any]]:
         )
         print(f"{cfg['system']}: {len(cases)} case(s)")
         for h, steps, order in cases:
-            for mode in ["range_only", "dependency_preserving"]:
-                row = torch_row(cfg, h=h, steps=steps, order=order, mode=mode)
-                rows.append(row)
-                print(
-                    f"  torch/{mode}: h={h:g} steps={steps} order={order} "
-                    f"status={row['status']} final_sum={float(row['final_width_sum']):.6g} "
-                    f"time={float(row['runtime_s']):.4f}s failures={row['containment_failures']}"
-                )
+            if not args.flowstar_only:
+                for mode in ["range_only", "dependency_preserving"]:
+                    row = torch_row(cfg, h=h, steps=steps, order=order, mode=mode)
+                    rows.append(row)
+                    print(
+                        f"  torch/{mode}: h={h:g} steps={steps} order={order} "
+                        f"status={row['status']} final_sum={float(row['final_width_sum']):.6g} "
+                        f"time={float(row['runtime_s']):.4f}s failures={row['containment_failures']}"
+                    )
             frow = flowstar_row(
                 cfg,
                 config_path,
@@ -754,6 +813,9 @@ def run_comparison(args: argparse.Namespace) -> list[dict[str, Any]]:
                 skip_flowstar=skip_flowstar,
                 timeout_s=args.flowstar_timeout_s,
                 build_flowstar_lib=not args.no_build_flowstar_lib,
+                flowstar_remainder_radius=args.flowstar_remainder_radius,
+                flowstar_cutoff=args.flowstar_cutoff,
+                flowstar_setting_label=args.flowstar_setting_label,
             )
             rows.append(frow)
             print(f"  flowstar/fixed: h={h:g} steps={steps} order={order} status={frow['status']}")
@@ -774,8 +836,12 @@ def main() -> None:
     parser.add_argument("--flowstar-root", default=None, help="path to chenxin415/flowstar root; alternatively set FLOWSTAR_ROOT")
     parser.add_argument("--flowstar-bin", default=None, help="legacy Flow* executable for --flowstar-target legacy_model")
     parser.add_argument("--skip-flowstar", action="store_true", help="do not run Flow*, only write skipped Flow* rows")
+    parser.add_argument("--flowstar-only", action="store_true", help="skip torch rows when sweeping Flow* settings")
     parser.add_argument("--flowstar-timeout-s", type=float, default=None)
     parser.add_argument("--no-build-flowstar-lib", action="store_true", help="do not run make in flowstar-toolbox when libflowstar.a is missing")
+    parser.add_argument("--flowstar-remainder-radius", type=float, default=None)
+    parser.add_argument("--flowstar-cutoff", type=float, default=None)
+    parser.add_argument("--flowstar-setting-label", default="default")
     parser.add_argument("--no-plots", action="store_true")
     args = parser.parse_args()
 

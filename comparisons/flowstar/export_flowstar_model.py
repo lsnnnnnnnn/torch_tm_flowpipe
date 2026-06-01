@@ -101,6 +101,8 @@ def render_toolbox_cpp(
     output_prefix: str = "flowstar_case",
     fixed_step: bool = True,
     fixed_order: bool = True,
+    remainder_radius: float | None = None,
+    cutoff: float | None = None,
 ) -> str:
     """Render a C++ benchmark for the current Flow* toolbox repository.
 
@@ -129,8 +131,8 @@ def render_toolbox_cpp(
     time_var = _time_var(config)
     all_vars = state_vars + [time_var]
     time_horizon = float(h) * int(steps)
-    rem = float(flowstar_cfg.get("remainder_estimation", 1.0e-10))
-    cutoff = float(flowstar_cfg.get("cutoff", 1.0e-15))
+    rem = float(remainder_radius if remainder_radius is not None else flowstar_cfg.get("remainder_estimation", 1.0e-10))
+    cutoff_value = float(cutoff if cutoff is not None else flowstar_cfg.get("cutoff", 1.0e-15))
     symbolic_remainder_size = int(flowstar_cfg.get("symbolic_remainder_size", 0))
 
     exprs = [_flowstar_expr(str(ode[v])) for v in state_vars] + ["1"]
@@ -154,7 +156,7 @@ def render_toolbox_cpp(
     lines.append(f"  ODE<Real> ode({{{expr_list}}}, vars);")
     lines.append("  Computational_Setting setting(vars);")
     lines.append(f"  setting.setFixedStepsize({_cpp_num(h)}, {int(order)});")
-    lines.append(f"  setting.setCutoffThreshold({_cpp_num(cutoff)});")
+    lines.append(f"  setting.setCutoffThreshold({_cpp_num(cutoff_value)});")
     lines.append("  vector<Interval> remainder_estimation(vars.size());")
     lines.append("  for(unsigned int i = 0; i < vars.size(); ++i)")
     lines.append("  {")
@@ -313,13 +315,15 @@ def export_model(
     order: int,
     plot_output_name: str | None = None,
     target: str = "toolbox_cpp",
+    remainder_radius: float | None = None,
+    cutoff: float | None = None,
 ) -> Path:
     cfg = load_config(config_path)
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
     if target == "toolbox_cpp":
         prefix = _safe_file_stem(plot_output_name or out.stem)
-        text = render_toolbox_cpp(cfg, h=h, steps=steps, order=order, output_prefix=prefix)
+        text = render_toolbox_cpp(cfg, h=h, steps=steps, order=order, output_prefix=prefix, remainder_radius=remainder_radius, cutoff=cutoff)
     elif target == "legacy_model":
         plot_name = plot_output_name or (out.with_suffix(".plt").name)
         text = render_legacy_model(cfg, h=h, steps=steps, order=order, output_name=plot_name)
@@ -338,6 +342,8 @@ def main() -> None:
     parser.add_argument("--output", required=True, help="Flow* C++ or legacy .model output path")
     parser.add_argument("--plot-output-name", default=None)
     parser.add_argument("--target", choices=["toolbox_cpp", "legacy_model"], default="toolbox_cpp")
+    parser.add_argument("--flowstar-remainder-radius", type=float, default=None)
+    parser.add_argument("--flowstar-cutoff", type=float, default=None)
     args = parser.parse_args()
     path = export_model(
         args.config,
@@ -347,6 +353,8 @@ def main() -> None:
         order=args.order,
         plot_output_name=args.plot_output_name,
         target=args.target,
+        remainder_radius=args.flowstar_remainder_radius,
+        cutoff=args.flowstar_cutoff,
     )
     print(path)
 

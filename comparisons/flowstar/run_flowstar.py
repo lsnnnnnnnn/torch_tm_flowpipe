@@ -20,6 +20,8 @@ from pathlib import Path
 class FlowstarRunResult:
     status: str
     runtime_s: float
+    compile_s: float | str = ""
+    run_s: float | str = ""
     stdout_path: Path | None = None
     stderr_path: Path | None = None
     returncode: int | None = None
@@ -169,19 +171,19 @@ def run_flowstar_toolbox(
         runtime = time.perf_counter() - start
         stdout_path.write_text(exc.stdout or "", encoding="utf-8")
         stderr_path.write_text(exc.stderr or "", encoding="utf-8")
-        return FlowstarRunResult("compile_timeout", runtime, stdout_path, stderr_path, None, None, "Flow* benchmark compilation timed out")
+        return FlowstarRunResult(status="compile_timeout", runtime_s=runtime, compile_s=runtime, stdout_path=stdout_path, stderr_path=stderr_path, message="Flow* benchmark compilation timed out")
     except OSError as exc:
         runtime = time.perf_counter() - start
-        return FlowstarRunResult("compile_failed", runtime, stdout_path, stderr_path, None, None, str(exc))
+        return FlowstarRunResult(status="compile_failed", runtime_s=runtime, compile_s=runtime, stdout_path=stdout_path, stderr_path=stderr_path, message=str(exc))
     _append_completed_process(comp, stdout_path, stderr_path)
+    compile_elapsed = time.perf_counter() - start
     if comp.returncode != 0:
-        runtime = time.perf_counter() - start
-        return FlowstarRunResult("compile_failed", runtime, stdout_path, stderr_path, comp.returncode, None, "Flow* benchmark compilation failed")
+        return FlowstarRunResult(status="compile_failed", runtime_s=compile_elapsed, compile_s=compile_elapsed, stdout_path=stdout_path, stderr_path=stderr_path, returncode=comp.returncode, message="Flow* benchmark compilation failed")
 
     if not run_executable:
         runtime = time.perf_counter() - start
         artifacts = sorted(p for p in out_dir.glob(f"{cpp.stem}*") if p.is_file())
-        return FlowstarRunResult("built", runtime, stdout_path, stderr_path, comp.returncode, str(exe), "", artifacts)
+        return FlowstarRunResult(status="built", runtime_s=runtime, compile_s=compile_elapsed, stdout_path=stdout_path, stderr_path=stderr_path, returncode=comp.returncode, executable=str(exe), artifact_paths=artifacts)
 
     try:
         proc = subprocess.run([str(exe)], text=True, capture_output=True, timeout=timeout_s, cwd=str(out_dir), check=False)
@@ -189,17 +191,18 @@ def run_flowstar_toolbox(
         runtime = time.perf_counter() - start
         stdout_path.write_text((stdout_path.read_text(encoding="utf-8") if stdout_path.exists() else "") + (exc.stdout or ""), encoding="utf-8")
         stderr_path.write_text((stderr_path.read_text(encoding="utf-8") if stderr_path.exists() else "") + (exc.stderr or ""), encoding="utf-8")
-        return FlowstarRunResult("timeout", runtime, stdout_path, stderr_path, None, str(exe), "Flow* benchmark timed out")
+        return FlowstarRunResult(status="timeout", runtime_s=runtime, compile_s=compile_elapsed, run_s=runtime - compile_elapsed, stdout_path=stdout_path, stderr_path=stderr_path, executable=str(exe), message="Flow* benchmark timed out")
     except OSError as exc:
         runtime = time.perf_counter() - start
-        return FlowstarRunResult("run_failed", runtime, stdout_path, stderr_path, None, str(exe), str(exc))
+        return FlowstarRunResult(status="run_failed", runtime_s=runtime, compile_s=compile_elapsed, run_s=runtime - compile_elapsed, stdout_path=stdout_path, stderr_path=stderr_path, executable=str(exe), message=str(exc))
 
     runtime = time.perf_counter() - start
+    run_elapsed = runtime - compile_elapsed
     _append_completed_process(proc, stdout_path, stderr_path)
     artifacts = sorted(p for p in out_dir.glob(f"{cpp.stem}*") if p.is_file())
     status = "completed" if proc.returncode == 0 else "run_failed"
     msg = "" if proc.returncode == 0 else f"Flow* benchmark returned code {proc.returncode}"
-    return FlowstarRunResult(status, runtime, stdout_path, stderr_path, proc.returncode, str(exe), msg, artifacts)
+    return FlowstarRunResult(status=status, runtime_s=runtime, compile_s=compile_elapsed, run_s=run_elapsed, stdout_path=stdout_path, stderr_path=stderr_path, returncode=proc.returncode, executable=str(exe), message=msg, artifact_paths=artifacts)
 
 
 def run_flowstar_legacy_model(
@@ -234,10 +237,10 @@ def run_flowstar_legacy_model(
         runtime = time.perf_counter() - start
         stdout_path.write_text(exc.stdout or "", encoding="utf-8")
         stderr_path.write_text(exc.stderr or "", encoding="utf-8")
-        return FlowstarRunResult("timeout", runtime, stdout_path, stderr_path, None, exe, "Flow* timed out")
+        return FlowstarRunResult(status="timeout", runtime_s=runtime, run_s=runtime, stdout_path=stdout_path, stderr_path=stderr_path, executable=exe, message="Flow* timed out")
     except OSError as exc:
         runtime = time.perf_counter() - start
-        return FlowstarRunResult("failed", runtime, None, None, None, exe, str(exc))
+        return FlowstarRunResult(status="failed", runtime_s=runtime, run_s=runtime, executable=exe, message=str(exc))
 
     runtime = time.perf_counter() - start
     stdout_path.write_text(proc.stdout, encoding="utf-8")
@@ -245,7 +248,7 @@ def run_flowstar_legacy_model(
     artifacts = sorted(p for p in out_dir.glob(f"{model.stem}*") if p.is_file())
     status = "completed" if proc.returncode == 0 else "failed"
     msg = "" if proc.returncode == 0 else f"Flow* returned code {proc.returncode}"
-    return FlowstarRunResult(status, runtime, stdout_path, stderr_path, proc.returncode, exe, msg, artifacts)
+    return FlowstarRunResult(status=status, runtime_s=runtime, run_s=runtime, stdout_path=stdout_path, stderr_path=stderr_path, returncode=proc.returncode, executable=exe, message=msg, artifact_paths=artifacts)
 
 
 # Backwards-compatible alias for earlier callers.

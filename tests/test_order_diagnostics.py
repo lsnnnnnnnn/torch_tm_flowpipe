@@ -12,6 +12,8 @@ def test_tm_order_audit_actual_degree_and_tau_drop():
     cfg = load_config(ROOT / "comparisons" / "flowstar" / "configs" / "van_der_pol.yaml")
     row = audit_row(cfg, h=0.0025, steps=1, order=4, mode="dependency_preserving")
     assert row["order_semantics"] == "total_degree_cutoff"
+    assert row["dependency_scope"] == "original_initial_variables"
+    assert row["actual_degree_reference"] == "degree_wrt_original_initial_vars"
     assert row["max_final_degree"] <= 4
     assert row["term_count_total"] > 0
     assert row["segment_tau_active_after_drop"] is False
@@ -33,6 +35,9 @@ def test_van_der_pol_diagnostic_decomposition_columns_exist():
         "max_final_degree",
         "term_count_by_dim",
         "width_over_sampled_ratio",
+        "remainder_width_frac",
+        "poly_range_width_frac",
+        "quality_label",
     ]:
         assert name in FIELDS
         assert name in rows[0]
