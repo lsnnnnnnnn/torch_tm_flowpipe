@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
+import time
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -42,10 +43,11 @@ DEFAULT_CONFIGS = [
 
 FIELDS = [
     "system", "mode", "h", "steps", "requested_order", "order_semantics",
-    "status", "final_width_sum", "final_width_max", "max_final_degree",
-    "degree_by_dim", "term_count_by_dim", "remainder_radius_by_dim",
-    "active_vars_by_dim", "segment_max_degree", "segment_tau_active_after_drop",
-    "validation_attempts",
+    "status", "final_width_sum", "final_width_max", "flowpipe_width_sum",
+    "flowpipe_width_max", "max_final_degree", "degree_by_dim",
+    "term_count_total", "term_count_by_dim", "remainder_radius_max",
+    "remainder_radius_by_dim", "active_vars_by_dim", "segment_max_degree",
+    "segment_tau_active_after_drop", "validation_attempts", "runtime_s",
 ]
 
 
@@ -90,7 +92,12 @@ def radius(iv: Interval) -> float:
     return float(iv.radius().detach().cpu())
 
 
+def _flowpipe_tube_box(result, n_state_vars: int) -> list[Interval]:
+    return [Interval.hull(*[seg.tm.range_box()[dim] for seg in result.segments]) for dim in range(n_state_vars)]
+
+
 def audit_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode: str) -> dict[str, Any]:
+    start = time.perf_counter()
     result = flowpipe_multi_step(
         ode_for_config(cfg),
         interval_box_from_config(cfg),
@@ -99,9 +106,12 @@ def audit_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         order=order,
         mode=mode,
     )
+    runtime = time.perf_counter() - start
     indices = metric_indices(cfg)
     final_box = result.final_tm.range_box()
     final_widths = [width(final_box[i]) for i in indices]
+    tube_box = _flowpipe_tube_box(result, len(cfg["state_vars"]))
+    tube_widths = [width(tube_box[i]) for i in indices]
     final_models = [result.final_tm[i] for i in indices]
     final_degrees = [m.polynomial.degree() for m in final_models]
     final_terms = [len(m.polynomial.terms) for m in final_models]
@@ -121,37 +131,63 @@ def audit_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         "h": h,
         "steps": steps,
         "requested_order": order,
-        "order_semantics": "total_degree_over_dependency_vars_plus_local_tau_per_segment",
+        "order_semantics": "total_degree_cutoff",
         "status": result.status,
         "final_width_sum": sum(final_widths),
         "final_width_max": max(final_widths) if final_widths else 0.0,
+        "flowpipe_width_sum": sum(tube_widths),
+        "flowpipe_width_max": max(tube_widths) if tube_widths else 0.0,
         "max_final_degree": max(final_degrees) if final_degrees else 0,
         "degree_by_dim": repr(final_degrees),
+        "term_count_total": sum(final_terms),
         "term_count_by_dim": repr(final_terms),
+        "remainder_radius_max": max(final_rems) if final_rems else 0.0,
         "remainder_radius_by_dim": repr(final_rems),
         "active_vars_by_dim": repr(final_active),
         "segment_max_degree": repr(seg_degrees),
-        "segment_tau_active_after_drop": repr(tau_active_after_drop),
+        "segment_tau_active_after_drop": any(tau_active_after_drop),
         "validation_attempts": result.validation_attempts,
+        "runtime_s": runtime,
     }
+
+
+def _select_configs(config_paths: list[Path], systems: list[str] | None) -> list[Path]:
+    if not systems:
+        return config_paths
+    wanted = set(systems)
+    selected = []
+    for path in config_paths:
+        cfg = load_config(path)
+        if cfg["system"] in wanted:
+            selected.append(path)
+    found = {load_config(p)["system"] for p in selected}
+    missing = wanted - found
+    if missing:
+        raise SystemExit(f"unknown system(s): {', '.join(sorted(missing))}")
+    return selected
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit retained Taylor-model polynomial dependency degree.")
     parser.add_argument("--config", nargs="*", default=None, help="config paths; defaults to bundled Flow* comparison configs")
+    parser.add_argument("--system", nargs="+", default=None, help="system name(s) from bundled configs")
     parser.add_argument("--all", action="store_true", help="run full configured grids; otherwise first h/steps/order per config")
+    parser.add_argument("--orders", type=int, nargs="+", default=None)
+    parser.add_argument("--h", type=float, nargs="+", default=None)
+    parser.add_argument("--steps", type=int, nargs="+", default=None)
     parser.add_argument("--csv", default="outputs/tm_order_audit.csv")
     args = parser.parse_args()
 
     config_paths = [Path(p) for p in args.config] if args.config else DEFAULT_CONFIGS
+    config_paths = _select_configs(config_paths, args.system)
     rows = []
     for path in config_paths:
         cfg = load_config(path)
-        hs = list(cfg["h"])
-        steps_list = list(cfg["steps"])
-        orders = list(cfg["order"])
+        hs = list(args.h if args.h is not None else cfg["h"])
+        steps_list = list(args.steps if args.steps is not None else cfg["steps"])
+        orders = list(args.orders if args.orders is not None else cfg["order"])
         cases = [(float(hs[0]), int(steps_list[0]), int(orders[0]))]
-        if args.all:
+        if args.all or args.h is not None or args.steps is not None or args.orders is not None:
             cases = [(float(h), int(s), int(o)) for h in hs for s in steps_list for o in orders]
         for h, steps, order in cases:
             for mode in ["range_only", "dependency_preserving"]:

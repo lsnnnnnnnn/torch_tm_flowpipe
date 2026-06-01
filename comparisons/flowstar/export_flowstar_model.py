@@ -151,7 +151,7 @@ def render_toolbox_cpp(
         cid = _safe_cpp_identifier(var)
         lines.append(f"  int {cid}_id = vars.declareVar({_cpp_string(var)});")
     lines.append("")
-    lines.append(f"  ODE ode({{{expr_list}}}, vars);")
+    lines.append(f"  ODE<Real> ode({{{expr_list}}}, vars);")
     lines.append("  Computational_Setting setting(vars);")
     lines.append(f"  setting.setFixedStepsize({_cpp_num(h)}, {int(order)});")
     lines.append(f"  setting.setCutoffThreshold({_cpp_num(cutoff)});")
@@ -169,7 +169,7 @@ def render_toolbox_cpp(
         lo, hi = initial[var]
         lines.append(f"  box[{cid}_id] = Interval({_cpp_num(lo)}, {_cpp_num(hi)});")
     tcid = _safe_cpp_identifier(time_var)
-    lines.append(f"  box[{tcid}_id] = Interval(0, 0);")
+    lines.append(f"  box[{tcid}_id] = Interval(0.0, 0.0);")
     lines.append("  Flowpipe initialSet(box);")
     lines.append("  vector<Constraint> safeSet;")
     lines.append("  Result_of_Reachability result;")

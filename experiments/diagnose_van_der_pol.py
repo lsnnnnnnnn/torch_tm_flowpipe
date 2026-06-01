@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Focused diagnostics for the Van der Pol benchmark.
 
-The main comparison showed dependency-preserving is wider than range_only on
-Van der Pol.  This diagnostic decomposes final width into polynomial interval
+This diagnostic decomposes final Taylor-model width into polynomial interval
 range and interval remainder contributions, and compares against a dense RK4
 sampling estimate of the true final box.  The sampling estimate is not a proof.
 """
@@ -11,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
+import time
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -26,10 +26,13 @@ from torch_tm_flowpipe import Interval, flowpipe_multi_step
 from torch_tm_flowpipe.ode_examples import van_der_pol_ode
 
 FIELDS = [
-    "h", "steps", "order", "mode", "status", "dim", "final_width",
-    "poly_range_width", "remainder_width", "remainder_radius",
-    "poly_degree", "term_count", "true_sample_width_dim",
-    "true_sample_width_sum", "over_sample_ratio_dim", "validation_attempts",
+    "system", "mode", "h", "steps", "requested_order", "status",
+    "final_width_sum", "final_width_by_dim", "poly_range_width_sum",
+    "poly_range_width_by_dim", "remainder_width_sum", "remainder_width_by_dim",
+    "remainder_radius_by_dim", "max_final_degree", "degree_by_dim",
+    "term_count_by_dim", "runtime_s", "validation_attempts",
+    "containment_failures", "sampled_width_sum", "sampled_width_by_dim",
+    "width_over_sampled_ratio",
 ]
 
 
@@ -78,6 +81,16 @@ def sample_true_widths(T: float, grid: int, substeps: int) -> tuple[list[float],
     return [boxes[0][1] - boxes[0][0], boxes[1][1] - boxes[1][0]], boxes
 
 
+def _containment_failures(final_box: list[Interval], sample_boxes: list[tuple[float, float]]) -> int:
+    failures = 0
+    for dim, (lo, hi) in enumerate(sample_boxes):
+        if not final_box[dim].contains(lo, tol=1e-8):
+            failures += 1
+        if not final_box[dim].contains(hi, tol=1e-8):
+            failures += 1
+    return failures
+
+
 def diagnostic_rows(h: float, steps: int, order: int, grid: int, substeps: int) -> list[dict[str, object]]:
     T = h * steps
     true_widths, true_boxes = sample_true_widths(T, grid=grid, substeps=substeps)
@@ -85,45 +98,70 @@ def diagnostic_rows(h: float, steps: int, order: int, grid: int, substeps: int) 
     rows = []
     x0_box = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
     for mode in ["range_only", "dependency_preserving"]:
+        start = time.perf_counter()
         result = flowpipe_multi_step(van_der_pol_ode, x0_box, h=h, steps=steps, order=order, mode=mode)
+        runtime = time.perf_counter() - start
         final_box = result.final_tm.range_box()
-        for dim, model in enumerate(result.final_tm.models):
+        final_widths = [width(iv) for iv in final_box]
+        poly_widths = []
+        rem_widths = []
+        rem_radii = []
+        degrees = []
+        term_counts = []
+        for model in result.final_tm.models:
             poly_iv = model.polynomial.evaluate_interval(model.domain)
-            fw = width(final_box[dim])
-            rows.append({
-                "h": h,
-                "steps": steps,
-                "order": order,
-                "mode": mode,
-                "status": result.status,
-                "dim": dim,
-                "final_width": fw,
-                "poly_range_width": width(poly_iv),
-                "remainder_width": width(model.remainder),
-                "remainder_radius": radius(model.remainder),
-                "poly_degree": model.polynomial.degree(),
-                "term_count": len(model.polynomial.terms),
-                "true_sample_width_dim": true_widths[dim],
-                "true_sample_width_sum": true_sum,
-                "over_sample_ratio_dim": fw / true_widths[dim] if true_widths[dim] > 0 else "",
-                "validation_attempts": result.validation_attempts,
-            })
+            poly_widths.append(width(poly_iv))
+            rem_widths.append(width(model.remainder))
+            rem_radii.append(radius(model.remainder))
+            degrees.append(model.polynomial.degree())
+            term_counts.append(len(model.polynomial.terms))
+        rows.append({
+            "system": "van_der_pol",
+            "mode": mode,
+            "h": h,
+            "steps": steps,
+            "requested_order": order,
+            "status": result.status,
+            "final_width_sum": sum(final_widths),
+            "final_width_by_dim": repr(final_widths),
+            "poly_range_width_sum": sum(poly_widths),
+            "poly_range_width_by_dim": repr(poly_widths),
+            "remainder_width_sum": sum(rem_widths),
+            "remainder_width_by_dim": repr(rem_widths),
+            "remainder_radius_by_dim": repr(rem_radii),
+            "max_final_degree": max(degrees) if degrees else 0,
+            "degree_by_dim": repr(degrees),
+            "term_count_by_dim": repr(term_counts),
+            "runtime_s": runtime,
+            "validation_attempts": result.validation_attempts,
+            "containment_failures": _containment_failures(final_box, true_boxes),
+            "sampled_width_sum": true_sum,
+            "sampled_width_by_dim": repr(true_widths),
+            "width_over_sampled_ratio": sum(final_widths) / true_sum if true_sum > 0 else "",
+        })
     return rows
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Diagnose why Van der Pol dependency-preserving can be wider.")
-    parser.add_argument("--h", type=float, default=0.01)
-    parser.add_argument("--steps", type=int, default=10)
+    parser.add_argument("--h", type=float, default=None, help="single step size; kept for compatibility")
+    parser.add_argument("--steps", type=int, default=None, help="single step count; kept for compatibility")
+    parser.add_argument("--h-values", type=float, nargs="+", default=None)
+    parser.add_argument("--steps-values", type=int, nargs="+", default=None)
     parser.add_argument("--orders", type=int, nargs="+", default=[4, 5, 6])
     parser.add_argument("--sample-grid", type=int, default=51)
     parser.add_argument("--rk4-substeps", type=int, default=100)
     parser.add_argument("--csv", default="outputs/van_der_pol_diagnostics.csv")
     args = parser.parse_args()
 
+    h_values = args.h_values if args.h_values is not None else [args.h if args.h is not None else 0.01]
+    steps_values = args.steps_values if args.steps_values is not None else [args.steps if args.steps is not None else 10]
+
     rows = []
-    for order in args.orders:
-        rows.extend(diagnostic_rows(args.h, args.steps, order, args.sample_grid, args.rk4_substeps))
+    for h in h_values:
+        for steps in steps_values:
+            for order in args.orders:
+                rows.extend(diagnostic_rows(float(h), int(steps), int(order), args.sample_grid, args.rk4_substeps))
     out = Path(args.csv)
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", newline="", encoding="utf-8") as f:
@@ -132,10 +170,12 @@ def main() -> None:
         writer.writerows(rows)
     print(f"wrote {out}")
     for r in rows:
-        if r["dim"] == 1:
-            print(f"order={r['order']} mode={r['mode']}: y_width={float(r['final_width']):.6g} "
-                  f"poly_width={float(r['poly_range_width']):.6g} rem_width={float(r['remainder_width']):.6g} "
-                  f"sample_width={float(r['true_sample_width_dim']):.6g}")
+        if r["h"] == 0.01 and r["steps"] == 10:
+            print(
+                f"order={r['requested_order']} mode={r['mode']}: width={float(r['final_width_sum']):.6g} "
+                f"poly={float(r['poly_range_width_sum']):.6g} rem={float(r['remainder_width_sum']):.6g} "
+                f"sample={float(r['sampled_width_sum']):.6g}"
+            )
 
 
 if __name__ == "__main__":

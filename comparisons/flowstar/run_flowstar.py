@@ -110,7 +110,7 @@ def run_flowstar_toolbox(
     """Compile and run a generated C++ benchmark with the Flow* toolbox."""
     cpp = Path(cpp_path)
     root = find_flowstar_root(str(flowstar_root) if flowstar_root is not None else None)
-    out_dir = Path(output_dir) if output_dir is not None else cpp.parent
+    out_dir = (Path(output_dir) if output_dir is not None else cpp.parent).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     stdout_path = out_dir / f"{cpp.stem}.stdout.txt"
     stderr_path = out_dir / f"{cpp.stem}.stderr.txt"

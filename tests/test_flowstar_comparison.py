@@ -16,7 +16,7 @@ def test_toolbox_export_matches_current_flowstar_cpp_api():
     assert "Variables vars" in text
     assert 'int x_id = vars.declareVar("x");' in text
     assert 'int t_id = vars.declareVar("t");' in text
-    assert 'ODE ode({"1 + x^2", "1"}, vars);' in text
+    assert 'ODE<Real> ode({"1 + x^2", "1"}, vars);' in text
     assert "setting.setFixedStepsize(0.01, 4);" in text
     assert "ode.reach(result, initialSet, 0.050000000000000003, setting, safeSet);" in text
     assert "result.transformToTaylorModels(setting);" in text
@@ -116,7 +116,7 @@ def test_compare_skip_flowstar_exports_cpp(tmp_path):
     assert row["status"] == "skipped"
     generated = tmp_path / "scalar_quadratic_h0.01_s1_o3.cpp"
     assert generated.exists()
-    assert "ODE ode" in generated.read_text(encoding="utf-8")
+    assert "ODE<Real> ode" in generated.read_text(encoding="utf-8")
 
 
 def test_toolbox_export_preserves_decimal_case_names(tmp_path):

@@ -10,6 +10,7 @@ import argparse
 import csv
 import itertools
 import math
+import re
 import sys
 import time
 from pathlib import Path
@@ -58,8 +59,15 @@ CSV_FIELDS = [
     "num_segments",
     "validation_attempts",
     "term_count",
+    "actual_degree",
     "remainder_radius",
     "containment_failures",
+    "flowstar_compile_s",
+    "flowstar_run_s",
+    "flowstar_model_path",
+    "flowstar_stdout_path",
+    "flowstar_stderr_path",
+    "failure_reason",
 ]
 
 CONFIG_DIR = Path(__file__).resolve().parent / "configs"
@@ -145,6 +153,12 @@ def _flowpipe_tube_box(result, n_state_vars: int) -> list[Interval]:
 
 def _term_count(result, indices: Sequence[int]) -> int:
     return int(sum(len(result.final_tm[i].polynomial.terms) for i in indices))
+
+
+def _actual_degree(result, indices: Sequence[int]) -> int:
+    if not indices:
+        return 0
+    return int(max(result.final_tm[i].polynomial.degree() for i in indices))
 
 
 def _remainder_radius(result, indices: Sequence[int]) -> float:
@@ -255,6 +269,30 @@ def flowstar_containment_failures(parsed_box: Mapping[str, tuple[float, float]],
     return sum(0 if _contains_box(parsed_box, sample, metric_vars, tol=1e-8) else 1 for sample in samples)
 
 
+def _flowstar_declared_failure(run) -> str:
+    text = ""
+    if run.stdout_path is not None and Path(run.stdout_path).exists():
+        text += Path(run.stdout_path).read_text(encoding="utf-8", errors="ignore")
+    if run.stderr_path is not None and Path(run.stderr_path).exists():
+        text += "\n" + Path(run.stderr_path).read_text(encoding="utf-8", errors="ignore")
+    if "FLOWSTAR_COMPLETED 0" in text:
+        for line in text.splitlines():
+            if "terminated" in line.lower() or "failed" in line.lower():
+                return line.strip()
+        return "Flow* reported FLOWSTAR_COMPLETED 0"
+    return ""
+
+
+def _flowstar_plot_paths(run, model_dir: Path) -> list[Path]:
+    if run.stdout_path is None or not Path(run.stdout_path).exists():
+        return []
+    text = Path(run.stdout_path).read_text(encoding="utf-8", errors="ignore")
+    paths = []
+    for match in re.finditer(r"FLOWSTAR_PLOT\s+(\S+)", text):
+        paths.append(model_dir / f"{match.group(1)}.plt")
+    return paths
+
+
 def torch_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode: str) -> dict[str, Any]:
     ode_fn = ode_for_config(cfg)
     x0_box = _interval_box_from_config(cfg)
@@ -288,8 +326,15 @@ def torch_row(cfg: Mapping[str, Any], *, h: float, steps: int, order: int, mode:
         "num_segments": len(result.segments),
         "validation_attempts": result.validation_attempts,
         "term_count": _term_count(result, indices),
+        "actual_degree": _actual_degree(result, indices),
         "remainder_radius": _remainder_radius(result, indices),
         "containment_failures": torch_containment_failures(result, cfg, h, steps),
+        "flowstar_compile_s": "",
+        "flowstar_run_s": "",
+        "flowstar_model_path": "",
+        "flowstar_stdout_path": "",
+        "flowstar_stderr_path": "",
+        "failure_reason": "",
     }
 
 
@@ -337,8 +382,15 @@ def flowstar_row(
             "num_segments": steps,
             "validation_attempts": "",
             "term_count": "",
+            "actual_degree": "",
             "remainder_radius": "",
             "containment_failures": "",
+            "flowstar_compile_s": "",
+            "flowstar_run_s": "",
+            "flowstar_model_path": str(model_path),
+            "flowstar_stdout_path": "",
+            "flowstar_stderr_path": "",
+            "failure_reason": "skip_flowstar requested or Flow* root/executable unavailable",
         }
 
     if flowstar_target == "toolbox_cpp":
@@ -368,11 +420,48 @@ def flowstar_row(
             "num_segments": steps,
             "validation_attempts": "",
             "term_count": "",
+            "actual_degree": "",
             "remainder_radius": "",
             "containment_failures": "",
+            "flowstar_compile_s": run.runtime_s if run.status in {"compile_failed", "compile_timeout", "failed"} else "",
+            "flowstar_run_s": run.runtime_s if run.status in {"run_failed", "timeout"} else "",
+            "flowstar_model_path": str(model_path),
+            "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
+            "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
+            "failure_reason": run.message,
+        }
+
+    declared_failure = _flowstar_declared_failure(run)
+    if declared_failure:
+        return {
+            "system": system,
+            "tool": "flowstar",
+            "mode": "fixed",
+            "h": h,
+            "steps": steps,
+            "order": order,
+            "status": "failed",
+            "final_width_sum": "",
+            "final_width_max": "",
+            "flowpipe_width_sum": "",
+            "flowpipe_width_max": "",
+            "runtime_s": run.runtime_s,
+            "num_segments": steps,
+            "validation_attempts": "",
+            "term_count": "",
+            "actual_degree": "",
+            "remainder_radius": "",
+            "containment_failures": "",
+            "flowstar_compile_s": "",
+            "flowstar_run_s": run.runtime_s,
+            "flowstar_model_path": str(model_path),
+            "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
+            "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
+            "failure_reason": declared_failure,
         }
 
     parse_candidates = [p for p in [run.stdout_path, run.stderr_path, model_dir / plot_name] if p is not None]
+    parse_candidates.extend(_flowstar_plot_paths(run, model_dir))
     parse_candidates.extend(run.artifact_paths)
     parse_candidates.extend(model_dir.glob(f"{base}*"))
     # Deduplicate while preserving order.  Toolbox output often consists of
@@ -406,18 +495,32 @@ def flowstar_row(
         "num_segments": steps,
         "validation_attempts": "",
         "term_count": "",
+        "actual_degree": "",
         "remainder_radius": "",
         "containment_failures": flowstar_containment_failures(parsed.final_box, cfg, h, steps),
+        "flowstar_compile_s": "",
+        "flowstar_run_s": run.runtime_s,
+        "flowstar_model_path": str(model_path),
+        "flowstar_stdout_path": str(run.stdout_path) if run.stdout_path is not None else "",
+        "flowstar_stderr_path": str(run.stderr_path) if run.stderr_path is not None else "",
+        "failure_reason": parsed.message if status == "unparsed" else "",
     }
 
 
-def _case_grid(cfg: Mapping[str, Any], *, all_cases: bool) -> list[tuple[float, int, int]]:
-    hs = list(cfg["h"])
-    steps = list(cfg["steps"])
-    orders = list(cfg["order"])
-    if not all_cases:
-        return [(float(hs[0]), int(steps[0]), int(orders[0]))]
-    return [(float(h), int(s), int(o)) for h, s, o in itertools.product(hs, steps, orders)]
+def _case_grid(
+    cfg: Mapping[str, Any],
+    *,
+    all_cases: bool,
+    h_values: Sequence[float] | None = None,
+    steps_values: Sequence[int] | None = None,
+    orders: Sequence[int] | None = None,
+) -> list[tuple[float, int, int]]:
+    hs = list(h_values if h_values is not None else cfg["h"])
+    steps = list(steps_values if steps_values is not None else cfg["steps"])
+    order_values = list(orders if orders is not None else cfg["order"])
+    if not all_cases and h_values is None and steps_values is None and orders is None:
+        return [(float(hs[0]), int(steps[0]), int(order_values[0]))]
+    return [(float(h), int(s), int(o)) for h, s, o in itertools.product(hs, steps, order_values)]
 
 
 def write_csv(path: str | Path, rows: Sequence[Mapping[str, Any]]) -> None:
@@ -583,8 +686,25 @@ def make_plots(csv_path: str | Path, output_dir: str | Path) -> list[Path]:
     return paths
 
 
+def _select_config_paths(config_paths: list[Path], systems: Sequence[str] | None) -> list[Path]:
+    if not systems:
+        return config_paths
+    wanted = set(systems)
+    selected = []
+    for path in config_paths:
+        cfg = load_config(path)
+        if cfg["system"] in wanted:
+            selected.append(path)
+    found = {load_config(p)["system"] for p in selected}
+    missing = wanted - found
+    if missing:
+        raise SystemExit(f"unknown system(s): {', '.join(sorted(missing))}")
+    return selected
+
+
 def run_comparison(args: argparse.Namespace) -> list[dict[str, Any]]:
     config_paths = [Path(p) for p in args.config] if args.config else DEFAULT_CONFIGS
+    config_paths = _select_config_paths(config_paths, args.systems)
     rows: list[dict[str, Any]] = []
     model_dir = Path(args.model_dir)
 
@@ -604,7 +724,13 @@ def run_comparison(args: argparse.Namespace) -> list[dict[str, Any]]:
 
     for config_path in config_paths:
         cfg = load_config(config_path)
-        cases = _case_grid(cfg, all_cases=args.all)
+        cases = _case_grid(
+            cfg,
+            all_cases=args.all,
+            h_values=args.h_values,
+            steps_values=args.steps_values,
+            orders=args.orders,
+        )
         print(f"{cfg['system']}: {len(cases)} case(s)")
         for h, steps, order in cases:
             for mode in ["range_only", "dependency_preserving"]:
@@ -638,6 +764,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Compare torch_tm_flowpipe against plant-only Flow* runs.")
     parser.add_argument("--all", action="store_true", help="run the full configured grids; otherwise run the first case per config")
     parser.add_argument("--config", nargs="*", default=None, help="YAML config path(s); defaults to all bundled configs")
+    parser.add_argument("--systems", nargs="+", default=None, help="system name(s) from bundled configs")
+    parser.add_argument("--orders", type=int, nargs="+", default=None)
+    parser.add_argument("--h-values", type=float, nargs="+", default=None)
+    parser.add_argument("--steps-values", type=int, nargs="+", default=None)
     parser.add_argument("--csv", default="outputs/flowstar_comparison.csv")
     parser.add_argument("--model-dir", default="outputs/flowstar_models")
     parser.add_argument("--flowstar-target", choices=["toolbox_cpp", "legacy_model"], default="toolbox_cpp", help="Flow* backend interface to use; toolbox_cpp matches chenxin415/flowstar")
