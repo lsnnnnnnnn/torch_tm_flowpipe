@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 FLOWSTAR_ROOT = Path('/srv/local/shengenli/flowstar')
 CSV_PATH = ROOT / 'outputs' / 'flowstar_vdp_remainder_cutoff_sweep.csv'
 LIB_PATH = FLOWSTAR_ROOT / 'flowstar-toolbox' / 'libflowstar.a'
+ARTIFACT_BUNDLE_COMMIT_NOTE = (
+    'This manifest is generated from the clean source tree recorded in '
+    'source_tree_commit_used_for_generation. The artifact bundle commit '
+    'containing this refreshed manifest may be later.'
+)
 
 
 def run(cmd: list[str], cwd: Path = ROOT) -> str:
@@ -114,6 +119,7 @@ def build_manifest(flow_rows: list[dict[str, str]]) -> dict[str, Any]:
     endpoint_false_ok = all(str(r.get('endpoint_box_available')).lower() == 'false' for r in completed_gnuplot)
     compiler_version = run(['g++', '--version']).splitlines()
     flowstar_status = run(['git', '-C', str(FLOWSTAR_ROOT), 'status', '--short'])
+    generation_worktree_status = run(['git', 'status', '--short']) or 'clean'
     return {
         'schema_version': 1,
         'generated_utc_date': '2026-06-02',
@@ -121,10 +127,11 @@ def build_manifest(flow_rows: list[dict[str, str]]) -> dict[str, Any]:
         'torch_tm_flowpipe': {
             'path': str(ROOT),
             'branch': run(['git', 'branch', '--show-current']),
-            'head_sha': run(['git', 'rev-parse', 'HEAD']),
-            'commit_message': run(['git', 'log', '-1', '--oneline']),
-            'status_short_before_manifest_generation': run(['git', 'status', '--short']),
-            'remote_origin_main': run(['git', 'ls-remote', 'origin', 'main']),
+            'source_tree_commit_used_for_generation': run(['git', 'rev-parse', 'HEAD']),
+            'source_tree_commit_message_used_for_generation': run(['git', 'log', '-1', '--oneline']),
+            'generation_worktree_status': generation_worktree_status,
+            'remote_origin_main_at_generation': run(['git', 'ls-remote', 'origin', 'main']),
+            'artifact_bundle_commit_note': ARTIFACT_BUNDLE_COMMIT_NOTE,
         },
         'flowstar_backend': {
             'FLOWSTAR_ROOT': str(FLOWSTAR_ROOT),
@@ -192,7 +199,10 @@ def write_manifest_md(manifest: dict[str, Any]) -> str:
         '',
     ]
     for k, v in manifest['torch_tm_flowpipe'].items():
-        lines.append(f'- `{k}`: `{v}`')
+        if isinstance(v, str) and '\n' in v:
+            lines.extend([f'- `{k}`:', '', '```text', *(v.splitlines() or ['<clean>']), '```'])
+        else:
+            lines.append(f'- `{k}`: `{v}`')
     lines.extend(['', '## Flow* Backend', ''])
     backend = manifest['flowstar_backend']
     lines.extend([

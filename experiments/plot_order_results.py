@@ -236,7 +236,7 @@ def write_status_table(rows: list[dict[str, str]], out: Path) -> None:
         "| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: | --- |",
     ]
     for r in sorted(vdp, key=lambda x: (x.get("setting_label") or "", to_int(x.get("order")) or -1, to_float(x.get("h")) or -1, to_int(x.get("steps")) or -1)):
-        reason = (r.get("failure_reason") or "").replace("|", "/")
+        reason = (r.get("failure_reason") or "").replace("|", "/").replace("\r", " ").replace("\n", " ")
         lines.append(
             f"| {r.get('setting_label','')} | {r.get('order','')} | {r.get('h','')} | {r.get('steps','')} | "
             f"{r.get('status','')} | {r.get('last_segment_width_sum','')} | {r.get('tube_width_sum','')} | "

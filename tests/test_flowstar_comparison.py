@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 import sys
 
@@ -43,6 +44,120 @@ def test_outputs_readme_references_existing_tracked_artifacts():
     ]:
         assert (ROOT / rel).exists()
         assert rel in tracked
+
+
+def _csv_rows(rel: str) -> tuple[list[str], list[dict[str, str]]]:
+    path = ROOT / rel
+    with path.open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    return reader.fieldnames or [], rows
+
+
+def test_authoritative_csvs_are_utf8_lf_nonempty_with_expected_rows_and_columns():
+    expectations = {
+        "outputs/tm_order_audit_vdp_order2_8.csv": {
+            "data_rows": 126,
+            "required_columns": {
+                "system",
+                "mode",
+                "h",
+                "steps",
+                "requested_order",
+                "order_semantics",
+                "status",
+                "final_width_sum",
+                "flowpipe_width_sum",
+                "runtime_s",
+            },
+        },
+        "outputs/van_der_pol_diagnostics_by_order_v2.csv": {
+            "data_rows": 126,
+            "required_columns": {
+                "system",
+                "mode",
+                "h",
+                "steps",
+                "requested_order",
+                "status",
+                "final_width_sum",
+                "remainder_width_sum",
+                "remainder_width_frac",
+                "quality_label",
+            },
+        },
+        "outputs/flowstar_vdp_remainder_cutoff_sweep.csv": {
+            "flowstar_data_rows": 252,
+            "required_columns": {
+                "system",
+                "tool",
+                "mode",
+                "setting_label",
+                "h",
+                "steps",
+                "order",
+                "status",
+                "last_segment_width_sum",
+                "tube_width_sum",
+                "flowstar_internal_reach_s",
+            },
+        },
+        "outputs/flowstar_vdp_plot_input_v2.csv": {
+            "flowstar_data_rows": 252,
+            "min_torch_data_rows": 1,
+            "required_columns": {
+                "system",
+                "tool",
+                "mode",
+                "h",
+                "steps",
+                "order",
+                "status",
+                "last_segment_width_sum",
+                "tube_width_sum",
+            },
+        },
+    }
+
+    for rel, expected in expectations.items():
+        path = ROOT / rel
+        raw = path.read_bytes()
+        assert raw
+        raw.decode("utf-8")
+        assert b"\x00" not in raw
+        assert b"\r" not in raw
+        assert raw.endswith(b"\n")
+
+        header, rows = _csv_rows(rel)
+        assert header
+        assert rows
+        assert set(header) >= expected["required_columns"]
+        assert raw.count(b"\n") == len(rows) + 1
+        if "data_rows" in expected:
+            assert len(rows) == expected["data_rows"]
+        if "flowstar_data_rows" in expected:
+            assert sum(r.get("tool") == "flowstar" for r in rows) == expected["flowstar_data_rows"]
+        if "min_torch_data_rows" in expected:
+            assert sum(r.get("tool") == "torch_tm_flowpipe" for r in rows) >= expected["min_torch_data_rows"]
+
+
+def test_order_flowstar_status_table_is_standard_pipe_table_with_all_flowstar_rows():
+    table_lines = (ROOT / "outputs" / "order_flowstar_status_table.md").read_text(encoding="utf-8").splitlines()
+    assert len(table_lines) >= 3
+    assert table_lines[0].startswith("| setting | order |")
+    assert table_lines[1].startswith("| --- | ---:")
+    assert table_lines[2].startswith("| rem")
+    assert "| --- |" not in table_lines[0]
+    assert "| rem" not in table_lines[0]
+    assert "| rem" not in table_lines[1]
+    assert all(not line.startswith("| | rem") for line in table_lines)
+    pipe_count = table_lines[0].count("|")
+    assert all(line.count("|") == pipe_count for line in table_lines if line.startswith("| "))
+
+    _header, flow_rows = _csv_rows("outputs/flowstar_vdp_remainder_cutoff_sweep.csv")
+    flowstar_count = sum(r.get("tool") == "flowstar" for r in flow_rows)
+    data_rows = [line for line in table_lines[2:] if line.startswith("| ")]
+    assert len(data_rows) == flowstar_count
 
 
 def test_flowstar_comparison_doc_does_not_reference_deprecated_ratio_plots():

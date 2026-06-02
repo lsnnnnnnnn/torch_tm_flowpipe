@@ -27,6 +27,25 @@ def test_flowstar_provenance_manifest_records_backend_and_semantics():
     data = json.loads((ROOT / "outputs" / "flowstar_provenance_manifest.json").read_text(encoding="utf-8"))
     md = (ROOT / "outputs" / "flowstar_provenance_manifest.md").read_text(encoding="utf-8")
 
+    source = data["torch_tm_flowpipe"]
+    assert "head_sha" not in source
+    assert "source_head_at_generation" not in source
+    assert "remote_origin_main" not in source
+    assert "status_short_before_manifest_generation" not in source
+    assert re.fullmatch(r"[0-9a-f]{40}", source["source_tree_commit_used_for_generation"])
+    assert re.fullmatch(r"[0-9a-f]{40}\trefs/heads/main", source["remote_origin_main_at_generation"])
+    assert source["generation_worktree_status"] == "clean"
+    assert source["artifact_bundle_commit_note"] == (
+        "This manifest is generated from the clean source tree recorded in "
+        "source_tree_commit_used_for_generation. The artifact bundle commit "
+        "containing this refreshed manifest may be later."
+    )
+    assert "`source_tree_commit_used_for_generation`" in md
+    assert "`remote_origin_main_at_generation`" in md
+    assert "`artifact_bundle_commit_note`" in md
+    assert "`generation_worktree_status`: `clean`" in md
+    assert "`head_sha`" not in md.split("## Flow* Backend", 1)[0]
+
     backend = data["flowstar_backend"]
     assert backend["FLOWSTAR_ROOT"] == "/srv/local/shengenli/flowstar"
     assert backend["backend"] == "toolbox_cpp"

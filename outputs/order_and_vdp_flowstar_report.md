@@ -155,6 +155,8 @@ Auxiliary generated files:
 - `outputs/flowstar_vdp_plot_input_v2.csv`
 - `scripts/run_vdp_order_flowstar_study.sh`
 
-## Next Work
+## Next research target: polynomial range looseness diagnostic
 
-The highest-leverage follow-ups are symbolic remainder support, centered or normalized variables, Bernstein or subdivision range bounding for retained polynomials, an explicit maximum remainder budget, and a separate Flow*_adaptive baseline. Those are intentionally outside this fixed-order diagnostic pass.
+The next research target is a plant-only Van der Pol diagnostic that compares the current polynomial interval range evaluation against a sampling/subdivision diagnostic. The goal is to quantify polynomial range looseness before designing any new range bounding method.
+
+This proposal does not add CROWN, auto_LiRPA, Jacobian bounds, sin/cos support, hybrid automata, a Flow* core binding, a Flow* rewrite, or an NN controller.
