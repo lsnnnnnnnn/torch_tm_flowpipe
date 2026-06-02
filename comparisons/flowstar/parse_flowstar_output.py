@@ -38,7 +38,12 @@ class ParsedFlowstarOutput:
 
     @property
     def final_box(self) -> dict[str, tuple[float, float]]:
-        """Compatibility alias for explicit endpoint text or GNUPLOT last segment."""
+        """Legacy compatibility alias, not an endpoint guarantee.
+
+        This returns explicit endpoint text when Flow* emitted one, otherwise it
+        falls back to the GNUPLOT last-segment box. Downstream reports must use
+        ``endpoint_box``, ``last_segment_box``, or ``tube_box`` explicitly.
+        """
         return self.endpoint_box or self.last_segment_box
 
     @property

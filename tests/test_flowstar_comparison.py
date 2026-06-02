@@ -9,6 +9,47 @@ from parse_flowstar_output import parse_files, parse_text, widths
 from run_flowstar import find_flowstar_root
 
 
+
+
+def test_outputs_readme_references_existing_tracked_artifacts():
+    import re
+    import subprocess
+
+    readme = ROOT / "outputs" / "README_RESULTS.md"
+    text = readme.read_text(encoding="utf-8")
+    refs = []
+    for raw in re.findall(r"`([^`]+)`", text):
+        if not raw.endswith((".csv", ".md", ".png")):
+            continue
+        path = ROOT / raw if "/" in raw else ROOT / "outputs" / raw
+        refs.append(path)
+    assert refs
+    missing = [p for p in refs if not p.exists()]
+    assert missing == []
+
+    tracked = set(subprocess.check_output(["git", "ls-files"], cwd=ROOT, text=True).splitlines())
+    untracked = []
+    for path in refs:
+        rel = path.relative_to(ROOT).as_posix()
+        if rel not in tracked:
+            untracked.append(rel)
+    assert untracked == []
+
+    for rel in [
+        "outputs/tm_order_audit_vdp_order2_8.csv",
+        "outputs/van_der_pol_diagnostics_by_order_v2.csv",
+        "outputs/flowstar_vdp_remainder_cutoff_sweep.csv",
+        "outputs/flowstar_vdp_plot_input_v2.csv",
+    ]:
+        assert (ROOT / rel).exists()
+        assert rel in tracked
+
+
+def test_flowstar_comparison_doc_does_not_reference_deprecated_ratio_plots():
+    text = (ROOT / "docs" / "flowstar_comparison.md").read_text(encoding="utf-8")
+    assert "width_ratio_torch_over_flowstar.png" not in text
+    assert "torch_over_flowstar_width_ratio_by_order.png" not in text
+
 def test_toolbox_export_matches_current_flowstar_cpp_api():
     cfg = load_config(ROOT / "comparisons" / "flowstar" / "configs" / "scalar_quadratic.yaml")
     text = render_toolbox_cpp(cfg, h=0.01, steps=5, order=4, output_prefix="case")
@@ -70,6 +111,8 @@ def test_flowstar_parser_reads_gnuplot_numeric_pairs(tmp_path):
     assert parsed.tube_box == {"x": (0.0, 0.4)}
     assert parsed.flowpipe_box == {"x": (0.0, 0.4)}
     assert parsed.final_box == {"x": (0.2, 0.4)}
+    assert "Legacy compatibility alias" in type(parsed).final_box.__doc__
+    assert "not an endpoint guarantee" in type(parsed).final_box.__doc__
 
 
 def test_toolbox_export_accepts_remainder_and_cutoff_overrides():
@@ -183,6 +226,7 @@ def test_summary_uses_flowstar_last_segment_and_tube_semantics(tmp_path):
     assert "No parsed Flow* boxes" not in md
     assert "| toy | last_segment | dependency_preserving | loose |" in md
     assert "| toy | tube | dependency_preserving | loose |" in md
+    assert "| toy | endpoint |" not in md
 
     _summary, cases = _flowstar_ratio_table([
         {

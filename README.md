@@ -59,14 +59,14 @@ bash scripts/setup_dev.sh
 bash scripts/check_all.sh
 ```
 
-For the requested `onmi` environment, run the same commands through `conda`:
+For the requested `py11` environment, run the same commands through `conda`:
 
 ```bash
-conda run -n onmi python -m pip install -e ".[test]"
-conda run -n onmi pytest -q
-conda run -n onmi python examples/scalar_quadratic.py
-conda run -n onmi python examples/van_der_pol_short.py
-conda run -n onmi python examples/affine_controlled.py
+conda run -n py11 python -m pip install -e ".[test]"
+conda run -n py11 pytest -q
+conda run -n py11 python examples/scalar_quadratic.py
+conda run -n py11 python examples/van_der_pol_short.py
+conda run -n py11 python examples/affine_controlled.py
 ```
 
 Experiment scripts keep their stdout output unchanged and can also write CSV
@@ -131,6 +131,15 @@ the torch baselines and writes Flow* rows with `status=skipped`.  See
 ## Flow* comparison backend note
 
 The plant-only comparison suite under `comparisons/flowstar/` defaults to the current `chenxin415/flowstar` toolbox interface. It generates C++ benchmark programs that include `Continuous.h` and link against `flowstar-toolbox/libflowstar.a`. Older `.model` file export remains available with `--flowstar-target legacy_model`, but it is not the default.
+
+For the local server setup used by the generated reports:
+
+```bash
+cd /srv/local/shengenli/torch_tm_flowpipe
+export FLOWSTAR_ROOT=/srv/local/shengenli/flowstar
+conda run -n py11 python -m pip install -e ".[test]"
+conda run -n py11 pytest -q
+```
 
 
 ## Evidence and comparison reports

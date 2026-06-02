@@ -23,10 +23,8 @@ Corrected plots:
 - `van_der_pol_poly_vs_remainder_stacked_by_order.png`
 - `flowstar_status_by_order_and_setting.png`
 
-Deprecated or removed ambiguous outputs:
-
-- `torch_over_flowstar_width_ratio_by_order.png`
-- `width_ratio_torch_over_flowstar.png`
-- Any table or plot that compares torch endpoint/final width to Flow* GNUPLOT last-segment width.
+Deprecated ambiguous outputs were removed from this bundle. Do not use any old
+table or plot that compares torch endpoint/final width to Flow* GNUPLOT
+last-segment width.
 
 Width semantics: endpoint, last-segment, and tube widths are distinct. Torch-vs-Flow* ratios in this bundle use matching last-segment or tube widths unless both tools explicitly provide endpoint boxes. Runtime semantics are also distinct: Flow* internal reach time comes from `FLOWSTAR_RUNTIME_S`, Flow* wall run time includes executable and plotting overhead, compile time is separate, and torch runtime is Python algorithm wall time.

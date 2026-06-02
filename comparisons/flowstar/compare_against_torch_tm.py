@@ -665,41 +665,47 @@ def make_plots(csv_path: str | Path, output_dir: str | Path) -> list[Path]:
         plt.close(fig)
         paths.append(path)
 
-    # Width ratio: torch modes divided by Flow* fixed, when Flow* parsed data exists.
-    fig, ax = plt.subplots(figsize=(9, 5))
-    flow_by_case: dict[tuple[str, str, str, str], float] = {}
-    for r in rows:
-        if r.get("tool") == "flowstar" and r.get("status") == "completed":
-            val = _to_float(r.get("last_segment_width_sum") or r.get("final_width_sum"))
-            if val and val > 0.0:
-                flow_by_case[(r["system"], r["h"], r["steps"], r["order"])] = val
-    ratio_by_label: dict[str, dict[int, list[float]]] = {}
-    for r in rows:
-        if r.get("tool") != "torch_tm_flowpipe" or r.get("status") != "validated":
-            continue
-        val = _to_float(r.get("last_segment_width_sum") or r.get("final_width_sum"))
-        flow_val = flow_by_case.get((r["system"], r["h"], r["steps"], r["order"]))
-        if val is None or flow_val is None or flow_val <= 0.0:
-            continue
-        label = f"{r['system']}/{r['mode']}"
-        ratio_by_label.setdefault(label, {}).setdefault(int(float(r["steps"])), []).append(val / flow_val)
-    if ratio_by_label:
-        for label, by_steps in sorted(ratio_by_label.items()):
-            xs = sorted(by_steps)
-            ys = [sum(by_steps[x]) / len(by_steps[x]) for x in xs]
-            ax.plot(xs, ys, marker="o", label=label)
-        ax.axhline(1.0, linestyle="--", linewidth=1)
-        ax.set_xlabel("steps")
-        ax.set_ylabel("torch last-segment width sum / Flow* last-segment width sum")
-        ax.set_title("Last-segment width ratio: torch over Flow*")
-        ax.legend(fontsize=7, ncol=2)
-    else:
-        _plot_placeholder(ax, "Last-segment width ratio: torch over Flow*", "No parsed Flow* last-segment width data")
-    fig.tight_layout()
-    path = out_dir / "torch_over_flowstar_last_segment_width_ratio.png"
-    fig.savefig(path, dpi=180)
-    plt.close(fig)
-    paths.append(path)
+    # Width ratios use matching semantics only: GNUPLOT-derived last segment and
+    # tube boxes are not endpoint boxes.
+    for ratio_type, width_col, ylabel in [
+        ("last_segment", "last_segment_width_sum", "torch last-segment width sum / Flow* last-segment width sum"),
+        ("tube", "tube_width_sum", "torch tube width sum / Flow* tube width sum"),
+    ]:
+        fig, ax = plt.subplots(figsize=(9, 5))
+        flow_by_case: dict[tuple[str, str, str, str], float] = {}
+        for r in rows:
+            if r.get("tool") == "flowstar" and r.get("status") == "completed":
+                val = _to_float(r.get(width_col))
+                if val and val > 0.0:
+                    flow_by_case[(r["system"], r["h"], r["steps"], r["order"])] = val
+        ratio_by_label: dict[str, dict[int, list[float]]] = {}
+        for r in rows:
+            if r.get("tool") != "torch_tm_flowpipe" or r.get("status") != "validated":
+                continue
+            val = _to_float(r.get(width_col))
+            flow_val = flow_by_case.get((r["system"], r["h"], r["steps"], r["order"]))
+            if val is None or flow_val is None or flow_val <= 0.0:
+                continue
+            label = f"{r['system']}/{r['mode']}"
+            ratio_by_label.setdefault(label, {}).setdefault(int(float(r["steps"])), []).append(val / flow_val)
+        title = f"{ratio_type.replace('_', '-')} width ratio: torch over Flow*"
+        if ratio_by_label:
+            for label, by_steps in sorted(ratio_by_label.items()):
+                xs = sorted(by_steps)
+                ys = [sum(by_steps[x]) / len(by_steps[x]) for x in xs]
+                ax.plot(xs, ys, marker="o", label=label)
+            ax.axhline(1.0, linestyle="--", linewidth=1)
+            ax.set_xlabel("steps")
+            ax.set_ylabel(ylabel)
+            ax.set_title(title)
+            ax.legend(fontsize=7, ncol=2)
+        else:
+            _plot_placeholder(ax, title, f"No parsed Flow* {ratio_type.replace('_', '-')} width data")
+        fig.tight_layout()
+        path = out_dir / f"torch_over_flowstar_{ratio_type}_width_ratio.png"
+        fig.savefig(path, dpi=180)
+        plt.close(fig)
+        paths.append(path)
 
     # Dependency preserving vs range-only ratio.
     fig, ax = plt.subplots(figsize=(9, 5))

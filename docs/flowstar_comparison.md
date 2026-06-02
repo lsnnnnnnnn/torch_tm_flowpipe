@@ -1,21 +1,26 @@
-# Flow* plant-only comparison suite
+# Flow* Plant-Only Comparison Suite
 
-This comparison suite is intentionally **plant-only**.  It compares the PyTorch Taylor-model flowpipe kernel in this repository against Flow* on isolated polynomial plant ODEs.  It does not run the full CROWN-Reach neural-network-controlled-system pipeline, and it does not add CROWN, auto_LiRPA, Jacobian bounds, non-polynomial functions, or Flow* bindings to the core `torch_tm_flowpipe` library.
+This comparison suite is intentionally **plant-only**. It compares the PyTorch Taylor-model flowpipe kernel in this repository against Flow* on isolated polynomial plant ODEs. It does not run the full CROWN-Reach neural-network-controlled-system pipeline, and it does not add CROWN, auto_LiRPA, Jacobian bounds, non-polynomial functions, or Flow* bindings to the core `torch_tm_flowpipe` library.
 
-CROWN-Reach uses Flow* for the continuous plant dynamics with Taylor Models and combines those plant Taylor Models with CROWN-style neural-network bounds.  The scripts under `comparisons/flowstar/` isolate only the plant-flowpipe part so we can compare the local PyTorch Taylor-model kernel against the Flow* backend used in that style of NNCS analysis.
+CROWN-Reach uses Flow* for the continuous plant dynamics with Taylor Models and combines those plant Taylor Models with CROWN-style neural-network bounds. The scripts under `comparisons/flowstar/` isolate only the plant-flowpipe part so we can compare the local PyTorch Taylor-model kernel against the Flow* backend used in that style of NNCS analysis.
 
-## What is compared
+## What Is Compared
 
-The first comparison uses fixed step size and fixed Taylor order for both tools.  Flow* adaptive step/order features are deliberately disabled for fairness in this baseline.  A future adaptive baseline should be added separately and labeled `Flow*_adaptive` rather than mixed into the fixed-order results.
+The baseline uses fixed step size and fixed Taylor order for both tools. Flow* adaptive step/order features are deliberately disabled for this baseline. A future adaptive baseline should be added separately and labeled `Flow*_adaptive` rather than mixed into the fixed-order results.
 
-The comparison is based on **box enclosures** extracted from each tool:
+The comparison is based on box enclosures extracted from each tool:
 
-- final reachable box at the end of the horizon,
-- flowpipe tube box over all segments when available,
-- runtime and segment counts,
-- torch-only diagnostics such as validation attempts, polynomial term counts, and remainder radius.
+- `endpoint_width_sum/max`: endpoint box at the final time, only when a true endpoint box is available.
+- `last_segment_width_sum/max`: range box over the final flowpipe segment.
+- `tube_width_sum/max`: hull over all parsed flowpipe segment boxes.
+- runtime and segment counts.
+- torch-only diagnostics such as validation attempts, polynomial term counts, actual degree, and remainder radius.
 
-We do **not** compare raw Taylor-model polynomial coefficients.  The Flow* parser starts with text/range parsing from stdout/stderr and plotting/range files.  For the current toolbox C++ target, generated C++ programs also emit GNUPLOT interval files via `plot_2D_interval_GNUPLOT`, and the parser can hull two-column numeric plot blocks.  If Flow* emits a format that does not include parseable ranges, the Flow* row is marked `unparsed`; the generated `.cpp` or `.model`, `.stdout.txt`, `.stderr.txt`, and plot files are kept in `outputs/flowstar_models/` for manual inspection.
+For torch, endpoint uses `final_tm.range_box()`, last segment uses the last segment Taylor model over `tau in [0,h]`, and tube is the hull over all segments.
+
+For the current `chenxin415/flowstar` toolbox C++ target, generated programs emit GNUPLOT interval files via `plot_2D_interval_GNUPLOT`. The parser hulls two-column numeric plot blocks. These GNUPLOT rectangles are flowpipe segment boxes: the last parsed segment is recorded in `last_segment_width_*`, and the hull over all parsed segments is recorded in `tube_width_*`. They are **not** endpoint boxes. When Flow* endpoint extraction is unavailable, Flow* rows leave `endpoint_width_*` blank, set `endpoint_box_available=False`, and reports must not compute or claim endpoint ratios.
+
+We do **not** compare raw Taylor-model polynomial coefficients. If Flow* emits a format that does not include parseable ranges, the Flow* row is marked `unparsed`; the generated `.cpp` or `.model`, `.stdout.txt`, `.stderr.txt`, and plot files are kept in `outputs/flowstar_models/` for manual inspection.
 
 ## Benchmarks
 
@@ -40,9 +45,9 @@ python experiments/van_der_pol_sampling.py
 python comparisons/flowstar/compare_against_torch_tm.py --all --csv outputs/flowstar_comparison.csv
 ```
 
-### Current `chenxin415/flowstar` toolbox backend
+### Current `chenxin415/flowstar` Toolbox Backend
 
-The current `chenxin415/flowstar` repository is a toolbox/static-library interface: it builds `flowstar-toolbox/libflowstar.a`, and individual reachability tasks are C++ programs that include `Continuous.h`, declare variables, construct an `ODE`, configure `Computational_Setting`, and call `ode.reach(...)`.  Therefore the default comparison target is now `toolbox_cpp`, not an older `.model` parser executable.
+The current `chenxin415/flowstar` repository is a C++ toolbox/static-library interface: it builds `flowstar-toolbox/libflowstar.a`, and individual reachability tasks are C++ programs that include `Continuous.h`, declare variables, construct an `ODE`, configure `Computational_Setting`, and call `ode.reach(...)`. Therefore the default comparison target is `toolbox_cpp`, not an older `.model` parser executable. Flow* is not a Python package in this workflow.
 
 Install/build Flow* separately, then point this suite at the repository root:
 
@@ -52,101 +57,82 @@ cd /path/to/flowstar/flowstar-toolbox
 make
 
 cd /path/to/torch_tm_flowpipe
-python comparisons/flowstar/compare_against_torch_tm.py \
-  --all \
-  --flowstar-root /path/to/flowstar \
-  --csv outputs/flowstar_comparison.csv
+python comparisons/flowstar/compare_against_torch_tm.py   --all   --flowstar-root /path/to/flowstar   --csv outputs/flowstar_comparison.csv
 ```
 
-Alternatively set `FLOWSTAR_ROOT=/path/to/flowstar`.  If `libflowstar.a` is missing, the runner attempts `make -C $FLOWSTAR_ROOT/flowstar-toolbox` unless `--no-build-flowstar-lib` is passed.
+Alternatively set `FLOWSTAR_ROOT=/path/to/flowstar`. If `libflowstar.a` is missing, the runner attempts `make -C $FLOWSTAR_ROOT/flowstar-toolbox` unless `--no-build-flowstar-lib` is passed.
 
-### Legacy `.model` executable backend
+### Legacy `.model` Executable Backend
 
 For older Flow* installations that expose a model-file parser executable, use:
 
 ```bash
-python comparisons/flowstar/compare_against_torch_tm.py \
-  --all \
-  --flowstar-target legacy_model \
-  --flowstar-bin /path/to/flowstar \
-  --csv outputs/flowstar_comparison.csv
+python comparisons/flowstar/compare_against_torch_tm.py   --all   --flowstar-target legacy_model   --flowstar-bin /path/to/flowstar   --csv outputs/flowstar_comparison.csv
 ```
 
-Flow* is optional.  If neither `FLOWSTAR_ROOT`/`--flowstar-root` nor a requested legacy executable is available, Flow* rows are written with `status=skipped`; torch rows and plots are still generated.
+Flow* is optional. If neither `FLOWSTAR_ROOT`/`--flowstar-root` nor a requested legacy executable is available, Flow* rows are written with `status=skipped`; torch rows and plots are still generated.
 
-The CSV fields are:
+## CSV Schema
+
+Key fields are:
 
 ```text
-system,tool,mode,h,steps,order,status,final_width_sum,final_width_max,
-flowpipe_width_sum,flowpipe_width_max,runtime_s,num_segments,
-validation_attempts,term_count,remainder_radius,containment_failures
+system,tool,mode,h,steps,order,setting_label,status,
+endpoint_width_sum,endpoint_width_max,
+last_segment_width_sum,last_segment_width_max,
+tube_width_sum,tube_width_max,
+box_source,endpoint_box_available,last_segment_box_available,tube_box_available,
+runtime_s,num_segments,validation_attempts,term_count,actual_degree,
+remainder_radius,containment_failures,flowstar_internal_reach_s,
+flowstar_wall_compile_s,flowstar_wall_run_s,flowstar_wall_total_s,
+flowstar_model_path,flowstar_stdout_path,flowstar_stderr_path,failure_reason
 ```
 
-Unavailable fields are left empty for Flow*.  This is expected for fields that are internal to `torch_tm_flowpipe`, such as validation attempts, term counts, and remainder radius.
+Legacy compatibility fields may still appear in CSVs, but narrative reports and torch-vs-Flow* ratios should use the explicit endpoint, last-segment, and tube fields. Endpoint ratios are allowed only when both compared rows have `endpoint_box_available=True` and nonempty endpoint widths. Current Flow* GNUPLOT-derived rows have `endpoint_box_available=False`, so current torch-vs-Flow* ratios are limited to `last_segment` and `tube`.
+
+Unavailable fields are left empty for Flow*. This is expected for fields that are internal to `torch_tm_flowpipe`, such as validation attempts, term counts, actual degree, and remainder radius.
+
+## Runtime Semantics
+
+For Flow*, `runtime_s` defaults to `flowstar_internal_reach_s` when the generated C++ program printed `FLOWSTAR_RUNTIME_S`. This is the Flow* reachability clock time. If the internal time is unavailable, `runtime_s` falls back to total wall time.
+
+Compile/run wall-clock times are reported separately:
+
+- `flowstar_wall_compile_s`: Python wall time spent compiling the generated C++ case.
+- `flowstar_wall_run_s`: Python wall time spent running the compiled case, including executable and plotting overhead.
+- `flowstar_wall_total_s`: compile plus run wall time.
+- `runtime_s` for torch: Python algorithm wall time.
 
 ## Plots
 
-The comparison script writes:
+The order/Van der Pol report bundle writes semantic torch-vs-Flow* plots only for matching boxes:
 
-- `outputs/final_width_vs_steps.png`
-- `outputs/runtime_vs_steps.png`
-- `outputs/width_ratio_torch_over_flowstar.png`
-- `outputs/dependency_preserving_vs_range_only.png`
+- `outputs/torch_over_flowstar_last_segment_width_ratio_by_order.png`
+- `outputs/torch_over_flowstar_tube_width_ratio_by_order.png`
 
-If Flow* was unavailable or its output was not parseable, `width_ratio_torch_over_flowstar.png` is still created with a placeholder message.
+The comparison script may also create generic final-width, runtime, last-segment-ratio, tube-ratio, and dependency-vs-range plots. Ambiguous endpoint-vs-GNUPLOT ratio plots are not part of the corrected report bundle.
 
-## Soundness note
+## Soundness Note
 
-The sampling containment column is a regression sanity check only.  It checks a small sample grid against the final box using exact solutions where simple closed forms exist and RK4 samples for Van der Pol.  It is not a formal proof of containment and should not be described as one.
+The sampling containment column is a regression sanity check only. It checks a small sample grid against the endpoint box using exact solutions where simple closed forms exist and RK4 samples for Van der Pol. It is not a formal proof of containment and should not be described as one.
 
-## Why a C++ Flow* backend is still comparable
-
-Flow* is C++, but the comparison is still meaningful because the benchmark task
-is language-independent.  For each YAML case we fix the same ODE, initial box,
-step size, number of steps, and Taylor order.  The harness then compares the
-observable enclosures:
-
-```text
-final reachable box width
-flowpipe tube box width
-runtime
-status
-```
-
-The harness does not require Flow* and PyTorch to share an internal Taylor-model
-class.  Flow* is run as an external verifier/backend, just like many verification
-benchmark pipelines run tools with different languages and internal data
-structures and then compare standardized outputs.
-
-## Generated artifacts for skipped Flow* rows
-
-When Flow* is unavailable, the comparison script still exports the C++ case into
-`outputs/flowstar_models/`.  This makes a skipped row actionable: copy the
-corresponding `.cpp` file to a server with `chenxin415/flowstar`, or pass
-`--flowstar-root`, and rerun the same command to obtain real Flow* rows.
+## Flow* Statuses
 
 Flow* statuses are interpreted as follows:
 
 - `skipped`: Flow* root/executable was not available, but the case was exported.
-- `compile_failed` or `compile_timeout`: the generated C++ case or local Flow*
-  build failed to compile.
-- `run_failed` or `timeout`: compilation succeeded but execution failed or timed
-  out.
-- `unparsed`: Flow* executed, but the harness could not parse a final/tube box
-  from stdout/stderr/plot files.
-- `completed`: Flow* executed and at least the metric final box was parsed.
+- `compile_failed` or `compile_timeout`: the generated C++ case or local Flow* build failed to compile.
+- `run_failed` or `timeout`: compilation succeeded but execution failed or timed out.
+- `failed`: Flow* declared a reachability failure such as large overestimation.
+- `unparsed`: Flow* executed, but the harness could not parse endpoint, last-segment, or tube boxes from stdout/stderr/plot files.
+- `completed`: Flow* executed and at least one semantic box was parsed.
 
-## Summary report
+## Summary Report
 
 Use:
 
 ```bash
-python comparisons/flowstar/summarize_comparison.py \
-  outputs/flowstar_comparison.csv \
-  --out outputs/flowstar_comparison_summary.md
+python comparisons/flowstar/summarize_comparison.py   outputs/flowstar_comparison.csv   --out outputs/flowstar_comparison_summary.md
 ```
 
-The report first gives the dependency-preserving/range-only evidence that can be
-computed without Flow*.  It then gives torch/Flow* ratios only for parsed Flow*
-rows.  If all Flow* rows are skipped, the report explicitly says not to make
-numeric torch-vs-Flow* claims yet.
+The report first gives the dependency-preserving/range-only evidence that can be computed without Flow*. It then gives torch/Flow* ratios only for parsed Flow* rows with compatible box semantics. If all Flow* rows are skipped or unparsed, the report explicitly says not to make numeric torch-vs-Flow* claims yet.
