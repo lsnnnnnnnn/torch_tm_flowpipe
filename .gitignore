@@ -7,3 +7,19 @@ __pycache__/
 dist/
 build/
 outputs/
+
+# Auditable generated report artifacts that are intentionally committed.
+!outputs/
+!outputs/README_RESULTS.md
+!outputs/order_and_vdp_flowstar_report.md
+!outputs/flowstar_provenance_manifest.md
+!outputs/flowstar_provenance_manifest.json
+!outputs/flowstar_parameter_equivalence_table.md
+
+# Keep all other output artifacts ignored after opening the directory for exceptions.
+outputs/*
+!outputs/README_RESULTS.md
+!outputs/order_and_vdp_flowstar_report.md
+!outputs/flowstar_provenance_manifest.md
+!outputs/flowstar_provenance_manifest.json
+!outputs/flowstar_parameter_equivalence_table.md

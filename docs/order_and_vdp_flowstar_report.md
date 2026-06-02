@@ -75,6 +75,12 @@ Flow* rows now distinguish:
 | `runtime_s` for Flow* | internal reach time when available, otherwise wall total |
 | `runtime_s` for torch | Python algorithm wall time |
 
+## Flow* backend provenance and claim boundaries
+
+The corrected Flow* rows use the `chenxin415/flowstar` toolbox C++ static-library backend at `FLOWSTAR_ROOT=/srv/local/shengenli/flowstar`. Generated benchmark programs include `Continuous.h`, call `ode.reach(...)`, and are compiled through the local runner against `flowstar-toolbox/libflowstar.a`; detailed backend, git, compiler, static-library, generated-case, and representative-artifact hashes are recorded in `outputs/flowstar_provenance_manifest.md` and `outputs/flowstar_provenance_manifest.json`.
+
+The comparison remains a plant-only fixed-step/fixed-order baseline over polynomial ODEs. It does not compare raw Taylor-model coefficients, does not report endpoint ratios for Flow* GNUPLOT-derived boxes, does not represent Flow* adaptive or best-tuned performance, and does not reproduce the full CROWN-Reach NNCS pipeline. Current torch-vs-Flow* ratios are limited to matching `last_segment` and `tube` box semantics, with Flow* `runtime_s` sourced from `FLOWSTAR_RUNTIME_S` internal reach time when available and compile/run wall times reported separately.
+
 ## Van der Pol Decomposition
 
 For `h=0.01`, `steps=10`, dependency-preserving is wider than range-only because two effects move in opposite directions. Higher order reduces remainder width sharply, but interval evaluation of the retained polynomial becomes the dominant source of looseness.

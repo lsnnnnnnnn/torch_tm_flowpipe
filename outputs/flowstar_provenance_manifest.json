@@ -1,0 +1,250 @@
+{
+  "box_and_ratio_semantics": {
+    "box_source": "GNUPLOT interval plot files parsed from plot_2D_interval_GNUPLOT outputs",
+    "current_torch_vs_flowstar_ratio_types": [
+      "last_segment",
+      "tube"
+    ],
+    "endpoint_ratio_allowed": false,
+    "flowstar_endpoint_box_available_for_gnuplot_rows": false,
+    "reason_endpoint_ratio_disallowed": "Flow* GNUPLOT-derived boxes are last_segment/tube boxes, not endpoint boxes.",
+    "verified_all_completed_gnuplot_rows_endpoint_box_available_false": true
+  },
+  "claim_boundaries": {
+    "excluded_features": [
+      "CROWN",
+      "auto_LiRPA",
+      "Jacobian bounds",
+      "sin/cos",
+      "hybrid automata",
+      "Flow* core binding"
+    ],
+    "fixed_step_fixed_order": true,
+    "flowstar_adaptive_baseline": false,
+    "full_crown_reach_pipeline": false,
+    "new_algorithm_added": false,
+    "plant_only": true,
+    "raw_taylor_model_coefficient_comparison": false
+  },
+  "flowstar_backend": {
+    "FLOWSTAR_ROOT": "/srv/local/shengenli/flowstar",
+    "backend": "toolbox_cpp",
+    "compiler_version": [
+      "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "Copyright (C) 2023 Free Software Foundation, Inc.",
+      "This is free software; see the source for copying conditions.  There is NO",
+      "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    ],
+    "description": "chenxin415/flowstar C++ toolbox/static library backend, not a Python package",
+    "head_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "libflowstar_a": {
+      "exists": true,
+      "path": "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a",
+      "sha256": "fdc4f1645d9418c1ab2839e4a821b2065015d30b5f9384ffea5145d3b7afe597",
+      "size_bytes": 26770044
+    },
+    "remote_v": [
+      "origin\thttps://github.com/chenxin415/flowstar (fetch)",
+      "origin\thttps://github.com/chenxin415/flowstar (push)"
+    ],
+    "status_short": [
+      "?? benchmarks/continuous/simple/simple",
+      "?? benchmarks/continuous/simple/simple.o",
+      "?? benchmarks/continuous/simple/simple.plt",
+      "?? benchmarks/continuous/vanderpol/vanderpol",
+      "?? benchmarks/continuous/vanderpol/vanderpol.o",
+      "?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps",
+      "?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt",
+      "?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps",
+      "?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt",
+      "?? flowstar-2.1.0/__MACOSX/",
+      "?? flowstar-2.1.0/flowstar-2.1.0/",
+      "?? flowstar-toolbox/Constraints.o",
+      "?? flowstar-toolbox/Continuous.o",
+      "?? flowstar-toolbox/Discrete.o",
+      "?? flowstar-toolbox/Geometry.o",
+      "?? flowstar-toolbox/Hybrid.o",
+      "?? flowstar-toolbox/Interval.o",
+      "?? flowstar-toolbox/Matrix.o",
+      "?? flowstar-toolbox/Variables.o",
+      "?? flowstar-toolbox/lex.yy.c",
+      "?? flowstar-toolbox/lex.yy.o",
+      "?? flowstar-toolbox/libflowstar.a",
+      "?? flowstar-toolbox/modelParser.output",
+      "?? flowstar-toolbox/modelParser.tab.c",
+      "?? flowstar-toolbox/modelParser.tab.h",
+      "?? flowstar-toolbox/modelParser.tab.o",
+      "?? flowstar-toolbox/settings.o"
+    ]
+  },
+  "generated_cpp_audit": {
+    "all_generated_cases_call_ode_reach": true,
+    "all_generated_cases_emit_GNUPLOT_interval_plots": true,
+    "all_generated_cases_include_Continuous_h": true,
+    "all_generated_cases_use_setFixedStepsize": true,
+    "comparison_csv": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_vdp_remainder_cutoff_sweep.csv",
+    "existing_cpp_case_count": 252,
+    "generated_cpp_case_count_from_csv": 252,
+    "runner_link_evidence": "comparisons/flowstar/run_flowstar.py compile_cmd uses -L $FLOWSTAR_ROOT/flowstar-toolbox and -lflowstar",
+    "runner_links_libflowstar_a": true
+  },
+  "generated_utc_date": "2026-06-02",
+  "representative_generated_artifacts": [
+    {
+      "cpp": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o2.cpp",
+        "sha256": "eb5db7abaac4bced9025417ee1b4dffbbb353f672355b61819af9fff405884c3",
+        "size_bytes": 2022
+      },
+      "failure_reason": "Flowpipe computation is terminated due to the large overestimation.",
+      "found": true,
+      "h": "0.01",
+      "label": "order2_loose_failed",
+      "order": "2",
+      "plots": [
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0_01_s10_o2_t_x.plt",
+          "sha256": "27fbd1bde110d529a473601ec40572f376a01da62cb51f30dec56f073481763d",
+          "size_bytes": 240
+        },
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0_01_s10_o2_t_y.plt",
+          "sha256": "d1432c7f471ce1cda03fa4d9043f5dcc7cc9b21efa191f4e1e318ea3234832f2",
+          "size_bytes": 240
+        }
+      ],
+      "setting_label": "rem1e-4_cut1e-10",
+      "status": "failed",
+      "stderr": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o2.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stdout": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o2.stdout.txt",
+        "sha256": "32dc31333739b28733baeec2c7388676cb87d6c2024099a0f02926b07304f75c",
+        "size_bytes": 313
+      },
+      "steps": "10",
+      "system": "van_der_pol"
+    },
+    {
+      "cpp": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o4.cpp",
+        "sha256": "16188e0bc8edb3d08beb761d6cfee7e21fae36829011b037199fe648198d4805",
+        "size_bytes": 2022
+      },
+      "failure_reason": "",
+      "found": true,
+      "h": "0.01",
+      "label": "order4_loose_completed",
+      "order": "4",
+      "plots": [
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0_01_s10_o4_t_x.plt",
+          "sha256": "527353154f123bd4a5687a121496b326194922e2483bf0cbf816eb75949625e6",
+          "size_bytes": 1565
+        },
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0_01_s10_o4_t_y.plt",
+          "sha256": "fd2754487f51b272842c1db6614b1b29cc2e331fc6df1fb1a5363d875ce5c60f",
+          "size_bytes": 1565
+        }
+      ],
+      "setting_label": "rem1e-4_cut1e-10",
+      "status": "completed",
+      "stderr": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o4.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stdout": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-4_cut1e-10/van_der_pol_h0.01_s10_o4.stdout.txt",
+        "sha256": "49a08a1f840edfb4cf5cc61e1612b145f1433267bba5f369f9d903aa37a5870d",
+        "size_bytes": 1456
+      },
+      "steps": "10",
+      "system": "van_der_pol"
+    },
+    {
+      "cpp": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-10_cut1e-15/van_der_pol_h0.0025_s10_o8.cpp",
+        "sha256": "7dfb5a68d7e55a963809fa0447f80400efbca51dc310c1023b5e5ebc5f20a3c6",
+        "size_bytes": 2063
+      },
+      "failure_reason": "",
+      "found": true,
+      "h": "0.0025",
+      "label": "order8_strict_completed",
+      "order": "8",
+      "plots": [
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-10_cut1e-15/van_der_pol_h0_0025_s10_o8_t_x.plt",
+          "sha256": "4a43a961b283861893ef4ddb7769de9807dfaf218216f0ba4ec28e0cf26daaa8",
+          "size_bytes": 1567
+        },
+        {
+          "exists": true,
+          "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-10_cut1e-15/van_der_pol_h0_0025_s10_o8_t_y.plt",
+          "sha256": "e6909d267d66f4ee7293e7c0b0593de837e2c14f766d18048bf6868acca8ab55",
+          "size_bytes": 1567
+        }
+      ],
+      "setting_label": "rem1e-10_cut1e-15",
+      "status": "completed",
+      "stderr": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-10_cut1e-15/van_der_pol_h0.0025_s10_o8.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stdout": {
+        "exists": true,
+        "path": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_models_rem1e-10_cut1e-15/van_der_pol_h0.0025_s10_o8.stdout.txt",
+        "sha256": "d6f4b83859f7722be7562e979a4709a803903bb54a2d88706b1661be6eba9fa8",
+        "size_bytes": 1460
+      },
+      "steps": "10",
+      "system": "van_der_pol"
+    }
+  ],
+  "result_counts": {
+    "completed_gnuplot_rows": 122,
+    "flowstar_row_count": 252,
+    "source_csv": "/srv/local/shengenli/torch_tm_flowpipe/outputs/flowstar_vdp_remainder_cutoff_sweep.csv",
+    "status_counts": {
+      "completed": 122,
+      "failed": 130
+    }
+  },
+  "runtime_semantics": {
+    "compile_run_wall_times_separate": true,
+    "flowstar_internal_reach_column": "flowstar_internal_reach_s",
+    "flowstar_runtime_s_source": "FLOWSTAR_RUNTIME_S internal reach time when present",
+    "wall_compile_column": "flowstar_wall_compile_s",
+    "wall_run_column": "flowstar_wall_run_s",
+    "wall_total_column": "flowstar_wall_total_s"
+  },
+  "schema_version": 1,
+  "scope": "plant-only fixed-step/fixed-order Flow* toolbox provenance audit; no new reachability algorithm",
+  "torch_tm_flowpipe": {
+    "branch": "main",
+    "commit_message": "ad8f748 2026-06-02-output-manifest-and-flowstar-doc-fix",
+    "head_sha": "ad8f748b533ef482c680e441c900004c67cd06c8",
+    "path": "/srv/local/shengenli/torch_tm_flowpipe",
+    "remote_origin_main": "ad8f748b533ef482c680e441c900004c67cd06c8\trefs/heads/main",
+    "status_short_before_manifest_generation": "?? scripts/generate_flowstar_provenance.py"
+  }
+}

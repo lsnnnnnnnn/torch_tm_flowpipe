@@ -9,6 +9,9 @@ Authoritative files for the corrected report bundle:
 - `flowstar_vdp_plot_input_v2.csv`: combined plot input used for corrected figures.
 - `order_flowstar_status_table.md`: Flow* status table by order, h, steps, and setting.
 - `flowstar_vdp_remainder_cutoff_sweep_summary_v2.md`: corrected summary with semantic torch-vs-Flow* ratios.
+- `flowstar_provenance_manifest.md`: Flow* backend, git, compiler, static-library, generated-case, and representative-artifact provenance.
+- `flowstar_provenance_manifest.json`: machine-readable version of the Flow* provenance manifest.
+- `flowstar_parameter_equivalence_table.md`: parameter equivalence table for the plant-only fixed-step/fixed-order Flow* sweep.
 
 Corrected plots:
 
