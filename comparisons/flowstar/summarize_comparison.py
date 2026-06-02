@@ -17,6 +17,12 @@ from typing import Any, Iterable, Mapping
 
 CASE_KEY = tuple[str, str, str, str]
 
+FLOWSTAR_BOX_NOTE = (
+    "Flow* endpoint boxes were not available. Flow* GNUPLOT-derived last-segment "
+    "and tube boxes were parsed for {n} completed cases. Torch-vs-Flow* ratios "
+    "below use last-segment/tube widths, not endpoint widths."
+)
+
 
 def _read_rows(path: str | Path) -> list[dict[str, str]]:
     with Path(path).open("r", newline="", encoding="utf-8") as f:
@@ -48,6 +54,14 @@ def _fmt(x: float | None, digits: int = 4) -> str:
     if x is None or not math.isfinite(x):
         return ""
     return f"{x:.{digits}g}"
+
+
+def _truthy(v: Any) -> bool:
+    if isinstance(v, bool):
+        return v
+    if v is None:
+        return False
+    return str(v).strip().lower() in {"1", "true", "yes", "y"}
 
 
 def _ratio_table(rows: list[dict[str, str]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -109,44 +123,71 @@ def _ratio_table(rows: list[dict[str, str]]) -> tuple[list[dict[str, Any]], list
     return summary, per_case
 
 
+def _has_flowstar_last_or_tube(row: Mapping[str, str]) -> bool:
+    return (_float(row.get("last_segment_width_sum")) is not None) or (_float(row.get("tube_width_sum")) is not None)
+
+
+def _flowstar_parsed_completed_count(rows: list[dict[str, str]]) -> int:
+    return sum(
+        1
+        for r in rows
+        if r.get("tool") == "flowstar" and r.get("status") == "completed" and _has_flowstar_last_or_tube(r)
+    )
+
+
 def _flowstar_ratio_table(rows: list[dict[str, str]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    flow: dict[CASE_KEY, dict[str, str]] = {}
+    flow: dict[CASE_KEY, list[dict[str, str]]] = defaultdict(list)
     torch: list[dict[str, str]] = []
     for r in rows:
         if r.get("tool") == "flowstar" and r.get("status") == "completed":
-            flow[_case_key(r)] = r
+            flow[_case_key(r)].append(r)
         elif r.get("tool") == "torch_tm_flowpipe" and r.get("status") == "validated":
             torch.append(r)
     per_case: list[dict[str, Any]] = []
-    by_label: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    by_label: dict[tuple[str, str, str, str], list[dict[str, Any]]] = defaultdict(list)
     for r in torch:
-        f = flow.get(_case_key(r))
-        if not f:
+        flow_rows = flow.get(_case_key(r), [])
+        if not flow_rows:
             continue
-        tw = _float(r.get("final_width_sum"))
-        fw = _float(f.get("final_width_sum"))
-        tt = _float(r.get("runtime_s"))
-        ft = _float(f.get("runtime_s"))
-        if tw is None or fw is None or fw <= 0:
-            continue
-        item = {
-            "system": r["system"],
-            "mode": r["mode"],
-            "h": r["h"],
-            "steps": int(float(r["steps"])),
-            "order": int(float(r["order"])),
-            "torch_over_flowstar_width": tw / fw,
-            "torch_over_flowstar_runtime": tt / ft if tt is not None and ft and ft > 0 else None,
-        }
-        per_case.append(item)
-        by_label[(r["system"], r["mode"])].append(item)
+        for f in flow_rows:
+            specs = [
+                ("last_segment", "last_segment_width_sum", True),
+                ("tube", "tube_width_sum", True),
+                ("endpoint", "endpoint_width_sum", _truthy(r.get("endpoint_box_available")) and _truthy(f.get("endpoint_box_available"))),
+            ]
+            for ratio_type, width_col, allowed in specs:
+                if not allowed:
+                    continue
+                tw = _float(r.get(width_col))
+                fw = _float(f.get(width_col))
+                tt = _float(r.get("runtime_s"))
+                ft = _float(f.get("flowstar_internal_reach_s") or f.get("runtime_s"))
+                if tw is None or fw is None or fw <= 0:
+                    continue
+                item = {
+                    "system": r["system"],
+                    "ratio_type": ratio_type,
+                    "torch_mode": r["mode"],
+                    "flowstar_setting_label": f.get("setting_label") or "default",
+                    "h": r["h"],
+                    "steps": int(float(r["steps"])),
+                    "order": int(float(r["order"])),
+                    "torch_width": tw,
+                    "flowstar_width": fw,
+                    "torch_over_flowstar_ratio": tw / fw,
+                    "torch_over_flowstar_runtime": tt / ft if tt is not None and ft and ft > 0 else None,
+                }
+                per_case.append(item)
+                by_label[(r["system"], ratio_type, r["mode"], item["flowstar_setting_label"])].append(item)
     summary: list[dict[str, Any]] = []
-    for (system, mode), items in sorted(by_label.items()):
-        wr = [i["torch_over_flowstar_width"] for i in items]
+    for (system, ratio_type, torch_mode, setting_label), items in sorted(by_label.items()):
+        wr = [i["torch_over_flowstar_ratio"] for i in items]
         tr = [i["torch_over_flowstar_runtime"] for i in items if i["torch_over_flowstar_runtime"] is not None]
         summary.append({
             "system": system,
-            "mode": mode,
+            "ratio_type": ratio_type,
+            "torch_mode": torch_mode,
+            "flowstar_setting_label": setting_label,
             "cases": len(items),
             "mean_width_ratio": mean(wr) if wr else None,
             "min_width_ratio": min(wr) if wr else None,
@@ -169,6 +210,7 @@ def generate_summary(csv_path: str | Path, out_path: str | Path | None = None) -
     status_counts = Counter((r.get("tool", ""), r.get("mode", ""), r.get("status", "")) for r in rows)
     torch_summary, torch_cases = _ratio_table(rows)
     flow_summary, flow_cases = _flowstar_ratio_table(rows)
+    parsed_flowstar_cases = _flowstar_parsed_completed_count(rows)
 
     lines: list[str] = []
     lines.append("# Plant-only Flow* comparison summary")
@@ -219,13 +261,38 @@ def generate_summary(csv_path: str | Path, out_path: str | Path | None = None) -
     lines.append("")
     lines.append("## Torch over Flow* ratios")
     lines.append("")
+    if parsed_flowstar_cases:
+        lines.append(FLOWSTAR_BOX_NOTE.format(n=parsed_flowstar_cases))
+        lines.append("")
     if flow_summary:
         lines.append(_markdown_table(
-            ["system", "mode", "cases", "mean torch/Flow* width", "min", "max", "mean runtime ratio"],
-            ([r["system"], r["mode"], r["cases"], _fmt(r["mean_width_ratio"]), _fmt(r["min_width_ratio"]), _fmt(r["max_width_ratio"]), _fmt(r["mean_runtime_ratio"])] for r in flow_summary),
+            ["system", "ratio_type", "torch_mode", "flowstar_setting_label", "cases", "mean torch/Flow* width", "min", "max", "mean runtime ratio"],
+            (
+                [
+                    r["system"], r["ratio_type"], r["torch_mode"], r["flowstar_setting_label"], r["cases"],
+                    _fmt(r["mean_width_ratio"]), _fmt(r["min_width_ratio"]), _fmt(r["max_width_ratio"]), _fmt(r["mean_runtime_ratio"]),
+                ]
+                for r in flow_summary
+            ),
+        ))
+        lines.append("")
+        lines.append("Representative semantic ratio rows:")
+        lines.append("")
+        lines.append(_markdown_table(
+            ["ratio_type", "torch_mode", "flowstar_setting_label", "h", "steps", "order", "torch_width", "flowstar_width", "torch_over_flowstar_ratio"],
+            (
+                [
+                    r["ratio_type"], r["torch_mode"], r["flowstar_setting_label"], r["h"], r["steps"], r["order"],
+                    _fmt(r["torch_width"], 6), _fmt(r["flowstar_width"], 6), _fmt(r["torch_over_flowstar_ratio"], 6),
+                ]
+                for r in sorted(flow_cases, key=lambda x: (x["ratio_type"], x["torch_mode"], x["flowstar_setting_label"], x["steps"], x["order"]))[:20]
+            ),
         ))
     else:
-        lines.append("No parsed Flow* boxes were available. This usually means Flow* was not installed, the C++ benchmark did not compile/run, or the generated plot/range files could not be parsed. Torch-vs-torch evidence above is still valid, but torch-vs-Flow* numeric claims should not be made yet.")
+        if parsed_flowstar_cases:
+            lines.append("Parsed Flow* last-segment/tube boxes were found, but no matching validated torch rows had compatible semantic widths for ratio reporting.")
+        else:
+            lines.append("No parsed Flow* boxes were available. This usually means Flow* was not installed, the C++ benchmark did not compile/run, or the generated plot/range files could not be parsed. Torch-vs-torch evidence above is still valid, but torch-vs-Flow* numeric claims should not be made yet.")
     lines.append("")
     lines.append("## Validation note")
     lines.append("")

@@ -165,3 +165,56 @@ def test_toolbox_export_preserves_decimal_case_names(tmp_path):
     text = out.read_text(encoding="utf-8")
     assert "van_der_pol_h0_01_s10_o4_t_x" in text
     assert "van_der_pol_h0_t_x" not in text
+
+
+def test_summary_uses_flowstar_last_segment_and_tube_semantics(tmp_path):
+    from summarize_comparison import generate_summary, _flowstar_ratio_table
+
+    csv_path = tmp_path / "semantic.csv"
+    csv_path.write_text(
+        "system,tool,mode,h,steps,order,setting_label,status,endpoint_width_sum,endpoint_width_max,last_segment_width_sum,last_segment_width_max,tube_width_sum,tube_width_max,box_source,endpoint_box_available,last_segment_box_available,tube_box_available,final_width_sum,final_width_max,flowpipe_width_sum,flowpipe_width_max,runtime_s,flowstar_internal_reach_s\n"
+        "toy,torch_tm_flowpipe,dependency_preserving,0.1,2,4,,validated,9,9,3,3,8,8,torch_endpoint_last_segment_tube,True,True,True,9,9,8,8,0.2,\n"
+        "toy,flowstar,fixed,0.1,2,4,loose,completed,,,2,2,4,4,flowstar_gnuplot_last_segment_and_tube,False,True,True,,,4,4,0.05,0.04\n",
+        encoding="utf-8",
+    )
+    md = generate_summary(csv_path)
+    assert "Flow* endpoint boxes were not available" in md
+    assert "last-segment and tube boxes were parsed for 1 completed cases" in md
+    assert "No parsed Flow* boxes" not in md
+    assert "| toy | last_segment | dependency_preserving | loose |" in md
+    assert "| toy | tube | dependency_preserving | loose |" in md
+
+    _summary, cases = _flowstar_ratio_table([
+        {
+            "system": "toy",
+            "tool": "torch_tm_flowpipe",
+            "mode": "dependency_preserving",
+            "h": "0.1",
+            "steps": "2",
+            "order": "4",
+            "status": "validated",
+            "endpoint_width_sum": "9",
+            "endpoint_box_available": "True",
+            "last_segment_width_sum": "3",
+            "tube_width_sum": "8",
+            "runtime_s": "0.2",
+        },
+        {
+            "system": "toy",
+            "tool": "flowstar",
+            "mode": "fixed",
+            "setting_label": "loose",
+            "h": "0.1",
+            "steps": "2",
+            "order": "4",
+            "status": "completed",
+            "endpoint_width_sum": "1",
+            "endpoint_box_available": "False",
+            "last_segment_width_sum": "2",
+            "tube_width_sum": "4",
+            "runtime_s": "0.05",
+        },
+    ])
+    assert {r["ratio_type"] for r in cases} == {"last_segment", "tube"}
+    assert all(r["ratio_type"] != "endpoint" for r in cases)
+

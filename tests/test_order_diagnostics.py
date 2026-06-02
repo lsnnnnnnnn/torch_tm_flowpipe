@@ -82,3 +82,56 @@ def test_flowstar_failed_or_unparsed_rows_are_written(tmp_path):
     assert "compile_failed" in text
     assert "unparsed" in text
     assert "compiler said no" in text
+
+
+def test_plot_order_results_creates_semantic_flowstar_ratio_filenames(tmp_path):
+    from plot_order_results import main
+    import sys
+
+    diag = tmp_path / "diag.csv"
+    flow = tmp_path / "flow.csv"
+    diag.write_text(
+        "system,mode,h,steps,requested_order,status,endpoint_width_sum,last_segment_width_sum,tube_width_sum,runtime_s,remainder_width_frac,poly_range_width_sum,remainder_width_sum\n"
+        "van_der_pol,dependency_preserving,0.01,10,4,validated,5,4,9,0.1,0.2,4,1\n"
+        "van_der_pol,range_only,0.01,10,4,validated,3,2,7,0.08,0.1,2,1\n",
+        encoding="utf-8",
+    )
+    flow.write_text(
+        "system,tool,mode,h,steps,order,setting_label,status,endpoint_width_sum,last_segment_width_sum,tube_width_sum,runtime_s,flowstar_wall_total_s\n"
+        "van_der_pol,torch_tm_flowpipe,dependency_preserving,0.01,10,4,,validated,5,4,9,0.1,\n"
+        "van_der_pol,flowstar,fixed,0.01,10,4,loose,completed,,2,3,0.04,0.2\n",
+        encoding="utf-8",
+    )
+    old_argv = sys.argv
+    try:
+        sys.argv = [
+            "plot_order_results.py",
+            "--torch-diagnostics", str(diag),
+            "--flowstar-csv", str(flow),
+            "--out-dir", str(tmp_path),
+        ]
+        main()
+    finally:
+        sys.argv = old_argv
+    assert (tmp_path / "torch_over_flowstar_last_segment_width_ratio_by_order.png").exists()
+    assert (tmp_path / "torch_over_flowstar_tube_width_ratio_by_order.png").exists()
+    assert not (tmp_path / "torch_over_flowstar_width_ratio_by_order.png").exists()
+
+
+def test_report_documents_required_flowstar_semantics():
+    text = (ROOT / "docs" / "order_and_vdp_flowstar_report.md").read_text(encoding="utf-8")
+    for phrase in [
+        "endpoint boxes were not available",
+        "last-segment",
+        "tube",
+        "setting-dependent",
+        "range_only degree",
+    ]:
+        assert phrase in text
+
+
+def test_old_ambiguous_flowstar_ratio_function_is_not_present():
+    text = (ROOT / "experiments" / "plot_order_results.py").read_text(encoding="utf-8")
+    assert 'r.get("final_width_sum") or r.get("last_segment_width_sum")' not in text
+    assert 'r.get("last_segment_width_sum") or r.get("final_width_sum")' not in text
+
