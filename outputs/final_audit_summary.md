@@ -7,6 +7,9 @@ Generated on 2026-06-02 for the plant-only Van der Pol fixed-step/fixed-order au
 - branch: `main`
 - local HEAD: `c74de89e6ce0a278bda455d644e7abcabadbc1c4`
 - remote origin/main: `c74de89e6ce0a278bda455d644e7abcabadbc1c4	refs/heads/main`
+- artifact_bundle_commit_containing_summary: `0499bc654d4db9fe8aff86b3574ba5442c5289a8`
+- current_origin_main_after_push: `0499bc654d4db9fe8aff86b3574ba5442c5289a8	refs/heads/main`
+- summary bundle note: exact self-reference to the commit containing this updated file is not representable in Git; the fields above record the pushed artifact bundle commit available at this formatting-cleanup start, and the final handoff records the newer pushed table-format-fix HEAD.
 - git status --short at audit-summary generation:
 
 ```text
@@ -25,6 +28,7 @@ M outputs/flowstar_provenance_manifest.json
 - pytest result: `42 passed in 5.90s`
 - final staged-artifact pytest rerun: `42 passed in 5.53s`
 - final pre-commit pytest rerun: `42 passed in 6.29s`
+- output-table-format-fix pytest rerun: `42 passed in 5.01s`
 
 ## Authoritative CSV Checks
 

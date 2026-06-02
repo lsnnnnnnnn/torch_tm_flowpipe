@@ -142,7 +142,12 @@ def test_authoritative_csvs_are_utf8_lf_nonempty_with_expected_rows_and_columns(
 
 
 def test_order_flowstar_status_table_is_standard_pipe_table_with_all_flowstar_rows():
-    table_lines = (ROOT / "outputs" / "order_flowstar_status_table.md").read_text(encoding="utf-8").splitlines()
+    raw = (ROOT / "outputs" / "order_flowstar_status_table.md").read_bytes()
+    assert b"\r" not in raw
+    assert raw.endswith(b"\n")
+    raw.decode("utf-8")
+
+    table_lines = raw.decode("utf-8").splitlines()
     assert len(table_lines) >= 3
     assert table_lines[0].startswith("| setting | order |")
     assert table_lines[1].startswith("| --- | ---:")
@@ -157,8 +162,9 @@ def test_order_flowstar_status_table_is_standard_pipe_table_with_all_flowstar_ro
     _header, flow_rows = _csv_rows("outputs/flowstar_vdp_remainder_cutoff_sweep.csv")
     flowstar_count = sum(r.get("tool") == "flowstar" for r in flow_rows)
     data_rows = [line for line in table_lines[2:] if line.startswith("| ")]
+    assert flowstar_count == 252
+    assert len(data_rows) == 252
     assert len(data_rows) == flowstar_count
-
 
 def test_flowstar_comparison_doc_does_not_reference_deprecated_ratio_plots():
     text = (ROOT / "docs" / "flowstar_comparison.md").read_text(encoding="utf-8")
