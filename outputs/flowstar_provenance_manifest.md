@@ -6,24 +6,11 @@ Scope: plant-only fixed-step/fixed-order comparison against the `chenxin415/flow
 
 - `path`: `/srv/local/shengenli/torch_tm_flowpipe`
 - `branch`: `main`
-- `source_head_at_generation`: `9e96bbc4023ac28f1757062375405a332f1ed68e`
-- `source_commit_message_at_generation`: `9e96bbc 2026-06-02-flowstar-provenance-audit`
-- `generation_worktree_status`:
-
-```text
-M experiments/plot_order_results.py
- M outputs/flowstar_provenance_manifest.json
- M outputs/flowstar_provenance_manifest.md
- M outputs/flowstar_vdp_plot_input_v2.csv
- M outputs/flowstar_vdp_remainder_cutoff_sweep.csv
- M outputs/tm_order_audit_vdp_order2_8.csv
- M outputs/van_der_pol_diagnostics_by_order_v2.csv
- M scripts/generate_flowstar_provenance.py
- M tests/test_flowstar_comparison.py
- M tests/test_flowstar_provenance.py
-```
-- `remote_origin_main_at_generation`: `9e96bbc4023ac28f1757062375405a332f1ed68e	refs/heads/main`
-- `manifest_note`: `This manifest records the source snapshot used to generate the audited artifacts. The commit containing this manifest may be later.`
+- `source_tree_commit_used_for_generation`: `c74de89e6ce0a278bda455d644e7abcabadbc1c4`
+- `source_tree_commit_message_used_for_generation`: `c74de89 2026-06-02-final-audit-source-snapshot`
+- `generation_worktree_status`: `clean`
+- `remote_origin_main_at_generation`: `c74de89e6ce0a278bda455d644e7abcabadbc1c4	refs/heads/main`
+- `artifact_bundle_commit_note`: `This manifest is generated from the clean source tree recorded in source_tree_commit_used_for_generation. The artifact bundle commit containing this refreshed manifest may be later.`
 
 ## Flow* Backend
 

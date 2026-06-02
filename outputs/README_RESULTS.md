@@ -12,6 +12,7 @@ Authoritative files for the corrected report bundle:
 - `flowstar_provenance_manifest.md`: Flow* backend, git, compiler, static-library, generated-case, and representative-artifact provenance.
 - `flowstar_provenance_manifest.json`: machine-readable version of the Flow* provenance manifest.
 - `flowstar_parameter_equivalence_table.md`: parameter equivalence table for the plant-only fixed-step/fixed-order Flow* sweep.
+- `final_audit_summary.md`: final audit summary with git, pytest, CSV row-count, Flow* generated-C++, semantics, and claim-boundary checks.
 
 Corrected plots:
 
