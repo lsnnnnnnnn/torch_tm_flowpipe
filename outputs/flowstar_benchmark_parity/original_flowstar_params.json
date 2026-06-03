@@ -1,0 +1,70 @@
+{
+  "cutoff_threshold": [
+    -1e-10,
+    1e-10
+  ],
+  "eps_files": [
+    "vanderpol_t_x.eps",
+    "vanderpol_t_y.eps"
+  ],
+  "initial_set": {
+    "t": [
+      0.0,
+      0.0
+    ],
+    "x": [
+      1.1,
+      1.4
+    ],
+    "y": [
+      2.35,
+      2.45
+    ]
+  },
+  "notes": "The original source does not call setFixedStepsize; it relies on Computational_Setting defaults parsed from flowstar-toolbox/Continuous.cpp.",
+  "ode": {
+    "t": "1",
+    "x": "y",
+    "y": "(1 - x^2) * y - x"
+  },
+  "order_policy": "fixed",
+  "plot_commands": [
+    "plot_setting.plot_2D_interval_GNUPLOT(\"./\", \"vanderpol_t_x\", result.tmv_flowpipes, setting)",
+    "plot_setting.plot_2D_interval_GNUPLOT(\"./\", \"vanderpol_t_y\", result.tmv_flowpipes, setting)"
+  ],
+  "plot_files": [
+    "vanderpol_t_x.plt",
+    "vanderpol_t_y.plt"
+  ],
+  "plot_stems": [
+    "vanderpol_t_x",
+    "vanderpol_t_y"
+  ],
+  "readme": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/README.md",
+  "readme_result_images": [
+    "../../../images/benchmarks/vanderpol_t_x.png",
+    "../../../images/benchmarks/vanderpol_t_y.png"
+  ],
+  "reference_png_files": [
+    "/srv/local/shengenli/flowstar/images/benchmarks/vanderpol_t_x.png",
+    "/srv/local/shengenli/flowstar/images/benchmarks/vanderpol_t_y.png"
+  ],
+  "remainder_estimation": [
+    -0.0001,
+    0.0001
+  ],
+  "safe_set": "y - 2.75 <= 0",
+  "source": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+  "state_variables": [
+    "x",
+    "y",
+    "t"
+  ],
+  "step_max": 0.1,
+  "step_min": 0.002,
+  "step_policy": "adaptive",
+  "symbolic_remainder_queue_size": 100,
+  "system": "van_der_pol",
+  "taylor_order": 4,
+  "time_horizon": 10.0
+}
