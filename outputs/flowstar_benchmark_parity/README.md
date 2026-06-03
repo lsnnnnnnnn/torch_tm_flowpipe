@@ -6,7 +6,8 @@ This directory contains the Van der Pol Flow* original benchmark parity audit.
 
 - Original Flow*: `/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol`
 - Generated Flow*: C++ harness generated from `original_flowstar_params.json`
-- PyTorch TM: range-only propagation over the original Flow* segment time grid
+- PyTorch TM range-only: weak baseline over the original Flow* segment time grid
+- PyTorch TM dependency-preserving: fairer TM comparison that propagates `seg.final_tm` between original Flow* segments
 - Horizon: `10.0`
 - Flow* patch used: no
 
@@ -24,7 +25,8 @@ Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `
 - `original_flowstar_params.md`
 - `original_flowstar/`
 - `generated_flowstar/`
-- `torch/`
+- `torch_range_only/`
+- `torch_dependency_preserving/`
 - `parity_summary.csv`
 - `generated_flowstar_vs_original_comparison.csv`
 - `parity_report.md`

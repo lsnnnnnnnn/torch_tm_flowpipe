@@ -31,4 +31,6 @@ Deprecated ambiguous outputs were removed from this bundle. Do not use any old
 table or plot that compares torch endpoint/final width to Flow* GNUPLOT
 last-segment width.
 
+Flow* benchmark parity also records both PyTorch TM modes: `torch_tm_range_only` is a weak baseline that collapses dependency at segment boundaries, while `torch_tm_dependency_preserving` is the fairer comparison because it propagates `seg.final_tm` on the original Flow* segment grid.
+
 Width semantics: endpoint, last-segment, and tube widths are distinct. Torch-vs-Flow* ratios in this bundle use matching last-segment or tube widths unless both tools explicitly provide endpoint boxes. Runtime semantics are also distinct: Flow* internal reach time comes from `FLOWSTAR_RUNTIME_S`, Flow* wall run time includes executable and plotting overhead, compile time is separate, and torch runtime is Python algorithm wall time.

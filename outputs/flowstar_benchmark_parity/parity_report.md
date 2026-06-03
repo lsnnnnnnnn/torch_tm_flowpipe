@@ -19,15 +19,18 @@ This is a Flow* original benchmark parity audit for the plant-only polynomial Va
 
 | tool | status | runtime | segments | last width sum | tube width sum | endpoint box | source |
 |---|---|---:|---:|---:|---:|---|---|
-| `original_flowstar` | `completed` | 1.01494 | 290 | 0.704713 | 9.56631 | `False` | `flowstar_original_gnuplot_segment_boxes` |
-| `generated_flowstar` | `completed` | 0.46567 | 290 | 0.704713 | 9.56631 | `False` | `flowstar_generated_gnuplot_segment_boxes` |
-| `torch_tm` | `failed` | 6.18656 | 40 | 2.64069e+182 | 2.64069e+182 | `True` | `torch_tm_range_only_segment_on_flowstar_time_grid` |
+| `original_flowstar` | `completed` | 1.02237 | 290 | 0.704713 | 9.56631 | `False` | `flowstar_original_gnuplot_segment_boxes` |
+| `generated_flowstar` | `completed` | 0.49288 | 290 | 0.704713 | 9.56631 | `False` | `flowstar_generated_gnuplot_segment_boxes` |
+| `torch_tm_range_only` | `failed` | 6.41447 | 40 | 2.64069e+182 | 2.64069e+182 | `True` | `torch_tm_range_only_segment_on_flowstar_time_grid` |
+| `torch_tm_dependency_preserving` | `failed` | 14.9892 | 34 | 7.15788e+178 | 7.15788e+178 | `True` | `torch_tm_dependency_preserving_segment_on_flowstar_time_grid` |
 
 `generated_flowstar` was generated from the parsed parameters and run through the repository Flow* toolbox runner. Its last-segment width sum is 0.704713.
 
 Generated Flow* vs original Flow*: segment count match is `True` and max absolute parsed segment-field difference is `0`.
 
-PyTorch TM status is `failed` with last reached time `0.666434` against requested horizon `10`.
+`torch_tm_range_only` is a weak baseline: it collapses each validated endpoint Taylor model to an interval box before the next original Flow* segment. It reached `0.666434` with status `failed`.
+
+`torch_tm_dependency_preserving` is the fairer PyTorch TM comparison because it propagates `seg.final_tm` directly across segment boundaries. It reached `0.512437` with status `failed` and notes: validation failed at segment 33: non-finite residual interval.
 
 ## Semantics
 

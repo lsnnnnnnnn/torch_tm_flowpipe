@@ -27,7 +27,7 @@ import torch
 
 torch.set_num_threads(1)
 
-from torch_tm_flowpipe import Interval, flowpipe_step
+from torch_tm_flowpipe import Interval, TMVector, flowpipe_step, flowpipe_step_from_tm
 from torch_tm_flowpipe.ode_examples import van_der_pol_ode
 
 from run_flowstar import find_flowstar_root, run_flowstar_toolbox
@@ -593,15 +593,15 @@ def _initial_box(params: Mapping[str, Any]) -> list[Interval]:
     return [Interval(*params["initial_set"]["x"]), Interval(*params["initial_set"]["y"])]
 
 
-def run_torch_on_original_grid(out_dir: Path, params: Mapping[str, Any], reference_segments: Sequence[Mapping[str, Any]]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    torch_dir = out_dir / "torch"
+def run_torch_range_only_on_original_grid(out_dir: Path, params: Mapping[str, Any], reference_segments: Sequence[Mapping[str, Any]]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    torch_dir = out_dir / "torch_range_only"
     torch_dir.mkdir(parents=True, exist_ok=True)
     order = int(params["taylor_order"])
     current_box = _initial_box(params)
     rows: list[dict[str, Any]] = []
     validation_attempts = 0
     status = "completed"
-    notes = "PyTorch TM used range_only propagation on the original Flow* segment time grid."
+    notes = "PyTorch TM range-only baseline on the original Flow* segment time grid; each segment endpoint is collapsed to an interval box."
     endpoint_widths: list[float] = []
     start = time.perf_counter()
     for i, ref in enumerate(reference_segments):
@@ -619,7 +619,7 @@ def run_torch_on_original_grid(out_dir: Path, params: Mapping[str, Any], referen
         width_y = _width(y_lo, y_hi)
         rows.append(
             {
-                "case_id": "torch_flowstar_original_grid",
+                "case_id": "torch_tm_range_only",
                 "segment_index": i,
                 "t_lo": float(ref["t_lo"]),
                 "t_hi": float(ref["t_hi"]),
@@ -644,12 +644,12 @@ def run_torch_on_original_grid(out_dir: Path, params: Mapping[str, Any], referen
 
     if rows and float(rows[-1]["t_hi"]) + 1e-12 < float(params["time_horizon"]) and status == "completed":
         status = "max_horizon_reached"
-        notes = "PyTorch stopped before the original horizon without a validation error."
+        notes = "PyTorch range-only run stopped before the original horizon without a validation error."
 
-    _write_csv(torch_dir / "torch_segments.csv", SEGMENT_FIELDS, rows)
+    _write_csv(torch_dir / "torch_range_only_segments.csv", SEGMENT_FIELDS, rows)
     summary = {
         "status": status,
-        "mode": "range_only_on_original_flowstar_time_grid",
+        "mode": "range_only",
         "runtime_s": runtime_s,
         **_summarize_segments(rows, float(params["time_horizon"])),
         "requested_order": order,
@@ -661,7 +661,83 @@ def run_torch_on_original_grid(out_dir: Path, params: Mapping[str, Any], referen
         "box_source": "torch_tm_range_only_segment_on_flowstar_time_grid",
         "notes": notes,
     }
-    _write_csv(torch_dir / "torch_summary.csv", TORCH_SUMMARY_FIELDS, [summary])
+    _write_csv(torch_dir / "torch_range_only_summary.csv", TORCH_SUMMARY_FIELDS, [summary])
+    return summary, rows
+
+
+def run_torch_dependency_preserving_on_original_grid(
+    out_dir: Path,
+    params: Mapping[str, Any],
+    reference_segments: Sequence[Mapping[str, Any]],
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    torch_dir = out_dir / "torch_dependency_preserving"
+    torch_dir.mkdir(parents=True, exist_ok=True)
+    order = int(params["taylor_order"])
+    current_tm = TMVector.identity(_initial_box(params), order=order)
+    rows: list[dict[str, Any]] = []
+    validation_attempts = 0
+    status = "completed"
+    notes = "PyTorch TM dependency-preserving run on the original Flow* segment time grid."
+    endpoint_widths: list[float] = []
+    start = time.perf_counter()
+    for i, ref in enumerate(reference_segments):
+        h = float(ref["t_hi"]) - float(ref["t_lo"])
+        if h <= 0:
+            status = "failed"
+            notes = f"non-positive reference segment width at index {i}"
+            break
+        seg = flowpipe_step_from_tm(van_der_pol_ode, current_tm, h, order)
+        validation_attempts += seg.validation_attempts
+        box = seg.tm.range_box()
+        x_lo, x_hi = _interval_tuple(box[0])
+        y_lo, y_hi = _interval_tuple(box[1])
+        width_x = _width(x_lo, x_hi)
+        width_y = _width(y_lo, y_hi)
+        rows.append(
+            {
+                "case_id": "torch_tm_dependency_preserving",
+                "segment_index": i,
+                "t_lo": float(ref["t_lo"]),
+                "t_hi": float(ref["t_hi"]),
+                "x_lo": x_lo,
+                "x_hi": x_hi,
+                "y_lo": y_lo,
+                "y_hi": y_hi,
+                "width_x": width_x,
+                "width_y": width_y,
+                "width_sum": width_x + width_y,
+                "box_source": "torch_tm_dependency_preserving_segment_on_flowstar_time_grid",
+            }
+        )
+        final_box = seg.final_tm.range_box()
+        endpoint_widths = [_width(*_interval_tuple(final_box[0])), _width(*_interval_tuple(final_box[1]))]
+        if seg.status != "validated":
+            status = "failed"
+            notes = f"validation failed at segment {i}: {seg.message}"
+            break
+        current_tm = seg.final_tm
+    runtime_s = time.perf_counter() - start
+
+    if rows and float(rows[-1]["t_hi"]) + 1e-12 < float(params["time_horizon"]) and status == "completed":
+        status = "max_horizon_reached"
+        notes = "PyTorch dependency-preserving run stopped before the original horizon without a validation error."
+
+    summary = {
+        "status": status,
+        "mode": "dependency_preserving",
+        "runtime_s": runtime_s,
+        **_summarize_segments(rows, float(params["time_horizon"])),
+        "requested_order": order,
+        "endpoint_box_available": bool(rows),
+        "endpoint_width_x": endpoint_widths[0] if endpoint_widths else "",
+        "endpoint_width_y": endpoint_widths[1] if endpoint_widths else "",
+        "endpoint_width_sum": sum(endpoint_widths) if endpoint_widths else "",
+        "validation_attempts": validation_attempts,
+        "box_source": "torch_tm_dependency_preserving_segment_on_flowstar_time_grid",
+        "notes": notes,
+    }
+    _write_csv(torch_dir / "torch_dependency_preserving_segments.csv", SEGMENT_FIELDS, rows)
+    _write_csv(torch_dir / "torch_dependency_preserving_summary.csv", TORCH_SUMMARY_FIELDS, [summary])
     return summary, rows
 
 
@@ -818,15 +894,45 @@ def make_overlay_plots(out_dir: Path, left_name: str, left_rows: Sequence[Mappin
     return paths
 
 
-def make_all_plots(out_dir: Path, original_rows: Sequence[Mapping[str, Any]], generated_rows: Sequence[Mapping[str, Any]], torch_rows: Sequence[Mapping[str, Any]]) -> None:
+def make_all_plots(
+    out_dir: Path,
+    original_rows: Sequence[Mapping[str, Any]],
+    generated_rows: Sequence[Mapping[str, Any]],
+    range_only_rows: Sequence[Mapping[str, Any]],
+    dependency_rows: Sequence[Mapping[str, Any]],
+) -> None:
     original_dir = out_dir / "original_flowstar"
     generated_dir = out_dir / "generated_flowstar"
-    torch_dir = out_dir / "torch"
+    range_only_dir = out_dir / "torch_range_only"
+    dependency_dir = out_dir / "torch_dependency_preserving"
     make_single_plots(original_dir, "original_flowstar_rendered", original_rows, "Original Flow*", "#2ca02c")
     make_single_plots(generated_dir, "generated_vanderpol", generated_rows, "Generated Flow*", "#9467bd")
-    make_single_plots(torch_dir, "torch_vanderpol", torch_rows, "PyTorch TM", "#1f77b4")
-    make_overlay_plots(out_dir, "Original Flow*", original_rows, "PyTorch TM", torch_rows, "overlay_original_flowstar_vs_torch")
-    make_overlay_plots(out_dir, "Generated Flow*", generated_rows, "PyTorch TM", torch_rows, "overlay_generated_flowstar_vs_torch")
+    make_single_plots(range_only_dir, "torch_range_only_vanderpol", range_only_rows, "PyTorch TM range-only", "#1f77b4")
+    make_single_plots(
+        dependency_dir,
+        "torch_dependency_preserving_vanderpol",
+        dependency_rows,
+        "PyTorch TM dependency-preserving",
+        "#d62728",
+    )
+    make_overlay_plots(out_dir, "Original Flow*", original_rows, "PyTorch TM range-only", range_only_rows, "overlay_original_flowstar_vs_torch_range_only")
+    make_overlay_plots(out_dir, "Generated Flow*", generated_rows, "PyTorch TM range-only", range_only_rows, "overlay_generated_flowstar_vs_torch_range_only")
+    make_overlay_plots(
+        out_dir,
+        "Original Flow*",
+        original_rows,
+        "PyTorch TM dependency-preserving",
+        dependency_rows,
+        "overlay_original_flowstar_vs_torch_dependency_preserving",
+    )
+    make_overlay_plots(
+        out_dir,
+        "Generated Flow*",
+        generated_rows,
+        "PyTorch TM dependency-preserving",
+        dependency_rows,
+        "overlay_generated_flowstar_vs_torch_dependency_preserving",
+    )
 
 
 def write_generated_original_comparison(out_dir: Path, original_rows: Sequence[Mapping[str, Any]], generated_rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
@@ -853,7 +959,33 @@ def _summary_value(row: Mapping[str, Any], key: str) -> Any:
     return "" if value is None else value
 
 
-def write_parity_summary(out_dir: Path, original: Mapping[str, Any], generated: Mapping[str, Any], torch_summary: Mapping[str, Any]) -> list[dict[str, Any]]:
+def _torch_parity_row(tool: str, summary: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "tool": tool,
+        "status": summary["status"],
+        "torch_runtime_s": summary["runtime_s"],
+        "num_segments": summary["num_segments"],
+        "last_reached_t": summary["last_reached_t"],
+        "requested_horizon": summary["requested_horizon"],
+        "last_segment_width_x": summary["last_segment_width_x"],
+        "last_segment_width_y": summary["last_segment_width_y"],
+        "last_segment_width_sum": summary["last_segment_width_sum"],
+        "tube_width_x": summary["tube_width_x"],
+        "tube_width_y": summary["tube_width_y"],
+        "tube_width_sum": summary["tube_width_sum"],
+        "endpoint_box_available": summary["endpoint_box_available"],
+        "box_source": summary["box_source"],
+        "notes": summary["notes"],
+    }
+
+
+def write_parity_summary(
+    out_dir: Path,
+    original: Mapping[str, Any],
+    generated: Mapping[str, Any],
+    range_only_summary: Mapping[str, Any],
+    dependency_summary: Mapping[str, Any],
+) -> list[dict[str, Any]]:
     rows = [
         {
             "tool": "original_flowstar",
@@ -891,23 +1023,8 @@ def write_parity_summary(out_dir: Path, original: Mapping[str, Any], generated: 
             "box_source": generated["box_source"],
             "notes": generated["notes"],
         },
-        {
-            "tool": "torch_tm",
-            "status": torch_summary["status"],
-            "torch_runtime_s": torch_summary["runtime_s"],
-            "num_segments": torch_summary["num_segments"],
-            "last_reached_t": torch_summary["last_reached_t"],
-            "requested_horizon": torch_summary["requested_horizon"],
-            "last_segment_width_x": torch_summary["last_segment_width_x"],
-            "last_segment_width_y": torch_summary["last_segment_width_y"],
-            "last_segment_width_sum": torch_summary["last_segment_width_sum"],
-            "tube_width_x": torch_summary["tube_width_x"],
-            "tube_width_y": torch_summary["tube_width_y"],
-            "tube_width_sum": torch_summary["tube_width_sum"],
-            "endpoint_box_available": torch_summary["endpoint_box_available"],
-            "box_source": torch_summary["box_source"],
-            "notes": torch_summary["notes"],
-        },
+        _torch_parity_row("torch_tm_range_only", range_only_summary),
+        _torch_parity_row("torch_tm_dependency_preserving", dependency_summary),
     ]
     _write_csv(out_dir / "parity_summary.csv", PARITY_FIELDS, rows)
     return rows
@@ -928,7 +1045,8 @@ def write_report(
     params: Mapping[str, Any],
     parity_rows: Sequence[Mapping[str, Any]],
     generated: Mapping[str, Any],
-    torch_summary: Mapping[str, Any],
+    range_only_summary: Mapping[str, Any],
+    dependency_summary: Mapping[str, Any],
     generated_comparison: Mapping[str, Any],
 ) -> None:
     table = [
@@ -949,6 +1067,14 @@ def write_report(
     generated_ratio = "n/a"
     if generated.get("last_segment_width_sum") not in ("", None):
         generated_ratio = _fmt_md(generated["last_segment_width_sum"])
+    range_last_t = _fmt_md(range_only_summary["last_reached_t"])
+    dependency_last_t = _fmt_md(dependency_summary["last_reached_t"])
+    dependency_note = ""
+    try:
+        if float(dependency_summary["last_reached_t"]) > float(range_only_summary["last_reached_t"]):
+            dependency_note = " The dependency-preserving run reaches farther than the range-only baseline, showing that dependency loss caused much of the range-only blowup."
+    except (TypeError, ValueError):
+        dependency_note = ""
     text = f"""# Flow* Benchmark Parity Report
 
 This is a Flow* original benchmark parity audit for the plant-only polynomial Van der Pol benchmark. It is not a new reachability algorithm.
@@ -974,7 +1100,9 @@ This is a Flow* original benchmark parity audit for the plant-only polynomial Va
 
 Generated Flow* vs original Flow*: segment count match is `{generated_comparison["segment_count_match"]}` and max absolute parsed segment-field difference is `{_fmt_md(generated_comparison["max_abs_segment_field_diff"])}`.
 
-PyTorch TM status is `{torch_summary['status']}` with last reached time `{_fmt_md(torch_summary['last_reached_t'])}` against requested horizon `{_fmt_md(torch_summary['requested_horizon'])}`.
+`torch_tm_range_only` is a weak baseline: it collapses each validated endpoint Taylor model to an interval box before the next original Flow* segment. It reached `{range_last_t}` with status `{range_only_summary['status']}`.
+
+`torch_tm_dependency_preserving` is the fairer PyTorch TM comparison because it propagates `seg.final_tm` directly across segment boundaries. It reached `{dependency_last_t}` with status `{dependency_summary['status']}` and notes: {dependency_summary['notes']}.{dependency_note}
 
 ## Semantics
 
@@ -998,7 +1126,8 @@ This directory contains the Van der Pol Flow* original benchmark parity audit.
 
 - Original Flow*: `/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol`
 - Generated Flow*: C++ harness generated from `original_flowstar_params.json`
-- PyTorch TM: range-only propagation over the original Flow* segment time grid
+- PyTorch TM range-only: weak baseline over the original Flow* segment time grid
+- PyTorch TM dependency-preserving: fairer TM comparison that propagates `seg.final_tm` between original Flow* segments
 - Horizon: `{params['time_horizon']}`
 - Flow* patch used: no
 
@@ -1016,7 +1145,8 @@ Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `
 - `original_flowstar_params.md`
 - `original_flowstar/`
 - `generated_flowstar/`
-- `torch/`
+- `torch_range_only/`
+- `torch_dependency_preserving/`
 - `parity_summary.csv`
 - `generated_flowstar_vs_original_comparison.csv`
 - `parity_report.md`
@@ -1047,16 +1177,24 @@ def main() -> None:
     write_params_docs(out_dir, params)
     original_summary, original_segments = run_original_flowstar(root, out_dir, params, args.timeout_s)
     generated_summary, generated_segments = run_generated_flowstar(root, out_dir, params, args.timeout_s)
-    torch_summary, torch_segments = run_torch_on_original_grid(out_dir, params, original_segments)
-    make_all_plots(out_dir, original_segments, generated_segments, torch_segments)
+    range_only_summary, range_only_segments = run_torch_range_only_on_original_grid(out_dir, params, original_segments)
+    dependency_summary, dependency_segments = run_torch_dependency_preserving_on_original_grid(out_dir, params, original_segments)
+    make_all_plots(out_dir, original_segments, generated_segments, range_only_segments, dependency_segments)
     generated_comparison = write_generated_original_comparison(out_dir, original_segments, generated_segments)
-    parity_rows = write_parity_summary(out_dir, original_summary, generated_summary, torch_summary)
-    write_report(out_dir, params, parity_rows, generated_summary, torch_summary, generated_comparison)
+    parity_rows = write_parity_summary(out_dir, original_summary, generated_summary, range_only_summary, dependency_summary)
+    write_report(out_dir, params, parity_rows, generated_summary, range_only_summary, dependency_summary, generated_comparison)
     write_output_readme(out_dir, params)
     print(f"wrote {out_dir}")
     print(f"original status={original_summary['status']} segments={original_summary['num_segments']}")
     print(f"generated status={generated_summary['status']} segments={generated_summary['num_segments']}")
-    print(f"torch status={torch_summary['status']} segments={torch_summary['num_segments']} last_t={torch_summary['last_reached_t']}")
+    print(
+        f"torch range_only status={range_only_summary['status']} "
+        f"segments={range_only_summary['num_segments']} last_t={range_only_summary['last_reached_t']}"
+    )
+    print(
+        f"torch dependency_preserving status={dependency_summary['status']} "
+        f"segments={dependency_summary['num_segments']} last_t={dependency_summary['last_reached_t']}"
+    )
 
 
 if __name__ == "__main__":

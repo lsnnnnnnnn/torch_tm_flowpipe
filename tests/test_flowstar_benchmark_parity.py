@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import csv
+import importlib.util
 import json
 import struct
 from pathlib import Path
+from types import SimpleNamespace
+
+from torch_tm_flowpipe import Interval
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "flowstar_benchmark_parity"
@@ -62,7 +66,8 @@ def test_segments_csv_columns_exist_and_widths_are_nonnegative():
     for path in [
         OUT / "original_flowstar" / "original_flowstar_segments.csv",
         OUT / "generated_flowstar" / "generated_flowstar_segments.csv",
-        OUT / "torch" / "torch_segments.csv",
+        OUT / "torch_range_only" / "torch_range_only_segments.csv",
+        OUT / "torch_dependency_preserving" / "torch_dependency_preserving_segments.csv",
     ]:
         header, rows = _csv_rows(path)
         assert set(header) >= {
@@ -107,11 +112,18 @@ def test_parity_summary_has_runtime_and_bound_fields():
         "notes",
     }
     by_tool = {row["tool"]: row for row in rows}
+    assert set(by_tool) == {
+        "original_flowstar",
+        "generated_flowstar",
+        "torch_tm_range_only",
+        "torch_tm_dependency_preserving",
+    }
     assert by_tool["original_flowstar"]["original_flowstar_wall_run_s"]
     assert by_tool["generated_flowstar"]["generated_flowstar_internal_reach_s"]
     assert by_tool["generated_flowstar"]["generated_flowstar_compile_wall_s"]
     assert by_tool["generated_flowstar"]["generated_flowstar_run_wall_s"]
-    assert by_tool["torch_tm"]["torch_runtime_s"]
+    assert by_tool["torch_tm_range_only"]["torch_runtime_s"]
+    assert by_tool["torch_tm_dependency_preserving"]["torch_runtime_s"]
 
 
 def test_flowstar_endpoint_box_is_false_without_true_endpoint_source():
@@ -122,14 +134,67 @@ def test_flowstar_endpoint_box_is_false_without_true_endpoint_source():
             assert "endpoint" not in row["box_source"]
 
 
+def test_dependency_preserving_runner_does_not_collapse_between_segments(monkeypatch, tmp_path):
+    spec = importlib.util.spec_from_file_location(
+        "flowstar_benchmark_parity",
+        ROOT / "experiments" / "flowstar_benchmark_parity.py",
+    )
+    assert spec and spec.loader
+    parity = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(parity)
+
+    class DummyTM:
+        def range_box(self):
+            return [Interval(0.0, 1.0), Interval(2.0, 3.0)]
+
+    first_final = DummyTM()
+    second_final = DummyTM()
+    received = []
+
+    def fake_step(_ode, current_tm, _h, _order):
+        received.append(current_tm)
+        final_tm = first_final if len(received) == 1 else second_final
+        return SimpleNamespace(
+            tm=final_tm,
+            final_tm=final_tm,
+            status="validated",
+            validation_attempts=1,
+            message="",
+        )
+
+    monkeypatch.setattr(parity, "flowpipe_step_from_tm", fake_step)
+    params = {
+        "initial_set": {"x": [1.1, 1.4], "y": [2.35, 2.45]},
+        "taylor_order": 4,
+        "time_horizon": 0.2,
+    }
+    refs = [
+        {"t_lo": 0.0, "t_hi": 0.1},
+        {"t_lo": 0.1, "t_hi": 0.2},
+    ]
+
+    summary, rows = parity.run_torch_dependency_preserving_on_original_grid(tmp_path, params, refs)
+
+    assert summary["status"] == "completed"
+    assert len(rows) == 2
+    assert received[1] is first_final
+
+
 def test_overlay_pngs_exist_nonempty_and_have_dimensions():
     required = [
-        OUT / "overlay_original_flowstar_vs_torch_t_x.png",
-        OUT / "overlay_original_flowstar_vs_torch_t_y.png",
-        OUT / "overlay_original_flowstar_vs_torch_phase_xy.png",
-        OUT / "overlay_generated_flowstar_vs_torch_t_x.png",
-        OUT / "overlay_generated_flowstar_vs_torch_t_y.png",
-        OUT / "torch" / "torch_vanderpol_phase_xy.png",
+        OUT / "overlay_original_flowstar_vs_torch_range_only_t_x.png",
+        OUT / "overlay_original_flowstar_vs_torch_range_only_t_y.png",
+        OUT / "overlay_original_flowstar_vs_torch_range_only_phase_xy.png",
+        OUT / "overlay_generated_flowstar_vs_torch_range_only_t_x.png",
+        OUT / "overlay_generated_flowstar_vs_torch_range_only_t_y.png",
+        OUT / "overlay_original_flowstar_vs_torch_dependency_preserving_t_x.png",
+        OUT / "overlay_original_flowstar_vs_torch_dependency_preserving_t_y.png",
+        OUT / "overlay_generated_flowstar_vs_torch_dependency_preserving_t_x.png",
+        OUT / "overlay_generated_flowstar_vs_torch_dependency_preserving_t_y.png",
+        OUT / "torch_range_only" / "torch_range_only_vanderpol_phase_xy.png",
+        OUT / "torch_dependency_preserving" / "torch_dependency_preserving_vanderpol_t_x.png",
+        OUT / "torch_dependency_preserving" / "torch_dependency_preserving_vanderpol_t_y.png",
+        OUT / "torch_dependency_preserving" / "torch_dependency_preserving_vanderpol_phase_xy.png",
     ]
     for path in required:
         assert path.exists(), path
