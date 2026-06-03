@@ -16,6 +16,22 @@ outputs/
 !outputs/flowstar_provenance_manifest.json
 !outputs/flowstar_parameter_equivalence_table.md
 !outputs/final_audit_summary.md
+!outputs/trajectory_audit/
+!outputs/trajectory_audit/README.md
+!outputs/trajectory_audit/*.md
+!outputs/trajectory_audit/*.csv
+!outputs/trajectory_audit/flowstar_segments/
+!outputs/trajectory_audit/flowstar_segments/*.csv
+!outputs/trajectory_audit/torch_segments/
+!outputs/trajectory_audit/torch_segments/*.csv
+!outputs/trajectory_audit/samples/
+!outputs/trajectory_audit/samples/*.csv
+!outputs/trajectory_audit/figures/
+!outputs/trajectory_audit/figures/*.png
+!outputs/trajectory_audit/flowstar_models/
+!outputs/trajectory_audit/flowstar_models/*.cpp
+!outputs/trajectory_audit/flowstar_models/*.txt
+!outputs/trajectory_audit/flowstar_models/*.plt
 
 # Keep all other output artifacts ignored after opening the directory for exceptions.
 outputs/*
@@ -25,3 +41,24 @@ outputs/*
 !outputs/flowstar_provenance_manifest.json
 !outputs/flowstar_parameter_equivalence_table.md
 !outputs/final_audit_summary.md
+# Trajectory visual audit generated artifacts.
+!outputs/trajectory_audit/
+!outputs/trajectory_audit/README.md
+!outputs/trajectory_audit/*.md
+!outputs/trajectory_audit/*.csv
+!outputs/trajectory_audit/flowstar_segments/
+!outputs/trajectory_audit/flowstar_segments/*.csv
+!outputs/trajectory_audit/torch_segments/
+!outputs/trajectory_audit/torch_segments/*.csv
+!outputs/trajectory_audit/samples/
+!outputs/trajectory_audit/samples/*.csv
+!outputs/trajectory_audit/figures/
+!outputs/trajectory_audit/figures/*.png
+!outputs/trajectory_audit/flowstar_models/
+!outputs/trajectory_audit/flowstar_models/*.cpp
+!outputs/trajectory_audit/flowstar_models/*.txt
+!outputs/trajectory_audit/flowstar_models/*.plt
+outputs/trajectory_audit/flowstar_models/*
+!outputs/trajectory_audit/flowstar_models/*.cpp
+!outputs/trajectory_audit/flowstar_models/*.txt
+!outputs/trajectory_audit/flowstar_models/*.plt
