@@ -78,6 +78,17 @@ python experiments/harmonic_oscillator.py --csv outputs/harmonic_oscillator.csv
 python experiments/van_der_pol_sampling.py --csv outputs/van_der_pol_sampling.csv
 ```
 
+## Diagnostics artifacts
+
+The committed Flow* Van der Pol diagnostics artifacts live under
+`outputs/flowstar_benchmark_diagnostics/`,
+`outputs/flowstar_benchmark_diagnostics_stage2/`, and
+`outputs/flowstar_benchmark_diagnostics_stage3/`. Stage 3 contains an
+experimental diagnostic-only symbolic remainder prototype/result. It is not
+part of the supported default API and did not improve the benchmark objective.
+See `docs/flowstar_vanderpol_pytorch_diagnostics_conclusion.md` for the final
+decision record.
+
 
 ## Dependency-preserving multi-step example
 
