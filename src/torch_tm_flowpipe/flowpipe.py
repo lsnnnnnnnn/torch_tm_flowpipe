@@ -289,6 +289,7 @@ def _validate_picard(
     diagnostic_mode: str | None = None,
     diagnostic_segment_index: int | None = None,
     diagnostic_context: Mapping[str, Any] | None = None,
+    rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
 ) -> tuple[TMVector, str, int, str]:
     domain = candidate_poly.domain
     if len(base_ext) != len(candidate_poly):
@@ -325,6 +326,19 @@ def _validate_picard(
 
     for attempt in range(1, max_attempts + 1):
         candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, remainders))
+        if rhs_breakdown_callback is not None:
+            callback_context = dict(diag_extra)
+            if diag_mode is not None:
+                callback_context["mode"] = diag_mode
+            if diag_segment_index is not None:
+                callback_context["segment_index"] = diag_segment_index
+            callback_context["attempt_index"] = attempt
+            callback_context["h"] = float(h)
+            callback_context["order"] = int(order)
+            try:
+                rhs_breakdown_callback(candidate, order, attempt, callback_context)
+            except Exception:
+                pass
         try:
             rhs = _call_ode(ode_fn, candidate, u_tms)
             residual_boxes: list[Interval] = []
@@ -435,6 +449,7 @@ def flowpipe_step_from_tm(
     diagnostics_mode: str | None = None,
     diagnostics_segment_index: int | None = None,
     diagnostics_context: Mapping[str, Any] | None = None,
+    rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
     diagnostic_mode: str | None = None,
     diagnostic_segment_index: int | None = None,
     diagnostic_context: Mapping[str, Any] | None = None,
@@ -477,6 +492,7 @@ def flowpipe_step_from_tm(
         diagnostics_mode=diagnostics_mode,
         diagnostics_segment_index=diagnostics_segment_index,
         diagnostics_context=diagnostics_context,
+        rhs_breakdown_callback=rhs_breakdown_callback,
     )
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
     if status == "validated":

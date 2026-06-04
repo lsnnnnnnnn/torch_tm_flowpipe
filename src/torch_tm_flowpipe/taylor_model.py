@@ -16,6 +16,59 @@ def _same_domain(a: list[Interval], b: list[Interval]) -> bool:
     return all(torch.equal(x.lo, y.lo) and torch.equal(x.hi, y.hi) for x, y in zip(a, b))
 
 
+
+def _interval_width_float(iv: Interval) -> float:
+    return float(iv.width().detach().cpu())
+
+
+def _interval_finite_with_width(iv: Interval) -> bool:
+    return iv.is_finite() and bool(torch.all(torch.isfinite(iv.width())))
+
+
+def taylor_model_mul_breakdown(a: "TaylorModel", b: "TaylorModel", order: int) -> dict[str, Any]:
+    """Return diagnostic-only width terms for Taylor-model multiplication.
+
+    This mirrors :meth:`TaylorModel.__mul__` but does not change or replace the
+    normal arithmetic path.
+    """
+    other = a._coerce(b)
+    poly, dropped = a.polynomial.mul_truncate(other.polynomial, int(order))
+    p_self_range = a.polynomial.evaluate_interval(a.domain)
+    p_other_range = other.polynomial.evaluate_interval(other.domain)
+    trunc_range = dropped.evaluate_interval(a.domain)
+    p_self_times_other_remainder = p_self_range * other.remainder
+    p_other_times_self_remainder = p_other_range * a.remainder
+    remainder_times_remainder = a.remainder * other.remainder
+    rem = (
+        p_self_times_other_remainder
+        + p_other_times_self_remainder
+        + remainder_times_remainder
+        + trunc_range
+    )
+    kept_poly_range = poly.evaluate_interval(a.domain)
+    output_total_range = kept_poly_range + rem
+    finite_terms = {
+        "kept_poly_range_finite": _interval_finite_with_width(kept_poly_range),
+        "dropped_trunc_finite": _interval_finite_with_width(trunc_range),
+        "p_self_times_other_remainder_finite": _interval_finite_with_width(p_self_times_other_remainder),
+        "p_other_times_self_remainder_finite": _interval_finite_with_width(p_other_times_self_remainder),
+        "remainder_times_remainder_finite": _interval_finite_with_width(remainder_times_remainder),
+        "total_remainder_finite": _interval_finite_with_width(rem),
+        "output_total_range_finite": _interval_finite_with_width(output_total_range),
+    }
+    return {
+        "kept_poly_range_width": _interval_width_float(kept_poly_range),
+        "dropped_trunc_width": _interval_width_float(trunc_range),
+        "p_self_times_other_remainder_width": _interval_width_float(p_self_times_other_remainder),
+        "p_other_times_self_remainder_width": _interval_width_float(p_other_times_self_remainder),
+        "remainder_times_remainder_width": _interval_width_float(remainder_times_remainder),
+        "total_remainder_width": _interval_width_float(rem),
+        "output_total_range_width": _interval_width_float(output_total_range),
+        **finite_terms,
+        "finite": all(finite_terms.values()),
+    }
+
+
 @dataclass(frozen=True)
 class TaylorModel:
     polynomial: Polynomial
