@@ -37,3 +37,17 @@ These notes are based on the local Flow* checkout at `/srv/local/shengenli/flows
 - `dependency_preserving` carries the raw endpoint Taylor model forward. That keeps dependency but also carries old variables and accumulated interval remainders into nonlinear products for too long.
 - The current validation loop inflates candidate remainders until containment. That can validate very wide boxes and permits the huge remainder blowup seen in `x*x*y`.
 - The rescue mode should instead recenter and normalize after each step, set a target remainder, reject on residual-not-subset rather than inflating without bound, shrink the step on failure, and optionally move small coefficients into conservative interval uncertainty.
+
+## Rescue Mode Claim Boundary
+
+The `flowstar_style` path in this repository is experimental clean-room
+Flow*-inspired behavior. It uses the local Flow* checkout only as a behavioral
+reference while keeping the implementation in Python/PyTorch. The rescue path
+recenters and rescales endpoint boxes, validates against a fixed target
+remainder, shrinks adaptive steps on failed containment, and records when any
+non-final accepted step drops below the original Flow* minimum step of `0.002`.
+
+These artifacts are not a Flow* parity claim. Horizon 10 and overlap-based box
+comparisons against the original Flow* segment boxes are required before making
+any stronger statement about reachability or tightness.
+

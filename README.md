@@ -34,10 +34,10 @@ The package supports:
 - constant interval controls and affine controls of the form
   `u = A x0 + b + error`, with `error in [-r, r]`.
 
-It intentionally does not integrate CROWN-Reach, CROWN, auto_LiRPA, Flow*,
-hybrid automata machinery, guards, jumps, adaptive order or step-size control,
-symbolic remainders, branch-and-bound, Jacobian/sensitivity bounds, or
-transcendental functions.
+It intentionally does not integrate CROWN-Reach, CROWN, auto_LiRPA, Flow*
+source code or a Flow* runtime backend, hybrid automata machinery, guards,
+jumps, adaptive order as a supported default, symbolic remainders,
+branch-and-bound, Jacobian/sensitivity bounds, or transcendental functions.
 
 ## Development
 
@@ -88,6 +88,20 @@ experimental diagnostic-only symbolic remainder prototype/result. It is not
 part of the supported default API and did not improve the benchmark objective.
 See `docs/flowstar_vanderpol_pytorch_diagnostics_conclusion.md` for the final
 decision record.
+
+## Experimental Flowstar-style rescue mode
+
+`experiments/flowstar_style_rescue_vanderpol.py` contains an experimental
+clean-room Flow*-inspired rescue path for the Van der Pol diagnostic case. It
+uses recenter/rescale normalization, target remainder validation, and adaptive
+step shrinkage to study whether the PyTorch-native Taylor-model prototype can
+continue farther than the earlier failure point. It is not copied Flow* code,
+does not make Flow* a package backend, and must not be described as Flow* parity
+unless horizon 10 is reached and numerical box comparisons are reported.
+
+The default package remains a PyTorch-native prototype. The rescue mode is an
+experiment artifact, not an advertised full Flow* implementation or a supported
+replacement for the Flow* toolbox.
 
 
 ## Dependency-preserving multi-step example
