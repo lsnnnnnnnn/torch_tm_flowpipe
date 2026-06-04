@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
+LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
     "baseline_dependency_preserving_o4_s1",
@@ -107,6 +108,7 @@ def test_committed_rescue_artifacts_are_multiline_and_parseable():
 
 def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(SCRIPT), doraise=True)
+    py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
 
 
 def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
@@ -132,3 +134,33 @@ def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
     assert row["last_width_ratio"] == 0.5
     assert row["tube_width_ratio"] == 0.5
     assert len(ratio_rows) == 2
+
+
+
+def test_h5_rescue_artifacts_are_multiline_and_parseable():
+    out_dir = ROOT / "outputs" / "flowstar_style_rescue_h5"
+    summary_rows = _csv_rows(out_dir / "rescue_summary.csv")
+    comparison_rows = _csv_rows(out_dir / "rescue_vs_flowstar_comparison.csv")
+
+    assert len(summary_rows) == 2
+    assert [row["run_id"] for row in summary_rows] == [
+        "flowstar_style_o6_target",
+        "flowstar_style_o6_target_cutoff",
+    ]
+    assert len(comparison_rows) == 2
+    assert [row["run_id"] for row in comparison_rows] == [
+        "flowstar_style_o6_target",
+        "flowstar_style_o6_target_cutoff",
+    ]
+
+    for name in ["rescue_report.md", "rescue_vs_flowstar_report.md"]:
+        text = (out_dir / name).read_text(encoding="utf-8")
+        assert text.count("\n") > 10
+        assert "\\n" not in text
+
+
+def test_flowstar_source_rescue_notes_are_multiline():
+    text = (ROOT / "docs" / "flowstar_source_rescue_notes.md").read_text(encoding="utf-8")
+    assert text.startswith("# Flow* Source Rescue Notes")
+    assert text.count("\n") > 30
+    assert "\\n" not in text

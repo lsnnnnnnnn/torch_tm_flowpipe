@@ -37,6 +37,10 @@ SUMMARY_FIELDS = [
     "run_id",
     "mode",
     "order",
+    "adaptive_order_fallback",
+    "fallback_from_order",
+    "refinement_pass",
+    "residual_subset_current",
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
@@ -53,6 +57,8 @@ SUMMARY_FIELDS = [
     "num_step_rejections",
     "num_accepted_steps",
     "num_rejected_steps",
+    "num_order8_steps",
+    "num_order8_attempts",
     "failure_reason",
     "final_width_sum",
     "max_width_sum",
@@ -90,6 +96,10 @@ VALIDATION_ATTEMPT_FIELDS = [
     "run_id",
     "mode",
     "order",
+    "adaptive_order_fallback",
+    "fallback_from_order",
+    "refinement_pass",
+    "residual_subset_current",
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
@@ -148,6 +158,27 @@ COMPARISON_FIELDS = [
     "tube_width_ratio",
     "max_time_overlap_width_ratio",
     "median_time_overlap_width_ratio",
+]
+
+
+NEXT_FIELDS = [
+    "variant_group",
+    "run_id",
+    "validation_mode",
+    "target_remainder_radius",
+    "cutoff_threshold",
+    "status",
+    "last_validated_t",
+    "runtime_s",
+    "num_accepted_steps",
+    "num_rejected_steps",
+    "num_order8_steps",
+    "min_regular_h_used",
+    "h_below_flowstar_min_count",
+    "final_width_sum",
+    "last_width_ratio",
+    "tube_width_ratio",
+    "notes",
 ]
 
 
@@ -243,7 +274,7 @@ def _segment_row(
     return {
         "run_id": spec["run_id"],
         "mode": spec["mode"],
-        "order": spec["order"],
+        "order": getattr(seg, "order", spec["order"]),
         "validation_mode": spec.get("validation_mode", "growth"),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
@@ -324,6 +355,8 @@ def _summarize_run(
         "num_step_rejections": num_rejected_steps,
         "num_accepted_steps": len(validated),
         "num_rejected_steps": num_rejected_steps,
+        "num_order8_steps": sum(1 for row in validated if int(row.get("order") or 0) == 8),
+        "num_order8_attempts": sum(1 for row in attempt_rows if int(row.get("order") or 0) == 8),
         "failure_reason": failure_reason,
         "final_width_sum": validated[-1]["width_sum"] if validated else "",
         "max_width_sum": _max_field(validated, "width_sum"),
@@ -469,6 +502,9 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     target_remainder_radius=float(spec.get("target_remainder_radius", 1e-4)),
                     cutoff_threshold=spec.get("cutoff_threshold"),
                     max_validation_attempts=int(spec.get("max_validation_attempts", 2)),
+                    validation_mode=str(spec.get("validation_mode", "target_remainder")),
+                    adaptive_order_fallback=spec.get("adaptive_order_fallback"),
+                    adaptive_order_threshold_factor=float(spec.get("adaptive_order_threshold_factor", 1.25)),
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                 ),
@@ -513,6 +549,33 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
 
 
 def _configs() -> list[dict[str, Any]]:
+    def flowstar_spec(
+        run_id: str,
+        *,
+        order: int = 6,
+        target_remainder_radius: float = 1e-4,
+        cutoff_threshold: float | None = None,
+        validation_mode: str = "target_remainder",
+        max_validation_attempts: int = 2,
+        adaptive_order_fallback: int | None = None,
+    ) -> dict[str, Any]:
+        spec: dict[str, Any] = {
+            "run_id": run_id,
+            "mode": "flowstar_style",
+            "order": order,
+            "validation_mode": validation_mode,
+            "target_remainder_radius": target_remainder_radius,
+            "cutoff_threshold": cutoff_threshold,
+            "h_min": 0.002,
+            "h_max": 0.1,
+            "max_validation_attempts": max_validation_attempts,
+            "kind": "adaptive",
+        }
+        if adaptive_order_fallback is not None:
+            spec["adaptive_order_fallback"] = adaptive_order_fallback
+            spec["adaptive_order_threshold_factor"] = 1.25
+        return spec
+
     return [
         {
             "run_id": "baseline_range_only_o6_s4",
@@ -530,54 +593,32 @@ def _configs() -> list[dict[str, Any]]:
             "h": 0.1,
             "kind": "fixed",
         },
-        {
-            "run_id": "flowstar_style_o4_target",
-            "mode": "flowstar_style",
-            "order": 4,
-            "validation_mode": "target_remainder",
-            "target_remainder_radius": 1e-4,
-            "cutoff_threshold": None,
-            "h_min": 0.002,
-            "h_max": 0.1,
-            "max_validation_attempts": 2,
-            "kind": "adaptive",
-        },
-        {
-            "run_id": "flowstar_style_o6_target",
-            "mode": "flowstar_style",
-            "order": 6,
-            "validation_mode": "target_remainder",
-            "target_remainder_radius": 1e-4,
-            "cutoff_threshold": None,
-            "h_min": 0.002,
-            "h_max": 0.1,
-            "max_validation_attempts": 2,
-            "kind": "adaptive",
-        },
-        {
-            "run_id": "flowstar_style_o4_target_cutoff",
-            "mode": "flowstar_style",
-            "order": 4,
-            "validation_mode": "target_remainder",
-            "target_remainder_radius": 1e-4,
-            "cutoff_threshold": 1e-10,
-            "h_min": 0.002,
-            "h_max": 0.1,
-            "max_validation_attempts": 2,
-            "kind": "adaptive",
-        },
-        {
-            "run_id": "flowstar_style_o6_target_cutoff",
-            "mode": "flowstar_style",
-            "order": 6,
-            "validation_mode": "target_remainder",
-            "target_remainder_radius": 1e-4,
-            "cutoff_threshold": 1e-10,
-            "h_min": 0.002,
-            "h_max": 0.1,
-            "max_validation_attempts": 2,
-            "kind": "adaptive",
-        },
+        flowstar_spec("flowstar_style_o4_target", order=4),
+        flowstar_spec("flowstar_style_o6_target", order=6),
+        flowstar_spec("flowstar_style_o4_target_cutoff", order=4, cutoff_threshold=1e-10),
+        flowstar_spec("flowstar_style_o6_target_cutoff", order=6, cutoff_threshold=1e-10),
+        flowstar_spec("flowstar_style_o6_target_adaptive_order_8", order=6, adaptive_order_fallback=8),
+        flowstar_spec(
+            "flowstar_style_o6_target_cutoff_adaptive_order_8",
+            order=6,
+            cutoff_threshold=1e-10,
+            adaptive_order_fallback=8,
+        ),
+        flowstar_spec("flowstar_style_o6_target_r2e-4", order=6, target_remainder_radius=2e-4),
+        flowstar_spec("flowstar_style_o6_target_r5e-4", order=6, target_remainder_radius=5e-4),
+        flowstar_spec(
+            "flowstar_style_o6_target_refined",
+            order=6,
+            validation_mode="target_remainder_refined",
+            max_validation_attempts=8,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_target_refined_cutoff",
+            order=6,
+            validation_mode="target_remainder_refined",
+            cutoff_threshold=1e-10,
+            max_validation_attempts=8,
+        ),
     ]
 
 
@@ -651,7 +692,7 @@ def write_report(
         else:
             cutoff_msg = "tied"
     recenter_msg = "yes" if best_rescue_t > best_old_t else "no"
-    target_rows = [r for r in summary_rows if r.get("validation_mode") == "target_remainder"]
+    target_rows = [r for r in summary_rows if str(r.get("validation_mode", "")).startswith("target_remainder")]
     max_target_rem = _max_field(target_rows, "max_remainder_width_sum")
     target_rem_float = _finite_float(max_target_rem)
     target_bounded = target_rem_float is not None and target_rem_float <= 0.0004 + 1e-15
@@ -742,6 +783,12 @@ def make_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]], attempt
         "flowstar_style_o6_target": "#d62728",
         "flowstar_style_o4_target_cutoff": "#9467bd",
         "flowstar_style_o6_target_cutoff": "#8c564b",
+        "flowstar_style_o6_target_adaptive_order_8": "#e377c2",
+        "flowstar_style_o6_target_cutoff_adaptive_order_8": "#7f7f7f",
+        "flowstar_style_o6_target_r2e-4": "#17becf",
+        "flowstar_style_o6_target_r5e-4": "#bcbd22",
+        "flowstar_style_o6_target_refined": "#1f77b4",
+        "flowstar_style_o6_target_refined_cutoff": "#ff7f0e",
     }
     grouped: dict[str, list[Mapping[str, Any]]] = {}
     for row in segment_rows:
@@ -1219,7 +1266,277 @@ def run_experiment(
         )
         if comparison_rows:
             write_report(out_dir, summary_rows, segment_rows, max_horizon=max_horizon, comparison_rows=comparison_rows)
+    write_specialized_outputs(
+        out_dir,
+        summary_rows,
+        segment_rows,
+        attempt_rows,
+        max_horizon=max_horizon,
+        comparison_rows=comparison_rows,
+    )
+    write_rescue_next_outputs(trigger_out_dir=out_dir)
     return summary_rows, segment_rows, attempt_rows
+
+
+
+def _summary_with_h5_baseline(summary_rows: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    rows: list[Mapping[str, Any]] = list(summary_rows)
+    if any(row.get("run_id") == "flowstar_style_o6_target" for row in rows):
+        return rows
+    baseline_path = REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_summary.csv"
+    if baseline_path.exists():
+        for row in _read_csv_rows(baseline_path):
+            if row.get("run_id") == "flowstar_style_o6_target":
+                rows.insert(0, row)
+                break
+    return rows
+
+
+def _comparison_by_run(comparison_rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+    return {str(row.get("run_id", "")): row for row in comparison_rows}
+
+
+def _write_adaptive_order_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best(summary_rows)
+    baseline_rows = _summary_with_h5_baseline([])
+    baseline = next((row for row in baseline_rows if row.get("run_id") == "flowstar_style_o6_target"), None)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    baseline_t = _finite_float(baseline.get("last_validated_t")) if baseline else 2.1095541733932355
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    comp = _comparison_by_run(comparison_rows).get(str(best.get("run_id", ""))) if best else None
+    order8_count = sum(int(row.get("num_order8_steps") or 0) for row in summary_rows)
+    cutoff_rows = [row for row in summary_rows if str(row.get("cutoff_threshold", "")) not in {"", "None"}]
+    no_cutoff_rows = [row for row in summary_rows if str(row.get("cutoff_threshold", "")) in {"", "None"}]
+    cutoff_help = "inconclusive"
+    if cutoff_rows and no_cutoff_rows:
+        ct = max(_finite_float(r.get("last_validated_t")) or 0.0 for r in cutoff_rows)
+        nt = max(_finite_float(r.get("last_validated_t")) or 0.0 for r in no_cutoff_rows)
+        cutoff_help = "yes" if ct > nt else ("no" if ct < nt else "tied")
+    lines = [
+        "# Adaptive Order Rescue Report",
+        "",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best adaptive-order variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did adaptive order fallback beat t~=2.10955? {_yes_no(bool(best_t is not None and baseline_t is not None and best_t > baseline_t))}.",
+        f"Did it reach horizon 5? {_yes_no(reached)}.",
+        f"How many accepted steps used order 8? `{order8_count}`.",
+        f"Runtime impact: best runtime_s=`{best.get('runtime_s', '') if best else ''}` vs h5 baseline runtime_s=`{baseline.get('runtime_s', '') if baseline else ''}`.",
+        f"Width vs Flow* ratio: last=`{comp.get('last_width_ratio', '') if comp else ''}`, tube=`{comp.get('tube_width_ratio', '') if comp else ''}`.",
+        f"Did cutoff help? {cutoff_help}.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | last_validated_t | order8_steps | runtime_s | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | --- |",
+    ]
+    for row in summary_rows:
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('num_order8_steps', '')} | {row.get('runtime_s', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "adaptive_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_remainder_sensitivity_report(out_dir: Path, rows: Sequence[Mapping[str, Any]], *, max_horizon: float) -> None:
+    ordered = sorted(rows, key=lambda r: _finite_float(r.get("target_remainder_radius")) or 0.0)
+    base = ordered[0] if ordered else None
+    reached = [row for row in ordered if (_finite_float(row.get("last_validated_t")) or 0.0) >= float(max_horizon) - 1e-9]
+    base_width = _finite_float(base.get("final_width_sum")) if base else None
+    lines = [
+        "# Target Remainder Sensitivity Report",
+        "",
+        "This is diagnostic only; larger target remainders are relaxed parameters, not Flow* parity.",
+        f"Does loosening target remainder reach horizon 5? {_yes_no(bool(reached))}.",
+        f"Is 2e-4 enough? {_yes_no(any(row.get('run_id') == 'flowstar_style_o6_target_r2e-4' for row in reached))}.",
+        f"Is 5e-4 enough? {_yes_no(any(row.get('run_id') == 'flowstar_style_o6_target_r5e-4' for row in reached))}.",
+        "",
+        "## Rows",
+        "",
+        "| radius | run_id | status | last_validated_t | final_width_sum | width_vs_1e-4 | rejected_steps |",
+        "| ---: | --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in ordered:
+        width = _finite_float(row.get("final_width_sum"))
+        width_ratio = width / base_width if width is not None and base_width and base_width > 0 else ""
+        lines.append(
+            f"| {row.get('target_remainder_radius', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('final_width_sum', '')} | {width_ratio} | {row.get('num_rejected_steps', '')} |"
+        )
+    lines.extend(
+        [
+            "",
+            "Relaxed target remainders can reduce rejections only if the validated horizon improves without unacceptable width growth.",
+            "Do not recommend relaxed remainders as parity unless the report explicitly labels the parameter change.",
+        ]
+    )
+    (out_dir / "remainder_sensitivity_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_refined_report(out_dir: Path, summary_rows: Sequence[Mapping[str, Any]], *, max_horizon: float) -> None:
+    best = _best(summary_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    lines = [
+        "# Refined Target Validation Report",
+        "",
+        f"Best refined variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did refined validation beat t~=2.10955? {_yes_no(bool(best_t is not None and best_t > 2.1095541733932355))}.",
+        f"Did it reach horizon 5? {_yes_no(reached)}.",
+        f"Runtime impact: best runtime_s=`{best.get('runtime_s', '') if best else ''}`.",
+        "Residual-over-target ratios are recorded in `rescue_validation_attempts.csv` via the target and residual width fields.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | last_validated_t | runtime_s | failure_reason |",
+        "| --- | --- | ---: | ---: | --- |",
+    ]
+    for row in summary_rows:
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('runtime_s', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "refined_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_specialized_outputs(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+    comparison_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    name = out_dir.name
+    if name == "flowstar_style_rescue_adaptive_order":
+        _write_csv(out_dir / "adaptive_order_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "adaptive_order_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_csv(out_dir / "adaptive_order_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+        _write_adaptive_order_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_rescue_remainder_sensitivity":
+        rows = _summary_with_h5_baseline(summary_rows)
+        _write_csv(out_dir / "remainder_sensitivity_summary.csv", SUMMARY_FIELDS, rows)
+        _write_remainder_sensitivity_report(out_dir, rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_rescue_refined":
+        _write_csv(out_dir / "refined_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_refined_report(out_dir, summary_rows, max_horizon=max_horizon)
+
+
+def _read_optional_csv(path: Path) -> list[dict[str, str]]:
+    return _read_csv_rows(path) if path.exists() else []
+
+
+def _variant_group(run_id: str) -> str:
+    if "adaptive_order_8" in run_id:
+        return "adaptive_order_fallback"
+    if "r2e-4" in run_id or "r5e-4" in run_id:
+        return "relaxed_target_remainder"
+    if "refined" in run_id:
+        return "refined_target_validation"
+    return "h5_current_best"
+
+
+def write_rescue_next_outputs(*, trigger_out_dir: Path | None = None) -> None:
+    if trigger_out_dir is not None:
+        try:
+            outputs_root = (REPO_ROOT / "outputs").resolve()
+            if not trigger_out_dir.resolve().is_relative_to(outputs_root):
+                return
+        except Exception:
+            return
+    candidates: dict[str, dict[str, Any]] = {}
+    comparisons: dict[str, Mapping[str, Any]] = {}
+    sources = [
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "adaptive_order_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_remainder_sensitivity" / "remainder_sensitivity_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_remainder_sensitivity" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_refined" / "refined_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_refined" / "rescue_vs_flowstar_comparison.csv"),
+    ]
+    for summary_path, comparison_path in sources:
+        for row in _read_optional_csv(summary_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                candidates[run_id] = dict(row)
+        for row in _read_optional_csv(comparison_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                comparisons[run_id] = row
+    if not candidates:
+        return
+    rows: list[dict[str, Any]] = []
+    for run_id, row in sorted(candidates.items(), key=lambda item: (_variant_group(item[0]), item[0])):
+        comp = comparisons.get(run_id, {})
+        rows.append(
+            {
+                "variant_group": _variant_group(run_id),
+                "run_id": run_id,
+                "validation_mode": row.get("validation_mode", ""),
+                "target_remainder_radius": row.get("target_remainder_radius", ""),
+                "cutoff_threshold": row.get("cutoff_threshold", ""),
+                "status": row.get("status", ""),
+                "last_validated_t": row.get("last_validated_t", ""),
+                "runtime_s": row.get("runtime_s", ""),
+                "num_accepted_steps": row.get("num_accepted_steps", ""),
+                "num_rejected_steps": row.get("num_rejected_steps", ""),
+                "num_order8_steps": row.get("num_order8_steps", ""),
+                "min_regular_h_used": row.get("min_regular_h_used", ""),
+                "h_below_flowstar_min_count": row.get("h_below_flowstar_min_count", ""),
+                "final_width_sum": row.get("final_width_sum", ""),
+                "last_width_ratio": comp.get("last_width_ratio", ""),
+                "tube_width_ratio": comp.get("tube_width_ratio", ""),
+                "notes": row.get("notes", ""),
+            }
+        )
+    out_dir = REPO_ROOT / "outputs" / "flowstar_style_rescue_next"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _write_csv(out_dir / "rescue_next_summary.csv", NEXT_FIELDS, rows)
+    parity_rows = [
+        row for row in rows
+        if str(row.get("target_remainder_radius", "")) in {"0.0001", "1e-04", "1e-4"}
+        and int(row.get("h_below_flowstar_min_count") or 0) == 0
+    ]
+    best = max(parity_rows or rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0)
+    relaxed_reached = any(
+        _variant_group(str(row.get("run_id", ""))) == "relaxed_target_remainder"
+        and (_finite_float(row.get("last_validated_t")) or 0.0) >= 5.0 - 1e-9
+        for row in rows
+    )
+    if (_finite_float(best.get("last_validated_t")) or 0.0) >= 5.0 - 1e-9:
+        recommendation = "continue with the best parity-preserving variant and tighten polynomial range bounding."
+    elif relaxed_reached:
+        recommendation = "use relaxed target remainder only as a diagnostic; prioritize tighter polynomial range bounding or a symbolic remainder queue for parity."
+    elif _variant_group(str(best.get("run_id", ""))) == "refined_target_validation":
+        recommendation = "continue refined target validation, then add tighter polynomial range bounding."
+    else:
+        recommendation = "prioritize tighter polynomial range bounding, then a real Flow*-style symbolic remainder queue."
+    lines = [
+        "# Rescue Variant Comparison",
+        "",
+        f"Best variant by current decision criteria: `{best.get('run_id', '')}` at t=`{best.get('last_validated_t', '')}`.",
+        f"Reached horizon 5? {_yes_no((_finite_float(best.get('last_validated_t')) or 0.0) >= 5.0 - 1e-9)}.",
+        f"Width ratio vs Flow*: last=`{best.get('last_width_ratio', '')}`, tube=`{best.get('tube_width_ratio', '')}`.",
+        f"Next recommendation: {recommendation}",
+        "",
+        "Decision criteria: highest last_validated_t, target remainder close to Flow* parameter, runtime, width ratio vs Flow*, and no non-final h below 0.002 except diagnostic runs.",
+        "",
+        "## Rows",
+        "",
+        "| group | run_id | status | last_validated_t | radius | last_width_ratio | tube_width_ratio |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in rows:
+        lines.append(
+            f"| {row.get('variant_group', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('target_remainder_radius', '')} | "
+            f"{row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
+        )
+    (out_dir / "rescue_next_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _write_outputs(

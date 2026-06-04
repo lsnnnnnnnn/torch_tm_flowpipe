@@ -219,7 +219,9 @@ def _append_validation_diagnostic(
         "validation_message": validation_message,
     }
     if extra:
-        row.update(extra)
+        for key, value in extra.items():
+            if key not in row:
+                row[key] = value
     if candidate is not None:
         try:
             candidate_box = candidate.range_box()
@@ -676,6 +678,184 @@ def _validate_picard_target_remainder(
     return candidate, "failed", max_attempts, "Picard residual not subset of target remainder"
 
 
+
+def _validate_picard_target_remainder_refined(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate_poly: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    max_attempts: int,
+    validation_eps: float,
+    h: float,
+    target_remainder_radius: float,
+    diagnostics: list[dict[str, Any]] | None = None,
+    diagnostics_mode: str | None = None,
+    diagnostics_segment_index: int | None = None,
+    diagnostics_context: Mapping[str, Any] | None = None,
+    rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    symbolic_remainder: bool = False,
+    max_symbolic_remainders: int = 0,
+) -> tuple[TMVector, str, int, str]:
+    """Conservative target validation with remainder-only Picard refinement."""
+    domain = candidate_poly.domain
+    if len(base_ext) != len(candidate_poly):
+        raise ValueError("base and candidate dimensions differ")
+    target_remainders = [_symmetric_interval(target_remainder_radius, domain) for _ in candidate_poly]
+    diag_extra = dict(diagnostics_context or {})
+    diag_extra.setdefault("validation_mode", "target_remainder_refined")
+    diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
+    diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    if symbolic_remainder:
+        diag_extra.setdefault("symbolic_remainder", True)
+        diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
+    diag_mode = diag_extra.pop("mode", diagnostics_mode)
+    diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
+
+    seed_remainders = [
+        _combine_remainders(base_i.remainder, candidate_i.remainder).inflate(validation_eps)
+        for base_i, candidate_i in zip(base_ext, candidate_poly)
+    ]
+    current_remainders = seed_remainders
+    candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, current_remainders))
+    if not intervals_are_finite(current_remainders):
+        message = "non-finite initial remainder"
+        extra = dict(diag_extra, subset_result=False, rejection_reason=message, refinement_pass=0)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=current_remainders,
+            finite_residual=False,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+    if not all(target.contains_interval(seed) for target, seed in zip(target_remainders, current_remainders)):
+        message = "initial or cutoff remainder exceeds target remainder"
+        extra = dict(diag_extra, subset_result=False, rejection_reason=message, refinement_pass=0)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=current_remainders,
+            finite_residual=True,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+
+    for attempt in range(1, max_attempts + 1):
+        candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, current_remainders))
+        if rhs_breakdown_callback is not None:
+            callback_context = dict(diag_extra)
+            if diag_mode is not None:
+                callback_context["mode"] = diag_mode
+            if diag_segment_index is not None:
+                callback_context["segment_index"] = diag_segment_index
+            callback_context["attempt_index"] = attempt
+            callback_context["h"] = float(h)
+            callback_context["order"] = int(order)
+            callback_context["refinement_pass"] = attempt
+            try:
+                rhs_breakdown_callback(candidate, order, attempt, callback_context)
+            except Exception:
+                pass
+        try:
+            rhs = _call_ode(ode_fn, candidate, u_tms)
+            residual_boxes: list[Interval] = []
+            for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
+                picard_i = base_i + f_i.integrate(tau_index)
+                residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
+                residual_boxes.append(residual_i.range_box().inflate(validation_eps))
+        except Exception as exc:
+            message = f"validation exception: {exc}"
+            extra = dict(diag_extra, subset_result=False, rejection_reason=message, refinement_pass=attempt)
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=None,
+                remainders=current_remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return candidate, "failed", attempt, message
+
+        finite_residual = intervals_are_finite(residual_boxes)
+        residual_inside_target = all(target.contains_interval(rb) for target, rb in zip(target_remainders, residual_boxes))
+        residual_inside_current = all(current.contains_interval(rb) for current, rb in zip(current_remainders, residual_boxes))
+        if not finite_residual:
+            message = "non-finite residual interval"
+        elif residual_inside_current:
+            message = ""
+        elif not residual_inside_target:
+            message = "Picard residual not subset of target remainder"
+        else:
+            message = "remainder-only refinement continuing"
+        extra = dict(
+            diag_extra,
+            subset_result=bool(finite_residual and residual_inside_target),
+            rejection_reason="" if finite_residual and residual_inside_current else message,
+            refinement_pass=attempt,
+            residual_subset_current=bool(finite_residual and residual_inside_current),
+        )
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=attempt,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=residual_boxes,
+            remainders=current_remainders,
+            finite_residual=finite_residual,
+            validation_status="validated" if finite_residual and residual_inside_current else "failed",
+            validation_message=message,
+            extra=extra,
+        )
+        if not finite_residual:
+            return candidate, "failed", attempt, message
+        if residual_inside_current:
+            return candidate, "validated", attempt, ""
+        if not residual_inside_target:
+            return candidate, "failed", attempt, message
+
+        next_remainders = [Interval.hull(seed, residual).inflate(validation_eps) for seed, residual in zip(seed_remainders, residual_boxes)]
+        if not all(target.contains_interval(next_r) for target, next_r in zip(target_remainders, next_remainders)):
+            message = "refined remainder exceeds target remainder"
+            return candidate, "failed", attempt, message
+        current_remainders = next_remainders
+
+    return candidate, "failed", max_attempts, "remainder-only target refinement did not converge"
+
+
 def flowpipe_step_from_tm(
     ode_fn: ODEFunction,
     x0_tm: TMVector,
@@ -723,9 +903,11 @@ def flowpipe_step_from_tm(
     base_poly_ext = TMVector(
         TaylorModel(m.polynomial, Interval.zero(), domain, order=order) for m in base_ext
     )
-    if validation_mode not in {"growth", "current", "target_remainder"}:
-        raise ValueError("validation_mode must be 'growth', 'current', or 'target_remainder'")
-    target_mode = validation_mode == "target_remainder"
+    if validation_mode not in {"growth", "current", "target_remainder", "target_remainder_refined"}:
+        raise ValueError(
+            "validation_mode must be 'growth', 'current', 'target_remainder', or 'target_remainder_refined'"
+        )
+    target_mode = validation_mode in {"target_remainder", "target_remainder_refined"}
     attempt_limit = (2 if target_mode else 20) if max_validation_attempts is None else int(max_validation_attempts)
     if attempt_limit <= 0:
         raise ValueError("max_validation_attempts must be positive")
@@ -739,8 +921,28 @@ def flowpipe_step_from_tm(
         u_tms,
         cutoff_threshold=cutoff_threshold,
     )
-    if target_mode:
+    if validation_mode == "target_remainder":
         validated, status, attempts, message = _validate_picard_target_remainder(
+            ode_fn,
+            base_ext,
+            candidate_poly,
+            tau_index,
+            order,
+            u_tms,
+            h=float(h),
+            max_attempts=attempt_limit,
+            validation_eps=validation_eps,
+            target_remainder_radius=target_remainder_radius,
+            diagnostics=diagnostics,
+            diagnostics_mode=diagnostics_mode,
+            diagnostics_segment_index=diagnostics_segment_index,
+            diagnostics_context=diagnostics_context,
+            rhs_breakdown_callback=rhs_breakdown_callback,
+            symbolic_remainder=symbolic_remainder,
+            max_symbolic_remainders=max_symbolic_remainders,
+        )
+    elif validation_mode == "target_remainder_refined":
+        validated, status, attempts, message = _validate_picard_target_remainder_refined(
             ode_fn,
             base_ext,
             candidate_poly,
@@ -852,6 +1054,10 @@ def flowpipe_step(
     return flowpipe_step_from_tm(ode_fn, x0_tm, h, order, u_box=u_box, affine_u=affine_u, **kwargs)
 
 
+def _is_target_containment_failure(message: str) -> bool:
+    return "target remainder" in message or "not subset" in message or "target containment" in message
+
+
 def flowpipe_step_flowstar_style_adaptive(
     ode_fn: ODEFunction,
     x0: TMVector | Sequence[Interval | tuple[float, float] | list[float] | float],
@@ -866,6 +1072,9 @@ def flowpipe_step_flowstar_style_adaptive(
     cutoff_threshold: float | None = 1e-10,
     max_validation_attempts: int = 2,
     validation_eps: float = 1e-12,
+    validation_mode: str = "target_remainder",
+    adaptive_order_fallback: int | None = None,
+    adaptive_order_threshold_factor: float = 1.25,
     grow_factor: float = 1.5,
     diagnostics: list[dict[str, Any]] | None = None,
     diagnostics_context: Mapping[str, Any] | None = None,
@@ -875,6 +1084,8 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("h_min and h_max must be positive")
     if h_min > h_max:
         raise ValueError("h_min must be <= h_max")
+    if validation_mode not in {"target_remainder", "target_remainder_refined"}:
+        raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     current_tm = x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order)
     h_try = min(float(h) if h is not None else float(h_max), float(h_max))
     if h_try < h_min:
@@ -900,7 +1111,7 @@ def flowpipe_step_flowstar_style_adaptive(
             affine_u=affine_u,
             max_validation_attempts=max_validation_attempts,
             validation_eps=validation_eps,
-            validation_mode="target_remainder",
+            validation_mode=validation_mode,
             target_remainder_radius=target_remainder_radius,
             cutoff_threshold=cutoff_threshold,
             diagnostics=diagnostics,
@@ -912,7 +1123,47 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
             seg.next_h = min(h_try * grow_factor, h_max)
             return seg
+
         last_seg = seg
+        fallback_order = int(adaptive_order_fallback or 0)
+        near_min_failure = (
+            h_try <= float(adaptive_order_threshold_factor) * float(h_min) + 1e-15
+            or h_try * 0.5 < float(h_min) - 1e-15
+        )
+        should_retry_order = (
+            fallback_order > int(order)
+            and int(order) == 6
+            and near_min_failure
+            and _is_target_containment_failure(seg.message)
+        )
+        if should_retry_order:
+            fallback_context = dict(context)
+            fallback_context["adaptive_order_fallback"] = True
+            fallback_context["fallback_from_order"] = int(order)
+            fallback_context["h_try"] = h_try
+            fallback_seg = flowpipe_step_from_tm(
+                ode_fn,
+                current_tm,
+                h_try,
+                fallback_order,
+                u_box=u_box,
+                affine_u=affine_u,
+                max_validation_attempts=max_validation_attempts,
+                validation_eps=validation_eps,
+                validation_mode=validation_mode,
+                target_remainder_radius=target_remainder_radius,
+                cutoff_threshold=cutoff_threshold,
+                diagnostics=diagnostics,
+                diagnostics_context=fallback_context,
+                rhs_breakdown_callback=rhs_breakdown_callback,
+            )
+            fallback_seg.step_rejections = rejections
+            last_seg = fallback_seg
+            if fallback_seg.status == "validated" and intervals_are_finite(fallback_seg.final_tm.range_box()):
+                fallback_seg.reset_tm = _normalized_tm_from_box(fallback_seg.final_tm.range_box(), order)
+                fallback_seg.next_h = min(h_try * grow_factor, h_max)
+                return fallback_seg
+
         rejections += 1
         h_try *= 0.5
 
@@ -921,7 +1172,6 @@ def flowpipe_step_flowstar_style_adaptive(
     last_seg.next_h = h_try
     last_seg.message = last_seg.message or "target remainder validation failed before h_min"
     return last_seg
-
 
 def _step_diagnostics_kwargs(kwargs: Mapping[str, Any], mode: str, segment_index: int) -> dict[str, Any]:
     step_kwargs = dict(kwargs)

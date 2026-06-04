@@ -170,3 +170,42 @@ def test_flowstar_style_adaptive_shrinks_after_rejection():
     assert seg.status == "failed"
     assert seg.step_rejections == 3
     assert [row["h"] for row in diagnostics] == [0.05, 0.025, 0.0125]
+
+
+
+def test_refined_target_remainder_validation_mode_smoke():
+    diagnostics = []
+    seg = flowpipe_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.005,
+        order=4,
+        validation_mode="target_remainder_refined",
+        target_remainder_radius=1e-4,
+        max_validation_attempts=4,
+        diagnostics=diagnostics,
+    )
+
+    assert seg.status == "validated"
+    assert diagnostics[-1]["validation_mode"] == "target_remainder_refined"
+    assert diagnostics[-1]["residual_subset_current"] is True
+
+
+def test_flowstar_style_adaptive_order_fallback_is_opt_in():
+    diagnostics = []
+    seg = flowpipe_step_flowstar_style_adaptive(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.0125,
+        order=6,
+        h_min=0.0125,
+        h_max=0.0125,
+        target_remainder_radius=1e-18,
+        cutoff_threshold=None,
+        max_validation_attempts=1,
+        adaptive_order_fallback=8,
+        diagnostics=diagnostics,
+    )
+
+    assert seg.status == "failed"
+    assert any(row.get("order") == 8 and row.get("adaptive_order_fallback") is True for row in diagnostics)
