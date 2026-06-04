@@ -155,6 +155,30 @@ class Polynomial:
         dropped = {e: c for e, c in self.terms.items() if sum(e) > order}
         return Polynomial(kept, self.n_vars), Polynomial(dropped, self.n_vars)
 
+    def cutoff(self, threshold: float | None, domain: Iterable[Interval]) -> tuple["Polynomial", Interval]:
+        """Drop small coefficients and return their conservative range.
+
+        The returned interval is the interval evaluation of all removed terms on
+        ``domain``.  Adding it to a Taylor-model remainder preserves containment.
+        """
+        domain_l = list(domain)
+        if len(domain_l) != self.n_vars:
+            raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
+        if threshold is None:
+            return self, Interval.zero(dtype=self.dtype, device=self.device)
+        threshold_t = torch.abs(_coef(threshold, like=next(iter(self.terms.values())) if self.terms else None))
+        kept: Dict[Exponent, torch.Tensor] = {}
+        removed: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            target = removed if bool(torch.all(torch.abs(c) <= threshold_t)) else kept
+            target[exp] = c
+        removed_range = (
+            Polynomial(removed, self.n_vars).evaluate_interval(domain_l)
+            if removed
+            else Interval.zero(dtype=self.dtype, device=self.device)
+        )
+        return Polynomial(kept, self.n_vars), removed_range
+
     def pow_int(self, exponent: int, *, order: int | None = None) -> tuple["Polynomial", "Polynomial"] | "Polynomial":
         if exponent < 0:
             raise ValueError("Polynomial.pow_int only supports nonnegative exponents")

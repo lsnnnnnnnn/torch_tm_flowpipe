@@ -80,6 +80,11 @@ class TMVector:
             raise ValueError("remainder length mismatch")
         return TMVector(m.with_remainder(r) for m, r in zip(self.models, remainders))
 
+    def apply_cutoff(self, threshold: float | None) -> "TMVector":
+        if threshold is None:
+            return self
+        return TMVector(m.apply_cutoff(threshold) for m in self.models)
+
     def __add__(self, other: "TMVector") -> "TMVector":
         if len(self) != len(other):
             raise ValueError("TMVector length mismatch")

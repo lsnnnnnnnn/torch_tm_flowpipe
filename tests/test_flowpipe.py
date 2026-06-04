@@ -1,6 +1,6 @@
 import math
 
-from torch_tm_flowpipe import Interval, flowpipe_multi_step, flowpipe_step
+from torch_tm_flowpipe import Interval, flowpipe_multi_step, flowpipe_step, flowpipe_step_flowstar_style_adaptive
 from torch_tm_flowpipe.ode_examples import affine_controlled_ode, scalar_quadratic_ode, van_der_pol_ode
 
 
@@ -95,3 +95,78 @@ def test_flowpipe_step_diagnostics_are_optional_and_do_not_change_result():
     assert diagnostics[-1]["mode"] == "unit"
     assert diagnostics[-1]["segment_index"] == 7
     assert diagnostics[-1]["validation_status"] == "validated"
+
+def test_default_flowpipe_step_matches_explicit_growth_validation():
+    plain = flowpipe_step(scalar_quadratic_ode, [Interval(0.0, 0.1)], h=0.01, order=4)
+    explicit = flowpipe_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.01,
+        order=4,
+        validation_mode="growth",
+    )
+
+    assert explicit.status == plain.status
+    assert explicit.validation_attempts == plain.validation_attempts
+    assert explicit.final_tm.range_box()[0].to_tuple() == plain.final_tm.range_box()[0].to_tuple()
+
+
+def test_flowstar_style_multi_step_uses_fresh_normalized_variables():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    rescue = flowpipe_multi_step(van_der_pol_ode, x0, h=0.002, steps=2, order=4, mode="flowstar_style")
+    dep = flowpipe_multi_step(van_der_pol_ode, x0, h=0.002, steps=2, order=4, mode="dependency_preserving")
+
+    assert rescue.status == "validated"
+    assert dep.status == "validated"
+    assert rescue.final_tm.n_vars == 2
+    assert all(model.polynomial.degree() <= 1 for model in rescue.final_tm)
+    assert any(model.polynomial.degree() > 1 for model in dep.final_tm)
+    assert [iv.to_tuple() for iv in rescue.final_tm.domain] == [(-1.0, 1.0), (-1.0, 1.0)]
+    assert [iv.to_tuple() for iv in dep.final_tm.domain] != [(-1.0, 1.0), (-1.0, 1.0)]
+
+    for seg in rescue.segments:
+        assert seg.reset_tm is not None
+        assert [iv.to_tuple() for iv in seg.reset_tm.domain] == [(-1.0, 1.0), (-1.0, 1.0)]
+        assert seg.reset_tm.active_variables() == {0, 1}
+        for reset_iv, raw_iv in zip(seg.reset_tm.range_box(), seg.final_tm.range_box()):
+            assert reset_iv.contains_interval(raw_iv, tol=1e-12)
+
+
+def test_target_remainder_validation_rejects_without_remainder_growth():
+    diagnostics = []
+    seg = flowpipe_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.05,
+        order=2,
+        validation_mode="target_remainder",
+        target_remainder_radius=1e-8,
+        max_validation_attempts=1,
+        diagnostics=diagnostics,
+    )
+
+    assert seg.status == "failed"
+    assert seg.message == "Picard residual not subset of target remainder"
+    assert diagnostics[-1]["subset_result"] is False
+    assert diagnostics[-1]["remainder_width_sum"] <= 2.1e-8
+    assert diagnostics[-1]["residual_width_sum"] > diagnostics[-1]["target_remainder_width_sum"]
+
+
+def test_flowstar_style_adaptive_shrinks_after_rejection():
+    diagnostics = []
+    seg = flowpipe_step_flowstar_style_adaptive(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.05,
+        order=2,
+        h_min=0.0125,
+        h_max=0.05,
+        target_remainder_radius=1e-16,
+        cutoff_threshold=None,
+        max_validation_attempts=1,
+        diagnostics=diagnostics,
+    )
+
+    assert seg.status == "failed"
+    assert seg.step_rejections == 3
+    assert [row["h"] for row in diagnostics] == [0.05, 0.025, 0.0125]

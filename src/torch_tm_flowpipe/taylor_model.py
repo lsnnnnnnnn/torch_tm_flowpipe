@@ -124,6 +124,12 @@ class TaylorModel:
     def with_remainder(self, remainder: Interval | Any) -> "TaylorModel":
         return TaylorModel(self.polynomial, ensure_interval(remainder), list(self.domain), self.order)
 
+    def apply_cutoff(self, threshold: float | None) -> "TaylorModel":
+        if threshold is None:
+            return self
+        poly, removed_range = self.polynomial.cutoff(threshold, self.domain)
+        return TaylorModel(poly, self.remainder + removed_range, list(self.domain), self.order)
+
     def __add__(self, other: Any) -> "TaylorModel":
         other = self._coerce(other)
         return TaylorModel(self.polynomial + other.polynomial, self.remainder + other.remainder, list(self.domain), self.order)
