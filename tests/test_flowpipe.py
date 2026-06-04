@@ -72,3 +72,26 @@ def test_affine_control_smoke_validated():
 def test_van_der_pol_short_smoke_validated():
     seg = flowpipe_step(van_der_pol_ode, [Interval(1.0, 1.01), Interval(0.0, 0.01)], h=0.002, order=4)
     assert seg.status == "validated"
+
+
+def test_flowpipe_step_diagnostics_are_optional_and_do_not_change_result():
+    plain = flowpipe_step(scalar_quadratic_ode, [Interval(0.0, 0.1)], h=0.01, order=4)
+    diagnostics = []
+    instrumented = flowpipe_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.01,
+        order=4,
+        diagnostics=diagnostics,
+        diagnostics_mode="unit",
+        diagnostics_segment_index=7,
+    )
+
+    assert instrumented.status == plain.status
+    assert instrumented.validation_attempts == plain.validation_attempts
+    assert instrumented.message == plain.message
+    assert instrumented.final_tm.range_box()[0].to_tuple() == plain.final_tm.range_box()[0].to_tuple()
+    assert diagnostics
+    assert diagnostics[-1]["mode"] == "unit"
+    assert diagnostics[-1]["segment_index"] == 7
+    assert diagnostics[-1]["validation_status"] == "validated"

@@ -13,7 +13,7 @@ The original benchmark parameters are parsed from Flow* source files, not guesse
 
 Flow* GNUPLOT rectangles are segment boxes. They are not final-time endpoint boxes, so Flow* rows use `endpoint_box_available=false` and do not report endpoint ratios. Parity reporting is limited to last-segment and tube widths. Runtime columns keep algorithm runtime separate from plot generation.
 
-If `torch_tm_dependency_preserving` fails, the report records the partial horizon, failing segment, and validation reason instead of pretending the horizon was reached. When it reaches farther than `torch_tm_range_only`, the report calls out that dependency loss caused much of the range-only blowup.
+If a PyTorch TM row fails, the report distinguishes the attempted failed segment from the last validated segment. The compatibility columns still show the attempted segment-box prefix, while `validated_segments`, `last_validated_t`, `failed_segment_index`, `failed_segment_t_lo`, `failed_segment_t_hi`, `last_attempted_t`, and `failure_reason` give the validation-specific accounting. When `torch_tm_dependency_preserving` validates farther than `torch_tm_range_only`, the report calls out that dependency loss caused much of the range-only blowup.
 
 The original benchmark PNG references are:
 

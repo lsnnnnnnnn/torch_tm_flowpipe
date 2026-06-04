@@ -17,7 +17,7 @@ Original Flow* `wall_run_s` is subprocess wall time for running the original exe
 
 ## Bound Semantics
 
-Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `endpoint_box_available=false` for Flow* rows unless a true endpoint source is extracted from the Flow* API. This audit reports last-segment and tube widths only for Flow* parity.
+Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `endpoint_box_available=false` for Flow* rows unless a true endpoint source is extracted from the Flow* API. This audit reports last-segment and tube widths only for Flow* parity. Failed PyTorch rows distinguish the attempted failed segment from the last validated segment with `failed_segment_*`, `last_attempted_t`, `validated_segments`, and `last_validated_t`.
 
 ## Files
 

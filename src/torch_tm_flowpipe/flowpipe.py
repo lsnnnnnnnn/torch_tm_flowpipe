@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Iterable, List, Sequence
+from typing import Any, Callable, Iterable, List, Mapping, Sequence
 
 import torch
 
@@ -67,6 +67,112 @@ def _zero_interval_like_domain(domain: Sequence[Interval]) -> Interval:
 
 def _zero_remainder_tm(poly: Polynomial, domain: Sequence[Interval], order: int) -> TaylorModel:
     return TaylorModel(poly, _zero_interval_like_domain(domain), list(domain), order=order)
+
+
+def _float_or_none(value: Any) -> float | None:
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return None
+    return f if torch.isfinite(torch.as_tensor(f)).item() else None
+
+
+def _interval_width_value(iv: Interval) -> float | None:
+    return _float_or_none(iv.width().detach().cpu())
+
+
+def _interval_bound_value(value: torch.Tensor) -> float | None:
+    return _float_or_none(value.detach().cpu())
+
+
+def _add_width_metrics(row: dict[str, Any], prefix: str, boxes: Sequence[Interval] | None) -> None:
+    if boxes is None:
+        return
+    names = ("x", "y")
+    widths: list[float] = []
+    for i, iv in enumerate(boxes[:2]):
+        width = _interval_width_value(iv)
+        if width is not None:
+            row[f"{prefix}_width_{names[i]}"] = width
+            widths.append(width)
+    if widths:
+        row[f"{prefix}_width_sum"] = sum(widths)
+
+
+def _add_interval_bounds(row: dict[str, Any], prefix: str, boxes: Sequence[Interval] | None) -> None:
+    if boxes is None:
+        return
+    names = ("x", "y")
+    for i, iv in enumerate(boxes[:2]):
+        lo = _interval_bound_value(iv.lo)
+        hi = _interval_bound_value(iv.hi)
+        if lo is not None:
+            row[f"{prefix}_lo_{names[i]}"] = lo
+        if hi is not None:
+            row[f"{prefix}_hi_{names[i]}"] = hi
+
+
+def _polynomial_range_boxes(tm: TMVector) -> list[Interval]:
+    return [m.polynomial.evaluate_interval(m.domain) for m in tm]
+
+
+def _final_range_boxes(tm: TMVector, tau_index: int, h: float) -> list[Interval] | None:
+    try:
+        return tm.substitute_const(tau_index, float(h)).drop_variable(tau_index).range_box()
+    except Exception:
+        return None
+
+
+def _append_validation_diagnostic(
+    diagnostics: list[dict[str, Any]] | None,
+    *,
+    mode: str | None,
+    segment_index: int | None,
+    attempt_index: int,
+    h: float,
+    order: int,
+    candidate: TMVector | None,
+    tau_index: int,
+    residual_boxes: Sequence[Interval] | None,
+    remainders: Sequence[Interval] | None,
+    finite_residual: bool | None,
+    validation_status: str,
+    validation_message: str,
+    extra: Mapping[str, Any] | None = None,
+) -> None:
+    if diagnostics is None:
+        return
+    row: dict[str, Any] = {
+        "mode": mode or "",
+        "segment_index": segment_index if segment_index is not None else "",
+        "attempt_index": attempt_index,
+        "h": float(h),
+        "order": int(order),
+        "finite_residual": finite_residual if finite_residual is not None else "",
+        "validation_status": validation_status,
+        "validation_message": validation_message,
+    }
+    if extra:
+        row.update(extra)
+    if candidate is not None:
+        try:
+            candidate_box = candidate.range_box()
+            _add_width_metrics(row, "candidate_segment", candidate_box)
+            _add_width_metrics(row, "total_range", candidate_box)
+        except Exception:
+            pass
+        try:
+            _add_width_metrics(row, "candidate_final", _final_range_boxes(candidate, tau_index, h))
+        except Exception:
+            pass
+        try:
+            _add_width_metrics(row, "polynomial_range", _polynomial_range_boxes(candidate))
+        except Exception:
+            pass
+    _add_width_metrics(row, "residual", residual_boxes)
+    _add_interval_bounds(row, "residual", residual_boxes)
+    _add_width_metrics(row, "remainder", remainders)
+    diagnostics.append(row)
 
 
 def _call_ode(ode_fn: ODEFunction, x: TMVector, u: TMVector | None) -> TMVector:
@@ -175,13 +281,47 @@ def _validate_picard(
     max_attempts: int,
     validation_eps: float,
     growth_factor: float,
+    h: float,
+    diagnostics: list[dict[str, Any]] | None = None,
+    diagnostics_mode: str | None = None,
+    diagnostics_segment_index: int | None = None,
+    diagnostics_context: Mapping[str, Any] | None = None,
+    diagnostic_mode: str | None = None,
+    diagnostic_segment_index: int | None = None,
+    diagnostic_context: Mapping[str, Any] | None = None,
 ) -> tuple[TMVector, str, int, str]:
     domain = candidate_poly.domain
     if len(base_ext) != len(candidate_poly):
         raise ValueError("base and candidate dimensions differ")
     remainders = [m.remainder.inflate(validation_eps) for m in base_ext]
+    if diagnostic_context is not None:
+        diagnostics_context = diagnostic_context
+    if diagnostic_mode is not None:
+        diagnostics_mode = diagnostic_mode
+    if diagnostic_segment_index is not None:
+        diagnostics_segment_index = diagnostic_segment_index
+    diag_extra = dict(diagnostics_context or {})
+    diag_mode = diag_extra.pop("mode", diagnostics_mode)
+    diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
     if not intervals_are_finite(remainders):
-        return candidate_poly, "failed", 0, "non-finite initial remainder"
+        message = "non-finite initial remainder"
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate_poly,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=remainders,
+            finite_residual=False,
+            validation_status="failed",
+            validation_message=message,
+            extra=diag_extra,
+        )
+        return candidate_poly, "failed", 0, message
 
     for attempt in range(1, max_attempts + 1):
         candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, remainders))
@@ -193,13 +333,82 @@ def _validate_picard(
                 residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
                 residual_boxes.append(residual_i.range_box().inflate(validation_eps))
         except Exception as exc:  # fail closed; caller gets a non-validated segment
-            return candidate, "failed", attempt, f"validation exception: {exc}"
+            message = f"validation exception: {exc}"
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=None,
+                remainders=remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=diag_extra,
+            )
+            return candidate, "failed", attempt, message
 
-        if not intervals_are_finite(residual_boxes):
-            return candidate, "failed", attempt, "non-finite residual interval"
+        finite_residual = intervals_are_finite(residual_boxes)
+        if not finite_residual:
+            message = "non-finite residual interval"
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=residual_boxes,
+                remainders=remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=diag_extra,
+            )
+            return candidate, "failed", attempt, message
 
         if all(r.contains_interval(rb) for r, rb in zip(remainders, residual_boxes)):
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=residual_boxes,
+                remainders=remainders,
+                finite_residual=True,
+                validation_status="validated",
+                validation_message="",
+                extra=diag_extra,
+            )
             return candidate, "validated", attempt, ""
+
+        message = "Picard remainder validation did not converge" if attempt == max_attempts else "residual not contained by current remainder"
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=attempt,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=residual_boxes,
+            remainders=remainders,
+            finite_residual=True,
+            validation_status="failed" if attempt == max_attempts else "needs_growth",
+            validation_message=message,
+            extra=diag_extra,
+        )
 
         new_remainders: list[Interval] = []
         for r, rb in zip(remainders, residual_boxes):
@@ -222,6 +431,13 @@ def flowpipe_step_from_tm(
     max_validation_attempts: int = 20,
     validation_eps: float = 1e-12,
     growth_factor: float = 1.25,
+    diagnostics: list[dict[str, Any]] | None = None,
+    diagnostics_mode: str | None = None,
+    diagnostics_segment_index: int | None = None,
+    diagnostics_context: Mapping[str, Any] | None = None,
+    diagnostic_mode: str | None = None,
+    diagnostic_segment_index: int | None = None,
+    diagnostic_context: Mapping[str, Any] | None = None,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -229,6 +445,12 @@ def flowpipe_step_from_tm(
     ``x0_tm`` and adds one local time variable.  The segment's final TM has the
     local time variable substituted with ``h`` and dropped.
     """
+    if diagnostic_context is not None:
+        diagnostics_context = diagnostic_context
+    if diagnostic_mode is not None:
+        diagnostics_mode = diagnostic_mode
+    if diagnostic_segment_index is not None:
+        diagnostics_segment_index = diagnostic_segment_index
     if h <= 0:
         raise ValueError("h must be positive")
     tau_interval = Interval(0.0, float(h))
@@ -247,9 +469,14 @@ def flowpipe_step_from_tm(
         tau_index,
         order,
         u_tms,
+        h=float(h),
         max_attempts=max_validation_attempts,
         validation_eps=validation_eps,
         growth_factor=growth_factor,
+        diagnostics=diagnostics,
+        diagnostics_mode=diagnostics_mode,
+        diagnostics_segment_index=diagnostics_segment_index,
+        diagnostics_context=diagnostics_context,
     )
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
     if status == "validated":
@@ -302,6 +529,17 @@ def flowpipe_step(
     return flowpipe_step_from_tm(ode_fn, x0_tm, h, order, u_box=u_box, affine_u=affine_u, **kwargs)
 
 
+def _step_diagnostics_kwargs(kwargs: Mapping[str, Any], mode: str, segment_index: int) -> dict[str, Any]:
+    step_kwargs = dict(kwargs)
+    if step_kwargs.get("diagnostics") is not None:
+        context = dict(step_kwargs.get("diagnostic_context") or step_kwargs.get("diagnostics_context") or {})
+        context.setdefault("mode", mode)
+        context.setdefault("segment_index", segment_index)
+        step_kwargs["diagnostics_context"] = context
+        step_kwargs.pop("diagnostic_context", None)
+    return step_kwargs
+
+
 def flowpipe_multi_step(
     ode_fn: ODEFunction,
     x0_box: Sequence[Interval | tuple[float, float] | list[float] | float],
@@ -332,8 +570,9 @@ def flowpipe_multi_step(
     if mode == "range_only":
         current_box = _as_interval_list(x0_box)
         current_final: TMVector | None = None
-        for _ in range(steps):
-            seg = flowpipe_step(ode_fn, current_box, h, order, u_box=u_box, affine_u=affine_u, **kwargs)
+        for segment_index in range(steps):
+            step_kwargs = _step_diagnostics_kwargs(kwargs, mode, segment_index)
+            seg = flowpipe_step(ode_fn, current_box, h, order, u_box=u_box, affine_u=affine_u, **step_kwargs)
             segments.append(seg)
             current_box = [iv.inflate(range_only_inflate) for iv in seg.final_tm.range_box()]
             # The range-only baseline intentionally forgets symbolic dependency at
@@ -345,8 +584,9 @@ def flowpipe_multi_step(
         return FlowpipeResult(segments, status, current_final, mode)
 
     current_tm = TMVector.identity(_as_interval_list(x0_box), order=order)
-    for _ in range(steps):
-        seg = flowpipe_step_from_tm(ode_fn, current_tm, h, order, u_box=u_box, affine_u=affine_u, **kwargs)
+    for segment_index in range(steps):
+        step_kwargs = _step_diagnostics_kwargs(kwargs, mode, segment_index)
+        seg = flowpipe_step_from_tm(ode_fn, current_tm, h, order, u_box=u_box, affine_u=affine_u, **step_kwargs)
         segments.append(seg)
         current_tm = seg.final_tm
     status = "validated" if all(s.status == "validated" for s in segments) else "failed"

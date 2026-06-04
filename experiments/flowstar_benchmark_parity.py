@@ -57,6 +57,13 @@ PARITY_FIELDS = [
     "torch_runtime_s",
     "num_segments",
     "last_reached_t",
+    "validated_segments",
+    "last_validated_t",
+    "failed_segment_index",
+    "failed_segment_t_lo",
+    "failed_segment_t_hi",
+    "last_attempted_t",
+    "failure_reason",
     "requested_horizon",
     "last_segment_width_x",
     "last_segment_width_y",
@@ -119,6 +126,13 @@ TORCH_SUMMARY_FIELDS = [
     "runtime_s",
     "num_segments",
     "last_reached_t",
+    "validated_segments",
+    "last_validated_t",
+    "failed_segment_index",
+    "failed_segment_t_lo",
+    "failed_segment_t_hi",
+    "last_attempted_t",
+    "failure_reason",
     "requested_horizon",
     "requested_order",
     "endpoint_box_available",
@@ -202,6 +216,58 @@ def _summarize_segments(rows: Sequence[Mapping[str, Any]], requested_horizon: fl
         "tube_width_x": _width(*tube_x) if tube_x else "",
         "tube_width_y": _width(*tube_y) if tube_y else "",
         "tube_width_sum": (_width(*tube_x) + _width(*tube_y)) if tube_x and tube_y else "",
+    }
+
+
+def _completed_progress_fields(summary: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "validated_segments": summary.get("num_segments", ""),
+        "last_validated_t": summary.get("last_reached_t", ""),
+        "failed_segment_index": "",
+        "failed_segment_t_lo": "",
+        "failed_segment_t_hi": "",
+        "last_attempted_t": summary.get("last_reached_t", ""),
+        "failure_reason": "",
+    }
+
+
+def _torch_progress_fields(
+    rows: Sequence[Mapping[str, Any]],
+    requested_horizon: float,
+    status: str,
+    *,
+    failed_segment_index: int | None = None,
+    failed_segment_t_lo: float | None = None,
+    failed_segment_t_hi: float | None = None,
+    failure_reason: str = "",
+) -> dict[str, Any]:
+    summary = _summarize_segments(rows, requested_horizon)
+    if status == "failed" and failed_segment_index is not None:
+        validated_rows = [r for r in rows if int(r["segment_index"]) < failed_segment_index]
+        last_validated_t = float(validated_rows[-1]["t_hi"]) if validated_rows else 0.0
+        if failed_segment_t_lo is None and rows:
+            failed_segment_t_lo = float(rows[-1]["t_lo"])
+        if failed_segment_t_hi is None and rows:
+            failed_segment_t_hi = float(rows[-1]["t_hi"])
+        return {
+            **summary,
+            "validated_segments": len(validated_rows),
+            "last_validated_t": last_validated_t,
+            "failed_segment_index": failed_segment_index,
+            "failed_segment_t_lo": failed_segment_t_lo if failed_segment_t_lo is not None else "",
+            "failed_segment_t_hi": failed_segment_t_hi if failed_segment_t_hi is not None else "",
+            "last_attempted_t": failed_segment_t_hi if failed_segment_t_hi is not None else summary["last_reached_t"],
+            "failure_reason": failure_reason,
+        }
+    return {
+        **summary,
+        "validated_segments": summary["num_segments"],
+        "last_validated_t": summary["last_reached_t"],
+        "failed_segment_index": "",
+        "failed_segment_t_lo": "",
+        "failed_segment_t_hi": "",
+        "last_attempted_t": summary["last_reached_t"],
+        "failure_reason": "",
     }
 
 
@@ -603,12 +669,20 @@ def run_torch_range_only_on_original_grid(out_dir: Path, params: Mapping[str, An
     status = "completed"
     notes = "PyTorch TM range-only baseline on the original Flow* segment time grid; each segment endpoint is collapsed to an interval box."
     endpoint_widths: list[float] = []
+    failed_segment_index: int | None = None
+    failed_segment_t_lo: float | None = None
+    failed_segment_t_hi: float | None = None
+    failure_reason = ""
     start = time.perf_counter()
     for i, ref in enumerate(reference_segments):
         h = float(ref["t_hi"]) - float(ref["t_lo"])
         if h <= 0:
             status = "failed"
-            notes = f"non-positive reference segment width at index {i}"
+            failed_segment_index = i
+            failed_segment_t_lo = float(ref["t_lo"])
+            failed_segment_t_hi = float(ref["t_hi"])
+            failure_reason = f"non-positive reference segment width at index {i}"
+            notes = failure_reason
             break
         seg = flowpipe_step(van_der_pol_ode, current_box, h, order)
         validation_attempts += seg.validation_attempts
@@ -637,7 +711,11 @@ def run_torch_range_only_on_original_grid(out_dir: Path, params: Mapping[str, An
         endpoint_widths = [_width(*_interval_tuple(final_box[0])), _width(*_interval_tuple(final_box[1]))]
         if seg.status != "validated":
             status = "failed"
-            notes = f"validation failed at segment {i}: {seg.message}"
+            failed_segment_index = i
+            failed_segment_t_lo = float(ref["t_lo"])
+            failed_segment_t_hi = float(ref["t_hi"])
+            failure_reason = seg.message or "validation failed"
+            notes = f"validation failed at attempted failed segment {i}: {failure_reason}"
             break
         current_box = [iv.inflate(1e-9) for iv in final_box]
     runtime_s = time.perf_counter() - start
@@ -651,7 +729,15 @@ def run_torch_range_only_on_original_grid(out_dir: Path, params: Mapping[str, An
         "status": status,
         "mode": "range_only",
         "runtime_s": runtime_s,
-        **_summarize_segments(rows, float(params["time_horizon"])),
+        **_torch_progress_fields(
+            rows,
+            float(params["time_horizon"]),
+            status,
+            failed_segment_index=failed_segment_index,
+            failed_segment_t_lo=failed_segment_t_lo,
+            failed_segment_t_hi=failed_segment_t_hi,
+            failure_reason=failure_reason,
+        ),
         "requested_order": order,
         "endpoint_box_available": bool(rows),
         "endpoint_width_x": endpoint_widths[0] if endpoint_widths else "",
@@ -679,12 +765,20 @@ def run_torch_dependency_preserving_on_original_grid(
     status = "completed"
     notes = "PyTorch TM dependency-preserving run on the original Flow* segment time grid."
     endpoint_widths: list[float] = []
+    failed_segment_index: int | None = None
+    failed_segment_t_lo: float | None = None
+    failed_segment_t_hi: float | None = None
+    failure_reason = ""
     start = time.perf_counter()
     for i, ref in enumerate(reference_segments):
         h = float(ref["t_hi"]) - float(ref["t_lo"])
         if h <= 0:
             status = "failed"
-            notes = f"non-positive reference segment width at index {i}"
+            failed_segment_index = i
+            failed_segment_t_lo = float(ref["t_lo"])
+            failed_segment_t_hi = float(ref["t_hi"])
+            failure_reason = f"non-positive reference segment width at index {i}"
+            notes = failure_reason
             break
         seg = flowpipe_step_from_tm(van_der_pol_ode, current_tm, h, order)
         validation_attempts += seg.validation_attempts
@@ -713,7 +807,11 @@ def run_torch_dependency_preserving_on_original_grid(
         endpoint_widths = [_width(*_interval_tuple(final_box[0])), _width(*_interval_tuple(final_box[1]))]
         if seg.status != "validated":
             status = "failed"
-            notes = f"validation failed at segment {i}: {seg.message}"
+            failed_segment_index = i
+            failed_segment_t_lo = float(ref["t_lo"])
+            failed_segment_t_hi = float(ref["t_hi"])
+            failure_reason = seg.message or "validation failed"
+            notes = f"validation failed at attempted failed segment {i}: {failure_reason}"
             break
         current_tm = seg.final_tm
     runtime_s = time.perf_counter() - start
@@ -726,7 +824,15 @@ def run_torch_dependency_preserving_on_original_grid(
         "status": status,
         "mode": "dependency_preserving",
         "runtime_s": runtime_s,
-        **_summarize_segments(rows, float(params["time_horizon"])),
+        **_torch_progress_fields(
+            rows,
+            float(params["time_horizon"]),
+            status,
+            failed_segment_index=failed_segment_index,
+            failed_segment_t_lo=failed_segment_t_lo,
+            failed_segment_t_hi=failed_segment_t_hi,
+            failure_reason=failure_reason,
+        ),
         "requested_order": order,
         "endpoint_box_available": bool(rows),
         "endpoint_width_x": endpoint_widths[0] if endpoint_widths else "",
@@ -966,6 +1072,13 @@ def _torch_parity_row(tool: str, summary: Mapping[str, Any]) -> dict[str, Any]:
         "torch_runtime_s": summary["runtime_s"],
         "num_segments": summary["num_segments"],
         "last_reached_t": summary["last_reached_t"],
+        "validated_segments": summary.get("validated_segments", ""),
+        "last_validated_t": summary.get("last_validated_t", ""),
+        "failed_segment_index": summary.get("failed_segment_index", ""),
+        "failed_segment_t_lo": summary.get("failed_segment_t_lo", ""),
+        "failed_segment_t_hi": summary.get("failed_segment_t_hi", ""),
+        "last_attempted_t": summary.get("last_attempted_t", ""),
+        "failure_reason": summary.get("failure_reason", ""),
         "requested_horizon": summary["requested_horizon"],
         "last_segment_width_x": summary["last_segment_width_x"],
         "last_segment_width_y": summary["last_segment_width_y"],
@@ -993,6 +1106,7 @@ def write_parity_summary(
             "original_flowstar_wall_run_s": original["wall_run_s"],
             "num_segments": original["num_segments"],
             "last_reached_t": original["last_reached_t"],
+            **_completed_progress_fields(original),
             "requested_horizon": original["requested_horizon"],
             "last_segment_width_x": original["last_segment_width_x"],
             "last_segment_width_y": original["last_segment_width_y"],
@@ -1012,6 +1126,7 @@ def write_parity_summary(
             "generated_flowstar_run_wall_s": generated["run_wall_s"],
             "num_segments": generated["num_segments"],
             "last_reached_t": generated["last_reached_t"],
+            **_completed_progress_fields(generated),
             "requested_horizon": generated["requested_horizon"],
             "last_segment_width_x": generated["last_segment_width_x"],
             "last_segment_width_y": generated["last_segment_width_y"],
@@ -1050,8 +1165,8 @@ def write_report(
     generated_comparison: Mapping[str, Any],
 ) -> None:
     table = [
-        "| tool | status | runtime | segments | last width sum | tube width sum | endpoint box | source |",
-        "|---|---|---:|---:|---:|---:|---|---|",
+        "| tool | status | runtime | segments | validated | last validated t | last attempted t | last width sum | tube width sum | endpoint box | source |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|",
     ]
     for row in parity_rows:
         runtime = (
@@ -1061,18 +1176,21 @@ def write_report(
         )
         table.append(
             f"| `{row['tool']}` | `{row['status']}` | {_fmt_md(runtime)} | {_fmt_md(row['num_segments'])} | "
-            f"{_fmt_md(row['last_segment_width_sum'])} | {_fmt_md(row['tube_width_sum'])} | "
-            f"`{row['endpoint_box_available']}` | `{row['box_source']}` |"
+            f"{_fmt_md(row.get('validated_segments'))} | {_fmt_md(row.get('last_validated_t'))} | "
+            f"{_fmt_md(row.get('last_attempted_t'))} | {_fmt_md(row['last_segment_width_sum'])} | "
+            f"{_fmt_md(row['tube_width_sum'])} | `{row['endpoint_box_available']}` | `{row['box_source']}` |"
         )
     generated_ratio = "n/a"
     if generated.get("last_segment_width_sum") not in ("", None):
         generated_ratio = _fmt_md(generated["last_segment_width_sum"])
-    range_last_t = _fmt_md(range_only_summary["last_reached_t"])
-    dependency_last_t = _fmt_md(dependency_summary["last_reached_t"])
+    range_last_t = _fmt_md(range_only_summary["last_validated_t"])
+    range_attempted_t = _fmt_md(range_only_summary["last_attempted_t"])
+    dependency_last_t = _fmt_md(dependency_summary["last_validated_t"])
+    dependency_attempted_t = _fmt_md(dependency_summary["last_attempted_t"])
     dependency_note = ""
     try:
-        if float(dependency_summary["last_reached_t"]) > float(range_only_summary["last_reached_t"]):
-            dependency_note = " The dependency-preserving run reaches farther than the range-only baseline, showing that dependency loss caused much of the range-only blowup."
+        if float(dependency_summary["last_validated_t"]) > float(range_only_summary["last_validated_t"]):
+            dependency_note = " The dependency-preserving run validates farther than the range-only baseline, showing that dependency loss caused much of the range-only blowup."
     except (TypeError, ValueError):
         dependency_note = ""
     text = f"""# Flow* Benchmark Parity Report
@@ -1100,15 +1218,15 @@ This is a Flow* original benchmark parity audit for the plant-only polynomial Va
 
 Generated Flow* vs original Flow*: segment count match is `{generated_comparison["segment_count_match"]}` and max absolute parsed segment-field difference is `{_fmt_md(generated_comparison["max_abs_segment_field_diff"])}`.
 
-`torch_tm_range_only` is a weak baseline: it collapses each validated endpoint Taylor model to an interval box before the next original Flow* segment. It reached `{range_last_t}` with status `{range_only_summary['status']}`.
+`torch_tm_range_only` is a weak baseline: it collapses each validated endpoint Taylor model to an interval box before the next original Flow* segment. Its last validated time is `{range_last_t}`, last attempted time is `{range_attempted_t}`, status is `{range_only_summary['status']}`, and notes are: {range_only_summary['notes']}.
 
-`torch_tm_dependency_preserving` is the fairer PyTorch TM comparison because it propagates `seg.final_tm` directly across segment boundaries. It reached `{dependency_last_t}` with status `{dependency_summary['status']}` and notes: {dependency_summary['notes']}.{dependency_note}
+`torch_tm_dependency_preserving` is the fairer PyTorch TM comparison because it propagates `seg.final_tm` directly across segment boundaries. Its last validated time is `{dependency_last_t}`, last attempted time is `{dependency_attempted_t}`, status is `{dependency_summary['status']}`, and notes are: {dependency_summary['notes']}.{dependency_note}
 
 ## Semantics
 
 Flow* GNUPLOT rectangles are segment boxes. They are not final-time endpoint boxes. Therefore `endpoint_box_available=false` for both Flow* rows, endpoint widths are blank, and no endpoint ratio is reported.
 
-Only last-segment and tube widths are reported for Flow* parity. Plot generation time is not included in algorithm runtime.
+For failed PyTorch rows, `failed_segment_index` and `failed_segment_t_hi` describe the attempted failed segment; `validated_segments` and `last_validated_t` describe only the last successfully validated segment. Only last-segment and tube widths are reported for Flow* parity. Plot generation time is not included in algorithm runtime.
 
 ## Scope Guard
 
@@ -1137,7 +1255,7 @@ Original Flow* `wall_run_s` is subprocess wall time for running the original exe
 
 ## Bound Semantics
 
-Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `endpoint_box_available=false` for Flow* rows unless a true endpoint source is extracted from the Flow* API. This audit reports last-segment and tube widths only for Flow* parity.
+Flow* GNUPLOT boxes are flowpipe segment boxes, not final-time endpoint boxes. `endpoint_box_available=false` for Flow* rows unless a true endpoint source is extracted from the Flow* API. This audit reports last-segment and tube widths only for Flow* parity. Failed PyTorch rows distinguish the attempted failed segment from the last validated segment with `failed_segment_*`, `last_attempted_t`, `validated_segments`, and `last_validated_t`.
 
 ## Files
 

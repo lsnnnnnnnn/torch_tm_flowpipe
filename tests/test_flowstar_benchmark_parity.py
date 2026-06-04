@@ -101,6 +101,13 @@ def test_parity_summary_has_runtime_and_bound_fields():
         "generated_flowstar_compile_wall_s",
         "generated_flowstar_run_wall_s",
         "torch_runtime_s",
+        "validated_segments",
+        "last_validated_t",
+        "failed_segment_index",
+        "failed_segment_t_lo",
+        "failed_segment_t_hi",
+        "last_attempted_t",
+        "failure_reason",
         "last_segment_width_x",
         "last_segment_width_y",
         "last_segment_width_sum",
@@ -132,6 +139,33 @@ def test_flowstar_endpoint_box_is_false_without_true_endpoint_source():
         if row["tool"] in {"original_flowstar", "generated_flowstar"}:
             assert row["endpoint_box_available"] == "false"
             assert "endpoint" not in row["box_source"]
+
+
+def test_failed_torch_rows_distinguish_validated_and_attempted_segments():
+    header, rows = _csv_rows(OUT / "parity_summary.csv")
+    assert set(header) >= {
+        "validated_segments",
+        "last_validated_t",
+        "failed_segment_index",
+        "failed_segment_t_lo",
+        "failed_segment_t_hi",
+        "last_attempted_t",
+        "failure_reason",
+    }
+    by_tool = {row["tool"]: row for row in rows}
+    for tool in ["torch_tm_range_only", "torch_tm_dependency_preserving"]:
+        row = by_tool[tool]
+        if row["status"] == "failed":
+            assert row["failed_segment_index"]
+            assert row["failed_segment_t_lo"]
+            assert row["failed_segment_t_hi"]
+            assert row["failure_reason"]
+            assert float(row["last_validated_t"]) < float(row["last_attempted_t"])
+            assert float(row["failed_segment_t_hi"]) == float(row["last_attempted_t"])
+            assert int(row["validated_segments"]) < int(row["num_segments"])
+        else:
+            assert row["last_validated_t"] == row["last_reached_t"]
+            assert row["last_attempted_t"] == row["last_reached_t"]
 
 
 def test_dependency_preserving_runner_does_not_collapse_between_segments(monkeypatch, tmp_path):
