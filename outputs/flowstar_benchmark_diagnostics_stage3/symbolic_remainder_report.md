@@ -1,0 +1,31 @@
+# Stage-3 Symbolic Remainder Diagnostics
+
+This report is diagnostic-only. It does not claim Flow* parity or a new full reachability algorithm.
+
+## Run Summary
+
+| run | status | last_validated_t | queue | max active noise | max ordinary rem | max symbolic rem | max materialized rem |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `dependency_window_2_symbolic_o4_s4_q4` | `timeout` | 0.1441472 | 4 | 4 | 0.82766868805714189 | 0.84708882316246792 | 0.82766868805714178 |
+| `dependency_window_2_symbolic_o4_s4_q8` | `timeout` | 0.019375 | 8 | 8 | 0.41548567746259085 | 0.46016711677454547 | 0.41548567746258858 |
+| `dependency_window_2_symbolic_o4_s4_q16` | `timeout` | 0.0159375 | 16 | 10 | 0.41548567746259085 | 0.45254390745885709 | 0.41548567746258858 |
+| `dependency_window_2_symbolic_o6_s4_q4` | `timeout` | 0.022812499999999999 | 4 | 4 | 0.45230672507739644 | 0.47191769701738318 | 0.45230672507739644 |
+| `dependency_window_2_symbolic_o6_s4_q8` | `timeout` | 0.012500000000000001 | 8 | 8 | 0.41566186155843315 | 0.44444297864083432 | 0.41566186155843099 |
+| `dependency_window_2_symbolic_o6_s4_q16` | `timeout` | 0.012500000000000001 | 16 | 8 | 0.41566186155843315 | 0.44444297864083432 | 0.41566186155843099 |
+| `range_only_symbolic_o4_s4_q4` | `timeout` | 0.1441472 | 4 | 4 | 0.81366390914096254 | 0.84180939051646597 | 0.81366390914096232 |
+| `range_only_symbolic_o4_s4_q8` | `timeout` | 0.019375 | 8 | 8 | 0.45899362910280195 | 0.4511984047709765 | 0.45899362910280184 |
+| `range_only_symbolic_o4_s4_q16` | `timeout` | 0.0159375 | 16 | 10 | 0.40768329874675008 | 0.45135671188682813 | 0.40768329874674814 |
+| `range_only_o6_s4_baseline` | `failed` | 0.7661635 |  | 0 | 7.4336427676524068e+211 | 0 | 0 |
+| `range_only_symbolic_o6_s4_q4` | `timeout` | 0.026249999999999999 | 4 | 4 | 0.47082049927272368 | 0.48261131197062257 | 0.47082049927272351 |
+| `range_only_symbolic_o6_s4_q8` | `timeout` | 0.012500000000000001 | 8 | 8 | 0.4077417565262394 | 0.44343709979238699 | 0.40774175652623729 |
+| `range_only_symbolic_o6_s4_q16` | `timeout` | 0.012500000000000001 | 16 | 8 | 0.4077417565262394 | 0.44343709979238699 | 0.40774175652623729 |
+
+## Questions
+
+- Did symbolic remainder handling beat the current best fixed diagnostic run, `range_only_o6_s4` at t ~= 0.7661635? No. Best symbolic run `dependency_window_2_symbolic_o4_s4_q4` reached t=0.1441472. The local baseline row `range_only_o6_s4_baseline` reached t=0.7661635.
+- Did it reduce polynomial_range * remainder blowup? Yes. Max `x_sq_y` ordinary interval-remainder interaction was 4.5438406007236365 for the best symbolic run vs 9.1899587614500689e+213 for baseline.
+- Which queue size was best? Queue 4 with best last_validated_t=0.1441472.
+- Did materialization of old symbols cause a later blowup? Possibly. The best run materialized width up to 0.82766868805714178 before stopping at t=0.1441472.
+- Did dependency_window_2 + symbolic remainder help more than pure range_only? They tied at t=0.1441472.
+- Was runtime acceptable? Total recorded runtime was 3991.4636806342751 s across 13 runs; 12 runs hit the per-run wall cap.
+- Next target: **d) stop because symbolic remainder did not help**.

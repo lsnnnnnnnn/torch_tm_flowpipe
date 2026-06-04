@@ -9,6 +9,7 @@ import torch
 from .interval import Interval, ensure_interval
 from .polynomial import Polynomial
 from .safety import intervals_are_finite
+from .symbolic_remainder import SymbolicRemainderState, introduce_symbolic_remainders
 from .taylor_model import TaylorModel
 from .tm_vector import TMVector
 
@@ -33,6 +34,9 @@ class FlowpipeSegment:
     validation_attempts: int
     message: str = ""
     tau_index: int | None = None
+    symbolic_remainder: bool = False
+    symbolic_remainder_state: SymbolicRemainderState | None = None
+    symbolic_remainder_stats: Mapping[str, Any] | None = None
 
 
 @dataclass
@@ -290,6 +294,8 @@ def _validate_picard(
     diagnostic_segment_index: int | None = None,
     diagnostic_context: Mapping[str, Any] | None = None,
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    symbolic_remainder: bool = False,
+    max_symbolic_remainders: int = 0,
 ) -> tuple[TMVector, str, int, str]:
     domain = candidate_poly.domain
     if len(base_ext) != len(candidate_poly):
@@ -302,6 +308,9 @@ def _validate_picard(
     if diagnostic_segment_index is not None:
         diagnostics_segment_index = diagnostic_segment_index
     diag_extra = dict(diagnostics_context or {})
+    if symbolic_remainder:
+        diag_extra.setdefault("symbolic_remainder", True)
+        diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
     diag_mode = diag_extra.pop("mode", diagnostics_mode)
     diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
     if not intervals_are_finite(remainders):
@@ -450,6 +459,9 @@ def flowpipe_step_from_tm(
     diagnostics_segment_index: int | None = None,
     diagnostics_context: Mapping[str, Any] | None = None,
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    symbolic_remainder: bool = False,
+    max_symbolic_remainders: int = 0,
+    symbolic_remainder_state: SymbolicRemainderState | None = None,
     diagnostic_mode: str | None = None,
     diagnostic_segment_index: int | None = None,
     diagnostic_context: Mapping[str, Any] | None = None,
@@ -493,6 +505,8 @@ def flowpipe_step_from_tm(
         diagnostics_segment_index=diagnostics_segment_index,
         diagnostics_context=diagnostics_context,
         rhs_breakdown_callback=rhs_breakdown_callback,
+        symbolic_remainder=symbolic_remainder,
+        max_symbolic_remainders=max_symbolic_remainders,
     )
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
     if status == "validated":
@@ -517,6 +531,24 @@ def flowpipe_step_from_tm(
             final_tm = TMVector(final_models)
         except Exception as exc:
             message = message or f"endpoint tightening skipped: {exc}"
+    next_symbolic_state = symbolic_remainder_state
+    symbolic_stats: Mapping[str, Any] | None = None
+    if symbolic_remainder:
+        if status == "validated":
+            final_tm, next_symbolic_state, symbolic_stats = introduce_symbolic_remainders(
+                final_tm,
+                symbolic_remainder_state,
+                max_symbolic_remainders=max_symbolic_remainders,
+            )
+        else:
+            next_symbolic_state = symbolic_remainder_state or SymbolicRemainderState.empty(max_symbolic_remainders)
+            symbolic_stats = {
+                "introduced_symbols": 0,
+                "active_noise_symbols": len(next_symbolic_state.symbols),
+                "symbolic_remainder_width_sum": "",
+                "ordinary_remainder_width_sum": "",
+                "materialized_remainder_width_sum": "",
+            }
     return FlowpipeSegment(
         tm=validated,
         final_tm=final_tm,
@@ -526,6 +558,9 @@ def flowpipe_step_from_tm(
         validation_attempts=attempts,
         message=message,
         tau_index=tau_index,
+        symbolic_remainder=bool(symbolic_remainder),
+        symbolic_remainder_state=next_symbolic_state,
+        symbolic_remainder_stats=symbolic_stats,
     )
 
 
