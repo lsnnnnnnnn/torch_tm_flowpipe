@@ -16,6 +16,7 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from torch_tm_flowpipe import (  # noqa: E402
+    Interval,
     TMVector,
     flowpipe_step_flowstar_style_adaptive,
     taylor_model_mul_breakdown,
@@ -94,6 +95,71 @@ SUMMARY_FIELDS = [
 ]
 
 
+TRUNCATION_DETAIL_FIELDS = [
+    "run_id",
+    "segment_index",
+    "attempt_index",
+    "t_start",
+    "h_try",
+    "failed_state_dimension",
+    "source_expression",
+    "dropped_total_degree",
+    "term_rank",
+    "monomial",
+    "coefficient",
+    "abs_interval_contribution",
+    "dropped_range_interval_lo",
+    "dropped_range_interval_hi",
+    "dropped_range_width",
+    "contribution_to_residual_lo",
+    "contribution_to_residual_hi",
+    "contribution_shift",
+    "residual_center",
+    "residual_radius",
+    "target_interval_lo",
+    "target_interval_hi",
+    "minimal_symmetric_radius_needed",
+    "minimal_asymmetric_interval_lo",
+    "minimal_asymmetric_interval_hi",
+]
+
+TRUNCATION_SUMMARY_FIELDS = [
+    "run_id",
+    "status",
+    "last_validated_t",
+    "failure_t_start",
+    "failure_h_try",
+    "failed_state_dimension",
+    "dominant_source_expression",
+    "dominance_shape",
+    "width_or_shift",
+    "minimal_symmetric_radius_needed",
+    "minimal_asymmetric_interval_lo",
+    "minimal_asymmetric_interval_hi",
+    "tighter_range_bound_likely_fix",
+    "notes",
+]
+
+RESIDUAL_SHIFT_FIELDS = [
+    "run_id",
+    "t_start",
+    "h_try",
+    "failed_dimension",
+    "residual_lo_y",
+    "residual_hi_y",
+    "target_radius",
+    "target_lo",
+    "target_hi",
+    "minimal_symmetric_radius_needed",
+    "minimal_asymmetric_interval_lo",
+    "minimal_asymmetric_interval_hi",
+    "asymmetric_width",
+    "symmetric_width",
+    "asymmetric_much_tighter_than_symmetric",
+    "accepted_semantics_changed",
+]
+
+
 class StepTimeout(RuntimeError):
     pass
 
@@ -133,6 +199,157 @@ def _width(value: Any) -> float | str:
     except Exception:
         return ""
     return w if math.isfinite(w) else ""
+
+
+
+def _interval_lo_hi(iv: Interval) -> tuple[float | str, float | str]:
+    try:
+        return float(iv.lo.detach().cpu()), float(iv.hi.detach().cpu())
+    except Exception:
+        return "", ""
+
+
+def _interval_width_value(iv: Interval) -> float | str:
+    try:
+        value = float(iv.width().detach().cpu())
+    except Exception:
+        return ""
+    return value if math.isfinite(value) else ""
+
+
+def _term_interval(exp: tuple[int, ...], coef: Any, domain: Sequence[Interval]) -> Interval:
+    term_iv = Interval.point(coef)
+    for power, dom in zip(exp, domain):
+        if power:
+            term_iv = term_iv * dom.pow_int(power)
+    return term_iv
+
+
+def _monomial_label(exp: tuple[int, ...]) -> str:
+    names = ["x", "y", "tau"]
+    parts: list[str] = []
+    for i, power in enumerate(exp):
+        if power == 0:
+            continue
+        name = names[i] if i < len(names) else f"z{i}"
+        parts.append(name if power == 1 else f"{name}^{power}")
+    return "1" if not parts else "*".join(parts)
+
+
+def _signed_interval(iv: Interval, sign: float) -> Interval:
+    return iv if sign >= 0 else -iv
+
+
+def _shift_label(lo: Any, hi: Any) -> str:
+    lo_f = _finite(lo)
+    hi_f = _finite(hi)
+    if lo_f is None or hi_f is None:
+        return "unknown"
+    if lo_f > 0:
+        return "positive"
+    if hi_f < 0:
+        return "negative"
+    return "straddles_zero"
+
+
+def _zero_detail_row(context: Mapping[str, Any], expression: str) -> dict[str, Any]:
+    return {
+        "run_id": context.get("run_id", RUN_ID),
+        "segment_index": context.get("segment_index", ""),
+        "attempt_index": context.get("attempt_index", ""),
+        "t_start": context.get("t_start", ""),
+        "h_try": context.get("h_try", context.get("h", "")),
+        "source_expression": expression,
+        "dropped_total_degree": "",
+        "term_rank": "",
+        "monomial": "",
+        "coefficient": "",
+        "abs_interval_contribution": 0.0,
+        "dropped_range_interval_lo": 0.0,
+        "dropped_range_interval_hi": 0.0,
+        "dropped_range_width": 0.0,
+        "contribution_to_residual_lo": 0.0,
+        "contribution_to_residual_hi": 0.0,
+        "contribution_shift": "none",
+    }
+
+
+def _dropped_detail_rows(
+    context: Mapping[str, Any],
+    expression: str,
+    dropped: Any,
+    domain: Sequence[Interval],
+    *,
+    residual_sign: float = 1.0,
+    top_n: int = 8,
+) -> list[dict[str, Any]]:
+    if not getattr(dropped, "terms", None):
+        return [_zero_detail_row(context, expression)]
+    dropped_range = dropped.evaluate_interval(domain)
+    dropped_lo, dropped_hi = _interval_lo_hi(dropped_range)
+    dropped_width = _interval_width_value(dropped_range)
+    term_rows: list[dict[str, Any]] = []
+    for exp, coef in dropped.terms.items():
+        term_iv = _term_interval(tuple(exp), coef, domain)
+        contrib = _signed_interval(term_iv, residual_sign)
+        lo, hi = _interval_lo_hi(contrib)
+        term_lo, term_hi = _interval_lo_hi(term_iv)
+        abs_contrib = ""
+        if term_lo != "" and term_hi != "":
+            abs_contrib = max(abs(float(term_lo)), abs(float(term_hi)))
+        coef_value = _finite(float(coef.detach().cpu())) if hasattr(coef, "detach") else _finite(coef)
+        term_rows.append(
+            {
+                "run_id": context.get("run_id", RUN_ID),
+                "segment_index": context.get("segment_index", ""),
+                "attempt_index": context.get("attempt_index", ""),
+                "t_start": context.get("t_start", ""),
+                "h_try": context.get("h_try", context.get("h", "")),
+                "source_expression": expression,
+                "dropped_total_degree": sum(int(v) for v in exp),
+                "monomial": _monomial_label(tuple(exp)),
+                "coefficient": coef_value if coef_value is not None else "",
+                "abs_interval_contribution": abs_contrib,
+                "dropped_range_interval_lo": dropped_lo,
+                "dropped_range_interval_hi": dropped_hi,
+                "dropped_range_width": dropped_width,
+                "contribution_to_residual_lo": lo,
+                "contribution_to_residual_hi": hi,
+                "contribution_shift": _shift_label(lo, hi),
+            }
+        )
+    term_rows.sort(key=lambda row: _finite(row.get("abs_interval_contribution")) or 0.0, reverse=True)
+    for rank, row in enumerate(term_rows[:top_n], start=1):
+        row["term_rank"] = rank
+    return term_rows[:top_n]
+
+
+def _truncation_detail_rows(candidate: TMVector, order: int, context: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    try:
+        x = candidate[0]
+        y = candidate[1]
+        tau_index = len(candidate.domain) - 1
+        rows.extend([_zero_detail_row(context, "x"), _zero_detail_row(context, "y")])
+        x_sq_poly, x_sq_dropped = x.polynomial.mul_truncate(x.polynomial, order)
+        rows.extend(_dropped_detail_rows(context, "x*x", x_sq_dropped, x.domain, residual_sign=1.0))
+        x_sq = x * x
+        _x_sq_y_poly, x_sq_y_dropped = x_sq.polynomial.mul_truncate(y.polynomial, order)
+        rows.extend(_dropped_detail_rows(context, "(x*x)*y", x_sq_y_dropped, x.domain, residual_sign=-1.0))
+        rhs_y = y - x - (x_sq * y)
+        _rhs_kept, rhs_dropped = rhs_y.polynomial.truncate(order)
+        rows.extend(_dropped_detail_rows(context, "y - x - x*x*y", rhs_dropped, rhs_y.domain, residual_sign=1.0))
+        picard_x = y.integrate(tau_index)
+        _px_kept, px_dropped = picard_x.polynomial.truncate(order)
+        rows.extend(_dropped_detail_rows(context, "Picard integrated x", px_dropped, picard_x.domain, residual_sign=1.0))
+        picard_y = rhs_y.integrate(tau_index)
+        _py_kept, py_dropped = picard_y.polynomial.truncate(order)
+        rows.extend(_dropped_detail_rows(context, "Picard integrated y", py_dropped, picard_y.domain, residual_sign=1.0))
+    except Exception as exc:
+        row = _zero_detail_row(context, "truncation_detail_exception")
+        row["monomial"] = str(exc)
+        rows.append(row)
+    return rows
 
 
 def _component_sum(row: Mapping[str, Any]) -> float | str:
@@ -321,6 +538,266 @@ def _failed_dimension_from_bounds(row: Mapping[str, Any]) -> str:
     return _failed_dimension(row)
 
 
+
+def _attempt_key(row: Mapping[str, Any]) -> tuple[str, str]:
+    return str(row.get("segment_index", "")), str(row.get("attempt_index", ""))
+
+
+def _residual_metrics(row: Mapping[str, Any], dim: str) -> dict[str, Any]:
+    lo = _finite(row.get(f"residual_lo_{dim}"))
+    hi = _finite(row.get(f"residual_hi_{dim}"))
+    if lo is None or hi is None:
+        return {
+            "residual_center": "",
+            "residual_radius": "",
+            "target_interval_lo": -TARGET_REMAINDER_RADIUS,
+            "target_interval_hi": TARGET_REMAINDER_RADIUS,
+            "minimal_symmetric_radius_needed": "",
+            "minimal_asymmetric_interval_lo": "",
+            "minimal_asymmetric_interval_hi": "",
+        }
+    center = 0.5 * (lo + hi)
+    radius = 0.5 * (hi - lo)
+    return {
+        "residual_center": center,
+        "residual_radius": radius,
+        "target_interval_lo": -TARGET_REMAINDER_RADIUS,
+        "target_interval_hi": TARGET_REMAINDER_RADIUS,
+        "minimal_symmetric_radius_needed": max(abs(lo), abs(hi)),
+        "minimal_asymmetric_interval_lo": lo,
+        "minimal_asymmetric_interval_hi": hi,
+    }
+
+
+def _enriched_truncation_rows(
+    detail_rows: Sequence[Mapping[str, Any]],
+    attempts: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    attempts_by_key = {_attempt_key(row): row for row in attempts}
+    rows: list[dict[str, Any]] = []
+    for detail in detail_rows:
+        attempt = attempts_by_key.get(_attempt_key(detail))
+        if not attempt:
+            continue
+        t_start = _finite(attempt.get("t_start")) or 0.0
+        if t_start <= 2.0 or not _is_rejected(attempt):
+            continue
+        failed_dim = _failed_dimension_from_bounds(attempt)
+        dim = "y" if "y" in failed_dim else "x"
+        row = dict(detail)
+        row["t_start"] = attempt.get("t_start", row.get("t_start", ""))
+        row["h_try"] = attempt.get("h_try", attempt.get("h", row.get("h_try", "")))
+        row["failed_state_dimension"] = failed_dim
+        row.update(_residual_metrics(attempt, dim))
+        rows.append(row)
+    rows.sort(
+        key=lambda row: (
+            _finite(row.get("t_start")) or 0.0,
+            _finite(row.get("h_try")) or 0.0,
+            -(_finite(row.get("abs_interval_contribution")) or 0.0),
+        )
+    )
+    return rows
+
+
+def _final_failure_attempt(attempts: Sequence[Mapping[str, Any]]) -> Mapping[str, Any] | None:
+    failed = [row for row in attempts if (_finite(row.get("t_start")) or 0.0) > 2.0 and _is_rejected(row)]
+    if not failed:
+        failed = [row for row in attempts if _is_rejected(row)]
+    return failed[-1] if failed else None
+
+
+def _truncation_summary_row(
+    summary: Mapping[str, Any],
+    final_failure: Mapping[str, Any] | None,
+    enriched_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    failure_key = _attempt_key(final_failure or {})
+    failure_terms = [
+        row for row in enriched_rows
+        if _attempt_key(row) == failure_key and (_finite(row.get("abs_interval_contribution")) or 0.0) > 0.0
+    ]
+    by_source: dict[str, float] = {}
+    for row in failure_terms:
+        source = str(row.get("source_expression", ""))
+        by_source[source] = by_source.get(source, 0.0) + (_finite(row.get("abs_interval_contribution")) or 0.0)
+    dominant_source = max(by_source.items(), key=lambda kv: kv[1])[0] if by_source else "none"
+    sorted_terms = sorted([_finite(row.get("abs_interval_contribution")) or 0.0 for row in failure_terms], reverse=True)
+    total = sum(sorted_terms)
+    top3 = sum(sorted_terms[:3])
+    dominance_shape = "few dropped monomials" if total > 0 and top3 / total >= 0.75 else ("many small dropped monomials" if total > 0 else "no dropped terms recorded")
+    failed_dim = _failed_dimension_from_bounds(final_failure or {}) if final_failure else "none"
+    dim = "y" if "y" in failed_dim else "x"
+    metrics = _residual_metrics(final_failure or {}, dim)
+    radius = _finite(metrics.get("residual_radius"))
+    min_sym = _finite(metrics.get("minimal_symmetric_radius_needed"))
+    center = abs(_finite(metrics.get("residual_center")) or 0.0)
+    if radius is not None and radius <= TARGET_REMAINDER_RADIUS and min_sym is not None and min_sym > TARGET_REMAINDER_RADIUS:
+        width_or_shift = "residual shift"
+    elif radius is not None and radius > TARGET_REMAINDER_RADIUS:
+        width_or_shift = "residual width"
+    else:
+        width_or_shift = "contained or unknown"
+    likely_fix = "possibly" if dominant_source in {"(x*x)*y", "Picard integrated y"} and center > 0 else "unknown"
+    return {
+        "run_id": RUN_ID,
+        "status": summary.get("status", ""),
+        "last_validated_t": summary.get("last_validated_t", ""),
+        "failure_t_start": (final_failure or {}).get("t_start", ""),
+        "failure_h_try": (final_failure or {}).get("h_try", (final_failure or {}).get("h", "")),
+        "failed_state_dimension": failed_dim,
+        "dominant_source_expression": dominant_source,
+        "dominance_shape": dominance_shape,
+        "width_or_shift": width_or_shift,
+        "minimal_symmetric_radius_needed": metrics.get("minimal_symmetric_radius_needed", ""),
+        "minimal_asymmetric_interval_lo": metrics.get("minimal_asymmetric_interval_lo", ""),
+        "minimal_asymmetric_interval_hi": metrics.get("minimal_asymmetric_interval_hi", ""),
+        "tighter_range_bound_likely_fix": likely_fix,
+        "notes": "diagnostic only; accepted validation semantics unchanged",
+    }
+
+
+def _write_truncation_detail_report(
+    out_dir: Path,
+    summary_row: Mapping[str, Any],
+    enriched_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    final_terms = [row for row in enriched_rows if (_finite(row.get("abs_interval_contribution")) or 0.0) > 0.0]
+    source_totals: dict[str, float] = {}
+    for row in final_terms:
+        source = str(row.get("source_expression", ""))
+        source_totals[source] = source_totals.get(source, 0.0) + (_finite(row.get("abs_interval_contribution")) or 0.0)
+    source_bits = ", ".join(f"{k}={v:.6g}" for k, v in sorted(source_totals.items(), key=lambda kv: kv[1], reverse=True)[:4]) or "none"
+    lines = [
+        "# Truncation Localization Report",
+        "",
+        f"Failure dimension near the final rejected attempts: `{summary_row.get('failed_state_dimension', '')}`.",
+        f"Is truncation dominated by a few dropped monomials or many small ones? `{summary_row.get('dominance_shape', '')}`.",
+        f"Are dropped terms mostly from x*x*y or Picard integration? Dominant source=`{summary_row.get('dominant_source_expression', '')}`; source totals: {source_bits}.",
+        f"Is containment failure caused by width or residual shift? `{summary_row.get('width_or_shift', '')}`.",
+        f"What symmetric target radius would be needed for the failed step? `{summary_row.get('minimal_symmetric_radius_needed', '')}`.",
+        f"Minimal asymmetric interval needed: `[{summary_row.get('minimal_asymmetric_interval_lo', '')}, {summary_row.get('minimal_asymmetric_interval_hi', '')}]`.",
+        f"Would a tighter range bound on dropped terms likely fix it? `{summary_row.get('tighter_range_bound_likely_fix', '')}`.",
+        "",
+        "## Output Files",
+        "",
+        "- `truncation_localization_summary.csv` summarizes the final failure mechanism.",
+        "- `truncation_top_terms.csv` lists top dropped monomial interval contributions near rejected attempts after t>2.",
+        "- `dropped_terms_near_failure.png` and `residual_shift_near_failure.png` visualize term size and residual shift.",
+    ]
+    (out_dir / "truncation_localization_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _make_truncation_detail_plots(out_dir: Path, enriched_rows: Sequence[Mapping[str, Any]]) -> None:
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+    nonzero = [row for row in enriched_rows if (_finite(row.get("abs_interval_contribution")) or 0.0) > 0.0]
+    top = sorted(nonzero, key=lambda row: _finite(row.get("abs_interval_contribution")) or 0.0, reverse=True)[:12]
+    fig, ax = plt.subplots(figsize=(9.0, 5.0))
+    if top:
+        labels = [f"{row.get('source_expression', '')}:{row.get('monomial', '')}" for row in top]
+        vals = [_finite(row.get("abs_interval_contribution")) or 0.0 for row in top]
+        ax.barh(list(range(len(vals))), vals, color="#4c78a8")
+        ax.set_yticks(list(range(len(vals))))
+        ax.set_yticklabels(labels, fontsize=7)
+        ax.invert_yaxis()
+    ax.set_xlabel("absolute interval contribution")
+    fig.tight_layout()
+    fig.savefig(out_dir / "dropped_terms_near_failure.png", dpi=160)
+    plt.close(fig)
+
+    by_attempt: dict[tuple[float, float], Mapping[str, Any]] = {}
+    for row in enriched_rows:
+        t = _finite(row.get("t_start"))
+        h = _finite(row.get("h_try"))
+        if t is not None and h is not None:
+            by_attempt[(t, h)] = row
+    pts = sorted(by_attempt.items())
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    if pts:
+        t_vals = [t for (t, _h), _row in pts]
+        lo_vals = [_finite(row.get("minimal_asymmetric_interval_lo")) or 0.0 for (_key, row) in pts]
+        hi_vals = [_finite(row.get("minimal_asymmetric_interval_hi")) or 0.0 for (_key, row) in pts]
+        ax.plot(t_vals, lo_vals, marker="o", markersize=2.5, label="residual lo")
+        ax.plot(t_vals, hi_vals, marker="o", markersize=2.5, label="residual hi")
+    ax.axhline(-TARGET_REMAINDER_RADIUS, color="#111111", linestyle="--", linewidth=0.8, label="target")
+    ax.axhline(TARGET_REMAINDER_RADIUS, color="#111111", linestyle="--", linewidth=0.8)
+    ax.set_xlabel("t_start")
+    ax.set_ylabel("failed residual interval")
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "residual_shift_near_failure.png", dpi=160)
+    plt.close(fig)
+
+
+def _write_residual_shift_outputs(final_failure: Mapping[str, Any] | None) -> None:
+    if not final_failure:
+        return
+    failed_dim = _failed_dimension_from_bounds(final_failure)
+    metrics = _residual_metrics(final_failure, "y")
+    lo = _finite(metrics.get("minimal_asymmetric_interval_lo"))
+    hi = _finite(metrics.get("minimal_asymmetric_interval_hi"))
+    min_sym = _finite(metrics.get("minimal_symmetric_radius_needed"))
+    if lo is None or hi is None or min_sym is None:
+        return
+    asym_width = hi - lo
+    sym_width = 2.0 * min_sym
+    row = {
+        "run_id": RUN_ID,
+        "t_start": final_failure.get("t_start", ""),
+        "h_try": final_failure.get("h_try", final_failure.get("h", "")),
+        "failed_dimension": failed_dim,
+        "residual_lo_y": lo,
+        "residual_hi_y": hi,
+        "target_radius": TARGET_REMAINDER_RADIUS,
+        "target_lo": -TARGET_REMAINDER_RADIUS,
+        "target_hi": TARGET_REMAINDER_RADIUS,
+        "minimal_symmetric_radius_needed": min_sym,
+        "minimal_asymmetric_interval_lo": lo,
+        "minimal_asymmetric_interval_hi": hi,
+        "asymmetric_width": asym_width,
+        "symmetric_width": sym_width,
+        "asymmetric_much_tighter_than_symmetric": asym_width < 0.75 * sym_width,
+        "accepted_semantics_changed": False,
+    }
+    out_dir = rescue.REPO_ROOT / "outputs" / "flowstar_style_residual_shift"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rescue._write_csv(out_dir / "residual_shift.csv", RESIDUAL_SHIFT_FIELDS, [row])
+    lines = [
+        "# Residual Shift Diagnostic",
+        "",
+        "This is diagnostic only; accepted validation still uses the symmetric target remainder interval.",
+        f"Failed y residual interval: `[{lo}, {hi}]`.",
+        f"Symmetric target interval: `[-{TARGET_REMAINDER_RADIUS}, {TARGET_REMAINDER_RADIUS}]`.",
+        f"Minimal symmetric target radius required: `{min_sym}`.",
+        f"Minimal asymmetric interval required: `[{lo}, {hi}]`.",
+        f"Would asymmetric target be much tighter than symmetric loosened target? {_yes_no(bool(row['asymmetric_much_tighter_than_symmetric']))}.",
+        "Do not claim parity with shifted/asymmetric target from this diagnostic.",
+    ]
+    (out_dir / "residual_shift_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_truncation_detail_outputs(
+    out_dir: Path,
+    summary: Mapping[str, Any],
+    attempts: Sequence[Mapping[str, Any]],
+    detail_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    enriched = _enriched_truncation_rows(detail_rows, attempts)
+    final_failure = _final_failure_attempt(attempts)
+    summary_row = _truncation_summary_row(summary, final_failure, enriched)
+    rescue._write_csv(out_dir / "truncation_localization_summary.csv", TRUNCATION_SUMMARY_FIELDS, [summary_row])
+    rescue._write_csv(out_dir / "truncation_top_terms.csv", TRUNCATION_DETAIL_FIELDS, enriched)
+    _write_truncation_detail_report(out_dir, summary_row, enriched)
+    _make_truncation_detail_plots(out_dir, enriched)
+    _write_residual_shift_outputs(final_failure)
+
+
 def _make_plots(out_dir: Path, attempts: Sequence[Mapping[str, Any]], segments: Sequence[Mapping[str, Any]]) -> None:
     try:
         import matplotlib
@@ -411,7 +888,13 @@ def _yes_no(value: bool) -> str:
     return "yes" if value else "no"
 
 
-def run_localization(out_dir: Path, *, max_horizon: float, wall_cap_s: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def run_localization(
+    out_dir: Path,
+    *,
+    max_horizon: float,
+    wall_cap_s: float,
+    truncation_detail: bool = False,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     out_dir.mkdir(parents=True, exist_ok=True)
     current: Any = rescue._initial_box()
     t = 0.0
@@ -419,6 +902,7 @@ def run_localization(out_dir: Path, *, max_horizon: float, wall_cap_s: float) ->
     segment_index = 0
     attempt_rows: list[dict[str, Any]] = []
     breakdown_rows: list[dict[str, Any]] = []
+    detail_rows: list[dict[str, Any]] = []
     segments: list[dict[str, Any]] = []
     status = "max_horizon_reached"
     failure_reason = ""
@@ -429,6 +913,8 @@ def run_localization(out_dir: Path, *, max_horizon: float, wall_cap_s: float) ->
         callback_context = dict(context)
         callback_context["attempt_index"] = attempt
         breakdown_rows.extend(_vdp_breakdown(candidate, order, callback_context))
+        if truncation_detail:
+            detail_rows.extend(_truncation_detail_rows(candidate, order, callback_context))
 
     while t < max_horizon - 1e-15:
         elapsed = time.perf_counter() - start_time
@@ -564,6 +1050,8 @@ def run_localization(out_dir: Path, *, max_horizon: float, wall_cap_s: float) ->
     rescue._write_csv(out_dir / "failure_step_attempts.csv", ATTEMPT_FIELDS, focused)
     rescue._write_csv(out_dir / "failure_residual_breakdown.csv", BREAKDOWN_FIELDS, focused_breakdown)
     _write_report(out_dir, summary, final_failure, dominant)
+    if truncation_detail:
+        _write_truncation_detail_outputs(out_dir, summary, attempt_rows, detail_rows)
     _make_plots(out_dir, focused, segments[-25:])
     return focused, focused_breakdown
 
@@ -573,8 +1061,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--out-dir", type=Path, default=Path("outputs/flowstar_style_failure_localization"))
     parser.add_argument("--max-horizon", type=float, default=2.2)
     parser.add_argument("--wall-cap-s", type=float, default=600.0)
+    parser.add_argument("--truncation-detail", action="store_true", help="Write dropped-term truncation localization diagnostics.")
     args = parser.parse_args(argv)
-    run_localization(args.out_dir, max_horizon=float(args.max_horizon), wall_cap_s=float(args.wall_cap_s))
+    run_localization(
+        args.out_dir,
+        max_horizon=float(args.max_horizon),
+        wall_cap_s=float(args.wall_cap_s),
+        truncation_detail=bool(args.truncation_detail),
+    )
     print(f"wrote failure localization outputs to {args.out_dir}")
     return 0
 

@@ -1,6 +1,8 @@
 import csv
 import importlib.util
 import py_compile
+
+import pandas as pd
 import subprocess
 import sys
 from pathlib import Path
@@ -164,3 +166,68 @@ def test_flowstar_source_rescue_notes_are_multiline():
     assert text.startswith("# Flow* Source Rescue Notes")
     assert text.count("\n") > 30
     assert "\\n" not in text
+
+
+
+def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable():
+    artifact_dirs = [
+        ROOT / "outputs" / "flowstar_style_failure_localization",
+        ROOT / "outputs" / "flowstar_style_rescue_h5",
+        ROOT / "outputs" / "flowstar_style_rescue_adaptive_order",
+        ROOT / "outputs" / "flowstar_style_rescue_remainder_sensitivity",
+        ROOT / "outputs" / "flowstar_style_rescue_next",
+    ]
+    text_paths = [ROOT / "docs" / "flowstar_source_rescue_notes.md"]
+    csv_paths = []
+    for out_dir in artifact_dirs:
+        csv_paths.extend(sorted(out_dir.glob("*.csv")))
+        text_paths.extend(sorted(out_dir.glob("*.md")))
+
+    assert csv_paths
+    assert text_paths
+    for path in csv_paths:
+        frame = pd.read_csv(path)
+        text = path.read_text(encoding="utf-8")
+        assert text.count("\n") > len(frame)
+    for path in text_paths:
+        text = path.read_text(encoding="utf-8")
+        assert text.count("\n") > 5
+        assert "\\n" not in text
+
+
+def test_adaptive_order_report_clarifies_aggregate_order8_count():
+    out_dir = ROOT / "outputs" / "flowstar_style_rescue_adaptive_order"
+    rows = _csv_rows(out_dir / "adaptive_order_summary.csv")
+    report = (out_dir / "adaptive_order_report.md").read_text(encoding="utf-8")
+    total_order8 = sum(int(row.get("num_order8_steps") or 0) for row in rows)
+
+    assert total_order8 == 88
+    assert "Across all configs" in report
+    assert "not a single-run step count" in report
+
+
+def test_candidate_order_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_style_candidate_order"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "60",
+            "--configs",
+            "flowstar_style_o6_candidate8_output6",
+        ],
+        check=True,
+    )
+
+    assert (out_dir / "candidate_order_summary.csv").exists()
+    assert (out_dir / "candidate_order_segments.csv").exists()
+    report = (out_dir / "candidate_order_report.md").read_text(encoding="utf-8")
+    assert "candidate_order=8/output_order=6" in report
+    rows = _csv_rows(out_dir / "candidate_order_summary.csv")
+    assert rows[0]["candidate_order"] == "8"
+    assert rows[0]["output_order"] == "6"

@@ -209,3 +209,25 @@ def test_flowstar_style_adaptive_order_fallback_is_opt_in():
 
     assert seg.status == "failed"
     assert any(row.get("order") == 8 and row.get("adaptive_order_fallback") is True for row in diagnostics)
+
+
+def test_candidate_order_truncates_output_order_and_records_diagnostics():
+    diagnostics = []
+    seg = flowpipe_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.005,
+        order=2,
+        candidate_order=4,
+        truncation_range_split=2,
+        validation_mode="target_remainder",
+        target_remainder_radius=1e-3,
+        diagnostics=diagnostics,
+    )
+
+    assert seg.status == "validated"
+    assert seg.order == 2
+    assert all(model.polynomial.degree() <= 2 for model in seg.final_tm)
+    assert diagnostics[-1]["candidate_order"] == 4
+    assert diagnostics[-1]["output_order"] == 2
+    assert diagnostics[-1]["truncation_range_split"] == 2

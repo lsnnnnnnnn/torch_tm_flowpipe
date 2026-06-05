@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, Mapping, Tuple
+from itertools import product
+from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
 
 import torch
 
@@ -233,6 +234,56 @@ class Polynomial:
                     term_iv = term_iv * dom.pow_int(power)
             acc = acc + term_iv
         return acc
+
+    def evaluate_interval_split(
+        self,
+        domain: Iterable[Interval],
+        splits: int,
+        *,
+        split_vars: Sequence[int] | None = None,
+    ) -> Interval:
+        """Evaluate conservatively over a small split-box cover of ``domain``.
+
+        This is intended for diagnostic truncation bounds.  By default it splits
+        the first two variables, matching the normalized state box in the current
+        Flow*-style Van der Pol experiments while leaving local time unsplit.
+        """
+        domain_l = list(domain)
+        if len(domain_l) != self.n_vars:
+            raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
+        if not self.terms:
+            return Interval.zero()
+        pieces = int(splits)
+        if pieces <= 1 or not domain_l:
+            return self.evaluate_interval(domain_l)
+        selected = list(split_vars) if split_vars is not None else list(range(min(2, self.n_vars)))
+        selected = [int(i) for i in selected if 0 <= int(i) < self.n_vars]
+        if not selected:
+            return self.evaluate_interval(domain_l)
+
+        partitions: list[list[Interval]] = []
+        for var_index in selected:
+            iv = domain_l[var_index]
+            width = iv.hi - iv.lo
+            boxes: list[Interval] = []
+            for i in range(pieces):
+                lo = iv.lo + width * (float(i) / float(pieces))
+                hi = iv.lo + width * (float(i + 1) / float(pieces))
+                if i == 0:
+                    lo = iv.lo
+                if i == pieces - 1:
+                    hi = iv.hi
+                boxes.append(Interval(lo, hi))
+            partitions.append(boxes)
+
+        hull: Interval | None = None
+        for parts in product(*partitions):
+            subdomain = list(domain_l)
+            for var_index, sub_iv in zip(selected, parts):
+                subdomain[var_index] = sub_iv
+            box = self.evaluate_interval(subdomain)
+            hull = box if hull is None else Interval.hull(hull, box)
+        return hull if hull is not None else self.evaluate_interval(domain_l)
 
     def evaluate_point(self, values: Iterable[Any]) -> torch.Tensor:
         vals = [_coef(v) for v in values]

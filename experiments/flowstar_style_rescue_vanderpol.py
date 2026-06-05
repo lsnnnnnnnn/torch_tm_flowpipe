@@ -37,6 +37,9 @@ SUMMARY_FIELDS = [
     "run_id",
     "mode",
     "order",
+    "candidate_order",
+    "output_order",
+    "truncation_range_split",
     "adaptive_order_fallback",
     "fallback_from_order",
     "refinement_pass",
@@ -71,6 +74,9 @@ SEGMENT_FIELDS = [
     "run_id",
     "mode",
     "order",
+    "candidate_order",
+    "output_order",
+    "truncation_range_split",
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
@@ -96,6 +102,9 @@ VALIDATION_ATTEMPT_FIELDS = [
     "run_id",
     "mode",
     "order",
+    "candidate_order",
+    "output_order",
+    "truncation_range_split",
     "adaptive_order_fallback",
     "fallback_from_order",
     "refinement_pass",
@@ -173,6 +182,9 @@ NEXT_FIELDS = [
     "num_accepted_steps",
     "num_rejected_steps",
     "num_order8_steps",
+    "candidate_order",
+    "output_order",
+    "truncation_range_split",
     "min_regular_h_used",
     "h_below_flowstar_min_count",
     "final_width_sum",
@@ -275,6 +287,9 @@ def _segment_row(
         "run_id": spec["run_id"],
         "mode": spec["mode"],
         "order": getattr(seg, "order", spec["order"]),
+        "candidate_order": spec.get("candidate_order", spec["order"]),
+        "output_order": spec.get("order", ""),
+        "truncation_range_split": spec.get("truncation_range_split", ""),
         "validation_mode": spec.get("validation_mode", "growth"),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
@@ -339,6 +354,9 @@ def _summarize_run(
         "run_id": spec["run_id"],
         "mode": spec["mode"],
         "order": spec["order"],
+        "candidate_order": spec.get("candidate_order", spec["order"]),
+        "output_order": spec.get("order", ""),
+        "truncation_range_split": spec.get("truncation_range_split", ""),
         "validation_mode": spec.get("validation_mode", "growth"),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
@@ -389,6 +407,9 @@ def _run_fixed(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: float
             "run_id": spec["run_id"],
             "mode": spec["mode"],
             "order": spec["order"],
+            "candidate_order": spec.get("candidate_order", spec["order"]),
+            "output_order": spec.get("order", ""),
+            "truncation_range_split": spec.get("truncation_range_split", ""),
             "validation_mode": "growth",
             "cutoff_threshold": "",
             "target_remainder_radius": "",
@@ -484,6 +505,9 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             "run_id": spec["run_id"],
             "mode": spec["mode"],
             "order": spec["order"],
+            "candidate_order": spec.get("candidate_order", spec["order"]),
+            "output_order": spec.get("order", ""),
+            "truncation_range_split": spec.get("truncation_range_split", ""),
             "validation_mode": spec["validation_mode"],
             "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
             "target_remainder_radius": spec.get("target_remainder_radius", ""),
@@ -505,6 +529,8 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     validation_mode=str(spec.get("validation_mode", "target_remainder")),
                     adaptive_order_fallback=spec.get("adaptive_order_fallback"),
                     adaptive_order_threshold_factor=float(spec.get("adaptive_order_threshold_factor", 1.25)),
+                    candidate_order=spec.get("candidate_order"),
+                    truncation_range_split=spec.get("truncation_range_split"),
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                 ),
@@ -558,6 +584,8 @@ def _configs() -> list[dict[str, Any]]:
         validation_mode: str = "target_remainder",
         max_validation_attempts: int = 2,
         adaptive_order_fallback: int | None = None,
+        candidate_order: int | None = None,
+        truncation_range_split: int | None = None,
     ) -> dict[str, Any]:
         spec: dict[str, Any] = {
             "run_id": run_id,
@@ -571,6 +599,10 @@ def _configs() -> list[dict[str, Any]]:
             "max_validation_attempts": max_validation_attempts,
             "kind": "adaptive",
         }
+        if candidate_order is not None:
+            spec["candidate_order"] = int(candidate_order)
+        if truncation_range_split is not None:
+            spec["truncation_range_split"] = int(truncation_range_split)
         if adaptive_order_fallback is not None:
             spec["adaptive_order_fallback"] = adaptive_order_fallback
             spec["adaptive_order_threshold_factor"] = 1.25
@@ -618,6 +650,21 @@ def _configs() -> list[dict[str, Any]]:
             validation_mode="target_remainder_refined",
             cutoff_threshold=1e-10,
             max_validation_attempts=8,
+        ),
+        flowstar_spec("flowstar_style_o6_candidate8_output6", order=6, candidate_order=8),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+        ),
+        flowstar_spec("flowstar_style_o6_target_truncsplit2", order=6, truncation_range_split=2),
+        flowstar_spec("flowstar_style_o6_target_truncsplit4", order=6, truncation_range_split=4),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_truncsplit2",
+            order=6,
+            candidate_order=8,
+            truncation_range_split=2,
         ),
     ]
 
@@ -1275,6 +1322,7 @@ def run_experiment(
         comparison_rows=comparison_rows,
     )
     write_rescue_next_outputs(trigger_out_dir=out_dir)
+    write_rescue_next2_outputs(trigger_out_dir=out_dir)
     return summary_rows, segment_rows, attempt_rows
 
 
@@ -1325,7 +1373,8 @@ def _write_adaptive_order_report(
         f"Best adaptive-order variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
         f"Did adaptive order fallback beat t~=2.10955? {_yes_no(bool(best_t is not None and baseline_t is not None and best_t > baseline_t))}.",
         f"Did it reach horizon 5? {_yes_no(reached)}.",
-        f"How many accepted steps used order 8? `{order8_count}`.",
+        f"Across all configs, accepted order-8 steps in this artifact: `{order8_count}`; best-run order-8 steps=`{best.get('num_order8_steps', '') if best else ''}`.",
+        "If both cutoff and no-cutoff adaptive configs are present, the aggregate count is the total across those configs, not a single-run step count.",
         f"Runtime impact: best runtime_s=`{best.get('runtime_s', '') if best else ''}` vs h5 baseline runtime_s=`{baseline.get('runtime_s', '') if baseline else ''}`.",
         f"Width vs Flow* ratio: last=`{comp.get('last_width_ratio', '') if comp else ''}`, tube=`{comp.get('tube_width_ratio', '') if comp else ''}`.",
         f"Did cutoff help? {cutoff_help}.",
@@ -1404,6 +1453,127 @@ def _write_refined_report(out_dir: Path, summary_rows: Sequence[Mapping[str, Any
     (out_dir / "refined_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+
+def _best_comparison_for_run(
+    comparison_rows: Sequence[Mapping[str, Any]],
+    run_id: str,
+) -> Mapping[str, Any]:
+    return _comparison_by_run(comparison_rows).get(str(run_id), {})
+
+
+def _adaptive_order_baselines() -> tuple[Mapping[str, str] | None, Mapping[str, str]]:
+    rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "adaptive_order_summary.csv")
+    comps = _comparison_by_run(
+        _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "rescue_vs_flowstar_comparison.csv")
+    )
+    best = max(rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default=None)
+    return best, comps.get(str(best.get("run_id", ""))) if best else {}
+
+
+def _write_candidate_order_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best(summary_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    best_comp = _best_comparison_for_run(comparison_rows, str(best.get("run_id", ""))) if best else {}
+    adaptive, adaptive_comp = _adaptive_order_baselines()
+    adaptive_t = _finite_float(adaptive.get("last_validated_t")) if adaptive else 2.2771582567640953
+    adaptive_runtime = adaptive.get("runtime_s", "") if adaptive else ""
+    best_runtime = best.get("runtime_s", "") if best else ""
+    best_tube = _finite_float(best_comp.get("tube_width_ratio"))
+    adaptive_tube = _finite_float(adaptive_comp.get("tube_width_ratio"))
+    if best_tube is None or adaptive_tube is None:
+        width_msg = "not compared"
+    elif best_tube < adaptive_tube:
+        width_msg = "improved"
+    elif best_tube > adaptive_tube:
+        width_msg = "worsened"
+    else:
+        width_msg = "tied"
+    best_residual = _finite_float(best.get("max_residual_width_sum")) if best else None
+    adaptive_residual = _finite_float(adaptive.get("max_residual_width_sum")) if adaptive else None
+    if best_residual is None or adaptive_residual is None:
+        residual_msg = "inconclusive"
+    elif best_residual < adaptive_residual:
+        residual_msg = "yes by max residual width sum"
+    elif best_residual > adaptive_residual:
+        residual_msg = "no; max residual width sum increased"
+    else:
+        residual_msg = "tied by max residual width sum"
+    lines = [
+        "# Candidate Order Diagnostic Report",
+        "",
+        "Candidate-order mode validates with a higher Picard polynomial order and truncates the accepted/output Taylor model back to output order with the dropped contribution added to interval uncertainty.",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best candidate-order variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did candidate_order=8/output_order=6 beat t~=2.277? {_yes_no(bool(best_t is not None and adaptive_t is not None and best_t > adaptive_t))}.",
+        f"Did it reach horizon 5? {_yes_no(reached)}.",
+        f"Width ratio vs adaptive full-order-8 fallback: {width_msg}; candidate last=`{best_comp.get('last_width_ratio', '')}`, tube=`{best_comp.get('tube_width_ratio', '')}`, adaptive tube=`{adaptive_comp.get('tube_width_ratio', '')}`.",
+        f"Runtime impact: best runtime_s=`{best_runtime}` vs adaptive fallback runtime_s=`{adaptive_runtime}`.",
+        f"Does it reduce truncation containment miss? {residual_msg}; candidate max_residual_width_sum=`{best.get('max_residual_width_sum', '') if best else ''}`, adaptive=`{adaptive.get('max_residual_width_sum', '') if adaptive else ''}`.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | candidate_order | output_order | last_validated_t | runtime_s | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    comp_by_run = _comparison_by_run(comparison_rows)
+    for row in summary_rows:
+        comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('candidate_order', '')} | "
+            f"{row.get('output_order', '')} | {row.get('last_validated_t', '')} | {row.get('runtime_s', '')} | "
+            f"{comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "candidate_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_truncation_range_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best(summary_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    comp_by_run = _comparison_by_run(comparison_rows)
+    best_comp = comp_by_run.get(str(best.get("run_id", ""))) if best else {}
+    cutoff_split_rows = [row for row in summary_rows if "cutoff" in str(row.get("run_id", "")) and "truncsplit" in str(row.get("run_id", ""))]
+    cutoff_msg = "not evaluated by the requested truncation-range config set" if not cutoff_split_rows else "see rows"
+    lines = [
+        "# Truncation Range Diagnostic Report",
+        "",
+        "Dropped/truncated polynomial terms are still bounded conservatively; this diagnostic only changes how their interval range is evaluated.",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best truncation-range variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Does tighter dropped-term range bounding beat t~=2.277? {_yes_no(bool(best_t is not None and best_t > 2.2771582567640953))}.",
+        f"Does it reach horizon 5? {_yes_no(reached)}.",
+        f"Runtime cost for best variant: runtime_s=`{best.get('runtime_s', '') if best else ''}`.",
+        f"Width ratio vs Flow*: last=`{best_comp.get('last_width_ratio', '') if best_comp else ''}`, tube=`{best_comp.get('tube_width_ratio', '') if best_comp else ''}`.",
+        f"Did cutoff help when combined with truncsplit? {cutoff_msg}.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | split | candidate_order | output_order | last_validated_t | runtime_s | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in summary_rows:
+        comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('truncation_range_split', '')} | "
+            f"{row.get('candidate_order', '')} | {row.get('output_order', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('runtime_s', '')} | {comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "truncation_range_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -1426,6 +1596,13 @@ def write_specialized_outputs(
     elif name == "flowstar_style_rescue_refined":
         _write_csv(out_dir / "refined_summary.csv", SUMMARY_FIELDS, summary_rows)
         _write_refined_report(out_dir, summary_rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_candidate_order":
+        _write_csv(out_dir / "candidate_order_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "candidate_order_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_candidate_order_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_truncation_range":
+        _write_csv(out_dir / "truncation_range_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_truncation_range_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:
@@ -1433,6 +1610,14 @@ def _read_optional_csv(path: Path) -> list[dict[str, str]]:
 
 
 def _variant_group(run_id: str) -> str:
+    if "residual_shift" in run_id:
+        return "residual_shift_diagnostic"
+    if "candidate8_output6" in run_id and "truncsplit" in run_id:
+        return "candidate_order_truncation_split"
+    if "candidate8_output6" in run_id:
+        return "candidate_order_output_order"
+    if "truncsplit" in run_id:
+        return "truncation_range_split"
     if "adaptive_order_8" in run_id:
         return "adaptive_order_fallback"
     if "r2e-4" in run_id or "r5e-4" in run_id:
@@ -1485,6 +1670,9 @@ def write_rescue_next_outputs(*, trigger_out_dir: Path | None = None) -> None:
                 "num_accepted_steps": row.get("num_accepted_steps", ""),
                 "num_rejected_steps": row.get("num_rejected_steps", ""),
                 "num_order8_steps": row.get("num_order8_steps", ""),
+                "candidate_order": row.get("candidate_order", row.get("order", "")),
+                "output_order": row.get("output_order", row.get("order", "")),
+                "truncation_range_split": row.get("truncation_range_split", ""),
                 "min_regular_h_used": row.get("min_regular_h_used", ""),
                 "h_below_flowstar_min_count": row.get("h_below_flowstar_min_count", ""),
                 "final_width_sum": row.get("final_width_sum", ""),
@@ -1537,6 +1725,131 @@ def write_rescue_next_outputs(*, trigger_out_dir: Path | None = None) -> None:
             f"{row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
         )
     (out_dir / "rescue_next_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+
+def write_rescue_next2_outputs(*, trigger_out_dir: Path | None = None) -> None:
+    if trigger_out_dir is not None:
+        try:
+            outputs_root = (REPO_ROOT / "outputs").resolve()
+            if not trigger_out_dir.resolve().is_relative_to(outputs_root):
+                return
+        except Exception:
+            return
+    candidates: dict[str, dict[str, Any]] = {}
+    comparisons: dict[str, Mapping[str, Any]] = {}
+    sources = [
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "adaptive_order_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_candidate_order" / "candidate_order_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_candidate_order" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_truncation_range" / "truncation_range_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_truncation_range" / "rescue_vs_flowstar_comparison.csv"),
+    ]
+    for summary_path, comparison_path in sources:
+        for row in _read_optional_csv(summary_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                candidates[run_id] = dict(row)
+        for row in _read_optional_csv(comparison_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                comparisons[run_id] = row
+
+    residual_rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_residual_shift" / "residual_shift.csv")
+    if residual_rows:
+        row = residual_rows[-1]
+        run_id = "residual_shift_diagnostic_y"
+        candidates[run_id] = {
+            "run_id": run_id,
+            "validation_mode": "diagnostic_only",
+            "target_remainder_radius": row.get("target_radius", "0.0001"),
+            "cutoff_threshold": "",
+            "status": "diagnostic_only",
+            "last_validated_t": row.get("t_start", ""),
+            "runtime_s": "",
+            "num_accepted_steps": "",
+            "num_rejected_steps": "",
+            "num_order8_steps": "",
+            "candidate_order": "",
+            "output_order": "",
+            "truncation_range_split": "",
+            "min_regular_h_used": "",
+            "h_below_flowstar_min_count": "",
+            "final_width_sum": "",
+            "notes": "diagnostic only; not an accepted run",
+        }
+    if not candidates:
+        return
+
+    rows: list[dict[str, Any]] = []
+    for run_id, row in sorted(candidates.items(), key=lambda item: (_variant_group(item[0]), item[0])):
+        comp = comparisons.get(run_id, {})
+        rows.append(
+            {
+                "variant_group": _variant_group(run_id),
+                "run_id": run_id,
+                "validation_mode": row.get("validation_mode", ""),
+                "target_remainder_radius": row.get("target_remainder_radius", ""),
+                "cutoff_threshold": row.get("cutoff_threshold", ""),
+                "status": row.get("status", ""),
+                "last_validated_t": row.get("last_validated_t", ""),
+                "runtime_s": row.get("runtime_s", ""),
+                "num_accepted_steps": row.get("num_accepted_steps", ""),
+                "num_rejected_steps": row.get("num_rejected_steps", ""),
+                "num_order8_steps": row.get("num_order8_steps", ""),
+                "candidate_order": row.get("candidate_order", row.get("order", "")),
+                "output_order": row.get("output_order", row.get("order", "")),
+                "truncation_range_split": row.get("truncation_range_split", ""),
+                "min_regular_h_used": row.get("min_regular_h_used", ""),
+                "h_below_flowstar_min_count": row.get("h_below_flowstar_min_count", ""),
+                "final_width_sum": row.get("final_width_sum", ""),
+                "last_width_ratio": comp.get("last_width_ratio", ""),
+                "tube_width_ratio": comp.get("tube_width_ratio", ""),
+                "notes": row.get("notes", ""),
+            }
+        )
+    eligible = [
+        row for row in rows
+        if row.get("variant_group") != "residual_shift_diagnostic"
+        and str(row.get("target_remainder_radius", "")) in {"0.0001", "0.000100000000000000", "1e-04", "1e-4", "0.00010000000000000000"}
+        and int(row.get("h_below_flowstar_min_count") or 0) == 0
+    ]
+    best = max(eligible or [row for row in rows if row.get("variant_group") != "residual_shift_diagnostic"] or rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0)
+    reached = (_finite_float(best.get("last_validated_t")) or 0.0) >= 5.0 - 1e-9
+    trunc_rows = [row for row in rows if row.get("variant_group") in {"truncation_range_split", "candidate_order_truncation_split"}]
+    trunc_best_t = max((_finite_float(row.get("last_validated_t")) or 0.0 for row in trunc_rows), default=0.0)
+    if reached:
+        recommendation = "run h10 next with the best horizon-5 variant, while keeping width and Flow* comparison checks enabled."
+    elif trunc_best_t > 2.2771582567640953:
+        recommendation = "continue tighter polynomial range bounding because it improved the validated horizon before moving to a symbolic remainder queue."
+    else:
+        recommendation = "move to a real Flow*-style symbolic remainder queue; the tested tighter range variants did not clear the bottleneck."
+
+    out_dir = REPO_ROOT / "outputs" / "flowstar_style_rescue_next2"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _write_csv(out_dir / "rescue_next2_summary.csv", NEXT_FIELDS, rows)
+    lines = [
+        "# Rescue Variant Comparison Next2",
+        "",
+        f"Best variant by decision criteria: `{best.get('run_id', '')}` at t=`{best.get('last_validated_t', '')}`.",
+        f"Reached horizon 5 with target_remainder_radius=1e-4? {_yes_no(reached)}.",
+        f"Width ratio vs Flow*: last=`{best.get('last_width_ratio', '')}`, tube=`{best.get('tube_width_ratio', '')}`.",
+        f"Next recommendation: {recommendation}",
+        "",
+        "Residual-shift rows are diagnostic only and are not treated as accepted reachability runs.",
+        "Decision criteria: reaches horizon 5, no non-final h below 0.002, width ratio not worse than adaptive fallback, runtime, and no fake parity claims.",
+        "",
+        "## Rows",
+        "",
+        "| group | run_id | status | last_validated_t | candidate_order | output_order | split | last_width_ratio | tube_width_ratio |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in rows:
+        lines.append(
+            f"| {row.get('variant_group', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('candidate_order', '')} | {row.get('output_order', '')} | "
+            f"{row.get('truncation_range_split', '')} | {row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
+        )
+    (out_dir / "rescue_next2_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _write_outputs(

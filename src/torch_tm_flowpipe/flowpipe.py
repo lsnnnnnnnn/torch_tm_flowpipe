@@ -72,8 +72,20 @@ def _zero_interval_like_domain(domain: Sequence[Interval]) -> Interval:
     return Interval.zero()
 
 
-def _zero_remainder_tm(poly: Polynomial, domain: Sequence[Interval], order: int) -> TaylorModel:
-    return TaylorModel(poly, _zero_interval_like_domain(domain), list(domain), order=order)
+def _zero_remainder_tm(
+    poly: Polynomial,
+    domain: Sequence[Interval],
+    order: int,
+    *,
+    truncation_range_split: int | None = None,
+) -> TaylorModel:
+    return TaylorModel(
+        poly,
+        _zero_interval_like_domain(domain),
+        list(domain),
+        order=order,
+        truncation_range_split=truncation_range_split,
+    )
 
 
 def _float_or_none(value: Any) -> float | None:
@@ -98,6 +110,37 @@ def _interval_is_zero(iv: Interval) -> bool:
 
 def _combine_remainders(base: Interval, extra: Interval) -> Interval:
     return base if _interval_is_zero(extra) else base + extra
+
+
+def _truncation_split_value(value: int | None) -> int | None:
+    if value is None:
+        return None
+    pieces = int(value)
+    return pieces if pieces > 1 else None
+
+
+def _poly_interval_with_split(poly: Polynomial, domain: Sequence[Interval], split: int | None) -> Interval:
+    pieces = _truncation_split_value(split)
+    if pieces is None:
+        return poly.evaluate_interval(domain)
+    return poly.evaluate_interval_split(domain, pieces)
+
+
+def _truncate_tm_to_order(tm: TMVector, output_order: int) -> TMVector:
+    models: list[TaylorModel] = []
+    for model in tm:
+        kept, dropped = model.polynomial.truncate(int(output_order))
+        dropped_range = _poly_interval_with_split(dropped, model.domain, model.truncation_range_split)
+        models.append(
+            TaylorModel(
+                kept,
+                model.remainder + dropped_range,
+                list(model.domain),
+                order=int(output_order),
+                truncation_range_split=model.truncation_range_split,
+            )
+        )
+    return TMVector(models)
 
 
 def _symmetric_interval(radius: float, domain: Sequence[Interval]) -> Interval:
@@ -253,17 +296,37 @@ def _call_ode(ode_fn: ODEFunction, x: TMVector, u: TMVector | None) -> TMVector:
     return TMVector(out)
 
 
-def _constant_control_tms(u_box: Sequence[Any] | None, domain: Sequence[Interval], order: int) -> TMVector | None:
+def _constant_control_tms(
+    u_box: Sequence[Any] | None,
+    domain: Sequence[Interval],
+    order: int,
+    *,
+    truncation_range_split: int | None = None,
+) -> TMVector | None:
     if u_box is None:
         return None
     controls: list[TaylorModel] = []
     for u in u_box:
         iv = ensure_interval(u) if not isinstance(u, (tuple, list)) else Interval(u[0], u[1])
-        controls.append(TaylorModel.constant(iv.mid(), domain, order=order, remainder=Interval(-iv.radius(), iv.radius())))
+        controls.append(
+            TaylorModel.constant(
+                iv.mid(),
+                domain,
+                order=order,
+                remainder=Interval(-iv.radius(), iv.radius()),
+                truncation_range_split=truncation_range_split,
+            )
+        )
     return TMVector(controls)
 
 
-def _affine_control_tms(affine_u: dict[str, Any] | None, domain: Sequence[Interval], order: int) -> TMVector | None:
+def _affine_control_tms(
+    affine_u: dict[str, Any] | None,
+    domain: Sequence[Interval],
+    order: int,
+    *,
+    truncation_range_split: int | None = None,
+) -> TMVector | None:
     if affine_u is None:
         return None
     A = torch.as_tensor(affine_u.get("A"), dtype=domain[0].lo.dtype if domain else torch.float64)
@@ -276,10 +339,13 @@ def _affine_control_tms(affine_u: dict[str, Any] | None, domain: Sequence[Interv
     n_u, n_x = A.shape
     if n_x > len(domain):
         raise ValueError("affine control has more input columns than active variables")
-    variables = [TaylorModel.variable(i, domain, order=order) for i in range(n_x)]
+    variables = [
+        TaylorModel.variable(i, domain, order=order, truncation_range_split=truncation_range_split)
+        for i in range(n_x)
+    ]
     controls: list[TaylorModel] = []
     for j in range(n_u):
-        tm = TaylorModel.constant(b[j], domain, order=order)
+        tm = TaylorModel.constant(b[j], domain, order=order, truncation_range_split=truncation_range_split)
         for i in range(n_x):
             if float(A[j, i]) != 0.0:
                 tm = tm + variables[i] * A[j, i]
@@ -300,9 +366,11 @@ def _make_controls(
     affine_u: dict[str, Any] | None,
     domain: Sequence[Interval],
     order: int,
+    *,
+    truncation_range_split: int | None = None,
 ) -> TMVector | None:
-    u_const = _constant_control_tms(u_box, domain, order)
-    u_affine = _affine_control_tms(affine_u, domain, order)
+    u_const = _constant_control_tms(u_box, domain, order, truncation_range_split=truncation_range_split)
+    u_affine = _affine_control_tms(affine_u, domain, order, truncation_range_split=truncation_range_split)
     if u_const is not None and u_affine is not None:
         if len(u_const) != len(u_affine):
             raise ValueError("u_box and affine_u dimensions do not match")
@@ -318,6 +386,7 @@ def _picard_polynomial(
     u_tms: TMVector | None,
     iterations: int | None = None,
     cutoff_threshold: float | None = None,
+    truncation_range_split: int | None = None,
 ) -> TMVector:
     """Construct the polynomial part of a Picard iterate.
 
@@ -334,7 +403,12 @@ def _picard_polynomial(
             integ = f_i.integrate(tau_index)
             tm_i = x0_i + integ
             poly, _dropped = tm_i.polynomial.truncate(order)
-            next_tm = _zero_remainder_tm(poly, domain, order).apply_cutoff(cutoff_threshold)
+            next_tm = _zero_remainder_tm(
+                poly,
+                domain,
+                order,
+                truncation_range_split=truncation_range_split,
+            ).apply_cutoff(cutoff_threshold)
             next_models.append(next_tm)
         g = TMVector(next_models)
     return g
@@ -402,7 +476,16 @@ def _validate_picard(
         return candidate_poly, "failed", 0, message
 
     for attempt in range(1, max_attempts + 1):
-        candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, remainders))
+        candidate = TMVector(
+            TaylorModel(
+                m.polynomial,
+                r,
+                domain,
+                order=order,
+                truncation_range_split=m.truncation_range_split,
+            )
+            for m, r in zip(candidate_poly, remainders)
+        )
         if rhs_breakdown_callback is not None:
             callback_context = dict(diag_extra)
             if diag_mode is not None:
@@ -421,7 +504,13 @@ def _validate_picard(
             residual_boxes: list[Interval] = []
             for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
                 picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
+                residual_i = picard_i - TaylorModel(
+                    cand_i.polynomial,
+                    Interval.zero(),
+                    domain,
+                    order=order,
+                    truncation_range_split=cand_i.truncation_range_split,
+                )
                 residual_boxes.append(residual_i.range_box().inflate(validation_eps))
         except Exception as exc:  # fail closed; caller gets a non-validated segment
             message = f"validation exception: {exc}"
@@ -507,7 +596,16 @@ def _validate_picard(
             new_remainders.append(hull.scale_about_mid(growth_factor, min_radius=validation_eps))
         remainders = new_remainders
 
-    candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, remainders))
+    candidate = TMVector(
+            TaylorModel(
+                m.polynomial,
+                r,
+                domain,
+                order=order,
+                truncation_range_split=m.truncation_range_split,
+            )
+            for m, r in zip(candidate_poly, remainders)
+        )
     return candidate, "failed", max_attempts, "Picard remainder validation did not converge"
 
 
@@ -547,7 +645,16 @@ def _validate_picard_target_remainder(
     diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
 
     seed_remainders = [_combine_remainders(base_i.remainder, candidate_i.remainder) for base_i, candidate_i in zip(base_ext, candidate_poly)]
-    candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, target_remainders))
+    candidate = TMVector(
+        TaylorModel(
+            m.polynomial,
+            r,
+            domain,
+            order=order,
+            truncation_range_split=m.truncation_range_split,
+        )
+        for m, r in zip(candidate_poly, target_remainders)
+    )
     if not intervals_are_finite(seed_remainders):
         message = "non-finite initial remainder"
         extra = dict(diag_extra, subset_result=False, rejection_reason=message)
@@ -608,7 +715,13 @@ def _validate_picard_target_remainder(
             residual_boxes: list[Interval] = []
             for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
                 picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
+                residual_i = picard_i - TaylorModel(
+                    cand_i.polynomial,
+                    Interval.zero(),
+                    domain,
+                    order=order,
+                    truncation_range_split=cand_i.truncation_range_split,
+                )
                 residual_boxes.append(residual_i.range_box().inflate(validation_eps))
         except Exception as exc:
             message = f"validation exception: {exc}"
@@ -720,7 +833,16 @@ def _validate_picard_target_remainder_refined(
         for base_i, candidate_i in zip(base_ext, candidate_poly)
     ]
     current_remainders = seed_remainders
-    candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, current_remainders))
+    candidate = TMVector(
+        TaylorModel(
+            m.polynomial,
+            r,
+            domain,
+            order=order,
+            truncation_range_split=m.truncation_range_split,
+        )
+        for m, r in zip(candidate_poly, current_remainders)
+    )
     if not intervals_are_finite(current_remainders):
         message = "non-finite initial remainder"
         extra = dict(diag_extra, subset_result=False, rejection_reason=message, refinement_pass=0)
@@ -763,7 +885,16 @@ def _validate_picard_target_remainder_refined(
         return candidate, "failed", 0, message
 
     for attempt in range(1, max_attempts + 1):
-        candidate = TMVector(TaylorModel(m.polynomial, r, domain, order=order) for m, r in zip(candidate_poly, current_remainders))
+        candidate = TMVector(
+            TaylorModel(
+                m.polynomial,
+                r,
+                domain,
+                order=order,
+                truncation_range_split=m.truncation_range_split,
+            )
+            for m, r in zip(candidate_poly, current_remainders)
+        )
         if rhs_breakdown_callback is not None:
             callback_context = dict(diag_extra)
             if diag_mode is not None:
@@ -783,7 +914,13 @@ def _validate_picard_target_remainder_refined(
             residual_boxes: list[Interval] = []
             for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
                 picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
+                residual_i = picard_i - TaylorModel(
+                    cand_i.polynomial,
+                    Interval.zero(),
+                    domain,
+                    order=order,
+                    truncation_range_split=cand_i.truncation_range_split,
+                )
                 residual_boxes.append(residual_i.range_box().inflate(validation_eps))
         except Exception as exc:
             message = f"validation exception: {exc}"
@@ -881,6 +1018,8 @@ def flowpipe_step_from_tm(
     diagnostic_mode: str | None = None,
     diagnostic_segment_index: int | None = None,
     diagnostic_context: Mapping[str, Any] | None = None,
+    candidate_order: int | None = None,
+    truncation_range_split: int | None = None,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -896,12 +1035,28 @@ def flowpipe_step_from_tm(
         diagnostics_segment_index = diagnostic_segment_index
     if h <= 0:
         raise ValueError("h must be positive")
+    output_order = int(order)
+    candidate_order_i = int(candidate_order) if candidate_order is not None else output_order
+    if candidate_order_i < output_order:
+        raise ValueError("candidate_order must be >= output order")
+    split = _truncation_split_value(truncation_range_split)
+    diag_context = dict(diagnostics_context or {})
+    diag_context.setdefault("output_order", output_order)
+    diag_context.setdefault("candidate_order", candidate_order_i)
+    diag_context.setdefault("truncation_range_split", split or "")
     tau_interval = Interval(0.0, float(h))
     base_ext = x0_tm.extend_domain(tau_interval)
     tau_index = x0_tm.n_vars
     domain = base_ext.domain
     base_poly_ext = TMVector(
-        TaylorModel(m.polynomial, Interval.zero(), domain, order=order) for m in base_ext
+        TaylorModel(
+            m.polynomial,
+            Interval.zero(),
+            domain,
+            order=candidate_order_i,
+            truncation_range_split=split,
+        )
+        for m in base_ext
     )
     if validation_mode not in {"growth", "current", "target_remainder", "target_remainder_refined"}:
         raise ValueError(
@@ -912,14 +1067,21 @@ def flowpipe_step_from_tm(
     if attempt_limit <= 0:
         raise ValueError("max_validation_attempts must be positive")
 
-    u_tms = _make_controls(u_box, affine_u, domain, order)
+    u_tms = _make_controls(
+        u_box,
+        affine_u,
+        domain,
+        candidate_order_i,
+        truncation_range_split=split,
+    )
     candidate_poly = _picard_polynomial(
         ode_fn,
         base_poly_ext,
         tau_index,
-        order,
+        candidate_order_i,
         u_tms,
         cutoff_threshold=cutoff_threshold,
+        truncation_range_split=split,
     )
     if validation_mode == "target_remainder":
         validated, status, attempts, message = _validate_picard_target_remainder(
@@ -927,7 +1089,7 @@ def flowpipe_step_from_tm(
             base_ext,
             candidate_poly,
             tau_index,
-            order,
+            candidate_order_i,
             u_tms,
             h=float(h),
             max_attempts=attempt_limit,
@@ -936,7 +1098,7 @@ def flowpipe_step_from_tm(
             diagnostics=diagnostics,
             diagnostics_mode=diagnostics_mode,
             diagnostics_segment_index=diagnostics_segment_index,
-            diagnostics_context=diagnostics_context,
+            diagnostics_context=diag_context,
             rhs_breakdown_callback=rhs_breakdown_callback,
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
@@ -947,7 +1109,7 @@ def flowpipe_step_from_tm(
             base_ext,
             candidate_poly,
             tau_index,
-            order,
+            candidate_order_i,
             u_tms,
             h=float(h),
             max_attempts=attempt_limit,
@@ -956,7 +1118,7 @@ def flowpipe_step_from_tm(
             diagnostics=diagnostics,
             diagnostics_mode=diagnostics_mode,
             diagnostics_segment_index=diagnostics_segment_index,
-            diagnostics_context=diagnostics_context,
+            diagnostics_context=diag_context,
             rhs_breakdown_callback=rhs_breakdown_callback,
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
@@ -967,7 +1129,7 @@ def flowpipe_step_from_tm(
             base_ext,
             candidate_poly,
             tau_index,
-            order,
+            candidate_order_i,
             u_tms,
             h=float(h),
             max_attempts=attempt_limit,
@@ -976,7 +1138,7 @@ def flowpipe_step_from_tm(
             diagnostics=diagnostics,
             diagnostics_mode=diagnostics_mode,
             diagnostics_segment_index=diagnostics_segment_index,
-            diagnostics_context=diagnostics_context,
+            diagnostics_context=diag_context,
             rhs_breakdown_callback=rhs_breakdown_callback,
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
@@ -992,7 +1154,13 @@ def flowpipe_step_from_tm(
             final_models = []
             for base_i, cand_i, f_i in zip(base_ext, validated, rhs):
                 picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(cand_i.polynomial, Interval.zero(), domain, order=order)
+                residual_i = picard_i - TaylorModel(
+                    cand_i.polynomial,
+                    Interval.zero(),
+                    domain,
+                    order=candidate_order_i,
+                    truncation_range_split=cand_i.truncation_range_split,
+                )
                 endpoint_residual = (
                     residual_i.substitute_const(tau_index, float(h))
                     .drop_variable(tau_index)
@@ -1001,10 +1169,19 @@ def flowpipe_step_from_tm(
                 )
                 endpoint_poly = cand_i.polynomial.substitute_const(tau_index, float(h)).drop_variable(tau_index)
                 endpoint_domain = [d for i, d in enumerate(domain) if i != tau_index]
-                final_models.append(TaylorModel(endpoint_poly, endpoint_residual, endpoint_domain, order=order))
+                final_models.append(TaylorModel(
+                    endpoint_poly,
+                    endpoint_residual,
+                    endpoint_domain,
+                    order=candidate_order_i,
+                    truncation_range_split=cand_i.truncation_range_split,
+                ))
             final_tm = TMVector(final_models).apply_cutoff(cutoff_threshold)
         except Exception as exc:
             message = message or f"endpoint tightening skipped: {exc}"
+    final_tm = _truncate_tm_to_order(final_tm, output_order).apply_cutoff(cutoff_threshold)
+    output_tm = _truncate_tm_to_order(validated, output_order)
+
     next_symbolic_state = symbolic_remainder_state
     symbolic_stats: Mapping[str, Any] | None = None
     if symbolic_remainder:
@@ -1024,11 +1201,11 @@ def flowpipe_step_from_tm(
                 "materialized_remainder_width_sum": "",
             }
     return FlowpipeSegment(
-        tm=validated,
+        tm=output_tm,
         final_tm=final_tm,
         status=status,
         h=float(h),
-        order=int(order),
+        order=output_order,
         validation_attempts=attempts,
         message=message,
         tau_index=tau_index,
@@ -1079,6 +1256,8 @@ def flowpipe_step_flowstar_style_adaptive(
     diagnostics: list[dict[str, Any]] | None = None,
     diagnostics_context: Mapping[str, Any] | None = None,
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    candidate_order: int | None = None,
+    truncation_range_split: int | None = None,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -1117,6 +1296,8 @@ def flowpipe_step_flowstar_style_adaptive(
             diagnostics=diagnostics,
             diagnostics_context=context,
             rhs_breakdown_callback=rhs_breakdown_callback,
+            candidate_order=candidate_order,
+            truncation_range_split=truncation_range_split,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -1156,6 +1337,8 @@ def flowpipe_step_flowstar_style_adaptive(
                 diagnostics=diagnostics,
                 diagnostics_context=fallback_context,
                 rhs_breakdown_callback=rhs_breakdown_callback,
+                candidate_order=None if candidate_order is None else max(int(candidate_order), fallback_order),
+                truncation_range_split=truncation_range_split,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg

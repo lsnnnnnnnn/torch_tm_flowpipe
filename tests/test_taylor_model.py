@@ -28,3 +28,25 @@ def test_taylor_model_multiplication_breakdown_matches_mul_widths():
     assert breakdown["total_remainder_width"] == product.remainder.width().item()
     assert breakdown["output_total_range_width"] == product.range_box().width().item()
     assert breakdown["finite"] is True
+
+
+def test_split_interval_evaluation_is_no_wider_for_dropped_terms():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    x = TaylorModel.variable(0, domain, order=1, truncation_range_split=2)
+    y = TaylorModel.variable(1, domain, order=1, truncation_range_split=2)
+    dropped_poly = (x.polynomial * y.polynomial) * (x.polynomial + y.polynomial)
+
+    plain = dropped_poly.evaluate_interval(domain)
+    split = dropped_poly.evaluate_interval_split(domain, 2)
+
+    assert split.width().item() <= plain.width().item() + 1e-12
+
+
+def test_taylor_model_mul_breakdown_records_split():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    x = TaylorModel.variable(0, domain, order=1, truncation_range_split=2)
+    y = TaylorModel.variable(1, domain, order=1, truncation_range_split=2)
+
+    breakdown = taylor_model_mul_breakdown(x * y, x + y, order=1)
+
+    assert breakdown["truncation_range_split"] == 2
