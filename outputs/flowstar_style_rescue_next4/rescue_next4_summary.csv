@@ -1,0 +1,5 @@
+comparison_item,run_id,status,last_validated_t,flowstar_validated,pytorch_validated,runtime_s,failure_reason,decision_relevance,notes
+previous_best_candidate_order,flowstar_style_o6_candidate8_output6,failed,2.4007376673997931,,,485.91970288474113,Picard residual not subset of target remainder,baseline t~=2.400737,Picard residual not subset of target remainder
+one_step_oracle,flowstar_one_step_oracle_candidate8_cutoff,skipped,,false,false,0,Flow* toolbox root not found; set FLOWSTAR_ROOT or pass --flowstar-root,local same-box diagnostic,local one-step diagnostic only; no full parity claim
+flowstar_ctrunc_validation,flowstar_style_o6_candidate8_output6_flowstar_ctrunc,failed,2.4007376673997931,,,442.6456627137959,Flowstar ctrunc tmp remainder not subset of target remainder,new validation mode,Flowstar ctrunc tmp remainder not subset of target remainder
+selective_validation_path,flowstar_style_o6_candidate8_output6_keep8,failed,2.345909199029081,,,438.32936211396009,Picard residual not subset of target remainder,keepK validation-path audit/fix,Picard residual not subset of target remainder

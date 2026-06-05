@@ -114,6 +114,20 @@ SEGMENT_FIELDS = [
     "message",
 ]
 
+RESET_BOX_FIELDS = [
+    "run_id",
+    "segment_index",
+    "t_lo",
+    "t_hi",
+    "x_lo",
+    "x_hi",
+    "y_lo",
+    "y_hi",
+    "h",
+    "order",
+    "reset_box_source",
+]
+
 VALIDATION_ATTEMPT_FIELDS = [
     "run_id",
     "mode",
@@ -188,6 +202,65 @@ VALIDATION_ATTEMPT_FIELDS = [
     "finite_residual",
     "validation_status",
     "validation_message",
+    "tmp_remainder_lo_x",
+    "tmp_remainder_hi_x",
+    "tmp_remainder_width_x",
+    "tmp_remainder_center_x",
+    "tmp_remainder_radius_x",
+    "tmp_remainder_lo_y",
+    "tmp_remainder_hi_y",
+    "tmp_remainder_width_y",
+    "tmp_remainder_center_y",
+    "tmp_remainder_radius_y",
+    "tmp_remainder_width_sum",
+    "poly_diff_range_lo_x",
+    "poly_diff_range_hi_x",
+    "poly_diff_range_width_x",
+    "poly_diff_range_center_x",
+    "poly_diff_range_radius_x",
+    "poly_diff_range_lo_y",
+    "poly_diff_range_hi_y",
+    "poly_diff_range_width_y",
+    "poly_diff_range_center_y",
+    "poly_diff_range_radius_y",
+    "poly_diff_range_width_sum",
+    "ordinary_residual_range_lo_x",
+    "ordinary_residual_range_hi_x",
+    "ordinary_residual_range_width_x",
+    "ordinary_residual_range_center_x",
+    "ordinary_residual_range_radius_x",
+    "ordinary_residual_range_lo_y",
+    "ordinary_residual_range_hi_y",
+    "ordinary_residual_range_width_y",
+    "ordinary_residual_range_center_y",
+    "ordinary_residual_range_radius_y",
+    "ordinary_residual_range_width_sum",
+    "normal_eval_range_lo_x",
+    "normal_eval_range_hi_x",
+    "normal_eval_range_width_x",
+    "normal_eval_range_center_x",
+    "normal_eval_range_radius_x",
+    "normal_eval_range_lo_y",
+    "normal_eval_range_hi_y",
+    "normal_eval_range_width_y",
+    "normal_eval_range_center_y",
+    "normal_eval_range_radius_y",
+    "normal_eval_range_width_sum",
+    "subset_tmp_remainder",
+    "subset_ordinary_residual",
+    "validation_decision_difference",
+    "candidate_terms_before_validation_terms_hash",
+    "candidate_terms_before_validation_term_count",
+    "candidate_terms_before_validation_max_degree",
+    "candidate_terms_before_validation_high_degree_term_count",
+    "candidate_terms_after_selective_terms_hash",
+    "candidate_terms_after_selective_term_count",
+    "candidate_terms_after_selective_max_degree",
+    "candidate_terms_after_selective_high_degree_term_count",
+    "validation_candidate_inside_terms_hash",
+    "validation_candidate_inside_term_count",
+    "validation_candidate_inside_max_degree",
+    "validation_candidate_inside_high_degree_term_count",
 ]
 
 COMPARISON_FIELDS = [
@@ -255,11 +328,38 @@ RETAINED_TERM_FIELDS = [
     "term_interval_width",
 ]
 
+VALIDATION_PATH_TERM_FIELDS = [
+    "run_id",
+    "segment_index",
+    "attempt_index",
+    "stage",
+    "terms_hash",
+    "term_count",
+    "max_degree",
+    "high_degree_term_count",
+    "validation_status",
+    "subset_result",
+    "rejection_reason",
+]
+
 NEXT3_FIELDS = [
     *NEXT_FIELDS,
     "center_corrected_dimensions",
     "max_center_correction_abs",
     "max_selective_dropped_remainder_width_sum",
+]
+
+NEXT4_FIELDS = [
+    "comparison_item",
+    "run_id",
+    "status",
+    "last_validated_t",
+    "flowstar_validated",
+    "pytorch_validated",
+    "runtime_s",
+    "failure_reason",
+    "decision_relevance",
+    "notes",
 ]
 
 
@@ -401,6 +501,29 @@ def _segment_row(
     if details:
         row["_selective_term_details"] = [dict(item) for item in details]
     return row
+
+
+def _reset_box_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for row in segment_rows:
+        if row.get("status") != "validated":
+            continue
+        rows.append(
+            {
+                "run_id": row.get("run_id", ""),
+                "segment_index": row.get("segment_index", ""),
+                "t_lo": row.get("t_lo", ""),
+                "t_hi": row.get("t_hi", ""),
+                "x_lo": row.get("x_lo", ""),
+                "x_hi": row.get("x_hi", ""),
+                "y_lo": row.get("y_lo", ""),
+                "y_hi": row.get("y_hi", ""),
+                "h": row.get("h", ""),
+                "order": row.get("order", ""),
+                "reset_box_source": "normalized_endpoint_reset_box",
+            }
+        )
+    return rows
 
 
 def _summarize_run(
@@ -841,6 +964,24 @@ def _configs() -> list[dict[str, Any]]:
             candidate_order=8,
             validation_mode="target_remainder_centered",
             selective_high_degree_terms_top_k=8,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_target_flowstar_ctrunc",
+            order=6,
+            validation_mode="target_remainder_flowstar_ctrunc",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_flowstar_ctrunc",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_flowstar_ctrunc",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_flowstar_ctrunc",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            validation_mode="target_remainder_flowstar_ctrunc",
         ),
     ]
 
@@ -1500,6 +1641,7 @@ def run_experiment(
     write_rescue_next_outputs(trigger_out_dir=out_dir)
     write_rescue_next2_outputs(trigger_out_dir=out_dir)
     write_rescue_next3_outputs(trigger_out_dir=out_dir)
+    write_rescue_next4_outputs(trigger_out_dir=out_dir)
     return summary_rows, segment_rows, attempt_rows
 
 
@@ -1896,6 +2038,162 @@ def _write_selective_terms_report(
         )
     (out_dir / "selective_terms_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+def _last_failed_attempt(attempt_rows: Sequence[Mapping[str, Any]], run_id: str | None = None) -> Mapping[str, Any]:
+    rows = [row for row in attempt_rows if row.get("validation_status") == "failed"]
+    if run_id is not None:
+        rows = [row for row in rows if row.get("run_id") == run_id]
+    return rows[-1] if rows else {}
+
+
+def _failure_dimension_from_attempt(row: Mapping[str, Any], prefix: str = "tmp_remainder") -> str:
+    target_width = (_finite_float(row.get("target_remainder_width_sum")) or 0.0004) / 2.0
+    scores: dict[str, float] = {}
+    for dim in ("x", "y"):
+        lo = _finite_float(row.get(f"{prefix}_lo_{dim}"))
+        hi = _finite_float(row.get(f"{prefix}_hi_{dim}"))
+        if lo is None or hi is None:
+            lo = _finite_float(row.get(f"residual_lo_{dim}"))
+            hi = _finite_float(row.get(f"residual_hi_{dim}"))
+        if lo is None or hi is None:
+            continue
+        scores[dim] = max(abs(lo), abs(hi)) - target_width * 0.5
+    return max(scores, key=scores.get, default="")
+
+
+def _shift_or_width_from_attempt(row: Mapping[str, Any], prefix: str = "tmp_remainder") -> str:
+    dim = _failure_dimension_from_attempt(row, prefix=prefix)
+    if not dim:
+        return "unknown"
+    width = _finite_float(row.get(f"{prefix}_width_{dim}"))
+    center = _finite_float(row.get(f"{prefix}_center_{dim}"))
+    target_width = (_finite_float(row.get("target_remainder_width_sum")) or 0.0004) / 2.0
+    if width is not None and center is not None and width <= target_width * 1.05 and abs(center) > max(width * 0.05, 1e-12):
+        return "shift"
+    if width is not None and width > target_width * 1.05:
+        return "width"
+    return "shift" if center is not None and abs(center) > 1e-12 else "unknown"
+
+
+def _max_abs_center(rows: Sequence[Mapping[str, Any]], prefix: str) -> float | None:
+    vals: list[float] = []
+    for row in rows:
+        for dim in ("x", "y"):
+            val = _finite_float(row.get(f"{prefix}_center_{dim}"))
+            if val is not None:
+                vals.append(abs(val))
+    return max(vals) if vals else None
+
+
+def _write_ctrunc_validation_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best(summary_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    failed = _last_failed_attempt(attempt_rows, str(best.get("run_id", "")) if best else None)
+    failure_dim = _failure_dimension_from_attempt(failed)
+    failure_kind = _shift_or_width_from_attempt(failed)
+    ordinary_shift = _max_abs_center(attempt_rows, "ordinary_residual_range")
+    normal_shift = _max_abs_center(attempt_rows, "normal_eval_range")
+    normal_reduced = ordinary_shift is not None and normal_shift is not None and normal_shift < ordinary_shift
+    comp = _best_comparison_for_run(comparison_rows, str(best.get("run_id", ""))) if best else {}
+    lines = [
+        "# Flowstar Ctrunc Validation Report",
+        "",
+        "This opt-in mode uses a clean-room Flow*-style Picard ctrunc validation decision. It does not replace the default target-remainder validator.",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best ctrunc variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did flowstar_ctrunc validation beat t~=2.400737? {_yes_no(bool(best_t is not None and best_t > 2.400737667399793))}.",
+        f"Did it reach horizon 5? {_yes_no(reached)}.",
+        f"Which dimension still fails? `{failure_dim}`.",
+        f"Is the failure still shift or width? `{failure_kind}`.",
+        f"Does normal eval reduce the residual shift? {_yes_no(normal_reduced)}; ordinary max center=`{ordinary_shift if ordinary_shift is not None else ''}`, normal max center=`{normal_shift if normal_shift is not None else ''}`.",
+        f"Runtime impact: best runtime_s=`{best.get('runtime_s', '') if best else ''}`.",
+        f"Width ratio vs Flow*: last=`{comp.get('last_width_ratio', '')}`, tube=`{comp.get('tube_width_ratio', '')}`.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | last_validated_t | runtime_s | tmp_subset_fail_dim | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | ---: | --- | ---: | ---: | --- |",
+    ]
+    comp_by_run = _comparison_by_run(comparison_rows)
+    for row in summary_rows:
+        comp_row = comp_by_run.get(str(row.get("run_id", "")), {})
+        failed_row = _last_failed_attempt(attempt_rows, str(row.get("run_id", "")))
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('runtime_s', '')} | {_failure_dimension_from_attempt(failed_row)} | "
+            f"{comp_row.get('last_width_ratio', '')} | {comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "ctrunc_validation_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _selective_validation_path_term_rows(attempt_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    stages = [
+        ("before_validation", "candidate_terms_before_validation"),
+        ("after_selective", "candidate_terms_after_selective"),
+        ("inside_validation", "validation_candidate_inside"),
+    ]
+    for attempt in attempt_rows:
+        if not attempt.get("selective_high_degree_terms_top_k"):
+            continue
+        for stage, prefix in stages:
+            rows.append(
+                {
+                    "run_id": attempt.get("run_id", ""),
+                    "segment_index": attempt.get("segment_index", ""),
+                    "attempt_index": attempt.get("attempt_index", ""),
+                    "stage": stage,
+                    "terms_hash": attempt.get(f"{prefix}_terms_hash", ""),
+                    "term_count": attempt.get(f"{prefix}_term_count", ""),
+                    "max_degree": attempt.get(f"{prefix}_max_degree", ""),
+                    "high_degree_term_count": attempt.get(f"{prefix}_high_degree_term_count", ""),
+                    "validation_status": attempt.get("validation_status", ""),
+                    "subset_result": attempt.get("subset_result", ""),
+                    "rejection_reason": attempt.get("rejection_reason", ""),
+                }
+            )
+    return rows
+
+
+def _write_selective_validation_path_audit(out_dir: Path, attempt_rows: Sequence[Mapping[str, Any]]) -> None:
+    term_rows = _selective_validation_path_term_rows(attempt_rows)
+    _write_csv(out_dir / "validation_path_terms.csv", VALIDATION_PATH_TERM_FIELDS, term_rows)
+    inside_rows = [row for row in term_rows if row.get("stage") == "inside_validation"]
+    after_rows = [row for row in term_rows if row.get("stage") == "after_selective"]
+    inside_high = max((_finite_float(row.get("high_degree_term_count")) or 0.0 for row in inside_rows), default=0.0)
+    after_high = max((_finite_float(row.get("high_degree_term_count")) or 0.0 for row in after_rows), default=0.0)
+    hashes_match = all(
+        a.get("terms_hash") == b.get("terms_hash")
+        for a, b in zip(after_rows, inside_rows)
+        if a.get("run_id") == b.get("run_id") and a.get("segment_index") == b.get("segment_index")
+    )
+    present = inside_high > 0
+    if present:
+        conclusion = "retained degree >6 monomials are present during residual validation"
+    elif after_high > 0:
+        conclusion = "retained degree >6 monomials are created after selective construction but are missing inside validation"
+    else:
+        conclusion = "no retained degree >6 monomials were observed in the audited attempts"
+    lines = [
+        "# Selective Validation Path Audit",
+        "",
+        f"Conclusion: {conclusion}.",
+        f"After-selective max high-degree term count: `{after_high}`.",
+        f"Inside-validation max high-degree term count: `{inside_high}`.",
+        f"Do after-selective and inside-validation term hashes match where comparable? {_yes_no(bool(hashes_match))}.",
+        "",
+        "The audit hashes the candidate polynomial before selective retention, after selective retention, and inside the Picard residual validator.",
+    ]
+    (out_dir / "validation_path_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -1935,6 +2233,12 @@ def write_specialized_outputs(
         _write_csv(out_dir / "selective_terms_segments.csv", SEGMENT_FIELDS, segment_rows)
         _write_selective_terms_report(out_dir, summary_rows, attempt_rows, comparison_rows, max_horizon=max_horizon)
         _write_csv(out_dir / "retained_terms_near_failure.csv", RETAINED_TERM_FIELDS, _retained_term_rows(segment_rows))
+        _write_selective_validation_path_audit(out_dir, attempt_rows)
+    elif name == "flowstar_style_ctrunc_validation":
+        _write_csv(out_dir / "ctrunc_validation_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "ctrunc_validation_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_csv(out_dir / "ctrunc_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+        _write_ctrunc_validation_report(out_dir, summary_rows, attempt_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:
@@ -2304,6 +2608,125 @@ def write_rescue_next3_outputs(*, trigger_out_dir: Path | None = None) -> None:
         )
     (out_dir / "rescue_next3_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+def _bool_from_row(row: Mapping[str, Any], key: str) -> bool:
+    return str(row.get(key, "")).strip().lower() in {"1", "true", "yes", "validated", "completed"}
+
+
+def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
+    if trigger_out_dir is not None:
+        try:
+            outputs_root = (REPO_ROOT / "outputs").resolve()
+            if not trigger_out_dir.resolve().is_relative_to(outputs_root):
+                return
+        except Exception:
+            return
+    previous_rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_candidate_order" / "candidate_order_summary.csv")
+    ctrunc_rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_ctrunc_validation" / "ctrunc_validation_summary.csv")
+    selective_rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_style_selective_terms" / "selective_terms_summary.csv")
+    oracle_rows = _read_optional_csv(REPO_ROOT / "outputs" / "flowstar_one_step_oracle" / "oracle_summary.csv")
+
+    previous_best = max(previous_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
+    ctrunc_best = max(ctrunc_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
+    selective_best = max(selective_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
+    oracle = oracle_rows[0] if oracle_rows else {}
+
+    rows: list[dict[str, Any]] = []
+    if previous_best:
+        rows.append(
+            {
+                "comparison_item": "previous_best_candidate_order",
+                "run_id": previous_best.get("run_id", ""),
+                "status": previous_best.get("status", ""),
+                "last_validated_t": previous_best.get("last_validated_t", ""),
+                "runtime_s": previous_best.get("runtime_s", ""),
+                "failure_reason": previous_best.get("failure_reason", ""),
+                "decision_relevance": "baseline t~=2.400737",
+                "notes": previous_best.get("notes", ""),
+            }
+        )
+    if oracle:
+        rows.append(
+            {
+                "comparison_item": "one_step_oracle",
+                "run_id": oracle.get("run_id", "flowstar_one_step_oracle"),
+                "status": oracle.get("status", ""),
+                "flowstar_validated": oracle.get("flowstar_validated", ""),
+                "pytorch_validated": oracle.get("pytorch_validated", ""),
+                "runtime_s": oracle.get("flowstar_runtime_s", ""),
+                "failure_reason": oracle.get("failure_reason", ""),
+                "decision_relevance": "local same-box diagnostic",
+                "notes": oracle.get("notes", ""),
+            }
+        )
+    if ctrunc_best:
+        rows.append(
+            {
+                "comparison_item": "flowstar_ctrunc_validation",
+                "run_id": ctrunc_best.get("run_id", ""),
+                "status": ctrunc_best.get("status", ""),
+                "last_validated_t": ctrunc_best.get("last_validated_t", ""),
+                "runtime_s": ctrunc_best.get("runtime_s", ""),
+                "failure_reason": ctrunc_best.get("failure_reason", ""),
+                "decision_relevance": "new validation mode",
+                "notes": ctrunc_best.get("notes", ""),
+            }
+        )
+    if selective_best:
+        rows.append(
+            {
+                "comparison_item": "selective_validation_path",
+                "run_id": selective_best.get("run_id", ""),
+                "status": selective_best.get("status", ""),
+                "last_validated_t": selective_best.get("last_validated_t", ""),
+                "runtime_s": selective_best.get("runtime_s", ""),
+                "failure_reason": selective_best.get("failure_reason", ""),
+                "decision_relevance": "keepK validation-path audit/fix",
+                "notes": selective_best.get("notes", ""),
+            }
+        )
+    if not rows:
+        return
+
+    previous_t = _finite_float(previous_best.get("last_validated_t")) or 2.400737667399793
+    ctrunc_t = _finite_float(ctrunc_best.get("last_validated_t")) or 0.0
+    selective_t = _finite_float(selective_best.get("last_validated_t")) or 0.0
+    oracle_flowstar_validated = _bool_from_row(oracle, "flowstar_validated")
+    if ctrunc_t >= 5.0 - 1e-9:
+        decision = "ctrunc validation reached horizon 5; run h10 next after width review."
+    elif oracle and oracle_flowstar_validated and ctrunc_t < 5.0 - 1e-9:
+        decision = "Flow* one-step validates but PyTorch ctrunc does not reach horizon 5; continue source archaeology for normal eval, symbolic remainder, or preconditioning details."
+    elif oracle and not oracle_flowstar_validated:
+        decision = "Flow* one-step also fails from the PyTorch reset box; focus on width reduction before that point."
+    elif selective_t > previous_t:
+        decision = "Selective validation-path fix helps; combine it with ctrunc validation."
+    else:
+        decision = "Nothing beats t~=2.400737 yet; next target is a real Flow*-style symbolic remainder queue."
+
+    out_dir = REPO_ROOT / "outputs" / "flowstar_style_rescue_next4"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _write_csv(out_dir / "rescue_next4_summary.csv", NEXT4_FIELDS, rows)
+    lines = [
+        "# Rescue Variant Comparison Next4",
+        "",
+        f"Previous best candidate_order=8/output_order=6: `{previous_best.get('run_id', '')}` at t=`{previous_best.get('last_validated_t', '')}`.",
+        f"One-step oracle Flow* validates same local box? {_yes_no(oracle_flowstar_validated)}.",
+        f"Best flowstar_ctrunc validation: `{ctrunc_best.get('run_id', '')}` at t=`{ctrunc_best.get('last_validated_t', '')}`.",
+        f"Best selective validation-path run: `{selective_best.get('run_id', '')}` at t=`{selective_best.get('last_validated_t', '')}`.",
+        f"Decision: {decision}",
+        "",
+        "## Rows",
+        "",
+        "| item | run_id | status | last_validated_t | flowstar_validated | pytorch_validated | notes |",
+        "| --- | --- | --- | ---: | --- | --- | --- |",
+    ]
+    for row in rows:
+        lines.append(
+            f"| {row.get('comparison_item', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('flowstar_validated', '')} | {row.get('pytorch_validated', '')} | {row.get('notes', '')} |"
+        )
+    (out_dir / "rescue_next4_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def _write_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -2315,6 +2738,7 @@ def _write_outputs(
     _write_csv(out_dir / "rescue_summary.csv", SUMMARY_FIELDS, summary_rows)
     _write_csv(out_dir / "rescue_segments.csv", SEGMENT_FIELDS, segment_rows)
     _write_csv(out_dir / "rescue_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+    _write_csv(out_dir / "rescue_reset_boxes.csv", RESET_BOX_FIELDS, _reset_box_rows(segment_rows))
     write_report(out_dir, summary_rows, segment_rows, max_horizon=max_horizon)
 
 

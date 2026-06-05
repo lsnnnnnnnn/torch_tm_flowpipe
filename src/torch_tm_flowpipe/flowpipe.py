@@ -1,6 +1,7 @@
 """Fixed-step Taylor-model flowpipe construction for polynomial ODE prototypes."""
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from typing import Any, Callable, Iterable, List, Mapping, Sequence
 
@@ -128,6 +129,40 @@ def _poly_interval_with_split(poly: Polynomial, domain: Sequence[Interval], spli
     return poly.evaluate_interval_split(domain, pieces)
 
 
+def _normal_domain(domain: Sequence[Interval], tau_index: int | None = None) -> list[Interval]:
+    normal: list[Interval] = []
+    for i, iv in enumerate(domain):
+        if tau_index is not None and i == tau_index:
+            normal.append(iv)
+        else:
+            normal.append(_unit_interval_like(iv))
+    return normal
+
+
+def _poly_interval_normal(poly: Polynomial, domain: Sequence[Interval], tau_index: int | None = None) -> Interval:
+    """Flow*-style normal interval evaluation for normalized local domains."""
+    return poly.evaluate_interval(_normal_domain(domain, tau_index))
+
+
+def _cutoff_polynomial_normal(
+    poly: Polynomial,
+    domain: Sequence[Interval],
+    tau_index: int | None,
+    threshold: float | None,
+) -> tuple[Polynomial, Interval]:
+    if threshold is None:
+        return poly, Interval.zero(dtype=poly.dtype, device=poly.device)
+    kept: dict[tuple[int, ...], Any] = {}
+    removed: dict[tuple[int, ...], Any] = {}
+    threshold_t = torch.as_tensor(abs(float(threshold)), dtype=poly.dtype, device=poly.device)
+    for exp, coef in poly.terms.items():
+        target = removed if bool(torch.all(torch.abs(coef) <= threshold_t)) else kept
+        target[exp] = coef
+    removed_poly = Polynomial(removed, poly.n_vars)
+    removed_range = _poly_interval_normal(removed_poly, domain, tau_index) if removed else Interval.zero(dtype=poly.dtype, device=poly.device)
+    return Polynomial(kept, poly.n_vars), removed_range
+
+
 def _term_interval(exp: tuple[int, ...], coef: Any, domain: Sequence[Interval]) -> Interval:
     term_iv = Interval.point(coef)
     for power, dom in zip(exp, domain):
@@ -156,6 +191,35 @@ def _float_value(value: Any) -> float | str:
     return out if out is not None else ""
 
 
+def _tm_terms_signature(tm: TMVector) -> str:
+    parts: list[str] = []
+    for state_index, model in enumerate(tm):
+        for exp, coef in sorted(model.polynomial.terms.items()):
+            coef_f = _float_value(coef.detach().cpu() if hasattr(coef, "detach") else coef)
+            parts.append(f"{state_index}:{','.join(str(e) for e in exp)}:{coef_f}")
+    return "|".join(parts)
+
+
+def _tm_terms_hash(tm: TMVector) -> str:
+    return hashlib.sha256(_tm_terms_signature(tm).encode("utf-8")).hexdigest()[:16]
+
+
+def _tm_high_degree_term_count(tm: TMVector, output_order: int) -> int:
+    return sum(1 for model in tm for exp in model.polynomial.terms if sum(exp) > int(output_order))
+
+
+def _tm_max_degree(tm: TMVector) -> int:
+    return max((sum(exp) for model in tm for exp in model.polynomial.terms), default=0)
+
+
+def _add_term_hash_metrics(row: dict[str, Any], prefix: str, tm: TMVector, output_order: int | None) -> None:
+    row[f"{prefix}_terms_hash"] = _tm_terms_hash(tm)
+    row[f"{prefix}_term_count"] = sum(len(model.polynomial.terms) for model in tm)
+    row[f"{prefix}_max_degree"] = _tm_max_degree(tm)
+    if output_order is not None:
+        row[f"{prefix}_high_degree_term_count"] = _tm_high_degree_term_count(tm, int(output_order))
+
+
 def _truncate_tm_to_order(tm: TMVector, output_order: int) -> TMVector:
     truncated, _stats, _details = _truncate_tm_to_order_selective(tm, output_order, selective_top_k=None)
     return truncated
@@ -166,6 +230,7 @@ def _truncate_tm_to_order_selective(
     output_order: int,
     *,
     selective_top_k: int | None = None,
+    result_order: int | None = None,
 ) -> tuple[TMVector, list[dict[str, Any]], list[dict[str, Any]]]:
     models: list[TaylorModel] = []
     stats: list[dict[str, Any]] = []
@@ -212,7 +277,7 @@ def _truncate_tm_to_order_selective(
                 sparse_poly,
                 model.remainder + dropped_range,
                 list(model.domain),
-                order=int(output_order),
+                order=int(result_order if result_order is not None else output_order),
                 truncation_range_split=model.truncation_range_split,
             )
         )
@@ -381,6 +446,13 @@ def _append_validation_diagnostic(
             if key not in row:
                 row[key] = value
     if candidate is not None:
+        output_order_value = _float_or_none(row.get("output_order"))
+        _add_term_hash_metrics(
+            row,
+            "validation_candidate_inside",
+            candidate,
+            int(output_order_value) if output_order_value is not None else None,
+        )
         try:
             candidate_box = candidate.range_box()
             _add_width_metrics(row, "candidate_segment", candidate_box)
@@ -951,6 +1023,260 @@ def _picard_residual_boxes(
         )
         residual_boxes.append(residual_i.range_box().inflate(validation_eps))
     return residual_boxes
+
+
+def _interval_list_stats(prefix: str, boxes: Sequence[Interval] | None) -> dict[str, Any]:
+    row: dict[str, Any] = {}
+    if boxes is None:
+        return row
+    names = ("x", "y")
+    widths: list[float] = []
+    for i, iv in enumerate(boxes[:2]):
+        name = names[i] if i < len(names) else f"state_{i}"
+        lo = _interval_bound_value(iv.lo)
+        hi = _interval_bound_value(iv.hi)
+        width = _interval_width_value(iv)
+        center = _float_or_none(iv.mid().detach().cpu())
+        radius = _float_or_none(iv.radius().detach().cpu())
+        row[f"{prefix}_lo_{name}"] = lo if lo is not None else ""
+        row[f"{prefix}_hi_{name}"] = hi if hi is not None else ""
+        row[f"{prefix}_width_{name}"] = width if width is not None else ""
+        row[f"{prefix}_center_{name}"] = center if center is not None else ""
+        row[f"{prefix}_radius_{name}"] = radius if radius is not None else ""
+        if width is not None:
+            widths.append(width)
+    if widths:
+        row[f"{prefix}_width_sum"] = sum(widths)
+    return row
+
+
+def _picard_ctrunc_normal_image(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    cutoff_threshold: float | None,
+) -> TMVector:
+    domain = candidate.domain
+    rhs = _call_ode(ode_fn, candidate, u_tms)
+    models: list[TaylorModel] = []
+    for base_i, f_i in zip(base_ext, rhs):
+        picard_i = base_i + f_i.integrate(tau_index)
+        kept, dropped = picard_i.polynomial.truncate(order)
+        trunc_range = _poly_interval_normal(dropped, domain, tau_index)
+        kept, cutoff_range = _cutoff_polynomial_normal(kept, domain, tau_index, cutoff_threshold)
+        models.append(
+            TaylorModel(
+                kept,
+                picard_i.remainder + trunc_range + cutoff_range,
+                domain,
+                order=order,
+                truncation_range_split=picard_i.truncation_range_split,
+            )
+        )
+    return TMVector(models)
+
+
+def _validate_picard_target_remainder_flowstar_ctrunc(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate_poly: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    max_attempts: int,
+    validation_eps: float,
+    h: float,
+    target_remainder_radius: float,
+    cutoff_threshold: float | None,
+    diagnostics: list[dict[str, Any]] | None = None,
+    diagnostics_mode: str | None = None,
+    diagnostics_segment_index: int | None = None,
+    diagnostics_context: Mapping[str, Any] | None = None,
+    rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    symbolic_remainder: bool = False,
+    max_symbolic_remainders: int = 0,
+) -> tuple[TMVector, str, int, str]:
+    domain = candidate_poly.domain
+    if len(base_ext) != len(candidate_poly):
+        raise ValueError("base and candidate dimensions differ")
+    target_remainders = [_symmetric_interval(target_remainder_radius, domain) for _ in candidate_poly]
+    diag_extra = dict(diagnostics_context or {})
+    diag_extra.setdefault("validation_mode", "target_remainder_flowstar_ctrunc")
+    diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
+    diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    if symbolic_remainder:
+        diag_extra.setdefault("symbolic_remainder", True)
+        diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
+    diag_mode = diag_extra.pop("mode", diagnostics_mode)
+    diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
+
+    seed_remainders = [_combine_remainders(base_i.remainder, candidate_i.remainder) for base_i, candidate_i in zip(base_ext, candidate_poly)]
+    candidate = TMVector(
+        TaylorModel(
+            m.polynomial,
+            r,
+            domain,
+            order=order,
+            truncation_range_split=m.truncation_range_split,
+        )
+        for m, r in zip(candidate_poly, target_remainders)
+    )
+    if not intervals_are_finite(seed_remainders):
+        message = "non-finite initial remainder"
+        extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=target_remainders,
+            finite_residual=False,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+    if not all(target.contains_interval(seed) for target, seed in zip(target_remainders, seed_remainders)):
+        message = "initial or cutoff remainder exceeds target remainder"
+        extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=target_remainders,
+            finite_residual=True,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+
+    for attempt in range(1, max_attempts + 1):
+        if rhs_breakdown_callback is not None:
+            callback_context = dict(diag_extra)
+            if diag_mode is not None:
+                callback_context["mode"] = diag_mode
+            if diag_segment_index is not None:
+                callback_context["segment_index"] = diag_segment_index
+            callback_context["attempt_index"] = attempt
+            callback_context["h"] = float(h)
+            callback_context["order"] = int(order)
+            try:
+                rhs_breakdown_callback(candidate, order, attempt, callback_context)
+            except Exception:
+                pass
+        try:
+            ordinary_residual = _picard_residual_boxes(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                validation_eps=validation_eps,
+            )
+            tmp = _picard_ctrunc_normal_image(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                cutoff_threshold=cutoff_threshold,
+            )
+            poly_diff_ranges: list[Interval] = []
+            tmp_remainders: list[Interval] = []
+            for tmp_i, cand_i in zip(tmp, candidate):
+                diff_poly = tmp_i.polynomial - cand_i.polynomial
+                diff_range = _poly_interval_normal(diff_poly, domain, tau_index).inflate(validation_eps)
+                poly_diff_ranges.append(diff_range)
+                tmp_remainders.append((tmp_i.remainder + diff_range).inflate(validation_eps))
+        except Exception as exc:
+            message = f"validation exception: {exc}"
+            extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=None,
+                remainders=target_remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return candidate, "failed", attempt, message
+
+        finite_residual = intervals_are_finite(ordinary_residual) and intervals_are_finite(tmp_remainders) and intervals_are_finite(poly_diff_ranges)
+        subset_ordinary = bool(finite_residual and all(target.contains_interval(rb) for target, rb in zip(target_remainders, ordinary_residual)))
+        subset_tmp = bool(finite_residual and all(target.contains_interval(rem) for target, rem in zip(target_remainders, tmp_remainders)))
+        validation_decision_difference = bool(subset_tmp != subset_ordinary)
+        message = "" if subset_tmp else "Flowstar ctrunc tmp remainder not subset of target remainder"
+        validated_candidate = TMVector(
+            TaylorModel(
+                m.polynomial,
+                r,
+                domain,
+                order=order,
+                truncation_range_split=m.truncation_range_split,
+            )
+            for m, r in zip(candidate_poly, tmp_remainders)
+        )
+        extra = {
+            **diag_extra,
+            **_interval_list_stats("tmp_remainder", tmp_remainders),
+            **_interval_list_stats("poly_diff_range", poly_diff_ranges),
+            **_interval_list_stats("ordinary_residual_range", ordinary_residual),
+            **_interval_list_stats("normal_eval_range", poly_diff_ranges),
+            "subset_result": subset_tmp,
+            "subset_tmp_remainder": subset_tmp,
+            "subset_ordinary_residual": subset_ordinary,
+            "validation_decision_difference": validation_decision_difference,
+            "rejection_reason": "" if subset_tmp else message,
+        }
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=attempt,
+            h=h,
+            order=order,
+            candidate=validated_candidate,
+            tau_index=tau_index,
+            residual_boxes=ordinary_residual,
+            remainders=tmp_remainders,
+            finite_residual=finite_residual,
+            validation_status="validated" if subset_tmp else "failed",
+            validation_message=message,
+            extra=extra,
+        )
+        if subset_tmp:
+            return validated_candidate, "validated", attempt, ""
+        return validated_candidate, "failed", attempt, message
+
+    return candidate, "failed", max_attempts, "Flowstar ctrunc tmp remainder not subset of target remainder"
 
 
 def _shift_candidate_constants(candidate_poly: TMVector, shifts: Sequence[torch.Tensor]) -> TMVector:
@@ -1567,11 +1893,24 @@ def flowpipe_step_from_tm(
         )
         for m in base_ext
     )
-    if validation_mode not in {"growth", "current", "target_remainder", "target_remainder_refined", "target_remainder_centered"}:
+    if validation_mode not in {
+        "growth",
+        "current",
+        "target_remainder",
+        "target_remainder_refined",
+        "target_remainder_centered",
+        "target_remainder_flowstar_ctrunc",
+    }:
         raise ValueError(
-            "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_refined', or 'target_remainder_centered'"
+            "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_refined', "
+            "'target_remainder_centered', or 'target_remainder_flowstar_ctrunc'"
         )
-    target_mode = validation_mode in {"target_remainder", "target_remainder_refined", "target_remainder_centered"}
+    target_mode = validation_mode in {
+        "target_remainder",
+        "target_remainder_refined",
+        "target_remainder_centered",
+        "target_remainder_flowstar_ctrunc",
+    }
     attempt_limit = (2 if target_mode else 20) if max_validation_attempts is None else int(max_validation_attempts)
     if attempt_limit <= 0:
         raise ValueError("max_validation_attempts must be positive")
@@ -1592,11 +1931,23 @@ def flowpipe_step_from_tm(
         cutoff_threshold=cutoff_threshold,
         truncation_range_split=split,
     )
+    _add_term_hash_metrics(diag_context, "candidate_terms_before_validation", candidate_poly, output_order)
+    validation_candidate_poly = candidate_poly
+    validation_selective_stats: list[dict[str, Any]] = []
+    validation_selective_details: list[dict[str, Any]] = []
+    if selective_top_k > 0:
+        validation_candidate_poly, validation_selective_stats, validation_selective_details = _truncate_tm_to_order_selective(
+            candidate_poly,
+            output_order,
+            selective_top_k=selective_top_k,
+            result_order=candidate_order_i,
+        )
+    _add_term_hash_metrics(diag_context, "candidate_terms_after_selective", validation_candidate_poly, output_order)
     if validation_mode == "target_remainder":
         validated, status, attempts, message = _validate_picard_target_remainder(
             ode_fn,
             base_ext,
-            candidate_poly,
+            validation_candidate_poly,
             tau_index,
             candidate_order_i,
             u_tms,
@@ -1616,7 +1967,7 @@ def flowpipe_step_from_tm(
         validated, status, attempts, message = _validate_picard_target_remainder_centered(
             ode_fn,
             base_ext,
-            candidate_poly,
+            validation_candidate_poly,
             tau_index,
             candidate_order_i,
             u_tms,
@@ -1637,7 +1988,7 @@ def flowpipe_step_from_tm(
         validated, status, attempts, message = _validate_picard_target_remainder_refined(
             ode_fn,
             base_ext,
-            candidate_poly,
+            validation_candidate_poly,
             tau_index,
             candidate_order_i,
             u_tms,
@@ -1653,11 +2004,32 @@ def flowpipe_step_from_tm(
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
         )
+    elif validation_mode == "target_remainder_flowstar_ctrunc":
+        validated, status, attempts, message = _validate_picard_target_remainder_flowstar_ctrunc(
+            ode_fn,
+            base_ext,
+            validation_candidate_poly,
+            tau_index,
+            candidate_order_i,
+            u_tms,
+            h=float(h),
+            max_attempts=attempt_limit,
+            validation_eps=validation_eps,
+            target_remainder_radius=target_remainder_radius,
+            cutoff_threshold=cutoff_threshold,
+            diagnostics=diagnostics,
+            diagnostics_mode=diagnostics_mode,
+            diagnostics_segment_index=diagnostics_segment_index,
+            diagnostics_context=diag_context,
+            rhs_breakdown_callback=rhs_breakdown_callback,
+            symbolic_remainder=symbolic_remainder,
+            max_symbolic_remainders=max_symbolic_remainders,
+        )
     else:
         validated, status, attempts, message = _validate_picard(
             ode_fn,
             base_ext,
-            candidate_poly,
+            validation_candidate_poly,
             tau_index,
             candidate_order_i,
             u_tms,
@@ -1675,7 +2047,7 @@ def flowpipe_step_from_tm(
         )
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
     final_tm = final_tm.apply_cutoff(cutoff_threshold)
-    if status == "validated":
+    if status == "validated" and validation_mode != "target_remainder_flowstar_ctrunc":
         # The segment remainder is valid for every tau in [0,h].  For multi-step
         # propagation we only need the endpoint at tau=h, so tighten the endpoint
         # remainder by re-evaluating the Picard residual at that fixed local time.
@@ -1722,8 +2094,8 @@ def flowpipe_step_from_tm(
             output_order,
             selective_top_k=selective_top_k,
         )
-        selective_stats = _aggregate_selective_stats(output_selective_stats, top_k=selective_top_k)
-        selective_details = output_selective_details
+        selective_stats = _aggregate_selective_stats(validation_selective_stats or output_selective_stats, top_k=selective_top_k)
+        selective_details = validation_selective_details or output_selective_details
         final_tm = final_tm.apply_cutoff(cutoff_threshold)
     else:
         final_tm = _truncate_tm_to_order(final_tm, output_order).apply_cutoff(cutoff_threshold)
@@ -1814,7 +2186,12 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("h_min and h_max must be positive")
     if h_min > h_max:
         raise ValueError("h_min must be <= h_max")
-    if validation_mode not in {"target_remainder", "target_remainder_refined", "target_remainder_centered"}:
+    if validation_mode not in {
+        "target_remainder",
+        "target_remainder_refined",
+        "target_remainder_centered",
+        "target_remainder_flowstar_ctrunc",
+    }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     current_tm = x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order)
     h_try = min(float(h) if h is not None else float(h_max), float(h_max))

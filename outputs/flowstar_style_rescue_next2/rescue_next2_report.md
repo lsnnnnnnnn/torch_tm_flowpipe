@@ -19,6 +19,6 @@ Decision criteria: reaches horizon 5, no non-final h below 0.002, width ratio no
 | candidate_order_truncation_split | flowstar_style_o6_candidate8_output6_truncsplit2 | failed | 2.397165587736743 | 8 | 6 | 2 | 65.414395437961886 | 4.6266107683365485 |
 | h5_current_best | flowstar_style_o6_target | failed | 2.1095541733932355 | 6 | 6 |  | 30.050027407228164 | 1.9627712588202828 |
 | h5_current_best | flowstar_style_o6_target_cutoff | failed | 2.1095541733932355 | 6 | 6 |  | 30.050027407228164 | 1.9627712588202828 |
-| residual_shift_diagnostic | residual_shift_diagnostic_y | diagnostic_only | 2.1095541733932355 |  |  |  |  |  |
+| residual_shift_diagnostic | residual_shift_diagnostic_y | diagnostic_only | 2.4007376673997931 |  |  |  |  |  |
 | truncation_range_split | flowstar_style_o6_target_truncsplit2 | failed | 2.1236342027212638 | 6 | 6 | 2 | 30.885943327720746 | 2.0029842681327326 |
 | truncation_range_split | flowstar_style_o6_target_truncsplit4 | failed | 2.1236342027212638 | 6 | 6 | 4 | 30.885943327720746 | 2.0029842681327326 |

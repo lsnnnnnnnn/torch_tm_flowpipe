@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
 LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
+ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
     "baseline_dependency_preserving_o4_s1",
@@ -111,6 +112,7 @@ def test_committed_rescue_artifacts_are_multiline_and_parseable():
 def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(SCRIPT), doraise=True)
     py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
+    py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
 
 
 def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
@@ -180,6 +182,7 @@ def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable()
         ROOT / "outputs" / "flowstar_style_candidate_order",
         ROOT / "outputs" / "flowstar_style_truncation_range",
         ROOT / "outputs" / "flowstar_style_rescue_next2",
+        ROOT / "outputs" / "flowstar_style_rescue_next3",
     ]
     text_paths = [ROOT / "docs" / "flowstar_source_rescue_notes.md"]
     csv_paths = []
@@ -192,7 +195,10 @@ def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable()
     for path in csv_paths:
         frame = pd.read_csv(path)
         text = path.read_text(encoding="utf-8")
-        assert text.count("\n") > len(frame)
+        physical_lines = text.splitlines()
+        assert text.endswith("\n")
+        assert text.count("\n") >= len(frame) + 1
+        assert len(physical_lines) >= len(frame) + 1
     for path in text_paths:
         text = path.read_text(encoding="utf-8")
         assert text.count("\n") > 5
@@ -306,3 +312,63 @@ def test_selective_terms_specialized_outputs_smoke(tmp_path):
     report = (out_dir / "selective_terms_report.md").read_text(encoding="utf-8")
     assert report.count("\n") > 5
     assert "diagnostic-only" in report
+
+
+
+def test_ctrunc_validation_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_style_ctrunc_validation"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "60",
+            "--configs",
+            "flowstar_style_o6_target_flowstar_ctrunc",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "rescue_reset_boxes.csv",
+        "ctrunc_validation_summary.csv",
+        "ctrunc_validation_segments.csv",
+        "ctrunc_validation_attempts.csv",
+        "ctrunc_validation_report.md",
+    ]:
+        assert (out_dir / name).exists()
+    attempts = pd.read_csv(out_dir / "ctrunc_validation_attempts.csv")
+    assert "tmp_remainder_lo_x" in attempts.columns
+    assert "subset_tmp_remainder" in attempts.columns
+    report = (out_dir / "ctrunc_validation_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 5
+    assert "flowstar_ctrunc validation" in report
+
+
+def test_selective_validation_path_audit_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_style_selective_terms"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "60",
+            "--configs",
+            "flowstar_style_o6_candidate8_output6_keep4",
+        ],
+        check=True,
+    )
+
+    terms = pd.read_csv(out_dir / "validation_path_terms.csv")
+    assert {"before_validation", "after_selective", "inside_validation"} <= set(terms["stage"])
+    assert "terms_hash" in terms.columns
+    audit = (out_dir / "validation_path_audit.md").read_text(encoding="utf-8")
+    assert "Selective Validation Path Audit" in audit

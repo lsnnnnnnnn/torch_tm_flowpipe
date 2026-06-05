@@ -24,13 +24,9 @@ Decision criteria: reaches horizon 5, no non-final h below 0.002, target remaind
 | residual_centering | flowstar_style_o6_candidate8_output6_centered | failed | 2.4007376673997931 | 8 | 6 |  | 3 | 68.368230360584846 | 4.8355287651994372 |
 | residual_centering | flowstar_style_o6_candidate8_output6_cutoff_centered | failed | 2.4007376673997931 | 8 | 6 |  | 3 | 68.368230360584391 | 4.8355287651994052 |
 | residual_centering | flowstar_style_o6_target_centered | failed | 2.1159710308044115 | 6 | 6 |  | 6 | 30.850786594767612 | 2.0007043188924944 |
-| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep1 | failed | 2.4007376673997931 | 8 | 6 | 1 | 0 | 68.368230360584846 | 4.8355287651994372 |
-| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep2 | failed | 2.4007376673997931 | 8 | 6 | 2 | 0 | 68.368230360584846 | 4.8355287651994372 |
-| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep4 | failed | 2.4007376673997931 | 8 | 6 | 4 | 0 | 68.368230360584846 | 4.8355287651994372 |
-| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep8 | failed | 2.4007376673997931 | 8 | 6 | 8 | 0 | 68.368230360584846 | 4.8355287651994372 |
-| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep1_centered | failed | 2.4007376673997931 | 8 | 6 | 1 | 3 | 68.368230360584846 | 4.8355287651994372 |
-| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep2_centered | failed | 2.4007376673997931 | 8 | 6 | 2 | 3 | 68.368230360584846 | 4.8355287651994372 |
-| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep4_centered | failed | 2.4007376673997931 | 8 | 6 | 4 | 3 | 68.368230360584846 | 4.8355287651994372 |
-| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep8_centered | failed | 2.4007376673997931 | 8 | 6 | 8 | 3 | 68.368230360584846 | 4.8355287651994372 |
+| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep4 | failed | 2.3236324377489392 | 8 | 6 | 4 | 0 | 67.071579301470919 | 4.3827104228847373 |
+| selective_high_degree_terms | flowstar_style_o6_candidate8_output6_keep8 | failed | 2.345909199029081 | 8 | 6 | 8 | 0 | 69.676729518061265 | 4.5529407816498333 |
+| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep4_centered | failed | 2.3398728391401784 | 8 | 6 | 4 | 4 | 71.473812159685195 | 4.6703689517668545 |
+| selective_terms_centered | flowstar_style_o6_candidate8_output6_keep8_centered | failed | 2.345909199029081 | 8 | 6 | 8 | 4 | 69.676729518061265 | 4.5529407816498333 |
 | truncation_range_split | flowstar_style_o6_target_truncsplit2 | failed | 2.1236342027212638 | 6 | 6 |  |  | 30.885943327720746 | 2.0029842681327326 |
 | truncation_range_split | flowstar_style_o6_target_truncsplit4 | failed | 2.1236342027212638 | 6 | 6 |  |  | 30.885943327720746 | 2.0029842681327326 |
