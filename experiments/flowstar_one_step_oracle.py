@@ -13,6 +13,7 @@ from typing import Any, Mapping, Sequence
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_ROOT = REPO_ROOT / "src"
 FLOWSTAR_RUNNER_ROOT = REPO_ROOT / "comparisons" / "flowstar"
+LOCAL_FLOWSTAR_ROOT = REPO_ROOT.parent / "flowstar"
 for p in (SRC_ROOT, FLOWSTAR_RUNNER_ROOT):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
@@ -272,20 +273,20 @@ int main()
   begin = clock();
   ode.reach(result, initialSet, {h:.17g}, setting, safeSet);
   end = clock();
-  printf("FLOWSTAR_RUNTIME_S %.17g\n", (double)(end - begin) / CLOCKS_PER_SEC);
-  printf("FLOWSTAR_COMPLETED %d\n", result.isCompleted() ? 1 : 0);
-  printf("FLOWSTAR_SAFE %d\n", result.isSafe() ? 1 : 0);
-  printf("FLOWSTAR_UNSAFE %d\n", result.isUnsafe() ? 1 : 0);
+  printf("FLOWSTAR_RUNTIME_S %.17g\\n", (double)(end - begin) / CLOCKS_PER_SEC);
+  printf("FLOWSTAR_COMPLETED %d\\n", result.isCompleted() ? 1 : 0);
+  printf("FLOWSTAR_SAFE %d\\n", result.isSafe() ? 1 : 0);
+  printf("FLOWSTAR_UNSAFE %d\\n", result.isUnsafe() ? 1 : 0);
 
   result.transformToTaylorModels(setting);
   Plot_Setting plot_setting(vars);
   plot_setting.printOn();
   plot_setting.setOutputDims("t", "x");
   plot_setting.plot_2D_interval_GNUPLOT("./", "{stem}_t_x", result.tmv_flowpipes, setting);
-  printf("FLOWSTAR_PLOT {stem}_t_x t x\n");
+  printf("FLOWSTAR_PLOT {stem}_t_x t x\\n");
   plot_setting.setOutputDims("t", "y");
   plot_setting.plot_2D_interval_GNUPLOT("./", "{stem}_t_y", result.tmv_flowpipes, setting);
-  printf("FLOWSTAR_PLOT {stem}_t_y t y\n");
+  printf("FLOWSTAR_PLOT {stem}_t_y t y\\n");
   return 0;
 }}
 """
@@ -310,7 +311,13 @@ def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: flo
         run = run_flowstar_toolbox(cpp_path, flowstar_root=flowstar_root, output_dir=model_dir, timeout_s=timeout_s, build_lib=True)
         completed_flag = _stdout_value(COMPLETED_RE, run.stdout_path, "ok")
         runtime = _stdout_value(RUNTIME_RE, run.stdout_path, "runtime")
-        status = "completed" if run.status == "completed" and completed_flag == "1" else run.status
+        if run.status == "completed" and completed_flag == "1":
+            status = "completed"
+        elif run.status == "completed" and completed_flag == "0":
+            status = "not_completed"
+        else:
+            status = run.status
+        failure_reason = run.message or ("Flow* reach did not complete; no segment boxes emitted" if status == "not_completed" else "")
         x_path = model_dir / f"oracle_flowstar_o{order}_t_x.plt"
         y_path = model_dir / f"oracle_flowstar_o{order}_t_y.plt"
         order_segments = _combine_segments(RUN_ID, order, status, x_path, y_path)
@@ -324,7 +331,7 @@ def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: flo
                 "runtime_s": _finite_float(runtime) if runtime else run.runtime_s,
                 "last_width_sum": last.get("width_sum", ""),
                 "num_segments": len(order_segments),
-                "failure_reason": run.message,
+                "failure_reason": failure_reason,
             }
         )
     return summaries, segments
@@ -337,6 +344,8 @@ def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: fl
     h_try = _finite_float(failed_attempt.get("h_try")) or _finite_float(failed_attempt.get("h"))
     if h_try is None:
         raise ValueError("failed attempt does not contain h_try/h")
+    if flowstar_root is None and (LOCAL_FLOWSTAR_ROOT / "flowstar-toolbox" / "Continuous.h").exists():
+        flowstar_root = str(LOCAL_FLOWSTAR_ROOT)
     py_row = {
         "run_id": RUN_ID,
         "source_run_id": SOURCE_RUN_ID,

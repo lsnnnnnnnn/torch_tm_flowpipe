@@ -453,6 +453,12 @@ def _append_validation_diagnostic(
             candidate,
             int(output_order_value) if output_order_value is not None else None,
         )
+        _add_term_hash_metrics(
+            row,
+            "validation_candidate_after_internal",
+            candidate,
+            int(output_order_value) if output_order_value is not None else None,
+        )
         try:
             candidate_box = candidate.range_box()
             _add_width_metrics(row, "candidate_segment", candidate_box)

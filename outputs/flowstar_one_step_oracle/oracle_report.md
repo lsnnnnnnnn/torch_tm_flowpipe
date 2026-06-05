@@ -13,9 +13,9 @@ Flow*/PyTorch width ratio: ``.
 
 | order | status | validated | runtime_s | last_width_sum | segments | failure_reason |
 | ---: | --- | --- | ---: | ---: | ---: | --- |
-| 4 | skipped | false | 0 |  | 0 | Flow* toolbox root not found; set FLOWSTAR_ROOT or pass --flowstar-root |
-| 6 | skipped | false | 0 |  | 0 | Flow* toolbox root not found; set FLOWSTAR_ROOT or pass --flowstar-root |
-| 8 | skipped | false | 0 |  | 0 | Flow* toolbox root not found; set FLOWSTAR_ROOT or pass --flowstar-root |
+| 4 | not_completed | false | 0.00092500000000000004 |  | 0 | Flow* reach did not complete; no segment boxes emitted |
+| 6 | not_completed | false | 0.0039170000000000003 |  | 0 | Flow* reach did not complete; no segment boxes emitted |
+| 8 | not_completed | false | 0.014694 |  | 0 | Flow* reach did not complete; no segment boxes emitted |
 
 ## PyTorch Attempt
 

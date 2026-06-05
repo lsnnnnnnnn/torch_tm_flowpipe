@@ -3,6 +3,8 @@
 Conclusion: retained degree >6 monomials are present during residual validation.
 After-selective max high-degree term count: `16.0`.
 Inside-validation max high-degree term count: `16.0`.
+After-internal max high-degree term count: `16.0`.
 Do after-selective and inside-validation term hashes match where comparable? no.
+Do inside-validation and after-internal term hashes match where comparable? yes.
 
-The audit hashes the candidate polynomial before selective retention, after selective retention, and inside the Picard residual validator.
+The audit hashes the candidate polynomial before selective retention, after selective retention, inside the Picard residual validator, and after internal validation Taylor-model operations.

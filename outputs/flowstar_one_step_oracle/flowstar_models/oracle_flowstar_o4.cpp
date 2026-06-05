@@ -36,25 +36,19 @@ int main()
   begin = clock();
   ode.reach(result, initialSet, 0.0036197592495462228, setting, safeSet);
   end = clock();
-  printf("FLOWSTAR_RUNTIME_S %.17g
-", (double)(end - begin) / CLOCKS_PER_SEC);
-  printf("FLOWSTAR_COMPLETED %d
-", result.isCompleted() ? 1 : 0);
-  printf("FLOWSTAR_SAFE %d
-", result.isSafe() ? 1 : 0);
-  printf("FLOWSTAR_UNSAFE %d
-", result.isUnsafe() ? 1 : 0);
+  printf("FLOWSTAR_RUNTIME_S %.17g\n", (double)(end - begin) / CLOCKS_PER_SEC);
+  printf("FLOWSTAR_COMPLETED %d\n", result.isCompleted() ? 1 : 0);
+  printf("FLOWSTAR_SAFE %d\n", result.isSafe() ? 1 : 0);
+  printf("FLOWSTAR_UNSAFE %d\n", result.isUnsafe() ? 1 : 0);
 
   result.transformToTaylorModels(setting);
   Plot_Setting plot_setting(vars);
   plot_setting.printOn();
   plot_setting.setOutputDims("t", "x");
   plot_setting.plot_2D_interval_GNUPLOT("./", "oracle_flowstar_o4_t_x", result.tmv_flowpipes, setting);
-  printf("FLOWSTAR_PLOT oracle_flowstar_o4_t_x t x
-");
+  printf("FLOWSTAR_PLOT oracle_flowstar_o4_t_x t x\n");
   plot_setting.setOutputDims("t", "y");
   plot_setting.plot_2D_interval_GNUPLOT("./", "oracle_flowstar_o4_t_y", result.tmv_flowpipes, setting);
-  printf("FLOWSTAR_PLOT oracle_flowstar_o4_t_y t y
-");
+  printf("FLOWSTAR_PLOT oracle_flowstar_o4_t_y t y\n");
   return 0;
 }

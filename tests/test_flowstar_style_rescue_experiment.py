@@ -117,6 +117,20 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
+def test_one_step_oracle_cpp_template_escapes_printf_newlines():
+    spec = importlib.util.spec_from_file_location("flowstar_one_step_oracle", ORACLE_SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    cpp = module._render_cpp(4, 0.01, {"x_lo": 1.0, "x_hi": 1.1, "y_lo": 2.0, "y_hi": 2.1})
+
+    assert "FLOWSTAR_RUNTIME_S %.17g\\n" in cpp
+    assert "FLOWSTAR_COMPLETED %d\\n" in cpp
+    assert "FLOWSTAR_PLOT oracle_flowstar_o4_t_x t x\\n" in cpp
+    assert cpp.count("FLOWSTAR_RUNTIME_S %.17g") == 1
+
+
 def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
     module = _load_experiment_module()
     summary = {
@@ -363,7 +377,7 @@ def test_selective_validation_path_audit_outputs_smoke(tmp_path):
     )
 
     terms = pd.read_csv(out_dir / "validation_path_terms.csv")
-    assert {"before_validation", "after_selective", "inside_validation"} <= set(terms["stage"])
+    assert {"before_validation", "after_selective", "inside_validation", "after_internal"} <= set(terms["stage"])
     assert "terms_hash" in terms.columns
     audit = (out_dir / "validation_path_audit.md").read_text(encoding="utf-8")
     assert "Selective Validation Path Audit" in audit

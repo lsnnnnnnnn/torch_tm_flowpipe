@@ -262,6 +262,10 @@ VALIDATION_ATTEMPT_FIELDS = [
     "validation_candidate_inside_term_count",
     "validation_candidate_inside_max_degree",
     "validation_candidate_inside_high_degree_term_count",
+    "validation_candidate_after_internal_terms_hash",
+    "validation_candidate_after_internal_term_count",
+    "validation_candidate_after_internal_max_degree",
+    "validation_candidate_after_internal_high_degree_term_count",
 ]
 
 COMPARISON_FIELDS = [
@@ -2141,6 +2145,7 @@ def _selective_validation_path_term_rows(attempt_rows: Sequence[Mapping[str, Any
         ("before_validation", "candidate_terms_before_validation"),
         ("after_selective", "candidate_terms_after_selective"),
         ("inside_validation", "validation_candidate_inside"),
+        ("after_internal", "validation_candidate_after_internal"),
     ]
     for attempt in attempt_rows:
         if not attempt.get("selective_high_degree_terms_top_k"):
@@ -2169,11 +2174,18 @@ def _write_selective_validation_path_audit(out_dir: Path, attempt_rows: Sequence
     _write_csv(out_dir / "validation_path_terms.csv", VALIDATION_PATH_TERM_FIELDS, term_rows)
     inside_rows = [row for row in term_rows if row.get("stage") == "inside_validation"]
     after_rows = [row for row in term_rows if row.get("stage") == "after_selective"]
+    internal_rows = [row for row in term_rows if row.get("stage") == "after_internal"]
     inside_high = max((_finite_float(row.get("high_degree_term_count")) or 0.0 for row in inside_rows), default=0.0)
     after_high = max((_finite_float(row.get("high_degree_term_count")) or 0.0 for row in after_rows), default=0.0)
+    internal_high = max((_finite_float(row.get("high_degree_term_count")) or 0.0 for row in internal_rows), default=0.0)
     hashes_match = all(
         a.get("terms_hash") == b.get("terms_hash")
         for a, b in zip(after_rows, inside_rows)
+        if a.get("run_id") == b.get("run_id") and a.get("segment_index") == b.get("segment_index")
+    )
+    internal_hashes_match = all(
+        a.get("terms_hash") == b.get("terms_hash")
+        for a, b in zip(inside_rows, internal_rows)
         if a.get("run_id") == b.get("run_id") and a.get("segment_index") == b.get("segment_index")
     )
     present = inside_high > 0
@@ -2189,9 +2201,11 @@ def _write_selective_validation_path_audit(out_dir: Path, attempt_rows: Sequence
         f"Conclusion: {conclusion}.",
         f"After-selective max high-degree term count: `{after_high}`.",
         f"Inside-validation max high-degree term count: `{inside_high}`.",
+        f"After-internal max high-degree term count: `{internal_high}`.",
         f"Do after-selective and inside-validation term hashes match where comparable? {_yes_no(bool(hashes_match))}.",
+        f"Do inside-validation and after-internal term hashes match where comparable? {_yes_no(bool(internal_hashes_match))}.",
         "",
-        "The audit hashes the candidate polynomial before selective retention, after selective retention, and inside the Picard residual validator.",
+        "The audit hashes the candidate polynomial before selective retention, after selective retention, inside the Picard residual validator, and after internal validation Taylor-model operations.",
     ]
     (out_dir / "validation_path_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
