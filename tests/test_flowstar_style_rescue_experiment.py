@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
 LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
 ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
+FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
     "baseline_dependency_preserving_o4_s1",
@@ -113,6 +114,7 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(SCRIPT), doraise=True)
     py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
     py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
+    py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
 def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
@@ -172,18 +174,7 @@ def test_flowstar_source_rescue_notes_are_multiline():
 
 
 def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable():
-    artifact_dirs = [
-        ROOT / "outputs" / "flowstar_style_failure_localization",
-        ROOT / "outputs" / "flowstar_style_rescue_h5",
-        ROOT / "outputs" / "flowstar_style_rescue_adaptive_order",
-        ROOT / "outputs" / "flowstar_style_rescue_remainder_sensitivity",
-        ROOT / "outputs" / "flowstar_style_rescue_next",
-        ROOT / "outputs" / "flowstar_style_truncation_localization",
-        ROOT / "outputs" / "flowstar_style_candidate_order",
-        ROOT / "outputs" / "flowstar_style_truncation_range",
-        ROOT / "outputs" / "flowstar_style_rescue_next2",
-        ROOT / "outputs" / "flowstar_style_rescue_next3",
-    ]
+    artifact_dirs = sorted(p for p in (ROOT / "outputs").glob("flowstar_style_*") if p.is_dir())
     text_paths = [ROOT / "docs" / "flowstar_source_rescue_notes.md"]
     csv_paths = []
     for out_dir in artifact_dirs:
@@ -199,6 +190,8 @@ def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable()
         assert text.endswith("\n")
         assert text.count("\n") >= len(frame) + 1
         assert len(physical_lines) >= len(frame) + 1
+        if path.name.endswith("reset_boxes.csv"):
+            assert "validation_mode" in frame.columns
     for path in text_paths:
         text = path.read_text(encoding="utf-8")
         assert text.count("\n") > 5
@@ -341,6 +334,8 @@ def test_ctrunc_validation_specialized_outputs_smoke(tmp_path):
         "ctrunc_validation_report.md",
     ]:
         assert (out_dir / name).exists()
+    reset_boxes = pd.read_csv(out_dir / "rescue_reset_boxes.csv")
+    assert "validation_mode" in reset_boxes.columns
     attempts = pd.read_csv(out_dir / "ctrunc_validation_attempts.csv")
     assert "tmp_remainder_lo_x" in attempts.columns
     assert "subset_tmp_remainder" in attempts.columns

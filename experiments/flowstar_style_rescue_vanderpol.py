@@ -126,6 +126,7 @@ RESET_BOX_FIELDS = [
     "h",
     "order",
     "reset_box_source",
+    "validation_mode",
 ]
 
 VALIDATION_ATTEMPT_FIELDS = [
@@ -521,6 +522,7 @@ def _reset_box_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str,
                 "h": row.get("h", ""),
                 "order": row.get("order", ""),
                 "reset_box_source": "normalized_endpoint_reset_box",
+                "validation_mode": row.get("validation_mode", ""),
             }
         )
     return rows
