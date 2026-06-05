@@ -794,6 +794,11 @@ def _write_truncation_detail_outputs(
     rescue._write_csv(out_dir / "truncation_localization_summary.csv", TRUNCATION_SUMMARY_FIELDS, [summary_row])
     rescue._write_csv(out_dir / "truncation_top_terms.csv", TRUNCATION_DETAIL_FIELDS, enriched)
     _write_truncation_detail_report(out_dir, summary_row, enriched)
+    if out_dir.name == "flowstar_style_best_failure_localization":
+        rescue._write_csv(out_dir / "best_failure_top_terms.csv", TRUNCATION_DETAIL_FIELDS, enriched)
+        report_text = (out_dir / "truncation_localization_report.md").read_text(encoding="utf-8")
+        report_text = report_text.replace("# Truncation Localization Report", "# Best Failure Localization Report", 1)
+        (out_dir / "best_failure_localization_report.md").write_text(report_text, encoding="utf-8")
     _make_truncation_detail_plots(out_dir, enriched)
     _write_residual_shift_outputs(final_failure)
 
@@ -894,7 +899,16 @@ def run_localization(
     max_horizon: float,
     wall_cap_s: float,
     truncation_detail: bool = False,
+    run_id: str = RUN_ID,
+    order: int = ORDER,
+    validation_mode: str = "target_remainder",
+    candidate_order: int | None = None,
+    selective_high_degree_terms_top_k: int | None = None,
+    cutoff_threshold: float | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    global RUN_ID, ORDER
+    RUN_ID = str(run_id)
+    ORDER = int(order)
     out_dir.mkdir(parents=True, exist_ok=True)
     current: Any = rescue._initial_box()
     t = 0.0
@@ -928,9 +942,12 @@ def run_localization(
             "run_id": RUN_ID,
             "mode": "flowstar_style",
             "order": ORDER,
-            "validation_mode": "target_remainder",
+            "candidate_order": candidate_order if candidate_order is not None else ORDER,
+            "output_order": ORDER,
+            "validation_mode": validation_mode,
             "target_remainder_radius": TARGET_REMAINDER_RADIUS,
-            "cutoff_threshold": "",
+            "cutoff_threshold": "" if cutoff_threshold is None else cutoff_threshold,
+            "selective_high_degree_terms_top_k": selective_high_degree_terms_top_k or "",
             "segment_index": segment_index,
             "t_start": t,
         }
@@ -946,8 +963,11 @@ def run_localization(
                     h_min=local_h_min,
                     h_max=H_MAX,
                     target_remainder_radius=TARGET_REMAINDER_RADIUS,
-                    cutoff_threshold=None,
+                    cutoff_threshold=cutoff_threshold,
                     max_validation_attempts=2,
+                    validation_mode=validation_mode,
+                    candidate_order=candidate_order,
+                    selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                     rhs_breakdown_callback=callback,
@@ -1062,12 +1082,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-horizon", type=float, default=2.2)
     parser.add_argument("--wall-cap-s", type=float, default=600.0)
     parser.add_argument("--truncation-detail", action="store_true", help="Write dropped-term truncation localization diagnostics.")
+    parser.add_argument("--run-id", default=RUN_ID)
+    parser.add_argument("--order", type=int, default=ORDER)
+    parser.add_argument("--validation-mode", default="target_remainder")
+    parser.add_argument("--candidate-order", type=int, default=0)
+    parser.add_argument("--selective-high-degree-terms-top-k", type=int, default=0)
+    parser.add_argument("--cutoff-threshold", type=float, default=None)
     args = parser.parse_args(argv)
     run_localization(
         args.out_dir,
         max_horizon=float(args.max_horizon),
         wall_cap_s=float(args.wall_cap_s),
         truncation_detail=bool(args.truncation_detail),
+        run_id=str(args.run_id),
+        order=int(args.order),
+        validation_mode=str(args.validation_mode),
+        candidate_order=int(args.candidate_order) if int(args.candidate_order) > 0 else None,
+        selective_high_degree_terms_top_k=int(args.selective_high_degree_terms_top_k) if int(args.selective_high_degree_terms_top_k) > 0 else None,
+        cutoff_threshold=args.cutoff_threshold,
     )
     print(f"wrote failure localization outputs to {args.out_dir}")
     return 0

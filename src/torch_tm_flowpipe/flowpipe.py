@@ -40,6 +40,8 @@ class FlowpipeSegment:
     reset_tm: TMVector | None = None
     next_h: float | None = None
     step_rejections: int = 0
+    selective_term_stats: Mapping[str, Any] | None = None
+    selective_term_details: Sequence[Mapping[str, Any]] | None = None
 
 
 @dataclass
@@ -126,21 +128,134 @@ def _poly_interval_with_split(poly: Polynomial, domain: Sequence[Interval], spli
     return poly.evaluate_interval_split(domain, pieces)
 
 
+def _term_interval(exp: tuple[int, ...], coef: Any, domain: Sequence[Interval]) -> Interval:
+    term_iv = Interval.point(coef)
+    for power, dom in zip(exp, domain):
+        if power:
+            term_iv = term_iv * dom.pow_int(power)
+    return term_iv
+
+
+def _interval_abs_extent(iv: Interval) -> float:
+    return max(abs(float(iv.lo.detach().cpu())), abs(float(iv.hi.detach().cpu())))
+
+
+def _monomial_label(exp: tuple[int, ...]) -> str:
+    names = ["x", "y", "tau"]
+    parts: list[str] = []
+    for i, power in enumerate(exp):
+        if power == 0:
+            continue
+        name = names[i] if i < len(names) else f"z{i}"
+        parts.append(name if power == 1 else f"{name}^{power}")
+    return "1" if not parts else "*".join(parts)
+
+
+def _float_value(value: Any) -> float | str:
+    out = _float_or_none(value)
+    return out if out is not None else ""
+
+
 def _truncate_tm_to_order(tm: TMVector, output_order: int) -> TMVector:
+    truncated, _stats, _details = _truncate_tm_to_order_selective(tm, output_order, selective_top_k=None)
+    return truncated
+
+
+def _truncate_tm_to_order_selective(
+    tm: TMVector,
+    output_order: int,
+    *,
+    selective_top_k: int | None = None,
+) -> tuple[TMVector, list[dict[str, Any]], list[dict[str, Any]]]:
     models: list[TaylorModel] = []
-    for model in tm:
+    stats: list[dict[str, Any]] = []
+    details: list[dict[str, Any]] = []
+    top_k = int(selective_top_k or 0)
+    state_names = ("x", "y")
+    for state_index, model in enumerate(tm):
         kept, dropped = model.polynomial.truncate(int(output_order))
-        dropped_range = _poly_interval_with_split(dropped, model.domain, model.truncation_range_split)
+        dropped_terms = list(dropped.terms.items())
+        retained_terms: dict[tuple[int, ...], Any] = {}
+        nonkept_terms: dict[tuple[int, ...], Any] = dict(dropped.terms)
+        ranked: list[tuple[float, tuple[int, ...], Any, Interval]] = []
+        if top_k > 0 and dropped_terms:
+            for exp, coef in dropped_terms:
+                term_iv = _term_interval(tuple(exp), coef, model.domain)
+                ranked.append((_interval_abs_extent(term_iv), tuple(exp), coef, term_iv))
+            ranked.sort(key=lambda item: item[0], reverse=True)
+            for rank, (abs_extent, exp, coef, term_iv) in enumerate(ranked, start=1):
+                retained = rank <= top_k
+                if retained:
+                    retained_terms[exp] = coef
+                    nonkept_terms.pop(exp, None)
+                details.append(
+                    {
+                        "state_index": state_index,
+                        "state_dimension": state_names[state_index] if state_index < len(state_names) else f"state_{state_index}",
+                        "term_rank": rank,
+                        "retained": retained,
+                        "monomial": _monomial_label(exp),
+                        "coefficient": _float_value(coef.detach().cpu() if hasattr(coef, "detach") else coef),
+                        "total_degree": sum(exp),
+                        "abs_interval_contribution": abs_extent,
+                        "term_interval_lo": _float_value(term_iv.lo.detach().cpu()),
+                        "term_interval_hi": _float_value(term_iv.hi.detach().cpu()),
+                        "term_interval_width": _float_value(term_iv.width().detach().cpu()),
+                    }
+                )
+        sparse_poly = kept + Polynomial(retained_terms, kept.n_vars) if retained_terms else kept
+        nonkept = Polynomial(nonkept_terms, kept.n_vars)
+        dropped_range = _poly_interval_with_split(nonkept, model.domain, model.truncation_range_split)
+        total_dropped_range = _poly_interval_with_split(dropped, model.domain, model.truncation_range_split)
         models.append(
             TaylorModel(
-                kept,
+                sparse_poly,
                 model.remainder + dropped_range,
                 list(model.domain),
                 order=int(output_order),
                 truncation_range_split=model.truncation_range_split,
             )
         )
-    return TMVector(models)
+        stats.append(
+            {
+                "state_index": state_index,
+                "state_dimension": state_names[state_index] if state_index < len(state_names) else f"state_{state_index}",
+                "selective_high_degree_terms_top_k": top_k if top_k > 0 else "",
+                "selective_retained_terms_count": len(retained_terms),
+                "selective_dropped_terms_count": len(dropped_terms),
+                "selective_nonretained_terms_count": len(nonkept_terms),
+                "selective_dropped_remainder_lo": _float_value(dropped_range.lo.detach().cpu()),
+                "selective_dropped_remainder_hi": _float_value(dropped_range.hi.detach().cpu()),
+                "selective_dropped_remainder_width": _float_value(dropped_range.width().detach().cpu()),
+                "selective_total_dropped_width": _float_value(total_dropped_range.width().detach().cpu()),
+            }
+        )
+    return TMVector(models), stats, details
+
+
+def _aggregate_selective_stats(
+    stats: Sequence[Mapping[str, Any]],
+    *,
+    top_k: int | None,
+) -> dict[str, Any]:
+    if not top_k:
+        return {}
+    retained = sum(int(row.get("selective_retained_terms_count") or 0) for row in stats)
+    dropped = sum(int(row.get("selective_dropped_terms_count") or 0) for row in stats)
+    nonretained = sum(int(row.get("selective_nonretained_terms_count") or 0) for row in stats)
+    rem_width = 0.0
+    total_width = 0.0
+    for row in stats:
+        rem_width += _float_or_none(row.get("selective_dropped_remainder_width")) or 0.0
+        total_width += _float_or_none(row.get("selective_total_dropped_width")) or 0.0
+    return {
+        "selective_high_degree_terms_top_k": int(top_k),
+        "selective_retained_terms_count": retained,
+        "selective_dropped_terms_count": dropped,
+        "selective_nonretained_terms_count": nonretained,
+        "selective_dropped_remainder_width_sum": rem_width,
+        "selective_total_dropped_width_sum": total_width,
+    }
 
 
 def _symmetric_interval(radius: float, domain: Sequence[Interval]) -> Interval:
@@ -792,6 +907,395 @@ def _validate_picard_target_remainder(
 
 
 
+def _residual_interval_stats(prefix: str, boxes: Sequence[Interval] | None) -> dict[str, Any]:
+    row: dict[str, Any] = {}
+    if boxes is None:
+        return row
+    names = ("x", "y")
+    for i, iv in enumerate(boxes[:2]):
+        name = names[i]
+        lo = _interval_bound_value(iv.lo)
+        hi = _interval_bound_value(iv.hi)
+        width = _interval_width_value(iv)
+        center = _float_or_none(iv.mid().detach().cpu())
+        radius = _float_or_none(iv.radius().detach().cpu())
+        row[f"{prefix}_lo_{name}"] = lo if lo is not None else ""
+        row[f"{prefix}_hi_{name}"] = hi if hi is not None else ""
+        row[f"{prefix}_width_{name}"] = width if width is not None else ""
+        row[f"{prefix}_center_{name}"] = center if center is not None else ""
+        row[f"{prefix}_radius_{name}"] = radius if radius is not None else ""
+    return row
+
+
+def _picard_residual_boxes(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    validation_eps: float,
+) -> list[Interval]:
+    domain = candidate.domain
+    rhs = _call_ode(ode_fn, candidate, u_tms)
+    residual_boxes: list[Interval] = []
+    for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
+        picard_i = base_i + f_i.integrate(tau_index)
+        residual_i = picard_i - TaylorModel(
+            cand_i.polynomial,
+            Interval.zero(),
+            domain,
+            order=order,
+            truncation_range_split=cand_i.truncation_range_split,
+        )
+        residual_boxes.append(residual_i.range_box().inflate(validation_eps))
+    return residual_boxes
+
+
+def _shift_candidate_constants(candidate_poly: TMVector, shifts: Sequence[torch.Tensor]) -> TMVector:
+    shifted: list[TaylorModel] = []
+    for model, shift in zip(candidate_poly, shifts):
+        terms = {exp: coef.clone() for exp, coef in model.polynomial.terms.items()}
+        zero_exp = (0,) * model.polynomial.n_vars
+        shift_t = shift.to(dtype=model.polynomial.dtype, device=model.polynomial.device)
+        terms[zero_exp] = terms.get(zero_exp, torch.zeros_like(shift_t)) + shift_t
+        shifted.append(
+            TaylorModel(
+                Polynomial(terms, model.polynomial.n_vars),
+                model.remainder,
+                list(model.domain),
+                order=model.order,
+                truncation_range_split=model.truncation_range_split,
+            )
+        )
+    return TMVector(shifted)
+
+
+def _zero_shift_like(model: TaylorModel) -> torch.Tensor:
+    if model.polynomial.terms:
+        first = next(iter(model.polynomial.terms.values()))
+        return torch.zeros((), dtype=first.dtype, device=first.device)
+    if model.domain:
+        return torch.zeros((), dtype=model.domain[0].dtype, device=model.domain[0].device)
+    return torch.zeros((), dtype=torch.float64)
+
+
+def _validate_picard_target_remainder_centered(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate_poly: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    max_attempts: int,
+    validation_eps: float,
+    h: float,
+    target_remainder_radius: float,
+    center_correction_width_factor: float = 1.05,
+    diagnostics: list[dict[str, Any]] | None = None,
+    diagnostics_mode: str | None = None,
+    diagnostics_segment_index: int | None = None,
+    diagnostics_context: Mapping[str, Any] | None = None,
+    rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
+    symbolic_remainder: bool = False,
+    max_symbolic_remainders: int = 0,
+) -> tuple[TMVector, str, int, str]:
+    domain = candidate_poly.domain
+    if len(base_ext) != len(candidate_poly):
+        raise ValueError("base and candidate dimensions differ")
+    target_remainders = [_symmetric_interval(target_remainder_radius, domain) for _ in candidate_poly]
+    diag_extra = dict(diagnostics_context or {})
+    diag_extra.setdefault("validation_mode", "target_remainder_centered")
+    diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
+    diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("center_correction_width_factor", float(center_correction_width_factor))
+    if symbolic_remainder:
+        diag_extra.setdefault("symbolic_remainder", True)
+        diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
+    diag_mode = diag_extra.pop("mode", diagnostics_mode)
+    diag_segment_index = diag_extra.pop("segment_index", diagnostics_segment_index)
+
+    seed_remainders = [_combine_remainders(base_i.remainder, candidate_i.remainder) for base_i, candidate_i in zip(base_ext, candidate_poly)]
+    candidate = TMVector(
+        TaylorModel(
+            m.polynomial,
+            r,
+            domain,
+            order=order,
+            truncation_range_split=m.truncation_range_split,
+        )
+        for m, r in zip(candidate_poly, target_remainders)
+    )
+    if not intervals_are_finite(seed_remainders):
+        message = "non-finite initial remainder"
+        extra = dict(diag_extra, subset_result=False, rejection_reason=message, center_correction_applied=False, subset_after_correction=False)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=target_remainders,
+            finite_residual=False,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+    if not all(target.contains_interval(seed) for target, seed in zip(target_remainders, seed_remainders)):
+        message = "initial or cutoff remainder exceeds target remainder"
+        extra = dict(diag_extra, subset_result=False, rejection_reason=message, center_correction_applied=False, subset_after_correction=False)
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=0,
+            h=h,
+            order=order,
+            candidate=candidate,
+            tau_index=tau_index,
+            residual_boxes=None,
+            remainders=target_remainders,
+            finite_residual=True,
+            validation_status="failed",
+            validation_message=message,
+            extra=extra,
+        )
+        return candidate, "failed", 0, message
+
+    for attempt in range(1, max_attempts + 1):
+        if rhs_breakdown_callback is not None:
+            callback_context = dict(diag_extra)
+            if diag_mode is not None:
+                callback_context["mode"] = diag_mode
+            if diag_segment_index is not None:
+                callback_context["segment_index"] = diag_segment_index
+            callback_context["attempt_index"] = attempt
+            callback_context["h"] = float(h)
+            callback_context["order"] = int(order)
+            try:
+                rhs_breakdown_callback(candidate, order, attempt, callback_context)
+            except Exception:
+                pass
+        try:
+            residual_before = _picard_residual_boxes(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                validation_eps=validation_eps,
+            )
+        except Exception as exc:
+            message = f"validation exception: {exc}"
+            extra = dict(diag_extra, subset_result=False, rejection_reason=message, center_correction_applied=False, subset_after_correction=False)
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=None,
+                remainders=target_remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return candidate, "failed", attempt, message
+
+        finite_residual = intervals_are_finite(residual_before)
+        before_stats = _residual_interval_stats("residual_before", residual_before)
+        if not finite_residual:
+            message = "non-finite residual interval"
+            extra = {**diag_extra, **before_stats, "subset_result": False, "rejection_reason": message, "center_correction_applied": False, "subset_after_correction": False}
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=residual_before,
+                remainders=target_remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return candidate, "failed", attempt, message
+
+        subset_before = all(target.contains_interval(rb) for target, rb in zip(target_remainders, residual_before))
+        if subset_before:
+            extra = {
+                **diag_extra,
+                **before_stats,
+                **_residual_interval_stats("residual_after", residual_before),
+                "subset_result": True,
+                "rejection_reason": "",
+                "center_correction_applied": False,
+                "correction_value_x": 0.0,
+                "correction_value_y": 0.0,
+                "subset_after_correction": True,
+            }
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=residual_before,
+                remainders=target_remainders,
+                finite_residual=True,
+                validation_status="validated",
+                validation_message="",
+                extra=extra,
+            )
+            return candidate, "validated", attempt, ""
+
+        target_widths = [_interval_width_value(target) for target in target_remainders]
+        residual_widths = [_interval_width_value(rb) for rb in residual_before]
+        misses = [not target.contains_interval(rb) for target, rb in zip(target_remainders, residual_before)]
+        shift_eligible = []
+        for miss, rb_width, target_width in zip(misses, residual_widths, target_widths):
+            shift_eligible.append(bool(miss and rb_width is not None and target_width is not None and rb_width <= target_width * float(center_correction_width_factor)))
+        if any(miss and not eligible for miss, eligible in zip(misses, shift_eligible)):
+            message = "Picard residual not subset of target remainder"
+            extra = {
+                **diag_extra,
+                **before_stats,
+                "subset_result": False,
+                "rejection_reason": message,
+                "center_correction_applied": False,
+                "correction_value_x": 0.0,
+                "correction_value_y": 0.0,
+                "subset_after_correction": False,
+            }
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=candidate,
+                tau_index=tau_index,
+                residual_boxes=residual_before,
+                remainders=target_remainders,
+                finite_residual=True,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return candidate, "failed", attempt, message
+
+        shifts = []
+        for model, rb, eligible in zip(candidate_poly, residual_before, shift_eligible):
+            shifts.append(rb.mid() if eligible else _zero_shift_like(model))
+        corrected_poly = _shift_candidate_constants(candidate_poly, shifts)
+        corrected_candidate = TMVector(
+            TaylorModel(
+                m.polynomial,
+                r,
+                domain,
+                order=order,
+                truncation_range_split=m.truncation_range_split,
+            )
+            for m, r in zip(corrected_poly, target_remainders)
+        )
+        try:
+            residual_after = _picard_residual_boxes(
+                ode_fn,
+                base_ext,
+                corrected_candidate,
+                tau_index,
+                order,
+                u_tms,
+                validation_eps=validation_eps,
+            )
+        except Exception as exc:
+            message = f"validation exception after center correction: {exc}"
+            extra = dict(
+                diag_extra,
+                before_stats,
+                subset_result=False,
+                rejection_reason=message,
+                center_correction_applied=True,
+                correction_value_x=_float_value(shifts[0].detach().cpu()) if len(shifts) > 0 else "",
+                correction_value_y=_float_value(shifts[1].detach().cpu()) if len(shifts) > 1 else "",
+                subset_after_correction=False,
+            )
+            _append_validation_diagnostic(
+                diagnostics,
+                mode=diag_mode,
+                segment_index=diag_segment_index,
+                attempt_index=attempt,
+                h=h,
+                order=order,
+                candidate=corrected_candidate,
+                tau_index=tau_index,
+                residual_boxes=None,
+                remainders=target_remainders,
+                finite_residual=False,
+                validation_status="failed",
+                validation_message=message,
+                extra=extra,
+            )
+            return corrected_candidate, "failed", attempt, message
+
+        finite_after = intervals_are_finite(residual_after)
+        subset_after = bool(finite_after and all(target.contains_interval(rb) for target, rb in zip(target_remainders, residual_after)))
+        message = "" if subset_after else "Picard residual not subset of target remainder after center correction"
+        extra = {
+            **diag_extra,
+            **before_stats,
+            **_residual_interval_stats("residual_after", residual_after),
+            "subset_result": subset_after,
+            "rejection_reason": "" if subset_after else message,
+            "center_correction_applied": True,
+            "correction_value_x": _float_value(shifts[0].detach().cpu()) if len(shifts) > 0 else "",
+            "correction_value_y": _float_value(shifts[1].detach().cpu()) if len(shifts) > 1 else "",
+            "subset_after_correction": subset_after,
+        }
+        _append_validation_diagnostic(
+            diagnostics,
+            mode=diag_mode,
+            segment_index=diag_segment_index,
+            attempt_index=attempt,
+            h=h,
+            order=order,
+            candidate=corrected_candidate,
+            tau_index=tau_index,
+            residual_boxes=residual_after,
+            remainders=target_remainders,
+            finite_residual=finite_after,
+            validation_status="validated" if subset_after else "failed",
+            validation_message=message,
+            extra=extra,
+        )
+        if subset_after:
+            return corrected_candidate, "validated", attempt, ""
+        return corrected_candidate, "failed", attempt, message
+
+    return candidate, "failed", max_attempts, "Picard residual not subset of target remainder"
+
+
 def _validate_picard_target_remainder_refined(
     ode_fn: ODEFunction,
     base_ext: TMVector,
@@ -1006,6 +1510,7 @@ def flowpipe_step_from_tm(
     growth_factor: float = 1.25,
     validation_mode: str = "growth",
     target_remainder_radius: float = 1e-4,
+    center_correction_width_factor: float = 1.05,
     cutoff_threshold: float | None = None,
     diagnostics: list[dict[str, Any]] | None = None,
     diagnostics_mode: str | None = None,
@@ -1020,6 +1525,7 @@ def flowpipe_step_from_tm(
     diagnostic_context: Mapping[str, Any] | None = None,
     candidate_order: int | None = None,
     truncation_range_split: int | None = None,
+    selective_high_degree_terms_top_k: int | None = None,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -1044,6 +1550,9 @@ def flowpipe_step_from_tm(
     diag_context.setdefault("output_order", output_order)
     diag_context.setdefault("candidate_order", candidate_order_i)
     diag_context.setdefault("truncation_range_split", split or "")
+    selective_top_k = int(selective_high_degree_terms_top_k or 0)
+    if selective_top_k > 0:
+        diag_context.setdefault("selective_high_degree_terms_top_k", selective_top_k)
     tau_interval = Interval(0.0, float(h))
     base_ext = x0_tm.extend_domain(tau_interval)
     tau_index = x0_tm.n_vars
@@ -1058,11 +1567,11 @@ def flowpipe_step_from_tm(
         )
         for m in base_ext
     )
-    if validation_mode not in {"growth", "current", "target_remainder", "target_remainder_refined"}:
+    if validation_mode not in {"growth", "current", "target_remainder", "target_remainder_refined", "target_remainder_centered"}:
         raise ValueError(
-            "validation_mode must be 'growth', 'current', 'target_remainder', or 'target_remainder_refined'"
+            "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_refined', or 'target_remainder_centered'"
         )
-    target_mode = validation_mode in {"target_remainder", "target_remainder_refined"}
+    target_mode = validation_mode in {"target_remainder", "target_remainder_refined", "target_remainder_centered"}
     attempt_limit = (2 if target_mode else 20) if max_validation_attempts is None else int(max_validation_attempts)
     if attempt_limit <= 0:
         raise ValueError("max_validation_attempts must be positive")
@@ -1095,6 +1604,27 @@ def flowpipe_step_from_tm(
             max_attempts=attempt_limit,
             validation_eps=validation_eps,
             target_remainder_radius=target_remainder_radius,
+            diagnostics=diagnostics,
+            diagnostics_mode=diagnostics_mode,
+            diagnostics_segment_index=diagnostics_segment_index,
+            diagnostics_context=diag_context,
+            rhs_breakdown_callback=rhs_breakdown_callback,
+            symbolic_remainder=symbolic_remainder,
+            max_symbolic_remainders=max_symbolic_remainders,
+        )
+    elif validation_mode == "target_remainder_centered":
+        validated, status, attempts, message = _validate_picard_target_remainder_centered(
+            ode_fn,
+            base_ext,
+            candidate_poly,
+            tau_index,
+            candidate_order_i,
+            u_tms,
+            h=float(h),
+            max_attempts=attempt_limit,
+            validation_eps=validation_eps,
+            target_remainder_radius=target_remainder_radius,
+            center_correction_width_factor=center_correction_width_factor,
             diagnostics=diagnostics,
             diagnostics_mode=diagnostics_mode,
             diagnostics_segment_index=diagnostics_segment_index,
@@ -1179,8 +1709,25 @@ def flowpipe_step_from_tm(
             final_tm = TMVector(final_models).apply_cutoff(cutoff_threshold)
         except Exception as exc:
             message = message or f"endpoint tightening skipped: {exc}"
-    final_tm = _truncate_tm_to_order(final_tm, output_order).apply_cutoff(cutoff_threshold)
-    output_tm = _truncate_tm_to_order(validated, output_order)
+    selective_stats: dict[str, Any] = {}
+    selective_details: list[dict[str, Any]] = []
+    if selective_top_k > 0:
+        final_tm, final_selective_stats, final_selective_details = _truncate_tm_to_order_selective(
+            final_tm,
+            output_order,
+            selective_top_k=selective_top_k,
+        )
+        output_tm, output_selective_stats, output_selective_details = _truncate_tm_to_order_selective(
+            validated,
+            output_order,
+            selective_top_k=selective_top_k,
+        )
+        selective_stats = _aggregate_selective_stats(output_selective_stats, top_k=selective_top_k)
+        selective_details = output_selective_details
+        final_tm = final_tm.apply_cutoff(cutoff_threshold)
+    else:
+        final_tm = _truncate_tm_to_order(final_tm, output_order).apply_cutoff(cutoff_threshold)
+        output_tm = _truncate_tm_to_order(validated, output_order)
 
     next_symbolic_state = symbolic_remainder_state
     symbolic_stats: Mapping[str, Any] | None = None
@@ -1212,6 +1759,8 @@ def flowpipe_step_from_tm(
         symbolic_remainder=bool(symbolic_remainder),
         symbolic_remainder_state=next_symbolic_state,
         symbolic_remainder_stats=symbolic_stats,
+        selective_term_stats=selective_stats or None,
+        selective_term_details=selective_details or None,
     )
 
 
@@ -1246,6 +1795,7 @@ def flowpipe_step_flowstar_style_adaptive(
     h_min: float = 0.002,
     h_max: float = 0.1,
     target_remainder_radius: float = 1e-4,
+    center_correction_width_factor: float = 1.05,
     cutoff_threshold: float | None = 1e-10,
     max_validation_attempts: int = 2,
     validation_eps: float = 1e-12,
@@ -1258,12 +1808,13 @@ def flowpipe_step_flowstar_style_adaptive(
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
     candidate_order: int | None = None,
     truncation_range_split: int | None = None,
+    selective_high_degree_terms_top_k: int | None = None,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
     if h_min > h_max:
         raise ValueError("h_min must be <= h_max")
-    if validation_mode not in {"target_remainder", "target_remainder_refined"}:
+    if validation_mode not in {"target_remainder", "target_remainder_refined", "target_remainder_centered"}:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     current_tm = x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order)
     h_try = min(float(h) if h is not None else float(h_max), float(h_max))
@@ -1292,12 +1843,14 @@ def flowpipe_step_flowstar_style_adaptive(
             validation_eps=validation_eps,
             validation_mode=validation_mode,
             target_remainder_radius=target_remainder_radius,
+            center_correction_width_factor=center_correction_width_factor,
             cutoff_threshold=cutoff_threshold,
             diagnostics=diagnostics,
             diagnostics_context=context,
             rhs_breakdown_callback=rhs_breakdown_callback,
             candidate_order=candidate_order,
             truncation_range_split=truncation_range_split,
+            selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -1333,12 +1886,14 @@ def flowpipe_step_flowstar_style_adaptive(
                 validation_eps=validation_eps,
                 validation_mode=validation_mode,
                 target_remainder_radius=target_remainder_radius,
+                center_correction_width_factor=center_correction_width_factor,
                 cutoff_threshold=cutoff_threshold,
                 diagnostics=diagnostics,
                 diagnostics_context=fallback_context,
                 rhs_breakdown_callback=rhs_breakdown_callback,
                 candidate_order=None if candidate_order is None else max(int(candidate_order), fallback_order),
                 truncation_range_split=truncation_range_split,
+                selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg

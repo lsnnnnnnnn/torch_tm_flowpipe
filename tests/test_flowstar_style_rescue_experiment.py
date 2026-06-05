@@ -176,6 +176,10 @@ def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable()
         ROOT / "outputs" / "flowstar_style_rescue_adaptive_order",
         ROOT / "outputs" / "flowstar_style_rescue_remainder_sensitivity",
         ROOT / "outputs" / "flowstar_style_rescue_next",
+        ROOT / "outputs" / "flowstar_style_truncation_localization",
+        ROOT / "outputs" / "flowstar_style_candidate_order",
+        ROOT / "outputs" / "flowstar_style_truncation_range",
+        ROOT / "outputs" / "flowstar_style_rescue_next2",
     ]
     text_paths = [ROOT / "docs" / "flowstar_source_rescue_notes.md"]
     csv_paths = []
@@ -231,3 +235,74 @@ def test_candidate_order_specialized_outputs_smoke(tmp_path):
     rows = _csv_rows(out_dir / "candidate_order_summary.csv")
     assert rows[0]["candidate_order"] == "8"
     assert rows[0]["output_order"] == "6"
+
+
+def test_residual_centering_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_style_residual_centering"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "60",
+            "--configs",
+            "flowstar_style_o6_target_centered",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "residual_centering_summary.csv",
+        "residual_centering_segments.csv",
+        "residual_centering_attempts.csv",
+        "residual_centering_report.md",
+    ]:
+        assert (out_dir / name).exists()
+    rows = _csv_rows(out_dir / "residual_centering_summary.csv")
+    assert rows[0]["validation_mode"] == "target_remainder_centered"
+    assert "center_corrections_applied" in rows[0]
+    attempts = pd.read_csv(out_dir / "residual_centering_attempts.csv")
+    assert "residual_before_lo_y" in attempts.columns
+    report = (out_dir / "residual_centering_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 5
+    assert "recomputing the Picard residual" in report
+
+
+def test_selective_terms_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_style_selective_terms"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "60",
+            "--configs",
+            "flowstar_style_o6_candidate8_output6_keep1",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "selective_terms_summary.csv",
+        "selective_terms_segments.csv",
+        "selective_terms_report.md",
+        "retained_terms_near_failure.csv",
+    ]:
+        assert (out_dir / name).exists()
+    rows = _csv_rows(out_dir / "selective_terms_summary.csv")
+    assert rows[0]["selective_high_degree_terms_top_k"] == "1"
+    segments = pd.read_csv(out_dir / "selective_terms_segments.csv")
+    assert "selective_retained_terms_count" in segments.columns
+    retained = pd.read_csv(out_dir / "retained_terms_near_failure.csv")
+    assert "retained" in retained.columns
+    report = (out_dir / "selective_terms_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 5
+    assert "diagnostic-only" in report

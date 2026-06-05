@@ -47,6 +47,15 @@ SUMMARY_FIELDS = [
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
+    "center_correction_width_factor",
+    "center_correction_attempts",
+    "center_corrections_applied",
+    "center_corrected_dimensions",
+    "max_center_correction_abs",
+    "max_residual_radius_after_correction",
+    "selective_high_degree_terms_top_k",
+    "max_selective_retained_terms_count",
+    "max_selective_dropped_remainder_width_sum",
     "status",
     "runtime_s",
     "validated_segments",
@@ -80,6 +89,13 @@ SEGMENT_FIELDS = [
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
+    "center_correction_width_factor",
+    "selective_high_degree_terms_top_k",
+    "selective_retained_terms_count",
+    "selective_dropped_terms_count",
+    "selective_nonretained_terms_count",
+    "selective_dropped_remainder_width_sum",
+    "selective_total_dropped_width_sum",
     "segment_index",
     "status",
     "validation_attempts",
@@ -112,6 +128,8 @@ VALIDATION_ATTEMPT_FIELDS = [
     "validation_mode",
     "cutoff_threshold",
     "target_remainder_radius",
+    "center_correction_width_factor",
+    "selective_high_degree_terms_top_k",
     "segment_index",
     "adaptive_attempt_index",
     "t_lo",
@@ -139,6 +157,26 @@ VALIDATION_ATTEMPT_FIELDS = [
     "remainder_width_sum",
     "target_remainder_width",
     "target_remainder_width_sum",
+    "center_correction_applied",
+    "correction_value_x",
+    "correction_value_y",
+    "residual_before_lo_x",
+    "residual_before_hi_x",
+    "residual_before_lo_y",
+    "residual_before_hi_y",
+    "residual_after_lo_x",
+    "residual_after_hi_x",
+    "residual_after_lo_y",
+    "residual_after_hi_y",
+    "residual_before_center_x",
+    "residual_before_center_y",
+    "residual_after_center_x",
+    "residual_after_center_y",
+    "residual_before_radius_x",
+    "residual_before_radius_y",
+    "residual_after_radius_x",
+    "residual_after_radius_y",
+    "subset_after_correction",
     "subset_result",
     "rejection_reason",
     "polynomial_range_width_x",
@@ -185,12 +223,43 @@ NEXT_FIELDS = [
     "candidate_order",
     "output_order",
     "truncation_range_split",
+    "center_corrections_applied",
+    "selective_high_degree_terms_top_k",
+    "max_selective_retained_terms_count",
     "min_regular_h_used",
     "h_below_flowstar_min_count",
     "final_width_sum",
     "last_width_ratio",
     "tube_width_ratio",
     "notes",
+]
+
+
+RETAINED_TERM_FIELDS = [
+    "run_id",
+    "segment_index",
+    "t_lo",
+    "t_hi",
+    "status",
+    "selective_high_degree_terms_top_k",
+    "state_index",
+    "state_dimension",
+    "term_rank",
+    "retained",
+    "monomial",
+    "coefficient",
+    "total_degree",
+    "abs_interval_contribution",
+    "term_interval_lo",
+    "term_interval_hi",
+    "term_interval_width",
+]
+
+NEXT3_FIELDS = [
+    *NEXT_FIELDS,
+    "center_corrected_dimensions",
+    "max_center_correction_abs",
+    "max_selective_dropped_remainder_width_sum",
 ]
 
 
@@ -205,7 +274,7 @@ def _initial_box() -> list[Interval]:
 def _write_csv(path: Path, fields: Sequence[str], rows: Sequence[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(fields), extrasaction="ignore")
+        writer = csv.DictWriter(f, fieldnames=list(fields), extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({k: _fmt(row.get(k, "")) for k in fields})
@@ -232,6 +301,20 @@ def _finite_float(value: Any) -> float | None:
 def _max_field(rows: Sequence[Mapping[str, Any]], field: str) -> float | str:
     vals = [_finite_float(row.get(field)) for row in rows]
     vals = [v for v in vals if v is not None]
+    return max(vals) if vals else ""
+
+
+def _truthy(value: Any) -> bool:
+    return str(value).strip().lower() in {"1", "true", "yes"}
+
+
+def _max_abs_fields(rows: Sequence[Mapping[str, Any]], fields: Sequence[str]) -> float | str:
+    vals: list[float] = []
+    for row in rows:
+        for field in fields:
+            value = _finite_float(row.get(field))
+            if value is not None:
+                vals.append(abs(value))
     return max(vals) if vals else ""
 
 
@@ -283,7 +366,8 @@ def _segment_row(
     box: Sequence[Interval],
 ) -> dict[str, Any]:
     x_lo, x_hi, y_lo, y_hi, width_x, width_y, width_sum = _segment_bounds(box)
-    return {
+    selective_stats = dict(getattr(seg, "selective_term_stats", None) or {})
+    row = {
         "run_id": spec["run_id"],
         "mode": spec["mode"],
         "order": getattr(seg, "order", spec["order"]),
@@ -293,6 +377,8 @@ def _segment_row(
         "validation_mode": spec.get("validation_mode", "growth"),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
+        "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
+        "selective_high_degree_terms_top_k": spec.get("selective_high_degree_terms_top_k", ""),
         "segment_index": segment_index,
         "status": status,
         "validation_attempts": getattr(seg, "validation_attempts", ""),
@@ -310,6 +396,11 @@ def _segment_row(
         "next_h": "" if getattr(seg, "next_h", None) is None else getattr(seg, "next_h"),
         "message": getattr(seg, "message", ""),
     }
+    row.update(selective_stats)
+    details = getattr(seg, "selective_term_details", None)
+    if details:
+        row["_selective_term_details"] = [dict(item) for item in details]
+    return row
 
 
 def _summarize_run(
@@ -350,6 +441,23 @@ def _summarize_run(
             if adaptive and h < flowstar_min_step - 1e-12:
                 h_below_flowstar_min_count += 1
     num_rejected_steps = sum(int(row.get("step_rejections") or 0) for row in segment_rows)
+    center_rows = [row for row in attempt_rows if _truthy(row.get("center_correction_applied"))]
+    center_correction_attempts = len(center_rows)
+    center_corrected_dimensions = sum(
+        1
+        for row in center_rows
+        for field in ("correction_value_x", "correction_value_y")
+        if abs(_finite_float(row.get(field)) or 0.0) > 0.0
+    )
+    max_center_correction_abs = _max_abs_fields(center_rows, ["correction_value_x", "correction_value_y"])
+    max_after_radius = _max_field(center_rows, "residual_after_radius_x")
+    max_after_radius_y = _max_field(center_rows, "residual_after_radius_y")
+    if max_after_radius == "":
+        max_after_radius = max_after_radius_y
+    elif max_after_radius_y != "":
+        max_after_radius = max(float(max_after_radius), float(max_after_radius_y))
+    selective_retained = _max_field(segment_rows, "selective_retained_terms_count")
+    selective_drop_width = _max_field(segment_rows, "selective_dropped_remainder_width_sum")
     return {
         "run_id": spec["run_id"],
         "mode": spec["mode"],
@@ -360,6 +468,15 @@ def _summarize_run(
         "validation_mode": spec.get("validation_mode", "growth"),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
+        "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
+        "center_correction_attempts": center_correction_attempts,
+        "center_corrections_applied": center_correction_attempts,
+        "center_corrected_dimensions": center_corrected_dimensions,
+        "max_center_correction_abs": max_center_correction_abs,
+        "max_residual_radius_after_correction": max_after_radius,
+        "selective_high_degree_terms_top_k": spec.get("selective_high_degree_terms_top_k", ""),
+        "max_selective_retained_terms_count": selective_retained,
+        "max_selective_dropped_remainder_width_sum": selective_drop_width,
         "status": status,
         "runtime_s": runtime_s,
         "validated_segments": len(validated),
@@ -511,6 +628,8 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             "validation_mode": spec["validation_mode"],
             "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
             "target_remainder_radius": spec.get("target_remainder_radius", ""),
+            "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
+            "selective_high_degree_terms_top_k": spec.get("selective_high_degree_terms_top_k", ""),
             "segment_index": segment_index,
         }
         attempt_start = len(attempt_rows)
@@ -524,6 +643,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     h_min=local_h_min,
                     h_max=float(spec.get("h_max", 0.1)),
                     target_remainder_radius=float(spec.get("target_remainder_radius", 1e-4)),
+                    center_correction_width_factor=float(spec.get("center_correction_width_factor") or 1.05),
                     cutoff_threshold=spec.get("cutoff_threshold"),
                     max_validation_attempts=int(spec.get("max_validation_attempts", 2)),
                     validation_mode=str(spec.get("validation_mode", "target_remainder")),
@@ -531,6 +651,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     adaptive_order_threshold_factor=float(spec.get("adaptive_order_threshold_factor", 1.25)),
                     candidate_order=spec.get("candidate_order"),
                     truncation_range_split=spec.get("truncation_range_split"),
+                    selective_high_degree_terms_top_k=spec.get("selective_high_degree_terms_top_k"),
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                 ),
@@ -586,6 +707,8 @@ def _configs() -> list[dict[str, Any]]:
         adaptive_order_fallback: int | None = None,
         candidate_order: int | None = None,
         truncation_range_split: int | None = None,
+        center_correction_width_factor: float = 1.05,
+        selective_high_degree_terms_top_k: int | None = None,
     ) -> dict[str, Any]:
         spec: dict[str, Any] = {
             "run_id": run_id,
@@ -593,6 +716,7 @@ def _configs() -> list[dict[str, Any]]:
             "order": order,
             "validation_mode": validation_mode,
             "target_remainder_radius": target_remainder_radius,
+            "center_correction_width_factor": center_correction_width_factor if validation_mode == "target_remainder_centered" else "",
             "cutoff_threshold": cutoff_threshold,
             "h_min": 0.002,
             "h_max": 0.1,
@@ -603,6 +727,8 @@ def _configs() -> list[dict[str, Any]]:
             spec["candidate_order"] = int(candidate_order)
         if truncation_range_split is not None:
             spec["truncation_range_split"] = int(truncation_range_split)
+        if selective_high_degree_terms_top_k is not None:
+            spec["selective_high_degree_terms_top_k"] = int(selective_high_degree_terms_top_k)
         if adaptive_order_fallback is not None:
             spec["adaptive_order_fallback"] = adaptive_order_fallback
             spec["adaptive_order_threshold_factor"] = 1.25
@@ -665,6 +791,56 @@ def _configs() -> list[dict[str, Any]]:
             order=6,
             candidate_order=8,
             truncation_range_split=2,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_target_centered",
+            order=6,
+            validation_mode="target_remainder_centered",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_centered",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_centered",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_centered",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            validation_mode="target_remainder_centered",
+        ),
+        flowstar_spec("flowstar_style_o6_candidate8_output6_keep1", order=6, candidate_order=8, selective_high_degree_terms_top_k=1),
+        flowstar_spec("flowstar_style_o6_candidate8_output6_keep2", order=6, candidate_order=8, selective_high_degree_terms_top_k=2),
+        flowstar_spec("flowstar_style_o6_candidate8_output6_keep4", order=6, candidate_order=8, selective_high_degree_terms_top_k=4),
+        flowstar_spec("flowstar_style_o6_candidate8_output6_keep8", order=6, candidate_order=8, selective_high_degree_terms_top_k=8),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_keep1_centered",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_centered",
+            selective_high_degree_terms_top_k=1,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_keep2_centered",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_centered",
+            selective_high_degree_terms_top_k=2,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_keep4_centered",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_centered",
+            selective_high_degree_terms_top_k=4,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_keep8_centered",
+            order=6,
+            candidate_order=8,
+            validation_mode="target_remainder_centered",
+            selective_high_degree_terms_top_k=8,
         ),
     ]
 
@@ -1323,6 +1499,7 @@ def run_experiment(
     )
     write_rescue_next_outputs(trigger_out_dir=out_dir)
     write_rescue_next2_outputs(trigger_out_dir=out_dir)
+    write_rescue_next3_outputs(trigger_out_dir=out_dir)
     return summary_rows, segment_rows, attempt_rows
 
 
@@ -1574,6 +1751,151 @@ def _write_truncation_range_report(
     (out_dir / "truncation_range_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+
+def _retained_term_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for segment in segment_rows:
+        details = segment.get("_selective_term_details") or []
+        for detail in details:
+            row = {
+                "run_id": segment.get("run_id", ""),
+                "segment_index": segment.get("segment_index", ""),
+                "t_lo": segment.get("t_lo", ""),
+                "t_hi": segment.get("t_hi", ""),
+                "status": segment.get("status", ""),
+                "selective_high_degree_terms_top_k": segment.get("selective_high_degree_terms_top_k", ""),
+            }
+            row.update(dict(detail))
+            rows.append(row)
+    rows.sort(
+        key=lambda row: (
+            _finite_float(row.get("t_lo")) or 0.0,
+            _finite_float(row.get("segment_index")) or 0.0,
+            0 if _truthy(row.get("retained")) else 1,
+            _finite_float(row.get("term_rank")) or 0.0,
+        )
+    )
+    if not rows:
+        return []
+    near_t = max(_finite_float(row.get("t_lo")) or 0.0 for row in rows)
+    near_rows = [row for row in rows if (_finite_float(row.get("t_lo")) or 0.0) >= near_t - 0.25]
+    return near_rows or rows
+
+
+def _write_residual_centering_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best(summary_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    comp = _best_comparison_for_run(comparison_rows, str(best.get("run_id", ""))) if best else {}
+    corrections = sum(int(row.get("center_corrections_applied") or 0) for row in summary_rows)
+    corrected_dims = sum(int(row.get("center_corrected_dimensions") or 0) for row in summary_rows)
+    max_corr = _max_field(summary_rows, "max_center_correction_abs")
+    target_radii = {str(row.get("target_remainder_radius", "")) for row in summary_rows}
+    target_stayed = target_radii <= {"0.0001", "0.000100000000000000", "1e-04", "1e-4", "0.00010000000000000000"}
+    below_min = any(int(row.get("h_below_flowstar_min_count") or 0) > 0 for row in summary_rows)
+    after_subset = sum(1 for row in attempt_rows if _truthy(row.get("center_correction_applied")) and _truthy(row.get("subset_after_correction")))
+    lines = [
+        "# Residual Centering Diagnostic Report",
+        "",
+        "This opt-in mode keeps the symmetric target remainder and accepts only after recomputing the Picard residual from the corrected candidate.",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best centered variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did centered validation beat t~=2.400737? {_yes_no(bool(best_t is not None and best_t > 2.400737667399793))}.",
+        f"Did it reach horizon 5? {_yes_no(reached)}.",
+        f"Center-correction attempts: `{corrections}` attempts, `{corrected_dims}` corrected dimensions; subset-after-correction rows=`{after_subset}`.",
+        f"Did corrections stay small? max_abs_correction=`{max_corr}`.",
+        f"Width ratio vs Flow*: last=`{comp.get('last_width_ratio', '')}`, tube=`{comp.get('tube_width_ratio', '')}`.",
+        f"Did target remainder remain at 1e-4? {_yes_no(target_stayed)}.",
+        f"Any non-final h below 0.002? {_yes_no(below_min)}.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | status | last_validated_t | corrections | corrected_dims | max_abs_correction | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    comp_by_run = _comparison_by_run(comparison_rows)
+    for row in summary_rows:
+        comp_row = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('center_corrections_applied', '')} | {row.get('center_corrected_dimensions', '')} | "
+            f"{row.get('max_center_correction_abs', '')} | {comp_row.get('last_width_ratio', '')} | "
+            f"{comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "residual_centering_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_selective_terms_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    raw_best = _best(summary_rows)
+    raw_best_t = _finite_float(raw_best.get("last_validated_t")) if raw_best else 0.0
+    tied_best_rows = [
+        row
+        for row in summary_rows
+        if raw_best_t is not None
+        and (row_t := _finite_float(row.get("last_validated_t"))) is not None
+        and abs(row_t - raw_best_t) <= 1e-12
+    ]
+
+    def _drop_width_key(row: Mapping[str, Any]) -> tuple[bool, float]:
+        width = _finite_float(row.get("max_selective_dropped_remainder_width_sum"))
+        return (width is None, width if width is not None else math.inf)
+
+    best = min(tied_best_rows, key=_drop_width_key, default=raw_best)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    comp = _best_comparison_for_run(comparison_rows, str(best.get("run_id", ""))) if best else {}
+    best_k = best.get("selective_high_degree_terms_top_k", "") if best else ""
+    if len(tied_best_rows) > 1:
+        best_k_summary = f"all tested K values tied on validated time; K=`{best_k}` minimized dropped remainder width"
+    else:
+        best_k_summary = f"`{best_k}`"
+    adaptive, adaptive_comp = _adaptive_order_baselines()
+    adaptive_t = _finite_float(adaptive.get("last_validated_t")) if adaptive else 2.2771582567640953
+    residual_centers = _max_abs_fields(attempt_rows, ["residual_before_center_x", "residual_before_center_y", "residual_after_center_x", "residual_after_center_y"])
+    lines = [
+        "# Selective High-Degree Term Diagnostic Report",
+        "",
+        "This is diagnostic-only: sparse over-order terms are retained beyond output_order=6, so this is not fixed-order Flow* parity.",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        f"Best selective variant: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did selective retention beat t~=2.400737? {_yes_no(bool(best_t is not None and best_t > 2.400737667399793))}.",
+        f"Did any variant reach horizon 5? {_yes_no(reached)}.",
+        f"Which K worked best? {best_k_summary}.",
+        f"Did keeping a few terms reduce residual shift? max recorded residual center magnitude=`{residual_centers}` (compare by row in attempts CSV).",
+        f"Runtime impact: best runtime_s=`{best.get('runtime_s', '') if best else ''}`.",
+        f"Width ratio vs Flow*: last=`{comp.get('last_width_ratio', '')}`, tube=`{comp.get('tube_width_ratio', '')}`.",
+        f"Did this outperform full adaptive order fallback? {_yes_no(bool(best_t is not None and adaptive_t is not None and best_t > adaptive_t))}; adaptive tube=`{adaptive_comp.get('tube_width_ratio', '')}`.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | K | status | last_validated_t | retained_terms | dropped_remainder_width | runtime_s | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    comp_by_run = _comparison_by_run(comparison_rows)
+    for row in summary_rows:
+        comp_row = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('selective_high_degree_terms_top_k', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('max_selective_retained_terms_count', '')} | "
+            f"{row.get('max_selective_dropped_remainder_width_sum', '')} | {row.get('runtime_s', '')} | "
+            f"{comp_row.get('last_width_ratio', '')} | {comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "selective_terms_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -1603,6 +1925,16 @@ def write_specialized_outputs(
     elif name == "flowstar_style_truncation_range":
         _write_csv(out_dir / "truncation_range_summary.csv", SUMMARY_FIELDS, summary_rows)
         _write_truncation_range_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_residual_centering":
+        _write_csv(out_dir / "residual_centering_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "residual_centering_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_csv(out_dir / "residual_centering_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+        _write_residual_centering_report(out_dir, summary_rows, attempt_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_style_selective_terms":
+        _write_csv(out_dir / "selective_terms_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "selective_terms_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_selective_terms_report(out_dir, summary_rows, attempt_rows, comparison_rows, max_horizon=max_horizon)
+        _write_csv(out_dir / "retained_terms_near_failure.csv", RETAINED_TERM_FIELDS, _retained_term_rows(segment_rows))
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:
@@ -1610,6 +1942,12 @@ def _read_optional_csv(path: Path) -> list[dict[str, str]]:
 
 
 def _variant_group(run_id: str) -> str:
+    if "keep" in run_id and "centered" in run_id:
+        return "selective_terms_centered"
+    if "keep" in run_id:
+        return "selective_high_degree_terms"
+    if "centered" in run_id:
+        return "residual_centering"
     if "residual_shift" in run_id:
         return "residual_shift_diagnostic"
     if "candidate8_output6" in run_id and "truncsplit" in run_id:
@@ -1851,6 +2189,120 @@ def write_rescue_next2_outputs(*, trigger_out_dir: Path | None = None) -> None:
         )
     (out_dir / "rescue_next2_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+
+
+def write_rescue_next3_outputs(*, trigger_out_dir: Path | None = None) -> None:
+    if trigger_out_dir is not None:
+        try:
+            outputs_root = (REPO_ROOT / "outputs").resolve()
+            if not trigger_out_dir.resolve().is_relative_to(outputs_root):
+                return
+        except Exception:
+            return
+    candidates: dict[str, dict[str, Any]] = {}
+    comparisons: dict[str, Mapping[str, Any]] = {}
+    sources = [
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_h5" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "adaptive_order_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_rescue_adaptive_order" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_candidate_order" / "candidate_order_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_candidate_order" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_truncation_range" / "truncation_range_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_truncation_range" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_residual_centering" / "residual_centering_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_residual_centering" / "rescue_vs_flowstar_comparison.csv"),
+        (REPO_ROOT / "outputs" / "flowstar_style_selective_terms" / "selective_terms_summary.csv", REPO_ROOT / "outputs" / "flowstar_style_selective_terms" / "rescue_vs_flowstar_comparison.csv"),
+    ]
+    for summary_path, comparison_path in sources:
+        for row in _read_optional_csv(summary_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                candidates[run_id] = dict(row)
+        for row in _read_optional_csv(comparison_path):
+            run_id = str(row.get("run_id", ""))
+            if run_id:
+                comparisons[run_id] = row
+    if not candidates:
+        return
+
+    rows: list[dict[str, Any]] = []
+    for run_id, row in sorted(candidates.items(), key=lambda item: (_variant_group(item[0]), item[0])):
+        comp = comparisons.get(run_id, {})
+        rows.append(
+            {
+                "variant_group": _variant_group(run_id),
+                "run_id": run_id,
+                "validation_mode": row.get("validation_mode", ""),
+                "target_remainder_radius": row.get("target_remainder_radius", ""),
+                "cutoff_threshold": row.get("cutoff_threshold", ""),
+                "status": row.get("status", ""),
+                "last_validated_t": row.get("last_validated_t", ""),
+                "runtime_s": row.get("runtime_s", ""),
+                "num_accepted_steps": row.get("num_accepted_steps", ""),
+                "num_rejected_steps": row.get("num_rejected_steps", ""),
+                "num_order8_steps": row.get("num_order8_steps", ""),
+                "candidate_order": row.get("candidate_order", row.get("order", "")),
+                "output_order": row.get("output_order", row.get("order", "")),
+                "truncation_range_split": row.get("truncation_range_split", ""),
+                "center_corrections_applied": row.get("center_corrections_applied", ""),
+                "center_corrected_dimensions": row.get("center_corrected_dimensions", ""),
+                "max_center_correction_abs": row.get("max_center_correction_abs", ""),
+                "selective_high_degree_terms_top_k": row.get("selective_high_degree_terms_top_k", ""),
+                "max_selective_retained_terms_count": row.get("max_selective_retained_terms_count", ""),
+                "max_selective_dropped_remainder_width_sum": row.get("max_selective_dropped_remainder_width_sum", ""),
+                "min_regular_h_used": row.get("min_regular_h_used", ""),
+                "h_below_flowstar_min_count": row.get("h_below_flowstar_min_count", ""),
+                "final_width_sum": row.get("final_width_sum", ""),
+                "last_width_ratio": comp.get("last_width_ratio", ""),
+                "tube_width_ratio": comp.get("tube_width_ratio", ""),
+                "notes": row.get("notes", ""),
+            }
+        )
+    eligible = [
+        row for row in rows
+        if str(row.get("target_remainder_radius", "")) in {"0.0001", "0.000100000000000000", "1e-04", "1e-4", "0.00010000000000000000"}
+        and int(row.get("h_below_flowstar_min_count") or 0) == 0
+    ]
+    best = max(eligible or rows, key=lambda r: (_finite_float(r.get("last_validated_t")) or 0.0, -(_finite_float(r.get("tube_width_ratio")) or math.inf)))
+    reached = (_finite_float(best.get("last_validated_t")) or 0.0) >= 5.0 - 1e-9
+    candidate_baseline = next((row for row in rows if row.get("run_id") == "flowstar_style_o6_candidate8_output6"), {})
+    candidate_tube = _finite_float(candidate_baseline.get("tube_width_ratio"))
+    best_tube = _finite_float(best.get("tube_width_ratio"))
+    width_ok = best_tube is None or candidate_tube is None or best_tube <= candidate_tube or reached
+    if reached:
+        recommendation = "run h10 only after reviewing the horizon-5 width and Flow* comparison artifacts."
+    elif _variant_group(str(best.get("run_id", ""))) in {"residual_centering", "selective_terms_centered"}:
+        recommendation = "continue residual-centering refinement or selective sparse over-order terms before h10."
+    elif _variant_group(str(best.get("run_id", ""))) == "selective_high_degree_terms":
+        recommendation = "continue selective sparse over-order terms, then compare against a real Flow*-style symbolic remainder queue."
+    else:
+        recommendation = "choose between residual-centering refinement, selective sparse over-order terms, or a real Flow*-style symbolic remainder queue."
+
+    out_dir = REPO_ROOT / "outputs" / "flowstar_style_rescue_next3"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _write_csv(out_dir / "rescue_next3_summary.csv", NEXT3_FIELDS, rows)
+    lines = [
+        "# Rescue Variant Comparison Next3",
+        "",
+        f"Best variant by decision criteria: `{best.get('run_id', '')}` at t=`{best.get('last_validated_t', '')}`.",
+        f"Reached horizon 5 with target_remainder_radius=1e-4? {_yes_no(reached)}.",
+        f"Width ratio vs Flow*: last=`{best.get('last_width_ratio', '')}`, tube=`{best.get('tube_width_ratio', '')}`.",
+        f"Width criterion vs candidate_order baseline acceptable? {_yes_no(width_ok)}.",
+        f"Target remainder stayed at 1e-4? {_yes_no(str(best.get('target_remainder_radius', '')) in {'0.0001', '0.000100000000000000', '1e-04', '1e-4', '0.00010000000000000000'})}.",
+        f"Next recommendation: {recommendation}",
+        "",
+        "This comparison is diagnostic-only and does not claim Flow* parity.",
+        "Decision criteria: reaches horizon 5, no non-final h below 0.002, target remainder 1e-4, width ratio not worse than candidate_order baseline unless horizon improves substantially, and acceptable runtime.",
+        "",
+        "## Rows",
+        "",
+        "| group | run_id | status | last_validated_t | candidate_order | output_order | K | corrections | last_width_ratio | tube_width_ratio |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in rows:
+        lines.append(
+            f"| {row.get('variant_group', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('candidate_order', '')} | {row.get('output_order', '')} | "
+            f"{row.get('selective_high_degree_terms_top_k', '')} | {row.get('center_corrections_applied', '')} | "
+            f"{row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
+        )
+    (out_dir / "rescue_next3_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 def _write_outputs(
     out_dir: Path,
