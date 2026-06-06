@@ -18,6 +18,7 @@ SAMPLE_CONTAINMENT_SCRIPT = ROOT / "experiments" / "flowstar_style_sample_contai
 TRACE_SCRIPT = ROOT / "experiments" / "flowstar_symbolic_step_trace.py"
 CHECKPOINT_REPLAY_SCRIPT = ROOT / "experiments" / "flowstar_checkpoint_replay.py"
 ATTRIBUTION_SCRIPT = ROOT / "experiments" / "flowstar_insertion_width_attribution.py"
+RIGHT_MAP_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_right_map_scaling_diagnostics.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 SYMBOLIC_SEMANTICS_DOC = ROOT / "docs" / "flowstar_symbolic_remainder_semantics_map.md"
 EXPECTED_RUN_IDS = {
@@ -543,6 +544,30 @@ def test_normalized_insertion_specialized_outputs_smoke(tmp_path):
 
 
 
+
+
+def test_width_fix_checkpoint_and_attribution_artifacts_are_readable():
+    artifact_dirs = [
+        ROOT / "outputs" / "flowstar_width_fix_h10",
+        ROOT / "outputs" / "flowstar_checkpoint_replay",
+        ROOT / "outputs" / "flowstar_insertion_width_attribution",
+    ]
+    for directory in artifact_dirs:
+        for csv_path in sorted(directory.glob("*.csv")):
+            frame = pd.read_csv(csv_path)
+            text = csv_path.read_text(encoding="utf-8")
+            assert text.endswith("\n"), csv_path
+            assert text.count("\n") == len(frame) + 1, csv_path
+        for md_path in sorted(directory.glob("*.md")):
+            text = md_path.read_text(encoding="utf-8")
+            assert text.endswith("\n"), md_path
+            assert text.count("\n") > 10, md_path
+
+    report = (ROOT / "outputs" / "flowstar_width_fix_h10" / "width_fix_report.md").read_text(encoding="utf-8")
+    baseline_line = next(line for line in report.splitlines() if line.startswith("Best old baseline"))
+    assert "``" not in baseline_line
+    assert "t=`0`" not in baseline_line
+
 def test_normalized_insertion_scalars_config_smoke(tmp_path):
     out_dir = tmp_path / "flowstar_width_fix_h10"
     subprocess.run(
@@ -629,6 +654,46 @@ def test_normalized_insertion_h10_specialized_outputs_smoke(tmp_path):
         assert text.count("\n") == len(frame) + 1
 
 
+
+
+def test_normal_eval_h10_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_normal_eval_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o4_target_insert_normaleval",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "normal_eval_summary.csv",
+        "normal_eval_segments.csv",
+        "normal_eval_reset_diagnostics.csv",
+        "normal_eval_validation_attempts.csv",
+        "normal_eval_vs_flowstar_comparison.csv",
+        "normal_eval_report.md",
+        "normal_eval_range_compare.png",
+        "branch_decision.md",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "normal_eval_summary.csv")
+    assert set(summary["right_map_range_mode"]) == {"normal_eval"}
+    reset = pd.read_csv(out_dir / "normal_eval_reset_diagnostics.csv")
+    assert "old_right_map_range_width_sum" in reset.columns
+    assert "normal_right_map_range_width_sum" in reset.columns
+    report = (out_dir / "normal_eval_report.md").read_text(encoding="utf-8")
+    assert "Did normal_eval beat" in report
+    assert report.count("\n") > 10
+
 def test_required_source_files_have_physical_lines_and_compile():
     source_paths = [
         FLOWPIPE,
@@ -639,6 +704,7 @@ def test_required_source_files_have_physical_lines_and_compile():
         TRACE_SCRIPT,
         CHECKPOINT_REPLAY_SCRIPT,
         ATTRIBUTION_SCRIPT,
+        RIGHT_MAP_DIAGNOSTICS_SCRIPT,
     ]
     for path in source_paths:
         text = path.read_text(encoding="utf-8")
@@ -736,6 +802,41 @@ def test_normalized_insertion_symqueue_split_h10_specialized_outputs_smoke(tmp_p
     assert "Did split semantics beat old symqueue" in report
     assert report.count("\n") > 10
 
+
+
+
+def test_right_map_scaling_diagnostics_script_smoke(tmp_path):
+    source_dir = tmp_path / "source"
+    out_dir = tmp_path / "right_map_diagnostics"
+    source_dir.mkdir(parents=True)
+    (source_dir / "normalized_insertion_h10_segments.csv").write_text(
+        "run_id,segment_index,status,t_hi,width_x,width_y,width_sum,reset_width_x,reset_width_y,reset_width_sum,inserted_endpoint_width_x,inserted_endpoint_width_y,inserted_endpoint_width_sum,normal_state_right_width_x,normal_state_right_width_y,normal_state_right_width_sum,scale_x,scale_y,center_x,center_y,tmv_right_degree,tmv_right_term_count,right_map_range_mode\n"
+        "flowstar_style_o4_target_insert,0,validated,0.01,0.3,0.1,0.4,0.3,0.1,0.4,0.2,0.1,0.3,2,2,4,0.1,0.05,1.2,2.4,4,10,standard\n"
+        "flowstar_style_o6_candidate8_output6_insert,0,validated,0.01,0.4,0.2,0.6,0.4,0.2,0.6,0.5,1.0,1.5,2,2,4,0.2,0.5,1.2,2.4,6,20,standard\n",
+        encoding="utf-8",
+    )
+    (source_dir / "rescue_vs_flowstar_ratio_trace.csv").write_text(
+        "run_id,t,width_ratio\nflowstar_style_o4_target_insert,0.01,1.2\nflowstar_style_o6_candidate8_output6_insert,0.01,2.4\n",
+        encoding="utf-8",
+    )
+    subprocess.run(
+        [sys.executable, str(RIGHT_MAP_DIAGNOSTICS_SCRIPT), "--source-dir", str(source_dir), "--out-dir", str(out_dir)],
+        check=True,
+    )
+    for name in [
+        "right_map_scaling_trace.csv",
+        "right_map_top_terms.csv",
+        "right_map_scaling_report.md",
+        "right_map_range_vs_t.png",
+        "right_map_terms_vs_t.png",
+        "top_terms_near_width_jump.png",
+    ]:
+        assert (out_dir / name).exists()
+    trace = pd.read_csv(out_dir / "right_map_scaling_trace.csv")
+    assert "right_map_range_normal_sum" in trace.columns
+    report = (out_dir / "right_map_scaling_report.md").read_text(encoding="utf-8")
+    assert "Which right-map dimension drives width?" in report
+    assert report.count("\n") > 10
 
 def test_h10_failure_localization_outputs_smoke(tmp_path):
     out_dir = tmp_path / "flowstar_normalized_insertion_failure"

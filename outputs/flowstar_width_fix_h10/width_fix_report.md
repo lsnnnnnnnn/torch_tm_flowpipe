@@ -1,14 +1,14 @@
 # Flowstar-Style Rescue Report
 
 Requested max horizon: `10`.
-Best old baseline in this run: `` at t=`0`.
+Best old baseline in this run: `flowstar_style_o6_candidate8_output6_insert` at t=`7.4960392581387341`.
 Best flowstar_style run: `flowstar_style_o6_candidate8_output6_insert_scalars` at t=`7.4960392581387341`.
 
 Did flowstar_style beat the old best t~=0.7661635? yes.
 Did flowstar_style_o6_target reach the requested horizon? no.
 Did cutoff help? inconclusive.
 Did target remainder stay bounded at width sum 0.0004? yes; max target-mode remainder width sum was `0.0004000000000000001`.
-Did recenter/rescale help compared to range_only and dependency_preserving? yes; best flowstar_style t=`7.4960392581387341` vs best baseline t=`0`.
+Did recenter/rescale help compared to the old normalized-insertion baseline? no; best scalar flowstar_style t=`7.4960392581387341` vs best baseline t=`7.4960392581387341`.
 Best rescue candidate: `flowstar_style_o6_candidate8_output6_insert_scalars`.
 Accepted/rejected steps for best rescue: `150` accepted, `60` rejected.
 min_regular_h_used for best rescue: `0.0021450425182496136`.

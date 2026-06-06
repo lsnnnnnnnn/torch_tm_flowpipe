@@ -42,6 +42,7 @@ SUMMARY_FIELDS = [
     "output_order",
     "truncation_range_split",
     "normal_eval_range_split",
+    "right_map_range_mode",
     "adaptive_order_fallback",
     "fallback_from_order",
     "refinement_pass",
@@ -107,6 +108,7 @@ SEGMENT_FIELDS = [
     "output_order",
     "truncation_range_split",
     "normal_eval_range_split",
+    "right_map_range_mode",
     "validation_mode",
     "reset_mode",
     "flowstar_symbolic_queue_max_size",
@@ -174,6 +176,12 @@ SEGMENT_FIELDS = [
     "normal_state_right_width_x",
     "normal_state_right_width_y",
     "normal_state_right_width_sum",
+    "old_right_map_range_width_x",
+    "old_right_map_range_width_y",
+    "old_right_map_range_width_sum",
+    "normal_right_map_range_width_x",
+    "normal_right_map_range_width_y",
+    "normal_right_map_range_width_sum",
     "insertion_truncation_width_x",
     "insertion_truncation_width_y",
     "insertion_truncation_width",
@@ -235,6 +243,7 @@ VALIDATION_ATTEMPT_FIELDS = [
     "output_order",
     "truncation_range_split",
     "normal_eval_range_split",
+    "right_map_range_mode",
     "adaptive_order_fallback",
     "fallback_from_order",
     "refinement_pass",
@@ -399,6 +408,7 @@ NORMALIZED_INSERTION_RESET_FIELDS = [
     "t_lo",
     "t_hi",
     "h",
+    "right_map_range_mode",
     "endpoint_box_width_x",
     "endpoint_box_width_y",
     "endpoint_box_width_sum",
@@ -415,6 +425,12 @@ NORMALIZED_INSERTION_RESET_FIELDS = [
     "normal_state_right_width_x",
     "normal_state_right_width_y",
     "normal_state_right_width_sum",
+    "old_right_map_range_width_x",
+    "old_right_map_range_width_y",
+    "old_right_map_range_width_sum",
+    "normal_right_map_range_width_x",
+    "normal_right_map_range_width_y",
+    "normal_right_map_range_width_sum",
     "insertion_truncation_width_x",
     "insertion_truncation_width_y",
     "insertion_truncation_width",
@@ -670,6 +686,7 @@ def _segment_row(
         "output_order": spec.get("order", ""),
         "truncation_range_split": spec.get("truncation_range_split", ""),
         "normal_eval_range_split": spec.get("normal_eval_range_split", ""),
+        "right_map_range_mode": normal_stats.get("right_map_range_mode", spec.get("right_map_range_mode", "standard")),
         "validation_mode": spec.get("validation_mode", "growth"),
         "reset_mode": reset_mode,
         "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
@@ -720,6 +737,8 @@ def _segment_row(
         "endpoint_box_width_sum": normal_stats.get("endpoint_box_width_sum", ""),
         "inserted_endpoint_width_sum": normal_stats.get("inserted_endpoint_width_sum", ""),
         "normalized_reset_width_sum": normal_stats.get("normalized_reset_width_sum", ""),
+        "old_right_map_range_width_sum": normal_stats.get("old_right_map_range_width_sum", ""),
+        "normal_right_map_range_width_sum": normal_stats.get("normal_right_map_range_width_sum", ""),
         "insertion_truncation_width": normal_stats.get("insertion_truncation_width", ""),
         "insertion_cutoff_width": normal_stats.get("insertion_cutoff_width", ""),
         "insertion_truncation_ordinary_width": normal_stats.get("insertion_truncation_ordinary_width", ""),
@@ -754,6 +773,12 @@ def _segment_row(
         "normal_state_right_width_x",
         "normal_state_right_width_y",
         "normal_state_right_width_sum",
+        "old_right_map_range_width_x",
+        "old_right_map_range_width_y",
+        "old_right_map_range_width_sum",
+        "normal_right_map_range_width_x",
+        "normal_right_map_range_width_y",
+        "normal_right_map_range_width_sum",
         "insertion_truncation_width_x",
         "insertion_truncation_width_y",
         "insertion_truncation_width_sum",
@@ -866,6 +891,7 @@ def _summarize_run(
         "output_order": spec.get("order", ""),
         "truncation_range_split": spec.get("truncation_range_split", ""),
         "normal_eval_range_split": spec.get("normal_eval_range_split", ""),
+        "right_map_range_mode": spec.get("right_map_range_mode", "standard"),
         "validation_mode": spec.get("validation_mode", "growth"),
         "reset_mode": spec.get("reset_mode", ""),
         "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
@@ -1047,6 +1073,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             "output_order": spec.get("order", ""),
             "truncation_range_split": spec.get("truncation_range_split", ""),
             "normal_eval_range_split": spec.get("normal_eval_range_split", ""),
+            "right_map_range_mode": spec.get("right_map_range_mode", "standard"),
             "validation_mode": spec["validation_mode"],
             "reset_mode": spec.get("reset_mode", "normalized_endpoint_box"),
             "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
@@ -1078,6 +1105,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     selective_high_degree_terms_top_k=spec.get("selective_high_degree_terms_top_k"),
                     normal_eval_range_split=spec.get("normal_eval_range_split"),
                     reset_mode=str(spec.get("reset_mode", "normalized_endpoint_box")),
+                    right_map_range_mode=str(spec.get("right_map_range_mode", "standard")),
                     scalar_recenter_remainder_midpoint=bool(spec.get("scalar_recenter_remainder_midpoint", False)),
                     flowstar_symbolic_queue_state=flowstar_queue_state,
                     flowstar_symbolic_queue_max_size=int(spec.get("flowstar_symbolic_queue_max_size") or 100),
@@ -1142,6 +1170,7 @@ def _configs() -> list[dict[str, Any]]:
         center_correction_width_factor: float = 1.05,
         selective_high_degree_terms_top_k: int | None = None,
         normal_eval_range_split: int | None = None,
+        right_map_range_mode: str = "standard",
         scalar_recenter_remainder_midpoint: bool = False,
         reset_mode: str = "normalized_endpoint_box",
         flowstar_symbolic_queue_max_size: int | None = None,
@@ -1152,6 +1181,7 @@ def _configs() -> list[dict[str, Any]]:
             "order": order,
             "validation_mode": validation_mode,
             "reset_mode": reset_mode,
+            "right_map_range_mode": right_map_range_mode,
             "flowstar_symbolic_queue_max_size": "" if flowstar_symbolic_queue_max_size is None else int(flowstar_symbolic_queue_max_size),
             "target_remainder_radius": target_remainder_radius,
             "center_correction_width_factor": center_correction_width_factor if validation_mode == "target_remainder_centered" else "",
@@ -1376,6 +1406,49 @@ def _configs() -> list[dict[str, Any]]:
             flowstar_symbolic_queue_max_size=100,
         ),
         flowstar_spec(
+            "flowstar_style_o4_target_insert_normaleval",
+            order=4,
+            reset_mode="normalized_insertion",
+            right_map_range_mode="normal_eval",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_insert_normaleval",
+            order=6,
+            candidate_order=8,
+            reset_mode="normalized_insertion",
+            right_map_range_mode="normal_eval",
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_cutoff_insert_normaleval",
+            order=4,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion",
+            right_map_range_mode="normal_eval",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_insert_normaleval",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion",
+            right_map_range_mode="normal_eval",
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_insert_normaleval_symqueue_split",
+            order=4,
+            reset_mode="normalized_insertion_symqueue_split",
+            right_map_range_mode="normal_eval",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_insert_normaleval_symqueue_split",
+            order=6,
+            candidate_order=8,
+            reset_mode="normalized_insertion_symqueue_split",
+            right_map_range_mode="normal_eval",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
             "flowstar_style_o4_target_insert_symqueue_split",
             order=4,
             reset_mode="normalized_insertion_symqueue_split",
@@ -1456,6 +1529,23 @@ def write_report(
     comparison_rows: Sequence[Mapping[str, Any]] | None = None,
 ) -> None:
     best_old = _best(summary_rows, not_mode="flowstar_style")
+    if best_old is None:
+        baseline_ids = {
+            "flowstar_style_o4_target_insert",
+            "flowstar_style_o6_candidate8_output6_insert",
+            "flowstar_style_o4_target_cutoff_insert",
+            "flowstar_style_o6_candidate8_output6_cutoff_insert",
+        }
+        for baseline_path in [
+            out_dir / "normalized_insertion_h10_summary.csv",
+            REPO_ROOT / "outputs" / "flowstar_normalized_insertion_h10" / "normalized_insertion_h10_summary.csv",
+        ]:
+            if not baseline_path.exists():
+                continue
+            baseline_rows = [row for row in _read_csv_rows(baseline_path) if row.get("run_id") in baseline_ids]
+            best_old = _best(baseline_rows)
+            if best_old is not None:
+                break
     best_rescue = _best(summary_rows, mode="flowstar_style")
     best_rescue_t = _finite_float(best_rescue.get("last_validated_t")) if best_rescue else 0.0
     best_old_t = _finite_float(best_old.get("last_validated_t")) if best_old else 0.0
@@ -2958,6 +3048,7 @@ def _write_normalized_insertion_report(
 
 
 H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_h10"
+NORMAL_EVAL_H10_OUTPUT_DIR_NAME = "flowstar_normal_eval_h10"
 SYMQUEUE_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_h10"
 SYMQUEUE_SPLIT_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_split_h10"
 H10_CONFIG_IDS = [
@@ -3305,6 +3396,151 @@ def write_normalized_insertion_h10_outputs(
     write_normalized_insertion_h10_vs_flowstar_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
     write_normalized_insertion_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
     make_normalized_insertion_h10_plots(out_dir, segment_rows)
+
+
+def _normal_eval_baseline_row(run_id: str) -> Mapping[str, Any]:
+    rows = _read_optional_csv(REPO_ROOT / "outputs" / H10_OUTPUT_DIR_NAME / "normalized_insertion_h10_summary.csv")
+    return next((row for row in rows if row.get("run_id") == run_id), {})
+
+
+def _normal_eval_comparison_by_run(comparison_rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+    return {str(row.get("run_id", "")): row for row in comparison_rows}
+
+
+def make_normal_eval_h10_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]]) -> None:
+    _copy_plot_if_present(out_dir, "width_ratio_vs_t.png", "normal_eval_width_ratio_vs_t.png")
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+    rows = [row for row in segment_rows if row.get("status") == "validated" and row.get("right_map_range_mode") == "normal_eval"]
+    if not rows:
+        return
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    for run_id in sorted({str(row.get("run_id", "")) for row in rows}):
+        sub = sorted([row for row in rows if row.get("run_id") == run_id], key=lambda r: _finite_float(r.get("t_hi")) or 0.0)
+        ts = [_finite_float(row.get("t_hi")) or 0.0 for row in sub]
+        old_vals = [_finite_float(row.get("old_right_map_range_width_sum")) or 0.0 for row in sub]
+        normal_vals = [_finite_float(row.get("normal_right_map_range_width_sum")) or 0.0 for row in sub]
+        ax.plot(ts, old_vals, linewidth=0.9, label=f"{run_id} old")
+        ax.plot(ts, normal_vals, linewidth=0.9, linestyle="--", label=f"{run_id} normal")
+    ax.set_xlabel("t")
+    ax.set_ylabel("right-map range width sum")
+    ax.set_yscale("log")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=6)
+    fig.tight_layout()
+    fig.savefig(out_dir / "normal_eval_range_compare.png", dpi=160)
+    plt.close(fig)
+
+
+def write_normal_eval_h10_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best_h10_summary(summary_rows, comparison_rows)
+    comp_by_run = _normal_eval_comparison_by_run(comparison_rows)
+    best_comp = comp_by_run.get(str(best.get("run_id", ""))) if best else None
+    o4_base = _normal_eval_baseline_row("flowstar_style_o4_target_insert")
+    o6_base = _normal_eval_baseline_row("flowstar_style_o6_candidate8_output6_insert")
+    o4_base_t = _finite_float(o4_base.get("last_validated_t")) or 6.4730088058091901
+    o6_base_t = _finite_float(o6_base.get("last_validated_t")) or 7.4960392581387341
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    any_reached = any(_reached_requested(row, max_horizon) for row in summary_rows)
+    improved_horizon = bool(best_t and best_t > max(o4_base_t, o6_base_t) + 1e-12)
+    normal_rows = [row for row in summary_rows if row.get("right_map_range_mode") == "normal_eval"]
+    max_old = _max_field(normal_rows, "max_inserted_endpoint_width_sum")
+    reset_rows = _read_optional_csv(out_dir / "normal_eval_reset_diagnostics.csv")
+    max_old_range = _max_field(reset_rows, "old_right_map_range_width_sum")
+    max_normal_range = _max_field(reset_rows, "normal_right_map_range_width_sum")
+    old_range_f = _finite_float(max_old_range)
+    normal_range_f = _finite_float(max_normal_range)
+    range_shrank = old_range_f is not None and normal_range_f is not None and normal_range_f < old_range_f
+    sample_row = _sample_containment_row(out_dir)
+    sample_passed = _sample_containment_passed(sample_row)
+    sample_text = "pending" if sample_passed is None else ("passed" if sample_passed else "failed")
+    width_ratio_text = "not compared"
+    if best_comp:
+        width_ratio_text = f"last=`{best_comp.get('last_width_ratio', '')}`, tube=`{best_comp.get('tube_width_ratio', '')}`"
+    branch_decision = "MERGE_CANDIDATE" if (any_reached or improved_horizon or range_shrank) else "NEEDS_MORE_WORK"
+    lines = [
+        "# Normal Eval H10 Report",
+        "",
+        f"Baseline o4 no-normal-eval: t=`{o4_base_t:.17g}`, final width=`{o4_base.get('final_width_sum', '')}`.",
+        f"Baseline o6 no-normal-eval: t=`{o6_base_t:.17g}`, final width=`{o6_base.get('final_width_sum', '')}`.",
+        f"Best normal_eval config: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did normal_eval beat the o4 baseline t~={o4_base_t:.17g} or o6 baseline t~={o6_base_t:.17g}? {_yes_no(improved_horizon)}.",
+        f"Did any config reach h10? {_yes_no(any_reached)}.",
+        f"Did width ratios improve? {width_ratio_text}.",
+        f"Did right_map_scaling shrink? {_yes_no(range_shrank)}; old max=`{max_old_range}`, normal max=`{max_normal_range}`, inserted max=`{max_old}`.",
+        f"Did sample containment pass? {sample_text}.",
+        "Did normal_eval remain conservative in tests? See pytest result for `evaluate_interval_normal` sample containment tests.",
+        f"Branch decision: {branch_decision}.",
+        "",
+        "## Config Status",
+        "",
+        "| run_id | status | last_validated_t | right_map_range_mode | final_width_sum | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | --- |",
+    ]
+    for row in _ordered_h10_rows(summary_rows):
+        comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('right_map_range_mode', '')} | {row.get('final_width_sum', '')} | "
+            f"{comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    if sample_row is not None:
+        lines.extend([
+            "",
+            "## Sample Containment",
+            "",
+            "| run_id | samples | checked_pairs | violations | max_outside_distance | status |",
+            "| --- | ---: | ---: | ---: | ---: | --- |",
+            f"| {sample_row.get('run_id', '')} | {sample_row.get('num_samples', '')} | {sample_row.get('checked_sample_time_pairs', '')} | "
+            f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
+        ])
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "normal_eval_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    decision_lines = [
+        "# Branch Decision",
+        "",
+        f"Decision: {branch_decision}",
+        "",
+        "## Evidence",
+        "",
+        f"- Horizon 10 reached: {_yes_no(any_reached)}.",
+        f"- Best normal_eval t: `{best_t}`.",
+        f"- Baseline o4/o6 t: `{o4_base_t:.17g}` / `{o6_base_t:.17g}`.",
+        f"- Right-map range shrank: {_yes_no(range_shrank)}.",
+        f"- Sample containment: {sample_text}.",
+        "- No fake Flow* parity is claimed; comparison ratios are reported separately.",
+        "",
+    ]
+    (out_dir / "branch_decision.md").write_text("\n".join(decision_lines), encoding="utf-8")
+
+
+def write_normal_eval_h10_outputs(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+    comparison_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    _write_csv(out_dir / "normal_eval_summary.csv", SUMMARY_FIELDS, summary_rows)
+    _write_csv(out_dir / "normal_eval_segments.csv", SEGMENT_FIELDS, segment_rows)
+    _write_csv(out_dir / "normal_eval_reset_diagnostics.csv", NORMALIZED_INSERTION_RESET_FIELDS, _normalized_insertion_reset_rows(segment_rows))
+    _write_csv(out_dir / "normal_eval_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+    _write_csv(out_dir / "normal_eval_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+    write_normal_eval_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    make_normal_eval_h10_plots(out_dir, segment_rows)
 
 
 
@@ -3725,6 +3961,15 @@ def write_specialized_outputs(
         make_normalized_insertion_plots(out_dir, segment_rows)
     elif name == H10_OUTPUT_DIR_NAME:
         write_normalized_insertion_h10_outputs(
+            out_dir,
+            summary_rows,
+            segment_rows,
+            attempt_rows,
+            max_horizon=max_horizon,
+            comparison_rows=comparison_rows,
+        )
+    elif name == NORMAL_EVAL_H10_OUTPUT_DIR_NAME:
+        write_normal_eval_h10_outputs(
             out_dir,
             summary_rows,
             segment_rows,

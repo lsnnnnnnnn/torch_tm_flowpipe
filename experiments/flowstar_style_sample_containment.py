@@ -225,6 +225,13 @@ def refresh_h10_report(out_dir: Path, max_horizon: float) -> None:
         comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
         rescue.write_normalized_insertion_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
 
+    normal_eval_summary_path = out_dir / "normal_eval_summary.csv"
+    if normal_eval_summary_path.exists():
+        comparison_path = out_dir / "normal_eval_vs_flowstar_comparison.csv"
+        summary_rows = _read_rows(normal_eval_summary_path)
+        comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
+        rescue.write_normal_eval_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+
     symqueue_summary_path = out_dir / "symqueue_h10_summary.csv"
     if symqueue_summary_path.exists():
         comparison_path = out_dir / "symqueue_h10_vs_flowstar_comparison.csv"

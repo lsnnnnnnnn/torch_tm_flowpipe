@@ -12,6 +12,98 @@ from .interval import Interval
 Exponent = Tuple[int, ...]
 
 
+def _interval_point_like(value: Any, like: torch.Tensor) -> Interval:
+    return Interval.point(_coef(value, like=like))
+
+
+def _state_normal_factor(exp: Exponent, state_var_indices: set[int], like: torch.Tensor) -> Interval:
+    has_state_power = False
+    for index in state_var_indices:
+        power = exp[index]
+        if power == 0:
+            continue
+        has_state_power = True
+        if power % 2 == 1:
+            return Interval(
+                torch.as_tensor(-1.0, dtype=like.dtype, device=like.device),
+                torch.as_tensor(1.0, dtype=like.dtype, device=like.device),
+            )
+    if has_state_power:
+        return Interval(
+            torch.as_tensor(0.0, dtype=like.dtype, device=like.device),
+            torch.as_tensor(1.0, dtype=like.dtype, device=like.device),
+        )
+    return _interval_point_like(1.0, like)
+
+
+def _step_power_interval(
+    power: int,
+    domain: Sequence[Interval],
+    time_var_index: int,
+    step_exp_table: Sequence[Any] | Mapping[int, Any] | None,
+    like: torch.Tensor,
+) -> Interval:
+    if step_exp_table is not None:
+        if isinstance(step_exp_table, Mapping):
+            if power in step_exp_table:
+                value = step_exp_table[power]
+                return value if isinstance(value, Interval) else _interval_point_like(value, like)
+        elif 0 <= power < len(step_exp_table):
+            value = step_exp_table[power]
+            return value if isinstance(value, Interval) else _interval_point_like(value, like)
+    return domain[time_var_index].pow_int(power)
+
+
+def evaluate_interval_normal(
+    poly: "Polynomial",
+    domain: Iterable[Interval],
+    step_exp_table: Sequence[Any] | Mapping[int, Any] | None = None,
+    state_var_indices: Sequence[int] | None = None,
+    time_var_index: int | None = 0,
+) -> Interval:
+    """Evaluate a polynomial over Flow*-style normal coordinates.
+
+    The time variable is bounded through ``step_exp_table`` when supplied, or by
+    the time interval in ``domain``. State variables are assumed normalized to
+    ``[-1, 1]`` regardless of their stored domain. This mirrors Flow*'s
+    ``intEvalNormal`` term rule while remaining a conservative interval bound.
+    """
+    domain_l = list(domain)
+    if len(domain_l) != poly.n_vars:
+        raise ValueError(f"domain length {len(domain_l)} != n_vars {poly.n_vars}")
+    if time_var_index is not None and (time_var_index < 0 or time_var_index >= poly.n_vars):
+        raise IndexError(time_var_index)
+    if state_var_indices is None:
+        state_set = {i for i in range(poly.n_vars) if i != time_var_index}
+    else:
+        state_set = {int(i) for i in state_var_indices}
+    if any(i < 0 or i >= poly.n_vars for i in state_set):
+        raise IndexError("state_var_indices contains an out-of-range variable")
+    if time_var_index is not None:
+        state_set.discard(time_var_index)
+    if not poly.terms:
+        return Interval.zero()
+
+    acc = Interval.zero(dtype=poly.dtype, device=poly.device)
+    for exp, c in poly.terms.items():
+        term_iv = Interval.point(c)
+        if time_var_index is not None and exp[time_var_index]:
+            term_iv = term_iv * _step_power_interval(
+                exp[time_var_index],
+                domain_l,
+                time_var_index,
+                step_exp_table,
+                c,
+            )
+        term_iv = term_iv * _state_normal_factor(exp, state_set, c)
+        for index, power in enumerate(exp):
+            if power == 0 or index in state_set or index == time_var_index:
+                continue
+            term_iv = term_iv * domain_l[index].pow_int(power)
+        acc = acc + term_iv
+    return acc
+
+
 def _coef(x: Any, *, like: torch.Tensor | None = None) -> torch.Tensor:
     if isinstance(x, torch.Tensor):
         t = x.detach().clone() if x.requires_grad else x.clone()

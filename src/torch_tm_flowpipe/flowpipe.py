@@ -8,7 +8,7 @@ from typing import Any, Callable, Iterable, List, Mapping, Sequence
 import torch
 
 from .interval import Interval, ensure_interval
-from .polynomial import Polynomial
+from .polynomial import Polynomial, evaluate_interval_normal
 from .safety import intervals_are_finite
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
@@ -226,10 +226,16 @@ def _poly_interval_normal(
     normal_eval_range_split: int | None = None,
 ) -> Interval:
     """Flow*-style normal interval evaluation for normalized local domains."""
-    normal = _normal_domain(domain, tau_index)
     pieces = _truncation_split_value(normal_eval_range_split)
     if pieces is None:
-        return poly.evaluate_interval(normal)
+        state_indices = [i for i in range(poly.n_vars) if i != tau_index]
+        return evaluate_interval_normal(
+            poly,
+            domain,
+            state_var_indices=state_indices,
+            time_var_index=tau_index,
+        )
+    normal = _normal_domain(domain, tau_index)
     split_vars = [i for i in range(len(normal)) if i != tau_index]
     return poly.evaluate_interval_split(normal, pieces, split_vars=split_vars)
 
@@ -722,6 +728,7 @@ def _flowstar_normalized_insertion_transition(
     symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     symbolic_queue_max_size: int = 100,
     scalar_recenter_remainder_midpoint: bool = False,
+    right_map_range_mode: str = "standard",
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
     if prev is None:
@@ -734,6 +741,8 @@ def _flowstar_normalized_insertion_transition(
             step_index=0,
             diagnostics={"reset_mode": "normalized_insertion", "implicit_initial_state": True},
         )
+    if right_map_range_mode not in {"standard", "normal_eval"}:
+        raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
     if symbolic_queue_split:
         mode_name = "normalized_insertion_symqueue_split"
     elif symbolic_queue:
@@ -743,6 +752,7 @@ def _flowstar_normalized_insertion_transition(
     endpoint_box = seg.final_tm.range_box()
     diagnostics: dict[str, Any] = {
         "reset_mode": mode_name,
+        "right_map_range_mode": right_map_range_mode,
         "step_index": int(prev.step_index) + 1,
         "endpoint_box_width_sum": _sum_interval_widths(endpoint_box),
         "endpoint_tm_width_sum": _sum_interval_widths(endpoint_box),
@@ -769,7 +779,11 @@ def _flowstar_normalized_insertion_transition(
         diagnostics["remainder_midpoint_shift_x"] = remainder_midpoint_shifts[0] if len(remainder_midpoint_shifts) > 0 else ""
         diagnostics["remainder_midpoint_shift_y"] = remainder_midpoint_shifts[1] if len(remainder_midpoint_shifts) > 1 else ""
         diagnostics["remainder_midpoint_shift_abs_sum"] = sum(abs(float(v)) for v in remainder_midpoint_shifts)
-    inserted_box = inserted.range_box()
+    old_inserted_box = inserted.range_box()
+    normal_inserted_box = _tmvector_range_box_normal(inserted, None)
+    _add_width_metrics(diagnostics, "old_right_map_range", old_inserted_box)
+    _add_width_metrics(diagnostics, "normal_right_map_range", normal_inserted_box)
+    inserted_box = normal_inserted_box if right_map_range_mode == "normal_eval" else old_inserted_box
     scales: list[float] = []
     inv_scales: list[float] = []
     for iv in inserted_box:
@@ -1483,6 +1497,22 @@ def _taylor_model_range_box_normal(
         normal_eval_range_split=normal_eval_range_split,
     )
     return poly_range + model.remainder
+
+
+def _tmvector_range_box_normal(
+    tmv: TMVector,
+    tau_index: int | None = None,
+    *,
+    normal_eval_range_split: int | None = None,
+) -> list[Interval]:
+    return [
+        _taylor_model_range_box_normal(
+            model,
+            tau_index,
+            normal_eval_range_split=normal_eval_range_split,
+        )
+        for model in tmv
+    ]
 
 
 def _picard_residual_boxes(
@@ -2691,6 +2721,7 @@ def flowpipe_step_flowstar_style_adaptive(
     flowstar_symbolic_queue_max_size: int = 100,
     flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
+    right_map_range_mode: str = "standard",
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -2715,6 +2746,8 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion', 'normalized_insertion_symqueue', or "
             "'normalized_insertion_symqueue_split'"
         )
+    if right_map_range_mode not in {"standard", "normal_eval"}:
+        raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
@@ -2749,6 +2782,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 symbolic_queue_state=queue_state,
                 symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
                 scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
+                right_map_range_mode=right_map_range_mode,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
             if use_split and symbolic_output_remainders:

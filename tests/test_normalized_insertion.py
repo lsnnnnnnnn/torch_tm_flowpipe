@@ -188,3 +188,27 @@ def test_normalized_insertion_symqueue_split_keeps_target_seed_clean():
     assert stats["symbolic_contribution_width"] > 0.0
     assert abs(stats["materialized_for_output_width"] - stats["symbolic_contribution_width"]) < 1e-15
     assert stats["total_range_width_with_symbolic"] >= stats["ordinary_only_range_width"]
+
+
+def test_normalized_insertion_normal_eval_range_mode_records_old_and_normal_ranges():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    seg = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        x0,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion",
+        right_map_range_mode="normal_eval",
+    )
+
+    assert seg.status == "validated"
+    assert seg.flowstar_normal_stats is not None
+    stats = seg.flowstar_normal_stats
+    assert stats["right_map_range_mode"] == "normal_eval"
+    assert stats["old_right_map_range_width_sum"] >= 0.0
+    assert stats["normal_right_map_range_width_sum"] >= 0.0
+    assert stats["inserted_endpoint_width_sum"] == stats["normal_right_map_range_width_sum"]
