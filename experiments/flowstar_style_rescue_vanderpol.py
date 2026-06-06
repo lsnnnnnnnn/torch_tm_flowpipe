@@ -60,6 +60,10 @@ SUMMARY_FIELDS = [
     "max_selective_dropped_remainder_width_sum",
     "max_flowstar_queue_size_after",
     "max_flowstar_propagated_remainder_width_sum",
+    "max_insertion_truncation_width",
+    "max_insertion_cutoff_width",
+    "max_inserted_endpoint_width_sum",
+    "max_normalized_reset_width_sum",
     "status",
     "runtime_s",
     "validated_segments",
@@ -124,6 +128,23 @@ SEGMENT_FIELDS = [
     "flowstar_queue_reset",
     "flowstar_propagated_remainder_width_sum",
     "flowstar_total_remainder_width_sum",
+    "endpoint_box_width_sum",
+    "inserted_endpoint_width_sum",
+    "normalized_reset_width_sum",
+    "insertion_truncation_width",
+    "insertion_cutoff_width",
+    "composed_poly_range_width",
+    "output_remainder_width",
+    "scale_x",
+    "scale_y",
+    "center_x",
+    "center_y",
+    "tmv_right_degree",
+    "tmv_pre_degree",
+    "tmv_right_term_count",
+    "tmv_pre_term_count",
+    "terms_before_insertion_truncation",
+    "terms_after_insertion",
     "step_rejections",
     "next_h",
     "message",
@@ -302,6 +323,40 @@ COMPARISON_FIELDS = [
     "tube_width_ratio",
     "max_time_overlap_width_ratio",
     "median_time_overlap_width_ratio",
+]
+
+RATIO_TRACE_FIELDS = [
+    "run_id",
+    "t",
+    "py_width_sum",
+    "flowstar_overlap_width_sum",
+    "width_ratio",
+]
+
+NORMALIZED_INSERTION_RESET_FIELDS = [
+    "run_id",
+    "segment_index",
+    "t_lo",
+    "t_hi",
+    "h",
+    "endpoint_box_width_sum",
+    "inserted_endpoint_width_sum",
+    "reset_width_sum",
+    "normalized_reset_width_sum",
+    "insertion_truncation_width",
+    "insertion_cutoff_width",
+    "composed_poly_range_width",
+    "output_remainder_width",
+    "scale_x",
+    "scale_y",
+    "center_x",
+    "center_y",
+    "tmv_right_degree",
+    "tmv_pre_degree",
+    "tmv_right_term_count",
+    "tmv_pre_term_count",
+    "terms_before_insertion_truncation",
+    "terms_after_insertion",
 ]
 
 
@@ -492,10 +547,16 @@ def _segment_row(
     x_lo, x_hi, y_lo, y_hi, width_x, width_y, width_sum = _segment_bounds(box)
     selective_stats = dict(getattr(seg, "selective_term_stats", None) or {})
     queue_stats = dict(getattr(seg, "flowstar_symbolic_queue_stats", None) or {})
+    normal_stats = dict(getattr(seg, "flowstar_normal_stats", None) or {})
     reset_box = seg.reset_tm.range_box() if getattr(seg, "reset_tm", None) is not None else box
     _rx_lo, _rx_hi, _ry_lo, _ry_hi, reset_width_x, reset_width_y, reset_width_sum = _segment_bounds(reset_box)
-    reset_mode = str(spec.get("reset_mode", queue_stats.get("reset_mode", "normalized_endpoint_box")))
-    reset_box_source = "flowstar_symbolic_remainder_queue" if reset_mode == "flowstar_symbolic_remainder_queue" else "normalized_endpoint_reset_box"
+    reset_mode = str(spec.get("reset_mode", normal_stats.get("reset_mode", queue_stats.get("reset_mode", "normalized_endpoint_box"))))
+    if reset_mode == "flowstar_symbolic_remainder_queue":
+        reset_box_source = "flowstar_symbolic_remainder_queue"
+    elif reset_mode == "normalized_insertion":
+        reset_box_source = "normalized_insertion"
+    else:
+        reset_box_source = "normalized_endpoint_reset_box"
     row = {
         "run_id": spec["run_id"],
         "mode": spec["mode"],
@@ -532,6 +593,23 @@ def _segment_row(
         "flowstar_queue_reset": queue_stats.get("queue_reset", ""),
         "flowstar_propagated_remainder_width_sum": queue_stats.get("propagated_remainder_width_sum", ""),
         "flowstar_total_remainder_width_sum": queue_stats.get("total_remainder_width_sum", ""),
+        "endpoint_box_width_sum": normal_stats.get("endpoint_box_width_sum", ""),
+        "inserted_endpoint_width_sum": normal_stats.get("inserted_endpoint_width_sum", ""),
+        "normalized_reset_width_sum": normal_stats.get("normalized_reset_width_sum", ""),
+        "insertion_truncation_width": normal_stats.get("insertion_truncation_width", ""),
+        "insertion_cutoff_width": normal_stats.get("insertion_cutoff_width", ""),
+        "composed_poly_range_width": normal_stats.get("composed_poly_range_width", ""),
+        "output_remainder_width": normal_stats.get("output_remainder_width", ""),
+        "scale_x": normal_stats.get("scale_x", ""),
+        "scale_y": normal_stats.get("scale_y", ""),
+        "center_x": normal_stats.get("center_x", ""),
+        "center_y": normal_stats.get("center_y", ""),
+        "tmv_right_degree": normal_stats.get("tmv_right_degree", ""),
+        "tmv_pre_degree": normal_stats.get("tmv_pre_degree", ""),
+        "tmv_right_term_count": normal_stats.get("tmv_right_term_count", ""),
+        "tmv_pre_term_count": normal_stats.get("tmv_pre_term_count", ""),
+        "terms_before_insertion_truncation": normal_stats.get("terms_before_insertion_truncation", ""),
+        "terms_after_insertion": normal_stats.get("terms_after_insertion", ""),
         "step_rejections": getattr(seg, "step_rejections", 0),
         "next_h": "" if getattr(seg, "next_h", None) is None else getattr(seg, "next_h"),
         "message": getattr(seg, "message", ""),
@@ -649,6 +727,10 @@ def _summarize_run(
         "max_selective_dropped_remainder_width_sum": selective_drop_width,
         "max_flowstar_queue_size_after": _max_field(segment_rows, "flowstar_queue_size_after"),
         "max_flowstar_propagated_remainder_width_sum": _max_field(segment_rows, "flowstar_propagated_remainder_width_sum"),
+        "max_insertion_truncation_width": _max_field(segment_rows, "insertion_truncation_width"),
+        "max_insertion_cutoff_width": _max_field(segment_rows, "insertion_cutoff_width"),
+        "max_inserted_endpoint_width_sum": _max_field(segment_rows, "inserted_endpoint_width_sum"),
+        "max_normalized_reset_width_sum": _max_field(segment_rows, "normalized_reset_width_sum"),
         "status": status,
         "runtime_s": runtime_s,
         "validated_segments": len(validated),
@@ -782,6 +864,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
     start = time.perf_counter()
     segment_index = 0
     flowstar_queue_state = None
+    flowstar_normal_state = None
 
     while t < max_horizon - 1e-15:
         elapsed = time.perf_counter() - start
@@ -830,6 +913,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     reset_mode=str(spec.get("reset_mode", "normalized_endpoint_box")),
                     flowstar_symbolic_queue_state=flowstar_queue_state,
                     flowstar_symbolic_queue_max_size=int(spec.get("flowstar_symbolic_queue_max_size") or 100),
+                    flowstar_normal_state=flowstar_normal_state,
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                 ),
@@ -850,6 +934,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             failure_reason = seg.message or "validation failed"
             break
         flowstar_queue_state = getattr(seg, "flowstar_symbolic_queue_state", flowstar_queue_state)
+        flowstar_normal_state = getattr(seg, "flowstar_normal_state", flowstar_normal_state)
         current = seg.reset_tm if seg.reset_tm is not None else seg.final_tm
         h_request = float(seg.next_h) if seg.next_h is not None else min(float(seg.h) * 1.5, float(spec.get("h_max", 0.1)))
         t += float(seg.h)
@@ -1050,6 +1135,13 @@ def _configs() -> list[dict[str, Any]]:
             cutoff_threshold=1e-10,
             reset_mode="flowstar_symbolic_remainder_queue",
             flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_insert",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion",
         ),
     ]
 
@@ -1664,6 +1756,7 @@ def write_rescue_vs_flowstar_outputs(
     flow_rows = _read_csv_rows(ORIGINAL_FLOWSTAR_SEGMENTS)
     comparison_rows: list[dict[str, Any]] = []
     ratio_rows_by_run: dict[str, list[dict[str, Any]]] = {}
+    ratio_trace_rows: list[dict[str, Any]] = []
     for summary in summary_rows:
         if summary.get("mode") != "flowstar_style":
             continue
@@ -1673,9 +1766,11 @@ def write_rescue_vs_flowstar_outputs(
         comparison, ratio_rows = _comparison_row(summary, py_rows, flow_rows)
         comparison_rows.append(comparison)
         ratio_rows_by_run[str(summary["run_id"])] = ratio_rows
+        ratio_trace_rows.extend(ratio_rows)
     if not comparison_rows:
         return []
     _write_csv(out_dir / "rescue_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+    _write_csv(out_dir / "rescue_vs_flowstar_ratio_trace.csv", RATIO_TRACE_FIELDS, ratio_trace_rows)
     write_flowstar_comparison_report(out_dir, comparison_rows, max_horizon=max_horizon)
     best = max(comparison_rows, key=lambda r: _finite_float(r.get("py_last_validated_t")) or 0.0)
     best_py_rows = _rows_for_run(segment_rows, str(best["run_id"]))
@@ -2404,6 +2499,201 @@ def _write_width_control_report(
     ]
     (out_dir / "branch_decision.md").write_text("\n".join(decision_lines), encoding="utf-8")
 
+
+def _normalized_insertion_reset_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for row in segment_rows:
+        if row.get("reset_mode") != "normalized_insertion" and "cutoff_insert" not in str(row.get("run_id", "")):
+            continue
+        rows.append({field: row.get(field, "") for field in NORMALIZED_INSERTION_RESET_FIELDS})
+    return rows
+
+
+def _rows_for_run_any_status(rows: Sequence[Mapping[str, Any]], run_id: str) -> list[Mapping[str, Any]]:
+    return sorted([row for row in rows if row.get("run_id") == run_id], key=lambda r: _finite_float(r.get("t_hi")) or 0.0)
+
+
+def _max_before_time(rows: Sequence[Mapping[str, Any]], run_id: str, field: str, t_limit: float) -> float | None:
+    vals: list[float] = []
+    for row in rows:
+        if row.get("run_id") != run_id:
+            continue
+        t_hi = _finite_float(row.get("t_hi"))
+        val = _finite_float(row.get(field))
+        if t_hi is not None and t_hi <= t_limit + 1e-12 and val is not None:
+            vals.append(val)
+    return max(vals) if vals else None
+
+
+def _first_ratio_crossing(ratio_rows: Sequence[Mapping[str, Any]], run_id: str, threshold: float) -> float | None:
+    candidates: list[float] = []
+    for row in ratio_rows:
+        if row.get("run_id") != run_id:
+            continue
+        ratio = _finite_float(row.get("width_ratio"))
+        t = _finite_float(row.get("t"))
+        if ratio is not None and t is not None and ratio >= threshold:
+            candidates.append(t)
+    return min(candidates) if candidates else None
+
+
+def _ratio_crossing_lines(ratio_rows: Sequence[Mapping[str, Any]], previous_id: str, new_id: str) -> list[str]:
+    lines: list[str] = []
+    for threshold in (2.0, 5.0, 10.0):
+        prev_t = _first_ratio_crossing(ratio_rows, previous_id, threshold)
+        new_t = _first_ratio_crossing(ratio_rows, new_id, threshold)
+        if prev_t is None and new_t is None:
+            verdict = "tied; neither crossed"
+        elif prev_t is None:
+            verdict = "worse; new crossed but previous did not"
+        elif new_t is None:
+            verdict = "improved; new did not cross"
+        elif new_t > prev_t + 1e-12:
+            verdict = "improved; crossing moved later"
+        elif new_t < prev_t - 1e-12:
+            verdict = "worse; crossing moved earlier"
+        else:
+            verdict = "tied"
+        lines.append(
+            f"- {threshold:.0f}x crossing: previous=`{prev_t if prev_t is not None else ''}`, "
+            f"normalized_insertion=`{new_t if new_t is not None else ''}`; {verdict}."
+        )
+    return lines
+
+
+def make_normalized_insertion_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]]) -> None:
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+
+    previous_id = "flowstar_style_o6_candidate8_output6_cutoff"
+    new_id = "flowstar_style_o6_candidate8_output6_cutoff_insert"
+    grouped = {
+        previous_id: _rows_for_run_any_status(segment_rows, previous_id),
+        new_id: _rows_for_run_any_status(segment_rows, new_id),
+    }
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    for run_id, rows in grouped.items():
+        pts = [
+            (_finite_float(row.get("t_hi")), _finite_float(row.get("reset_width_sum")))
+            for row in rows
+            if _finite_float(row.get("t_hi")) is not None and _finite_float(row.get("reset_width_sum")) is not None
+        ]
+        if pts:
+            pts.sort()
+            ax.plot([p[0] for p in pts], [p[1] for p in pts], marker="o", markersize=2.4, linewidth=1.0, label=run_id)
+    ax.set_xlabel("t")
+    ax.set_ylabel("reset width sum")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "reset_width_compare.png", dpi=160)
+    plt.close(fig)
+
+    rows = _rows_for_run_any_status(segment_rows, new_id)
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    pts_trunc: list[tuple[float, float]] = []
+    pts_cutoff: list[tuple[float, float]] = []
+    pts_rem: list[tuple[float, float]] = []
+    for row in rows:
+        t = _finite_float(row.get("t_hi"))
+        if t is None:
+            continue
+        trunc = _finite_float(row.get("insertion_truncation_width"))
+        cutoff = _finite_float(row.get("insertion_cutoff_width"))
+        rem = _finite_float(row.get("output_remainder_width"))
+        if trunc is not None:
+            pts_trunc.append((t, trunc))
+        if cutoff is not None:
+            pts_cutoff.append((t, cutoff))
+        if rem is not None:
+            pts_rem.append((t, rem))
+    for label, pts in (("truncation", pts_trunc), ("cutoff", pts_cutoff), ("output remainder", pts_rem)):
+        if pts:
+            pts.sort()
+            ax.plot([p[0] for p in pts], [p[1] for p in pts], marker="o", markersize=2.4, linewidth=1.0, label=label)
+    ax.set_xlabel("t")
+    ax.set_ylabel("uncertainty width sum")
+    ax.set_yscale("log")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "insertion_uncertainty_vs_t.png", dpi=160)
+    plt.close(fig)
+
+
+def _write_normalized_insertion_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    previous_id = "flowstar_style_o6_candidate8_output6_cutoff"
+    new_id = "flowstar_style_o6_candidate8_output6_cutoff_insert"
+    previous = _row_by_run(summary_rows, previous_id)
+    new = _row_by_run(summary_rows, new_id)
+    previous_t = _finite_float(previous.get("last_validated_t")) or 0.0
+    new_t = _finite_float(new.get("last_validated_t")) or 0.0
+    reached = bool(new and new_t >= float(max_horizon) - 1e-9)
+    beat_old = new_t > 2.400737667399793
+    prev_reset = _max_before_time(segment_rows, previous_id, "reset_width_sum", 2.4)
+    new_reset = _max_before_time(segment_rows, new_id, "reset_width_sum", 2.4)
+    reset_shrank = prev_reset is not None and new_reset is not None and new_reset < prev_reset
+    insertion_unc = _max_field([row for row in segment_rows if row.get("run_id") == new_id], "output_remainder_width")
+    inserted_width = _max_field([row for row in segment_rows if row.get("run_id") == new_id], "inserted_endpoint_width_sum")
+    unc_float = _finite_float(insertion_unc)
+    inserted_float = _finite_float(inserted_width)
+    uncertainty_dominated = bool(unc_float is not None and inserted_float is not None and unc_float >= inserted_float)
+    comp_previous = _best_comparison_for_run(comparison_rows, previous_id)
+    comp_new = _best_comparison_for_run(comparison_rows, new_id)
+    ratio_rows = _read_optional_csv(out_dir / "rescue_vs_flowstar_ratio_trace.csv")
+    ratio_lines = _ratio_crossing_lines(ratio_rows, previous_id, new_id) if ratio_rows else [
+        "- Crossing data unavailable because `rescue_vs_flowstar_ratio_trace.csv` was not produced."
+    ]
+    if (float(max_horizon) >= 5.0 and reached) or new_t > previous_t + 1e-12:
+        branch_decision = "MERGE_CANDIDATE"
+    else:
+        branch_decision = "NEEDS_MORE_WORK"
+
+    lines = [
+        "# Flowstar Normalized Insertion Rescue Report",
+        "",
+        "Mechanism: opt-in clean-room normal insertion/composition. The default flowpipe path is unchanged.",
+        f"Previous best `{previous_id}` reached t=`{previous_t:.17g}`.",
+        f"Normalized insertion `{new_id}` reached t=`{new_t:.17g}`.",
+        f"Did normalized insertion beat t~=2.400737? {_yes_no(beat_old)}.",
+        f"Did it reach horizon {float(max_horizon):.17g}? {_yes_no(reached)}.",
+        f"Did reset widths shrink before t~=2.4? {_yes_no(reset_shrank)}; previous max reset width sum=`{prev_reset if prev_reset is not None else ''}`, new=`{new_reset if new_reset is not None else ''}`.",
+        "Did width ratios vs Flow* improve at 2x/5x/10x crossing times?",
+        *ratio_lines,
+        f"Did insertion uncertainty dominate? {_yes_no(uncertainty_dominated)}; max output remainder width=`{insertion_unc}`, max inserted endpoint width=`{inserted_width}`.",
+        f"Runtime cost: previous=`{previous.get('runtime_s', '')}`, normalized insertion=`{new.get('runtime_s', '')}` seconds.",
+        f"Width ratio vs Flow*: previous last=`{comp_previous.get('last_width_ratio', '')}`, tube=`{comp_previous.get('tube_width_ratio', '')}`; new last=`{comp_new.get('last_width_ratio', '')}`, tube=`{comp_new.get('tube_width_ratio', '')}`.",
+        f"Failure mode if still failing: `{new.get('failure_reason', '')}`.",
+        f"One-step oracle after insertion: {'not run; normalized insertion reached the requested horizon and produced no PyTorch failure point' if reached else 'run at the new failure point if requested by the driver'}.",
+        f"Branch decision: {branch_decision}.",
+        "",
+        "## Rows",
+        "",
+        "| run_id | reset_mode | status | last_validated_t | runtime_s | max_inserted_width | max_insertion_truncation | max_insertion_cutoff | failure_reason |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in summary_rows:
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('reset_mode', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('runtime_s', '')} | {row.get('max_inserted_endpoint_width_sum', '')} | "
+            f"{row.get('max_insertion_truncation_width', '')} | {row.get('max_insertion_cutoff_width', '')} | {row.get('failure_reason', '')} |"
+        )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "normalized_insertion_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -2456,6 +2746,14 @@ def write_specialized_outputs(
         _write_csv(out_dir / "width_control_reset_boxes.csv", RESET_BOX_FIELDS, _reset_box_rows(segment_rows))
         _write_csv(out_dir / "width_control_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
         _write_width_control_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_normalized_insertion_rescue":
+        _write_csv(out_dir / "normalized_insertion_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "normalized_insertion_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_csv(out_dir / "normalized_insertion_reset_diagnostics.csv", NORMALIZED_INSERTION_RESET_FIELDS, _normalized_insertion_reset_rows(segment_rows))
+        _write_csv(out_dir / "normalized_insertion_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+        _write_csv(out_dir / "normalized_insertion_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+        _write_normalized_insertion_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
+        make_normalized_insertion_plots(out_dir, segment_rows)
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:

@@ -466,10 +466,15 @@ def run_oracle(
     _write_csv(out_dir / "oracle_flowstar_segments.csv", FLOWSTAR_SEGMENT_FIELDS, flowstar_segments)
     _write_csv(out_dir / "oracle_pytorch_attempt.csv", PYTORCH_ATTEMPT_FIELDS, [py_row])
     _write_report(out_dir, summary, order_summaries, py_row)
+    alias_suffix = ""
     if "after_width_control" in out_dir.name:
+        alias_suffix = "after_width_control"
+    elif "after_insertion" in out_dir.name:
+        alias_suffix = "after_insertion"
+    if alias_suffix:
         for source_name, alias_name in (
-            ("oracle_report.md", "oracle_after_width_control_report.md"),
-            ("oracle_summary.csv", "oracle_after_width_control_summary.csv"),
+            ("oracle_report.md", f"oracle_{alias_suffix}_report.md"),
+            ("oracle_summary.csv", f"oracle_{alias_suffix}_summary.csv"),
         ):
             source_path = out_dir / source_name
             if source_path.exists():

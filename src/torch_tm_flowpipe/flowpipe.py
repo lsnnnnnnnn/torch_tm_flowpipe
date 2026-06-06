@@ -50,6 +50,8 @@ class FlowpipeSegment:
     selective_term_details: Sequence[Mapping[str, Any]] | None = None
     flowstar_symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None
     flowstar_symbolic_queue_stats: Mapping[str, Any] | None = None
+    flowstar_normal_state: "FlowstarNormalFlowpipeState | None" = None
+    flowstar_normal_stats: Mapping[str, Any] | None = None
 
 
 @dataclass
@@ -62,6 +64,66 @@ class FlowpipeResult:
     @property
     def validation_attempts(self) -> int:
         return sum(seg.validation_attempts for seg in self.segments)
+
+
+@dataclass(frozen=True)
+class FlowstarNormalFlowpipeState:
+    """Opt-in Flow*-style normal-composition state.
+
+    ``tmv_pre`` is the validated left/preconditioning flow map for the current
+    step. ``tmv_right`` maps the current local normalized variables back into the
+    previous normal coordinate frame.
+    """
+
+    tmv_pre: TMVector
+    tmv_right: TMVector
+    domain: list[Interval]
+    center: list[float]
+    scales: list[float]
+    step_index: int = 0
+    diagnostics: Mapping[str, Any] | None = None
+
+    @staticmethod
+    def from_initial_box(
+        x0_box: Sequence[Interval | tuple[float, float] | list[float] | float],
+        order: int,
+    ) -> "FlowstarNormalFlowpipeState":
+        normalized = _normalized_tm_from_box(x0_box, order)
+        domain = normalized.domain
+        boxes = _as_interval_list(x0_box)
+        return FlowstarNormalFlowpipeState(
+            tmv_pre=normalized,
+            tmv_right=TMVector.identity(domain, order=order),
+            domain=list(domain),
+            center=[float(iv.mid().detach().cpu()) for iv in boxes],
+            scales=[float(iv.radius().detach().cpu()) for iv in boxes],
+            step_index=0,
+            diagnostics={"reset_mode": "normalized_insertion", "initial_state": True},
+        )
+
+    def endpoint_tm(self) -> TMVector:
+        models: list[TaylorModel] = []
+        for model, center, scale in zip(self.tmv_right, self.center, self.scales):
+            models.append((model * float(scale)) + float(center))
+        return TMVector(models)
+
+    def range_box(self) -> list[Interval]:
+        return self.endpoint_tm().range_box()
+
+    def normalized_initial_tm(self, order: int | None = None) -> TMVector:
+        return _normalized_tm_from_center_scale(
+            self.center,
+            self.scales,
+            int(order) if order is not None else _tm_max_degree(self.tmv_pre),
+            template_domain=self.domain,
+        )
+
+    def diagnostic_widths(self) -> dict[str, Any]:
+        return {
+            "normal_state_width_sum": _sum_interval_widths(self.range_box()),
+            "normal_state_right_width_sum": _sum_interval_widths(self.tmv_right.range_box()),
+            "normal_state_scale_sum": sum(abs(float(s)) for s in self.scales),
+        }
 
 
 def _as_interval_list(x0_box: Sequence[Interval | tuple[float, float] | list[float] | float]) -> list[Interval]:
@@ -373,6 +435,260 @@ def _normalized_tm_from_box(x_box: Sequence[Interval | tuple[float, float] | lis
         ) * radius
         models.append(TaylorModel(poly, Interval.zero(dtype=center.dtype, device=center.device), domain, order=order))
     return TMVector(models)
+
+
+def _normalized_tm_from_center_scale(
+    centers: Sequence[Any],
+    scales: Sequence[Any],
+    order: int,
+    *,
+    template_domain: Sequence[Interval] | None = None,
+) -> TMVector:
+    template = list(template_domain or [])
+    if template:
+        dtype = template[0].lo.dtype
+        device = template[0].lo.device
+    else:
+        dtype = torch.float64
+        device = torch.device("cpu")
+    domain = [Interval(torch.as_tensor(-1.0, dtype=dtype, device=device), torch.as_tensor(1.0, dtype=dtype, device=device)) for _ in centers]
+    models: list[TaylorModel] = []
+    n_vars = len(domain)
+    for i, (center, scale) in enumerate(zip(centers, scales)):
+        c = torch.as_tensor(center, dtype=dtype, device=device)
+        s = torch.as_tensor(scale, dtype=dtype, device=device)
+        poly = Polynomial.constant(c, n_vars)
+        if bool(torch.any(s != 0)):
+            poly = poly + Polynomial.variable(i, n_vars, dtype=dtype, device=device) * s
+        models.append(TaylorModel(poly, Interval.zero(dtype=dtype, device=device), domain, order=order))
+    return TMVector(models)
+
+
+def _tm_with_order(model: TaylorModel, order: int) -> TaylorModel:
+    return TaylorModel(
+        model.polynomial,
+        model.remainder,
+        list(model.domain),
+        order=order,
+        truncation_range_split=model.truncation_range_split,
+    )
+
+
+def _tmvector_with_order(tmv: TMVector, order: int) -> TMVector:
+    return TMVector(_tm_with_order(model, order) for model in tmv)
+
+
+def _diag_add_width(diagnostics: dict[str, Any] | None, key: str, value: Interval | float | int | None) -> None:
+    if diagnostics is None or value is None:
+        return
+    if isinstance(value, Interval):
+        numeric = _interval_width_value(value)
+    else:
+        numeric = _float_or_none(value)
+    if numeric is None:
+        return
+    diagnostics[key] = (_float_or_none(diagnostics.get(key)) or 0.0) + float(numeric)
+
+
+def _diag_add_count(diagnostics: dict[str, Any] | None, key: str, value: int) -> None:
+    if diagnostics is None:
+        return
+    diagnostics[key] = int(diagnostics.get(key) or 0) + int(value)
+
+
+def _compose_term_with_inner(
+    coef: Any,
+    exp: tuple[int, ...],
+    inner: TMVector,
+    *,
+    work_order: int,
+    domain: Sequence[Interval],
+) -> TaylorModel:
+    term = TaylorModel.constant(coef, domain, order=work_order)
+    for var_index, power in enumerate(exp):
+        for _ in range(int(power)):
+            term = term * inner[var_index]
+    return _tm_with_order(term, work_order)
+
+
+def _insert_ctrunc_normal_like_scalar(
+    outer: TaylorModel,
+    inner: TMVector,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval] | None,
+    diagnostics: dict[str, Any] | None,
+) -> TaylorModel:
+    if outer.polynomial.n_vars != len(inner):
+        raise ValueError("outer TaylorModel variable count must match inner TMVector length")
+    out_domain = list(domain or inner.domain)
+    if len(out_domain) != inner.n_vars:
+        raise ValueError("composition output domain must match inner TaylorModel domain")
+    inner_degree = max((_tm_max_degree(TMVector([m])) for m in inner), default=0)
+    outer_degree = outer.polynomial.degree()
+    work_order = max(int(order), int(outer_degree) * max(1, int(inner_degree)))
+    inner_work = _tmvector_with_order(inner, work_order)
+    acc = TaylorModel.zero(out_domain, order=work_order, truncation_range_split=outer.truncation_range_split)
+    for exp, coef in outer.polynomial.terms.items():
+        term = _compose_term_with_inner(coef, tuple(exp), inner_work, work_order=work_order, domain=out_domain)
+        acc = acc + term
+
+    kept, dropped = acc.polynomial.truncate(int(order))
+    trunc_range = _poly_interval_with_split(dropped, out_domain, acc.truncation_range_split)
+    cutoff_kept, cutoff_range = kept.cutoff(cutoff_threshold, out_domain)
+    remainder = acc.remainder + outer.remainder + trunc_range + cutoff_range
+    result = TaylorModel(
+        cutoff_kept,
+        remainder,
+        out_domain,
+        order=int(order),
+        truncation_range_split=acc.truncation_range_split,
+    )
+
+    _diag_add_width(diagnostics, "insertion_truncation_width", trunc_range)
+    _diag_add_width(diagnostics, "insertion_cutoff_width", cutoff_range)
+    _diag_add_width(diagnostics, "composed_poly_range_width", cutoff_kept.evaluate_interval(out_domain))
+    _diag_add_width(diagnostics, "output_remainder_width", result.remainder)
+    _diag_add_count(diagnostics, "terms_before_insertion_truncation", len(acc.polynomial.terms))
+    _diag_add_count(diagnostics, "terms_after_insertion", len(result.polynomial.terms))
+    return result
+
+
+def insert_ctrunc_normal_like(
+    outer: TaylorModel | TMVector,
+    inner: TMVector,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval] | None = None,
+    diagnostics: dict[str, Any] | None = None,
+) -> TaylorModel | TMVector:
+    """Clean-room conservative analogue of Flow* normal insertion.
+
+    The helper substitutes ``inner`` into ``outer`` over the normalized output
+    domain, truncates to ``order``, and moves truncation/cutoff uncertainty into
+    interval remainders. It is intentionally straightforward rather than a copy
+    of Flow*'s Horner implementation.
+    """
+    if isinstance(outer, TMVector):
+        models = [
+            _insert_ctrunc_normal_like_scalar(model, inner, order, cutoff_threshold, domain, diagnostics)
+            for model in outer
+        ]
+        if diagnostics is not None:
+            diagnostics["insertion_components"] = len(models)
+        return TMVector(models)
+    return _insert_ctrunc_normal_like_scalar(outer, inner, order, cutoff_threshold, domain, diagnostics)
+
+
+def _tmvector_constant_part(tmv: TMVector) -> list[float]:
+    constants: list[float] = []
+    for model in tmv:
+        zero_exp = (0,) * model.polynomial.n_vars
+        coef = model.polynomial.terms.get(zero_exp)
+        if coef is None:
+            coef = _zero_shift_like(model)
+        constants.append(float(coef.detach().cpu()))
+    return constants
+
+
+def _tmvector_rm_constants(tmv: TMVector) -> TMVector:
+    models: list[TaylorModel] = []
+    for model in tmv:
+        zero_exp = (0,) * model.polynomial.n_vars
+        terms = {exp: coef for exp, coef in model.polynomial.terms.items() if exp != zero_exp}
+        models.append(
+            TaylorModel(
+                Polynomial(terms, model.polynomial.n_vars),
+                model.remainder,
+                list(model.domain),
+                order=model.order,
+                truncation_range_split=model.truncation_range_split,
+            )
+        )
+    return TMVector(models)
+
+
+def _interval_magnitude(iv: Interval) -> float | None:
+    lo = _interval_bound_value(iv.lo)
+    hi = _interval_bound_value(iv.hi)
+    if lo is None or hi is None:
+        return None
+    return max(abs(lo), abs(hi))
+
+
+def _scale_tmvector_components(tmv: TMVector, inv_scales: Sequence[float]) -> TMVector:
+    models: list[TaylorModel] = []
+    for model, inv_scale in zip(tmv, inv_scales):
+        models.append(model * float(inv_scale))
+    return TMVector(models)
+
+
+def _flowstar_normalized_insertion_transition(
+    seg: FlowpipeSegment,
+    previous_state: FlowstarNormalFlowpipeState | None,
+    order: int,
+    *,
+    cutoff_threshold: float | None,
+) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
+    prev = previous_state
+    if prev is None:
+        prev = FlowstarNormalFlowpipeState(
+            tmv_pre=seg.final_tm,
+            tmv_right=TMVector.identity(seg.final_tm.domain, order=order),
+            domain=seg.final_tm.domain,
+            center=_tmvector_constant_part(seg.final_tm),
+            scales=[1.0 for _ in seg.final_tm],
+            step_index=0,
+            diagnostics={"reset_mode": "normalized_insertion", "implicit_initial_state": True},
+        )
+    diagnostics: dict[str, Any] = {
+        "reset_mode": "normalized_insertion",
+        "step_index": int(prev.step_index) + 1,
+        "endpoint_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
+        "reset_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
+    }
+    center = _tmvector_constant_part(seg.final_tm)
+    endpoint_without_constants = _tmvector_rm_constants(seg.final_tm)
+    inserted = insert_ctrunc_normal_like(
+        endpoint_without_constants,
+        prev.tmv_right,
+        int(order),
+        cutoff_threshold,
+        prev.domain,
+        diagnostics,
+    )
+    assert isinstance(inserted, TMVector)
+    inserted_box = inserted.range_box()
+    scales: list[float] = []
+    inv_scales: list[float] = []
+    for iv in inserted_box:
+        mag = _interval_magnitude(iv)
+        scale = 0.0 if mag is None or mag == 0.0 else float(mag)
+        scales.append(scale)
+        inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
+    tmv_right = _scale_tmvector_components(inserted, inv_scales).apply_cutoff(cutoff_threshold)
+    reset_tm = _normalized_tm_from_center_scale(center, scales, int(order), template_domain=prev.domain)
+    state = FlowstarNormalFlowpipeState(
+        tmv_pre=seg.tm,
+        tmv_right=tmv_right,
+        domain=list(prev.domain),
+        center=center,
+        scales=scales,
+        step_index=int(prev.step_index) + 1,
+        diagnostics=diagnostics,
+    )
+    diagnostics.update(state.diagnostic_widths())
+    diagnostics["inserted_endpoint_width_sum"] = _sum_interval_widths(inserted_box)
+    diagnostics["normalized_reset_width_sum"] = _sum_interval_widths(reset_tm.range_box())
+    diagnostics["scale_x"] = scales[0] if len(scales) > 0 else ""
+    diagnostics["scale_y"] = scales[1] if len(scales) > 1 else ""
+    diagnostics["center_x"] = center[0] if len(center) > 0 else ""
+    diagnostics["center_y"] = center[1] if len(center) > 1 else ""
+    diagnostics["tmv_right_degree"] = _tm_max_degree(tmv_right)
+    diagnostics["tmv_pre_degree"] = _tm_max_degree(seg.tm)
+    diagnostics["tmv_right_term_count"] = sum(len(model.polynomial.terms) for model in tmv_right)
+    diagnostics["tmv_pre_term_count"] = sum(len(model.polynomial.terms) for model in seg.tm)
+    return reset_tm, state, diagnostics
 
 
 def _sum_interval_widths(boxes: Sequence[Interval]) -> float | str:
@@ -2197,6 +2513,7 @@ def flowpipe_step_flowstar_style_adaptive(
     reset_mode: str = "normalized_endpoint_box",
     flowstar_symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     flowstar_symbolic_queue_max_size: int = 100,
+    flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -2209,13 +2526,20 @@ def flowpipe_step_flowstar_style_adaptive(
         "target_remainder_flowstar_ctrunc",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
-    if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue"}:
-        raise ValueError("reset_mode must be 'normalized_endpoint_box' or 'flowstar_symbolic_remainder_queue'")
-    current_tm = x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order)
+    if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", "normalized_insertion"}:
+        raise ValueError("reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', or 'normalized_insertion'")
+    normal_state = flowstar_normal_state
+    if reset_mode == "normalized_insertion" and normal_state is None and not isinstance(x0, TMVector):
+        normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
+    current_tm = (
+        normal_state.normalized_initial_tm(order)
+        if reset_mode == "normalized_insertion" and normal_state is not None
+        else (x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order))
+    )
     queue_state = flowstar_symbolic_queue_state
 
     def _assign_reset(seg: FlowpipeSegment, accepted_h: float) -> FlowpipeSegment:
-        nonlocal queue_state
+        nonlocal queue_state, normal_state
         if reset_mode == "flowstar_symbolic_remainder_queue":
             reset_tm, queue_state, queue_stats = flowstar_symbolic_remainder_queue_reset(
                 seg.final_tm,
@@ -2225,6 +2549,18 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.reset_tm = reset_tm
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
+        elif reset_mode == "normalized_insertion":
+            reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
+                seg,
+                normal_state,
+                order,
+                cutoff_threshold=cutoff_threshold,
+            )
+            seg.reset_tm = reset_tm
+            seg.flowstar_normal_state = normal_state
+            seg.flowstar_normal_stats = {**normal_stats, "reset_mode": reset_mode}
+            seg.flowstar_symbolic_queue_state = queue_state
+            seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
         else:
             seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
             seg.flowstar_symbolic_queue_state = queue_state

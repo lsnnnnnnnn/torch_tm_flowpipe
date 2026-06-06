@@ -1,5 +1,5 @@
 """PyTorch-native Taylor-model flowpipe research prototype."""
-from .flowpipe import FlowpipeResult, FlowpipeSegment, flowpipe_multi_step, flowpipe_step, flowpipe_step_flowstar_style_adaptive, flowpipe_step_from_tm
+from .flowpipe import FlowpipeResult, FlowpipeSegment, FlowstarNormalFlowpipeState, flowpipe_multi_step, flowpipe_step, flowpipe_step_flowstar_style_adaptive, flowpipe_step_from_tm, insert_ctrunc_normal_like
 from .interval import Interval
 from .polynomial import Polynomial
 from .symbolic_remainder import (
@@ -20,6 +20,7 @@ __all__ = [
     "FlowpipeResult",
     "FlowpipeSegment",
     "FlowstarSymbolicRemainderQueue",
+    "FlowstarNormalFlowpipeState",
     "Interval",
     "Polynomial",
     "SymbolicNoiseSymbol",
@@ -37,4 +38,5 @@ __all__ = [
     "flowpipe_step_from_tm",
     "flowpipe_step_flowstar_style_adaptive",
     "flowpipe_multi_step",
+    "insert_ctrunc_normal_like",
 ]
