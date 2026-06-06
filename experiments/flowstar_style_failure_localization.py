@@ -772,11 +772,17 @@ def _write_residual_shift_outputs(final_failure: Mapping[str, Any] | None) -> No
         "# Residual Shift Diagnostic",
         "",
         "This is diagnostic only; accepted validation still uses the symmetric target remainder interval.",
+        "",
+        "## Bounds",
+        "",
         f"Failed y residual interval: `[{lo}, {hi}]`.",
         f"Symmetric target interval: `[-{TARGET_REMAINDER_RADIUS}, {TARGET_REMAINDER_RADIUS}]`.",
         f"Minimal symmetric target radius required: `{min_sym}`.",
         f"Minimal asymmetric interval required: `[{lo}, {hi}]`.",
         f"Would asymmetric target be much tighter than symmetric loosened target? {_yes_no(bool(row['asymmetric_much_tighter_than_symmetric']))}.",
+        "",
+        "## Conclusion",
+        "",
         "Do not claim parity with shifted/asymmetric target from this diagnostic.",
     ]
     (out_dir / "residual_shift_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

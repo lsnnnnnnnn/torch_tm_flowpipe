@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
 LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
 ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
+WIDTH_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_width_growth_diagnostics.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
@@ -114,6 +115,7 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(SCRIPT), doraise=True)
     py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
     py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
+    py_compile.compile(str(WIDTH_DIAGNOSTICS_SCRIPT), doraise=True)
     py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
@@ -205,6 +207,54 @@ def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
 
 
 
+
+def test_width_growth_diagnostics_smoke(tmp_path):
+    out_dir = tmp_path / "width_growth"
+    subprocess.run(
+        [
+            sys.executable,
+            str(WIDTH_DIAGNOSTICS_SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--source-run",
+            "flowstar_style_o6_candidate8_output6_cutoff",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "width_growth_summary.csv",
+        "width_growth_trace.csv",
+        "reset_box_vs_flowstar_trace.csv",
+        "width_growth_report.md",
+        "width_ratio_vs_t.png",
+        "reset_box_ratio_vs_t.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "width_growth_summary.csv")
+    assert summary.loc[0, "segments"] > 0
+    trace = pd.read_csv(out_dir / "width_growth_trace.csv")
+    assert "final_ratio_sum" in trace.columns
+    report = (out_dir / "width_growth_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 10
+    assert "Most likely missing Flow* mechanism" in report
+
+
+def test_flowstar_width_control_source_map_is_detailed():
+    text = (ROOT / "docs" / "flowstar_width_control_source_map.md").read_text(encoding="utf-8")
+    assert text.startswith("# Flow* Width-Control Source Map")
+    assert text.count("\n") > 120
+    for needle in [
+        "Flow* mechanism",
+        "Current PyTorch mechanism",
+        "Implementation target",
+        "Symbolic_Remainder",
+        "/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp:2123-2323",
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp:74-90",
+    ]:
+        assert needle in text
+
+
 def test_h5_rescue_artifacts_are_multiline_and_parseable():
     out_dir = ROOT / "outputs" / "flowstar_style_rescue_h5"
     summary_rows = _csv_rows(out_dir / "rescue_summary.csv")
@@ -235,9 +285,22 @@ def test_flowstar_source_rescue_notes_are_multiline():
 
 
 
-def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable():
+def test_requested_flowstar_artifacts_are_multiline_and_pandas_parseable():
     artifact_dirs = sorted(p for p in (ROOT / "outputs").glob("flowstar_style_*") if p.is_dir())
-    text_paths = [ROOT / "docs" / "flowstar_source_rescue_notes.md"]
+    artifact_dirs.append(ROOT / "outputs" / "flowstar_one_step_oracle")
+    for optional in ["flowstar_width_growth_diagnostics", "flowstar_width_control_rescue", "flowstar_one_step_oracle_after_width_control"]:
+        candidate = ROOT / "outputs" / optional
+        if candidate.exists():
+            artifact_dirs.append(candidate)
+    text_paths = [
+        ROOT / "docs" / "flowstar_source_rescue_notes.md",
+        ROOT / "docs" / "flowstar_kernel_alignment_notes.md",
+        ROOT / "docs" / "flowstar_width_control_source_map.md",
+        ROOT / "outputs" / "flowstar_one_step_oracle" / "oracle_report.md",
+        ROOT / "outputs" / "flowstar_style_ctrunc_validation" / "ctrunc_validation_report.md",
+        ROOT / "outputs" / "flowstar_style_rescue_next4" / "rescue_next4_report.md",
+        ROOT / "outputs" / "flowstar_style_selective_terms" / "validation_path_audit.md",
+    ]
     csv_paths = []
     for out_dir in artifact_dirs:
         csv_paths.extend(sorted(out_dir.glob("*.csv")))
@@ -250,13 +313,15 @@ def test_requested_flowstar_style_artifacts_are_multiline_and_pandas_parseable()
         text = path.read_text(encoding="utf-8")
         physical_lines = text.splitlines()
         assert text.endswith("\n")
-        assert text.count("\n") >= len(frame) + 1
-        assert len(physical_lines) >= len(frame) + 1
+        assert text.count("\n") == len(frame) + 1
+        assert len(physical_lines) == len(frame) + 1
         if path.name.endswith("reset_boxes.csv"):
             assert "validation_mode" in frame.columns
-    for path in text_paths:
+    for path in set(text_paths):
+        if not path.exists():
+            continue
         text = path.read_text(encoding="utf-8")
-        assert text.count("\n") > 5
+        assert text.count("\n") > 10
         assert "\\n" not in text
 
 

@@ -10,7 +10,12 @@ import torch
 from .interval import Interval, ensure_interval
 from .polynomial import Polynomial
 from .safety import intervals_are_finite
-from .symbolic_remainder import SymbolicRemainderState, introduce_symbolic_remainders
+from .symbolic_remainder import (
+    FlowstarSymbolicRemainderQueue,
+    SymbolicRemainderState,
+    flowstar_symbolic_remainder_queue_reset,
+    introduce_symbolic_remainders,
+)
 from .taylor_model import TaylorModel
 from .tm_vector import TMVector
 
@@ -43,6 +48,8 @@ class FlowpipeSegment:
     step_rejections: int = 0
     selective_term_stats: Mapping[str, Any] | None = None
     selective_term_details: Sequence[Mapping[str, Any]] | None = None
+    flowstar_symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None
+    flowstar_symbolic_queue_stats: Mapping[str, Any] | None = None
 
 
 @dataclass
@@ -2187,6 +2194,9 @@ def flowpipe_step_flowstar_style_adaptive(
     candidate_order: int | None = None,
     truncation_range_split: int | None = None,
     selective_high_degree_terms_top_k: int | None = None,
+    reset_mode: str = "normalized_endpoint_box",
+    flowstar_symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
+    flowstar_symbolic_queue_max_size: int = 100,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -2199,7 +2209,28 @@ def flowpipe_step_flowstar_style_adaptive(
         "target_remainder_flowstar_ctrunc",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
+    if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue"}:
+        raise ValueError("reset_mode must be 'normalized_endpoint_box' or 'flowstar_symbolic_remainder_queue'")
     current_tm = x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order)
+    queue_state = flowstar_symbolic_queue_state
+
+    def _assign_reset(seg: FlowpipeSegment, accepted_h: float) -> FlowpipeSegment:
+        nonlocal queue_state
+        if reset_mode == "flowstar_symbolic_remainder_queue":
+            reset_tm, queue_state, queue_stats = flowstar_symbolic_remainder_queue_reset(
+                seg.final_tm,
+                queue_state,
+                max_size=flowstar_symbolic_queue_max_size,
+            )
+            seg.reset_tm = reset_tm
+            seg.flowstar_symbolic_queue_state = queue_state
+            seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
+        else:
+            seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
+            seg.flowstar_symbolic_queue_state = queue_state
+            seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
+        seg.next_h = min(accepted_h * grow_factor, h_max)
+        return seg
     h_try = min(float(h) if h is not None else float(h_max), float(h_max))
     if h_try < h_min:
         raise ValueError("initial h is below h_min")
@@ -2237,9 +2268,7 @@ def flowpipe_step_flowstar_style_adaptive(
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
-            seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
-            seg.next_h = min(h_try * grow_factor, h_max)
-            return seg
+            return _assign_reset(seg, h_try)
 
         last_seg = seg
         fallback_order = int(adaptive_order_fallback or 0)
@@ -2281,9 +2310,7 @@ def flowpipe_step_flowstar_style_adaptive(
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg
             if fallback_seg.status == "validated" and intervals_are_finite(fallback_seg.final_tm.range_box()):
-                fallback_seg.reset_tm = _normalized_tm_from_box(fallback_seg.final_tm.range_box(), order)
-                fallback_seg.next_h = min(h_try * grow_factor, h_max)
-                return fallback_seg
+                return _assign_reset(fallback_seg, h_try)
 
         rejections += 1
         h_try *= 0.5

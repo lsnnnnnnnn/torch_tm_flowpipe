@@ -45,6 +45,8 @@ SUMMARY_FIELDS = [
     "refinement_pass",
     "residual_subset_current",
     "validation_mode",
+    "reset_mode",
+    "flowstar_symbolic_queue_max_size",
     "cutoff_threshold",
     "target_remainder_radius",
     "center_correction_width_factor",
@@ -56,6 +58,8 @@ SUMMARY_FIELDS = [
     "selective_high_degree_terms_top_k",
     "max_selective_retained_terms_count",
     "max_selective_dropped_remainder_width_sum",
+    "max_flowstar_queue_size_after",
+    "max_flowstar_propagated_remainder_width_sum",
     "status",
     "runtime_s",
     "validated_segments",
@@ -87,6 +91,8 @@ SEGMENT_FIELDS = [
     "output_order",
     "truncation_range_split",
     "validation_mode",
+    "reset_mode",
+    "flowstar_symbolic_queue_max_size",
     "cutoff_threshold",
     "target_remainder_radius",
     "center_correction_width_factor",
@@ -109,6 +115,15 @@ SEGMENT_FIELDS = [
     "width_x",
     "width_y",
     "width_sum",
+    "reset_box_source",
+    "reset_width_x",
+    "reset_width_y",
+    "reset_width_sum",
+    "flowstar_queue_size_before",
+    "flowstar_queue_size_after",
+    "flowstar_queue_reset",
+    "flowstar_propagated_remainder_width_sum",
+    "flowstar_total_remainder_width_sum",
     "step_rejections",
     "next_h",
     "message",
@@ -127,6 +142,10 @@ RESET_BOX_FIELDS = [
     "order",
     "reset_box_source",
     "validation_mode",
+    "reset_mode",
+    "width_x",
+    "width_y",
+    "width_sum",
 ]
 
 VALIDATION_ATTEMPT_FIELDS = [
@@ -472,6 +491,11 @@ def _segment_row(
 ) -> dict[str, Any]:
     x_lo, x_hi, y_lo, y_hi, width_x, width_y, width_sum = _segment_bounds(box)
     selective_stats = dict(getattr(seg, "selective_term_stats", None) or {})
+    queue_stats = dict(getattr(seg, "flowstar_symbolic_queue_stats", None) or {})
+    reset_box = seg.reset_tm.range_box() if getattr(seg, "reset_tm", None) is not None else box
+    _rx_lo, _rx_hi, _ry_lo, _ry_hi, reset_width_x, reset_width_y, reset_width_sum = _segment_bounds(reset_box)
+    reset_mode = str(spec.get("reset_mode", queue_stats.get("reset_mode", "normalized_endpoint_box")))
+    reset_box_source = "flowstar_symbolic_remainder_queue" if reset_mode == "flowstar_symbolic_remainder_queue" else "normalized_endpoint_reset_box"
     row = {
         "run_id": spec["run_id"],
         "mode": spec["mode"],
@@ -480,6 +504,8 @@ def _segment_row(
         "output_order": spec.get("order", ""),
         "truncation_range_split": spec.get("truncation_range_split", ""),
         "validation_mode": spec.get("validation_mode", "growth"),
+        "reset_mode": reset_mode,
+        "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
         "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
@@ -497,6 +523,15 @@ def _segment_row(
         "width_x": width_x,
         "width_y": width_y,
         "width_sum": width_sum,
+        "reset_box_source": reset_box_source,
+        "reset_width_x": reset_width_x,
+        "reset_width_y": reset_width_y,
+        "reset_width_sum": reset_width_sum,
+        "flowstar_queue_size_before": queue_stats.get("queue_size_before", ""),
+        "flowstar_queue_size_after": queue_stats.get("queue_size_after", ""),
+        "flowstar_queue_reset": queue_stats.get("queue_reset", ""),
+        "flowstar_propagated_remainder_width_sum": queue_stats.get("propagated_remainder_width_sum", ""),
+        "flowstar_total_remainder_width_sum": queue_stats.get("total_remainder_width_sum", ""),
         "step_rejections": getattr(seg, "step_rejections", 0),
         "next_h": "" if getattr(seg, "next_h", None) is None else getattr(seg, "next_h"),
         "message": getattr(seg, "message", ""),
@@ -525,8 +560,12 @@ def _reset_box_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str,
                 "y_hi": row.get("y_hi", ""),
                 "h": row.get("h", ""),
                 "order": row.get("order", ""),
-                "reset_box_source": "normalized_endpoint_reset_box",
+                "reset_box_source": row.get("reset_box_source", "normalized_endpoint_reset_box"),
                 "validation_mode": row.get("validation_mode", ""),
+                "reset_mode": row.get("reset_mode", ""),
+                "width_x": row.get("reset_width_x", row.get("width_x", "")),
+                "width_y": row.get("reset_width_y", row.get("width_y", "")),
+                "width_sum": row.get("reset_width_sum", row.get("width_sum", "")),
             }
         )
     return rows
@@ -595,6 +634,8 @@ def _summarize_run(
         "output_order": spec.get("order", ""),
         "truncation_range_split": spec.get("truncation_range_split", ""),
         "validation_mode": spec.get("validation_mode", "growth"),
+        "reset_mode": spec.get("reset_mode", ""),
+        "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
         "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
         "target_remainder_radius": spec.get("target_remainder_radius", ""),
         "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
@@ -606,6 +647,8 @@ def _summarize_run(
         "selective_high_degree_terms_top_k": spec.get("selective_high_degree_terms_top_k", ""),
         "max_selective_retained_terms_count": selective_retained,
         "max_selective_dropped_remainder_width_sum": selective_drop_width,
+        "max_flowstar_queue_size_after": _max_field(segment_rows, "flowstar_queue_size_after"),
+        "max_flowstar_propagated_remainder_width_sum": _max_field(segment_rows, "flowstar_propagated_remainder_width_sum"),
         "status": status,
         "runtime_s": runtime_s,
         "validated_segments": len(validated),
@@ -738,6 +781,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
     last_attempted_t = 0.0
     start = time.perf_counter()
     segment_index = 0
+    flowstar_queue_state = None
 
     while t < max_horizon - 1e-15:
         elapsed = time.perf_counter() - start
@@ -755,6 +799,8 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             "output_order": spec.get("order", ""),
             "truncation_range_split": spec.get("truncation_range_split", ""),
             "validation_mode": spec["validation_mode"],
+            "reset_mode": spec.get("reset_mode", "normalized_endpoint_box"),
+            "flowstar_symbolic_queue_max_size": spec.get("flowstar_symbolic_queue_max_size", ""),
             "cutoff_threshold": "" if spec.get("cutoff_threshold") is None else spec.get("cutoff_threshold"),
             "target_remainder_radius": spec.get("target_remainder_radius", ""),
             "center_correction_width_factor": spec.get("center_correction_width_factor", ""),
@@ -781,6 +827,9 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     candidate_order=spec.get("candidate_order"),
                     truncation_range_split=spec.get("truncation_range_split"),
                     selective_high_degree_terms_top_k=spec.get("selective_high_degree_terms_top_k"),
+                    reset_mode=str(spec.get("reset_mode", "normalized_endpoint_box")),
+                    flowstar_symbolic_queue_state=flowstar_queue_state,
+                    flowstar_symbolic_queue_max_size=int(spec.get("flowstar_symbolic_queue_max_size") or 100),
                     diagnostics=attempt_rows,
                     diagnostics_context=context,
                 ),
@@ -800,6 +849,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
             status = "failed"
             failure_reason = seg.message or "validation failed"
             break
+        flowstar_queue_state = getattr(seg, "flowstar_symbolic_queue_state", flowstar_queue_state)
         current = seg.reset_tm if seg.reset_tm is not None else seg.final_tm
         h_request = float(seg.next_h) if seg.next_h is not None else min(float(seg.h) * 1.5, float(spec.get("h_max", 0.1)))
         t += float(seg.h)
@@ -838,12 +888,16 @@ def _configs() -> list[dict[str, Any]]:
         truncation_range_split: int | None = None,
         center_correction_width_factor: float = 1.05,
         selective_high_degree_terms_top_k: int | None = None,
+        reset_mode: str = "normalized_endpoint_box",
+        flowstar_symbolic_queue_max_size: int | None = None,
     ) -> dict[str, Any]:
         spec: dict[str, Any] = {
             "run_id": run_id,
             "mode": "flowstar_style",
             "order": order,
             "validation_mode": validation_mode,
+            "reset_mode": reset_mode,
+            "flowstar_symbolic_queue_max_size": "" if flowstar_symbolic_queue_max_size is None else int(flowstar_symbolic_queue_max_size),
             "target_remainder_radius": target_remainder_radius,
             "center_correction_width_factor": center_correction_width_factor if validation_mode == "target_remainder_centered" else "",
             "cutoff_threshold": cutoff_threshold,
@@ -988,6 +1042,14 @@ def _configs() -> list[dict[str, Any]]:
             candidate_order=8,
             cutoff_threshold=1e-10,
             validation_mode="target_remainder_flowstar_ctrunc",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_symqueue",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            reset_mode="flowstar_symbolic_remainder_queue",
+            flowstar_symbolic_queue_max_size=100,
         ),
     ]
 
@@ -1230,6 +1292,32 @@ def make_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]], attempt
     ax.legend(fontsize=7)
     fig.tight_layout()
     fig.savefig(out_dir / "step_size_trace.png", dpi=160)
+    plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    for run_id, rows in grouped.items():
+        rows = [r for r in rows if str(r.get("mode")) == "flowstar_style"]
+        pts = []
+        for row in sorted(rows, key=lambda r: float(r["t_hi"])):
+            t_hi = _finite_float(row.get("t_hi"))
+            reset_width = _finite_float(row.get("reset_width_sum"))
+            if t_hi is not None and reset_width is not None:
+                pts.append((t_hi, reset_width))
+        if pts:
+            ax.plot(
+                [t for t, _width in pts],
+                [width for _t, width in pts],
+                marker="o",
+                markersize=2.4,
+                linewidth=1.0,
+                label=run_id,
+                color=colors.get(run_id),
+            )
+    ax.set_xlabel("t")
+    ax.set_ylabel("reset box width sum")
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "reset_box_width_trace.png", dpi=160)
     plt.close(fig)
 
     residual_groups: dict[str, list[Mapping[str, Any]]] = {}
@@ -2206,9 +2294,115 @@ def _write_selective_validation_path_audit(out_dir: Path, attempt_rows: Sequence
         f"Do inside-validation and after-internal term hashes match where comparable? {_yes_no(bool(internal_hashes_match))}.",
         "",
         "The audit hashes the candidate polynomial before selective retention, after selective retention, inside the Picard residual validator, and after internal validation Taylor-model operations.",
+        "",
+        "## Stage Counts",
+        "",
+        "| stage | rows | max_high_degree_terms |",
+        "| --- | ---: | ---: |",
+        f"| after_selective | {len(after_rows)} | {after_high} |",
+        f"| inside_validation | {len(inside_rows)} | {inside_high} |",
+        f"| after_internal | {len(internal_rows)} | {internal_high} |",
     ]
     (out_dir / "validation_path_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+
+
+def _row_by_run(rows: Sequence[Mapping[str, Any]], run_id: str) -> Mapping[str, Any]:
+    return next((row for row in rows if row.get("run_id") == run_id), {})
+
+
+def _write_width_control_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    previous_id = "flowstar_style_o6_candidate8_output6_cutoff"
+    new_id = "flowstar_style_o6_candidate8_output6_cutoff_symqueue"
+    previous = _row_by_run(summary_rows, previous_id)
+    new = _row_by_run(summary_rows, new_id)
+    previous_t = _finite_float(previous.get("last_validated_t")) or 0.0
+    new_t = _finite_float(new.get("last_validated_t")) or 0.0
+    reached = bool(new and new_t >= float(max_horizon) - 1e-9)
+    comp_previous = _best_comparison_for_run(comparison_rows, previous_id)
+    comp_new = _best_comparison_for_run(comparison_rows, new_id)
+    prev_ratio = _finite_float(comp_previous.get("tube_width_ratio"))
+    new_ratio = _finite_float(comp_new.get("tube_width_ratio"))
+    ratio_improved = prev_ratio is not None and new_ratio is not None and new_ratio < prev_ratio
+    previous_reset = max(
+        (_finite_float(row.get("reset_width_sum")) or 0.0 for row in segment_rows if row.get("run_id") == previous_id),
+        default=0.0,
+    )
+    new_reset = max(
+        (_finite_float(row.get("reset_width_sum")) or 0.0 for row in segment_rows if row.get("run_id") == new_id),
+        default=0.0,
+    )
+    reset_shrank = bool(previous_reset and new_reset and new_reset < previous_reset)
+    queue_peak = _max_field([row for row in segment_rows if row.get("run_id") == new_id], "flowstar_queue_size_after")
+    propagated_peak = _max_field([row for row in segment_rows if row.get("run_id") == new_id], "flowstar_propagated_remainder_width_sum")
+    if not new:
+        branch_decision = "DISCARD_BRANCH"
+        recommendation = "The symbolic-queue config did not run; fix reproducibility before using this branch."
+    elif reached or new_t > previous_t + 1e-12:
+        branch_decision = "MERGE_CANDIDATE"
+        recommendation = "Keep the opt-in queue path and run a longer follow-up after reviewing oracle evidence."
+    else:
+        branch_decision = "NEEDS_MORE_WORK"
+        recommendation = "The queue is tighter over its short horizon but fails much earlier; implement normalized insertion/composition next."
+
+    lines = [
+        "# Flowstar Width-Control Rescue Report",
+        "",
+        "Chosen mechanism: Flow*-style symbolic remainder queue skeleton (`J`, `Phi_L`, `scalars`) because the original Van der Pol benchmark calls `ode.reach(..., sr)` with a symbolic queue of size 100.",
+        f"Previous best `{previous_id}` reached t=`{previous_t:.17g}`.",
+        f"New width-control `{new_id}` reached t=`{new_t:.17g}`.",
+        f"Did the new width-control beat t~=2.400737? {_yes_no(new_t > 2.400737667399793)}.",
+        f"Did it reach horizon {float(max_horizon):.17g}? {_yes_no(reached)}.",
+        f"Runtime cost: previous=`{previous.get('runtime_s', '')}`, new=`{new.get('runtime_s', '')}` seconds.",
+        f"Width ratio vs Flow*: previous tube=`{comp_previous.get('tube_width_ratio', '')}`, new tube=`{comp_new.get('tube_width_ratio', '')}`.",
+        f"Did width ratio improve over the validated same-run horizon? {_yes_no(ratio_improved)} (not comparable as a success if the new run stops much earlier).",
+        f"Did reset box width shrink vs previous best? {_yes_no(reset_shrank)}; previous max reset width sum=`{previous_reset:.17g}`, new=`{new_reset:.17g}`.",
+        f"Queue peak size after accepted steps: `{queue_peak}`; propagated remainder peak width sum: `{propagated_peak}`.",
+        "Did the local one-step oracle become easier? See `outputs/flowstar_one_step_oracle_after_width_control/oracle_after_width_control_report.md` when that rerun is available.",
+        f"Failure mode if still failing: `{new.get('failure_reason', '')}`.",
+        f"Branch decision: {branch_decision}.",
+        f"Next recommendation: {recommendation}",
+        "",
+        "## Rows",
+        "",
+        "| run_id | reset_mode | status | last_validated_t | runtime_s | max_queue_after | max_propagated_width | failure_reason |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in summary_rows:
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('reset_mode', '')} | {row.get('status', '')} | "
+            f"{row.get('last_validated_t', '')} | {row.get('runtime_s', '')} | {row.get('max_flowstar_queue_size_after', '')} | "
+            f"{row.get('max_flowstar_propagated_remainder_width_sum', '')} | {row.get('failure_reason', '')} |"
+        )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "width_control_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    decision_lines = [
+        "# Branch Decision",
+        "",
+        f"Decision: {branch_decision}",
+        "",
+        "## Evidence",
+        "",
+        f"- Previous best `{previous_id}` reached t=`{previous_t:.17g}`.",
+        f"- New width-control `{new_id}` reached t=`{new_t:.17g}`.",
+        f"- Horizon {float(max_horizon):.17g} reached: {_yes_no(reached)}.",
+        f"- Width ratio improved over the validated same-run horizon: {_yes_no(ratio_improved)}.",
+        f"- Reset boxes shrank against the previous best: {_yes_no(reset_shrank)}.",
+        f"- Failure mode: `{new.get('failure_reason', '')}`.",
+        "",
+        "## Recommendation",
+        "",
+        recommendation,
+        "",
+    ]
+    (out_dir / "branch_decision.md").write_text("\n".join(decision_lines), encoding="utf-8")
 
 def write_specialized_outputs(
     out_dir: Path,
@@ -2255,6 +2449,13 @@ def write_specialized_outputs(
         _write_csv(out_dir / "ctrunc_validation_segments.csv", SEGMENT_FIELDS, segment_rows)
         _write_csv(out_dir / "ctrunc_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
         _write_ctrunc_validation_report(out_dir, summary_rows, attempt_rows, comparison_rows, max_horizon=max_horizon)
+    elif name == "flowstar_width_control_rescue":
+        _write_csv(out_dir / "width_control_summary.csv", SUMMARY_FIELDS, summary_rows)
+        _write_csv(out_dir / "width_control_segments.csv", SEGMENT_FIELDS, segment_rows)
+        _write_csv(out_dir / "width_control_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+        _write_csv(out_dir / "width_control_reset_boxes.csv", RESET_BOX_FIELDS, _reset_box_rows(segment_rows))
+        _write_csv(out_dir / "width_control_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+        _write_width_control_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:
@@ -2792,12 +2993,18 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
         "# Branch Triage Report",
         "",
         f"Branch decision: {branch_decision}.",
+        "",
+        "## Evidence",
+        "",
         f"Did Flow* one-step actually run? {_yes_no(oracle_ran)}.",
         f"Did Flow* validate the local failed step? {_yes_no(oracle_flowstar_validated)}.",
         f"Previous best: `{previous_best.get('run_id', '')}` at t=`{previous_best.get('last_validated_t', '')}`.",
         f"Ctrunc best: `{ctrunc_best.get('run_id', '')}` at t=`{ctrunc_best.get('last_validated_t', '')}`.",
         f"Selective best: `{selective_best.get('run_id', '')}` at t=`{selective_best.get('last_validated_t', '')}`.",
         f"Did any variant reach horizon 5? {_yes_no(bool(ctrunc_t >= 5.0 - 1e-9 or previous_t >= 5.0 - 1e-9 or selective_t >= 5.0 - 1e-9))}.",
+        "",
+        "## Recommendation",
+        "",
         f"Next recommendation: {decision}",
     ]
     (out_dir / "branch_triage_report.md").write_text("\n".join(triage_lines) + "\n", encoding="utf-8")

@@ -5,6 +5,7 @@ import importlib.util
 from pathlib import Path
 
 from torch_tm_flowpipe import (
+    FlowstarSymbolicRemainderQueue,
     Interval,
     SymbolicRemainderState,
     TMVector,
@@ -14,6 +15,7 @@ from torch_tm_flowpipe import (
     materialize_all_symbols,
 )
 from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode
+from torch_tm_flowpipe.symbolic_remainder import flowstar_symbolic_remainder_queue_reset
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -122,6 +124,29 @@ def test_queue_overflow_materializes_oldest_symbol():
     assert stats["materialized_symbol_ids"] == (0,)
     assert stats["materialized_remainder_width_sum"] > 0.0
     assert symbolic.n_vars == 3
+
+
+
+def test_flowstar_symbolic_remainder_queue_propagates_linear_remainders():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    tm = TMVector(
+        [
+            TaylorModel.variable(0, domain, order=3).with_remainder(Interval(-0.01, 0.01)),
+            TaylorModel.variable(1, domain, order=3).with_remainder(Interval(-0.02, 0.02)),
+        ]
+    )
+    reset_1, state_1, stats_1 = flowstar_symbolic_remainder_queue_reset(
+        tm,
+        FlowstarSymbolicRemainderQueue.empty(2, 100),
+        max_size=100,
+    )
+    reset_2, state_2, stats_2 = flowstar_symbolic_remainder_queue_reset(reset_1, state_1, max_size=100)
+
+    assert len(state_1.J) == 1
+    assert len(state_2.J) == 2
+    assert stats_1["propagated_remainder_width_sum"] <= 1e-300
+    assert stats_2["propagated_remainder_width_sum"] > 0.0
+    assert reset_2.range_box()[0].contains_interval(reset_1.range_box()[0], tol=1e-12)
 
 
 def test_stage3_short_run_writes_required_outputs_and_sanitized_csv(tmp_path):

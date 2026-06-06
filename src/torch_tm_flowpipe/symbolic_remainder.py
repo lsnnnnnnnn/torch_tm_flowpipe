@@ -49,10 +49,168 @@ class SymbolicRemainderState:
         return replace(self, max_symbolic_remainders=int(max_symbolic_remainders))
 
 
+IntervalColumn = tuple[Interval, ...]
+RealMatrix = tuple[tuple[float, ...], ...]
+
+
+@dataclass(frozen=True)
+class FlowstarSymbolicRemainderQueue:
+    """Clean-room skeleton of Flow*'s J/Phi_L/scalars remainder queue.
+
+    This is separate from ``SymbolicRemainderState`` above. Flow* does not add
+    ordinary polynomial noise variables for each residual; it keeps a queue of
+    interval remainder columns and propagates older columns through the linear
+    part of each accepted reset map.
+    """
+
+    J: tuple[IntervalColumn, ...]
+    Phi_L: tuple[RealMatrix, ...]
+    scalars: tuple[float, ...]
+    max_size: int
+
+    @staticmethod
+    def empty(dim: int, max_size: int = 100) -> "FlowstarSymbolicRemainderQueue":
+        return FlowstarSymbolicRemainderQueue((), (), tuple(1.0 for _ in range(int(dim))), int(max_size))
+
+    @property
+    def dim(self) -> int:
+        return len(self.scalars)
+
+    def reset(self, dim: int | None = None) -> "FlowstarSymbolicRemainderQueue":
+        return FlowstarSymbolicRemainderQueue.empty(self.dim if dim is None else int(dim), self.max_size)
+
+
 def _zero_interval_like(domain: Sequence[Interval]) -> Interval:
     if domain:
         return Interval.zero(dtype=domain[0].dtype, device=domain[0].device)
     return Interval.zero()
+
+
+def _zero_interval_like_interval(iv: Interval) -> Interval:
+    return Interval.zero(dtype=iv.dtype, device=iv.device)
+
+
+def _linear_coefficients(tm: TMVector) -> RealMatrix:
+    dim = len(tm)
+    rows: list[list[float]] = []
+    for model in tm:
+        row = [0.0 for _ in range(dim)]
+        for exp, coeff in model.polynomial.terms.items():
+            if sum(exp) != 1:
+                continue
+            for var_index in range(min(dim, len(exp))):
+                if exp[var_index] == 1 and all(power == 0 for j, power in enumerate(exp) if j != var_index):
+                    row[var_index] = float(coeff.detach().cpu())
+                    break
+        rows.append(row)
+    return tuple(tuple(row) for row in rows)
+
+
+def _right_scale_matrix(matrix: RealMatrix, scalars: Sequence[float]) -> RealMatrix:
+    return tuple(tuple(value * float(scalars[j]) for j, value in enumerate(row)) for row in matrix)
+
+
+def _matmul_real(a: RealMatrix, b: RealMatrix) -> RealMatrix:
+    if not a:
+        return ()
+    cols = len(b[0]) if b else 0
+    out: list[tuple[float, ...]] = []
+    for row in a:
+        out_row = []
+        for col in range(cols):
+            out_row.append(sum(float(row[k]) * float(b[k][col]) for k in range(len(b))))
+        out.append(tuple(out_row))
+    return tuple(out)
+
+
+def _matmul_interval_col(matrix: RealMatrix, column: IntervalColumn, reference: Interval) -> IntervalColumn:
+    out: list[Interval] = []
+    for row in matrix:
+        acc = _zero_interval_like_interval(reference)
+        for scalar, iv in zip(row, column):
+            if scalar:
+                acc = acc + iv * float(scalar)
+        out.append(acc)
+    return tuple(out)
+
+
+def _add_interval_columns(a: IntervalColumn, b: IntervalColumn) -> IntervalColumn:
+    return tuple(x + y for x, y in zip(a, b))
+
+
+def _column_width_sum(column: IntervalColumn) -> float:
+    return sum(_interval_width(iv) for iv in column)
+
+
+def _updated_phi_and_propagated_remainder(
+    state: FlowstarSymbolicRemainderQueue,
+    phi_l_i: RealMatrix,
+    reference: Interval,
+) -> tuple[tuple[RealMatrix, ...], IntervalColumn]:
+    updated_phi = list(state.Phi_L)
+    for i in range(1, len(updated_phi)):
+        updated_phi[i] = _matmul_real(phi_l_i, updated_phi[i])
+    updated_phi.append(phi_l_i)
+
+    propagated = tuple(_zero_interval_like_interval(reference) for _ in range(state.dim))
+    for i in range(1, len(updated_phi)):
+        if i - 1 >= len(state.J):
+            break
+        propagated = _add_interval_columns(propagated, _matmul_interval_col(updated_phi[i], state.J[i - 1], reference))
+    return tuple(updated_phi), propagated
+
+
+def flowstar_symbolic_remainder_queue_reset(
+    tm: TMVector,
+    state: FlowstarSymbolicRemainderQueue | None,
+    *,
+    max_size: int = 100,
+) -> tuple[TMVector, FlowstarSymbolicRemainderQueue, dict[str, Any]]:
+    """Propagate endpoint remainders through a Flow*-style linear queue.
+
+    The helper is intentionally conservative: it preserves the endpoint
+    polynomial dependency and replaces the ordinary remainder by the current
+    endpoint remainder plus the queued linear propagation of older remainders.
+    """
+
+    dim = len(tm)
+    if dim == 0:
+        empty = FlowstarSymbolicRemainderQueue.empty(0, max_size)
+        return tm, empty, {"active_queue_size": 0, "queue_reset": False}
+    if state is None or state.dim != dim or int(state.max_size) != int(max_size):
+        state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+
+    reference = tm[0].remainder
+    linear = _linear_coefficients(tm)
+    phi_l_i = _right_scale_matrix(linear, state.scalars)
+    updated_phi, propagated = _updated_phi_and_propagated_remainder(state, phi_l_i, reference)
+    current_j = tuple(model.remainder for model in tm)
+    total_remainders = _add_interval_columns(current_j, propagated)
+    reset_tm = TMVector(model.with_remainder(rem) for model, rem in zip(tm, total_remainders))
+
+    widths = reset_tm.range_box()
+    scalars: list[float] = []
+    for box in widths:
+        mag = max(abs(float(box.lo.detach().cpu())), abs(float(box.hi.detach().cpu())))
+        scalars.append(0.0 if mag == 0 else 1.0 / mag)
+
+    new_j = state.J + (current_j,)
+    queue_reset = bool(int(max_size) > 0 and len(new_j) >= int(max_size))
+    if queue_reset:
+        new_state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+    else:
+        new_state = FlowstarSymbolicRemainderQueue(tuple(new_j), updated_phi, tuple(scalars), int(max_size))
+
+    stats = {
+        "queue_size_before": len(state.J),
+        "queue_size_after": len(new_state.J),
+        "queue_reset": queue_reset,
+        "current_remainder_width_sum": _column_width_sum(current_j),
+        "propagated_remainder_width_sum": _column_width_sum(propagated),
+        "total_remainder_width_sum": _column_width_sum(total_remainders),
+        "linear_map_abs_sum": sum(abs(v) for row in linear for v in row),
+    }
+    return reset_tm, new_state, stats
 
 
 def _interval_width(iv: Interval) -> float:

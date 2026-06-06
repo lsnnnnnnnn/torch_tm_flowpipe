@@ -295,6 +295,11 @@ def _stdout_value(pattern: re.Pattern[str], path: Path | None, group: str) -> st
     return matches[-1].group(group) if matches else ""
 
 
+def _write_text_lines(path: Path, lines: Sequence[str]) -> None:
+    text = "\n".join(line.rstrip("\n") for line in lines).rstrip() + "\n"
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
 def _write_top_level_oracle_artifacts(out_dir: Path, model_dir: Path, representative_order: int, orders: Sequence[int]) -> None:
     representative_cpp = model_dir / f"oracle_flowstar_o{representative_order}.cpp"
     if representative_cpp.exists():
@@ -321,10 +326,10 @@ def _write_top_level_oracle_artifacts(out_dir: Path, model_dir: Path, representa
         run_stdout_lines.append(stdout_path.read_text(encoding="utf-8", errors="ignore") if stdout_path.exists() else "")
         run_stderr_lines.append(f"===== order {order} stderr =====")
         run_stderr_lines.append(stderr_path.read_text(encoding="utf-8", errors="ignore") if stderr_path.exists() else "")
-    (out_dir / "compile_stdout.txt").write_text("\n".join(compile_stdout_lines), encoding="utf-8", newline="\n")
-    (out_dir / "compile_stderr.txt").write_text("\n".join(compile_stderr_lines), encoding="utf-8", newline="\n")
-    (out_dir / "run_stdout.txt").write_text("\n".join(run_stdout_lines) + "\n", encoding="utf-8", newline="\n")
-    (out_dir / "run_stderr.txt").write_text("\n".join(run_stderr_lines) + "\n", encoding="utf-8", newline="\n")
+    _write_text_lines(out_dir / "compile_stdout.txt", compile_stdout_lines)
+    _write_text_lines(out_dir / "compile_stderr.txt", compile_stderr_lines)
+    _write_text_lines(out_dir / "run_stdout.txt", run_stdout_lines)
+    _write_text_lines(out_dir / "run_stderr.txt", run_stderr_lines)
 
 
 def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: float, orders: Sequence[int], flowstar_root: str | None, timeout_s: float | None) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -368,7 +373,18 @@ def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: flo
     return summaries, segments
 
 
-def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: float | None = 600.0, orders: Sequence[int] = (4, 6, 8)) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
+def run_oracle(
+    out_dir: Path,
+    *,
+    flowstar_root: str | None = None,
+    timeout_s: float | None = 600.0,
+    orders: Sequence[int] = (4, 6, 8),
+    source_run_id: str = SOURCE_RUN_ID,
+    source_dir: Path = SOURCE_DIR,
+) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
+    global SOURCE_RUN_ID, SOURCE_DIR
+    SOURCE_RUN_ID = source_run_id
+    SOURCE_DIR = Path(source_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     reset_box = _load_last_reset_box()
     failed_attempt = _load_failed_attempt(reset_box)
@@ -450,6 +466,14 @@ def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: fl
     _write_csv(out_dir / "oracle_flowstar_segments.csv", FLOWSTAR_SEGMENT_FIELDS, flowstar_segments)
     _write_csv(out_dir / "oracle_pytorch_attempt.csv", PYTORCH_ATTEMPT_FIELDS, [py_row])
     _write_report(out_dir, summary, order_summaries, py_row)
+    if "after_width_control" in out_dir.name:
+        for source_name, alias_name in (
+            ("oracle_report.md", "oracle_after_width_control_report.md"),
+            ("oracle_summary.csv", "oracle_after_width_control_summary.csv"),
+        ):
+            source_path = out_dir / source_name
+            if source_path.exists():
+                (out_dir / alias_name).write_text(source_path.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
     try:
         from flowstar_style_rescue_vanderpol import write_rescue_next4_outputs
 
@@ -515,8 +539,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--flowstar-root", default=None)
     parser.add_argument("--timeout-s", type=float, default=600.0)
     parser.add_argument("--orders", nargs="*", type=int, default=[4, 6, 8])
+    parser.add_argument("--source-run", default=SOURCE_RUN_ID)
+    parser.add_argument("--source-dir", type=Path, default=SOURCE_DIR)
     args = parser.parse_args(argv)
-    summary, segments, _py = run_oracle(args.out_dir, flowstar_root=args.flowstar_root, timeout_s=args.timeout_s, orders=args.orders)
+    summary, segments, _py = run_oracle(
+        args.out_dir,
+        flowstar_root=args.flowstar_root,
+        timeout_s=args.timeout_s,
+        orders=args.orders,
+        source_run_id=args.source_run,
+        source_dir=args.source_dir,
+    )
     print(f"wrote oracle outputs to {args.out_dir}; flowstar_validated={summary.get('flowstar_validated')} segments={len(segments)}")
     return 0
 

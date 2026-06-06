@@ -3,6 +3,7 @@ from .flowpipe import FlowpipeResult, FlowpipeSegment, flowpipe_multi_step, flow
 from .interval import Interval
 from .polynomial import Polynomial
 from .symbolic_remainder import (
+    FlowstarSymbolicRemainderQueue,
     SymbolicNoiseSymbol,
     SymbolicRemainderState,
     SymbolicTaylorModel,
@@ -18,6 +19,7 @@ from .tm_vector import TMVector
 __all__ = [
     "FlowpipeResult",
     "FlowpipeSegment",
+    "FlowstarSymbolicRemainderQueue",
     "Interval",
     "Polynomial",
     "SymbolicNoiseSymbol",
