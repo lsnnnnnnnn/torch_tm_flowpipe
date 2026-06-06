@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import shutil
 import signal
 import statistics
 import sys
@@ -1023,6 +1024,17 @@ def _configs() -> list[dict[str, Any]]:
         flowstar_spec("flowstar_style_o6_target", order=6),
         flowstar_spec("flowstar_style_o4_target_cutoff", order=4, cutoff_threshold=1e-10),
         flowstar_spec("flowstar_style_o6_target_cutoff", order=6, cutoff_threshold=1e-10),
+        flowstar_spec(
+            "flowstar_style_o4_target_insert",
+            order=4,
+            reset_mode="normalized_insertion",
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_cutoff_insert",
+            order=4,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion",
+        ),
         flowstar_spec("flowstar_style_o6_target_adaptive_order_8", order=6, adaptive_order_fallback=8),
         flowstar_spec(
             "flowstar_style_o6_target_cutoff_adaptive_order_8",
@@ -1046,6 +1058,12 @@ def _configs() -> list[dict[str, Any]]:
             max_validation_attempts=8,
         ),
         flowstar_spec("flowstar_style_o6_candidate8_output6", order=6, candidate_order=8),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_insert",
+            order=6,
+            candidate_order=8,
+            reset_mode="normalized_insertion",
+        ),
         flowstar_spec(
             "flowstar_style_o6_candidate8_output6_cutoff",
             order=6,
@@ -2694,6 +2712,329 @@ def _write_normalized_insertion_report(
     (out_dir / "normalized_insertion_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+
+H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_h10"
+H10_CONFIG_IDS = [
+    "flowstar_style_o6_candidate8_output6_cutoff_insert",
+    "flowstar_style_o6_candidate8_output6_insert",
+    "flowstar_style_o4_target_cutoff_insert",
+    "flowstar_style_o4_target_insert",
+]
+
+
+def _copy_plot_if_present(out_dir: Path, src_name: str, dst_name: str) -> None:
+    src = out_dir / src_name
+    dst = out_dir / dst_name
+    if src.exists():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, dst)
+
+
+def _ordered_h10_rows(summary_rows: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    by_id = {str(row.get("run_id", "")): row for row in summary_rows}
+    ordered = [by_id[run_id] for run_id in H10_CONFIG_IDS if run_id in by_id]
+    ordered.extend(row for row in summary_rows if row not in ordered)
+    return ordered
+
+
+def _comparison_by_run(comparison_rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
+    return {str(row.get("run_id", "")): row for row in comparison_rows}
+
+
+def _reached_requested(row: Mapping[str, Any], max_horizon: float) -> bool:
+    return (_finite_float(row.get("last_validated_t")) or 0.0) >= float(max_horizon) - 1e-9
+
+
+def _sample_containment_row(out_dir: Path) -> Mapping[str, str] | None:
+    path = out_dir / "sample_containment_summary.csv"
+    if not path.exists():
+        return None
+    rows = _read_csv_rows(path)
+    return rows[0] if rows else None
+
+
+def _sample_containment_passed(row: Mapping[str, str] | None) -> bool | None:
+    if row is None:
+        return None
+    violations = int(float(row.get("violations_count") or 0))
+    return violations == 0 and str(row.get("status", "")).lower() in {"passed", "pass", "ok"}
+
+
+def _best_h10_summary(
+    summary_rows: Sequence[Mapping[str, Any]], comparison_rows: Sequence[Mapping[str, Any]]
+) -> Mapping[str, Any] | None:
+    if not summary_rows:
+        return None
+    comp_by_run = _comparison_by_run(comparison_rows)
+
+    def key(row: Mapping[str, Any]) -> tuple[float, float, float]:
+        comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        tube_ratio = _finite_float(comp.get("tube_width_ratio"))
+        runtime = _finite_float(row.get("runtime_s"))
+        return (
+            _finite_float(row.get("last_validated_t")) or 0.0,
+            -(tube_ratio if tube_ratio is not None else math.inf),
+            -(runtime if runtime is not None else math.inf),
+        )
+
+    normalized = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion"]
+    return max(normalized or list(summary_rows), key=key)
+
+
+def _widths_are_flowstar_comparable(best: Mapping[str, Any] | None, comparison_rows: Sequence[Mapping[str, Any]]) -> bool | None:
+    if not best:
+        return None
+    comp = _comparison_by_run(comparison_rows).get(str(best.get("run_id", "")))
+    if not comp:
+        return None
+    last_ratio = _finite_float(comp.get("last_width_ratio"))
+    tube_ratio = _finite_float(comp.get("tube_width_ratio"))
+    if last_ratio is None or tube_ratio is None:
+        return None
+    return last_ratio <= 1.10 and tube_ratio <= 1.10
+
+
+def make_normalized_insertion_h10_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]]) -> None:
+    _copy_plot_if_present(out_dir, "rescue_t_x.png", "normalized_insertion_h10_t_x.png")
+    _copy_plot_if_present(out_dir, "rescue_t_y.png", "normalized_insertion_h10_t_y.png")
+    _copy_plot_if_present(out_dir, "rescue_phase_xy.png", "normalized_insertion_h10_phase_xy.png")
+    _copy_plot_if_present(
+        out_dir,
+        "overlay_rescue_vs_original_flowstar_t_x.png",
+        "overlay_normalized_insertion_vs_original_flowstar_t_x.png",
+    )
+    _copy_plot_if_present(
+        out_dir,
+        "overlay_rescue_vs_original_flowstar_t_y.png",
+        "overlay_normalized_insertion_vs_original_flowstar_t_y.png",
+    )
+    _copy_plot_if_present(
+        out_dir,
+        "overlay_rescue_vs_original_flowstar_phase_xy.png",
+        "overlay_normalized_insertion_vs_original_flowstar_phase_xy.png",
+    )
+    _copy_plot_if_present(out_dir, "reset_box_width_trace.png", "reset_width_vs_t.png")
+
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+
+    rows = [row for row in segment_rows if row.get("reset_mode") == "normalized_insertion"]
+    if not rows:
+        return
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        grouped.setdefault(str(row.get("run_id", "")), []).append(row)
+
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    for run_id, run_rows in grouped.items():
+        pts = []
+        for row in sorted(run_rows, key=lambda r: _finite_float(r.get("t_hi")) or 0.0):
+            t = _finite_float(row.get("t_hi"))
+            width = _finite_float(row.get("reset_width_sum"))
+            if t is not None and width is not None:
+                pts.append((t, width))
+        if pts:
+            ax.plot([t for t, _width in pts], [width for _t, width in pts], marker="o", markersize=2.4, linewidth=1.0, label=run_id)
+    ax.set_xlabel("t")
+    ax.set_ylabel("reset width sum")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "reset_width_vs_t.png", dpi=160)
+    plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    field_labels = [
+        ("insertion_truncation_width", "truncation"),
+        ("insertion_cutoff_width", "cutoff"),
+        ("output_remainder_width", "output remainder"),
+    ]
+    for run_id, run_rows in grouped.items():
+        for field, label in field_labels:
+            pts = []
+            for row in sorted(run_rows, key=lambda r: _finite_float(r.get("t_hi")) or 0.0):
+                t = _finite_float(row.get("t_hi"))
+                value = _finite_float(row.get(field))
+                if t is not None and value is not None and value > 0:
+                    pts.append((t, value))
+            if pts:
+                ax.plot([t for t, _value in pts], [value for _t, value in pts], linewidth=0.9, label=f"{run_id} {label}")
+    ax.set_xlabel("t")
+    ax.set_ylabel("uncertainty width sum")
+    ax.set_yscale("log")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=6)
+    fig.tight_layout()
+    fig.savefig(out_dir / "insertion_uncertainty_vs_t.png", dpi=160)
+    plt.close(fig)
+
+
+def write_normalized_insertion_h10_vs_flowstar_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    comp_by_run = _comparison_by_run(comparison_rows)
+    lines = [
+        "# Normalized Insertion H10 Vs Original Flow* Comparison",
+        "",
+        f"Requested horizon: `{float(max_horizon):.17g}`.",
+        "Original Flow* boxes are GNUPLOT segment boxes; adaptive PyTorch grids are not expected to match segment counts.",
+        "This report is a width and overlap comparison, not an exact Flow* parity claim.",
+        "",
+        "## Metrics",
+        "",
+        "| run_id | status | runtime_s | segments | last_validated_t | min_h_used | min_regular_h_used | h_below_flowstar_min_count | max_h_used | step_rejections | final_width_sum | py_tube_width_sum | flowstar_last_width_sum | flowstar_tube_width_sum | last_width_ratio | tube_width_ratio | max_overlap_width_ratio | median_overlap_width_ratio |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for row in _ordered_h10_rows(summary_rows):
+        comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('runtime_s', '')} | "
+            f"{row.get('validated_segments', '')} | {row.get('last_validated_t', '')} | {row.get('min_h_used', '')} | "
+            f"{row.get('min_regular_h_used', '')} | {row.get('h_below_flowstar_min_count', '')} | {row.get('max_h_used', '')} | "
+            f"{row.get('num_step_rejections', '')} | {row.get('final_width_sum', '')} | {comp.get('py_tube_width_sum', '')} | "
+            f"{comp.get('flowstar_last_width_sum_near_T', '')} | {comp.get('flowstar_tube_width_sum_over_same_horizon', '')} | "
+            f"{comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | "
+            f"{comp.get('max_time_overlap_width_ratio', '')} | {comp.get('median_time_overlap_width_ratio', '')} |"
+        )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "normalized_insertion_h10_vs_flowstar_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_normalized_insertion_h10_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best_h10_summary(summary_rows, comparison_rows)
+    comp_by_run = _comparison_by_run(comparison_rows)
+    best_comp = comp_by_run.get(str(best.get("run_id", ""))) if best else None
+    reached_rows = [row for row in summary_rows if _reached_requested(row, max_horizon)]
+    any_reached = bool(reached_rows)
+    order4_reached = any(str(row.get("run_id", "")).startswith("flowstar_style_o4_") and _reached_requested(row, max_horizon) for row in summary_rows)
+    order6_reached = any("o6_candidate8" in str(row.get("run_id", "")) and _reached_requested(row, max_horizon) for row in summary_rows)
+    below_min_any = any(int(row.get("h_below_flowstar_min_count") or 0) > 0 for row in summary_rows)
+    sample_row = _sample_containment_row(out_dir)
+    sample_passed = _sample_containment_passed(sample_row)
+    comparable = _widths_are_flowstar_comparable(best, comparison_rows)
+    if comparable is None:
+        comparable_text = "unknown; comparison data unavailable"
+    elif comparable:
+        comparable_text = "yes; width ratios are within 10% of Flow* over the reported comparison horizon"
+    else:
+        comparable_text = "no; width ratios exceed the 10% comparison threshold"
+    if sample_passed is None:
+        sample_text = "pending; `sample_containment_summary.csv` has not been generated yet"
+    else:
+        sample_text = "passed" if sample_passed else "failed"
+    best_below_min = bool(best and int(best.get("h_below_flowstar_min_count") or 0) > 0)
+    decision = "MERGE_CANDIDATE" if any_reached and comparable is True and sample_passed is True and not best_below_min else "NEEDS_MORE_WORK"
+    if decision == "MERGE_CANDIDATE":
+        recommendation = "merge experimental branch"
+    elif not any_reached:
+        recommendation = "investigate any h10 failure point"
+    elif comparable is False:
+        recommendation = "add Flow*-style symbolic remainder queue on top of normalized insertion"
+    elif sample_passed is False:
+        recommendation = "investigate sample containment failure point"
+    else:
+        recommendation = "finish sample containment and comparison verification"
+
+    lines = [
+        "# Normalized Insertion H10 Report",
+        "",
+        f"Did any normalized insertion config reach horizon 10? {_yes_no(any_reached)}.",
+        f"Which config is best? `{best.get('run_id', '') if best else ''}`.",
+        f"Did order4 reach horizon 10? {_yes_no(order4_reached)}.",
+        f"Did order6/candidate8 reach horizon 10? {_yes_no(order6_reached)}.",
+        f"Are widths comparable to Flow*? {comparable_text}.",
+        f"Did any non-final step go below Flow* min step 0.002? {_yes_no(below_min_any)}.",
+        f"Did sample containment sanity pass? {sample_text}.",
+        f"Branch decision: {decision}.",
+        f"Recommended next step: {recommendation}.",
+        "",
+        "## Best Config Metrics",
+        "",
+        "| run_id | status | runtime_s | segments | last_validated_t | min_regular_h_used | h_below_flowstar_min_count | final_width_sum | last_width_ratio | tube_width_ratio |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    if best:
+        lines.append(
+            f"| {best.get('run_id', '')} | {best.get('status', '')} | {best.get('runtime_s', '')} | "
+            f"{best.get('validated_segments', '')} | {best.get('last_validated_t', '')} | {best.get('min_regular_h_used', '')} | "
+            f"{best.get('h_below_flowstar_min_count', '')} | {best.get('final_width_sum', '')} | "
+            f"{best_comp.get('last_width_ratio', '') if best_comp else ''} | {best_comp.get('tube_width_ratio', '') if best_comp else ''} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Config Status",
+            "",
+            "| run_id | status | runtime_s | segments | last_validated_t | min_regular_h_used | h_below_flowstar_min_count | failure_reason |",
+            "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+        ]
+    )
+    for row in _ordered_h10_rows(summary_rows):
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('runtime_s', '')} | "
+            f"{row.get('validated_segments', '')} | {row.get('last_validated_t', '')} | {row.get('min_regular_h_used', '')} | "
+            f"{row.get('h_below_flowstar_min_count', '')} | {row.get('failure_reason', '')} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Interpretation",
+            "",
+            "Do not claim exact Flow* parity from this report; adaptive grids differ and segment boxes are not expected to match exactly.",
+            "If only order6/candidate8 reaches h10, this is a higher-order PyTorch rescue result, not original order-4 parity.",
+            "If an order4 insert config reaches h10, treat it as the closer result to original Flow* settings and highlight it separately.",
+        ]
+    )
+    if sample_row is not None:
+        lines.extend(
+            [
+                "",
+                "## Sample Containment",
+                "",
+                "| run_id | samples | checked_pairs | violations | max_outside_distance | status |",
+                "| --- | ---: | ---: | ---: | ---: | --- |",
+                f"| {sample_row.get('run_id', '')} | {sample_row.get('num_samples', '')} | {sample_row.get('checked_sample_time_pairs', '')} | "
+                f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
+            ]
+        )
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "normalized_insertion_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_normalized_insertion_h10_outputs(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+    comparison_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    _write_csv(out_dir / "normalized_insertion_h10_summary.csv", SUMMARY_FIELDS, summary_rows)
+    _write_csv(out_dir / "normalized_insertion_h10_segments.csv", SEGMENT_FIELDS, segment_rows)
+    _write_csv(out_dir / "normalized_insertion_h10_reset_diagnostics.csv", NORMALIZED_INSERTION_RESET_FIELDS, _normalized_insertion_reset_rows(segment_rows))
+    _write_csv(out_dir / "normalized_insertion_h10_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+    _write_csv(out_dir / "normalized_insertion_h10_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+    write_normalized_insertion_h10_vs_flowstar_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    write_normalized_insertion_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    make_normalized_insertion_h10_plots(out_dir, segment_rows)
+
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -2754,6 +3095,15 @@ def write_specialized_outputs(
         _write_csv(out_dir / "normalized_insertion_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
         _write_normalized_insertion_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
         make_normalized_insertion_plots(out_dir, segment_rows)
+    elif name == H10_OUTPUT_DIR_NAME:
+        write_normalized_insertion_h10_outputs(
+            out_dir,
+            summary_rows,
+            segment_rows,
+            attempt_rows,
+            max_horizon=max_horizon,
+            comparison_rows=comparison_rows,
+        )
 
 
 def _read_optional_csv(path: Path) -> list[dict[str, str]]:

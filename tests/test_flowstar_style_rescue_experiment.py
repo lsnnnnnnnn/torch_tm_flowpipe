@@ -13,6 +13,7 @@ SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
 LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
 ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
 WIDTH_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_width_growth_diagnostics.py"
+SAMPLE_CONTAINMENT_SCRIPT = ROOT / "experiments" / "flowstar_style_sample_containment.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
@@ -116,6 +117,7 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
     py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
     py_compile.compile(str(WIDTH_DIAGNOSTICS_SCRIPT), doraise=True)
+    py_compile.compile(str(SAMPLE_CONTAINMENT_SCRIPT), doraise=True)
     py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
@@ -379,6 +381,40 @@ def test_candidate_order_specialized_outputs_smoke(tmp_path):
     assert rows[0]["output_order"] == "6"
 
 
+
+def test_required_normalized_insertion_artifacts_have_physical_lines():
+    required_csvs = [
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_summary.csv",
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_segments.csv",
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_reset_diagnostics.csv",
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_validation_attempts.csv",
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_vs_flowstar_comparison.csv",
+    ]
+    h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_h10"
+    if h10_dir.exists():
+        required_csvs.extend(sorted(h10_dir.glob("*.csv")))
+    for path in required_csvs:
+        frame = pd.read_csv(path)
+        text = path.read_text(encoding="utf-8")
+        assert text.endswith("\n")
+        assert text.count("\n") == len(frame) + 1
+        assert len(text.splitlines()) == len(frame) + 1
+
+    required_markdown = [
+        ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_report.md",
+        ROOT / "docs" / "flowstar_normalized_insertion_source_map.md",
+    ]
+    if h10_dir.exists():
+        required_markdown.extend(sorted(h10_dir.glob("*.md")))
+    for path in required_markdown:
+        text = path.read_text(encoding="utf-8")
+        assert text.count("\n") > 10
+        assert "\\n" not in text
+        table_rows = [line for line in text.splitlines() if line.startswith("|")]
+        if table_rows:
+            assert len(table_rows) >= 2
+
+
 def test_normalized_insertion_specialized_outputs_smoke(tmp_path):
     out_dir = tmp_path / "flowstar_normalized_insertion_rescue"
     subprocess.run(
@@ -432,6 +468,113 @@ def test_normalized_insertion_specialized_outputs_smoke(tmp_path):
     assert report.count("\n") > 10
     assert "Did reset widths shrink before t~=2.4?" in report
     assert "Branch decision:" in report
+
+
+
+def test_normalized_insertion_h10_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_normalized_insertion_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o6_candidate8_output6_cutoff_insert",
+            "flowstar_style_o6_candidate8_output6_insert",
+            "flowstar_style_o4_target_cutoff_insert",
+            "flowstar_style_o4_target_insert",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "normalized_insertion_h10_summary.csv",
+        "normalized_insertion_h10_segments.csv",
+        "normalized_insertion_h10_reset_diagnostics.csv",
+        "normalized_insertion_h10_validation_attempts.csv",
+        "normalized_insertion_h10_vs_flowstar_comparison.csv",
+        "normalized_insertion_h10_report.md",
+        "normalized_insertion_h10_vs_flowstar_report.md",
+        "normalized_insertion_h10_t_x.png",
+        "normalized_insertion_h10_t_y.png",
+        "normalized_insertion_h10_phase_xy.png",
+        "reset_width_vs_t.png",
+        "insertion_uncertainty_vs_t.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "normalized_insertion_h10_summary.csv")
+    assert set(summary["run_id"]) == {
+        "flowstar_style_o6_candidate8_output6_cutoff_insert",
+        "flowstar_style_o6_candidate8_output6_insert",
+        "flowstar_style_o4_target_cutoff_insert",
+        "flowstar_style_o4_target_insert",
+    }
+    report = (out_dir / "normalized_insertion_h10_report.md").read_text(encoding="utf-8")
+    assert "Did any normalized insertion config reach horizon 10?" in report
+    assert "Did sample containment sanity pass? pending" in report
+    for csv_name in [
+        "normalized_insertion_h10_summary.csv",
+        "normalized_insertion_h10_segments.csv",
+        "normalized_insertion_h10_reset_diagnostics.csv",
+        "normalized_insertion_h10_validation_attempts.csv",
+        "normalized_insertion_h10_vs_flowstar_comparison.csv",
+    ]:
+        frame = pd.read_csv(out_dir / csv_name)
+        text = (out_dir / csv_name).read_text(encoding="utf-8")
+        assert text.endswith("\n")
+        assert text.count("\n") == len(frame) + 1
+
+
+def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
+    out_dir = tmp_path / "flowstar_normalized_insertion_h10"
+    out_dir.mkdir()
+    (out_dir / "rescue_summary.csv").write_text(
+        "run_id,reset_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum\n"
+        "sample_run,normalized_insertion,0.01,max_horizon_reached,0.1,1,0,1.0\n",
+        encoding="utf-8",
+    )
+    (out_dir / "rescue_segments.csv").write_text(
+        "run_id,status,t_hi,x_lo,x_hi,y_lo,y_hi\n"
+        "sample_run,validated,0.01,-10,10,-10,10\n",
+        encoding="utf-8",
+    )
+    (out_dir / "normalized_insertion_h10_summary.csv").write_text(
+        "run_id,reset_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum\n"
+        "sample_run,normalized_insertion,0.01,max_horizon_reached,0.1,1,0,1.0\n",
+        encoding="utf-8",
+    )
+    (out_dir / "normalized_insertion_h10_vs_flowstar_comparison.csv").write_text(
+        "run_id,last_width_ratio,tube_width_ratio\n",
+        encoding="utf-8",
+    )
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(SAMPLE_CONTAINMENT_SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--samples",
+            "4",
+            "--max-rk4-dt",
+            "0.001",
+            "--max-horizon",
+            "0.01",
+        ],
+        check=True,
+    )
+
+    summary = pd.read_csv(out_dir / "sample_containment_summary.csv")
+    assert int(summary.loc[0, "violations_count"]) == 0
+    report = (out_dir / "sample_containment_report.md").read_text(encoding="utf-8")
+    assert "not a reachability proof" in report
+    h10_report = (out_dir / "normalized_insertion_h10_report.md").read_text(encoding="utf-8")
+    assert "Did sample containment sanity pass? passed" in h10_report
 
 
 def test_residual_centering_specialized_outputs_smoke(tmp_path):
