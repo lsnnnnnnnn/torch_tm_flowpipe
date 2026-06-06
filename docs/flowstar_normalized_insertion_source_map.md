@@ -61,6 +61,16 @@ The new path substitutes an accepted endpoint Taylor model through the previous 
 - `tests/test_normalized_insertion.py`: checks sampled containment for direct insertion, truncation/cutoff accounting, normalized-insertion endpoint containment, and unchanged default reset behavior.
 - `tests/test_flowstar_style_rescue_experiment.py`: includes a tiny specialized-output smoke test that verifies multiline CSV/report formatting.
 
+## Attribution-Targeted Scale Update
+
+The h10 attribution run identifies `right_map_scaling` as the dominant width source: max right-map width sum `21.883875748631645`, max output-range width sum `21.800746276090599`, max Picard residual width sum `0.00021478626710226962`, and max insertion truncation width sum `7.5777280987120131e-05`. The source-map target is therefore the Flow* scale update, not symbolic queue tuning or Horner truncation.
+
+Observed PyTorch component: `normalized_right_map_range_width_sum` grows with the inserted right map before reset scaling. Relevant Flow* mechanism: `/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp:457-514` computes constants, removes them, calls `remainder.remove_midpoint(m)`, adds that midpoint into the next center, then measures `tmvRange[i].mag(sup)` before dividing the right-map component by `sup`. This means Flow* does not let an asymmetric interval remainder inflate the right-map magnitude while leaving its midpoint outside the center.
+
+Observed PyTorch component: `scale_x` and `scale_y` track the inserted right-map magnitude, and the attribution report recommends `right-map scalar alignment`. Relevant Flow* mechanism: `/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h:3453-3459` applies scalar assignment component by component after the magnitude has been selected. The clean-room target is the same component-local scalar rule: recenter each inserted component remainder first, add that midpoint to the reset center, then compute the scale from the recentered range.
+
+Implementation target: `src/torch_tm_flowpipe/flowpipe.py` exposes this as the opt-in normalized-insertion scalar path used by `flowstar_style_o4_target_insert_scalars` and `flowstar_style_o6_candidate8_output6_insert_scalars`. The default normalized insertion configs stay as the h10 baseline, so the scalar run can be compared directly against the reported o4/o6 baseline widths.
+
 ## Equivalence And Differences
 
 Equivalent intent:

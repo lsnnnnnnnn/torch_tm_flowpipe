@@ -218,9 +218,20 @@ def _normal_domain(domain: Sequence[Interval], tau_index: int | None = None) -> 
     return normal
 
 
-def _poly_interval_normal(poly: Polynomial, domain: Sequence[Interval], tau_index: int | None = None) -> Interval:
+def _poly_interval_normal(
+    poly: Polynomial,
+    domain: Sequence[Interval],
+    tau_index: int | None = None,
+    *,
+    normal_eval_range_split: int | None = None,
+) -> Interval:
     """Flow*-style normal interval evaluation for normalized local domains."""
-    return poly.evaluate_interval(_normal_domain(domain, tau_index))
+    normal = _normal_domain(domain, tau_index)
+    pieces = _truncation_split_value(normal_eval_range_split)
+    if pieces is None:
+        return poly.evaluate_interval(normal)
+    split_vars = [i for i in range(len(normal)) if i != tau_index]
+    return poly.evaluate_interval_split(normal, pieces, split_vars=split_vars)
 
 
 def _cutoff_polynomial_normal(
@@ -228,6 +239,8 @@ def _cutoff_polynomial_normal(
     domain: Sequence[Interval],
     tau_index: int | None,
     threshold: float | None,
+    *,
+    normal_eval_range_split: int | None = None,
 ) -> tuple[Polynomial, Interval]:
     if threshold is None:
         return poly, Interval.zero(dtype=poly.dtype, device=poly.device)
@@ -238,7 +251,16 @@ def _cutoff_polynomial_normal(
         target = removed if bool(torch.all(torch.abs(coef) <= threshold_t)) else kept
         target[exp] = coef
     removed_poly = Polynomial(removed, poly.n_vars)
-    removed_range = _poly_interval_normal(removed_poly, domain, tau_index) if removed else Interval.zero(dtype=poly.dtype, device=poly.device)
+    removed_range = (
+        _poly_interval_normal(
+            removed_poly,
+            domain,
+            tau_index,
+            normal_eval_range_split=normal_eval_range_split,
+        )
+        if removed
+        else Interval.zero(dtype=poly.dtype, device=poly.device)
+    )
     return Polynomial(kept, poly.n_vars), removed_range
 
 
@@ -498,6 +520,30 @@ def _diag_add_width(diagnostics: dict[str, Any] | None, key: str, value: Interva
     if numeric is None:
         return
     diagnostics[key] = (_float_or_none(diagnostics.get(key)) or 0.0) + float(numeric)
+    if key.endswith("_width"):
+        diagnostics[f"{key}_sum"] = diagnostics[key]
+
+
+def _diag_add_component_width(
+    diagnostics: dict[str, Any] | None,
+    key: str,
+    value: Interval | float | int | None,
+    component_index: int | None,
+) -> None:
+    if diagnostics is None or value is None or component_index is None:
+        return
+    if isinstance(value, Interval):
+        numeric = _interval_width_value(value)
+    else:
+        numeric = _float_or_none(value)
+    if numeric is None:
+        return
+    names = ("x", "y")
+    name = names[component_index] if 0 <= int(component_index) < len(names) else f"state_{component_index}"
+    component_key = f"{key}_{name}"
+    diagnostics[component_key] = (_float_or_none(diagnostics.get(component_key)) or 0.0) + float(numeric)
+    if key.endswith("_width"):
+        diagnostics[f"{key}_sum"] = _float_or_none(diagnostics.get(key)) or 0.0
 
 
 def _diag_add_count(diagnostics: dict[str, Any] | None, key: str, value: int) -> None:
@@ -528,6 +574,7 @@ def _insert_ctrunc_normal_like_scalar(
     cutoff_threshold: float | None,
     domain: Sequence[Interval] | None,
     diagnostics: dict[str, Any] | None,
+    component_index: int | None = None,
 ) -> TaylorModel:
     if outer.polynomial.n_vars != len(inner):
         raise ValueError("outer TaylorModel variable count must match inner TMVector length")
@@ -555,10 +602,15 @@ def _insert_ctrunc_normal_like_scalar(
         truncation_range_split=acc.truncation_range_split,
     )
 
+    composed_poly_range = cutoff_kept.evaluate_interval(out_domain)
     _diag_add_width(diagnostics, "insertion_truncation_width", trunc_range)
+    _diag_add_component_width(diagnostics, "insertion_truncation_width", trunc_range, component_index)
     _diag_add_width(diagnostics, "insertion_cutoff_width", cutoff_range)
-    _diag_add_width(diagnostics, "composed_poly_range_width", cutoff_kept.evaluate_interval(out_domain))
+    _diag_add_component_width(diagnostics, "insertion_cutoff_width", cutoff_range, component_index)
+    _diag_add_width(diagnostics, "composed_poly_range_width", composed_poly_range)
+    _diag_add_component_width(diagnostics, "composed_poly_range_width", composed_poly_range, component_index)
     _diag_add_width(diagnostics, "output_remainder_width", result.remainder)
+    _diag_add_component_width(diagnostics, "output_remainder_width", result.remainder, component_index)
     _diag_add_count(diagnostics, "terms_before_insertion_truncation", len(acc.polynomial.terms))
     _diag_add_count(diagnostics, "terms_after_insertion", len(result.polynomial.terms))
     return result
@@ -581,8 +633,16 @@ def insert_ctrunc_normal_like(
     """
     if isinstance(outer, TMVector):
         models = [
-            _insert_ctrunc_normal_like_scalar(model, inner, order, cutoff_threshold, domain, diagnostics)
-            for model in outer
+            _insert_ctrunc_normal_like_scalar(
+                model,
+                inner,
+                order,
+                cutoff_threshold,
+                domain,
+                diagnostics,
+                component_index=index,
+            )
+            for index, model in enumerate(outer)
         ]
         if diagnostics is not None:
             diagnostics["insertion_components"] = len(models)
@@ -637,6 +697,20 @@ def _tmvector_add_remainders(tmv: TMVector, remainders: Sequence[Interval]) -> T
     return TMVector(model.with_remainder(model.remainder + rem) for model, rem in zip(tmv, remainders))
 
 
+def _tmvector_recenter_remainders(tmv: TMVector) -> tuple[TMVector, list[float]]:
+    models: list[TaylorModel] = []
+    shifts: list[float] = []
+    for model in tmv:
+        midpoint = model.remainder.mid()
+        shift = _float_or_none(midpoint.detach().cpu()) or 0.0
+        shifts.append(float(shift))
+        if shift == 0.0:
+            models.append(model)
+        else:
+            models.append(model.with_remainder(model.remainder - Interval.point(midpoint)))
+    return TMVector(models), shifts
+
+
 def _flowstar_normalized_insertion_transition(
     seg: FlowpipeSegment,
     previous_state: FlowstarNormalFlowpipeState | None,
@@ -647,6 +721,7 @@ def _flowstar_normalized_insertion_transition(
     symbolic_queue_split: bool = False,
     symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     symbolic_queue_max_size: int = 100,
+    scalar_recenter_remainder_midpoint: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
     if prev is None:
@@ -665,12 +740,16 @@ def _flowstar_normalized_insertion_transition(
         mode_name = "normalized_insertion_symqueue"
     else:
         mode_name = "normalized_insertion"
+    endpoint_box = seg.final_tm.range_box()
     diagnostics: dict[str, Any] = {
         "reset_mode": mode_name,
         "step_index": int(prev.step_index) + 1,
-        "endpoint_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
-        "reset_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
+        "endpoint_box_width_sum": _sum_interval_widths(endpoint_box),
+        "endpoint_tm_width_sum": _sum_interval_widths(endpoint_box),
+        "reset_box_width_sum": _sum_interval_widths(endpoint_box),
     }
+    _add_width_metrics(diagnostics, "endpoint_box", endpoint_box)
+    _add_width_metrics(diagnostics, "endpoint_tm", endpoint_box)
     center = _tmvector_constant_part(seg.final_tm)
     endpoint_without_constants = _tmvector_rm_constants(seg.final_tm)
     inserted = insert_ctrunc_normal_like(
@@ -682,6 +761,14 @@ def _flowstar_normalized_insertion_transition(
         diagnostics,
     )
     assert isinstance(inserted, TMVector)
+    remainder_midpoint_shifts: list[float] = [0.0 for _ in inserted]
+    if scalar_recenter_remainder_midpoint:
+        inserted, remainder_midpoint_shifts = _tmvector_recenter_remainders(inserted)
+        center = [float(c) + float(shift) for c, shift in zip(center, remainder_midpoint_shifts)]
+        diagnostics["scalar_recenter_remainder_midpoint"] = True
+        diagnostics["remainder_midpoint_shift_x"] = remainder_midpoint_shifts[0] if len(remainder_midpoint_shifts) > 0 else ""
+        diagnostics["remainder_midpoint_shift_y"] = remainder_midpoint_shifts[1] if len(remainder_midpoint_shifts) > 1 else ""
+        diagnostics["remainder_midpoint_shift_abs_sum"] = sum(abs(float(v)) for v in remainder_midpoint_shifts)
     inserted_box = inserted.range_box()
     scales: list[float] = []
     inv_scales: list[float] = []
@@ -691,7 +778,11 @@ def _flowstar_normalized_insertion_transition(
         scales.append(scale)
         inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
     tmv_right = _scale_tmvector_components(inserted, inv_scales).apply_cutoff(cutoff_threshold)
+    _add_width_metrics(diagnostics, "inserted_endpoint", inserted_box)
+    _add_width_metrics(diagnostics, "normal_state_right", tmv_right.range_box())
     reset_tm = _normalized_tm_from_center_scale(center, scales, int(order), template_domain=prev.domain)
+    reset_box = reset_tm.range_box()
+    _add_width_metrics(diagnostics, "normalized_reset", reset_box)
     next_queue = prev.symbolic_queue if prev.symbolic_queue is not None else symbolic_queue_state
     initial_remainders: tuple[Interval, ...] | None = None
     if symbolic_queue:
@@ -720,7 +811,7 @@ def _flowstar_normalized_insertion_transition(
     )
     diagnostics.update(state.diagnostic_widths())
     diagnostics["inserted_endpoint_width_sum"] = _sum_interval_widths(inserted_box)
-    diagnostics["normalized_reset_width_sum"] = _sum_interval_widths(reset_tm.range_box())
+    diagnostics["normalized_reset_width_sum"] = _sum_interval_widths(reset_box)
     if symbolic_queue_split:
         insertion_trunc = _float_or_none(diagnostics.get("insertion_truncation_width")) or 0.0
         insertion_cutoff = _float_or_none(diagnostics.get("insertion_cutoff_width")) or 0.0
@@ -1063,18 +1154,15 @@ def _validate_picard(
             except Exception:
                 pass
         try:
-            rhs = _call_ode(ode_fn, candidate, u_tms)
-            residual_boxes: list[Interval] = []
-            for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
-                picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(
-                    cand_i.polynomial,
-                    Interval.zero(),
-                    domain,
-                    order=order,
-                    truncation_range_split=cand_i.truncation_range_split,
-                )
-                residual_boxes.append(residual_i.range_box().inflate(validation_eps))
+            residual_boxes = _picard_residual_boxes(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                validation_eps=validation_eps,
+            )
         except Exception as exc:  # fail closed; caller gets a non-validated segment
             message = f"validation exception: {exc}"
             _append_validation_diagnostic(
@@ -1184,6 +1272,7 @@ def _validate_picard_target_remainder(
     validation_eps: float,
     h: float,
     target_remainder_radius: float,
+    normal_eval_range_split: int | None = None,
     diagnostics: list[dict[str, Any]] | None = None,
     diagnostics_mode: str | None = None,
     diagnostics_segment_index: int | None = None,
@@ -1197,8 +1286,10 @@ def _validate_picard_target_remainder(
         raise ValueError("base and candidate dimensions differ")
     target_remainders = [_symmetric_interval(target_remainder_radius, domain) for _ in candidate_poly]
     diag_extra = dict(diagnostics_context or {})
-    diag_extra.setdefault("validation_mode", "target_remainder")
+    diag_extra.setdefault("validation_mode", "target_remainder_normal_eval" if normal_eval_range_split is not None else "target_remainder")
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
+    if normal_eval_range_split is not None:
+        diag_extra.setdefault("normal_eval_range_split", int(normal_eval_range_split))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_checked_width", _sum_interval_widths(target_remainders))
@@ -1275,18 +1366,16 @@ def _validate_picard_target_remainder(
             except Exception:
                 pass
         try:
-            rhs = _call_ode(ode_fn, candidate, u_tms)
-            residual_boxes: list[Interval] = []
-            for base_i, cand_i, f_i in zip(base_ext, candidate, rhs):
-                picard_i = base_i + f_i.integrate(tau_index)
-                residual_i = picard_i - TaylorModel(
-                    cand_i.polynomial,
-                    Interval.zero(),
-                    domain,
-                    order=order,
-                    truncation_range_split=cand_i.truncation_range_split,
-                )
-                residual_boxes.append(residual_i.range_box().inflate(validation_eps))
+            residual_boxes = _picard_residual_boxes(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                validation_eps=validation_eps,
+                normal_eval_range_split=normal_eval_range_split,
+            )
         except Exception as exc:
             message = f"validation exception: {exc}"
             extra = dict(diag_extra, subset_result=False, rejection_reason=message)
@@ -1332,7 +1421,12 @@ def _validate_picard_target_remainder(
 
         subset_result = all(target.contains_interval(rb) for target, rb in zip(target_remainders, residual_boxes))
         message = "" if subset_result else "Picard residual not subset of target remainder"
-        extra = dict(diag_extra, subset_result=subset_result, rejection_reason="" if subset_result else message)
+        extra = dict(
+            diag_extra,
+            subset_result=subset_result,
+            rejection_reason="" if subset_result else message,
+            **(_interval_list_stats("normal_eval_range", residual_boxes) if normal_eval_range_split is not None else {}),
+        )
         _append_validation_diagnostic(
             diagnostics,
             mode=diag_mode,
@@ -1376,6 +1470,21 @@ def _residual_interval_stats(prefix: str, boxes: Sequence[Interval] | None) -> d
     return row
 
 
+def _taylor_model_range_box_normal(
+    model: TaylorModel,
+    tau_index: int | None,
+    *,
+    normal_eval_range_split: int | None = None,
+) -> Interval:
+    poly_range = _poly_interval_normal(
+        model.polynomial,
+        model.domain,
+        tau_index,
+        normal_eval_range_split=normal_eval_range_split,
+    )
+    return poly_range + model.remainder
+
+
 def _picard_residual_boxes(
     ode_fn: ODEFunction,
     base_ext: TMVector,
@@ -1385,6 +1494,7 @@ def _picard_residual_boxes(
     u_tms: TMVector | None,
     *,
     validation_eps: float,
+    normal_eval_range_split: int | None = None,
 ) -> list[Interval]:
     domain = candidate.domain
     rhs = _call_ode(ode_fn, candidate, u_tms)
@@ -1398,7 +1508,15 @@ def _picard_residual_boxes(
             order=order,
             truncation_range_split=cand_i.truncation_range_split,
         )
-        residual_boxes.append(residual_i.range_box().inflate(validation_eps))
+        if normal_eval_range_split is None:
+            residual_box = residual_i.range_box()
+        else:
+            residual_box = _taylor_model_range_box_normal(
+                residual_i,
+                tau_index,
+                normal_eval_range_split=normal_eval_range_split,
+            )
+        residual_boxes.append(residual_box.inflate(validation_eps))
     return residual_boxes
 
 
@@ -2232,6 +2350,7 @@ def flowpipe_step_from_tm(
     candidate_order: int | None = None,
     truncation_range_split: int | None = None,
     selective_high_degree_terms_top_k: int | None = None,
+    normal_eval_range_split: int | None = None,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -2252,10 +2371,12 @@ def flowpipe_step_from_tm(
     if candidate_order_i < output_order:
         raise ValueError("candidate_order must be >= output order")
     split = _truncation_split_value(truncation_range_split)
+    normal_split = _truncation_split_value(normal_eval_range_split)
     diag_context = dict(diagnostics_context or {})
     diag_context.setdefault("output_order", output_order)
     diag_context.setdefault("candidate_order", candidate_order_i)
     diag_context.setdefault("truncation_range_split", split or "")
+    diag_context.setdefault("normal_eval_range_split", normal_split or "")
     selective_top_k = int(selective_high_degree_terms_top_k or 0)
     if selective_top_k > 0:
         diag_context.setdefault("selective_high_degree_terms_top_k", selective_top_k)
@@ -2277,16 +2398,18 @@ def flowpipe_step_from_tm(
         "growth",
         "current",
         "target_remainder",
+        "target_remainder_normal_eval",
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
     }:
         raise ValueError(
-            "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_refined', "
-            "'target_remainder_centered', or 'target_remainder_flowstar_ctrunc'"
+            "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_normal_eval', "
+            "'target_remainder_refined', 'target_remainder_centered', or 'target_remainder_flowstar_ctrunc'"
         )
     target_mode = validation_mode in {
         "target_remainder",
+        "target_remainder_normal_eval",
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
@@ -2323,7 +2446,7 @@ def flowpipe_step_from_tm(
             result_order=candidate_order_i,
         )
     _add_term_hash_metrics(diag_context, "candidate_terms_after_selective", validation_candidate_poly, output_order)
-    if validation_mode == "target_remainder":
+    if validation_mode in {"target_remainder", "target_remainder_normal_eval"}:
         validated, status, attempts, message = _validate_picard_target_remainder(
             ode_fn,
             base_ext,
@@ -2335,6 +2458,7 @@ def flowpipe_step_from_tm(
             max_attempts=attempt_limit,
             validation_eps=validation_eps,
             target_remainder_radius=target_remainder_radius,
+            normal_eval_range_split=normal_split if validation_mode == "target_remainder_normal_eval" else None,
             diagnostics=diagnostics,
             diagnostics_mode=diagnostics_mode,
             diagnostics_segment_index=diagnostics_segment_index,
@@ -2561,10 +2685,12 @@ def flowpipe_step_flowstar_style_adaptive(
     candidate_order: int | None = None,
     truncation_range_split: int | None = None,
     selective_high_degree_terms_top_k: int | None = None,
+    normal_eval_range_split: int | None = None,
     reset_mode: str = "normalized_endpoint_box",
     flowstar_symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     flowstar_symbolic_queue_max_size: int = 100,
     flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
+    scalar_recenter_remainder_midpoint: bool = False,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -2572,6 +2698,7 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("h_min must be <= h_max")
     if validation_mode not in {
         "target_remainder",
+        "target_remainder_normal_eval",
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
@@ -2621,6 +2748,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 symbolic_queue_split=use_split,
                 symbolic_queue_state=queue_state,
                 symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
+                scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
             if use_split and symbolic_output_remainders:
@@ -2675,6 +2803,7 @@ def flowpipe_step_flowstar_style_adaptive(
             candidate_order=candidate_order,
             truncation_range_split=truncation_range_split,
             selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
+            normal_eval_range_split=normal_eval_range_split,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -2716,6 +2845,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 candidate_order=None if candidate_order is None else max(int(candidate_order), fallback_order),
                 truncation_range_split=truncation_range_split,
                 selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
+                normal_eval_range_split=normal_eval_range_split,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg

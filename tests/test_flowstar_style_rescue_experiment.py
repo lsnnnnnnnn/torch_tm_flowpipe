@@ -16,6 +16,8 @@ ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
 WIDTH_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_width_growth_diagnostics.py"
 SAMPLE_CONTAINMENT_SCRIPT = ROOT / "experiments" / "flowstar_style_sample_containment.py"
 TRACE_SCRIPT = ROOT / "experiments" / "flowstar_symbolic_step_trace.py"
+CHECKPOINT_REPLAY_SCRIPT = ROOT / "experiments" / "flowstar_checkpoint_replay.py"
+ATTRIBUTION_SCRIPT = ROOT / "experiments" / "flowstar_insertion_width_attribution.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 SYMBOLIC_SEMANTICS_DOC = ROOT / "docs" / "flowstar_symbolic_remainder_semantics_map.md"
 EXPECTED_RUN_IDS = {
@@ -123,6 +125,8 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(WIDTH_DIAGNOSTICS_SCRIPT), doraise=True)
     py_compile.compile(str(SAMPLE_CONTAINMENT_SCRIPT), doraise=True)
     py_compile.compile(str(TRACE_SCRIPT), doraise=True)
+    py_compile.compile(str(CHECKPOINT_REPLAY_SCRIPT), doraise=True)
+    py_compile.compile(str(ATTRIBUTION_SCRIPT), doraise=True)
     py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
@@ -454,8 +458,10 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
     h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_h10"
     symqueue_h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_h10"
     symqueue_split_h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_split_h10"
+    oracle_split_dir = ROOT / "outputs" / "flowstar_one_step_oracle_after_symqueue_split"
+    symbolic_trace_dir = ROOT / "outputs" / "flowstar_symbolic_step_trace"
     failure_dir = ROOT / "outputs" / "flowstar_normalized_insertion_failure"
-    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, failure_dir]:
+    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, oracle_split_dir, symbolic_trace_dir, failure_dir]:
         if directory.exists():
             required_csvs.extend(sorted(directory.glob("*.csv")))
     for path in required_csvs:
@@ -469,7 +475,7 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
         ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_report.md",
         ROOT / "docs" / "flowstar_normalized_insertion_source_map.md",
     ]
-    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, failure_dir]:
+    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, oracle_split_dir, symbolic_trace_dir, failure_dir]:
         if directory.exists():
             required_markdown.extend(sorted(directory.glob("*.md")))
     for path in required_markdown:
@@ -535,6 +541,33 @@ def test_normalized_insertion_specialized_outputs_smoke(tmp_path):
     assert "Did reset widths shrink before t~=2.4?" in report
     assert "Branch decision:" in report
 
+
+
+def test_normalized_insertion_scalars_config_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_width_fix_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o4_target_insert_scalars",
+            "flowstar_style_o6_candidate8_output6_insert_scalars",
+        ],
+        check=True,
+    )
+
+    summary = pd.read_csv(out_dir / "rescue_summary.csv")
+    assert set(summary["run_id"]) == {
+        "flowstar_style_o4_target_insert_scalars",
+        "flowstar_style_o6_candidate8_output6_insert_scalars",
+    }
+    assert set(summary["reset_mode"]) == {"normalized_insertion"}
 
 
 def test_normalized_insertion_h10_specialized_outputs_smoke(tmp_path):
@@ -604,6 +637,8 @@ def test_required_source_files_have_physical_lines_and_compile():
         SAMPLE_CONTAINMENT_SCRIPT,
         H10_FAILURE_SCRIPT,
         TRACE_SCRIPT,
+        CHECKPOINT_REPLAY_SCRIPT,
+        ATTRIBUTION_SCRIPT,
     ]
     for path in source_paths:
         text = path.read_text(encoding="utf-8")
@@ -925,3 +960,97 @@ def test_selective_validation_path_audit_outputs_smoke(tmp_path):
     assert "terms_hash" in terms.columns
     audit = (out_dir / "validation_path_audit.md").read_text(encoding="utf-8")
     assert "Selective Validation Path Audit" in audit
+
+
+def _write_minimal_checkpoint_source(source_dir: Path) -> None:
+    source_dir.mkdir(parents=True, exist_ok=True)
+    rows = [
+        "run_id,segment_index,t_lo,t_hi,x_lo,x_hi,y_lo,y_hi,h,order,reset_box_source,validation_mode,reset_mode,width_x,width_y,width_sum\n",
+        "flowstar_style_o4_target_insert,0,0,0.01,1.1,1.4,2.35,2.45,0.002,4,normalized_insertion,target_remainder,normalized_insertion,0.3,0.1,0.4\n",
+        "flowstar_style_o6_candidate8_output6_insert,0,0,0.01,1.1,1.4,2.35,2.45,0.002,6,normalized_insertion,target_remainder,normalized_insertion,0.3,0.1,0.4\n",
+    ]
+    (source_dir / "rescue_reset_boxes.csv").write_text("".join(rows), encoding="utf-8")
+    (source_dir / "normalized_insertion_h10_segments.csv").write_text(
+        "run_id,mode,order,candidate_order,output_order,truncation_range_split,validation_mode,reset_mode,segment_index,status,t_lo,t_hi,h,x_lo,x_hi,y_lo,y_hi,width_x,width_y,width_sum,reset_width_x,reset_width_y,reset_width_sum,next_h\n"
+        "flowstar_style_o4_target_insert,flowstar_style,4,4,4,,target_remainder,normalized_insertion,0,validated,0,0.01,0.002,1.1,1.4,2.35,2.45,0.3,0.1,0.4,0.3,0.1,0.4,0.002\n"
+        "flowstar_style_o6_candidate8_output6_insert,flowstar_style,6,8,6,,target_remainder,normalized_insertion,0,validated,0,0.01,0.002,1.1,1.4,2.35,2.45,0.3,0.1,0.4,0.3,0.1,0.4,0.002\n",
+        encoding="utf-8",
+    )
+
+
+def test_checkpoint_replay_cpp_template_escapes_printf_newlines():
+    spec = importlib.util.spec_from_file_location("flowstar_checkpoint_replay", CHECKPOINT_REPLAY_SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    cpp = module._render_cpp(
+        "smoke",
+        4,
+        0.002,
+        0.002,
+        {"x_lo": 1.0, "x_hi": 1.1, "y_lo": 2.0, "y_hi": 2.1},
+    )
+
+    assert "FLOWSTAR_RUNTIME_S %.17g\\n" in cpp
+    assert "FLOWSTAR_COMPLETED %d\\n" in cpp
+    assert "FLOWSTAR_RUNTIME_S %.17g\n" not in cpp
+    assert "FLOWSTAR_COMPLETED %d\n" not in cpp
+
+
+def test_checkpoint_replay_script_smoke(tmp_path):
+    source_dir = tmp_path / "source"
+    out_dir = tmp_path / "checkpoint_replay"
+    _write_minimal_checkpoint_source(source_dir)
+    subprocess.run(
+        [
+            sys.executable,
+            str(CHECKPOINT_REPLAY_SCRIPT),
+            "--source-dir",
+            str(source_dir),
+            "--out-dir",
+            str(out_dir),
+            "--mini-horizon",
+            "0.002",
+            "--timeout-s",
+            "1",
+        ],
+        check=True,
+    )
+    for name in ["checkpoint_replay_summary.csv", "checkpoint_replay_segments.csv", "checkpoint_replay_report.md"]:
+        assert (out_dir / name).exists()
+    report = (out_dir / "checkpoint_replay_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 10
+    frame = pd.read_csv(out_dir / "checkpoint_replay_summary.csv")
+    assert {"o4_insert", "o6_insert"} <= set(frame["path_id"])
+
+
+def test_insertion_width_attribution_script_smoke(tmp_path):
+    source_dir = tmp_path / "source"
+    out_dir = tmp_path / "attribution"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    (source_dir / "normalized_insertion_h10_segments.csv").write_text(
+        "run_id,segment_index,status,t_hi,width_x,width_y,width_sum,reset_width_x,reset_width_y,reset_width_sum,endpoint_tm_width_x,endpoint_tm_width_y,endpoint_tm_width_sum,inserted_endpoint_width_x,inserted_endpoint_width_y,inserted_endpoint_width_sum,insertion_truncation_width_x,insertion_truncation_width_y,insertion_truncation_width_sum,insertion_cutoff_width_x,insertion_cutoff_width_y,insertion_cutoff_width_sum,normal_state_right_width_x,normal_state_right_width_y,normal_state_right_width_sum,output_remainder_width_x,output_remainder_width_y,output_remainder_width_sum,scale_x,scale_y,terms_before_insertion_truncation,terms_after_insertion\n"
+        "flowstar_style_o4_target_insert,0,validated,0.01,0.3,0.1,0.4,0.3,0.1,0.4,0.3,0.1,0.4,0.2,0.1,0.3,0.001,0.002,0.003,0,0,0,0.2,0.1,0.3,0.0001,0.0002,0.0003,0.1,0.05,10,8\n"
+        "flowstar_style_o6_candidate8_output6_insert,0,validated,0.01,0.4,0.2,0.6,0.4,0.2,0.6,0.4,0.2,0.6,0.3,0.2,0.5,0.002,0.003,0.005,0,0,0,0.3,0.2,0.5,0.0002,0.0003,0.0005,0.2,0.1,20,12\n",
+        encoding="utf-8",
+    )
+    (source_dir / "normalized_insertion_h10_validation_attempts.csv").write_text(
+        "run_id,segment_index,validation_status,residual_width_x,residual_width_y,residual_width_sum,remainder_width_x,remainder_width_y,remainder_width_sum\n"
+        "flowstar_style_o4_target_insert,0,validated,0.0001,0.0002,0.0003,0.0002,0.0002,0.0004\n"
+        "flowstar_style_o6_candidate8_output6_insert,0,validated,0.0002,0.0004,0.0006,0.0002,0.0002,0.0004\n",
+        encoding="utf-8",
+    )
+    (source_dir / "rescue_vs_flowstar_ratio_trace.csv").write_text(
+        "run_id,t,width_ratio\nflowstar_style_o4_target_insert,0.01,1.2\nflowstar_style_o6_candidate8_output6_insert,0.01,2.4\n",
+        encoding="utf-8",
+    )
+    subprocess.run(
+        [sys.executable, str(ATTRIBUTION_SCRIPT), "--source-dir", str(source_dir), "--out-dir", str(out_dir)],
+        check=True,
+    )
+    for name in ["insertion_width_trace.csv", "insertion_width_report.md", "insertion_component_stack.png", "o4_vs_o6_width_sources.png"]:
+        assert (out_dir / name).exists()
+    report = (out_dir / "insertion_width_report.md").read_text(encoding="utf-8")
+    assert "Which component causes width growth?" in report
+    assert report.count("\n") > 10
