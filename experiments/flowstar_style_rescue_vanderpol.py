@@ -65,6 +65,12 @@ SUMMARY_FIELDS = [
     "max_symqueue_new_symbolic_width_sum",
     "max_symqueue_materialized_width_sum",
     "max_symqueue_linear_map_norm",
+    "max_total_range_width_with_symbolic",
+    "max_ordinary_only_range_width",
+    "max_symbolic_contribution_width",
+    "max_materialized_for_output_width",
+    "max_target_checked_width",
+    "max_insertion_symbolic_candidate_width",
     "max_insertion_truncation_width",
     "max_insertion_cutoff_width",
     "max_inserted_endpoint_width_sum",
@@ -143,6 +149,11 @@ SEGMENT_FIELDS = [
     "materialized_width_x",
     "materialized_width_y",
     "materialized_width_sum",
+    "materialized_for_output_width",
+    "ordinary_only_range_width",
+    "symbolic_contribution_width",
+    "total_range_width_with_symbolic",
+    "target_checked_width",
     "linear_map_norm",
     "scalars",
     "symqueue_approximation",
@@ -151,6 +162,9 @@ SEGMENT_FIELDS = [
     "normalized_reset_width_sum",
     "insertion_truncation_width",
     "insertion_cutoff_width",
+    "insertion_truncation_ordinary_width",
+    "insertion_cutoff_ordinary_width",
+    "insertion_symbolic_candidate_width",
     "composed_poly_range_width",
     "output_remainder_width",
     "scale_x",
@@ -230,6 +244,7 @@ VALIDATION_ATTEMPT_FIELDS = [
     "remainder_width_sum",
     "target_remainder_width",
     "target_remainder_width_sum",
+    "target_checked_width",
     "center_correction_applied",
     "correction_value_x",
     "correction_value_y",
@@ -363,6 +378,9 @@ NORMALIZED_INSERTION_RESET_FIELDS = [
     "normalized_reset_width_sum",
     "insertion_truncation_width",
     "insertion_cutoff_width",
+    "insertion_truncation_ordinary_width",
+    "insertion_cutoff_ordinary_width",
+    "insertion_symbolic_candidate_width",
     "composed_poly_range_width",
     "output_remainder_width",
     "queue_size",
@@ -375,6 +393,11 @@ NORMALIZED_INSERTION_RESET_FIELDS = [
     "materialized_width_x",
     "materialized_width_y",
     "materialized_width_sum",
+    "materialized_for_output_width",
+    "ordinary_only_range_width",
+    "symbolic_contribution_width",
+    "total_range_width_with_symbolic",
+    "target_checked_width",
     "linear_map_norm",
     "scalars",
     "symqueue_approximation",
@@ -584,7 +607,7 @@ def _segment_row(
     reset_mode = str(spec.get("reset_mode", normal_stats.get("reset_mode", queue_stats.get("reset_mode", "normalized_endpoint_box"))))
     if reset_mode == "flowstar_symbolic_remainder_queue":
         reset_box_source = "flowstar_symbolic_remainder_queue"
-    elif reset_mode in {"normalized_insertion", "normalized_insertion_symqueue"}:
+    elif reset_mode in {"normalized_insertion", "normalized_insertion_symqueue", "normalized_insertion_symqueue_split"}:
         reset_box_source = reset_mode
     else:
         reset_box_source = "normalized_endpoint_reset_box"
@@ -634,6 +657,11 @@ def _segment_row(
         "materialized_width_x": queue_stats.get("materialized_width_x", ""),
         "materialized_width_y": queue_stats.get("materialized_width_y", ""),
         "materialized_width_sum": queue_stats.get("materialized_width_sum", ""),
+        "materialized_for_output_width": queue_stats.get("materialized_for_output_width", ""),
+        "ordinary_only_range_width": queue_stats.get("ordinary_only_range_width", ""),
+        "symbolic_contribution_width": queue_stats.get("symbolic_contribution_width", ""),
+        "total_range_width_with_symbolic": queue_stats.get("total_range_width_with_symbolic", ""),
+        "target_checked_width": queue_stats.get("target_checked_width", ""),
         "linear_map_norm": queue_stats.get("linear_map_norm", queue_stats.get("linear_map_abs_sum", "")),
         "scalars": queue_stats.get("scalars", ""),
         "symqueue_approximation": queue_stats.get("approximation", ""),
@@ -642,6 +670,9 @@ def _segment_row(
         "normalized_reset_width_sum": normal_stats.get("normalized_reset_width_sum", ""),
         "insertion_truncation_width": normal_stats.get("insertion_truncation_width", ""),
         "insertion_cutoff_width": normal_stats.get("insertion_cutoff_width", ""),
+        "insertion_truncation_ordinary_width": normal_stats.get("insertion_truncation_ordinary_width", ""),
+        "insertion_cutoff_ordinary_width": normal_stats.get("insertion_cutoff_ordinary_width", ""),
+        "insertion_symbolic_candidate_width": normal_stats.get("insertion_symbolic_candidate_width", ""),
         "composed_poly_range_width": normal_stats.get("composed_poly_range_width", ""),
         "output_remainder_width": normal_stats.get("output_remainder_width", ""),
         "scale_x": normal_stats.get("scale_x", ""),
@@ -775,6 +806,12 @@ def _summarize_run(
         "max_symqueue_new_symbolic_width_sum": _max_field(segment_rows, "new_symbolic_width_sum"),
         "max_symqueue_materialized_width_sum": _max_field(segment_rows, "materialized_width_sum"),
         "max_symqueue_linear_map_norm": _max_field(segment_rows, "linear_map_norm"),
+        "max_total_range_width_with_symbolic": _max_field(segment_rows, "total_range_width_with_symbolic"),
+        "max_ordinary_only_range_width": _max_field(segment_rows, "ordinary_only_range_width"),
+        "max_symbolic_contribution_width": _max_field(segment_rows, "symbolic_contribution_width"),
+        "max_materialized_for_output_width": _max_field(segment_rows, "materialized_for_output_width"),
+        "max_target_checked_width": _max_field(segment_rows, "target_checked_width"),
+        "max_insertion_symbolic_candidate_width": _max_field(segment_rows, "insertion_symbolic_candidate_width"),
         "max_insertion_truncation_width": _max_field(segment_rows, "insertion_truncation_width"),
         "max_insertion_cutoff_width": _max_field(segment_rows, "insertion_cutoff_width"),
         "max_inserted_endpoint_width_sum": _max_field(segment_rows, "inserted_endpoint_width_sum"),
@@ -1234,6 +1271,34 @@ def _configs() -> list[dict[str, Any]]:
             candidate_order=8,
             cutoff_threshold=1e-10,
             reset_mode="normalized_insertion_symqueue",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_insert_symqueue_split",
+            order=4,
+            reset_mode="normalized_insertion_symqueue_split",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_cutoff_insert_symqueue_split",
+            order=4,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion_symqueue_split",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_insert_symqueue_split",
+            order=6,
+            candidate_order=8,
+            reset_mode="normalized_insertion_symqueue_split",
+            flowstar_symbolic_queue_max_size=100,
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_insert_symqueue_split",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion_symqueue_split",
             flowstar_symbolic_queue_max_size=100,
         ),
     ]
@@ -2598,7 +2663,7 @@ def _normalized_insertion_reset_rows(segment_rows: Sequence[Mapping[str, Any]]) 
     for row in segment_rows:
         reset_mode = str(row.get("reset_mode", ""))
         run_id = str(row.get("run_id", ""))
-        if reset_mode not in {"normalized_insertion", "normalized_insertion_symqueue"} and "cutoff_insert" not in run_id:
+        if reset_mode not in {"normalized_insertion", "normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} and "cutoff_insert" not in run_id:
             continue
         rows.append({field: row.get(field, "") for field in NORMALIZED_INSERTION_RESET_FIELDS})
     return rows
@@ -2792,6 +2857,7 @@ def _write_normalized_insertion_report(
 
 H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_h10"
 SYMQUEUE_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_h10"
+SYMQUEUE_SPLIT_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_split_h10"
 H10_CONFIG_IDS = [
     "flowstar_style_o6_candidate8_output6_cutoff_insert",
     "flowstar_style_o6_candidate8_output6_insert",
@@ -2803,6 +2869,12 @@ SYMQUEUE_H10_CONFIG_IDS = [
     "flowstar_style_o4_target_cutoff_insert_symqueue",
     "flowstar_style_o6_candidate8_output6_insert_symqueue",
     "flowstar_style_o6_candidate8_output6_cutoff_insert_symqueue",
+]
+SYMQUEUE_SPLIT_H10_CONFIG_IDS = [
+    "flowstar_style_o4_target_insert_symqueue_split",
+    "flowstar_style_o4_target_cutoff_insert_symqueue_split",
+    "flowstar_style_o6_candidate8_output6_insert_symqueue_split",
+    "flowstar_style_o6_candidate8_output6_cutoff_insert_symqueue_split",
 ]
 
 
@@ -2824,6 +2896,13 @@ def _ordered_h10_rows(summary_rows: Sequence[Mapping[str, Any]]) -> list[Mapping
 def _ordered_symqueue_h10_rows(summary_rows: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
     by_id = {str(row.get("run_id", "")): row for row in summary_rows}
     ordered = [by_id[run_id] for run_id in SYMQUEUE_H10_CONFIG_IDS if run_id in by_id]
+    ordered.extend(row for row in summary_rows if row not in ordered)
+    return ordered
+
+
+def _ordered_symqueue_split_h10_rows(summary_rows: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    by_id = {str(row.get("run_id", "")): row for row in summary_rows}
+    ordered = [by_id[run_id] for run_id in SYMQUEUE_SPLIT_H10_CONFIG_IDS if run_id in by_id]
     ordered.extend(row for row in summary_rows if row not in ordered)
     return ordered
 
@@ -3299,6 +3378,189 @@ def write_symqueue_h10_outputs(
     make_symqueue_h10_plots(out_dir, segment_rows)
 
 
+def _baseline_symqueue_h10_rows() -> list[dict[str, str]]:
+    path = REPO_ROOT / "outputs" / SYMQUEUE_H10_OUTPUT_DIR_NAME / "symqueue_h10_summary.csv"
+    return _read_csv_rows(path) if path.exists() else []
+
+
+def _old_symqueue_best_t(fallback: float = 3.35) -> float:
+    rows = _baseline_symqueue_h10_rows()
+    values = [_finite_float(row.get("last_validated_t")) for row in rows]
+    values = [value for value in values if value is not None]
+    return max(values) if values else fallback
+
+
+def make_symqueue_split_h10_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]]) -> None:
+    _copy_plot_if_present(out_dir, "width_ratio_vs_t.png", "symqueue_split_width_ratio_vs_t.png")
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for row in segment_rows:
+        if str(row.get("reset_mode", "")) == "normalized_insertion_symqueue_split" and row.get("status") == "validated":
+            grouped.setdefault(str(row.get("run_id", "")), []).append(row)
+
+    def _plot_field(field: str, ylabel: str, filename: str, *, log: bool = False) -> None:
+        fig, ax = plt.subplots(figsize=(9.0, 4.8))
+        for run_id, rows in grouped.items():
+            pts = []
+            for row in sorted(rows, key=lambda r: _finite_float(r.get("t_hi")) or 0.0):
+                t = _finite_float(row.get("t_hi"))
+                value = _finite_float(row.get(field))
+                if t is not None and value is not None:
+                    pts.append((t, value))
+            if pts:
+                ax.plot([p[0] for p in pts], [p[1] for p in pts], marker="o", markersize=2.2, linewidth=1.0, label=run_id)
+        ax.set_xlabel("t")
+        ax.set_ylabel(ylabel)
+        if log:
+            ax.set_yscale("log")
+        ax.grid(True, alpha=0.25, linewidth=0.6)
+        ax.legend(fontsize=7)
+        fig.tight_layout()
+        fig.savefig(out_dir / filename, dpi=160)
+        plt.close(fig)
+
+    _plot_field("queue_size", "symbolic queue size", "symqueue_split_queue_size_vs_t.png")
+
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    fields = [
+        ("ordinary_only_range_width", "ordinary-only range"),
+        ("symbolic_contribution_width", "symbolic contribution"),
+        ("materialized_for_output_width", "materialized for output"),
+        ("total_range_width_with_symbolic", "total with symbolic"),
+    ]
+    for run_id, rows in grouped.items():
+        for field, label in fields:
+            pts = []
+            for row in sorted(rows, key=lambda r: _finite_float(r.get("t_hi")) or 0.0):
+                t = _finite_float(row.get("t_hi"))
+                value = _finite_float(row.get(field))
+                if t is not None and value is not None and value > 0:
+                    pts.append((t, value))
+            if pts:
+                ax.plot([p[0] for p in pts], [p[1] for p in pts], linewidth=0.9, label=f"{run_id} {label}")
+    ax.set_xlabel("t")
+    ax.set_ylabel("width sum")
+    ax.set_yscale("log")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=6)
+    fig.tight_layout()
+    fig.savefig(out_dir / "symqueue_channel_widths_vs_t.png", dpi=160)
+    plt.close(fig)
+
+
+def write_symqueue_split_h10_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best = _best_h10_summary(summary_rows, comparison_rows)
+    comp_by_run = _comparison_by_run(comparison_rows)
+    best_comp = comp_by_run.get(str(best.get("run_id", ""))) if best else None
+    any_reached = any(_reached_requested(row, max_horizon) for row in summary_rows)
+    order4_reached = any(str(row.get("run_id", "")).startswith("flowstar_style_o4_") and _reached_requested(row, max_horizon) for row in summary_rows)
+    order6_reached = any("o6_candidate8" in str(row.get("run_id", "")) and _reached_requested(row, max_horizon) for row in summary_rows)
+    o4_base = _baseline_t("flowstar_style_o4_target_insert", 6.4730088058091901)
+    o6_base = _baseline_t("flowstar_style_o6_candidate8_output6_insert", 7.4960392581387341)
+    old_symqueue_t = _old_symqueue_best_t()
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    best_o4 = max((_finite_float(row.get("last_validated_t")) or 0.0 for row in summary_rows if str(row.get("run_id", "")).startswith("flowstar_style_o4_")), default=0.0)
+    best_o6 = max((_finite_float(row.get("last_validated_t")) or 0.0 for row in summary_rows if "o6_candidate8" in str(row.get("run_id", ""))), default=0.0)
+    sample_row = _sample_containment_row(out_dir)
+    sample_passed = _sample_containment_passed(sample_row)
+    sample_text = "pending" if sample_passed is None else ("passed" if sample_passed else "failed")
+    max_symbolic = _max_field(summary_rows, "max_symbolic_contribution_width")
+    max_materialized = _max_field(summary_rows, "max_materialized_for_output_width")
+    symbolic_bounded = (_finite_float(max_symbolic) or 0.0) < 1.0 and (_finite_float(max_materialized) or 0.0) < 1.0
+    target_stayed = all(str(row.get("target_remainder_radius", "")) in {"0.0001", "0.000100000000000000", "1e-04", "1e-4"} for row in summary_rows)
+    width_ratio_text = "not compared"
+    if best_comp:
+        width_ratio_text = f"last=`{best_comp.get('last_width_ratio', '')}`, tube=`{best_comp.get('tube_width_ratio', '')}`"
+    failure = best.get("failure_reason", "") if best else ""
+    lines = [
+        "# Normalized Insertion Plus Symbolic Queue Split H10 Report",
+        "",
+        f"Did split semantics beat old symqueue t~={old_symqueue_t:.17g}? {_yes_no(bool(best_t is not None and best_t > old_symqueue_t + 1e-12))}; best split t=`{best_t}`.",
+        f"Did split beat no-queue o4 t~={o4_base:.17g}? {_yes_no(best_o4 > o4_base + 1e-12)}; best order4 t=`{best_o4:.17g}`.",
+        f"Did split beat no-queue o6 t~={o6_base:.17g}? {_yes_no(best_o6 > o6_base + 1e-12)}; best order6 t=`{best_o6:.17g}`.",
+        f"Did any config reach horizon 10? {_yes_no(any_reached)}.",
+        f"Did order4 reach horizon 10? {_yes_no(order4_reached)}.",
+        f"Did order6/candidate8 reach horizon 10? {_yes_no(order6_reached)}.",
+        f"Did range boxes remain conservative and sample containment pass? {sample_text}.",
+        f"Did symbolic contribution remain bounded? {_yes_no(symbolic_bounded)}; max symbolic=`{max_symbolic}`, max output materialized=`{max_materialized}`.",
+        f"Did ordinary target remainder stay at 1e-4? {_yes_no(target_stayed)}.",
+        f"Flow* width ratios for best config: {width_ratio_text}.",
+        f"Runtime cost for best config: `{best.get('runtime_s', '') if best else ''}` seconds.",
+        f"If it still fails, exact reported failure component: `{failure}`.",
+        "Queue split note: propagated symbolic width is added to reported output/range boxes, while ordinary target containment checks the local Picard target remainder channel.",
+        "",
+        "## Best Config Metrics",
+        "",
+        "| run_id | status | last_validated_t | runtime_s | queue_size | ordinary_only_range | symbolic_contribution | output_materialized | total_with_symbolic | last_width_ratio | tube_width_ratio |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    if best:
+        lines.append(
+            f"| {best.get('run_id', '')} | {best.get('status', '')} | {best.get('last_validated_t', '')} | "
+            f"{best.get('runtime_s', '')} | {best.get('max_flowstar_queue_size_after', '')} | "
+            f"{best.get('max_ordinary_only_range_width', '')} | {best.get('max_symbolic_contribution_width', '')} | "
+            f"{best.get('max_materialized_for_output_width', '')} | {best.get('max_total_range_width_with_symbolic', '')} | "
+            f"{best_comp.get('last_width_ratio', '') if best_comp else ''} | {best_comp.get('tube_width_ratio', '') if best_comp else ''} |"
+        )
+    lines.extend([
+        "",
+        "## Config Status",
+        "",
+        "| run_id | status | last_validated_t | accepted | rejected | max_queue | max_symbolic | max_output_materialized | target_checked_width | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ])
+    for row in _ordered_symqueue_split_h10_rows(summary_rows):
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('num_accepted_steps', '')} | {row.get('num_rejected_steps', '')} | {row.get('max_flowstar_queue_size_after', '')} | "
+            f"{row.get('max_symbolic_contribution_width', '')} | {row.get('max_materialized_for_output_width', '')} | "
+            f"{row.get('max_target_checked_width', '')} | {row.get('failure_reason', '')} |"
+        )
+    if sample_row is not None:
+        lines.extend([
+            "",
+            "## Sample Containment",
+            "",
+            "| run_id | samples | checked_pairs | violations | max_outside_distance | status |",
+            "| --- | ---: | ---: | ---: | ---: | --- |",
+            f"| {sample_row.get('run_id', '')} | {sample_row.get('num_samples', '')} | {sample_row.get('checked_sample_time_pairs', '')} | "
+            f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
+        ])
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "symqueue_split_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_symqueue_split_h10_outputs(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+    comparison_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    _write_csv(out_dir / "symqueue_split_summary.csv", SUMMARY_FIELDS, summary_rows)
+    _write_csv(out_dir / "symqueue_split_segments.csv", SEGMENT_FIELDS, segment_rows)
+    _write_csv(out_dir / "symqueue_split_reset_diagnostics.csv", NORMALIZED_INSERTION_RESET_FIELDS, _normalized_insertion_reset_rows(segment_rows))
+    _write_csv(out_dir / "symqueue_split_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+    _write_csv(out_dir / "symqueue_split_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+    write_symqueue_split_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    make_symqueue_split_h10_plots(out_dir, segment_rows)
+
+
 def write_specialized_outputs(
     out_dir: Path,
     summary_rows: Sequence[Mapping[str, Any]],
@@ -3370,6 +3632,15 @@ def write_specialized_outputs(
         )
     elif name == SYMQUEUE_H10_OUTPUT_DIR_NAME:
         write_symqueue_h10_outputs(
+            out_dir,
+            summary_rows,
+            segment_rows,
+            attempt_rows,
+            max_horizon=max_horizon,
+            comparison_rows=comparison_rows,
+        )
+    elif name == SYMQUEUE_SPLIT_H10_OUTPUT_DIR_NAME:
+        write_symqueue_split_h10_outputs(
             out_dir,
             summary_rows,
             segment_rows,

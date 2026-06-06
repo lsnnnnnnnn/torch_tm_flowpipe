@@ -141,3 +141,50 @@ def test_normalized_insertion_symqueue_carries_queue_state():
     assert second.flowstar_symbolic_queue_stats["queue_size_after"] == 2
     assert second.flowstar_normal_state is not None
     assert second.flowstar_normal_state.initial_remainders is not None
+
+
+
+def test_normalized_insertion_symqueue_split_keeps_target_seed_clean():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    first = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        x0,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue_split",
+        flowstar_symbolic_queue_max_size=100,
+    )
+
+    assert first.status == "validated"
+    assert first.flowstar_normal_state is not None
+    assert first.reset_tm is not None
+
+    second = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        first.reset_tm,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue_split",
+        flowstar_symbolic_queue_max_size=100,
+        flowstar_normal_state=first.flowstar_normal_state,
+    )
+
+    assert second.status == "validated"
+    assert second.flowstar_normal_state is not None
+    assert second.flowstar_normal_state.initial_remainders is None
+    assert second.flowstar_symbolic_queue_stats is not None
+    stats = second.flowstar_symbolic_queue_stats
+    assert stats["semantic_split"] is True
+    assert stats["queue_size_after"] == 2
+    assert stats["target_checked_width"] <= 1e-15
+    assert stats["symbolic_contribution_width"] > 0.0
+    assert abs(stats["materialized_for_output_width"] - stats["symbolic_contribution_width"]) < 1e-15
+    assert stats["total_range_width_with_symbolic"] >= stats["ordinary_only_range_width"]

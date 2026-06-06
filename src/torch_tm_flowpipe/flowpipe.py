@@ -633,6 +633,10 @@ def _scale_tmvector_components(tmv: TMVector, inv_scales: Sequence[float]) -> TM
     return TMVector(models)
 
 
+def _tmvector_add_remainders(tmv: TMVector, remainders: Sequence[Interval]) -> TMVector:
+    return TMVector(model.with_remainder(model.remainder + rem) for model, rem in zip(tmv, remainders))
+
+
 def _flowstar_normalized_insertion_transition(
     seg: FlowpipeSegment,
     previous_state: FlowstarNormalFlowpipeState | None,
@@ -640,6 +644,7 @@ def _flowstar_normalized_insertion_transition(
     *,
     cutoff_threshold: float | None,
     symbolic_queue: bool = False,
+    symbolic_queue_split: bool = False,
     symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     symbolic_queue_max_size: int = 100,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
@@ -654,7 +659,12 @@ def _flowstar_normalized_insertion_transition(
             step_index=0,
             diagnostics={"reset_mode": "normalized_insertion", "implicit_initial_state": True},
         )
-    mode_name = "normalized_insertion_symqueue" if symbolic_queue else "normalized_insertion"
+    if symbolic_queue_split:
+        mode_name = "normalized_insertion_symqueue_split"
+    elif symbolic_queue:
+        mode_name = "normalized_insertion_symqueue"
+    else:
+        mode_name = "normalized_insertion"
     diagnostics: dict[str, Any] = {
         "reset_mode": mode_name,
         "step_index": int(prev.step_index) + 1,
@@ -691,8 +701,10 @@ def _flowstar_normalized_insertion_transition(
             next_queue,
             scales=scales,
             max_size=symbolic_queue_max_size,
+            materialize_propagated_on_reset=not symbolic_queue_split,
         )
-        initial_remainders = tuple(model.remainder for model in reset_tm)
+        if not symbolic_queue_split:
+            initial_remainders = tuple(model.remainder for model in reset_tm)
         diagnostics.update(queue_stats)
     state = FlowstarNormalFlowpipeState(
         tmv_pre=seg.tm,
@@ -709,6 +721,12 @@ def _flowstar_normalized_insertion_transition(
     diagnostics.update(state.diagnostic_widths())
     diagnostics["inserted_endpoint_width_sum"] = _sum_interval_widths(inserted_box)
     diagnostics["normalized_reset_width_sum"] = _sum_interval_widths(reset_tm.range_box())
+    if symbolic_queue_split:
+        insertion_trunc = _float_or_none(diagnostics.get("insertion_truncation_width")) or 0.0
+        insertion_cutoff = _float_or_none(diagnostics.get("insertion_cutoff_width")) or 0.0
+        diagnostics["insertion_truncation_ordinary_width"] = 0.0
+        diagnostics["insertion_cutoff_ordinary_width"] = 0.0
+        diagnostics["insertion_symbolic_candidate_width"] = insertion_trunc + insertion_cutoff
     diagnostics["scale_x"] = scales[0] if len(scales) > 0 else ""
     diagnostics["scale_y"] = scales[1] if len(scales) > 1 else ""
     diagnostics["center_x"] = center[0] if len(center) > 0 else ""
@@ -1183,6 +1201,7 @@ def _validate_picard_target_remainder(
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_checked_width", _sum_interval_widths(target_remainders))
     if symbolic_remainder:
         diag_extra.setdefault("symbolic_remainder", True)
         diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
@@ -1468,6 +1487,7 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_checked_width", _sum_interval_widths(target_remainders))
     if symbolic_remainder:
         diag_extra.setdefault("symbolic_remainder", True)
         diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
@@ -1695,6 +1715,7 @@ def _validate_picard_target_remainder_centered(
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_checked_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("center_correction_width_factor", float(center_correction_width_factor))
     if symbolic_remainder:
         diag_extra.setdefault("symbolic_remainder", True)
@@ -2010,6 +2031,7 @@ def _validate_picard_target_remainder_refined(
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
+    diag_extra.setdefault("target_checked_width", _sum_interval_widths(target_remainders))
     if symbolic_remainder:
         diag_extra.setdefault("symbolic_remainder", True)
         diag_extra.setdefault("queue_size", int(max_symbolic_remainders))
@@ -2555,11 +2577,16 @@ def flowpipe_step_flowstar_style_adaptive(
         "target_remainder_flowstar_ctrunc",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
-    normal_insertion_modes = {"normalized_insertion", "normalized_insertion_symqueue"}
+    normal_insertion_modes = {
+        "normalized_insertion",
+        "normalized_insertion_symqueue",
+        "normalized_insertion_symqueue_split",
+    }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
             "reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', "
-            "'normalized_insertion', or 'normalized_insertion_symqueue'"
+            "'normalized_insertion', 'normalized_insertion_symqueue', or "
+            "'normalized_insertion_symqueue_split'"
         )
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
@@ -2583,16 +2610,22 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
         elif reset_mode in normal_insertion_modes:
-            use_symqueue = reset_mode == "normalized_insertion_symqueue"
+            use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"}
+            use_split = reset_mode == "normalized_insertion_symqueue_split"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
                 normal_state,
                 order,
                 cutoff_threshold=cutoff_threshold,
                 symbolic_queue=use_symqueue,
+                symbolic_queue_split=use_split,
                 symbolic_queue_state=queue_state,
                 symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
             )
+            symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
+            if use_split and symbolic_output_remainders:
+                seg.final_tm = _tmvector_add_remainders(seg.final_tm, symbolic_output_remainders)
+                seg.tm = _tmvector_add_remainders(seg.tm, symbolic_output_remainders)
             if use_symqueue and normal_state is not None:
                 queue_state = normal_state.symbolic_queue
             seg.reset_tm = reset_tm

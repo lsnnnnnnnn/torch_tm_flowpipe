@@ -103,6 +103,16 @@ The default package remains a PyTorch-native prototype. The rescue mode is an
 experiment artifact, not an advertised full Flow* implementation or a supported
 replacement for the Flow* toolbox.
 
+A newer opt-in diagnostic mode,
+`reset_mode="normalized_insertion_symqueue_split"`, separates propagated
+Flow*-style symbolic queue width from the ordinary target-remainder channel. In
+the H10 Van der Pol diagnostics it beats the older symqueue failure point
+(t~=3.35) and reaches the no-queue horizons (o4 t~=6.473, o6 t~=7.496), but it
+does not reach horizon 10 and does not beat the no-queue baselines. The best
+split run passes the 500-sample containment sanity check, while the after-split
+one-step Flow* oracle also rejects the same wider local box. Treat this as an
+experimental semantics diagnostic, not a Flow* parity result.
+
 
 ## Dependency-preserving multi-step example
 

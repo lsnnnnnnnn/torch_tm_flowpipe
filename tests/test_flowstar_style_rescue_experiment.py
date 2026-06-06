@@ -15,7 +15,9 @@ H10_FAILURE_SCRIPT = ROOT / "experiments" / "flowstar_normalized_insertion_h10_f
 ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
 WIDTH_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_width_growth_diagnostics.py"
 SAMPLE_CONTAINMENT_SCRIPT = ROOT / "experiments" / "flowstar_style_sample_containment.py"
+TRACE_SCRIPT = ROOT / "experiments" / "flowstar_symbolic_step_trace.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
+SYMBOLIC_SEMANTICS_DOC = ROOT / "docs" / "flowstar_symbolic_remainder_semantics_map.md"
 EXPECTED_RUN_IDS = {
     "baseline_range_only_o6_s4",
     "baseline_dependency_preserving_o4_s1",
@@ -120,6 +122,7 @@ def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
     py_compile.compile(str(WIDTH_DIAGNOSTICS_SCRIPT), doraise=True)
     py_compile.compile(str(SAMPLE_CONTAINMENT_SCRIPT), doraise=True)
+    py_compile.compile(str(TRACE_SCRIPT), doraise=True)
     py_compile.compile(str(FLOWPIPE), doraise=True)
 
 
@@ -274,6 +277,54 @@ def test_flowstar_normalized_insertion_source_map_is_detailed():
         assert needle in text
 
 
+
+def test_flowstar_symbolic_remainder_semantics_map_is_detailed():
+    text = SYMBOLIC_SEMANTICS_DOC.read_text(encoding="utf-8")
+    assert text.startswith("# Flow* Symbolic Remainder Semantics Map")
+    assert text.count("\n") > 100
+    for needle in [
+        "Symbolic_Remainder",
+        "J_ip1",
+        "Phi_L",
+        "Required Clean-Room Change",
+        "/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp:2123-2418",
+        "normalized_insertion_symqueue_split",
+    ]:
+        assert needle in text
+
+
+def test_flowstar_symbolic_step_trace_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_symbolic_step_trace"
+    subprocess.run(
+        [
+            sys.executable,
+            str(TRACE_SCRIPT),
+            "--out-dir",
+            str(out_dir),
+        ],
+        check=True,
+    )
+
+    for name in [
+        "symbolic_step_trace_summary.csv",
+        "symbolic_step_components.csv",
+        "symbolic_step_trace_report.md",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "symbolic_step_trace_summary.csv")
+    assert summary.loc[0, "trigger_component"] in {
+        "propagated_symbolic",
+        "materialized_symbolic",
+        "ordinary_initial_remainder",
+    }
+    assert str(summary.loc[0, "pytorch_counts_symbolic_as_ordinary"]).lower() in {"true", "1"}
+    components = pd.read_csv(out_dir / "symbolic_step_components.csv")
+    assert "propagated_symbolic" in set(components["component"])
+    report = (out_dir / "symbolic_step_trace_report.md").read_text(encoding="utf-8")
+    assert report.count("\n") > 10
+    assert "propagated symbolic width" in report
+
+
 def test_h5_rescue_artifacts_are_multiline_and_parseable():
     out_dir = ROOT / "outputs" / "flowstar_style_rescue_h5"
     summary_rows = _csv_rows(out_dir / "rescue_summary.csv")
@@ -307,7 +358,15 @@ def test_flowstar_source_rescue_notes_are_multiline():
 def test_requested_flowstar_artifacts_are_multiline_and_pandas_parseable():
     artifact_dirs = sorted(p for p in (ROOT / "outputs").glob("flowstar_style_*") if p.is_dir())
     artifact_dirs.append(ROOT / "outputs" / "flowstar_one_step_oracle")
-    for optional in ["flowstar_width_growth_diagnostics", "flowstar_width_control_rescue", "flowstar_one_step_oracle_after_width_control", "flowstar_normalized_insertion_rescue"]:
+    for optional in [
+        "flowstar_width_growth_diagnostics",
+        "flowstar_width_control_rescue",
+        "flowstar_one_step_oracle_after_width_control",
+        "flowstar_normalized_insertion_rescue",
+        "flowstar_symbolic_step_trace",
+        "flowstar_normalized_insertion_symqueue_split_h10",
+        "flowstar_one_step_oracle_after_symqueue_split",
+    ]:
         candidate = ROOT / "outputs" / optional
         if candidate.exists():
             artifact_dirs.append(candidate)
@@ -394,8 +453,9 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
     ]
     h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_h10"
     symqueue_h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_h10"
+    symqueue_split_h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_split_h10"
     failure_dir = ROOT / "outputs" / "flowstar_normalized_insertion_failure"
-    for directory in [h10_dir, symqueue_h10_dir, failure_dir]:
+    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, failure_dir]:
         if directory.exists():
             required_csvs.extend(sorted(directory.glob("*.csv")))
     for path in required_csvs:
@@ -409,7 +469,7 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
         ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_report.md",
         ROOT / "docs" / "flowstar_normalized_insertion_source_map.md",
     ]
-    for directory in [h10_dir, symqueue_h10_dir, failure_dir]:
+    for directory in [h10_dir, symqueue_h10_dir, symqueue_split_h10_dir, failure_dir]:
         if directory.exists():
             required_markdown.extend(sorted(directory.glob("*.md")))
     for path in required_markdown:
@@ -543,6 +603,7 @@ def test_required_source_files_have_physical_lines_and_compile():
         ORACLE_SCRIPT,
         SAMPLE_CONTAINMENT_SCRIPT,
         H10_FAILURE_SCRIPT,
+        TRACE_SCRIPT,
     ]
     for path in source_paths:
         text = path.read_text(encoding="utf-8")
@@ -593,6 +654,54 @@ def test_normalized_insertion_symqueue_h10_specialized_outputs_smoke(tmp_path):
     assert report.count("\n") > 10
 
 
+
+def test_normalized_insertion_symqueue_split_h10_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_normalized_insertion_symqueue_split_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o4_target_insert_symqueue_split",
+            "flowstar_style_o6_candidate8_output6_insert_symqueue_split",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "symqueue_split_summary.csv",
+        "symqueue_split_segments.csv",
+        "symqueue_split_reset_diagnostics.csv",
+        "symqueue_split_validation_attempts.csv",
+        "symqueue_split_vs_flowstar_comparison.csv",
+        "symqueue_split_report.md",
+        "symqueue_split_queue_size_vs_t.png",
+        "symqueue_channel_widths_vs_t.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "symqueue_split_summary.csv")
+    assert set(summary["reset_mode"]) == {"normalized_insertion_symqueue_split"}
+    assert "max_total_range_width_with_symbolic" in summary.columns
+    segments = pd.read_csv(out_dir / "symqueue_split_segments.csv")
+    assert {
+        "total_range_width_with_symbolic",
+        "ordinary_only_range_width",
+        "symbolic_contribution_width",
+        "target_checked_width",
+    } <= set(segments.columns)
+    reset = pd.read_csv(out_dir / "symqueue_split_reset_diagnostics.csv")
+    assert "insertion_symbolic_candidate_width" in reset.columns
+    report = (out_dir / "symqueue_split_report.md").read_text(encoding="utf-8")
+    assert "Did split semantics beat old symqueue" in report
+    assert report.count("\n") > 10
+
+
 def test_h10_failure_localization_outputs_smoke(tmp_path):
     out_dir = tmp_path / "flowstar_normalized_insertion_failure"
     subprocess.run(
@@ -629,12 +738,14 @@ def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
     out_dir.mkdir()
     (out_dir / "rescue_summary.csv").write_text(
         "run_id,reset_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum\n"
-        "sample_run,normalized_insertion,0.01,max_horizon_reached,0.1,1,0,1.0\n",
+        "sample_run,normalized_insertion,0.01,max_horizon_reached,0.1,1,0,1.0\n"
+        "split_sample_run,normalized_insertion_symqueue_split,0.01,max_horizon_reached,0.1,1,0,1.0\n",
         encoding="utf-8",
     )
     (out_dir / "rescue_segments.csv").write_text(
         "run_id,status,t_hi,x_lo,x_hi,y_lo,y_hi\n"
-        "sample_run,validated,0.01,-10,10,-10,10\n",
+        "sample_run,validated,0.01,-10,10,-10,10\n"
+        "split_sample_run,validated,0.01,-10,10,-10,10\n",
         encoding="utf-8",
     )
     (out_dir / "normalized_insertion_h10_summary.csv").write_text(
@@ -643,6 +754,15 @@ def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
         encoding="utf-8",
     )
     (out_dir / "normalized_insertion_h10_vs_flowstar_comparison.csv").write_text(
+        "run_id,last_width_ratio,tube_width_ratio\n",
+        encoding="utf-8",
+    )
+    (out_dir / "symqueue_split_summary.csv").write_text(
+        "run_id,reset_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum,target_remainder_radius\n"
+        "split_sample_run,normalized_insertion_symqueue_split,0.01,max_horizon_reached,0.1,1,0,1.0,0.0001\n",
+        encoding="utf-8",
+    )
+    (out_dir / "symqueue_split_vs_flowstar_comparison.csv").write_text(
         "run_id,last_width_ratio,tube_width_ratio\n",
         encoding="utf-8",
     )
@@ -665,10 +785,13 @@ def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
 
     summary = pd.read_csv(out_dir / "sample_containment_summary.csv")
     assert int(summary.loc[0, "violations_count"]) == 0
+    assert summary.loc[0, "run_id"] == "split_sample_run"
     report = (out_dir / "sample_containment_report.md").read_text(encoding="utf-8")
     assert "not a reachability proof" in report
     h10_report = (out_dir / "normalized_insertion_h10_report.md").read_text(encoding="utf-8")
     assert "Did sample containment sanity pass? passed" in h10_report
+    split_report = (out_dir / "symqueue_split_report.md").read_text(encoding="utf-8")
+    assert "Did range boxes remain conservative and sample containment pass? passed" in split_report
 
 
 def test_residual_centering_specialized_outputs_smoke(tmp_path):

@@ -220,17 +220,16 @@ def flowstar_normalized_insertion_symbolic_queue_reset(
     *,
     scales: Sequence[float],
     max_size: int = 100,
+    materialize_propagated_on_reset: bool = True,
 ) -> tuple[TMVector, FlowstarSymbolicRemainderQueue, dict[str, Any]]:
     """Conservative symbolic queue update after normalized insertion.
 
     ``inserted_endpoint`` is the accepted nonconstant endpoint after Flow*-style
     normal insertion. ``reset_tm`` is the fresh normalized local initial set for
     the next step. The helper propagates older queued interval columns through
-    the linear part of ``inserted_endpoint`` and materializes that propagated
-    width as an extra remainder on ``reset_tm``. The current insertion
-    remainders are queued for future steps instead of being materialized again,
-    because the normalized reset scale was already chosen from the inserted
-    endpoint range.
+    the linear part of ``inserted_endpoint``. Existing symqueue mode materializes
+    that propagated width on ``reset_tm``; split mode returns a clean ordinary
+    reset and exposes the propagated width for output/range materialization.
     """
 
     dim = len(reset_tm)
@@ -245,10 +244,16 @@ def flowstar_normalized_insertion_symbolic_queue_reset(
     phi_l_i = _right_scale_matrix(linear, state.scalars)
     updated_phi, propagated = _updated_phi_and_propagated_remainder(state, phi_l_i, reference)
     current_j = tuple(model.remainder for model in inserted_endpoint)
-    reset_with_queue = TMVector(
-        model.with_remainder(model.remainder + propagated_i)
-        for model, propagated_i in zip(reset_tm, propagated)
-    )
+
+    if materialize_propagated_on_reset:
+        reset_with_queue = TMVector(
+            model.with_remainder(model.remainder + propagated_i)
+            for model, propagated_i in zip(reset_tm, propagated)
+        )
+        output_symbolic_remainders = tuple(_zero_interval_like_interval(reference) for _ in range(dim))
+    else:
+        reset_with_queue = reset_tm
+        output_symbolic_remainders = propagated
 
     new_j = state.J + (current_j,)
     queue_reset = bool(int(max_size) > 0 and len(new_j) >= int(max_size))
@@ -262,13 +267,25 @@ def flowstar_normalized_insertion_symbolic_queue_reset(
 
     propagated_widths = [_interval_width(iv) for iv in propagated]
     new_widths = [_interval_width(iv) for iv in current_j]
-    materialized_widths = [_interval_width(model.remainder) for model in reset_with_queue]
+    ordinary_remainder_widths = [_interval_width(model.remainder) for model in reset_tm]
+    materialized_widths = (
+        [_interval_width(model.remainder) for model in reset_with_queue]
+        if materialize_propagated_on_reset
+        else propagated_widths
+    )
+    ordinary_only_range_width = sum(_interval_width(iv) for iv in reset_tm.range_box())
+    total_with_symbolic_tm = TMVector(
+        model.with_remainder(model.remainder + rem)
+        for model, rem in zip(reset_with_queue, output_symbolic_remainders)
+    )
+    total_range_width_with_symbolic = sum(_interval_width(iv) for iv in total_with_symbolic_tm.range_box())
     linear_norm = sum(abs(v) for row in linear for v in row)
     stats = {
         "queue_size_before": len(state.J),
         "queue_size_after": len(new_state.J),
         "queue_size": len(new_state.J),
         "queue_reset": queue_reset,
+        "semantic_split": not materialize_propagated_on_reset,
         "propagated_symbolic_width_x": propagated_widths[0] if len(propagated_widths) > 0 else "",
         "propagated_symbolic_width_y": propagated_widths[1] if len(propagated_widths) > 1 else "",
         "propagated_symbolic_width_sum": sum(propagated_widths),
@@ -278,10 +295,21 @@ def flowstar_normalized_insertion_symbolic_queue_reset(
         "materialized_width_x": materialized_widths[0] if len(materialized_widths) > 0 else "",
         "materialized_width_y": materialized_widths[1] if len(materialized_widths) > 1 else "",
         "materialized_width_sum": sum(materialized_widths),
+        "materialized_for_output_width": sum(materialized_widths),
+        "ordinary_only_range_width": ordinary_only_range_width,
+        "symbolic_contribution_width": sum(propagated_widths),
+        "total_range_width_with_symbolic": total_range_width_with_symbolic,
+        "target_checked_width": sum(ordinary_remainder_widths),
         "linear_map_norm": linear_norm,
         "linear_map_abs_sum": linear_norm,
         "scalars": ";".join(f"{float(s):.17g}" for s in scales[:dim]),
+        "_symbolic_output_remainders": output_symbolic_remainders,
         "approximation": (
+            "limited_normalized_insertion_symqueue_split; current insertion uncertainty "
+            "is queued for future propagation and propagated old queue width is "
+            "materialized for output/range only"
+            if not materialize_propagated_on_reset
+            else
             "limited_normalized_insertion_symqueue; current insertion uncertainty "
             "is queued for future propagation and propagated old queue width is "
             "materialized on the next normalized reset"

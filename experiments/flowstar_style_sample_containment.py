@@ -104,7 +104,9 @@ def _rk4_advance(state: tuple[float, float], dt_total: float, max_dt: float) -> 
 def _select_run(summary_rows: Sequence[Mapping[str, str]], run_id: str | None) -> str:
     if run_id:
         return run_id
-    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue"]
+    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue_split"]
+    if not candidates:
+        candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue"]
     if not candidates:
         candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion"]
     if not candidates:
@@ -229,6 +231,13 @@ def refresh_h10_report(out_dir: Path, max_horizon: float) -> None:
         summary_rows = _read_rows(symqueue_summary_path)
         comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
         rescue.write_symqueue_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+
+    split_summary_path = out_dir / "symqueue_split_summary.csv"
+    if split_summary_path.exists():
+        comparison_path = out_dir / "symqueue_split_vs_flowstar_comparison.csv"
+        summary_rows = _read_rows(split_summary_path)
+        comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
+        rescue.write_symqueue_split_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -471,6 +471,8 @@ def run_oracle(
         alias_suffix = "after_width_control"
     elif "after_insertion" in out_dir.name:
         alias_suffix = "after_insertion"
+    elif "after_symqueue_split" in out_dir.name:
+        alias_suffix = "after_symqueue_split"
     elif "after_symqueue" in out_dir.name:
         alias_suffix = "after_symqueue"
     if alias_suffix:
