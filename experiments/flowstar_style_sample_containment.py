@@ -104,7 +104,9 @@ def _rk4_advance(state: tuple[float, float], dt_total: float, max_dt: float) -> 
 def _select_run(summary_rows: Sequence[Mapping[str, str]], run_id: str | None) -> str:
     if run_id:
         return run_id
-    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion"]
+    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue"]
+    if not candidates:
+        candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion"]
     if not candidates:
         candidates = list(summary_rows)
     best = max(candidates, key=lambda row: _finite_float(row.get("last_validated_t")) or 0.0)
@@ -215,16 +217,23 @@ def write_report(out_dir: Path, summary: Mapping[str, Any]) -> None:
 
 def refresh_h10_report(out_dir: Path, max_horizon: float) -> None:
     summary_path = out_dir / "normalized_insertion_h10_summary.csv"
-    if not summary_path.exists():
-        return
-    comparison_path = out_dir / "normalized_insertion_h10_vs_flowstar_comparison.csv"
-    summary_rows = _read_rows(summary_path)
-    comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
-    rescue.write_normalized_insertion_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+    if summary_path.exists():
+        comparison_path = out_dir / "normalized_insertion_h10_vs_flowstar_comparison.csv"
+        summary_rows = _read_rows(summary_path)
+        comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
+        rescue.write_normalized_insertion_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+
+    symqueue_summary_path = out_dir / "symqueue_h10_summary.csv"
+    if symqueue_summary_path.exists():
+        comparison_path = out_dir / "symqueue_h10_vs_flowstar_comparison.csv"
+        summary_rows = _read_rows(symqueue_summary_path)
+        comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
+        rescue.write_symqueue_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input-dir", type=Path, default=None, help="Directory containing rescue_summary.csv and rescue_segments.csv.")
     parser.add_argument("--out-dir", type=Path, default=Path("outputs/flowstar_normalized_insertion_h10"))
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--samples", type=int, default=500)
@@ -233,13 +242,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-horizon", type=float, default=10.0)
     args = parser.parse_args(argv)
 
+    input_dir = args.input_dir if args.input_dir is not None else args.out_dir
     summary = check_sample_containment(
-        args.out_dir,
+        input_dir,
         run_id=args.run_id,
         num_samples=args.samples,
         max_rk4_dt=args.max_rk4_dt,
         tol=args.tol,
     )
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     _write_csv(args.out_dir / "sample_containment_summary.csv", SUMMARY_FIELDS, [summary])
     write_report(args.out_dir, summary)
     refresh_h10_report(args.out_dir, max_horizon=float(args.max_horizon))

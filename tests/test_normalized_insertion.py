@@ -97,3 +97,47 @@ def test_default_flowstar_style_adaptive_reset_is_unchanged():
     assert default.reset_tm is not None
     assert explicit.reset_tm is not None
     assert default.reset_tm.range_box()[0].to_tuple() == explicit.reset_tm.range_box()[0].to_tuple()
+
+
+def test_normalized_insertion_symqueue_carries_queue_state():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    first = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        x0,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue",
+        flowstar_symbolic_queue_max_size=100,
+    )
+
+    assert first.status == "validated"
+    assert first.flowstar_normal_state is not None
+    assert first.flowstar_normal_state.symbolic_queue is not None
+    assert first.reset_tm is not None
+    assert first.flowstar_symbolic_queue_stats is not None
+    assert first.flowstar_symbolic_queue_stats["queue_size_after"] == 1
+    assert "propagated_symbolic_width_sum" in first.flowstar_symbolic_queue_stats
+
+    second = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        first.reset_tm,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue",
+        flowstar_symbolic_queue_max_size=100,
+        flowstar_normal_state=first.flowstar_normal_state,
+    )
+
+    assert second.status == "validated"
+    assert second.flowstar_symbolic_queue_stats is not None
+    assert second.flowstar_symbolic_queue_stats["queue_size_after"] == 2
+    assert second.flowstar_normal_state is not None
+    assert second.flowstar_normal_state.initial_remainders is not None

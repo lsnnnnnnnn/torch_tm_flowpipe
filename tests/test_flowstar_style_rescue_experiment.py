@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_style_rescue_vanderpol.py"
 LOCALIZATION_SCRIPT = ROOT / "experiments" / "flowstar_style_failure_localization.py"
+H10_FAILURE_SCRIPT = ROOT / "experiments" / "flowstar_normalized_insertion_h10_failure.py"
 ORACLE_SCRIPT = ROOT / "experiments" / "flowstar_one_step_oracle.py"
 WIDTH_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_width_growth_diagnostics.py"
 SAMPLE_CONTAINMENT_SCRIPT = ROOT / "experiments" / "flowstar_style_sample_containment.py"
@@ -115,6 +116,7 @@ def test_committed_rescue_artifacts_are_multiline_and_parseable():
 def test_flowstar_style_rescue_script_is_py_compileable():
     py_compile.compile(str(SCRIPT), doraise=True)
     py_compile.compile(str(LOCALIZATION_SCRIPT), doraise=True)
+    py_compile.compile(str(H10_FAILURE_SCRIPT), doraise=True)
     py_compile.compile(str(ORACLE_SCRIPT), doraise=True)
     py_compile.compile(str(WIDTH_DIAGNOSTICS_SCRIPT), doraise=True)
     py_compile.compile(str(SAMPLE_CONTAINMENT_SCRIPT), doraise=True)
@@ -391,8 +393,11 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
         ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_vs_flowstar_comparison.csv",
     ]
     h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_h10"
-    if h10_dir.exists():
-        required_csvs.extend(sorted(h10_dir.glob("*.csv")))
+    symqueue_h10_dir = ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_h10"
+    failure_dir = ROOT / "outputs" / "flowstar_normalized_insertion_failure"
+    for directory in [h10_dir, symqueue_h10_dir, failure_dir]:
+        if directory.exists():
+            required_csvs.extend(sorted(directory.glob("*.csv")))
     for path in required_csvs:
         frame = pd.read_csv(path)
         text = path.read_text(encoding="utf-8")
@@ -404,8 +409,9 @@ def test_required_normalized_insertion_artifacts_have_physical_lines():
         ROOT / "outputs" / "flowstar_normalized_insertion_rescue" / "normalized_insertion_report.md",
         ROOT / "docs" / "flowstar_normalized_insertion_source_map.md",
     ]
-    if h10_dir.exists():
-        required_markdown.extend(sorted(h10_dir.glob("*.md")))
+    for directory in [h10_dir, symqueue_h10_dir, failure_dir]:
+        if directory.exists():
+            required_markdown.extend(sorted(directory.glob("*.md")))
     for path in required_markdown:
         text = path.read_text(encoding="utf-8")
         assert text.count("\n") > 10
@@ -528,6 +534,94 @@ def test_normalized_insertion_h10_specialized_outputs_smoke(tmp_path):
         text = (out_dir / csv_name).read_text(encoding="utf-8")
         assert text.endswith("\n")
         assert text.count("\n") == len(frame) + 1
+
+
+def test_required_source_files_have_physical_lines_and_compile():
+    source_paths = [
+        FLOWPIPE,
+        SCRIPT,
+        ORACLE_SCRIPT,
+        SAMPLE_CONTAINMENT_SCRIPT,
+        H10_FAILURE_SCRIPT,
+    ]
+    for path in source_paths:
+        text = path.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        assert len(lines) > 20
+        assert max(len(line) for line in lines) < 500
+        py_compile.compile(str(path), doraise=True)
+
+
+def test_normalized_insertion_symqueue_h10_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_normalized_insertion_symqueue_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o4_target_insert_symqueue",
+            "flowstar_style_o6_candidate8_output6_insert_symqueue",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "symqueue_h10_summary.csv",
+        "symqueue_h10_segments.csv",
+        "symqueue_h10_reset_diagnostics.csv",
+        "symqueue_h10_validation_attempts.csv",
+        "symqueue_h10_vs_flowstar_comparison.csv",
+        "symqueue_h10_report.md",
+        "symqueue_queue_size_vs_t.png",
+        "symqueue_propagated_width_vs_t.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "symqueue_h10_summary.csv")
+    assert set(summary["reset_mode"]) == {"normalized_insertion_symqueue"}
+    assert "max_symqueue_propagated_symbolic_width_sum" in summary.columns
+    segments = pd.read_csv(out_dir / "symqueue_h10_segments.csv")
+    assert "queue_size" in segments.columns
+    assert "propagated_symbolic_width_sum" in segments.columns
+    report = (out_dir / "symqueue_h10_report.md").read_text(encoding="utf-8")
+    assert "Did any symqueue config reach horizon 10?" in report
+    assert report.count("\n") > 10
+
+
+def test_h10_failure_localization_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_normalized_insertion_failure"
+    subprocess.run(
+        [
+            sys.executable,
+            str(H10_FAILURE_SCRIPT),
+            "--input-dir",
+            str(ROOT / "outputs" / "flowstar_normalized_insertion_h10"),
+            "--out-dir",
+            str(out_dir),
+        ],
+        check=True,
+    )
+
+    for name in [
+        "h10_failure_summary.csv",
+        "h10_failure_attempts.csv",
+        "h10_failure_residual_breakdown.csv",
+        "h10_failure_report.md",
+        "residual_near_failure_o4.png",
+        "residual_near_failure_o6.png",
+        "width_ratio_near_failure.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "h10_failure_summary.csv")
+    assert set(summary["run_id"]) == {"flowstar_style_o4_target_insert", "flowstar_style_o6_candidate8_output6_insert"}
+    report = (out_dir / "h10_failure_report.md").read_text(encoding="utf-8")
+    assert "Which path should be prioritized for h10 parity?" in report
+    assert report.count("\n") > 10
 
 
 def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):

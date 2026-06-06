@@ -213,6 +213,83 @@ def flowstar_symbolic_remainder_queue_reset(
     return reset_tm, new_state, stats
 
 
+def flowstar_normalized_insertion_symbolic_queue_reset(
+    inserted_endpoint: TMVector,
+    reset_tm: TMVector,
+    state: FlowstarSymbolicRemainderQueue | None,
+    *,
+    scales: Sequence[float],
+    max_size: int = 100,
+) -> tuple[TMVector, FlowstarSymbolicRemainderQueue, dict[str, Any]]:
+    """Conservative symbolic queue update after normalized insertion.
+
+    ``inserted_endpoint`` is the accepted nonconstant endpoint after Flow*-style
+    normal insertion. ``reset_tm`` is the fresh normalized local initial set for
+    the next step. The helper propagates older queued interval columns through
+    the linear part of ``inserted_endpoint`` and materializes that propagated
+    width as an extra remainder on ``reset_tm``. The current insertion
+    remainders are queued for future steps instead of being materialized again,
+    because the normalized reset scale was already chosen from the inserted
+    endpoint range.
+    """
+
+    dim = len(reset_tm)
+    if dim == 0:
+        empty = FlowstarSymbolicRemainderQueue.empty(0, max_size)
+        return reset_tm, empty, {"queue_size": 0, "queue_reset": False}
+    if state is None or state.dim != dim or int(state.max_size) != int(max_size):
+        state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+
+    reference = reset_tm[0].remainder
+    linear = _linear_coefficients(inserted_endpoint)
+    phi_l_i = _right_scale_matrix(linear, state.scalars)
+    updated_phi, propagated = _updated_phi_and_propagated_remainder(state, phi_l_i, reference)
+    current_j = tuple(model.remainder for model in inserted_endpoint)
+    reset_with_queue = TMVector(
+        model.with_remainder(model.remainder + propagated_i)
+        for model, propagated_i in zip(reset_tm, propagated)
+    )
+
+    new_j = state.J + (current_j,)
+    queue_reset = bool(int(max_size) > 0 and len(new_j) >= int(max_size))
+    if queue_reset:
+        new_state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+    else:
+        scalar_tuple = tuple(float(s) for s in scales[:dim])
+        if len(scalar_tuple) < dim:
+            scalar_tuple = scalar_tuple + tuple(1.0 for _ in range(dim - len(scalar_tuple)))
+        new_state = FlowstarSymbolicRemainderQueue(tuple(new_j), updated_phi, scalar_tuple, int(max_size))
+
+    propagated_widths = [_interval_width(iv) for iv in propagated]
+    new_widths = [_interval_width(iv) for iv in current_j]
+    materialized_widths = [_interval_width(model.remainder) for model in reset_with_queue]
+    linear_norm = sum(abs(v) for row in linear for v in row)
+    stats = {
+        "queue_size_before": len(state.J),
+        "queue_size_after": len(new_state.J),
+        "queue_size": len(new_state.J),
+        "queue_reset": queue_reset,
+        "propagated_symbolic_width_x": propagated_widths[0] if len(propagated_widths) > 0 else "",
+        "propagated_symbolic_width_y": propagated_widths[1] if len(propagated_widths) > 1 else "",
+        "propagated_symbolic_width_sum": sum(propagated_widths),
+        "new_symbolic_width_x": new_widths[0] if len(new_widths) > 0 else "",
+        "new_symbolic_width_y": new_widths[1] if len(new_widths) > 1 else "",
+        "new_symbolic_width_sum": sum(new_widths),
+        "materialized_width_x": materialized_widths[0] if len(materialized_widths) > 0 else "",
+        "materialized_width_y": materialized_widths[1] if len(materialized_widths) > 1 else "",
+        "materialized_width_sum": sum(materialized_widths),
+        "linear_map_norm": linear_norm,
+        "linear_map_abs_sum": linear_norm,
+        "scalars": ";".join(f"{float(s):.17g}" for s in scales[:dim]),
+        "approximation": (
+            "limited_normalized_insertion_symqueue; current insertion uncertainty "
+            "is queued for future propagation and propagated old queue width is "
+            "materialized on the next normalized reset"
+        ),
+    }
+    return reset_with_queue, new_state, stats
+
+
 def _interval_width(iv: Interval) -> float:
     return float(iv.width().detach().cpu())
 

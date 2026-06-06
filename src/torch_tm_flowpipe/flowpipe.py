@@ -13,6 +13,7 @@ from .safety import intervals_are_finite
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
     SymbolicRemainderState,
+    flowstar_normalized_insertion_symbolic_queue_reset,
     flowstar_symbolic_remainder_queue_reset,
     introduce_symbolic_remainders,
 )
@@ -82,6 +83,9 @@ class FlowstarNormalFlowpipeState:
     scales: list[float]
     step_index: int = 0
     diagnostics: Mapping[str, Any] | None = None
+    symbolic_queue: FlowstarSymbolicRemainderQueue | None = None
+    symbolic_queue_max_size: int = 100
+    initial_remainders: tuple[Interval, ...] | None = None
 
     @staticmethod
     def from_initial_box(
@@ -111,12 +115,18 @@ class FlowstarNormalFlowpipeState:
         return self.endpoint_tm().range_box()
 
     def normalized_initial_tm(self, order: int | None = None) -> TMVector:
-        return _normalized_tm_from_center_scale(
+        tmv = _normalized_tm_from_center_scale(
             self.center,
             self.scales,
             int(order) if order is not None else _tm_max_degree(self.tmv_pre),
             template_domain=self.domain,
         )
+        if self.initial_remainders:
+            return TMVector(
+                model.with_remainder(model.remainder + rem)
+                for model, rem in zip(tmv, self.initial_remainders)
+            )
+        return tmv
 
     def diagnostic_widths(self) -> dict[str, Any]:
         return {
@@ -629,6 +639,9 @@ def _flowstar_normalized_insertion_transition(
     order: int,
     *,
     cutoff_threshold: float | None,
+    symbolic_queue: bool = False,
+    symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
+    symbolic_queue_max_size: int = 100,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
     if prev is None:
@@ -641,8 +654,9 @@ def _flowstar_normalized_insertion_transition(
             step_index=0,
             diagnostics={"reset_mode": "normalized_insertion", "implicit_initial_state": True},
         )
+    mode_name = "normalized_insertion_symqueue" if symbolic_queue else "normalized_insertion"
     diagnostics: dict[str, Any] = {
-        "reset_mode": "normalized_insertion",
+        "reset_mode": mode_name,
         "step_index": int(prev.step_index) + 1,
         "endpoint_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
         "reset_box_width_sum": _sum_interval_widths(seg.final_tm.range_box()),
@@ -668,6 +682,18 @@ def _flowstar_normalized_insertion_transition(
         inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
     tmv_right = _scale_tmvector_components(inserted, inv_scales).apply_cutoff(cutoff_threshold)
     reset_tm = _normalized_tm_from_center_scale(center, scales, int(order), template_domain=prev.domain)
+    next_queue = prev.symbolic_queue if prev.symbolic_queue is not None else symbolic_queue_state
+    initial_remainders: tuple[Interval, ...] | None = None
+    if symbolic_queue:
+        reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_symbolic_queue_reset(
+            inserted,
+            reset_tm,
+            next_queue,
+            scales=scales,
+            max_size=symbolic_queue_max_size,
+        )
+        initial_remainders = tuple(model.remainder for model in reset_tm)
+        diagnostics.update(queue_stats)
     state = FlowstarNormalFlowpipeState(
         tmv_pre=seg.tm,
         tmv_right=tmv_right,
@@ -676,6 +702,9 @@ def _flowstar_normalized_insertion_transition(
         scales=scales,
         step_index=int(prev.step_index) + 1,
         diagnostics=diagnostics,
+        symbolic_queue=next_queue if symbolic_queue else None,
+        symbolic_queue_max_size=int(symbolic_queue_max_size),
+        initial_remainders=initial_remainders,
     )
     diagnostics.update(state.diagnostic_widths())
     diagnostics["inserted_endpoint_width_sum"] = _sum_interval_widths(inserted_box)
@@ -2526,14 +2555,18 @@ def flowpipe_step_flowstar_style_adaptive(
         "target_remainder_flowstar_ctrunc",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
-    if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", "normalized_insertion"}:
-        raise ValueError("reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', or 'normalized_insertion'")
+    normal_insertion_modes = {"normalized_insertion", "normalized_insertion_symqueue"}
+    if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
+        raise ValueError(
+            "reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', "
+            "'normalized_insertion', or 'normalized_insertion_symqueue'"
+        )
     normal_state = flowstar_normal_state
-    if reset_mode == "normalized_insertion" and normal_state is None and not isinstance(x0, TMVector):
+    if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
     current_tm = (
         normal_state.normalized_initial_tm(order)
-        if reset_mode == "normalized_insertion" and normal_state is not None
+        if reset_mode in normal_insertion_modes and normal_state is not None
         else (x0 if isinstance(x0, TMVector) else _normalized_tm_from_box(x0, order))
     )
     queue_state = flowstar_symbolic_queue_state
@@ -2549,18 +2582,26 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.reset_tm = reset_tm
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
-        elif reset_mode == "normalized_insertion":
+        elif reset_mode in normal_insertion_modes:
+            use_symqueue = reset_mode == "normalized_insertion_symqueue"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
                 normal_state,
                 order,
                 cutoff_threshold=cutoff_threshold,
+                symbolic_queue=use_symqueue,
+                symbolic_queue_state=queue_state,
+                symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
             )
+            if use_symqueue and normal_state is not None:
+                queue_state = normal_state.symbolic_queue
             seg.reset_tm = reset_tm
             seg.flowstar_normal_state = normal_state
             seg.flowstar_normal_stats = {**normal_stats, "reset_mode": reset_mode}
             seg.flowstar_symbolic_queue_state = queue_state
-            seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
+            seg.flowstar_symbolic_queue_stats = (
+                {**normal_stats, "reset_mode": reset_mode} if use_symqueue else {"reset_mode": reset_mode}
+            )
         else:
             seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
             seg.flowstar_symbolic_queue_state = queue_state
