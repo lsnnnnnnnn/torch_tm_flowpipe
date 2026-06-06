@@ -116,11 +116,13 @@ def _is_rejected(row: Mapping[str, Any]) -> bool:
 
 
 def _target_width(row: Mapping[str, Any]) -> float:
+    radius = _finite(row.get("target_remainder_radius"))
+    if radius is not None:
+        return 2.0 * radius
     width = _finite(row.get("target_remainder_width"))
     if width is not None:
-        return width
-    radius = _finite(row.get("target_remainder_radius")) or 1e-4
-    return 2.0 * radius
+        return 0.5 * width
+    return 2.0e-4
 
 
 def _ratio(num: Any, den: Any) -> float | str:
