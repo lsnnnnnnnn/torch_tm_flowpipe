@@ -2644,7 +2644,44 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
     previous_best = max(previous_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
     ctrunc_best = max(ctrunc_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
     selective_best = max(selective_rows, key=lambda r: _finite_float(r.get("last_validated_t")) or 0.0, default={})
-    oracle = oracle_rows[0] if oracle_rows else {}
+
+    def _oracle_order(row: Mapping[str, Any]) -> int:
+        value = _finite_float(row.get("order"))
+        return int(value) if value is not None else 0
+
+    def _oracle_rollup(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+        if not rows:
+            return {}
+        # New oracle_summary.csv is one row per Flow* order. Older committed
+        # artifacts had one aggregate row, so retain a compatibility path.
+        if "order" not in rows[0]:
+            return dict(rows[0])
+        validated_rows = [row for row in rows if _bool_from_row(row, "flowstar_validated")]
+        selected = min(validated_rows, key=_oracle_order) if validated_rows else max(rows, key=_oracle_order)
+        flowstar_validated = bool(validated_rows)
+        pytorch_validated = any(_bool_from_row(row, "pytorch_validated") for row in rows)
+        status = "completed" if flowstar_validated else str(selected.get("flowstar_status", ""))
+        failure_reason = ""
+        if not flowstar_validated:
+            failure_reason = str(selected.get("skip_reason", ""))
+            if not failure_reason and status == "not_completed":
+                failure_reason = "Flow* reach did not complete; no segment boxes emitted"
+            elif not failure_reason:
+                failure_reason = status
+        return {
+            "run_id": "flowstar_one_step_oracle_candidate8_cutoff",
+            "status": status,
+            "flowstar_validated": flowstar_validated,
+            "pytorch_validated": pytorch_validated,
+            "runtime_s": selected.get("flowstar_runtime_s", ""),
+            "failure_reason": failure_reason,
+            "decision_relevance": "local same-box diagnostic",
+            "notes": "local one-step diagnostic only; no full parity claim",
+            "flowstar_best_order": selected.get("order", ""),
+            "flowstar_segments": selected.get("flowstar_segments", ""),
+        }
+
+    oracle = _oracle_rollup(oracle_rows)
 
     rows: list[dict[str, Any]] = []
     if previous_best:
@@ -2668,7 +2705,7 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
                 "status": oracle.get("status", ""),
                 "flowstar_validated": oracle.get("flowstar_validated", ""),
                 "pytorch_validated": oracle.get("pytorch_validated", ""),
-                "runtime_s": oracle.get("flowstar_runtime_s", ""),
+                "runtime_s": oracle.get("runtime_s", ""),
                 "failure_reason": oracle.get("failure_reason", ""),
                 "decision_relevance": "local same-box diagnostic",
                 "notes": oracle.get("notes", ""),
@@ -2707,16 +2744,23 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
     ctrunc_t = _finite_float(ctrunc_best.get("last_validated_t")) or 0.0
     selective_t = _finite_float(selective_best.get("last_validated_t")) or 0.0
     oracle_flowstar_validated = _bool_from_row(oracle, "flowstar_validated")
+    oracle_ran = bool(oracle) and str(oracle.get("status", "")) not in {"", "skipped", "compile_failed", "compile_timeout"}
     if ctrunc_t >= 5.0 - 1e-9:
         decision = "ctrunc validation reached horizon 5; run h10 next after width review."
     elif oracle and oracle_flowstar_validated and ctrunc_t < 5.0 - 1e-9:
         decision = "Flow* one-step validates but PyTorch ctrunc does not reach horizon 5; continue source archaeology for normal eval, symbolic remainder, or preconditioning details."
-    elif oracle and not oracle_flowstar_validated:
+    elif oracle and oracle_ran and not oracle_flowstar_validated:
         decision = "Flow* one-step also fails from the PyTorch reset box; focus on width reduction before that point."
+    elif oracle and not oracle_ran:
+        decision = "Flow* one-step did not run; rerun the oracle before drawing a kernel conclusion."
     elif selective_t > previous_t:
         decision = "Selective validation-path fix helps; combine it with ctrunc validation."
     else:
         decision = "Nothing beats t~=2.400737 yet; next target is a real Flow*-style symbolic remainder queue."
+
+    branch_decision = "NEEDS_MORE_WORK"
+    if not oracle_rows and not ctrunc_rows and not selective_rows:
+        branch_decision = "DISCARD_BRANCH"
 
     out_dir = REPO_ROOT / "outputs" / "flowstar_style_rescue_next4"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -2725,9 +2769,11 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
         "# Rescue Variant Comparison Next4",
         "",
         f"Previous best candidate_order=8/output_order=6: `{previous_best.get('run_id', '')}` at t=`{previous_best.get('last_validated_t', '')}`.",
+        f"Did Flow* one-step actually run? {_yes_no(oracle_ran)}.",
         f"One-step oracle Flow* validates same local box? {_yes_no(oracle_flowstar_validated)}.",
         f"Best flowstar_ctrunc validation: `{ctrunc_best.get('run_id', '')}` at t=`{ctrunc_best.get('last_validated_t', '')}`.",
         f"Best selective validation-path run: `{selective_best.get('run_id', '')}` at t=`{selective_best.get('last_validated_t', '')}`.",
+        f"Branch decision: {branch_decision}.",
         f"Decision: {decision}",
         "",
         "## Rows",
@@ -2742,6 +2788,19 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
         )
     (out_dir / "rescue_next4_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+    triage_lines = [
+        "# Branch Triage Report",
+        "",
+        f"Branch decision: {branch_decision}.",
+        f"Did Flow* one-step actually run? {_yes_no(oracle_ran)}.",
+        f"Did Flow* validate the local failed step? {_yes_no(oracle_flowstar_validated)}.",
+        f"Previous best: `{previous_best.get('run_id', '')}` at t=`{previous_best.get('last_validated_t', '')}`.",
+        f"Ctrunc best: `{ctrunc_best.get('run_id', '')}` at t=`{ctrunc_best.get('last_validated_t', '')}`.",
+        f"Selective best: `{selective_best.get('run_id', '')}` at t=`{selective_best.get('last_validated_t', '')}`.",
+        f"Did any variant reach horizon 5? {_yes_no(bool(ctrunc_t >= 5.0 - 1e-9 or previous_t >= 5.0 - 1e-9 or selective_t >= 5.0 - 1e-9))}.",
+        f"Next recommendation: {decision}",
+    ]
+    (out_dir / "branch_triage_report.md").write_text("\n".join(triage_lines) + "\n", encoding="utf-8")
 
 def _write_outputs(
     out_dir: Path,

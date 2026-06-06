@@ -1,2 +1,4 @@
-run_id,source_run_id,reset_segment_index,t_lo,t_hi,h_try,status,flowstar_validated,pytorch_validated,flowstar_orders,flowstar_best_order,flowstar_last_width_sum,pytorch_candidate_final_width_sum,width_ratio_flowstar_over_pytorch,flowstar_runtime_s,failure_reason,notes
-flowstar_one_step_oracle_candidate8_cutoff,flowstar_style_o6_candidate8_output6_cutoff,94,2.4007376673997931,2.4043574266493395,0.0036197592495462228,not_completed,false,false,4;6;8,8,,26.976655524727043,,0.014694,Flow* reach did not complete; no segment boxes emitted,local one-step diagnostic only; no full parity claim
+order,flowstar_status,flowstar_validated,flowstar_runtime_s,flowstar_segments,flowstar_last_width_sum,pytorch_status,pytorch_validated,pytorch_failed_reason,pytorch_candidate_final_width_sum,width_ratio_flowstar_over_pytorch,skip_reason
+4,not_completed,false,0.00092599999999999996,0,,failed,false,Picard residual not subset of target remainder,26.976655524727043,,
+6,not_completed,false,0.0039500000000000004,0,,failed,false,Picard residual not subset of target remainder,26.976655524727043,,
+8,not_completed,false,0.014678999999999999,0,,failed,false,Picard residual not subset of target remainder,26.976655524727043,,

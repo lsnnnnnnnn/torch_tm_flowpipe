@@ -29,23 +29,18 @@ COMPLETED_RE = re.compile(r"FLOWSTAR_COMPLETED\s+(?P<ok>[01])")
 RUNTIME_RE = re.compile(rf"FLOWSTAR_RUNTIME_S\s+(?P<runtime>{NUMBER_RE})")
 
 SUMMARY_FIELDS = [
-    "run_id",
-    "source_run_id",
-    "reset_segment_index",
-    "t_lo",
-    "t_hi",
-    "h_try",
-    "status",
+    "order",
+    "flowstar_status",
     "flowstar_validated",
-    "pytorch_validated",
-    "flowstar_orders",
-    "flowstar_best_order",
+    "flowstar_runtime_s",
+    "flowstar_segments",
     "flowstar_last_width_sum",
+    "pytorch_status",
+    "pytorch_validated",
+    "pytorch_failed_reason",
     "pytorch_candidate_final_width_sum",
     "width_ratio_flowstar_over_pytorch",
-    "flowstar_runtime_s",
-    "failure_reason",
-    "notes",
+    "skip_reason",
 ]
 
 FLOWSTAR_SEGMENT_FIELDS = [
@@ -300,11 +295,44 @@ def _stdout_value(pattern: re.Pattern[str], path: Path | None, group: str) -> st
     return matches[-1].group(group) if matches else ""
 
 
+def _write_top_level_oracle_artifacts(out_dir: Path, model_dir: Path, representative_order: int, orders: Sequence[int]) -> None:
+    representative_cpp = model_dir / f"oracle_flowstar_o{representative_order}.cpp"
+    if representative_cpp.exists():
+        (out_dir / "generated_flowstar_one_step.cpp").write_text(
+            representative_cpp.read_text(encoding="utf-8"),
+            encoding="utf-8",
+            newline="\n",
+        )
+    compile_stdout_lines = [
+        "Flow* benchmark compilation is performed per order by comparisons/flowstar/run_flowstar.py.",
+        "Compiler stdout is normally empty for successful builds; per-order combined logs are in flowstar_models/.",
+        "",
+    ]
+    compile_stderr_lines = [
+        "Flow* benchmark compilation stderr is normally empty for successful builds; per-order combined logs are in flowstar_models/.",
+        "",
+    ]
+    run_stdout_lines: list[str] = []
+    run_stderr_lines: list[str] = []
+    for order in orders:
+        stdout_path = model_dir / f"oracle_flowstar_o{order}.stdout.txt"
+        stderr_path = model_dir / f"oracle_flowstar_o{order}.stderr.txt"
+        run_stdout_lines.append(f"===== order {order} stdout =====")
+        run_stdout_lines.append(stdout_path.read_text(encoding="utf-8", errors="ignore") if stdout_path.exists() else "")
+        run_stderr_lines.append(f"===== order {order} stderr =====")
+        run_stderr_lines.append(stderr_path.read_text(encoding="utf-8", errors="ignore") if stderr_path.exists() else "")
+    (out_dir / "compile_stdout.txt").write_text("\n".join(compile_stdout_lines), encoding="utf-8", newline="\n")
+    (out_dir / "compile_stderr.txt").write_text("\n".join(compile_stderr_lines), encoding="utf-8", newline="\n")
+    (out_dir / "run_stdout.txt").write_text("\n".join(run_stdout_lines) + "\n", encoding="utf-8", newline="\n")
+    (out_dir / "run_stderr.txt").write_text("\n".join(run_stderr_lines) + "\n", encoding="utf-8", newline="\n")
+
+
 def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: float, orders: Sequence[int], flowstar_root: str | None, timeout_s: float | None) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     model_dir = out_dir / "flowstar_models"
     model_dir.mkdir(parents=True, exist_ok=True)
     summaries: list[dict[str, Any]] = []
     segments: list[dict[str, Any]] = []
+    representative_order = 6 if 6 in set(int(o) for o in orders) else int(orders[0])
     for order in orders:
         cpp_path = model_dir / f"oracle_flowstar_o{order}.cpp"
         cpp_path.write_text(_render_cpp(order, h_try, reset_box), encoding="utf-8", newline="\n")
@@ -326,14 +354,17 @@ def _run_flowstar_orders(out_dir: Path, reset_box: Mapping[str, Any], h_try: flo
         summaries.append(
             {
                 "order": order,
-                "status": status,
+                "flowstar_status": status,
                 "flowstar_validated": status == "completed" and bool(order_segments),
-                "runtime_s": _finite_float(runtime) if runtime else run.runtime_s,
-                "last_width_sum": last.get("width_sum", ""),
-                "num_segments": len(order_segments),
+                "flowstar_runtime_s": _finite_float(runtime) if runtime else run.runtime_s,
+                "flowstar_last_width_sum": last.get("width_sum", ""),
+                "flowstar_segments": len(order_segments),
+                "skip_reason": failure_reason if status == "skipped" else "",
                 "failure_reason": failure_reason,
             }
         )
+    if orders:
+        _write_top_level_oracle_artifacts(out_dir, model_dir, representative_order, orders)
     return summaries, segments
 
 
@@ -371,8 +402,30 @@ def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: fl
     validated = [row for row in order_summaries if row.get("flowstar_validated")]
     best = min(validated, key=lambda r: int(r["order"]), default=(order_summaries[-1] if order_summaries else {}))
     py_width = _finite_float(py_row.get("candidate_final_width_sum"))
-    flow_width = _finite_float(best.get("last_width_sum"))
+    flow_width = _finite_float(best.get("flowstar_last_width_sum"))
     flowstar_validated = bool(validated)
+    pytorch_validated = str(py_row.get("validation_status", "")).lower() == "validated"
+    summary_rows: list[dict[str, Any]] = []
+    for row in order_summaries:
+        order_flow_width = _finite_float(row.get("flowstar_last_width_sum"))
+        summary_rows.append(
+            {
+                "order": row.get("order", ""),
+                "flowstar_status": row.get("flowstar_status", ""),
+                "flowstar_validated": row.get("flowstar_validated", ""),
+                "flowstar_runtime_s": row.get("flowstar_runtime_s", ""),
+                "flowstar_segments": row.get("flowstar_segments", ""),
+                "flowstar_last_width_sum": row.get("flowstar_last_width_sum", ""),
+                "pytorch_status": py_row.get("validation_status", ""),
+                "pytorch_validated": pytorch_validated,
+                "pytorch_failed_reason": py_row.get("rejection_reason", ""),
+                "pytorch_candidate_final_width_sum": py_row.get("candidate_final_width_sum", ""),
+                "width_ratio_flowstar_over_pytorch": (
+                    order_flow_width / py_width if order_flow_width is not None and py_width and py_width > 0 else ""
+                ),
+                "skip_reason": row.get("skip_reason", ""),
+            }
+        )
     summary = {
         "run_id": RUN_ID,
         "source_run_id": SOURCE_RUN_ID,
@@ -380,19 +433,20 @@ def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: fl
         "t_lo": reset_box.get("t_hi", ""),
         "t_hi": (_finite_float(reset_box.get("t_hi")) or 0.0) + h_try,
         "h_try": h_try,
-        "status": "completed" if flowstar_validated else (best.get("status", "skipped") if best else "skipped"),
+        "status": "completed" if flowstar_validated else (best.get("flowstar_status", "skipped") if best else "skipped"),
         "flowstar_validated": flowstar_validated,
-        "pytorch_validated": str(py_row.get("validation_status", "")).lower() == "validated",
+        "pytorch_validated": pytorch_validated,
         "flowstar_orders": ";".join(str(o) for o in orders),
         "flowstar_best_order": best.get("order", ""),
-        "flowstar_last_width_sum": best.get("last_width_sum", ""),
+        "flowstar_last_width_sum": best.get("flowstar_last_width_sum", ""),
         "pytorch_candidate_final_width_sum": py_row.get("candidate_final_width_sum", ""),
         "width_ratio_flowstar_over_pytorch": (flow_width / py_width) if flow_width is not None and py_width and py_width > 0 else "",
-        "flowstar_runtime_s": best.get("runtime_s", ""),
+        "flowstar_runtime_s": best.get("flowstar_runtime_s", ""),
         "failure_reason": "" if flowstar_validated else best.get("failure_reason", "Flow* did not validate or no boxes parsed"),
         "notes": "local one-step diagnostic only; no full parity claim",
+        "flowstar_actually_ran": bool(order_summaries) and any(row.get("flowstar_status") not in {"skipped", "compile_failed", "compile_timeout"} for row in order_summaries),
     }
-    _write_csv(out_dir / "oracle_summary.csv", SUMMARY_FIELDS, [summary])
+    _write_csv(out_dir / "oracle_summary.csv", SUMMARY_FIELDS, summary_rows)
     _write_csv(out_dir / "oracle_flowstar_segments.csv", FLOWSTAR_SEGMENT_FIELDS, flowstar_segments)
     _write_csv(out_dir / "oracle_pytorch_attempt.csv", PYTORCH_ATTEMPT_FIELDS, [py_row])
     _write_report(out_dir, summary, order_summaries, py_row)
@@ -408,19 +462,25 @@ def run_oracle(out_dir: Path, *, flowstar_root: str | None = None, timeout_s: fl
 def _write_report(out_dir: Path, summary: Mapping[str, Any], order_summaries: Sequence[Mapping[str, Any]], py_row: Mapping[str, Any]) -> None:
     flowstar_validated = str(summary.get("flowstar_validated", "")).lower() in {"true", "1", "yes"}
     pytorch_validated = str(summary.get("pytorch_validated", "")).lower() in {"true", "1", "yes"}
-    if flowstar_validated and not pytorch_validated:
+    flowstar_ran = str(summary.get("flowstar_actually_ran", "")).lower() in {"true", "1", "yes"}
+    flowstar_skipped = bool(order_summaries) and all(str(row.get("flowstar_status", "")) == "skipped" for row in order_summaries)
+    if flowstar_skipped:
+        conclusion = "The Flow* run was skipped, so the same-box validation question is inconclusive."
+    elif flowstar_validated and not pytorch_validated:
         conclusion = "Flow* validates the same local box and h_try where PyTorch rejects; the PyTorch kernel is missing or tighter than a Flow* mechanism."
     elif not flowstar_validated:
         conclusion = "Flow* does not validate the same local box and h_try; the local reset box is already too wide or the step is too hard."
     else:
         conclusion = "Both tools validate this local one-step case."
+    same_box_answer = "inconclusive" if flowstar_skipped else ("yes" if flowstar_validated and not pytorch_validated else "no")
     lines = [
         "# Flowstar One-Step Oracle Report",
         "",
         f"Source run: `{SOURCE_RUN_ID}`.",
         f"Reset segment index: `{summary.get('reset_segment_index', '')}` at t=`{summary.get('t_lo', '')}`.",
         f"h_try: `{summary.get('h_try', '')}`.",
-        f"Does Flow* validate the same local box and h_try where PyTorch rejects? {'yes' if flowstar_validated and not pytorch_validated else 'no'}.",
+        f"Did Flow* actually compile and run? {'yes' if flowstar_ran else 'no'}.",
+        f"Does Flow* validate the same local box and h_try where PyTorch rejects? {same_box_answer}.",
         conclusion,
         f"Flow* local one-step width sum: `{summary.get('flowstar_last_width_sum', '')}`.",
         f"PyTorch failed candidate final width sum: `{summary.get('pytorch_candidate_final_width_sum', '')}`.",
@@ -433,8 +493,9 @@ def _write_report(out_dir: Path, summary: Mapping[str, Any], order_summaries: Se
     ]
     for row in order_summaries:
         lines.append(
-            f"| {row.get('order', '')} | {row.get('status', '')} | {_fmt(row.get('flowstar_validated', ''))} | "
-            f"{_fmt(row.get('runtime_s', ''))} | {_fmt(row.get('last_width_sum', ''))} | {row.get('num_segments', '')} | {row.get('failure_reason', '')} |"
+            f"| {row.get('order', '')} | {row.get('flowstar_status', '')} | {_fmt(row.get('flowstar_validated', ''))} | "
+            f"{_fmt(row.get('flowstar_runtime_s', ''))} | {_fmt(row.get('flowstar_last_width_sum', ''))} | "
+            f"{row.get('flowstar_segments', '')} | {row.get('failure_reason', '')} |"
         )
     lines.extend(
         [

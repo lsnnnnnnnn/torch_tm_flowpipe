@@ -131,6 +131,54 @@ def test_one_step_oracle_cpp_template_escapes_printf_newlines():
     assert cpp.count("FLOWSTAR_RUNTIME_S %.17g") == 1
 
 
+def test_committed_one_step_oracle_contract_is_explicit():
+    out_dir = ROOT / "outputs" / "flowstar_one_step_oracle"
+    with (out_dir / "oracle_summary.csv").open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        assert reader.fieldnames == [
+            "order",
+            "flowstar_status",
+            "flowstar_validated",
+            "flowstar_runtime_s",
+            "flowstar_segments",
+            "flowstar_last_width_sum",
+            "pytorch_status",
+            "pytorch_validated",
+            "pytorch_failed_reason",
+            "pytorch_candidate_final_width_sum",
+            "width_ratio_flowstar_over_pytorch",
+            "skip_reason",
+        ]
+    assert {row["order"] for row in rows} >= {"4", "6", "8"}
+    assert all(row["flowstar_status"] != "skipped" for row in rows)
+
+    report = (out_dir / "oracle_report.md").read_text(encoding="utf-8")
+    assert "Did Flow* actually compile and run?" in report
+    assert "Does Flow* validate the same local box and h_try where PyTorch rejects?" in report
+    assert "inconclusive" not in report.split("## Order Comparison", 1)[0]
+
+    for name in [
+        "generated_flowstar_one_step.cpp",
+        "compile_stdout.txt",
+        "compile_stderr.txt",
+        "run_stdout.txt",
+        "run_stderr.txt",
+    ]:
+        artifact = out_dir / name
+        assert artifact.exists()
+        assert artifact.read_text(encoding="utf-8").count("\n") >= 1
+
+
+def test_flowstar_kernel_alignment_notes_are_source_mapped():
+    text = (ROOT / "docs" / "flowstar_kernel_alignment_notes.md").read_text(encoding="utf-8")
+    assert text.startswith("# Flow* Kernel Alignment Notes")
+    assert text.count("\n") > 80
+    assert "/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp:59-78" in text
+    assert "Clean-room target" in text
+    assert "Symbolic_Remainder" in text
+
+
 def test_flowstar_overlap_comparison_does_not_require_segment_count_match():
     module = _load_experiment_module()
     summary = {
