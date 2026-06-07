@@ -13,6 +13,7 @@ from .safety import intervals_are_finite
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
     SymbolicRemainderState,
+    flowstar_normalized_insertion_linear_queue_v2_reset,
     flowstar_normalized_insertion_symbolic_queue_reset,
     flowstar_symbolic_remainder_queue_reset,
     introduce_symbolic_remainders,
@@ -1126,6 +1127,8 @@ def _flowstar_normalized_insertion_transition(
     symbolic_queue_split: bool = False,
     symbolic_queue_state: FlowstarSymbolicRemainderQueue | None = None,
     symbolic_queue_max_size: int = 100,
+    symbolic_queue_mode: str = "",
+    target_remainder_radius: float | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
     horner_diagnostic: bool = False,
@@ -1144,8 +1147,13 @@ def _flowstar_normalized_insertion_transition(
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
+    if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
+        raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
+    symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
     if horner_insertion:
         mode_name = "normalized_insertion_horner"
+    elif symbolic_queue_v2:
+        mode_name = "normalized_insertion_symqueue_v2"
     elif symbolic_queue_split:
         mode_name = "normalized_insertion_symqueue_split"
     elif symbolic_queue:
@@ -1245,7 +1253,17 @@ def _flowstar_normalized_insertion_transition(
     _add_width_metrics(diagnostics, "normalized_reset", reset_box)
     next_queue = prev.symbolic_queue if prev.symbolic_queue is not None else symbolic_queue_state
     initial_remainders: tuple[Interval, ...] | None = None
-    if symbolic_queue:
+    if symbolic_queue_v2:
+        reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_linear_queue_v2_reset(
+            inserted,
+            reset_tm,
+            next_queue,
+            scales=scales,
+            max_size=symbolic_queue_max_size,
+            target_remainder_radius=target_remainder_radius,
+        )
+        diagnostics.update(queue_stats)
+    elif symbolic_queue:
         reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_symbolic_queue_reset(
             inserted,
             reset_tm,
@@ -1265,7 +1283,7 @@ def _flowstar_normalized_insertion_transition(
         scales=scales,
         step_index=int(prev.step_index) + 1,
         diagnostics=diagnostics,
-        symbolic_queue=next_queue if symbolic_queue else None,
+        symbolic_queue=next_queue if (symbolic_queue or symbolic_queue_v2) else None,
         symbolic_queue_max_size=int(symbolic_queue_max_size),
         initial_remainders=initial_remainders,
     )
@@ -3168,6 +3186,7 @@ def flowpipe_step_flowstar_style_adaptive(
     flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
+    symbolic_queue_mode: str = "",
     horner_diagnostic: bool = False,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
@@ -3186,16 +3205,20 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion",
         "normalized_insertion_symqueue",
         "normalized_insertion_symqueue_split",
+        "normalized_insertion_symqueue_v2",
         "normalized_insertion_horner",
     }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
             "reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', "
             "'normalized_insertion', 'normalized_insertion_symqueue', "
-            "'normalized_insertion_symqueue_split', or 'normalized_insertion_horner'"
+            "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
+            "or 'normalized_insertion_horner'"
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
+    if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
+        raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
@@ -3218,7 +3241,8 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
         elif reset_mode in normal_insertion_modes:
-            use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"}
+            use_v2 = reset_mode == "normalized_insertion_symqueue_v2" or symbolic_queue_mode == "flowstar_linear_v2"
+            use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} or use_v2
             use_split = reset_mode == "normalized_insertion_symqueue_split"
             use_horner = reset_mode == "normalized_insertion_horner"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
@@ -3230,13 +3254,15 @@ def flowpipe_step_flowstar_style_adaptive(
                 symbolic_queue_split=use_split,
                 symbolic_queue_state=queue_state,
                 symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
+                symbolic_queue_mode="flowstar_linear_v2" if use_v2 else symbolic_queue_mode,
+                target_remainder_radius=target_remainder_radius,
                 scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
                 right_map_range_mode=right_map_range_mode,
                 horner_diagnostic=horner_diagnostic,
                 horner_insertion=use_horner,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
-            if use_split and symbolic_output_remainders:
+            if (use_split or use_v2) and symbolic_output_remainders:
                 seg.final_tm = _tmvector_add_remainders(seg.final_tm, symbolic_output_remainders)
                 seg.tm = _tmvector_add_remainders(seg.tm, symbolic_output_remainders)
             if use_symqueue and normal_state is not None:

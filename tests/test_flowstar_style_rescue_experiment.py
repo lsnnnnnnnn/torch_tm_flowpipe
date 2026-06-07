@@ -19,6 +19,7 @@ TRACE_SCRIPT = ROOT / "experiments" / "flowstar_symbolic_step_trace.py"
 CHECKPOINT_REPLAY_SCRIPT = ROOT / "experiments" / "flowstar_checkpoint_replay.py"
 ATTRIBUTION_SCRIPT = ROOT / "experiments" / "flowstar_insertion_width_attribution.py"
 RIGHT_MAP_DIAGNOSTICS_SCRIPT = ROOT / "experiments" / "flowstar_right_map_scaling_diagnostics.py"
+QUEUE_AUDIT_SCRIPT = ROOT / "experiments" / "flowstar_queue_state_audit.py"
 FLOWPIPE = ROOT / "src" / "torch_tm_flowpipe" / "flowpipe.py"
 SYMBOLIC_SEMANTICS_DOC = ROOT / "docs" / "flowstar_symbolic_remainder_semantics_map.md"
 EXPECTED_RUN_IDS = {
@@ -705,6 +706,7 @@ def test_required_source_files_have_physical_lines_and_compile():
         CHECKPOINT_REPLAY_SCRIPT,
         ATTRIBUTION_SCRIPT,
         RIGHT_MAP_DIAGNOSTICS_SCRIPT,
+        QUEUE_AUDIT_SCRIPT,
     ]
     for path in source_paths:
         text = path.read_text(encoding="utf-8")
@@ -805,6 +807,56 @@ def test_normalized_insertion_symqueue_split_h10_specialized_outputs_smoke(tmp_p
 
 
 
+def test_normalized_insertion_symqueue_v2_h10_specialized_outputs_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_symbolic_queue_v2_h10"
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--out-dir",
+            str(out_dir),
+            "--max-horizon",
+            "0.02",
+            "--wall-cap-s",
+            "120",
+            "--configs",
+            "flowstar_style_o4_target_insert_symqueue_v2",
+            "flowstar_style_o6_candidate8_output6_insert_symqueue_v2",
+        ],
+        check=True,
+    )
+
+    for name in [
+        "symqueue_v2_summary.csv",
+        "symqueue_v2_segments.csv",
+        "symqueue_v2_reset_diagnostics.csv",
+        "symqueue_v2_validation_attempts.csv",
+        "symqueue_v2_vs_flowstar_comparison.csv",
+        "symqueue_v2_report.md",
+        "queue_channels_vs_t.png",
+        "reset_width_vs_t.png",
+    ]:
+        assert (out_dir / name).exists()
+    summary = pd.read_csv(out_dir / "symqueue_v2_summary.csv")
+    assert set(summary["reset_mode"]) == {"normalized_insertion_symqueue_v2"}
+    assert set(summary["symbolic_queue_mode"]) == {"flowstar_linear_v2"}
+    segments = pd.read_csv(out_dir / "symqueue_v2_segments.csv")
+    assert {
+        "j_count",
+        "phi_l_count",
+        "current_linear_map_norm",
+        "output_only_symbolic_width_sum",
+        "target_check_width_sum",
+        "output_range_includes_symbolic_contributions",
+    } <= set(segments.columns)
+    reset = pd.read_csv(out_dir / "symqueue_v2_reset_diagnostics.csv")
+    assert "current_linear_map_entries" in reset.columns
+    report = (out_dir / "symqueue_v2_report.md").read_text(encoding="utf-8")
+    assert "Did v2 beat split queue" in report
+    assert "not Flow* parity" in report
+    assert report.count("\n") > 10
+
+
 def test_right_map_scaling_diagnostics_script_smoke(tmp_path):
     source_dir = tmp_path / "source"
     out_dir = tmp_path / "right_map_diagnostics"
@@ -869,19 +921,50 @@ def test_h10_failure_localization_outputs_smoke(tmp_path):
     assert report.count("\n") > 10
 
 
+def test_flowstar_queue_state_audit_script_smoke(tmp_path):
+    out_dir = tmp_path / "flowstar_queue_state_audit"
+    subprocess.run(
+        [
+            sys.executable,
+            str(QUEUE_AUDIT_SCRIPT),
+            "--out-dir",
+            str(out_dir),
+        ],
+        check=True,
+    )
+
+    for name in ["queue_state_trace.csv", "queue_state_report.md"]:
+        assert (out_dir / name).exists()
+    trace = pd.read_csv(out_dir / "queue_state_trace.csv")
+    assert {
+        "t_hi",
+        "queue_size",
+        "current_linear_map_norm",
+        "phi_l_count",
+        "j_count",
+        "target_check_width_exceeds_target",
+        "output_range_includes_all_symbolic_contributions",
+    } <= set(trace.columns)
+    report = (out_dir / "queue_state_report.md").read_text(encoding="utf-8")
+    assert "Is Phi_L actually propagating old J?" in report
+    assert report.count("\n") > 10
+
+
 def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
     out_dir = tmp_path / "flowstar_normalized_insertion_h10"
     out_dir.mkdir()
     (out_dir / "rescue_summary.csv").write_text(
         "run_id,reset_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum\n"
         "sample_run,normalized_insertion,0.01,max_horizon_reached,0.1,1,0,1.0\n"
-        "split_sample_run,normalized_insertion_symqueue_split,0.01,max_horizon_reached,0.1,1,0,1.0\n",
+        "split_sample_run,normalized_insertion_symqueue_split,0.01,max_horizon_reached,0.1,1,0,1.0\n"
+        "v2_sample_run,normalized_insertion_symqueue_v2,0.01,max_horizon_reached,0.1,1,0,1.0\n",
         encoding="utf-8",
     )
     (out_dir / "rescue_segments.csv").write_text(
         "run_id,status,t_hi,x_lo,x_hi,y_lo,y_hi\n"
         "sample_run,validated,0.01,-10,10,-10,10\n"
-        "split_sample_run,validated,0.01,-10,10,-10,10\n",
+        "split_sample_run,validated,0.01,-10,10,-10,10\n"
+        "v2_sample_run,validated,0.01,-10,10,-10,10\n",
         encoding="utf-8",
     )
     (out_dir / "normalized_insertion_h10_summary.csv").write_text(
@@ -899,6 +982,20 @@ def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
         encoding="utf-8",
     )
     (out_dir / "symqueue_split_vs_flowstar_comparison.csv").write_text(
+        "run_id,last_width_ratio,tube_width_ratio\n",
+        encoding="utf-8",
+    )
+    (out_dir / "symqueue_v2_summary.csv").write_text(
+        "run_id,reset_mode,symbolic_queue_mode,last_validated_t,status,runtime_s,validated_segments,h_below_flowstar_min_count,final_width_sum,target_remainder_radius\n"
+        "v2_sample_run,normalized_insertion_symqueue_v2,flowstar_linear_v2,0.01,max_horizon_reached,0.1,1,0,1.0,0.0001\n",
+        encoding="utf-8",
+    )
+    (out_dir / "symqueue_v2_segments.csv").write_text(
+        "run_id,status,reset_mode,t_hi,j_count,phi_l_count,output_range_includes_symbolic_contributions,output_only_symbolic_width_sum,reset_box_width_sum,target_check_width_sum\n"
+        "v2_sample_run,validated,normalized_insertion_symqueue_v2,0.01,1,1,true,0.0,1.0,0.0\n",
+        encoding="utf-8",
+    )
+    (out_dir / "symqueue_v2_vs_flowstar_comparison.csv").write_text(
         "run_id,last_width_ratio,tube_width_ratio\n",
         encoding="utf-8",
     )
@@ -921,13 +1018,15 @@ def test_sample_containment_script_smoke_and_h10_report_refresh(tmp_path):
 
     summary = pd.read_csv(out_dir / "sample_containment_summary.csv")
     assert int(summary.loc[0, "violations_count"]) == 0
-    assert summary.loc[0, "run_id"] == "split_sample_run"
+    assert summary.loc[0, "run_id"] == "v2_sample_run"
     report = (out_dir / "sample_containment_report.md").read_text(encoding="utf-8")
     assert "not a reachability proof" in report
     h10_report = (out_dir / "normalized_insertion_h10_report.md").read_text(encoding="utf-8")
     assert "Did sample containment sanity pass? passed" in h10_report
     split_report = (out_dir / "symqueue_split_report.md").read_text(encoding="utf-8")
     assert "Did range boxes remain conservative and sample containment pass? passed" in split_report
+    v2_report = (out_dir / "symqueue_v2_report.md").read_text(encoding="utf-8")
+    assert "Did sample containment pass? passed" in v2_report
 
 
 def test_residual_centering_specialized_outputs_smoke(tmp_path):

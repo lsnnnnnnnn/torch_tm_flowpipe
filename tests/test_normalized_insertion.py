@@ -241,6 +241,57 @@ def test_normalized_insertion_symqueue_split_keeps_target_seed_clean():
     assert stats["total_range_width_with_symbolic"] >= stats["ordinary_only_range_width"]
 
 
+def test_normalized_insertion_symqueue_v2_keeps_target_clean_and_records_linear_state():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    first = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        x0,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue_v2",
+        symbolic_queue_mode="flowstar_linear_v2",
+        flowstar_symbolic_queue_max_size=100,
+    )
+
+    assert first.status == "validated"
+    assert first.flowstar_normal_state is not None
+    assert first.flowstar_normal_state.symbolic_queue is not None
+
+    second = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        first.reset_tm,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_symqueue_v2",
+        symbolic_queue_mode="flowstar_linear_v2",
+        flowstar_symbolic_queue_max_size=100,
+        flowstar_normal_state=first.flowstar_normal_state,
+    )
+
+    assert second.status == "validated"
+    assert second.flowstar_normal_state is not None
+    assert second.flowstar_normal_state.initial_remainders is None
+    assert second.flowstar_symbolic_queue_stats is not None
+    stats = second.flowstar_symbolic_queue_stats
+    assert stats["symbolic_queue_mode"] == "flowstar_linear_v2"
+    assert stats["semantic_split"] is True
+    assert stats["j_count"] == 2
+    assert stats["phi_l_count"] == 2
+    assert stats["target_check_width_sum"] <= 1e-15
+    assert stats["output_range_includes_symbolic_contributions"] is True
+    assert stats["current_linear_map_norm"] > 0.0
+    assert stats["scalar_x"] > 0.0
+    assert stats["scalar_y"] > 0.0
+
+
 def test_normalized_insertion_normal_eval_range_mode_records_old_and_normal_ranges():
     x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
     seg = flowpipe_step_flowstar_style_adaptive(

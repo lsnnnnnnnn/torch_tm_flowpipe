@@ -104,7 +104,9 @@ def _rk4_advance(state: tuple[float, float], dt_total: float, max_dt: float) -> 
 def _select_run(summary_rows: Sequence[Mapping[str, str]], run_id: str | None) -> str:
     if run_id:
         return run_id
-    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue_split"]
+    candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue_v2"]
+    if not candidates:
+        candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue_split"]
     if not candidates:
         candidates = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_symqueue"]
     if not candidates:
@@ -245,6 +247,15 @@ def refresh_h10_report(out_dir: Path, max_horizon: float) -> None:
         summary_rows = _read_rows(split_summary_path)
         comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
         rescue.write_symqueue_split_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
+
+    v2_summary_path = out_dir / "symqueue_v2_summary.csv"
+    if v2_summary_path.exists():
+        comparison_path = out_dir / "symqueue_v2_vs_flowstar_comparison.csv"
+        segment_path = out_dir / "symqueue_v2_segments.csv"
+        summary_rows = _read_rows(v2_summary_path)
+        segment_rows = _read_rows(segment_path) if segment_path.exists() else []
+        comparison_rows = _read_rows(comparison_path) if comparison_path.exists() else []
+        rescue.write_symqueue_v2_h10_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

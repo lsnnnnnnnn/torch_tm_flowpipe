@@ -110,6 +110,10 @@ def _right_scale_matrix(matrix: RealMatrix, scalars: Sequence[float]) -> RealMat
     return tuple(tuple(value * float(scalars[j]) for j, value in enumerate(row)) for row in matrix)
 
 
+def _identity_matrix(dim: int) -> RealMatrix:
+    return tuple(tuple(1.0 if i == j else 0.0 for j in range(int(dim))) for i in range(int(dim)))
+
+
 def _matmul_real(a: RealMatrix, b: RealMatrix) -> RealMatrix:
     if not a:
         return ()
@@ -140,6 +144,66 @@ def _add_interval_columns(a: IntervalColumn, b: IntervalColumn) -> IntervalColum
 
 def _column_width_sum(column: IntervalColumn) -> float:
     return sum(_interval_width(iv) for iv in column)
+
+
+def _column_widths(column: IntervalColumn) -> list[float]:
+    return [_interval_width(iv) for iv in column]
+
+
+def _matrix_norm(matrix: RealMatrix) -> float:
+    return sum(abs(v) for row in matrix for v in row)
+
+
+def _matrix_entries(matrix: RealMatrix) -> str:
+    return ";".join(",".join(f"{float(v):.17g}" for v in row) for row in matrix)
+
+
+def _inverse_scales(scales: Sequence[float], dim: int) -> tuple[float, ...]:
+    values: list[float] = []
+    for i in range(int(dim)):
+        scale = float(scales[i]) if i < len(scales) else 0.0
+        values.append(1.0 if scale == 0.0 else 1.0 / scale)
+    return tuple(values)
+
+
+def _range_widths(tmv: TMVector) -> list[float]:
+    return [_interval_width(iv) for iv in tmv.range_box()]
+
+
+def _nonlinear_remainder_widths(tmv: TMVector) -> list[float]:
+    widths: list[float] = []
+    for model in tmv:
+        nonlinear_terms = {
+            exp: coeff
+            for exp, coeff in model.polynomial.terms.items()
+            if sum(exp) >= 2
+        }
+        nonlinear_poly = Polynomial(nonlinear_terms, model.n_vars)
+        nonlinear_range = nonlinear_poly.evaluate_interval(model.domain) if nonlinear_terms else _zero_interval_like(model.domain)
+        widths.append(_interval_width(nonlinear_range + model.remainder))
+    return widths
+
+
+def _set_component_width_stats(stats: dict[str, Any], prefix: str, widths: Sequence[float]) -> None:
+    stats[f"{prefix}_width_x"] = widths[0] if len(widths) > 0 else ""
+    stats[f"{prefix}_width_y"] = widths[1] if len(widths) > 1 else ""
+    stats[f"{prefix}_width_sum"] = sum(float(w) for w in widths)
+
+
+def _propagate_queue_v2(
+    state: FlowstarSymbolicRemainderQueue,
+    phi_l_i: RealMatrix,
+    reference: Interval,
+) -> tuple[tuple[RealMatrix, ...], IntervalColumn]:
+    identity = _identity_matrix(state.dim)
+    old_phi = tuple(state.Phi_L)
+    if len(old_phi) < len(state.J):
+        old_phi = old_phi + tuple(identity for _ in range(len(state.J) - len(old_phi)))
+    updated_phi = tuple(_matmul_real(phi_l_i, phi) for phi in old_phi[: len(state.J)])
+    propagated = tuple(_zero_interval_like_interval(reference) for _ in range(state.dim))
+    for phi, column in zip(updated_phi, state.J):
+        propagated = _add_interval_columns(propagated, _matmul_interval_col(phi, column, reference))
+    return updated_phi, propagated
 
 
 def _updated_phi_and_propagated_remainder(
@@ -316,6 +380,114 @@ def flowstar_normalized_insertion_symbolic_queue_reset(
         ),
     }
     return reset_with_queue, new_state, stats
+
+
+
+def flowstar_normalized_insertion_linear_queue_v2_reset(
+    inserted_endpoint: TMVector,
+    reset_tm: TMVector,
+    state: FlowstarSymbolicRemainderQueue | None,
+    *,
+    scales: Sequence[float],
+    max_size: int = 100,
+    target_remainder_radius: float | None = None,
+) -> tuple[TMVector, FlowstarSymbolicRemainderQueue, dict[str, Any]]:
+    """Flow*-style linear symbolic queue v2 for normalized insertion.
+
+    This remains a clean-room approximation. The ordinary normalized reset is
+    left target-clean; propagated old symbolic queue width is returned as an
+    output/range-only contribution, and the current insertion remainder is
+    queued for future linear propagation.
+    """
+
+    dim = len(reset_tm)
+    if dim == 0:
+        empty = FlowstarSymbolicRemainderQueue.empty(0, max_size)
+        return reset_tm, empty, {"queue_size": 0, "queue_reset": False, "symbolic_queue_mode": "flowstar_linear_v2"}
+    if state is None or state.dim != dim or int(state.max_size) != int(max_size):
+        state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+
+    reference = reset_tm[0].remainder
+    current_linear = _linear_coefficients(inserted_endpoint)
+    phi_l_i = _right_scale_matrix(current_linear, state.scalars)
+    updated_phi, propagated = _propagate_queue_v2(state, phi_l_i, reference)
+    current_j = tuple(model.remainder for model in inserted_endpoint)
+    inverse_scale_tuple = _inverse_scales(scales, dim)
+
+    new_j = state.J + (current_j,)
+    new_phi = updated_phi + (_identity_matrix(dim),)
+    queue_reset = bool(int(max_size) > 0 and len(new_j) >= int(max_size))
+    if queue_reset:
+        new_state = FlowstarSymbolicRemainderQueue.empty(dim, max_size)
+    else:
+        new_state = FlowstarSymbolicRemainderQueue(tuple(new_j), tuple(new_phi), inverse_scale_tuple, int(max_size))
+
+    propagated_widths = _column_widths(propagated)
+    new_widths = _column_widths(current_j)
+    target_widths = _column_widths(tuple(model.remainder for model in reset_tm))
+    right_map_widths = _range_widths(inserted_endpoint)
+    reset_widths = _range_widths(reset_tm)
+    nonlinear_widths = _nonlinear_remainder_widths(inserted_endpoint)
+    total_with_symbolic_tm = TMVector(
+        model.with_remainder(model.remainder + rem)
+        for model, rem in zip(reset_tm, propagated)
+    )
+    ordinary_only_range_width = sum(reset_widths)
+    total_range_width_with_symbolic = sum(_range_widths(total_with_symbolic_tm))
+    target_radius = float(target_remainder_radius) if target_remainder_radius is not None else None
+    target_exceeds = (
+        any(width > target_radius + 1e-15 for width in target_widths)
+        if target_radius is not None
+        else False
+    )
+    output_includes_symbolic = (
+        total_range_width_with_symbolic + 1e-15 >= ordinary_only_range_width
+        and total_range_width_with_symbolic + 1e-15 >= sum(propagated_widths)
+    )
+
+    stats: dict[str, Any] = {
+        "queue_size_before": len(state.J),
+        "queue_size_after": len(new_state.J),
+        "queue_size": len(new_state.J),
+        "queue_reset": queue_reset,
+        "semantic_split": True,
+        "symbolic_queue_mode": "flowstar_linear_v2",
+        "j_count": len(new_state.J),
+        "phi_l_count": len(new_state.Phi_L),
+        "current_linear_map_entries": _matrix_entries(current_linear),
+        "current_linear_map_norm": _matrix_norm(current_linear),
+        "current_phi_l_map_entries": _matrix_entries(phi_l_i),
+        "current_phi_l_map_norm": _matrix_norm(phi_l_i),
+        "linear_map_norm": _matrix_norm(current_linear),
+        "linear_map_abs_sum": _matrix_norm(current_linear),
+        "scalars": ";".join(f"{float(s):.17g}" for s in inverse_scale_tuple),
+        "scalar_x": inverse_scale_tuple[0] if len(inverse_scale_tuple) > 0 else "",
+        "scalar_y": inverse_scale_tuple[1] if len(inverse_scale_tuple) > 1 else "",
+        "ordinary_only_range_width": ordinary_only_range_width,
+        "symbolic_contribution_width": sum(propagated_widths),
+        "total_range_width_with_symbolic": total_range_width_with_symbolic,
+        "target_checked_width": sum(target_widths),
+        "target_check_exceeds_target": target_exceeds,
+        "output_range_includes_symbolic_contributions": output_includes_symbolic,
+        "materialized_for_output_width": sum(propagated_widths),
+        "conservative": output_includes_symbolic,
+        "_symbolic_output_remainders": propagated,
+        "approximation": (
+            "flowstar_linear_v2; old interval columns are propagated through "
+            "degree-1 normalized-insertion maps with inverse reset scalars, "
+            "while nonlinear polynomial terms and ordinary local remainders stay outside the queue"
+        ),
+    }
+    _set_component_width_stats(stats, "propagated_symbolic", propagated_widths)
+    _set_component_width_stats(stats, "new_symbolic", new_widths)
+    _set_component_width_stats(stats, "materialized", propagated_widths)
+    _set_component_width_stats(stats, "ordinary_step_remainder", new_widths)
+    _set_component_width_stats(stats, "current_nonlinear_remainder", nonlinear_widths)
+    _set_component_width_stats(stats, "reset_box", reset_widths)
+    _set_component_width_stats(stats, "right_map_range", right_map_widths)
+    _set_component_width_stats(stats, "target_check", target_widths)
+    _set_component_width_stats(stats, "output_only_symbolic", propagated_widths)
+    return reset_tm, new_state, stats
 
 
 def _interval_width(iv: Interval) -> float:
