@@ -674,7 +674,7 @@ def _segment_row(
     reset_mode = str(spec.get("reset_mode", normal_stats.get("reset_mode", queue_stats.get("reset_mode", "normalized_endpoint_box"))))
     if reset_mode == "flowstar_symbolic_remainder_queue":
         reset_box_source = "flowstar_symbolic_remainder_queue"
-    elif reset_mode in {"normalized_insertion", "normalized_insertion_symqueue", "normalized_insertion_symqueue_split"}:
+    elif reset_mode in {"normalized_insertion", "normalized_insertion_symqueue", "normalized_insertion_symqueue_split", "normalized_insertion_horner"}:
         reset_box_source = reset_mode
     else:
         reset_box_source = "normalized_endpoint_reset_box"
@@ -756,6 +756,22 @@ def _segment_row(
         "tmv_pre_term_count": normal_stats.get("tmv_pre_term_count", ""),
         "terms_before_insertion_truncation": normal_stats.get("terms_before_insertion_truncation", ""),
         "terms_after_insertion": normal_stats.get("terms_after_insertion", ""),
+        "horner_direct_range_width_sum": normal_stats.get("direct_range_width_sum", ""),
+        "horner_range_width_sum": normal_stats.get("horner_range_width_sum", ""),
+        "horner_direct_normal_range_width_sum": normal_stats.get("direct_normal_range_width_sum", ""),
+        "horner_normal_range_width_sum": normal_stats.get("horner_normal_range_width_sum", ""),
+        "horner_minus_direct_range_width_sum": normal_stats.get("horner_minus_direct_range_width_sum", ""),
+        "horner_minus_direct_normal_range_width_sum": normal_stats.get("horner_minus_direct_normal_range_width_sum", ""),
+        "horner_reduced_range": normal_stats.get("horner_reduced_range", ""),
+        "horner_reduced_normal_range": normal_stats.get("horner_reduced_normal_range", ""),
+        "horner_changed_range": normal_stats.get("horner_changed_range", ""),
+        "horner_stage_count": normal_stats.get("horner_stage_count", ""),
+        "horner_time_branch_stage_count": normal_stats.get("horner_time_branch_stage_count", ""),
+        "horner_state_branch_stage_count": normal_stats.get("horner_state_branch_stage_count", ""),
+        "horner_y_branch_stage_count": normal_stats.get("horner_y_branch_stage_count", ""),
+        "horner_truncation_width_sum": normal_stats.get("horner_truncation_width_sum", ""),
+        "horner_cutoff_width_sum": normal_stats.get("horner_cutoff_width_sum", ""),
+        "horner_outer_remainder_width_sum": normal_stats.get("horner_outer_remainder_width_sum", ""),
         "step_rejections": getattr(seg, "step_rejections", 0),
         "next_h": "" if getattr(seg, "next_h", None) is None else getattr(seg, "next_h"),
         "message": getattr(seg, "message", ""),
@@ -797,6 +813,10 @@ def _segment_row(
     details = getattr(seg, "selective_term_details", None)
     if details:
         row["_selective_term_details"] = [dict(item) for item in details]
+    if normal_stats.get("_horner_stage_ranges"):
+        row["_horner_stage_ranges"] = [dict(item) for item in normal_stats["_horner_stage_ranges"]]
+    if normal_stats.get("_horner_top_components"):
+        row["_horner_top_components"] = [dict(item) for item in normal_stats["_horner_top_components"]]
     return row
 
 
@@ -1107,6 +1127,7 @@ def _run_adaptive(spec: Mapping[str, Any], *, max_horizon: float, wall_cap_s: fl
                     reset_mode=str(spec.get("reset_mode", "normalized_endpoint_box")),
                     right_map_range_mode=str(spec.get("right_map_range_mode", "standard")),
                     scalar_recenter_remainder_midpoint=bool(spec.get("scalar_recenter_remainder_midpoint", False)),
+                    horner_diagnostic=bool(spec.get("horner_diagnostic", False)) and segment_index >= int(spec.get("horner_diagnostic_segment_min", 0) or 0),
                     flowstar_symbolic_queue_state=flowstar_queue_state,
                     flowstar_symbolic_queue_max_size=int(spec.get("flowstar_symbolic_queue_max_size") or 100),
                     flowstar_normal_state=flowstar_normal_state,
@@ -1174,6 +1195,7 @@ def _configs() -> list[dict[str, Any]]:
         scalar_recenter_remainder_midpoint: bool = False,
         reset_mode: str = "normalized_endpoint_box",
         flowstar_symbolic_queue_max_size: int | None = None,
+        horner_diagnostic: bool = False,
     ) -> dict[str, Any]:
         spec: dict[str, Any] = {
             "run_id": run_id,
@@ -1199,6 +1221,8 @@ def _configs() -> list[dict[str, Any]]:
             spec["normal_eval_range_split"] = int(normal_eval_range_split)
         if scalar_recenter_remainder_midpoint:
             spec["scalar_recenter_remainder_midpoint"] = True
+        if horner_diagnostic:
+            spec["horner_diagnostic"] = True
         if selective_high_degree_terms_top_k is not None:
             spec["selective_high_degree_terms_top_k"] = int(selective_high_degree_terms_top_k)
         if adaptive_order_fallback is not None:
@@ -1237,6 +1261,17 @@ def _configs() -> list[dict[str, Any]]:
             order=4,
             cutoff_threshold=1e-10,
             reset_mode="normalized_insertion",
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_insert_horner",
+            order=4,
+            reset_mode="normalized_insertion_horner",
+        ),
+        flowstar_spec(
+            "flowstar_style_o4_target_cutoff_insert_horner",
+            order=4,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion_horner",
         ),
         flowstar_spec(
             "flowstar_style_o4_target_insert_scalars",
@@ -1389,6 +1424,19 @@ def _configs() -> list[dict[str, Any]]:
             candidate_order=8,
             cutoff_threshold=1e-10,
             reset_mode="normalized_insertion",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_insert_horner",
+            order=6,
+            candidate_order=8,
+            reset_mode="normalized_insertion_horner",
+        ),
+        flowstar_spec(
+            "flowstar_style_o6_candidate8_output6_cutoff_insert_horner",
+            order=6,
+            candidate_order=8,
+            cutoff_threshold=1e-10,
+            reset_mode="normalized_insertion_horner",
         ),
         flowstar_spec(
             "flowstar_style_o6_candidate8_output6_insert_symqueue",
@@ -1637,7 +1685,7 @@ def write_report(
                 f"{row.get('min_regular_h_used', '')} | {row.get('h_below_flowstar_min_count', '')} |"
             )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "rescue_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def make_plots(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]], attempt_rows: Sequence[Mapping[str, Any]]) -> None:
@@ -2091,7 +2139,7 @@ def write_flowstar_comparison_report(
             f"{row['median_time_overlap_width_ratio']} |"
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "rescue_vs_flowstar_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_vs_flowstar_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_rescue_vs_flowstar_outputs(
@@ -2247,7 +2295,7 @@ def _write_adaptive_order_report(
             f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
             f"{row.get('num_order8_steps', '')} | {row.get('runtime_s', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "adaptive_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "adaptive_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _write_remainder_sensitivity_report(out_dir: Path, rows: Sequence[Mapping[str, Any]], *, max_horizon: float) -> None:
@@ -2282,7 +2330,7 @@ def _write_remainder_sensitivity_report(out_dir: Path, rows: Sequence[Mapping[st
             "Do not recommend relaxed remainders as parity unless the report explicitly labels the parameter change.",
         ]
     )
-    (out_dir / "remainder_sensitivity_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "remainder_sensitivity_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _write_refined_report(out_dir: Path, summary_rows: Sequence[Mapping[str, Any]], *, max_horizon: float) -> None:
@@ -2308,7 +2356,7 @@ def _write_refined_report(out_dir: Path, summary_rows: Sequence[Mapping[str, Any
             f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
             f"{row.get('runtime_s', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "refined_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "refined_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
@@ -2388,7 +2436,7 @@ def _write_candidate_order_report(
             f"{row.get('output_order', '')} | {row.get('last_validated_t', '')} | {row.get('runtime_s', '')} | "
             f"{comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "candidate_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "candidate_order_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _write_truncation_range_report(
@@ -2429,7 +2477,7 @@ def _write_truncation_range_report(
             f"{row.get('candidate_order', '')} | {row.get('output_order', '')} | {row.get('last_validated_t', '')} | "
             f"{row.get('runtime_s', '')} | {comp.get('last_width_ratio', '')} | {comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "truncation_range_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "truncation_range_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
@@ -2510,7 +2558,7 @@ def _write_residual_centering_report(
             f"{row.get('max_center_correction_abs', '')} | {comp_row.get('last_width_ratio', '')} | "
             f"{comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "residual_centering_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "residual_centering_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _write_selective_terms_report(
@@ -2575,7 +2623,7 @@ def _write_selective_terms_report(
             f"{row.get('max_selective_dropped_remainder_width_sum', '')} | {row.get('runtime_s', '')} | "
             f"{comp_row.get('last_width_ratio', '')} | {comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "selective_terms_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "selective_terms_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 def _last_failed_attempt(attempt_rows: Sequence[Mapping[str, Any]], run_id: str | None = None) -> Mapping[str, Any]:
     rows = [row for row in attempt_rows if row.get("validation_status") == "failed"]
@@ -2669,7 +2717,7 @@ def _write_ctrunc_validation_report(
             f"{row.get('runtime_s', '')} | {_failure_dimension_from_attempt(failed_row)} | "
             f"{comp_row.get('last_width_ratio', '')} | {comp_row.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
         )
-    (out_dir / "ctrunc_validation_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "ctrunc_validation_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def _selective_validation_path_term_rows(attempt_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -2748,7 +2796,7 @@ def _write_selective_validation_path_audit(out_dir: Path, attempt_rows: Sequence
         f"| inside_validation | {len(inside_rows)} | {inside_high} |",
         f"| after_internal | {len(internal_rows)} | {internal_high} |",
     ]
-    (out_dir / "validation_path_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "validation_path_audit.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
@@ -2827,7 +2875,7 @@ def _write_width_control_report(
             f"{row.get('max_flowstar_propagated_remainder_width_sum', '')} | {row.get('failure_reason', '')} |"
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "width_control_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "width_control_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     decision_lines = [
         "# Branch Decision",
         "",
@@ -3043,13 +3091,14 @@ def _write_normalized_insertion_report(
             f"{row.get('max_insertion_truncation_width', '')} | {row.get('max_insertion_cutoff_width', '')} | {row.get('failure_reason', '')} |"
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "normalized_insertion_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "normalized_insertion_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
 H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_h10"
 NORMAL_EVAL_H10_OUTPUT_DIR_NAME = "flowstar_normal_eval_h10"
 SYMQUEUE_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_h10"
+HORNER_H10_OUTPUT_DIR_NAME = "flowstar_horner_insertion_h10"
 SYMQUEUE_SPLIT_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_split_h10"
 H10_CONFIG_IDS = [
     "flowstar_style_o6_candidate8_output6_cutoff_insert",
@@ -3269,7 +3318,7 @@ def write_normalized_insertion_h10_vs_flowstar_report(
             f"{comp.get('max_time_overlap_width_ratio', '')} | {comp.get('median_time_overlap_width_ratio', '')} |"
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "normalized_insertion_h10_vs_flowstar_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "normalized_insertion_h10_vs_flowstar_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_normalized_insertion_h10_report(
@@ -3376,7 +3425,7 @@ def write_normalized_insertion_h10_report(
             ]
         )
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "normalized_insertion_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "normalized_insertion_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_normalized_insertion_h10_outputs(
@@ -3506,7 +3555,7 @@ def write_normal_eval_h10_report(
             f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
         ])
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "normal_eval_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "normal_eval_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     decision_lines = [
         "# Branch Decision",
         "",
@@ -3695,7 +3744,7 @@ def write_symqueue_h10_report(
             f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
         ])
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "symqueue_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "symqueue_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_symqueue_h10_outputs(
@@ -3878,7 +3927,7 @@ def write_symqueue_split_h10_report(
             f"{sample_row.get('violations_count', '')} | {sample_row.get('max_outside_distance', '')} | {sample_row.get('status', '')} |",
         ])
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "symqueue_split_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "symqueue_split_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def write_symqueue_split_h10_outputs(
@@ -3897,6 +3946,140 @@ def write_symqueue_split_h10_outputs(
     _write_csv(out_dir / "symqueue_split_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
     write_symqueue_split_h10_report(out_dir, summary_rows, comparison_rows, max_horizon=max_horizon)
     make_symqueue_split_h10_plots(out_dir, segment_rows)
+
+
+HORNER_EXTRA_FIELDS = [
+    "horner_direct_range_width_sum",
+    "horner_range_width_sum",
+    "horner_direct_normal_range_width_sum",
+    "horner_normal_range_width_sum",
+    "horner_minus_direct_range_width_sum",
+    "horner_minus_direct_normal_range_width_sum",
+    "horner_reduced_range",
+    "horner_reduced_normal_range",
+    "horner_changed_range",
+    "horner_stage_count",
+    "horner_time_branch_stage_count",
+    "horner_state_branch_stage_count",
+    "horner_y_branch_stage_count",
+    "horner_truncation_width_sum",
+    "horner_cutoff_width_sum",
+    "horner_outer_remainder_width_sum",
+]
+
+
+def _horner_reset_rows(segment_rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    base_rows = _normalized_insertion_reset_rows(segment_rows)
+    by_key = {(row.get("run_id"), row.get("segment_index")): row for row in segment_rows}
+    rows: list[dict[str, Any]] = []
+    for row in base_rows:
+        source = by_key.get((row.get("run_id"), row.get("segment_index")), {})
+        rows.append({**row, **{field: source.get(field, "") for field in HORNER_EXTRA_FIELDS}})
+    return rows
+
+
+def _write_horner_h10_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    comparison_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    horner_rows = [row for row in summary_rows if row.get("reset_mode") == "normalized_insertion_horner"]
+    best = _best(horner_rows)
+    best_t = _finite_float(best.get("last_validated_t")) if best else 0.0
+    reached = bool(best_t is not None and best_t >= float(max_horizon) - 1e-9)
+    comp = _best_comparison_for_run(comparison_rows, str(best.get("run_id", ""))) if best else None
+    o4_t = max((_finite_float(row.get("last_validated_t")) or 0.0 for row in horner_rows if "o4" in str(row.get("run_id", ""))), default=0.0)
+    o6_t = max((_finite_float(row.get("last_validated_t")) or 0.0 for row in horner_rows if "o6" in str(row.get("run_id", ""))), default=0.0)
+    validated_segments = [row for row in segment_rows if row.get("status") == "validated" and row.get("reset_mode") == "normalized_insertion_horner"]
+    changed = any(str(row.get("horner_changed_range", "")).lower() == "true" for row in validated_segments)
+    reduced = any(str(row.get("horner_reduced_range", "")).lower() == "true" for row in validated_segments)
+    lines = [
+        "# Horner Insertion H10 Report",
+        "",
+        f"Requested max horizon: `{float(max_horizon):.17g}`.",
+        f"Best Horner insertion config: `{best.get('run_id', '') if best else ''}` at t=`{best_t}`.",
+        f"Did Horner insertion beat o4 t~=6.473? {_yes_no(o4_t > 6.4730088058091901)}.",
+        f"Did Horner insertion beat o6 t~=7.496? {_yes_no(o6_t > 7.4960392581387341)}.",
+        f"Did any config reach h10? {_yes_no(reached)}.",
+        f"Did width ratios improve? last=`{comp.get('last_width_ratio', '') if comp else ''}`, tube=`{comp.get('tube_width_ratio', '') if comp else ''}`.",
+        "Did sample containment pass? see `sample_containment_summary.csv` if the sample containment command was run for this directory.",
+        f"Runtime cost: best runtime_s=`{best.get('runtime_s', '') if best else ''}`.",
+        f"Did Horner diagnostic materially change/reduce ranges in this run? changed={_yes_no(changed)}, reduced={_yes_no(reduced)}.",
+        "If no improvement, the likely explanation is that this polynomial case is dominated by the same right-map range/scale channel or this clean-room Horner diagnostic is still incomplete relative to Flow* symbolic queue propagation.",
+        "",
+        "## Config Status",
+        "",
+        "| run_id | status | last_validated_t | accepted | rejected | final_width_sum | last_width_ratio | tube_width_ratio | failure_reason |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    comp_by_run = {str(row.get("run_id", "")): row for row in comparison_rows}
+    for row in horner_rows:
+        row_comp = comp_by_run.get(str(row.get("run_id", "")), {})
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('status', '')} | {row.get('last_validated_t', '')} | "
+            f"{row.get('num_accepted_steps', '')} | {row.get('num_rejected_steps', '')} | {row.get('final_width_sum', '')} | "
+            f"{row_comp.get('last_width_ratio', '')} | {row_comp.get('tube_width_ratio', '')} | {row.get('failure_reason', '')} |"
+        )
+    (out_dir / "horner_h10_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def _make_horner_stage_uncertainty_plot(out_dir: Path, segment_rows: Sequence[Mapping[str, Any]]) -> None:
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for row in segment_rows:
+        if row.get("status") == "validated" and row.get("reset_mode") == "normalized_insertion_horner":
+            grouped.setdefault(str(row.get("run_id", "")), []).append(row)
+    if not grouped:
+        return
+    fig, ax = plt.subplots(figsize=(9.0, 4.8))
+    for run_id, rows in grouped.items():
+        pts = []
+        for row in sorted(rows, key=lambda r: _finite_float(r.get("t_hi")) or 0.0):
+            t_hi = _finite_float(row.get("t_hi"))
+            trunc = _finite_float(row.get("horner_truncation_width_sum")) or 0.0
+            cutoff = _finite_float(row.get("horner_cutoff_width_sum")) or 0.0
+            outer = _finite_float(row.get("horner_outer_remainder_width_sum")) or 0.0
+            if t_hi is not None:
+                pts.append((t_hi, trunc + cutoff + outer))
+        if pts:
+            ax.plot([p[0] for p in pts], [p[1] for p in pts], linewidth=1.0, label=run_id)
+    ax.set_xlabel("t")
+    ax.set_ylabel("Horner stage uncertainty width sum")
+    ax.set_yscale("log")
+    ax.grid(True, alpha=0.25, linewidth=0.6)
+    ax.legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out_dir / "horner_stage_uncertainty_vs_t.png", dpi=160)
+    plt.close(fig)
+
+
+def write_horner_h10_outputs(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+    comparison_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    segment_fields = list(SEGMENT_FIELDS) + [field for field in HORNER_EXTRA_FIELDS if field not in SEGMENT_FIELDS]
+    reset_fields = list(NORMALIZED_INSERTION_RESET_FIELDS) + [field for field in HORNER_EXTRA_FIELDS if field not in NORMALIZED_INSERTION_RESET_FIELDS]
+    _write_csv(out_dir / "horner_h10_summary.csv", SUMMARY_FIELDS, summary_rows)
+    _write_csv(out_dir / "horner_h10_segments.csv", segment_fields, segment_rows)
+    _write_csv(out_dir / "horner_h10_reset_diagnostics.csv", reset_fields, _horner_reset_rows(segment_rows))
+    _write_csv(out_dir / "horner_h10_validation_attempts.csv", VALIDATION_ATTEMPT_FIELDS, attempt_rows)
+    _write_csv(out_dir / "horner_h10_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
+    _write_horner_h10_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
+    _copy_plot_if_present(out_dir, "width_ratio_vs_t.png", "horner_width_ratio_vs_t.png")
+    _make_horner_stage_uncertainty_plot(out_dir, segment_rows)
 
 
 def write_specialized_outputs(
@@ -3959,6 +4142,15 @@ def write_specialized_outputs(
         _write_csv(out_dir / "normalized_insertion_vs_flowstar_comparison.csv", COMPARISON_FIELDS, comparison_rows)
         _write_normalized_insertion_report(out_dir, summary_rows, segment_rows, comparison_rows, max_horizon=max_horizon)
         make_normalized_insertion_plots(out_dir, segment_rows)
+    elif name == HORNER_H10_OUTPUT_DIR_NAME:
+        write_horner_h10_outputs(
+            out_dir,
+            summary_rows,
+            segment_rows,
+            attempt_rows,
+            max_horizon=max_horizon,
+            comparison_rows=comparison_rows,
+        )
     elif name == H10_OUTPUT_DIR_NAME:
         write_normalized_insertion_h10_outputs(
             out_dir,
@@ -4122,7 +4314,7 @@ def write_rescue_next_outputs(*, trigger_out_dir: Path | None = None) -> None:
             f"{row.get('last_validated_t', '')} | {row.get('target_remainder_radius', '')} | "
             f"{row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
         )
-    (out_dir / "rescue_next_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_next_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
@@ -4247,7 +4439,7 @@ def write_rescue_next2_outputs(*, trigger_out_dir: Path | None = None) -> None:
             f"{row.get('last_validated_t', '')} | {row.get('candidate_order', '')} | {row.get('output_order', '')} | "
             f"{row.get('truncation_range_split', '')} | {row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
         )
-    (out_dir / "rescue_next2_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_next2_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 
@@ -4362,7 +4554,7 @@ def write_rescue_next3_outputs(*, trigger_out_dir: Path | None = None) -> None:
             f"{row.get('selective_high_degree_terms_top_k', '')} | {row.get('center_corrections_applied', '')} | "
             f"{row.get('last_width_ratio', '')} | {row.get('tube_width_ratio', '')} |"
         )
-    (out_dir / "rescue_next3_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_next3_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 def _bool_from_row(row: Mapping[str, Any], key: str) -> bool:
     return str(row.get(key, "")).strip().lower() in {"1", "true", "yes", "validated", "completed"}
@@ -4526,7 +4718,7 @@ def write_rescue_next4_outputs(*, trigger_out_dir: Path | None = None) -> None:
             f"| {row.get('comparison_item', '')} | {row.get('run_id', '')} | {row.get('status', '')} | "
             f"{row.get('last_validated_t', '')} | {row.get('flowstar_validated', '')} | {row.get('pytorch_validated', '')} | {row.get('notes', '')} |"
         )
-    (out_dir / "rescue_next4_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "rescue_next4_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
     triage_lines = [
         "# Branch Triage Report",

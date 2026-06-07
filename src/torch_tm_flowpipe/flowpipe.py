@@ -136,6 +136,17 @@ class FlowstarNormalFlowpipeState:
         }
 
 
+@dataclass(frozen=True)
+class HornerInsertionDiagnosticResult:
+    """Diagnostic-only comparison of direct and Horner normal insertion."""
+
+    direct_result: TaylorModel | TMVector
+    horner_result: TaylorModel | TMVector
+    summary: Mapping[str, Any]
+    stage_ranges: Sequence[Mapping[str, Any]]
+    top_components: Sequence[Mapping[str, Any]]
+
+
 def _as_interval_list(x0_box: Sequence[Interval | tuple[float, float] | list[float] | float]) -> list[Interval]:
     out: list[Interval] = []
     for x in x0_box:
@@ -656,6 +667,394 @@ def insert_ctrunc_normal_like(
     return _insert_ctrunc_normal_like_scalar(outer, inner, order, cutoff_threshold, domain, diagnostics)
 
 
+
+
+def _object_range_box(obj: TaylorModel | TMVector) -> list[Interval]:
+    if isinstance(obj, TMVector):
+        return obj.range_box()
+    return [obj.range_box()]
+
+
+def _object_normal_range_box(obj: TaylorModel | TMVector) -> list[Interval]:
+    if isinstance(obj, TMVector):
+        return _tmvector_range_box_normal(obj, None)
+    return [_taylor_model_range_box_normal(obj, None)]
+
+
+def _object_range_width_sum(obj: TaylorModel | TMVector) -> float:
+    value = _sum_interval_widths(_object_range_box(obj))
+    return _float_or_none(value) or 0.0
+
+
+def _object_normal_range_width_sum(obj: TaylorModel | TMVector) -> float:
+    value = _sum_interval_widths(_object_normal_range_box(obj))
+    return _float_or_none(value) or 0.0
+
+
+def _interval_width_float(value: Interval | float | int | None) -> float:
+    if value is None:
+        return 0.0
+    if isinstance(value, Interval):
+        return _interval_width_value(value) or 0.0
+    return _float_or_none(value) or 0.0
+
+
+def _merged_split_value(*values: int | None) -> int | None:
+    pieces = [_truncation_split_value(value) for value in values]
+    pieces = [value for value in pieces if value is not None]
+    return max(pieces) if pieces else None
+
+
+def _polynomial_part_for_power(poly: Polynomial, var_index: int, power: int) -> Polynomial:
+    terms: dict[tuple[int, ...], Any] = {}
+    for exp, coef in poly.terms.items():
+        if int(exp[var_index]) != int(power):
+            continue
+        new_exp = list(exp)
+        new_exp[var_index] = 0
+        new_exp_t = tuple(new_exp)
+        terms[new_exp_t] = terms.get(new_exp_t, torch.zeros_like(coef)) + coef
+    return Polynomial(terms, poly.n_vars)
+
+
+def _tm_apply_cutoff_for_horner(
+    model: TaylorModel,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval],
+    order: int,
+) -> tuple[TaylorModel, Interval]:
+    if cutoff_threshold is None:
+        return model, _zero_interval_like_domain(domain)
+    kept, cutoff_range = model.polynomial.cutoff(cutoff_threshold, domain)
+    return (
+        TaylorModel(
+            kept,
+            model.remainder + cutoff_range,
+            list(domain),
+            order=int(order),
+            truncation_range_split=model.truncation_range_split,
+        ),
+        cutoff_range,
+    )
+
+
+def _tm_mul_ctrunc_horner_stage(
+    left: TaylorModel,
+    right: TaylorModel,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval],
+) -> tuple[TaylorModel, dict[str, float]]:
+    split = _merged_split_value(left.truncation_range_split, right.truncation_range_split)
+    kept_poly, dropped_poly = left.polynomial.mul_truncate(right.polynomial, int(order))
+    left_poly_range = left.polynomial.evaluate_interval(domain)
+    right_poly_range = right.polynomial.evaluate_interval(domain)
+    trunc_range = _poly_interval_with_split(dropped_poly, domain, split)
+    cutoff_kept, cutoff_range = kept_poly.cutoff(cutoff_threshold, domain)
+    p_left_times_right_remainder = left_poly_range * right.remainder
+    p_right_times_left_remainder = right_poly_range * left.remainder
+    remainder_times_remainder = left.remainder * right.remainder
+    remainder = (
+        p_left_times_right_remainder
+        + p_right_times_left_remainder
+        + remainder_times_remainder
+        + trunc_range
+        + cutoff_range
+    )
+    result = TaylorModel(
+        cutoff_kept,
+        remainder,
+        list(domain),
+        order=int(order),
+        truncation_range_split=split,
+    )
+    kept_range = cutoff_kept.evaluate_interval(domain)
+    total_range = kept_range + remainder
+    return result, {
+        "kept_poly_range_width": _interval_width_float(kept_range),
+        "truncation_width": _interval_width_float(trunc_range),
+        "cutoff_width": _interval_width_float(cutoff_range),
+        "p_left_times_right_remainder_width": _interval_width_float(p_left_times_right_remainder),
+        "p_right_times_left_remainder_width": _interval_width_float(p_right_times_left_remainder),
+        "remainder_times_remainder_width": _interval_width_float(remainder_times_remainder),
+        "result_remainder_width": _interval_width_float(result.remainder),
+        "result_range_width": _interval_width_float(total_range),
+    }
+
+
+def _horner_component_name(component_index: int | None) -> str:
+    if component_index == 0:
+        return "x"
+    if component_index == 1:
+        return "y"
+    return "scalar" if component_index is None else f"state_{component_index}"
+
+
+def _append_horner_stage(
+    stage_rows: list[dict[str, Any]],
+    top_components: list[dict[str, Any]],
+    *,
+    component_index: int | None,
+    variable_index: int | None,
+    branch: str,
+    operation: str,
+    result: TaylorModel,
+    inserted_var: TaylorModel | None,
+    power_after: int | str,
+    components: Mapping[str, float] | None = None,
+) -> None:
+    components = dict(components or {})
+    row = {
+        "component_index": "" if component_index is None else int(component_index),
+        "component": _horner_component_name(component_index),
+        "stage_index": len(stage_rows),
+        "variable_index": "" if variable_index is None else int(variable_index),
+        "branch": branch,
+        "operation": operation,
+        "power_after": power_after,
+        "inserted_var_range_width": _interval_width_float(inserted_var.range_box()) if inserted_var is not None else "",
+        "result_range_width": _interval_width_float(result.range_box()),
+        "result_normal_range_width": _interval_width_float(_taylor_model_range_box_normal(result, None)),
+        "result_remainder_width": _interval_width_float(result.remainder),
+        "result_term_count": len(result.polynomial.terms),
+        "result_degree": result.polynomial.degree(),
+    }
+    row.update(components)
+    stage_rows.append(row)
+    for name, width in components.items():
+        if not name.endswith("_width"):
+            continue
+        top_components.append({
+            "component_index": row["component_index"],
+            "component": row["component"],
+            "stage_index": row["stage_index"],
+            "variable_index": row["variable_index"],
+            "branch": branch,
+            "operation": operation,
+            "uncertainty_component": name,
+            "width": float(width),
+        })
+
+
+def _insert_ctrunc_normal_horner_scalar(
+    outer: TaylorModel,
+    inner: TMVector,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval] | None,
+    *,
+    component_index: int | None,
+    stage_rows: list[dict[str, Any]],
+    top_components: list[dict[str, Any]],
+    time_var_index: int | None = None,
+) -> TaylorModel:
+    if outer.polynomial.n_vars != len(inner):
+        raise ValueError("outer TaylorModel variable count must match inner TMVector length")
+    out_domain = list(domain or inner.domain)
+    if len(out_domain) != inner.n_vars:
+        raise ValueError("composition output domain must match inner TaylorModel domain")
+    inner_work = _tmvector_with_order(inner, int(order))
+
+    def horner(poly: Polynomial, var_index: int) -> TaylorModel:
+        if not poly.terms:
+            return TaylorModel.zero(out_domain, order=int(order), truncation_range_split=outer.truncation_range_split)
+        if var_index >= poly.n_vars:
+            coef = poly.terms.get((0,) * poly.n_vars)
+            return TaylorModel.constant(
+                0.0 if coef is None else coef,
+                out_domain,
+                order=int(order),
+                truncation_range_split=outer.truncation_range_split,
+            )
+        powers = sorted({int(exp[var_index]) for exp in poly.terms})
+        max_power = max(powers)
+        parts = {power: _polynomial_part_for_power(poly, var_index, power) for power in powers}
+        acc = horner(parts[max_power], var_index + 1)
+        for power in range(max_power - 1, -1, -1):
+            branch = "time" if time_var_index is not None and var_index == int(time_var_index) else "state"
+            acc, components = _tm_mul_ctrunc_horner_stage(
+                acc,
+                inner_work[var_index],
+                int(order),
+                cutoff_threshold,
+                out_domain,
+            )
+            _append_horner_stage(
+                stage_rows,
+                top_components,
+                component_index=component_index,
+                variable_index=var_index,
+                branch=branch,
+                operation="multiply_inserted_right_map",
+                result=acc,
+                inserted_var=inner_work[var_index],
+                power_after=power,
+                components=components,
+            )
+            part = parts.get(power)
+            if part is not None and part.terms:
+                addend = horner(part, var_index + 1)
+                acc = acc + addend
+                acc, cutoff_range = _tm_apply_cutoff_for_horner(acc, cutoff_threshold, out_domain, int(order))
+                _append_horner_stage(
+                    stage_rows,
+                    top_components,
+                    component_index=component_index,
+                    variable_index=var_index,
+                    branch=branch,
+                    operation="add_coefficient_branch",
+                    result=acc,
+                    inserted_var=None,
+                    power_after=power,
+                    components={"cutoff_width": _interval_width_float(cutoff_range)},
+                )
+        return acc
+
+    result = horner(outer.polynomial, 0)
+    if not _interval_is_zero(outer.remainder):
+        result = result.with_remainder(result.remainder + outer.remainder)
+        _append_horner_stage(
+            stage_rows,
+            top_components,
+            component_index=component_index,
+            variable_index=None,
+            branch="outer",
+            operation="add_outer_remainder",
+            result=result,
+            inserted_var=None,
+            power_after="",
+            components={"outer_remainder_width": _interval_width_float(outer.remainder)},
+        )
+    return result
+
+
+def _stage_width_sum(stage_rows: Sequence[Mapping[str, Any]], field: str, component_index: int | None = None) -> float:
+    total = 0.0
+    wanted = "" if component_index is None else int(component_index)
+    for row in stage_rows:
+        if component_index is not None and row.get("component_index") != wanted:
+            continue
+        total += _float_or_none(row.get(field)) or 0.0
+    return total
+
+
+def _copy_horner_summary_to_diagnostics(diagnostics: dict[str, Any] | None, summary: Mapping[str, Any]) -> None:
+    if diagnostics is None:
+        return
+    for key, value in summary.items():
+        if key.startswith("_"):
+            continue
+        diagnostics[key] = value
+
+
+def insert_ctrunc_normal_horner_diagnostic(
+    outer: TaylorModel | TMVector,
+    inner: TMVector,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval] | None = None,
+    diagnostics: dict[str, Any] | None = None,
+    *,
+    time_var_index: int | None = None,
+) -> HornerInsertionDiagnosticResult:
+    """Compare direct sparse substitution with Horner-style insertion.
+
+    This is a clean-room diagnostic analogue: it deliberately does not replace
+    the default direct insertion path. The Horner side truncates and cutoffs
+    after each multiplication by an inserted Taylor model and records the range
+    and uncertainty generated at each stage.
+    """
+    direct_diag: dict[str, Any] = {}
+    direct_result = insert_ctrunc_normal_like(
+        outer,
+        inner,
+        int(order),
+        cutoff_threshold,
+        domain,
+        direct_diag,
+    )
+    stage_rows: list[dict[str, Any]] = []
+    top_components: list[dict[str, Any]] = []
+    if isinstance(outer, TMVector):
+        horner_models = [
+            _insert_ctrunc_normal_horner_scalar(
+                model,
+                inner,
+                int(order),
+                cutoff_threshold,
+                domain,
+                component_index=index,
+                stage_rows=stage_rows,
+                top_components=top_components,
+                time_var_index=time_var_index,
+            )
+            for index, model in enumerate(outer)
+        ]
+        horner_result: TaylorModel | TMVector = TMVector(horner_models)
+    else:
+        horner_result = _insert_ctrunc_normal_horner_scalar(
+            outer,
+            inner,
+            int(order),
+            cutoff_threshold,
+            domain,
+            component_index=None,
+            stage_rows=stage_rows,
+            top_components=top_components,
+            time_var_index=time_var_index,
+        )
+
+    direct_standard = _object_range_width_sum(direct_result)
+    horner_standard = _object_range_width_sum(horner_result)
+    direct_normal = _object_normal_range_width_sum(direct_result)
+    horner_normal = _object_normal_range_width_sum(horner_result)
+    range_delta = horner_standard - direct_standard
+    normal_range_delta = horner_normal - direct_normal
+    change_tol = 1e-12
+    summary: dict[str, Any] = {
+        "direct_range_width_sum": direct_standard,
+        "horner_range_width_sum": horner_standard,
+        "direct_normal_range_width_sum": direct_normal,
+        "horner_normal_range_width_sum": horner_normal,
+        "horner_minus_direct_range_width_sum": range_delta,
+        "horner_minus_direct_normal_range_width_sum": normal_range_delta,
+        "horner_reduced_range": range_delta < -change_tol,
+        "horner_reduced_normal_range": normal_range_delta < -change_tol,
+        "horner_changed_range": abs(range_delta) > change_tol,
+        "horner_stage_count": len(stage_rows),
+        "horner_time_branch_stage_count": sum(1 for row in stage_rows if row.get("branch") == "time"),
+        "horner_state_branch_stage_count": sum(1 for row in stage_rows if row.get("branch") == "state"),
+        "horner_y_branch_stage_count": sum(1 for row in stage_rows if row.get("variable_index") == 1),
+        "horner_truncation_width_sum": _stage_width_sum(stage_rows, "truncation_width"),
+        "horner_cutoff_width_sum": _stage_width_sum(stage_rows, "cutoff_width"),
+        "horner_p_left_times_right_remainder_width_sum": _stage_width_sum(stage_rows, "p_left_times_right_remainder_width"),
+        "horner_p_right_times_left_remainder_width_sum": _stage_width_sum(stage_rows, "p_right_times_left_remainder_width"),
+        "horner_remainder_times_remainder_width_sum": _stage_width_sum(stage_rows, "remainder_times_remainder_width"),
+        "horner_outer_remainder_width_sum": _stage_width_sum(stage_rows, "outer_remainder_width"),
+        "direct_truncation_width_sum": direct_diag.get("insertion_truncation_width", 0.0),
+        "direct_cutoff_width_sum": direct_diag.get("insertion_cutoff_width", 0.0),
+        "direct_output_remainder_width_sum": direct_diag.get("output_remainder_width", 0.0),
+        "direct_terms_before_insertion_truncation": direct_diag.get("terms_before_insertion_truncation", ""),
+        "direct_terms_after_insertion": direct_diag.get("terms_after_insertion", ""),
+    }
+    for component_index, name in enumerate(("x", "y")):
+        summary[f"horner_truncation_width_{name}"] = _stage_width_sum(stage_rows, "truncation_width", component_index)
+        summary[f"horner_cutoff_width_{name}"] = _stage_width_sum(stage_rows, "cutoff_width", component_index)
+        summary[f"horner_output_remainder_width_{name}"] = _stage_width_sum(stage_rows, "result_remainder_width", component_index)
+    top_components_sorted = sorted(
+        top_components,
+        key=lambda row: _float_or_none(row.get("width")) or 0.0,
+        reverse=True,
+    )
+    _copy_horner_summary_to_diagnostics(diagnostics, summary)
+    return HornerInsertionDiagnosticResult(
+        direct_result=direct_result,
+        horner_result=horner_result,
+        summary=summary,
+        stage_ranges=stage_rows,
+        top_components=top_components_sorted,
+    )
+
 def _tmvector_constant_part(tmv: TMVector) -> list[float]:
     constants: list[float] = []
     for model in tmv:
@@ -729,6 +1128,8 @@ def _flowstar_normalized_insertion_transition(
     symbolic_queue_max_size: int = 100,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
+    horner_diagnostic: bool = False,
+    horner_insertion: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
     if prev is None:
@@ -743,7 +1144,9 @@ def _flowstar_normalized_insertion_transition(
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
-    if symbolic_queue_split:
+    if horner_insertion:
+        mode_name = "normalized_insertion_horner"
+    elif symbolic_queue_split:
         mode_name = "normalized_insertion_symqueue_split"
     elif symbolic_queue:
         mode_name = "normalized_insertion_symqueue"
@@ -762,15 +1165,58 @@ def _flowstar_normalized_insertion_transition(
     _add_width_metrics(diagnostics, "endpoint_tm", endpoint_box)
     center = _tmvector_constant_part(seg.final_tm)
     endpoint_without_constants = _tmvector_rm_constants(seg.final_tm)
-    inserted = insert_ctrunc_normal_like(
-        endpoint_without_constants,
-        prev.tmv_right,
-        int(order),
-        cutoff_threshold,
-        prev.domain,
-        diagnostics,
-    )
-    assert isinstance(inserted, TMVector)
+    if horner_insertion:
+        horner_result = insert_ctrunc_normal_horner_diagnostic(
+            endpoint_without_constants,
+            prev.tmv_right,
+            int(order),
+            cutoff_threshold,
+            prev.domain,
+            diagnostics,
+        )
+        inserted = horner_result.horner_result
+        assert isinstance(inserted, TMVector)
+        diagnostics["insertion_horner_used"] = True
+        diagnostics["_horner_stage_ranges"] = [dict(row) for row in horner_result.stage_ranges]
+        diagnostics["_horner_top_components"] = [dict(row) for row in horner_result.top_components]
+        diagnostics["insertion_truncation_width"] = horner_result.summary.get("horner_truncation_width_sum", 0.0)
+        diagnostics["insertion_truncation_width_sum"] = diagnostics["insertion_truncation_width"]
+        diagnostics["insertion_truncation_width_x"] = horner_result.summary.get("horner_truncation_width_x", 0.0)
+        diagnostics["insertion_truncation_width_y"] = horner_result.summary.get("horner_truncation_width_y", 0.0)
+        diagnostics["insertion_cutoff_width"] = horner_result.summary.get("horner_cutoff_width_sum", 0.0)
+        diagnostics["insertion_cutoff_width_sum"] = diagnostics["insertion_cutoff_width"]
+        diagnostics["insertion_cutoff_width_x"] = horner_result.summary.get("horner_cutoff_width_x", 0.0)
+        diagnostics["insertion_cutoff_width_y"] = horner_result.summary.get("horner_cutoff_width_y", 0.0)
+        diagnostics["terms_after_insertion"] = sum(len(model.polynomial.terms) for model in inserted)
+        diagnostics["terms_before_insertion_truncation"] = horner_result.summary.get("direct_terms_before_insertion_truncation", "")
+        for index, model in enumerate(inserted):
+            component = "x" if index == 0 else ("y" if index == 1 else f"state_{index}")
+            poly_range = model.polynomial.evaluate_interval(prev.domain)
+            _diag_add_width(diagnostics, "composed_poly_range_width", poly_range)
+            diagnostics[f"composed_poly_range_width_{component}"] = _interval_width_float(poly_range)
+            _diag_add_width(diagnostics, "output_remainder_width", model.remainder)
+            diagnostics[f"output_remainder_width_{component}"] = _interval_width_float(model.remainder)
+    else:
+        inserted = insert_ctrunc_normal_like(
+            endpoint_without_constants,
+            prev.tmv_right,
+            int(order),
+            cutoff_threshold,
+            prev.domain,
+            diagnostics,
+        )
+        assert isinstance(inserted, TMVector)
+        if horner_diagnostic:
+            horner_result = insert_ctrunc_normal_horner_diagnostic(
+                endpoint_without_constants,
+                prev.tmv_right,
+                int(order),
+                cutoff_threshold,
+                prev.domain,
+                diagnostics,
+            )
+            diagnostics["_horner_stage_ranges"] = [dict(row) for row in horner_result.stage_ranges]
+            diagnostics["_horner_top_components"] = [dict(row) for row in horner_result.top_components]
     remainder_midpoint_shifts: list[float] = [0.0 for _ in inserted]
     if scalar_recenter_remainder_midpoint:
         inserted, remainder_midpoint_shifts = _tmvector_recenter_remainders(inserted)
@@ -2722,6 +3168,7 @@ def flowpipe_step_flowstar_style_adaptive(
     flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
+    horner_diagnostic: bool = False,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -2739,12 +3186,13 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion",
         "normalized_insertion_symqueue",
         "normalized_insertion_symqueue_split",
+        "normalized_insertion_horner",
     }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
             "reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', "
-            "'normalized_insertion', 'normalized_insertion_symqueue', or "
-            "'normalized_insertion_symqueue_split'"
+            "'normalized_insertion', 'normalized_insertion_symqueue', "
+            "'normalized_insertion_symqueue_split', or 'normalized_insertion_horner'"
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
@@ -2772,6 +3220,7 @@ def flowpipe_step_flowstar_style_adaptive(
         elif reset_mode in normal_insertion_modes:
             use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"}
             use_split = reset_mode == "normalized_insertion_symqueue_split"
+            use_horner = reset_mode == "normalized_insertion_horner"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
                 normal_state,
@@ -2783,6 +3232,8 @@ def flowpipe_step_flowstar_style_adaptive(
                 symbolic_queue_max_size=flowstar_symbolic_queue_max_size,
                 scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
                 right_map_range_mode=right_map_range_mode,
+                horner_diagnostic=horner_diagnostic,
+                horner_insertion=use_horner,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
             if use_split and symbolic_output_remainders:

@@ -5,6 +5,7 @@ from torch_tm_flowpipe import (
     TaylorModel,
     TMVector,
     flowpipe_step_flowstar_style_adaptive,
+    insert_ctrunc_normal_horner_diagnostic,
     insert_ctrunc_normal_like,
 )
 from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode, van_der_pol_ode
@@ -41,6 +42,56 @@ def test_insert_ctrunc_normal_like_moves_truncation_and_cutoff_to_remainder():
     assert composed.remainder.width().item() > 1.0
     assert diagnostics["insertion_truncation_width"] > 1.0
     assert diagnostics["insertion_cutoff_width"] > 0.0
+
+
+def test_insert_ctrunc_normal_horner_diagnostic_contains_sampled_direct_values():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    x = TaylorModel.variable(0, domain, order=5)
+    y = TaylorModel.variable(1, domain, order=5)
+    outer = x.pow_int(3) - 0.25 * x * y + 0.125 * y.pow_int(2) + Interval(-1e-7, 1e-7)
+    inner = TMVector([x + 0.3 * y, y - 0.1 * x + 0.05])
+
+    diagnostic = insert_ctrunc_normal_horner_diagnostic(
+        outer,
+        inner,
+        order=3,
+        cutoff_threshold=1e-12,
+        domain=domain,
+    )
+
+    assert diagnostic.stage_ranges
+    assert diagnostic.top_components
+    assert diagnostic.summary["horner_stage_count"] == len(diagnostic.stage_ranges)
+    box = diagnostic.horner_result.range_box()
+    for point in itertools.product([-1.0, -0.5, 0.0, 0.5, 1.0], repeat=2):
+        inner_value = [model.evaluate_point(point) for model in inner]
+        direct = outer.evaluate_point(inner_value)
+        assert box.contains(direct, tol=1e-8)
+
+
+def test_insert_ctrunc_normal_horner_uncertainty_is_recorded_and_conservative():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    x = TaylorModel.variable(0, domain, order=5)
+    y = TaylorModel.variable(1, domain, order=5)
+    outer = x.pow_int(4) + 0.5 * y.pow_int(3) + 1e-11 * x
+    inner = TMVector([x + 0.2 * y + Interval(-1e-5, 1e-5), y - 0.15 * x])
+
+    diagnostic = insert_ctrunc_normal_horner_diagnostic(
+        outer,
+        inner,
+        order=2,
+        cutoff_threshold=1e-10,
+        domain=domain,
+    )
+
+    assert diagnostic.summary["horner_truncation_width_sum"] > 0.0
+    assert diagnostic.summary["horner_cutoff_width_sum"] > 0.0
+    assert diagnostic.summary["horner_range_width_sum"] >= diagnostic.summary["horner_normal_range_width_sum"]
+    box = diagnostic.horner_result.range_box()
+    for point in itertools.product([-1.0, 0.0, 1.0], repeat=2):
+        inner_value = [model.evaluate_point(point) for model in inner]
+        direct = outer.evaluate_point(inner_value)
+        assert box.contains(direct, tol=1e-7)
 
 
 def test_normalized_insertion_state_contains_sampled_endpoint_values():

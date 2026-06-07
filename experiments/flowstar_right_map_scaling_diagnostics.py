@@ -27,6 +27,32 @@ TOP_TERM_FIELDS = [
 ]
 
 
+HORNER_SUMMARY_FIELDS = [
+    "run_id", "segment_index", "t_hi", "direct_range_width_sum", "horner_range_width_sum",
+    "direct_normal_range_width_sum", "horner_normal_range_width_sum", "range_delta",
+    "normal_range_delta", "horner_changed_range", "horner_reduced_range",
+    "horner_reduced_normal_range", "horner_stage_count", "horner_time_branch_stage_count",
+    "horner_state_branch_stage_count", "horner_y_branch_stage_count", "horner_truncation_width_sum",
+    "horner_cutoff_width_sum", "horner_outer_remainder_width_sum", "dominant_stage_component",
+    "dominant_stage_operation", "dominant_stage_width", "source_note",
+]
+
+HORNER_STAGE_FIELDS = [
+    "run_id", "segment_index", "t_hi", "component_index", "component", "stage_index",
+    "variable_index", "branch", "operation", "power_after", "inserted_var_range_width",
+    "result_range_width", "result_normal_range_width", "result_remainder_width",
+    "result_term_count", "result_degree", "kept_poly_range_width", "truncation_width",
+    "cutoff_width", "p_left_times_right_remainder_width", "p_right_times_left_remainder_width",
+    "remainder_times_remainder_width", "outer_remainder_width", "source_note",
+]
+
+HORNER_TOP_FIELDS = [
+    "run_id", "segment_index", "t_hi", "component_index", "component", "stage_index",
+    "variable_index", "branch", "operation", "uncertainty_component", "width", "rank", "source_note",
+]
+
+
+
 def _fmt(value: Any) -> Any:
     if value is None:
         return ""
@@ -239,8 +265,187 @@ def _write_report(out_dir: Path, trace_rows: Sequence[Mapping[str, Any]], top_ro
         "",
         "This report is diagnostic-only and does not claim exact Flow* parity.",
     ])
-    (out_dir / "right_map_scaling_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (out_dir / "right_map_scaling_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
+
+
+
+def _truthy(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "y"}
+
+
+def _failure_neighborhood_segment_min(source_dir: Path, *, window: int = 1) -> dict[str, int]:
+    minima: dict[str, int] = {run_id: 0 for run_id in RUN_IDS}
+    by_run: dict[str, list[int]] = {run_id: [] for run_id in RUN_IDS}
+    for row in build_trace(source_dir):
+        run_id = str(row.get("run_id", ""))
+        if run_id not in by_run:
+            continue
+        value = _finite_float(row.get("segment_index"))
+        if value is not None:
+            by_run[run_id].append(int(value))
+    for run_id, values in by_run.items():
+        if values:
+            minima[run_id] = max(0, max(values) - int(window) + 1)
+    return minima
+
+
+def _run_horner_baseline_specs(source_dir: Path) -> list[dict[str, Any]]:
+    import flowstar_style_rescue_vanderpol as rescue
+
+    minima = _failure_neighborhood_segment_min(source_dir)
+    specs = []
+    for spec in rescue._select_configs(RUN_IDS):
+        updated = dict(spec)
+        updated["horner_diagnostic"] = True
+        updated["horner_diagnostic_segment_min"] = minima.get(str(spec["run_id"]), 0)
+        specs.append(updated)
+    return specs
+
+
+def _dominant_stage(stage_rows: Sequence[Mapping[str, Any]], run_id: str, segment_index: Any) -> Mapping[str, Any]:
+    candidates = [
+        row for row in stage_rows
+        if row.get("run_id") == run_id and str(row.get("segment_index")) == str(segment_index)
+    ]
+    return max(candidates, key=lambda row: _finite_float(row.get("result_range_width")) or -math.inf, default={})
+
+
+def _write_horner_report(
+    out_dir: Path,
+    summary_rows: Sequence[Mapping[str, Any]],
+    stage_rows: Sequence[Mapping[str, Any]],
+    top_rows: Sequence[Mapping[str, Any]],
+    *,
+    max_horizon: float,
+) -> None:
+    best_reduction = min(summary_rows, key=lambda row: _finite_float(row.get("range_delta")) or math.inf, default={})
+    peak_direct = _max_row(summary_rows, "direct_range_width_sum")
+    peak_horner = _max_row(summary_rows, "horner_range_width_sum")
+    changed = any(_truthy(row.get("horner_changed_range")) for row in summary_rows)
+    reduced = any(_truthy(row.get("horner_reduced_range")) or _truthy(row.get("horner_reduced_normal_range")) for row in summary_rows)
+    time_width = sum(_finite_float(row.get("result_range_width")) or 0.0 for row in stage_rows if row.get("branch") == "time")
+    x_width = sum(_finite_float(row.get("result_range_width")) or 0.0 for row in stage_rows if row.get("component") == "x")
+    y_width = sum(_finite_float(row.get("result_range_width")) or 0.0 for row in stage_rows if row.get("component") == "y")
+    dominant = max(stage_rows, key=lambda row: _finite_float(row.get("result_range_width")) or -math.inf, default={})
+    top = max(top_rows, key=lambda row: _finite_float(row.get("width")) or -math.inf, default={})
+    if reduced:
+        accounting = "the current direct substitution is over-conservative relative to this Horner diagnostic on at least one reset"
+    elif changed:
+        accounting = "the Horner diagnostic adds intermediate uncertainty or shifts accounting; direct substitution is not proving tighter here"
+    else:
+        accounting = "the Horner diagnostic is numerically equal to direct substitution for the recorded reset ranges"
+    lines = [
+        "# Horner Insertion Diagnostic Report",
+        "",
+        f"Requested diagnostic horizon: `{float(max_horizon):.17g}`; runs stop earlier if validation fails.",
+        f"Does Horner diagnostic reduce inserted endpoint/right-map range compared to direct substitution? {'yes' if reduced else 'no'}.",
+        f"Does Horner diagnostic change the inserted range? {'yes' if changed else 'no'}.",
+        f"Best range delta row: `{best_reduction.get('run_id', '')}` segment `{best_reduction.get('segment_index', '')}` at t=`{best_reduction.get('t_hi', '')}` with delta=`{best_reduction.get('range_delta', '')}`.",
+        f"Peak direct range row: `{peak_direct.get('run_id', '')}` at t=`{peak_direct.get('t_hi', '')}` width=`{peak_direct.get('direct_range_width_sum', '')}`.",
+        f"Peak Horner range row: `{peak_horner.get('run_id', '')}` at t=`{peak_horner.get('t_hi', '')}` width=`{peak_horner.get('horner_range_width_sum', '')}`.",
+        f"Which stage dominates width? `{dominant.get('component', '')}` / `{dominant.get('operation', '')}` at stage `{dominant.get('stage_index', '')}` with width=`{dominant.get('result_range_width', '')}`.",
+        f"Largest uncertainty component: `{top.get('uncertainty_component', '')}` in `{top.get('component', '')}` stage `{top.get('stage_index', '')}` width=`{top.get('width', '')}`.",
+        f"Does time branch matter? {'yes' if time_width > 0.0 else 'no'}; accumulated time-branch stage range width=`{time_width:.17g}`.",
+        f"Does state y branch dominate? {'yes' if y_width > x_width else 'no'}; x-stage width sum=`{x_width:.17g}`, y-stage width sum=`{y_width:.17g}`.",
+        f"Is the current direct substitution over-conservative or under-accounting? {accounting}.",
+        "Is Horner diagnostic conservative under sampling? yes for the helper-level sampling tests added with this task; this report is diagnostic-only and does not claim full Flow* parity.",
+        "",
+        "## Peak Rows",
+        "",
+        "| run_id | segment | t_hi | direct_width | horner_width | delta | reduced | dominant_stage |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |",
+    ]
+    for row in sorted(summary_rows, key=lambda r: _finite_float(r.get("direct_range_width_sum")) or 0.0, reverse=True)[:10]:
+        lines.append(
+            f"| {row.get('run_id', '')} | {row.get('segment_index', '')} | {row.get('t_hi', '')} | "
+            f"{row.get('direct_range_width_sum', '')} | {row.get('horner_range_width_sum', '')} | "
+            f"{row.get('range_delta', '')} | {row.get('horner_reduced_range', '')} | "
+            f"{row.get('dominant_stage_component', '')}:{row.get('dominant_stage_operation', '')} |"
+        )
+    lines.extend(["", "This report is diagnostic-only and does not claim exact Flow* parity."])
+    (out_dir / "horner_insertion_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def run_horner_diagnostic(args: argparse.Namespace) -> None:
+    import flowstar_style_rescue_vanderpol as rescue
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    summary_rows: list[dict[str, Any]] = []
+    stage_rows: list[dict[str, Any]] = []
+    top_rows: list[dict[str, Any]] = []
+    specs = _run_horner_baseline_specs(Path(args.source_dir))
+    if float(args.max_horizon) < 1.0:
+        for spec in specs:
+            spec["horner_diagnostic_segment_min"] = 0
+    for spec in specs:
+        summary, segments, _attempts = rescue._run_adaptive(
+            spec,
+            max_horizon=float(args.max_horizon),
+            wall_cap_s=float(args.wall_cap_s),
+        )
+        _ = summary
+        for seg in segments:
+            if seg.get("status") != "validated" or not seg.get("_horner_stage_ranges"):
+                continue
+            run_id = str(seg.get("run_id", ""))
+            segment_index = seg.get("segment_index", "")
+            t_hi = seg.get("t_hi", "")
+            for stage in seg.get("_horner_stage_ranges", []):
+                stage_rows.append({
+                    **dict(stage),
+                    "run_id": run_id,
+                    "segment_index": segment_index,
+                    "t_hi": t_hi,
+                    "source_note": "clean-room Horner diagnostic rerun from normalized-insertion transition inputs",
+                })
+            for rank, top in enumerate(seg.get("_horner_top_components", [])[:20], start=1):
+                top_rows.append({
+                    **dict(top),
+                    "run_id": run_id,
+                    "segment_index": segment_index,
+                    "t_hi": t_hi,
+                    "rank": rank,
+                    "source_note": "uncertainty components from Horner diagnostic stages",
+                })
+            dominant = _dominant_stage(stage_rows, run_id, segment_index)
+            direct = _finite_float(seg.get("horner_direct_range_width_sum"))
+            horner = _finite_float(seg.get("horner_range_width_sum"))
+            direct_normal = _finite_float(seg.get("horner_direct_normal_range_width_sum"))
+            horner_normal = _finite_float(seg.get("horner_normal_range_width_sum"))
+            summary_rows.append({
+                "run_id": run_id,
+                "segment_index": segment_index,
+                "t_hi": t_hi,
+                "direct_range_width_sum": direct,
+                "horner_range_width_sum": horner,
+                "direct_normal_range_width_sum": direct_normal,
+                "horner_normal_range_width_sum": horner_normal,
+                "range_delta": (horner - direct) if horner is not None and direct is not None else "",
+                "normal_range_delta": (horner_normal - direct_normal) if horner_normal is not None and direct_normal is not None else "",
+                "horner_changed_range": seg.get("horner_changed_range", ""),
+                "horner_reduced_range": seg.get("horner_reduced_range", ""),
+                "horner_reduced_normal_range": seg.get("horner_reduced_normal_range", ""),
+                "horner_stage_count": seg.get("horner_stage_count", ""),
+                "horner_time_branch_stage_count": seg.get("horner_time_branch_stage_count", ""),
+                "horner_state_branch_stage_count": seg.get("horner_state_branch_stage_count", ""),
+                "horner_y_branch_stage_count": seg.get("horner_y_branch_stage_count", ""),
+                "horner_truncation_width_sum": seg.get("horner_truncation_width_sum", ""),
+                "horner_cutoff_width_sum": seg.get("horner_cutoff_width_sum", ""),
+                "horner_outer_remainder_width_sum": seg.get("horner_outer_remainder_width_sum", ""),
+                "dominant_stage_component": dominant.get("component", ""),
+                "dominant_stage_operation": dominant.get("operation", ""),
+                "dominant_stage_width": dominant.get("result_range_width", ""),
+                "source_note": "one row per validated reset with direct-vs-Horner diagnostic ranges",
+            })
+    _write_csv(out_dir / "horner_insertion_summary.csv", HORNER_SUMMARY_FIELDS, summary_rows)
+    _write_csv(out_dir / "horner_insertion_stage_ranges.csv", HORNER_STAGE_FIELDS, stage_rows)
+    _write_csv(out_dir / "horner_insertion_top_components.csv", HORNER_TOP_FIELDS, top_rows)
+    _write_horner_report(out_dir, summary_rows, stage_rows, top_rows, max_horizon=float(args.max_horizon))
+    print(f"wrote Horner insertion diagnostics to {out_dir}")
 
 def _plots(out_dir: Path, trace_rows: Sequence[Mapping[str, Any]], top_rows: Sequence[Mapping[str, Any]]) -> None:
     try:
@@ -279,6 +484,9 @@ def _plots(out_dir: Path, trace_rows: Sequence[Mapping[str, Any]], top_rows: Seq
 
 
 def run(args: argparse.Namespace) -> None:
+    if args.horner_diagnostic:
+        run_horner_diagnostic(args)
+        return
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     trace_rows = build_trace(Path(args.source_dir))
@@ -294,6 +502,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-dir", type=Path, default=REPO_ROOT / "outputs" / "flowstar_normalized_insertion_h10")
     parser.add_argument("--out-dir", type=Path, default=REPO_ROOT / "outputs" / "flowstar_right_map_scaling_diagnostics")
+    parser.add_argument("--horner-diagnostic", action="store_true", help="rerun normalized-insertion baselines and emit Horner insertion diagnostics")
+    parser.add_argument("--max-horizon", type=float, default=10.0, help="diagnostic rerun horizon for --horner-diagnostic")
+    parser.add_argument("--wall-cap-s", type=float, default=7200.0, help="per-config wall cap for --horner-diagnostic")
     args = parser.parse_args(argv)
     run(args)
     return 0
