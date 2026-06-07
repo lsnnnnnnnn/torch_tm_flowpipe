@@ -3228,7 +3228,8 @@ NORMAL_EVAL_H10_OUTPUT_DIR_NAME = "flowstar_normal_eval_h10"
 SYMQUEUE_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_h10"
 HORNER_H10_OUTPUT_DIR_NAME = "flowstar_horner_insertion_h10"
 SYMQUEUE_SPLIT_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_split_h10"
-SYMQUEUE_V2_H10_OUTPUT_DIR_NAME = "flowstar_symbolic_queue_v2_h10"
+SYMQUEUE_V2_H10_OUTPUT_DIR_NAME = "flowstar_normalized_insertion_symqueue_v2_h10"
+LEGACY_SYMQUEUE_V2_H10_OUTPUT_DIR_NAME = "flowstar_symbolic_queue_v2_h10"
 H10_CONFIG_IDS = [
     "flowstar_style_o6_candidate8_output6_cutoff_insert",
     "flowstar_style_o6_candidate8_output6_insert",
@@ -4530,7 +4531,7 @@ def write_specialized_outputs(
             max_horizon=max_horizon,
             comparison_rows=comparison_rows,
         )
-    elif name == SYMQUEUE_V2_H10_OUTPUT_DIR_NAME:
+    elif name in {SYMQUEUE_V2_H10_OUTPUT_DIR_NAME, LEGACY_SYMQUEUE_V2_H10_OUTPUT_DIR_NAME}:
         write_symqueue_v2_h10_outputs(
             out_dir,
             summary_rows,

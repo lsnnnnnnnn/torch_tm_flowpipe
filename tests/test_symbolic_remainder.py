@@ -16,6 +16,13 @@ from torch_tm_flowpipe import (
 )
 from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode
 from torch_tm_flowpipe.symbolic_remainder import flowstar_symbolic_remainder_queue_reset
+from torch_tm_flowpipe.symbolic_remainder import (
+    _column_widths,
+    _matmul_real,
+    _propagate_queue_v2,
+    _right_scale_matrix,
+    flowstar_normalized_insertion_linear_queue_v2_reset,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -147,6 +154,84 @@ def test_flowstar_symbolic_remainder_queue_propagates_linear_remainders():
     assert stats_1["propagated_remainder_width_sum"] <= 1e-300
     assert stats_2["propagated_remainder_width_sum"] > 0.0
     assert reset_2.range_box()[0].contains_interval(reset_1.range_box()[0], tol=1e-12)
+
+
+def _linear_tm(matrix: tuple[tuple[float, ...], ...], remainders: tuple[Interval, ...]) -> TMVector:
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    variables = [TaylorModel.variable(i, domain, order=2) for i in range(2)]
+    models = []
+    for row, remainder in zip(matrix, remainders):
+        model = TaylorModel.constant(0.0, domain, order=2)
+        for coeff, variable in zip(row, variables):
+            model = model + float(coeff) * variable
+        models.append(model.with_remainder(remainder))
+    return TMVector(models)
+
+
+def test_flowstar_queue_resets_when_max_size_is_reached_after_append():
+    inserted = _linear_tm(
+        ((0.5, 0.0), (0.0, 0.25)),
+        (Interval(-0.01, 0.01), Interval(-0.02, 0.02)),
+    )
+    reset_tm = TMVector.identity(inserted.domain, order=2)
+    state = FlowstarSymbolicRemainderQueue.empty(2, max_size=2)
+
+    _reset_1, state_1, stats_1 = flowstar_normalized_insertion_linear_queue_v2_reset(
+        inserted,
+        reset_tm,
+        state,
+        scales=(1.0, 1.0),
+        max_size=2,
+    )
+    _reset_2, state_2, stats_2 = flowstar_normalized_insertion_linear_queue_v2_reset(
+        inserted,
+        reset_tm,
+        state_1,
+        scales=(1.0, 1.0),
+        max_size=2,
+    )
+
+    assert stats_1["queue_reset"] is False
+    assert len(state_1.J) == 1
+    assert stats_2["queue_reset"] is True
+    assert stats_2["queue_size_after"] == 0
+    assert len(state_2.J) == 0
+    assert state_2.scalars == (1.0, 1.0)
+
+
+def test_flowstar_queue_v2_uses_inverse_scalars_as_right_column_scales():
+    state = FlowstarSymbolicRemainderQueue(
+        J=((Interval(-1.0, 1.0), Interval(-0.5, 0.5)),),
+        Phi_L=(((1.0, 0.0), (0.0, 1.0)),),
+        scalars=(0.5, 2.0),
+        max_size=3,
+    )
+    current_linear = ((2.0, 3.0), (5.0, 7.0))
+
+    phi_l_i = _right_scale_matrix(current_linear, state.scalars)
+    updated_phi, propagated = _propagate_queue_v2(state, phi_l_i, Interval.zero())
+
+    assert phi_l_i == ((1.0, 6.0), (2.5, 14.0))
+    assert updated_phi == (phi_l_i,)
+    widths = _column_widths(propagated)
+    assert abs(widths[0] - 8.0) < 1e-12
+    assert abs(widths[1] - 19.0) < 1e-12
+
+
+def test_flowstar_queue_v2_left_multiplies_existing_phi_l_entries():
+    previous_phi = ((0.0, 1.0), (-1.0, 0.0))
+    current_phi = ((1.0, 2.0), (3.0, 4.0))
+    state = FlowstarSymbolicRemainderQueue(
+        J=((Interval(-0.1, 0.1), Interval(-0.2, 0.2)),),
+        Phi_L=(previous_phi,),
+        scalars=(1.0, 1.0),
+        max_size=3,
+    )
+
+    updated_phi, _propagated = _propagate_queue_v2(state, current_phi, Interval.zero())
+
+    assert updated_phi[0] == _matmul_real(current_phi, previous_phi)
+    assert updated_phi[0] != _matmul_real(previous_phi, current_phi)
 
 
 def test_stage3_short_run_writes_required_outputs_and_sanitized_csv(tmp_path):

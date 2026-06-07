@@ -808,7 +808,7 @@ def test_normalized_insertion_symqueue_split_h10_specialized_outputs_smoke(tmp_p
 
 
 def test_normalized_insertion_symqueue_v2_h10_specialized_outputs_smoke(tmp_path):
-    out_dir = tmp_path / "flowstar_symbolic_queue_v2_h10"
+    out_dir = tmp_path / "flowstar_normalized_insertion_symqueue_v2_h10"
     subprocess.run(
         [
             sys.executable,
@@ -933,9 +933,10 @@ def test_flowstar_queue_state_audit_script_smoke(tmp_path):
         check=True,
     )
 
-    for name in ["queue_state_trace.csv", "queue_state_report.md"]:
+    for name in ["queue_state_trace.csv", "queue_state_summary.csv", "queue_state_report.md"]:
         assert (out_dir / name).exists()
     trace = pd.read_csv(out_dir / "queue_state_trace.csv")
+    assert set(trace["source"]) >= {"no_queue", "split_symqueue", "v2_symqueue"}
     assert {
         "t_hi",
         "queue_size",
@@ -946,7 +947,7 @@ def test_flowstar_queue_state_audit_script_smoke(tmp_path):
         "output_range_includes_all_symbolic_contributions",
     } <= set(trace.columns)
     report = (out_dir / "queue_state_report.md").read_text(encoding="utf-8")
-    assert "Is Phi_L actually propagating old J?" in report
+    assert "Did v2 reach h10?" in report
     assert report.count("\n") > 10
 
 

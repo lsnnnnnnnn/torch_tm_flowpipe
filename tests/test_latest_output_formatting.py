@@ -15,8 +15,11 @@ REPORT_PATHS = [
 
 OPTIONAL_REPORT_PATHS = [
     ROOT / "outputs" / "flowstar_queue_state_audit" / "queue_state_report.md",
+    ROOT / "outputs" / "flowstar_normalized_insertion_symqueue_v2_h10" / "symqueue_v2_report.md",
     ROOT / "outputs" / "flowstar_symbolic_queue_v2_h10" / "symqueue_v2_report.md",
     ROOT / "docs" / "flowstar_symbolic_queue_v2_notes.md",
+    ROOT / "docs" / "flowstar_source_queue_semantics_audit.md",
+    ROOT / "docs" / "flowstar_symbolic_queue_v2_audit_conclusion.md",
 ]
 
 CSV_PATHS = [

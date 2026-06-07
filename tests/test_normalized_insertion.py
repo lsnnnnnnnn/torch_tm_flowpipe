@@ -286,6 +286,7 @@ def test_normalized_insertion_symqueue_v2_keeps_target_clean_and_records_linear_
     assert stats["j_count"] == 2
     assert stats["phi_l_count"] == 2
     assert stats["target_check_width_sum"] <= 1e-15
+    assert stats["output_only_symbolic_width_sum"] > 0.0
     assert stats["output_range_includes_symbolic_contributions"] is True
     assert stats["current_linear_map_norm"] > 0.0
     assert stats["scalar_x"] > 0.0

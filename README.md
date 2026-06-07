@@ -113,6 +113,10 @@ split run passes the 500-sample containment sanity check, while the after-split
 one-step Flow* oracle also rejects the same wider local box. Treat this as an
 experimental semantics diagnostic, not a Flow* parity result.
 
+The follow-up `normalized_insertion_symqueue_v2` audit reaches the same best
+horizon as no-queue/split and is documented in
+`docs/flowstar_symbolic_queue_v2_audit_conclusion.md`.
+
 
 ## Dependency-preserving multi-step example
 
