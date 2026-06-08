@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import importlib.util
+import subprocess
 import sys
 from pathlib import Path
 
@@ -91,4 +92,32 @@ def test_batched_tm_gpu_microbench_records_skips_without_speed_thresholds(tmp_pa
     assert skipped_scalar
     assert all(row["status"] == "skipped" for row in skipped_scalar)
     assert all("max_scalar_batch" in row["skip_reason"] for row in skipped_scalar)
+
+
+def test_batched_tm_gpu_microbench_cli_tiny_cpu_writes_expected_files(tmp_path):
+    cmd = [
+        sys.executable,
+        str(ROOT / "experiments" / "batched_tm_gpu_microbench.py"),
+        "--output-dir",
+        str(tmp_path),
+        "--dtype",
+        "float64",
+        "--batches",
+        "1,2",
+        "--devices",
+        "cpu",
+        "--warmup",
+        "0",
+        "--repeats",
+        "1",
+        "--tiny-config",
+        "--no-scalar",
+    ]
+
+    result = subprocess.run(cmd, cwd=ROOT, check=True, capture_output=True, text=True)
+
+    assert (tmp_path / "gpu_microbench_summary.csv").exists()
+    assert (tmp_path / "gpu_microbench_report.md").exists()
+    assert "gpu_microbench_summary.csv" in result.stdout
+    assert "gpu_microbench_report.md" in result.stdout
 

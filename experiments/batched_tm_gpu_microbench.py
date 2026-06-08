@@ -147,6 +147,31 @@ def _dtype_from_name(name: str) -> torch.dtype:
     raise ValueError(f"unsupported dtype: {name}")
 
 
+def _split_csv_args(values: Sequence[Any] | None) -> list[str]:
+    if values is None:
+        return []
+    parts: list[str] = []
+    for value in values:
+        parts.extend(part.strip() for part in str(value).split(",") if part.strip())
+    return parts
+
+
+def _parse_int_list(values: Sequence[Any] | None, default: Sequence[int]) -> list[int]:
+    parts = _split_csv_args(values)
+    return [int(part) for part in parts] if parts else list(default)
+
+
+def _parse_devices(values: Sequence[Any] | None) -> list[str] | None:
+    parts = _split_csv_args(values)
+    if not parts:
+        return None
+    allowed = {"cpu", "cuda"}
+    unknown = sorted(set(parts) - allowed)
+    if unknown:
+        raise SystemExit(f"unknown device(s): {', '.join(unknown)}")
+    return parts
+
+
 def _format_number(value: Any) -> Any:
     if isinstance(value, float):
         if math.isfinite(value):
@@ -1053,14 +1078,24 @@ def run_benchmark(
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Benchmark batched dense TM kernels on torch CPU/CUDA.")
     parser.add_argument("--output-dir", default=str(REPO_ROOT / "outputs" / "batched_tm_gpu_microbench"))
-    parser.add_argument("--batches", type=int, nargs="+", default=DEFAULT_BATCHES)
+    parser.add_argument(
+        "--batches",
+        nargs="+",
+        default=None,
+        help="Batch sizes, either comma-separated or space-separated.",
+    )
     parser.add_argument("--warmup", type=int, default=3)
     parser.add_argument("--repeats", type=int, default=7)
     parser.add_argument("--dtype", choices=["float32", "float64"], default="float64")
-    parser.add_argument("--devices", choices=["cpu", "cuda"], nargs="+", default=None)
+    parser.add_argument(
+        "--devices",
+        nargs="+",
+        default=None,
+        help="Devices, either comma-separated or space-separated. Defaults to CPU plus CUDA when available.",
+    )
     parser.add_argument("--max-working-bytes-mib", type=float, default=768.0)
-    parser.add_argument("--max-scalar-batch", type=int, default=128)
-    parser.add_argument("--max-scalar-terms", type=int, default=128)
+    parser.add_argument("--max-scalar-batch", type=int, default=1)
+    parser.add_argument("--max-scalar-terms", type=int, default=70)
     parser.add_argument("--no-scalar", action="store_true")
     parser.add_argument("--include-order6", action="store_true")
     parser.add_argument("--torch-threads", type=int, default=None)
@@ -1068,6 +1103,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--quick",
         action="store_true",
         help="Short smoke run: dim=2/order=4, batches 1/8/32, warmup 1, repeats 2.",
+    )
+    parser.add_argument(
+        "--tiny-config",
+        action="store_true",
+        help="Tiny dim=2/order=2 config for CPU-only CLI smoke tests.",
     )
     return parser.parse_args(argv)
 
@@ -1078,9 +1118,14 @@ def main(argv: Sequence[str] | None = None) -> None:
         torch.set_num_threads(int(args.torch_threads))
     dtype = _dtype_from_name(args.dtype)
     settings = None
-    batches = args.batches
+    batches = _parse_int_list(args.batches, DEFAULT_BATCHES)
+    devices = _parse_devices(args.devices)
     warmup = args.warmup
     repeats = args.repeats
+    if args.tiny_config:
+        settings = [BenchmarkSetting("tiny_dim2_order2", 2, 2, "tiny_cli_smoke")]
+        if args.batches is None:
+            batches = [1]
     if args.quick:
         settings = [BenchmarkSetting("dim2_order4_vdp_like", 2, 4, "dense_total_degree_vdp_like_count")]
         batches = [1, 8, 32]
@@ -1090,7 +1135,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         args.output_dir,
         batch_sizes=batches,
         settings=settings,
-        devices=args.devices,
+        devices=devices,
         dtype=dtype,
         warmup=warmup,
         repeats=repeats,

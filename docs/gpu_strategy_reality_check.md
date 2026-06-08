@@ -54,3 +54,11 @@ The benchmark in `experiments/batched_tm_gpu_microbench.py` is the decision
 instrument for this question. It does not claim that PyTorch is faster unless
 the emitted data show a clear speedup at realistic batch sizes.
 
+## Latest Run
+
+- GPU model: Tesla V100-SXM2-16GB
+- PyTorch version: 2.5.1+cu121
+- Final recommendation: GPU_PATH_PROMISING
+- First CUDA win per operation: interval_affine_map at batch 8192; poly_coeff_add at batch 32; poly_coeff_mul_trunc at batch 1; tm_range_bound at batch 32; fixed_picard_tm_step at batch 1.
+- Caveat: this evidence is for dense batched kernels only. It does not show that the current sparse TaylorModel/Polynomial object representation is GPU-efficient, and it is not a Flow* replacement.
+
