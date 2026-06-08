@@ -27,6 +27,14 @@ This is a diagnostic probe, not a Flow* parity claim.
 - First causal divergence: `adaptive_acceptance_policy` at t=`0.0`, h=`0.025`.
 - Flow* rejection reason: target miss
 
+## Acceptance predicate endpoints
+
+- Flow* h=0.025: subset_x=`unknown`, residual_x=`[, ]`, target_x=`[-0.0001, 0.0001]`; subset_y=`unknown`, residual_y=`[, ]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`none`.
+- PyTorch no_queue h=0.025: subset_x=`unknown`, residual_x=`[, ]`, target_x=`[-0.0001, 0.0001]`; subset_y=`unknown`, residual_y=`[, ]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`none`.
+- PyTorch v2 h=0.025: subset_x=`unknown`, residual_x=`[, ]`, target_x=`[-0.0001, 0.0001]`; subset_y=`unknown`, residual_y=`[, ]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`none`.
+- Width comparison is not the acceptance predicate; endpoint-wise interval inclusion is. A residual may have smaller width than the target and still fail if it is shifted outside the target interval.
+- Detailed component ledger: `outputs/flowstar_acceptance_predicate_audit/acceptance_predicate_ledger.csv`.
+
 ## Forced-h replay
 
 - Under the Flow* accepted h schedule, PyTorch accepts all replayed rows present in the ledger: `yes`

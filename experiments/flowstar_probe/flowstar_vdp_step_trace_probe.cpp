@@ -110,6 +110,18 @@ const vector<string> kHeaders = {
     "residual_width_x",
     "residual_width_y",
     "residual_width_sum",
+    "target_remainder_lo_x",
+    "target_remainder_hi_x",
+    "target_remainder_lo_y",
+    "target_remainder_hi_y",
+    "picard_ctrunc_normal_residual_lo_x",
+    "picard_ctrunc_normal_residual_hi_x",
+    "picard_ctrunc_normal_residual_lo_y",
+    "picard_ctrunc_normal_residual_hi_y",
+    "residual_lo_x",
+    "residual_hi_x",
+    "residual_lo_y",
+    "residual_hi_y",
     "residual_over_target_x",
     "residual_over_target_y",
     "residual_over_target_sum"};
@@ -172,6 +184,20 @@ double width_sum(const vector<Interval> &boxes)
         total += interval_width(boxes[i]);
     }
     return total;
+}
+
+void set_bounds(Row &row, const string &prefix, const vector<Interval> &boxes)
+{
+    if (boxes.size() > 0)
+    {
+        set_value(row, prefix + "_lo_x", boxes[0].inf());
+        set_value(row, prefix + "_hi_x", boxes[0].sup());
+    }
+    if (boxes.size() > 1)
+    {
+        set_value(row, prefix + "_lo_y", boxes[1].inf());
+        set_value(row, prefix + "_hi_y", boxes[1].sup());
+    }
 }
 
 void set_widths(Row &row, const string &prefix, const vector<Interval> &boxes)
@@ -379,6 +405,7 @@ void set_scalars(Row &row, const vector<Real> &scalars)
 void set_target(Row &row, const vector<Interval> &target)
 {
     set_widths(row, "target_remainder", target);
+    set_bounds(row, "target_remainder", target);
 }
 
 void set_residual_ratios(Row &row, const vector<Interval> &residual, const vector<Interval> &target)
@@ -630,6 +657,7 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "picard_no_remainder_residual", picard_no_remainder_range);
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
         set_widths(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
+        set_bounds(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_widths(row, "cutoff_polynomial_difference", intDifferences);
         set_value(row, "symbolic_J_size", format_size(symbolic_remainder.J.size()));
         set_value(row, "symbolic_Phi_L_size", format_size(symbolic_remainder.Phi_L.size()));
@@ -641,6 +669,7 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "symbolic_propagated", matrix_column_intervals(J_i));
         set_widths(row, "output_only_symbolic", matrix_column_intervals(J_i));
         set_widths(row, "residual", ctrunc_remainder);
+        set_bounds(row, "residual", ctrunc_remainder);
         set_residual_ratios(row, ctrunc_remainder, target);
 
         if (!bfound)
@@ -708,7 +737,9 @@ int traced_advance_adaptive_symbolic(
             final_remainders.push_back(x.tms[i].remainder);
         }
         set_widths(row, "picard_ctrunc_normal_residual", final_remainders);
+        set_bounds(row, "picard_ctrunc_normal_residual", final_remainders);
         set_widths(row, "residual", final_remainders);
+        set_bounds(row, "residual", final_remainders);
         set_residual_ratios(row, final_remainders, target);
         push_row(rows, row);
         return 1;

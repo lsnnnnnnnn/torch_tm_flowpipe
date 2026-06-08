@@ -27,6 +27,14 @@ This is a diagnostic probe, not a Flow* parity claim.
 - First causal divergence: `adaptive_acceptance_policy` at t=`9.9999999999999998e-13`, h=`0.025000000000000001`.
 - Flow* rejection reason: Picard_ctrunc_normal remainder not contained in target; shrinking h
 
+## Acceptance predicate endpoints
+
+- Flow* h=0.025: subset_x=`yes`, residual_x=`[-5.7034993171691869e-06, 9.6267419600486818e-06]`, target_x=`[-0.0001, 0.0001]`; subset_y=`no`, residual_y=`[-8.3561112430831106e-05, 0.0001083283903691475]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`y`.
+- PyTorch no_queue h=0.025: subset_x=`yes`, residual_x=`[-3.5138691795527178e-06, 4.7947416664619525e-06]`, target_x=`[-0.0001, 0.0001]`; subset_y=`yes`, residual_y=`[-5.1533346624557205e-05, 5.8769252659495084e-05]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`none`.
+- PyTorch v2 h=0.025: subset_x=`yes`, residual_x=`[-3.5138691795527178e-06, 4.7947416664619525e-06]`, target_x=`[-0.0001, 0.0001]`; subset_y=`yes`, residual_y=`[-5.1533346624557205e-05, 5.8769252659495084e-05]`, target_y=`[-0.0001, 0.0001]`; which_dim_failed=`none`.
+- Width comparison is not the acceptance predicate; endpoint-wise interval inclusion is. A residual may have smaller width than the target and still fail if it is shifted outside the target interval.
+- Detailed component ledger: `outputs/flowstar_acceptance_predicate_audit/acceptance_predicate_ledger.csv`.
+
 ## Forced-h replay
 
 - Under the Flow* accepted h schedule, PyTorch accepts all replayed rows present in the ledger: `yes`

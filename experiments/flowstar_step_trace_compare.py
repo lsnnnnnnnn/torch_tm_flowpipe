@@ -119,6 +119,18 @@ TRACE_FIELDS = [
     "residual_width_x",
     "residual_width_y",
     "residual_width_sum",
+    "target_remainder_lo_x",
+    "target_remainder_hi_x",
+    "target_remainder_lo_y",
+    "target_remainder_hi_y",
+    "picard_ctrunc_normal_residual_lo_x",
+    "picard_ctrunc_normal_residual_hi_x",
+    "picard_ctrunc_normal_residual_lo_y",
+    "picard_ctrunc_normal_residual_hi_y",
+    "residual_lo_x",
+    "residual_hi_x",
+    "residual_lo_y",
+    "residual_hi_y",
     "residual_over_target_x",
     "residual_over_target_y",
     "residual_over_target_sum",
@@ -302,6 +314,13 @@ def _put_widths(out: dict[str, Any], target_prefix: str, source: Mapping[str, An
         else:
             value = source.get(source_key)
         out[f"{target_prefix}_width_{suffix}"] = value if value is not None else ""
+
+
+def _put_bounds(out: dict[str, Any], target_prefix: str, source: Mapping[str, Any], source_prefix: str) -> None:
+    for dim in ("x", "y"):
+        for side in ("lo", "hi"):
+            value = source.get(f"{source_prefix}_{side}_{dim}")
+            out[f"{target_prefix}_{side}_{dim}"] = value if value is not None else ""
 
 
 def _zero_widths(out: dict[str, Any], target_prefix: str) -> None:
@@ -546,12 +565,17 @@ def _common_torch_row(
 
     for suffix in ("x", "y"):
         row[f"target_remainder_width_{suffix}"] = 2.0 * target_radius
+        row[f"target_remainder_lo_{suffix}"] = -abs(float(target_radius))
+        row[f"target_remainder_hi_{suffix}"] = abs(float(target_radius))
     row["target_remainder_width_sum"] = 4.0 * target_radius
 
     if "tmp_remainder_width_sum" in validation:
         _put_widths(row, "picard_ctrunc_normal_residual", validation, "tmp_remainder")
+        _put_bounds(row, "picard_ctrunc_normal_residual", validation, "tmp_remainder")
     else:
         _put_widths(row, "picard_ctrunc_normal_residual", validation, "residual")
+        _put_bounds(row, "picard_ctrunc_normal_residual", validation, "residual")
+    _put_bounds(row, "residual", validation, "residual")
 
     if "poly_diff_range_width_sum" in validation:
         _put_widths(row, "cutoff_polynomial_difference", validation, "poly_diff_range")
@@ -1272,6 +1296,51 @@ def _attempt_fact(row: Mapping[str, Any] | None) -> str:
     )
 
 
+def _endpoint_subset(row: Mapping[str, Any] | None, dim: str) -> dict[str, Any]:
+    if row is None:
+        return {"subset": None, "residual_lo": None, "residual_hi": None, "target_lo": None, "target_hi": None}
+    residual_lo = _float(row.get(f"picard_ctrunc_normal_residual_lo_{dim}"))
+    residual_hi = _float(row.get(f"picard_ctrunc_normal_residual_hi_{dim}"))
+    target_lo = _float(row.get(f"target_remainder_lo_{dim}"))
+    target_hi = _float(row.get(f"target_remainder_hi_{dim}"))
+    if target_lo is None:
+        target_lo = -1e-4
+    if target_hi is None:
+        target_hi = 1e-4
+    subset = None
+    if residual_lo is not None and residual_hi is not None:
+        subset = residual_lo >= target_lo and residual_hi <= target_hi
+    return {
+        "subset": subset,
+        "residual_lo": residual_lo,
+        "residual_hi": residual_hi,
+        "target_lo": target_lo,
+        "target_hi": target_hi,
+    }
+
+
+def _subset_word(value: Any) -> str:
+    if value is None:
+        return "unknown"
+    return "yes" if bool(value) else "no"
+
+
+def _predicate_endpoint_fact(label: str, row: Mapping[str, Any] | None) -> str:
+    x = _endpoint_subset(row, "x")
+    y = _endpoint_subset(row, "y")
+    failed = [dim for dim, data in (("x", x), ("y", y)) if data["subset"] is False]
+    failed_text = ";".join(failed) if failed else "none"
+    return (
+        f"- {label}: subset_x=`{_subset_word(x['subset'])}`, "
+        f"residual_x=`[{_str(x['residual_lo'])}, {_str(x['residual_hi'])}]`, "
+        f"target_x=`[{_str(x['target_lo'])}, {_str(x['target_hi'])}]`; "
+        f"subset_y=`{_subset_word(y['subset'])}`, "
+        f"residual_y=`[{_str(y['residual_lo'])}, {_str(y['residual_hi'])}]`, "
+        f"target_y=`[{_str(y['target_lo'])}, {_str(y['target_hi'])}]`; "
+        f"which_dim_failed=`{failed_text}`."
+    )
+
+
 def write_report(
     out_dir: Path,
     aligned: list[Mapping[str, Any]],
@@ -1378,6 +1447,19 @@ def write_report(
         )
     else:
         lines.extend(["- No aligned attempt status divergence was found before numeric comparison became unknown or clean.", ""])
+
+    lines.extend(
+        [
+            "## Acceptance predicate endpoints",
+            "",
+            _predicate_endpoint_fact("Flow* h=0.025", flow_025),
+            _predicate_endpoint_fact("PyTorch no_queue h=0.025", noq_025),
+            _predicate_endpoint_fact("PyTorch v2 h=0.025", v2_025),
+            "- Width comparison is not the acceptance predicate; endpoint-wise interval inclusion is. A residual may have smaller width than the target and still fail if it is shifted outside the target interval.",
+            "- Detailed component ledger: `outputs/flowstar_acceptance_predicate_audit/acceptance_predicate_ledger.csv`.",
+            "",
+        ]
+    )
 
     lines.extend(["## Forced-h replay", ""])
     if first_forced_reject:
