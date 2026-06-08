@@ -1653,6 +1653,7 @@ def main() -> int:
         noqueue_rows=noqueue_rows,
         v2_rows=v2_rows,
         horizon=args.horizon,
+        docs=out_dir == DEFAULT_OUT.resolve(),
     )
     print(f"Wrote traces, comparators, and report to {out_dir}")
     return 0
