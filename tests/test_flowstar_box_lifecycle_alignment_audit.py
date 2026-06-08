@@ -125,3 +125,47 @@ def test_cli_writes_lifecycle_ledger_and_report(tmp_path):
     assert (out_dir / "box_lifecycle_ledger.csv").exists()
     report = (out_dir / "box_lifecycle_report.md").read_text(encoding="utf-8")
     assert "Are Flow* and PyTorch pre_step boxes equal?" in report
+
+
+def test_cli_reports_unknown_when_trace_stage_columns_are_missing(tmp_path):
+    trace_dir = tmp_path / "trace"
+    out_dir = tmp_path / "out"
+    _write_csv(trace_dir / "flowstar_trace.csv", [_row("flowstar", status="rejected")])
+    _write_csv(trace_dir / "torch_noqueue_trace.csv", [_row("torch_noqueue")])
+    _write_csv(trace_dir / "torch_v2_trace.csv", [_row("torch_v2")])
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--trace-dir",
+            str(trace_dir),
+            "--out-dir",
+            str(out_dir),
+        ],
+        check=True,
+        cwd=ROOT,
+    )
+
+    ledger = list(csv.DictReader((out_dir / "box_lifecycle_ledger.csv").open(newline="", encoding="utf-8")))
+    report = (out_dir / "box_lifecycle_report.md").read_text(encoding="utf-8")
+    assert ledger[0]["first_lifecycle_stage_divergence"] == "unknown_missing_stage_fields"
+    assert "unknown_missing_stage_fields" in report
+
+
+def test_checked_in_trace_headers_have_lifecycle_stage_columns():
+    required = {
+        "pre_step_box_x_lo",
+        "pre_step_box_x_hi",
+        "pre_step_box_y_lo",
+        "pre_step_box_y_hi",
+        "endpoint_box_before_center_x_lo",
+        "endpoint_box_before_center_x_hi",
+        "endpoint_box_before_center_y_lo",
+        "endpoint_box_before_center_y_hi",
+    }
+    for name in ("flowstar_trace.csv", "torch_noqueue_trace.csv", "torch_v2_trace.csv"):
+        path = ROOT / "outputs" / "flowstar_step_trace_compare" / name
+        with path.open(newline="", encoding="utf-8") as handle:
+            fields = set(csv.DictReader(handle).fieldnames or [])
+        assert required <= fields

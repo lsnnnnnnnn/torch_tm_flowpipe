@@ -728,6 +728,7 @@ int traced_advance_adaptive_symbolic(
         }
         set_widths(row, "new_x0", new_x0_range);
         set_widths(row, "reset", new_x0_range);
+        set_lifecycle_bounds(row, "reset_box_after_center_scale", new_x0_range);
         set_target(row, target);
         set_widths(row, "target_check", target);
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);

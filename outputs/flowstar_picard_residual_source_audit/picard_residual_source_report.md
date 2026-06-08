@@ -14,7 +14,7 @@ This audit uses the first same-t/h divergence only. It does not add a solver mec
 
 - Pre-step boxes equal: `true`.
 - Endpoint-before-center comparable: `true`.
-- Reset-after-center boxes equal: `unknown`.
+- Reset-after-center boxes equal: `false`.
 - First lifecycle stage divergence: `endpoint_box_before_center`.
 - Residual comparison same-stage valid: `false`.
 - Picard residual comparison: `noncausal/stage-misaligned`.
