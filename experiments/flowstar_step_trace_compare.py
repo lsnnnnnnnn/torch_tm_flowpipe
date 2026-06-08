@@ -35,6 +35,21 @@ LIFECYCLE_FIELDS = [
     "endpoint_box_before_center_x_hi",
     "endpoint_box_before_center_y_lo",
     "endpoint_box_before_center_y_hi",
+    "endpoint_before_center_source_object",
+    "endpoint_before_center_domain_semantics",
+    "endpoint_before_center_includes_target_remainder",
+    "endpoint_before_center_includes_ordinary_remainder",
+    "endpoint_before_center_includes_symbolic_output_width",
+    "endpoint_before_center_includes_cutoff_poly_diff",
+    "endpoint_before_center_range_eval_method",
+    "endpoint_before_center_polynomial_order",
+    "endpoint_before_center_dropped_terms_width_x",
+    "endpoint_before_center_dropped_terms_width_y",
+    "endpoint_before_center_dropped_terms_width_sum",
+    "endpoint_before_center_remainder_width_x",
+    "endpoint_before_center_remainder_width_y",
+    "endpoint_before_center_remainder_width_sum",
+    "endpoint_before_center_notes",
     "extracted_center_x",
     "extracted_center_y",
     "extracted_scale_x",
@@ -760,6 +775,32 @@ def _common_torch_row(
                 f"materialized_for_output_width_{suffix}",
                 f"propagated_symbolic_width_{suffix}",
             )
+
+    row["endpoint_before_center_source_object"] = "seg.final_tm.range_box"
+    row["endpoint_before_center_domain_semantics"] = "physical_endpoint_after_tau_substitution_tau_dropped"
+    row["endpoint_before_center_includes_target_remainder"] = "false"
+    row["endpoint_before_center_includes_ordinary_remainder"] = "false"
+    symbolic_output = _float(row.get("output_only_symbolic_width_sum"))
+    row["endpoint_before_center_includes_symbolic_output_width"] = "true" if symbolic_output is not None and symbolic_output > 0.0 else "false"
+    row["endpoint_before_center_includes_cutoff_poly_diff"] = "true" if "tmp_remainder_width_sum" in validation else "unknown"
+    row["endpoint_before_center_range_eval_method"] = "TMVector.range_box on seg.final_tm after substitute_const(tau=h).drop_variable(tau)"
+    row["endpoint_before_center_polynomial_order"] = validation.get("order", "")
+    for suffix in ("x", "y", "sum"):
+        row[f"endpoint_before_center_dropped_terms_width_{suffix}"] = _first_present(
+            row,
+            f"cutoff_polynomial_difference_width_{suffix}",
+            f"poly_diff_range_width_{suffix}",
+        )
+        row[f"endpoint_before_center_remainder_width_{suffix}"] = _first_present(
+            row,
+            f"picard_ctrunc_normal_residual_width_{suffix}",
+            f"tmp_remainder_width_{suffix}",
+        )
+    row["endpoint_before_center_notes"] = (
+        "diagnostic label: endpoint_box_before_center is the accepted final segment range, "
+        "not the normalized-insertion inserted_endpoint/right_map range"
+    )
+
     _put_lifecycle_bounds_from_row(row, "post_cutoff_residual", row, "picard_ctrunc_normal_residual")
     _fill_common_trace_aliases(row, trace_source=mode)
     return row

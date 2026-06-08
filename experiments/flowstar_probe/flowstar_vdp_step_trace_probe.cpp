@@ -45,6 +45,21 @@ const vector<string> kHeaders = {
     "endpoint_box_before_center_x_hi",
     "endpoint_box_before_center_y_lo",
     "endpoint_box_before_center_y_hi",
+    "endpoint_before_center_source_object",
+    "endpoint_before_center_domain_semantics",
+    "endpoint_before_center_includes_target_remainder",
+    "endpoint_before_center_includes_ordinary_remainder",
+    "endpoint_before_center_includes_symbolic_output_width",
+    "endpoint_before_center_includes_cutoff_poly_diff",
+    "endpoint_before_center_range_eval_method",
+    "endpoint_before_center_polynomial_order",
+    "endpoint_before_center_dropped_terms_width_x",
+    "endpoint_before_center_dropped_terms_width_y",
+    "endpoint_before_center_dropped_terms_width_sum",
+    "endpoint_before_center_remainder_width_x",
+    "endpoint_before_center_remainder_width_y",
+    "endpoint_before_center_remainder_width_sum",
+    "endpoint_before_center_notes",
     "extracted_center_x",
     "extracted_center_y",
     "extracted_scale_x",
@@ -704,6 +719,17 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "endpoint_pre_center", endpoint_before_center_range);
         set_lifecycle_bounds(row, "pre_step_box", new_x0_range);
         set_lifecycle_bounds(row, "endpoint_box_before_center", endpoint_before_center_range);
+        set_value(row, "endpoint_before_center_source_object", "tmvTmp.Picard_ctrunc_normal_post_poly_diff");
+        set_value(row, "endpoint_before_center_domain_semantics", "physical_tube_over_step_exp_table_before_next_center_extraction");
+        set_value(row, "endpoint_before_center_includes_target_remainder", false);
+        set_value(row, "endpoint_before_center_includes_ordinary_remainder", false);
+        set_value(row, "endpoint_before_center_includes_symbolic_output_width", false);
+        set_value(row, "endpoint_before_center_includes_cutoff_poly_diff", true);
+        set_value(row, "endpoint_before_center_range_eval_method", "TaylorModelVec<Interval>.intEvalNormal(step_exp_table)");
+        set_value(row, "endpoint_before_center_polynomial_order", format_size(tm_setting.order));
+        set_widths(row, "endpoint_before_center_dropped_terms", intDifferences);
+        set_widths(row, "endpoint_before_center_remainder", ctrunc_remainder);
+        set_value(row, "endpoint_before_center_notes", "diagnostic label: tmvTmp after Picard_ctrunc_normal and after intDifferences are added, before next-step center extraction");
         if (const_of_x0.size() > 0)
         {
             set_value(row, "center_x", real_to_double(const_of_x0[0]));
