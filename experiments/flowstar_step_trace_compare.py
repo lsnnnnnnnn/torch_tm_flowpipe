@@ -124,7 +124,24 @@ DIFF_FIELDS = [
     "cutoff_poly_ratio_v2",
     "symbolic_queue_ratio_v2",
     "first_material_channel",
+    "channel_attribution_valid",
+    "comparison_kind",
+    "alignment_warning",
     "notes",
+]
+
+STEP_ALIGNMENT_WARNING_FIELDS = [
+    "step_index",
+    "t_flowstar",
+    "t_noqueue",
+    "t_v2",
+    "flowstar_h",
+    "noqueue_h",
+    "v2_h",
+    "first_material_channel",
+    "channel_attribution_valid",
+    "comparison_kind",
+    "alignment_warning",
 ]
 
 
@@ -492,6 +509,24 @@ def _material_channel(noq: dict[str, float | None], v2: dict[str, float | None],
     return ""
 
 
+def _step_alignment_warning(flow: Mapping[str, Any], noq: Mapping[str, Any], v2: Mapping[str, Any], *, tolerance: float = 1e-9) -> str:
+    mismatches: list[str] = []
+    pairs = [
+        ("noqueue_t", flow.get("t_before"), noq.get("t_before")),
+        ("v2_t", flow.get("t_before"), v2.get("t_before")),
+        ("noqueue_h", flow.get("h"), noq.get("h")),
+        ("v2_h", flow.get("h"), v2.get("h")),
+    ]
+    for label, reference, candidate in pairs:
+        ref = _float(reference)
+        cand = _float(candidate)
+        if ref is None or cand is None:
+            continue
+        if abs(ref - cand) > tolerance:
+            mismatches.append(f"{label} differs: Flow*={ref:.17g}, torch={cand:.17g}")
+    return "; ".join(mismatches)
+
+
 def align_traces(flowstar_rows: list[Mapping[str, Any]], noqueue_rows: list[Mapping[str, Any]], v2_rows: list[Mapping[str, Any]]) -> list[dict[str, Any]]:
     flow_acc = _accepted(flowstar_rows)
     noq_acc = _accepted(noqueue_rows)
@@ -504,7 +539,14 @@ def align_traces(flowstar_rows: list[Mapping[str, Any]], noqueue_rows: list[Mapp
         v2 = v2_acc[index]
         noq_channels = _channel_ratios(flow, noq)
         v2_channels = _channel_ratios(flow, v2)
-        channel = _material_channel(noq_channels, v2_channels, ratio_threshold=1.25, delta_threshold=1e-6)
+        alignment_warning = _step_alignment_warning(flow, noq, v2)
+        raw_channel = _material_channel(noq_channels, v2_channels, ratio_threshold=1.25, delta_threshold=1e-6)
+        channel = "adaptive_step_alignment_mismatch" if alignment_warning else raw_channel
+        channel_valid = not bool(alignment_warning)
+        comparison_kind = "accepted_ordinal_trace_diff_noncausal" if alignment_warning else "accepted_ordinal_trace_diff"
+        notes = "ratio threshold 1.25, center/scale absolute delta threshold 1e-6" if raw_channel else ""
+        if alignment_warning:
+            notes = f"{alignment_warning}; channel attribution marked invalid/noncausal"
         row = {
             "step_index": index,
             "t_flowstar": flow.get("t_before", ""),
@@ -537,10 +579,53 @@ def align_traces(flowstar_rows: list[Mapping[str, Any]], noqueue_rows: list[Mapp
             "cutoff_poly_ratio_v2": v2_channels["cutoff_poly"],
             "symbolic_queue_ratio_v2": v2_channels["symbolic_queue"],
             "first_material_channel": channel,
-            "notes": "ratio threshold 1.25, center/scale absolute delta threshold 1e-6" if channel else "",
+            "channel_attribution_valid": channel_valid,
+            "comparison_kind": comparison_kind,
+            "alignment_warning": alignment_warning,
+            "notes": notes,
         }
         rows.append(row)
     return rows
+
+
+def step_alignment_warnings(aligned_rows: list[Mapping[str, Any]], *, tolerance: float = 1e-9) -> list[dict[str, Any]]:
+    warnings: list[dict[str, Any]] = []
+    for row in aligned_rows:
+        flow_h = _float(row.get("flowstar_h"))
+        noq_h = _float(row.get("noqueue_h"))
+        v2_h = _float(row.get("v2_h"))
+        flow_t = _float(row.get("t_flowstar"))
+        noq_t = _float(row.get("t_noqueue"))
+        v2_t = _float(row.get("t_v2"))
+        messages: list[str] = []
+        for label, reference, candidate in (
+            ("noqueue_t", flow_t, noq_t),
+            ("v2_t", flow_t, v2_t),
+            ("noqueue_h", flow_h, noq_h),
+            ("v2_h", flow_h, v2_h),
+        ):
+            if reference is None or candidate is None:
+                continue
+            if abs(reference - candidate) > tolerance:
+                messages.append(f"{label} differs: Flow*={reference:.17g}, torch={candidate:.17g}")
+        if not messages:
+            continue
+        warnings.append(
+            {
+                "step_index": row.get("step_index", ""),
+                "t_flowstar": row.get("t_flowstar", ""),
+                "t_noqueue": row.get("t_noqueue", ""),
+                "t_v2": row.get("t_v2", ""),
+                "flowstar_h": row.get("flowstar_h", ""),
+                "noqueue_h": row.get("noqueue_h", ""),
+                "v2_h": row.get("v2_h", ""),
+                "first_material_channel": "adaptive_step_alignment_mismatch",
+                "channel_attribution_valid": False,
+                "comparison_kind": "accepted_ordinal_trace_diff_noncausal",
+                "alignment_warning": "; ".join(messages),
+            }
+        )
+    return warnings
 
 
 def write_report(out_dir: Path, aligned: list[Mapping[str, Any]], *, horizon: float, docs: bool = True) -> str:
@@ -568,12 +653,14 @@ def write_report(out_dir: Path, aligned: list[Mapping[str, Any]], *, horizon: fl
         "",
     ]
     if first:
+        attribution_valid = str(first.get("channel_attribution_valid", "")).lower() != "false"
         lines.extend(
             [
                 "## First Channel Divergence",
                 "",
                 f"- Step: {first.get('step_index')}",
                 f"- Channel: {first.get('first_material_channel')}",
+                f"- Channel attribution valid: {'yes' if attribution_valid else 'no; accepted-step timing differs, so this is noncausal'}",
                 f"- Flow* h: {first.get('flowstar_h')}",
                 f"- no_queue width ratio: {first.get('noqueue_width_ratio')}",
                 f"- v2 width ratio: {first.get('v2_width_ratio')}",
@@ -612,6 +699,7 @@ def write_report(out_dir: Path, aligned: list[Mapping[str, Any]], *, horizon: fl
             "",
             "- The Flow* C++ probe mirrors the local adaptive symbolic-remainder path for this benchmark and logs public internals; it does not patch or commit Flow* source.",
             "- PyTorch cutoff/Picard fields use existing diagnostics. Fields absent in a mode are left blank or zeroed when the channel is not present.",
+            "- If Flow* and PyTorch accepted-step `t` or `h` differ, channel attribution is marked `adaptive_step_alignment_mismatch` and treated as noncausal. The next comparator should produce attempt-aligned and forced-h trace diffs.",
         ]
     )
     text = "\n".join(lines) + "\n"
@@ -683,6 +771,7 @@ def main() -> int:
     )
     aligned = align_traces(flowstar_rows, noqueue_rows, v2_rows)
     _write_rows(out_dir / "aligned_trace_diff.csv", DIFF_FIELDS, aligned)
+    _write_rows(out_dir / "step_alignment_warnings.csv", STEP_ALIGNMENT_WARNING_FIELDS, step_alignment_warnings(aligned))
     write_report(out_dir, aligned, horizon=args.horizon)
     print(f"Wrote traces and report to {out_dir}")
     return 0

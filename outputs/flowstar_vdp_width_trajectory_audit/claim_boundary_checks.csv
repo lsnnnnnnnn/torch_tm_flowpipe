@@ -1,0 +1,7 @@
+check_id,status,artifact_path,details
+endpoint_ratio_disabled_without_flowstar_endpoint,pass,outputs/trajectory_audit/flowstar_vs_torch_overlay_summary.csv,Flow* GNUPLOT rows have endpoint_ratio_allowed=false; no endpoint ratio is emitted.
+flowstar_parity_exact_only,pass,outputs/flowstar_benchmark_parity/generated_flowstar_vs_original_comparison.csv,segment_count_match=true; max_abs_segment_field_diff=0
+missing_artifacts_recorded,pass,outputs/flowstar_vdp_width_trajectory_audit/evidence_inventory.csv,Missing artifact count recorded explicitly: 0
+accepted_step_h_or_t_mismatch_noncausal,noncausal_guarded,outputs/flowstar_step_trace_compare/aligned_trace_diff.csv,first_material_channel must be adaptive_step_alignment_mismatch; ordinal channel attribution invalid/noncausal
+h10_not_timeout_only,pass,outputs/flowstar_normalized_insertion_h10/normalized_insertion_h10_vs_flowstar_comparison.csv,"h10 failures include width/trajectory divergence, not only runtime timeout."
+samples_visual_only,pass,outputs/trajectory_audit/samples/*.csv,"Sampling trajectories and overlays are recorded as visual diagnostics only, not proof."

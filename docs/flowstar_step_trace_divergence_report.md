@@ -10,8 +10,10 @@ This is a diagnostic probe, not a Flow* parity claim.
 ## First Channel Divergence
 
 - Step: 0
-- Channel: center/scaling
+- Channel: adaptive_step_alignment_mismatch
+- Channel attribution valid: no; accepted-step timing differs, so this is noncausal
 - Flow* h: 0.012500000000000001
+- PyTorch h: 0.025000000000000001
 - no_queue width ratio: 0.9213038720324402
 - v2 width ratio: 0.9213038720324402
 - no_queue residual ratio: 4.9826544783281745
@@ -36,3 +38,4 @@ This is a diagnostic probe, not a Flow* parity claim.
 
 - The Flow* C++ probe mirrors the local adaptive symbolic-remainder path for this benchmark and logs public internals; it does not patch or commit Flow* source.
 - PyTorch cutoff/Picard fields use existing diagnostics. Fields absent in a mode are left blank or zeroed when the channel is not present.
+- This existing accepted ordinal comparison compares Flow* h=0.0125 to PyTorch h=0.025 at step 0, so channel attribution is invalid/noncausal. Treat it as `accepted_ordinal_trace_diff_noncausal` and produce attempt-aligned and forced-h trace diffs next.
