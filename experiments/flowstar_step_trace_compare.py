@@ -13,7 +13,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, Sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -27,17 +27,49 @@ PROBE_CPP = ROOT / "experiments" / "flowstar_probe" / "flowstar_vdp_step_trace_p
 DEFAULT_OUT = ROOT / "outputs" / "flowstar_step_trace_compare"
 
 TRACE_FIELDS = [
+    "trace_source",
     "source",
     "mode",
+    "attempt_global_index",
+    "accepted_step_index",
     "step_index",
+    "attempt_index_within_step",
     "adaptive_attempt_index",
     "t_before",
+    "h_try",
     "h",
     "t_after",
+    "h_after_if_rejected_or_next",
     "accepted",
     "rejected",
     "status",
+    "rejection_reason",
     "message",
+    "residual_subset_target",
+    "target_check_width_x",
+    "target_check_width_y",
+    "target_check_width_sum",
+    "ordinary_step_remainder_width_x",
+    "ordinary_step_remainder_width_y",
+    "ordinary_step_remainder_width_sum",
+    "right_map_range_width_x",
+    "right_map_range_width_y",
+    "right_map_range_width_sum",
+    "reset_width_x",
+    "reset_width_y",
+    "reset_width_sum",
+    "output_range_width_x",
+    "output_range_width_y",
+    "output_range_width_sum",
+    "final_segment_width_x",
+    "final_segment_width_y",
+    "final_segment_width_sum",
+    "output_only_symbolic_width_x",
+    "output_only_symbolic_width_y",
+    "output_only_symbolic_width_sum",
+    "queue_size",
+    "j_count",
+    "phi_l_count",
     "tmv_pre_range_width_x",
     "tmv_pre_range_width_y",
     "tmv_pre_range_width_sum",
@@ -144,6 +176,64 @@ STEP_ALIGNMENT_WARNING_FIELDS = [
     "alignment_warning",
 ]
 
+ATTEMPT_ALIGNED_FIELDS = [
+    "aligned_index",
+    "t_before",
+    "h_try",
+    "flowstar_status",
+    "torch_noqueue_status",
+    "torch_v2_status",
+    "first_status_divergence",
+    "first_numeric_channel_divergence",
+    "channel_attribution_valid",
+    "flowstar_rejection_reason",
+    "torch_noqueue_rejection_reason",
+    "torch_v2_rejection_reason",
+    "residual_ratio_noqueue_over_flowstar",
+    "residual_ratio_v2_over_flowstar",
+    "target_width_ratio_noqueue_over_flowstar",
+    "target_width_ratio_v2_over_flowstar",
+    "right_map_width_ratio_noqueue_over_flowstar",
+    "right_map_width_ratio_v2_over_flowstar",
+    "reset_width_ratio_noqueue_over_flowstar",
+    "reset_width_ratio_v2_over_flowstar",
+    "output_range_width_ratio_noqueue_over_flowstar",
+    "output_range_width_ratio_v2_over_flowstar",
+    "center_delta_noqueue",
+    "center_delta_v2",
+    "scale_delta_noqueue",
+    "scale_delta_v2",
+    "verdict",
+]
+
+FORCED_H_FIELDS = [
+    "forced_step_index",
+    "t_before",
+    "h_forced",
+    "flowstar_status",
+    "torch_noqueue_status",
+    "torch_v2_status",
+    "torch_noqueue_accepts_flowstar_h",
+    "torch_v2_accepts_flowstar_h",
+    "first_numeric_channel_divergence",
+    "channel_attribution_valid",
+    "center_delta_noqueue",
+    "center_delta_v2",
+    "scale_delta_noqueue",
+    "scale_delta_v2",
+    "right_map_width_ratio_noqueue_over_flowstar",
+    "right_map_width_ratio_v2_over_flowstar",
+    "reset_width_ratio_noqueue_over_flowstar",
+    "reset_width_ratio_v2_over_flowstar",
+    "target_width_ratio_noqueue_over_flowstar",
+    "target_width_ratio_v2_over_flowstar",
+    "picard_residual_ratio_noqueue_over_flowstar",
+    "picard_residual_ratio_v2_over_flowstar",
+    "output_range_width_ratio_noqueue_over_flowstar",
+    "output_range_width_ratio_v2_over_flowstar",
+    "verdict",
+]
+
 
 def _float(value: Any) -> float | None:
     if value in (None, ""):
@@ -195,9 +285,11 @@ def _sum_widths(row: Mapping[str, Any], prefix: str) -> float | None:
     explicit = _float(row.get(f"{prefix}_width_sum"))
     if explicit is not None:
         return explicit
-    x = _float(row.get(f"{prefix}_width_x")) or 0.0
-    y = _float(row.get(f"{prefix}_width_y")) or 0.0
-    return x + y
+    x = _float(row.get(f"{prefix}_width_x"))
+    y = _float(row.get(f"{prefix}_width_y"))
+    if x is None and y is None:
+        return None
+    return (x or 0.0) + (y or 0.0)
 
 
 def _put_widths(out: dict[str, Any], target_prefix: str, source: Mapping[str, Any], source_prefix: str) -> None:
@@ -217,6 +309,125 @@ def _zero_widths(out: dict[str, Any], target_prefix: str) -> None:
         out[f"{target_prefix}_width_{suffix}"] = 0.0
 
 
+def _blank_widths(out: dict[str, Any], target_prefix: str) -> None:
+    for suffix in ("x", "y", "sum"):
+        out[f"{target_prefix}_width_{suffix}"] = ""
+
+
+def _first_present(row: Mapping[str, Any], *fields: str) -> Any:
+    for field in fields:
+        value = row.get(field)
+        if value not in (None, ""):
+            return value
+    return ""
+
+
+def _truthy(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "accepted", "validated"}
+
+
+def _status(row: Mapping[str, Any] | None) -> str:
+    if row is None:
+        return "not_completed"
+    raw = str(row.get("status", "")).strip().lower()
+    if raw in {"accepted", "validated"}:
+        return "accepted"
+    if raw in {"rejected", "failed", "failure"}:
+        return "rejected"
+    if raw in {"not_completed", "missing", ""}:
+        if _truthy(row.get("accepted")):
+            return "accepted"
+        if _truthy(row.get("rejected")):
+            return "rejected"
+        return "not_completed"
+    return raw
+
+
+def _attempt_index(row: Mapping[str, Any]) -> int | None:
+    value = _first_present(row, "attempt_index_within_step", "adaptive_attempt_index", "attempt_index")
+    try:
+        return int(float(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def _h_try(row: Mapping[str, Any]) -> float | None:
+    return _float(_first_present(row, "h_try", "h_forced", "h"))
+
+
+def _t_before(row: Mapping[str, Any]) -> float | None:
+    return _float(row.get("t_before"))
+
+
+def _trace_source(row: Mapping[str, Any], fallback: str = "") -> str:
+    return str(_first_present(row, "trace_source", "mode", "source") or fallback)
+
+
+def _rejection_reason(row: Mapping[str, Any] | None) -> str:
+    if row is None:
+        return ""
+    return str(_first_present(row, "rejection_reason", "message", "validation_message"))
+
+
+def _width_value(row: Mapping[str, Any] | None, *fields: str) -> Any:
+    if row is None:
+        return ""
+    return _first_present(row, *fields)
+
+
+def _component_delta(reference: Mapping[str, Any], candidate: Mapping[str, Any], prefix: str) -> float | None:
+    return _max_abs_delta(reference, candidate, (f"{prefix}_x", f"{prefix}_y"))
+
+
+def _set_width_alias(
+    row: dict[str, Any],
+    target_prefix: str,
+    source_prefix: str,
+    *,
+    fallback_prefix: str | None = None,
+) -> None:
+    for suffix in ("x", "y", "sum"):
+        target_key = f"{target_prefix}_width_{suffix}"
+        if row.get(target_key) not in (None, ""):
+            continue
+        value = row.get(f"{source_prefix}_width_{suffix}")
+        if value in (None, "") and fallback_prefix is not None:
+            value = row.get(f"{fallback_prefix}_width_{suffix}")
+        row[target_key] = value if value not in (None, "") else ""
+
+
+def _fill_common_trace_aliases(row: dict[str, Any], *, trace_source: str, attempt_global_index: int | None = None) -> None:
+    row.setdefault("trace_source", trace_source)
+    row.setdefault("attempt_global_index", attempt_global_index if attempt_global_index is not None else "")
+    row.setdefault("accepted_step_index", row.get("step_index", ""))
+    row.setdefault("attempt_index_within_step", row.get("adaptive_attempt_index", ""))
+    row.setdefault("h_try", row.get("h", ""))
+    row.setdefault("rejection_reason", row.get("message", "") if _status(row) == "rejected" else "")
+    row.setdefault("residual_subset_target", _status(row) == "accepted")
+    _set_width_alias(row, "target_check", "target_remainder")
+    _set_width_alias(row, "ordinary_step_remainder", "picard_no_remainder_residual", fallback_prefix="residual")
+    _set_width_alias(row, "right_map_range", "tmv_right_normal_range", fallback_prefix="tmv_right_range")
+    _set_width_alias(row, "reset", "new_x0")
+    _set_width_alias(row, "output_range", "final_flowpipe")
+    _set_width_alias(row, "final_segment", "final_flowpipe")
+    row.setdefault("queue_size", _first_present(row, "queue_size", "symbolic_J_size"))
+    row.setdefault("j_count", _first_present(row, "j_count", "symbolic_J_size"))
+    row.setdefault("phi_l_count", _first_present(row, "phi_l_count", "symbolic_Phi_L_size"))
+    for suffix in ("x", "y", "sum"):
+        row.setdefault(f"output_only_symbolic_width_{suffix}", row.get(f"symbolic_propagated_width_{suffix}", ""))
+
+
+def _normalized_rows(rows: Iterable[Mapping[str, Any]], trace_source: str = "") -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    for index, row in enumerate(rows):
+        out = dict(row)
+        _fill_common_trace_aliases(out, trace_source=trace_source or _trace_source(out), attempt_global_index=index)
+        normalized.append(out)
+    return normalized
+
+
 def _read_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
@@ -225,7 +436,7 @@ def _read_rows(path: Path) -> list[dict[str, str]]:
 def _write_rows(path: Path, fieldnames: list[str], rows: Iterable[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({field: _str(row.get(field, "")) for field in fieldnames})
@@ -302,17 +513,24 @@ def _common_torch_row(
     normal_stats: Mapping[str, Any] | None,
     target_radius: float,
 ) -> dict[str, Any]:
+    message = validation.get("validation_message", "") or validation.get("rejection_reason", "")
     row: dict[str, Any] = {
+        "trace_source": mode,
         "source": "torch",
         "mode": mode,
+        "accepted_step_index": step_index,
         "step_index": step_index,
+        "attempt_index_within_step": validation.get("adaptive_attempt_index", ""),
         "adaptive_attempt_index": validation.get("adaptive_attempt_index", ""),
         "t_before": t_before,
+        "h_try": validation.get("h_try", validation.get("h", "")),
         "h": validation.get("h_try", validation.get("h", "")),
         "accepted": accepted,
         "rejected": not accepted,
         "status": "accepted" if accepted else "rejected",
-        "message": validation.get("validation_message", "") or validation.get("rejection_reason", ""),
+        "rejection_reason": "" if accepted else message,
+        "message": message,
+        "residual_subset_target": validation.get("subset_tmp_remainder", validation.get("subset_result", accepted)),
     }
     h = _float(row["h"])
     if h is not None:
@@ -321,7 +539,10 @@ def _common_torch_row(
     _put_widths(row, "tmv_pre_range", validation, "candidate_segment")
     _put_widths(row, "final_flowpipe", validation, "candidate_final")
     _put_widths(row, "residual", validation, "residual")
-    _put_widths(row, "picard_no_remainder_residual", validation, "residual")
+    if "ordinary_residual_range_width_sum" in validation:
+        _put_widths(row, "picard_no_remainder_residual", validation, "ordinary_residual_range")
+    else:
+        _put_widths(row, "picard_no_remainder_residual", validation, "residual")
 
     for suffix in ("x", "y"):
         row[f"target_remainder_width_{suffix}"] = 2.0 * target_radius
@@ -357,8 +578,11 @@ def _common_torch_row(
         for suffix in ("x", "y"):
             scale = _float(normal_stats.get(f"scale_{suffix}"))
             row[f"inv_scale_{suffix}"] = "" if scale is None or scale == 0.0 else 1.0 / scale
-        row["symbolic_J_size"] = normal_stats.get("j_count", normal_stats.get("queue_size_after", 0 if mode == "torch_noqueue" else ""))
-        row["symbolic_Phi_L_size"] = normal_stats.get("phi_l_count", "")
+        row["queue_size"] = normal_stats.get("queue_size_after", normal_stats.get("queue_size", 0 if mode == "torch_noqueue" else ""))
+        row["j_count"] = normal_stats.get("j_count", row.get("queue_size", ""))
+        row["phi_l_count"] = normal_stats.get("phi_l_count", "")
+        row["symbolic_J_size"] = row.get("j_count", "")
+        row["symbolic_Phi_L_size"] = row.get("phi_l_count", "")
         row["scalar_x"] = normal_stats.get("scalar_x", row.get("inv_scale_x", ""))
         row["scalar_y"] = normal_stats.get("scalar_y", row.get("inv_scale_y", ""))
         if mode == "torch_v2":
@@ -368,13 +592,22 @@ def _common_torch_row(
             _zero_widths(row, "symbolic_J")
             _zero_widths(row, "symbolic_propagated")
     else:
-        _zero_widths(row, "tmv_right_range")
-        _zero_widths(row, "tmv_right_normal_range")
-        _zero_widths(row, "endpoint_pre_center")
-        _zero_widths(row, "new_x0")
-        _zero_widths(row, "symbolic_J")
-        _zero_widths(row, "symbolic_propagated")
+        _blank_widths(row, "tmv_right_range")
+        _blank_widths(row, "tmv_right_normal_range")
+        _blank_widths(row, "endpoint_pre_center")
+        _blank_widths(row, "new_x0")
+        _blank_widths(row, "symbolic_J")
+        _blank_widths(row, "symbolic_propagated")
 
+    if normal_stats:
+        for suffix in ("x", "y", "sum"):
+            row[f"output_only_symbolic_width_{suffix}"] = _first_present(
+                normal_stats,
+                f"output_only_symbolic_width_{suffix}",
+                f"materialized_for_output_width_{suffix}",
+                f"propagated_symbolic_width_{suffix}",
+            )
+    _fill_common_trace_aliases(row, trace_source=mode)
     return row
 
 
@@ -440,17 +673,22 @@ def generate_torch_trace(
         for attempt in sorted(grouped):
             validation = grouped[attempt]
             accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
-            trace_rows.append(
-                _common_torch_row(
-                    mode=mode,
-                    step_index=step_index,
-                    t_before=t,
-                    validation=validation,
-                    accepted=accepted,
-                    normal_stats=seg.flowstar_normal_stats if accepted else None,
-                    target_radius=target_radius,
-                )
+            row = _common_torch_row(
+                mode=mode,
+                step_index=step_index,
+                t_before=t,
+                validation=validation,
+                accepted=accepted,
+                normal_stats=seg.flowstar_normal_stats if accepted else None,
+                target_radius=target_radius,
             )
+            row["attempt_global_index"] = len(trace_rows)
+            h_value = _float(row.get("h_try"))
+            if accepted:
+                row["h_after_if_rejected_or_next"] = seg.next_h if seg.next_h is not None else (min(h_value * 1.5, h_max) if h_value is not None else "")
+            elif h_value is not None:
+                row["h_after_if_rejected_or_next"] = max(h_value * 0.5, h_min)
+            trace_rows.append(row)
 
         if seg.status != "validated" or seg.reset_tm is None:
             break
@@ -466,7 +704,385 @@ def generate_torch_trace(
 
 
 def _accepted(rows: list[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
-    return [row for row in rows if str(row.get("accepted", "")).lower() == "true" or row.get("status") == "accepted"]
+    return [row for row in rows if _status(row) == "accepted"]
+
+
+def _flowstar_accepted_schedule(rows: list[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    return [dict(row) for row in _accepted(_normalized_rows(rows, "flowstar"))]
+
+
+def generate_torch_forced_h_trace(
+    *,
+    mode: str,
+    flowstar_rows: list[Mapping[str, Any]],
+    out_path: Path,
+    target_radius: float = 1e-4,
+    order: int = 4,
+    validation_mode: str = "target_remainder_flowstar_ctrunc",
+) -> list[dict[str, Any]]:
+    if mode not in {"torch_noqueue", "torch_v2"}:
+        raise ValueError(f"unsupported torch trace mode: {mode}")
+    schedule = _flowstar_accepted_schedule(flowstar_rows)
+    current: TMVector | list[Interval] = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    normal_state: FlowstarNormalFlowpipeState | None = None
+    trace_rows: list[dict[str, Any]] = []
+    reset_mode = "normalized_insertion" if mode == "torch_noqueue" else "normalized_insertion_symqueue_v2"
+    symbolic_queue_mode = "" if mode == "torch_noqueue" else "flowstar_linear_v2"
+
+    for step_index, flow_row in enumerate(schedule):
+        h_forced = _h_try(flow_row)
+        if h_forced is None or h_forced <= 0.0:
+            continue
+        t_label = _t_before(flow_row)
+        diagnostics: list[dict[str, Any]] = []
+        seg = flowpipe_step_flowstar_style_adaptive(
+            van_der_pol_ode,
+            current,
+            h=h_forced,
+            h_min=h_forced,
+            h_max=h_forced,
+            order=order,
+            target_remainder_radius=target_radius,
+            cutoff_threshold=1e-10,
+            max_validation_attempts=2,
+            validation_mode=validation_mode,
+            reset_mode=reset_mode,
+            symbolic_queue_mode=symbolic_queue_mode,
+            flowstar_symbolic_queue_max_size=100,
+            flowstar_normal_state=normal_state,
+            grow_factor=1.0,
+            diagnostics=diagnostics,
+            diagnostics_context={
+                "mode": mode,
+                "segment_index": step_index,
+                "t_before": t_label if t_label is not None else "",
+                "forced_h_replay": True,
+            },
+        )
+        grouped = _validation_by_adaptive_attempt(diagnostics)
+        if not grouped:
+            row = {
+                "trace_source": mode,
+                "source": "torch",
+                "mode": mode,
+                "attempt_global_index": len(trace_rows),
+                "accepted_step_index": step_index,
+                "step_index": step_index,
+                "attempt_index_within_step": 1,
+                "adaptive_attempt_index": 1,
+                "t_before": t_label if t_label is not None else "",
+                "h_try": h_forced,
+                "h": h_forced,
+                "accepted": False,
+                "rejected": False,
+                "status": "not_completed",
+                "message": seg.message,
+            }
+            _fill_common_trace_aliases(row, trace_source=mode, attempt_global_index=len(trace_rows))
+            trace_rows.append(row)
+            break
+
+        accepted_attempt = None
+        if seg.status == "validated":
+            accepted_h = _float(seg.h)
+            for attempt, validation in grouped.items():
+                if _float(validation.get("h_try", validation.get("h"))) == accepted_h:
+                    accepted_attempt = attempt
+            if accepted_attempt is None and grouped:
+                accepted_attempt = max(grouped)
+
+        step_accepted = False
+        for attempt in sorted(grouped):
+            validation = grouped[attempt]
+            accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
+            row = _common_torch_row(
+                mode=mode,
+                step_index=step_index,
+                t_before=t_label if t_label is not None else 0.0,
+                validation=validation,
+                accepted=accepted,
+                normal_stats=seg.flowstar_normal_stats if accepted else None,
+                target_radius=target_radius,
+            )
+            row["attempt_global_index"] = len(trace_rows)
+            row["h_after_if_rejected_or_next"] = h_forced
+            row["forced_h_replay"] = True
+            trace_rows.append(row)
+            step_accepted = step_accepted or accepted
+
+        if not step_accepted or seg.reset_tm is None:
+            break
+        current = seg.reset_tm
+        normal_state = seg.flowstar_normal_state
+
+    _write_rows(out_path, TRACE_FIELDS, trace_rows)
+    return trace_rows
+
+
+def _channel_width(row: Mapping[str, Any] | None, channel: str) -> Any:
+    if row is None:
+        return ""
+    if channel == "residual":
+        return _width_value(row, "residual_width_sum", "picard_ctrunc_normal_residual_width_sum")
+    if channel == "target":
+        return _width_value(row, "target_remainder_width_sum", "target_check_width_sum")
+    if channel == "right_map":
+        return _width_value(row, "right_map_range_width_sum", "tmv_right_normal_range_width_sum", "tmv_right_range_width_sum")
+    if channel == "reset":
+        return _width_value(row, "reset_width_sum", "new_x0_width_sum", "normalized_reset_width_sum")
+    if channel == "output_range":
+        return _width_value(row, "output_range_width_sum", "final_segment_width_sum", "final_flowpipe_width_sum")
+    if channel == "picard":
+        return _width_value(row, "picard_ctrunc_normal_residual_width_sum", "residual_width_sum")
+    if channel == "cutoff":
+        return _width_value(row, "cutoff_polynomial_difference_width_sum", "poly_diff_range_width_sum")
+    if channel == "symbolic":
+        return _width_value(row, "symbolic_J_width_sum", "output_only_symbolic_width_sum", "symbolic_propagated_width_sum")
+    raise ValueError(f"unknown channel: {channel}")
+
+
+def _channel_ratio(flow: Mapping[str, Any], candidate: Mapping[str, Any] | None, channel: str) -> float | None:
+    return _ratio(_channel_width(candidate, channel), _channel_width(flow, channel))
+
+
+def _numeric_channel_divergence(
+    flow: Mapping[str, Any],
+    noqueue: Mapping[str, Any] | None,
+    v2: Mapping[str, Any] | None,
+    *,
+    ratio_threshold: float = 1.25,
+    delta_threshold: float = 1e-6,
+) -> str:
+    saw_comparable = False
+    delta_channels = [
+        ("center_scaling", [_component_delta(flow, row, "center") for row in (noqueue, v2) if row is not None]),
+        ("center_scaling", [_component_delta(flow, row, "scale") for row in (noqueue, v2) if row is not None]),
+    ]
+    for label, values in delta_channels:
+        for value in values:
+            if value is None:
+                continue
+            saw_comparable = True
+            if value > delta_threshold:
+                return label
+
+    ratio_channels = [
+        ("right_map_range", "right_map"),
+        ("reset_new_x0", "reset"),
+        ("target_remainder", "target"),
+        ("picard_residual", "picard"),
+        ("cutoff_poly_diff", "cutoff"),
+        ("output_range", "output_range"),
+        ("symbolic_queue", "symbolic"),
+    ]
+    for label, channel in ratio_channels:
+        for row in (noqueue, v2):
+            value = _channel_ratio(flow, row, channel) if row is not None else None
+            if value is None:
+                continue
+            saw_comparable = True
+            if value > ratio_threshold or value < 1.0 / ratio_threshold:
+                return label
+    return "" if saw_comparable else "unknown"
+
+
+def _int_from_fields(row: Mapping[str, Any], *fields: str, default: int = 0) -> int:
+    for field in fields:
+        value = _float(row.get(field))
+        if value is not None:
+            return int(value)
+    return default
+
+
+def _attempt_sort_key(row: Mapping[str, Any]) -> tuple[float, int, int, float]:
+    return (
+        _t_before(row) if _t_before(row) is not None else float("inf"),
+        _int_from_fields(row, "accepted_step_index", "step_index"),
+        _attempt_index(row) or _int_from_fields(row, "attempt_global_index"),
+        _h_try(row) if _h_try(row) is not None else float("inf"),
+    )
+
+
+def _same_attempt(reference: Mapping[str, Any], candidate: Mapping[str, Any], *, tolerance: float) -> bool:
+    ref_t = _t_before(reference)
+    cand_t = _t_before(candidate)
+    ref_h = _h_try(reference)
+    cand_h = _h_try(candidate)
+    if ref_t is None or cand_t is None or ref_h is None or cand_h is None:
+        return False
+    if abs(ref_t - cand_t) > tolerance or abs(ref_h - cand_h) > tolerance:
+        return False
+    ref_attempt = _attempt_index(reference)
+    cand_attempt = _attempt_index(candidate)
+    if ref_attempt is not None and cand_attempt is not None and ref_attempt != cand_attempt:
+        return False
+    return True
+
+
+def _find_matching_attempt(
+    reference: Mapping[str, Any],
+    candidates: Sequence[Mapping[str, Any]],
+    used: set[int],
+    *,
+    tolerance: float,
+) -> tuple[int | None, Mapping[str, Any] | None]:
+    for index, candidate in enumerate(candidates):
+        if index in used:
+            continue
+        if _same_attempt(reference, candidate, tolerance=tolerance):
+            return index, candidate
+    return None, None
+
+
+def compare_attempt_aligned(
+    flowstar_rows: list[Mapping[str, Any]],
+    noqueue_rows: list[Mapping[str, Any]],
+    v2_rows: list[Mapping[str, Any]],
+    *,
+    tolerance: float = 1e-9,
+) -> list[dict[str, Any]]:
+    flow = sorted(_normalized_rows(flowstar_rows, "flowstar"), key=_attempt_sort_key)
+    noq = sorted(_normalized_rows(noqueue_rows, "torch_noqueue"), key=_attempt_sort_key)
+    v2 = sorted(_normalized_rows(v2_rows, "torch_v2"), key=_attempt_sort_key)
+    used_noq: set[int] = set()
+    used_v2: set[int] = set()
+    rows: list[dict[str, Any]] = []
+    for aligned_index, flow_row in enumerate(flow):
+        noq_index, noq_row = _find_matching_attempt(flow_row, noq, used_noq, tolerance=tolerance)
+        v2_index, v2_row = _find_matching_attempt(flow_row, v2, used_v2, tolerance=tolerance)
+        if noq_index is not None:
+            used_noq.add(noq_index)
+        if v2_index is not None:
+            used_v2.add(v2_index)
+
+        flow_status = _status(flow_row)
+        noq_status = _status(noq_row)
+        v2_status = _status(v2_row)
+        aligned = noq_row is not None and v2_row is not None
+        status_divergence = ""
+        numeric_divergence = ""
+        verdict = "aligned_no_material_divergence"
+        channel_valid = aligned
+        if not aligned:
+            verdict = "unaligned_t_or_h"
+            channel_valid = False
+        elif len({flow_status, noq_status, v2_status}) > 1:
+            status_divergence = "adaptive_acceptance_policy"
+            verdict = "adaptive_acceptance_policy"
+        else:
+            numeric_divergence = _numeric_channel_divergence(flow_row, noq_row, v2_row)
+            if numeric_divergence:
+                verdict = numeric_divergence
+
+        rows.append(
+            {
+                "aligned_index": aligned_index,
+                "t_before": flow_row.get("t_before", ""),
+                "h_try": _first_present(flow_row, "h_try", "h"),
+                "flowstar_status": flow_status,
+                "torch_noqueue_status": noq_status,
+                "torch_v2_status": v2_status,
+                "first_status_divergence": status_divergence,
+                "first_numeric_channel_divergence": numeric_divergence,
+                "channel_attribution_valid": channel_valid,
+                "flowstar_rejection_reason": _rejection_reason(flow_row),
+                "torch_noqueue_rejection_reason": _rejection_reason(noq_row),
+                "torch_v2_rejection_reason": _rejection_reason(v2_row),
+                "residual_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "residual"),
+                "residual_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "residual"),
+                "target_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "target"),
+                "target_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "target"),
+                "right_map_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "right_map"),
+                "right_map_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "right_map"),
+                "reset_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "reset"),
+                "reset_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "reset"),
+                "output_range_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "output_range"),
+                "output_range_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "output_range"),
+                "center_delta_noqueue": _component_delta(flow_row, noq_row, "center") if noq_row is not None else None,
+                "center_delta_v2": _component_delta(flow_row, v2_row, "center") if v2_row is not None else None,
+                "scale_delta_noqueue": _component_delta(flow_row, noq_row, "scale") if noq_row is not None else None,
+                "scale_delta_v2": _component_delta(flow_row, v2_row, "scale") if v2_row is not None else None,
+                "verdict": verdict,
+            }
+        )
+    return rows
+
+
+def _find_forced_row(
+    flow_row: Mapping[str, Any],
+    candidates: Sequence[Mapping[str, Any]],
+    index: int,
+    *,
+    tolerance: float,
+) -> Mapping[str, Any] | None:
+    for candidate in candidates:
+        if _same_attempt(flow_row, candidate, tolerance=tolerance):
+            return candidate
+    for candidate in candidates:
+        cand_step = _int_from_fields(candidate, "accepted_step_index", "step_index", default=-1)
+        if cand_step == index and _h_try(candidate) is not None and _h_try(flow_row) is not None:
+            if abs((_h_try(candidate) or 0.0) - (_h_try(flow_row) or 0.0)) <= tolerance:
+                return candidate
+    return None
+
+
+def compare_forced_h(
+    flowstar_rows: list[Mapping[str, Any]],
+    noqueue_rows: list[Mapping[str, Any]],
+    v2_rows: list[Mapping[str, Any]],
+    *,
+    tolerance: float = 1e-9,
+) -> list[dict[str, Any]]:
+    schedule = _flowstar_accepted_schedule(flowstar_rows)
+    noq = _normalized_rows(noqueue_rows, "torch_noqueue")
+    v2 = _normalized_rows(v2_rows, "torch_v2")
+    rows: list[dict[str, Any]] = []
+    for index, flow_row in enumerate(schedule):
+        noq_row = _find_forced_row(flow_row, noq, index, tolerance=tolerance)
+        v2_row = _find_forced_row(flow_row, v2, index, tolerance=tolerance)
+        noq_accepts = _status(noq_row) == "accepted"
+        v2_accepts = _status(v2_row) == "accepted"
+        numeric = ""
+        channel_valid = False
+        verdict = "forced_h_alignment_missing"
+        if noq_row is not None and v2_row is not None:
+            if noq_accepts and v2_accepts:
+                numeric = _numeric_channel_divergence(flow_row, noq_row, v2_row)
+                channel_valid = True
+                verdict = numeric or "forced_h_no_material_divergence"
+            else:
+                verdict = "pytorch_rejects_flowstar_h"
+        row = {
+            "forced_step_index": index,
+            "t_before": flow_row.get("t_before", ""),
+            "h_forced": _first_present(flow_row, "h_try", "h"),
+            "flowstar_status": _status(flow_row),
+            "torch_noqueue_status": _status(noq_row),
+            "torch_v2_status": _status(v2_row),
+            "torch_noqueue_accepts_flowstar_h": noq_accepts,
+            "torch_v2_accepts_flowstar_h": v2_accepts,
+            "first_numeric_channel_divergence": numeric,
+            "channel_attribution_valid": channel_valid,
+            "center_delta_noqueue": _component_delta(flow_row, noq_row, "center") if noq_row is not None else None,
+            "center_delta_v2": _component_delta(flow_row, v2_row, "center") if v2_row is not None else None,
+            "scale_delta_noqueue": _component_delta(flow_row, noq_row, "scale") if noq_row is not None else None,
+            "scale_delta_v2": _component_delta(flow_row, v2_row, "scale") if v2_row is not None else None,
+            "right_map_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "right_map"),
+            "right_map_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "right_map"),
+            "reset_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "reset"),
+            "reset_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "reset"),
+            "target_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "target"),
+            "target_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "target"),
+            "picard_residual_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "picard"),
+            "picard_residual_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "picard"),
+            "output_range_width_ratio_noqueue_over_flowstar": _channel_ratio(flow_row, noq_row, "output_range"),
+            "output_range_width_ratio_v2_over_flowstar": _channel_ratio(flow_row, v2_row, "output_range"),
+            "verdict": verdict,
+        }
+        rows.append(row)
+        if noq_row is None or v2_row is None or not (noq_accepts and v2_accepts):
+            break
+    return rows
 
 
 def _channel_ratios(flow: Mapping[str, Any], torch_row: Mapping[str, Any]) -> dict[str, float | None]:
@@ -628,78 +1244,200 @@ def step_alignment_warnings(aligned_rows: list[Mapping[str, Any]], *, tolerance:
     return warnings
 
 
-def write_report(out_dir: Path, aligned: list[Mapping[str, Any]], *, horizon: float, docs: bool = True) -> str:
-    first = next((row for row in aligned if row.get("first_material_channel")), None)
-    first_ratio = next(
+def _find_attempt_at(rows: Iterable[Mapping[str, Any]], *, t: float, h: float, tolerance: float = 1e-9) -> Mapping[str, Any] | None:
+    normalized = _normalized_rows(rows)
+    for row in normalized:
+        row_t = _t_before(row)
+        row_h = _h_try(row)
+        if row_t is None or row_h is None:
+            continue
+        if abs(row_t - t) <= tolerance and abs(row_h - h) <= tolerance:
+            return row
+    return None
+
+
+def _row_number(row: Mapping[str, Any] | None, field: str) -> str:
+    if row is None:
+        return ""
+    return _str(_first_present(row, field))
+
+
+def _attempt_fact(row: Mapping[str, Any] | None) -> str:
+    if row is None:
+        return "missing"
+    return (
+        f"status=`{_status(row)}`, residual_width_sum=`{_row_number(row, 'residual_width_sum')}`, "
+        f"target_width_sum=`{_row_number(row, 'target_remainder_width_sum') or _row_number(row, 'target_check_width_sum')}`, "
+        f"residual_over_target_sum=`{_row_number(row, 'residual_over_target_sum')}`"
+    )
+
+
+def write_report(
+    out_dir: Path,
+    aligned: list[Mapping[str, Any]],
+    attempt_aligned: list[Mapping[str, Any]],
+    forced_h: list[Mapping[str, Any]],
+    *,
+    flowstar_rows: list[Mapping[str, Any]],
+    noqueue_rows: list[Mapping[str, Any]],
+    v2_rows: list[Mapping[str, Any]],
+    horizon: float,
+    docs: bool = True,
+) -> str:
+    first_accepted = next((row for row in aligned if row.get("first_material_channel")), None)
+    first_attempt_status = next((row for row in attempt_aligned if row.get("first_status_divergence")), None)
+    first_attempt_numeric = next((row for row in attempt_aligned if row.get("first_numeric_channel_divergence") not in (None, "", "unknown")), None)
+    first_forced_numeric = next((row for row in forced_h if row.get("first_numeric_channel_divergence") not in (None, "", "unknown")), None)
+    first_forced_reject = next(
         (
             row
-            for row in aligned
-            if (_float(row.get("noqueue_width_ratio")) or 0.0) > 1.25
-            or (_float(row.get("v2_width_ratio")) or 0.0) > 1.25
-            or (_float(row.get("noqueue_residual_ratio")) or 0.0) > 1.25
-            or (_float(row.get("v2_residual_ratio")) or 0.0) > 1.25
+            for row in forced_h
+            if str(row.get("torch_noqueue_accepts_flowstar_h", "")).lower() == "false"
+            or str(row.get("torch_v2_accepts_flowstar_h", "")).lower() == "false"
         ),
         None,
     )
+    causal = first_attempt_status or first_attempt_numeric
+    if first_attempt_status:
+        executive = "First causal divergence: adaptive acceptance / residual validation."
+        recommendation = "Fix PyTorch acceptance policy/target residual validation."
+    elif first_forced_numeric:
+        executive = f"First forced-h numeric divergence: {first_forced_numeric.get('first_numeric_channel_divergence')}."
+        recommendation = "Investigate Flow* right-map/preconditioning/source-order semantics."
+    else:
+        executive = "No causal numeric channel was isolated over this short trace."
+        recommendation = "Investigate cutoff/poly-diff accounting."
+
+    flow_025 = _find_attempt_at(flowstar_rows, t=0.0, h=0.025)
+    noq_025 = _find_attempt_at(noqueue_rows, t=0.0, h=0.025)
+    v2_025 = _find_attempt_at(v2_rows, t=0.0, h=0.025)
+    flow_rejects_025 = _status(flow_025) == "rejected"
+    noq_accepts_025 = _status(noq_025) == "accepted"
+    v2_accepts_025 = _status(v2_025) == "accepted"
+    forced_accepts_all = bool(forced_h) and all(
+        str(row.get("torch_noqueue_accepts_flowstar_h", "")).lower() == "true"
+        and str(row.get("torch_v2_accepts_flowstar_h", "")).lower() == "true"
+        for row in forced_h
+    )
+
     lines = [
-        "# Flow* Accepted-Step Trace Divergence Report",
+        "# Flow* Step Trace Divergence Report",
         "",
         "This is a diagnostic probe, not a Flow* parity claim.",
         "",
+        "## Executive conclusion",
+        "",
         f"- Horizon traced: T={horizon:g}",
-        "- Flow* source: local toolbox probe linked against `/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a`",
-        "- PyTorch modes: existing `normalized_insertion` no_queue and `normalized_insertion_symqueue_v2` with `flowstar_linear_v2`",
-        "- Material threshold: width/residual/channel ratio outside `[0.8, 1.25]`, or center/scaling absolute delta above `1e-6`",
+        f"- {executive}",
+        "- Accepted ordinal comparisons are retained only as noncausal diagnostics when `t` or `h` differ.",
+        "",
+        "## Accepted ordinal comparison",
         "",
     ]
-    if first:
-        attribution_valid = str(first.get("channel_attribution_valid", "")).lower() != "false"
+    if first_accepted:
+        attribution_valid = str(first_accepted.get("channel_attribution_valid", "")).lower() != "false"
         lines.extend(
             [
-                "## First Channel Divergence",
-                "",
-                f"- Step: {first.get('step_index')}",
-                f"- Channel: {first.get('first_material_channel')}",
-                f"- Channel attribution valid: {'yes' if attribution_valid else 'no; accepted-step timing differs, so this is noncausal'}",
-                f"- Flow* h: {first.get('flowstar_h')}",
-                f"- no_queue width ratio: {first.get('noqueue_width_ratio')}",
-                f"- v2 width ratio: {first.get('v2_width_ratio')}",
-                f"- no_queue residual ratio: {first.get('noqueue_residual_ratio')}",
-                f"- v2 residual ratio: {first.get('v2_residual_ratio')}",
+                f"- Comparison kind: `{first_accepted.get('comparison_kind', '')}`",
+                f"- First material channel: `{first_accepted.get('first_material_channel', '')}`",
+                f"- Channel attribution valid: `{'true' if attribution_valid else 'false'}`",
+                f"- Flow* h: `{first_accepted.get('flowstar_h', '')}`; no_queue h: `{first_accepted.get('noqueue_h', '')}`; v2 h: `{first_accepted.get('v2_h', '')}`",
+                f"- Warning: {first_accepted.get('alignment_warning', '') or 'none'}",
                 "",
             ]
         )
     else:
-        lines.extend(["## First Channel Divergence", "", "- No material channel divergence found over aligned accepted steps.", ""])
-    if first_ratio:
-        lines.extend(
-            [
-                "## First Width Or Residual Divergence",
-                "",
-                f"- Step: {first_ratio.get('step_index')}",
-                f"- no_queue width ratio: {first_ratio.get('noqueue_width_ratio')}",
-                f"- v2 width ratio: {first_ratio.get('v2_width_ratio')}",
-                f"- no_queue residual ratio: {first_ratio.get('noqueue_residual_ratio')}",
-                f"- v2 residual ratio: {first_ratio.get('v2_residual_ratio')}",
-                "",
-            ]
-        )
-    else:
-        lines.extend(["## First Width Or Residual Divergence", "", "- No material width/residual divergence found over aligned accepted steps.", ""])
+        lines.extend(["- No accepted ordinal material channel was found.", ""])
+
     lines.extend(
         [
-            "## Output Files",
+            "## Attempt-aligned comparison",
+            "",
+            f"- Does Flow* reject h=0.025 at t=0? `{'yes' if flow_rejects_025 else 'no'}`",
+            f"- Does PyTorch no_queue accept h=0.025 at t=0? `{'yes' if noq_accepts_025 else 'no'}`",
+            f"- Does PyTorch v2 accept h=0.025 at t=0? `{'yes' if v2_accepts_025 else 'no'}`",
+            f"- Flow* h=0.025 evidence: {_attempt_fact(flow_025)}",
+            f"- no_queue h=0.025 evidence: {_attempt_fact(noq_025)}",
+            f"- v2 h=0.025 evidence: {_attempt_fact(v2_025)}",
+        ]
+    )
+    if first_attempt_status:
+        lines.extend(
+            [
+                f"- First causal divergence: `{first_attempt_status.get('first_status_divergence')}` at t=`{first_attempt_status.get('t_before')}`, h=`{first_attempt_status.get('h_try')}`.",
+                f"- Flow* rejection reason: {first_attempt_status.get('flowstar_rejection_reason', '')}",
+                "",
+            ]
+        )
+    elif first_attempt_numeric:
+        lines.extend(
+            [
+                f"- First numeric divergence under matched attempts: `{first_attempt_numeric.get('first_numeric_channel_divergence')}`.",
+                "",
+            ]
+        )
+    else:
+        lines.extend(["- No aligned attempt status divergence was found before numeric comparison became unknown or clean.", ""])
+
+    lines.extend(["## Forced-h replay", ""])
+    if first_forced_reject:
+        lines.extend(
+            [
+                "- PyTorch does not accept every Flow* accepted h in the replayed schedule.",
+                f"- First forced reject/missing step: `{first_forced_reject.get('forced_step_index')}` at h=`{first_forced_reject.get('h_forced')}`.",
+                f"- no_queue accepts Flow* h: `{first_forced_reject.get('torch_noqueue_accepts_flowstar_h')}`; v2 accepts Flow* h: `{first_forced_reject.get('torch_v2_accepts_flowstar_h')}`",
+            ]
+        )
+    else:
+        lines.append(f"- Under the Flow* accepted h schedule, PyTorch accepts all replayed rows present in the ledger: `{'yes' if forced_accepts_all else 'no'}`")
+    if first_forced_numeric:
+        lines.extend(
+            [
+                f"- First numeric channel divergence: `{first_forced_numeric.get('first_numeric_channel_divergence')}` at forced step `{first_forced_numeric.get('forced_step_index')}`.",
+                f"- right_map ratios no_queue/v2: `{first_forced_numeric.get('right_map_width_ratio_noqueue_over_flowstar')}` / `{first_forced_numeric.get('right_map_width_ratio_v2_over_flowstar')}`",
+                f"- reset ratios no_queue/v2: `{first_forced_numeric.get('reset_width_ratio_noqueue_over_flowstar')}` / `{first_forced_numeric.get('reset_width_ratio_v2_over_flowstar')}`",
+                f"- output_range ratios no_queue/v2: `{first_forced_numeric.get('output_range_width_ratio_noqueue_over_flowstar')}` / `{first_forced_numeric.get('output_range_width_ratio_v2_over_flowstar')}`",
+            ]
+        )
+    else:
+        lines.append("- First numeric channel divergence: `unknown` or not reached.")
+    lines.append("")
+
+    lines.extend(
+        [
+            "## Interpretation",
+            "",
+            "- The attempt-aligned comparator is the causal guard: channel attribution is valid only when `t_before`, `h_try`, and attempt index align.",
+            "- The accepted ordinal diff remains useful for regression monitoring, but its first row compares different step sizes and must not be used as first causal channel attribution.",
+        ]
+    )
+    if first_attempt_status and first_forced_numeric:
+        lines.append("- The adaptive acceptance divergence occurs before the forced-h numeric channel divergence.")
+    if first_forced_numeric and first_forced_numeric.get("first_numeric_channel_divergence") in {"right_map_range", "reset_new_x0", "output_range"}:
+        lines.append("- The forced-h result is consistent with the prior right_map/preconditioning/output-range width attribution thread.")
+    lines.extend(
+        [
+            "",
+            "## Next recommendation",
+            "",
+            f"- {recommendation}",
+            "",
+            "## Output files",
             "",
             "- `outputs/flowstar_step_trace_compare/flowstar_trace.csv`",
             "- `outputs/flowstar_step_trace_compare/torch_noqueue_trace.csv`",
             "- `outputs/flowstar_step_trace_compare/torch_v2_trace.csv`",
             "- `outputs/flowstar_step_trace_compare/aligned_trace_diff.csv`",
+            "- `outputs/flowstar_step_trace_compare/attempt_aligned_trace_diff.csv`",
+            "- `outputs/flowstar_step_trace_compare/forced_h_trace_diff.csv`",
+            "- `outputs/flowstar_step_trace_compare/attempt_alignment_warnings.csv`",
+            "- `outputs/flowstar_step_trace_compare/forced_h_width_channel_ledger.csv`",
             "",
             "## Limitations",
             "",
-            "- The Flow* C++ probe mirrors the local adaptive symbolic-remainder path for this benchmark and logs public internals; it does not patch or commit Flow* source.",
-            "- PyTorch cutoff/Picard fields use existing diagnostics. Fields absent in a mode are left blank or zeroed when the channel is not present.",
-            "- If Flow* and PyTorch accepted-step `t` or `h` differ, channel attribution is marked `adaptive_step_alignment_mismatch` and treated as noncausal. The next comparator should produce attempt-aligned and forced-h trace diffs.",
+            "- The Flow* C++ probe is an oracle/instrumentation probe; this change does not add a new flowpipe mechanism or symbolic queue variant.",
+            "- Fields absent in a mode are left blank in the trace and reported as unknown by the comparator.",
+            "- This report does not compare PyTorch endpoint boxes to Flow* GNUPLOT segment boxes.",
         ]
     )
     text = "\n".join(lines) + "\n"
@@ -742,7 +1480,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-segments", type=int, default=0)
     parser.add_argument("--compiler", default=os.environ.get("CXX", "g++"))
     parser.add_argument("--skip-flowstar", action="store_true")
+    parser.add_argument("--compare-mode", choices=["accepted_ordinal", "attempt_aligned", "forced_h", "all"], default="all")
+    parser.add_argument("--flowstar-trace", type=Path)
+    parser.add_argument("--torch-noqueue-trace", type=Path)
+    parser.add_argument("--torch-v2-trace", type=Path)
+    parser.add_argument("--torch-noqueue-forced-trace", type=Path)
+    parser.add_argument("--torch-v2-forced-trace", type=Path)
     return parser.parse_args()
+
+
+def _load_or_generate_flowstar(args: argparse.Namespace, out_dir: Path) -> tuple[Path, list[dict[str, Any]]]:
+    if args.flowstar_trace:
+        path = args.flowstar_trace.resolve()
+        return path, _read_rows(path)
+    flowstar_trace = out_dir / "flowstar_trace.csv"
+    if not args.skip_flowstar:
+        exe = compile_probe(Path(args.flowstar_root).resolve(), out_dir, compiler=args.compiler)
+        flowstar_trace = run_flowstar_probe(exe, out_dir, args.horizon, args.max_segments or None)
+    return flowstar_trace, _read_rows(flowstar_trace)
+
+
+def _load_or_generate_torch(args: argparse.Namespace, out_dir: Path, mode: str) -> list[dict[str, Any]]:
+    trace_arg = args.torch_noqueue_trace if mode == "torch_noqueue" else args.torch_v2_trace
+    if trace_arg:
+        return _read_rows(trace_arg.resolve())
+    return generate_torch_trace(
+        mode=mode,
+        horizon=args.horizon,
+        out_path=out_dir / f"{mode}_trace.csv",
+        max_segments=args.max_segments or None,
+    )
 
 
 def main() -> int:
@@ -751,29 +1518,61 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     write_plan_doc()
 
-    flowstar_trace = out_dir / "flowstar_trace.csv"
-    if not args.skip_flowstar:
-        exe = compile_probe(Path(args.flowstar_root).resolve(), out_dir, compiler=args.compiler)
-        flowstar_trace = run_flowstar_probe(exe, out_dir, args.horizon, args.max_segments or None)
-    flowstar_rows = _read_rows(flowstar_trace)
+    _flowstar_trace, flowstar_rows = _load_or_generate_flowstar(args, out_dir)
+    noqueue_rows = _load_or_generate_torch(args, out_dir, "torch_noqueue")
+    v2_rows = _load_or_generate_torch(args, out_dir, "torch_v2")
 
-    noqueue_rows = generate_torch_trace(
-        mode="torch_noqueue",
+    aligned: list[dict[str, Any]] = []
+    attempt_aligned: list[dict[str, Any]] = []
+    forced_h: list[dict[str, Any]] = []
+
+    if args.compare_mode in {"accepted_ordinal", "all"}:
+        aligned = align_traces(flowstar_rows, noqueue_rows, v2_rows)
+        _write_rows(out_dir / "aligned_trace_diff.csv", DIFF_FIELDS, aligned)
+        _write_rows(out_dir / "step_alignment_warnings.csv", STEP_ALIGNMENT_WARNING_FIELDS, step_alignment_warnings(aligned))
+
+    if args.compare_mode in {"attempt_aligned", "all"}:
+        attempt_aligned = compare_attempt_aligned(flowstar_rows, noqueue_rows, v2_rows)
+        _write_rows(out_dir / "attempt_aligned_trace_diff.csv", ATTEMPT_ALIGNED_FIELDS, attempt_aligned)
+        warnings = [row for row in attempt_aligned if str(row.get("channel_attribution_valid", "")).lower() == "false"]
+        _write_rows(out_dir / "attempt_alignment_warnings.csv", ATTEMPT_ALIGNED_FIELDS, warnings)
+
+    if args.compare_mode in {"forced_h", "all"}:
+        if args.torch_noqueue_forced_trace:
+            forced_noqueue_rows = _read_rows(args.torch_noqueue_forced_trace.resolve())
+        elif args.torch_noqueue_trace:
+            forced_noqueue_rows = noqueue_rows
+        else:
+            forced_noqueue_rows = generate_torch_forced_h_trace(
+                mode="torch_noqueue",
+                flowstar_rows=flowstar_rows,
+                out_path=out_dir / "torch_noqueue_forced_h_trace.csv",
+            )
+        if args.torch_v2_forced_trace:
+            forced_v2_rows = _read_rows(args.torch_v2_forced_trace.resolve())
+        elif args.torch_v2_trace:
+            forced_v2_rows = v2_rows
+        else:
+            forced_v2_rows = generate_torch_forced_h_trace(
+                mode="torch_v2",
+                flowstar_rows=flowstar_rows,
+                out_path=out_dir / "torch_v2_forced_h_trace.csv",
+            )
+        forced_h = compare_forced_h(flowstar_rows, forced_noqueue_rows, forced_v2_rows)
+        _write_rows(out_dir / "forced_h_trace_diff.csv", FORCED_H_FIELDS, forced_h)
+        _write_rows(out_dir / "forced_h_width_channel_ledger.csv", FORCED_H_FIELDS, forced_h)
+
+    write_report(
+        out_dir,
+        aligned,
+        attempt_aligned,
+        forced_h,
+        flowstar_rows=flowstar_rows,
+        noqueue_rows=noqueue_rows,
+        v2_rows=v2_rows,
         horizon=args.horizon,
-        out_path=out_dir / "torch_noqueue_trace.csv",
-        max_segments=args.max_segments or None,
     )
-    v2_rows = generate_torch_trace(
-        mode="torch_v2",
-        horizon=args.horizon,
-        out_path=out_dir / "torch_v2_trace.csv",
-        max_segments=args.max_segments or None,
-    )
-    aligned = align_traces(flowstar_rows, noqueue_rows, v2_rows)
-    _write_rows(out_dir / "aligned_trace_diff.csv", DIFF_FIELDS, aligned)
-    _write_rows(out_dir / "step_alignment_warnings.csv", STEP_ALIGNMENT_WARNING_FIELDS, step_alignment_warnings(aligned))
-    write_report(out_dir, aligned, horizon=args.horizon)
-    print(f"Wrote traces and report to {out_dir}")
+    print(f"Wrote traces, comparators, and report to {out_dir}")
     return 0
 
 

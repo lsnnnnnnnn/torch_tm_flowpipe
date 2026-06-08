@@ -1,0 +1,42 @@
+aligned_index,t_before,h_try,flowstar_status,torch_noqueue_status,torch_v2_status,first_status_divergence,first_numeric_channel_divergence,channel_attribution_valid,flowstar_rejection_reason,torch_noqueue_rejection_reason,torch_v2_rejection_reason,residual_ratio_noqueue_over_flowstar,residual_ratio_v2_over_flowstar,target_width_ratio_noqueue_over_flowstar,target_width_ratio_v2_over_flowstar,right_map_width_ratio_noqueue_over_flowstar,right_map_width_ratio_v2_over_flowstar,reset_width_ratio_noqueue_over_flowstar,reset_width_ratio_v2_over_flowstar,output_range_width_ratio_noqueue_over_flowstar,output_range_width_ratio_v2_over_flowstar,center_delta_noqueue,center_delta_v2,scale_delta_noqueue,scale_delta_v2,verdict
+0,9.9999999999999998e-13,0.10000000000000001,rejected,rejected,rejected,,picard_residual,true,Picard_ctrunc_normal remainder not contained in target; shrinking h,Flowstar ctrunc tmp remainder not subset of target remainder,Flowstar ctrunc tmp remainder not subset of target remainder,0.45895126652907864,0.45895126652907864,1,1,,,,,,,,,,,picard_residual
+1,9.9999999999999998e-13,0.050000000000000003,rejected,rejected,rejected,,picard_residual,true,Picard_ctrunc_normal remainder not contained in target; shrinking h,Flowstar ctrunc tmp remainder not subset of target remainder,Flowstar ctrunc tmp remainder not subset of target remainder,0.4607859188209148,0.4607859188209148,1,1,,,,,,,,,,,picard_residual
+2,9.9999999999999998e-13,0.025000000000000001,rejected,accepted,accepted,adaptive_acceptance_policy,,true,Picard_ctrunc_normal remainder not contained in target; shrinking h,,,0.57239336269945496,0.57239336269945496,1,1,0.11370798266639881,0.11370798266639881,1.1401035542489464,1.1401035542489464,,,0.069705793357435653,0.069705793357435653,0.027083451029272579,0.027083451029272579,adaptive_acceptance_policy
+3,9.9999999999999998e-13,0.012500000000000001,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+4,0.012500000001000001,0.013750000000000002,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+5,0.026250000001000001,0.015125000000000003,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+6,0.041375000001000001,0.016637500000000003,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+7,0.058012500001,0.018301250000000005,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+8,0.076313750001000005,0.020131375000000007,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+9,0.096445125001000012,0.022144512500000008,rejected,not_completed,not_completed,,,false,Picard_ctrunc_normal remainder not contained in target; shrinking h,,,,,,,,,,,,,,,,,unaligned_t_or_h
+10,0.096445125001000012,0.011072256250000004,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+11,0.10751738125100002,0.012179481875000005,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+12,0.11969686312600003,0.013397430062500007,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+13,0.13309429318850002,0.014737173068750008,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+14,0.14783146625725002,0.016210890375625009,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+15,0.16404235663287503,0.01783197941318751,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+16,0.18187433604606254,0.019615177354506262,rejected,not_completed,not_completed,,,false,Picard_ctrunc_normal remainder not contained in target; shrinking h,,,,,,,,,,,,,,,,,unaligned_t_or_h
+17,0.18187433604606254,0.0098075886772531311,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+18,0.19168192472331566,0.010788347544978445,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+19,0.20247027226829412,0.01186718229947629,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+20,0.2143374545677704,0.01305390052942392,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+21,0.22739135509719433,0.014359290582366313,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+22,0.24175064567956064,0.015795219640602945,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+23,0.2575458653201636,0.017374741604663242,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+24,0.27492060692482684,0.019112215765129569,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+25,0.2940328226899564,0.021023437341642529,rejected,not_completed,not_completed,,,false,Picard_ctrunc_normal remainder not contained in target; shrinking h,,,,,,,,,,,,,,,,,unaligned_t_or_h
+26,0.2940328226899564,0.010511718670821265,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+27,0.30454454136077769,0.011562890537903391,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+28,0.31610743189868107,0.012719179591693731,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+29,0.32882661149037479,0.013991097550863106,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+30,0.34281770904123787,0.015390207305949418,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+31,0.35820791634718729,0.016929228036544362,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+32,0.37513714438373164,0.0186221508401988,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+33,0.39375929522393044,0.020484365924218682,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+34,0.41424366114814914,0.022532802516640551,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+35,0.43677646366478967,0.024786082768304608,rejected,not_completed,not_completed,,,false,Picard_ctrunc_normal remainder not contained in target; shrinking h,,,,,,,,,,,,,,,,,unaligned_t_or_h
+36,0.43677646366478967,0.012393041384152304,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+37,0.44916950504894199,0.013632345522567535,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+38,0.46280185057150952,0.014995580074824289,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+39,0.47779743064633379,0.01649513808230672,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h
+40,0.49429256872864052,0.0057074312713594755,accepted,not_completed,not_completed,,,false,,,,,,,,,,,,,,,,,,unaligned_t_or_h

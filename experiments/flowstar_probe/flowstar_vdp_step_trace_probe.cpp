@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <limits>
+#include <cstdio>
 #include <map>
 #include <sstream>
 #include <string>
@@ -17,17 +18,49 @@ namespace
 {
 
 const vector<string> kHeaders = {
+    "trace_source",
     "source",
     "mode",
+    "attempt_global_index",
+    "accepted_step_index",
     "step_index",
+    "attempt_index_within_step",
     "adaptive_attempt_index",
     "t_before",
+    "h_try",
     "h",
     "t_after",
+    "h_after_if_rejected_or_next",
     "accepted",
     "rejected",
     "status",
+    "rejection_reason",
     "message",
+    "residual_subset_target",
+    "target_check_width_x",
+    "target_check_width_y",
+    "target_check_width_sum",
+    "ordinary_step_remainder_width_x",
+    "ordinary_step_remainder_width_y",
+    "ordinary_step_remainder_width_sum",
+    "right_map_range_width_x",
+    "right_map_range_width_y",
+    "right_map_range_width_sum",
+    "reset_width_x",
+    "reset_width_y",
+    "reset_width_sum",
+    "output_range_width_x",
+    "output_range_width_y",
+    "output_range_width_sum",
+    "final_segment_width_x",
+    "final_segment_width_y",
+    "final_segment_width_sum",
+    "output_only_symbolic_width_x",
+    "output_only_symbolic_width_y",
+    "output_only_symbolic_width_sum",
+    "queue_size",
+    "j_count",
+    "phi_l_count",
     "tmv_pre_range_width_x",
     "tmv_pre_range_width_y",
     "tmv_pre_range_width_sum",
@@ -246,15 +279,89 @@ void write_csv(const string &path, const vector<Row> &rows)
     }
 }
 
+string dirname_for(const string &path)
+{
+    string::size_type pos = path.find_last_of("/");
+    if (pos == string::npos)
+    {
+        return ".";
+    }
+    return path.substr(0, pos);
+}
+
+string shell_output(const string &cmd)
+{
+    FILE *pipe = popen(cmd.c_str(), "r");
+    if (!pipe)
+    {
+        return "";
+    }
+    char buffer[256];
+    string result;
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL)
+    {
+        result += buffer;
+    }
+    pclose(pipe);
+    while (!result.empty() && (result[result.size() - 1] == '\n' || result[result.size() - 1] == '\r'))
+    {
+        result.erase(result.size() - 1);
+    }
+    return result;
+}
+
+void write_metadata_csv(const string &trace_path, double horizon, const Taylor_Model_Setting &tm_setting, const Symbolic_Remainder &sr)
+{
+    string metadata_path = trace_path;
+    string suffix = ".csv";
+    if (metadata_path.size() >= suffix.size() && metadata_path.substr(metadata_path.size() - suffix.size()) == suffix)
+    {
+        metadata_path = metadata_path.substr(0, metadata_path.size() - suffix.size()) + "_metadata.csv";
+    }
+    else
+    {
+        metadata_path += "_metadata.csv";
+    }
+    const char *env_root = getenv("FLOWSTAR_ROOT");
+    string flowstar_root = env_root == NULL ? "/srv/local/shengenli/flowstar" : string(env_root);
+    string flowstar_head = shell_output("git -C " + flowstar_root + " rev-parse HEAD 2>/dev/null");
+    ofstream out(metadata_path.c_str());
+    out << "key,value\n";
+    out << "ode_dxdt," << csv_escape("y") << "\n";
+    out << "ode_dydt," << csv_escape("y - x - x^2*y") << "\n";
+    out << "initial_x," << csv_escape("[1.1,1.4]") << "\n";
+    out << "initial_y," << csv_escape("[2.35,2.45]") << "\n";
+    out << "horizon," << format_double(horizon) << "\n";
+    out << "step_min," << format_double(tm_setting.step_min) << "\n";
+    out << "step_max," << format_double(tm_setting.step_max) << "\n";
+    out << "starting_attempted_h," << format_double(tm_setting.step_max) << "\n";
+    out << "order," << format_size(tm_setting.order) << "\n";
+    out << "cutoff," << csv_escape("[-1e-10,1e-10]") << "\n";
+    out << "remainder_estimation," << csv_escape("[-1e-4,1e-4]") << "\n";
+    out << "symbolic_remainder_enabled,true\n";
+    out << "symbolic_remainder_max_size," << format_size(sr.max_size) << "\n";
+    out << "flowstar_root," << csv_escape(flowstar_root) << "\n";
+    out << "flowstar_git_head," << csv_escape(flowstar_head) << "\n";
+}
+
 Row base_row(int step_index, int attempt_index, double t_before)
 {
     Row row;
+    set_value(row, "trace_source", "flowstar");
     set_value(row, "source", "flowstar");
-    set_value(row, "mode", "accepted_step_probe");
+    set_value(row, "mode", "attempt_step_probe");
+    set_value(row, "accepted_step_index", format_size(static_cast<size_t>(step_index)));
     set_value(row, "step_index", format_size(static_cast<size_t>(step_index)));
+    set_value(row, "attempt_index_within_step", format_size(static_cast<size_t>(attempt_index)));
     set_value(row, "adaptive_attempt_index", format_size(static_cast<size_t>(attempt_index)));
     set_value(row, "t_before", t_before);
     return row;
+}
+
+void push_row(vector<Row> &rows, Row row)
+{
+    set_value(row, "attempt_global_index", format_size(rows.size()));
+    rows.push_back(row);
 }
 
 void set_scalars(Row &row, const vector<Real> &scalars)
@@ -484,14 +591,17 @@ int traced_advance_adaptive_symbolic(
         }
 
         Row row = base_row(step_index, attempt_index, t_before);
+        set_value(row, "h_try", h_try);
         set_value(row, "h", h_try);
         set_value(row, "t_after", t_before + h_try);
         set_value(row, "accepted", bfound);
         set_value(row, "rejected", !bfound);
         set_value(row, "status", bfound ? "accepted" : "rejected");
+        set_value(row, "residual_subset_target", bfound);
         set_widths(row, "tmv_pre_range", picard_no_remainder_range);
         set_widths(row, "tmv_right_range", result_tmv_range_before_scale);
         set_widths(row, "tmv_right_normal_range", result_tmv_normal_range);
+        set_widths(row, "right_map_range", result_tmv_normal_range);
         set_widths(row, "endpoint_pre_center", range_of_x0);
         if (const_of_x0.size() > 0)
         {
@@ -514,23 +624,32 @@ int traced_advance_adaptive_symbolic(
         vector<Interval> new_x0_range;
         new_x0.intEvalNormal(new_x0_range, tm_setting.step_end_exp_table);
         set_widths(row, "new_x0", new_x0_range);
+        set_widths(row, "reset", new_x0_range);
         set_target(row, target);
+        set_widths(row, "target_check", target);
         set_widths(row, "picard_no_remainder_residual", picard_no_remainder_range);
+        set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
         set_widths(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_widths(row, "cutoff_polynomial_difference", intDifferences);
         set_value(row, "symbolic_J_size", format_size(symbolic_remainder.J.size()));
         set_value(row, "symbolic_Phi_L_size", format_size(symbolic_remainder.Phi_L.size()));
+        set_value(row, "queue_size", format_size(symbolic_remainder.J.size()));
+        set_value(row, "j_count", format_size(symbolic_remainder.J.size()));
+        set_value(row, "phi_l_count", format_size(symbolic_remainder.Phi_L.size()));
         set_scalars(row, symbolic_remainder.scalars);
         set_widths(row, "symbolic_J", matrix_column_intervals(J_ip1));
         set_widths(row, "symbolic_propagated", matrix_column_intervals(J_i));
+        set_widths(row, "output_only_symbolic", matrix_column_intervals(J_i));
         set_widths(row, "residual", ctrunc_remainder);
         set_residual_ratios(row, ctrunc_remainder, target);
 
         if (!bfound)
         {
-            set_value(row, "message", "Picard_ctrunc_normal remainder not contained in target; shrinking h");
-            rows.push_back(row);
             const double newStep = h_try * LAMBDA_DOWN;
+            set_value(row, "message", "Picard_ctrunc_normal remainder not contained in target; shrinking h");
+            set_value(row, "rejection_reason", "Picard_ctrunc_normal remainder not contained in target; shrinking h");
+            set_value(row, "h_after_if_rejected_or_next", newStep);
+            push_row(rows, row);
             if (newStep < tm_setting.step_min)
             {
                 return 0;
@@ -580,6 +699,9 @@ int traced_advance_adaptive_symbolic(
         vector<Interval> final_box;
         result.intEvalNormal(final_box, tm_setting.step_exp_table, tm_setting.order, tm_setting.cutoff_threshold);
         set_widths(row, "final_flowpipe", final_box);
+        set_widths(row, "final_segment", final_box);
+        set_widths(row, "output_range", final_box);
+        set_value(row, "h_after_if_rejected_or_next", h_try * LAMBDA_UP);
         vector<Interval> final_remainders;
         for (unsigned int i = 0; i < rangeDim; ++i)
         {
@@ -588,7 +710,7 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "picard_ctrunc_normal_residual", final_remainders);
         set_widths(row, "residual", final_remainders);
         set_residual_ratios(row, final_remainders, target);
-        rows.push_back(row);
+        push_row(rows, row);
         return 1;
     }
 }
@@ -621,6 +743,10 @@ int main(int argc, char **argv)
     ODE<Real> ode({"y", "(1 - x^2) * y - x", "1"}, vars);
     Computational_Setting setting(vars);
     setting.printOff();
+    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, 4, 4);
+    setting.tm_setting.setCutoff(Interval(-1e-10, 1e-10));
+    vector<Interval> target_remainder_setting(ode.expressions.size(), Interval(-1e-4, 1e-4));
+    setting.tm_setting.setRemainderEstimation(target_remainder_setting);
 
     vector<Interval> box(vars.size());
     box[x_id] = Interval(1.1, 1.4);
@@ -633,7 +759,7 @@ int main(int argc, char **argv)
     Flowpipe currentFlowpipe = initialSet;
     vector<Constraint> dummy_invariant;
 
-    setting.tm_setting.setStepsize(setting.tm_setting.step_max, setting.tm_setting.order);
+    setting.tm_setting.setStepsize(setting.tm_setting.step_max, 4);
     double new_stepsize = -1;
     double t = THRESHOLD_HIGH;
     int step_index = 0;
@@ -662,7 +788,7 @@ int main(int argc, char **argv)
             set_value(row, "rejected", true);
             set_value(row, "status", "failed");
             set_value(row, "message", "Flow* traced advance failed below minimum step");
-            rows.push_back(row);
+            push_row(rows, row);
             break;
         }
 
@@ -674,6 +800,7 @@ int main(int argc, char **argv)
             newFlowpipe.domain[0].setSup(remaining_time);
             if (!rows.empty())
             {
+                set_value(rows.back(), "h_try", current_stepsize);
                 set_value(rows.back(), "h", current_stepsize);
                 set_value(rows.back(), "t_after", t + current_stepsize);
             }
@@ -694,6 +821,7 @@ int main(int argc, char **argv)
         ++step_index;
     }
 
+    write_metadata_csv(output_csv, horizon, setting.tm_setting, sr);
     write_csv(output_csv, rows);
     return 0;
 }

@@ -1,0 +1,16 @@
+key,value
+ode_dxdt,y
+ode_dydt,y - x - x^2*y
+initial_x,"[1.1,1.4]"
+initial_y,"[2.35,2.45]"
+horizon,0.5
+step_min,0.002
+step_max,0.10000000000000001
+starting_attempted_h,0.10000000000000001
+order,4
+cutoff,"[-1e-10,1e-10]"
+remainder_estimation,"[-1e-4,1e-4]"
+symbolic_remainder_enabled,true
+symbolic_remainder_max_size,100
+flowstar_root,/srv/local/shengenli/flowstar
+flowstar_git_head,b85a3211748cb77b736fe4ad42ee02d8d2b81148
