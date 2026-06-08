@@ -19,9 +19,14 @@ def _rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
+def _csv_line(fields: list[str]) -> str:
+    return ",".join(fields) + "\n"
+
+
 def _minimal_fixture(root: Path) -> None:
     _write(
-        root / "outputs/flowstar_benchmark_parity/generated_flowstar_vs_original_comparison.csv",
+        root
+        / "outputs/flowstar_benchmark_parity/generated_flowstar_vs_original_comparison.csv",
         "metric,value\n"
         "original_num_segments,2\n"
         "generated_num_segments,2\n"
@@ -30,25 +35,97 @@ def _minimal_fixture(root: Path) -> None:
     )
     _write(
         root / "outputs/flowstar_benchmark_parity/parity_summary.csv",
-        "tool,status,num_segments,last_validated_t,last_attempted_t,last_segment_width_sum,tube_width_sum,endpoint_box_available,generated_flowstar_internal_reach_s,original_flowstar_wall_run_s\n"
-        "original_flowstar,completed,2,10,10,0.7,9.5,false,,1.0\n"
-        "generated_flowstar,completed,2,10,10,0.7,9.5,false,0.5,\n",
+        _csv_line(
+            [
+                "tool",
+                "status",
+                "num_segments",
+                "last_validated_t",
+                "last_attempted_t",
+                "last_segment_width_sum",
+                "tube_width_sum",
+                "endpoint_box_available",
+                "generated_flowstar_internal_reach_s",
+                "original_flowstar_wall_run_s",
+            ]
+        )
+        + "original_flowstar,completed,2,10,10,0.7,9.5,false,,1.0\n"
+        + "generated_flowstar,completed,2,10,10,0.7,9.5,false,0.5,\n",
     )
     _write(
         root / "outputs/trajectory_audit/flowstar_vs_torch_overlay_summary.csv",
-        "case_id,system,h,steps,horizon,order,setting_label,torch_mode,flowstar_status,torch_status,last_segment_ratio_available,last_segment_width_ratio_torch_over_flowstar,tube_ratio_available,tube_width_ratio_torch_over_flowstar,endpoint_ratio_available,endpoint_width_ratio_torch_over_flowstar,ratio_note\n"
-        "toy_o4,van_der_pol,0.01,10,0.1,4,loose,range_only,completed,validated,true,1.1,true,1.05,false,,endpoint ratio disabled because Flow* GNUPLOT boxes are segment boxes\n",
+        _csv_line(
+            [
+                "case_id",
+                "system",
+                "h",
+                "steps",
+                "horizon",
+                "order",
+                "setting_label",
+                "torch_mode",
+                "flowstar_status",
+                "torch_status",
+                "last_segment_ratio_available",
+                "last_segment_width_ratio_torch_over_flowstar",
+                "tube_ratio_available",
+                "tube_width_ratio_torch_over_flowstar",
+                "endpoint_ratio_available",
+                "endpoint_width_ratio_torch_over_flowstar",
+                "ratio_note",
+            ]
+        )
+        + _csv_line(
+            [
+                "toy_o4",
+                "van_der_pol",
+                "0.01",
+                "10",
+                "0.1",
+                "4",
+                "loose",
+                "range_only",
+                "completed",
+                "validated",
+                "true",
+                "1.1",
+                "true",
+                "1.05",
+                "false",
+                "",
+                "endpoint ratio disabled because Flow* GNUPLOT boxes are segment boxes",
+            ]
+        ),
     )
     _write(
         root / "outputs/flowstar_step_trace_compare/aligned_trace_diff.csv",
-        "step_index,t_flowstar,t_noqueue,t_v2,flowstar_h,noqueue_h,v2_h,first_material_channel\n"
-        "0,0,0,0,0.0125,0.025,0.025,center/scaling\n",
+        _csv_line(
+            [
+                "step_index",
+                "t_flowstar",
+                "t_noqueue",
+                "t_v2",
+                "flowstar_h",
+                "noqueue_h",
+                "v2_h",
+                "first_material_channel",
+            ]
+        )
+        + "0,0,0,0,0.0125,0.025,0.025,center/scaling\n",
     )
 
 
 def _run(root: Path, out_dir: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(SCRIPT), "--repo-root", str(root), "--out-dir", str(out_dir), "--no-strict-missing"],
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--repo-root",
+            str(root),
+            "--out-dir",
+            str(out_dir),
+            "--no-strict-missing",
+        ],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -68,8 +145,12 @@ def test_endpoint_ratio_disabled_when_flowstar_endpoint_missing(tmp_path):
     assert all(row["endpoint_ratio_allowed"] == "false" for row in trajectory)
     assert all(row["endpoint_width_ratio"] == "" for row in trajectory)
 
-    checks = {row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")}
-    assert checks["endpoint_ratio_disabled_without_flowstar_endpoint"]["status"] == "pass"
+    checks = {
+        row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")
+    }
+    assert (
+        checks["endpoint_ratio_disabled_without_flowstar_endpoint"]["status"] == "pass"
+    )
 
 
 def test_report_includes_exact_flowstar_parity_section(tmp_path):
@@ -94,7 +175,9 @@ def test_missing_artifacts_are_reported_explicitly(tmp_path):
     assert "Missing Paths" in inventory_md
     assert "outputs/flowstar_normalized_insertion_h10/" in inventory_md
 
-    checks = {row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")}
+    checks = {
+        row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")
+    }
     assert checks["missing_artifacts_recorded"]["status"] == "pass"
 
 
@@ -104,7 +187,9 @@ def test_accepted_step_h_mismatch_marked_noncausal(tmp_path):
 
     _run(tmp_path, out_dir)
 
-    checks = {row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")}
+    checks = {
+        row["check_id"]: row for row in _rows(out_dir / "claim_boundary_checks.csv")
+    }
     mismatch = checks["accepted_step_h_or_t_mismatch_noncausal"]
     assert mismatch["status"] == "noncausal_guarded"
     assert "adaptive_step_alignment_mismatch" in mismatch["details"]
