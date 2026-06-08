@@ -1,0 +1,13 @@
+batch,device,steps,order,dtype,dense_contains_samples,scalar_checked,scalar_contains_samples,dense_contains_scalar_ranges,max_dense_width,max_scalar_width,note
+1,cpu,10,4,float64,True,True,True,True,0.07256612121283679,0.07253000523323805,"scalar range containment is diagnostic, not required for speed claims"
+8,cpu,10,4,float64,True,True,True,True,0.07673530201095402,0.07668711722326105,"scalar range containment is diagnostic, not required for speed claims"
+32,cpu,10,4,float64,True,True,True,True,0.07673530201095402,0.07668711722326105,"scalar range containment is diagnostic, not required for speed claims"
+128,cpu,10,4,float64,True,False,,,0.07673530201095402,,scalar skipped above cap 32
+512,cpu,10,4,float64,True,False,,,0.07710066919706704,,scalar skipped above cap 32
+2048,cpu,10,4,float64,True,False,,,0.07710066919706704,,scalar skipped above cap 32
+1,cuda,10,4,float64,True,True,True,True,0.07256612121283657,0.07253000523323805,"scalar range containment is diagnostic, not required for speed claims"
+8,cuda,10,4,float64,True,True,True,True,0.07673530201095402,0.07668711722326105,"scalar range containment is diagnostic, not required for speed claims"
+32,cuda,10,4,float64,True,True,True,True,0.07673530201095402,0.07668711722326105,"scalar range containment is diagnostic, not required for speed claims"
+128,cuda,10,4,float64,True,False,,,0.07673530201095402,,scalar skipped above cap 32
+512,cuda,10,4,float64,True,False,,,0.07710066919706682,,scalar skipped above cap 32
+2048,cuda,10,4,float64,True,False,,,0.07710066919706682,,scalar skipped above cap 32

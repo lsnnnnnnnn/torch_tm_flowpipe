@@ -1,0 +1,19 @@
+batch,device,implementation,steps,order,dtype,status,elapsed_ms,rhs_ms,update_ms,range_ms,dominant_operation,samples_contained,speedup_vs_scalar_cpu,speedup_vs_dense_cpu,note
+1,cpu,scalar_loop,10,4,float64,ok,148.144219070673,,,,,True,,,existing sparse TaylorModel loop
+8,cpu,scalar_loop,10,4,float64,ok,1256.1165308579803,,,,,True,,,existing sparse TaylorModel loop
+32,cpu,scalar_loop,10,4,float64,ok,4802.4229891598225,,,,,True,,,existing sparse TaylorModel loop
+128,cpu,scalar_loop,10,4,float64,skipped,,,,,,,,,batch exceeds scalar cap 32
+512,cpu,scalar_loop,10,4,float64,skipped,,,,,,,,,batch exceeds scalar cap 32
+2048,cpu,scalar_loop,10,4,float64,skipped,,,,,,,,,batch exceeds scalar cap 32
+1,cpu,torch_dense,10,4,float64,ok,50.02122186124325,48.26099518686533,1.7320821061730385,0.668233260512352,rhs_mul_trunc,True,2.9616273565171753,,experimental dense tensor path
+8,cpu,torch_dense,10,4,float64,ok,55.00464700162411,53.29168867319822,1.695144921541214,0.6430977955460548,rhs_mul_trunc,True,22.83655289744685,,experimental dense tensor path
+32,cpu,torch_dense,10,4,float64,ok,63.603224232792854,61.919850297272205,1.657562330365181,0.6929356604814529,rhs_mul_trunc,True,75.50596761545567,,experimental dense tensor path
+128,cpu,torch_dense,10,4,float64,ok,111.4067742601037,109.59065891802311,1.800299622118473,0.8087083697319031,rhs_mul_trunc,True,,,experimental dense tensor path
+512,cpu,torch_dense,10,4,float64,ok,307.59726744145155,305.2413985133171,2.337934449315071,1.3893647119402885,rhs_mul_trunc,True,,,experimental dense tensor path
+2048,cpu,torch_dense,10,4,float64,ok,1275.4041040316224,1270.1084706932306,5.268224515020847,4.221336916089058,rhs_mul_trunc,True,,,experimental dense tensor path
+1,cuda,torch_dense,10,4,float64,ok,302.53732576966286,297.02640138566494,5.358066409826279,1.440349966287613,rhs_mul_trunc,True,,0.16533900977007698,experimental dense tensor path
+8,cuda,torch_dense,10,4,float64,ok,123.3958126977086,117.7635220810771,5.498599261045456,1.601463183760643,rhs_mul_trunc,True,,0.44575780813869964,experimental dense tensor path
+32,cuda,torch_dense,10,4,float64,ok,122.61043954640627,117.07102507352829,5.412286147475243,1.4547472819685936,rhs_mul_trunc,True,,0.5187423229872686,experimental dense tensor path
+128,cuda,torch_dense,10,4,float64,ok,123.46098944544792,117.84541513770819,5.474669858813286,1.5293341130018234,rhs_mul_trunc,True,,0.9023641780331717,experimental dense tensor path
+512,cuda,torch_dense,10,4,float64,ok,124.69780072569847,119.20315120369196,5.3701866418123245,1.4267675578594208,rhs_mul_trunc,True,,2.466741719992982,experimental dense tensor path
+2048,cuda,torch_dense,10,4,float64,ok,126.62054784595966,121.01742066442966,5.47440443187952,1.5123607590794563,rhs_mul_trunc,True,,10.072647178743978,experimental dense tensor path
