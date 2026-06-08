@@ -8,6 +8,19 @@ This audit uses the first same-t/h divergence only. It does not add a solver mec
 - h_try: `0.025000000000000001`
 - Input traces: `outputs/flowstar_step_trace_compare/*.csv`
 - Output ledger: `outputs/flowstar_picard_residual_source_audit/picard_residual_source_ledger.csv`
+- Lifecycle ledger: `outputs/flowstar_box_lifecycle_alignment_audit/box_lifecycle_ledger.csv`
+
+## Lifecycle Gate
+
+- Pre-step boxes equal: `true`.
+- Endpoint-before-center comparable: `true`.
+- Reset-after-center boxes equal: `unknown`.
+- First lifecycle stage divergence: `endpoint_box_before_center`.
+- Residual comparison same-stage valid: `false`.
+- Picard residual comparison: `noncausal/stage-misaligned`.
+- Flow* missing residual components: `picard_no_remainder_residual`.
+
+The residual endpoint mismatch is not yet a valid same-local-box comparison.
 
 ## Target-Check Residuals
 
@@ -19,15 +32,16 @@ This audit uses the first same-t/h divergence only. It does not add a solver mec
 
 ## Attribution Answers
 
-- Picard no-remainder: `unknown` for Flow* because the probe does not expose no-remainder residual endpoints. The PyTorch ordinary residual endpoints are inside the target at h=0.025, so this row does not support a PyTorch no-remainder rejection.
-- Picard ctrunc: `yes, at the exposed target-check residual`. Flow* post-cutoff/Picard_ctrunc_normal y upper is `0.0001083283903691475`, above target `0.0001` by `8.3283903691474946e-06`; PyTorch no_queue y upper is `5.8769252659495084e-05`, lower than Flow* by `4.9559137709652415e-05`.
-- Polynomial difference/cutoff: `not supported as the primary source by exposed widths`. The endpoint fields are missing, but width-only trace fields are tiny here; PyTorch ordinary-to-post y upper shift is `1.0000000027804608e-12`.
-- Domain/center/scale mismatch: `yes`. The inferred local boxes differ; max center delta Flow* vs no_queue is `0.069705793357435653` and max scale delta is `0.027083451029272579`.
-- Target remainder interval mismatch: `no`. All exposed target intervals are `[-0.0001, 0.0001]`.
-- Interval subset tolerance: `no`. Flow* fails endpoint inclusion in y; the upper endpoint exceeds the target by `8.3283903691474946e-06`, so width-only comparison is not the predicate.
-- Missing term in PyTorch residual accounting: `not indicated by this trace`. PyTorch records both ordinary residual endpoints and post-cutoff/Picard_ctrunc_normal endpoints; the recorded post-cutoff change is far too small to explain the Flow* y-upper gap. Flow* raw ctrunc and no-remainder endpoints remain missing, so the precise pre/post-ctrunc split is still unknown.
+- Picard no-remainder: `not attributed`; lifecycle stage alignment is invalid or unknown.
+- Picard ctrunc: `not attributed`; Flow* post-cutoff/Picard_ctrunc_normal y upper is `0.0001083283903691475`, PyTorch no_queue y upper is `5.8769252659495084e-05`, but their local-box stages are not yet proven comparable.
+- Polynomial difference/cutoff: `not attributed`; PyTorch ordinary-to-post y upper shift is `1.0000000027804608e-12`, but cutoff attribution would be noncausal before same-stage boxes align.
+- Domain/center/scale mismatch: `not evaluated from generic center/scale fields`; use stage-labeled boxes. Lifecycle first divergence is `endpoint_box_before_center`.
+- Target remainder interval mismatch: `no`.
+- Interval subset tolerance: `not the observed predicate issue`. Flow* fails endpoint inclusion in y by `8.3283903691474946e-06`, but this does not identify the residual source while stage alignment is invalid or unknown.
+- Missing term in PyTorch residual accounting: `unknown`; the Flow* vs PyTorch y-upper gap `4.9559137709652415e-05` is not a causal residual-accounting comparison until lifecycle boxes align.
 
 ## Missing Fields
 
 - Blank component endpoint columns mean the source trace did not expose that component endpoint.
 - Width-only component evidence is kept in the row notes instead of being converted into fabricated intervals.
+- Generic center/scale local_box columns are preserved for continuity but are deprecated for same-stage residual attribution.

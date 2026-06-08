@@ -26,6 +26,43 @@ from torch_tm_flowpipe.ode_examples import van_der_pol_ode
 PROBE_CPP = ROOT / "experiments" / "flowstar_probe" / "flowstar_vdp_step_trace_probe.cpp"
 DEFAULT_OUT = ROOT / "outputs" / "flowstar_step_trace_compare"
 
+LIFECYCLE_FIELDS = [
+    "pre_step_box_x_lo",
+    "pre_step_box_x_hi",
+    "pre_step_box_y_lo",
+    "pre_step_box_y_hi",
+    "endpoint_box_before_center_x_lo",
+    "endpoint_box_before_center_x_hi",
+    "endpoint_box_before_center_y_lo",
+    "endpoint_box_before_center_y_hi",
+    "extracted_center_x",
+    "extracted_center_y",
+    "extracted_scale_x",
+    "extracted_scale_y",
+    "reset_box_after_center_scale_x_lo",
+    "reset_box_after_center_scale_x_hi",
+    "reset_box_after_center_scale_y_lo",
+    "reset_box_after_center_scale_y_hi",
+    "target_remainder_x_lo",
+    "target_remainder_x_hi",
+    "target_remainder_y_lo",
+    "target_remainder_y_hi",
+    "picard_no_remainder_residual_x_lo",
+    "picard_no_remainder_residual_x_hi",
+    "picard_no_remainder_residual_y_lo",
+    "picard_no_remainder_residual_y_hi",
+    "picard_ctrunc_raw_residual_x_lo",
+    "picard_ctrunc_raw_residual_x_hi",
+    "picard_ctrunc_raw_residual_y_lo",
+    "picard_ctrunc_raw_residual_y_hi",
+    "cutoff_polynomial_difference_x_width",
+    "cutoff_polynomial_difference_y_width",
+    "post_cutoff_residual_x_lo",
+    "post_cutoff_residual_x_hi",
+    "post_cutoff_residual_y_lo",
+    "post_cutoff_residual_y_hi",
+]
+
 TRACE_FIELDS = [
     "trace_source",
     "source",
@@ -46,6 +83,7 @@ TRACE_FIELDS = [
     "rejection_reason",
     "message",
     "residual_subset_target",
+    *LIFECYCLE_FIELDS,
     "target_check_width_x",
     "target_check_width_y",
     "target_check_width_sum",
@@ -323,6 +361,75 @@ def _put_bounds(out: dict[str, Any], target_prefix: str, source: Mapping[str, An
             out[f"{target_prefix}_{side}_{dim}"] = value if value is not None else ""
 
 
+def _scalar_float(value: Any) -> float | None:
+    try:
+        if hasattr(value, "detach"):
+            value = value.detach().cpu()
+        out = float(value)
+    except (TypeError, ValueError):
+        return None
+    return out if math.isfinite(out) else None
+
+
+def _interval_bound(interval: Interval, side: str) -> float | None:
+    return _scalar_float(interval.lo if side == "lo" else interval.hi)
+
+
+def _range_box(value: TMVector | Sequence[Interval] | None) -> list[Interval] | None:
+    if value is None:
+        return None
+    if isinstance(value, TMVector):
+        try:
+            return list(value.range_box())
+        except Exception:
+            return None
+    try:
+        return [iv for iv in value if isinstance(iv, Interval)]
+    except TypeError:
+        return None
+
+
+def _put_lifecycle_bounds(out: dict[str, Any], target_prefix: str, boxes: Sequence[Interval] | None) -> None:
+    if boxes is None:
+        return
+    for dim, interval in zip(("x", "y"), boxes):
+        lo = _interval_bound(interval, "lo")
+        hi = _interval_bound(interval, "hi")
+        out[f"{target_prefix}_{dim}_lo"] = lo if lo is not None else ""
+        out[f"{target_prefix}_{dim}_hi"] = hi if hi is not None else ""
+
+
+def _put_lifecycle_bounds_from_row(out: dict[str, Any], target_prefix: str, source: Mapping[str, Any], source_prefix: str) -> None:
+    for dim in ("x", "y"):
+        for side in ("lo", "hi"):
+            value = source.get(f"{source_prefix}_{side}_{dim}")
+            out[f"{target_prefix}_{dim}_{side}"] = value if value not in (None, "") else out.get(f"{target_prefix}_{dim}_{side}", "")
+
+
+def _fill_lifecycle_aliases(row: dict[str, Any]) -> None:
+    for dim in ("x", "y"):
+        for side in ("lo", "hi"):
+            aliases = [
+                (f"target_remainder_{dim}_{side}", f"target_remainder_{side}_{dim}"),
+                (f"post_cutoff_residual_{dim}_{side}", f"picard_ctrunc_normal_residual_{side}_{dim}"),
+                (f"picard_no_remainder_residual_{dim}_{side}", f"ordinary_residual_range_{side}_{dim}"),
+            ]
+            for target, source in aliases:
+                if row.get(target) in (None, "") and row.get(source) not in (None, ""):
+                    row[target] = row.get(source, "")
+        width = row.get(f"cutoff_polynomial_difference_width_{dim}")
+        if row.get(f"cutoff_polynomial_difference_{dim}_width") in (None, "") and width not in (None, ""):
+            row[f"cutoff_polynomial_difference_{dim}_width"] = width
+    for target, source in (
+        ("extracted_center_x", "center_x"),
+        ("extracted_center_y", "center_y"),
+        ("extracted_scale_x", "scale_x"),
+        ("extracted_scale_y", "scale_y"),
+    ):
+        if row.get(target) in (None, "") and row.get(source) not in (None, ""):
+            row[target] = row.get(source, "")
+
+
 def _zero_widths(out: dict[str, Any], target_prefix: str) -> None:
     for suffix in ("x", "y", "sum"):
         out[f"{target_prefix}_width_{suffix}"] = 0.0
@@ -436,6 +543,7 @@ def _fill_common_trace_aliases(row: dict[str, Any], *, trace_source: str, attemp
     row.setdefault("phi_l_count", _first_present(row, "phi_l_count", "symbolic_Phi_L_size"))
     for suffix in ("x", "y", "sum"):
         row.setdefault(f"output_only_symbolic_width_{suffix}", row.get(f"symbolic_propagated_width_{suffix}", ""))
+    _fill_lifecycle_aliases(row)
 
 
 def _normalized_rows(rows: Iterable[Mapping[str, Any]], trace_source: str = "") -> list[dict[str, Any]]:
@@ -531,6 +639,9 @@ def _common_torch_row(
     accepted: bool,
     normal_stats: Mapping[str, Any] | None,
     target_radius: float,
+    pre_step_boxes: Sequence[Interval] | None = None,
+    endpoint_box_before_center_boxes: Sequence[Interval] | None = None,
+    reset_box_after_center_scale_boxes: Sequence[Interval] | None = None,
 ) -> dict[str, Any]:
     message = validation.get("validation_message", "") or validation.get("rejection_reason", "")
     row: dict[str, Any] = {
@@ -555,18 +666,26 @@ def _common_torch_row(
     if h is not None:
         row["t_after"] = t_before + h
 
+    _put_lifecycle_bounds(row, "pre_step_box", pre_step_boxes)
+    _put_lifecycle_bounds(row, "endpoint_box_before_center", endpoint_box_before_center_boxes)
+    _put_lifecycle_bounds(row, "reset_box_after_center_scale", reset_box_after_center_scale_boxes)
+
     _put_widths(row, "tmv_pre_range", validation, "candidate_segment")
     _put_widths(row, "final_flowpipe", validation, "candidate_final")
     _put_widths(row, "residual", validation, "residual")
     if "ordinary_residual_range_width_sum" in validation:
         _put_widths(row, "picard_no_remainder_residual", validation, "ordinary_residual_range")
+        _put_lifecycle_bounds_from_row(row, "picard_no_remainder_residual", validation, "ordinary_residual_range")
     else:
         _put_widths(row, "picard_no_remainder_residual", validation, "residual")
+        _put_lifecycle_bounds_from_row(row, "picard_no_remainder_residual", validation, "residual")
 
     for suffix in ("x", "y"):
         row[f"target_remainder_width_{suffix}"] = 2.0 * target_radius
         row[f"target_remainder_lo_{suffix}"] = -abs(float(target_radius))
         row[f"target_remainder_hi_{suffix}"] = abs(float(target_radius))
+        row[f"target_remainder_{suffix}_lo"] = -abs(float(target_radius))
+        row[f"target_remainder_{suffix}_hi"] = abs(float(target_radius))
     row["target_remainder_width_sum"] = 4.0 * target_radius
 
     if "tmp_remainder_width_sum" in validation:
@@ -583,6 +702,12 @@ def _common_torch_row(
         _put_widths(row, "cutoff_polynomial_difference", normal_stats, "insertion_cutoff")
     else:
         _zero_widths(row, "cutoff_polynomial_difference")
+    for suffix in ("x", "y"):
+        row[f"cutoff_polynomial_difference_{suffix}_width"] = _first_present(
+            row,
+            f"cutoff_polynomial_difference_width_{suffix}",
+            f"poly_diff_range_width_{suffix}",
+        )
 
     residual_sum = _float(row.get("residual_width_sum"))
     if residual_sum is not None:
@@ -599,6 +724,10 @@ def _common_torch_row(
         _put_widths(row, "new_x0", normal_stats, "normalized_reset")
         for key in ("center_x", "center_y", "scale_x", "scale_y"):
             row[key] = normal_stats.get(key, "")
+        row["extracted_center_x"] = normal_stats.get("center_x", "")
+        row["extracted_center_y"] = normal_stats.get("center_y", "")
+        row["extracted_scale_x"] = normal_stats.get("scale_x", "")
+        row["extracted_scale_y"] = normal_stats.get("scale_y", "")
         for suffix in ("x", "y"):
             scale = _float(normal_stats.get(f"scale_{suffix}"))
             row[f"inv_scale_{suffix}"] = "" if scale is None or scale == 0.0 else 1.0 / scale
@@ -631,6 +760,7 @@ def _common_torch_row(
                 f"materialized_for_output_width_{suffix}",
                 f"propagated_symbolic_width_{suffix}",
             )
+    _put_lifecycle_bounds_from_row(row, "post_cutoff_residual", row, "picard_ctrunc_normal_residual")
     _fill_common_trace_aliases(row, trace_source=mode)
     return row
 
@@ -665,6 +795,7 @@ def generate_torch_trace(
         if h_try < h_min:
             h_try = h_min
         diagnostics: list[dict[str, Any]] = []
+        pre_step_boxes = _range_box(current)
         seg = flowpipe_step_flowstar_style_adaptive(
             van_der_pol_ode,
             current,
@@ -697,6 +828,8 @@ def generate_torch_trace(
         for attempt in sorted(grouped):
             validation = grouped[attempt]
             accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
+            endpoint_boxes = _range_box(seg.final_tm) if accepted else None
+            reset_boxes = _range_box(seg.reset_tm) if accepted else None
             row = _common_torch_row(
                 mode=mode,
                 step_index=step_index,
@@ -705,6 +838,9 @@ def generate_torch_trace(
                 accepted=accepted,
                 normal_stats=seg.flowstar_normal_stats if accepted else None,
                 target_radius=target_radius,
+                pre_step_boxes=pre_step_boxes,
+                endpoint_box_before_center_boxes=endpoint_boxes,
+                reset_box_after_center_scale_boxes=reset_boxes,
             )
             row["attempt_global_index"] = len(trace_rows)
             h_value = _float(row.get("h_try"))
@@ -759,6 +895,7 @@ def generate_torch_forced_h_trace(
             continue
         t_label = _t_before(flow_row)
         diagnostics: list[dict[str, Any]] = []
+        pre_step_boxes = _range_box(current)
         seg = flowpipe_step_flowstar_style_adaptive(
             van_der_pol_ode,
             current,
@@ -819,6 +956,8 @@ def generate_torch_forced_h_trace(
         for attempt in sorted(grouped):
             validation = grouped[attempt]
             accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
+            endpoint_boxes = _range_box(seg.final_tm) if accepted else None
+            reset_boxes = _range_box(seg.reset_tm) if accepted else None
             row = _common_torch_row(
                 mode=mode,
                 step_index=step_index,
@@ -827,6 +966,9 @@ def generate_torch_forced_h_trace(
                 accepted=accepted,
                 normal_stats=seg.flowstar_normal_stats if accepted else None,
                 target_radius=target_radius,
+                pre_step_boxes=pre_step_boxes,
+                endpoint_box_before_center_boxes=endpoint_boxes,
+                reset_box_after_center_scale_boxes=reset_boxes,
             )
             row["attempt_global_index"] = len(trace_rows)
             row["h_after_if_rejected_or_next"] = h_forced

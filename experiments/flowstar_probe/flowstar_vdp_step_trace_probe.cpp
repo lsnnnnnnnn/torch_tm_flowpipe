@@ -37,6 +37,40 @@ const vector<string> kHeaders = {
     "rejection_reason",
     "message",
     "residual_subset_target",
+    "pre_step_box_x_lo",
+    "pre_step_box_x_hi",
+    "pre_step_box_y_lo",
+    "pre_step_box_y_hi",
+    "endpoint_box_before_center_x_lo",
+    "endpoint_box_before_center_x_hi",
+    "endpoint_box_before_center_y_lo",
+    "endpoint_box_before_center_y_hi",
+    "extracted_center_x",
+    "extracted_center_y",
+    "extracted_scale_x",
+    "extracted_scale_y",
+    "reset_box_after_center_scale_x_lo",
+    "reset_box_after_center_scale_x_hi",
+    "reset_box_after_center_scale_y_lo",
+    "reset_box_after_center_scale_y_hi",
+    "target_remainder_x_lo",
+    "target_remainder_x_hi",
+    "target_remainder_y_lo",
+    "target_remainder_y_hi",
+    "picard_no_remainder_residual_x_lo",
+    "picard_no_remainder_residual_x_hi",
+    "picard_no_remainder_residual_y_lo",
+    "picard_no_remainder_residual_y_hi",
+    "picard_ctrunc_raw_residual_x_lo",
+    "picard_ctrunc_raw_residual_x_hi",
+    "picard_ctrunc_raw_residual_y_lo",
+    "picard_ctrunc_raw_residual_y_hi",
+    "cutoff_polynomial_difference_x_width",
+    "cutoff_polynomial_difference_y_width",
+    "post_cutoff_residual_x_lo",
+    "post_cutoff_residual_x_hi",
+    "post_cutoff_residual_y_lo",
+    "post_cutoff_residual_y_hi",
     "target_check_width_x",
     "target_check_width_y",
     "target_check_width_sum",
@@ -216,6 +250,32 @@ void set_widths(Row &row, const string &prefix, const vector<Interval> &boxes)
         total += width;
     }
     set_value(row, prefix + "_width_sum", total);
+}
+
+void set_lifecycle_bounds(Row &row, const string &prefix, const vector<Interval> &boxes)
+{
+    if (boxes.size() > 0)
+    {
+        set_value(row, prefix + "_x_lo", boxes[0].inf());
+        set_value(row, prefix + "_x_hi", boxes[0].sup());
+    }
+    if (boxes.size() > 1)
+    {
+        set_value(row, prefix + "_y_lo", boxes[1].inf());
+        set_value(row, prefix + "_y_hi", boxes[1].sup());
+    }
+}
+
+void set_lifecycle_widths(Row &row, const string &prefix, const vector<Interval> &boxes)
+{
+    if (boxes.size() > 0)
+    {
+        set_value(row, prefix + "_x_width", interval_width(boxes[0]));
+    }
+    if (boxes.size() > 1)
+    {
+        set_value(row, prefix + "_y_width", interval_width(boxes[1]));
+    }
 }
 
 vector<Interval> matrix_column_intervals(const Matrix<Interval> &matrix)
@@ -406,6 +466,7 @@ void set_target(Row &row, const vector<Interval> &target)
 {
     set_widths(row, "target_remainder", target);
     set_bounds(row, "target_remainder", target);
+    set_lifecycle_bounds(row, "target_remainder", target);
 }
 
 void set_residual_ratios(Row &row, const vector<Interval> &residual, const vector<Interval> &target)
@@ -589,6 +650,12 @@ int traced_advance_adaptive_symbolic(
         tmvTmp.tms.clear();
         x.Picard_ctrunc_normal(tmvTmp, new_x0, ode, tm_setting.step_exp_table, rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold, intermediate_ranges, g_setting);
 
+        vector<Interval> raw_ctrunc_remainder;
+        for (unsigned int i = 0; i < rangeDim; ++i)
+        {
+            raw_ctrunc_remainder.push_back(tmvTmp.tms[i].remainder);
+        }
+
         if (!have_poly_differences)
         {
             polyDifferences.clear();
@@ -617,6 +684,11 @@ int traced_advance_adaptive_symbolic(
             ctrunc_remainder.push_back(tmvTmp.tms[i].remainder);
         }
 
+        vector<Interval> endpoint_before_center_range;
+        tmvTmp.intEvalNormal(endpoint_before_center_range, tm_setting.step_exp_table);
+        vector<Interval> new_x0_range;
+        new_x0.intEvalNormal(new_x0_range, tm_setting.step_end_exp_table);
+
         Row row = base_row(step_index, attempt_index, t_before);
         set_value(row, "h_try", h_try);
         set_value(row, "h", h_try);
@@ -629,36 +701,42 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "tmv_right_range", result_tmv_range_before_scale);
         set_widths(row, "tmv_right_normal_range", result_tmv_normal_range);
         set_widths(row, "right_map_range", result_tmv_normal_range);
-        set_widths(row, "endpoint_pre_center", range_of_x0);
+        set_widths(row, "endpoint_pre_center", endpoint_before_center_range);
+        set_lifecycle_bounds(row, "pre_step_box", new_x0_range);
+        set_lifecycle_bounds(row, "endpoint_box_before_center", endpoint_before_center_range);
         if (const_of_x0.size() > 0)
         {
             set_value(row, "center_x", real_to_double(const_of_x0[0]));
+            set_value(row, "extracted_center_x", real_to_double(const_of_x0[0]));
         }
         if (const_of_x0.size() > 1)
         {
             set_value(row, "center_y", real_to_double(const_of_x0[1]));
+            set_value(row, "extracted_center_y", real_to_double(const_of_x0[1]));
         }
         if (S.size() > 0)
         {
             set_value(row, "scale_x", real_to_double(S[0]));
+            set_value(row, "extracted_scale_x", real_to_double(S[0]));
             set_value(row, "inv_scale_x", real_to_double(invS[0]));
         }
         if (S.size() > 1)
         {
             set_value(row, "scale_y", real_to_double(S[1]));
+            set_value(row, "extracted_scale_y", real_to_double(S[1]));
             set_value(row, "inv_scale_y", real_to_double(invS[1]));
         }
-        vector<Interval> new_x0_range;
-        new_x0.intEvalNormal(new_x0_range, tm_setting.step_end_exp_table);
         set_widths(row, "new_x0", new_x0_range);
         set_widths(row, "reset", new_x0_range);
         set_target(row, target);
         set_widths(row, "target_check", target);
-        set_widths(row, "picard_no_remainder_residual", picard_no_remainder_range);
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
+        set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
         set_widths(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_bounds(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
+        set_lifecycle_bounds(row, "post_cutoff_residual", ctrunc_remainder);
         set_widths(row, "cutoff_polynomial_difference", intDifferences);
+        set_lifecycle_widths(row, "cutoff_polynomial_difference", intDifferences);
         set_value(row, "symbolic_J_size", format_size(symbolic_remainder.J.size()));
         set_value(row, "symbolic_Phi_L_size", format_size(symbolic_remainder.Phi_L.size()));
         set_value(row, "queue_size", format_size(symbolic_remainder.J.size()));
@@ -738,6 +816,7 @@ int traced_advance_adaptive_symbolic(
         }
         set_widths(row, "picard_ctrunc_normal_residual", final_remainders);
         set_bounds(row, "picard_ctrunc_normal_residual", final_remainders);
+        set_lifecycle_bounds(row, "post_cutoff_residual", final_remainders);
         set_widths(row, "residual", final_remainders);
         set_bounds(row, "residual", final_remainders);
         set_residual_ratios(row, final_remainders, target);

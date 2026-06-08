@@ -17,6 +17,7 @@ from typing import Any, Iterable, Mapping
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TRACE_DIR = ROOT / "outputs" / "flowstar_step_trace_compare"
 DEFAULT_OUT_DIR = ROOT / "outputs" / "flowstar_picard_residual_source_audit"
+DEFAULT_LIFECYCLE_DIR = ROOT / "outputs" / "flowstar_box_lifecycle_alignment_audit"
 
 LEDGER_FIELDS = [
     "source",
@@ -147,22 +148,25 @@ def _find_attempt(rows: Iterable[Mapping[str, Any]], *, t: float, h: float, tole
 
 
 def _bounds(row: Mapping[str, Any], prefix: str, dim: str) -> tuple[float | None, float | None]:
-    return finite_float(row.get(f"{prefix}_lo_{dim}")), finite_float(row.get(f"{prefix}_hi_{dim}"))
+    lo = finite_float(_first_present(row, f"{prefix}_{dim}_lo", f"{prefix}_lo_{dim}"))
+    hi = finite_float(_first_present(row, f"{prefix}_{dim}_hi", f"{prefix}_hi_{dim}"))
+    return lo, hi
+
+
+def _has_bounds(row: Mapping[str, Any], prefix: str) -> bool:
+    return all(_bounds(row, prefix, dim)[side] is not None for dim in ("x", "y") for side in (0, 1))
 
 
 def _put_bounds(out: dict[str, Any], target_prefix: str, row: Mapping[str, Any], source_prefix: str, notes: list[str]) -> bool:
     missing: list[str] = []
     for dim in ("x", "y"):
-        lo_key = f"{source_prefix}_lo_{dim}"
-        hi_key = f"{source_prefix}_hi_{dim}"
-        lo = finite_float(row.get(lo_key))
-        hi = finite_float(row.get(hi_key))
+        lo, hi = _bounds(row, source_prefix, dim)
         out[f"{target_prefix}_{dim}_lo"] = lo
         out[f"{target_prefix}_{dim}_hi"] = hi
         if lo is None:
-            missing.append(lo_key)
+            missing.append(f"{source_prefix}_{dim}_lo")
         if hi is None:
-            missing.append(hi_key)
+            missing.append(f"{source_prefix}_{dim}_hi")
     if missing:
         notes.append(f"missing {target_prefix} endpoints: {', '.join(missing)}")
         return False
@@ -214,7 +218,7 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
 
     # The acceptance predicate in the trace is the Picard_ctrunc_normal target
     # check. These endpoints are the observed post-cutoff residual endpoints.
-    residual_prefix = "picard_ctrunc_normal_residual"
+    residual_prefix = "post_cutoff_residual" if _has_bounds(row, "post_cutoff_residual") else "picard_ctrunc_normal_residual"
     for dim in ("x", "y"):
         res_lo, res_hi = _bounds(row, residual_prefix, dim)
         tgt_lo, tgt_hi = _bounds(row, "target_remainder", dim)
@@ -230,13 +234,11 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
     unknown_subset = any(out[f"subset_{dim}"] == "unknown" for dim in ("x", "y"))
     out["failed_dim"] = ";".join(failed) if failed else ("unknown" if unknown_subset else "")
 
-    # PyTorch trace rows keep ordinary Picard residual endpoints in residual_*.
-    # The Flow* probe does not expose no-remainder residual endpoints.
-    if source.startswith("torch"):
+    if _has_bounds(row, "picard_no_remainder_residual"):
+        _put_bounds(out, "picard_no_remainder", row, "picard_no_remainder_residual", notes)
+    elif source.startswith("torch") and _has_bounds(row, "residual"):
         _put_bounds(out, "picard_no_remainder", row, "residual", notes)
         notes.append("picard_no_remainder uses PyTorch ordinary residual endpoints from residual_lo/hi")
-    elif all(row.get(f"picard_no_remainder_residual_{side}_{dim}") not in (None, "") for dim in ("x", "y") for side in ("lo", "hi")):
-        _put_bounds(out, "picard_no_remainder", row, "picard_no_remainder_residual", notes)
     else:
         _put_blank_component(out, "picard_no_remainder")
         notes.append("missing picard_no_remainder endpoints")
@@ -246,9 +248,9 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
         if width_note:
             notes.append(width_note)
 
-    # Raw Picard_ctrunc-before-polynomial-difference endpoints are not present
-    # in the current traces.
-    if all(row.get(f"picard_ctrunc_raw_{side}_{dim}") not in (None, "") for dim in ("x", "y") for side in ("lo", "hi")):
+    if _has_bounds(row, "picard_ctrunc_raw_residual"):
+        _put_bounds(out, "picard_ctrunc_raw", row, "picard_ctrunc_raw_residual", notes)
+    elif _has_bounds(row, "picard_ctrunc_raw"):
         _put_bounds(out, "picard_ctrunc_raw", row, "picard_ctrunc_raw", notes)
     else:
         _put_blank_component(out, "picard_ctrunc_raw")
@@ -256,7 +258,7 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
 
     # Some historical PyTorch validation CSVs expose poly_diff_range endpoints,
     # but the step trace used here exposes only widths.
-    if all(row.get(f"poly_diff_range_{side}_{dim}") not in (None, "") for dim in ("x", "y") for side in ("lo", "hi")):
+    if _has_bounds(row, "poly_diff_range"):
         _put_bounds(out, "polynomial_diff", row, "poly_diff_range", notes)
     else:
         _put_blank_component(out, "polynomial_diff")
@@ -265,7 +267,7 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
         if width_note:
             notes.append(width_note)
 
-    if all(row.get(f"cutoff_uncertainty_{side}_{dim}") not in (None, "") for dim in ("x", "y") for side in ("lo", "hi")):
+    if _has_bounds(row, "cutoff_uncertainty"):
         _put_bounds(out, "cutoff_uncertainty", row, "cutoff_uncertainty", notes)
     else:
         _put_blank_component(out, "cutoff_uncertainty")
@@ -288,6 +290,8 @@ def build_ledger_row(source: str, row: Mapping[str, Any], *, tolerance: float = 
     out["domain_used"] = "center_scale_inferred" if all(value is not None for value in (center_x, center_y, scale_x, scale_y)) else "unknown"
     if out["domain_used"] == "unknown":
         notes.append("missing center/scale domain fields")
+    else:
+        notes.append("generic center/scale local_box is deprecated for same-stage comparison; use lifecycle stage boxes")
 
     rejection_reason = _first_present(row, "rejection_reason", "message", "validation_message")
     if rejection_reason:
@@ -354,27 +358,81 @@ def _bool_word(value: bool | None) -> str:
     return "yes" if value else "no"
 
 
-def _report(out_dir: Path, ledger: list[dict[str, Any]], *, t: float, h: float) -> str:
+def _read_lifecycle_summary(lifecycle_dir: Path | None) -> dict[str, Any]:
+    summary: dict[str, Any] = {
+        "pre_step_boxes_equal": "unknown",
+        "endpoint_before_center_comparable": "unknown",
+        "endpoint_before_center_boxes_equal": "unknown",
+        "reset_after_center_comparable": "unknown",
+        "reset_after_center_boxes_equal": "unknown",
+        "first_lifecycle_stage_divergence": "unknown_missing_stage_fields",
+        "residual_comparison_stage_valid": "unknown",
+        "picard_residual_comparison": "noncausal/stage-misaligned",
+        "flowstar_missing_residual_components": "",
+    }
+    if lifecycle_dir is None:
+        return summary
+    ledger_path = lifecycle_dir / "box_lifecycle_ledger.csv"
+    if not ledger_path.exists():
+        summary["notes"] = f"missing lifecycle ledger: {ledger_path}"
+        return summary
+    rows = _read_rows(ledger_path)
+    if not rows:
+        summary["notes"] = f"empty lifecycle ledger: {ledger_path}"
+        return summary
+    row = rows[0]
+    for key in summary:
+        value = row.get(key)
+        if value is not None and (value != "" or key == "flowstar_missing_residual_components"):
+            summary[key] = value
+    return summary
+
+
+def _component_delta_label(rows: list[dict[str, Any]], prefix: str) -> str:
+    same_x = _same_interval(rows, f"{prefix}_x_lo", f"{prefix}_x_hi")
+    same_y = _same_interval(rows, f"{prefix}_y_lo", f"{prefix}_y_hi")
+    if same_x is None or same_y is None:
+        return "unknown"
+    return "same" if same_x and same_y else "differs"
+
+
+def _first_valid_stage_component(ledger: list[dict[str, Any]], target_same_x: bool | None, target_same_y: bool | None) -> str:
+    if target_same_x is False or target_same_y is False:
+        return "target_remainder"
+    for prefix, label in (
+        ("picard_no_remainder", "picard_no_remainder"),
+        ("picard_ctrunc_raw", "picard_ctrunc_raw"),
+        ("polynomial_diff", "polynomial_difference/cutoff"),
+        ("post_cutoff_residual", "post_cutoff_residual"),
+    ):
+        if _component_delta_label(ledger, prefix) == "differs":
+            return label
+    flow = _row_for(ledger, "flowstar")
+    if flow.get("subset_x") == "false" or flow.get("subset_y") == "false":
+        return "interval_subset_predicate"
+    return "unknown"
+
+
+def _report(
+    out_dir: Path,
+    ledger: list[dict[str, Any]],
+    *,
+    t: float,
+    h: float,
+    lifecycle_summary: Mapping[str, Any] | None = None,
+) -> str:
     flow = _row_for(ledger, "flowstar")
     noq = _row_for(ledger, "torch_noqueue")
-    v2 = _row_for(ledger, "torch_v2")
     target_same_x = _same_interval(ledger, "target_x_lo", "target_x_hi")
     target_same_y = _same_interval(ledger, "target_y_lo", "target_y_hi")
+    target_mismatch = None if target_same_x is None or target_same_y is None else not (target_same_x and target_same_y)
     flow_y_excess = _delta(_num(flow, "residual_y_hi"), _num(flow, "target_y_hi"))
     noqueue_y_gap = _delta(_num(flow, "residual_y_hi"), _num(noq, "residual_y_hi"))
-    center_delta = _max_abs(
-        [
-            _abs_delta(_num(flow, "center_x"), _num(noq, "center_x")),
-            _abs_delta(_num(flow, "center_y"), _num(noq, "center_y")),
-        ]
-    )
-    scale_delta = _max_abs(
-        [
-            _abs_delta(_num(flow, "scale_x"), _num(noq, "scale_x")),
-            _abs_delta(_num(flow, "scale_y"), _num(noq, "scale_y")),
-        ]
-    )
     noqueue_ordinary_to_post_y = _delta(_num(noq, "post_cutoff_residual_y_hi"), _num(noq, "picard_no_remainder_y_hi"))
+    lifecycle = dict(lifecycle_summary or _read_lifecycle_summary(DEFAULT_LIFECYCLE_DIR))
+    stage_valid = str(lifecycle.get("residual_comparison_stage_valid", "unknown")).strip().lower()
+    same_stage_valid = stage_valid == "true"
+    first_component = _first_valid_stage_component(ledger, target_same_x, target_same_y) if same_stage_valid else "not-attributed-stage-misaligned"
 
     lines = [
         "# Flow* Picard Residual Source Audit",
@@ -387,12 +445,35 @@ def _report(out_dir: Path, ledger: list[dict[str, Any]], *, t: float, h: float) 
         f"- h_try: `{h:.17g}`",
         "- Input traces: `outputs/flowstar_step_trace_compare/*.csv`",
         "- Output ledger: `outputs/flowstar_picard_residual_source_audit/picard_residual_source_ledger.csv`",
+        "- Lifecycle ledger: `outputs/flowstar_box_lifecycle_alignment_audit/box_lifecycle_ledger.csv`",
         "",
-        "## Target-Check Residuals",
+        "## Lifecycle Gate",
         "",
-        "| source | status | residual x | residual y | target x | target y | subset x | subset y | failed dim | local box |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        f"- Pre-step boxes equal: `{lifecycle.get('pre_step_boxes_equal', 'unknown')}`.",
+        f"- Endpoint-before-center comparable: `{lifecycle.get('endpoint_before_center_comparable', 'unknown')}`.",
+        f"- Reset-after-center boxes equal: `{lifecycle.get('reset_after_center_boxes_equal', 'unknown')}`.",
+        f"- First lifecycle stage divergence: `{lifecycle.get('first_lifecycle_stage_divergence', 'unknown')}`.",
+        f"- Residual comparison same-stage valid: `{lifecycle.get('residual_comparison_stage_valid', 'unknown')}`.",
+        f"- Picard residual comparison: `{lifecycle.get('picard_residual_comparison', 'unknown')}`.",
+        f"- Flow* missing residual components: `{lifecycle.get('flowstar_missing_residual_components') or 'none'}`.",
     ]
+    if not same_stage_valid:
+        lines.extend(
+            [
+                "",
+                "The residual endpoint mismatch is not yet a valid same-local-box comparison.",
+            ]
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Target-Check Residuals",
+            "",
+            "| source | status | residual x | residual y | target x | target y | subset x | subset y | failed dim | local box |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        ]
+    )
     for row in ledger:
         local_box = (
             f"x={_fmt_interval(row, 'local_box', 'x')}, y={_fmt_interval(row, 'local_box', 'y')}"
@@ -414,34 +495,51 @@ def _report(out_dir: Path, ledger: list[dict[str, Any]], *, t: float, h: float) 
             )
         )
 
+    if same_stage_valid:
+        attribution = [
+            f"- First component source after lifecycle alignment: `{first_component}`.",
+            f"- Picard no-remainder: `{_component_delta_label(ledger, 'picard_no_remainder')}` across exposed endpoints.",
+            f"- Picard ctrunc: `{_component_delta_label(ledger, 'picard_ctrunc_raw')}` across exposed raw-ctrunc endpoints.",
+            f"- Polynomial difference/cutoff: `{_component_delta_label(ledger, 'polynomial_diff')}` across exposed endpoints; PyTorch ordinary-to-post y upper shift is `{_format(noqueue_ordinary_to_post_y)}`.",
+            f"- Target remainder interval mismatch: `{_bool_word(target_mismatch)}`.",
+            f"- Interval subset tolerance: Flow* y upper exceeds target by `{_format(flow_y_excess)}`; the subset predicate checks endpoints, not width alone.",
+            "- Missing term in PyTorch residual accounting: `unknown` unless an exposed same-stage component remains inconsistent after target and tolerance checks.",
+        ]
+    else:
+        attribution = [
+            "- Picard no-remainder: `not attributed`; lifecycle stage alignment is invalid or unknown.",
+            f"- Picard ctrunc: `not attributed`; Flow* post-cutoff/Picard_ctrunc_normal y upper is `{_format(flow.get('residual_y_hi'))}`, PyTorch no_queue y upper is `{_format(noq.get('residual_y_hi'))}`, but their local-box stages are not yet proven comparable.",
+            f"- Polynomial difference/cutoff: `not attributed`; PyTorch ordinary-to-post y upper shift is `{_format(noqueue_ordinary_to_post_y)}`, but cutoff attribution would be noncausal before same-stage boxes align.",
+            f"- Domain/center/scale mismatch: `not evaluated from generic center/scale fields`; use stage-labeled boxes. Lifecycle first divergence is `{lifecycle.get('first_lifecycle_stage_divergence', 'unknown')}`.",
+            f"- Target remainder interval mismatch: `{_bool_word(target_mismatch)}`.",
+            f"- Interval subset tolerance: `not the observed predicate issue`. Flow* fails endpoint inclusion in y by `{_format(flow_y_excess)}`, but this does not identify the residual source while stage alignment is invalid or unknown.",
+            f"- Missing term in PyTorch residual accounting: `unknown`; the Flow* vs PyTorch y-upper gap `{_format(noqueue_y_gap)}` is not a causal residual-accounting comparison until lifecycle boxes align.",
+        ]
+
     lines.extend(
         [
             "",
             "## Attribution Answers",
             "",
-            f"- Picard no-remainder: `unknown` for Flow* because the probe does not expose no-remainder residual endpoints. The PyTorch ordinary residual endpoints are inside the target at h=0.025, so this row does not support a PyTorch no-remainder rejection.",
-            f"- Picard ctrunc: `yes, at the exposed target-check residual`. Flow* post-cutoff/Picard_ctrunc_normal y upper is `{_format(flow.get('residual_y_hi'))}`, above target `{_format(flow.get('target_y_hi'))}` by `{_format(flow_y_excess)}`; PyTorch no_queue y upper is `{_format(noq.get('residual_y_hi'))}`, lower than Flow* by `{_format(noqueue_y_gap)}`.",
-            f"- Polynomial difference/cutoff: `not supported as the primary source by exposed widths`. The endpoint fields are missing, but width-only trace fields are tiny here; PyTorch ordinary-to-post y upper shift is `{_format(noqueue_ordinary_to_post_y)}`.",
-            f"- Domain/center/scale mismatch: `yes`. The inferred local boxes differ; max center delta Flow* vs no_queue is `{_format(center_delta)}` and max scale delta is `{_format(scale_delta)}`.",
-            f"- Target remainder interval mismatch: `{_bool_word(not (target_same_x and target_same_y) if target_same_x is not None and target_same_y is not None else None)}`. All exposed target intervals are `[-0.0001, 0.0001]`.",
-            f"- Interval subset tolerance: `no`. Flow* fails endpoint inclusion in y; the upper endpoint exceeds the target by `{_format(flow_y_excess)}`, so width-only comparison is not the predicate.",
-            "- Missing term in PyTorch residual accounting: `not indicated by this trace`. PyTorch records both ordinary residual endpoints and post-cutoff/Picard_ctrunc_normal endpoints; the recorded post-cutoff change is far too small to explain the Flow* y-upper gap. Flow* raw ctrunc and no-remainder endpoints remain missing, so the precise pre/post-ctrunc split is still unknown.",
+            *attribution,
             "",
             "## Missing Fields",
             "",
             "- Blank component endpoint columns mean the source trace did not expose that component endpoint.",
             "- Width-only component evidence is kept in the row notes instead of being converted into fabricated intervals.",
+            "- Generic center/scale local_box columns are preserved for continuity but are deprecated for same-stage residual attribution.",
         ]
     )
     text = "\n".join(lines) + "\n"
+    out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "picard_residual_source_report.md").write_text(text, encoding="utf-8")
     return text
-
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trace-dir", type=Path, default=DEFAULT_TRACE_DIR)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
+    parser.add_argument("--lifecycle-dir", type=Path, default=DEFAULT_LIFECYCLE_DIR)
     parser.add_argument("--t", type=float, default=0.0)
     parser.add_argument("--h", type=float, default=0.025)
     return parser.parse_args()
@@ -456,7 +554,8 @@ def main() -> int:
     v2_rows = _read_rows(trace_dir / "torch_v2_trace.csv")
     ledger = build_ledger(flowstar_rows, noqueue_rows, v2_rows, t=args.t, h=args.h)
     _write_rows(out_dir / "picard_residual_source_ledger.csv", ledger)
-    _report(out_dir, ledger, t=args.t, h=args.h)
+    lifecycle_summary = _read_lifecycle_summary(args.lifecycle_dir.resolve() if args.lifecycle_dir else None)
+    _report(out_dir, ledger, t=args.t, h=args.h, lifecycle_summary=lifecycle_summary)
     print(f"wrote Picard residual source audit to {out_dir}")
     return 0
 
