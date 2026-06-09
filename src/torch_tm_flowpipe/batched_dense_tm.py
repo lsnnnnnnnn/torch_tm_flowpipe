@@ -242,6 +242,41 @@ def _subdivision_count(method: str, subdivisions: int = 2) -> int:
     raise ValueError(f"unknown range bound mode: {method}")
 
 
+def _blocked_interval_chunk_size(method: str, default: int = 32) -> int | None:
+    if method == "blocked_interval":
+        return int(default)
+    if method.startswith("blocked_interval:"):
+        return max(1, int(method.split(":", 1)[1]))
+    return None
+
+
+def _range_for_terms_blocked(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    *,
+    chunk_size: int = 32,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if coeffs.shape[-1] == 0:
+        out = torch.zeros(coeffs.shape[:-1], dtype=coeffs.dtype, device=coeffs.device)
+        return out, out
+    total_terms = int(coeffs.shape[-1])
+    chunk = max(1, int(chunk_size))
+    out_lo = torch.zeros(coeffs.shape[:-1], dtype=coeffs.dtype, device=coeffs.device)
+    out_hi = torch.zeros_like(out_lo)
+    for start in range(0, total_terms, chunk):
+        stop = min(start + chunk, total_terms)
+        block_lo, block_hi = _range_for_terms(
+            coeffs[..., start:stop],
+            exponents[start:stop],
+            domain_lo,
+            domain_hi,
+        )
+        out_lo, out_hi = _interval_add(out_lo, out_hi, block_lo, block_hi)
+    return out_lo, out_hi
+
+
 def _range_for_terms_split(
     coeffs: torch.Tensor,
     exponents: torch.Tensor,
@@ -284,6 +319,9 @@ def _range_for_terms_mode(
     method: str = "interval",
     subdivisions: int = 2,
 ) -> tuple[torch.Tensor, torch.Tensor]:
+    block_size = _blocked_interval_chunk_size(method)
+    if block_size is not None:
+        return _range_for_terms_blocked(coeffs, exponents, domain_lo, domain_hi, chunk_size=block_size)
     count = _subdivision_count(method, subdivisions=subdivisions)
     if count == 1:
         return _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
@@ -581,8 +619,8 @@ class BatchedPolynomial:
         range_bound_mode: str = "interval",
         profile: DenseTMProfiler | None = None,
     ) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
-        if dropped_merge_mode not in {"termwise", "merged"}:
-            raise ValueError("dropped_merge_mode must be 'termwise' or 'merged'")
+        if dropped_merge_mode not in {"termwise", "merged", "grouped"}:
+            raise ValueError("dropped_merge_mode must be 'termwise', 'merged', or 'grouped'")
         self._check_basis(other)
         other_coeffs = other.coeffs.to(device=self.coeffs.device, dtype=self.coeffs.dtype)
         basis = self.basis
@@ -605,7 +643,7 @@ class BatchedPolynomial:
             dropped = self.coeffs.index_select(-1, basis.trunc_left_indices) * other_coeffs.index_select(
                 -1, basis.trunc_right_indices
             )
-            if dropped_merge_mode == "merged":
+            if dropped_merge_mode in {"merged", "grouped"}:
                 dropped = _merge_coefficients_by_index(
                     dropped,
                     basis.trunc_merge_indices,

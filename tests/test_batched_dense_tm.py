@@ -324,3 +324,97 @@ def test_cpu_cuda_dense_tm_results_close_for_small_case():
 
     assert torch.allclose(lo_cpu, lo_cuda.cpu(), atol=1e-10, rtol=1e-10)
     assert torch.allclose(hi_cpu, hi_cuda.cpu(), atol=1e-10, rtol=1e-10)
+
+
+
+def test_blocked_interval_range_bound_contains_sampled_values():
+    basis = BatchedMonomialBasis.build(dim=2, order=3)
+    domain_lo = torch.tensor([[-0.8, -0.4], [0.1, -0.7]], dtype=torch.float64)
+    domain_hi = torch.tensor([[0.9, 0.6], [0.8, 0.5]], dtype=torch.float64)
+    gen = torch.Generator().manual_seed(2027)
+    coeffs = torch.randn((2, 2, basis.num_terms), generator=gen, dtype=torch.float64) * 0.05
+    poly = BatchedPolynomial(coeffs, basis)
+
+    lo, hi = poly.range_bound(domain_lo, domain_hi, method="blocked_interval")
+    samples = torch.stack(
+        [
+            domain_lo,
+            domain_hi,
+            0.5 * (domain_lo + domain_hi),
+            torch.stack([domain_lo[:, 0], domain_hi[:, 1]], dim=1),
+            torch.stack([domain_hi[:, 0], domain_lo[:, 1]], dim=1),
+        ],
+        dim=1,
+    )
+    values = poly.evaluate(samples)
+    _assert_contains(lo[:, None, :], hi[:, None, :], values)
+
+
+def test_grouped_dropped_bound_contains_samples_and_matches_merged_width():
+    basis = BatchedMonomialBasis.build(dim=2, order=2)
+    domain_lo = torch.tensor([[-0.7, -0.3]], dtype=torch.float64)
+    domain_hi = torch.tensor([[0.6, 0.8]], dtype=torch.float64)
+    coeffs_p = torch.zeros((1, 1, basis.num_terms), dtype=torch.float64)
+    coeffs_q = torch.zeros_like(coeffs_p)
+    coeffs_p[0, 0, basis.term_index((2, 0))] = 0.7
+    coeffs_p[0, 0, basis.term_index((1, 1))] = -0.4
+    coeffs_p[0, 0, basis.term_index((0, 2))] = 0.2
+    coeffs_q[0, 0, basis.term_index((1, 0))] = -0.8
+    coeffs_q[0, 0, basis.term_index((0, 1))] = 0.5
+    coeffs_q[0, 0, basis.term_index((1, 1))] = 0.3
+    p = BatchedPolynomial(coeffs_p, basis)
+    q = BatchedPolynomial(coeffs_q, basis)
+
+    _kept_m, merged_lo, merged_hi = p.mul_trunc(
+        q,
+        return_truncation_bound=True,
+        domain_lo=domain_lo,
+        domain_hi=domain_hi,
+        dropped_merge_mode="merged",
+        range_bound_mode="blocked_interval",
+    )
+    _kept_g, grouped_lo, grouped_hi = p.mul_trunc(
+        q,
+        return_truncation_bound=True,
+        domain_lo=domain_lo,
+        domain_hi=domain_hi,
+        dropped_merge_mode="grouped",
+        range_bound_mode="blocked_interval",
+    )
+    assert bool(torch.all(grouped_hi - grouped_lo <= merged_hi - merged_lo + 1e-12))
+
+    xs = torch.linspace(float(domain_lo[0, 0]), float(domain_hi[0, 0]), 9, dtype=torch.float64)
+    ys = torch.linspace(float(domain_lo[0, 1]), float(domain_hi[0, 1]), 9, dtype=torch.float64)
+    samples = torch.tensor([[float(x), float(y)] for x in xs for y in ys], dtype=torch.float64).view(1, -1, 2)
+    kept_values = _kept_g.evaluate(samples)
+    exact_values = p.evaluate(samples) * q.evaluate(samples)
+    dropped_values = exact_values - kept_values
+    _assert_contains(grouped_lo[:, None, :], grouped_hi[:, None, :], dropped_values)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")
+def test_blocked_grouped_cpu_cuda_close_for_tiny_case():
+    domain_lo = torch.tensor([[-0.2, -0.1], [0.1, -0.2]], dtype=torch.float64)
+    domain_hi = torch.tensor([[0.3, 0.4], [0.4, 0.2]], dtype=torch.float64)
+    basis_cpu = BatchedMonomialBasis.build(dim=2, order=3, device="cpu")
+    tm_cpu = BatchedTaylorModel.variables_from_domain(domain_lo, domain_hi, basis_cpu)
+    for _ in range(2):
+        tm_cpu = tm_cpu.fixed_euler_tm_step_vdp(
+            0.01,
+            dropped_merge_mode="grouped",
+            range_bound_mode="blocked_interval",
+        )
+    lo_cpu, hi_cpu = tm_cpu.range_bound(method="blocked_interval")
+
+    basis_cuda = BatchedMonomialBasis.build(dim=2, order=3, device="cuda")
+    tm_cuda = BatchedTaylorModel.variables_from_domain(domain_lo.cuda(), domain_hi.cuda(), basis_cuda)
+    for _ in range(2):
+        tm_cuda = tm_cuda.fixed_euler_tm_step_vdp(
+            0.01,
+            dropped_merge_mode="grouped",
+            range_bound_mode="blocked_interval",
+        )
+    lo_cuda, hi_cuda = tm_cuda.range_bound(method="blocked_interval")
+
+    assert torch.allclose(lo_cpu, lo_cuda.cpu(), atol=1e-10, rtol=1e-10)
+    assert torch.allclose(hi_cpu, hi_cuda.cpu(), atol=1e-10, rtol=1e-10)

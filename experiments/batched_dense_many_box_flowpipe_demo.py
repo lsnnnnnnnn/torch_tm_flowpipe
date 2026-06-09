@@ -582,10 +582,10 @@ def run_experiment(
         if row.get("device") == "cuda" and cpu_key in dense_cpu_elapsed and elapsed > 0:
             row["speedup_vs_dense_cpu"] = dense_cpu_elapsed[cpu_key] / elapsed
         term_key = (batch, steps, order, str(row["device"]), str(row["range_bound_mode"]))
-        if row.get("dropped_merge_mode") == "merged" and term_key in termwise_width and termwise_width[term_key] > 0:
+        if row.get("dropped_merge_mode") in {"merged", "grouped"} and term_key in termwise_width and termwise_width[term_key] > 0:
             row["width_ratio_vs_termwise"] = float(row["max_width"]) / termwise_width[term_key]
         int_key = (batch, steps, order, str(row["device"]), str(row["dropped_merge_mode"]))
-        if row.get("range_bound_mode") == "split2" and int_key in interval_width and interval_width[int_key] > 0:
+        if row.get("range_bound_mode") in {"split2", "blocked_interval"} and int_key in interval_width and interval_width[int_key] > 0:
             row["width_ratio_vs_interval"] = float(row["max_width"]) / interval_width[int_key]
 
     dense_ok = [row for row in rows if row.get("implementation") == "torch_dense" and row.get("status") == "ok"]
@@ -629,8 +629,8 @@ def main() -> None:
         h=args.h,
         devices=_parse_strings(args.devices, ["cpu"], {"cpu", "cuda"}),
         dtype=_dtype_from_name(args.dtype),
-        range_bound_modes=_parse_strings(args.range_bound_mode, ["interval"], {"interval", "split2", "subdivide"}),
-        dropped_merge_modes=_parse_strings(args.dropped_merge_mode, ["termwise"], {"termwise", "merged"}),
+        range_bound_modes=_parse_strings(args.range_bound_mode, ["interval"], {"interval", "blocked_interval", "split2", "subdivide"}),
+        dropped_merge_modes=_parse_strings(args.dropped_merge_mode, ["termwise"], {"termwise", "merged", "grouped"}),
         scalar_cap=args.scalar_cap,
     )
     print(f"many-box dense plant demo complete: recommendation={recommendation}")

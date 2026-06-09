@@ -33,6 +33,8 @@ SUMMARY_FIELDS = [
     "order",
     "h",
     "dtype",
+    "range_bound_mode",
+    "dropped_merge_mode",
     "status",
     "skip_reason",
     "elapsed_ms",
@@ -243,6 +245,8 @@ def _run_case(
     dtype: torch.dtype,
     device: torch.device,
     tol: float,
+    range_bound_mode: str = "interval",
+    dropped_merge_mode: str = "merged",
 ) -> dict[str, Any]:
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
@@ -284,7 +288,7 @@ def _run_case(
             plant_ms += (time.perf_counter() - plant_start) * 1000.0
 
             range_start = time.perf_counter()
-            range_lo, range_hi = state_tm.range_bound(method="interval")
+            range_lo, range_hi = state_tm.range_bound(method=range_bound_mode)
             _sync(device)
             range_ms += (time.perf_counter() - range_start) * 1000.0
             selected_lo = range_lo.index_select(0, sample_indices)
@@ -315,6 +319,8 @@ def _run_case(
         "order": order,
         "h": h,
         "dtype": str(dtype).replace("torch.", ""),
+        "range_bound_mode": range_bound_mode,
+        "dropped_merge_mode": dropped_merge_mode,
         "status": "ok",
         "elapsed_ms": elapsed_ms,
         "basis_mul_plan_ms": basis_ms,
@@ -418,6 +424,8 @@ def run_experiment(
     controllers: Sequence[str],
     devices: Sequence[str],
     dtype: torch.dtype,
+    range_bound_modes: Sequence[str] = ("interval",),
+    dropped_merge_modes: Sequence[str] = ("merged",),
     order: int = 3,
     h: float = 0.01,
 ) -> tuple[Path, Path, list[dict[str, Any]], str]:
@@ -431,39 +439,47 @@ def run_experiment(
                 for num_control_steps in num_control_steps_list:
                     for plant_substeps in plant_substeps_list:
                         for batch in batches:
-                            rows.append(
-                                {
-                                    "batch": batch,
-                                    "device": "cuda",
-                                    "controller": controller,
-                                    "num_control_steps": num_control_steps,
-                                    "plant_substeps": plant_substeps,
-                                    "order": order,
-                                    "h": h,
-                                    "dtype": str(dtype).replace("torch.", ""),
-                                    "status": "skipped",
-                                    "skip_reason": "CUDA unavailable",
-                                }
-                            )
+                            for range_mode in range_bound_modes:
+                                for drop_mode in dropped_merge_modes:
+                                    rows.append(
+                                        {
+                                            "batch": batch,
+                                            "device": "cuda",
+                                            "controller": controller,
+                                            "num_control_steps": num_control_steps,
+                                            "plant_substeps": plant_substeps,
+                                            "order": order,
+                                            "h": h,
+                                            "dtype": str(dtype).replace("torch.", ""),
+                                            "range_bound_mode": range_mode,
+                                            "dropped_merge_mode": drop_mode,
+                                            "status": "skipped",
+                                            "skip_reason": "CUDA unavailable",
+                                        }
+                                    )
             continue
         device = torch.device(device_name)
         for controller in controllers:
             for num_control_steps in num_control_steps_list:
                 for plant_substeps in plant_substeps_list:
                     for batch in batches:
-                        rows.append(
-                            _run_case(
-                                batch=batch,
-                                num_control_steps=num_control_steps,
-                                plant_substeps=plant_substeps,
-                                order=order,
-                                h=h,
-                                controller=controller,
-                                dtype=dtype,
-                                device=device,
-                                tol=tol,
-                            )
-                        )
+                        for range_mode in range_bound_modes:
+                            for drop_mode in dropped_merge_modes:
+                                rows.append(
+                                    _run_case(
+                                        batch=batch,
+                                        num_control_steps=num_control_steps,
+                                        plant_substeps=plant_substeps,
+                                        order=order,
+                                        h=h,
+                                        controller=controller,
+                                        dtype=dtype,
+                                        device=device,
+                                        tol=tol,
+                                        range_bound_mode=range_mode,
+                                        dropped_merge_mode=drop_mode,
+                                    )
+                                )
 
     dense_cpu_elapsed = {
         (
@@ -471,6 +487,8 @@ def run_experiment(
             str(row["controller"]),
             int(row["num_control_steps"]),
             int(row["plant_substeps"]),
+            str(row.get("range_bound_mode", "interval")),
+            str(row.get("dropped_merge_mode", "merged")),
         ): float(row["elapsed_ms"])
         for row in rows
         if row.get("device") == "cpu" and row.get("status") == "ok"
@@ -483,6 +501,8 @@ def run_experiment(
             str(row["controller"]),
             int(row["num_control_steps"]),
             int(row["plant_substeps"]),
+            str(row.get("range_bound_mode", "interval")),
+            str(row.get("dropped_merge_mode", "merged")),
         )
         elapsed = float(row["elapsed_ms"])
         if key in dense_cpu_elapsed and elapsed > 0:
@@ -514,6 +534,8 @@ def main() -> None:
     parser.add_argument("--controller", default="affine,relu_ibp")
     parser.add_argument("--devices", default="cpu,cuda")
     parser.add_argument("--dtype", default="float64", choices=["float64", "float32"])
+    parser.add_argument("--range-bound-mode", default="interval")
+    parser.add_argument("--dropped-merge-mode", default="merged")
     parser.add_argument("--order", type=int, default=3)
     parser.add_argument("--h", type=float, default=0.01)
     args = parser.parse_args()
@@ -525,6 +547,8 @@ def main() -> None:
         controllers=_parse_strings(args.controller, ["affine"], {"affine", "relu_ibp"}),
         devices=_parse_strings(args.devices, ["cpu"], {"cpu", "cuda"}),
         dtype=_dtype_from_name(args.dtype),
+        range_bound_modes=_parse_strings(args.range_bound_mode, ["interval"], {"interval", "blocked_interval"}),
+        dropped_merge_modes=_parse_strings(args.dropped_merge_mode, ["merged"], {"merged", "grouped"}),
         order=args.order,
         h=args.h,
     )
