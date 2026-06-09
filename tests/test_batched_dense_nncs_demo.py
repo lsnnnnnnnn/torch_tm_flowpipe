@@ -94,3 +94,19 @@ def test_nncs_demo_cuda_smoke_if_available(tmp_path):
     cuda_rows = [row for row in rows if row.get("device") == "cuda" and row.get("status") == "ok"]
     assert cuda_rows
     assert all(row["containment_pass"] for row in cuda_rows)
+
+
+
+def test_checked_in_nncs_artifacts_are_physical_multiline_files():
+    summary = ROOT / "outputs" / "batched_dense_nncs_demo" / "nncs_summary.csv"
+    report = ROOT / "outputs" / "batched_dense_nncs_demo" / "nncs_report.md"
+
+    summary_lines = summary.read_text(encoding="utf-8").splitlines()
+    report_lines = report.read_text(encoding="utf-8").splitlines()
+
+    assert len(summary_lines) > 10
+    assert len(report_lines) > 10
+    assert report_lines[0] == "# Batched Dense NNCS Demo Report"
+    assert "## Direct Answers" in report_lines
+    assert any(line == "- First CUDA win batch: 2048" for line in report_lines)
+    assert any("GPU_PATH_CONTINUE" in line for line in report_lines)

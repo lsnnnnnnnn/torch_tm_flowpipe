@@ -405,7 +405,7 @@ def _write_report(out_dir: Path, rows: Sequence[dict[str, Any]], recommendation:
             )
         )
     report = out_dir / "nncs_report.md"
-    report.write_text("\n".join(lines), encoding="utf-8")
+    report.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report
 
 

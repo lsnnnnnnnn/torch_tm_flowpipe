@@ -103,3 +103,28 @@ def test_many_box_demo_cuda_smoke_if_available(tmp_path):
     cuda_rows = [row for row in rows if row.get("device") == "cuda" and row.get("status") == "ok"]
     assert cuda_rows
     assert all(row["containment_pass"] for row in cuda_rows)
+
+
+
+def test_checked_in_many_box_artifacts_are_physical_multiline_files():
+    summary = ROOT / "outputs" / "batched_dense_many_box_flowpipe_demo" / "many_box_summary.csv"
+    report = ROOT / "outputs" / "batched_dense_many_box_flowpipe_demo" / "many_box_report.md"
+    bline_report = ROOT / "docs" / "batched_dense_gpu_b_line_report.md"
+    flowstar_boundary = ROOT / "docs" / "flowstar_archeology_boundary_report.md"
+
+    summary_lines = summary.read_text(encoding="utf-8").splitlines()
+    report_lines = report.read_text(encoding="utf-8").splitlines()
+    bline_lines = bline_report.read_text(encoding="utf-8").splitlines()
+    boundary_lines = flowstar_boundary.read_text(encoding="utf-8").splitlines()
+
+    assert len(summary_lines) > 10
+    assert len(report_lines) > 10
+    assert len(bline_lines) > 10
+    assert len(boundary_lines) > 10
+    assert report_lines[0] == "# Batched Dense Many-Box Plant Demo Report"
+    assert "## Direct Answers" in report_lines
+    assert "## Many-Box Plant Demo" in bline_lines
+    assert "## Executive Conclusion" in boundary_lines
+    assert any(line == "- First CUDA win batch: 512" for line in report_lines)
+    assert any("GPU_PATH_CONTINUE" in line for line in report_lines)
+    assert any(line == "Final B-line decision: `GPU_PATH_CONTINUE`." for line in bline_lines)

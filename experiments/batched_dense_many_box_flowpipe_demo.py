@@ -443,7 +443,7 @@ def _write_report(out_dir: Path, rows: Sequence[dict[str, Any]], recommendation:
     if scalar_rows:
         lines.extend(["", f"Scalar loop was checked for {len(scalar_rows)} row(s); larger scalar batches are skipped by --scalar-cap."])
     report = out_dir / "many_box_report.md"
-    report.write_text("\n".join(lines), encoding="utf-8")
+    report.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report
 
 
