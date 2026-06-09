@@ -2194,6 +2194,7 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
                 cutoff_threshold=cutoff_threshold,
             )
             raw_ctrunc_remainders: list[Interval] = []
+            raw_ctrunc_polynomial_ranges = _polynomial_range_boxes(tmp)
             poly_diff_ranges: list[Interval] = []
             tmp_remainders: list[Interval] = []
             for tmp_i, cand_i in zip(tmp, candidate):
@@ -2243,9 +2244,20 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             **diag_extra,
             **_interval_list_stats("tmp_remainder", tmp_remainders),
             **_interval_list_stats("raw_ctrunc_residual", raw_ctrunc_remainders),
+            **_interval_list_stats("raw_ctrunc_remainder", raw_ctrunc_remainders),
+            **_interval_list_stats("raw_ctrunc_polynomial_range", raw_ctrunc_polynomial_ranges),
+            **_interval_list_stats("target_remainder_before_ctrunc", target_remainders),
             **_interval_list_stats("poly_diff_range", poly_diff_ranges),
             **_interval_list_stats("ordinary_residual_range", ordinary_residual),
             **_interval_list_stats("normal_eval_range", poly_diff_ranges),
+            "raw_ctrunc_residual_source_object": "_picard_ctrunc_normal_image returned TaylorModel.remainder before poly_diff_range",
+            "raw_ctrunc_residual_domain_semantics": "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff",
+            "raw_ctrunc_residual_includes_target_remainder": False,
+            "raw_ctrunc_residual_includes_ordinary_remainder": False,
+            "raw_ctrunc_residual_includes_cutoff_poly_diff": False,
+            "raw_ctrunc_residual_added_component": "none_before_cutoff_polyDiff",
+            "raw_ctrunc_residual_notes": "raw ctrunc remainder is recorded before adding poly_diff_range; target remainder is only the containment set",
+            "ordinary_remainder_missing_reason": "PyTorch ordinary_residual_range is exposed separately; it is not included in raw_ctrunc_residual",
             "subset_result": subset_tmp,
             "subset_tmp_remainder": subset_tmp,
             "subset_ordinary_residual": subset_ordinary,

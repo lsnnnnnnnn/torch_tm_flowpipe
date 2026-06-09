@@ -84,6 +84,38 @@ const vector<string> kHeaders = {
     "raw_ctrunc_residual_x_hi",
     "raw_ctrunc_residual_y_lo",
     "raw_ctrunc_residual_y_hi",
+    "raw_ctrunc_polynomial_range_x_lo",
+    "raw_ctrunc_polynomial_range_x_hi",
+    "raw_ctrunc_polynomial_range_y_lo",
+    "raw_ctrunc_polynomial_range_y_hi",
+    "raw_ctrunc_remainder_x_lo",
+    "raw_ctrunc_remainder_x_hi",
+    "raw_ctrunc_remainder_y_lo",
+    "raw_ctrunc_remainder_y_hi",
+    "raw_ctrunc_residual_source_object",
+    "raw_ctrunc_residual_domain_semantics",
+    "raw_ctrunc_residual_includes_target_remainder",
+    "raw_ctrunc_residual_includes_ordinary_remainder",
+    "raw_ctrunc_residual_includes_cutoff_poly_diff",
+    "raw_ctrunc_residual_added_component",
+    "raw_ctrunc_residual_notes",
+    "picard_no_remainder_range_x_lo",
+    "picard_no_remainder_range_x_hi",
+    "picard_no_remainder_range_y_lo",
+    "picard_no_remainder_range_y_hi",
+    "picard_no_remainder_polynomial_range_x_lo",
+    "picard_no_remainder_polynomial_range_x_hi",
+    "picard_no_remainder_polynomial_range_y_lo",
+    "picard_no_remainder_polynomial_range_y_hi",
+    "picard_no_remainder_remainder_x_lo",
+    "picard_no_remainder_remainder_x_hi",
+    "picard_no_remainder_remainder_y_lo",
+    "picard_no_remainder_remainder_y_hi",
+    "target_remainder_before_ctrunc_x_lo",
+    "target_remainder_before_ctrunc_x_hi",
+    "target_remainder_before_ctrunc_y_lo",
+    "target_remainder_before_ctrunc_y_hi",
+    "ordinary_remainder_missing_reason",
     "picard_no_remainder_residual_x_lo",
     "picard_no_remainder_residual_x_hi",
     "picard_no_remainder_residual_y_lo",
@@ -695,6 +727,13 @@ int traced_advance_adaptive_symbolic(
 
     vector<Interval> picard_no_remainder_range;
     x.intEvalNormal(picard_no_remainder_range, tm_setting.step_exp_table);
+    vector<Interval> picard_no_remainder_polynomial_range;
+    x.polyRangeNormal(picard_no_remainder_polynomial_range, tm_setting.step_exp_table);
+    vector<Interval> picard_no_remainder_remainder;
+    for (unsigned int i = 0; i < rangeDim; ++i)
+    {
+        picard_no_remainder_remainder.push_back(x.tms[i].remainder);
+    }
 
     if (new_stepsize > 0)
     {
@@ -837,9 +876,23 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "target_check", target);
         set_lifecycle_bounds(row, "polynomial_range", validation_polynomial_range);
         set_widths(row, "polynomial_range", validation_polynomial_range);
+        set_lifecycle_bounds(row, "raw_ctrunc_polynomial_range", validation_polynomial_range);
+        set_lifecycle_bounds(row, "picard_no_remainder_range", picard_no_remainder_range);
+        set_lifecycle_bounds(row, "picard_no_remainder_polynomial_range", picard_no_remainder_polynomial_range);
+        set_lifecycle_bounds(row, "picard_no_remainder_remainder", picard_no_remainder_remainder);
+        set_lifecycle_bounds(row, "target_remainder_before_ctrunc", target);
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
         set_lifecycle_bounds(row, "raw_ctrunc_residual", raw_ctrunc_remainder);
+        set_lifecycle_bounds(row, "raw_ctrunc_remainder", raw_ctrunc_remainder);
         set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
+        set_value(row, "raw_ctrunc_residual_source_object", "tmvTmp.tms[i].remainder immediately after Picard_ctrunc_normal");
+        set_value(row, "raw_ctrunc_residual_domain_semantics", "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff");
+        set_value(row, "raw_ctrunc_residual_includes_target_remainder", false);
+        set_value(row, "raw_ctrunc_residual_includes_ordinary_remainder", false);
+        set_value(row, "raw_ctrunc_residual_includes_cutoff_poly_diff", false);
+        set_value(row, "raw_ctrunc_residual_added_component", "none_before_cutoff_polyDiff");
+        set_value(row, "raw_ctrunc_residual_notes", "raw Picard_ctrunc_normal returned remainder before intDifferences are added");
+        set_value(row, "ordinary_remainder_missing_reason", "Flow* probe does not expose a separate ordinary Picard residual endpoint object here; ordinary_step_remainder remains width-only for Picard_no_remainder result range");
         set_widths(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_bounds(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_lifecycle_bounds(row, "post_cutoff_residual", ctrunc_remainder);

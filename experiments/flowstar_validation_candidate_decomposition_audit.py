@@ -633,6 +633,7 @@ def _report(out_dir: Path, ledger: list[dict[str, Any]], summary: Mapping[str, A
             "- The exposed Flow* raw ctrunc and post-cutoff residuals differ only by the recorded cutoff width on this row.",
             "- The exposed PyTorch ordinary no-remainder and post-cutoff residuals differ only by the recorded cutoff width on this row.",
             polynomial_range_note,
+            "- Raw ctrunc residual construction audit: `outputs/flowstar_raw_ctrunc_residual_audit/raw_ctrunc_residual_report.md`; do not treat the root cause as closed unless that audit completes component attribution.",
             "- Blank component endpoint columns mean unknown, not zero.",
             f"- Missing component fields: {missing_text}.",
         ]

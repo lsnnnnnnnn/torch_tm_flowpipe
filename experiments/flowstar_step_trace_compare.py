@@ -117,6 +117,38 @@ LIFECYCLE_FIELDS = [
     "raw_ctrunc_residual_x_hi",
     "raw_ctrunc_residual_y_lo",
     "raw_ctrunc_residual_y_hi",
+    "raw_ctrunc_polynomial_range_x_lo",
+    "raw_ctrunc_polynomial_range_x_hi",
+    "raw_ctrunc_polynomial_range_y_lo",
+    "raw_ctrunc_polynomial_range_y_hi",
+    "raw_ctrunc_remainder_x_lo",
+    "raw_ctrunc_remainder_x_hi",
+    "raw_ctrunc_remainder_y_lo",
+    "raw_ctrunc_remainder_y_hi",
+    "raw_ctrunc_residual_source_object",
+    "raw_ctrunc_residual_domain_semantics",
+    "raw_ctrunc_residual_includes_target_remainder",
+    "raw_ctrunc_residual_includes_ordinary_remainder",
+    "raw_ctrunc_residual_includes_cutoff_poly_diff",
+    "raw_ctrunc_residual_added_component",
+    "raw_ctrunc_residual_notes",
+    "picard_no_remainder_range_x_lo",
+    "picard_no_remainder_range_x_hi",
+    "picard_no_remainder_range_y_lo",
+    "picard_no_remainder_range_y_hi",
+    "picard_no_remainder_polynomial_range_x_lo",
+    "picard_no_remainder_polynomial_range_x_hi",
+    "picard_no_remainder_polynomial_range_y_lo",
+    "picard_no_remainder_polynomial_range_y_hi",
+    "picard_no_remainder_remainder_x_lo",
+    "picard_no_remainder_remainder_x_hi",
+    "picard_no_remainder_remainder_y_lo",
+    "picard_no_remainder_remainder_y_hi",
+    "target_remainder_before_ctrunc_x_lo",
+    "target_remainder_before_ctrunc_x_hi",
+    "target_remainder_before_ctrunc_y_lo",
+    "target_remainder_before_ctrunc_y_hi",
+    "ordinary_remainder_missing_reason",
     "picard_no_remainder_residual_x_lo",
     "picard_no_remainder_residual_x_hi",
     "picard_no_remainder_residual_y_lo",
@@ -494,7 +526,13 @@ def _fill_lifecycle_aliases(row: dict[str, Any]) -> None:
                 (f"picard_no_remainder_residual_{dim}_{side}", f"ordinary_residual_range_{side}_{dim}"),
                 (f"ordinary_remainder_{dim}_{side}", f"ordinary_residual_range_{side}_{dim}"),
                 (f"raw_ctrunc_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
+                (f"raw_ctrunc_polynomial_range_{dim}_{side}", f"raw_ctrunc_polynomial_range_{side}_{dim}"),
+                (f"raw_ctrunc_remainder_{dim}_{side}", f"raw_ctrunc_remainder_{side}_{dim}"),
                 (f"picard_ctrunc_raw_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
+                (f"picard_no_remainder_range_{dim}_{side}", f"picard_no_remainder_range_{side}_{dim}"),
+                (f"picard_no_remainder_polynomial_range_{dim}_{side}", f"picard_no_remainder_polynomial_range_{side}_{dim}"),
+                (f"picard_no_remainder_remainder_{dim}_{side}", f"picard_no_remainder_remainder_{side}_{dim}"),
+                (f"target_remainder_before_ctrunc_{dim}_{side}", f"target_remainder_before_ctrunc_{side}_{dim}"),
                 (f"cutoff_poly_diff_{dim}_{side}", f"poly_diff_range_{side}_{dim}"),
                 (f"cutoff_polynomial_difference_{dim}_{side}", f"poly_diff_range_{side}_{dim}"),
                 (f"polynomial_range_{dim}_{side}", f"polynomial_range_{side}_{dim}"),
@@ -779,6 +817,7 @@ def _common_torch_row(
         row[f"target_remainder_{suffix}_lo"] = -abs(float(target_radius))
         row[f"target_remainder_{suffix}_hi"] = abs(float(target_radius))
     row["target_remainder_width_sum"] = 4.0 * target_radius
+    _put_lifecycle_bounds_from_row(row, "target_remainder_before_ctrunc", row, "target_remainder")
 
     if "tmp_remainder_width_sum" in validation:
         _put_widths(row, "picard_ctrunc_normal_residual", validation, "tmp_remainder")
@@ -787,7 +826,24 @@ def _common_torch_row(
         _put_widths(row, "picard_ctrunc_normal_residual", validation, "residual")
         _put_bounds(row, "picard_ctrunc_normal_residual", validation, "residual")
     _put_lifecycle_bounds_from_row(row, "raw_ctrunc_residual", validation, "raw_ctrunc_residual")
+    _put_lifecycle_bounds_from_row(row, "raw_ctrunc_polynomial_range", validation, "raw_ctrunc_polynomial_range")
+    _put_lifecycle_bounds_from_row(row, "raw_ctrunc_remainder", validation, "raw_ctrunc_remainder")
     _put_lifecycle_bounds_from_row(row, "picard_ctrunc_raw_residual", validation, "raw_ctrunc_residual")
+    _put_lifecycle_bounds_from_row(row, "picard_no_remainder_range", validation, "picard_no_remainder_range")
+    _put_lifecycle_bounds_from_row(row, "picard_no_remainder_polynomial_range", validation, "picard_no_remainder_polynomial_range")
+    _put_lifecycle_bounds_from_row(row, "picard_no_remainder_remainder", validation, "picard_no_remainder_remainder")
+    for key in (
+        "raw_ctrunc_residual_source_object",
+        "raw_ctrunc_residual_domain_semantics",
+        "raw_ctrunc_residual_includes_target_remainder",
+        "raw_ctrunc_residual_includes_ordinary_remainder",
+        "raw_ctrunc_residual_includes_cutoff_poly_diff",
+        "raw_ctrunc_residual_added_component",
+        "raw_ctrunc_residual_notes",
+        "ordinary_remainder_missing_reason",
+    ):
+        if validation.get(key) not in (None, ""):
+            row[key] = validation.get(key, "")
     _put_bounds(row, "residual", validation, "residual")
 
     if "poly_diff_range_width_sum" in validation:

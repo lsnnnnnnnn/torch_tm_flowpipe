@@ -41,5 +41,6 @@ This is diagnostic-only. It does not change solver behavior, rerun h10, add symb
 - The exposed Flow* raw ctrunc and post-cutoff residuals differ only by the recorded cutoff width on this row.
 - The exposed PyTorch ordinary no-remainder and post-cutoff residuals differ only by the recorded cutoff width on this row.
 - Polynomial range endpoints are exposed in the current traces; component status is `same`.
+- Raw ctrunc residual construction audit: `outputs/flowstar_raw_ctrunc_residual_audit/raw_ctrunc_residual_report.md`; do not treat the root cause as closed unless that audit completes component attribution.
 - Blank component endpoint columns mean unknown, not zero.
 - Missing component fields: flowstar.ordinary_remainder_x_hi; flowstar.ordinary_remainder_x_lo; flowstar.ordinary_remainder_y_hi; flowstar.ordinary_remainder_y_lo.
