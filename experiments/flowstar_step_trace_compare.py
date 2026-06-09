@@ -164,6 +164,37 @@ LIFECYCLE_FIELDS = [
     "raw_remainder_range_enclosure_method",
     "raw_remainder_normal_domain_scaling",
     "raw_remainder_partition_missing_reason",
+    "expression_evaluate_remainder_x_lo",
+    "expression_evaluate_remainder_x_hi",
+    "expression_evaluate_remainder_y_lo",
+    "expression_evaluate_remainder_y_hi",
+    "horner_insert_ctrunc_remainder_x_lo",
+    "horner_insert_ctrunc_remainder_x_hi",
+    "horner_insert_ctrunc_remainder_y_lo",
+    "horner_insert_ctrunc_remainder_y_hi",
+    "int_trunc_dropped_terms_x_lo",
+    "int_trunc_dropped_terms_x_hi",
+    "int_trunc_dropped_terms_y_lo",
+    "int_trunc_dropped_terms_y_hi",
+    "int_trunc2_dropped_terms_x_lo",
+    "int_trunc2_dropped_terms_x_hi",
+    "int_trunc2_dropped_terms_y_lo",
+    "int_trunc2_dropped_terms_y_hi",
+    "mul_ctrunc_normal_remainder_x_lo",
+    "mul_ctrunc_normal_remainder_x_hi",
+    "mul_ctrunc_normal_remainder_y_lo",
+    "mul_ctrunc_normal_remainder_y_hi",
+    "accumulated_remainder_before_x0_add_x_lo",
+    "accumulated_remainder_before_x0_add_x_hi",
+    "accumulated_remainder_before_x0_add_y_lo",
+    "accumulated_remainder_before_x0_add_y_hi",
+    "accumulated_remainder_after_x0_add_x_lo",
+    "accumulated_remainder_after_x0_add_x_hi",
+    "accumulated_remainder_after_x0_add_y_lo",
+    "accumulated_remainder_after_x0_add_y_hi",
+    "flowstar_internal_intermediate_ranges_entry_count",
+    "flowstar_internal_intermediate_ranges_source_path",
+    "flowstar_internal_intermediate_ranges_notes",
     "raw_ctrunc_residual_source_object",
     "raw_ctrunc_residual_domain_semantics",
     "raw_ctrunc_residual_includes_target_remainder",
@@ -576,6 +607,13 @@ def _fill_lifecycle_aliases(row: dict[str, Any]) -> None:
                 (f"raw_remainder_after_cutoff_{dim}_{side}", f"raw_remainder_after_cutoff_{side}_{dim}"),
                 (f"raw_remainder_before_poly_diff_{dim}_{side}", f"raw_remainder_before_poly_diff_{side}_{dim}"),
                 (f"raw_remainder_after_poly_diff_{dim}_{side}", f"raw_remainder_after_poly_diff_{side}_{dim}"),
+                (f"expression_evaluate_remainder_{dim}_{side}", f"expression_evaluate_remainder_{side}_{dim}"),
+                (f"horner_insert_ctrunc_remainder_{dim}_{side}", f"horner_insert_ctrunc_remainder_{side}_{dim}"),
+                (f"int_trunc_dropped_terms_{dim}_{side}", f"int_trunc_dropped_terms_{side}_{dim}"),
+                (f"int_trunc2_dropped_terms_{dim}_{side}", f"int_trunc2_dropped_terms_{side}_{dim}"),
+                (f"mul_ctrunc_normal_remainder_{dim}_{side}", f"mul_ctrunc_normal_remainder_{side}_{dim}"),
+                (f"accumulated_remainder_before_x0_add_{dim}_{side}", f"accumulated_remainder_before_x0_add_{side}_{dim}"),
+                (f"accumulated_remainder_after_x0_add_{dim}_{side}", f"accumulated_remainder_after_x0_add_{side}_{dim}"),
                 (f"picard_ctrunc_raw_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
                 (f"picard_no_remainder_range_{dim}_{side}", f"picard_no_remainder_range_{side}_{dim}"),
                 (f"picard_no_remainder_polynomial_range_{dim}_{side}", f"picard_no_remainder_polynomial_range_{side}_{dim}"),
@@ -885,6 +923,13 @@ def _common_torch_row(
     _put_lifecycle_bounds_from_row(row, "raw_remainder_after_cutoff", validation, "raw_remainder_after_cutoff")
     _put_lifecycle_bounds_from_row(row, "raw_remainder_before_poly_diff", validation, "raw_remainder_before_poly_diff")
     _put_lifecycle_bounds_from_row(row, "raw_remainder_after_poly_diff", validation, "raw_remainder_after_poly_diff")
+    _put_lifecycle_bounds_from_row(row, "expression_evaluate_remainder", validation, "expression_evaluate_remainder")
+    _put_lifecycle_bounds_from_row(row, "horner_insert_ctrunc_remainder", validation, "horner_insert_ctrunc_remainder")
+    _put_lifecycle_bounds_from_row(row, "int_trunc_dropped_terms", validation, "int_trunc_dropped_terms")
+    _put_lifecycle_bounds_from_row(row, "int_trunc2_dropped_terms", validation, "int_trunc2_dropped_terms")
+    _put_lifecycle_bounds_from_row(row, "mul_ctrunc_normal_remainder", validation, "mul_ctrunc_normal_remainder")
+    _put_lifecycle_bounds_from_row(row, "accumulated_remainder_before_x0_add", validation, "accumulated_remainder_before_x0_add")
+    _put_lifecycle_bounds_from_row(row, "accumulated_remainder_after_x0_add", validation, "accumulated_remainder_after_x0_add")
     _put_lifecycle_bounds_from_row(row, "picard_ctrunc_raw_residual", validation, "raw_ctrunc_residual")
     _put_lifecycle_bounds_from_row(row, "picard_no_remainder_range", validation, "picard_no_remainder_range")
     _put_lifecycle_bounds_from_row(row, "picard_no_remainder_polynomial_range", validation, "picard_no_remainder_polynomial_range")
@@ -900,6 +945,9 @@ def _common_torch_row(
         "raw_remainder_range_enclosure_method",
         "raw_remainder_normal_domain_scaling",
         "raw_remainder_partition_missing_reason",
+        "flowstar_internal_intermediate_ranges_entry_count",
+        "flowstar_internal_intermediate_ranges_source_path",
+        "flowstar_internal_intermediate_ranges_notes",
         "ordinary_remainder_missing_reason",
     ):
         if validation.get(key) not in (None, ""):

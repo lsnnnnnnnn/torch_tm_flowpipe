@@ -131,6 +131,37 @@ const vector<string> kHeaders = {
     "raw_remainder_range_enclosure_method",
     "raw_remainder_normal_domain_scaling",
     "raw_remainder_partition_missing_reason",
+    "expression_evaluate_remainder_x_lo",
+    "expression_evaluate_remainder_x_hi",
+    "expression_evaluate_remainder_y_lo",
+    "expression_evaluate_remainder_y_hi",
+    "horner_insert_ctrunc_remainder_x_lo",
+    "horner_insert_ctrunc_remainder_x_hi",
+    "horner_insert_ctrunc_remainder_y_lo",
+    "horner_insert_ctrunc_remainder_y_hi",
+    "int_trunc_dropped_terms_x_lo",
+    "int_trunc_dropped_terms_x_hi",
+    "int_trunc_dropped_terms_y_lo",
+    "int_trunc_dropped_terms_y_hi",
+    "int_trunc2_dropped_terms_x_lo",
+    "int_trunc2_dropped_terms_x_hi",
+    "int_trunc2_dropped_terms_y_lo",
+    "int_trunc2_dropped_terms_y_hi",
+    "mul_ctrunc_normal_remainder_x_lo",
+    "mul_ctrunc_normal_remainder_x_hi",
+    "mul_ctrunc_normal_remainder_y_lo",
+    "mul_ctrunc_normal_remainder_y_hi",
+    "accumulated_remainder_before_x0_add_x_lo",
+    "accumulated_remainder_before_x0_add_x_hi",
+    "accumulated_remainder_before_x0_add_y_lo",
+    "accumulated_remainder_before_x0_add_y_hi",
+    "accumulated_remainder_after_x0_add_x_lo",
+    "accumulated_remainder_after_x0_add_x_hi",
+    "accumulated_remainder_after_x0_add_y_lo",
+    "accumulated_remainder_after_x0_add_y_hi",
+    "flowstar_internal_intermediate_ranges_entry_count",
+    "flowstar_internal_intermediate_ranges_source_path",
+    "flowstar_internal_intermediate_ranges_notes",
     "raw_ctrunc_residual_source_object",
     "raw_ctrunc_residual_domain_semantics",
     "raw_ctrunc_residual_includes_target_remainder",
@@ -638,6 +669,138 @@ void set_residual_ratios(Row &row, const vector<Interval> &residual, const vecto
     set_value(row, "residual_over_target_sum", total_target == 0.0 ? numeric_limits<double>::quiet_NaN() : total_residual / total_target);
 }
 
+struct FlowstarInternalRangesAudit
+{
+    vector<Interval> expression_evaluate_remainder;
+    vector<Interval> accumulated_remainder_before_x0_add;
+    vector<Interval> accumulated_remainder_after_x0_add;
+    bool have_int_trunc_y;
+    bool have_int_trunc2_y;
+    bool have_mul_ctrunc_y;
+    Interval int_trunc_y;
+    Interval int_trunc2_y;
+    Interval mul_ctrunc_y;
+    size_t intermediate_entry_count;
+    string notes;
+
+    FlowstarInternalRangesAudit()
+        : have_int_trunc_y(false),
+          have_int_trunc2_y(false),
+          have_mul_ctrunc_y(false),
+          intermediate_entry_count(0)
+    {
+    }
+};
+
+Interval scaled_by_step(Interval value, const Interval &step)
+{
+    value *= step;
+    return value;
+}
+
+vector<Interval> intermediate_slice(const list<Interval> &ranges, size_t start)
+{
+    vector<Interval> out;
+    size_t index = 0;
+    for (list<Interval>::const_iterator it = ranges.begin(); it != ranges.end(); ++it, ++index)
+    {
+        if (index >= start)
+        {
+            out.push_back(*it);
+        }
+    }
+    return out;
+}
+
+void set_lifecycle_y_bounds(Row &row, const string &prefix, bool have_value, const Interval &value)
+{
+    if (!have_value)
+    {
+        return;
+    }
+    set_value(row, prefix + "_y_lo", value.inf());
+    set_value(row, prefix + "_y_hi", value.sup());
+}
+
+FlowstarInternalRangesAudit audit_flowstar_internal_ranges(
+    const TaylorModelVec<Real> &x,
+    const TaylorModelVec<Real> &new_x0,
+    const vector<Expression<Real> > &ode,
+    const vector<Interval> &step_exp_table,
+    const unsigned int numVars,
+    const unsigned int order,
+    const Interval &cutoff_threshold,
+    const Global_Setting &setting,
+    const unsigned int rangeDim)
+{
+    FlowstarInternalRangesAudit audit;
+    list<Interval> diagnostic_ranges;
+    vector<vector<Interval> > entries_by_state;
+    TaylorModelVec<Interval> evaluated_rhs;
+    const unsigned int k = order - 1;
+
+    for (unsigned int i = 0; i < ode.size(); ++i)
+    {
+        const size_t before = diagnostic_ranges.size();
+        TaylorModel<Interval> tmTmp;
+        ode[i].evaluate(tmTmp, x.tms, k, step_exp_table, cutoff_threshold, numVars, diagnostic_ranges, setting);
+        evaluated_rhs.tms.push_back(tmTmp);
+        audit.expression_evaluate_remainder.push_back(scaled_by_step(tmTmp.remainder, step_exp_table[1]));
+        entries_by_state.push_back(intermediate_slice(diagnostic_ranges, before));
+    }
+
+    TaylorModelVec<Interval> integrated_rhs;
+    evaluated_rhs.integral_time(integrated_rhs, step_exp_table[1]);
+    TaylorModelVec<Interval> after_x0 = integrated_rhs + new_x0;
+
+    for (unsigned int i = 0; i < rangeDim && i < integrated_rhs.tms.size(); ++i)
+    {
+        audit.accumulated_remainder_before_x0_add.push_back(integrated_rhs.tms[i].remainder);
+    }
+    for (unsigned int i = 0; i < rangeDim && i < after_x0.tms.size(); ++i)
+    {
+        audit.accumulated_remainder_after_x0_add.push_back(after_x0.tms[i].remainder);
+    }
+
+    audit.intermediate_entry_count = diagnostic_ranges.size();
+    audit.notes = "probe-only duplicate Expression::evaluate path; Van der Pol y expression maps entries as const, x^2 intPoly1/intPoly2/intTrunc, outer product intPoly1/intPoly2/intTrunc; Horner path is not used by this Expression ODE call";
+
+    if (entries_by_state.size() > 1 && entries_by_state[1].size() >= 7 && x.tms.size() > 1)
+    {
+        const vector<Interval> &y_entries = entries_by_state[1];
+        const Interval &step = step_exp_table[1];
+        const Interval &x_remainder = x.tms[0].remainder;
+        const Interval &y_remainder = x.tms[1].remainder;
+
+        audit.int_trunc_y = scaled_by_step(y_entries[3], step);
+        audit.int_trunc2_y = scaled_by_step(y_entries[6], step);
+        audit.have_int_trunc_y = true;
+        audit.have_int_trunc2_y = true;
+
+        Interval pow_remainder = y_entries[1] * x_remainder;
+        pow_remainder += y_entries[2] * x_remainder;
+        pow_remainder += x_remainder * x_remainder;
+        pow_remainder += y_entries[3];
+
+        Interval left_remainder = y_entries[0];
+        left_remainder -= pow_remainder;
+
+        Interval outer_mul_remainder = y_entries[4] * y_remainder;
+        outer_mul_remainder += y_entries[5] * left_remainder;
+        outer_mul_remainder += left_remainder * y_remainder;
+        outer_mul_remainder += y_entries[6];
+
+        audit.mul_ctrunc_y = scaled_by_step(outer_mul_remainder, step);
+        audit.have_mul_ctrunc_y = true;
+    }
+    else
+    {
+        audit.notes += "; y-expression intermediate_ranges shape was not the expected seven-entry Van der Pol polynomial expression";
+    }
+
+    return audit;
+}
+
 vector<Interval> target_remainders(const Taylor_Model_Setting &tm_setting, unsigned int dim)
 {
     vector<Interval> target;
@@ -802,6 +965,16 @@ int traced_advance_adaptive_symbolic(
         tmvTmp = TaylorModelVec<Interval>();
         tmvTmp.tms.clear();
         x.Picard_ctrunc_normal(tmvTmp, new_x0, ode, tm_setting.step_exp_table, rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold, intermediate_ranges, g_setting);
+        FlowstarInternalRangesAudit internal_ranges_audit = audit_flowstar_internal_ranges(
+            x,
+            new_x0,
+            ode,
+            tm_setting.step_exp_table,
+            rangeDimExt,
+            tm_setting.order,
+            tm_setting.cutoff_threshold,
+            g_setting,
+            rangeDim);
 
         vector<Interval> raw_ctrunc_remainder;
         for (unsigned int i = 0; i < rangeDim; ++i)
@@ -933,6 +1106,15 @@ int traced_advance_adaptive_symbolic(
         set_value(row, "raw_remainder_range_enclosure_method", "Flowstar intermediate_ranges evaluated by TaylorModelVec::Picard_ctrunc_normal_remainder; dropped-term and multiplication partitions are not mapped to state dimensions by the probe");
         set_value(row, "raw_remainder_normal_domain_scaling", "none_after_Picard_call; raw remainder is physical interval over step_exp_table before cutoff/polyDiff");
         set_value(row, "raw_remainder_partition_missing_reason", "Flow* internal dropped-term and multiplication remainder partitions live inside expression/Horner intermediate_ranges; expose TaylorModel.h Expression evaluate_remainder intermediate objects next");
+        set_lifecycle_bounds(row, "expression_evaluate_remainder", internal_ranges_audit.expression_evaluate_remainder);
+        set_lifecycle_y_bounds(row, "int_trunc_dropped_terms", internal_ranges_audit.have_int_trunc_y, internal_ranges_audit.int_trunc_y);
+        set_lifecycle_y_bounds(row, "int_trunc2_dropped_terms", internal_ranges_audit.have_int_trunc2_y, internal_ranges_audit.int_trunc2_y);
+        set_lifecycle_y_bounds(row, "mul_ctrunc_normal_remainder", internal_ranges_audit.have_mul_ctrunc_y, internal_ranges_audit.mul_ctrunc_y);
+        set_lifecycle_bounds(row, "accumulated_remainder_before_x0_add", internal_ranges_audit.accumulated_remainder_before_x0_add);
+        set_lifecycle_bounds(row, "accumulated_remainder_after_x0_add", internal_ranges_audit.accumulated_remainder_after_x0_add);
+        set_value(row, "flowstar_internal_intermediate_ranges_entry_count", format_size(internal_ranges_audit.intermediate_entry_count));
+        set_value(row, "flowstar_internal_intermediate_ranges_source_path", "TaylorModelVec::Picard_ctrunc_normal(Expression) -> Expression::evaluate -> TaylorModel::mul_insert_ctrunc_normal -> TaylorModelVec::integral_time -> result = tmvTmp2 + x0");
+        set_value(row, "flowstar_internal_intermediate_ranges_notes", internal_ranges_audit.notes);
         set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
         set_value(row, "raw_ctrunc_residual_source_object", "tmvTmp.tms[i].remainder immediately after Picard_ctrunc_normal");
         set_value(row, "raw_ctrunc_residual_domain_semantics", "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff");
