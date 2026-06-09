@@ -2071,6 +2071,56 @@ def _picard_ctrunc_normal_image(
     return TMVector(models)
 
 
+def _picard_ctrunc_normal_partition_boxes(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    cutoff_threshold: float | None,
+) -> dict[str, list[Interval]]:
+    domain = candidate.domain
+    rhs = _call_ode(ode_fn, candidate, u_tms)
+    zero = Interval.zero(dtype=domain[0].lo.dtype, device=domain[0].lo.device) if domain else Interval.zero()
+    dropped_terms: list[Interval] = []
+    multiplication_remainders: list[Interval] = []
+    integration_remainders: list[Interval] = []
+    before_accumulation: list[Interval] = []
+    after_integration: list[Interval] = []
+    after_dropped_terms: list[Interval] = []
+    after_cutoff: list[Interval] = []
+    for base_i, f_i in zip(base_ext, rhs):
+        integrated = f_i.integrate(tau_index)
+        picard_i = base_i + integrated
+        kept, dropped = picard_i.polynomial.truncate(order)
+        trunc_range = _poly_interval_normal(dropped, domain, tau_index)
+        _kept_after_cutoff, cutoff_range = _cutoff_polynomial_normal(kept, domain, tau_index, cutoff_threshold)
+        dropped_total = trunc_range + cutoff_range
+        before = base_i.remainder
+        after_int = picard_i.remainder
+        after_drop = after_int + trunc_range
+        after_cut = after_drop + cutoff_range
+        dropped_terms.append(dropped_total)
+        multiplication_remainders.append(integrated.remainder)
+        integration_remainders.append(after_int)
+        before_accumulation.append(before if before is not None else zero)
+        after_integration.append(after_int)
+        after_dropped_terms.append(after_drop)
+        after_cutoff.append(after_cut)
+    return {
+        "raw_remainder_dropped_terms_range": dropped_terms,
+        "raw_remainder_multiplication_remainder": multiplication_remainders,
+        "raw_remainder_integration_remainder": integration_remainders,
+        "raw_remainder_before_accumulation": before_accumulation,
+        "raw_remainder_after_integration": after_integration,
+        "raw_remainder_after_dropped_terms": after_dropped_terms,
+        "raw_remainder_after_cutoff": after_cutoff,
+        "raw_remainder_before_poly_diff": after_cutoff,
+    }
+
+
 def _validate_picard_target_remainder_flowstar_ctrunc(
     ode_fn: ODEFunction,
     base_ext: TMVector,
@@ -2195,6 +2245,15 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             )
             raw_ctrunc_remainders: list[Interval] = []
             raw_ctrunc_polynomial_ranges = _polynomial_range_boxes(tmp)
+            raw_partition_boxes = _picard_ctrunc_normal_partition_boxes(
+                ode_fn,
+                base_ext,
+                candidate,
+                tau_index,
+                order,
+                u_tms,
+                cutoff_threshold=cutoff_threshold,
+            )
             poly_diff_ranges: list[Interval] = []
             tmp_remainders: list[Interval] = []
             for tmp_i, cand_i in zip(tmp, candidate):
@@ -2204,6 +2263,7 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
                 diff_range = _poly_interval_normal(diff_poly, domain, tau_index).inflate(validation_eps)
                 poly_diff_ranges.append(diff_range)
                 tmp_remainders.append((raw_remainder + diff_range).inflate(validation_eps))
+            raw_partition_boxes["raw_remainder_after_poly_diff"] = tmp_remainders
         except Exception as exc:
             message = f"validation exception: {exc}"
             extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
@@ -2247,6 +2307,15 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             **_interval_list_stats("raw_ctrunc_remainder", raw_ctrunc_remainders),
             **_interval_list_stats("raw_ctrunc_polynomial_range", raw_ctrunc_polynomial_ranges),
             **_interval_list_stats("target_remainder_before_ctrunc", target_remainders),
+            **_interval_list_stats("raw_remainder_dropped_terms_range", raw_partition_boxes.get("raw_remainder_dropped_terms_range")),
+            **_interval_list_stats("raw_remainder_multiplication_remainder", raw_partition_boxes.get("raw_remainder_multiplication_remainder")),
+            **_interval_list_stats("raw_remainder_integration_remainder", raw_partition_boxes.get("raw_remainder_integration_remainder")),
+            **_interval_list_stats("raw_remainder_before_accumulation", raw_partition_boxes.get("raw_remainder_before_accumulation")),
+            **_interval_list_stats("raw_remainder_after_integration", raw_partition_boxes.get("raw_remainder_after_integration")),
+            **_interval_list_stats("raw_remainder_after_dropped_terms", raw_partition_boxes.get("raw_remainder_after_dropped_terms")),
+            **_interval_list_stats("raw_remainder_after_cutoff", raw_partition_boxes.get("raw_remainder_after_cutoff")),
+            **_interval_list_stats("raw_remainder_before_poly_diff", raw_partition_boxes.get("raw_remainder_before_poly_diff")),
+            **_interval_list_stats("raw_remainder_after_poly_diff", raw_partition_boxes.get("raw_remainder_after_poly_diff")),
             **_interval_list_stats("poly_diff_range", poly_diff_ranges),
             **_interval_list_stats("ordinary_residual_range", ordinary_residual),
             **_interval_list_stats("normal_eval_range", poly_diff_ranges),
@@ -2257,6 +2326,9 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             "raw_ctrunc_residual_includes_cutoff_poly_diff": False,
             "raw_ctrunc_residual_added_component": "none_before_cutoff_polyDiff",
             "raw_ctrunc_residual_notes": "raw ctrunc remainder is recorded before adding poly_diff_range; target remainder is only the containment set",
+            "raw_remainder_range_enclosure_method": "Polynomial.truncate plus _poly_interval_normal on dropped terms; cutoff range from _cutoff_polynomial_normal",
+            "raw_remainder_normal_domain_scaling": "none_after_Picard_call; intervals are over the physical full-step tau domain",
+            "raw_remainder_partition_missing_reason": "PyTorch exposes diagnostic reconstruction of dropped/integration/multiplication partitions; Flow* source-level intermediate_ranges partition remains the reference for exact attribution",
             "ordinary_remainder_missing_reason": "PyTorch ordinary_residual_range is exposed separately; it is not included in raw_ctrunc_residual",
             "subset_result": subset_tmp,
             "subset_tmp_remainder": subset_tmp,

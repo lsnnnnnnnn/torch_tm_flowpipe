@@ -125,6 +125,45 @@ LIFECYCLE_FIELDS = [
     "raw_ctrunc_remainder_x_hi",
     "raw_ctrunc_remainder_y_lo",
     "raw_ctrunc_remainder_y_hi",
+    "raw_remainder_dropped_terms_range_x_lo",
+    "raw_remainder_dropped_terms_range_x_hi",
+    "raw_remainder_dropped_terms_range_y_lo",
+    "raw_remainder_dropped_terms_range_y_hi",
+    "raw_remainder_multiplication_remainder_x_lo",
+    "raw_remainder_multiplication_remainder_x_hi",
+    "raw_remainder_multiplication_remainder_y_lo",
+    "raw_remainder_multiplication_remainder_y_hi",
+    "raw_remainder_integration_remainder_x_lo",
+    "raw_remainder_integration_remainder_x_hi",
+    "raw_remainder_integration_remainder_y_lo",
+    "raw_remainder_integration_remainder_y_hi",
+    "raw_remainder_before_accumulation_x_lo",
+    "raw_remainder_before_accumulation_x_hi",
+    "raw_remainder_before_accumulation_y_lo",
+    "raw_remainder_before_accumulation_y_hi",
+    "raw_remainder_after_integration_x_lo",
+    "raw_remainder_after_integration_x_hi",
+    "raw_remainder_after_integration_y_lo",
+    "raw_remainder_after_integration_y_hi",
+    "raw_remainder_after_dropped_terms_x_lo",
+    "raw_remainder_after_dropped_terms_x_hi",
+    "raw_remainder_after_dropped_terms_y_lo",
+    "raw_remainder_after_dropped_terms_y_hi",
+    "raw_remainder_after_cutoff_x_lo",
+    "raw_remainder_after_cutoff_x_hi",
+    "raw_remainder_after_cutoff_y_lo",
+    "raw_remainder_after_cutoff_y_hi",
+    "raw_remainder_before_poly_diff_x_lo",
+    "raw_remainder_before_poly_diff_x_hi",
+    "raw_remainder_before_poly_diff_y_lo",
+    "raw_remainder_before_poly_diff_y_hi",
+    "raw_remainder_after_poly_diff_x_lo",
+    "raw_remainder_after_poly_diff_x_hi",
+    "raw_remainder_after_poly_diff_y_lo",
+    "raw_remainder_after_poly_diff_y_hi",
+    "raw_remainder_range_enclosure_method",
+    "raw_remainder_normal_domain_scaling",
+    "raw_remainder_partition_missing_reason",
     "raw_ctrunc_residual_source_object",
     "raw_ctrunc_residual_domain_semantics",
     "raw_ctrunc_residual_includes_target_remainder",
@@ -528,6 +567,15 @@ def _fill_lifecycle_aliases(row: dict[str, Any]) -> None:
                 (f"raw_ctrunc_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
                 (f"raw_ctrunc_polynomial_range_{dim}_{side}", f"raw_ctrunc_polynomial_range_{side}_{dim}"),
                 (f"raw_ctrunc_remainder_{dim}_{side}", f"raw_ctrunc_remainder_{side}_{dim}"),
+                (f"raw_remainder_dropped_terms_range_{dim}_{side}", f"raw_remainder_dropped_terms_range_{side}_{dim}"),
+                (f"raw_remainder_multiplication_remainder_{dim}_{side}", f"raw_remainder_multiplication_remainder_{side}_{dim}"),
+                (f"raw_remainder_integration_remainder_{dim}_{side}", f"raw_remainder_integration_remainder_{side}_{dim}"),
+                (f"raw_remainder_before_accumulation_{dim}_{side}", f"raw_remainder_before_accumulation_{side}_{dim}"),
+                (f"raw_remainder_after_integration_{dim}_{side}", f"raw_remainder_after_integration_{side}_{dim}"),
+                (f"raw_remainder_after_dropped_terms_{dim}_{side}", f"raw_remainder_after_dropped_terms_{side}_{dim}"),
+                (f"raw_remainder_after_cutoff_{dim}_{side}", f"raw_remainder_after_cutoff_{side}_{dim}"),
+                (f"raw_remainder_before_poly_diff_{dim}_{side}", f"raw_remainder_before_poly_diff_{side}_{dim}"),
+                (f"raw_remainder_after_poly_diff_{dim}_{side}", f"raw_remainder_after_poly_diff_{side}_{dim}"),
                 (f"picard_ctrunc_raw_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
                 (f"picard_no_remainder_range_{dim}_{side}", f"picard_no_remainder_range_{side}_{dim}"),
                 (f"picard_no_remainder_polynomial_range_{dim}_{side}", f"picard_no_remainder_polynomial_range_{side}_{dim}"),
@@ -828,6 +876,15 @@ def _common_torch_row(
     _put_lifecycle_bounds_from_row(row, "raw_ctrunc_residual", validation, "raw_ctrunc_residual")
     _put_lifecycle_bounds_from_row(row, "raw_ctrunc_polynomial_range", validation, "raw_ctrunc_polynomial_range")
     _put_lifecycle_bounds_from_row(row, "raw_ctrunc_remainder", validation, "raw_ctrunc_remainder")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_dropped_terms_range", validation, "raw_remainder_dropped_terms_range")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_multiplication_remainder", validation, "raw_remainder_multiplication_remainder")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_integration_remainder", validation, "raw_remainder_integration_remainder")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_before_accumulation", validation, "raw_remainder_before_accumulation")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_after_integration", validation, "raw_remainder_after_integration")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_after_dropped_terms", validation, "raw_remainder_after_dropped_terms")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_after_cutoff", validation, "raw_remainder_after_cutoff")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_before_poly_diff", validation, "raw_remainder_before_poly_diff")
+    _put_lifecycle_bounds_from_row(row, "raw_remainder_after_poly_diff", validation, "raw_remainder_after_poly_diff")
     _put_lifecycle_bounds_from_row(row, "picard_ctrunc_raw_residual", validation, "raw_ctrunc_residual")
     _put_lifecycle_bounds_from_row(row, "picard_no_remainder_range", validation, "picard_no_remainder_range")
     _put_lifecycle_bounds_from_row(row, "picard_no_remainder_polynomial_range", validation, "picard_no_remainder_polynomial_range")
@@ -840,6 +897,9 @@ def _common_torch_row(
         "raw_ctrunc_residual_includes_cutoff_poly_diff",
         "raw_ctrunc_residual_added_component",
         "raw_ctrunc_residual_notes",
+        "raw_remainder_range_enclosure_method",
+        "raw_remainder_normal_domain_scaling",
+        "raw_remainder_partition_missing_reason",
         "ordinary_remainder_missing_reason",
     ):
         if validation.get(key) not in (None, ""):

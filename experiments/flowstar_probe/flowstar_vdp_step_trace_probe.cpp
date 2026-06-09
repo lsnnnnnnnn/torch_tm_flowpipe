@@ -92,6 +92,45 @@ const vector<string> kHeaders = {
     "raw_ctrunc_remainder_x_hi",
     "raw_ctrunc_remainder_y_lo",
     "raw_ctrunc_remainder_y_hi",
+    "raw_remainder_dropped_terms_range_x_lo",
+    "raw_remainder_dropped_terms_range_x_hi",
+    "raw_remainder_dropped_terms_range_y_lo",
+    "raw_remainder_dropped_terms_range_y_hi",
+    "raw_remainder_multiplication_remainder_x_lo",
+    "raw_remainder_multiplication_remainder_x_hi",
+    "raw_remainder_multiplication_remainder_y_lo",
+    "raw_remainder_multiplication_remainder_y_hi",
+    "raw_remainder_integration_remainder_x_lo",
+    "raw_remainder_integration_remainder_x_hi",
+    "raw_remainder_integration_remainder_y_lo",
+    "raw_remainder_integration_remainder_y_hi",
+    "raw_remainder_before_accumulation_x_lo",
+    "raw_remainder_before_accumulation_x_hi",
+    "raw_remainder_before_accumulation_y_lo",
+    "raw_remainder_before_accumulation_y_hi",
+    "raw_remainder_after_integration_x_lo",
+    "raw_remainder_after_integration_x_hi",
+    "raw_remainder_after_integration_y_lo",
+    "raw_remainder_after_integration_y_hi",
+    "raw_remainder_after_dropped_terms_x_lo",
+    "raw_remainder_after_dropped_terms_x_hi",
+    "raw_remainder_after_dropped_terms_y_lo",
+    "raw_remainder_after_dropped_terms_y_hi",
+    "raw_remainder_after_cutoff_x_lo",
+    "raw_remainder_after_cutoff_x_hi",
+    "raw_remainder_after_cutoff_y_lo",
+    "raw_remainder_after_cutoff_y_hi",
+    "raw_remainder_before_poly_diff_x_lo",
+    "raw_remainder_before_poly_diff_x_hi",
+    "raw_remainder_before_poly_diff_y_lo",
+    "raw_remainder_before_poly_diff_y_hi",
+    "raw_remainder_after_poly_diff_x_lo",
+    "raw_remainder_after_poly_diff_x_hi",
+    "raw_remainder_after_poly_diff_y_lo",
+    "raw_remainder_after_poly_diff_y_hi",
+    "raw_remainder_range_enclosure_method",
+    "raw_remainder_normal_domain_scaling",
+    "raw_remainder_partition_missing_reason",
     "raw_ctrunc_residual_source_object",
     "raw_ctrunc_residual_domain_semantics",
     "raw_ctrunc_residual_includes_target_remainder",
@@ -769,6 +808,8 @@ int traced_advance_adaptive_symbolic(
         {
             raw_ctrunc_remainder.push_back(tmvTmp.tms[i].remainder);
         }
+        vector<Interval> raw_remainder_from_intermediate_ranges;
+        x.Picard_ctrunc_normal_remainder(raw_remainder_from_intermediate_ranges, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
         vector<Interval> validation_polynomial_range;
         tmvTmp.polyRangeNormal(validation_polynomial_range, tm_setting.step_exp_table);
 
@@ -884,6 +925,14 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
         set_lifecycle_bounds(row, "raw_ctrunc_residual", raw_ctrunc_remainder);
         set_lifecycle_bounds(row, "raw_ctrunc_remainder", raw_ctrunc_remainder);
+        set_lifecycle_bounds(row, "raw_remainder_integration_remainder", raw_remainder_from_intermediate_ranges);
+        set_lifecycle_bounds(row, "raw_remainder_after_integration", raw_remainder_from_intermediate_ranges);
+        set_lifecycle_bounds(row, "raw_remainder_after_cutoff", raw_ctrunc_remainder);
+        set_lifecycle_bounds(row, "raw_remainder_before_poly_diff", raw_ctrunc_remainder);
+        set_lifecycle_bounds(row, "raw_remainder_after_poly_diff", ctrunc_remainder);
+        set_value(row, "raw_remainder_range_enclosure_method", "Flowstar intermediate_ranges evaluated by TaylorModelVec::Picard_ctrunc_normal_remainder; dropped-term and multiplication partitions are not mapped to state dimensions by the probe");
+        set_value(row, "raw_remainder_normal_domain_scaling", "none_after_Picard_call; raw remainder is physical interval over step_exp_table before cutoff/polyDiff");
+        set_value(row, "raw_remainder_partition_missing_reason", "Flow* internal dropped-term and multiplication remainder partitions live inside expression/Horner intermediate_ranges; expose TaylorModel.h Expression evaluate_remainder intermediate objects next");
         set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
         set_value(row, "raw_ctrunc_residual_source_object", "tmvTmp.tms[i].remainder immediately after Picard_ctrunc_normal");
         set_value(row, "raw_ctrunc_residual_domain_semantics", "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff");
