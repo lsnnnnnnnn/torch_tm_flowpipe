@@ -9,6 +9,7 @@ from torch_tm_flowpipe.batched_dense_tm import (
     BatchedMonomialBasis,
     BatchedPolynomial,
     BatchedTaylorModel,
+    DenseTMProfiler,
 )
 
 
@@ -223,3 +224,103 @@ def test_device_roundtrip_and_cuda_if_available(device):
     assert out.poly.coeffs.device.type == torch.device(device).type
     assert lo.device.type == torch.device(device).type
     assert bool(torch.all(lo <= hi))
+
+
+
+def test_dropped_term_merged_bound_contains_samples_and_is_not_wider():
+    basis = BatchedMonomialBasis.build(dim=2, order=1)
+    domain_lo = torch.tensor([[-1.0, -0.5]], dtype=torch.float64)
+    domain_hi = torch.tensor([[1.0, 0.75]], dtype=torch.float64)
+    coeffs_p = torch.zeros((1, 1, basis.num_terms), dtype=torch.float64)
+    coeffs_q = torch.zeros_like(coeffs_p)
+    coeffs_p[0, 0, basis.term_index((1, 0))] = 1.0
+    coeffs_p[0, 0, basis.term_index((0, 1))] = 1.0
+    coeffs_q[0, 0, basis.term_index((1, 0))] = 1.0
+    coeffs_q[0, 0, basis.term_index((0, 1))] = -1.0
+    p = BatchedPolynomial(coeffs_p, basis)
+    q = BatchedPolynomial(coeffs_q, basis)
+
+    kept_termwise, term_lo, term_hi = p.mul_trunc(
+        q,
+        return_truncation_bound=True,
+        domain_lo=domain_lo,
+        domain_hi=domain_hi,
+        dropped_merge_mode="termwise",
+    )
+    kept_merged, merged_lo, merged_hi = p.mul_trunc(
+        q,
+        return_truncation_bound=True,
+        domain_lo=domain_lo,
+        domain_hi=domain_hi,
+        dropped_merge_mode="merged",
+    )
+
+    assert kept_termwise.coeffs.shape == kept_merged.coeffs.shape
+    assert term_lo.shape == merged_lo.shape == (1, 1)
+    assert bool(torch.all(merged_hi - merged_lo <= term_hi - term_lo + 1e-12))
+
+    xs = torch.linspace(float(domain_lo[0, 0]), float(domain_hi[0, 0]), 9, dtype=torch.float64)
+    ys = torch.linspace(float(domain_lo[0, 1]), float(domain_hi[0, 1]), 9, dtype=torch.float64)
+    samples = torch.tensor([[float(x), float(y)] for x in xs for y in ys], dtype=torch.float64).view(1, -1, 2)
+    dropped_values = p.evaluate(samples) * q.evaluate(samples)
+    _assert_contains(term_lo[:, None, :], term_hi[:, None, :], dropped_values)
+    _assert_contains(merged_lo[:, None, :], merged_hi[:, None, :], dropped_values)
+
+
+def test_split_range_bound_contains_samples_and_is_comparable_to_interval():
+    basis = BatchedMonomialBasis.build(dim=2, order=2)
+    domain_lo = torch.tensor([[0.0, -0.25]], dtype=torch.float64)
+    domain_hi = torch.tensor([[1.0, 0.25]], dtype=torch.float64)
+    coeffs = torch.zeros((1, 1, basis.num_terms), dtype=torch.float64)
+    coeffs[0, 0, basis.term_index((1, 0))] = 1.0
+    coeffs[0, 0, basis.term_index((2, 0))] = -1.0
+    coeffs[0, 0, basis.term_index((0, 1))] = 0.25
+    poly = BatchedPolynomial(coeffs, basis)
+
+    interval_lo, interval_hi = poly.range_bound(domain_lo, domain_hi, method="interval")
+    split_lo, split_hi = poly.range_bound(domain_lo, domain_hi, method="split2")
+    assert bool(torch.all(split_hi - split_lo <= interval_hi - interval_lo + 1e-12))
+
+    xs = torch.linspace(0.0, 1.0, 17, dtype=torch.float64)
+    ys = torch.linspace(-0.25, 0.25, 9, dtype=torch.float64)
+    samples = torch.tensor([[float(x), float(y)] for x in xs for y in ys], dtype=torch.float64).view(1, -1, 2)
+    values = poly.evaluate(samples)
+    _assert_contains(interval_lo[:, None, :], interval_hi[:, None, :], values)
+    _assert_contains(split_lo[:, None, :], split_hi[:, None, :], values)
+
+
+def test_fixed_euler_alias_and_profiler_hooks():
+    basis = BatchedMonomialBasis.build(dim=2, order=2)
+    domain_lo = torch.tensor([[-0.2, -0.1]], dtype=torch.float64)
+    domain_hi = torch.tensor([[0.3, 0.4]], dtype=torch.float64)
+    tm = BatchedTaylorModel.variables_from_domain(domain_lo, domain_hi, basis)
+    profiler = DenseTMProfiler(device="cpu")
+    euler = tm.fixed_euler_tm_step_vdp(0.01, dropped_merge_mode="merged", profile=profiler)
+    old_alias = tm.fixed_picard_step_vdp(0.01, dropped_merge_mode="merged")
+    one_alias = tm.one_fixed_tm_step_vdp(0.01, dropped_merge_mode="merged")
+
+    assert torch.allclose(euler.poly.coeffs, old_alias.poly.coeffs)
+    assert torch.allclose(euler.poly.coeffs, one_alias.poly.coeffs)
+    assert profiler.timings_ms["mul_trunc"] > 0.0
+    assert profiler.timings_ms["dropped_range_bound"] > 0.0
+    assert profiler.timings_ms["range_bound"] > 0.0
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")
+def test_cpu_cuda_dense_tm_results_close_for_small_case():
+    basis_cpu = BatchedMonomialBasis.build(dim=2, order=2, device="cpu")
+    domain_lo = torch.tensor([[-0.2, -0.1], [0.1, -0.2]], dtype=torch.float64)
+    domain_hi = torch.tensor([[0.3, 0.4], [0.4, 0.2]], dtype=torch.float64)
+    tm_cpu = BatchedTaylorModel.variables_from_domain(domain_lo, domain_hi, basis_cpu)
+    for _ in range(3):
+        tm_cpu = tm_cpu.fixed_euler_tm_step_vdp(0.01, dropped_merge_mode="merged")
+    lo_cpu, hi_cpu = tm_cpu.range_bound(method="split2")
+
+    basis_cuda = BatchedMonomialBasis.build(dim=2, order=2, device="cuda")
+    tm_cuda = BatchedTaylorModel.variables_from_domain(domain_lo.cuda(), domain_hi.cuda(), basis_cuda)
+    for _ in range(3):
+        tm_cuda = tm_cuda.fixed_euler_tm_step_vdp(0.01, dropped_merge_mode="merged")
+    lo_cuda, hi_cuda = tm_cuda.range_bound(method="split2")
+
+    assert torch.allclose(lo_cpu, lo_cuda.cpu(), atol=1e-10, rtol=1e-10)
+    assert torch.allclose(hi_cpu, hi_cuda.cpu(), atol=1e-10, rtol=1e-10)

@@ -6,10 +6,74 @@ Taylor models. It intentionally does not replace the sparse production
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Sequence
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from itertools import product
+import time
+from typing import Any, Iterator, Sequence
 
 import torch
+
+
+@dataclass
+class DenseTMProfiler:
+    """Small opt-in profiler for dense batched TM experiments."""
+
+    device: torch.device | str | None = None
+    enabled: bool = True
+    timings_ms: dict[str, float] = field(default_factory=dict)
+    cuda_memory_allocated_bytes: int = 0
+    cuda_memory_reserved_bytes: int = 0
+
+    def _device(self) -> torch.device:
+        return _as_device(self.device)
+
+    def _sync(self) -> None:
+        device = self._device()
+        if self.enabled and device.type == "cuda":
+            torch.cuda.synchronize(device)
+
+    @contextmanager
+    def measure(self, name: str) -> Iterator[None]:
+        if not self.enabled:
+            yield
+            return
+        self._sync()
+        start = time.perf_counter()
+        try:
+            yield
+        finally:
+            self._sync()
+            self.timings_ms[name] = self.timings_ms.get(name, 0.0) + (time.perf_counter() - start) * 1000.0
+            self.snapshot_cuda_memory()
+
+    def snapshot_cuda_memory(self) -> None:
+        device = self._device()
+        if not self.enabled or device.type != "cuda":
+            return
+        self.cuda_memory_allocated_bytes = max(
+            self.cuda_memory_allocated_bytes,
+            int(torch.cuda.max_memory_allocated(device)),
+        )
+        self.cuda_memory_reserved_bytes = max(
+            self.cuda_memory_reserved_bytes,
+            int(torch.cuda.max_memory_reserved(device)),
+        )
+
+    def as_flat_dict(self) -> dict[str, float | int]:
+        out: dict[str, float | int] = dict(self.timings_ms)
+        out["cuda_memory_allocated_bytes"] = self.cuda_memory_allocated_bytes
+        out["cuda_memory_reserved_bytes"] = self.cuda_memory_reserved_bytes
+        return out
+
+
+@contextmanager
+def _profile_measure(profile: DenseTMProfiler | None, name: str) -> Iterator[None]:
+    if profile is None:
+        yield
+        return
+    with profile.measure(name):
+        yield
 
 
 def _as_device(device: torch.device | str | None) -> torch.device:
@@ -166,6 +230,80 @@ def _range_for_terms(
     return _down(term_lo.sum(dim=-1)), _up(term_hi.sum(dim=-1))
 
 
+def _subdivision_count(method: str, subdivisions: int = 2) -> int:
+    if method == "interval":
+        return 1
+    if method == "split2":
+        return 2
+    if method == "subdivide":
+        return max(2, int(subdivisions))
+    if method.startswith("subdivide:"):
+        return max(2, int(method.split(":", 1)[1]))
+    raise ValueError(f"unknown range bound mode: {method}")
+
+
+def _range_for_terms_split(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    *,
+    subdivisions: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    domain_lo = domain_lo.to(device=coeffs.device, dtype=coeffs.dtype)
+    domain_hi = domain_hi.to(device=coeffs.device, dtype=coeffs.dtype)
+    if domain_lo.ndim == 1:
+        domain_lo = domain_lo.unsqueeze(0)
+        domain_hi = domain_hi.unsqueeze(0)
+    dim = int(domain_lo.shape[1])
+    total_subboxes = int(subdivisions) ** dim
+    if dim > 4 or total_subboxes > 16:
+        raise ValueError("split range bounds are limited to small dimensions/subdivision counts")
+    width = domain_hi - domain_lo
+    out_lo: torch.Tensor | None = None
+    out_hi: torch.Tensor | None = None
+    for cell in product(range(int(subdivisions)), repeat=dim):
+        cell_lo = torch.as_tensor(cell, dtype=coeffs.dtype, device=coeffs.device).view(1, dim) / float(subdivisions)
+        cell_hi = (torch.as_tensor(cell, dtype=coeffs.dtype, device=coeffs.device).view(1, dim) + 1.0) / float(subdivisions)
+        sub_lo = domain_lo + width * cell_lo
+        sub_hi = domain_lo + width * cell_hi
+        lo, hi = _range_for_terms(coeffs, exponents, sub_lo, sub_hi)
+        out_lo = lo if out_lo is None else torch.minimum(out_lo, lo)
+        out_hi = hi if out_hi is None else torch.maximum(out_hi, hi)
+    if out_lo is None or out_hi is None:
+        return _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+    return _down(out_lo), _up(out_hi)
+
+
+def _range_for_terms_mode(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    *,
+    method: str = "interval",
+    subdivisions: int = 2,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    count = _subdivision_count(method, subdivisions=subdivisions)
+    if count == 1:
+        return _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+    return _range_for_terms_split(coeffs, exponents, domain_lo, domain_hi, subdivisions=count)
+
+
+def _merge_coefficients_by_index(
+    coeffs: torch.Tensor,
+    merge_indices: torch.Tensor,
+    unique_count: int,
+) -> torch.Tensor:
+    if unique_count == 0:
+        return torch.zeros((*coeffs.shape[:-1], 0), dtype=coeffs.dtype, device=coeffs.device)
+    merge_t = merge_indices.to(device=coeffs.device, dtype=torch.long)
+    target = merge_t.view(*([1] * (coeffs.ndim - 1)), -1).expand_as(coeffs)
+    out = torch.zeros((*coeffs.shape[:-1], int(unique_count)), dtype=coeffs.dtype, device=coeffs.device)
+    out.scatter_add_(-1, target, coeffs)
+    return out
+
+
 @dataclass(frozen=True)
 class BatchedMonomialBasis:
     """Dense total-degree monomial basis with precomputed scatter plans."""
@@ -183,6 +321,8 @@ class BatchedMonomialBasis:
     trunc_left_indices: torch.Tensor
     trunc_right_indices: torch.Tensor
     trunc_exponents: torch.Tensor
+    trunc_merge_indices: torch.Tensor
+    trunc_unique_exponents: torch.Tensor
 
     @staticmethod
     def build(dim: int, order: int, device: torch.device | str | None = None) -> "BatchedMonomialBasis":
@@ -221,6 +361,15 @@ class BatchedMonomialBasis:
                     trunc_right.append(right_index)
                     trunc_exps.append(product_exp)
 
+        trunc_unique: list[tuple[int, ...]] = []
+        trunc_unique_index: dict[tuple[int, ...], int] = {}
+        trunc_merge: list[int] = []
+        for exp in trunc_exps:
+            if exp not in trunc_unique_index:
+                trunc_unique_index[exp] = len(trunc_unique)
+                trunc_unique.append(exp)
+            trunc_merge.append(trunc_unique_index[exp])
+
         return BatchedMonomialBasis(
             int(dim),
             int(order),
@@ -235,6 +384,8 @@ class BatchedMonomialBasis:
             torch.as_tensor(trunc_left, dtype=torch.long, device=device_t),
             torch.as_tensor(trunc_right, dtype=torch.long, device=device_t),
             torch.as_tensor(trunc_exps, dtype=torch.long, device=device_t).reshape(-1, int(dim)),
+            torch.as_tensor(trunc_merge, dtype=torch.long, device=device_t),
+            torch.as_tensor(trunc_unique, dtype=torch.long, device=device_t).reshape(-1, int(dim)),
         )
 
     @property
@@ -263,6 +414,8 @@ class BatchedMonomialBasis:
             self.trunc_left_indices.to(device_t),
             self.trunc_right_indices.to(device_t),
             self.trunc_exponents.to(device_t),
+            self.trunc_merge_indices.to(device_t),
+            self.trunc_unique_exponents.to(device_t),
         )
 
     def term_index(self, exponent_tuple: Sequence[int]) -> int:
@@ -424,17 +577,23 @@ class BatchedPolynomial:
         return_truncation_bound: bool = False,
         domain_lo: torch.Tensor | None = None,
         domain_hi: torch.Tensor | None = None,
+        dropped_merge_mode: str = "termwise",
+        range_bound_mode: str = "interval",
+        profile: DenseTMProfiler | None = None,
     ) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
+        if dropped_merge_mode not in {"termwise", "merged"}:
+            raise ValueError("dropped_merge_mode must be 'termwise' or 'merged'")
         self._check_basis(other)
         other_coeffs = other.coeffs.to(device=self.coeffs.device, dtype=self.coeffs.dtype)
         basis = self.basis
-        left = basis.mul_left_indices
-        right = basis.mul_right_indices
-        products = self.coeffs.index_select(-1, left) * other_coeffs.index_select(-1, right)
-        out = torch.zeros((*products.shape[:-1], basis.num_terms), dtype=self.coeffs.dtype, device=self.coeffs.device)
-        target = basis.mul_out_indices.view(*([1] * (products.ndim - 1)), -1).expand_as(products)
-        out.scatter_add_(-1, target, products)
-        poly = BatchedPolynomial(out, basis)
+        with _profile_measure(profile, "mul_trunc"):
+            left = basis.mul_left_indices
+            right = basis.mul_right_indices
+            products = self.coeffs.index_select(-1, left) * other_coeffs.index_select(-1, right)
+            out = torch.zeros((*products.shape[:-1], basis.num_terms), dtype=self.coeffs.dtype, device=self.coeffs.device)
+            target = basis.mul_out_indices.view(*([1] * (products.ndim - 1)), -1).expand_as(products)
+            out.scatter_add_(-1, target, products)
+            poly = BatchedPolynomial(out, basis)
         if not return_truncation_bound:
             return poly
         if domain_lo is None or domain_hi is None:
@@ -442,10 +601,26 @@ class BatchedPolynomial:
         if basis.trunc_left_indices.numel() == 0:
             zeros = torch.zeros(products.shape[:-1], dtype=self.coeffs.dtype, device=self.coeffs.device)
             return poly, zeros, zeros
-        dropped = self.coeffs.index_select(-1, basis.trunc_left_indices) * other_coeffs.index_select(
-            -1, basis.trunc_right_indices
-        )
-        trunc_lo, trunc_hi = _range_for_terms(dropped, basis.trunc_exponents, domain_lo, domain_hi)
+        with _profile_measure(profile, "dropped_range_bound"):
+            dropped = self.coeffs.index_select(-1, basis.trunc_left_indices) * other_coeffs.index_select(
+                -1, basis.trunc_right_indices
+            )
+            if dropped_merge_mode == "merged":
+                dropped = _merge_coefficients_by_index(
+                    dropped,
+                    basis.trunc_merge_indices,
+                    int(basis.trunc_unique_exponents.shape[0]),
+                )
+                trunc_exponents = basis.trunc_unique_exponents
+            else:
+                trunc_exponents = basis.trunc_exponents
+            trunc_lo, trunc_hi = _range_for_terms_mode(
+                dropped,
+                trunc_exponents,
+                domain_lo,
+                domain_hi,
+                method=range_bound_mode,
+            )
         return poly, trunc_lo, trunc_hi
 
     def square_trunc(self, **kwargs: Any) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
@@ -456,10 +631,11 @@ class BatchedPolynomial:
         domain_lo: torch.Tensor,
         domain_hi: torch.Tensor,
         method: str = "interval",
+        *,
+        profile: DenseTMProfiler | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        if method != "interval":
-            raise ValueError("only interval range bounds are implemented")
-        return _range_for_terms(self.coeffs, self.basis.exponents, domain_lo, domain_hi)
+        with _profile_measure(profile, "range_bound"):
+            return _range_for_terms_mode(self.coeffs, self.basis.exponents, domain_lo, domain_hi, method=method)
 
     def evaluate(self, points: torch.Tensor) -> torch.Tensor:
         points_t = torch.as_tensor(points, dtype=self.coeffs.dtype, device=self.coeffs.device)
@@ -516,6 +692,34 @@ class BatchedTaylorModel:
         poly = BatchedPolynomial.variables(lo.shape[0], lo.shape[1], basis, device=lo.device, dtype=lo.dtype)
         rem = torch.zeros((lo.shape[0], lo.shape[1]), dtype=lo.dtype, device=lo.device)
         return BatchedTaylorModel(poly, rem, rem.clone(), lo, hi)
+
+    @staticmethod
+    def constant_interval(
+        value_lo: Any,
+        value_hi: Any,
+        basis: BatchedMonomialBasis,
+        domain_lo: torch.Tensor,
+        domain_hi: torch.Tensor,
+    ) -> "BatchedTaylorModel":
+        dom_lo = torch.as_tensor(domain_lo)
+        dom_hi = torch.as_tensor(domain_hi, dtype=dom_lo.dtype, device=dom_lo.device)
+        lo = torch.as_tensor(value_lo, dtype=dom_lo.dtype, device=dom_lo.device)
+        hi = torch.as_tensor(value_hi, dtype=dom_lo.dtype, device=dom_lo.device)
+        if lo.ndim == 0:
+            lo = lo.reshape(1, 1)
+            hi = hi.reshape(1, 1)
+        elif lo.ndim == 1:
+            lo = lo.unsqueeze(-1)
+            hi = hi.unsqueeze(-1)
+        lo, hi = torch.broadcast_tensors(lo, hi)
+        if lo.shape[0] == 1 and dom_lo.shape[0] != 1:
+            lo = lo.expand(dom_lo.shape[0], -1)
+            hi = hi.expand(dom_lo.shape[0], -1)
+        if lo.ndim != 2 or lo.shape[0] != dom_lo.shape[0]:
+            raise ValueError("constant interval values must broadcast to [batch, out_dim]")
+        center = 0.5 * (lo + hi)
+        poly = BatchedPolynomial.constants(center, basis.to(dom_lo.device))
+        return BatchedTaylorModel(poly, _down(lo - center), _up(hi - center), dom_lo, dom_hi)
 
     def clone(self) -> "BatchedTaylorModel":
         return BatchedTaylorModel(
@@ -578,26 +782,42 @@ class BatchedTaylorModel:
             self.domain_hi,
         )
 
-    def mul_trunc(self, other: "BatchedTaylorModel") -> "BatchedTaylorModel":
+    def mul_trunc(
+        self,
+        other: "BatchedTaylorModel",
+        *,
+        dropped_merge_mode: str = "termwise",
+        range_bound_mode: str = "interval",
+        profile: DenseTMProfiler | None = None,
+    ) -> "BatchedTaylorModel":
         self._check_domain(other)
         poly, trunc_lo, trunc_hi = self.poly.mul_trunc(
             other.poly,
             return_truncation_bound=True,
             domain_lo=self.domain_lo,
             domain_hi=self.domain_hi,
+            dropped_merge_mode=dropped_merge_mode,
+            range_bound_mode=range_bound_mode,
+            profile=profile,
         )
-        p_lo, p_hi = self.poly.range_bound(self.domain_lo, self.domain_hi)
-        q_lo, q_hi = other.poly.range_bound(self.domain_lo, self.domain_hi)
-        p_j_lo, p_j_hi = _interval_mul(p_lo, p_hi, other.rem_lo, other.rem_hi)
-        q_i_lo, q_i_hi = _interval_mul(q_lo, q_hi, self.rem_lo, self.rem_hi)
-        i_j_lo, i_j_hi = _interval_mul(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
-        rem_lo, rem_hi = _interval_add(trunc_lo, trunc_hi, p_j_lo, p_j_hi)
-        rem_lo, rem_hi = _interval_add(rem_lo, rem_hi, q_i_lo, q_i_hi)
-        rem_lo, rem_hi = _interval_add(rem_lo, rem_hi, i_j_lo, i_j_hi)
+        p_lo, p_hi = self.poly.range_bound(self.domain_lo, self.domain_hi, method=range_bound_mode, profile=profile)
+        q_lo, q_hi = other.poly.range_bound(self.domain_lo, self.domain_hi, method=range_bound_mode, profile=profile)
+        with _profile_measure(profile, "tm_remainder_propagation"):
+            p_j_lo, p_j_hi = _interval_mul(p_lo, p_hi, other.rem_lo, other.rem_hi)
+            q_i_lo, q_i_hi = _interval_mul(q_lo, q_hi, self.rem_lo, self.rem_hi)
+            i_j_lo, i_j_hi = _interval_mul(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
+            rem_lo, rem_hi = _interval_add(trunc_lo, trunc_hi, p_j_lo, p_j_hi)
+            rem_lo, rem_hi = _interval_add(rem_lo, rem_hi, q_i_lo, q_i_hi)
+            rem_lo, rem_hi = _interval_add(rem_lo, rem_hi, i_j_lo, i_j_hi)
         return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi)
 
-    def range_bound(self) -> tuple[torch.Tensor, torch.Tensor]:
-        poly_lo, poly_hi = self.poly.range_bound(self.domain_lo, self.domain_hi)
+    def range_bound(
+        self,
+        method: str = "interval",
+        *,
+        profile: DenseTMProfiler | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        poly_lo, poly_hi = self.poly.range_bound(self.domain_lo, self.domain_hi, method=method, profile=profile)
         return _interval_add(poly_lo, poly_hi, self.rem_lo, self.rem_hi)
 
     def recenter_rescale(self) -> "BatchedTaylorModel":
@@ -629,20 +849,71 @@ class BatchedTaylorModel:
             first.domain_hi,
         )
 
-    def vanderpol_rhs(self) -> "BatchedTaylorModel":
+    def vanderpol_rhs(
+        self,
+        *,
+        dropped_merge_mode: str = "termwise",
+        range_bound_mode: str = "interval",
+        profile: DenseTMProfiler | None = None,
+    ) -> "BatchedTaylorModel":
         if self.poly.out_dim != 2:
             raise ValueError("Van der Pol RHS requires out_dim=2")
+        with _profile_measure(profile, "rhs_construction"):
+            x = self.component(0)
+            y = self.component(1)
+            x_sq = x.mul_trunc(
+                x,
+                dropped_merge_mode=dropped_merge_mode,
+                range_bound_mode=range_bound_mode,
+                profile=profile,
+            )
+            x_sq_y = x_sq.mul_trunc(
+                y,
+                dropped_merge_mode=dropped_merge_mode,
+                range_bound_mode=range_bound_mode,
+                profile=profile,
+            )
+            return BatchedTaylorModel.concat([y, y.sub(x).sub(x_sq_y)])
+
+    def controlled_rhs(self, control: "BatchedTaylorModel") -> "BatchedTaylorModel":
+        if self.poly.out_dim != 2 or control.poly.out_dim != 1:
+            raise ValueError("controlled RHS requires state out_dim=2 and control out_dim=1")
+        self._check_domain(control)
         x = self.component(0)
         y = self.component(1)
-        x_sq_y = x.mul_trunc(x).mul_trunc(y)
-        return BatchedTaylorModel.concat([y, y.sub(x).sub(x_sq_y)])
+        return BatchedTaylorModel.concat([y, control.sub(x).sub(y.scale(0.1))])
 
-    def fixed_picard_step_vdp(self, h: float, order: int | None = None) -> "BatchedTaylorModel":
+    def fixed_euler_tm_step_vdp(
+        self,
+        h: float,
+        order: int | None = None,
+        *,
+        dropped_merge_mode: str = "termwise",
+        range_bound_mode: str = "interval",
+        profile: DenseTMProfiler | None = None,
+    ) -> "BatchedTaylorModel":
         _ = order
-        return self.add(self.vanderpol_rhs().scale(float(h)))
+        rhs = self.vanderpol_rhs(
+            dropped_merge_mode=dropped_merge_mode,
+            range_bound_mode=range_bound_mode,
+            profile=profile,
+        )
+        return self.add(rhs.scale(float(h)))
 
-    def one_fixed_tm_step_vdp(self, h: float, order: int | None = None) -> "BatchedTaylorModel":
-        return self.fixed_picard_step_vdp(h, order=order)
+    def fixed_euler_tm_step_controlled(
+        self,
+        control: "BatchedTaylorModel",
+        h: float,
+        order: int | None = None,
+    ) -> "BatchedTaylorModel":
+        _ = order
+        return self.add(self.controlled_rhs(control).scale(float(h)))
+
+    def fixed_picard_step_vdp(self, h: float, order: int | None = None, **kwargs: Any) -> "BatchedTaylorModel":
+        return self.fixed_euler_tm_step_vdp(h, order=order, **kwargs)
+
+    def one_fixed_tm_step_vdp(self, h: float, order: int | None = None, **kwargs: Any) -> "BatchedTaylorModel":
+        return self.fixed_euler_tm_step_vdp(h, order=order, **kwargs)
 
     __add__ = add
     __sub__ = sub
@@ -653,4 +924,5 @@ __all__ = [
     "BatchedMonomialBasis",
     "BatchedPolynomial",
     "BatchedTaylorModel",
+    "DenseTMProfiler",
 ]
