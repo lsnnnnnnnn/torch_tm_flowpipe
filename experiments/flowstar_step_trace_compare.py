@@ -105,6 +105,18 @@ LIFECYCLE_FIELDS = [
     "target_remainder_x_hi",
     "target_remainder_y_lo",
     "target_remainder_y_hi",
+    "polynomial_range_x_lo",
+    "polynomial_range_x_hi",
+    "polynomial_range_y_lo",
+    "polynomial_range_y_hi",
+    "ordinary_remainder_x_lo",
+    "ordinary_remainder_x_hi",
+    "ordinary_remainder_y_lo",
+    "ordinary_remainder_y_hi",
+    "raw_ctrunc_residual_x_lo",
+    "raw_ctrunc_residual_x_hi",
+    "raw_ctrunc_residual_y_lo",
+    "raw_ctrunc_residual_y_hi",
     "picard_no_remainder_residual_x_lo",
     "picard_no_remainder_residual_x_hi",
     "picard_no_remainder_residual_y_lo",
@@ -113,6 +125,14 @@ LIFECYCLE_FIELDS = [
     "picard_ctrunc_raw_residual_x_hi",
     "picard_ctrunc_raw_residual_y_lo",
     "picard_ctrunc_raw_residual_y_hi",
+    "cutoff_poly_diff_x_lo",
+    "cutoff_poly_diff_x_hi",
+    "cutoff_poly_diff_y_lo",
+    "cutoff_poly_diff_y_hi",
+    "cutoff_polynomial_difference_x_lo",
+    "cutoff_polynomial_difference_x_hi",
+    "cutoff_polynomial_difference_y_lo",
+    "cutoff_polynomial_difference_y_hi",
     "cutoff_polynomial_difference_x_width",
     "cutoff_polynomial_difference_y_width",
     "post_cutoff_residual_x_lo",
@@ -472,6 +492,12 @@ def _fill_lifecycle_aliases(row: dict[str, Any]) -> None:
                 (f"target_remainder_{dim}_{side}", f"target_remainder_{side}_{dim}"),
                 (f"post_cutoff_residual_{dim}_{side}", f"picard_ctrunc_normal_residual_{side}_{dim}"),
                 (f"picard_no_remainder_residual_{dim}_{side}", f"ordinary_residual_range_{side}_{dim}"),
+                (f"ordinary_remainder_{dim}_{side}", f"ordinary_residual_range_{side}_{dim}"),
+                (f"raw_ctrunc_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
+                (f"picard_ctrunc_raw_residual_{dim}_{side}", f"raw_ctrunc_residual_{side}_{dim}"),
+                (f"cutoff_poly_diff_{dim}_{side}", f"poly_diff_range_{side}_{dim}"),
+                (f"cutoff_polynomial_difference_{dim}_{side}", f"poly_diff_range_{side}_{dim}"),
+                (f"polynomial_range_{dim}_{side}", f"polynomial_range_{side}_{dim}"),
             ]
             for target, source in aliases:
                 if row.get(target) in (None, "") and row.get(source) not in (None, ""):
@@ -732,6 +758,7 @@ def _common_torch_row(
     _put_lifecycle_bounds(row, "reset_box_after_center_scale", reset_box_after_center_scale_boxes)
     _put_lifecycle_bounds(row, "torch_full_step_validation_candidate", full_step_validation_candidate_boxes)
     _put_lifecycle_bounds(row, "torch_tau_h_endpoint", tau_h_endpoint_boxes)
+    _put_lifecycle_bounds_from_row(row, "polynomial_range", validation, "polynomial_range")
 
     _put_widths(row, "tmv_pre_range", validation, "candidate_segment")
     _put_widths(row, "final_flowpipe", validation, "candidate_final")
@@ -739,9 +766,11 @@ def _common_torch_row(
     if "ordinary_residual_range_width_sum" in validation:
         _put_widths(row, "picard_no_remainder_residual", validation, "ordinary_residual_range")
         _put_lifecycle_bounds_from_row(row, "picard_no_remainder_residual", validation, "ordinary_residual_range")
+        _put_lifecycle_bounds_from_row(row, "ordinary_remainder", validation, "ordinary_residual_range")
     else:
         _put_widths(row, "picard_no_remainder_residual", validation, "residual")
         _put_lifecycle_bounds_from_row(row, "picard_no_remainder_residual", validation, "residual")
+        _put_lifecycle_bounds_from_row(row, "ordinary_remainder", validation, "residual")
 
     for suffix in ("x", "y"):
         row[f"target_remainder_width_{suffix}"] = 2.0 * target_radius
@@ -757,10 +786,14 @@ def _common_torch_row(
     else:
         _put_widths(row, "picard_ctrunc_normal_residual", validation, "residual")
         _put_bounds(row, "picard_ctrunc_normal_residual", validation, "residual")
+    _put_lifecycle_bounds_from_row(row, "raw_ctrunc_residual", validation, "raw_ctrunc_residual")
+    _put_lifecycle_bounds_from_row(row, "picard_ctrunc_raw_residual", validation, "raw_ctrunc_residual")
     _put_bounds(row, "residual", validation, "residual")
 
     if "poly_diff_range_width_sum" in validation:
         _put_widths(row, "cutoff_polynomial_difference", validation, "poly_diff_range")
+        _put_lifecycle_bounds_from_row(row, "cutoff_poly_diff", validation, "poly_diff_range")
+        _put_lifecycle_bounds_from_row(row, "cutoff_polynomial_difference", validation, "poly_diff_range")
     elif normal_stats:
         _put_widths(row, "cutoff_polynomial_difference", normal_stats, "insertion_cutoff")
     else:
@@ -1626,7 +1659,7 @@ def write_report(
     causal = first_attempt_status or first_attempt_numeric
     if first_attempt_status:
         executive = "First causal divergence: adaptive acceptance / residual validation."
-        recommendation = "First align same-source tube/endpoint objects: Flow* full-step tmvTmp tube vs PyTorch full-step validation-candidate tube; and Flow* tau=h endpoint vs PyTorch tau=h endpoint."
+        recommendation = "Expose and compare polynomial/remainder/raw-ctrunc/no-remainder decomposition."
     elif first_forced_numeric:
         executive = f"First forced-h numeric divergence: {first_forced_numeric.get('first_numeric_channel_divergence')}."
         recommendation = "Investigate Flow* right-map/preconditioning/source-order semantics."

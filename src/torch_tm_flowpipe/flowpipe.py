@@ -1409,7 +1409,9 @@ def _append_validation_diagnostic(
         except Exception:
             pass
         try:
-            _add_width_metrics(row, "polynomial_range", _polynomial_range_boxes(candidate))
+            polynomial_boxes = _polynomial_range_boxes(candidate)
+            _add_width_metrics(row, "polynomial_range", polynomial_boxes)
+            _add_interval_bounds(row, "polynomial_range", polynomial_boxes)
         except Exception:
             pass
     _add_width_metrics(row, "residual", residual_boxes)
@@ -2191,13 +2193,16 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
                 u_tms,
                 cutoff_threshold=cutoff_threshold,
             )
+            raw_ctrunc_remainders: list[Interval] = []
             poly_diff_ranges: list[Interval] = []
             tmp_remainders: list[Interval] = []
             for tmp_i, cand_i in zip(tmp, candidate):
+                raw_remainder = tmp_i.remainder.inflate(validation_eps)
+                raw_ctrunc_remainders.append(raw_remainder)
                 diff_poly = tmp_i.polynomial - cand_i.polynomial
                 diff_range = _poly_interval_normal(diff_poly, domain, tau_index).inflate(validation_eps)
                 poly_diff_ranges.append(diff_range)
-                tmp_remainders.append((tmp_i.remainder + diff_range).inflate(validation_eps))
+                tmp_remainders.append((raw_remainder + diff_range).inflate(validation_eps))
         except Exception as exc:
             message = f"validation exception: {exc}"
             extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
@@ -2237,6 +2242,7 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
         extra = {
             **diag_extra,
             **_interval_list_stats("tmp_remainder", tmp_remainders),
+            **_interval_list_stats("raw_ctrunc_residual", raw_ctrunc_remainders),
             **_interval_list_stats("poly_diff_range", poly_diff_ranges),
             **_interval_list_stats("ordinary_residual_range", ordinary_residual),
             **_interval_list_stats("normal_eval_range", poly_diff_ranges),

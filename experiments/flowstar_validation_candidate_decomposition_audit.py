@@ -165,6 +165,10 @@ def _has_bounds(row: Mapping[str, Any], prefix: str) -> bool:
     return all(_bounds(row, prefix, dim)[side] is not None for dim in ("x", "y") for side in (0, 1))
 
 
+def _has_component_endpoint(row: Mapping[str, Any], prefix: str) -> bool:
+    return _has_bounds(row, prefix)
+
+
 def _source_full_step_prefix(source: str) -> str:
     if source == "flowstar":
         return "flowstar_full_step_tube"
@@ -434,6 +438,30 @@ def _component_status(rows: list[Mapping[str, Any]], prefix: str, *, tolerance: 
     return "same" if saw_known else "unknown"
 
 
+def _component_y_hi_delta(rows: list[Mapping[str, Any]], prefix: str) -> float | None:
+    flow = _row_for(rows, "flowstar")
+    torch = _primary_torch(rows)
+    return _interval_delta(torch, flow, prefix, "y", "hi")
+
+
+def _matching_y_hi_component(rows: list[Mapping[str, Any]], target_delta: float | None, *, tolerance: float = GAP_MATCH_TOL) -> str:
+    if target_delta is None:
+        return "unknown"
+    for prefix, label in (
+        ("polynomial_range", "polynomial_range"),
+        ("ordinary_remainder", "ordinary_remainder"),
+        ("raw_ctrunc_residual", "raw_ctrunc_residual"),
+        ("cutoff_poly_diff", "cutoff_poly_diff"),
+        ("post_cutoff_residual", "post_cutoff_residual"),
+    ):
+        delta = _component_y_hi_delta(rows, prefix)
+        if delta is None:
+            continue
+        if abs(delta - target_delta) <= tolerance:
+            return label
+    return "unknown"
+
+
 def _component_missing(rows: list[Mapping[str, Any]], prefix: str) -> list[str]:
     missing: list[str] = []
     for row in rows:
@@ -492,16 +520,16 @@ def summarize(ledger: list[dict[str, Any]]) -> dict[str, Any]:
     flowstar_no_remainder_missing = any(flow.get(f"ordinary_remainder_{dim}_{side}") in (None, "") for dim in ("x", "y") for side in ("lo", "hi"))
     missing_fields = sorted({field for prefix in COMPONENT_PREFIXES for field in _component_missing(ledger, prefix)})
 
-    if _component_status(ledger, "post_cutoff_residual") == "differs":
-        exposed_component = "post_cutoff_residual"
-    elif _component_status(ledger, "raw_ctrunc_residual") == "differs":
-        exposed_component = "raw_ctrunc_residual"
-    elif _component_status(ledger, "ordinary_remainder") == "differs":
-        exposed_component = "ordinary_remainder"
-    elif polynomial_status == "differs":
-        exposed_component = "polynomial_range"
-    else:
-        exposed_component = "unknown"
+    exposed_component = _matching_y_hi_component(ledger, post_cutoff_y_hi_delta)
+    if exposed_component == "unknown":
+        if _component_status(ledger, "post_cutoff_residual") == "differs":
+            exposed_component = "post_cutoff_residual"
+        elif _component_status(ledger, "raw_ctrunc_residual") == "differs":
+            exposed_component = "raw_ctrunc_residual"
+        elif _component_status(ledger, "ordinary_remainder") == "differs":
+            exposed_component = "ordinary_remainder"
+        elif polynomial_status == "differs":
+            exposed_component = "polynomial_range"
 
     return {
         "verdict": verdict,
@@ -521,9 +549,8 @@ def summarize(ledger: list[dict[str, Any]]) -> dict[str, Any]:
         "flowstar_raw_no_remainder_still_missing": "true" if flowstar_no_remainder_missing else "false",
         "missing_fields": missing_fields,
         "next_fields_to_expose": (
-            "flowstar ordinary_remainder/picard_no_remainder_residual endpoints; "
-            "torch raw_ctrunc_residual/Picard_ctrunc_raw endpoints; "
-            "full-step polynomial_range endpoints for both sources"
+            "any still-blank polynomial_range, ordinary_remainder/picard_no_remainder, "
+            "raw_ctrunc_residual, or cutoff_poly_diff endpoints for the first differing component"
         ),
     }
 
@@ -537,6 +564,11 @@ def _report(out_dir: Path, ledger: list[dict[str, Any]], summary: Mapping[str, A
     torch = _primary_torch(ledger)
     missing_fields = summary.get("missing_fields") or []
     missing_text = "; ".join(str(field) for field in missing_fields) if missing_fields else "none"
+    polynomial_range_note = (
+        f"- Polynomial range endpoints are exposed in the current traces; component status is `{summary.get('polynomial_range_component', 'unknown')}`."
+        if _has_component_endpoint(flow, "polynomial_range") and _has_component_endpoint(torch, "polynomial_range")
+        else "- Polynomial range endpoints are blank in at least one current trace, so polynomial-vs-remainder width placement is not fully inferred."
+    )
     lines = [
         "# Flow* Validation Candidate Decomposition Audit",
         "",
@@ -600,7 +632,7 @@ def _report(out_dir: Path, ledger: list[dict[str, Any]], summary: Mapping[str, A
             f"- Flow* y margin to target is `{_format(flow.get('residual_y_hi_margin_to_target'))}`; PyTorch y margin to target is `{_format(torch.get('residual_y_hi_margin_to_target'))}`.",
             "- The exposed Flow* raw ctrunc and post-cutoff residuals differ only by the recorded cutoff width on this row.",
             "- The exposed PyTorch ordinary no-remainder and post-cutoff residuals differ only by the recorded cutoff width on this row.",
-            "- Polynomial range endpoints are blank in the current traces, so polynomial-vs-remainder width placement is not inferred.",
+            polynomial_range_note,
             "- Blank component endpoint columns mean unknown, not zero.",
             f"- Missing component fields: {missing_text}.",
         ]

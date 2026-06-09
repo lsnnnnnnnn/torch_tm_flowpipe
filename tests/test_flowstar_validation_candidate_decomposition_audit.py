@@ -97,6 +97,21 @@ def test_width_close_full_step_residual_fail_reports_decomposition_mismatch():
     assert summary["acceptance_residual_gap_equals_full_step_y_hi_gap"] == "true"
 
 
+def test_present_component_endpoints_explain_y_hi_gap():
+    flow = _audit_row("flowstar", status="rejected", full_y=("0", "1"), residual_y_hi="0.000108")
+    noqueue = _audit_row("torch_noqueue", status="accepted", full_y=("0", "0.99995"), residual_y_hi="0.000058")
+    v2 = _audit_row("torch_v2", status="accepted", full_y=("0", "0.99995"), residual_y_hi="0.000058")
+    _put_box(flow, "polynomial_range", y=("0", "0.500000"))
+    _put_box(noqueue, "polynomial_range", y=("0", "0.499950"))
+    _put_box(v2, "polynomial_range", y=("0", "0.499950"))
+
+    ledger = audit.build_ledger([flow], [noqueue], [v2], t=0.0, h=0.025)
+    summary = audit.summarize(ledger)
+
+    assert summary["exposed_gap_component"] == "polynomial_range"
+    assert summary["polynomial_range_component"] == "differs"
+
+
 def _same_source_row(source: str, *, old_y_hi: str, full_y_hi: str, tau_y_hi: str) -> dict[str, object]:
     row: dict[str, object] = {
         "trace_source": source,
@@ -175,3 +190,35 @@ def test_cli_writes_ledger_and_report(tmp_path):
 
     assert (out_dir / "validation_candidate_decomposition_ledger.csv").exists()
     assert (out_dir / "validation_candidate_decomposition_report.md").exists()
+
+
+def test_checked_in_trace_headers_expose_decomposition_fields():
+    traces = (
+        ROOT / "outputs" / "flowstar_step_trace_compare" / "flowstar_trace.csv",
+        ROOT / "outputs" / "flowstar_step_trace_compare" / "torch_noqueue_trace.csv",
+        ROOT / "outputs" / "flowstar_step_trace_compare" / "torch_v2_trace.csv",
+    )
+    required_fields = (
+        "polynomial_range_x_lo",
+        "polynomial_range_y_hi",
+        "ordinary_remainder_x_lo",
+        "raw_ctrunc_residual_y_hi",
+        "cutoff_poly_diff_y_hi",
+        "post_cutoff_residual_y_hi",
+    )
+
+    for trace in traces:
+        with trace.open(newline="", encoding="utf-8") as handle:
+            fieldnames = csv.DictReader(handle).fieldnames or []
+        for field in required_fields:
+            assert field in fieldnames
+
+
+def test_docs_and_outputs_recommend_decomposition_not_stale_alignment():
+    docs = (ROOT / "docs" / "flowstar_step_trace_divergence_report.md").read_text(encoding="utf-8")
+    output = (ROOT / "outputs" / "flowstar_step_trace_compare" / "trace_divergence_report.md").read_text(encoding="utf-8")
+
+    assert "First align same-source tube/endpoint objects" not in docs
+    assert "First align same-source tube/endpoint objects" not in output
+    assert "Expose and compare polynomial/remainder/raw-ctrunc/no-remainder decomposition" in docs
+    assert "Expose and compare polynomial/remainder/raw-ctrunc/no-remainder decomposition" in output

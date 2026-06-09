@@ -72,6 +72,18 @@ const vector<string> kHeaders = {
     "target_remainder_x_hi",
     "target_remainder_y_lo",
     "target_remainder_y_hi",
+    "polynomial_range_x_lo",
+    "polynomial_range_x_hi",
+    "polynomial_range_y_lo",
+    "polynomial_range_y_hi",
+    "ordinary_remainder_x_lo",
+    "ordinary_remainder_x_hi",
+    "ordinary_remainder_y_lo",
+    "ordinary_remainder_y_hi",
+    "raw_ctrunc_residual_x_lo",
+    "raw_ctrunc_residual_x_hi",
+    "raw_ctrunc_residual_y_lo",
+    "raw_ctrunc_residual_y_hi",
     "picard_no_remainder_residual_x_lo",
     "picard_no_remainder_residual_x_hi",
     "picard_no_remainder_residual_y_lo",
@@ -80,6 +92,14 @@ const vector<string> kHeaders = {
     "picard_ctrunc_raw_residual_x_hi",
     "picard_ctrunc_raw_residual_y_lo",
     "picard_ctrunc_raw_residual_y_hi",
+    "cutoff_poly_diff_x_lo",
+    "cutoff_poly_diff_x_hi",
+    "cutoff_poly_diff_y_lo",
+    "cutoff_poly_diff_y_hi",
+    "cutoff_polynomial_difference_x_lo",
+    "cutoff_polynomial_difference_x_hi",
+    "cutoff_polynomial_difference_y_lo",
+    "cutoff_polynomial_difference_y_hi",
     "cutoff_polynomial_difference_x_width",
     "cutoff_polynomial_difference_y_width",
     "post_cutoff_residual_x_lo",
@@ -710,6 +730,8 @@ int traced_advance_adaptive_symbolic(
         {
             raw_ctrunc_remainder.push_back(tmvTmp.tms[i].remainder);
         }
+        vector<Interval> validation_polynomial_range;
+        tmvTmp.polyRangeNormal(validation_polynomial_range, tm_setting.step_exp_table);
 
         if (!have_poly_differences)
         {
@@ -813,11 +835,16 @@ int traced_advance_adaptive_symbolic(
         set_lifecycle_bounds(row, "reset_box_after_center_scale", new_x0_range);
         set_target(row, target);
         set_widths(row, "target_check", target);
+        set_lifecycle_bounds(row, "polynomial_range", validation_polynomial_range);
+        set_widths(row, "polynomial_range", validation_polynomial_range);
         set_widths(row, "ordinary_step_remainder", picard_no_remainder_range);
+        set_lifecycle_bounds(row, "raw_ctrunc_residual", raw_ctrunc_remainder);
         set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
         set_widths(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_bounds(row, "picard_ctrunc_normal_residual", ctrunc_remainder);
         set_lifecycle_bounds(row, "post_cutoff_residual", ctrunc_remainder);
+        set_lifecycle_bounds(row, "cutoff_poly_diff", intDifferences);
+        set_lifecycle_bounds(row, "cutoff_polynomial_difference", intDifferences);
         set_widths(row, "cutoff_polynomial_difference", intDifferences);
         set_lifecycle_widths(row, "cutoff_polynomial_difference", intDifferences);
         set_value(row, "symbolic_J_size", format_size(symbolic_remainder.J.size()));
