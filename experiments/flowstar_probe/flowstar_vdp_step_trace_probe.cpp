@@ -86,6 +86,46 @@ const vector<string> kHeaders = {
     "post_cutoff_residual_x_hi",
     "post_cutoff_residual_y_lo",
     "post_cutoff_residual_y_hi",
+    "flowstar_full_step_tube_source_object",
+    "flowstar_full_step_tube_domain_semantics",
+    "flowstar_full_step_tube_x_lo",
+    "flowstar_full_step_tube_x_hi",
+    "flowstar_full_step_tube_y_lo",
+    "flowstar_full_step_tube_y_hi",
+    "flowstar_full_step_tube_includes_cutoff_poly_diff",
+    "flowstar_full_step_tube_includes_target_remainder",
+    "flowstar_full_step_tube_includes_ordinary_remainder",
+    "flowstar_full_step_tube_includes_symbolic_output_width",
+    "flowstar_tau_h_endpoint_source_object",
+    "flowstar_tau_h_endpoint_domain_semantics",
+    "flowstar_tau_h_endpoint_x_lo",
+    "flowstar_tau_h_endpoint_x_hi",
+    "flowstar_tau_h_endpoint_y_lo",
+    "flowstar_tau_h_endpoint_y_hi",
+    "flowstar_tau_h_endpoint_includes_cutoff_poly_diff",
+    "flowstar_tau_h_endpoint_includes_target_remainder",
+    "flowstar_tau_h_endpoint_includes_ordinary_remainder",
+    "flowstar_tau_h_endpoint_includes_symbolic_output_width",
+    "torch_full_step_validation_candidate_source_object",
+    "torch_full_step_validation_candidate_domain_semantics",
+    "torch_full_step_validation_candidate_x_lo",
+    "torch_full_step_validation_candidate_x_hi",
+    "torch_full_step_validation_candidate_y_lo",
+    "torch_full_step_validation_candidate_y_hi",
+    "torch_full_step_validation_candidate_includes_cutoff_poly_diff",
+    "torch_full_step_validation_candidate_includes_target_remainder",
+    "torch_full_step_validation_candidate_includes_ordinary_remainder",
+    "torch_full_step_validation_candidate_includes_symbolic_output_width",
+    "torch_tau_h_endpoint_source_object",
+    "torch_tau_h_endpoint_domain_semantics",
+    "torch_tau_h_endpoint_x_lo",
+    "torch_tau_h_endpoint_x_hi",
+    "torch_tau_h_endpoint_y_lo",
+    "torch_tau_h_endpoint_y_hi",
+    "torch_tau_h_endpoint_includes_cutoff_poly_diff",
+    "torch_tau_h_endpoint_includes_target_remainder",
+    "torch_tau_h_endpoint_includes_ordinary_remainder",
+    "torch_tau_h_endpoint_includes_symbolic_output_width",
     "target_check_width_x",
     "target_check_width_y",
     "target_check_width_sum",
@@ -701,6 +741,8 @@ int traced_advance_adaptive_symbolic(
 
         vector<Interval> endpoint_before_center_range;
         tmvTmp.intEvalNormal(endpoint_before_center_range, tm_setting.step_exp_table);
+        vector<Interval> tau_h_endpoint_range;
+        tmvTmp.intEvalNormal(tau_h_endpoint_range, tm_setting.step_end_exp_table);
         vector<Interval> new_x0_range;
         new_x0.intEvalNormal(new_x0_range, tm_setting.step_end_exp_table);
 
@@ -719,6 +761,20 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "endpoint_pre_center", endpoint_before_center_range);
         set_lifecycle_bounds(row, "pre_step_box", new_x0_range);
         set_lifecycle_bounds(row, "endpoint_box_before_center", endpoint_before_center_range);
+        set_lifecycle_bounds(row, "flowstar_full_step_tube", endpoint_before_center_range);
+        set_lifecycle_bounds(row, "flowstar_tau_h_endpoint", tau_h_endpoint_range);
+        set_value(row, "flowstar_full_step_tube_source_object", "Picard_ctrunc_normal_post_poly_diff_validation_candidate");
+        set_value(row, "flowstar_full_step_tube_domain_semantics", "physical_tube_over_full_step_tau_domain_before_tau_h_substitution");
+        set_value(row, "flowstar_full_step_tube_includes_cutoff_poly_diff", true);
+        set_value(row, "flowstar_full_step_tube_includes_target_remainder", false);
+        set_value(row, "flowstar_full_step_tube_includes_ordinary_remainder", false);
+        set_value(row, "flowstar_full_step_tube_includes_symbolic_output_width", false);
+        set_value(row, "flowstar_tau_h_endpoint_source_object", "tau_h_endpoint_of_Picard_ctrunc_normal_post_poly_diff_validation_candidate");
+        set_value(row, "flowstar_tau_h_endpoint_domain_semantics", "physical_endpoint_tau_h_after_tau_substitution_tau_dropped");
+        set_value(row, "flowstar_tau_h_endpoint_includes_cutoff_poly_diff", true);
+        set_value(row, "flowstar_tau_h_endpoint_includes_target_remainder", false);
+        set_value(row, "flowstar_tau_h_endpoint_includes_ordinary_remainder", false);
+        set_value(row, "flowstar_tau_h_endpoint_includes_symbolic_output_width", false);
         set_value(row, "endpoint_before_center_source_object", "tmvTmp.Picard_ctrunc_normal_post_poly_diff");
         set_value(row, "endpoint_before_center_domain_semantics", "physical_tube_over_step_exp_table_before_next_center_extraction");
         set_value(row, "endpoint_before_center_includes_target_remainder", false);

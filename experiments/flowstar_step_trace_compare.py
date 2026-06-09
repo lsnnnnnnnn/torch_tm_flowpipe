@@ -26,6 +26,49 @@ from torch_tm_flowpipe.ode_examples import van_der_pol_ode
 PROBE_CPP = ROOT / "experiments" / "flowstar_probe" / "flowstar_vdp_step_trace_probe.cpp"
 DEFAULT_OUT = ROOT / "outputs" / "flowstar_step_trace_compare"
 
+SAME_SOURCE_FIELDS = [
+    "flowstar_full_step_tube_source_object",
+    "flowstar_full_step_tube_domain_semantics",
+    "flowstar_full_step_tube_x_lo",
+    "flowstar_full_step_tube_x_hi",
+    "flowstar_full_step_tube_y_lo",
+    "flowstar_full_step_tube_y_hi",
+    "flowstar_full_step_tube_includes_cutoff_poly_diff",
+    "flowstar_full_step_tube_includes_target_remainder",
+    "flowstar_full_step_tube_includes_ordinary_remainder",
+    "flowstar_full_step_tube_includes_symbolic_output_width",
+    "flowstar_tau_h_endpoint_source_object",
+    "flowstar_tau_h_endpoint_domain_semantics",
+    "flowstar_tau_h_endpoint_x_lo",
+    "flowstar_tau_h_endpoint_x_hi",
+    "flowstar_tau_h_endpoint_y_lo",
+    "flowstar_tau_h_endpoint_y_hi",
+    "flowstar_tau_h_endpoint_includes_cutoff_poly_diff",
+    "flowstar_tau_h_endpoint_includes_target_remainder",
+    "flowstar_tau_h_endpoint_includes_ordinary_remainder",
+    "flowstar_tau_h_endpoint_includes_symbolic_output_width",
+    "torch_full_step_validation_candidate_source_object",
+    "torch_full_step_validation_candidate_domain_semantics",
+    "torch_full_step_validation_candidate_x_lo",
+    "torch_full_step_validation_candidate_x_hi",
+    "torch_full_step_validation_candidate_y_lo",
+    "torch_full_step_validation_candidate_y_hi",
+    "torch_full_step_validation_candidate_includes_cutoff_poly_diff",
+    "torch_full_step_validation_candidate_includes_target_remainder",
+    "torch_full_step_validation_candidate_includes_ordinary_remainder",
+    "torch_full_step_validation_candidate_includes_symbolic_output_width",
+    "torch_tau_h_endpoint_source_object",
+    "torch_tau_h_endpoint_domain_semantics",
+    "torch_tau_h_endpoint_x_lo",
+    "torch_tau_h_endpoint_x_hi",
+    "torch_tau_h_endpoint_y_lo",
+    "torch_tau_h_endpoint_y_hi",
+    "torch_tau_h_endpoint_includes_cutoff_poly_diff",
+    "torch_tau_h_endpoint_includes_target_remainder",
+    "torch_tau_h_endpoint_includes_ordinary_remainder",
+    "torch_tau_h_endpoint_includes_symbolic_output_width",
+]
+
 LIFECYCLE_FIELDS = [
     "pre_step_box_x_lo",
     "pre_step_box_x_hi",
@@ -76,6 +119,7 @@ LIFECYCLE_FIELDS = [
     "post_cutoff_residual_x_hi",
     "post_cutoff_residual_y_lo",
     "post_cutoff_residual_y_hi",
+    *SAME_SOURCE_FIELDS,
 ]
 
 TRACE_FIELDS = [
@@ -657,6 +701,8 @@ def _common_torch_row(
     pre_step_boxes: Sequence[Interval] | None = None,
     endpoint_box_before_center_boxes: Sequence[Interval] | None = None,
     reset_box_after_center_scale_boxes: Sequence[Interval] | None = None,
+    full_step_validation_candidate_boxes: Sequence[Interval] | None = None,
+    tau_h_endpoint_boxes: Sequence[Interval] | None = None,
 ) -> dict[str, Any]:
     message = validation.get("validation_message", "") or validation.get("rejection_reason", "")
     row: dict[str, Any] = {
@@ -684,6 +730,8 @@ def _common_torch_row(
     _put_lifecycle_bounds(row, "pre_step_box", pre_step_boxes)
     _put_lifecycle_bounds(row, "endpoint_box_before_center", endpoint_box_before_center_boxes)
     _put_lifecycle_bounds(row, "reset_box_after_center_scale", reset_box_after_center_scale_boxes)
+    _put_lifecycle_bounds(row, "torch_full_step_validation_candidate", full_step_validation_candidate_boxes)
+    _put_lifecycle_bounds(row, "torch_tau_h_endpoint", tau_h_endpoint_boxes)
 
     _put_widths(row, "tmv_pre_range", validation, "candidate_segment")
     _put_widths(row, "final_flowpipe", validation, "candidate_final")
@@ -781,7 +829,8 @@ def _common_torch_row(
     row["endpoint_before_center_includes_target_remainder"] = "false"
     row["endpoint_before_center_includes_ordinary_remainder"] = "false"
     symbolic_output = _float(row.get("output_only_symbolic_width_sum"))
-    row["endpoint_before_center_includes_symbolic_output_width"] = "true" if symbolic_output is not None and symbolic_output > 0.0 else "false"
+    symbolic_output_present = symbolic_output is not None and symbolic_output > 1e-300
+    row["endpoint_before_center_includes_symbolic_output_width"] = "true" if symbolic_output_present else "false"
     row["endpoint_before_center_includes_cutoff_poly_diff"] = "true" if "tmp_remainder_width_sum" in validation else "unknown"
     row["endpoint_before_center_range_eval_method"] = "TMVector.range_box on seg.final_tm after substitute_const(tau=h).drop_variable(tau)"
     row["endpoint_before_center_polynomial_order"] = validation.get("order", "")
@@ -800,6 +849,25 @@ def _common_torch_row(
         "diagnostic label: endpoint_box_before_center is the accepted final segment range, "
         "not the normalized-insertion inserted_endpoint/right_map range"
     )
+
+    canonical_full_step_source = "Picard_ctrunc_normal_post_poly_diff_validation_candidate"
+    canonical_full_step_domain = "physical_tube_over_full_step_tau_domain_before_tau_h_substitution"
+    canonical_tau_h_source = "tau_h_endpoint_of_Picard_ctrunc_normal_post_poly_diff_validation_candidate"
+    canonical_tau_h_domain = "physical_endpoint_tau_h_after_tau_substitution_tau_dropped"
+    symbolic_output_flag = "true" if symbolic_output_present else "false"
+    cutoff_flag = "true" if "tmp_remainder_width_sum" in validation else "unknown"
+    row["torch_full_step_validation_candidate_source_object"] = canonical_full_step_source
+    row["torch_full_step_validation_candidate_domain_semantics"] = canonical_full_step_domain
+    row["torch_full_step_validation_candidate_includes_cutoff_poly_diff"] = cutoff_flag
+    row["torch_full_step_validation_candidate_includes_target_remainder"] = "false"
+    row["torch_full_step_validation_candidate_includes_ordinary_remainder"] = "false"
+    row["torch_full_step_validation_candidate_includes_symbolic_output_width"] = symbolic_output_flag
+    row["torch_tau_h_endpoint_source_object"] = canonical_tau_h_source
+    row["torch_tau_h_endpoint_domain_semantics"] = canonical_tau_h_domain
+    row["torch_tau_h_endpoint_includes_cutoff_poly_diff"] = cutoff_flag
+    row["torch_tau_h_endpoint_includes_target_remainder"] = "false"
+    row["torch_tau_h_endpoint_includes_ordinary_remainder"] = "false"
+    row["torch_tau_h_endpoint_includes_symbolic_output_width"] = symbolic_output_flag
 
     _put_lifecycle_bounds_from_row(row, "post_cutoff_residual", row, "picard_ctrunc_normal_residual")
     _fill_common_trace_aliases(row, trace_source=mode)
@@ -869,6 +937,7 @@ def generate_torch_trace(
         for attempt in sorted(grouped):
             validation = grouped[attempt]
             accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
+            full_step_boxes = _range_box(seg.tm) if accepted else None
             endpoint_boxes = _range_box(seg.final_tm) if accepted else None
             reset_boxes = _range_box(seg.reset_tm) if accepted else None
             row = _common_torch_row(
@@ -882,6 +951,8 @@ def generate_torch_trace(
                 pre_step_boxes=pre_step_boxes,
                 endpoint_box_before_center_boxes=endpoint_boxes,
                 reset_box_after_center_scale_boxes=reset_boxes,
+                full_step_validation_candidate_boxes=full_step_boxes,
+                tau_h_endpoint_boxes=endpoint_boxes,
             )
             row["attempt_global_index"] = len(trace_rows)
             h_value = _float(row.get("h_try"))
@@ -997,6 +1068,7 @@ def generate_torch_forced_h_trace(
         for attempt in sorted(grouped):
             validation = grouped[attempt]
             accepted = bool(seg.status == "validated" and attempt == accepted_attempt)
+            full_step_boxes = _range_box(seg.tm) if accepted else None
             endpoint_boxes = _range_box(seg.final_tm) if accepted else None
             reset_boxes = _range_box(seg.reset_tm) if accepted else None
             row = _common_torch_row(
@@ -1010,6 +1082,8 @@ def generate_torch_forced_h_trace(
                 pre_step_boxes=pre_step_boxes,
                 endpoint_box_before_center_boxes=endpoint_boxes,
                 reset_box_after_center_scale_boxes=reset_boxes,
+                full_step_validation_candidate_boxes=full_step_boxes,
+                tau_h_endpoint_boxes=endpoint_boxes,
             )
             row["attempt_global_index"] = len(trace_rows)
             row["h_after_if_rejected_or_next"] = h_forced
@@ -1552,7 +1626,7 @@ def write_report(
     causal = first_attempt_status or first_attempt_numeric
     if first_attempt_status:
         executive = "First causal divergence: adaptive acceptance / residual validation."
-        recommendation = "Fix PyTorch acceptance policy/target residual validation."
+        recommendation = "First align same-source tube/endpoint objects: Flow* full-step tmvTmp tube vs PyTorch full-step validation-candidate tube; and Flow* tau=h endpoint vs PyTorch tau=h endpoint."
     elif first_forced_numeric:
         executive = f"First forced-h numeric divergence: {first_forced_numeric.get('first_numeric_channel_divergence')}."
         recommendation = "Investigate Flow* right-map/preconditioning/source-order semantics."

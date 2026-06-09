@@ -51,7 +51,7 @@ This is a diagnostic probe, not a Flow* parity claim.
 
 ## Next recommendation
 
-- Fix PyTorch acceptance policy/target residual validation.
+- First align same-source tube/endpoint objects: Flow* full-step tmvTmp tube vs PyTorch full-step validation-candidate tube; and Flow* tau=h endpoint vs PyTorch tau=h endpoint.
 
 ## Output files
 
