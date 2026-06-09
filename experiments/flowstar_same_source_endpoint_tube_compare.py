@@ -349,23 +349,17 @@ def summarize(rows: list[dict[str, Any]], flow: Mapping[str, Any], noqueue: Mapp
         else:
             close_values[kind] = "false"
 
-    same_source_y_deltas = [
-        finite_float(row.get("y_hi_delta"))
-        for row in rows
-        if row.get("semantic_comparison_valid") == "true"
-    ]
-    same_source_y_deltas = [value for value in same_source_y_deltas if value is not None]
-    old_deltas = [
-        _previous_endpoint_y_hi_delta(flow, noqueue),
-        _previous_endpoint_y_hi_delta(flow, v2),
-    ]
-    old_deltas = [value for value in old_deltas if value is not None]
-    if not old_deltas or not same_source_y_deltas:
-        previous_gap_remains = "unknown"
-    elif max(abs(value) for value in same_source_y_deltas) <= TOLERANCE:
-        previous_gap_remains = "false"
+    previous_endpoint_before_center_y_hi_delta = _previous_endpoint_y_hi_delta(flow, noqueue)
+    same_source_full_step_y_hi_delta = finite_float(by_kind["full_step_tube"].get("y_hi_delta"))
+    same_source_tau_h_y_hi_delta = finite_float(by_kind["tau_h_endpoint"].get("y_hi_delta"))
+    if (
+        previous_endpoint_before_center_y_hi_delta is None
+        or same_source_full_step_y_hi_delta is None
+        or abs(same_source_full_step_y_hi_delta) <= 0.0
+    ):
+        previous_gap_reduced_factor = None
     else:
-        previous_gap_remains = "true"
+        previous_gap_reduced_factor = abs(previous_endpoint_before_center_y_hi_delta) / abs(same_source_full_step_y_hi_delta)
 
     missing: list[str] = []
     for row in rows:
@@ -393,10 +387,12 @@ def summarize(rows: list[dict[str, Any]], flow: Mapping[str, Any], noqueue: Mapp
         "full_step_close": close_values.get("full_step_tube", "unknown"),
         "tau_h_close": close_values.get("tau_h_endpoint", "unknown"),
         "first_same_source_divergence": first,
-        "previous_y_hi_gap_remains_under_same_source": previous_gap_remains,
+        "previous_endpoint_before_center_y_hi_delta": previous_endpoint_before_center_y_hi_delta,
+        "same_source_full_step_y_hi_delta": same_source_full_step_y_hi_delta,
+        "same_source_tau_h_y_hi_delta": same_source_tau_h_y_hi_delta,
+        "previous_gap_reduced_factor": previous_gap_reduced_factor,
         "likely_component_if_mismatch_remains": likely_component,
         "missing_fields": missing,
-        "previous_endpoint_y_hi_delta_noqueue": old_deltas[0] if old_deltas else None,
     }
 
 
@@ -448,9 +444,13 @@ def _report(out_dir: Path, rows: list[dict[str, Any]], summary: Mapping[str, Any
         f"- Full-step tube comparison semantically valid: `{summary.get('full_step_semantic_valid', 'unknown')}`.",
         f"- Tau=h endpoint comparison semantically valid: `{summary.get('tau_h_semantic_valid', 'unknown')}`.",
         f"- Which same-source object differs first: `{summary.get('first_same_source_divergence', 'unknown')}`.",
-        f"- Is the tau=h endpoint close: `{summary.get('tau_h_close', 'unknown')}`.",
-        f"- Is the full-step tube close: `{summary.get('full_step_close', 'unknown')}`.",
-        f"- Does the previous y_hi gap remain once source semantics match: `{summary.get('previous_y_hi_gap_remains_under_same_source', 'unknown')}`.",
+        f"- Does the tau=h endpoint match endpoint-wise at tolerance: `{summary.get('tau_h_close', 'unknown')}`.",
+        f"- Does the full-step tube match endpoint-wise at tolerance: `{summary.get('full_step_close', 'unknown')}`.",
+        f"- previous_endpoint_before_center_y_hi_delta: `{_format(summary.get('previous_endpoint_before_center_y_hi_delta'))}`.",
+        f"- same_source_full_step_y_hi_delta: `{_format(summary.get('same_source_full_step_y_hi_delta'))}`.",
+        f"- same_source_tau_h_y_hi_delta: `{_format(summary.get('same_source_tau_h_y_hi_delta'))}`.",
+        f"- previous_gap_reduced_factor: `{_format(summary.get('previous_gap_reduced_factor'))}`.",
+        "- The old large y_hi gap is mostly explained by source/stage mismatch; a smaller same-source y_hi gap remains and is acceptance-critical.",
         f"- Likely component if mismatch remains: {summary.get('likely_component_if_mismatch_remains', 'unknown')}.",
         f"- Missing fields: {missing_text}.",
         "",

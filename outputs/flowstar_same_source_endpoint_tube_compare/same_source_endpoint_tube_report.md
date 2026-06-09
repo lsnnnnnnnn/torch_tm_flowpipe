@@ -14,9 +14,13 @@ This is diagnostic-only and makes no solver change. It does not rerun h10, add q
 - Full-step tube comparison semantically valid: `true`.
 - Tau=h endpoint comparison semantically valid: `true`.
 - Which same-source object differs first: `full_step_tube:same_source_x_lo_divergence`.
-- Is the tau=h endpoint close: `false`.
-- Is the full-step tube close: `false`.
-- Does the previous y_hi gap remain once source semantics match: `true`.
+- Does the tau=h endpoint match endpoint-wise at tolerance: `false`.
+- Does the full-step tube match endpoint-wise at tolerance: `false`.
+- previous_endpoint_before_center_y_hi_delta: `-0.07195954851759101`.
+- same_source_full_step_y_hi_delta: `-4.9559137703436562e-05`.
+- same_source_tau_h_y_hi_delta: `-0.0021665797675911591`.
+- previous_gap_reduced_factor: `1451.9935546134643`.
+- The old large y_hi gap is mostly explained by source/stage mismatch; a smaller same-source y_hi gap remains and is acceptance-critical.
 - Likely component if mismatch remains: full-step validation candidate tube construction or range evaluation.
 - Missing fields: none.
 
