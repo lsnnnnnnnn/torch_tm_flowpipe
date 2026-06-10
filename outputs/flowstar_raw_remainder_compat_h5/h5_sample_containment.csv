@@ -1,0 +1,6 @@
+source,mode,sample_count,sample_containment_status,sample_violations,max_violation,checked_segments,notes
+flowstar,generated_flowstar_h5_reference,,not_applicable,,,149,reference segment boxes only; sample containment checked on PyTorch modes
+torch_existing_artifact,flowstar_style_o6_candidate8_output6_cutoff_insert,,not_run_existing_artifact,,,56,existing artifact comparison only
+torch,current_no_queue_default_policy,21,passed,0,0,135,"corners, center, and deterministic random samples checked against final-time endpoint boxes after each accepted segment"
+torch,raw_remainder_compat_default_policy,21,passed,0,0,180,"corners, center, and deterministic random samples checked against final-time endpoint boxes after each accepted segment"
+torch,raw_remainder_compat_flowstar_step_policy,21,passed,0,0,181,"corners, center, and deterministic random samples checked against final-time endpoint boxes after each accepted segment"
