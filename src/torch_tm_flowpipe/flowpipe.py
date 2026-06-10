@@ -2121,6 +2121,259 @@ def _picard_ctrunc_normal_partition_boxes(
     }
 
 
+class _FlowstarRawRemainderTraceTM:
+    """Internal Expression::evaluate_remainder-style tracer for compat mode."""
+
+    def __init__(
+        self,
+        tm: TaylorModel,
+        replay_remainder: Interval | None = None,
+        *,
+        order: int,
+        tau_index: int,
+        cutoff_threshold: float | None,
+    ):
+        self.tm = tm
+        self.replay_remainder = tm.remainder if replay_remainder is None else replay_remainder
+        self._order = int(order)
+        self._tau_index = int(tau_index)
+        self._cutoff_threshold = cutoff_threshold
+
+    @property
+    def domain(self) -> list[Interval]:
+        return list(self.tm.domain)
+
+    @property
+    def polynomial(self) -> Polynomial:
+        return self.tm.polynomial
+
+    @property
+    def remainder(self) -> Interval:
+        return self.replay_remainder
+
+    @property
+    def order(self) -> int:
+        return self._order
+
+    @property
+    def truncation_range_split(self) -> int | None:
+        return self.tm.truncation_range_split
+
+    def _wrap(self, tm: TaylorModel, replay_remainder: Interval) -> "_FlowstarRawRemainderTraceTM":
+        return _FlowstarRawRemainderTraceTM(
+            tm,
+            replay_remainder,
+            order=self._order,
+            tau_index=self._tau_index,
+            cutoff_threshold=self._cutoff_threshold,
+        )
+
+    def _coerce(self, other: Any) -> "_FlowstarRawRemainderTraceTM":
+        if isinstance(other, _FlowstarRawRemainderTraceTM):
+            return other
+        if isinstance(other, TaylorModel):
+            tm = TaylorModel(
+                other.polynomial,
+                other.remainder,
+                list(other.domain),
+                order=self._order,
+                truncation_range_split=other.truncation_range_split,
+            )
+            return self._wrap(tm, tm.remainder)
+        const = TaylorModel.constant(other, self.domain, order=self._order, truncation_range_split=self.truncation_range_split)
+        return self._wrap(const, const.remainder)
+
+    def __add__(self, other: Any) -> "_FlowstarRawRemainderTraceTM":
+        other = self._coerce(other)
+        tm = TaylorModel(
+            self.polynomial + other.polynomial,
+            self.replay_remainder + other.replay_remainder,
+            self.domain,
+            order=self._order,
+            truncation_range_split=self.truncation_range_split,
+        )
+        return self._wrap(tm, tm.remainder)
+
+    __radd__ = __add__
+
+    def __sub__(self, other: Any) -> "_FlowstarRawRemainderTraceTM":
+        other = self._coerce(other)
+        tm = TaylorModel(
+            self.polynomial - other.polynomial,
+            self.replay_remainder - other.replay_remainder,
+            self.domain,
+            order=self._order,
+            truncation_range_split=self.truncation_range_split,
+        )
+        return self._wrap(tm, tm.remainder)
+
+    def __rsub__(self, other: Any) -> "_FlowstarRawRemainderTraceTM":
+        return self._coerce(other) - self
+
+    def __neg__(self) -> "_FlowstarRawRemainderTraceTM":
+        tm = TaylorModel(
+            -self.polynomial,
+            -self.replay_remainder,
+            self.domain,
+            order=self._order,
+            truncation_range_split=self.truncation_range_split,
+        )
+        return self._wrap(tm, tm.remainder)
+
+    def __mul__(self, other: Any) -> "_FlowstarRawRemainderTraceTM":
+        other = self._coerce(other)
+        poly_product = self.polynomial * other.polynomial
+        kept, dropped = poly_product.truncate(self._order)
+        int_trunc = _poly_interval_normal(dropped, self.domain, self._tau_index)
+        kept, cutoff_range = _cutoff_polynomial_normal(
+            kept,
+            self.domain,
+            self._tau_index,
+            self._cutoff_threshold,
+        )
+        int_trunc = int_trunc + cutoff_range
+        left_poly_range = _poly_interval_normal(self.polynomial, self.domain, self._tau_index)
+        right_poly_range = _poly_interval_normal(other.polynomial, other.domain, self._tau_index)
+        replay = (
+            left_poly_range * other.replay_remainder
+            + right_poly_range * self.replay_remainder
+            + self.replay_remainder * other.replay_remainder
+            + int_trunc
+        )
+        tm = TaylorModel(
+            kept,
+            replay,
+            self.domain,
+            order=self._order,
+            truncation_range_split=self.truncation_range_split,
+        )
+        return self._wrap(tm, replay)
+
+    __rmul__ = __mul__
+
+    def pow_int(self, exponent: int) -> "_FlowstarRawRemainderTraceTM":
+        if exponent < 0:
+            raise ValueError("flowstar raw remainder compat only supports nonnegative integer powers")
+        out = self._coerce(1.0)
+        for _ in range(int(exponent)):
+            out = out * self
+        return out
+
+
+class _FlowstarRawRemainderTraceVector:
+    def __init__(self, models: Iterable[_FlowstarRawRemainderTraceTM]):
+        self.models = list(models)
+
+    def __len__(self) -> int:
+        return len(self.models)
+
+    def __iter__(self):
+        return iter(self.models)
+
+    def __getitem__(self, index: int) -> _FlowstarRawRemainderTraceTM:
+        return self.models[index]
+
+    @property
+    def domain(self) -> list[Interval]:
+        return self.models[0].domain if self.models else []
+
+    @property
+    def n_vars(self) -> int:
+        return len(self.domain)
+
+
+def _coerce_flowstar_trace_output(
+    value: Any,
+    exemplar: _FlowstarRawRemainderTraceTM,
+) -> _FlowstarRawRemainderTraceTM:
+    if isinstance(value, _FlowstarRawRemainderTraceTM):
+        return value
+    return exemplar._coerce(value)
+
+
+def _flowstar_raw_remainder_compat_boxes(
+    ode_fn: ODEFunction,
+    base_ext: TMVector,
+    candidate: TMVector,
+    tau_index: int,
+    order: int,
+    u_tms: TMVector | None,
+    *,
+    cutoff_threshold: float | None,
+    validation_eps: float,
+) -> dict[str, list[Interval]]:
+    rhs_order = max(int(order) - 1, 0)
+    trace_models = [
+        _FlowstarRawRemainderTraceTM(
+            TaylorModel(
+                model.polynomial,
+                model.remainder,
+                list(model.domain),
+                order=rhs_order,
+                truncation_range_split=model.truncation_range_split,
+            ),
+            model.remainder,
+            order=rhs_order,
+            tau_index=tau_index,
+            cutoff_threshold=cutoff_threshold,
+        )
+        for model in candidate
+    ]
+    trace_state = _FlowstarRawRemainderTraceVector(trace_models)
+    trace_controls = None
+    if u_tms is not None:
+        trace_controls = _FlowstarRawRemainderTraceVector(
+            _FlowstarRawRemainderTraceTM(
+                TaylorModel(
+                    model.polynomial,
+                    model.remainder,
+                    list(model.domain),
+                    order=rhs_order,
+                    truncation_range_split=model.truncation_range_split,
+                ),
+                model.remainder,
+                order=rhs_order,
+                tau_index=tau_index,
+                cutoff_threshold=cutoff_threshold,
+            )
+            for model in u_tms
+        )
+    try:
+        out = ode_fn(trace_state, trace_controls)
+    except TypeError:
+        out = ode_fn(trace_state)
+    raw_outputs = list(out) if not isinstance(out, TMVector) else list(out)
+    if len(raw_outputs) != len(candidate):
+        raise ValueError("flowstar raw remainder compat RHS dimension mismatch")
+    exemplar = trace_models[0]
+    rhs = [_coerce_flowstar_trace_output(value, exemplar) for value in raw_outputs]
+    time_step = candidate.domain[tau_index]
+    before_x0 = [(model.replay_remainder * time_step).inflate(validation_eps) for model in rhs]
+    after_x0 = [(base_i.remainder + rem).inflate(validation_eps) for base_i, rem in zip(base_ext, before_x0)]
+    return {
+        "flowstar_raw_remainder_compat_rhs_remainder": [model.replay_remainder for model in rhs],
+        "accumulated_remainder_before_x0_add": before_x0,
+        "accumulated_remainder_after_x0_add": after_x0,
+        "flowstar_raw_remainder_compat_raw_ctrunc_residual": after_x0,
+    }
+
+
+def _flowstar_raw_remainder_compat_check(
+    target_remainders: Sequence[Interval],
+    accumulated_before_x0_add: Sequence[Interval],
+    base_remainders: Sequence[Interval],
+    poly_diff_ranges: Sequence[Interval],
+    *,
+    validation_eps: float = 0.0,
+) -> tuple[list[Interval], list[bool]]:
+    check_remainders = [
+        (base + before + diff).inflate(validation_eps)
+        for target, before, base, diff in zip(target_remainders, accumulated_before_x0_add, base_remainders, poly_diff_ranges)
+    ]
+    subset = [target.contains_interval(rem) for target, rem in zip(target_remainders, check_remainders)]
+    return check_remainders, subset
+
+
 def _validate_picard_target_remainder_flowstar_ctrunc(
     ode_fn: ODEFunction,
     base_ext: TMVector,
@@ -2141,13 +2394,19 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
     symbolic_remainder: bool = False,
     max_symbolic_remainders: int = 0,
+    raw_remainder_mode: str = "",
 ) -> tuple[TMVector, str, int, str]:
     domain = candidate_poly.domain
     if len(base_ext) != len(candidate_poly):
         raise ValueError("base and candidate dimensions differ")
+    if raw_remainder_mode not in {"", "flowstar_compat"}:
+        raise ValueError("raw_remainder_mode must be empty or 'flowstar_compat'")
+    compat_mode = raw_remainder_mode == "flowstar_compat"
     target_remainders = [_symmetric_interval(target_remainder_radius, domain) for _ in candidate_poly]
     diag_extra = dict(diagnostics_context or {})
-    diag_extra.setdefault("validation_mode", "target_remainder_flowstar_ctrunc")
+    diag_extra.setdefault("validation_mode", "flowstar_raw_remainder_compat" if compat_mode else "target_remainder_flowstar_ctrunc")
+    diag_extra.setdefault("raw_remainder_mode", "flowstar_compat" if compat_mode else "")
+    diag_extra.setdefault("flowstar_raw_remainder_compat_enabled", compat_mode)
     diag_extra.setdefault("target_remainder_radius", abs(float(target_remainder_radius)))
     diag_extra.setdefault("target_remainder_width", _sum_interval_widths(target_remainders))
     diag_extra.setdefault("target_remainder_width_sum", _sum_interval_widths(target_remainders))
@@ -2264,6 +2523,27 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
                 poly_diff_ranges.append(diff_range)
                 tmp_remainders.append((raw_remainder + diff_range).inflate(validation_eps))
             raw_partition_boxes["raw_remainder_after_poly_diff"] = tmp_remainders
+            compat_boxes: dict[str, list[Interval]] = {}
+            compat_remainders: list[Interval] | None = None
+            compat_subset_by_dim: list[bool] = []
+            if compat_mode:
+                compat_boxes = _flowstar_raw_remainder_compat_boxes(
+                    ode_fn,
+                    base_ext,
+                    candidate,
+                    tau_index,
+                    order,
+                    u_tms,
+                    cutoff_threshold=cutoff_threshold,
+                    validation_eps=validation_eps,
+                )
+                compat_remainders, compat_subset_by_dim = _flowstar_raw_remainder_compat_check(
+                    target_remainders,
+                    compat_boxes["accumulated_remainder_before_x0_add"],
+                    [base_i.remainder for base_i in base_ext],
+                    poly_diff_ranges,
+                    validation_eps=validation_eps,
+                )
         except Exception as exc:
             message = f"validation exception: {exc}"
             extra = dict(diag_extra, subset_result=False, subset_tmp_remainder=False, subset_ordinary_residual=False, rejection_reason=message)
@@ -2286,10 +2566,18 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             return candidate, "failed", attempt, message
 
         finite_residual = intervals_are_finite(ordinary_residual) and intervals_are_finite(tmp_remainders) and intervals_are_finite(poly_diff_ranges)
+        if compat_mode:
+            finite_residual = finite_residual and compat_remainders is not None and intervals_are_finite(compat_remainders)
         subset_ordinary = bool(finite_residual and all(target.contains_interval(rb) for target, rb in zip(target_remainders, ordinary_residual)))
         subset_tmp = bool(finite_residual and all(target.contains_interval(rem) for target, rem in zip(target_remainders, tmp_remainders)))
-        validation_decision_difference = bool(subset_tmp != subset_ordinary)
-        message = "" if subset_tmp else "Flowstar ctrunc tmp remainder not subset of target remainder"
+        subset_check = bool(subset_tmp if not compat_mode else all(compat_subset_by_dim))
+        validation_decision_difference = bool(subset_check != subset_ordinary)
+        message = "" if subset_check else (
+            "Flowstar raw remainder compat residual not subset of target remainder"
+            if compat_mode
+            else "Flowstar ctrunc tmp remainder not subset of target remainder"
+        )
+        checked_remainders = compat_remainders if compat_mode and compat_remainders is not None else tmp_remainders
         validated_candidate = TMVector(
             TaylorModel(
                 m.polynomial,
@@ -2298,15 +2586,26 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
                 order=order,
                 truncation_range_split=m.truncation_range_split,
             )
-            for m, r in zip(candidate_poly, tmp_remainders)
+            for m, r in zip(candidate_poly, checked_remainders)
         )
+        compat_raw = compat_boxes.get("flowstar_raw_remainder_compat_raw_ctrunc_residual") if compat_mode else None
+        raw_stats = compat_raw if compat_raw is not None else raw_ctrunc_remainders
+        if compat_mode:
+            raw_partition_boxes["accumulated_remainder_before_x0_add"] = compat_boxes.get("accumulated_remainder_before_x0_add", [])
+            raw_partition_boxes["accumulated_remainder_after_x0_add"] = compat_boxes.get("accumulated_remainder_after_x0_add", [])
         extra = {
             **diag_extra,
             **_interval_list_stats("tmp_remainder", tmp_remainders),
-            **_interval_list_stats("raw_ctrunc_residual", raw_ctrunc_remainders),
-            **_interval_list_stats("raw_ctrunc_remainder", raw_ctrunc_remainders),
+            **_interval_list_stats("flowstar_raw_remainder_compat_check_remainder", compat_remainders),
+            **_interval_list_stats("current_raw_ctrunc_residual", raw_ctrunc_remainders),
+            **_interval_list_stats("raw_ctrunc_residual", raw_stats),
+            **_interval_list_stats("raw_ctrunc_remainder", raw_stats),
             **_interval_list_stats("raw_ctrunc_polynomial_range", raw_ctrunc_polynomial_ranges),
             **_interval_list_stats("target_remainder_before_ctrunc", target_remainders),
+            **_interval_list_stats("flowstar_raw_remainder_compat_rhs_remainder", compat_boxes.get("flowstar_raw_remainder_compat_rhs_remainder") if compat_mode else None),
+            **_interval_list_stats("flowstar_raw_remainder_compat_raw_ctrunc_residual", compat_raw),
+            **_interval_list_stats("accumulated_remainder_before_x0_add", raw_partition_boxes.get("accumulated_remainder_before_x0_add")),
+            **_interval_list_stats("accumulated_remainder_after_x0_add", raw_partition_boxes.get("accumulated_remainder_after_x0_add")),
             **_interval_list_stats("raw_remainder_dropped_terms_range", raw_partition_boxes.get("raw_remainder_dropped_terms_range")),
             **_interval_list_stats("raw_remainder_multiplication_remainder", raw_partition_boxes.get("raw_remainder_multiplication_remainder")),
             **_interval_list_stats("raw_remainder_integration_remainder", raw_partition_boxes.get("raw_remainder_integration_remainder")),
@@ -2319,22 +2618,41 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             **_interval_list_stats("poly_diff_range", poly_diff_ranges),
             **_interval_list_stats("ordinary_residual_range", ordinary_residual),
             **_interval_list_stats("normal_eval_range", poly_diff_ranges),
-            "raw_ctrunc_residual_source_object": "_picard_ctrunc_normal_image returned TaylorModel.remainder before poly_diff_range",
+            "raw_ctrunc_residual_source_object": (
+                "flowstar_raw_remainder_compat Expression::evaluate_remainder replay before poly_diff_range"
+                if compat_mode
+                else "_picard_ctrunc_normal_image returned TaylorModel.remainder before poly_diff_range"
+            ),
             "raw_ctrunc_residual_domain_semantics": "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff",
             "raw_ctrunc_residual_includes_target_remainder": False,
             "raw_ctrunc_residual_includes_ordinary_remainder": False,
             "raw_ctrunc_residual_includes_cutoff_poly_diff": False,
             "raw_ctrunc_residual_added_component": "none_before_cutoff_polyDiff",
-            "raw_ctrunc_residual_notes": "raw ctrunc remainder is recorded before adding poly_diff_range; target remainder is only the containment set",
-            "raw_remainder_range_enclosure_method": "Polynomial.truncate plus _poly_interval_normal on dropped terms; cutoff range from _cutoff_polynomial_normal",
+            "raw_ctrunc_residual_notes": (
+                "compat mode checks replayed raw remainder plus poly_diff_range; target remainder is only the containment set"
+                if compat_mode
+                else "raw ctrunc remainder is recorded before adding poly_diff_range; target remainder is only the containment set"
+            ),
+            "raw_remainder_range_enclosure_method": (
+                "Flowstar Expression::evaluate_remainder-style replay over polynomial ranges and truncation intervals"
+                if compat_mode
+                else "Polynomial.truncate plus _poly_interval_normal on dropped terms; cutoff range from _cutoff_polynomial_normal"
+            ),
             "raw_remainder_normal_domain_scaling": "none_after_Picard_call; intervals are over the physical full-step tau domain",
-            "raw_remainder_partition_missing_reason": "PyTorch exposes diagnostic reconstruction of dropped/integration/multiplication partitions; Flow* source-level intermediate_ranges partition remains the reference for exact attribution",
+            "raw_remainder_partition_missing_reason": (
+                "compat mode reconstructs the replayed raw remainder; Flow* source-level intermediate_ranges remain the exact reference"
+                if compat_mode
+                else "PyTorch exposes diagnostic reconstruction of dropped/integration/multiplication partitions; Flow* source-level intermediate_ranges partition remains the reference for exact attribution"
+            ),
             "ordinary_remainder_missing_reason": "PyTorch ordinary_residual_range is exposed separately; it is not included in raw_ctrunc_residual",
-            "subset_result": subset_tmp,
+            "subset_result": subset_check,
             "subset_tmp_remainder": subset_tmp,
+            "subset_flowstar_raw_remainder_compat": subset_check if compat_mode else "",
+            "subset_flowstar_raw_remainder_compat_x": compat_subset_by_dim[0] if compat_mode and len(compat_subset_by_dim) > 0 else "",
+            "subset_flowstar_raw_remainder_compat_y": compat_subset_by_dim[1] if compat_mode and len(compat_subset_by_dim) > 1 else "",
             "subset_ordinary_residual": subset_ordinary,
             "validation_decision_difference": validation_decision_difference,
-            "rejection_reason": "" if subset_tmp else message,
+            "rejection_reason": "" if subset_check else message,
         }
         _append_validation_diagnostic(
             diagnostics,
@@ -2346,13 +2664,13 @@ def _validate_picard_target_remainder_flowstar_ctrunc(
             candidate=validated_candidate,
             tau_index=tau_index,
             residual_boxes=ordinary_residual,
-            remainders=tmp_remainders,
+            remainders=checked_remainders,
             finite_residual=finite_residual,
-            validation_status="validated" if subset_tmp else "failed",
+            validation_status="validated" if subset_check else "failed",
             validation_message=message,
             extra=extra,
         )
-        if subset_tmp:
+        if subset_check:
             return validated_candidate, "validated", attempt, ""
         return validated_candidate, "failed", attempt, message
 
@@ -2986,10 +3304,12 @@ def flowpipe_step_from_tm(
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
+        "flowstar_raw_remainder_compat",
     }:
         raise ValueError(
             "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_normal_eval', "
-            "'target_remainder_refined', 'target_remainder_centered', or 'target_remainder_flowstar_ctrunc'"
+            "'target_remainder_refined', 'target_remainder_centered', 'target_remainder_flowstar_ctrunc', "
+            "or 'flowstar_raw_remainder_compat'"
         )
     target_mode = validation_mode in {
         "target_remainder",
@@ -2997,6 +3317,7 @@ def flowpipe_step_from_tm(
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
+        "flowstar_raw_remainder_compat",
     }
     attempt_limit = (2 if target_mode else 20) if max_validation_attempts is None else int(max_validation_attempts)
     if attempt_limit <= 0:
@@ -3092,7 +3413,7 @@ def flowpipe_step_from_tm(
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
         )
-    elif validation_mode == "target_remainder_flowstar_ctrunc":
+    elif validation_mode in {"target_remainder_flowstar_ctrunc", "flowstar_raw_remainder_compat"}:
         validated, status, attempts, message = _validate_picard_target_remainder_flowstar_ctrunc(
             ode_fn,
             base_ext,
@@ -3112,6 +3433,7 @@ def flowpipe_step_from_tm(
             rhs_breakdown_callback=rhs_breakdown_callback,
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
+            raw_remainder_mode="flowstar_compat" if validation_mode == "flowstar_raw_remainder_compat" else "",
         )
     else:
         validated, status, attempts, message = _validate_picard(
@@ -3135,7 +3457,7 @@ def flowpipe_step_from_tm(
         )
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
     final_tm = final_tm.apply_cutoff(cutoff_threshold)
-    if status == "validated" and validation_mode != "target_remainder_flowstar_ctrunc":
+    if status == "validated" and validation_mode not in {"target_remainder_flowstar_ctrunc", "flowstar_raw_remainder_compat"}:
         # The segment remainder is valid for every tau in [0,h].  For multi-step
         # propagation we only need the endpoint at tau=h, so tighten the endpoint
         # remainder by re-evaluating the Picard residual at that fixed local time.
@@ -3289,6 +3611,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "target_remainder_refined",
         "target_remainder_centered",
         "target_remainder_flowstar_ctrunc",
+        "flowstar_raw_remainder_compat",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     normal_insertion_modes = {
