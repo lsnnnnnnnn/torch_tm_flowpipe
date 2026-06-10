@@ -23,6 +23,9 @@ from .tm_vector import TMVector
 
 ODEFunction = Callable[..., Sequence[TaylorModel] | TMVector]
 
+FLOWSTAR_COMPAT_STEP_SHRINK = 0.5
+FLOWSTAR_COMPAT_STEP_GROW = 1.1
+
 
 @dataclass
 class FlowpipeSegment:
@@ -3585,6 +3588,7 @@ def flowpipe_step_flowstar_style_adaptive(
     adaptive_order_fallback: int | None = None,
     adaptive_order_threshold_factor: float = 1.25,
     grow_factor: float = 1.5,
+    step_policy_mode: str = "",
     diagnostics: list[dict[str, Any]] | None = None,
     diagnostics_context: Mapping[str, Any] | None = None,
     rhs_breakdown_callback: Callable[[TMVector, int, int, Mapping[str, Any]], None] | None = None,
@@ -3632,6 +3636,10 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
+    if step_policy_mode not in {"", "flowstar_compat"}:
+        raise ValueError("step_policy_mode must be empty or 'flowstar_compat'")
+    step_shrink_factor = FLOWSTAR_COMPAT_STEP_SHRINK
+    effective_grow_factor = FLOWSTAR_COMPAT_STEP_GROW if step_policy_mode == "flowstar_compat" else float(grow_factor)
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
@@ -3691,7 +3699,7 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.reset_tm = _normalized_tm_from_box(seg.final_tm.range_box(), order)
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
-        seg.next_h = min(accepted_h * grow_factor, h_max)
+        seg.next_h = min(accepted_h * effective_grow_factor, h_max)
         return seg
     h_try = min(float(h) if h is not None else float(h_max), float(h_max))
     if h_try < h_min:
@@ -3708,6 +3716,9 @@ def flowpipe_step_flowstar_style_adaptive(
         context["h_try"] = h_try
         context["h_min"] = float(h_min)
         context["h_max"] = float(h_max)
+        context["step_policy_mode"] = step_policy_mode
+        context["step_shrink_factor"] = step_shrink_factor
+        context["step_grow_factor"] = effective_grow_factor
         seg = flowpipe_step_from_tm(
             ode_fn,
             current_tm,
@@ -3737,7 +3748,7 @@ def flowpipe_step_flowstar_style_adaptive(
         fallback_order = int(adaptive_order_fallback or 0)
         near_min_failure = (
             h_try <= float(adaptive_order_threshold_factor) * float(h_min) + 1e-15
-            or h_try * 0.5 < float(h_min) - 1e-15
+            or h_try * step_shrink_factor < float(h_min) - 1e-15
         )
         should_retry_order = (
             fallback_order > int(order)
@@ -3777,7 +3788,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 return _assign_reset(fallback_seg, h_try)
 
         rejections += 1
-        h_try *= 0.5
+        h_try *= step_shrink_factor
 
     assert last_seg is not None
     last_seg.step_rejections = rejections

@@ -294,11 +294,64 @@ def finalize_summary(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return rows
 
 
+def add_analysis_rows(rows: list[dict[str, Any]], horizon: float) -> list[dict[str, Any]]:
+    by_mode = {str(row.get("mode")): row for row in rows}
+    current = by_mode.get("current_no_queue", {})
+    compat = by_mode.get("flowstar_raw_remainder_compat", {})
+    current_dist = _float(current.get("schedule_distance_vs_flowstar"))
+    compat_dist = _float(compat.get("schedule_distance_vs_flowstar"))
+    compat_width_ratio = _float(compat.get("width_ratio_vs_current"))
+    closer = compat_dist is not None and current_dist is not None and compat_dist < current_dist
+    return [
+        *rows,
+        {
+            "source": "analysis",
+            "mode": "compat_vs_current",
+            "horizon": horizon,
+            "status": "closer_to_flowstar" if closer else "not_closer_to_flowstar",
+            "reached_t": "",
+            "accepted_steps": "",
+            "rejected_attempts": "",
+            "accepted_h_sequence": "",
+            "schedule_distance_vs_flowstar": "",
+            "schedule_prefix_matches_flowstar": "",
+            "sample_contained": compat.get("sample_contained", ""),
+            "sample_max_violation": compat.get("sample_max_violation", ""),
+            "stopped_too_early": compat.get("stopped_too_early", ""),
+            "final_width_x": "",
+            "final_width_y": "",
+            "final_width_sum": compat.get("final_width_sum", ""),
+            "width_ratio_vs_current": compat_width_ratio if compat_width_ratio is not None else "",
+            "notes": f"current_distance={_format(current_dist)}; compat_distance={_format(compat_dist)}",
+        },
+        {
+            "source": "analysis",
+            "mode": "step_policy_audit_gate",
+            "horizon": horizon,
+            "status": "required_before_h5",
+            "reached_t": "",
+            "accepted_steps": "",
+            "rejected_attempts": "",
+            "accepted_h_sequence": "",
+            "schedule_distance_vs_flowstar": "",
+            "schedule_prefix_matches_flowstar": "",
+            "sample_contained": compat.get("sample_contained", ""),
+            "sample_max_violation": compat.get("sample_max_violation", ""),
+            "stopped_too_early": compat.get("stopped_too_early", ""),
+            "final_width_x": "",
+            "final_width_y": "",
+            "final_width_sum": "",
+            "width_ratio_vs_current": "",
+            "notes": "audit Flow* accept-step growth policy before any h5 run",
+        },
+    ]
+
+
 def run(out_dir: Path, flowstar_trace: Path, horizon: float) -> list[dict[str, Any]]:
     flow = flowstar_schedule_summary(_read_rows(flowstar_trace), horizon)
     current = run_torch_horizon("current_no_queue", horizon)
     compat = run_torch_horizon("flowstar_raw_remainder_compat", horizon)
-    rows = finalize_summary([flow, current, compat])
+    rows = add_analysis_rows(finalize_summary([flow, current, compat]), horizon)
     write_summary(out_dir / "short_horizon_summary.csv", rows)
     write_report(out_dir / "short_horizon_report.md", rows, horizon)
     return rows
