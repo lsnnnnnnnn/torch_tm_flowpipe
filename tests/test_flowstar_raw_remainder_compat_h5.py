@@ -190,7 +190,7 @@ def test_checked_in_h5_outputs_have_physical_lines():
         assert path.exists(), path
         text = path.read_text(encoding="utf-8")
         if path.suffix == ".csv":
-            assert len(text.splitlines()) > 1, path
+            assert len(text.splitlines()) > 5, path
         else:
             assert len(text.splitlines()) > 10, path
             assert "\\n" not in text
