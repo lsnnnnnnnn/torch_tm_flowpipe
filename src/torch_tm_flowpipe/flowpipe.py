@@ -1120,6 +1120,139 @@ def _tmvector_recenter_remainders(tmv: TMVector) -> tuple[TMVector, list[float]]
     return TMVector(models), shifts
 
 
+def _tm_shift_polynomial_constant(model: TaylorModel, shift: float) -> TaylorModel:
+    if float(shift) == 0.0:
+        return model
+    value = torch.as_tensor(float(shift), dtype=model.remainder.lo.dtype, device=model.remainder.lo.device)
+    return TaylorModel(
+        model.polynomial - Polynomial.constant(value, model.polynomial.n_vars),
+        model.remainder,
+        list(model.domain),
+        order=model.order,
+        truncation_range_split=model.truncation_range_split,
+    )
+
+
+def _tmvector_shift_polynomial_constants(tmv: TMVector, shifts: Sequence[float]) -> TMVector:
+    return TMVector(_tm_shift_polynomial_constant(model, float(shift)) for model, shift in zip(tmv, shifts))
+
+
+def _right_map_range_box_for_mode(tmv: TMVector, mode: str) -> list[Interval]:
+    if mode == "normal_eval":
+        return _tmvector_range_box_normal(tmv, None)
+    return tmv.range_box()
+
+
+def _polynomial_max_abs_diff(a: Polynomial, b: Polynomial) -> float:
+    if a.terms:
+        zero = torch.zeros((), dtype=a.dtype, device=a.device)
+    elif b.terms:
+        zero = torch.zeros((), dtype=b.dtype, device=b.device)
+    else:
+        return 0.0
+    max_diff = 0.0
+    for exp in set(a.terms) | set(b.terms):
+        av = a.terms.get(exp, zero)
+        bv = b.terms.get(exp, zero)
+        diff = _float_or_none(torch.max(torch.abs(av - bv)).detach().cpu())
+        if diff is not None:
+            max_diff = max(max_diff, float(diff))
+    return max_diff
+
+
+def _add_right_map_centering_diagnostics(
+    diagnostics: dict[str, Any],
+    *,
+    mode: str,
+    old_center: Sequence[float],
+    new_center: Sequence[float],
+    inserted: TMVector,
+    centered_inserted: TMVector,
+    inserted_box: Sequence[Interval],
+    centered_box: Sequence[Interval],
+    baseline_scales: Sequence[float],
+    centered_scales: Sequence[float],
+    applied_shifts: Sequence[float],
+) -> None:
+    diagnostics["right_map_center_mode"] = mode
+    _add_interval_bounds(diagnostics, "inserted_range", inserted_box)
+    _add_width_metrics(diagnostics, "inserted_range", inserted_box)
+    _add_interval_bounds(diagnostics, "centered_inserted_range", centered_box)
+    _add_width_metrics(diagnostics, "centered_inserted_range", centered_box)
+
+    names = ("x", "y")
+    shift_abs_sum = 0.0
+    asymmetry_sum = 0.0
+    baseline_scale_sum = 0.0
+    centered_scale_sum = 0.0
+    baseline_reset_sum = 0.0
+    centered_reset_sum = 0.0
+    reduction_sum = 0.0
+    max_poly_diff = 0.0
+    max_rem_lo_diff = 0.0
+    max_rem_hi_diff = 0.0
+    for i, model in enumerate(inserted):
+        name = names[i] if i < len(names) else f"state_{i}"
+        shift = float(applied_shifts[i]) if i < len(applied_shifts) else 0.0
+        baseline_scale = float(baseline_scales[i]) if i < len(baseline_scales) else 0.0
+        centered_scale = float(centered_scales[i]) if i < len(centered_scales) else baseline_scale
+        baseline_reset_width = 2.0 * abs(baseline_scale)
+        centered_reset_width = 2.0 * abs(centered_scale)
+        reduction = baseline_reset_width - centered_reset_width
+        reduction_relative = reduction / baseline_reset_width if baseline_reset_width > 0.0 else 0.0
+
+        asymmetry = 0.0
+        if i < len(inserted_box):
+            lo = _interval_bound_value(inserted_box[i].lo)
+            hi = _interval_bound_value(inserted_box[i].hi)
+            if lo is not None and hi is not None:
+                asymmetry = abs(abs(float(hi)) - abs(float(lo)))
+
+        center_value = float(old_center[i]) if i < len(old_center) else 0.0
+        shifted_center_value = float(new_center[i]) if i < len(new_center) else center_value
+        lhs_poly = model.polynomial + Polynomial.constant(center_value, model.polynomial.n_vars)
+        centered_model = centered_inserted[i]
+        rhs_poly = centered_model.polynomial + Polynomial.constant(shifted_center_value, centered_model.polynomial.n_vars)
+        poly_diff = _polynomial_max_abs_diff(lhs_poly, rhs_poly)
+        rem_lo_diff = abs(float((model.remainder.lo - centered_model.remainder.lo).detach().cpu()))
+        rem_hi_diff = abs(float((model.remainder.hi - centered_model.remainder.hi).detach().cpu()))
+
+        diagnostics[f"inserted_range_midpoint_shift_{name}"] = shift
+        diagnostics[f"inserted_range_asymmetry_{name}"] = asymmetry
+        diagnostics[f"baseline_scale_{name}"] = baseline_scale
+        diagnostics[f"centered_scale_{name}"] = centered_scale
+        diagnostics[f"baseline_reset_width_{name}"] = baseline_reset_width
+        diagnostics[f"centered_reset_width_{name}"] = centered_reset_width
+        diagnostics[f"scale_reduction_absolute_{name}"] = reduction
+        diagnostics[f"scale_reduction_relative_{name}"] = reduction_relative
+        diagnostics[f"reconstruction_polynomial_max_abs_diff_{name}"] = poly_diff
+        diagnostics[f"reconstruction_remainder_lo_diff_{name}"] = rem_lo_diff
+        diagnostics[f"reconstruction_remainder_hi_diff_{name}"] = rem_hi_diff
+
+        shift_abs_sum += abs(shift)
+        asymmetry_sum += asymmetry
+        baseline_scale_sum += abs(baseline_scale)
+        centered_scale_sum += abs(centered_scale)
+        baseline_reset_sum += baseline_reset_width
+        centered_reset_sum += centered_reset_width
+        reduction_sum += reduction
+        max_poly_diff = max(max_poly_diff, poly_diff)
+        max_rem_lo_diff = max(max_rem_lo_diff, rem_lo_diff)
+        max_rem_hi_diff = max(max_rem_hi_diff, rem_hi_diff)
+
+    diagnostics["inserted_range_midpoint_shift_abs_sum"] = shift_abs_sum
+    diagnostics["inserted_range_asymmetry_sum"] = asymmetry_sum
+    diagnostics["baseline_scale_sum"] = baseline_scale_sum
+    diagnostics["centered_scale_sum"] = centered_scale_sum
+    diagnostics["baseline_reset_width_sum"] = baseline_reset_sum
+    diagnostics["centered_reset_width_sum"] = centered_reset_sum
+    diagnostics["scale_reduction_absolute_sum"] = reduction_sum
+    diagnostics["scale_reduction_relative_sum"] = reduction_sum / baseline_reset_sum if baseline_reset_sum > 0.0 else 0.0
+    diagnostics["reconstruction_polynomial_max_abs_diff"] = max_poly_diff
+    diagnostics["reconstruction_remainder_lo_diff"] = max_rem_lo_diff
+    diagnostics["reconstruction_remainder_hi_diff"] = max_rem_hi_diff
+
+
 def _flowstar_normalized_insertion_transition(
     seg: FlowpipeSegment,
     previous_state: FlowstarNormalFlowpipeState | None,
@@ -1134,6 +1267,7 @@ def _flowstar_normalized_insertion_transition(
     target_remainder_radius: float | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
+    right_map_center_mode: str = "constant",
     horner_diagnostic: bool = False,
     horner_insertion: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
@@ -1150,6 +1284,8 @@ def _flowstar_normalized_insertion_transition(
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
+    if right_map_center_mode not in {"constant", "range_midpoint"}:
+        raise ValueError("right_map_center_mode must be 'constant' or 'range_midpoint'")
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
@@ -1167,6 +1303,7 @@ def _flowstar_normalized_insertion_transition(
     diagnostics: dict[str, Any] = {
         "reset_mode": mode_name,
         "right_map_range_mode": right_map_range_mode,
+        "right_map_center_mode": right_map_center_mode,
         "step_index": int(prev.step_index) + 1,
         "endpoint_box_width_sum": _sum_interval_widths(endpoint_box),
         "endpoint_tm_width_sum": _sum_interval_widths(endpoint_box),
@@ -1241,15 +1378,53 @@ def _flowstar_normalized_insertion_transition(
     _add_width_metrics(diagnostics, "old_right_map_range", old_inserted_box)
     _add_width_metrics(diagnostics, "normal_right_map_range", normal_inserted_box)
     inserted_box = normal_inserted_box if right_map_range_mode == "normal_eval" else old_inserted_box
+    baseline_scales: list[float] = []
+    for iv in inserted_box:
+        mag = _interval_magnitude(iv)
+        scale = 0.0 if mag is None or mag == 0.0 else float(mag)
+        baseline_scales.append(scale)
+
+    old_center = list(center)
+    if right_map_center_mode == "range_midpoint":
+        midpoint_shifts = [
+            _float_or_none(iv.mid().detach().cpu()) or 0.0
+            for iv in inserted_box
+        ]
+        centered_inserted = _tmvector_shift_polynomial_constants(inserted, midpoint_shifts)
+        center = [float(c) + float(shift) for c, shift in zip(center, midpoint_shifts)]
+        centered_box = _right_map_range_box_for_mode(centered_inserted, right_map_range_mode)
+        scale_box = centered_box
+        inserted_for_reset = centered_inserted
+        applied_shifts = midpoint_shifts
+    else:
+        centered_inserted = inserted
+        centered_box = inserted_box
+        scale_box = inserted_box
+        inserted_for_reset = inserted
+        applied_shifts = [0.0 for _ in inserted]
+
     scales: list[float] = []
     inv_scales: list[float] = []
-    for iv in inserted_box:
+    for iv in scale_box:
         mag = _interval_magnitude(iv)
         scale = 0.0 if mag is None or mag == 0.0 else float(mag)
         scales.append(scale)
         inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
-    tmv_right = _scale_tmvector_components(inserted, inv_scales).apply_cutoff(cutoff_threshold)
-    _add_width_metrics(diagnostics, "inserted_endpoint", inserted_box)
+    _add_right_map_centering_diagnostics(
+        diagnostics,
+        mode=right_map_center_mode,
+        old_center=old_center,
+        new_center=center,
+        inserted=inserted,
+        centered_inserted=centered_inserted,
+        inserted_box=inserted_box,
+        centered_box=centered_box,
+        baseline_scales=baseline_scales,
+        centered_scales=scales,
+        applied_shifts=applied_shifts,
+    )
+    tmv_right = _scale_tmvector_components(inserted_for_reset, inv_scales).apply_cutoff(cutoff_threshold)
+    _add_width_metrics(diagnostics, "inserted_endpoint", scale_box)
     _add_width_metrics(diagnostics, "normal_state_right", tmv_right.range_box())
     reset_tm = _normalized_tm_from_center_scale(center, scales, int(order), template_domain=prev.domain)
     reset_box = reset_tm.range_box()
@@ -1258,7 +1433,7 @@ def _flowstar_normalized_insertion_transition(
     initial_remainders: tuple[Interval, ...] | None = None
     if symbolic_queue_v2:
         reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_linear_queue_v2_reset(
-            inserted,
+            inserted_for_reset,
             reset_tm,
             next_queue,
             scales=scales,
@@ -1268,7 +1443,7 @@ def _flowstar_normalized_insertion_transition(
         diagnostics.update(queue_stats)
     elif symbolic_queue:
         reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_symbolic_queue_reset(
-            inserted,
+            inserted_for_reset,
             reset_tm,
             next_queue,
             scales=scales,
@@ -3602,6 +3777,7 @@ def flowpipe_step_flowstar_style_adaptive(
     flowstar_normal_state: FlowstarNormalFlowpipeState | None = None,
     scalar_recenter_remainder_midpoint: bool = False,
     right_map_range_mode: str = "standard",
+    right_map_center_mode: str = "constant",
     symbolic_queue_mode: str = "",
     horner_diagnostic: bool = False,
 ) -> FlowpipeSegment:
@@ -3634,6 +3810,8 @@ def flowpipe_step_flowstar_style_adaptive(
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
+    if right_map_center_mode not in {"constant", "range_midpoint"}:
+        raise ValueError("right_map_center_mode must be 'constant' or 'range_midpoint'")
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     if step_policy_mode not in {"", "flowstar_compat"}:
@@ -3679,6 +3857,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 target_remainder_radius=target_remainder_radius,
                 scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
                 right_map_range_mode=right_map_range_mode,
+                right_map_center_mode=right_map_center_mode,
                 horner_diagnostic=horner_diagnostic,
                 horner_insertion=use_horner,
             )
