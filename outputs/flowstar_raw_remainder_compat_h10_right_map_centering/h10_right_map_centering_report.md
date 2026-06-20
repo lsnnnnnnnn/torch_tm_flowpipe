@@ -9,6 +9,8 @@ This h10 audit keeps `right_map_center_mode="constant"` as the default. h10 was 
 - Minimum target margin: `2.3488222932062895e-08` at step `53`, t `1.1910872506835912`, h `0.061034072337060589`.
 - Immediate same-state saving max: `0.0022487356326686362`.
 - Cumulative downstream saving max: `0.22509633248238251`.
+- Common-time width worsening count: `26`.
+- Cross-schedule centering improvement: `0.22413303738259271`.
 
 ## Run Summary
 
@@ -45,5 +47,5 @@ This h10 audit keeps `right_map_center_mode="constant"` as the default. h10 was 
 | outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_margin_watch.csv | 11 | 11 | ok |
 | outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_segments.csv | 1232 | 1232 | ok |
 | outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_summary.csv | 6 | 6 | ok |
-| outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_report.md | 49 |  | ok |
+| outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_report.md | 51 |  | ok |
 | outputs/flowstar_raw_remainder_compat_h10_right_map_centering/h10_right_map_centering_decision.txt | 1 |  | ok |

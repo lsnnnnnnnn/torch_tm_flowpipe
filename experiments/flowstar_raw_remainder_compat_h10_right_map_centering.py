@@ -630,6 +630,12 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
     torch_summaries = [row for mode, row in summary_by_mode.items() if mode != FLOWSTAR_MODE]
     range_summary = summary_by_mode[RANGE_ADAPTIVE]
     constant_summary = summary_by_mode[CONSTANT_ADAPTIVE]
+    range_on_constant = [row for row in cross_rows if row.get("replay_kind") == "range_midpoint_on_constant_schedule" and row.get("replay_status") == "accepted"]
+    cross_improvement = _float(range_on_constant[-1].get("width_reduction_relative")) if range_on_constant else None
+    base_metrics = {
+        "cross_schedule_centering_improvement": cross_improvement if cross_improvement is not None else "",
+        "common_time_width_worsening_count": common_stats.get("width_worsening_count", ""),
+    }
     soundness_reasons: list[str] = []
     for row in torch_summaries:
         if int(float(row.get("raw_residual_target_violations") or 0)) > 0:
@@ -644,13 +650,11 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
         if (_float(row.get("max_reconstruction_remainder_endpoint_diff")) or 0.0) > 1e-15:
             soundness_reasons.append(f"{row.get('mode')} reconstruction remainder diff")
     if soundness_reasons:
-        return "reject_due_to_soundness_or_reconstruction_failure", {}, soundness_reasons
+        return "reject_due_to_soundness_or_reconstruction_failure", base_metrics, soundness_reasons
 
     final_ratio = _float(range_summary.get("flowstar_final_width_ratio"))
     tube_ratio = _float(range_summary.get("flowstar_tube_width_ratio"))
     range_reached = _bool(range_summary.get("reached_h10"))
-    range_on_constant = [row for row in cross_rows if row.get("replay_kind") == "range_midpoint_on_constant_schedule" and row.get("replay_status") == "accepted"]
-    cross_improvement = _float(range_on_constant[-1].get("width_reduction_relative")) if range_on_constant else None
     schedule_independent = cross_improvement is not None and cross_improvement >= 0.05
     no_worsening = int(common_stats.get("width_worsening_count") or 0) == 0
     if range_reached:
@@ -660,10 +664,7 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
             and no_worsening
             and schedule_independent
         )
-        return ("h10_reached_with_controlled_width" if controlled else "h10_reached_but_width_gap_large"), {
-            "cross_schedule_centering_improvement": cross_improvement if cross_improvement is not None else "",
-            "common_time_width_worsening_count": common_stats.get("width_worsening_count", ""),
-        }, []
+        return ("h10_reached_with_controlled_width" if controlled else "h10_reached_but_width_gap_large"), base_metrics, []
 
     range_t = _float(range_summary.get("reached_t")) or 0.0
     const_t = _float(constant_summary.get("reached_t")) or 0.0
@@ -671,10 +672,7 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
     const_steps = int(float(constant_summary.get("accepted_steps") or 0))
     width_improved = (_float(common_stats.get("final_common_width_improvement")) or 0.0) >= 0.05
     materially = (range_t >= const_t + 0.5 or (range_t > const_t and range_steps >= const_steps + 10)) and width_improved
-    return ("h10_not_reached_but_materially_improved" if materially else "h10_not_reached_no_material_improvement"), {
-        "cross_schedule_centering_improvement": cross_improvement if cross_improvement is not None else "",
-        "common_time_width_worsening_count": common_stats.get("width_worsening_count", ""),
-    }, []
+    return ("h10_not_reached_but_materially_improved" if materially else "h10_not_reached_no_material_improvement"), base_metrics, []
 
 
 def _flowstar_summary(flow_ref: Mapping[str, Any]) -> dict[str, Any]:
@@ -722,6 +720,8 @@ def write_report(path: Path, summary_rows: Sequence[Mapping[str, Any]], margin_r
         f"- Minimum target margin: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin'))}` at step `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_step'))}`, t `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_time'))}`, h `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_h'))}`.",
         f"- Immediate same-state saving max: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('max_immediate_same_state_saving'))}`.",
         f"- Cumulative downstream saving max: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('max_cumulative_downstream_saving'))}`.",
+        f"- Common-time width worsening count: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('common_time_width_worsening_count'))}`.",
+        f"- Cross-schedule centering improvement: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('cross_schedule_centering_improvement'))}`.",
         "",
         "## Run Summary",
         "",
@@ -778,7 +778,8 @@ def run(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, 
     summary_by_mode = {row["mode"]: row for row in summaries}
     decision, decision_metrics, reasons = decide(summary_by_mode, common_stats, cross_rows)
     for row in summaries:
-        row["max_cumulative_downstream_saving"] = _max_field([r for r in cross_rows if r.get("replay_mode") == RANGE_ON_CONSTANT], "cumulative_reset_reduction_relative")
+        if row.get("source") == "torch":
+            row["max_cumulative_downstream_saving"] = _max_field([r for r in cross_rows if r.get("replay_mode") == RANGE_ON_CONSTANT], "cumulative_reset_reduction_relative")
     summaries = finalize_summaries(summaries, flow_ref, flow_h, decision, decision_metrics)
     all_segments = flow_rows + const_rows + range_rows + range_on_const_rows + const_on_range_rows
     all_attempts = const_attempts + range_attempts + range_on_const_attempts + const_on_range_attempts
