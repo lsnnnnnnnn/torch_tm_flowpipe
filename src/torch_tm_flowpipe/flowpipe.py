@@ -1172,13 +1172,18 @@ def _add_right_map_centering_diagnostics(
     centered_box: Sequence[Interval],
     baseline_scales: Sequence[float],
     centered_scales: Sequence[float],
+    hypothetical_centered_box: Sequence[Interval],
+    hypothetical_centered_scales: Sequence[float],
     applied_shifts: Sequence[float],
 ) -> None:
     diagnostics["right_map_center_mode"] = mode
+    diagnostics["immediate_saving_source"] = "same_inserted_tm_shadow_diagnostic"
     _add_interval_bounds(diagnostics, "inserted_range", inserted_box)
     _add_width_metrics(diagnostics, "inserted_range", inserted_box)
     _add_interval_bounds(diagnostics, "centered_inserted_range", centered_box)
     _add_width_metrics(diagnostics, "centered_inserted_range", centered_box)
+    _add_interval_bounds(diagnostics, "hypothetical_centered_inserted_range", hypothetical_centered_box)
+    _add_width_metrics(diagnostics, "hypothetical_centered_inserted_range", hypothetical_centered_box)
 
     names = ("x", "y")
     shift_abs_sum = 0.0
@@ -1187,7 +1192,9 @@ def _add_right_map_centering_diagnostics(
     centered_scale_sum = 0.0
     baseline_reset_sum = 0.0
     centered_reset_sum = 0.0
+    hypothetical_centered_reset_sum = 0.0
     reduction_sum = 0.0
+    immediate_reduction_sum = 0.0
     max_poly_diff = 0.0
     max_rem_lo_diff = 0.0
     max_rem_hi_diff = 0.0
@@ -1196,10 +1203,18 @@ def _add_right_map_centering_diagnostics(
         shift = float(applied_shifts[i]) if i < len(applied_shifts) else 0.0
         baseline_scale = float(baseline_scales[i]) if i < len(baseline_scales) else 0.0
         centered_scale = float(centered_scales[i]) if i < len(centered_scales) else baseline_scale
+        hypothetical_scale = (
+            float(hypothetical_centered_scales[i])
+            if i < len(hypothetical_centered_scales)
+            else centered_scale
+        )
         baseline_reset_width = 2.0 * abs(baseline_scale)
         centered_reset_width = 2.0 * abs(centered_scale)
+        hypothetical_centered_reset_width = 2.0 * abs(hypothetical_scale)
         reduction = baseline_reset_width - centered_reset_width
         reduction_relative = reduction / baseline_reset_width if baseline_reset_width > 0.0 else 0.0
+        immediate_reduction = baseline_reset_width - hypothetical_centered_reset_width
+        immediate_reduction_relative = immediate_reduction / baseline_reset_width if baseline_reset_width > 0.0 else 0.0
 
         asymmetry = 0.0
         if i < len(inserted_box):
@@ -1220,11 +1235,17 @@ def _add_right_map_centering_diagnostics(
         diagnostics[f"inserted_range_midpoint_shift_{name}"] = shift
         diagnostics[f"inserted_range_asymmetry_{name}"] = asymmetry
         diagnostics[f"baseline_scale_{name}"] = baseline_scale
+        diagnostics[f"constant_scale_{name}"] = baseline_scale
         diagnostics[f"centered_scale_{name}"] = centered_scale
+        diagnostics[f"actual_centered_scale_{name}"] = centered_scale
+        diagnostics[f"hypothetical_centered_scale_{name}"] = hypothetical_scale
         diagnostics[f"baseline_reset_width_{name}"] = baseline_reset_width
         diagnostics[f"centered_reset_width_{name}"] = centered_reset_width
+        diagnostics[f"hypothetical_centered_reset_width_{name}"] = hypothetical_centered_reset_width
         diagnostics[f"scale_reduction_absolute_{name}"] = reduction
         diagnostics[f"scale_reduction_relative_{name}"] = reduction_relative
+        diagnostics[f"immediate_reset_reduction_absolute_{name}"] = immediate_reduction
+        diagnostics[f"immediate_reset_reduction_relative_{name}"] = immediate_reduction_relative
         diagnostics[f"reconstruction_polynomial_max_abs_diff_{name}"] = poly_diff
         diagnostics[f"reconstruction_remainder_lo_diff_{name}"] = rem_lo_diff
         diagnostics[f"reconstruction_remainder_hi_diff_{name}"] = rem_hi_diff
@@ -1235,7 +1256,9 @@ def _add_right_map_centering_diagnostics(
         centered_scale_sum += abs(centered_scale)
         baseline_reset_sum += baseline_reset_width
         centered_reset_sum += centered_reset_width
+        hypothetical_centered_reset_sum += hypothetical_centered_reset_width
         reduction_sum += reduction
+        immediate_reduction_sum += immediate_reduction
         max_poly_diff = max(max_poly_diff, poly_diff)
         max_rem_lo_diff = max(max_rem_lo_diff, rem_lo_diff)
         max_rem_hi_diff = max(max_rem_hi_diff, rem_hi_diff)
@@ -1243,11 +1266,19 @@ def _add_right_map_centering_diagnostics(
     diagnostics["inserted_range_midpoint_shift_abs_sum"] = shift_abs_sum
     diagnostics["inserted_range_asymmetry_sum"] = asymmetry_sum
     diagnostics["baseline_scale_sum"] = baseline_scale_sum
+    diagnostics["constant_scale_sum"] = baseline_scale_sum
     diagnostics["centered_scale_sum"] = centered_scale_sum
+    diagnostics["actual_centered_scale_sum"] = centered_scale_sum
+    diagnostics["hypothetical_centered_scale_sum"] = sum(abs(float(s)) for s in hypothetical_centered_scales)
     diagnostics["baseline_reset_width_sum"] = baseline_reset_sum
     diagnostics["centered_reset_width_sum"] = centered_reset_sum
+    diagnostics["hypothetical_centered_reset_width_sum"] = hypothetical_centered_reset_sum
     diagnostics["scale_reduction_absolute_sum"] = reduction_sum
     diagnostics["scale_reduction_relative_sum"] = reduction_sum / baseline_reset_sum if baseline_reset_sum > 0.0 else 0.0
+    diagnostics["immediate_reset_reduction_absolute_sum"] = immediate_reduction_sum
+    diagnostics["immediate_reset_reduction_relative_sum"] = (
+        immediate_reduction_sum / baseline_reset_sum if baseline_reset_sum > 0.0 else 0.0
+    )
     diagnostics["reconstruction_polynomial_max_abs_diff"] = max_poly_diff
     diagnostics["reconstruction_remainder_lo_diff"] = max_rem_lo_diff
     diagnostics["reconstruction_remainder_hi_diff"] = max_rem_hi_diff
@@ -1383,19 +1414,26 @@ def _flowstar_normalized_insertion_transition(
         mag = _interval_magnitude(iv)
         scale = 0.0 if mag is None or mag == 0.0 else float(mag)
         baseline_scales.append(scale)
+    hypothetical_midpoint_shifts = [
+        _float_or_none(iv.mid().detach().cpu()) or 0.0
+        for iv in inserted_box
+    ]
+    hypothetical_centered_inserted = _tmvector_shift_polynomial_constants(inserted, hypothetical_midpoint_shifts)
+    hypothetical_centered_box = _right_map_range_box_for_mode(hypothetical_centered_inserted, right_map_range_mode)
+    hypothetical_centered_scales: list[float] = []
+    for iv in hypothetical_centered_box:
+        mag = _interval_magnitude(iv)
+        scale = 0.0 if mag is None or mag == 0.0 else float(mag)
+        hypothetical_centered_scales.append(scale)
 
     old_center = list(center)
     if right_map_center_mode == "range_midpoint":
-        midpoint_shifts = [
-            _float_or_none(iv.mid().detach().cpu()) or 0.0
-            for iv in inserted_box
-        ]
-        centered_inserted = _tmvector_shift_polynomial_constants(inserted, midpoint_shifts)
-        center = [float(c) + float(shift) for c, shift in zip(center, midpoint_shifts)]
-        centered_box = _right_map_range_box_for_mode(centered_inserted, right_map_range_mode)
+        centered_inserted = hypothetical_centered_inserted
+        center = [float(c) + float(shift) for c, shift in zip(center, hypothetical_midpoint_shifts)]
+        centered_box = hypothetical_centered_box
         scale_box = centered_box
         inserted_for_reset = centered_inserted
-        applied_shifts = midpoint_shifts
+        applied_shifts = hypothetical_midpoint_shifts
     else:
         centered_inserted = inserted
         centered_box = inserted_box
@@ -1421,6 +1459,8 @@ def _flowstar_normalized_insertion_transition(
         centered_box=centered_box,
         baseline_scales=baseline_scales,
         centered_scales=scales,
+        hypothetical_centered_box=hypothetical_centered_box,
+        hypothetical_centered_scales=hypothetical_centered_scales,
         applied_shifts=applied_shifts,
     )
     tmv_right = _scale_tmvector_components(inserted_for_reset, inv_scales).apply_cutoff(cutoff_threshold)
