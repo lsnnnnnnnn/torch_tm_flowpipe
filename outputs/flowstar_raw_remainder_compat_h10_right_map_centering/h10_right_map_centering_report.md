@@ -1,26 +1,32 @@
 # h10 Right-Map Range-Midpoint Centering Audit
 
 This h10 audit keeps `right_map_center_mode="constant"` as the default. h10 was run only by this opt-in experiment.
+Terminal validation rejection is a safe failure-to-progress, not an accepted unsound enclosure.
 
 ## Decision
 
-- Decision: `reject_due_to_soundness_or_reconstruction_failure`.
-- Reasons: `constant_adaptive_h10 raw target violation; range_midpoint_adaptive_h10 raw target violation; constant_on_range_midpoint_schedule raw target violation`.
+- Decision: `h10_not_reached_no_material_improvement`.
+- Reasons: `criteria evaluated from h10 artifacts`.
+- Accepted soundness checks passed.
+- Centering produced material common-prefix width improvement, but validated-horizon extension did not meet the predefined 0.5 threshold.
 - Minimum target margin: `2.3488222932062895e-08` at step `53`, t `1.1910872506835912`, h `0.061034072337060589`.
-- Immediate same-state saving max: `0.0022487356326686362`.
-- Cumulative downstream saving max: `0.22509633248238251`.
+- Accepted raw-target violations: `0`.
+- Rejected raw-target attempts: `46`.
+- Terminal raw-target rejection: `true`.
+- Baseline counterfactual immediate saving max: `0.17003372367652925`.
+- Post-centering remaining asymmetry max: `0.0022487356326686362`.
+- Frozen cumulative final width saving: `0.22413303738259271`.
 - Common-time width worsening count: `26`.
-- Cross-schedule centering improvement: `0.22413303738259271`.
 
 ## Run Summary
 
-| mode | reached_t | reached_h10 | accepted | rejected | final width | tube width | Flowstar final ratio | Flowstar tube ratio | samples | min margin |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| generated_flowstar_h10_reference | 10 | true | 290 |  | 0.7047129999999997 | 9.5663119999999999 | 1 | 1 |  |  |
-| constant_adaptive_h10 | 6.3172908799330765 | false | 308 | 48 | 4.18646949336906 | 10.823889674070674 | 5.940673002156994 | 1.1314589858736235 | 0 | 9.0837879836220994e-07 |
-| range_midpoint_adaptive_h10 | 6.3909311096815973 | false | 293 | 46 | 4.2364622601250339 | 10.951974122131782 | 6.0116136074189575 | 1.1448481005147837 | 0 | 2.3488222932062895e-08 |
-| range_midpoint_on_constant_schedule | 6.3172908799330765 | false | 308 | 0 | 3.2481433699106885 | 10.449734049790425 | 4.6091719180867816 | 1.0923471918739871 | 0 | 4.0866916207331111e-06 |
-| constant_on_range_midpoint_schedule | 0.43677646366378969 | false | 29 | 1 | 0.82403352058588952 | 3.0256663349906692 | 1.1693178933635251 | 0.31628346796452689 | 0 | 3.5043588820237207e-06 |
+| mode | replay status | reached_t | reached_h10 | accepted | rejected | accepted raw | rejected raw attempts | terminal target rejection | final width | time-aligned Flowstar width | time-aligned ratio | time-aligned tube ratio | samples | min margin |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| generated_flowstar_h10_reference |  | 10 | true | 290 |  |  |  |  | 0.7047129999999997 | 0.7047129999999997 | 1 | 1 |  |  |
+| constant_adaptive_h10 |  | 6.3172908799330765 | false | 308 | 48 | 0 | 48 | true | 4.18646949336906 | 0.46173629999999982 | 9.066797419585729 | 1.1438370368644633 | 0 | 9.0837879836220994e-07 |
+| range_midpoint_adaptive_h10 |  | 6.3909311096815973 | false | 293 | 46 | 0 | 46 | true | 4.2364622601250339 | 0.45704840000000002 | 9.2691764376049317 | 1.1492248875491264 | 0 | 2.3488222932062895e-08 |
+| range_midpoint_on_constant_schedule | completed_source_schedule | 6.3172908799330765 | false | 308 | 0 | 0 | 0 | false | 3.2481433699106885 | 0.46173629999999982 | 7.0346285746013253 | 1.1042973636517799 | 0 | 4.0866916207331111e-06 |
+| constant_on_range_midpoint_schedule | validation_failed | 0.43677646366378969 | false | 29 | 1 | 0 | 1 | true | 0.82403352058588952 | 0.77074450000000017 | 1.0691396702615319 | 1.0113150202927625 | 0 | 3.5043588820237207e-06 |
 
 ## Margin Watch
 

@@ -23,13 +23,17 @@ def _summary(mode: str, **updates):
         "reached_h10": True,
         "reached_t": 10.0,
         "accepted_steps": 10,
-        "raw_residual_target_violations": 0,
+        "accepted_raw_target_violations": 0,
+        "rejected_raw_target_attempts": 0,
+        "terminal_raw_target_rejection": False,
+        "accepted_nonfinite_enclosures": 0,
         "sample_sanity_violations": 0,
         "minimum_target_margin": 1e-6,
         "max_reconstruction_polynomial_abs_diff": 0.0,
         "max_reconstruction_remainder_endpoint_diff": 0.0,
-        "flowstar_final_width_ratio": 2.0,
-        "flowstar_tube_width_ratio": 1.01,
+        "flowstar_h10_final_width_ratio": 2.0,
+        "time_aligned_tube_ratio": 1.01,
+        "_max_immediate_same_state_saving": 0.0,
     }
     row.update(updates)
     return row
@@ -76,8 +80,9 @@ def test_sequence_exhaustion_stops_replay_without_forcing_acceptance():
         prescribed_h=[0.002],
     )
 
-    assert summary["status"] == "failed"
-    assert summary["first_failure_reason"] == "prescribed h sequence ended before horizon"
+    assert summary["status"] == "completed_source_schedule"
+    assert summary["replay_status"] == "completed_source_schedule"
+    assert summary["reached_source_schedule_end"] is True
     assert summary["accepted_steps"] == 1
     assert len(rows) == 1
 
@@ -128,6 +133,47 @@ def test_decision_checks_frozen_and_adaptive_sample_violations():
     assert any("sample sanity violation" in reason for reason in reasons)
 
 
+def test_terminal_rejected_target_failure_is_not_accepted_soundness_violation():
+    summaries = {
+        h10.CONSTANT_ADAPTIVE: _summary(h10.CONSTANT_ADAPTIVE),
+        h10.RANGE_ADAPTIVE: _summary(
+            h10.RANGE_ADAPTIVE,
+            reached_h10=False,
+            reached_t=6.3,
+            accepted_raw_target_violations=0,
+            rejected_raw_target_attempts=1,
+            terminal_raw_target_rejection=True,
+        ),
+        h10.RANGE_ON_CONSTANT: _summary(h10.RANGE_ON_CONSTANT),
+        h10.CONSTANT_ON_RANGE: _summary(h10.CONSTANT_ON_RANGE),
+    }
+    decision, _metrics, reasons = h10.decide(
+        summaries,
+        {"width_worsening_count": 0, "final_common_width_improvement": 0.1},
+        [{"replay_kind": "range_midpoint_on_constant_schedule", "replay_status": "accepted", "width_reduction_relative": 0.1}],
+    )
+
+    assert decision != "reject_due_to_soundness_or_reconstruction_failure"
+    assert not reasons
+
+
+def test_accepted_target_violation_triggers_soundness_reject():
+    summaries = {
+        h10.CONSTANT_ADAPTIVE: _summary(h10.CONSTANT_ADAPTIVE),
+        h10.RANGE_ADAPTIVE: _summary(h10.RANGE_ADAPTIVE, accepted_raw_target_violations=1),
+        h10.RANGE_ON_CONSTANT: _summary(h10.RANGE_ON_CONSTANT),
+        h10.CONSTANT_ON_RANGE: _summary(h10.CONSTANT_ON_RANGE),
+    }
+    decision, _metrics, reasons = h10.decide(
+        summaries,
+        {"width_worsening_count": 0, "final_common_width_improvement": 0.1},
+        [{"replay_kind": "range_midpoint_on_constant_schedule", "replay_status": "accepted", "width_reduction_relative": 0.1}],
+    )
+
+    assert decision == "reject_due_to_soundness_or_reconstruction_failure"
+    assert any("accepted raw target violation" in reason for reason in reasons)
+
+
 def test_non_positive_margin_cannot_get_success_decision():
     summaries = {
         h10.CONSTANT_ADAPTIVE: _summary(h10.CONSTANT_ADAPTIVE),
@@ -143,6 +189,105 @@ def test_non_positive_margin_cannot_get_success_decision():
 
     assert decision == "reject_due_to_soundness_or_reconstruction_failure"
     assert any("non-positive" in reason for reason in reasons)
+
+
+def test_segment_lookup_does_not_carry_forward_after_run_end():
+    rows = [{"accepted_rejected": "accepted", "t_lo": 0.0, "t_hi": 1.0, "final_segment_width_sum": 1.0}]
+    assert h10._segment_containing(rows, 0.5) == rows[0]
+    assert h10._segment_containing(rows, 1.0 + 5e-13) == rows[0]
+    assert h10._segment_containing(rows, 1.1) == {}
+
+
+def test_checkpoint_after_run_end_is_missing_not_last_segment():
+    flow_rows = [
+        {
+            "source": "flowstar",
+            "mode": h10.FLOWSTAR_MODE,
+            "run_kind": "reference",
+            "accepted_rejected": "accepted",
+            "segment_index": 0,
+            "t_lo": 0.0,
+            "t_hi": 10.0,
+            "h_accepted": 10.0,
+            "final_segment_width_sum": 1.0,
+            "tube_prefix_width_sum": 1.0,
+        }
+    ]
+    short = [
+        {
+            "source": "torch",
+            "mode": h10.RANGE_ADAPTIVE,
+            "run_kind": "fixture",
+            "accepted_rejected": "accepted",
+            "segment_index": 0,
+            "t_lo": 0.0,
+            "t_hi": 1.0,
+            "h_accepted": 1.0,
+            "final_segment_width_sum": 2.0,
+            "tube_prefix_width_sum": 2.0,
+        }
+    ]
+    checkpoints = h10.make_checkpoints(
+        {
+            h10.CONSTANT_ADAPTIVE: short,
+            h10.RANGE_ADAPTIVE: short,
+            h10.RANGE_ON_CONSTANT: short,
+            h10.CONSTANT_ON_RANGE: short,
+        },
+        flow_rows,
+        10.0,
+    )
+    row = next(r for r in checkpoints if r["event_name"] == "t_5" and r["mode"] == h10.RANGE_ADAPTIVE)
+    assert row["status"] == "missing"
+    assert row["comparison_status"] == "run_ended_before_checkpoint"
+    assert row.get("final_segment_width_sum", "") == ""
+
+
+def test_partial_horizon_summary_does_not_compute_h10_final_ratio():
+    rows = [
+        {
+            "mode": h10.FLOWSTAR_MODE,
+            "source": "flowstar",
+            "accepted_rejected": "accepted",
+            "t_lo": 0.0,
+            "t_hi": 10.0,
+            "final_segment_width_sum": 2.0,
+            "tube_prefix_width_sum": 3.0,
+        }
+    ]
+    summaries = [
+        h10._flowstar_summary({"accepted_steps": 1, "final_width_sum": 2.0, "_tube_width_sum": 3.0}),
+        _summary(h10.RANGE_ADAPTIVE, reached_h10=False, reached_t=1.0, final_segment_width_sum=4.0, tube_width_sum=5.0, _accepted_h=[1.0]),
+    ]
+    finalized = h10.finalize_summaries(
+        summaries,
+        {"final_width_sum": 2.0, "_tube_width_sum": 3.0},
+        rows,
+        [1.0],
+        "h10_not_reached_no_material_improvement",
+        {},
+    )
+    row = next(r for r in finalized if r["mode"] == h10.RANGE_ADAPTIVE)
+    assert row["flowstar_h10_final_width_ratio"] == "not_applicable_partial_horizon"
+    assert row["time_aligned_final_width_ratio"] == 2.0
+
+
+def test_baseline_immediate_and_post_centering_asymmetry_are_separate():
+    summaries = {
+        h10.CONSTANT_ADAPTIVE: _summary(h10.CONSTANT_ADAPTIVE, _max_immediate_same_state_saving=0.17),
+        h10.RANGE_ADAPTIVE: _summary(h10.RANGE_ADAPTIVE, _max_immediate_same_state_saving=0.002),
+        h10.RANGE_ON_CONSTANT: _summary(h10.RANGE_ON_CONSTANT),
+        h10.CONSTANT_ON_RANGE: _summary(h10.CONSTANT_ON_RANGE),
+    }
+    _decision, metrics, _reasons = h10.decide(
+        summaries,
+        {"width_worsening_count": 0, "final_common_width_improvement": 0.1},
+        [{"replay_kind": "range_midpoint_on_constant_schedule", "replay_status": "accepted", "width_reduction_relative": 0.22}],
+    )
+
+    assert metrics["baseline_counterfactual_immediate_saving_max"] == 0.17
+    assert metrics["post_centering_remaining_asymmetry_max"] == 0.002
+    assert metrics["frozen_cumulative_width_saving_final"] == 0.22
 
 
 def test_missing_flowstar_component_fields_are_unknown_not_zero():

@@ -55,12 +55,18 @@ DECISIONS = {
 SUMMARY_FIELDS = [
     "source", "run_kind", "mode", "right_map_center_mode", "status", "reached_t", "reached_h10",
     "accepted_steps", "rejected_attempts", "first_failure_step", "first_failure_time", "first_failure_reason",
-    "shared_schedule_end_time", "min_h_used", "runtime_s", "final_segment_width_sum", "tube_width_sum",
-    "flowstar_final_width_sum", "flowstar_tube_width_sum", "flowstar_final_width_ratio", "flowstar_tube_width_ratio",
+    "replay_status", "source_schedule_steps", "replayed_schedule_steps", "reached_source_schedule_end",
+    "source_schedule_end_time", "shared_schedule_end_time", "min_h_used", "runtime_s", "final_segment_width_sum", "tube_width_sum",
+    "flowstar_h10_final_width", "flowstar_h10_full_tube_width", "flowstar_h10_final_width_ratio",
+    "time_aligned_flowstar_segment_width", "time_aligned_final_width_ratio",
+    "time_aligned_flowstar_tube_prefix_width", "time_aligned_tube_ratio",
     "schedule_distance_vs_flowstar", "sample_sanity_violations", "sample_sanity_status",
     "minimum_target_margin", "minimum_target_margin_step", "minimum_target_margin_time", "minimum_target_margin_h",
-    "raw_residual_target_violations", "max_reconstruction_polynomial_abs_diff", "max_reconstruction_remainder_endpoint_diff",
-    "max_immediate_same_state_saving", "max_cumulative_downstream_saving", "common_time_width_worsening_count",
+    "accepted_raw_target_violations", "rejected_raw_target_attempts", "terminal_raw_target_rejection",
+    "accepted_nonfinite_enclosures", "max_reconstruction_polynomial_abs_diff",
+    "max_reconstruction_remainder_endpoint_diff", "baseline_counterfactual_immediate_saving_max",
+    "post_centering_remaining_asymmetry_max", "frozen_cumulative_width_saving_final",
+    "max_cumulative_downstream_saving", "common_time_width_worsening_count",
     "cross_schedule_centering_improvement", "decision", "notes",
 ]
 
@@ -75,6 +81,7 @@ SEGMENT_FIELDS = [
     "actual_centered_reset_width_sum", "immediate_reset_reduction_relative",
     "cumulative_reset_reduction_relative", "final_segment_width_sum", "tube_prefix_width_sum",
     "reconstruction_polynomial_max_abs_diff", "reconstruction_remainder_endpoint_diff",
+    "accepted_enclosure_finite",
     "step_rejections", "had_prior_rejection", "missing_flowstar_component_fields", "message",
 ]
 
@@ -96,8 +103,10 @@ CROSS_FIELDS = [
 
 CHECKPOINT_FIELDS = [
     "event_name", "checkpoint_t", "threshold", "source", "mode", "run_kind", "segment_index", "status",
+    "run_reached_checkpoint", "last_validated_time", "comparison_status",
     "t_lo", "t_hi", "h", "final_segment_width_sum", "tube_prefix_width_sum", "flowstar_segment_width_sum",
-    "flowstar_final_width_ratio", "flowstar_tube_width_ratio", "target_margin_min",
+    "time_aligned_flowstar_segment_width", "time_aligned_final_width_ratio",
+    "time_aligned_flowstar_tube_prefix_width", "time_aligned_tube_ratio", "target_margin_min",
     "immediate_same_state_saving", "cumulative_downstream_saving", "missing_flowstar_component_fields", "notes",
 ]
 
@@ -162,6 +171,27 @@ def _min_margin_row(rows: Sequence[Mapping[str, Any]]) -> Mapping[str, Any]:
     return min(candidates, key=lambda row: float(row["target_margin_min"]))
 
 
+def _target_subset_failure(row: Mapping[str, Any]) -> bool:
+    if _bool(row.get("raw_residual_target_violation")):
+        return True
+    text = " ".join(
+        str(row.get(field, ""))
+        for field in ("rejection_reason", "validation_status", "validation_message", "message")
+    ).lower()
+    return "target" in text and ("subset" in text or "remainder" in text) and (
+        "fail" in text or "not" in text or "reject" in text
+    )
+
+
+def _last_validated_time(rows: Sequence[Mapping[str, Any]]) -> float | None:
+    times = [
+        _float(row.get("t_hi"))
+        for row in rows
+        if row.get("accepted_rejected") == "accepted" and _float(row.get("t_hi")) is not None
+    ]
+    return max(times) if times else None
+
+
 def _reconstruction_endpoint_diff(row: Mapping[str, Any]) -> float | str:
     lo = _float(row.get("reconstruction_remainder_lo_diff"))
     hi = _float(row.get("reconstruction_remainder_hi_diff"))
@@ -211,12 +241,18 @@ def run_centering_h10(
     horizon: float,
     wall_cap_s: float,
     prescribed_h: Sequence[float] | None = None,
+    initial_current: TMVector | list[Interval] | None = None,
+    initial_normal_state: FlowstarNormalFlowpipeState | None = None,
+    initial_samples: Sequence[Sequence[float]] | None = None,
+    initial_t: float = 0.0,
+    initial_h_next: float | None = None,
+    start_segment_index: int = 0,
 ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
-    current: TMVector | list[Interval] = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
-    normal_state: FlowstarNormalFlowpipeState | None = None
-    samples = make_samples()
-    h_next = H_MAX
-    t = 0.0
+    current: TMVector | list[Interval] = initial_current if initial_current is not None else [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    normal_state: FlowstarNormalFlowpipeState | None = initial_normal_state
+    samples = [list(point) for point in initial_samples] if initial_samples is not None else make_samples()
+    h_next = float(initial_h_next) if initial_h_next is not None else H_MAX
+    t = float(initial_t)
     start = time.perf_counter()
     rows: list[dict[str, Any]] = []
     attempts: list[dict[str, Any]] = []
@@ -225,6 +261,7 @@ def run_centering_h10(
     sample_max_violation = 0.0
     status = "completed"
     message = "validated to requested h10 horizon"
+    replay_status = ""
     first_failure_step: int | str = ""
     first_failure_time: float | str = ""
     first_failure_reason = ""
@@ -234,8 +271,8 @@ def run_centering_h10(
     while t < horizon - 1e-12:
         if time.perf_counter() - start >= wall_cap_s:
             status = "timeout"
-            message = f"wall-time cap reached before segment {len(rows)}"
-            first_failure_step = len(rows)
+            message = f"wall-time cap reached before segment {start_segment_index + len(rows)}"
+            first_failure_step = start_segment_index + len(rows)
             first_failure_time = t
             first_failure_reason = message
             break
@@ -245,11 +282,9 @@ def run_centering_h10(
             prescribed_value: float | str = ""
         else:
             if prescribed_index >= len(prescribed):
-                status = "failed"
-                message = "prescribed h sequence ended before horizon"
-                first_failure_step = len(rows)
-                first_failure_time = t
-                first_failure_reason = message
+                status = "completed_source_schedule"
+                replay_status = "completed_source_schedule"
+                message = "completed prescribed source schedule before h10"
                 break
             h_try = float(prescribed[prescribed_index])
             prescribed_value = h_try
@@ -258,8 +293,9 @@ def run_centering_h10(
                 h_try = remaining
             elif h_try > remaining + 1e-10:
                 status = "failed"
+                replay_status = "schedule_mismatch"
                 message = "prescribed h exceeds remaining horizon"
-                first_failure_step = len(rows)
+                first_failure_step = start_segment_index + len(rows)
                 first_failure_time = t
                 first_failure_reason = message
                 break
@@ -283,7 +319,7 @@ def run_centering_h10(
             flowstar_normal_state=normal_state,
             right_map_center_mode=right_map_center_mode,
             diagnostics=diagnostics,
-            diagnostics_context={"mode": mode, "run_kind": run_kind, "segment_index": len(rows), "t_before": t},
+            diagnostics_context={"mode": mode, "run_kind": run_kind, "segment_index": start_segment_index + len(rows), "t_before": t},
         )
         rejected_attempts += sum(1 for row in diagnostics if _diag_status(row) == "rejected")
         for diag in diagnostics:
@@ -292,7 +328,7 @@ def run_centering_h10(
                 "source": "torch",
                 "mode": mode,
                 "run_kind": run_kind,
-                "segment_index": len(rows),
+                "segment_index": start_segment_index + len(rows),
                 "attempt_index": diag.get("attempt_index", ""),
                 "t_before": t,
                 "h_attempted": diag.get("h", diag.get("h_try", h_try)),
@@ -331,7 +367,7 @@ def run_centering_h10(
             "mode": mode,
             "run_kind": run_kind,
             "right_map_center_mode": right_map_center_mode,
-            "segment_index": len(rows),
+            "segment_index": start_segment_index + len(rows),
             "t_lo": t,
             "t_hi": t_hi,
             "h_attempted": h_try,
@@ -366,6 +402,7 @@ def run_centering_h10(
             "tube_prefix_width_sum": "",
             "reconstruction_polynomial_max_abs_diff": stats.get("reconstruction_polynomial_max_abs_diff", ""),
             "reconstruction_remainder_endpoint_diff": max(_float(stats.get("reconstruction_remainder_lo_diff")) or 0.0, _float(stats.get("reconstruction_remainder_hi_diff")) or 0.0) if stats else "",
+            "accepted_enclosure_finite": finite if accepted else "",
             "step_rejections": getattr(seg, "step_rejections", ""),
             "had_prior_rejection": (getattr(seg, "step_rejections", 0) or 0) > 0,
             "missing_flowstar_component_fields": "",
@@ -374,8 +411,10 @@ def run_centering_h10(
         rows.append(row)
         if not accepted:
             status = "failed"
+            if prescribed_h is not None:
+                replay_status = "validation_failed"
             message = row["rejection_reason"] or "validation failed"
-            first_failure_step = len(rows) - 1
+            first_failure_step = start_segment_index + len(rows) - 1
             first_failure_time = t
             first_failure_reason = message
             break
@@ -404,6 +443,38 @@ def run_centering_h10(
     if status == "completed" and t < horizon - 1e-12:
         status = "stopped"
         message = "stopped before h10"
+    reached_h10 = bool(status == "completed" and t >= horizon - 1e-9)
+    if prescribed_h is not None and reached_h10:
+        replay_status = "reached_h10"
+    if prescribed_h is not None and not replay_status:
+        replay_status = "validation_failed" if status == "failed" else "completed_source_schedule"
+    reached_source_schedule_end = bool(
+        prescribed_h is not None
+        and len(accepted_rows) == len(prescribed)
+        and status in {"completed_source_schedule", "completed"}
+    )
+    source_schedule_end_time = t if reached_source_schedule_end else ""
+    terminal = rows[-1] if rows else {}
+    accepted_raw_violations = sum(
+        1
+        for row in accepted_rows
+        if _bool(row.get("raw_residual_target_violation"))
+    )
+    rejected_target_attempts = sum(
+        1
+        for row in attempts
+        if row.get("accepted_rejected") == "rejected" and _target_subset_failure(row)
+    )
+    terminal_target_rejection = bool(
+        terminal
+        and terminal.get("accepted_rejected") == "rejected"
+        and _target_subset_failure(terminal)
+    )
+    accepted_nonfinite = sum(
+        1
+        for row in accepted_rows
+        if row.get("accepted_enclosure_finite") not in {True, "true", "True", 1, "1"}
+    )
     summary = {
         "source": "torch",
         "run_kind": run_kind,
@@ -411,12 +482,17 @@ def run_centering_h10(
         "right_map_center_mode": right_map_center_mode,
         "status": status,
         "reached_t": t,
-        "reached_h10": bool(status == "completed" and t >= horizon - 1e-9),
+        "reached_h10": reached_h10,
         "accepted_steps": len(accepted_rows),
         "rejected_attempts": rejected_attempts,
         "first_failure_step": first_failure_step,
         "first_failure_time": first_failure_time,
         "first_failure_reason": first_failure_reason,
+        "replay_status": replay_status,
+        "source_schedule_steps": len(prescribed) if prescribed_h is not None else "",
+        "replayed_schedule_steps": len(accepted_rows) if prescribed_h is not None else "",
+        "reached_source_schedule_end": reached_source_schedule_end if prescribed_h is not None else "",
+        "source_schedule_end_time": source_schedule_end_time,
         "shared_schedule_end_time": t if prescribed_h is not None else "",
         "min_h_used": min(h_vals) if h_vals else "",
         "runtime_s": time.perf_counter() - start,
@@ -428,12 +504,21 @@ def run_centering_h10(
         "minimum_target_margin_step": min_row.get("segment_index", ""),
         "minimum_target_margin_time": min_row.get("t_hi", ""),
         "minimum_target_margin_h": min_row.get("h_accepted", ""),
-        "raw_residual_target_violations": sum(1 for row in rows if _bool(row.get("raw_residual_target_violation"))),
+        "accepted_raw_target_violations": accepted_raw_violations,
+        "rejected_raw_target_attempts": rejected_target_attempts,
+        "terminal_raw_target_rejection": terminal_target_rejection,
+        "accepted_nonfinite_enclosures": accepted_nonfinite,
         "max_reconstruction_polynomial_abs_diff": _max_field(accepted_rows, "reconstruction_polynomial_max_abs_diff"),
         "max_reconstruction_remainder_endpoint_diff": _max_field(accepted_rows, "reconstruction_remainder_endpoint_diff"),
-        "max_immediate_same_state_saving": _max_field(accepted_rows, "immediate_reset_reduction_relative"),
+        "baseline_counterfactual_immediate_saving_max": "",
+        "post_centering_remaining_asymmetry_max": "",
+        "_max_immediate_same_state_saving": _max_field(accepted_rows, "immediate_reset_reduction_relative"),
         "_accepted_h": h_vals,
         "_sample_max_violation": sample_max_violation,
+        "_final_current": current,
+        "_final_normal_state": normal_state,
+        "_final_samples": samples,
+        "_next_h": h_next,
         "notes": message + "; sample containment is a sanity check only, not a proof",
     }
     return summary, rows, attempts
@@ -476,14 +561,17 @@ def make_cross_schedule_rows(source_rows: Sequence[Mapping[str, Any]], replay_ro
     return rows
 
 
-def _segment_containing(rows: Sequence[Mapping[str, Any]], t: float) -> Mapping[str, Any]:
+def _segment_containing(rows: Sequence[Mapping[str, Any]], t: float, *, tolerance: float = 1e-12) -> Mapping[str, Any]:
     accepted = [row for row in rows if row.get("accepted_rejected") == "accepted"]
     for row in accepted:
         lo = _float(row.get("t_lo"))
         hi = _float(row.get("t_hi"))
-        if lo is not None and hi is not None and lo - 1e-12 <= t <= hi + 1e-12:
+        if lo is not None and hi is not None and lo - tolerance <= t <= hi + tolerance:
             return row
-    return accepted[-1] if accepted and t >= (_float(accepted[-1].get("t_hi")) or 0.0) - 1e-12 else {}
+    last_t = _last_validated_time(accepted)
+    if accepted and last_t is not None and abs(t - last_t) <= tolerance:
+        return accepted[-1]
+    return {}
 
 
 def first_h_divergence(const_rows: Sequence[Mapping[str, Any]], range_rows: Sequence[Mapping[str, Any]]) -> float | str:
@@ -545,14 +633,37 @@ def make_checkpoints(rows_by_mode: Mapping[str, Sequence[Mapping[str, Any]]], fl
         if t is None:
             continue
         flow = _segment_containing(flow_rows, t)
-        flow_tube = flow.get("tube_prefix_width_sum", "")
+        flow_tube = flow.get("tube_prefix_width_sum", "") if flow else ""
         for mode, rows in all_modes.items():
             segment = _segment_containing(rows, t)
+            last_time = _last_validated_time(rows)
             if not segment:
-                out.append({"event_name": event["event_name"], "checkpoint_t": t, "threshold": event.get("threshold", ""), "mode": mode, "status": "missing", "notes": "no containing segment; no interpolation used"})
+                comparison_status = "missing_reference" if (mode == FLOWSTAR_MODE or not flow) else "missing_segment"
+                if last_time is not None and t > last_time + 1e-12:
+                    comparison_status = "run_ended_before_checkpoint"
+                out.append({
+                    "event_name": event["event_name"],
+                    "checkpoint_t": t,
+                    "threshold": event.get("threshold", ""),
+                    "source": "flowstar" if mode == FLOWSTAR_MODE else "torch",
+                    "mode": mode,
+                    "run_kind": "reference" if mode == FLOWSTAR_MODE else "",
+                    "status": "missing",
+                    "run_reached_checkpoint": False,
+                    "last_validated_time": last_time if last_time is not None else "",
+                    "comparison_status": comparison_status,
+                    "notes": "no containing segment; no carry-forward or interpolation used",
+                })
                 continue
-            ratio = _ratio(segment.get("final_segment_width_sum"), flow.get("final_segment_width_sum")) if mode != FLOWSTAR_MODE else 1.0
-            tube_ratio = _ratio(segment.get("tube_prefix_width_sum"), flow_tube) if mode != FLOWSTAR_MODE else 1.0
+            if mode == FLOWSTAR_MODE:
+                ratio = 1.0 if flow else ""
+                tube_ratio = 1.0 if flow else ""
+            elif flow:
+                ratio = _ratio(segment.get("final_segment_width_sum"), flow.get("final_segment_width_sum"))
+                tube_ratio = _ratio(segment.get("tube_prefix_width_sum"), flow_tube)
+            else:
+                ratio = ""
+                tube_ratio = ""
             out.append({
                 "event_name": event["event_name"],
                 "checkpoint_t": t,
@@ -562,14 +673,19 @@ def make_checkpoints(rows_by_mode: Mapping[str, Sequence[Mapping[str, Any]]], fl
                 "run_kind": segment.get("run_kind", ""),
                 "segment_index": segment.get("segment_index", ""),
                 "status": segment.get("accepted_rejected", ""),
+                "run_reached_checkpoint": True,
+                "last_validated_time": last_time if last_time is not None else "",
+                "comparison_status": "time_aligned" if flow else "missing_reference",
                 "t_lo": segment.get("t_lo", ""),
                 "t_hi": segment.get("t_hi", ""),
                 "h": segment.get("h_accepted", ""),
                 "final_segment_width_sum": segment.get("final_segment_width_sum", ""),
                 "tube_prefix_width_sum": segment.get("tube_prefix_width_sum", ""),
                 "flowstar_segment_width_sum": flow.get("final_segment_width_sum", ""),
-                "flowstar_final_width_ratio": ratio,
-                "flowstar_tube_width_ratio": tube_ratio,
+                "time_aligned_flowstar_segment_width": flow.get("final_segment_width_sum", ""),
+                "time_aligned_final_width_ratio": ratio,
+                "time_aligned_flowstar_tube_prefix_width": flow_tube,
+                "time_aligned_tube_ratio": tube_ratio,
                 "target_margin_min": segment.get("target_margin_min", ""),
                 "immediate_same_state_saving": segment.get("immediate_reset_reduction_relative", UNKNOWN_FLOWSTAR_COMPONENT if mode == FLOWSTAR_MODE else ""),
                 "cumulative_downstream_saving": segment.get("cumulative_reset_reduction_relative", UNKNOWN_FLOWSTAR_COMPONENT if mode == FLOWSTAR_MODE else ""),
@@ -634,12 +750,17 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
     cross_improvement = _float(range_on_constant[-1].get("width_reduction_relative")) if range_on_constant else None
     base_metrics = {
         "cross_schedule_centering_improvement": cross_improvement if cross_improvement is not None else "",
+        "frozen_cumulative_width_saving_final": cross_improvement if cross_improvement is not None else "",
         "common_time_width_worsening_count": common_stats.get("width_worsening_count", ""),
+        "baseline_counterfactual_immediate_saving_max": constant_summary.get("_max_immediate_same_state_saving", constant_summary.get("baseline_counterfactual_immediate_saving_max", "")),
+        "post_centering_remaining_asymmetry_max": range_summary.get("_max_immediate_same_state_saving", range_summary.get("post_centering_remaining_asymmetry_max", "")),
     }
     soundness_reasons: list[str] = []
     for row in torch_summaries:
-        if int(float(row.get("raw_residual_target_violations") or 0)) > 0:
-            soundness_reasons.append(f"{row.get('mode')} raw target violation")
+        if int(float(row.get("accepted_raw_target_violations") or 0)) > 0:
+            soundness_reasons.append(f"{row.get('mode')} accepted raw target violation")
+        if int(float(row.get("accepted_nonfinite_enclosures") or 0)) > 0:
+            soundness_reasons.append(f"{row.get('mode')} accepted non-finite enclosure")
         if int(float(row.get("sample_sanity_violations") or 0)) > 0:
             soundness_reasons.append(f"{row.get('mode')} sample sanity violation")
         margin = _float(row.get("minimum_target_margin"))
@@ -652,9 +773,14 @@ def decide(summary_by_mode: Mapping[str, Mapping[str, Any]], common_stats: Mappi
     if soundness_reasons:
         return "reject_due_to_soundness_or_reconstruction_failure", base_metrics, soundness_reasons
 
-    final_ratio = _float(range_summary.get("flowstar_final_width_ratio"))
-    tube_ratio = _float(range_summary.get("flowstar_tube_width_ratio"))
     range_reached = _bool(range_summary.get("reached_h10"))
+    flow_summary = summary_by_mode.get(FLOWSTAR_MODE, {})
+    final_ratio = _float(range_summary.get("flowstar_h10_final_width_ratio"))
+    if final_ratio is None and range_reached:
+        final_ratio = _ratio(range_summary.get("final_segment_width_sum"), flow_summary.get("final_segment_width_sum"))
+    tube_ratio = _float(range_summary.get("time_aligned_tube_ratio"))
+    if tube_ratio is None and range_reached:
+        tube_ratio = _ratio(range_summary.get("tube_width_sum"), flow_summary.get("tube_width_sum"))
     schedule_independent = cross_improvement is not None and cross_improvement >= 0.05
     no_worsening = int(common_stats.get("width_worsening_count") or 0) == 0
     if range_reached:
@@ -680,56 +806,95 @@ def _flowstar_summary(flow_ref: Mapping[str, Any]) -> dict[str, Any]:
         "source": "flowstar", "run_kind": "reference", "mode": FLOWSTAR_MODE, "right_map_center_mode": "not_applicable",
         "status": "completed", "reached_t": DEFAULT_HORIZON, "reached_h10": True,
         "accepted_steps": flow_ref.get("accepted_steps", ""), "final_segment_width_sum": flow_ref.get("final_width_sum", ""),
-        "tube_width_sum": flow_ref.get("_tube_width_sum", ""), "flowstar_final_width_sum": flow_ref.get("final_width_sum", ""),
-        "flowstar_tube_width_sum": flow_ref.get("_tube_width_sum", ""), "flowstar_final_width_ratio": 1.0,
-        "flowstar_tube_width_ratio": 1.0, "decision": "reference_only",
+        "tube_width_sum": flow_ref.get("_tube_width_sum", ""), "flowstar_h10_final_width": flow_ref.get("final_width_sum", ""),
+        "flowstar_h10_full_tube_width": flow_ref.get("_tube_width_sum", ""), "flowstar_h10_final_width_ratio": 1.0,
+        "time_aligned_flowstar_segment_width": flow_ref.get("final_width_sum", ""),
+        "time_aligned_final_width_ratio": 1.0,
+        "time_aligned_flowstar_tube_prefix_width": flow_ref.get("_tube_width_sum", ""),
+        "time_aligned_tube_ratio": 1.0, "decision": "reference_only",
         "notes": "Flowstar h10 segment-box reference; internal component fields unknown, not zero.",
     }
 
 
-def finalize_summaries(summary_rows: list[dict[str, Any]], flow_ref: Mapping[str, Any], flow_h: Sequence[float], decision: str, decision_metrics: Mapping[str, Any]) -> list[dict[str, Any]]:
+def finalize_summaries(summary_rows: list[dict[str, Any]], flow_ref: Mapping[str, Any], flow_rows: Sequence[Mapping[str, Any]], flow_h: Sequence[float], decision: str, decision_metrics: Mapping[str, Any]) -> list[dict[str, Any]]:
     flow_final = flow_ref.get("final_width_sum", "")
     flow_tube = flow_ref.get("_tube_width_sum", "")
     for row in summary_rows:
-        row["flowstar_final_width_sum"] = flow_final
-        row["flowstar_tube_width_sum"] = flow_tube
+        row["flowstar_h10_final_width"] = flow_final
+        row["flowstar_h10_full_tube_width"] = flow_tube
         if row.get("source") == "torch":
-            row["flowstar_final_width_ratio"] = _ratio(row.get("final_segment_width_sum"), flow_final)
-            row["flowstar_tube_width_ratio"] = _ratio(row.get("tube_width_sum"), flow_tube)
+            reached_t = _float(row.get("reached_t"))
+            aligned_flow = _segment_containing(flow_rows, reached_t) if reached_t is not None else {}
+            if aligned_flow:
+                row["time_aligned_flowstar_segment_width"] = aligned_flow.get("final_segment_width_sum", "")
+                row["time_aligned_final_width_ratio"] = _ratio(row.get("final_segment_width_sum"), aligned_flow.get("final_segment_width_sum"))
+                row["time_aligned_flowstar_tube_prefix_width"] = aligned_flow.get("tube_prefix_width_sum", "")
+                row["time_aligned_tube_ratio"] = _ratio(row.get("tube_width_sum"), aligned_flow.get("tube_prefix_width_sum"))
+            else:
+                row["time_aligned_flowstar_segment_width"] = ""
+                row["time_aligned_final_width_ratio"] = ""
+                row["time_aligned_flowstar_tube_prefix_width"] = ""
+                row["time_aligned_tube_ratio"] = ""
+            row["flowstar_h10_final_width_ratio"] = (
+                _ratio(row.get("final_segment_width_sum"), flow_final)
+                if _bool(row.get("reached_h10"))
+                else "not_applicable_partial_horizon"
+            )
             accepted = row.get("_accepted_h", [])
             row["schedule_distance_vs_flowstar"] = schedule_distance(list(flow_h), list(accepted)) if accepted else ""
             row["decision"] = decision if row.get("mode") == RANGE_ADAPTIVE else ""
+            row["baseline_counterfactual_immediate_saving_max"] = decision_metrics.get("baseline_counterfactual_immediate_saving_max", "")
+            row["post_centering_remaining_asymmetry_max"] = decision_metrics.get("post_centering_remaining_asymmetry_max", "")
+            row["frozen_cumulative_width_saving_final"] = decision_metrics.get("frozen_cumulative_width_saving_final", "")
             row["common_time_width_worsening_count"] = decision_metrics.get("common_time_width_worsening_count", "")
             row["cross_schedule_centering_improvement"] = decision_metrics.get("cross_schedule_centering_improvement", "")
             row.pop("_accepted_h", None)
             row.pop("_sample_max_violation", None)
+            row.pop("_final_current", None)
+            row.pop("_final_normal_state", None)
+            row.pop("_final_samples", None)
+            row.pop("_next_h", None)
+            row.pop("_max_immediate_same_state_saving", None)
     return summary_rows
 
 
 def write_report(path: Path, summary_rows: Sequence[Mapping[str, Any]], margin_rows: Sequence[Mapping[str, Any]], decision: str, reasons: Sequence[str], formatting: Sequence[Mapping[str, Any]]) -> None:
     by_mode = {row.get("mode"): row for row in summary_rows}
+    range_row = by_mode.get(RANGE_ADAPTIVE, {})
     lines = [
         "# h10 Right-Map Range-Midpoint Centering Audit",
         "",
         "This h10 audit keeps `right_map_center_mode=\"constant\"` as the default. h10 was run only by this opt-in experiment.",
+        "Terminal validation rejection is a safe failure-to-progress, not an accepted unsound enclosure.",
         "",
         "## Decision",
         "",
         f"- Decision: `{decision}`.",
         f"- Reasons: `{'; '.join(reasons) if reasons else 'criteria evaluated from h10 artifacts'}`.",
-        f"- Minimum target margin: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin'))}` at step `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_step'))}`, t `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_time'))}`, h `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('minimum_target_margin_h'))}`.",
-        f"- Immediate same-state saving max: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('max_immediate_same_state_saving'))}`.",
-        f"- Cumulative downstream saving max: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('max_cumulative_downstream_saving'))}`.",
-        f"- Common-time width worsening count: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('common_time_width_worsening_count'))}`.",
-        f"- Cross-schedule centering improvement: `{_format(by_mode.get(RANGE_ADAPTIVE, {}).get('cross_schedule_centering_improvement'))}`.",
+        "- Accepted soundness checks passed." if not reasons else "- Accepted soundness checks did not pass.",
+        "- Centering produced material common-prefix width improvement, but validated-horizon extension did not meet the predefined 0.5 threshold." if decision == "h10_not_reached_no_material_improvement" else "- Decision followed the predefined h10 criteria.",
+        f"- Minimum target margin: `{_format(range_row.get('minimum_target_margin'))}` at step `{_format(range_row.get('minimum_target_margin_step'))}`, t `{_format(range_row.get('minimum_target_margin_time'))}`, h `{_format(range_row.get('minimum_target_margin_h'))}`.",
+        f"- Accepted raw-target violations: `{_format(range_row.get('accepted_raw_target_violations'))}`.",
+        f"- Rejected raw-target attempts: `{_format(range_row.get('rejected_raw_target_attempts'))}`.",
+        f"- Terminal raw-target rejection: `{_format(range_row.get('terminal_raw_target_rejection'))}`.",
+        f"- Baseline counterfactual immediate saving max: `{_format(range_row.get('baseline_counterfactual_immediate_saving_max'))}`.",
+        f"- Post-centering remaining asymmetry max: `{_format(range_row.get('post_centering_remaining_asymmetry_max'))}`.",
+        f"- Frozen cumulative final width saving: `{_format(range_row.get('frozen_cumulative_width_saving_final'))}`.",
+        f"- Common-time width worsening count: `{_format(range_row.get('common_time_width_worsening_count'))}`.",
         "",
         "## Run Summary",
         "",
-        "| mode | reached_t | reached_h10 | accepted | rejected | final width | tube width | Flowstar final ratio | Flowstar tube ratio | samples | min margin |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| mode | replay status | reached_t | reached_h10 | accepted | rejected | accepted raw | rejected raw attempts | terminal target rejection | final width | time-aligned Flowstar width | time-aligned ratio | time-aligned tube ratio | samples | min margin |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in summary_rows:
-        lines.append("| " + " | ".join(_format(row.get(field)) for field in ("mode", "reached_t", "reached_h10", "accepted_steps", "rejected_attempts", "final_segment_width_sum", "tube_width_sum", "flowstar_final_width_ratio", "flowstar_tube_width_ratio", "sample_sanity_violations", "minimum_target_margin")) + " |")
+        lines.append("| " + " | ".join(_format(row.get(field)) for field in (
+            "mode", "replay_status", "reached_t", "reached_h10", "accepted_steps", "rejected_attempts",
+            "accepted_raw_target_violations", "rejected_raw_target_attempts", "terminal_raw_target_rejection",
+            "final_segment_width_sum", "time_aligned_flowstar_segment_width",
+            "time_aligned_final_width_ratio", "time_aligned_tube_ratio",
+            "sample_sanity_violations", "minimum_target_margin",
+        )) + " |")
     lines.extend(["", "## Margin Watch", "", "| rank | mode | step | t_hi | h | margin | width | had rejection |", "| --- | --- | --- | --- | --- | --- | --- | --- |"])
     for row in margin_rows:
         lines.append("| " + " | ".join(_format(row.get(field)) for field in ("rank", "mode", "segment_index", "t_hi", "h", "target_margin_min", "final_segment_width_sum", "had_prior_rejection")) + " |")
@@ -780,7 +945,7 @@ def run(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, 
     for row in summaries:
         if row.get("source") == "torch":
             row["max_cumulative_downstream_saving"] = _max_field([r for r in cross_rows if r.get("replay_mode") == RANGE_ON_CONSTANT], "cumulative_reset_reduction_relative")
-    summaries = finalize_summaries(summaries, flow_ref, flow_h, decision, decision_metrics)
+    summaries = finalize_summaries(summaries, flow_ref, flow_rows, flow_h, decision, decision_metrics)
     all_segments = flow_rows + const_rows + range_rows + range_on_const_rows + const_on_range_rows
     all_attempts = const_attempts + range_attempts + range_on_const_attempts + const_on_range_attempts
 
@@ -793,6 +958,9 @@ def run(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, 
     _write_csv(out / "h10_right_map_centering_checkpoints.csv", CHECKPOINT_FIELDS, checkpoints)
     _write_csv(out / "h10_right_map_centering_margin_watch.csv", MARGIN_FIELDS, margins)
     (out / "h10_right_map_centering_decision.txt").write_text(decision + "\n", encoding="utf-8")
+    fmt = formatting_rows(out)
+    _write_csv(out / "h10_right_map_centering_formatting.csv", FORMAT_FIELDS, fmt)
+    write_report(out / "h10_right_map_centering_report.md", summaries, margins, decision, reasons, fmt)
     fmt = formatting_rows(out)
     _write_csv(out / "h10_right_map_centering_formatting.csv", FORMAT_FIELDS, fmt)
     write_report(out / "h10_right_map_centering_report.md", summaries, margins, decision, reasons, fmt)
