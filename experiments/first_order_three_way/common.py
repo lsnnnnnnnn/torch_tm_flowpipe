@@ -250,7 +250,12 @@ def write_csv(path: str | Path, rows: Sequence[Mapping[str, Any]], fields: Seque
     target.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(fields or RAW_FIELDS)
     with target.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=fieldnames,
+            extrasaction="ignore",
+            lineterminator="\n",
+        )
         writer.writeheader()
         writer.writerows(rows)
 

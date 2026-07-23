@@ -1,0 +1,400 @@
+{
+  "configurations": [
+    {
+      "h": 0.005,
+      "horizon": 0.1,
+      "steps": 20,
+      "system": "riccati"
+    },
+    {
+      "h": 0.005,
+      "horizon": 0.5,
+      "steps": 100,
+      "system": "riccati"
+    },
+    {
+      "h": 0.005,
+      "horizon": 1.0,
+      "steps": 200,
+      "system": "riccati"
+    },
+    {
+      "h": 0.01,
+      "horizon": 0.1,
+      "steps": 10,
+      "system": "riccati"
+    },
+    {
+      "h": 0.01,
+      "horizon": 0.5,
+      "steps": 50,
+      "system": "riccati"
+    },
+    {
+      "h": 0.01,
+      "horizon": 1.0,
+      "steps": 100,
+      "system": "riccati"
+    },
+    {
+      "h": 0.02,
+      "horizon": 0.1,
+      "steps": 5,
+      "system": "riccati"
+    },
+    {
+      "h": 0.02,
+      "horizon": 0.5,
+      "steps": 25,
+      "system": "riccati"
+    },
+    {
+      "h": 0.02,
+      "horizon": 1.0,
+      "steps": 50,
+      "system": "riccati"
+    },
+    {
+      "h": 0.05,
+      "horizon": 0.1,
+      "steps": 2,
+      "system": "riccati"
+    },
+    {
+      "h": 0.05,
+      "horizon": 0.5,
+      "steps": 10,
+      "system": "riccati"
+    },
+    {
+      "h": 0.05,
+      "horizon": 1.0,
+      "steps": 20,
+      "system": "riccati"
+    },
+    {
+      "h": 0.01,
+      "horizon": 1.0,
+      "steps": 100,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.01,
+      "horizon": 5.0,
+      "steps": 500,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.01,
+      "horizon": 10.0,
+      "steps": 1000,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.02,
+      "horizon": 1.0,
+      "steps": 50,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.02,
+      "horizon": 5.0,
+      "steps": 250,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.02,
+      "horizon": 10.0,
+      "steps": 500,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.05,
+      "horizon": 1.0,
+      "steps": 20,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.05,
+      "horizon": 5.0,
+      "steps": 100,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.05,
+      "horizon": 10.0,
+      "steps": 200,
+      "system": "harmonic"
+    },
+    {
+      "h": 0.005,
+      "horizon": 0.1,
+      "steps": 20,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.005,
+      "horizon": 0.25,
+      "steps": 50,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.005,
+      "horizon": 0.5,
+      "steps": 100,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.005,
+      "horizon": 1.0,
+      "steps": 200,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.005,
+      "horizon": 2.0,
+      "steps": 400,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.01,
+      "horizon": 0.1,
+      "steps": 10,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.01,
+      "horizon": 0.25,
+      "steps": 25,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.01,
+      "horizon": 0.5,
+      "steps": 50,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.01,
+      "horizon": 1.0,
+      "steps": 100,
+      "system": "van_der_pol"
+    },
+    {
+      "h": 0.01,
+      "horizon": 2.0,
+      "steps": 200,
+      "system": "van_der_pol"
+    }
+  ],
+  "description": "Canonical plant-only first-order reachability comparison.",
+  "diffreach": {
+    "bound_time_step": true,
+    "device": "cpu",
+    "dtype": "float64",
+    "frr_rounds": 5,
+    "frr_stop_ratio": 0.95,
+    "init_remainder": 0.1,
+    "partitions": 1,
+    "symbolic_remainder_window": 100
+  },
+  "flowstar": {
+    "cutoff": 1e-15,
+    "diagnostic_order": 2,
+    "fixed_order": true,
+    "fixed_step": true,
+    "preconditioning": "toolbox_normalized_QR",
+    "remainder_estimation": 0.0001,
+    "requested_order": 1,
+    "symbolic_remainder_size": 0
+  },
+  "name": "first_order_three_way",
+  "numerical_containment_tolerance": 1e-08,
+  "random_seed": 20260723,
+  "sample_substeps_per_step": 3,
+  "sample_trajectories": 24,
+  "schema_version": 1,
+  "steady_repetitions": 5,
+  "systems": {
+    "harmonic": {
+      "exact_reference": "harmonic",
+      "horizons": [
+        1.0,
+        5.0,
+        10.0
+      ],
+      "initial_box": [
+        [
+          -0.1,
+          0.1
+        ],
+        [
+          -0.1,
+          0.1
+        ]
+      ],
+      "rhs": [
+        {
+          "terms": [
+            {
+              "coefficient": 1.0,
+              "powers": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "terms": [
+            {
+              "coefficient": -1.0,
+              "powers": [
+                1,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "smoke": {
+        "h": 0.01,
+        "horizon": 0.1
+      },
+      "state_names": [
+        "x1",
+        "x2"
+      ],
+      "step_sizes": [
+        0.01,
+        0.02,
+        0.05
+      ],
+      "title": "Harmonic oscillator"
+    },
+    "riccati": {
+      "exact_reference": "riccati",
+      "horizons": [
+        0.1,
+        0.5,
+        1.0
+      ],
+      "initial_box": [
+        [
+          0.0,
+          0.1
+        ]
+      ],
+      "rhs": [
+        {
+          "terms": [
+            {
+              "coefficient": 1.0,
+              "powers": [
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "smoke": {
+        "h": 0.01,
+        "horizon": 0.1
+      },
+      "state_names": [
+        "x"
+      ],
+      "step_sizes": [
+        0.005,
+        0.01,
+        0.02,
+        0.05
+      ],
+      "title": "Scalar Riccati"
+    },
+    "van_der_pol": {
+      "exact_reference": "sampled_only",
+      "horizons": [
+        0.1,
+        0.25,
+        0.5,
+        1.0,
+        2.0
+      ],
+      "initial_box": [
+        [
+          1.1,
+          1.4
+        ],
+        [
+          2.35,
+          2.45
+        ]
+      ],
+      "rhs": [
+        {
+          "terms": [
+            {
+              "coefficient": 1.0,
+              "powers": [
+                0,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "terms": [
+            {
+              "coefficient": 1.0,
+              "powers": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.0,
+              "powers": [
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": -1.0,
+              "powers": [
+                2,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "smoke": {
+        "h": 0.01,
+        "horizon": 0.1
+      },
+      "state_names": [
+        "x1",
+        "x2"
+      ],
+      "step_sizes": [
+        0.005,
+        0.01
+      ],
+      "title": "Van der Pol (mu=1)"
+    }
+  },
+  "timeout_s": 600,
+  "torch": {
+    "adaptive_step": false,
+    "cutoff": null,
+    "device": "cpu",
+    "dtype": "float64",
+    "max_validation_attempts": 20,
+    "order": 1,
+    "range_only_inflate": 1e-09,
+    "rescue": false,
+    "symbolic_remainder_size": 0,
+    "validation_mode": "growth"
+  }
+}

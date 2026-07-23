@@ -143,7 +143,7 @@ def main() -> None:
         (output_dir / "trajectories.csv", trajectory_rows, TRAJECTORY_FIELDS),
     ):
         with path.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
             writer.writeheader()
             writer.writerows(rows)
     write_json(output_dir / "benchmark_spec_resolved.json", resolved_spec(spec))

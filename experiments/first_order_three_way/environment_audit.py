@@ -65,6 +65,11 @@ def repo_audit(path: Path) -> dict[str, Any]:
     return {name: run(command, cwd=path) for name, command in commands.items()}
 
 
+def strip_line_end_whitespace(value: str) -> str:
+    """Remove command-output padding while preserving its line structure."""
+    return "\n".join(line.rstrip() for line in value.splitlines())
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", required=True)
@@ -156,8 +161,8 @@ def main() -> None:
             text.extend(
                 [
                     f"--- {label}: {' '.join(result['command'])}",
-                    result["stdout"].rstrip(),
-                    result["stderr"].rstrip(),
+                    strip_line_end_whitespace(result["stdout"]),
+                    strip_line_end_whitespace(result["stderr"]),
                     f"[returncode={result['returncode']}]",
                 ]
             )
@@ -165,8 +170,8 @@ def main() -> None:
         text.extend(
             [
                 f"===== {label}: {' '.join(result['command'])} =====",
-                result["stdout"].rstrip(),
-                result["stderr"].rstrip(),
+                strip_line_end_whitespace(result["stdout"]),
+                strip_line_end_whitespace(result["stderr"]),
                 f"[returncode={result['returncode']}]",
             ]
         )
