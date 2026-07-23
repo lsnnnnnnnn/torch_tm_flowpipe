@@ -1,0 +1,95 @@
+schema_version: 1
+name: first_order_three_way
+description: Canonical plant-only first-order reachability comparison.
+random_seed: 20260723
+sample_trajectories: 24
+sample_substeps_per_step: 3
+steady_repetitions: 5
+timeout_s: 600
+numerical_containment_tolerance: 1.0e-8
+torch:
+  dtype: float64
+  device: cpu
+  order: 1
+  validation_mode: growth
+  max_validation_attempts: 20
+  rescue: false
+  adaptive_step: false
+  symbolic_remainder_size: 0
+  cutoff: null
+flowstar:
+  requested_order: 1
+  diagnostic_order: 2
+  remainder_estimation: 1.0e-4
+  cutoff: 1.0e-15
+  fixed_step: true
+  fixed_order: true
+  symbolic_remainder_size: 0
+  preconditioning: toolbox_normalized_QR
+diffreach:
+  dtype: float64
+  device: cpu
+  init_remainder: 0.1
+  frr_rounds: 5
+  frr_stop_ratio: 0.95
+  symbolic_remainder_window: 100
+  bound_time_step: true
+  partitions: 1
+systems:
+  riccati:
+    title: Scalar Riccati
+    state_names: [x]
+    initial_box:
+      - [0.0, 0.1]
+    rhs:
+      - terms:
+          - coefficient: 1.0
+            powers: [2]
+    step_sizes: [0.005, 0.01, 0.02, 0.05]
+    horizons: [0.1, 0.5, 1.0]
+    smoke:
+      h: 0.01
+      horizon: 0.1
+    exact_reference: riccati
+  harmonic:
+    title: Harmonic oscillator
+    state_names: [x1, x2]
+    initial_box:
+      - [-0.1, 0.1]
+      - [-0.1, 0.1]
+    rhs:
+      - terms:
+          - coefficient: 1.0
+            powers: [0, 1]
+      - terms:
+          - coefficient: -1.0
+            powers: [1, 0]
+    step_sizes: [0.01, 0.02, 0.05]
+    horizons: [1.0, 5.0, 10.0]
+    smoke:
+      h: 0.01
+      horizon: 0.1
+    exact_reference: harmonic
+  van_der_pol:
+    title: Van der Pol (mu=1)
+    state_names: [x1, x2]
+    initial_box:
+      - [1.10, 1.40]
+      - [2.35, 2.45]
+    rhs:
+      - terms:
+          - coefficient: 1.0
+            powers: [0, 1]
+      - terms:
+          - coefficient: 1.0
+            powers: [0, 1]
+          - coefficient: -1.0
+            powers: [1, 0]
+          - coefficient: -1.0
+            powers: [2, 1]
+    step_sizes: [0.005, 0.01]
+    horizons: [0.1, 0.25, 0.5, 1.0, 2.0]
+    smoke:
+      h: 0.01
+      horizon: 0.1
+    exact_reference: sampled_only
