@@ -15,7 +15,8 @@ the interval remainder (`src/torch_tm_flowpipe/flowpipe.py`).
 
 The dependency-preserving protocol passes each final Taylor model into the
 next step, retaining generator dependence. The range-only supplement converts
-each final model to a box and restarts, so it intentionally adds wrapping.
+each final model to a box, inflates each bound by the public baseline's
+`1e-9`, and restarts, so it intentionally adds wrapping.
 Both use fixed `h`, order 1, float64 CPU, zero symbolic-remainder history, no
 cutoff, no adaptive step, and no rescue.
 

@@ -60,7 +60,8 @@ RAW_FIELDS = [
     "requested_order_label", "retained_basis", "effective_max_degree",
     "truncate_to_affine", "nonzero_Lt", "dependency_mode",
     "symbolic_remainder_size", "cutoff", "partitions", "dtype", "device",
-    "batch_size", "build_time_s", "warmup_time_s",
+    "batch_size", "number_of_states", "number_of_steps",
+    "build_time_s", "warmup_time_s",
     "steady_runtime_median_s", "steady_runtime_iqr_s", "git_commit",
     "environment", "validation_attempts", "successful_horizon", "message",
 ]
@@ -321,6 +322,8 @@ def raw_run_template(
         "dtype": dtype,
         "device": device,
         "batch_size": 1,
+        "number_of_states": "",
+        "number_of_steps": exact_steps(h, horizon),
         "build_time_s": 0.0,
         "warmup_time_s": "",
         "steady_runtime_median_s": "",

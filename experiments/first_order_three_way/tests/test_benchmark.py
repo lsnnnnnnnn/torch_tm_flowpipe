@@ -18,7 +18,15 @@ for path in (EXPERIMENT, SRC_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-from common import RAW_FIELDS, evaluate_rhs, exact_endpoint, exact_steps, flowstar_expression, load_spec
+from common import (
+    RAW_FIELDS,
+    evaluate_rhs,
+    exact_endpoint,
+    exact_steps,
+    flowstar_expression,
+    iter_configurations,
+    load_spec,
+)
 from run_flowstar import render_cpp
 from run_torch import _ode
 from torch_tm_flowpipe import Interval, TMVector, flowpipe_multi_step
@@ -126,6 +134,8 @@ def test_raw_schema_complete_when_results_are_supplied():
     assert all(row["status"] for row in rows)
     assert all(row["requested_order_label"] for row in rows)
     assert all(row["retained_basis"] for row in rows)
+    assert all(int(row["number_of_states"]) >= 1 for row in rows)
+    assert all(int(row["number_of_steps"]) >= 1 for row in rows)
 
 
 def test_exact_riccati_and_harmonic_checks_pass_or_downgrade_the_run():
@@ -150,18 +160,91 @@ def test_exact_riccati_and_harmonic_checks_pass_or_downgrade_the_run():
             assert status_by_run[check["run_id"]] == "certified_ok"
 
 
-def test_sampled_trajectory_tube_checks_pass_but_are_not_called_a_proof():
+def test_sampled_trajectory_checks_pass_or_downgrade_and_are_not_a_proof():
     directory = _results_dir()
     if directory is None:
         pytest.skip("BENCHMARK_RESULTS_DIR not set")
     checks = json.loads((directory / "correctness_checks.json").read_text())
+    with (directory / "raw_results.csv").open(newline="", encoding="utf-8") as handle:
+        status_by_run = {
+            row["run_id"]: row["status"]
+            for row in csv.DictReader(handle)
+        }
     sample_checks = [
         check for check in checks["checks"]
         if check["check"] == "sampled_trajectory_tube_containment" and check["checked"]
     ]
     assert sample_checks
-    assert all(check["violations"] == 0 for check in sample_checks)
+    for check in sample_checks:
+        if check["violations"]:
+            assert status_by_run[check["run_id"]] == "sample_violation"
+        else:
+            assert status_by_run[check["run_id"]] in {"certified_ok", "sample_violation"}
     assert checks["sample_checks_are_formal_proof"] is False
+
+
+def test_per_run_metadata_and_plot_pairs_are_complete(spec):
+    directory = _results_dir()
+    if directory is None:
+        pytest.skip("BENCHMARK_RESULTS_DIR not set")
+    with (directory / "raw_results.csv").open(newline="", encoding="utf-8") as handle:
+        run_ids = {row["run_id"] for row in csv.DictReader(handle)}
+    assert run_ids
+    assert all((directory / "per_run" / f"{run_id}.json").is_file() for run_id in run_ids)
+
+    plots = directory / "plots"
+    if not plots.is_dir():
+        pytest.skip("plot generation is checked only for the full pipeline")
+    png_stems = {path.stem for path in plots.glob("*.png")}
+    pdf_stems = {path.stem for path in plots.glob("*.pdf")}
+    assert png_stems == pdf_stems
+    assert {"representation_semantics", "failure_horizon_van_der_pol"} <= png_stems
+    for config in iter_configurations(spec, smoke=False):
+        system = config["system"]
+        h_label = f"{float(config['h']):g}"
+        horizon_label = f"{float(config['horizon']):g}"
+        for state_index in range(len(spec["systems"][system]["state_names"])):
+            for protocol_label in ("primary", "supplemental"):
+                prefix = (
+                    f"{protocol_label}_{system}_h{h_label}_"
+                    f"T{horizon_label}_state{state_index}"
+                )
+                assert f"enclosure_{prefix}" in png_stems
+                assert f"width_linear_{prefix}" in png_stems
+                assert f"width_log_{prefix}" in png_stems
+        if len(spec["systems"][system]["state_names"]) == 2:
+            for protocol_label in ("primary", "supplemental"):
+                assert (
+                    f"phase_{protocol_label}_{system}_h{h_label}_T{horizon_label}"
+                    in png_stems
+                )
+
+
+def test_report_contains_all_required_sections():
+    directory = _results_dir()
+    if directory is None:
+        pytest.skip("BENCHMARK_RESULTS_DIR not set")
+    report_path = directory / "first_order_three_way_report.md"
+    if not report_path.is_file():
+        pytest.skip("report generation is checked only for the full pipeline")
+    report = report_path.read_text(encoding="utf-8")
+    required = [
+        "Executive summary",
+        "Repository SHAs and environments",
+        "Benchmark definitions",
+        "What order 1 means in each implementation",
+        "Primary native-first-order results",
+        "Strict-common-affine results",
+        "Supplemental native representations",
+        "Tightness analysis",
+        "Validation and failure analysis",
+        "Runtime analysis",
+        "Exact references and sampled-trajectory sanity checks",
+        "Limitations",
+        "Recommended next experiment",
+        "Conclusion",
+    ]
+    assert all(heading in report for heading in required)
 
 
 def test_closed_form_reference_values():

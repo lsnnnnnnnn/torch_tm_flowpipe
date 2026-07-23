@@ -89,7 +89,10 @@ def _propagate(
         segments.append(segment)
         if segment.status != "validated" or not _finite_box(segment.final_tm.range_box()):
             break
-        current_box = [iv.inflate(1.0e-9) for iv in segment.final_tm.range_box()]
+        current_box = [
+            iv.inflate(float(settings["range_only_inflate"]))
+            for iv in segment.final_tm.range_box()
+        ]
     return segments
 
 
@@ -227,6 +230,11 @@ def _rows_and_metadata(
         "adaptive_order": False,
         "rescue": False,
         "symbolic_remainder": False,
+        "range_only_inflate": (
+            float(spec["torch"]["range_only_inflate"])
+            if mode == "range_only"
+            else 0.0
+        ),
         "interval_semantics": {
             "endpoint": "tau=h after local-time substitution",
             "tube": "whole validated segment over tau in [0,h]",

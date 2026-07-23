@@ -27,6 +27,16 @@ from common import iter_configurations, load_spec, output_dir_from_args
 
 PRIMARY = "native_first_order_setting"
 SUPPLEMENTAL = "supplementary_native_representations"
+TOOL_SHORT = {
+    "torch_tm_flowpipe": "Torch TM",
+    "flowstar": "Flow*",
+    "diffreach": "DiffReach",
+}
+PROTOCOL_SHORT = {
+    PRIMARY: "native first-order",
+    "strict_common_affine": "strict common affine",
+    SUPPLEMENTAL: "supplemental",
+}
 STYLE = {
     ("torch_tm_flowpipe", PRIMARY): ("Torch TM (dependency preserving)", "#1f77b4", "-", "o"),
     ("flowstar", PRIMARY): ("Flow* (fixed order 1)", "#2ca02c", "--", "s"),
@@ -344,7 +354,10 @@ def _runtime_plots(summary: pd.DataFrame, output: Path) -> None:
             if values.empty:
                 continue
             values["label"] = values.apply(
-                lambda row: f"{row['tool']}\n{row['system']}\nh={row['h']:g},T={row['horizon']:g}",
+                lambda row: (
+                    f"{TOOL_SHORT.get(row['tool'], row['tool'])}\n{row['system']}\n"
+                    f"h={row['h']:g},T={row['horizon']:g}"
+                ),
                 axis=1,
             )
             colors = values["tool"].map(
@@ -381,7 +394,13 @@ def _failure_plot(summary: pd.DataFrame, output: Path) -> None:
         data.groupby(["tool", "protocol"], as_index=False)["successful_horizon"].max()
         .sort_values(["protocol", "tool"])
     )
-    labels = [f"{row.tool}\n{row.protocol}" for row in grouped.itertuples()]
+    labels = [
+        (
+            f"{TOOL_SHORT.get(row.tool, row.tool)}\n"
+            f"{PROTOCOL_SHORT.get(row.protocol, row.protocol)}"
+        )
+        for row in grouped.itertuples()
+    ]
     colors = grouped["tool"].map(
         {"torch_tm_flowpipe": "#1f77b4", "flowstar": "#2ca02c", "diffreach": "#d62728"}
     )
@@ -407,14 +426,44 @@ def _semantics_figure(summary: pd.DataFrame, output: Path) -> None:
     if rows.empty:
         return
     display = rows.copy()
-    display["retained_basis"] = display["retained_basis"].map(lambda value: str(value)[:58])
-    fig, ax = plt.subplots(figsize=(13.0, 0.55 * len(display) + 1.8))
+    display["tool"] = display["tool"].map(
+        lambda value: TOOL_SHORT.get(str(value), str(value))
+    )
+    display["protocol"] = display["protocol"].map(
+        lambda value: PROTOCOL_SHORT.get(str(value), str(value))
+    )
+    basis_short = {
+        ("DiffReach", "native first-order"): "affine final; transient {t², t·z}",
+        ("Flow*", "native first-order"): "unsupported: API requires order ≥2",
+        ("Torch TM", "native first-order"): "complete degree ≤1: {1,t,z}",
+        ("DiffReach", "strict common affine"): "unsupported: no independent Lt remainder",
+        ("Flow*", "strict common affine"): "unsupported: API requires order ≥2",
+        ("Torch TM", "strict common affine"): "complete degree ≤1: {1,t,z}",
+        ("DiffReach", "supplemental"): "restricted {1,z,t²,t·z}",
+        ("Flow*", "supplemental"): "complete degree ≤2",
+        ("Torch TM", "supplemental"): "degree ≤1 with range-only restarts",
+    }
+    display["retained_basis"] = display.apply(
+        lambda row: basis_short.get(
+            (str(row["tool"]), str(row["protocol"])),
+            str(row["retained_basis"])[:48],
+        ),
+        axis=1,
+    )
+    display["effective_max_degree"] = display["effective_max_degree"].map(
+        lambda value: "—" if pd.isna(value) else f"{float(value):g}"
+    )
+    display["nonzero_Lt"] = display["nonzero_Lt"].fillna("—").replace(
+        {"not_applicable": "n/a"}
+    )
+    fig, ax = plt.subplots(figsize=(13.5, 0.58 * len(display) + 2.0))
     ax.axis("off")
     table = ax.table(
         cellText=display.values,
         colLabels=["tool", "protocol", "retained basis", "effective degree", "affine flag", "final Lt"],
         loc="center",
         cellLoc="left",
+        colWidths=[0.12, 0.18, 0.34, 0.12, 0.11, 0.10],
     )
     table.auto_set_font_size(False)
     table.set_fontsize(7)
@@ -431,10 +480,10 @@ def main() -> None:
     spec = load_spec(args.spec)
     output_dir = output_dir_from_args(args.output_dir)
     plots = output_dir / "plots"
-    raw = pd.read_csv(output_dir / "raw_results.csv")
-    summary = pd.read_csv(output_dir / "run_summary.csv")
-    references = pd.read_csv(output_dir / "references.csv")
-    trajectories = pd.read_csv(output_dir / "trajectories.csv")
+    raw = pd.read_csv(output_dir / "raw_results.csv", low_memory=False)
+    summary = pd.read_csv(output_dir / "run_summary.csv", low_memory=False)
+    references = pd.read_csv(output_dir / "references.csv", low_memory=False)
+    trajectories = pd.read_csv(output_dir / "trajectories.csv", low_memory=False)
     numeric_columns = [
         "h", "horizon", "state_index", "step_index", "time", "lower", "upper", "width",
         "first_failure_time", "successful_horizon",

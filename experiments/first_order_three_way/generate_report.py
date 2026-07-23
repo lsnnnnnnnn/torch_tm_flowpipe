@@ -205,10 +205,13 @@ def vdp_horizons(runs: Sequence[Mapping[str, str]]) -> list[list[str]]:
     return out
 
 
-def runtime_rows(runs: Sequence[Mapping[str, str]]) -> list[list[str]]:
+def runtime_rows(
+    runs: Sequence[Mapping[str, str]],
+    protocol: str,
+) -> list[list[str]]:
     grouped: dict[tuple[str, str], list[Mapping[str, str]]] = defaultdict(list)
     for run in runs:
-        if run["protocol"] == PRIMARY and run["status"] in GOOD:
+        if run["protocol"] == protocol and run["status"] in GOOD:
             grouped[(run["tool"], run["system"])].append(run)
     out: list[list[str]] = []
     for (tool, system), values in sorted(grouped.items()):
@@ -229,6 +232,64 @@ def runtime_rows(runs: Sequence[Mapping[str, str]]) -> list[list[str]]:
             ]
         )
     return out
+
+
+def runtime_quality_tradeoff(runs: Sequence[Mapping[str, str]]) -> str:
+    """Summarize paired primary Torch/DiffReach runtime and width tradeoffs."""
+    indexed: dict[tuple[str, str, str], dict[str, Mapping[str, str]]] = defaultdict(dict)
+    for run in runs:
+        if run["protocol"] == PRIMARY and run["status"] in GOOD:
+            indexed[(run["system"], run["h"], run["horizon"])][run["tool"]] = run
+    pairs: list[tuple[str, float, float]] = []
+    for key, tools in indexed.items():
+        if "torch_tm_flowpipe" not in tools or "diffreach" not in tools:
+            continue
+        torch_run, diff_run = tools["torch_tm_flowpipe"], tools["diffreach"]
+        torch_time = number(torch_run["steady_runtime_median_s"])
+        diff_time = number(diff_run["steady_runtime_median_s"])
+        torch_width = number(torch_run["sum_final_widths"])
+        diff_width = number(diff_run["sum_final_widths"])
+        if min(torch_time, diff_time, torch_width, diff_width) <= 0:
+            continue
+        faster = "DiffReach" if diff_time < torch_time else "Torch TM"
+        speedup = max(torch_time, diff_time) / min(torch_time, diff_time)
+        faster_width = diff_width if faster == "DiffReach" else torch_width
+        other_width = torch_width if faster == "DiffReach" else diff_width
+        pairs.append((faster, speedup, faster_width / other_width))
+    if not pairs:
+        return "No certified primary Torch/DiffReach pairs were available."
+    faster_counts = Counter(pair[0] for pair in pairs)
+    wider_materially = sum(pair[2] > 1.10 for pair in pairs)
+    narrower_materially = sum(pair[2] < 1.0 / 1.10 for pair in pairs)
+    median_speedup = statistics.median(pair[1] for pair in pairs)
+    median_width_ratio = statistics.median(pair[2] for pair in pairs)
+    common_faster, common_count = faster_counts.most_common(1)[0]
+    vdp_failures: dict[tuple[str, str], float] = {}
+    for run in runs:
+        failure = number(run.get("first_failure_time"))
+        if (
+            run["protocol"] == PRIMARY
+            and run["system"] == "van_der_pol"
+            and run["status"] not in GOOD
+            and run["tool"] in {"torch_tm_flowpipe", "diffreach"}
+            and failure > 0
+        ):
+            key = (run["tool"], run["h"])
+            vdp_failures[key] = min(failure, vdp_failures.get(key, failure))
+    failure_clause = ""
+    if vdp_failures:
+        failure_clause = " First Van der Pol failures were " + "; ".join(
+            f"{TOOL_LABEL.get(tool, tool)} h={fmt(h)}: t={fmt(time_value)}"
+            for (tool, h), time_value in sorted(vdp_failures.items())
+        ) + "."
+    return (
+        f"Across {len(pairs)} paired certified primary configurations, {common_faster} "
+        f"was faster in {common_count}; the median faster/slower speed ratio was "
+        f"{fmt(median_speedup)}× and the faster method's median final summed-width "
+        f"ratio was {fmt(median_width_ratio)}×. The faster result was >10% wider in "
+        f"{wider_materially} pairs and >10% narrower in {narrower_materially} pairs."
+        f"{failure_clause}"
+    )
 
 
 def exact_check_counts(checks: Mapping[str, Any]) -> list[list[str]]:
@@ -266,6 +327,17 @@ def main() -> None:
         ["torch_tm_flowpipe original checkout", repo_sha(environment, "torch_original_checkout")],
         ["DiffReach", repo_sha(environment, "diffreach")],
         ["Flow* toolbox", repo_sha(environment, "flowstar")],
+    ]
+    execution_shas: dict[str, set[str]] = defaultdict(set)
+    for run in runs:
+        if run.get("git_commit"):
+            execution_shas[run["tool"]].add(run["git_commit"])
+    execution_sha_rows = [
+        [
+            TOOL_LABEL.get(tool, tool),
+            ", ".join(sorted(shas)),
+        ]
+        for tool, shas in sorted(execution_shas.items())
     ]
     benchmarks = []
     for name, system in spec["systems"].items():
@@ -323,6 +395,19 @@ def main() -> None:
     successful = sum(status == "certified_ok" for status in (run["status"] for run in runs))
     failures = len(runs) - successful
     environment_decisions = environment.get("environment_decisions", {})
+    torch_probe = (
+        environment.get("software_hardware", {})
+        .get("py11_torch", {})
+        .get("stdout", "")
+    )
+    cuda_visible = "cuda_available True" in str(torch_probe)
+    hardware_sentence = (
+        "CUDA devices were visible, but the frozen benchmark specification selected "
+        "float64 CPU batch 1 for Torch and CPU JAX for DiffReach."
+        if cuda_visible
+        else "CUDA devices were not visible to the audited run; all measurements were CPU-only."
+    )
+    tradeoff_sentence = runtime_quality_tradeoff(runs)
 
     harmonic_native = [
         row
@@ -343,12 +428,35 @@ def main() -> None:
         for tool, values in harmonic_by_tool.items()
         if values
     )
-    wrapping_answer = (
-        f"{harmonic_ranking[0][1]} had the lowest median exact inflation "
-        f"({fmt(harmonic_ranking[0][0])}) among supported native runs."
-        if harmonic_ranking
-        else "No native implementation completed a validated harmonic run."
-    )
+    harmonic_supplemental: dict[str, list[float]] = defaultdict(list)
+    for row in summary:
+        ratio = number(row.get("exact_inflation_ratio"))
+        if (
+            row["system"] == "harmonic"
+            and row["protocol"] == SUPPLEMENTAL
+            and row["status"] in GOOD
+            and math.isfinite(ratio)
+        ):
+            harmonic_supplemental[row["tool"]].append(ratio)
+    if harmonic_ranking:
+        native_details = ", ".join(
+            f"{label} {fmt(value)}" for value, label in harmonic_ranking
+        )
+        wrapping_answer = (
+            f"{harmonic_ranking[0][1]} controlled wrapping best among supported native "
+            f"first-order settings (median exact inflation: {native_details})."
+        )
+        if harmonic_supplemental:
+            supplemental_details = ", ".join(
+                f"{TOOL_LABEL.get(tool, tool)} {fmt(statistics.median(values))}"
+                for tool, values in sorted(harmonic_supplemental.items())
+            )
+            wrapping_answer += (
+                f" Supplemental medians were {supplemental_details}; Flow* there is "
+                "fixed order 2 and is not a first-order comparison."
+            )
+    else:
+        wrapping_answer = "No native implementation completed a validated harmonic run."
 
     quasi_sentence = (
         f"Across {len(quasi_changes)} paired certified configurations, disabling affine "
@@ -381,10 +489,14 @@ def main() -> None:
         "",
         table(["repository", "audited HEAD"], sha_rows),
         "",
+        "Commits recorded in the actual adapter rows:",
+        "",
+        table(["adapter", "execution commit"], execution_sha_rows),
+        "",
         f"- Torch/plotting: {environment_decisions.get('torch_and_plotting', 'unknown')}.",
         f"- DiffReach: {environment_decisions.get('diffreach', 'unknown')}.",
         f"- Flow*: {environment_decisions.get('flowstar', 'unknown')}.",
-        "- Host: Intel Xeon Gold 6138 CPU; CUDA was unavailable, so every measured run was CPU-only.",
+        f"- Host: Intel Xeon Gold 6138 CPU. {hardware_sentence}",
         "- Full command output, branch listings, remotes, 100-commit graphs, untracked files, compiler, OS, CPU, memory, and device probes are preserved in `environment.json` and `environment.txt`.",
         "",
         "The declared DiffReach editable install was attempted but pip found an internal dependency conflict: "
@@ -489,16 +601,29 @@ def main() -> None:
         "",
         "## 10. Runtime analysis",
         "",
+        "Primary certified configurations:",
+        "",
         table(
             ["tool", "system", "median build", "median warmup", "median steady", "device"],
-            runtime_rows(runs),
+            runtime_rows(runs, PRIMARY),
         ),
+        "",
+        "Supplemental certified configurations:",
+        "",
+        table(
+            ["tool", "system", "median build", "median warmup", "median steady", "device"],
+            runtime_rows(runs, SUPPLEMENTAL),
+        ),
+        "",
+        tradeoff_sentence,
         "",
         (
             "Build/source generation, first-call or JIT time, and steady runtime are deliberately "
             "separate. These are CPU measurements on one shared host, not a hardware-fair CPU/GPU "
             "claim. A fast unsupported run is not treated as useful speed, and timing is interpreted "
-            "alongside width and validation horizon."
+            "alongside width and validation horizon. The all-CPU sweep includes the requested "
+            "batch-1 subsets Riccati h=0.01/T=1, harmonic h=0.01/T=5, and Van der Pol "
+            "h=0.01/T=0.5."
         ),
         "",
         "## 11. Exact references and sampled-trajectory sanity checks",
@@ -515,7 +640,7 @@ def main() -> None:
         "",
         "- The retained polynomial bases differ materially, including DiffReach's restricted Lt basis.",
         "- Numerical soundness backends differ: Torch floating-point intervals, Flow* MPFR intervals, and JAX floating-point interval arithmetic are not interchangeable guarantees.",
-        "- All timings here are CPU-only because CUDA was unavailable; GPU results could alter performance but not representation semantics.",
+        "- All reported primary timings are CPU-only by specification; visible GPUs were deliberately excluded, and GPU results could alter performance but not representation semantics.",
         "- Endpoint enclosures and whole-segment tubes are distinct and were extracted/evaluated separately.",
         "- The benchmark exercises plant dynamics only; it imports no controller or CROWN component.",
         "- Sampled trajectories are sanity checks and never establish formal soundness.",
@@ -556,10 +681,8 @@ def main() -> None:
         f"**Quasi-quadratic improvement:** {quasi_sentence}",
         "",
         (
-            "**Runtime versus quality:** Any apparent runtime advantage must be read jointly with the "
-            "inflation and failure tables. Unsupported order-one Flow* timings are not gains; where a "
-            "faster certified method is materially wider or fails earlier, the plots and summary keep "
-            "that tradeoff explicit rather than ranking runtime alone."
+            f"**Runtime versus quality:** {tradeoff_sentence} Unsupported order-one Flow* timings "
+            "are not gains, and validation failures are not treated as speedups."
         ),
         "",
         "## Reproduction",

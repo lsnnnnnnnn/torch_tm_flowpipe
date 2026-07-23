@@ -18,6 +18,7 @@ from common import (
     RAW_FIELDS,
     STATUS_VALUES,
     exact_endpoint,
+    exact_steps,
     finite_number,
     load_spec,
     output_dir_from_args,
@@ -36,7 +37,7 @@ SUMMARY_FIELDS = [
     "build_time_s", "warmup_time_s", "steady_runtime_median_s",
     "steady_runtime_iqr_s", "retained_basis", "effective_max_degree",
     "truncate_to_affine", "nonzero_Lt", "dtype", "device", "git_commit",
-    "environment", "message",
+    "environment", "number_of_states", "number_of_steps", "message",
 ]
 
 
@@ -147,7 +148,9 @@ def _trajectory_checks(
         ].append(row)
     checks: list[dict[str, Any]] = []
     for run_id, rows in grouped.items():
-        if not rows or rows[0]["status"] != "certified_ok":
+        # Still run the independent trajectory check when the analytic check
+        # just downgraded a formerly certified run to sample_violation.
+        if not rows or rows[0]["status"] not in {"certified_ok", "sample_violation"}:
             continue
         h, horizon = _float(rows[0]["h"]), _float(rows[0]["horizon"])
         config_key = (rows[0]["system"], round(h, 14), round(horizon, 14))
@@ -272,6 +275,18 @@ def main() -> None:
     for path in adapter_paths:
         rows.extend(read_csv(path))
     for index, row in enumerate(rows):
+        row["number_of_states"] = row.get("number_of_states") or len(
+            spec["systems"][row["system"]]["state_names"]
+        )
+        row["number_of_steps"] = row.get("number_of_steps") or exact_steps(
+            _float(row["h"]), _float(row["horizon"])
+        )
+        if row["tool"] == "flowstar" and row["status"] == "validation_failed":
+            successful_horizon = _float(row["successful_horizon"], 0.0)
+            row["first_failure_time"] = min(
+                _float(row["horizon"]),
+                successful_horizon + _float(row["h"]),
+            )
         missing_fields = [field for field in RAW_FIELDS if field not in row]
         if missing_fields:
             raise ValueError(f"row {index} missing fields: {missing_fields}")
@@ -311,6 +326,15 @@ def main() -> None:
             metadata = read_json(metadata_path)
             metadata["post_collection_status"] = run_rows[0]["status"]
             metadata["post_collection_validation_status"] = run_rows[0]["validation_status"]
+            metadata["number_of_states"] = run_rows[0]["number_of_states"]
+            metadata["number_of_steps"] = run_rows[0]["number_of_steps"]
+            if (
+                run_rows[0]["tool"] == "torch_tm_flowpipe"
+                and run_rows[0]["dependency_mode"] == "range_only"
+            ):
+                metadata["range_only_inflate"] = float(
+                    spec["torch"]["range_only_inflate"]
+                )
             metadata["correctness_checks"] = [
                 check for check in checks if check["run_id"] == run_id
             ]

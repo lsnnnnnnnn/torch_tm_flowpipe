@@ -72,6 +72,8 @@ def main() -> None:
     output_dir = output_dir_from_args(args.output_dir)
     software_commands = {
         "conda_env_list": ["conda", "env", "list"],
+        "py11_conda_list": ["conda", "list", "-n", "py11"],
+        "diffreach312_conda_list": ["conda", "list", "-n", "diffreach312"],
         "py11_python": ["conda", "run", "-n", "py11", "python", "--version"],
         "py11_torch": [
             "conda", "run", "-n", "py11", "python", "-c",
@@ -128,7 +130,10 @@ def main() -> None:
             "machine": platform.machine(),
         },
         "environment_decisions": {
-            "torch_and_plotting": "py11 (Python 3.11, torch 2.5.1+cu121, CPU because CUDA unavailable)",
+            "torch_and_plotting": (
+                "py11 (Python 3.11, torch 2.5.1+cu121); the benchmark specification "
+                "selects float64 CPU batch-1 even when CUDA devices are visible"
+            ),
             "diffreach": "diffreach312 (Python 3.12, CPU JAX 0.10.2, x64 enabled)",
             "flowstar": "system GCC/G++ 15.2 and existing static toolbox library",
             "diffreach_declared_install": (

@@ -14,7 +14,8 @@ does not retain the same intermediate basis as Torch order 1.
 ## Environments
 
 - `py11`: Python 3.11, Torch 2.5.1+cu121, SciPy, pandas, Matplotlib, and
-  PyYAML. CUDA is unavailable on the benchmark host, so Torch uses float64 CPU.
+  PyYAML. The run specification selects float64 CPU batch 1; CUDA devices may
+  be visible but are not used for primary tightness or timing.
 - `diffreach312`: Python 3.12 with CPU `jax==0.10.2`, SciPy, PyYAML, and
   pytest. JAX x64 is explicitly enabled by the adapter.
 - Flow*: system GCC/G++ 15.2 and the existing

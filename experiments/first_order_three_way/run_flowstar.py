@@ -287,7 +287,12 @@ def _make_output(
     complete = status == "certified_ok" and segments == steps
     if status == "certified_ok" and segments != steps:
         status = "validation_failed"
-    failure_time = "" if complete else (segments * h if segments else 0.0)
+    if complete:
+        failure_time: float | str = ""
+    elif status == "validation_failed":
+        failure_time = min(horizon, (segments + 1) * h)
+    else:
+        failure_time = 0.0
     median_s, iqr_s = median_iqr(repeated_walls)
     run.update(
         status=status,
@@ -422,12 +427,16 @@ def main() -> None:
                         compile_status = "timeout"
                         compile_message = f"configuration exceeded {timeout_s:g} seconds"
                         break
-                    _, wall, stdout, _ = _execute(
+                    repeat_status, wall, stdout, _ = _execute(
                         executable,
                         timeout_s=remaining_budget(),
                         log_prefix=run_dir / f"repeat_{repetition + 1}",
                     )
                     repeated_walls.append(wall)
+                    if repeat_status == "timeout":
+                        compile_status = "timeout"
+                        compile_message = f"configuration exceeded {timeout_s:g} seconds"
+                        break
                     runtime_match = RUNTIME_RE.search(stdout)
                     if runtime_match:
                         repeated_internal.append(float(runtime_match.group(1)))
