@@ -276,7 +276,11 @@ def parse_output(stdout: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]) if rows else [])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(rows[0]) if rows else [],
+            lineterminator="\n",
+        )
         if rows:
             writer.writeheader()
             writer.writerows(rows)
