@@ -91,23 +91,47 @@ def plot_torch_diagnostics(output: Path, plots: Path) -> None:
     )
     selected = [
         row for row in diagnostics
-        if row["protocol"] == "torch_dependency_forensics"
-        and row["mode"] == "dependency_preserving"
+        if row["protocol"] == "matched_affine_carry"
+        and row["system"] == "harmonic"
+        and row["basis"] == "B1"
     ]
     times = [float(row["time"]) for row in selected]
     affine = [row["endpoint"][0]["polynomial_width"] for row in selected]
-    remainder = [row["endpoint"][0]["remainder_width"] for row in selected]
-    overflow = [float(row["discarded_range_width_sum"]) for row in selected]
+    overflow = []
+    remainder = []
+    for row in selected:
+        last_iteration = max(
+            (
+                int(item["iteration"])
+                for item in row["discarded_terms"]
+                if item["stage"] == "picard"
+            ),
+            default=0,
+        )
+        projected = sum(
+            float(item["range_width"])
+            for item in row["discarded_terms"]
+            if item["stage"] == "picard"
+            and int(item["iteration"]) == last_iteration
+            and int(item["state_index"]) == 0
+        )
+        total_remainder = float(row["endpoint"][0]["remainder_width"])
+        overflow.append(min(projected, total_remainder))
+        remainder.append(max(total_remainder - projected, 0.0))
     fig, ax = plt.subplots(figsize=(7.2, 4.2))
     ax.stackplot(
         times, affine, overflow, remainder,
-        labels=("affine polynomial", "explicit projected overflow", "validated remainder"),
+        labels=(
+            "affine polynomial",
+            "termwise projected overflow",
+            "remaining validated remainder",
+        ),
         alpha=0.8,
     )
     ax.set(
         xlabel="time",
         ylabel="state-0 endpoint width components",
-        title="Torch harmonic dependency-preserving decomposition",
+        title="Torch harmonic B1 finite-basis decomposition",
     )
     ax.legend(loc="upper left")
     _save(fig, plots / "02_torch_harmonic_width_decomposition.png")
