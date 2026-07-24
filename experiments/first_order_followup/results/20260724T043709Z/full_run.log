@@ -1,0 +1,38 @@
+OUTPUT_DIR=/srv/local/shengenli/torch_tm_flowpipe_first_order_followup/experiments/first_order_followup/results/20260724T043709Z
+Captured 1999 frozen-baseline files
+Torch riccati B1: 100/100 steps
+Torch riccati B_DR: 100/100 steps
+Torch riccati B2: 100/100 steps
+Torch riccati complete-degree-two reference: 55/100 steps
+Torch harmonic B1: 1000/1000 steps
+Torch harmonic B_DR: 1000/1000 steps
+Torch harmonic B2: 1000/1000 steps
+Torch harmonic complete-degree-two reference: 1000/1000 steps
+Torch van_der_pol B1: 134/400 steps
+Torch van_der_pol B_DR: 355/400 steps
+Torch van_der_pol B2: 355/400 steps
+Torch van_der_pol complete-degree-two reference: 42/400 steps
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+DiffReach matched_affine_carry riccati: 100/100 steps
+DiffReach matched_affine_carry harmonic: 990/1000 steps
+DiffReach matched_affine_carry van_der_pol: 125/400 steps
+DiffReach complete_degree_two_reference riccati: 100/100 steps
+DiffReach complete_degree_two_reference harmonic: 1000/1000 steps
+DiffReach complete_degree_two_reference van_der_pol: 400/400 steps
+Flow* matched_affine_carry riccati: 100/100 steps
+Flow* matched_affine_carry harmonic: 450/1000 steps
+Flow* matched_affine_carry van_der_pol: 16/400 steps
+Flow* complete_degree_two_reference riccati: 100/100 steps
+Flow* complete_degree_two_reference harmonic: 450/1000 steps
+Flow* complete_degree_two_reference van_der_pol: 17/400 steps
+Collected 53918 rows; exact violations=0; sample violations=0
+........................................................................ [ 25%]
+........................................................................ [ 51%]
+........................................................................ [ 77%]
+..............................................................           [100%]
+278 passed in 163.04s (0:02:43)
+........                                                                 [100%]
+8 passed in 7.51s
+Frozen baseline byte-for-byte gate passed
+Generated report and 8 mandatory plots in /srv/local/shengenli/torch_tm_flowpipe_first_order_followup/experiments/first_order_followup/results/20260724T043709Z
+FULL_RUN_COMPLETE=/srv/local/shengenli/torch_tm_flowpipe_first_order_followup/experiments/first_order_followup/results/20260724T043709Z

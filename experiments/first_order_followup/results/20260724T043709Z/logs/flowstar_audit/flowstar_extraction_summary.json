@@ -1,0 +1,154 @@
+{
+  "compile_command": [
+    "g++",
+    "-O2",
+    "-w",
+    "-fpermissive",
+    "-std=c++11",
+    "-I",
+    "/srv/local/shengenli/flowstar/flowstar-toolbox",
+    "/srv/local/shengenli/torch_tm_flowpipe_first_order_followup/experiments/first_order_followup/results/20260724T043709Z/logs/flowstar_audit/flowstar_extraction_audit.cpp",
+    "-L",
+    "/srv/local/shengenli/flowstar/flowstar-toolbox",
+    "-o",
+    "/srv/local/shengenli/torch_tm_flowpipe_first_order_followup/experiments/first_order_followup/results/20260724T043709Z/logs/flowstar_audit/flowstar_extraction_audit",
+    "-lflowstar",
+    "-lmpfr",
+    "-lgmp",
+    "-lgsl",
+    "-lgslcblas",
+    "-lm",
+    "-lglpk"
+  ],
+  "compile_time_s": 1.810459413100034,
+  "correctness": {
+    "max_raw_transformed_delta": 0.0,
+    "minimal_baseline_failure": {
+      "first_violating_step": 1,
+      "first_violation": {
+        "expected": [
+          0.0,
+          0.10020040080160321
+        ],
+        "exported": [
+          -5.005041474154166e-05,
+          0.10020035141645481
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 1,
+        "time": 0.02
+      },
+      "h": 0.02,
+      "horizon": 0.1
+    },
+    "raw_transformed_agreement": [
+      {
+        "left": "raw_compose_tube",
+        "max_abs_delta": 0.0,
+        "right": "transformed_tube"
+      },
+      {
+        "left": "raw_compose_endpoint_direct",
+        "max_abs_delta": 0.0,
+        "right": "transformed_endpoint_direct"
+      },
+      {
+        "left": "raw_compose_endpoint_direct",
+        "max_abs_delta": 1.3877787807814457e-17,
+        "right": "raw_compose_endpoint_substitute"
+      },
+      {
+        "left": "transformed_endpoint_direct",
+        "max_abs_delta": 1.3877787807814457e-17,
+        "right": "transformed_endpoint_substitute"
+      }
+    ],
+    "safe_candidate_gate_passed": true,
+    "safe_exact_endpoint_checks": 5,
+    "safe_exact_endpoint_violations": 0,
+    "safe_sample_checks": 500,
+    "safe_sample_violations": 0,
+    "safe_violations": [],
+    "sample_checks_are_formal_proof": false,
+    "sample_violations": [],
+    "unfixed_exact_endpoint_checks": 5,
+    "unfixed_exact_endpoint_violations": 5,
+    "unfixed_violations": [
+      {
+        "expected": [
+          0.0,
+          0.10020040080160321
+        ],
+        "exported": [
+          -5.005041474154166e-05,
+          0.10020035141645481
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 1,
+        "time": 0.02
+      },
+      {
+        "expected": [
+          0.0,
+          0.10040160642570281
+        ],
+        "exported": [
+          -0.00010030153475002824,
+          0.10040150731313252
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 2,
+        "time": 0.04
+      },
+      {
+        "expected": [
+          0.0,
+          0.1006036217303823
+        ],
+        "exported": [
+          -0.00015075426689336192,
+          0.10060347254622731
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 3,
+        "time": 0.06
+      },
+      {
+        "expected": [
+          0.0,
+          0.10080645161290323
+        ],
+        "exported": [
+          -0.0002014097193099661,
+          0.10080625201110846
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 4,
+        "time": 0.08
+      },
+      {
+        "expected": [
+          0.0,
+          0.10101010101010102
+        ],
+        "exported": [
+          -0.0002522688237651442,
+          0.10100985064270847
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 5,
+        "time": 0.1
+      }
+    ]
+  },
+  "domains": 20,
+  "expression": "x^2",
+  "flowstar_root": "/srv/local/shengenli/flowstar",
+  "h": 0.02,
+  "horizon": 0.1,
+  "order": 2,
+  "remainder_estimation": 0.0001,
+  "returncode": 0,
+  "rows": 115,
+  "runtime_s": 0.004968695808202028
+}

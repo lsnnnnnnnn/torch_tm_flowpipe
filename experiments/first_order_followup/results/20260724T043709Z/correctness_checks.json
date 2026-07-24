@@ -1,0 +1,575 @@
+{
+  "all_exact_checks_passed": true,
+  "all_sample_checks_passed": true,
+  "checks": [
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2000,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "torch_dependency_forensics",
+        "harmonic",
+        "dependency_preserving",
+        "B1",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2000,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "torch_dependency_forensics",
+        "harmonic",
+        "range_only",
+        "B1",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2000,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "torch_dependency_forensics",
+        "harmonic",
+        "affine_box",
+        "B1",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2000,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "torch_dependency_forensics",
+        "harmonic",
+        "qr",
+        "B1",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2000,
+      "details": [],
+      "group": [
+        "analytic_oracle",
+        "torch_dependency_forensics",
+        "harmonic",
+        "exact_rotation",
+        "affine_exact",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_affine_carry",
+        "riccati",
+        "finite_dictionary_affine_box_reset",
+        "B1",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "riccati",
+        "finite_dictionary_affine_box_reset",
+        "B_DR",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "riccati",
+        "finite_dictionary_affine_box_reset",
+        "B2",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 56,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "complete_degree_two_reference",
+        "riccati",
+        "finite_dictionary_complete_carry",
+        "B2",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2002,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_affine_carry",
+        "harmonic",
+        "finite_dictionary_affine_box_reset",
+        "B1",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2002,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "harmonic",
+        "finite_dictionary_affine_box_reset",
+        "B_DR",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2002,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "harmonic",
+        "finite_dictionary_affine_box_reset",
+        "B2",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2002,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "complete_degree_two_reference",
+        "harmonic",
+        "finite_dictionary_complete_carry",
+        "B2",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "diffreach_experimental_strict_affine",
+        "matched_affine_carry",
+        "riccati",
+        "strict_affine_projection",
+        "B1_carry",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 1982,
+      "details": [],
+      "group": [
+        "diffreach_experimental_strict_affine",
+        "matched_affine_carry",
+        "harmonic",
+        "strict_affine_projection",
+        "B1_carry",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "diffreach_restricted_quasiquadratic",
+        "complete_degree_two_reference",
+        "riccati",
+        "restricted_quasiquadratic_native_carry",
+        "restricted_quasiquadratic_not_complete_degree_2",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 2002,
+      "details": [],
+      "group": [
+        "diffreach_restricted_quasiquadratic",
+        "complete_degree_two_reference",
+        "harmonic",
+        "restricted_quasiquadratic_native_carry",
+        "restricted_quasiquadratic_not_complete_degree_2",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "flowstar",
+        "matched_affine_carry",
+        "riccati",
+        "order2_local_affine_carry",
+        "B1_carry",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 902,
+      "details": [],
+      "group": [
+        "flowstar",
+        "matched_affine_carry",
+        "harmonic",
+        "order2_local_affine_carry",
+        "B1_carry",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 101,
+      "details": [],
+      "group": [
+        "flowstar",
+        "complete_degree_two_reference",
+        "riccati",
+        "order2_complete_carry",
+        "B2",
+        "0.01",
+        "1.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "analytic_exact_endpoint_containment",
+      "checked": 902,
+      "details": [],
+      "group": [
+        "flowstar",
+        "complete_degree_two_reference",
+        "harmonic",
+        "order2_complete_carry",
+        "B2",
+        "0.01",
+        "10.0"
+      ],
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 12078,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_affine_carry",
+        "van_der_pol",
+        "finite_dictionary_affine_box_reset",
+        "B1",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 31968,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "van_der_pol",
+        "finite_dictionary_affine_box_reset",
+        "B_DR",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 31968,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "matched_basis_ablation",
+        "van_der_pol",
+        "finite_dictionary_affine_box_reset",
+        "B2",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 3798,
+      "details": [],
+      "group": [
+        "torch_tm_flowpipe",
+        "complete_degree_two_reference",
+        "van_der_pol",
+        "finite_dictionary_complete_carry",
+        "B2",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 11268,
+      "details": [],
+      "group": [
+        "diffreach_experimental_strict_affine",
+        "matched_affine_carry",
+        "van_der_pol",
+        "strict_affine_projection",
+        "B1_carry",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 36018,
+      "details": [],
+      "group": [
+        "diffreach_restricted_quasiquadratic",
+        "complete_degree_two_reference",
+        "van_der_pol",
+        "restricted_quasiquadratic_native_carry",
+        "restricted_quasiquadratic_not_complete_degree_2",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 1458,
+      "details": [],
+      "group": [
+        "flowstar",
+        "matched_affine_carry",
+        "van_der_pol",
+        "order2_local_affine_carry",
+        "B1_carry",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    },
+    {
+      "check": "deterministic_high_accuracy_trajectory_containment",
+      "checked": 1548,
+      "details": [],
+      "group": [
+        "flowstar",
+        "complete_degree_two_reference",
+        "van_der_pol",
+        "order2_complete_carry",
+        "B2",
+        "0.005",
+        "2.0"
+      ],
+      "proof": false,
+      "violations": 0
+    }
+  ],
+  "exact_reference_checks": 24559,
+  "exact_reference_violations": 0,
+  "flowstar_extraction_audit": {
+    "max_raw_transformed_delta": 0.0,
+    "minimal_baseline_failure": {
+      "first_violating_step": 1,
+      "first_violation": {
+        "expected": [
+          0.0,
+          0.10020040080160321
+        ],
+        "exported": [
+          -5.005041474154166e-05,
+          0.10020035141645481
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 1,
+        "time": 0.02
+      },
+      "h": 0.02,
+      "horizon": 0.1
+    },
+    "raw_transformed_agreement": [
+      {
+        "left": "raw_compose_tube",
+        "max_abs_delta": 0.0,
+        "right": "transformed_tube"
+      },
+      {
+        "left": "raw_compose_endpoint_direct",
+        "max_abs_delta": 0.0,
+        "right": "transformed_endpoint_direct"
+      },
+      {
+        "left": "raw_compose_endpoint_direct",
+        "max_abs_delta": 1.3877787807814457e-17,
+        "right": "raw_compose_endpoint_substitute"
+      },
+      {
+        "left": "transformed_endpoint_direct",
+        "max_abs_delta": 1.3877787807814457e-17,
+        "right": "transformed_endpoint_substitute"
+      }
+    ],
+    "safe_candidate_gate_passed": true,
+    "safe_exact_endpoint_checks": 5,
+    "safe_exact_endpoint_violations": 0,
+    "safe_sample_checks": 500,
+    "safe_sample_violations": 0,
+    "safe_violations": [],
+    "sample_checks_are_formal_proof": false,
+    "sample_violations": [],
+    "unfixed_exact_endpoint_checks": 5,
+    "unfixed_exact_endpoint_violations": 5,
+    "unfixed_violations": [
+      {
+        "expected": [
+          0.0,
+          0.10020040080160321
+        ],
+        "exported": [
+          -5.005041474154166e-05,
+          0.10020035141645481
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 1,
+        "time": 0.02
+      },
+      {
+        "expected": [
+          0.0,
+          0.10040160642570281
+        ],
+        "exported": [
+          -0.00010030153475002824,
+          0.10040150731313252
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 2,
+        "time": 0.04
+      },
+      {
+        "expected": [
+          0.0,
+          0.1006036217303823
+        ],
+        "exported": [
+          -0.00015075426689336192,
+          0.10060347254622731
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 3,
+        "time": 0.06
+      },
+      {
+        "expected": [
+          0.0,
+          0.10080645161290323
+        ],
+        "exported": [
+          -0.0002014097193099661,
+          0.10080625201110846
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 4,
+        "time": 0.08
+      },
+      {
+        "expected": [
+          0.0,
+          0.10101010101010102
+        ],
+        "exported": [
+          -0.0002522688237651442,
+          0.10100985064270847
+        ],
+        "path": "transformed_endpoint_direct",
+        "step": 5,
+        "time": 0.1
+      }
+    ]
+  },
+  "no_successful_row_with_exact_violation": true,
+  "sample_checks": 130104,
+  "sample_checks_are_formal_proof": false,
+  "sample_violations": 0
+}
