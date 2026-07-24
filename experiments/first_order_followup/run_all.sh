@@ -22,13 +22,17 @@ conda run --no-capture-output -n py11 \
 conda run --no-capture-output -n py11 \
   python "$SCRIPT_DIR/collect_results.py" --output-dir "$OUTPUT_DIR"
 
-# All package tests plus the experiment-local regression suites.
-conda run --no-capture-output -n py11 \
-  python -m pytest -q "$REPO_ROOT/tests" "$SCRIPT_DIR/tests/test_torch_basis.py"
-conda run --no-capture-output -n diffreach312 \
-  python -m pytest -q \
-  "$SCRIPT_DIR/tests/test_diffreach_projection.py" \
-  "$SCRIPT_DIR/tests/test_diffreach_parity.py"
+# All tests normally run here.  CI/debug callers that already ran these exact
+# commands may skip only this duplicate phase; the numerical and correctness
+# gates above are never skipped.
+if [[ "${FIRST_ORDER_FOLLOWUP_TESTS_ALREADY_PASSED:-0}" != "1" ]]; then
+  conda run --no-capture-output -n py11 \
+    python -m pytest -q "$REPO_ROOT/tests" "$SCRIPT_DIR/tests/test_torch_basis.py"
+  conda run --no-capture-output -n diffreach312 \
+    python -m pytest -q \
+    "$SCRIPT_DIR/tests/test_diffreach_projection.py" \
+    "$SCRIPT_DIR/tests/test_diffreach_parity.py"
+fi
 
 conda run --no-capture-output -n py11 \
   python "$SCRIPT_DIR/audit_environment.py" --output-dir "$OUTPUT_DIR" --stage after
