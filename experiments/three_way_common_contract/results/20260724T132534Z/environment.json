@@ -1,0 +1,450 @@
+{
+  "adapter_environments": {
+    "diffreach": {
+      "device": "cpu",
+      "dtype": "jax_x64",
+      "tool": "diffreach",
+      "values": [
+        {
+          "point": [
+            0.0
+          ],
+          "point_index": 0,
+          "system": "riccati",
+          "value": [
+            0.0
+          ]
+        },
+        {
+          "point": [
+            0.05
+          ],
+          "point_index": 1,
+          "system": "riccati",
+          "value": [
+            0.0025000000000000005
+          ]
+        },
+        {
+          "point": [
+            0.1
+          ],
+          "point_index": 2,
+          "system": "riccati",
+          "value": [
+            0.010000000000000002
+          ]
+        },
+        {
+          "point": [
+            0.0,
+            0.0
+          ],
+          "point_index": 0,
+          "system": "harmonic",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "point": [
+            0.1,
+            -0.1
+          ],
+          "point_index": 1,
+          "system": "harmonic",
+          "value": [
+            -0.1,
+            -0.1
+          ]
+        },
+        {
+          "point": [
+            -0.035,
+            0.072
+          ],
+          "point_index": 2,
+          "system": "harmonic",
+          "value": [
+            0.072,
+            0.035
+          ]
+        },
+        {
+          "point": [
+            1.1,
+            2.35
+          ],
+          "point_index": 0,
+          "system": "van_der_pol",
+          "value": [
+            2.35,
+            -1.5935000000000006
+          ]
+        },
+        {
+          "point": [
+            1.25,
+            2.4
+          ],
+          "point_index": 1,
+          "system": "van_der_pol",
+          "value": [
+            2.4,
+            -2.6
+          ]
+        },
+        {
+          "point": [
+            1.4,
+            2.45
+          ],
+          "point_index": 2,
+          "system": "van_der_pol",
+          "value": [
+            2.45,
+            -3.7519999999999993
+          ]
+        }
+      ]
+    },
+    "flowstar": {
+      "device": "cpu",
+      "dtype": "MPFR_interval",
+      "tool": "flowstar",
+      "values": [
+        {
+          "intervals": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              -0.0,
+              -0.0
+            ]
+          ],
+          "point": [
+            0.0,
+            0.0
+          ],
+          "point_index": 0,
+          "system": "harmonic",
+          "value": [
+            0.0,
+            -0.0
+          ]
+        },
+        {
+          "intervals": [
+            [
+              -0.1,
+              -0.1
+            ],
+            [
+              -0.1,
+              -0.1
+            ]
+          ],
+          "point": [
+            0.1,
+            -0.1
+          ],
+          "point_index": 1,
+          "system": "harmonic",
+          "value": [
+            -0.1,
+            -0.1
+          ]
+        },
+        {
+          "intervals": [
+            [
+              0.072,
+              0.072
+            ],
+            [
+              0.035,
+              0.035
+            ]
+          ],
+          "point": [
+            -0.035,
+            0.072
+          ],
+          "point_index": 2,
+          "system": "harmonic",
+          "value": [
+            0.072,
+            0.035
+          ]
+        },
+        {
+          "intervals": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "point": [
+            0.0
+          ],
+          "point_index": 0,
+          "system": "riccati",
+          "value": [
+            0.0
+          ]
+        },
+        {
+          "intervals": [
+            [
+              0.0025,
+              0.0025000000000000005
+            ]
+          ],
+          "point": [
+            0.05
+          ],
+          "point_index": 1,
+          "system": "riccati",
+          "value": [
+            0.0025000000000000005
+          ]
+        },
+        {
+          "intervals": [
+            [
+              0.01,
+              0.010000000000000002
+            ]
+          ],
+          "point": [
+            0.1
+          ],
+          "point_index": 2,
+          "system": "riccati",
+          "value": [
+            0.010000000000000002
+          ]
+        },
+        {
+          "intervals": [
+            [
+              2.35,
+              2.35
+            ],
+            [
+              -1.5935000000000015,
+              -1.5935000000000001
+            ]
+          ],
+          "point": [
+            1.1,
+            2.35
+          ],
+          "point_index": 0,
+          "system": "van_der_pol",
+          "value": [
+            2.35,
+            -1.5935000000000008
+          ]
+        },
+        {
+          "intervals": [
+            [
+              2.4,
+              2.4
+            ],
+            [
+              -2.6,
+              -2.5999999999999996
+            ]
+          ],
+          "point": [
+            1.25,
+            2.4
+          ],
+          "point_index": 1,
+          "system": "van_der_pol",
+          "value": [
+            2.4,
+            -2.5999999999999996
+          ]
+        },
+        {
+          "intervals": [
+            [
+              2.45,
+              2.45
+            ],
+            [
+              -3.7520000000000002,
+              -3.7519999999999993
+            ]
+          ],
+          "point": [
+            1.4,
+            2.45
+          ],
+          "point_index": 2,
+          "system": "van_der_pol",
+          "value": [
+            2.45,
+            -3.752
+          ]
+        }
+      ]
+    },
+    "torch": {
+      "device": "cpu",
+      "dtype": "float64",
+      "tool": "torch_tm_flowpipe",
+      "values": [
+        {
+          "point": [
+            0.0
+          ],
+          "point_index": 0,
+          "system": "riccati",
+          "value": [
+            0.0
+          ]
+        },
+        {
+          "point": [
+            0.05
+          ],
+          "point_index": 1,
+          "system": "riccati",
+          "value": [
+            0.0025000000000000005
+          ]
+        },
+        {
+          "point": [
+            0.1
+          ],
+          "point_index": 2,
+          "system": "riccati",
+          "value": [
+            0.010000000000000002
+          ]
+        },
+        {
+          "point": [
+            0.0,
+            0.0
+          ],
+          "point_index": 0,
+          "system": "harmonic",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "point": [
+            0.1,
+            -0.1
+          ],
+          "point_index": 1,
+          "system": "harmonic",
+          "value": [
+            -0.1,
+            -0.1
+          ]
+        },
+        {
+          "point": [
+            -0.035,
+            0.072
+          ],
+          "point_index": 2,
+          "system": "harmonic",
+          "value": [
+            0.072,
+            0.035
+          ]
+        },
+        {
+          "point": [
+            1.1,
+            2.35
+          ],
+          "point_index": 0,
+          "system": "van_der_pol",
+          "value": [
+            2.35,
+            -1.5935000000000006
+          ]
+        },
+        {
+          "point": [
+            1.25,
+            2.4
+          ],
+          "point_index": 1,
+          "system": "van_der_pol",
+          "value": [
+            2.4,
+            -2.6
+          ]
+        },
+        {
+          "point": [
+            1.4,
+            2.45
+          ],
+          "point_index": 2,
+          "system": "van_der_pol",
+          "value": [
+            2.45,
+            -3.7519999999999993
+          ]
+        }
+      ]
+    }
+  },
+  "collector_python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "diffreach_upstream_provenance": {
+    "adapter_calls_saved_upstream_step_directly": true,
+    "diffreach_git_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "diffreach_root": "/srv/local/shengenli/DiffReach",
+    "external_repository_modified": false,
+    "float64_constructor_override": "upstream build_linear_tm called with explicit jnp.float64",
+    "jax_backend": "cpu",
+    "jax_version": "0.10.2",
+    "jax_x64_enabled": true,
+    "optional_jax_verify_import_shim_used": true,
+    "optional_shim_behavior": "raises_if_neural_bound_path_is_called",
+    "total_upstream_step_trace_invocations": 24,
+    "upstream_class": "src.reachability.CT_Dyn_Reach",
+    "upstream_picard_callable": "src.picard.remainder_picard",
+    "upstream_picard_file_sha256": "cd44b0b759045d8f059caf970f1a6a908ac0ed48df1da32000535b5d39399857",
+    "upstream_picard_source_file": "/srv/local/shengenli/DiffReach/src/picard.py",
+    "upstream_step_callable_identity": true,
+    "upstream_step_file_sha256": "1c155652e54f42172425a517dac5ca246194d00550cfc3a79dabb0a98ce7ccc9",
+    "upstream_step_source_file": "/srv/local/shengenli/DiffReach/src/reachability.py",
+    "upstream_step_source_line": 127,
+    "upstream_taylor_model_class": "src.taylor_model.QuadTM",
+    "upstream_taylor_model_file_sha256": "3fff760e35e7e49715c49fe2202efcc8637c96c2f3842628ed5b6779fc50b21e",
+    "upstream_taylor_model_source_file": "/srv/local/shengenli/DiffReach/src/taylor_model.py"
+  },
+  "git_shas": {
+    "diffreach": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "torch": "c12de37d5ada53fdab17b98ab9526f48c6cc31c4"
+  },
+  "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+  "title": "Three-way low-order reachability comparison under common external contracts",
+  "tool_paths": {
+    "diffreach": "/srv/local/shengenli/DiffReach",
+    "flowstar": "/srv/local/shengenli/flowstar",
+    "torch": "/srv/local/shengenli/torch_tm_flowpipe_three_way_comparison"
+  },
+  "tracked_worktrees_clean": {
+    "diffreach": true,
+    "flowstar": true
+  }
+}

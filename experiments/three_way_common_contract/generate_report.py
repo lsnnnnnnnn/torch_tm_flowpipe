@@ -164,6 +164,28 @@ def generate(output: Path) -> str:
     )
     shas = environment["git_shas"]
     provenance = environment["diffreach_upstream_provenance"]
+    vdp_best_rows: list[dict[str, Any]] = []
+    for keys, group in vdp_failure.groupby(["protocol", "h"]):
+        maximum = pd.to_numeric(
+            group["failure_horizon_or_censor"], errors="coerce"
+        ).max()
+        winners = group[
+            pd.to_numeric(
+                group["failure_horizon_or_censor"], errors="coerce"
+            )
+            == maximum
+        ]
+        vdp_best_rows.append(
+            {
+                "protocol": keys[0],
+                "h": float(keys[1]),
+                "farthest_primary_tool(s)": ", ".join(
+                    LABELS.get(tool, tool)
+                    for tool in sorted(winners["tool"].unique())
+                ),
+                "failure_horizon_or_censor": float(maximum),
+            }
+        )
 
     one_step_display = one_step[
         [
@@ -233,6 +255,41 @@ def generate(output: Path) -> str:
         "Deterministic trajectory checks are sanity checks only; they do not "
         "establish soundness. Native validation and analytic containment are "
         "reported independently.",
+        "",
+        "## Direct answers",
+        "",
+        "1. **Literal common internal order:** No. Torch order 1, the "
+        "DiffReach affine flag, and Flow* fixed order 2 have different retained "
+        "support and validation semantics.",
+        "2. **Identical one-step input:** Torch gives the smallest valid "
+        "Riccati widths at every tested `h`; DiffReach gives the smallest valid "
+        "harmonic and Van der Pol widths at every tested `h`/state. Flow* has "
+        "no accepted row at some larger steps, and those configurations are "
+        "reported as `validation_failed` rather than ranked.",
+        "3. **Common componentwise-box carry:** Torch is tightest at the "
+        "Riccati checkpoints. DiffReach is tightest at every harmonic and Van "
+        "der Pol common checkpoint/state where the primary tools can be "
+        "compared. Flow* fails before harmonic `t=4`, Van der Pol `t=0.08` at "
+        "`h=0.005`, and the first Van der Pol step at `h=0.01`.",
+        "4. **Van der Pol validation horizon:** The farthest primary tool "
+        "depends on protocol and `h`, as summarized immediately below. The "
+        "supplemental default DiffReach quasi-quadratic native variant reaches "
+        "the requested `T=1` for both step sizes.",
+        "",
+        _markdown_table(vdp_best_rows),
+        "",
+        "5. **Throughput after one-time work:** There is no system-independent "
+        "winner. Flow* is fastest on scalar Riccati at roughly `0.07 ms/step`; "
+        "DiffReach is typically about `0.1–0.3 ms/step` after JIT and is faster "
+        "than Flow* on the two-state harmonic runs; Torch eager execution is "
+        "roughly `8–24 ms/step`. These steady rates exclude Flow* builds "
+        "(about `1.7 s` per generated executable) and DiffReach JIT "
+        "(about `0.4–1.6 s` per configuration).",
+        "6. **Native versus controlled carry:** Native carry materially changes "
+        "widths and horizons because each tool retains its own dependencies. "
+        "Most notably, the supplemental default DiffReach quasi-quadratic "
+        "variant reaches Van der Pol `T=1`, while the primary affine flag and "
+        "all common-box primary runs fail earlier.",
         "",
         "## Tool identity and semantics",
         "",

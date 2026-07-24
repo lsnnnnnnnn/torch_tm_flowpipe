@@ -1,0 +1,103 @@
+{
+  "all_gates_passed": true,
+  "caveat": "Trajectory sampling is a deterministic sanity check and does not prove soundness; analytic containment and native validation are separate gates.",
+  "gates": {
+    "all_analytic_intervals_contained": {
+      "checks": 11954,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "configuration_coverage": {
+      "actual_runs": 64,
+      "checks": 64,
+      "examples": [],
+      "expected_runs": 64,
+      "passed": true,
+      "violations": 0
+    },
+    "deterministic_high_accuracy_trajectory_sanity": {
+      "checks": 407646,
+      "examples": [],
+      "method": "SciPy DOP853 rtol=1e-12 atol=1e-14 deterministic corners/center/face-centers",
+      "passed": true,
+      "proves_soundness": false,
+      "violations": 0
+    },
+    "diffreach_real_upstream_operations": {
+      "checks": 26,
+      "examples": [],
+      "passed": true,
+      "primary_upstream_runs": 20,
+      "provenance": {
+        "adapter_calls_saved_upstream_step_directly": true,
+        "diffreach_git_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+        "diffreach_root": "/srv/local/shengenli/DiffReach",
+        "external_repository_modified": false,
+        "float64_constructor_override": "upstream build_linear_tm called with explicit jnp.float64",
+        "jax_backend": "cpu",
+        "jax_version": "0.10.2",
+        "jax_x64_enabled": true,
+        "optional_jax_verify_import_shim_used": true,
+        "optional_shim_behavior": "raises_if_neural_bound_path_is_called",
+        "total_upstream_step_trace_invocations": 24,
+        "upstream_class": "src.reachability.CT_Dyn_Reach",
+        "upstream_picard_callable": "src.picard.remainder_picard",
+        "upstream_picard_file_sha256": "cd44b0b759045d8f059caf970f1a6a908ac0ed48df1da32000535b5d39399857",
+        "upstream_picard_source_file": "/srv/local/shengenli/DiffReach/src/picard.py",
+        "upstream_step_callable_identity": true,
+        "upstream_step_file_sha256": "1c155652e54f42172425a517dac5ca246194d00550cfc3a79dabb0a98ce7ccc9",
+        "upstream_step_source_file": "/srv/local/shengenli/DiffReach/src/reachability.py",
+        "upstream_step_source_line": 127,
+        "upstream_taylor_model_class": "src.taylor_model.QuadTM",
+        "upstream_taylor_model_file_sha256": "3fff760e35e7e49715c49fe2202efcc8637c96c2f3842628ed5b6779fc50b21e",
+        "upstream_taylor_model_source_file": "/srv/local/shengenli/DiffReach/src/taylor_model.py"
+      },
+      "violations": 0
+    },
+    "endpoint_vs_whole_tube_extraction": {
+      "checks": 8023,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "flowstar_order_and_extraction_workaround": {
+      "checks": 60,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "harmonic_one_step_exact_containment": {
+      "checks": 22,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "identical_initial_boxes_and_state_order": {
+      "checks": 327,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "identical_ode_point_evaluations": {
+      "checks": 45,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "native_validation_status_consistency": {
+      "checks": 16219,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    },
+    "riccati_one_step_exact_containment": {
+      "checks": 11,
+      "examples": [],
+      "passed": true,
+      "violations": 0
+    }
+  },
+  "smoke": false,
+  "title": "Three-way low-order reachability comparison under common external contracts"
+}

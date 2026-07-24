@@ -1,0 +1,25 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+DiffReach affine_flag one_step_common_input riccati h=0.005 T=0.005: 1/1 success
+DiffReach affine_flag one_step_common_input riccati h=0.01 T=0.01: 1/1 success
+DiffReach affine_flag one_step_common_input riccati h=0.02 T=0.02: 1/1 success
+DiffReach affine_flag one_step_common_input riccati h=0.05 T=0.05: 1/1 success
+DiffReach affine_flag one_step_common_input harmonic h=0.005 T=0.005: 1/1 success
+DiffReach affine_flag one_step_common_input harmonic h=0.01 T=0.01: 1/1 success
+DiffReach affine_flag one_step_common_input harmonic h=0.02 T=0.02: 1/1 success
+DiffReach affine_flag one_step_common_input harmonic h=0.05 T=0.05: 1/1 success
+DiffReach affine_flag one_step_common_input van_der_pol h=0.0025 T=0.0025: 1/1 success
+DiffReach affine_flag one_step_common_input van_der_pol h=0.005 T=0.005: 1/1 success
+DiffReach affine_flag one_step_common_input van_der_pol h=0.01 T=0.01: 1/1 success
+DiffReach affine_flag one_step_common_input van_der_pol h=0.02 T=0.02: 1/1 success
+DiffReach affine_flag multi_step_common_box_carry riccati h=0.01 T=1: 100/100 success
+DiffReach affine_flag multi_step_common_box_carry harmonic h=0.01 T=4: 400/400 success
+DiffReach affine_flag multi_step_common_box_carry van_der_pol h=0.005 T=1: 125/200 validation_failed
+DiffReach affine_flag multi_step_common_box_carry van_der_pol h=0.01 T=1: 54/100 validation_failed
+DiffReach affine_flag native_low_order riccati h=0.01 T=1: 100/100 success
+DiffReach default_restricted_quasi_quadratic native_low_order riccati h=0.01 T=1: 100/100 success
+DiffReach affine_flag native_low_order harmonic h=0.01 T=4: 400/400 success
+DiffReach default_restricted_quasi_quadratic native_low_order harmonic h=0.01 T=4: 400/400 success
+DiffReach affine_flag native_low_order van_der_pol h=0.005 T=1: 123/200 validation_failed
+DiffReach default_restricted_quasi_quadratic native_low_order van_der_pol h=0.005 T=1: 200/200 success
+DiffReach affine_flag native_low_order van_der_pol h=0.01 T=1: 53/100 validation_failed
+DiffReach default_restricted_quasi_quadratic native_low_order van_der_pol h=0.01 T=1: 100/100 success
