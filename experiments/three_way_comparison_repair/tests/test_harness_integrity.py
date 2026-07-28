@@ -7,6 +7,7 @@ from collect_results import (
     _common_time_summary,
     _failure_summary,
     _late_point_violations,
+    collect,
 )
 from common import (
     FAILURE_CATEGORIES,
@@ -172,3 +173,10 @@ def test_original_flowstar_parity_configuration_is_exact() -> None:
         "ode.reach(result, initial_set, 10.0, setting, safe_set, symbolic);",
     ):
         assert fragment in source
+
+
+def test_partial_outcome_does_not_hide_flowstar_violations(tmp_path: Path) -> None:
+    source = inspect.getsource(collect)
+    assert 'row["tool"] != "flowstar"' in source
+    assert '"torch_and_diffreach_sampled_trajectories"' in source
+    assert '"sampled_trajectories"' in source

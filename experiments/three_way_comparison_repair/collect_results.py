@@ -383,6 +383,12 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
         if row["tool"] != "flowstar"
         and row["analytic_reference_status"] == "failed"
     ]
+    non_flowstar_trajectory_failures = [
+        row
+        for row in rows
+        if row["tool"] != "flowstar"
+        and row["sampled_trajectory_status"] == "failed"
+    ]
     finite_violations = [
         row["run_id"]
         for row in rows
@@ -468,6 +474,10 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
             "violations": trajectory_counts["failed"],
             "counts": trajectory_counts,
         },
+        "torch_and_diffreach_sampled_trajectories": {
+            "passed": not non_flowstar_trajectory_failures,
+            "violations": len(non_flowstar_trajectory_failures),
+        },
         "finite_arithmetic": {
             "passed": not finite_violations,
             "violations": len(finite_violations),
@@ -486,7 +496,7 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
         for name in (
             "torch_and_diffreach_exact_references",
             "endpoint_contained_in_tube",
-            "sampled_trajectories",
+            "torch_and_diffreach_sampled_trajectories",
             "finite_arithmetic",
         )
     )
@@ -517,6 +527,9 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
             "failure_rows": len(failures),
             "trajectory_checks_passed": trajectory_counts["passed"],
             "trajectory_checks_failed": trajectory_counts["failed"],
+            "torch_diffreach_trajectory_checks_failed": len(
+                non_flowstar_trajectory_failures
+            ),
         },
     }
     with (output / "raw_results.csv").open("w", newline="", encoding="utf-8") as handle:
