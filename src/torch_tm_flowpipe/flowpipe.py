@@ -32,9 +32,12 @@ class FlowpipeSegment:
     """One validated flowpipe segment.
 
     ``tm`` is the segment over the original dependency variables plus a local
-    time variable ``tau``.  ``final_tm`` is obtained by substituting ``tau=h`` and
-    dropping the local time variable, so it can be used as the initial condition
-    for the next dependency-preserving step.
+    time variable ``tau``.  ``final_tm`` preserves the historical package
+    behavior and is the endpoint used for dependency-preserving propagation.
+    ``endpoint_raw_tm`` is obtained only by substituting ``tau=h`` in ``tm``;
+    ``endpoint_tightened_tm`` is the optional fixed-time residual
+    recomputation.  Keeping all three names explicit prevents experiment code
+    from silently comparing different endpoint semantics.
     """
 
     tm: TMVector
@@ -57,6 +60,20 @@ class FlowpipeSegment:
     flowstar_symbolic_queue_stats: Mapping[str, Any] | None = None
     flowstar_normal_state: "FlowstarNormalFlowpipeState | None" = None
     flowstar_normal_stats: Mapping[str, Any] | None = None
+    endpoint_raw_tm: TMVector | None = None
+    endpoint_tightened_tm: TMVector | None = None
+    endpoint_semantics: str = "legacy_final_tm"
+    endpoint_tightening_applied: bool = False
+    endpoint_tightening_validation_method: str = ""
+
+    def __post_init__(self) -> None:
+        # Older experiment helpers construct FlowpipeSegment directly.  Treat
+        # their final_tm as both endpoint views unless the step builder supplied
+        # the explicit objects.
+        if self.endpoint_raw_tm is None:
+            self.endpoint_raw_tm = self.final_tm
+        if self.endpoint_tightened_tm is None:
+            self.endpoint_tightened_tm = self.final_tm
 
 
 @dataclass
@@ -3673,8 +3690,11 @@ def flowpipe_step_from_tm(
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
         )
-    final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
-    final_tm = final_tm.apply_cutoff(cutoff_threshold)
+    endpoint_raw_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
+    endpoint_raw_tm = endpoint_raw_tm.apply_cutoff(cutoff_threshold)
+    endpoint_tightened_tm = endpoint_raw_tm
+    endpoint_tightening_applied = False
+    endpoint_tightening_validation_method = "not_applied"
     if status == "validated" and validation_mode not in {"target_remainder_flowstar_ctrunc", "flowstar_raw_remainder_compat"}:
         # The segment remainder is valid for every tau in [0,h].  For multi-step
         # propagation we only need the endpoint at tau=h, so tighten the endpoint
@@ -3706,14 +3726,26 @@ def flowpipe_step_from_tm(
                     order=candidate_order_i,
                     truncation_range_split=cand_i.truncation_range_split,
                 ))
-            final_tm = TMVector(final_models).apply_cutoff(cutoff_threshold)
+            endpoint_tightened_tm = TMVector(final_models).apply_cutoff(cutoff_threshold)
+            endpoint_tightening_applied = True
+            endpoint_tightening_validation_method = (
+                "fixed_time_picard_residual_interval_evaluation"
+            )
         except Exception as exc:
             message = message or f"endpoint tightening skipped: {exc}"
+            endpoint_tightening_validation_method = (
+                f"skipped_after_exception:{type(exc).__name__}"
+            )
     selective_stats: dict[str, Any] = {}
     selective_details: list[dict[str, Any]] = []
     if selective_top_k > 0:
-        final_tm, final_selective_stats, final_selective_details = _truncate_tm_to_order_selective(
-            final_tm,
+        endpoint_tightened_tm, final_selective_stats, final_selective_details = _truncate_tm_to_order_selective(
+            endpoint_tightened_tm,
+            output_order,
+            selective_top_k=selective_top_k,
+        )
+        endpoint_raw_tm, _, _ = _truncate_tm_to_order_selective(
+            endpoint_raw_tm,
             output_order,
             selective_top_k=selective_top_k,
         )
@@ -3724,11 +3756,18 @@ def flowpipe_step_from_tm(
         )
         selective_stats = _aggregate_selective_stats(validation_selective_stats or output_selective_stats, top_k=selective_top_k)
         selective_details = validation_selective_details or output_selective_details
-        final_tm = final_tm.apply_cutoff(cutoff_threshold)
+        endpoint_tightened_tm = endpoint_tightened_tm.apply_cutoff(cutoff_threshold)
+        endpoint_raw_tm = endpoint_raw_tm.apply_cutoff(cutoff_threshold)
     else:
-        final_tm = _truncate_tm_to_order(final_tm, output_order).apply_cutoff(cutoff_threshold)
+        endpoint_tightened_tm = _truncate_tm_to_order(
+            endpoint_tightened_tm, output_order
+        ).apply_cutoff(cutoff_threshold)
+        endpoint_raw_tm = _truncate_tm_to_order(
+            endpoint_raw_tm, output_order
+        ).apply_cutoff(cutoff_threshold)
         output_tm = _truncate_tm_to_order(validated, output_order)
 
+    final_tm = endpoint_tightened_tm
     next_symbolic_state = symbolic_remainder_state
     symbolic_stats: Mapping[str, Any] | None = None
     if symbolic_remainder:
@@ -3738,6 +3777,7 @@ def flowpipe_step_from_tm(
                 symbolic_remainder_state,
                 max_symbolic_remainders=max_symbolic_remainders,
             )
+            endpoint_tightened_tm = final_tm
         else:
             next_symbolic_state = symbolic_remainder_state or SymbolicRemainderState.empty(max_symbolic_remainders)
             symbolic_stats = {
@@ -3761,6 +3801,15 @@ def flowpipe_step_from_tm(
         symbolic_remainder_stats=symbolic_stats,
         selective_term_stats=selective_stats or None,
         selective_term_details=selective_details or None,
+        endpoint_raw_tm=endpoint_raw_tm,
+        endpoint_tightened_tm=endpoint_tightened_tm,
+        endpoint_semantics=(
+            "endpoint_tightened_fixed_time_residual"
+            if endpoint_tightening_applied
+            else "endpoint_raw_segment_substitution"
+        ),
+        endpoint_tightening_applied=endpoint_tightening_applied,
+        endpoint_tightening_validation_method=endpoint_tightening_validation_method,
     )
 
 
