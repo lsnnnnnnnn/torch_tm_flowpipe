@@ -274,7 +274,7 @@ def main() -> None:
     args = parser.parse_args()
     output = Path(args.output_dir).resolve()
     plots = output / "plots"
-    raw = pd.read_csv(output / "raw_results.csv")
+    raw = pd.read_csv(output / "raw_results.csv", low_memory=False)
     for column in (
         "lower",
         "upper",

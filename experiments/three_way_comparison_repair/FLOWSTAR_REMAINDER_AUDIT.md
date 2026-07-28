@@ -59,5 +59,7 @@ The full one-factor sweep over order, step, candidate radius, cutoff, and
 zero/native refinement is saved in `flowstar_parameter_sensitivity.csv`. It
 also repeats the base configuration with `intervalNumPrecision=256` to
 distinguish algorithmic refinement behavior from the default 53-bit MPFR
-precision. Every instrumented intermediate is in
+precision. The 256-bit run returns the same first-step upper bound
+`0.10010008767642772`, so increased precision does not remove the violation.
+Every instrumented intermediate is in
 `flowstar_refinement_trace.csv`.

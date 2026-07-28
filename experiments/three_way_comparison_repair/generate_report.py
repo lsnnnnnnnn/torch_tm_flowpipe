@@ -59,7 +59,7 @@ def _fmt(value: float | None) -> str:
 
 
 def generate(output: Path) -> tuple[str, str]:
-    raw = pd.read_csv(output / "raw_results.csv")
+    raw = pd.read_csv(output / "raw_results.csv", low_memory=False)
     for column in (
         "h",
         "width",
@@ -218,6 +218,11 @@ def generate(output: Path) -> tuple[str, str]:
         "`Picard_ctrunc_normal` and the polynomial-difference interval are regenerated. "
         "The audit trace records `subset=0` and restores the already accepted initial "
         "remainder. This is a conservative diagnostic fallback, not a merged upstream fix.",
+        "",
+        "Repeating the base run with `intervalNumPrecision=256` produces the "
+        "same first-step upper bound to the exported precision and therefore "
+        "does not remove the violation. This is evidence against default "
+        "53-bit numeric rounding as the first cause.",
         "",
         "## 7. Exact Flow* failure classification",
         "",
