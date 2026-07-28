@@ -1,5 +1,10 @@
 # Three-way low-order reachability comparison under common external contracts
 
+> **Superseded:** the committed `results/20260724T132534Z` directory is a
+> preserved preliminary artifact and must not be used for winner claims. See
+> `HISTORICAL_RESULTS_NOTICE.md` and the audited replacement in
+> `../three_way_comparison_repair/`.
+
 This experiment compares the real `torch_tm_flowpipe`, DiffReach, and Flow*
 implementations without claiming a common internal order. The canonical ODE,
 state order, initial box, step sizes, horizons, and point checks live in
