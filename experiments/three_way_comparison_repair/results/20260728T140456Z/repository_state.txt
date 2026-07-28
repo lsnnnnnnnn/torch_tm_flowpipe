@@ -1,0 +1,651 @@
+PRE-EDIT BASE SNAPSHOT
+Torch base branch: codex/three-way-common-contract-comparison
+Torch base SHA: 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+DiffReach SHA: dd628eb443b517d6415de93e7035b4baef73963e
+Flow* SHA: b85a3211748cb77b736fe4ad42ee02d8d2b81148
+The Torch and DiffReach tracked worktrees were clean. The original Flow* checkout had pre-existing untracked build and plot artifacts; it was not edited.
+
+EXECUTION-TIME REPOSITORY STATE
+
+## torch_repair: /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+
+$ git status --short --untracked-files=all
+
+
+
+$ git branch -avv
+  codex/batched-dense-nncs-gpu                                        6b2c78c [origin/codex/batched-dense-nncs-gpu] Improve batched dense TM range remainder kernels
++ codex/bern-ibf-tm-feasibility                                       dd82032 (/srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study) add independent Bernstein reference and tests
++ codex/first-order-followup-correctness-matched-basis                3d0ae54 (/srv/local/shengenli/torch_tm_flowpipe_first_order_followup) [origin/codex/first-order-followup-correctness-matched-basis] add validated focused follow-up results
++ codex/first-order-three-way-benchmark                               13e5eec (/srv/local/shengenli/torch_tm_flowpipe_first_order_bench) [origin/codex/first-order-three-way-benchmark] add reproducible benchmark report and curated results
+  codex/flowstar-kernel-alignment                                     54704e8 [origin/codex/flowstar-kernel-alignment] Add Flowstar width-control diagnostics
+  codex/flowstar-normalized-insertion                                 3bd72ca [origin/codex/flowstar-normalized-insertion] Audit Flowstar internal intermediate ranges
++ codex/flowstar-raw-remainder-compat                                 26a254e (/srv/local/shengenli/torch_tm_flowpipe) Correct h10 centering audit semantics and add handoff
++ codex/three-way-common-contract-comparison                          7251adf (/srv/local/shengenli/torch_tm_flowpipe_three_way_comparison) [origin/codex/three-way-common-contract-comparison] add validated three-way comparison results
+* codex/three-way-comparison-correctness-repair                       04f1f1a add corrected protocols and correctness gates
+  main                                                                b2f34f5 [origin/main] Refresh Flowstar ctrunc validation outputs
+  remotes/origin/codex/batched-dense-nncs-gpu                         6b2c78c Improve batched dense TM range remainder kernels
+  remotes/origin/codex/first-order-followup-correctness-matched-basis 3d0ae54 add validated focused follow-up results
+  remotes/origin/codex/first-order-three-way-benchmark                13e5eec add reproducible benchmark report and curated results
+  remotes/origin/codex/flowstar-ctrunc-rescue-diagnostics             bf19292 Add Flowstar ctrunc rescue diagnostics
+  remotes/origin/codex/flowstar-kernel-alignment                      54704e8 Add Flowstar width-control diagnostics
+  remotes/origin/codex/flowstar-normalized-insertion                  3bd72ca Audit Flowstar internal intermediate ranges
+  remotes/origin/codex/flowstar-raw-remainder-compat                  26a254e Correct h10 centering audit semantics and add handoff
+  remotes/origin/codex/three-way-common-contract-comparison           7251adf add validated three-way comparison results
+  remotes/origin/main                                                 b2f34f5 Refresh Flowstar ctrunc validation outputs
+  remotes/origin/master                                               93e623e initialize
+
+
+
+$ git rev-parse HEAD
+04f1f1a5d277f77ab09bad903f05f645a4778419
+
+
+
+$ git log --oneline --decorate --graph --all -n 100
+* 04f1f1a (HEAD -> codex/three-way-comparison-correctness-repair) add corrected protocols and correctness gates
+* 8a5450e audit DiffReach raw endpoint semantics
+* 55ea10c expose raw and tightened Torch endpoints
+* 3e35997 separate Flowstar stock and diagnostic audit paths
+* 7884bf7 invalidate historical comparison and add repair harness
+| * dd82032 (codex/bern-ibf-tm-feasibility) add independent Bernstein reference and tests
+| * 9fbe724 audit BERN paper code and environment
+| * 8fbe4b7 add three-way robustness appendix
+|/  
+* 7251adf (origin/codex/three-way-common-contract-comparison, codex/three-way-common-contract-comparison) add validated three-way comparison results
+* c12de37 add three-way common-contract reachability comparison
+* 3d0ae54 (origin/codex/first-order-followup-correctness-matched-basis, codex/first-order-followup-correctness-matched-basis) add validated focused follow-up results
+* 206b7d3 normalize Flowstar audit CSV line endings
+* 0c46c8c clarify Torch overflow decomposition plot
+* 75c1f93 support validated-test reuse in background sweeps
+* 82f3400 report validated Flowstar prefixes accurately
+* e959d60 add matched protocols runners and reporting
+* c1da8dc add sound DiffReach strict-affine projection
+* 3c2d219 add Torch dependency and finite-basis diagnostics
+* 2ab7b4a add Flowstar extraction correctness audit
+* 13e5eec (origin/codex/first-order-three-way-benchmark, codex/first-order-three-way-benchmark) add reproducible benchmark report and curated results
+* 5582ae9 tighten validation metadata and quantitative reporting
+* 62edadc add result collection plots report and runners
+* 589ac46 add semantics and correctness tests
+* 074a381 add canonical first-order three-way adapters
+* 26a254e (origin/codex/flowstar-raw-remainder-compat, codex/flowstar-raw-remainder-compat) Correct h10 centering audit semantics and add handoff
+* 7231eb0 Audit h10 right-map range midpoint centering
+* 06809ee Audit h10 right-map range midpoint centering
+* 46a7dd7 Audit h5 right-map range midpoint centering
+* 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+* 3b79151 Audit h5 Flowstar raw remainder compat divergence
+* f08856c Run h5 Flowstar raw remainder compat audit
+* 8aa7976 Align Flowstar raw remainder compat step policy
+* e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+* 426f8f9 Add Flowstar raw remainder compatibility experiment
+| * 6b2c78c (origin/codex/batched-dense-nncs-gpu, codex/batched-dense-nncs-gpu) Improve batched dense TM range remainder kernels
+| * 6b5e6e6 Clean up B-line benchmark artifact formatting
+| * ad9fe38 Add batched dense NNCS GPU path demo
+|/  
+* 3bd72ca (origin/codex/flowstar-normalized-insertion, codex/flowstar-normalized-insertion) Audit Flowstar internal intermediate ranges
+* 823699e Partition Flowstar raw ctrunc remainder gap
+* dda7ce9 Audit Flowstar raw ctrunc residual construction
+* 7f613e4 Expose Flowstar validation candidate decomposition fields
+* c791195 Audit Flowstar validation candidate decomposition
+* fd606c8 Add same-source Flowstar endpoint tube comparison
+* 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+* 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+* 2973097 Align Flowstar Picard residual box lifecycle stages
+* 7094373 Audit Flowstar Picard residual source mismatch
+* 754e064 Add Flowstar acceptance predicate audit
+* 1998b68 Add batched dense Taylor model prototype
+* 10dd6b3 Add attempt-aligned Flowstar step comparator
+* e42ca83 Clean up Van der Pol audit formatting
+* 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+* 7101408 Publish batched TM GPU microbenchmark evidence
+* b2b1a6d Add batched TM GPU microbenchmark
+* 4d8f1e7 Add Flowstar accepted step trace comparator
+* c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+* 7e81d6a Add Flowstar symbolic queue v2 audit
+* 346772e Add Horner insertion diagnostics
+* 3778e90 Add normal-eval right-map diagnostics
+* c56f817 Add Flowstar width attribution and scalar fix run
+* a2ac372 Add split symbolic queue semantics diagnostics
+* 82a814c Fix h10 failure target width diagnostics
+* ed23e61 Add normalized insertion symqueue diagnostics
+* f667f73 Add normalized insertion h10 diagnostics
+* 6b66196 Add Flowstar normalized insertion rescue
+* 54704e8 (origin/codex/flowstar-kernel-alignment, codex/flowstar-kernel-alignment) Add Flowstar width-control diagnostics
+* 461c95f Align Flowstar one-step oracle reporting
+* b2f34f5 (origin/main, main) Refresh Flowstar ctrunc validation outputs
+* 2dcab97 Run Flowstar one-step oracle and complete selective audit
+* d6d7556 Add validation mode to rescue reset boxes
+* bf19292 (origin/codex/flowstar-ctrunc-rescue-diagnostics) Add Flowstar ctrunc rescue diagnostics
+* 06ddeaa Add Flowstar-style rescue diagnostics
+* 443c4b6 Add Flowstar-style truncation diagnostics
+* dd978be Add Flowstar-style rescue diagnostics
+* 3e1f6f1 Extend Flowstar-style rescue to long-horizon comparison
+* d81feb7 Add Flowstar-style rescue mode
+* d83a57b Finalize Flow* Van der Pol PyTorch diagnostics conclusion
+* 79dc5aa Add symbolic remainder diagnostics
+* db9c837 Add stage-2 Taylor-model diagnostics
+* d9227c1 Add Flowstar PyTorch TM failure diagnostics
+* eb36930 Add dependency-preserving torch parity run
+* 9d498f9 2026-06-03-flowstar-vanderpol-benchmark-parity
+* 41d0669 2026-06-03-trajectory-visual-audit
+* 5b3ce73 2026-06-02-final-output-table-format-fix
+* 0499bc6 2026-06-02-final-provenance-output-cleanup
+* c74de89 2026-06-02-final-audit-source-snapshot
+* 9e96bbc 2026-06-02-flowstar-provenance-audit
+* ad8f748 2026-06-02-output-manifest-and-flowstar-doc-fix
+* 3956c91 2026-06-01-vdp-report-fix
+* 3353edb 2026-06-01-vdp-flowstar-metric-fix
+* 8b1ae42 2026-06-01
+*   bc96354 Merge remote main
+|\  
+| * ee53187 initialize
+* a185cde Initial commit
+* 93e623e (origin/master) initialize
+
+
+
+$ git remote -v
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (fetch)
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (push)
+
+
+
+$ git worktree list --porcelain
+worktree /srv/local/shengenli/torch_tm_flowpipe
+HEAD 26a254ef585a9dee394b7e41922c06bf8799f501
+branch refs/heads/codex/flowstar-raw-remainder-compat
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study
+HEAD dd820324902c7d8c13c61c161fa830ae04b52f80
+branch refs/heads/codex/bern-ibf-tm-feasibility
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+HEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34
+branch refs/heads/codex/first-order-three-way-benchmark
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup
+HEAD 3d0ae5444435974e7509e176129fb796c76312ab
+branch refs/heads/codex/first-order-followup-correctness-matched-basis
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+HEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+branch refs/heads/codex/three-way-common-contract-comparison
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+HEAD 04f1f1a5d277f77ab09bad903f05f645a4778419
+branch refs/heads/codex/three-way-comparison-correctness-repair
+
+
+
+
+## diffreach: /srv/local/shengenli/DiffReach
+
+$ git status --short --untracked-files=all
+
+
+
+$ git branch -avv
+* main                dd628eb [origin/main] update
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main dd628eb update
+
+
+
+$ git rev-parse HEAD
+dd628eb443b517d6415de93e7035b4baef73963e
+
+
+
+$ git log --oneline --decorate --graph --all -n 100
+* dd628eb (HEAD -> main, origin/main, origin/HEAD) update
+* 161ca2c add .gitignore
+* 577b59f init release
+* 72ff43d update links
+* b6920cb init
+
+
+
+$ git remote -v
+origin	https://github.com/trustworthyrobotics/DiffReach (fetch)
+origin	https://github.com/trustworthyrobotics/DiffReach (push)
+
+
+
+$ git worktree list --porcelain
+worktree /srv/local/shengenli/DiffReach
+HEAD dd628eb443b517d6415de93e7035b4baef73963e
+branch refs/heads/main
+
+
+
+
+## flowstar_original: /srv/local/shengenli/flowstar
+
+$ git status --short --untracked-files=all
+?? benchmarks/continuous/simple/simple
+?? benchmarks/continuous/simple/simple.o
+?? benchmarks/continuous/simple/simple.plt
+?? benchmarks/continuous/vanderpol/vanderpol
+?? benchmarks/continuous/vanderpol/vanderpol.o
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+?? flowstar-2.1.0/__MACOSX/._flowstar-2.1.0
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._.DS_Store
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Constraints.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Constraints.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Continuous.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Continuous.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Geometry.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Geometry.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Hybrid.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Hybrid.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Interval.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Interval.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Makefile
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Matrix.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Matrix.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Monomial.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Monomial.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Polynomial.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._Polynomial.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._TaylorModel.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._TaylorModel.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._include.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._makefile.local
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._modelLexer.l
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._modelParser.cpp
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._modelParser.h
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._modelParser.y
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/._vanderpol.model
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/counterexamples/._.DS_Store
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/images/._.DS_Store
+?? flowstar-2.1.0/__MACOSX/flowstar-2.1.0/outputs/._.DS_Store
+?? flowstar-2.1.0/flowstar-2.1.0/.DS_Store
+?? flowstar-2.1.0/flowstar-2.1.0/Constraints.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Constraints.h
+?? flowstar-2.1.0/flowstar-2.1.0/Constraints.o
+?? flowstar-2.1.0/flowstar-2.1.0/Continuous.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Continuous.h
+?? flowstar-2.1.0/flowstar-2.1.0/Continuous.o
+?? flowstar-2.1.0/flowstar-2.1.0/Geometry.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Geometry.h
+?? flowstar-2.1.0/flowstar-2.1.0/Geometry.o
+?? flowstar-2.1.0/flowstar-2.1.0/Hybrid.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Hybrid.h
+?? flowstar-2.1.0/flowstar-2.1.0/Hybrid.o
+?? flowstar-2.1.0/flowstar-2.1.0/Interval.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Interval.h
+?? flowstar-2.1.0/flowstar-2.1.0/Interval.o
+?? flowstar-2.1.0/flowstar-2.1.0/Makefile
+?? flowstar-2.1.0/flowstar-2.1.0/Matrix.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Matrix.h
+?? flowstar-2.1.0/flowstar-2.1.0/Matrix.o
+?? flowstar-2.1.0/flowstar-2.1.0/Monomial.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Monomial.h
+?? flowstar-2.1.0/flowstar-2.1.0/Monomial.o
+?? flowstar-2.1.0/flowstar-2.1.0/Polynomial.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/Polynomial.h
+?? flowstar-2.1.0/flowstar-2.1.0/Polynomial.o
+?? flowstar-2.1.0/flowstar-2.1.0/TaylorModel.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/TaylorModel.h
+?? flowstar-2.1.0/flowstar-2.1.0/TaylorModel.o
+?? flowstar-2.1.0/flowstar-2.1.0/counterexamples/.DS_Store
+?? flowstar-2.1.0/flowstar-2.1.0/flowstar
+?? flowstar-2.1.0/flowstar-2.1.0/images/.DS_Store
+?? flowstar-2.1.0/flowstar-2.1.0/include.h
+?? flowstar-2.1.0/flowstar-2.1.0/lex.yy.c
+?? flowstar-2.1.0/flowstar-2.1.0/lex.yy.o
+?? flowstar-2.1.0/flowstar-2.1.0/libflowstar.a
+?? flowstar-2.1.0/flowstar-2.1.0/makefile.local
+?? flowstar-2.1.0/flowstar-2.1.0/modelLexer.l
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.cpp
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.h
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.o
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.output
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.tab.c
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.tab.h
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.tab.o
+?? flowstar-2.1.0/flowstar-2.1.0/modelParser.y
+?? flowstar-2.1.0/flowstar-2.1.0/outputs/.DS_Store
+?? flowstar-2.1.0/flowstar-2.1.0/vanderpol.model
+?? flowstar-toolbox/Constraints.o
+?? flowstar-toolbox/Continuous.o
+?? flowstar-toolbox/Discrete.o
+?? flowstar-toolbox/Geometry.o
+?? flowstar-toolbox/Hybrid.o
+?? flowstar-toolbox/Interval.o
+?? flowstar-toolbox/Matrix.o
+?? flowstar-toolbox/Variables.o
+?? flowstar-toolbox/lex.yy.c
+?? flowstar-toolbox/lex.yy.o
+?? flowstar-toolbox/libflowstar.a
+?? flowstar-toolbox/modelParser.output
+?? flowstar-toolbox/modelParser.tab.c
+?? flowstar-toolbox/modelParser.tab.h
+?? flowstar-toolbox/modelParser.tab.o
+?? flowstar-toolbox/settings.o
+
+
+
+$ git branch -avv
++ codex/three-way-refinement-audit 316128e (/srv/local/shengenli/flowstar_three_way_audit) instrument Flowstar refinement validation
+* master                           b85a321 [origin/master] Merge branch 'master' of https://github.com/chenxin415/flowstar
+  remotes/origin/HEAD              -> origin/master
+  remotes/origin/master            b85a321 Merge branch 'master' of https://github.com/chenxin415/flowstar
+
+
+
+$ git rev-parse HEAD
+b85a3211748cb77b736fe4ad42ee02d8d2b81148
+
+
+
+$ git log --oneline --decorate --graph --all -n 100
+* 316128e (codex/three-way-refinement-audit) instrument Flowstar refinement validation
+*   b85a321 (HEAD -> master, origin/master, origin/HEAD) Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 6172bcd Update Matrix.h
+| * a49d73f Update README.md
+| * f9855f0 Update README.md
+| * eac80d2 Update spring_pendulum.cpp
+* | ed08e67 New constructors in TM class is added
+|/  
+* f0a915c benchmark updated
+* bd9c5ad new benchmark added
+* 7005b8d Update README.md
+* ac86b6e Create README.md
+* 0bd6179 performance improved
+* 1c6aba5 Update README.md
+* 4f06fd5 Update README.md
+* 260e69c Update lorenz.cpp
+* 3895b43 Update roessler.cpp
+* b614712 Update roessler.cpp
+* a0fcf15 Update coupled_vanderpol.cpp
+* 2caa34f Update laubloomis.cpp
+* f390465 Update README.md
+* 12a1b99 Update README.md
+* cf29b71 Update README.md
+*   f85410d Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 4028358 Update README.md
+* | 6a88e46 website updated
+|/  
+* d93dca8 new benchmark added
+* 038e6e5 website updated
+* 890953b Update README.md
+* 2a705e6 version 2.1.0 uploaded
+* b3a3e6a Update README.md
+* 3c44495 Update laubloomis.cpp
+* 4d54fb3 Update README.md
+* b16ae31 new benchmarks added
+* 8b269e2 Create README.md
+* 1d7753b new benchmarks added
+* 503ce5f Update README.md
+*   33794e2 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 3362daa Update README.md
+* | 3d23ba4 website updated
+|/  
+* d9c448f source code updated
+* ec06de2 website updated
+* 7bd5434 Update spring_pendulum.cpp
+* 326b619 Update simple.cpp
+* a34effc Update robertson.cpp
+* 0d397bd website updated
+* d05e1fc Update brusselator.cpp
+* 755abe2 Update laubloomis.cpp
+* 8d88601 Update README.md
+* 26c5456 Update README.md
+* 4373ec2 Update README.md
+*   5d4e522 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 1ef9d02 Update README.md
+| * da7241f Update README.md
+| * 9d865fc Update README.md
+* | be506d7 website updated
+|/  
+* 32fbc22 website updated
+* 7c283cd Update laubloomis.cpp
+* 90b055e Update laubloomis.cpp
+* cedc641 Update laubloomis.cpp
+* 3b379ba Update README.md
+* cf01dcc Update vanderpol.cpp
+*   af998ff Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * d2ceb39 Update README.md
+* | 59976e5 website updated
+|/  
+* 30288f7 website updated
+* 581b249 Update README.md
+* ef7519b website updated
+* 355c6cf website updated
+* f750521 Update README.md
+* 213a485 website updated
+* 4917c53 Update README.md
+* 693bd04 Update README.md
+* 2887e6f Create README.md
+* 5d9b266 new benchmarks added
+* 6e2f3f2 Update Makefile
+* c0acdf7 Create README.md
+*   ef37047 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 54f3e76 Create README.md
+| * 388f3df Update README.md
+| * eb7f3c0 Update coupled_vanderpol.cpp
+* | 754de73 new benchmarks added
+|/  
+* 8772bd3 homepage updated
+* 68b9318 homepage updated
+* b522274 Update README.md
+* a33321d Update README.md
+* 2ef824f Update README.md
+*   cc3188a Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * cc3f7c8 Update README.md
+| * 7585298 Update README.md
+| * 321c4d2 Update README.md
+* | a701426 homepage updated
+|/  
+* ba4ec9f homepage updated
+* 5acdba9 Update README.md
+* 3668f56 homepage updated
+* a6460d6 Update README.md
+* 7403290 Update README.md
+* 8af9ff9 Update vanderpol.cpp
+* 788a317 Update spring_pendulum.cpp
+* db3eeb9 Update simple.cpp
+* 6afb453 Update robertson.cpp
+
+
+
+$ git remote -v
+origin	https://github.com/chenxin415/flowstar (fetch)
+origin	https://github.com/chenxin415/flowstar (push)
+
+
+
+$ git worktree list --porcelain
+worktree /srv/local/shengenli/flowstar
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+branch refs/heads/master
+
+worktree /srv/local/shengenli/flowstar_three_way_audit
+HEAD 316128e46202605c47d8131870dff265f96b7f3b
+branch refs/heads/codex/three-way-refinement-audit
+
+
+
+
+## flowstar_audit: /srv/local/shengenli/flowstar_three_way_audit
+
+$ git status --short --untracked-files=all
+?? benchmarks/continuous/vanderpol/vanderpol
+?? benchmarks/continuous/vanderpol/vanderpol.o
+?? flowstar-toolbox/Constraints.o
+?? flowstar-toolbox/Continuous.o
+?? flowstar-toolbox/Discrete.o
+?? flowstar-toolbox/Geometry.o
+?? flowstar-toolbox/Hybrid.o
+?? flowstar-toolbox/Interval.o
+?? flowstar-toolbox/Matrix.o
+?? flowstar-toolbox/Variables.o
+?? flowstar-toolbox/lex.yy.c
+?? flowstar-toolbox/lex.yy.o
+?? flowstar-toolbox/libflowstar.a
+?? flowstar-toolbox/modelParser.output
+?? flowstar-toolbox/modelParser.tab.c
+?? flowstar-toolbox/modelParser.tab.h
+?? flowstar-toolbox/modelParser.tab.o
+?? flowstar-toolbox/settings.o
+
+
+
+$ git branch -avv
+* codex/three-way-refinement-audit 316128e instrument Flowstar refinement validation
++ master                           b85a321 (/srv/local/shengenli/flowstar) [origin/master] Merge branch 'master' of https://github.com/chenxin415/flowstar
+  remotes/origin/HEAD              -> origin/master
+  remotes/origin/master            b85a321 Merge branch 'master' of https://github.com/chenxin415/flowstar
+
+
+
+$ git rev-parse HEAD
+316128e46202605c47d8131870dff265f96b7f3b
+
+
+
+$ git log --oneline --decorate --graph --all -n 100
+* 316128e (HEAD -> codex/three-way-refinement-audit) instrument Flowstar refinement validation
+*   b85a321 (origin/master, origin/HEAD, master) Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 6172bcd Update Matrix.h
+| * a49d73f Update README.md
+| * f9855f0 Update README.md
+| * eac80d2 Update spring_pendulum.cpp
+* | ed08e67 New constructors in TM class is added
+|/  
+* f0a915c benchmark updated
+* bd9c5ad new benchmark added
+* 7005b8d Update README.md
+* ac86b6e Create README.md
+* 0bd6179 performance improved
+* 1c6aba5 Update README.md
+* 4f06fd5 Update README.md
+* 260e69c Update lorenz.cpp
+* 3895b43 Update roessler.cpp
+* b614712 Update roessler.cpp
+* a0fcf15 Update coupled_vanderpol.cpp
+* 2caa34f Update laubloomis.cpp
+* f390465 Update README.md
+* 12a1b99 Update README.md
+* cf29b71 Update README.md
+*   f85410d Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 4028358 Update README.md
+* | 6a88e46 website updated
+|/  
+* d93dca8 new benchmark added
+* 038e6e5 website updated
+* 890953b Update README.md
+* 2a705e6 version 2.1.0 uploaded
+* b3a3e6a Update README.md
+* 3c44495 Update laubloomis.cpp
+* 4d54fb3 Update README.md
+* b16ae31 new benchmarks added
+* 8b269e2 Create README.md
+* 1d7753b new benchmarks added
+* 503ce5f Update README.md
+*   33794e2 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 3362daa Update README.md
+* | 3d23ba4 website updated
+|/  
+* d9c448f source code updated
+* ec06de2 website updated
+* 7bd5434 Update spring_pendulum.cpp
+* 326b619 Update simple.cpp
+* a34effc Update robertson.cpp
+* 0d397bd website updated
+* d05e1fc Update brusselator.cpp
+* 755abe2 Update laubloomis.cpp
+* 8d88601 Update README.md
+* 26c5456 Update README.md
+* 4373ec2 Update README.md
+*   5d4e522 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 1ef9d02 Update README.md
+| * da7241f Update README.md
+| * 9d865fc Update README.md
+* | be506d7 website updated
+|/  
+* 32fbc22 website updated
+* 7c283cd Update laubloomis.cpp
+* 90b055e Update laubloomis.cpp
+* cedc641 Update laubloomis.cpp
+* 3b379ba Update README.md
+* cf01dcc Update vanderpol.cpp
+*   af998ff Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * d2ceb39 Update README.md
+* | 59976e5 website updated
+|/  
+* 30288f7 website updated
+* 581b249 Update README.md
+* ef7519b website updated
+* 355c6cf website updated
+* f750521 Update README.md
+* 213a485 website updated
+* 4917c53 Update README.md
+* 693bd04 Update README.md
+* 2887e6f Create README.md
+* 5d9b266 new benchmarks added
+* 6e2f3f2 Update Makefile
+* c0acdf7 Create README.md
+*   ef37047 Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * 54f3e76 Create README.md
+| * 388f3df Update README.md
+| * eb7f3c0 Update coupled_vanderpol.cpp
+* | 754de73 new benchmarks added
+|/  
+* 8772bd3 homepage updated
+* 68b9318 homepage updated
+* b522274 Update README.md
+* a33321d Update README.md
+* 2ef824f Update README.md
+*   cc3188a Merge branch 'master' of https://github.com/chenxin415/flowstar
+|\  
+| * cc3f7c8 Update README.md
+| * 7585298 Update README.md
+| * 321c4d2 Update README.md
+* | a701426 homepage updated
+|/  
+* ba4ec9f homepage updated
+* 5acdba9 Update README.md
+* 3668f56 homepage updated
+* a6460d6 Update README.md
+* 7403290 Update README.md
+* 8af9ff9 Update vanderpol.cpp
+* 788a317 Update spring_pendulum.cpp
+* db3eeb9 Update simple.cpp
+* 6afb453 Update robertson.cpp
+
+
+
+$ git remote -v
+origin	https://github.com/chenxin415/flowstar (fetch)
+origin	https://github.com/chenxin415/flowstar (push)
+
+
+
+$ git worktree list --porcelain
+worktree /srv/local/shengenli/flowstar
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+branch refs/heads/master
+
+worktree /srv/local/shengenli/flowstar_three_way_audit
+HEAD 316128e46202605c47d8131870dff265f96b7f3b
+branch refs/heads/codex/three-way-refinement-audit
+
+
