@@ -16,7 +16,9 @@ from typing import Any, Mapping, Sequence
 from common import (
     analytic_contained,
     evaluate_polynomial_interval,
+    git_sha,
     load_spec,
+    unavailable,
     write_csv,
     write_json,
 )
@@ -269,6 +271,44 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
                             "status": segment.status,
                             "directed_rounding_or_mpfr": "torch_nextafter_outward",
                             "floating_point_enclosure_candidate": True,
+                        },
+                        system_definition={
+                            "name": system_name,
+                            "state_names": list(system["state_names"]),
+                            "equations": system["rhs"],
+                            "initial_domain": system["initial_box"],
+                        },
+                        requested_horizon=step * h,
+                        segment_start=(step - 1) * h,
+                        accepted_step=h,
+                        outcome={
+                            "status": "success",
+                            "category": "",
+                            "reason": "",
+                            "requested_horizon_reached": True,
+                        },
+                        execution_metadata={
+                            "backend": "torch",
+                            "dtype": "torch.float64",
+                            "device": "cpu",
+                            "repository_commit": git_sha(REPO_ROOT),
+                            "runtime": {
+                                "setup_s": unavailable(
+                                    "per-step setup is included in propagation"
+                                ),
+                                "propagation_s": elapsed,
+                                "export_s": unavailable(
+                                    "export timing is included in the loop"
+                                ),
+                            },
+                        },
+                        basis_metadata={
+                            "name": "B1_affine",
+                            "requested_order": 1,
+                            "native_order": 1,
+                            "coefficient_representation": (
+                                "Torch sparse exponent tuple to tensor coefficient"
+                            ),
                         },
                     )
                     record["native_validation_passed"] = True

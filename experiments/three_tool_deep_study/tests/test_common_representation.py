@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import itertools
 import copy
+import json
 import math
+from pathlib import Path
 
 from common import (
     affine_project_state,
@@ -22,6 +24,13 @@ def test_torch_export_round_trip_and_endpoint_tube_contract() -> None:
     checks = validate_record(record)
     assert checks["passed"], checks
     assert record["native_validation_passed"]
+    assert record["schema_version"] == 2
+    assert record["system_definition"]["equations"]
+    assert record["step_semantics"]["requested_step"] == 0.01
+    assert record["step_semantics"]["accepted_step"] == 0.01
+    assert record["execution"]["repository_commit"]
+    assert record["execution"]["runtime"]["propagation_s"] >= 0.0
+    assert record["outcome"]["requested_horizon_reached"]
     for sample in record["native_metadata"]["native_point_samples"]:
         for state_index, expected in enumerate(sample["polynomial_values"]):
             actual = evaluate_polynomial_point(
@@ -118,3 +127,24 @@ def test_vanderpol_state_semantics_are_explicit() -> None:
         "position",
         "velocity",
     ]
+
+
+def test_machine_readable_cir_schema_tracks_validator_contract() -> None:
+    schema = json.loads(
+        (Path(__file__).parents[1] / "cir_schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert schema["properties"]["schema_version"]["const"] == 2
+    assert {
+        "system_definition",
+        "time_semantics",
+        "step_semantics",
+        "variable_semantics",
+        "dependency_semantics",
+        "polynomial_representation",
+        "enclosures",
+        "reset_carry_policy",
+        "outcome",
+        "execution",
+    }.issubset(schema["required"])

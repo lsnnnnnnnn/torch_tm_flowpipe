@@ -53,6 +53,11 @@ cd "${REPO_ROOT}"
   --mode collect --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/defect_diagnostic.py" \
   --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 pytest -q \
+  "${STUDY_DIR}/tests/test_external_exports.py" \
+  --torch-segment "${OUTPUT_DIR}/common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.01.json" \
+  --diffreach-segment "${OUTPUT_DIR}/common_segments/diffreach_upstream_affine_flag_riccati_h0.01.json" \
+  --flowstar-segment "${OUTPUT_DIR}/common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.01_o2.json"
 
 "${CONDA}" run -n py11 python "${STUDY_DIR}/run_pareto.py" \
   --tool torch --smoke --output-dir "${OUTPUT_DIR}"

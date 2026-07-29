@@ -11,7 +11,13 @@ import time
 from pathlib import Path
 from typing import Any, Mapping
 
-from common import canonical_record, load_spec, write_json
+from common import (
+    canonical_record,
+    git_sha,
+    load_spec,
+    unavailable,
+    write_json,
+)
 
 HERE = Path(__file__).resolve().parent
 TERM_RE = re.compile(
@@ -290,7 +296,15 @@ def _compile(
     return time.perf_counter() - started
 
 
-def _parse(stdout: str, *, variant: str, system: str, h: float) -> dict[str, Any]:
+def _parse(
+    stdout: str,
+    *,
+    variant: str,
+    system: str,
+    system_definition: Mapping[str, Any],
+    h: float,
+    requested_order: int,
+) -> dict[str, Any]:
     terms: dict[str, dict[int, list[dict[str, Any]]]] = {
         "tube": {},
         "endpoint": {},
@@ -374,7 +388,10 @@ def _parse(stdout: str, *, variant: str, system: str, h: float) -> dict[str, Any
             {
                 "polynomial_terms": terms["tube"][state],
                 "independent_interval_remainder": remainders["tube"][state],
-                "native_structured_symbolic_remainder": None,
+                "native_structured_symbolic_remainder": unavailable(
+                    "Flow* structured symbolic remainder is not losslessly "
+                    "available as one per-state interval"
+                ),
             }
         )
         # evaluate_time leaves a zero time exponent in the term dimension.
@@ -388,7 +405,10 @@ def _parse(stdout: str, *, variant: str, system: str, h: float) -> dict[str, Any
                     for term in terms["endpoint"][state]
                 ],
                 "independent_interval_remainder": remainders["endpoint"][state],
-                "native_structured_symbolic_remainder": None,
+                "native_structured_symbolic_remainder": unavailable(
+                    "Flow* structured symbolic remainder is not losslessly "
+                    "available as one per-state interval"
+                ),
             }
         )
     record = canonical_record(
@@ -425,6 +445,46 @@ def _parse(stdout: str, *, variant: str, system: str, h: float) -> dict[str, Any
             "directed_rounding_or_mpfr": True,
             "floating_point_enclosure_candidate": False,
             "native_point_samples": samples,
+        },
+        system_definition={
+            "name": system,
+            "state_names": list(system_definition["state_names"]),
+            "equations": system_definition["rhs"],
+            "initial_domain": system_definition["initial_box"],
+        },
+        accepted_step=h,
+        outcome={
+            "status": "success",
+            "category": "",
+            "reason": "",
+            "requested_horizon_reached": True,
+        },
+        execution_metadata={
+            "backend": "flowstar_cpp_mpfr",
+            "dtype": unavailable(
+                "MPFR precision is attached after process execution"
+            ),
+            "device": "cpu",
+            "repository_commit": unavailable(
+                "Flow* repository SHA is attached after process execution"
+            ),
+            "runtime": {
+                "setup_s": unavailable(
+                    "build timing is attached after process execution"
+                ),
+                "propagation_s": float(status.get("seconds", "nan")),
+                "export_s": unavailable(
+                    "native print/export time is included in process execution"
+                ),
+            },
+        },
+        basis_metadata={
+            "name": f"complete_total_degree_{requested_order}",
+            "requested_order": requested_order,
+            "native_order": requested_order,
+            "coefficient_representation": (
+                "Flow* sparse Polynomial<Real> terms"
+            ),
         },
     )
     record["native_validation_passed"] = True
@@ -483,12 +543,21 @@ def export_segment(
             f"stdout={process.stdout[-4000:]}; stderr={process.stderr[-2000:]}"
         )
     record = _parse(
-        process.stdout, variant=variant, system=system_name, h=h
+        process.stdout,
+        variant=variant,
+        system=system_name,
+        system_definition=spec["systems"][system_name],
+        h=h,
+        requested_order=order,
     )
     record["native_metadata"]["compile_time_s"] = compile_time
     record["native_metadata"]["execution_time_s"] = execution_time
     record["native_metadata"]["requested_order"] = order
     record["native_metadata"]["interval_precision_bits"] = precision_bits
+    record["execution"]["dtype"] = f"MPFR_interval_{precision_bits}_bit"
+    record["execution"]["repository_commit"] = git_sha(flowstar_root)
+    record["execution"]["runtime"]["setup_s"] = compile_time
+    record["execution"]["runtime"]["propagation_s"] = execution_time
     return record
 
 

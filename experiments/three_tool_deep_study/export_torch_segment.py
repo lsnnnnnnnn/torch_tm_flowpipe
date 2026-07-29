@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -16,7 +17,14 @@ for candidate in (HERE, SRC_ROOT):
 
 import torch
 
-from common import canonical_record, deterministic_points, load_spec, write_json
+from common import (
+    canonical_record,
+    deterministic_points,
+    git_sha,
+    load_spec,
+    unavailable,
+    write_json,
+)
 from torch_tm_flowpipe import Interval, TaylorModel, TMVector, flowpipe_step
 
 torch.set_default_dtype(torch.float64)
@@ -65,7 +73,9 @@ def _state(model: TaylorModel) -> dict[str, Any]:
             )
         ],
         "independent_interval_remainder": _bounds(model.remainder),
-        "native_structured_symbolic_remainder": None,
+        "native_structured_symbolic_remainder": unavailable(
+            "Torch TM exposes one independent interval remainder only"
+        ),
     }
 
 
@@ -102,6 +112,7 @@ def export_segment(
 ) -> dict[str, Any]:
     system = spec["systems"][system_name]
     diagnostics: list[dict[str, Any]] = []
+    propagation_started = time.perf_counter()
     segment = flowpipe_step(
         rhs_from_spec(system),
         [Interval(*bounds) for bounds in system["initial_box"]],
@@ -115,6 +126,7 @@ def export_segment(
             "endpoint_semantics": "raw_and_tightened_separate",
         },
     )
+    propagation_s = time.perf_counter() - propagation_started
     if segment.endpoint_raw_tm is None:
         raise RuntimeError("Torch segment did not expose a raw endpoint")
     tube = segment.tm
@@ -125,6 +137,33 @@ def export_segment(
     ]
     roles = ["state_generator"] * len(system["state_names"]) + ["local_time"]
     domains = [_bounds(domain) for domain in tube.domain]
+    export_started = time.perf_counter()
+    tube_states = [_state(model) for model in tube]
+    endpoint_states = [_state(model) for model in endpoint]
+    raw_endpoint_box = [
+        _bounds(interval) for interval in endpoint.range_box()
+    ]
+    tube_box = [_bounds(interval) for interval in tube.range_box()]
+    tightened = (
+        segment.endpoint_tightened_tm
+        if (
+            segment.endpoint_tightened_tm is not None
+            and segment.endpoint_tightening_applied
+        )
+        else None
+    )
+    tightened_states = (
+        [_state(model) for model in tightened]
+        if tightened is not None
+        else None
+    )
+    tightened_box = (
+        [_bounds(interval) for interval in tightened.range_box()]
+        if tightened is not None
+        else None
+    )
+    export_s = time.perf_counter() - export_started
+    template = tube[0].remainder.lo
     record = canonical_record(
         tool="torch_tm_flowpipe",
         variant=f"complete_total_degree_{order}",
@@ -133,10 +172,10 @@ def export_segment(
         variable_names=variable_names,
         variable_roles=roles,
         domains=domains,
-        states=[_state(model) for model in tube],
-        raw_endpoint=[_state(model) for model in endpoint],
-        raw_endpoint_box=[_bounds(interval) for interval in endpoint.range_box()],
-        tube_box=[_bounds(interval) for interval in tube.range_box()],
+        states=tube_states,
+        raw_endpoint=endpoint_states,
+        raw_endpoint_box=raw_endpoint_box,
+        tube_box=tube_box,
         validation_trace=diagnostics,
         reset_metadata={
             "reset": "none_one_step",
@@ -157,6 +196,46 @@ def export_segment(
             "directed_rounding_or_mpfr": "torch_nextafter_outward",
             "floating_point_enclosure_candidate": True,
             "native_point_samples": _native_samples(tube),
+        },
+        system_definition={
+            "name": system_name,
+            "state_names": list(system["state_names"]),
+            "equations": system["rhs"],
+            "initial_domain": system["initial_box"],
+        },
+        accepted_step=h if segment.status == "validated" else None,
+        tightened_endpoint=tightened_states,
+        tightened_endpoint_box=tightened_box,
+        outcome={
+            "status": (
+                "success" if segment.status == "validated" else "failure"
+            ),
+            "category": (
+                "" if segment.status == "validated" else "validation_failure"
+            ),
+            "reason": segment.message or "",
+            "requested_horizon_reached": segment.status == "validated",
+        },
+        execution_metadata={
+            "backend": "torch",
+            "dtype": str(template.dtype),
+            "device": str(template.device),
+            "repository_commit": git_sha(REPO_ROOT),
+            "runtime": {
+                "setup_s": unavailable(
+                    "setup is included in one-step propagation timing"
+                ),
+                "propagation_s": propagation_s,
+                "export_s": export_s,
+            },
+        },
+        basis_metadata={
+            "name": f"complete_total_degree_{order}",
+            "requested_order": order,
+            "native_order": order,
+            "coefficient_representation": (
+                "Torch sparse exponent tuple to tensor coefficient"
+            ),
         },
     )
     record["native_validation_passed"] = segment.status == "validated"

@@ -14,7 +14,21 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+
+
+def unavailable(reason: str) -> dict[str, str]:
+    if not reason.strip():
+        raise ValueError("unavailable values require a reason")
+    return {"availability": "unavailable", "reason": reason}
+
+
+def is_unavailable(value: Any) -> bool:
+    return (
+        isinstance(value, Mapping)
+        and value.get("availability") == "unavailable"
+        and bool(value.get("reason"))
+    )
 
 
 def load_spec(path: str | Path = HERE / "benchmark_spec.yaml") -> dict[str, Any]:
@@ -223,13 +237,95 @@ def canonical_record(
     validation_trace: Sequence[Mapping[str, Any]],
     reset_metadata: Mapping[str, Any],
     native_metadata: Mapping[str, Any],
+    system_definition: Mapping[str, Any] | None = None,
+    requested_horizon: float | None = None,
+    segment_start: float = 0.0,
+    accepted_step: float | None = None,
+    tightened_endpoint: Sequence[Mapping[str, Any]] | None = None,
+    tightened_endpoint_box: Sequence[Sequence[float]] | None = None,
+    outcome: Mapping[str, Any] | None = None,
+    execution_metadata: Mapping[str, Any] | None = None,
+    basis_metadata: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     time_index = (
         list(variable_roles).index("local_time")
         if "local_time" in variable_roles
         else None
     )
-    return {
+    requested_horizon_value = (
+        float(h) if requested_horizon is None else float(requested_horizon)
+    )
+    accepted_step_value: float | dict[str, str] = (
+        unavailable("backend rejected the requested step")
+        if accepted_step is None
+        else float(accepted_step)
+    )
+    tightened_record: Any
+    tightened_box_record: Any
+    if tightened_endpoint is None:
+        tightened_record = unavailable(
+            "backend does not expose a distinct tightened endpoint"
+        )
+        tightened_box_record = unavailable(
+            "backend does not expose a distinct tightened endpoint box"
+        )
+    else:
+        if tightened_endpoint_box is None:
+            raise ValueError(
+                "tightened endpoint states require a tightened endpoint box"
+            )
+        tightened_record = [
+            decorate_state(dict(state), None) for state in tightened_endpoint
+        ]
+        tightened_box_record = [
+            list(map(float, box)) for box in tightened_endpoint_box
+        ]
+    system_record: Any = (
+        dict(system_definition)
+        if system_definition is not None
+        else unavailable("system definition was not supplied by this adapter")
+    )
+    outcome_record = {
+        "status": "success",
+        "category": "",
+        "reason": "",
+        "requested_horizon_reached": True,
+        **dict(outcome or {}),
+    }
+    execution_record = {
+        "backend": unavailable("backend identifier was not supplied"),
+        "dtype": unavailable("dtype was not exposed"),
+        "device": unavailable("device was not exposed"),
+        "repository_commit": unavailable("repository commit was not supplied"),
+        "runtime": {
+            "setup_s": unavailable("setup timing was not measured"),
+            "propagation_s": unavailable("propagation timing was not measured"),
+            "export_s": unavailable("export timing was not measured"),
+        },
+        **dict(execution_metadata or {}),
+    }
+    basis_record = {
+        "name": unavailable("basis name was not supplied"),
+        "requested_order": unavailable("requested order was not supplied"),
+        "native_order": unavailable("native order was not exposed"),
+        "coefficient_representation": "sparse_monomial_terms",
+        **dict(basis_metadata or {}),
+    }
+    variable_semantics = [
+        {"name": name, "role": role, "domain": list(map(float, domain))}
+        for name, role, domain in zip(variable_names, variable_roles, domains)
+    ]
+    decorated_states = [
+        decorate_state(dict(state), time_index) for state in states
+    ]
+    decorated_raw_endpoint = [
+        decorate_state(dict(state), None) for state in raw_endpoint
+    ]
+    raw_endpoint_box_record = [
+        list(map(float, box)) for box in raw_endpoint_box
+    ]
+    tube_box_record = [list(map(float, box)) for box in tube_box]
+    record = {
         "schema_version": SCHEMA_VERSION,
         "tool": tool,
         "variant": variant,
@@ -246,16 +342,58 @@ def canonical_record(
             if role != "local_time"
         ],
         "domains": [list(map(float, domain)) for domain in domains],
-        "states": [decorate_state(dict(state), time_index) for state in states],
-        "raw_endpoint": [
-            decorate_state(dict(state), None) for state in raw_endpoint
-        ],
-        "raw_endpoint_box": [list(map(float, box)) for box in raw_endpoint_box],
-        "whole_tube_box": [list(map(float, box)) for box in tube_box],
+        "states": decorated_states,
+        "raw_endpoint": decorated_raw_endpoint,
+        "raw_endpoint_box": raw_endpoint_box_record,
+        "whole_tube_box": tube_box_record,
         "validation_trace": list(validation_trace),
         "reset_preconditioning_metadata": dict(reset_metadata),
         "native_metadata": dict(native_metadata),
+        "system_definition": system_record,
+        "time_semantics": {
+            "initial_time": 0.0,
+            "requested_horizon": requested_horizon_value,
+            "segment_start": float(segment_start),
+            "segment_end": float(segment_start) + float(h),
+        },
+        "step_semantics": {
+            "requested_step": float(h),
+            "accepted_step": accepted_step_value,
+        },
+        "variable_semantics": variable_semantics,
+        "dependency_semantics": {
+            "generator_variables": [
+                item["name"]
+                for item in variable_semantics
+                if item["role"]
+                in {"state_generator", "dependency_generator", "noise_generator"}
+            ],
+            "noise_variables": [
+                item["name"]
+                for item in variable_semantics
+                if item["role"] == "noise_generator"
+            ],
+            "independent_remainder_semantics": (
+                "per-state interval independent of polynomial generators"
+            ),
+        },
+        "polynomial_representation": basis_record,
+        "enclosures": {
+            "tube": {"states": decorated_states, "box": tube_box_record},
+            "endpoint_raw": {
+                "states": decorated_raw_endpoint,
+                "box": raw_endpoint_box_record,
+            },
+            "endpoint_tightened": {
+                "states": tightened_record,
+                "box": tightened_box_record,
+            },
+        },
+        "reset_carry_policy": dict(reset_metadata),
+        "outcome": outcome_record,
+        "execution": execution_record,
     }
+    return record
 
 
 def deterministic_points(domains: Sequence[Sequence[float]], limit: int = 32) -> list[list[float]]:
@@ -278,10 +416,72 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
         "whole_tube_box",
         "validation_trace",
         "reset_preconditioning_metadata",
+        "system_definition",
+        "time_semantics",
+        "step_semantics",
+        "variable_semantics",
+        "dependency_semantics",
+        "polynomial_representation",
+        "enclosures",
+        "reset_carry_policy",
+        "outcome",
+        "execution",
     }
     missing = sorted(required - set(record))
     if missing:
         raise ValueError(f"record missing fields: {missing}")
+    if record.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError(
+            f"unsupported CIR schema version: {record.get('schema_version')}"
+        )
+    if is_unavailable(record["system_definition"]):
+        raise ValueError("system definition is required for a CIR export")
+    if len(record["variable_semantics"]) != len(record["domains"]):
+        raise ValueError("variable semantics/domain length mismatch")
+    for item, name, role, domain in zip(
+        record["variable_semantics"],
+        record["variable_names"],
+        record["variable_roles"],
+        record["domains"],
+    ):
+        if (
+            item.get("name") != name
+            or item.get("role") != role
+            or list(item.get("domain", [])) != list(domain)
+        ):
+            raise ValueError("variable semantics do not match legacy fields")
+    requested_step = record["step_semantics"].get("requested_step")
+    accepted_step_value = record["step_semantics"].get("accepted_step")
+    if not isinstance(requested_step, (int, float)):
+        raise ValueError("requested step must be numeric")
+    if not (
+        isinstance(accepted_step_value, (int, float))
+        or is_unavailable(accepted_step_value)
+    ):
+        raise ValueError("accepted step must be numeric or explicitly unavailable")
+    tightened = record["enclosures"]["endpoint_tightened"]
+    if not (
+        (
+            isinstance(tightened.get("states"), list)
+            and isinstance(tightened.get("box"), list)
+        )
+        or (
+            is_unavailable(tightened.get("states"))
+            and is_unavailable(tightened.get("box"))
+        )
+    ):
+        raise ValueError(
+            "tightened endpoint must be populated or explicitly unavailable"
+        )
+    execution = record["execution"]
+    for key in ("backend", "dtype", "device", "repository_commit", "runtime"):
+        if key not in execution or execution[key] is None:
+            raise ValueError(f"execution field {key} is missing")
+    for state in list(record["states"]) + list(record["raw_endpoint"]):
+        if state.get("native_structured_symbolic_remainder") is None:
+            raise ValueError(
+                "unavailable native structured remainders must be explicit"
+            )
     domains = record["domains"]
     point_checks = 0
     tube_violations = 0
@@ -365,6 +565,8 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
             ):
                 native_point_violations += 1
     return {
+        "schema_version": SCHEMA_VERSION,
+        "schema_fields_passed": True,
         "point_evaluation_checks": point_checks,
         "tube_point_violations": tube_violations,
         "endpoint_evaluation_violations": endpoint_violations,
@@ -399,7 +601,9 @@ def affine_project_state(
     return {
         "polynomial_terms": kept,
         "independent_interval_remainder": remainder,
-        "native_structured_symbolic_remainder": None,
+        "native_structured_symbolic_remainder": unavailable(
+            "affine projection has no native structured symbolic remainder"
+        ),
     }, discarded
 
 

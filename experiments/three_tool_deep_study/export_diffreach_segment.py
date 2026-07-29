@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 import types
 from pathlib import Path
 from typing import Any, Mapping
@@ -46,7 +47,14 @@ import src.reachability as reachability
 import src.settings as dr_settings
 from src.symbolic_remainder import init_symbolic_state
 
-from common import canonical_record, deterministic_points, load_spec, write_json
+from common import (
+    canonical_record,
+    deterministic_points,
+    git_sha,
+    load_spec,
+    unavailable,
+    write_json,
+)
 
 ORIGINAL_BUILD_LINEAR_TM = reachability.build_linear_tm
 ORIGINAL_STEP_ONCE = reachability.CT_Dyn_Reach.step_once
@@ -163,7 +171,10 @@ def _states_with_remainder(model: Any) -> list[dict[str, Any]]:
             float(remainder_lo[index]),
             float(remainder_hi[index]),
         ]
-        state["native_structured_symbolic_remainder"] = None
+        state["native_structured_symbolic_remainder"] = unavailable(
+            "DiffReach symbolic carry is stored in native metadata, not as a "
+            "single lossless per-state interval object"
+        )
     return states
 
 
@@ -198,7 +209,10 @@ def _endpoint_states(model: Any, h: float) -> list[dict[str, Any]]:
                     float(remainder_lo[state_index]),
                     float(remainder_hi[state_index]),
                 ],
-                "native_structured_symbolic_remainder": None,
+                "native_structured_symbolic_remainder": unavailable(
+                    "DiffReach symbolic carry is stored in native metadata, "
+                    "not as a single lossless per-state interval object"
+                ),
             }
         )
     return states
@@ -224,6 +238,7 @@ def export_segment(
     affine: bool,
 ) -> dict[str, Any]:
     system = spec["systems"][system_name]
+    setup_started = time.perf_counter()
     dr_settings.update_config(
         {
             "TRUNCATE_TO_AFFINE": bool(affine),
@@ -235,6 +250,8 @@ def export_segment(
     symbolic_window = max(windows) if isinstance(windows, list) else int(windows)
     core = _core(spec, system, h)
     carry = _initial_carry(system, symbolic_window)
+    setup_s = time.perf_counter() - setup_started
+    propagation_started = time.perf_counter()
     next_carry, (_, _, contraction) = ORIGINAL_STEP_ONCE(core, carry, None)
     local_tm, parameterization, symbolic = next_carry
     composed = local_tm.compose_affine(parameterization, core.step_size)
@@ -244,7 +261,26 @@ def export_segment(
     endpoint = composed.eval_interval(endpoint_lo, step_hi)
     domains = [[0.0, float(h)]] + [[-1.0, 1.0]] * len(system["state_names"])
     contraction_array = np.asarray(contraction)
+    propagation_s = time.perf_counter() - propagation_started
     validation_passed = bool(np.all(contraction_array))
+    export_started = time.perf_counter()
+    states = _states_with_remainder(composed)
+    endpoint_states = _endpoint_states(composed, h)
+    raw_endpoint_box = [
+        [float(lo), float(hi)]
+        for lo, hi in zip(
+            np.asarray(endpoint.lo)[0], np.asarray(endpoint.hi)[0]
+        )
+    ]
+    tube_box = [
+        [float(lo), float(hi)]
+        for lo, hi in zip(np.asarray(tube.lo)[0], np.asarray(tube.hi)[0])
+    ]
+    native_samples = _native_samples(composed, domains)
+    export_s = time.perf_counter() - export_started
+    basis_name = (
+        "B1_affine" if affine else "B_DR_restricted_quasi_quadratic"
+    )
     record = canonical_record(
         tool="diffreach",
         variant="upstream_affine_flag" if affine else "upstream_restricted_quasi_quadratic",
@@ -253,16 +289,10 @@ def export_segment(
         variable_names=["tau", *[f"xi_{name}" for name in system["state_names"]]],
         variable_roles=["local_time", *["state_generator"] * len(system["state_names"])],
         domains=domains,
-        states=_states_with_remainder(composed),
-        raw_endpoint=_endpoint_states(composed, h),
-        raw_endpoint_box=[
-            [float(lo), float(hi)]
-            for lo, hi in zip(np.asarray(endpoint.lo)[0], np.asarray(endpoint.hi)[0])
-        ],
-        tube_box=[
-            [float(lo), float(hi)]
-            for lo, hi in zip(np.asarray(tube.lo)[0], np.asarray(tube.hi)[0])
-        ],
+        states=states,
+        raw_endpoint=endpoint_states,
+        raw_endpoint_box=raw_endpoint_box,
+        tube_box=tube_box,
         validation_trace=[
             {
                 "upstream_step_once": True,
@@ -302,7 +332,49 @@ def export_segment(
                 "remainder_lo": _as_list(parameterization.R.lo),
                 "remainder_hi": _as_list(parameterization.R.hi),
             },
-            "native_point_samples": _native_samples(composed, domains),
+            "native_point_samples": native_samples,
+        },
+        system_definition={
+            "name": system_name,
+            "state_names": list(system["state_names"]),
+            "equations": system["rhs"],
+            "initial_domain": system["initial_box"],
+        },
+        accepted_step=h if validation_passed else None,
+        outcome={
+            "status": "success" if validation_passed else "rejection",
+            "category": (
+                "" if validation_passed else "picard_contraction_rejected"
+            ),
+            "reason": (
+                ""
+                if validation_passed
+                else "upstream step_once contraction predicate was false"
+            ),
+            "requested_horizon_reached": validation_passed,
+        },
+        execution_metadata={
+            "backend": "jax",
+            "dtype": str(composed.P.c.dtype),
+            "device": str(jax.devices()[0]),
+            "repository_commit": git_sha(
+                spec["repositories"]["diffreach"]
+            ),
+            "runtime": {
+                "setup_s": setup_s,
+                "propagation_s": propagation_s,
+                "export_s": export_s,
+            },
+        },
+        basis_metadata={
+            "name": basis_name,
+            "requested_order": unavailable(
+                "DiffReach selects a restricted basis rather than a total order"
+            ),
+            "native_order": 1 if affine else 2,
+            "coefficient_representation": (
+                "DiffReach dense c/L/Lt arrays mapped losslessly to sparse terms"
+            ),
         },
     )
     record["native_validation_passed"] = validation_passed

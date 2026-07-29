@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "torch-flowstar-diffreach-cir-v2",
+  "title": "Three-tool common intermediate representation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool",
+    "variant",
+    "system_definition",
+    "time_semantics",
+    "step_semantics",
+    "variable_semantics",
+    "dependency_semantics",
+    "polynomial_representation",
+    "enclosures",
+    "reset_carry_policy",
+    "outcome",
+    "execution",
+    "validation_trace"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "tool": {"type": "string", "minLength": 1},
+    "variant": {"type": "string", "minLength": 1},
+    "system_definition": {
+      "type": "object",
+      "required": ["name", "state_names", "equations", "initial_domain"]
+    },
+    "time_semantics": {
+      "type": "object",
+      "required": [
+        "initial_time",
+        "requested_horizon",
+        "segment_start",
+        "segment_end"
+      ]
+    },
+    "step_semantics": {
+      "type": "object",
+      "required": ["requested_step", "accepted_step"]
+    },
+    "variable_semantics": {"type": "array"},
+    "dependency_semantics": {
+      "type": "object",
+      "required": [
+        "generator_variables",
+        "noise_variables",
+        "independent_remainder_semantics"
+      ]
+    },
+    "polynomial_representation": {
+      "type": "object",
+      "required": [
+        "name",
+        "requested_order",
+        "native_order",
+        "coefficient_representation"
+      ]
+    },
+    "enclosures": {
+      "type": "object",
+      "required": ["tube", "endpoint_raw", "endpoint_tightened"]
+    },
+    "reset_carry_policy": {"type": "object"},
+    "outcome": {
+      "type": "object",
+      "required": [
+        "status",
+        "category",
+        "reason",
+        "requested_horizon_reached"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "backend",
+        "dtype",
+        "device",
+        "repository_commit",
+        "runtime"
+      ]
+    },
+    "validation_trace": {"type": "array"}
+  }
+}
