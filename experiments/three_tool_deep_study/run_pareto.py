@@ -42,16 +42,34 @@ def _multi_cases(spec: Mapping[str, Any], smoke: bool):
             )
 
 
+def _acceleration_case(
+    spec: Mapping[str, Any],
+) -> tuple[str, float, float]:
+    """Return one nonlinear, cross-term-active full configuration."""
+    configuration = spec["multi_step"]["coupled_quadratic"][0]
+    return (
+        "coupled_quadratic",
+        float(configuration["h"]),
+        float(configuration["horizon"]),
+    )
+
+
 def run_torch_repetitions(
     spec: Mapping[str, Any], output: Path, *, smoke: bool
 ) -> dict[str, Any]:
+    import torch
+
     src = REPO_ROOT / "src"
     followup = HERE.parent / "first_order_followup"
     for candidate in (src, followup):
         if str(candidate) not in sys.path:
             sys.path.insert(0, str(candidate))
     from export_torch_segment import rhs_from_spec
-    from torch_basis import affine_reset, normalized_initial_tm
+    from torch_basis import (
+        affine_reset,
+        normalized_initial_tm,
+        project_to_basis,
+    )
     from torch_tm_flowpipe import flowpipe_step_from_tm
 
     repetitions = 1 if smoke else int(spec["runtime"]["repetitions"])
@@ -68,6 +86,7 @@ def run_torch_repetitions(
                 )
                 timings: list[float] = []
                 completed = 0
+                reset_discarded_total = 0
                 endpoint_box: list[list[float]] = []
                 failure = ""
                 for step in range(1, steps + 1):
@@ -90,7 +109,17 @@ def run_torch_repetitions(
                         ]
                         for interval in endpoint.range_box()
                     ]
-                    current, _ = affine_reset(endpoint, method="box")
+                    affine_endpoint, discarded = project_to_basis(
+                        endpoint,
+                        "B1",
+                        tau_index=None,
+                        stage="pareto_affine_reset_projection",
+                        iteration=step,
+                    )
+                    reset_discarded_total += len(discarded)
+                    current, _ = affine_reset(
+                        affine_endpoint, method="box"
+                    )
                     completed = step
                 exact = (
                     analytic_contained(
@@ -119,6 +148,9 @@ def run_torch_repetitions(
                             default=math.nan,
                         ),
                         "native_validation_passed": completed == steps,
+                        "reset_discarded_term_count": (
+                            reset_discarded_total
+                        ),
                         "analytic_reference_contained": exact,
                         "compile_or_jit_time_s": 0.0,
                         "first_step_time_s": (
@@ -142,7 +174,180 @@ def run_torch_repetitions(
                     }
                 )
     write_csv(output / "pareto_repetitions_torch.csv", rows)
-    return {"rows": len(rows), "repetitions": repetitions}
+
+    acceleration_rows: list[dict[str, Any]] = []
+    acceleration_system, acceleration_h, acceleration_horizon = (
+        _acceleration_case(spec)
+    )
+    acceleration_variant = (
+        "order2_affine_reset_selected"
+        if smoke
+        else "order4_affine_reset_selected"
+    )
+    for row in rows:
+        if (
+            row["variant"] == acceleration_variant
+            and row["system"] == acceleration_system
+            and math.isclose(float(row["h"]), acceleration_h)
+        ):
+            acceleration_rows.append(
+                {
+                    **row,
+                    "backend": "torch_cpu",
+                    "backend_status": "available",
+                    "acceleration_scope": (
+                        "secondary_native_hardware_throughput;"
+                        "same_full_configuration"
+                    ),
+                    "algorithmic_hardware_fair_comparison": False,
+                }
+            )
+
+    if not smoke:
+        if torch.cuda.is_available():
+            system = spec["systems"][acceleration_system]
+            rhs = rhs_from_spec(system)
+            order = 4
+            steps = round(acceleration_horizon / acceleration_h)
+            device = torch.device("cuda:0")
+
+            # Initialize the CUDA context and run one unreported solver step so
+            # context startup is not charged to the repeated configurations.
+            warm_current = normalized_initial_tm(
+                system["initial_box"],
+                order=order,
+                dtype=torch.float64,
+                device=device,
+            )
+            torch.cuda.synchronize(device)
+            warm_started = time.perf_counter()
+            warm_segment = flowpipe_step_from_tm(
+                rhs, warm_current, acceleration_h, order
+            )
+            torch.cuda.synchronize(device)
+            warmup_time = time.perf_counter() - warm_started
+            if warm_segment.status != "validated":
+                raise RuntimeError(
+                    "Torch CUDA acceleration warmup failed: "
+                    f"{warm_segment.message}"
+                )
+
+            for repetition in range(repetitions):
+                current = normalized_initial_tm(
+                    system["initial_box"],
+                    order=order,
+                    dtype=torch.float64,
+                    device=device,
+                )
+                timings: list[float] = []
+                endpoint_box: list[list[float]] = []
+                completed = 0
+                failure = ""
+                torch.cuda.reset_peak_memory_stats(device)
+                for step in range(1, steps + 1):
+                    torch.cuda.synchronize(device)
+                    started = time.perf_counter()
+                    segment = flowpipe_step_from_tm(
+                        rhs, current, acceleration_h, order
+                    )
+                    torch.cuda.synchronize(device)
+                    timings.append(time.perf_counter() - started)
+                    if (
+                        segment.status != "validated"
+                        or segment.endpoint_raw_tm is None
+                    ):
+                        failure = (
+                            segment.message or "CUDA validation failure"
+                        )
+                        break
+                    endpoint = segment.endpoint_raw_tm
+                    endpoint_box = [
+                        [
+                            float(interval.lo.detach().cpu()),
+                            float(interval.hi.detach().cpu()),
+                        ]
+                        for interval in endpoint.range_box()
+                    ]
+                    current, _ = affine_reset(endpoint, method="box")
+                    completed = step
+                acceleration_rows.append(
+                    {
+                        "tool": "torch_tm_flowpipe",
+                        "variant": "order4_affine_reset_selected",
+                        "system": acceleration_system,
+                        "h": acceleration_h,
+                        "requested_horizon": acceleration_horizon,
+                        "evaluation_time": completed * acceleration_h,
+                        "repetition": repetition,
+                        "requested_steps": steps,
+                        "completed_steps": completed,
+                        "successful_horizon": completed * acceleration_h,
+                        "width_at_evaluation_time": max(
+                            (
+                                bounds[1] - bounds[0]
+                                for bounds in endpoint_box
+                            ),
+                            default=math.nan,
+                        ),
+                        "native_validation_passed": completed == steps,
+                        "analytic_reference_contained": "",
+                        "compile_or_jit_time_s": (
+                            warmup_time if repetition == 0 else 0.0
+                        ),
+                        "first_step_time_s": (
+                            timings[0] if timings else math.nan
+                        ),
+                        "steady_full_configuration_time_s": sum(timings),
+                        "steady_step_time_s": (
+                            statistics.median(timings[1:] or timings)
+                            if timings
+                            else math.nan
+                        ),
+                        "peak_process_rss_kib": "",
+                        "peak_device_memory_bytes": (
+                            torch.cuda.max_memory_allocated(device)
+                        ),
+                        "device": str(device),
+                        "backend": "torch_cuda",
+                        "backend_status": "available",
+                        "dtype": "float64",
+                        "failure_category": (
+                            ""
+                            if completed == steps
+                            else "validation_failure"
+                        ),
+                        "message": failure,
+                        "acceleration_scope": (
+                            "secondary_native_hardware_throughput;"
+                            "same_full_configuration"
+                        ),
+                        "algorithmic_hardware_fair_comparison": False,
+                    }
+                )
+        else:
+            acceleration_rows.append(
+                {
+                    "tool": "torch_tm_flowpipe",
+                    "variant": "order4_affine_reset_selected",
+                    "system": acceleration_system,
+                    "h": acceleration_h,
+                    "requested_horizon": acceleration_horizon,
+                    "device": "cuda",
+                    "backend": "torch_cuda",
+                    "backend_status": "unavailable",
+                    "message": "torch.cuda.is_available() is false",
+                    "acceleration_scope": (
+                        "secondary_native_hardware_throughput"
+                    ),
+                    "algorithmic_hardware_fair_comparison": False,
+                }
+            )
+    write_csv(output / "acceleration_torch.csv", acceleration_rows)
+    return {
+        "rows": len(rows),
+        "repetitions": repetitions,
+        "acceleration_rows": len(acceleration_rows),
+    }
 
 
 def run_diffreach_repetitions(
@@ -278,7 +483,200 @@ def run_diffreach_repetitions(
                 }
             )
     write_csv(output / "pareto_repetitions_diffreach.csv", rows)
-    return {"rows": len(rows), "repetitions": repetitions}
+
+    acceleration_rows: list[dict[str, Any]] = []
+    acceleration_system, acceleration_h, acceleration_horizon = (
+        _acceleration_case(spec)
+    )
+    for row in rows:
+        if (
+            row["system"] == acceleration_system
+            and math.isclose(float(row["h"]), acceleration_h)
+        ):
+            acceleration_rows.append(
+                {
+                    **row,
+                    "backend": "jax_cpu",
+                    "backend_status": "available",
+                    "acceleration_scope": (
+                        "secondary_native_hardware_throughput;"
+                        "same_full_configuration"
+                    ),
+                    "algorithmic_hardware_fair_comparison": False,
+                }
+            )
+
+    if not smoke:
+        gpu_devices = [
+            device for device in jax.devices() if device.platform == "gpu"
+        ]
+        if gpu_devices:
+            device = gpu_devices[0]
+            system = spec["systems"][acceleration_system]
+            steps = round(acceleration_horizon / acceleration_h)
+            window = max(map(int, spec["diffreach"]["symbolic_windows"]))
+            rounds = max(map(int, spec["diffreach"]["frr_rounds"]))
+            with jax.default_device(device):
+                dr_settings.update_config(
+                    {
+                        "TRUNCATE_TO_AFFINE": False,
+                        "BOUND_TIME_STEP": True,
+                        "DEBUG_LOG": False,
+                    }
+                )
+                core = reachability.CT_Dyn_Reach(
+                    rhs=_rhs(system),
+                    state_dim=len(system["state_names"]),
+                    nn_dyn=False,
+                    step_size=acceleration_h,
+                    init_remainder=float(
+                        spec["diffreach"]["init_remainder"]
+                    ),
+                    frr_rounds=rounds,
+                    frr_stop_ratio=float(
+                        spec["diffreach"]["frr_stop_ratio"]
+                    ),
+                    sr_window_size=window,
+                )
+                core.step_boxes = reachability._make_step_boxes(
+                    1,
+                    len(system["state_names"]),
+                    acceleration_h,
+                    dtype=jnp.float64,
+                )
+                carry = jax.device_put(
+                    _initial_carry(system, min(window, steps)), device
+                )
+                compiled = jax.jit(
+                    lambda initial: jax.lax.scan(
+                        core.step_once, initial, None, length=steps
+                    ),
+                    device=device,
+                )
+                started = time.perf_counter()
+                warm = jax.tree.map(
+                    lambda value: value.block_until_ready()
+                    if hasattr(value, "block_until_ready")
+                    else value,
+                    compiled(carry),
+                )
+                compile_first = time.perf_counter() - started
+                del warm
+                for repetition in range(repetitions):
+                    started = time.perf_counter()
+                    result = jax.tree.map(
+                        lambda value: value.block_until_ready()
+                        if hasattr(value, "block_until_ready")
+                        else value,
+                        compiled(carry),
+                    )
+                    elapsed = time.perf_counter() - started
+                    los = np.asarray(result[1][0])[:, 0, :]
+                    uppers = np.asarray(result[1][1])[:, 0, :]
+                    contractions = np.asarray(result[1][2])
+                    valid = np.all(
+                        contractions,
+                        axis=tuple(range(1, contractions.ndim)),
+                    )
+                    finite = np.all(np.isfinite(uppers), axis=1)
+                    bad = np.flatnonzero(~(valid & finite))
+                    completed = int(bad[0]) if bad.size else steps
+                    endpoint = (
+                        [
+                            [float(lo), float(hi)]
+                            for lo, hi in zip(
+                                los[completed - 1],
+                                uppers[completed - 1],
+                            )
+                        ]
+                        if completed
+                        else []
+                    )
+                    acceleration_rows.append(
+                        {
+                            "tool": "diffreach",
+                            "variant": (
+                                "restricted_quasi_window100_round5_selected"
+                            ),
+                            "system": acceleration_system,
+                            "h": acceleration_h,
+                            "requested_horizon": acceleration_horizon,
+                            "evaluation_time": completed * acceleration_h,
+                            "repetition": repetition,
+                            "requested_steps": steps,
+                            "completed_steps": completed,
+                            "successful_horizon": (
+                                completed * acceleration_h
+                            ),
+                            "width_at_evaluation_time": max(
+                                (
+                                    bounds[1] - bounds[0]
+                                    for bounds in endpoint
+                                ),
+                                default=math.nan,
+                            ),
+                            "native_validation_passed": (
+                                completed == steps
+                            ),
+                            "analytic_reference_contained": "",
+                            "compile_or_jit_time_s": (
+                                compile_first
+                                if repetition == 0
+                                else 0.0
+                            ),
+                            "first_step_time_s": "",
+                            "steady_full_configuration_time_s": elapsed,
+                            "steady_step_time_s": elapsed / max(steps, 1),
+                            "peak_process_rss_kib": resource.getrusage(
+                                resource.RUSAGE_SELF
+                            ).ru_maxrss,
+                            "device": str(device),
+                            "backend": "jax_cuda",
+                            "backend_status": "available",
+                            "dtype": "float64",
+                            "failure_category": (
+                                ""
+                                if completed == steps
+                                else "validation_failure"
+                            ),
+                            "message": "",
+                            "acceleration_scope": (
+                                "secondary_native_hardware_throughput;"
+                                "same_full_configuration"
+                            ),
+                            "algorithmic_hardware_fair_comparison": False,
+                        }
+                    )
+        else:
+            acceleration_rows.append(
+                {
+                    "tool": "diffreach",
+                    "variant": (
+                        "restricted_quasi_window100_round5_selected"
+                    ),
+                    "system": acceleration_system,
+                    "h": acceleration_h,
+                    "requested_horizon": acceleration_horizon,
+                    "device": "cuda",
+                    "backend": "jax_cuda",
+                    "backend_status": "unavailable",
+                    "message": (
+                        "installed JAX/JAXlib exposes no GPU device"
+                    ),
+                    "acceleration_scope": (
+                        "secondary_native_hardware_throughput"
+                    ),
+                    "algorithmic_hardware_fair_comparison": False,
+                }
+            )
+    write_csv(
+        output / "acceleration_diffreach.csv", acceleration_rows
+    )
+    return {
+        "rows": len(rows),
+        "repetitions": repetitions,
+        "acceleration_rows": len(acceleration_rows),
+    }
 
 
 def run_flowstar_repetitions(
@@ -405,7 +803,30 @@ def run_flowstar_repetitions(
                 }
             )
     write_csv(output / "pareto_repetitions_flowstar.csv", rows)
-    return {"rows": len(rows), "repetitions": repetitions}
+    acceleration_system, acceleration_h, _ = _acceleration_case(spec)
+    acceleration_rows = [
+        {
+            **row,
+            "backend": "flowstar_cpu",
+            "backend_status": "available",
+            "acceleration_scope": (
+                "secondary_native_hardware_throughput;"
+                "same_full_configuration"
+            ),
+            "algorithmic_hardware_fair_comparison": False,
+        }
+        for row in rows
+        if row["system"] == acceleration_system
+        and math.isclose(float(row["h"]), acceleration_h)
+    ]
+    write_csv(
+        output / "acceleration_flowstar.csv", acceleration_rows
+    )
+    return {
+        "rows": len(rows),
+        "repetitions": repetitions,
+        "acceleration_rows": len(acceleration_rows),
+    }
 
 
 def _read_csv(path: Path) -> list[dict[str, Any]]:
@@ -478,6 +899,138 @@ def _pareto_flags(rows: list[dict[str, Any]]) -> None:
                 )
                 for other in group
             )
+
+
+def _collect_acceleration(output: Path) -> list[dict[str, Any]]:
+    observations: list[dict[str, Any]] = []
+    for tool in ("torch", "diffreach", "flowstar"):
+        observations.extend(
+            _read_csv(output / f"acceleration_{tool}.csv")
+        )
+    unavailable = [
+        row
+        for row in observations
+        if str(row.get("backend_status", "")).lower() != "available"
+    ]
+    available = [
+        row
+        for row in observations
+        if str(row.get("backend_status", "")).lower() == "available"
+    ]
+    grouped: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
+    for row in available:
+        grouped[
+            tuple(
+                str(row.get(field, ""))
+                for field in (
+                    "tool",
+                    "backend",
+                    "variant",
+                    "system",
+                    "h",
+                    "requested_horizon",
+                )
+            )
+        ].append(row)
+
+    summaries: list[dict[str, Any]] = []
+    for key, values in sorted(grouped.items()):
+        runtimes = [
+            _float(row.get("steady_full_configuration_time_s"))
+            for row in values
+        ]
+        widths = [
+            _float(row.get("width_at_evaluation_time"))
+            for row in values
+        ]
+        horizons = [
+            _float(row.get("successful_horizon")) for row in values
+        ]
+        summaries.append(
+            {
+                "tool": key[0],
+                "backend": key[1],
+                "backend_status": "available",
+                "variant": key[2],
+                "system": key[3],
+                "h": key[4],
+                "requested_horizon": key[5],
+                "runtime_repetitions": len(values),
+                "median_full_configuration_time_s": statistics.median(
+                    runtimes
+                ),
+                "runtime_min_s": min(runtimes),
+                "runtime_max_s": max(runtimes),
+                "median_width_at_evaluation_time": statistics.median(
+                    widths
+                ),
+                "median_successful_horizon": statistics.median(horizons),
+                "all_native_validations_passed": all(
+                    str(row.get("native_validation_passed", "")).lower()
+                    == "true"
+                    for row in values
+                ),
+                "compile_or_context_time_s": max(
+                    _float(row.get("compile_or_jit_time_s"), 0.0)
+                    for row in values
+                ),
+                "algorithmic_hardware_fair_comparison": False,
+                "interpretation": (
+                    "implementation/hardware throughput only"
+                ),
+                "message": "",
+            }
+        )
+    for row in unavailable:
+        summaries.append(
+            {
+                "tool": row.get("tool", ""),
+                "backend": row.get("backend", ""),
+                "backend_status": row.get(
+                    "backend_status", "unavailable"
+                ),
+                "variant": row.get("variant", ""),
+                "system": row.get("system", ""),
+                "h": row.get("h", ""),
+                "requested_horizon": row.get(
+                    "requested_horizon", ""
+                ),
+                "runtime_repetitions": 0,
+                "median_full_configuration_time_s": "",
+                "runtime_min_s": "",
+                "runtime_max_s": "",
+                "median_width_at_evaluation_time": "",
+                "median_successful_horizon": "",
+                "all_native_validations_passed": "",
+                "compile_or_context_time_s": "",
+                "algorithmic_hardware_fair_comparison": False,
+                "interpretation": (
+                    "implementation/hardware capability unavailable"
+                ),
+                "message": row.get("message", ""),
+            }
+        )
+
+    cpu_by_tool = {
+        str(row["tool"]): _float(
+            row.get("median_full_configuration_time_s")
+        )
+        for row in summaries
+        if str(row.get("backend", "")).endswith("_cpu")
+        and row.get("backend_status") == "available"
+    }
+    for row in summaries:
+        cpu = cpu_by_tool.get(str(row.get("tool", "")), math.nan)
+        runtime = _float(row.get("median_full_configuration_time_s"))
+        row["speedup_vs_same_tool_cpu"] = (
+            cpu / runtime
+            if math.isfinite(cpu)
+            and math.isfinite(runtime)
+            and runtime > 0
+            else ""
+        )
+    write_csv(output / "acceleration_summary.csv", summaries)
+    return summaries
 
 
 def collect(output: Path) -> dict[str, Any]:
@@ -599,10 +1152,16 @@ def collect(output: Path) -> dict[str, Any]:
     _pareto_flags(rows)
     write_csv(output / "native_pareto_summary.csv", rows)
     write_csv(output / "runtime_summary.csv", runtime_rows)
+    acceleration = _collect_acceleration(output)
     result = {
         "pareto_rows": len(rows),
         "repeated_configuration_rows": len(runtime_rows),
         "repetition_observations": len(repetition_rows),
+        "acceleration_rows": len(acceleration),
+        "available_acceleration_rows": sum(
+            row.get("backend_status") == "available"
+            for row in acceleration
+        ),
         "all_selected_have_ten_repetitions": all(
             int(row["runtime_repetitions"]) >= 10 for row in runtime_rows
         )
