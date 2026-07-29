@@ -1,5 +1,9 @@
 # First-order three-way reachability benchmark
 
+> **Superseded for cross-tool ranking:** internal bases are not matched, so any
+> width ordering below is descriptive historical output, not a solver ranking.
+> Use `experiments/three_tool_deep_study/`.
+
 ## 1. Executive summary
 
 The canonical sweep produced 279 tool/protocol/configuration runs: 141 certified and 138 unsupported or failed. The central result is semantic rather than a winner: the three projects do not expose the same object under their apparent first-order controls. Flow* fixed order 1 is explicitly rejected by the installed toolbox, and DiffReach's affine flag has transient degree-two time terms plus a nonstandard final projection. Torch TM is therefore the only primary path here that directly executes complete-total-degree-one Taylor models.

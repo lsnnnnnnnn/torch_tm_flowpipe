@@ -1,10 +1,12 @@
 # Native practical Pareto and runtime protocol
 
 Pareto rows use three objectives: width at one explicitly recorded absolute
-time, successful horizon, and steady full-configuration CPU runtime.  Width
-dominance is computed only within the same system and absolute evaluation
-time.  Adaptive Flow* rows at `T=10` are therefore never ranked against fixed
-rows at `T=1`.
+time, successful horizon, and steady full-configuration CPU runtime.  Because
+native practical configurations do not share exact bases or arithmetic
+backends, dominance is computed only **within one tool**, system, and absolute
+evaluation time.  The cross-tool plot is a labelled tradeoff display, not a
+relative ranking.  Adaptive Flow* rows at `T=10` are therefore never ranked
+against fixed rows at `T=1`.
 
 The complete native sweep contributes every documented candidate.  Selected
 practical configurations additionally receive ten post-warmup, batch-size-one

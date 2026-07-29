@@ -1,5 +1,10 @@
 # First-order three-way benchmark
 
+> **Superseded for cross-tool ranking:** the committed
+> `results/20260723T173852Z` directory is a preserved exploratory artifact.
+> See `HISTORICAL_RESULTS_NOTICE.md` and the audited replacement in
+> `../three_tool_deep_study/`.
+
 This directory contains a plant-only, fixed-step comparison of
 `torch_tm_flowpipe`, Flow*, and DiffReach on scalar Riccati, a harmonic
 oscillator, and Van der Pol dynamics. `benchmark_spec.yaml` is the single

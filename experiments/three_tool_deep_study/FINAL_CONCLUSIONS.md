@@ -11,9 +11,9 @@ full-configuration runtime rows with at
 least ten repetitions.
 
 The literal question “which tool is best at order 1?” has no sound universal
-answer because the tools' order labels select different bases.  The closest
-valid comparison is common affine carry.  Its measured per-system minima are:
-coupled_quadratic (h=0.005, t=0.015): flowstar `flowstar_root_cause_patch` at 0.0407502; harmonic (h=0.01, t=0.03): flowstar `flowstar_root_cause_patch` at 0.206082; riccati (h=0.01, t=0.03): flowstar `flowstar_root_cause_patch` at 0.100377; van_der_pol (h=0.005, t=0.015): flowstar `flowstar_root_cause_patch` at 0.313305.
+answer because the tools' order labels select different bases.  Common affine
+carry is the closest controlled carry protocol, but it is not used for a
+relative winner because native local construction remains unmatched.
 
 Box carry is a wrapping control and loses dependency information by the exact
 ratios in `box_carry_summary.csv`.  Native low-order and practical Pareto rows

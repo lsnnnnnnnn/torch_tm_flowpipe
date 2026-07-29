@@ -242,6 +242,11 @@ def generate(output: Path) -> str:
     lines = [
         f"# {TITLE}",
         "",
+        "> **Superseded:** this historical protocol did not provide matched "
+        "internal bases and its Flow* extraction was later invalidated. Any "
+        "cross-tool tightness, speed, horizon, or winner wording below is "
+        "retracted. Use `../three_tool_deep_study/`.",
+        "",
         "## Result status",
         "",
         (

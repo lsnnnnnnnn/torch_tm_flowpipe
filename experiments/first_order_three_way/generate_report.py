@@ -470,6 +470,10 @@ def main() -> None:
     lines = [
         "# First-order three-way reachability benchmark",
         "",
+        "> **Superseded for cross-tool ranking:** internal bases are not "
+        "matched, so any width ordering below is descriptive historical "
+        "output, not a solver ranking. Use `../three_tool_deep_study/`.",
+        "",
         "## 1. Executive summary",
         "",
         (

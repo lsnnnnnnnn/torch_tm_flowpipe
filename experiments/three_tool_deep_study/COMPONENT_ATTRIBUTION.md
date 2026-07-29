@@ -29,7 +29,9 @@ step size, initial box, and no reset.  Only the retained dictionary changes:
 - B1: constant, local time, and affine state generators.
 - B_DR: B1 plus local-time squared and local-time/state terms.
 - B2: all monomials of complete total degree at most two.
-- B3: all monomials of complete total degree at most three.
+- B3: complete quadratic dependency/state terms plus their one-local-time
+  integration lift (`tau*xi_i*xi_j`); general cubic state terms and higher
+  time powers are excluded.
 
 Every projected term is logged with exponent, coefficient, outward interval
 contribution, and destination (`fresh_independent_interval_remainder`).

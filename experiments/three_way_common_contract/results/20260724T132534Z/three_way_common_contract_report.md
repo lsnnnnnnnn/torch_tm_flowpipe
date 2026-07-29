@@ -1,5 +1,10 @@
 # Three-way low-order reachability comparison under common external contracts
 
+> **Superseded:** this historical protocol did not provide matched internal
+> bases and its Flow* extraction was later invalidated. Any cross-tool
+> tightness, speed, horizon, or winner wording below is retracted. Use
+> `experiments/three_tool_deep_study/`.
+
 ## Result status
 
 **All strict correctness gates passed.**

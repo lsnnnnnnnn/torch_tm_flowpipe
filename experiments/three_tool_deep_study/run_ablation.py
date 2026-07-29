@@ -163,8 +163,8 @@ def run_matched_basis(
                     )
             if basis == "B3" and "time_state_higher" not in local_families:
                 raise RuntimeError(
-                    "coupled quadratic failed to activate a cubic "
-                    "time-state-state term in B3"
+                    "coupled quadratic failed to activate a time-lifted "
+                    "quadratic state cross term in B3"
                 )
             for record in discarded:
                 discarded_rows.append(
@@ -186,10 +186,90 @@ def run_matched_basis(
     write_csv(output / "matched_basis_summary.csv", summary_rows)
     write_csv(output / "matched_basis_support.csv", support_rows)
     write_csv(output / "matched_basis_discarded_terms.csv", discarded_rows)
+    capability_rows = [
+        {
+            "tool": tool,
+            "basis": basis,
+            "status": status,
+            "mapping": mapping,
+            "reason": reason,
+        }
+        for tool, entries in {
+            "torch_common_engine": {
+                "B1": (
+                    "supported_experiment_adapter",
+                    "sound finite-dictionary projection",
+                    "",
+                ),
+                "B_DR": (
+                    "supported_experiment_adapter",
+                    "sound finite-dictionary projection",
+                    "",
+                ),
+                "B2": (
+                    "supported_experiment_adapter",
+                    "sound finite-dictionary projection",
+                    "",
+                ),
+                "B3": (
+                    "supported_experiment_adapter",
+                    "sound quadratic-dependency/time-lift projection",
+                    "",
+                ),
+            },
+            "diffreach": {
+                "B1": (
+                    "supported_native",
+                    "TRUNCATE_TO_AFFINE=true",
+                    "",
+                ),
+                "B_DR": (
+                    "supported_native",
+                    "c/L/Lt restricted quasi-quadratic dictionary",
+                    "",
+                ),
+                "B2": (
+                    "capability_gap",
+                    "unavailable",
+                    "no complete total-degree-2 native dictionary",
+                ),
+                "B3": (
+                    "capability_gap",
+                    "unavailable",
+                    "no quadratic state-cross dictionary with tau lift",
+                ),
+            },
+            "flowstar": {
+                "B1": (
+                    "capability_gap",
+                    "unavailable",
+                    "minimum legal fixed order is 2; no exact B1 selector",
+                ),
+                "B_DR": (
+                    "capability_gap",
+                    "unavailable",
+                    "no exact restricted c/L/Lt dictionary selector",
+                ),
+                "B2": (
+                    "supported_native",
+                    "fixed complete order 2",
+                    "",
+                ),
+                "B3": (
+                    "capability_gap",
+                    "unavailable",
+                    "order 3 is a strict cubic superset, not exact B3",
+                ),
+            },
+        }.items()
+        for basis, (status, mapping, reason) in entries.items()
+    ]
+    write_csv(output / "matched_basis_capabilities.csv", capability_rows)
     return {
         "summaries": len(summary_rows),
         "retained_terms": len(support_rows),
         "discarded_terms": len(discarded_rows),
+        "capability_rows": len(capability_rows),
     }
 
 

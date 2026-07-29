@@ -52,7 +52,21 @@ def exponent_is_retained(
     if basis == "B2":
         return degree <= 2
     if basis == "B3":
-        return degree <= 3
+        if degree <= 2:
+            return True
+        # B3 is quadratic in dependency/state generators, with the one
+        # local-time factor needed to retain integrated quadratic cross terms.
+        # It is not a general cubic state basis.
+        if degree != 3 or tau_index is None or exp[tau_index] != 1:
+            return False
+        return (
+            sum(
+                value
+                for index, value in enumerate(exp)
+                if index != tau_index
+            )
+            == 2
+        )
     if basis != "B_DR":
         raise ValueError(f"unknown finite basis {basis!r}")
     if degree <= 1:

@@ -94,27 +94,6 @@ def _max_width_rows(
     return result
 
 
-def _winner_text(rows: list[dict[str, Any]]) -> str:
-    grouped: dict[tuple[str, str, float], list[dict[str, Any]]] = defaultdict(list)
-    for row in rows:
-        grouped[
-            (row["system"], row["h"], round(_f(row.get("time")), 12))
-        ].append(row)
-    clauses = []
-    for (system, h, time_value), values in sorted(grouped.items()):
-        eligible = [
-            row for row in values if math.isfinite(_f(row["width"]))
-        ]
-        if not eligible:
-            continue
-        winner = min(eligible, key=lambda row: _f(row["width"]))
-        clauses.append(
-            f"{system} (h={h}, t={_fmt(time_value)}): {winner['tool']} "
-            f"`{winner['variant']}` at {_fmt(winner['width'])}"
-        )
-    return "; ".join(clauses) or "No eligible common-time rows."
-
-
 def _carry_loss(
     affine: list[dict[str, Any]], box: list[dict[str, Any]]
 ) -> list[tuple[str, str, str, float, float, float, float]]:
@@ -201,6 +180,9 @@ def generate(output: Path) -> tuple[str, str]:
     pareto = _read(output / "native_pareto_summary.csv")
     components = _read(output / "component_ablation.csv")
     matched = _read(output / "matched_basis_summary.csv")
+    matched_capabilities = _read(
+        output / "matched_basis_capabilities.csv"
+    )
     defect = _read(output / "defect_summary.csv")
     runtime = _read(output / "runtime_summary.csv")
     acceleration = _read(output / "acceleration_summary.csv")
@@ -371,9 +353,9 @@ tube/endpoint distinction.  Primary raw-endpoint maxima are:
     ((row['tool'], row['variant'], row['system'], row['h'], _fmt(row['width'])) for row in one_endpoint),
 )}
 
-The tightest row is configuration- and system-dependent:
-{_winner_text(one_endpoint)}.  This is a local-construction result, not a
-long-horizon wrapping claim.  Flow* exposes a complete higher-order expansion
+These rows are not relatively ranked because the native local bases are not
+exactly matched.  This is a local-construction result, not a long-horizon
+wrapping claim.  Flow* exposes a complete higher-order expansion
 with MPFR intervals; DiffReach's restricted quasi-quadratic form stores
 constant/linear plus local-time cross structure; Torch's complete basis exposes
 more local monomials as its order increases.  Raw and legacy-tightened Torch
@@ -381,12 +363,12 @@ endpoints remain separate everywhere.
 
 ## RQ2 — common affine carry
 
-At the requested final common times, the smallest maximum-component widths are:
-{_winner_text(affine_widths)}.  These are the valid “first-order carry”
-comparisons.  Differences that remain come from each native local polynomial
-construction, range evaluation, and validator; carried degree and endpoint
-projection are controlled.  A failed short prefix is never ranked against a
-solver that reached the requested final time.
+The requested-final-time rows are listed below.  They are valid controlled
+carry observations, but they are not relatively ranked because each native
+local solver still uses a different construction basis, range evaluation, and
+validator.  Carried degree and endpoint projection are controlled.  A failed
+short prefix is never compared against a solver that reached the requested
+final time.
 
 {_markdown_table(
     ['tool', 'variant', 'system', 'h', 'time', 'max width'],
@@ -428,18 +410,19 @@ some local polynomial detail for much better conditioning.  Flow* benefits
 when complete higher-order terms, normalized composition, symbolic remainder,
 or adaptive steps prevent the same information from being repeatedly ranged.
 
-## RQ4 — native practical Pareto frontiers
+## RQ4 — native practical tradeoffs and within-tool Pareto frontiers
 
-Width/runtime dominance was computed only at identical system and absolute
-time.  {len(repeated)} selected configuration/system rows have ten
-full-configuration repetitions.  Nondominated rows:
+Width/runtime dominance was computed only within one tool at identical system
+and absolute time.  Cross-tool native rows are not relatively ranked.
+{len(repeated)} selected configuration/system rows have ten
+full-configuration repetitions.  Within-tool nondominated rows:
 
 {_markdown_table(
     ['tool', 'variant', 'system', 'time', 'width', 'horizon', 'steady s', 'repetitions'],
     ((row.get('tool',''), row.get('variant',''), row.get('system',''), _fmt(row.get('evaluation_time')), _fmt(row.get('width_at_evaluation_time')), _fmt(row.get('successful_horizon')), _fmt(row.get('steady_full_configuration_time_s')), row.get('runtime_repetitions','')) for row in frontier),
 )}
 
-No universal winner follows from these rows.  A width/runtime point at T=1 is
+No cross-tool winner follows from these rows.  A width/runtime point at T=1 is
 not ranked against Flow*'s adaptive T=10 point.  Compile/JIT/build costs remain
 separate from steady full-horizon execution, and backend throughput is not
 presented as pure algorithmic speed.  Any configuration with a deterministic
@@ -462,9 +445,18 @@ The one-engine matched-basis result is:
     ((basis, h, _fmt(width), _fmt(rem), discarded) for basis, h, width, rem, discarded in matched_rows),
 )}
 
+Exact cross-tool basis capability is:
+
+{_markdown_table(
+    ['tool', 'basis', 'status', 'mapping', 'reason'],
+    ((row.get('tool',''), row.get('basis',''), row.get('status',''), row.get('mapping',''), row.get('reason','')) for row in matched_capabilities),
+)}
+
 All four use one order-3 arithmetic ceiling, two Picard iterations, validator,
-range backend, dtype, step, initial set, and reset.  The coupled quadratic
-activates state-state and time-state-state terms.  Thus B1-to-B_DR/B2/B3
+range backend, dtype, step, initial set, and reset.  B3 is not a general cubic
+basis: it adds the one-local-time lift of quadratic state dependency, including
+`tau*xi_i*xi_j`, while excluding cubic state terms.  The coupled quadratic
+activates that cross-term family.  Thus B1-to-B_DR/B2/B3
 changes are attributable to the retained dictionary inside one implementation,
 not JAX versus Torch versus C++.
 
@@ -512,9 +504,9 @@ full configuration on the cross-term-active coupled quadratic benchmark.
 2. **Closest valid first-order experiment.** Common affine carry is the closest:
    native local solve, raw endpoint, then one sound `c + A xi + I` carry
    projection.
-3. **Tighter under affine carry.** The measured per-system answer is:
-   {_winner_text(affine_widths)}.  The cause after controlling carry is local
-   basis/construction, range bounding, and validator inflation.
+3. **Widths under affine carry.** The per-system rows are reported without a
+   cross-tool winner because local basis/construction, range bounding, and
+   validator remain unmatched after controlling the carried representation.
 4. **Loss from box carry.** The table above reports the exact measured ratios;
    values above one quantify lost dependency information.
 5. **DiffReach low-order terms.** `tau^2` and `tau*xi` can reduce local-time
@@ -599,9 +591,9 @@ full-configuration runtime rows with at
 least ten repetitions.
 
 The literal question “which tool is best at order 1?” has no sound universal
-answer because the tools' order labels select different bases.  The closest
-valid comparison is common affine carry.  Its measured per-system minima are:
-{_winner_text(affine_widths)}.
+answer because the tools' order labels select different bases.  Common affine
+carry is the closest controlled carry protocol, but it is not used for a
+relative winner because native local construction remains unmatched.
 
 Box carry is a wrapping control and loses dependency information by the exact
 ratios in `box_carry_summary.csv`.  Native low-order and practical Pareto rows

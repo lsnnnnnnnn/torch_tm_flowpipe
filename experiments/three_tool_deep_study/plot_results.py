@@ -335,7 +335,7 @@ def plot_pareto(rows: list[dict[str, Any]], plots: Path) -> None:
     _finish(
         figure,
         plots / "08_native_practical_width_runtime_pareto.png",
-        "Native practical width/runtime Pareto (stars are nondominated)",
+        "Native practical tradeoffs (stars = within-tool Pareto only)",
     )
 
 

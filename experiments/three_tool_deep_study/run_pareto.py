@@ -877,12 +877,21 @@ def _runtime(summary: Mapping[str, Any]) -> float:
 
 
 def _pareto_flags(rows: list[dict[str, Any]]) -> None:
-    groups: dict[tuple[str, float], list[dict[str, Any]]] = defaultdict(list)
+    # Native practical configurations do not share exact bases/backends.
+    # Pareto dominance is therefore meaningful only among configurations of
+    # the same tool at the same system and absolute evaluation time.
+    groups: dict[tuple[str, str, float], list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         evaluation_time = _float(row.get("evaluation_time"))
         if not math.isfinite(evaluation_time):
             continue
-        groups[(str(row["system"]), round(evaluation_time, 12))].append(row)
+        groups[
+            (
+                str(row["tool"]),
+                str(row["system"]),
+                round(evaluation_time, 12),
+            )
+        ].append(row)
     for group in groups.values():
         for candidate in group:
             candidate["width_runtime_pareto"] = not any(

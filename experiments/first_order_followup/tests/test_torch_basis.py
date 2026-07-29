@@ -68,6 +68,19 @@ def test_one_step_support_matches_finite_dictionary(basis):
         assert all(sum(exponent) <= 2 for exponent in support)
     else:
         assert all(sum(exponent) <= 3 for exponent in support)
+        assert all(
+            sum(exponent) <= 2
+            or (
+                exponent[segment.tau_index] == 1
+                and sum(
+                    value
+                    for index, value in enumerate(exponent)
+                    if index != segment.tau_index
+                )
+                == 2
+            )
+            for exponent in support
+        )
     assert all(
         segment.final_tm.active_variables() <= set(range(initial.n_vars))
         for _ in [0]
@@ -84,11 +97,13 @@ def test_bdr_keeps_time_state_but_discards_state_state():
     assert (1, 1, 0) not in dictionary
 
 
-def test_b3_dictionary_contains_cubic_cross_terms():
+def test_b3_dictionary_contains_time_lifted_quadratic_cross_terms_only():
     dictionary = set(retained_dictionary("B3", 3, tau_index=2))
     assert (1, 1, 1) in dictionary
     assert (2, 0, 1) in dictionary
-    assert (0, 0, 3) in dictionary
+    assert (0, 0, 3) not in dictionary
+    assert (3, 0, 0) not in dictionary
+    assert (1, 0, 2) not in dictionary
 
 
 def test_affine_box_and_qr_resets_contain_input():

@@ -234,6 +234,204 @@ def _number(value: Any, default: float = 0.0) -> float:
         return default
 
 
+def _tool_family(tool: Any) -> str:
+    text = str(tool)
+    if text.startswith("diffreach"):
+        return "diffreach"
+    if text.startswith("torch"):
+        return "torch_tm_flowpipe"
+    return text
+
+
+def _annotate_required_metrics(
+    spec: Mapping[str, Any], rows: list[dict[str, Any]]
+) -> None:
+    """Add common metric semantics without fabricating missing quantities."""
+    affine_widths: dict[tuple[str, ...], float] = {}
+    for row in rows:
+        if (
+            row.get("protocol") == "common_affine_carry"
+            and row.get("interval_kind") == "endpoint_raw"
+        ):
+            key = (
+                _tool_family(row.get("tool")),
+                str(row.get("system", "")),
+                str(row.get("h", "")),
+                str(row.get("time", "")),
+                str(row.get("state_index", "")),
+            )
+            affine_widths[key] = _number(row.get("width"), math.nan)
+
+    for row in rows:
+        system_name = str(row.get("system", ""))
+        state_index = int(_number(row.get("state_index"), 0.0))
+        lower = _number(row.get("lower"), math.nan)
+        upper = _number(row.get("upper"), math.nan)
+        if math.isfinite(lower) and math.isfinite(upper):
+            center = 0.5 * (lower + upper)
+            row["interval_center"] = center
+            initial = spec["systems"].get(system_name, {}).get(
+                "initial_box", []
+            )
+            if state_index < len(initial):
+                initial_center = 0.5 * (
+                    float(initial[state_index][0])
+                    + float(initial[state_index][1])
+                )
+                row["center_shift_from_initial"] = (
+                    center - initial_center
+                )
+            else:
+                row["center_shift_from_initial"] = "unavailable"
+                row["center_shift_unavailable_reason"] = (
+                    "state index is outside the system definition"
+                )
+        else:
+            row["interval_center"] = "unavailable"
+            row["center_shift_from_initial"] = "unavailable"
+            row["center_shift_unavailable_reason"] = (
+                "row has no finite interval"
+            )
+
+        h = _number(row.get("h"), math.nan)
+        row["requested_step"] = h if math.isfinite(h) else "unavailable"
+        validation = _truth(row.get("native_validation_passed"))
+        is_failure = (
+            str(row.get("interval_kind", "")) == "failure"
+            or bool(row.get("failure_category"))
+        )
+        row["accepted_step"] = (
+            h
+            if math.isfinite(h) and validation is not False and not is_failure
+            else "unavailable"
+        )
+        if row["accepted_step"] == "unavailable":
+            row["accepted_step_unavailable_reason"] = (
+                "native validation rejected the requested step or the "
+                "backend did not expose an accepted step"
+            )
+        step_index = _number(row.get("step_index"), math.nan)
+        row["accepted_steps"] = row.get(
+            "completed_steps",
+            (
+                max(0, int(step_index) - 1)
+                if is_failure and math.isfinite(step_index)
+                else row.get("step_index", "unavailable")
+            ),
+        )
+        if row.get("successful_horizon") not in ("", None):
+            row["successful_horizon"] = row["successful_horizon"]
+        elif is_failure and math.isfinite(step_index) and math.isfinite(h):
+            row["successful_horizon"] = max(0.0, (step_index - 1) * h)
+        else:
+            row["successful_horizon"] = row.get("time", "unavailable")
+
+        if system_name in {"riccati", "harmonic"}:
+            row["reference_oracle"] = "analytic_interval_solution"
+        else:
+            row["reference_oracle"] = (
+                "deterministic_DOP853_trajectory_sanity_non_proof"
+            )
+
+        if (
+            row.get("protocol") == "common_box_carry"
+            and row.get("interval_kind") == "endpoint_raw"
+        ):
+            key = (
+                _tool_family(row.get("tool")),
+                system_name,
+                str(row.get("h", "")),
+                str(row.get("time", "")),
+                str(row.get("state_index", "")),
+            )
+            affine = affine_widths.get(key, math.nan)
+            width = _number(row.get("width"), math.nan)
+            if math.isfinite(affine) and affine > 0 and math.isfinite(width):
+                row["dependency_loss_metric"] = width / affine
+                row["dependency_loss_semantics"] = (
+                    "box_width_over_same_time_affine_carry_width"
+                )
+            else:
+                row["dependency_loss_metric"] = "unavailable"
+                row["dependency_loss_semantics"] = (
+                    "no same-time affine reference row"
+                )
+        elif row.get("protocol") == "common_affine_carry":
+            row["dependency_loss_metric"] = "reference"
+            row["dependency_loss_semantics"] = (
+                "affine carry reference for box-reset dependency loss"
+            )
+        else:
+            row["dependency_loss_metric"] = "unavailable"
+            row["dependency_loss_semantics"] = (
+                "dependency loss requires a matched carry/reset control"
+            )
+
+        setup = next(
+            (
+                row.get(key)
+                for key in (
+                    "setup_time_s",
+                    "build_time_s",
+                    "compile_time_s",
+                    "jit_time_s",
+                )
+                if row.get(key) not in ("", None)
+            ),
+            "unavailable",
+        )
+        propagation = next(
+            (
+                row.get(key)
+                for key in (
+                    "propagation_time_s",
+                    "runtime_s",
+                    "execution_time_s",
+                    "step_runtime_s",
+                )
+                if row.get(key) not in ("", None)
+            ),
+            "unavailable",
+        )
+        export = next(
+            (
+                row.get(key)
+                for key in ("export_time_s", "serialization_time_s")
+                if row.get(key) not in ("", None)
+            ),
+            "unavailable",
+        )
+        row["runtime_setup_s"] = setup
+        row["runtime_propagation_s"] = propagation
+        row["runtime_export_s"] = export
+        row["runtime_unavailable_semantics"] = (
+            "unavailable means the backend did not isolate this component; "
+            "it is not zero"
+        )
+        if not any(
+            row.get(key) not in ("", None)
+            for key in (
+                "memory_kib",
+                "peak_process_rss_kib",
+                "peak_device_memory_bytes",
+            )
+        ):
+            row["memory_measurement"] = "unavailable"
+            row["memory_unavailable_reason"] = (
+                "this protocol did not isolate process/device peak memory"
+            )
+        else:
+            row["memory_measurement"] = next(
+                row.get(key)
+                for key in (
+                    "memory_kib",
+                    "peak_process_rss_kib",
+                    "peak_device_memory_bytes",
+                )
+                if row.get(key) not in ("", None)
+            )
+
+
 def _last_rows(
     rows: Iterable[Mapping[str, Any]], protocol: str
 ) -> list[dict[str, Any]]:
@@ -431,6 +629,7 @@ def collect_tables(
 ) -> dict[str, Any]:
     controlled = _read_csv(output / "controlled_raw.csv")
     native = _read_csv(output / "native_raw.csv")
+    _annotate_required_metrics(spec, controlled + native)
     trajectory_checks = _annotate_trajectory_sanity(
         spec, controlled + native
     )
