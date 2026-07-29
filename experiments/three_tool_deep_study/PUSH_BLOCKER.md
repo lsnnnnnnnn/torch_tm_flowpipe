@@ -2,6 +2,12 @@
 
 Recorded: 2026-07-29T09:29:56Z.
 
+Resolution: the same branch-scoped escalation succeeded at
+2026-07-29T09:32:10Z.  Remote
+`codex/torch-flowstar-diffreach-deep-study` then resolved to
+`fab3141dbfd9a6bc3388a394ed95d59ecd4132e6`.  The evidence below is retained as
+a transient infrastructure incident, not a current blocker.
+
 The correctness launch checkpoint exists locally:
 
 - branch: `codex/torch-flowstar-diffreach-deep-study`;
@@ -31,9 +37,9 @@ read-only `git ls-remote` with network escalation failed in the approval
 control plane with `Rejected("approval request failed")`; the commands were
 not executed outside the sandbox.
 
-The formal run has deliberately not been launched: the task requires a pushed
-checkpoint before a long experiment.  Once external execution approval or
-network access is restored, the recovery sequence is:
+The formal run was deliberately not launched while this incident was active
+because the task requires a pushed checkpoint before a long experiment.  The
+recovery sequence was:
 
 ```text
 git push origin codex/torch-flowstar-diffreach-deep-study
