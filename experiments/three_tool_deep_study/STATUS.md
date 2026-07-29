@@ -1,6 +1,6 @@
 # Deep-study status
 
-Last updated: 2026-07-29 UTC.
+Last updated: 2026-07-29T08:46:49Z.
 
 | phase | status | evidence / next gate |
 |---|---|---|
@@ -14,3 +14,22 @@ Last updated: 2026-07-29 UTC.
 
 Checkpoint policy: update this file in every phase checkpoint.  Timestamped
 scratch runs are never authoritative unless all final verification gates pass.
+
+## Continuation recovery
+
+The continuation recovery at `2026-07-29T08:46:49Z` is recorded in
+`RECOVERY_CONTINUATION.md`.  After fetching, local and remote HEAD were both
+`3bf1e25ae85b7857fdd3803adcd0c9ac9d5453d0` and the worktree was clean.  No
+tmux server or live study process remained.
+
+Run `20260729T075727Z` is preserved as **incomplete and non-authoritative**.
+It stopped in `controlled protocols: Flowstar` after the first-step
+order-2 Riccati candidate-remainder inclusion rejection.  It has no
+`RUN_COMPLETE`, `final_acceptance.json`, `artifact_quality_audit.json`, or
+`pareto_checks.json`; its partial rows must not be mixed with a future
+authoritative run.
+
+The next correctness gate is the adaptive native Flow* Van der Pol trajectory
+audit.  A new authoritative run remains prohibited until native trajectory
+failures fail closed and the affected configuration is either repaired with
+regression evidence or explicitly excluded from authoritative tables.

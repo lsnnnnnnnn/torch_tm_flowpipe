@@ -1,0 +1,66 @@
+# Continuation recovery record
+
+Recovered at `2026-07-29T08:46:49Z` with the existing worktree and branch:
+
+- worktree:
+  `/srv/local/shengenli/torch_tm_flowpipe_three_tool_study`;
+- branch: `codex/torch-flowstar-diffreach-deep-study`;
+- local HEAD:
+  `3bf1e25ae85b7857fdd3803adcd0c9ac9d5453d0`;
+- fetched remote HEAD:
+  `3bf1e25ae85b7857fdd3803adcd0c9ac9d5453d0`;
+- worktree status before this record: clean.
+
+`git fetch --all --prune` completed successfully.  The existing branch and
+worktree were retained; no reset, replacement branch, force push, `main`
+change, result deletion, or result overwrite was performed.
+
+## Run recovery decision
+
+The newest run directory is
+`experiments/three_tool_deep_study/results/20260729T075727Z`.  Its frozen
+configuration is the checked-in `benchmark_spec.yaml` with SHA-256
+`6386020d0da79f58239d87787f0c77aa391f25f06ec5b9c04ca56dcce76f6ce4`;
+the launcher pipeline has SHA-256
+`ebe0ceea6e9ddb3d1eab67072b11b7024bf3738b3e89ac9a040dcd050617e1e6`.
+
+The last completed progress entries were:
+
+1. Phase-0 provenance and initial frozen checksums;
+2. acceptance tests;
+3. Flow* correctness matrix and original parity;
+4. controlled Torch;
+5. controlled DiffReach.
+
+The run entered `controlled protocols: Flowstar` at
+`2026-07-29T08:20:18Z` and then stopped.  `run_all.log` records
+`run_controlled.py:556 -> export_flowstar_segment.py:541`: the primary
+`flowstar_root_cause_patch` rejected the first order-2 Riccati step at
+`h=0.05`.  The configured candidate remainder was
+`[-1.0e-4, 1.0e-4]`; the first Picard image remainder upper bound was
+`1.2913942109863294e-4`, leaving upper inclusion margin
+`-2.913942109863294e-5`.  This is a configuration rejection, not evidence of
+a global Flow* failure.
+
+No tmux server was present at
+`/tmp/tm_three_tool_deep_study.sock`, and no live `run_all.sh`,
+`run_controlled.py`, or deep-study process existed.  The run lacks all four
+completion/quality markers:
+
+- `RUN_COMPLETE`;
+- `final_acceptance.json`;
+- `artifact_quality_audit.json`;
+- `pareto_checks.json`.
+
+Therefore `20260729T075727Z` is classified as **incomplete,
+non-authoritative diagnostic evidence**.  It remains untouched and must not
+be resumed into, relabelled as final, or mixed with a new authoritative run.
+
+## Required next gate
+
+Before another formal run starts, the adaptive native Flow* Van der Pol
+trajectory failure must be traced from its first divergent endpoint through
+native flowpipe evaluation and CIR export.  The acceptance gate must reject
+any included native configuration with nonzero trajectory failures.  The
+configuration may enter authoritative Pareto/ranking/headline artifacts only
+after a zero-failure regression, otherwise it must be explicitly excluded.
