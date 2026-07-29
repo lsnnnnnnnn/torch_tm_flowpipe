@@ -117,9 +117,15 @@ def _one_step_cases(spec: Mapping[str, Any], smoke: bool):
 
 def _save_common_segment(output: Path, record: Mapping[str, Any]) -> None:
     variant = str(record["variant"]).replace("/", "_")
+    requested_order = record.get("native_metadata", {}).get(
+        "requested_order"
+    )
+    order_suffix = (
+        f"_o{requested_order}" if requested_order not in (None, "") else ""
+    )
     name = (
         f"{record['tool']}_{variant}_{record['system']}_"
-        f"h{float(record['h']):g}.json"
+        f"h{float(record['h']):g}{order_suffix}.json"
     )
     write_json(output / "common_segments" / name, record)
 
