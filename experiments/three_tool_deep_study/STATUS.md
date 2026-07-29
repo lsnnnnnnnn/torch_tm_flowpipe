@@ -61,3 +61,13 @@ SHA and records it, while the full patch series makes the change reproducible.
 The correctness launch gate is therefore satisfied.  The next step is the
 single formal `run_all.sh` execution; no second run may be launched while its
 tmux session is live.
+
+## Current infrastructure blocker
+
+Correctness checkpoint `9a60e744418b59a903a9e1c6c3b44f5af05f22c9`
+was committed locally, but the environment could not push it at
+`2026-07-29T09:29:56Z`.  Sandbox SSH/HTTPS cannot resolve GitHub, and repeated
+branch-scoped network-escalation requests failed in the approval control plane
+before execution.  Exact commands and errors are retained in
+`PUSH_BLOCKER.md`.  Per the long-run checkpoint rule, the formal run has not
+been launched while the remote still points to `266bed4`.
