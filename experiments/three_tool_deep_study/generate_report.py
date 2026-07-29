@@ -507,8 +507,11 @@ full configuration on the cross-term-active coupled quadratic benchmark.
 3. **Widths under affine carry.** The per-system rows are reported without a
    cross-tool winner because local basis/construction, range bounding, and
    validator remain unmatched after controlling the carried representation.
-4. **Loss from box carry.** The table above reports the exact measured ratios;
-   values above one quantify lost dependency information.
+4. **Box-carry control.** The table above reports the exact measured ratios.
+   The box operation discards correlation, but width need not increase
+   monotonically because re-normalization can improve later interval
+   conditioning; values above one are observed wrapping inflation, while
+   values below one are not “negative dependency loss.”
 5. **DiffReach low-order terms.** `tau^2` and `tau*xi` can reduce local-time
    truncation relative to a purely affine form, while missing general
    state-state/cubic terms can dominate on coupled or Van der Pol dynamics.
@@ -595,14 +598,16 @@ answer because the tools' order labels select different bases.  Common affine
 carry is the closest controlled carry protocol, but it is not used for a
 relative winner because native local construction remains unmatched.
 
-Box carry is a wrapping control and loses dependency information by the exact
-ratios in `box_carry_summary.csv`.  Native low-order and practical Pareto rows
-remain valid when labelled with their actual bases, successful horizon, common
-absolute evaluation time, and numerical guarantee.  Flow*'s variable-leaf
-cache patch and full-Picard revalidation both eliminate the stock Riccati
-under-enclosure; the corrected original Van der Pol configuration reaches
-T=10, but its exported adaptive raw endpoints fail the separate deterministic
-trajectory sanity check and are excluded from numerical Pareto claims.
+Box carry is a wrapping control that discards correlation; the exact width
+ratios in `box_carry_summary.csv` may nevertheless fall below one when
+re-normalization improves later interval conditioning.  Native low-order and
+practical Pareto rows remain valid when labelled with their actual bases,
+successful horizon, common absolute evaluation time, and numerical guarantee.
+Flow*'s variable-leaf cache patch and full-Picard revalidation both eliminate
+the stock Riccati under-enclosure; the corrected original Van der Pol
+configuration reaches T=10, but its exported adaptive raw endpoints fail the
+separate deterministic trajectory sanity check and are excluded from numerical
+Pareto claims.
 
 The matched-basis experiment shows what changes from B1/B_DR/B2/B3 inside one
 engine.  The reset controls show why Torch's unchecked dependency carry
