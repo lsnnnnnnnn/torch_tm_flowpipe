@@ -52,6 +52,15 @@ def _torch_configs(smoke: bool) -> list[dict[str, Any]]:
     ]
 
 
+def _multi_cases(spec: Mapping[str, Any], smoke: bool):
+    for system_name, configurations in spec["multi_step"].items():
+        selected = (
+            [spec["smoke"][system_name]] if smoke else configurations
+        )
+        for configuration in selected:
+            yield system_name, configuration
+
+
 def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, Any]:
     src = REPO_ROOT / "src"
     followup = HERE.parent / "first_order_followup"
@@ -68,10 +77,7 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
 
     rows: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
-    for system_name, all_configs in spec["multi_step"].items():
-        configuration = (
-            spec["smoke"][system_name] if smoke else all_configs[0]
-        )
+    for system_name, configuration in _multi_cases(spec, smoke):
         h = float(configuration["h"])
         horizon = float(configuration["horizon"])
         system = spec["systems"][system_name]
@@ -301,10 +307,7 @@ def run_diffreach(
     jax.config.update("jax_enable_x64", True)
     rows: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
-    for system_name, all_configs in spec["multi_step"].items():
-        configuration = (
-            spec["smoke"][system_name] if smoke else all_configs[0]
-        )
+    for system_name, configuration in _multi_cases(spec, smoke):
         h = float(configuration["h"])
         horizon = float(configuration["horizon"])
         steps = round(horizon / h)
@@ -514,10 +517,7 @@ def run_flowstar(
     rows: list[dict[str, Any]] = []
     summaries: list[dict[str, Any]] = []
     orders = [2] if smoke else list(map(int, spec["flowstar"]["orders"]))
-    for system_name, all_configs in spec["multi_step"].items():
-        configuration = (
-            spec["smoke"][system_name] if smoke else all_configs[0]
-        )
+    for system_name, configuration in _multi_cases(spec, smoke):
         h = float(configuration["h"])
         horizon = float(configuration["horizon"])
         for order in orders:
