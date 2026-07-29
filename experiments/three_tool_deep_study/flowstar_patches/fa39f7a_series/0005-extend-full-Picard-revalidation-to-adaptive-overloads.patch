@@ -1,0 +1,234 @@
+From 2310c1ac55357d0b48af3b37495a82a3e10ea4ff Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 29 Jul 2026 09:09:52 +0000
+Subject: [PATCH] extend full Picard revalidation across overloads
+
+---
+ flowstar-toolbox/Continuous.cpp | 170 ++++++++++++++++++++++++++++----
+ 1 file changed, 150 insertions(+), 20 deletions(-)
+
+diff --git a/flowstar-toolbox/Continuous.cpp b/flowstar-toolbox/Continuous.cpp
+index bb15b3c..c0679c6 100644
+--- a/flowstar-toolbox/Continuous.cpp
++++ b/flowstar-toolbox/Continuous.cpp
+@@ -1478,30 +1478,97 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Interval>
+ 	bool bfinished = false;
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+-		bfinished = true;
+-
+ 		std::vector<Interval> newRemainders;
+ 		x.Picard_ctrunc_normal_remainder(newRemainders, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
+ 
+-		// add the uncertainties and the cutoff intervals onto the result
++		std::vector<double> widthRatios(rangeDim);
++		bool cachedProposalIsSubset = true;
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			newRemainders[i] += intDifferences[i];
++			const bool subset = newRemainders[i].subseteq(
++				x.tms[i].remainder);
++			widthRatios[i] =
++				x.tms[i].remainder.widthRatio(newRemainders[i]);
++			if(!subset)
++				cachedProposalIsSubset = false;
++		}
+ 
+-			if(newRemainders[i].subseteq(x.tms[i].remainder))
++		if(flowstar_audit_revalidate_refinement())
++		{
++			if(!cachedProposalIsSubset)
+ 			{
+-				if(x.tms[i].remainder.widthRatio(newRemainders[i]) <= STOP_RATIO)
++				bfinished = true;
++				break;
++			}
++
++			TaylorModelVec<Real> proposedX = x;
++			for(unsigned int i=0; i<rangeDim; ++i)
++				proposedX.tms[i].remainder = newRemainders[i];
++
++			TaylorModelVec<Interval> fullPicard;
++			std::list<Interval> freshIntermediateRanges;
++			proposedX.Picard_ctrunc_normal(
++				fullPicard, new_x0, ode, tm_setting.step_exp_table,
++				rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold,
++				freshIntermediateRanges, g_setting);
++
++			std::vector<Interval> freshIntDifferences;
++			bool completeImageIsSubset = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				Polynomial<Interval> freshPolyDifference;
++				freshPolyDifference =
++					fullPicard.tms[i].expansion -
++					proposedX.tms[i].expansion;
++				Interval freshIntDifference;
++				freshPolyDifference.intEvalNormal(
++					freshIntDifference, tm_setting.step_exp_table);
++				freshIntDifferences.push_back(freshIntDifference);
++
++				fullPicard.tms[i].remainder += freshIntDifference;
++				if(!fullPicard.tms[i].remainder.subseteq(
++					proposedX.tms[i].remainder))
+ 				{
+-					bfinished = false;
++					completeImageIsSubset = false;
+ 				}
+-
+-				x.tms[i].remainder = newRemainders[i];
+ 			}
+-			else
++
++			if(!completeImageIsSubset)
+ 			{
+ 				bfinished = true;
+ 				break;
+ 			}
++
++			x = proposedX;
++			intermediate_ranges = freshIntermediateRanges;
++			intDifferences = freshIntDifferences;
++			bfinished = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				if(widthRatios[i] <= STOP_RATIO)
++					bfinished = false;
++			}
++		}
++		else
++		{
++			// Preserve the upstream componentwise update order unless the
++			// explicit full-Picard correctness fallback is enabled.
++			bfinished = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				if(newRemainders[i].subseteq(x.tms[i].remainder))
++				{
++					if(widthRatios[i] <= STOP_RATIO)
++						bfinished = false;
++					x.tms[i].remainder = newRemainders[i];
++				}
++				else
++				{
++					bfinished = true;
++					break;
++				}
++			}
+ 		}
+ 	}
+ 
+@@ -1697,30 +1764,95 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 	bool bfinished = false;
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+-		bfinished = true;
+-
+ 		std::vector<Interval> newRemainders;
+ 		x.Picard_ctrunc_normal_remainder(newRemainders, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
+ 
+-		// add the uncertainties and the cutoff intervals onto the result
++		std::vector<double> widthRatios(rangeDim);
++		bool cachedProposalIsSubset = true;
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			newRemainders[i] += intDifferences[i];
++			const bool subset = newRemainders[i].subseteq(
++				x.tms[i].remainder);
++			widthRatios[i] =
++				x.tms[i].remainder.widthRatio(newRemainders[i]);
++			if(!subset)
++				cachedProposalIsSubset = false;
++		}
+ 
+-			if(newRemainders[i].subseteq(x.tms[i].remainder))
++		if(flowstar_audit_revalidate_refinement())
++		{
++			if(!cachedProposalIsSubset)
+ 			{
+-				if(x.tms[i].remainder.widthRatio(newRemainders[i]) <= STOP_RATIO)
++				bfinished = true;
++				break;
++			}
++
++			TaylorModelVec<Real> proposedX = x;
++			for(unsigned int i=0; i<rangeDim; ++i)
++				proposedX.tms[i].remainder = newRemainders[i];
++
++			TaylorModelVec<Interval> fullPicard;
++			std::list<Interval> freshIntermediateRanges;
++			proposedX.Picard_ctrunc_normal(
++				fullPicard, new_x0, ode, tm_setting.step_exp_table,
++				rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold,
++				freshIntermediateRanges, g_setting);
++
++			std::vector<Interval> freshIntDifferences;
++			bool completeImageIsSubset = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				Polynomial<Interval> freshPolyDifference;
++				freshPolyDifference =
++					fullPicard.tms[i].expansion -
++					proposedX.tms[i].expansion;
++				Interval freshIntDifference;
++				freshPolyDifference.intEvalNormal(
++					freshIntDifference, tm_setting.step_exp_table);
++				freshIntDifferences.push_back(freshIntDifference);
++
++				fullPicard.tms[i].remainder += freshIntDifference;
++				if(!fullPicard.tms[i].remainder.subseteq(
++					proposedX.tms[i].remainder))
+ 				{
+-					bfinished = false;
++					completeImageIsSubset = false;
+ 				}
+-
+-				x.tms[i].remainder = newRemainders[i];
+ 			}
+-			else
++
++			if(!completeImageIsSubset)
+ 			{
+ 				bfinished = true;
+ 				break;
+ 			}
++
++			x = proposedX;
++			intermediate_ranges = freshIntermediateRanges;
++			intDifferences = freshIntDifferences;
++			bfinished = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				if(widthRatios[i] <= STOP_RATIO)
++					bfinished = false;
++			}
++		}
++		else
++		{
++			bfinished = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				if(newRemainders[i].subseteq(x.tms[i].remainder))
++				{
++					if(widthRatios[i] <= STOP_RATIO)
++						bfinished = false;
++					x.tms[i].remainder = newRemainders[i];
++				}
++				else
++				{
++					bfinished = true;
++					break;
++				}
++			}
+ 		}
+ 	}
+ 
+@@ -12658,5 +12790,3 @@ void test_domain_contraction(Result_of_Reachability & contraction_result, Result
+ 
+ 
+ 
+-
+-
+-- 
+2.53.0
+

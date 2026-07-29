@@ -58,15 +58,16 @@ def audit(output: Path) -> dict[str, Any]:
     total_rows = 0
     nonfinite_cells: list[dict[str, Any]] = []
     horizon_violations: list[dict[str, Any]] = []
-    for path in sorted(output.glob("*.csv")):
+    for path in sorted(output.rglob("*.csv")):
+        relative = path.relative_to(output).as_posix()
         with path.open(newline="", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
             fieldnames = reader.fieldnames or []
             if not fieldnames:
-                failures.append(f"{path.name}: missing CSV header")
+                failures.append(f"{relative}: missing CSV header")
                 continue
             if len(fieldnames) != len(set(fieldnames)):
-                failures.append(f"{path.name}: duplicate CSV column")
+                failures.append(f"{relative}: duplicate CSV column")
             rows = list(reader)
         total_rows += len(rows)
         for row_index, row in enumerate(rows, start=2):
@@ -80,7 +81,7 @@ def audit(output: Path) -> dict[str, Any]:
                 if lower in NONFINITE_LITERALS or numeric_overflow:
                     nonfinite_cells.append(
                         {
-                            "path": path.name,
+                            "path": relative,
                             "row": row_index,
                             "field": field,
                             "value": value,
@@ -102,7 +103,7 @@ def audit(output: Path) -> dict[str, Any]:
             ):
                 horizon_violations.append(
                     {
-                        "path": path.name,
+                        "path": relative,
                         "row": row_index,
                         "requested_horizon": requested,
                         "successful_or_evaluation_horizon": successful,
@@ -121,7 +122,7 @@ def audit(output: Path) -> dict[str, Any]:
             ):
                 horizon_violations.append(
                     {
-                        "path": path.name,
+                        "path": relative,
                         "row": row_index,
                         "requested_step": requested_step,
                         "accepted_step": accepted_step,
@@ -129,7 +130,7 @@ def audit(output: Path) -> dict[str, Any]:
                 )
         csv_rows.append(
             {
-                "path": path.name,
+                "path": relative,
                 "rows": len(rows),
                 "columns": len(fieldnames),
                 "runtime_unit_columns": sorted(
@@ -152,19 +153,20 @@ def audit(output: Path) -> dict[str, Any]:
         )
 
     json_rows: list[dict[str, Any]] = []
-    for path in sorted(output.glob("*.json")):
+    for path in sorted(output.rglob("*.json")):
+        relative = path.relative_to(output).as_posix()
         try:
             with path.open(encoding="utf-8") as handle:
                 payload = json.load(handle, parse_constant=_reject_constant)
             nonfinite_locations = _json_nonfinite(payload)
             if nonfinite_locations:
                 failures.append(
-                    f"{path.name}: non-finite JSON number(s) at "
+                    f"{relative}: non-finite JSON number(s) at "
                     + ", ".join(nonfinite_locations[:10])
                 )
             json_rows.append(
                 {
-                    "path": path.name,
+                    "path": relative,
                     "top_level_type": type(payload).__name__,
                     "entries": (
                         len(payload)
@@ -174,7 +176,7 @@ def audit(output: Path) -> dict[str, Any]:
                 }
             )
         except Exception as exc:
-            failures.append(f"{path.name}: {type(exc).__name__}: {exc}")
+            failures.append(f"{relative}: {type(exc).__name__}: {exc}")
 
     if nonfinite_cells:
         failures.append(

@@ -1,5 +1,18 @@
 # Literature map
 
+## Material availability audit
+
+The requested attachment filenames were searched exactly under the workspace
+and across the readable server filesystem on 2026-07-29.  None was present.
+The exact 16-file list and the resulting evidence boundary are in
+`MATERIALS_MISSING.md`.
+
+Accordingly, this map does **not** claim attachment-specific page numbers or
+that any missing PDF was read.  The paper entries below use their public
+landing-page metadata.  Course-attachment metadata explicitly supplied for
+this study is listed separately from the public course schedule; the two
+numbering systems are not treated as interchangeable.
+
 ## Scope rule
 
 The primary evidence for this repository is the executed plant-only
@@ -78,7 +91,23 @@ tests only the Bernstein range-query idea.
   is a useful model for benchmark governance, not direct evidence about
   Flow*, Taylor models, or DiffReach plant flowpipes.
 
-## ECE/CS 584 Lecture 7–12 and homework
+## Course attachments requested for this study
+
+These are attachment identifiers, not public-schedule lecture numbers.  Since
+the files are missing, titles/pages not explicitly supplied are left
+unavailable rather than reconstructed.
+
+| requested attachment | verified attachment metadata | relation if restored |
+|---|---|---|
+| `Week-4-1-2.pdf` | Distinct Week 4 attachment; exact title and relevant pages unavailable. | Must be mapped separately.  Likely method/course context only unless its pages explicitly cover plant ODE reachability. |
+| `Week-4-2-3.pdf` | A second, distinct Week 4 attachment; exact title and relevant pages unavailable. | Must not be merged with `Week-4-1-2.pdf`; classify from its own content when restored. |
+| `Lecture-9_-Neural-Network-Verification-Bound-Propagation-2.pdf` | Bound-propagation attachment; exact subtitle/pages unavailable. | **Methodologically indirect / future NNCS.** Controller bounding cannot replace plant flowpipe validation. |
+| `Lecture-10_-Neural-Network-Verification-Bound-Propagation.pdf` | Bound-propagation attachment; exact subtitle/pages unavailable. | **Methodologically indirect / future NNCS.** Relevant to IBP/CROWN-style controller contracts. |
+| `Lecture-11_-Neural-Network-Verification-Bound-Propagation.pdf` | Bound-propagation attachment; exact subtitle/pages unavailable. | **Methodologically indirect / future NNCS.** Exact method/page mapping awaits the file. |
+| `Lecture-12.pdf` | **Modeling Physics**; covers dynamical systems, stability, and Lyapunov reasoning. Exact page mapping unavailable. | **Direct conceptual background** for dynamical systems/stability; it does not itself certify any Torch/Flow*/DiffReach enclosure. |
+| `584_homework2.pdf` | **Homework 2**. Exact title, exercises, and pages unavailable. | Cannot be mapped until restored. It is not Homework 1 and is not inferred from the public assignment schedule. |
+
+## Public ECE/CS 584 schedule (separate source)
 
 The public [Spring 2025 ECE/CS 584
 schedule](https://publish.illinois.edu/ece584-spring2025/course-schedule/)
@@ -91,8 +120,8 @@ places the material in the following sequence:
 | Lecture 9 | Verification as optimization; MILP and LP formulations | Connects arXiv:1711.07356 and arXiv:1711.00851 and clarifies exact encoding versus relaxation. |
 | Lecture 10 | Bound propagation | Connects CROWN and the convex-relaxation barrier; motivates explicit bound semantics. |
 | Lecture 11 | Branch-and-bound | Connects β-CROWN and JMLR 19-468; separates bound quality from search completeness. |
-| Lecture 12 | Guest lecture by Haoze Wu | The public schedule exposes no technical synopsis, so no additional claim is inferred. |
-| Homework 1 | Announced after Lecture 5 and due 2025-02-17 | The assignment itself is a private Canvas link. It is recorded as unavailable rather than reconstructed. |
+| Public Lecture 12 | Guest lecture by Haoze Wu | This public schedule row is not used to relabel attachment `Lecture-12.pdf`, whose supplied title is **Modeling Physics**. |
+| Public Homework 1 listing | Announced after Lecture 5 and due 2025-02-17 | This is not the requested `584_homework2.pdf`; no attachment content is inferred from it. |
 
 The course ordering is useful: SMT/optimization, bound propagation, and BaB
 are layers of an NN-verification stack, while plant dynamics/reachability
@@ -100,6 +129,22 @@ appear later in the course.  That separation is preserved here.  The course
 project guidance also explicitly distinguishes hybrid reachability tools such
 as Flow* from specialized NN verifiers and treats their composition as an open
 systems problem.
+
+## Relevance partition
+
+- **Directly relevant now:** ODEs, dynamical systems, reachability,
+  Taylor-model flowpipes, validated remainder handling, endpoint restriction,
+  stability, and Lyapunov concepts.
+- **Methodologically indirect now:** IBP, CROWN, β-CROWN, convex relaxation,
+  MILP, BaB, verified training, adversarial attacks, and VNN-COMP protocol
+  governance.
+- **Relevant to a future NNCS study:** any of those NN bounders used as an
+  explicit controller contract and composed with the plant reachability
+  contract.
+- **Not interchangeable with this experiment:** classifier/controller
+  verification material cannot replace plant-only ODE integration, Picard
+  validation, Taylor truncation-to-remainder, endpoint evaluation, or
+  multi-step carry evidence.
 
 ## Resulting research position
 

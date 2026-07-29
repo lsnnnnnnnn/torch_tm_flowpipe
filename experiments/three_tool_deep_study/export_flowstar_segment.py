@@ -41,6 +41,17 @@ SAMPLE_RE = re.compile(
     r"state=(?P<state>\d+) lower=(?P<lower>[-+0-9.eE]+) "
     r"upper=(?P<upper>[-+0-9.eE]+) point=(?P<point>[-+0-9.eE,]+)$"
 )
+ENDPOINT_PATH_RE = re.compile(
+    r"^FS_ENDPOINT_PATH state=(?P<state>\d+) "
+    r"collapsed_lower=(?P<collapsed_lower>[-+0-9.eE]+) "
+    r"collapsed_upper=(?P<collapsed_upper>[-+0-9.eE]+) "
+    r"native_lower=(?P<native_lower>[-+0-9.eE]+) "
+    r"native_upper=(?P<native_upper>[-+0-9.eE]+) "
+    r"repaired_lower=(?P<repaired_lower>[-+0-9.eE]+) "
+    r"repaired_upper=(?P<repaired_upper>[-+0-9.eE]+) "
+    r"padding_lower=(?P<padding_lower>[-+0-9.eE]+) "
+    r"padding_upper=(?P<padding_upper>[-+0-9.eE]+)$"
+)
 
 
 def _number(value: float) -> str:
@@ -231,6 +242,38 @@ int main() {{
       endpoint, endpoint_powers(next.domain[0], {order}));
   vector<Interval> endpoint_domain = next.domain;
   endpoint_domain[0] = Interval(0.0);
+  vector<Interval> collapsed_endpoint_box;
+  endpoint.intEval(collapsed_endpoint_box, endpoint_domain);
+  vector<Interval> native_endpoint_domain = next.domain;
+  Real accepted_step;
+  next.domain[0].sup(accepted_step);
+  native_endpoint_domain[0] = Interval(accepted_step);
+  vector<Interval> native_endpoint_box;
+  composed.intEval(native_endpoint_box, native_endpoint_domain);
+  for(unsigned int state = 0; state < endpoint.tms.size(); ++state) {{
+    double repaired_lower = collapsed_endpoint_box[state].inf();
+    double repaired_upper = collapsed_endpoint_box[state].sup();
+    if(native_endpoint_box[state].inf() < repaired_lower)
+      repaired_lower = native_endpoint_box[state].inf();
+    if(native_endpoint_box[state].sup() > repaired_upper)
+      repaired_upper = native_endpoint_box[state].sup();
+    double padding_lower =
+        repaired_lower - collapsed_endpoint_box[state].inf();
+    double padding_upper =
+        repaired_upper - collapsed_endpoint_box[state].sup();
+    endpoint.tms[state].remainder +=
+        Interval(padding_lower, padding_upper);
+    printf(
+        "FS_ENDPOINT_PATH state=%u "
+        "collapsed_lower=%.17g collapsed_upper=%.17g "
+        "native_lower=%.17g native_upper=%.17g "
+        "repaired_lower=%.17g repaired_upper=%.17g "
+        "padding_lower=%.17g padding_upper=%.17g\\n",
+        state, collapsed_endpoint_box[state].inf(),
+        collapsed_endpoint_box[state].sup(),
+        native_endpoint_box[state].inf(), native_endpoint_box[state].sup(),
+        repaired_lower, repaired_upper, padding_lower, padding_upper);
+  }}
   print_terms("endpoint", endpoint);
   print_box("endpoint", endpoint, endpoint_domain);
   for(unsigned int sample = 0; sample < 3; ++sample) {{
@@ -313,6 +356,7 @@ def _parse(
     boxes: dict[str, dict[int, list[float]]] = {"tube": {}, "endpoint": {}}
     domains: dict[int, list[float]] = {}
     samples: list[dict[str, Any]] = []
+    endpoint_paths: dict[int, dict[str, float]] = {}
     traces: list[dict[str, str]] = []
     status: dict[str, str] = {}
     for line in stdout.splitlines():
@@ -363,6 +407,22 @@ def _parse(
                     ],
                 }
             )
+            continue
+        match = ENDPOINT_PATH_RE.match(line)
+        if match:
+            endpoint_paths[int(match["state"])] = {
+                key: float(match[key])
+                for key in (
+                    "collapsed_lower",
+                    "collapsed_upper",
+                    "native_lower",
+                    "native_upper",
+                    "repaired_lower",
+                    "repaired_upper",
+                    "padding_lower",
+                    "padding_upper",
+                )
+            }
             continue
         if line.startswith("FLOWSTAR_AUDIT "):
             fields: dict[str, str] = {}
@@ -445,6 +505,15 @@ def _parse(
             "directed_rounding_or_mpfr": True,
             "floating_point_enclosure_candidate": False,
             "native_point_samples": samples,
+            "endpoint_path_audit": [
+                {"state": state, **endpoint_paths[state]}
+                for state in sorted(endpoint_paths)
+            ],
+            "endpoint_path_semantics": (
+                "raw endpoint is the hull of composed.evaluate_time and "
+                "the composed native flowpipe evaluated on tau=[h,h]; "
+                "the hull delta is explicit in the independent remainder"
+            ),
         },
         system_definition={
             "name": system,
@@ -488,6 +557,21 @@ def _parse(
         },
     )
     record["native_validation_passed"] = True
+    if len(endpoint_paths) != dimension:
+        raise RuntimeError(
+            "Flow* exporter did not emit one endpoint-path audit per state"
+        )
+    for state, path in endpoint_paths.items():
+        repaired = boxes["endpoint"][state]
+        native = [path["native_lower"], path["native_upper"]]
+        if (
+            repaired[0] > native[0] + 1e-12
+            or repaired[1] < native[1] - 1e-12
+        ):
+            raise RuntimeError(
+                "repaired Flow* endpoint does not contain native fixed-domain "
+                f"evaluation for state {state}: {repaired} vs {native}"
+            )
     return record
 
 

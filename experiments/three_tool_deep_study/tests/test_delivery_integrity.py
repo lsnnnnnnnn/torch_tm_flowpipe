@@ -34,7 +34,9 @@ def test_audit_rejects_csv_overflow_and_json_nonfinite(tmp_path: Path) -> None:
         writer = csv.writer(handle)
         writer.writerow(["requested_horizon", "successful_horizon", "value"])
         writer.writerow(["1", "1", "1e999"])
-    (tmp_path / "overflow.json").write_text(
+    nested = tmp_path / "nested"
+    nested.mkdir()
+    (nested / "overflow.json").write_text(
         '{"value": 1e999}', encoding="utf-8"
     )
 
@@ -57,6 +59,38 @@ def test_curator_refuses_non_authoritative_repetition_count(
     (source / "RUN_COMPLETE").touch()
 
     with pytest.raises(SystemExit, match="ten-repetition"):
+        curate(source, tmp_path / "destination")
+
+
+def test_curator_refuses_inconsistent_completion_record(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "final_acceptance.json").write_text(
+        json.dumps({"passed": True, "require_ten_repetitions": True}),
+        encoding="utf-8",
+    )
+    (source / "artifact_quality_audit.json").write_text(
+        json.dumps({"passed": True}), encoding="utf-8"
+    )
+    (source / "RUN_COMPLETE").write_text(
+        json.dumps(
+            {
+                "run_id": "wrong-run",
+                "acceptance_passed": True,
+                "artifact_quality_passed": True,
+                "complete_pytest_totals": {
+                    "passed": 10,
+                    "skipped": 0,
+                    "failed": 0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(SystemExit, match="inconsistent"):
         curate(source, tmp_path / "destination")
 
 

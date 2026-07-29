@@ -553,19 +553,45 @@ def run_flowstar(
     for system_name, h in _one_step_cases(spec, smoke):
         for order in orders:
             started = time.perf_counter()
-            record = export_segment(
-                spec,
-                system_name=system_name,
-                h=h,
-                order=order,
-                variant=spec["flowstar"]["primary_variant"],
-                work_dir=(
-                    output
-                    / "logs"
-                    / "controlled_flowstar"
-                    / f"one_step_{system_name}_h{h:g}_o{order}"
-                ),
-            )
+            try:
+                record = export_segment(
+                    spec,
+                    system_name=system_name,
+                    h=h,
+                    order=order,
+                    variant=spec["flowstar"]["primary_variant"],
+                    work_dir=(
+                        output
+                        / "logs"
+                        / "controlled_flowstar"
+                        / f"one_step_{system_name}_h{h:g}_o{order}"
+                    ),
+                )
+            except RuntimeError as exc:
+                message = str(exc)
+                if "reason=first_picard_inclusion_failed" not in message:
+                    raise
+                summaries.append(
+                    {
+                        "tool": "flowstar",
+                        "variant": spec["flowstar"]["primary_variant"],
+                        "protocol": "one_step_common_input",
+                        "system": system_name,
+                        "h": h,
+                        "order": order,
+                        "requested_steps": 1,
+                        "completed_steps": 0,
+                        "successful_horizon": 0.0,
+                        "runtime_s": time.perf_counter() - started,
+                        "status": "configuration_rejected",
+                        "failure_category": (
+                            "native_configuration_rejected"
+                        ),
+                        "failure_message": message,
+                        "excluded_from_authoritative": True,
+                    }
+                )
+                continue
             _save_common_segment(output, record)
             runtime = time.perf_counter() - started
             rows.extend(
@@ -591,6 +617,10 @@ def run_flowstar(
                     "completed_steps": 1,
                     "successful_horizon": h,
                     "runtime_s": runtime,
+                    "status": "success",
+                    "failure_category": "",
+                    "failure_message": "",
+                    "excluded_from_authoritative": False,
                 }
             )
 

@@ -36,6 +36,11 @@ def _selected(source: Path) -> Iterable[Path]:
     for path in sorted((source / "flowstar_root_cause").iterdir()):
         if path.is_file() and path.suffix in {".csv", ".json"}:
             yield path
+    for path in sorted(
+        (source / "flowstar_adaptive_trajectory_audit").iterdir()
+    ):
+        if path.is_file() and path.suffix in {".csv", ".json"}:
+            yield path
 
 
 def curate(source: Path, destination: Path) -> dict[str, Any]:
@@ -53,6 +58,18 @@ def curate(source: Path, destination: Path) -> dict[str, Any]:
         raise SystemExit("source artifact quality audit did not pass")
     if not (source / "RUN_COMPLETE").is_file():
         raise SystemExit("source has no RUN_COMPLETE marker")
+    completion = json.loads(
+        (source / "RUN_COMPLETE").read_text(encoding="utf-8")
+    )
+    test_totals = completion.get("complete_pytest_totals", {})
+    if (
+        completion.get("run_id") != source.name
+        or not completion.get("acceptance_passed", False)
+        or not completion.get("artifact_quality_passed", False)
+        or int(test_totals.get("passed", 0)) <= 0
+        or int(test_totals.get("failed", -1)) != 0
+    ):
+        raise SystemExit("source RUN_COMPLETE record is inconsistent")
     if destination.exists() and any(destination.iterdir()):
         raise SystemExit(f"destination already exists and is nonempty: {destination}")
 
@@ -79,8 +96,9 @@ def curate(source: Path, destination: Path) -> dict[str, Any]:
         ),
         "selection": (
             "top-level CSV/JSON/Markdown, RUN_COMPLETE, PNG plots, all CIR "
-            "JSON segments, and root-cause CSV/JSON; build products and logs "
-            "remain in ignored scratch results"
+            "JSON segments, root-cause CSV/JSON, and adaptive-trajectory "
+            "CSV/JSON; build products and verbose logs remain in ignored "
+            "scratch results"
         ),
         "file_count": len(copied),
         "total_bytes": sum(int(row["bytes"]) for row in copied),

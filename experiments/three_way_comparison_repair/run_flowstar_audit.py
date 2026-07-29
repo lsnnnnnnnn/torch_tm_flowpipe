@@ -284,19 +284,56 @@ int main() {{
     endpoint_domain[0] = Interval(0.0);
     vector<Interval> endpoint_box;
     endpoint.intEval(endpoint_box, endpoint_domain);
+    vector<Interval> direct_domain = it->domain;
+    Real accepted_step;
+    it->domain[0].sup(accepted_step);
+    direct_domain[0] = Interval(accepted_step);
+    vector<Interval> direct_box;
+    composed.intEval(direct_box, direct_domain);
+    TaylorModelVec<Real> endpoint_pre;
+    it->tmvPre.evaluate_time(
+        endpoint_pre, endpoint_powers(it->domain[0], setting.tm_setting.order));
+    vector<Interval> endpoint_tmv_poly_range;
+    it->tmv.polyRange(endpoint_tmv_poly_range, endpoint_domain);
+    TaylorModelVec<Real> native_endpoint;
+    endpoint_pre.insert_ctrunc(
+        native_endpoint, it->tmv, endpoint_tmv_poly_range, endpoint_domain,
+        setting.tm_setting.order, setting.tm_setting.cutoff_threshold);
+    vector<Interval> native_endpoint_box;
+    native_endpoint.intEval(native_endpoint_box, endpoint_domain);
     for(unsigned int state = 0; state < 2; ++state) {{
       Interval polynomial_range;
       composed.tms[state].polyRange(polynomial_range, it->domain);
+      double repaired_lower = endpoint_box[state].inf();
+      double repaired_upper = endpoint_box[state].sup();
+      if(direct_box[state].inf() < repaired_lower)
+        repaired_lower = direct_box[state].inf();
+      if(direct_box[state].sup() > repaired_upper)
+        repaired_upper = direct_box[state].sup();
       printf(
           "PARITY_ROW label={label} step=%u time=%.17g state=%u "
           "tube_lower=%.17g tube_upper=%.17g "
           "endpoint_lower=%.17g endpoint_upper=%.17g "
           "poly_width=%.17g remainder_width=%.17g\\n",
           step, absolute_time, state, tube[state].inf(), tube[state].sup(),
-          endpoint_box[state].inf(), endpoint_box[state].sup(),
+          repaired_lower, repaired_upper,
           polynomial_range.sup() - polynomial_range.inf(),
           composed.tms[state].remainder.sup() -
               composed.tms[state].remainder.inf());
+      printf(
+          "PARITY_ENDPOINT_PATH label={label} step=%u time=%.17g state=%u "
+          "export_lower=%.17g export_upper=%.17g "
+          "direct_lower=%.17g direct_upper=%.17g "
+          "native_lower=%.17g native_upper=%.17g "
+          "repaired_lower=%.17g repaired_upper=%.17g "
+          "padding_lower=%.17g padding_upper=%.17g\\n",
+          step, absolute_time, state,
+          endpoint_box[state].inf(), endpoint_box[state].sup(),
+          direct_box[state].inf(), direct_box[state].sup(),
+          native_endpoint_box[state].inf(), native_endpoint_box[state].sup(),
+          repaired_lower, repaired_upper,
+          repaired_lower - endpoint_box[state].inf(),
+          repaired_upper - endpoint_box[state].sup());
     }}
   }}
   printf("PARITY_STATUS label={label} completed=%d segments=%u horizon=%.17g\\n",

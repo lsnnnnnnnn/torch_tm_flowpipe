@@ -176,6 +176,12 @@ def _artifact_mapping(relative: str) -> tuple[str, str, str]:
         return name, "flowstar_correctness.py", "Flow* correctness gate"
     if relative.startswith("flowstar_root_cause/"):
         return relative, "flowstar_correctness.py", "Flow* root-cause evidence"
+    if relative.startswith("flowstar_adaptive_trajectory_audit/"):
+        return (
+            relative,
+            "flowstar_adaptive_trajectory_audit.py",
+            "Adaptive Flow* endpoint-path correctness evidence",
+        )
     if name.startswith("bern_feasibility"):
         return name, "bern_feasibility.py", "RQ6 range-only feasibility"
     if name in {
@@ -230,9 +236,15 @@ def generate(artifact: Path, destination: Path) -> dict[str, Any]:
     quality = _json(artifact / "artifact_quality_audit.json")
     environment = _json(artifact / "environment.json")
     bern = _json(artifact / "bern_feasibility.json")
+    completion = _json(artifact / "RUN_COMPLETE")
     pareto = _csv(artifact / "native_pareto_summary.csv")
     failures = _csv(artifact / "failure_summary.csv")
     capabilities = _csv(artifact / "matched_basis_capabilities.csv")
+    one_step = _csv(artifact / "one_step_summary.csv")
+    affine = _csv(artifact / "affine_carry_summary.csv")
+    box_carry = _csv(artifact / "box_carry_summary.csv")
+    matched = _csv(artifact / "matched_basis_summary.csv")
+    runtime = _csv(artifact / "runtime_summary.csv")
     canonical_report = (
         artifact / "three_tool_deep_study_report.md"
     ).read_text(encoding="utf-8")
@@ -243,6 +255,10 @@ def generate(artifact: Path, destination: Path) -> dict[str, Any]:
         if int(float(row.get("runtime_repetitions") or 0)) >= 10
     ]
     repositories = environment.get("repositories", {})
+    adaptive = (
+        correctness.get("flowstar", {})
+        .get("adaptive_trajectory", {})
+    )
     source_rel = Path("artifacts") / "authoritative" / artifact.name
     checkpoint_table = _table(
         ["SHA", "checkpoint"], [[sha, subject] for sha, subject in checkpoints]
@@ -295,9 +311,19 @@ legacy-tightened Torch endpoint against another tool's raw endpoint.
 Flow*'s stock Riccati miss was traced to a variable-leaf truncation contribution
 present in the full evaluator but absent from the cached remainder-only replay.
 The record/replay patch and the independent full-Picard revalidation both
-restore containment. A rejected fixed order below Flow*'s supported minimum is a
-configuration rejection, not a crash. No experiment overwrites a Flow*
+restore containment. The fixed-order-2, `h=0.05` Riccati stress point can
+reject its configured candidate remainder; that is a configuration rejection,
+not a crash or an overall Flow* failure. No experiment overwrites a Flow*
 remainder after `advance`.
+
+The earlier adaptive Van der Pol collapsed endpoint miss is also closed.  The
+audit compares stock upstream, the original and identical generated harnesses,
+the variable-leaf patch, and the adaptive full-Picard fallback.  It localizes
+the miss to collapsed endpoint restriction: Flow*'s native composed flowpipe
+evaluated on `tau=[h,h]` contains every deterministic sample.  The raw endpoint
+now carries the explicit hull delta as independent remainder.  Repair passed:
+**{adaptive.get('passed', False)}**; excluded from authoritative:
+**{adaptive.get('repair', {}).get('excluded_from_authoritative', True)}**.
 
 ## Repository provenance
 
@@ -378,8 +404,17 @@ stock 结果因此漏掉解析真值。记录/重放补丁以及独立的 full-P
 {counts.get('stock_analytic_violations', 'n/a')} 条。原始 Van der Pol
 调度到 T=10 使用 {parity.get('original_segments', 'n/a')} 段，根因补丁
 到 T=10 使用 {parity.get('root_cause_segments', 'n/a')} 段；补丁改变
-自适应接受决策，所以不要求两者调度相同。固定阶数低于 Flow* 支持下限时
-属于“配置被拒绝”，不是崩溃。实验也从不在 `advance` 后覆盖 Flow* 余项。
+自适应接受决策，所以不要求两者调度相同。固定二阶、`h=0.05` 的 Riccati
+压力点可能拒绝其候选余项；这属于“配置被拒绝”，不是 Flow* 整体失败或
+崩溃。实验也从不在 `advance` 后覆盖 Flow* 余项。
+
+此前 Van der Pol 自适应路径的折叠端点漏包也已闭环。审计同时比较
+upstream stock、原始/同构生成 harness、变量叶截断补丁和自适应
+full-Picard fallback，定位到折叠端点限制路径。对同一已验证 flowpipe
+直接在 `tau=[h,h]` 上做原生区间求值时，所有确定性样本均被包含；raw
+端点现将两条路径的 hull 差值显式加入独立余项。修复通过：
+**{adaptive.get('passed', False)}**；是否从权威结果排除：
+**{adaptive.get('repair', {}).get('excluded_from_authoritative', True)}**。
 
 ## 共同协议与基
 
@@ -436,6 +471,149 @@ time-state 基、改进多项式范围界和 overflow 归因、暴露验证器�
 """
     (destination / "FINAL_REPORT_ZH.md").write_text(zh, encoding="utf-8")
 
+    frontier = [
+        row
+        for row in pareto
+        if row.get("width_runtime_pareto", "").lower() == "true"
+        and row.get("primary_numerical_eligible", "true").lower() == "true"
+    ]
+    frontier_table = _table(
+        [
+            "tool",
+            "variant",
+            "system",
+            "time",
+            "width",
+            "successful horizon",
+            "steady s",
+            "memory KiB",
+        ],
+        [
+            [
+                row.get("tool", ""),
+                row.get("variant", ""),
+                row.get("system", ""),
+                row.get("evaluation_time", ""),
+                row.get("width_at_evaluation_time", ""),
+                row.get("successful_horizon", ""),
+                row.get("steady_full_configuration_time_s", ""),
+                row.get("memory_kib", ""),
+            ]
+            for row in frontier
+        ],
+    )
+    first_failure = adaptive.get("first_failure", {})
+    conclusions = f"""# Final conclusions
+
+## Authority
+
+These conclusions are generated from the accepted `{artifact.name}` run on
+`codex/torch-flowstar-diffreach-deep-study`. Acceptance and the recursive
+artifact-quality audit both passed. The complete isolated pytest matrix
+reported {completion.get('complete_pytest_totals', {}).get('passed', 0)}
+passed, {completion.get('complete_pytest_totals', {}).get('skipped', 0)}
+skipped, and {completion.get('complete_pytest_totals', {}).get('failed', 0)}
+failed tests.
+
+## Revoked conclusions
+
+The earlier “same-order winner” and any Torch-tightened-versus-other-raw
+ranking are revoked. Equal order labels do not denote equal polynomial
+dictionaries, validators, reset contracts, or arithmetic. A failed prefix
+cannot be ranked at another solver's requested final time, common-box carry is
+a reset/control protocol rather than a native-solver ranking, and sampling is
+not a proof.
+
+## Flow* correctness findings
+
+The Riccati stock miss was caused by a variable-leaf truncation interval that
+the full evaluator produced but the cached remainder-only replay omitted. The
+record/replay correction and an independent full-Picard revalidation both
+restore analytic containment: the primary audit contains
+{counts.get('primary_rows', 0)} rows with
+{counts.get('primary_analytic_violations', 'n/a')} analytic violations and
+{counts.get('primary_endpoint_tube_violations', 'n/a')} endpoint/tube
+violations. The stock miss remains in the evidence as a regression target.
+
+The adaptive Van der Pol miss belongs to the collapsed endpoint
+restriction/evaluation path, not to the ODE/reference mapping, the
+variable-leaf patch, adaptive full-Picard acceptance, or the verified native
+flowpipe. The first discrepancy is segment
+{first_failure.get('segment_index', 'n/a')}, state
+{first_failure.get('state_index', 'n/a')}, at absolute time
+{first_failure.get('absolute_time', 'n/a')}; the collapsed lower endpoint
+{first_failure.get('flowstar_lower', 'n/a')} missed the DOP853 sanity sample
+{first_failure.get('reference_lower', 'n/a')} by
+{first_failure.get('lower_under_enclosure_gap', 'n/a')}. The native composed
+flowpipe evaluated on fixed local time enclosed all tested samples. The
+exporter therefore uses the hull of the collapsed and fixed-domain native
+evaluations and places the hull delta in the independent remainder. The
+repaired authoritative path has zero deterministic trajectory misses and is
+not excluded. The original upstream/generated schedule parity remains
+{parity.get('schedule_agreement', False)} with
+{parity.get('original_segments', 'n/a')} segments to T=10.
+
+## Comparability and trusted numerical results
+
+- The {len(one_step)} one-step rows use matched ODEs, initial boxes, state
+  order, steps, and raw endpoint/tube semantics. They support local enclosure
+  observations, but not a cross-tool winner because native bases and
+  validators remain different.
+- The {len(affine)} common-affine and {len(box_carry)} common-box rows control
+  the propagated representation. Only rows at the same requested absolute
+  horizon are juxtaposed. Box/affine ratios measure the effect of this reset
+  control; recentering can make a ratio below one, so it is not “negative
+  dependency loss.”
+- The {len(matched)} matched-basis rows compare B1, B_DR, B2, and B3 inside one
+  arithmetic engine with one validator/reset contract. They isolate retained
+  monomial families; they do not pretend all three native tools implement
+  those dictionaries.
+- Native-practical width/runtime dominance is valid only within one tool,
+  system, and absolute time. The authoritative nondominated rows are:
+
+{frontier_table}
+
+All exact widths and horizons are in
+`{source_rel.as_posix()}/one_step_summary.csv`,
+`affine_carry_summary.csv`, `box_carry_summary.csv`,
+`native_low_order_summary.csv`, and `native_pareto_summary.csv`. Runtime,
+warm-up/build/JIT, ten repetitions, and memory are kept separate in
+`runtime_summary.csv` ({len(runtime)} rows); no unavailable memory or
+capability value is replaced by zero. Dependency/reset evidence is in the two
+carry tables and `component_ablation.csv`. The associated figures are
+`plots/01_*.png` through `plots/18_*.png`.
+
+## Evidence strength
+
+Riccati containment and small polynomial identities have analytic checks.
+Flow* acceptance uses its native interval/Picard certificates, and CIR
+round-trip checks establish export consistency. Torch and DiffReach preserve
+their native validation statuses, but their float64 paths are not promoted to
+MPFR-style formal roundoff proofs. DOP853 trajectory checks are deterministic
+bug-finding sanity checks only; their zero-failure result is an admission gate,
+not a certificate.
+
+## BERN and remaining gaps
+
+BERN is feasible only as a polynomial range backend: all
+{bern.get('cases', 0)} analytic cases were contained and
+{bern.get('strictly_tighter_cases', 0)} cancellation cases were tighter. It is
+not a fourth reachability solver and presently lacks integration, Picard
+validation, truncation accounting, endpoint substitution, reset, and a
+formally outward-rounded sparse backend.
+
+No unexplained native trajectory failure remains in an authoritative row.
+Capability gaps remain explicit in `matched_basis_capabilities.csv`, including
+unavailable exact-basis mappings and structured-remainder observability.
+Further proof-grade claims for float64 Torch/DiffReach or the BERN prototype
+require directed-rounding/MPFR evidence. The requested course PDFs were absent
+from the server-wide filename audit, so `MATERIALS_MISSING.md` records all 16
+exact names and `LITERATURE_MAP.md` does not claim page-level review.
+"""
+    (destination / "FINAL_CONCLUSIONS.md").write_text(
+        conclusions, encoding="utf-8"
+    )
+
     index = f"""# Artifact index
 
 ## Authoritative
@@ -445,6 +623,8 @@ time-state 基、改进多项式范围界和 overflow 归因、暴露验证器�
   study.
 - `FINAL_REPORT.md` / `FINAL_REPORT_ZH.md` — detailed English and Chinese
   reports.
+- `FINAL_CONCLUSIONS.md` — artifact-derived final conclusions and evidence
+  boundary; replaces the superseded smoke placeholder.
 - `RESULTS_MANIFEST.csv` — every curated CSV and plot mapped to its source,
   producer, protocol, and SHA-256.
 

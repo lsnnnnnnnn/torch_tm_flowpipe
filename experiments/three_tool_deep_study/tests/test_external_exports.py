@@ -36,3 +36,54 @@ def test_external_export_if_supplied(name: str, request: pytest.FixtureRequest) 
             expected = sample["total_interval"]
             assert actual + remainder[0] >= expected[0] - 5e-12
             assert actual + remainder[1] <= expected[1] + 5e-12
+
+
+def test_flowstar_endpoint_and_adaptive_artifact_gates_if_supplied(
+    request: pytest.FixtureRequest,
+) -> None:
+    supplied = request.config.getoption("--flowstar-segment")
+    if not supplied:
+        pytest.skip("--flowstar-segment was not supplied")
+    path = Path(supplied)
+    record = json.loads(path.read_text(encoding="utf-8"))
+    endpoint_paths = record["native_metadata"]["endpoint_path_audit"]
+    assert len(endpoint_paths) == record["state_dimension"]
+    for state, audit in enumerate(endpoint_paths):
+        endpoint = record["raw_endpoint_box"][state]
+        assert endpoint[0] <= audit["native_lower"] + 1e-12
+        assert endpoint[1] >= audit["native_upper"] - 1e-12
+        assert math.isclose(
+            endpoint[0],
+            audit["repaired_lower"],
+            rel_tol=0.0,
+            abs_tol=1e-12,
+        )
+        assert math.isclose(
+            endpoint[1],
+            audit["repaired_upper"],
+            rel_tol=0.0,
+            abs_tol=1e-12,
+        )
+
+    results = path.parents[1]
+    correctness = json.loads(
+        (results / "flowstar_correctness_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    parity = correctness["original_parity"]
+    assert parity["passed"]
+    assert parity["original_reached_horizon_10"]
+    assert parity["schedule_agreement"]
+    assert parity["original_segments"] == 290
+    adaptive = json.loads(
+        (
+            results
+            / "flowstar_adaptive_trajectory_audit"
+            / "flowstar_adaptive_trajectory_summary.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert adaptive["passed"]
+    assert adaptive["first_failure"]["segment_index"] == 3
+    assert adaptive["authoritative_repaired_trajectory_failures"] == 0
+    assert not adaptive["excluded_from_authoritative"]

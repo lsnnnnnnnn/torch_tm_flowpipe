@@ -9,9 +9,11 @@ import json
 import math
 import os
 import platform
+import re
 import subprocess
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -765,6 +767,11 @@ def collect_tables(
         _truth(row.get("trajectory_sanity_passed")) is False
         for row in native
     )
+    included_native_trajectory_failures = sum(
+        _truth(row.get("trajectory_sanity_passed")) is False
+        and _truth(row.get("excluded_from_authoritative")) is not True
+        for row in native
+    )
 
     failed_native_configurations = {
         tuple(
@@ -774,25 +781,58 @@ def collect_tables(
         for row in native
         if _truth(row.get("trajectory_sanity_passed")) is False
     }
+    explicitly_excluded_native_configurations = {
+        tuple(
+            str(row.get(field, ""))
+            for field in ("tool", "variant", "system", "h")
+        )
+        for row in native
+        if _truth(row.get("excluded_from_authoritative")) is True
+    }
     pareto_path = output / "native_pareto_summary.csv"
     if pareto_path.exists():
         pareto_rows = _read_csv(pareto_path)
+        eligible_pareto_rows = []
+        excluded_pareto_rows = []
         for row in pareto_rows:
             key = tuple(
                 str(row.get(field, ""))
                 for field in ("tool", "variant", "system", "h")
             )
             trajectory_passed = key not in failed_native_configurations
+            explicitly_excluded = (
+                key in explicitly_excluded_native_configurations
+            )
             native_passed = (
                 _truth(row.get("native_validation_passed")) is not False
             )
             row["trajectory_sanity_passed"] = trajectory_passed
             row["primary_numerical_eligible"] = (
-                trajectory_passed and native_passed
+                trajectory_passed
+                and native_passed
+                and not explicitly_excluded
             )
             if not row["primary_numerical_eligible"]:
                 row["width_runtime_pareto"] = False
-        write_csv(pareto_path, pareto_rows)
+                row["excluded_from_authoritative"] = True
+                row["exclusion_reason"] = (
+                    "explicit_configuration_exclusion"
+                    if explicitly_excluded
+                    else (
+                        "trajectory_sanity_failure"
+                        if not trajectory_passed
+                        else "native_validation_failure"
+                    )
+                )
+                excluded_pareto_rows.append(row)
+            else:
+                row["excluded_from_authoritative"] = False
+                eligible_pareto_rows.append(row)
+        write_csv(pareto_path, eligible_pareto_rows)
+        write_csv(
+            output / "native_pareto_excluded.csv",
+            excluded_pareto_rows,
+        )
     flowstar_summary_path = output / "flowstar_correctness_summary.json"
     flowstar_summary = (
         json.loads(flowstar_summary_path.read_text(encoding="utf-8"))
@@ -821,6 +861,12 @@ def collect_tables(
             **trajectory_checks,
             "controlled_failures": controlled_trajectory_failures,
             "native_candidate_failures": native_trajectory_failures,
+            "included_native_failures": (
+                included_native_trajectory_failures
+            ),
+            "explicitly_excluded_native_configurations": len(
+                explicitly_excluded_native_configurations
+            ),
         },
         "common_segment_records": len(representation_checks),
         "common_segment_point_checks": sum(
@@ -850,6 +896,7 @@ def collect_tables(
         correctness["native_validation_failures"] == 0
         and correctness["analytic_violations"] == 0
         and controlled_trajectory_failures == 0
+        and included_native_trajectory_failures == 0
         and correctness["common_segment_representation_failures"] == 0
         and correctness[
             "common_segment_native_round_trip_violations"
@@ -881,6 +928,38 @@ def verify_completed_output(
     failures: list[str] = []
     if not correctness.get("primary_gates_passed", False):
         failures.append("primary correctness gates did not pass")
+    included_native_failures = int(
+        correctness.get("trajectory_sanity", {}).get(
+            "included_native_failures", 0
+        )
+    )
+    if included_native_failures:
+        failures.append(
+            f"{included_native_failures} included native trajectory failures"
+        )
+    adaptive_summary_path = (
+        output
+        / "flowstar_adaptive_trajectory_audit"
+        / "flowstar_adaptive_trajectory_summary.json"
+    )
+    if not adaptive_summary_path.exists():
+        failures.append("missing adaptive Flow* trajectory audit")
+    else:
+        adaptive_summary = json.loads(
+            adaptive_summary_path.read_text(encoding="utf-8")
+        )
+        if (
+            not adaptive_summary.get("passed", False)
+            or int(
+                adaptive_summary.get(
+                    "authoritative_repaired_trajectory_failures", -1
+                )
+            )
+            != 0
+        ):
+            failures.append(
+                "adaptive Flow* authoritative endpoint audit did not pass"
+            )
 
     plot_names = (
         "one_step_tube_width_vs_h",
@@ -1011,13 +1090,90 @@ def verify_completed_output(
     return result
 
 
+def write_completion_record(output: Path) -> dict[str, Any]:
+    acceptance = json.loads(
+        (output / "final_acceptance.json").read_text(encoding="utf-8")
+    )
+    quality = json.loads(
+        (output / "artifact_quality_audit.json").read_text(encoding="utf-8")
+    )
+    test_log = output / "complete_pytest.log"
+    if not acceptance.get("passed", False):
+        raise SystemExit("cannot complete a run with failed acceptance")
+    if not quality.get("passed", False):
+        raise SystemExit("cannot complete a run with failed artifact audit")
+    if not test_log.exists():
+        raise SystemExit("cannot complete a run without complete_pytest.log")
+    text = test_log.read_text(encoding="utf-8")
+    totals = {
+        name: sum(
+            int(match)
+            for match in re.findall(rf"(\d+)\s+{name}", text)
+        )
+        for name in ("passed", "skipped", "failed")
+    }
+    if totals["passed"] <= 0 or totals["failed"] != 0:
+        raise SystemExit(f"invalid complete pytest totals: {totals}")
+    repositories = {
+        name: {
+            "path": path,
+            "sha": git_sha(Path(path)),
+        }
+        for name, path in load_spec()["repositories"].items()
+    }
+    log_sha = sha256_manifest([test_log], output)[0]["sha256"]
+    result = {
+        "run_id": output.name,
+        "completed_at_utc": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
+        "branch": "codex/torch-flowstar-diffreach-deep-study",
+        "torch_sha": git_sha(REPO_ROOT),
+        "repositories": repositories,
+        "acceptance_passed": True,
+        "artifact_quality_passed": True,
+        "complete_test_command": (
+            f"DEEP_STUDY_RESULTS_DIR={output} "
+            "scripts/run_complete_pytest.sh"
+        ),
+        "complete_pytest_totals": totals,
+        "complete_pytest_log": str(test_log),
+        "complete_pytest_log_sha256": log_sha,
+        "completion_semantics": (
+            "torch_sha is the frozen code SHA that produced the run; the "
+            "later artifact-only commit can have a different SHA"
+        ),
+    }
+    write_json(output / "RUN_COMPLETE", result)
+    (output / "COMPLETE_TEST_RECORD.md").write_text(
+        "# Complete repository test record\n\n"
+        f"- Run ID: `{output.name}`\n"
+        f"- Command: `{result['complete_test_command']}`\n"
+        f"- Passed: **{totals['passed']}**\n"
+        f"- Skipped: **{totals['skipped']}**\n"
+        f"- Failed: **{totals['failed']}**\n"
+        f"- Log SHA-256: `{log_sha}`\n"
+        "- Historical suites were executed in isolated pytest processes to "
+        "avoid their repeated top-level module names.\n",
+        encoding="utf-8",
+    )
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--mode",
-        choices=["initialize", "finalize", "tables", "verify", "all"],
+        choices=[
+            "initialize",
+            "finalize",
+            "tables",
+            "verify",
+            "complete",
+            "all",
+        ],
         required=True,
     )
     parser.add_argument(
@@ -1043,6 +1199,8 @@ def main() -> None:
             output,
             require_ten_repetitions=args.require_ten_repetitions,
         )
+    if args.mode == "complete":
+        result["complete"] = write_completion_record(output)
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
 
 

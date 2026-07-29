@@ -6,6 +6,7 @@ REPO_ROOT="$(cd "${STUDY_DIR}/../.." && pwd)"
 CONDA="/srv/local/shengenli/miniforge3/condabin/conda"
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 OUTPUT_DIR="${1:-${STUDY_DIR}/results/${TIMESTAMP}}"
+RUN_ID="$(basename "${OUTPUT_DIR}")"
 PROGRESS_LOG="${OUTPUT_DIR}/progress.log"
 mkdir -p "${OUTPUT_DIR}"
 export MPLCONFIGDIR="${OUTPUT_DIR}/.matplotlib"
@@ -103,6 +104,24 @@ progress "final frozen checksums, collection, plots, report"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/audit_results.py" \
   --output-dir "${OUTPUT_DIR}"
 
-date -u +%Y-%m-%dT%H:%M:%SZ > "${OUTPUT_DIR}/RUN_COMPLETE"
+progress "complete isolated repository-wide pytest matrix"
+DEEP_STUDY_RESULTS_DIR="${OUTPUT_DIR}" \
+  "${REPO_ROOT}/scripts/run_complete_pytest.sh" 2>&1 \
+  | tee "${OUTPUT_DIR}/complete_pytest.log"
+
+progress "write completion record"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
+  --mode complete --output-dir "${OUTPUT_DIR}"
+
+ARTIFACT_DIR="${STUDY_DIR}/artifacts/authoritative/${RUN_ID}"
+progress "curate authoritative artifact"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/curate_artifacts.py" \
+  --source "${OUTPUT_DIR}" --destination "${ARTIFACT_DIR}"
+
+progress "generate bilingual final delivery"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/generate_final_delivery.py" \
+  --artifact-dir "${ARTIFACT_DIR}" --destination "${STUDY_DIR}"
+
 progress "complete"
 printf 'Full study output: %s\n' "${OUTPUT_DIR}"
+printf 'Curated authoritative artifact: %s\n' "${ARTIFACT_DIR}"

@@ -295,10 +295,32 @@ def main() -> None:
         if args.skip_parity
         else run_original_parity_gate(spec, output)
     )
+    if args.skip_parity:
+        adaptive_trajectory = {"skipped": True, "passed": True}
+    else:
+        from flowstar_adaptive_trajectory_audit import run_adaptive_audit
+
+        adaptive_trace = run_adaptive_audit(
+            spec,
+            output / "flowstar_adaptive_trajectory_audit",
+            parity_summary=parity,
+            parity_output=output,
+        )
+        adaptive_trajectory = {
+            "passed": adaptive_trace["passed"],
+            "classification": adaptive_trace["classification"],
+            "first_failure": adaptive_trace["first_failure"],
+            "repair": adaptive_trace["repair"],
+        }
     summary = {
         "analytic_counts": counts,
         "original_parity": parity,
-        "passed": bool(counts["passed"] and parity["passed"]),
+        "adaptive_trajectory": adaptive_trajectory,
+        "passed": bool(
+            counts["passed"]
+            and parity["passed"]
+            and adaptive_trajectory["passed"]
+        ),
     }
     write_csv(output / "flowstar_correctness.csv", rows)
     write_json(output / "flowstar_correctness_traces.json", traces)

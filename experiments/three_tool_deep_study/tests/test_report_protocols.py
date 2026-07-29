@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from generate_report import (
     _at_requested_horizon,
     _carry_loss,
@@ -152,3 +154,24 @@ def test_required_metrics_use_matched_affine_reference_and_explicit_missing() ->
     assert rows[1]["successful_horizon"] == "0.01"
     assert rows[1]["runtime_setup_s"] == "unavailable"
     assert rows[1]["memory_measurement"] == "unavailable"
+
+
+def test_literature_map_keeps_course_attachments_distinct() -> None:
+    study = Path(__file__).parents[1]
+    literature = (study / "LITERATURE_MAP.md").read_text(encoding="utf-8")
+    missing = (study / "MATERIALS_MISSING.md").read_text(encoding="utf-8")
+    assert "Lecture-12.pdf" in literature
+    assert "Modeling Physics" in literature
+    assert "dynamical systems, stability, and Lyapunov" in literature
+    assert "584_homework2.pdf" in literature
+    assert "Homework 2" in literature
+    assert "Week-4-1-2.pdf" in literature
+    assert "Week-4-2-3.pdf" in literature
+    assert "public-schedule lecture numbers" in literature
+    assert (
+        sum(
+            line[:1].isdigit() and ".pdf`" in line
+            for line in missing.splitlines()
+        )
+        == 16
+    )

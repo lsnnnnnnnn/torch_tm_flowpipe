@@ -1,4 +1,11 @@
-# Executive summary
+# Superseded smoke-only executive summary
+
+This file was generated from the earlier integrated smoke run.  It is
+**superseded and non-authoritative**.  The authoritative conclusion is created
+only after the ten-repetition formal run and is published under
+`experiments/three_tool_deep_study/FINAL_CONCLUSIONS.md`; its source tables,
+plots, and canonical run report are retained under
+`artifacts/authoritative/<run-id>/`.
 
 The completed three-tool study passes its primary gates:
 **True**.  It contains

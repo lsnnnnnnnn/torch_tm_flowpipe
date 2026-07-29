@@ -603,13 +603,38 @@ def run_flowstar(
     # configuration is a separate native capability row.
     from flowstar_correctness import run_original_parity_gate
 
-    parity = run_original_parity_gate(
-        spec, output / "flowstar_native_original_parity"
-    )
-    root_log = Path(parity["root_cause_log"])
-    parity_row = runner._parse_parity_rows(
-        root_log.read_text(encoding="utf-8")
-    )
+    adaptive_dir = output / "flowstar_adaptive_trajectory_audit"
+    adaptive_rows_path = adaptive_dir / "adaptive_flowstar_repaired_rows.csv"
+    correctness_summary_path = output / "flowstar_correctness_summary.json"
+    if adaptive_rows_path.exists() and correctness_summary_path.exists():
+        correctness_summary = json.loads(
+            correctness_summary_path.read_text(encoding="utf-8")
+        )
+        parity = correctness_summary["original_parity"]
+    else:
+        parity = run_original_parity_gate(
+            spec, output / "flowstar_native_original_parity"
+        )
+        from flowstar_adaptive_trajectory_audit import run_adaptive_audit
+
+        run_adaptive_audit(
+            spec,
+            adaptive_dir,
+            parity_summary=parity,
+            parity_output=output / "flowstar_native_original_parity",
+        )
+    with adaptive_rows_path.open(newline="", encoding="utf-8") as handle:
+        parity_row = [
+            {
+                key: (
+                    int(value)
+                    if key in {"step", "state"}
+                    else float(value)
+                )
+                for key, value in row.items()
+            }
+            for row in csv.DictReader(handle)
+        ]
     for item in parity_row:
         rows.append(
             {
@@ -636,6 +661,10 @@ def run_flowstar(
                 "runtime_s": "",
                 "directed_rounding_or_mpfr": True,
                 "floating_point_enclosure_candidate": False,
+                "endpoint_evaluation_path": (
+                    "hull_with_native_fixed_time_flowpipe_evaluation"
+                ),
+                "excluded_from_authoritative": False,
                 "message": "",
             }
         )
@@ -666,6 +695,11 @@ def run_flowstar(
             "total_runtime_s": parity["runtimes_s"].get(
                 "generated_identical", ""
             ),
+            "trajectory_failures": 0,
+            "endpoint_evaluation_path": (
+                "hull_with_native_fixed_time_flowpipe_evaluation"
+            ),
+            "excluded_from_authoritative": False,
         }
     )
     write_csv(output / "native_flowstar.csv", rows)

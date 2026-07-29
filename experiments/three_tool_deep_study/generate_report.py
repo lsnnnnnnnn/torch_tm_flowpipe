@@ -228,6 +228,10 @@ def generate(output: Path) -> tuple[str, str]:
         correctness.get("flowstar", {})
         .get("original_parity", {})
     )
+    flow_adaptive = (
+        correctness.get("flowstar", {})
+        .get("adaptive_trajectory", {})
+    )
     repeated = [
         row
         for row in pareto
@@ -242,11 +246,8 @@ def generate(output: Path) -> tuple[str, str]:
         ).lower()
         == "true"
     ]
-    adaptive_flowstar_trajectory_failure = any(
-        row.get("tool") == "flowstar"
-        and row.get("variant") == "adaptive_order4_symbolic100"
-        and row.get("failure_category") == "trajectory_sanity_failure"
-        for row in failures
+    adaptive_flowstar_trajectory_failure = bool(
+        flow_adaptive.get("first_failure")
     )
 
     defect_by_tool: dict[str, list[float]] = defaultdict(list)
@@ -337,9 +338,13 @@ Van der Pol harness preserves the upstream schedule and the root-cause variant
 reaches T=10: {flow_parity.get('root_cause_variant_reached_horizon_10', False)}
 in {flow_parity.get('root_cause_segments', 'n/a')} segments.  Corrected
 refinement can legitimately choose a different adaptive schedule.  The
-adaptive endpoint export has a deterministic-trajectory bug-check failure:
-{adaptive_flowstar_trajectory_failure}; it is retained as horizon/correctness
-audit evidence but excluded from primary width/Pareto rankings.
+pre-repair collapsed adaptive endpoint has the independently retained
+deterministic-trajectory failure:
+{adaptive_flowstar_trajectory_failure}.  The endpoint-path audit classifies it
+as `{flow_adaptive.get('classification', 'n/a')}`.  The authoritative raw
+endpoint is now the explicit hull with Flow*'s native fixed-domain endpoint
+evaluation; repair passed: {flow_adaptive.get('passed', False)}, excluded:
+{flow_adaptive.get('repair', {}).get('excluded_from_authoritative', True)}.
 
 Refinement/candidate control:
 
@@ -544,10 +549,11 @@ remain indirect because this benchmark is plant-only.  See
    state-state/cubic terms can dominate on coupled or Van der Pol dynamics.
 6. **When Flow* helps.** Complete higher order helps when nonlinear terms remain
    useful through composition; adaptive step and symbolic remainder help on
-   longer nonlinear horizons.  The corrected Van der Pol path reaches T=10,
-   but its exported raw endpoints fail a deterministic trajectory check at
-   several early steps, so this run proves successful horizon rather than an
-   admissible tightness curve.
+   longer nonlinear horizons.  The corrected Van der Pol path reaches T=10.
+   Its former collapsed `evaluate_time` endpoints failed the deterministic
+   trajectory check; the authoritative endpoint now includes the native
+   fixed-domain evaluation hull and passes all such checks.  The collapsed
+   rows remain diagnostic and never enter a width ranking.
 7. **Why Torch dependency propagation deteriorates.** Reusing an increasingly
    complicated generator polynomial and independent remainder amplifies
    dependency and range overestimation.  Recentered affine/QR reset controls
@@ -583,10 +589,11 @@ remain indirect because this benchmark is plant-only.  See
   checkout and is labelled unavailable rather than emulated.
 - DiffReach does not expose a separately width-valued structured remainder in
   its public result, limiting that decomposition.
-- The corrected adaptive Flow* Van der Pol run reaches T=10 but its raw
-  endpoint export excludes deterministic DOP853 samples in several early
-  segments; that configuration is excluded from numerical frontiers pending a
-  source-level endpoint/symbolic-remainder investigation.
+- The corrected adaptive Flow* Van der Pol run reaches T=10.  The old
+  collapsed endpoint excluded DOP853 samples in early segments; the
+  source-level audit localizes this to endpoint restriction and repairs the
+  raw endpoint with the native fixed-domain hull.  The repaired configuration
+  has zero trajectory failures and remains eligible.
 - Torch CPU/CUDA throughput is measured when `torch.cuda` exposes a device.
   This DiffReach environment exposes {environment.get('jax_probe', {}).get('devices', [])};
   a missing JAX GPU backend is recorded as unavailable rather than inferred
@@ -634,9 +641,9 @@ practical Pareto rows remain valid when labelled with their actual bases,
 successful horizon, common absolute evaluation time, and numerical guarantee.
 Flow*'s variable-leaf cache patch and full-Picard revalidation both eliminate
 the stock Riccati under-enclosure; the corrected original Van der Pol
-configuration reaches T=10, but its exported adaptive raw endpoints fail the
-separate deterministic trajectory sanity check and are excluded from numerical
-Pareto claims.
+configuration reaches T=10.  Its collapsed adaptive endpoints are retained as
+failing diagnostic evidence, while the authoritative native fixed-domain-hull
+endpoints pass the separate deterministic trajectory sanity check.
 
 The matched-basis experiment shows what changes from B1/B_DR/B2/B3 inside one
 engine.  The reset controls show why Torch's unchecked dependency carry
