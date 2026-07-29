@@ -80,5 +80,7 @@ cd "${REPO_ROOT}"
   --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
   --mode verify --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/audit_results.py" \
+  --output-dir "${OUTPUT_DIR}"
 
 printf 'Smoke study passed. Output: %s\n' "${OUTPUT_DIR}"

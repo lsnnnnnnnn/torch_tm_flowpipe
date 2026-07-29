@@ -1,5 +1,29 @@
 # torch-tm-flowpipe
 
+## Authoritative three-tool deep study
+
+The current research-delivery branch is
+`codex/torch-flowstar-diffreach-deep-study`, based on the repaired correctness
+delivery at `9024a8a29bdc0ad668a7c0620bd53872f4313cc8`. The default branch may be
+stale and must not be used as the source of the current Torch TM / DiffReach /
+Flow* conclusions.
+
+The study does not name a cross-tool “order-1 winner”: the native order labels
+do not select matched bases, validators, resets, or arithmetic. It instead uses
+raw one-step output, common affine and box carry contracts, accurately labelled
+native modes, one-engine matched-basis controls, and within-tool-only Pareto
+frontiers. The Flow* correctness path is the `fa39f7a` audit patch series under
+`experiments/three_tool_deep_study/flowstar_patches/fa39f7a_series/`.
+
+The final reports and authoritative curated artifact will be linked here after
+the mandatory ten-repetition run passes:
+
+- `experiments/three_tool_deep_study/FINAL_REPORT.md`
+- `experiments/three_tool_deep_study/FINAL_REPORT_ZH.md`
+- `experiments/three_tool_deep_study/ARTIFACT_INDEX.md`
+- `experiments/three_tool_deep_study/REPRODUCIBILITY.md`
+- `experiments/three_tool_deep_study/RESULTS_MANIFEST.csv`
+
 `torch-tm-flowpipe` is a small PyTorch-native research prototype for fixed-step
 Taylor-model flowpipes of polynomial plant dynamics, including a
 dependency-preserving multi-step propagation mode. It implements only the

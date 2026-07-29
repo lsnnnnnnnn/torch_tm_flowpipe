@@ -100,6 +100,8 @@ progress "final frozen checksums, collection, plots, report"
   --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
   --mode verify --require-ten-repetitions --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/audit_results.py" \
+  --output-dir "${OUTPUT_DIR}"
 
 date -u +%Y-%m-%dT%H:%M:%SZ > "${OUTPUT_DIR}/RUN_COMPLETE"
 progress "complete"
