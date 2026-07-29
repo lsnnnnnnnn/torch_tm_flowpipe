@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+import pytest
 
 from generate_report import (
     _at_requested_horizon,
     _carry_loss,
 )
 from collect_results import _annotate_required_metrics
-from run_pareto import _pareto_flags
+from run_pareto import _pareto_flags, _projected_affine_box_reset
 
 
 def _row(
@@ -175,3 +178,72 @@ def test_literature_map_keeps_course_attachments_distinct() -> None:
         )
         == 16
     )
+
+
+def test_torch_pareto_projects_before_affine_only_reset() -> None:
+    nonlinear_endpoint = object()
+    affine_endpoint = object()
+    reset_endpoint = object()
+    calls: list[tuple[object, ...]] = []
+
+    def project(value: object, basis: str, **kwargs: object):
+        calls.append(("project", value, basis, kwargs))
+        return affine_endpoint, ["quadratic", "cubic"]
+
+    def reset(value: object, *, method: str):
+        calls.append(("reset", value, method))
+        assert value is affine_endpoint
+        return reset_endpoint, {}
+
+    result, discarded = _projected_affine_box_reset(
+        nonlinear_endpoint,
+        project_to_basis=project,
+        affine_reset=reset,
+        stage="pareto_cuda_affine_reset_projection",
+        iteration=7,
+    )
+
+    assert result is reset_endpoint
+    assert discarded == 2
+    assert calls[0][0] == "project"
+    assert calls[1] == ("reset", affine_endpoint, "box")
+
+
+def test_torch_cuda_pareto_reset_accepts_projected_nonlinear_endpoint() -> None:
+    torch = pytest.importorskip("torch")
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA is unavailable")
+    followup = Path(__file__).parents[2] / "first_order_followup"
+    if str(followup) not in sys.path:
+        sys.path.insert(0, str(followup))
+    from export_torch_segment import rhs_from_spec
+    from torch_basis import (
+        affine_reset,
+        normalized_initial_tm,
+        project_to_basis,
+    )
+    from torch_tm_flowpipe import flowpipe_step_from_tm
+
+    spec = __import__("common").load_spec()
+    system = spec["systems"]["coupled_quadratic"]
+    device = torch.device("cuda:0")
+    current = normalized_initial_tm(
+        system["initial_box"],
+        order=4,
+        dtype=torch.float64,
+        device=device,
+    )
+    segment = flowpipe_step_from_tm(
+        rhs_from_spec(system), current, 0.01, 4
+    )
+    assert segment.status == "validated"
+    assert segment.endpoint_raw_tm is not None
+    reset, discarded = _projected_affine_box_reset(
+        segment.endpoint_raw_tm,
+        project_to_basis=project_to_basis,
+        affine_reset=affine_reset,
+        stage="pareto_cuda_affine_reset_projection",
+        iteration=1,
+    )
+    assert len(reset) == len(system["initial_box"])
+    assert discarded > 0

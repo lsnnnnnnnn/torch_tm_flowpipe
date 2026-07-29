@@ -54,6 +54,26 @@ def _acceleration_case(
     )
 
 
+def _projected_affine_box_reset(
+    endpoint: Any,
+    *,
+    project_to_basis: Any,
+    affine_reset: Any,
+    stage: str,
+    iteration: int,
+) -> tuple[Any, int]:
+    """Project a possibly nonlinear endpoint before the affine-only reset."""
+    affine_endpoint, discarded = project_to_basis(
+        endpoint,
+        "B1",
+        tau_index=None,
+        stage=stage,
+        iteration=iteration,
+    )
+    current, _ = affine_reset(affine_endpoint, method="box")
+    return current, len(discarded)
+
+
 def run_torch_repetitions(
     spec: Mapping[str, Any], output: Path, *, smoke: bool
 ) -> dict[str, Any]:
@@ -109,17 +129,14 @@ def run_torch_repetitions(
                         ]
                         for interval in endpoint.range_box()
                     ]
-                    affine_endpoint, discarded = project_to_basis(
+                    current, discarded_count = _projected_affine_box_reset(
                         endpoint,
-                        "B1",
-                        tau_index=None,
+                        project_to_basis=project_to_basis,
+                        affine_reset=affine_reset,
                         stage="pareto_affine_reset_projection",
                         iteration=step,
                     )
-                    reset_discarded_total += len(discarded)
-                    current, _ = affine_reset(
-                        affine_endpoint, method="box"
-                    )
+                    reset_discarded_total += discarded_count
                     completed = step
                 exact = (
                     analytic_contained(
@@ -242,6 +259,7 @@ def run_torch_repetitions(
                 timings: list[float] = []
                 endpoint_box: list[list[float]] = []
                 completed = 0
+                reset_discarded_total = 0
                 failure = ""
                 torch.cuda.reset_peak_memory_stats(device)
                 for step in range(1, steps + 1):
@@ -268,7 +286,14 @@ def run_torch_repetitions(
                         ]
                         for interval in endpoint.range_box()
                     ]
-                    current, _ = affine_reset(endpoint, method="box")
+                    current, discarded_count = _projected_affine_box_reset(
+                        endpoint,
+                        project_to_basis=project_to_basis,
+                        affine_reset=affine_reset,
+                        stage="pareto_cuda_affine_reset_projection",
+                        iteration=step,
+                    )
+                    reset_discarded_total += discarded_count
                     completed = step
                 acceleration_rows.append(
                     {
@@ -290,6 +315,9 @@ def run_torch_repetitions(
                             default=math.nan,
                         ),
                         "native_validation_passed": completed == steps,
+                        "reset_discarded_term_count": (
+                            reset_discarded_total
+                        ),
                         "analytic_reference_contained": "",
                         "compile_or_jit_time_s": (
                             warmup_time if repetition == 0 else 0.0

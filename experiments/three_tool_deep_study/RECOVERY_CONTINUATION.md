@@ -64,3 +64,37 @@ native flowpipe evaluation and CIR export.  The acceptance gate must reject
 any included native configuration with nonzero trajectory failures.  The
 configuration may enter authoritative Pareto/ranking/headline artifacts only
 after a zero-failure regression, otherwise it must be explicitly excluded.
+
+## Preserved formal-run failure `20260729T093319Z`
+
+The next formal attempt was launched only after correctness checkpoint
+`7868274020d5a0f1209622eba6d907303fad7687` was pushed.  It completed:
+
+1. all isolated launch test groups;
+2. the 96-row Flow* correctness matrix, root-cause evidence, original schedule
+   parity, and adaptive endpoint-path audit;
+3. controlled Torch, DiffReach, and Flow*;
+4. native Torch, DiffReach, and Flow*;
+5. matched-basis and component ablations;
+6. common defect diagnostics; and
+7. the five-case BERN feasibility gate.
+
+It entered `ten-repetition native practical timing: Torch` at
+`2026-07-29T10:34:59Z` and exited at `2026-07-29T11:39:39Z`.
+`run_pareto.py:271` called the affine-only `affine_reset` helper directly on
+the nonlinear order-4 CUDA endpoint.  The helper correctly rejected the input
+with `ValueError: affine reset received a nonlinear polynomial`.
+
+This was a benchmark protocol implementation error, not a solver validation
+failure.  The CPU path already projected the endpoint to B1 before reset; the
+secondary CUDA path did not.  The fix routes both paths through one
+`_projected_affine_box_reset` helper and records the discarded-term count.
+A control-flow regression exercises the helper, and a CUDA functional
+regression executes an actual coupled-quadratic step when a CUDA device is
+visible.
+
+The run has no `RUN_COMPLETE`, `final_acceptance.json`,
+`artifact_quality_audit.json`, or `pareto_checks.json`.  It is marked by its
+ignored `results/20260729T093319Z/INCOMPLETE` record and remains
+**non-authoritative**.  Its partial data must not be reused by the replacement
+formal run.

@@ -1,6 +1,6 @@
 # Deep-study status
 
-Last updated: 2026-07-29T09:25:20Z.
+Last updated: 2026-07-29T16:24:31Z.
 
 | phase | status | evidence / next gate |
 |---|---|---|
@@ -10,7 +10,7 @@ Last updated: 2026-07-29T09:25:20Z.
 | 3. Common intermediate representation | complete | CIR v2 schema and semantic validator cover every required field; Torch/Flow*/DiffReach adapters emit explicit unavailable markers and all three external schema/round-trip tests pass |
 | 4. Fair protocols | complete | B1/B_DR/B2/B3 semantics, explicit native capability gaps, required metric annotations, and within-tool-only Pareto flags pass 23 focused tests, matched-basis smoke, and an integrated 18-plot/1,280-row smoke with no verification failures; the authoritative ten-repetition run remains a Phase 6 gate |
 | 5. BERN and literature | complete | range-only clean-room feasibility prototype contains all 5 analytic cases and tightens 2 cancellation cases; the exact 16 requested PDF filenames were absent in a server-wide filename search and are recorded without invented page claims in `MATERIALS_MISSING.md`; `LITERATURE_MAP.md` now separates the two Week-4 files, Lecture 12 / Modeling Physics, Homework 2, attachment names, and public-schedule numbering |
-| 6. Repository/final delivery | in progress | recursive quality auditor, native-failure-closed Pareto collector, fail-closed curator, artifact-derived conclusions, bilingual delivery generator, and complete isolated pytest matrix are implemented; 25 focused tests pass with 4 expected argument-bound skips; the authoritative ten-repetition run, final artifact generation, full repository test matrix, clean status, artifact commit, and push remain |
+| 6. Repository/final delivery | in progress | formal attempt `20260729T093319Z` passed every solver/correctness stage through BERN, then exposed a secondary CUDA Pareto reset bug; both CPU and CUDA paths now share an explicit B1 projection before affine reset; 26 focused tests pass with 5 expected environment/argument skips; a fresh checkpointed formal run, final artifact generation, full repository test matrix, clean status, artifact commit, and push remain |
 
 Checkpoint policy: update this file in every phase checkpoint.  Timestamped
 scratch runs are never authoritative unless all final verification gates pass.
@@ -73,3 +73,17 @@ before execution.  Exact commands and errors are retained in
 `2026-07-29T09:32:10Z`; remote HEAD was verified as `fab3141`.  No tmux server
 or formal-run process existed at that verification point, so launch is now
 permitted.
+
+## Preserved formal attempt `20260729T093319Z`
+
+The pushed formal attempt completed correctness, all controlled/native tool
+runs, ablations, defect diagnostics, and BERN.  It stopped in the Torch
+ten-repetition stage because the secondary CUDA timing path passed a nonlinear
+order-4 endpoint directly to the affine-only reset helper.  The CPU path
+already performed the required B1 projection.
+
+The run is explicitly **incomplete and non-authoritative**, has no completion
+or acceptance markers, and is recorded in `RECOVERY_CONTINUATION.md` plus its
+ignored `INCOMPLETE` marker.  The repair now makes CPU and CUDA call the same
+project-then-reset helper and records discarded terms.  No prior numerical
+rows will be mixed into the replacement run.
