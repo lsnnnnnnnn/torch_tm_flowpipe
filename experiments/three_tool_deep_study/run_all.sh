@@ -22,6 +22,8 @@ progress "phase0 provenance and initial frozen checksums"
 progress "acceptance tests"
 "${CONDA}" run -n py11 pytest -q \
   experiments/first_order_followup/tests/test_torch_basis.py
+"${CONDA}" run -n diffreach312 pytest -q \
+  experiments/first_order_followup/tests/test_diffreach_projection.py
 "${CONDA}" run -n py11 pytest -q \
   experiments/three_tool_deep_study/tests
 
@@ -86,6 +88,8 @@ progress "final frozen checksums, collection, plots, report"
   --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/generate_report.py" \
   --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
+  --mode verify --require-ten-repetitions --output-dir "${OUTPUT_DIR}"
 
 date -u +%Y-%m-%dT%H:%M:%SZ > "${OUTPUT_DIR}/RUN_COMPLETE"
 progress "complete"

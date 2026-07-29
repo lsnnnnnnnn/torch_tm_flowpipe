@@ -29,6 +29,10 @@ as a conservative initial mismatch.  It is a diagnostic certificate for the
 exported polynomial core, not a replacement for a tool's native validator.
 Native and common radii therefore remain separate columns.
 
-Analytic containment is mandatory for Riccati and harmonic rows.  Deterministic
-trajectories for nonlinear systems are bug-catching checks only.  No report
-text treats a floating-point trajectory as a proof of enclosure.
+Analytic containment is mandatory for Riccati and harmonic rows.  For the
+coupled quadratic and Van der Pol systems, the collector integrates every
+corner/midpoint tensor-product sample with SciPy DOP853 at `rtol=1e-12` and
+`atol=1e-14`, then checks raw endpoints and five within-step tube times.
+Those deterministic trajectories are bug-catching checks only.  Their pass
+status is stored separately from native validation and analytic containment,
+and no report text treats a floating-point trajectory as a proof of enclosure.

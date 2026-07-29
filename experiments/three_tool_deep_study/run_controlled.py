@@ -648,6 +648,11 @@ def run_flowstar(
                     not forbidden_mutation
                 )
                 summary["no_candidate_reinjection"] = not forbidden_mutation
+                summary["failure_category"] = (
+                    ""
+                    if summary.get("native_validation_passed")
+                    else "flowstar_advance_validation_failure"
+                )
                 if forbidden_mutation:
                     raise RuntimeError(
                         f"forbidden Flow* remainder mutation in {summary['source']}"

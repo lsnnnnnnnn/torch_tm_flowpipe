@@ -309,6 +309,10 @@ def plot_pareto(rows: list[dict[str, Any]], plots: Path) -> None:
             if row.get("system") == system
             and math.isfinite(_f(row.get("width_at_evaluation_time")))
             and _f(row.get("steady_full_configuration_time_s")) > 0
+            and str(
+                row.get("primary_numerical_eligible", "true")
+            ).lower()
+            == "true"
         ]
         for row in selected:
             tool = str(row.get("tool"))
@@ -349,6 +353,14 @@ def plot_horizon_runtime(rows: list[dict[str, Any]], plots: Path) -> None:
             _f(row["steady_full_configuration_time_s"]),
             _f(row["successful_horizon"]),
             color=COLORS.get(tool),
+            marker=(
+                "x"
+                if str(
+                    row.get("primary_numerical_eligible", "true")
+                ).lower()
+                != "true"
+                else "o"
+            ),
             label=tool,
             alpha=0.75,
         )
@@ -361,7 +373,7 @@ def plot_horizon_runtime(rows: list[dict[str, Any]], plots: Path) -> None:
     _finish(
         figure,
         plots / "09_successful_horizon_vs_runtime.png",
-        "Successful horizon versus runtime",
+        "Successful horizon versus runtime (x = numerical-ineligible audit row)",
     )
 
 

@@ -105,3 +105,31 @@ def test_affine_box_and_qr_resets_contain_input():
             assert reset_interval.contains_interval(input_interval, tol=1e-12)
         assert stats["method"] == method
         assert math.isfinite(stats["generator_condition_number"])
+
+
+@pytest.mark.parametrize(
+    "device",
+    [
+        "cpu",
+        pytest.param(
+            "cuda",
+            marks=pytest.mark.skipif(
+                not torch.cuda.is_available(), reason="CUDA unavailable"
+            ),
+        ),
+    ],
+)
+def test_normalized_affine_reset_preserves_device(device):
+    spec = load_spec(EXPERIMENT / "benchmark_spec.yaml")
+    initial = normalized_initial_tm(
+        spec["systems"]["harmonic"]["initial_box"],
+        order=2,
+        device=device,
+    )
+    reset, _ = affine_reset(initial, method="box")
+    assert all(model.remainder.device.type == device for model in reset)
+    assert all(
+        interval.device.type == device
+        for model in reset
+        for interval in model.domain
+    )

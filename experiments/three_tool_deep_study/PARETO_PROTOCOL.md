@@ -21,7 +21,18 @@ JIT/first execution from ten after-JIT executions.  Flow* separates build time,
 per-process startup/full execution, and emitted per-step timing.  These
 categories are not collapsed into a claim of backend fairness.
 
-CPU float64 (or Flow*'s MPFR interval mode) is primary.  CUDA is included only
-when actually available; an unavailable device produces a capability note, not
-a fabricated timing.  Process peak RSS is recorded where the runtime exposes a
-useful measurement, and otherwise marked unavailable.
+CPU float64 (or Flow*'s MPFR interval mode) is primary.  A secondary
+implementation/hardware study uses the first coupled-quadratic configuration,
+whose cross terms are known to activate, and repeats the same selected native
+full configuration on:
+
+- Torch CPU and CUDA when `torch.cuda` exposes a device;
+- DiffReach JAX CPU and JAX CUDA when the installed JAXlib exposes a GPU
+  device;
+- Flow* CPU.
+
+The secondary rows are explicitly not an algorithmically hardware-fair
+cross-tool comparison.  An unavailable backend produces a capability row, not
+a fabricated timing.  Process peak RSS or device peak allocation is recorded
+where the runtime exposes a useful measurement, and otherwise marked
+unavailable.

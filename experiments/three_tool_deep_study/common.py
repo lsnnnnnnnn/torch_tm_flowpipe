@@ -307,12 +307,76 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
         endpoint[0] < tube[0] - tolerance or endpoint[1] > tube[1] + tolerance
         for endpoint, tube in zip(record["raw_endpoint_box"], record["whole_tube_box"])
     )
+    native_point_checks = 0
+    native_point_violations = 0
+    for sample in record.get("native_metadata", {}).get(
+        "native_point_samples", []
+    ):
+        point = sample.get("point", [])
+        if "polynomial_values" in sample:
+            for state_index, expected in enumerate(
+                sample["polynomial_values"]
+            ):
+                if state_index >= len(record["states"]):
+                    native_point_violations += 1
+                    continue
+                actual = evaluate_polynomial_point(
+                    record["states"][state_index]["polynomial_terms"],
+                    point,
+                )
+                native_point_checks += 1
+                if not math.isclose(
+                    actual,
+                    float(expected),
+                    rel_tol=0.0,
+                    abs_tol=tolerance,
+                ):
+                    native_point_violations += 1
+        elif "total_interval" in sample:
+            state_index = int(sample.get("state", 0))
+            kind = str(sample.get("kind", "tube"))
+            states = (
+                record["raw_endpoint"]
+                if kind == "endpoint"
+                else record["states"]
+            )
+            if state_index >= len(states):
+                native_point_violations += 1
+                continue
+            state = states[state_index]
+            actual = evaluate_polynomial_point(
+                state["polynomial_terms"], point
+            )
+            remainder = state["independent_interval_remainder"]
+            actual_interval = [
+                actual + float(remainder[0]),
+                actual + float(remainder[1]),
+            ]
+            expected = list(map(float, sample["total_interval"]))
+            native_point_checks += 1
+            if any(
+                not math.isclose(
+                    got,
+                    want,
+                    rel_tol=0.0,
+                    abs_tol=tolerance,
+                )
+                for got, want in zip(actual_interval, expected)
+            ):
+                native_point_violations += 1
     return {
         "point_evaluation_checks": point_checks,
         "tube_point_violations": tube_violations,
         "endpoint_evaluation_violations": endpoint_violations,
         "endpoint_vs_tube_violations": endpoint_tube_violations,
-        "passed": not (tube_violations or endpoint_violations or endpoint_tube_violations),
+        "native_point_evaluation_checks": native_point_checks,
+        "native_point_evaluation_violations": native_point_violations,
+        "passed": not (
+            tube_violations
+            or endpoint_violations
+            or endpoint_tube_violations
+            or native_point_violations
+        ),
     }
 
 

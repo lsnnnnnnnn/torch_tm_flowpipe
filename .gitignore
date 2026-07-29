@@ -229,3 +229,8 @@ outputs/flowstar_one_step_oracle_after_symqueue/flowstar_models/*
 outputs/flowstar_one_step_oracle_after_width_control/flowstar_models/*
 !outputs/flowstar_one_step_oracle_after_width_control/flowstar_models/*.cpp
 !outputs/flowstar_one_step_oracle_after_width_control/flowstar_models/*.txt
+
+# Timestamped deep-study runs contain copied Flow* build trees and may be
+# multiple GiB.  They remain local recovery/diagnostic evidence.  Curated,
+# portable final artifacts are committed separately by the study collector.
+experiments/three_tool_deep_study/results/

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import itertools
 import json
+import math
 import os
 import platform
 import subprocess
@@ -291,11 +293,147 @@ def _one_step_summary(
     return result
 
 
+def _rhs_numpy(
+    system: Mapping[str, Any], state: Any
+) -> Any:
+    import numpy as np
+
+    values = []
+    for component in system["rhs"]:
+        total = 0.0
+        for term in component["terms"]:
+            value = float(term["coefficient"])
+            for coordinate, power in zip(state, term["powers"]):
+                value *= float(coordinate) ** int(power)
+            total += value
+        values.append(total)
+    return np.asarray(values, dtype=np.float64)
+
+
+def _trajectory_sample_points(
+    initial_box: Iterable[Iterable[float]],
+) -> list[tuple[float, ...]]:
+    axes = []
+    for lower, upper in initial_box:
+        lo, hi = float(lower), float(upper)
+        axes.append((lo, 0.5 * (lo + hi), hi))
+    return list(itertools.product(*axes))
+
+
+def _annotate_trajectory_sanity(
+    spec: Mapping[str, Any],
+    rows: list[dict[str, Any]],
+) -> dict[str, int]:
+    """Apply non-proof deterministic trajectory checks to nonlinear rows."""
+    import numpy as np
+    from scipy.integrate import solve_ivp
+
+    nonlinear = {"coupled_quadratic", "van_der_pol"}
+    tolerance = float(spec["trajectory_tolerance"])
+    horizons: dict[str, float] = defaultdict(float)
+    for row in rows:
+        system = str(row.get("system", ""))
+        time_value = _number(row.get("time"), math.nan)
+        if system in nonlinear and math.isfinite(time_value):
+            horizons[system] = max(horizons[system], time_value)
+
+    solutions: dict[str, list[Any]] = {}
+    for system_name, horizon in horizons.items():
+        system = spec["systems"][system_name]
+        system_solutions = []
+        for point in _trajectory_sample_points(system["initial_box"]):
+            solution = solve_ivp(
+                lambda _time, state, _system=system: _rhs_numpy(
+                    _system, state
+                ),
+                (0.0, max(horizon, 1e-15)),
+                np.asarray(point, dtype=np.float64),
+                method="DOP853",
+                rtol=1e-12,
+                atol=1e-14,
+                dense_output=True,
+            )
+            if not solution.success or solution.sol is None:
+                raise RuntimeError(
+                    f"trajectory sanity integration failed for {system_name}: "
+                    f"{solution.message}"
+                )
+            system_solutions.append(solution.sol)
+        solutions[system_name] = system_solutions
+
+    checked = passed = failed = not_applicable = 0
+    for row in rows:
+        system_name = str(row.get("system", ""))
+        kind = str(row.get("interval_kind", ""))
+        if system_name not in nonlinear:
+            if kind in {
+                "tube",
+                "endpoint_raw",
+                "endpoint_tightened_supplemental",
+            }:
+                row["trajectory_sanity_passed"] = (
+                    "not_applicable_analytic_reference"
+                )
+                not_applicable += 1
+            continue
+        if kind not in {
+            "tube",
+            "endpoint_raw",
+            "endpoint_tightened_supplemental",
+        }:
+            continue
+        lower = _number(row.get("lower"), math.nan)
+        upper = _number(row.get("upper"), math.nan)
+        time_value = _number(row.get("time"), math.nan)
+        state_index = int(_number(row.get("state_index")))
+        if not all(math.isfinite(value) for value in (lower, upper, time_value)):
+            row["trajectory_sanity_passed"] = "not_checked_nonfinite"
+            not_applicable += 1
+            continue
+        if kind == "tube":
+            h = _number(row.get("h"), math.nan)
+            if not math.isfinite(h):
+                row["trajectory_sanity_passed"] = (
+                    "not_checked_adaptive_local_step"
+                )
+                not_applicable += 1
+                continue
+            times = np.linspace(max(0.0, time_value - h), time_value, 5)
+        else:
+            times = np.asarray([time_value])
+        values = np.concatenate(
+            [
+                np.asarray(solution(times))[state_index].reshape(-1)
+                for solution in solutions[system_name]
+            ]
+        )
+        contained = bool(
+            np.min(values) >= lower - tolerance
+            and np.max(values) <= upper + tolerance
+        )
+        row["trajectory_sanity_passed"] = contained
+        checked += 1
+        if contained:
+            passed += 1
+        else:
+            failed += 1
+    return {
+        "checked": checked,
+        "passed": passed,
+        "failed": failed,
+        "not_applicable": not_applicable,
+        "proof": False,
+    }
+
+
 def collect_tables(
     spec: Mapping[str, Any], output: Path
 ) -> dict[str, Any]:
     controlled = _read_csv(output / "controlled_raw.csv")
     native = _read_csv(output / "native_raw.csv")
+    trajectory_checks = _annotate_trajectory_sanity(
+        spec, controlled + native
+    )
     repetitions: list[dict[str, Any]] = []
     for tool in ("torch", "diffreach", "flowstar"):
         repetitions.extend(
@@ -305,11 +443,32 @@ def collect_tables(
     flowstar_ablation = _read_csv(
         output / "flowstar_component_ablation.csv"
     )
+    controlled_summaries: list[dict[str, Any]] = []
+    native_summaries: list[dict[str, Any]] = []
+    for tool in ("torch", "diffreach", "flowstar"):
+        controlled_path = output / f"controlled_{tool}_summary.json"
+        native_path = output / f"native_{tool}_summary.json"
+        if controlled_path.exists():
+            controlled_summaries.extend(
+                json.loads(controlled_path.read_text(encoding="utf-8"))
+            )
+        if native_path.exists():
+            native_summaries.extend(
+                json.loads(native_path.read_text(encoding="utf-8"))
+            )
+    acceleration: list[dict[str, Any]] = []
+    for tool in ("torch", "diffreach", "flowstar"):
+        acceleration.extend(
+            _read_csv(output / f"acceleration_{tool}.csv")
+        )
     raw: list[dict[str, Any]] = []
     for source, values in (
         ("controlled", controlled),
         ("native", native),
+        ("controlled_summary", controlled_summaries),
+        ("native_summary", native_summaries),
         ("runtime_repetition", repetitions),
+        ("acceleration", acceleration),
         ("flowstar_correctness", correctness_rows),
         ("flowstar_ablation", flowstar_ablation),
     ):
@@ -336,7 +495,21 @@ def collect_tables(
         category = row.get(
             "failure_category", row.get("failure_message", "")
         )
-        if validation is False or category:
+        analytic = _truth(row.get("analytic_reference_contained"))
+        trajectory = _truth(row.get("trajectory_sanity_passed"))
+        if (
+            validation is False
+            or analytic is False
+            or trajectory is False
+            or category
+        ):
+            if not category:
+                if validation is False:
+                    category = "native_validation_failure"
+                elif analytic is False:
+                    category = "analytic_reference_violation"
+                else:
+                    category = "trajectory_sanity_failure"
             failures.append(
                 {
                     "result_source": row.get("result_source", ""),
@@ -346,8 +519,7 @@ def collect_tables(
                     "system": row.get("system", ""),
                     "h": row.get("h", ""),
                     "step_index": row.get("step_index", ""),
-                    "failure_category": category
-                    or "native_validation_failure",
+                    "failure_category": category,
                     "message": row.get(
                         "message", row.get("failure_message", "")
                     ),
@@ -386,6 +558,42 @@ def collect_tables(
         for row in controlled + native
         if str(row.get("native_validation_passed", "")).strip()
     ]
+    controlled_trajectory_failures = sum(
+        _truth(row.get("trajectory_sanity_passed")) is False
+        for row in controlled
+    )
+    native_trajectory_failures = sum(
+        _truth(row.get("trajectory_sanity_passed")) is False
+        for row in native
+    )
+
+    failed_native_configurations = {
+        tuple(
+            str(row.get(field, ""))
+            for field in ("tool", "variant", "system", "h")
+        )
+        for row in native
+        if _truth(row.get("trajectory_sanity_passed")) is False
+    }
+    pareto_path = output / "native_pareto_summary.csv"
+    if pareto_path.exists():
+        pareto_rows = _read_csv(pareto_path)
+        for row in pareto_rows:
+            key = tuple(
+                str(row.get(field, ""))
+                for field in ("tool", "variant", "system", "h")
+            )
+            trajectory_passed = key not in failed_native_configurations
+            native_passed = (
+                _truth(row.get("native_validation_passed")) is not False
+            )
+            row["trajectory_sanity_passed"] = trajectory_passed
+            row["primary_numerical_eligible"] = (
+                trajectory_passed and native_passed
+            )
+            if not row["primary_numerical_eligible"]:
+                row["width_runtime_pareto"] = False
+        write_csv(pareto_path, pareto_rows)
     flowstar_summary_path = output / "flowstar_correctness_summary.json"
     flowstar_summary = (
         json.loads(flowstar_summary_path.read_text(encoding="utf-8"))
@@ -410,9 +618,22 @@ def collect_tables(
             _truth(row.get("analytic_reference_contained")) is False
             for row in analytic_rows
         ),
+        "trajectory_sanity": {
+            **trajectory_checks,
+            "controlled_failures": controlled_trajectory_failures,
+            "native_candidate_failures": native_trajectory_failures,
+        },
         "common_segment_records": len(representation_checks),
         "common_segment_point_checks": sum(
             int(row["point_evaluation_checks"])
+            for row in representation_checks
+        ),
+        "common_segment_native_round_trip_checks": sum(
+            int(row["native_point_evaluation_checks"])
+            for row in representation_checks
+        ),
+        "common_segment_native_round_trip_violations": sum(
+            int(row["native_point_evaluation_violations"])
             for row in representation_checks
         ),
         "common_segment_representation_failures": sum(
@@ -429,7 +650,12 @@ def collect_tables(
     correctness["primary_gates_passed"] = bool(
         correctness["native_validation_failures"] == 0
         and correctness["analytic_violations"] == 0
+        and controlled_trajectory_failures == 0
         and correctness["common_segment_representation_failures"] == 0
+        and correctness[
+            "common_segment_native_round_trip_violations"
+        ]
+        == 0
         and correctness["common_segment_endpoint_tube_violations"] == 0
         and flowstar_summary.get("passed", False)
         and frozen.get("unchanged", False)
@@ -446,14 +672,139 @@ def collect_tables(
     }
 
 
+def verify_completed_output(
+    output: Path, *, require_ten_repetitions: bool
+) -> dict[str, Any]:
+    checks_path = output / "correctness_checks.json"
+    if not checks_path.exists():
+        raise SystemExit("missing correctness_checks.json")
+    correctness = json.loads(checks_path.read_text(encoding="utf-8"))
+    failures: list[str] = []
+    if not correctness.get("primary_gates_passed", False):
+        failures.append("primary correctness gates did not pass")
+
+    plot_names = (
+        "one_step_tube_width_vs_h",
+        "one_step_endpoint_raw_width_vs_h",
+        "exact_inflation_ratios",
+        "common_affine_carry_width_vs_time",
+        "common_box_carry_width_vs_time",
+        "affine_vs_box_carry",
+        "native_low_order_width_curves",
+        "native_practical_width_runtime_pareto",
+        "successful_horizon_vs_runtime",
+        "polynomial_remainder_decomposition",
+        "monomial_family_support",
+        "torch_reset_order_ablation",
+        "diffreach_affine_quasi_symbolic_ablation",
+        "flowstar_order_step_qr_symbolic_refinement_ablation",
+        "matched_basis_results",
+        "common_defect_vs_native_remainder",
+        "runtime_decomposition",
+        "failure_categories",
+    )
+    mandatory_plots = [
+        f"{index:02d}_{name}.png"
+        for index, name in enumerate(plot_names, start=1)
+    ]
+    missing_plots = [
+        name
+        for name in mandatory_plots
+        if not (output / "plots" / name).is_file()
+    ]
+    if missing_plots:
+        failures.append(f"missing mandatory plots: {missing_plots}")
+    for name in (
+        "three_tool_deep_study_report.md",
+        "executive_summary.md",
+        "raw_results.csv",
+        "correctness_checks.json",
+        "failure_summary.csv",
+    ):
+        if not (output / name).is_file():
+            failures.append(f"missing final artifact: {name}")
+
+    pareto = (
+        json.loads(
+            (output / "pareto_checks.json").read_text(encoding="utf-8")
+        )
+        if (output / "pareto_checks.json").exists()
+        else {}
+    )
+    if require_ten_repetitions and not pareto.get(
+        "all_selected_have_ten_repetitions", False
+    ):
+        failures.append(
+            "selected practical configurations lack ten repetitions"
+        )
+
+    acceleration = _read_csv(output / "acceleration_summary.csv")
+    if require_ten_repetitions:
+        status = {
+            str(row.get("backend")): str(
+                row.get("backend_status")
+            ).lower()
+            for row in acceleration
+        }
+        for backend in ("torch_cpu", "jax_cpu", "flowstar_cpu"):
+            if status.get(backend) != "available":
+                failures.append(
+                    f"missing available acceleration row for {backend}"
+                )
+        environment = json.loads(
+            (output / "environment.json").read_text(encoding="utf-8")
+        )
+        torch_cuda = bool(
+            environment.get("torch_probe", {}).get(
+                "cuda_available", False
+            )
+        )
+        if torch_cuda and status.get("torch_cuda") != "available":
+            failures.append(
+                "Torch CUDA is visible but no available CUDA row exists"
+            )
+        jax_devices = [
+            str(value).lower()
+            for value in environment.get("jax_probe", {}).get(
+                "devices", []
+            )
+        ]
+        jax_gpu = any(
+            "gpu" in value or "cuda" in value for value in jax_devices
+        )
+        expected_jax_status = "available" if jax_gpu else "unavailable"
+        if status.get("jax_cuda") != expected_jax_status:
+            failures.append(
+                "JAX CUDA capability row does not match enumerated devices"
+            )
+
+    result = {
+        "passed": not failures,
+        "failures": failures,
+        "require_ten_repetitions": require_ten_repetitions,
+        "primary_gates_passed": correctness.get(
+            "primary_gates_passed", False
+        ),
+        "mandatory_plot_count": len(mandatory_plots) - len(missing_plots),
+        "pareto_checks": pareto,
+    }
+    write_json(output / "final_acceptance.json", result)
+    if failures:
+        raise SystemExit("; ".join(failures))
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--mode",
-        choices=["initialize", "finalize", "tables", "all"],
+        choices=["initialize", "finalize", "tables", "verify", "all"],
         required=True,
+    )
+    parser.add_argument(
+        "--require-ten-repetitions", action="store_true"
     )
     args = parser.parse_args()
     spec = load_spec(args.spec)
@@ -470,6 +821,11 @@ def main() -> None:
         )
     if args.mode in {"tables", "all"}:
         result["tables"] = collect_tables(spec, output)
+    if args.mode == "verify":
+        result["verify"] = verify_completed_output(
+            output,
+            require_ten_repetitions=args.require_ten_repetitions,
+        )
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
 
 

@@ -17,6 +17,8 @@ cd "${REPO_ROOT}"
 # top-level modules with the same historical name `common`.
 "${CONDA}" run -n py11 pytest -q \
   experiments/first_order_followup/tests/test_torch_basis.py
+"${CONDA}" run -n diffreach312 pytest -q \
+  experiments/first_order_followup/tests/test_diffreach_projection.py
 "${CONDA}" run -n py11 pytest -q \
   experiments/three_tool_deep_study/tests
 
@@ -67,5 +69,7 @@ cd "${REPO_ROOT}"
   --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/generate_report.py" \
   --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
+  --mode verify --output-dir "${OUTPUT_DIR}"
 
 printf 'Smoke study passed. Output: %s\n' "${OUTPUT_DIR}"

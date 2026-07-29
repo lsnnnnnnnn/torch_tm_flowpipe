@@ -38,5 +38,7 @@ Background run:
 ```
 
 Every timestamped result directory includes provenance, frozen-input checksum
-manifests, raw rows, protocol summaries, correctness gates, plots, logs, and a
-generated report. Existing result directories are never regenerated in place.
+manifests, raw rows, protocol summaries, correctness gates, the primary CPU
+runtime/Pareto tables, a separately labelled native CPU/CUDA capability and
+throughput table, plots, logs, and a generated report. Existing result
+directories are never regenerated in place.

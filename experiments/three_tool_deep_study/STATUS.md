@@ -1,0 +1,16 @@
+# Deep-study status
+
+Last updated: 2026-07-29 UTC.
+
+| phase | status | evidence / next gate |
+|---|---|---|
+| 0. Recovery | complete | `RECOVERY.md`; fetched base is exactly `9024a8a`; existing worktree recovered without reset |
+| 1. Correctness delivery repair | implementation present; final audit pending | repaired collector/tests and regenerated correctness artifacts must be rechecked |
+| 2. Flow* root cause | implementation and external audit commits present; final evidence audit pending | audit branch `94cf3cb`; root-cause report, patch export, MPFR/analytic/parity/regression evidence still require final consolidation |
+| 3. Common intermediate representation | implementation present; final schema audit pending | exporters and schema tests exist under this directory |
+| 4. Fair protocols | implementation present; complete run pending | interrupted runs are diagnostic only; one clean end-to-end run and portable artifact curation remain |
+| 5. BERN and literature | pending final consolidation | local BERN feasibility branch exists at `dd82032`; required literature map is not yet present |
+| 6. Repository/final delivery | in progress | required bilingual reports, artifact index, reproducibility guide, results manifest, README update, full tests, clean status, commits, and pushes remain |
+
+Checkpoint policy: update this file in every phase checkpoint.  Timestamped
+scratch runs are never authoritative unless all final verification gates pass.

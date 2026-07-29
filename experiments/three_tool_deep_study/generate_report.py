@@ -74,7 +74,7 @@ def _max_width_rows(
             continue
         key = tuple(
             str(row.get(field, ""))
-            for field in ("tool", "variant", "system", "h")
+            for field in ("tool", "variant", "protocol", "system", "h")
         )
         grouped[key].append(row)
     result: list[dict[str, Any]] = []
@@ -84,8 +84,9 @@ def _max_width_rows(
             {
                 "tool": key[0],
                 "variant": key[1],
-                "system": key[2],
-                "h": key[3],
+                "protocol": key[2],
+                "system": key[3],
+                "h": key[4],
                 "width": max(widths),
                 "time": max(_f(row.get("time")) for row in values),
             }
@@ -94,11 +95,13 @@ def _max_width_rows(
 
 
 def _winner_text(rows: list[dict[str, Any]]) -> str:
-    grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    grouped: dict[tuple[str, str, float], list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
-        grouped[(row["system"], row["h"])].append(row)
+        grouped[
+            (row["system"], row["h"], round(_f(row.get("time")), 12))
+        ].append(row)
     clauses = []
-    for (system, h), values in sorted(grouped.items()):
+    for (system, h, time_value), values in sorted(grouped.items()):
         eligible = [
             row for row in values if math.isfinite(_f(row["width"]))
         ]
@@ -106,7 +109,7 @@ def _winner_text(rows: list[dict[str, Any]]) -> str:
             continue
         winner = min(eligible, key=lambda row: _f(row["width"]))
         clauses.append(
-            f"{system} (h={h}): {winner['tool']} "
+            f"{system} (h={h}, t={_fmt(time_value)}): {winner['tool']} "
             f"`{winner['variant']}` at {_fmt(winner['width'])}"
         )
     return "; ".join(clauses) or "No eligible common-time rows."
@@ -114,13 +117,23 @@ def _winner_text(rows: list[dict[str, Any]]) -> str:
 
 def _carry_loss(
     affine: list[dict[str, Any]], box: list[dict[str, Any]]
-) -> list[tuple[str, str, str, float, float, float]]:
+) -> list[tuple[str, str, str, float, float, float, float]]:
     av = {
-        (row["tool"], row["system"], row["h"]): row["width"]
+        (
+            row["tool"],
+            row["system"],
+            row["h"],
+            round(_f(row.get("time")), 12),
+        ): row["width"]
         for row in _max_width_rows(affine)
     }
     bv = {
-        (row["tool"], row["system"], row["h"]): row["width"]
+        (
+            row["tool"],
+            row["system"],
+            row["h"],
+            round(_f(row.get("time")), 12),
+        ): row["width"]
         for row in _max_width_rows(box)
     }
     return [
@@ -128,14 +141,33 @@ def _carry_loss(
             tool,
             system,
             h,
-            av[(tool, system, h)],
-            bv[(tool, system, h)],
-            bv[(tool, system, h)] / av[(tool, system, h)]
-            if av[(tool, system, h)]
+            time_value,
+            av[(tool, system, h, time_value)],
+            bv[(tool, system, h, time_value)],
+            bv[(tool, system, h, time_value)]
+            / av[(tool, system, h, time_value)]
+            if av[(tool, system, h, time_value)]
             else math.nan,
         )
-        for tool, system, h in sorted(set(av) & set(bv))
+        for tool, system, h, time_value in sorted(set(av) & set(bv))
     ]
+
+
+def _at_requested_horizon(row: Mapping[str, Any]) -> bool:
+    time_value = _f(row.get("time"))
+    horizon = _f(
+        row.get("horizon", row.get("requested_horizon"))
+    )
+    return (
+        math.isfinite(time_value)
+        and math.isfinite(horizon)
+        and math.isclose(
+            time_value,
+            horizon,
+            rel_tol=0.0,
+            abs_tol=1e-10 * max(1.0, abs(horizon)),
+        )
+    )
 
 
 def _matched_summary(
@@ -171,16 +203,32 @@ def generate(output: Path) -> tuple[str, str]:
     matched = _read(output / "matched_basis_summary.csv")
     defect = _read(output / "defect_summary.csv")
     runtime = _read(output / "runtime_summary.csv")
+    acceleration = _read(output / "acceleration_summary.csv")
     failures = _read(output / "failure_summary.csv")
     flowstar_ablation = _read(
         output / "flowstar_component_ablation.csv"
     )
 
     one_endpoint = _max_width_rows(one_step, kind="endpoint_raw")
-    affine_widths = _max_width_rows(affine)
-    box_widths = _max_width_rows(box)
+    affine_complete = [
+        row for row in affine if _at_requested_horizon(row)
+    ]
+    box_complete = [
+        row for row in box if _at_requested_horizon(row)
+    ]
+    affine_incomplete = [
+        row for row in affine if not _at_requested_horizon(row)
+    ]
+    box_incomplete = [
+        row for row in box if not _at_requested_horizon(row)
+    ]
+    affine_widths = _max_width_rows(affine_complete)
+    box_widths = _max_width_rows(box_complete)
+    incomplete_carry_widths = _max_width_rows(
+        affine_incomplete + box_incomplete
+    )
     native_widths = _max_width_rows(native_low, kind="endpoint_raw")
-    losses = _carry_loss(affine, box)
+    losses = _carry_loss(affine_complete, box_complete)
     matched_rows = _matched_summary(matched)
 
     repositories = environment.get("repositories", {})
@@ -205,7 +253,17 @@ def generate(output: Path) -> tuple[str, str]:
         row
         for row in pareto
         if str(row.get("width_runtime_pareto")).lower() == "true"
+        and str(
+            row.get("primary_numerical_eligible", "true")
+        ).lower()
+        == "true"
     ]
+    adaptive_flowstar_trajectory_failure = any(
+        row.get("tool") == "flowstar"
+        and row.get("variant") == "adaptive_order4_symbolic100"
+        and row.get("failure_category") == "trajectory_sanity_failure"
+        for row in failures
+    )
 
     defect_by_tool: dict[str, list[float]] = defaultdict(list)
     for row in defect:
@@ -245,7 +303,11 @@ Primary gates passed: **{correctness.get('primary_gates_passed', False)}**.
 The collected tables contain {correctness.get('native_validation_checks', 0)}
 native-validation checks, {correctness.get('analytic_checks', 0)} analytic
 checks, {correctness.get('common_segment_point_checks', 0)} exported point
-checks, and {len(failures)} explicitly classified failure rows.
+containment checks,
+{correctness.get('common_segment_native_round_trip_checks', 0)} native/export
+round-trip evaluations, {correctness.get('trajectory_sanity', {}).get('checked', 0)}
+non-proof nonlinear trajectory checks, and {len(failures)} explicitly
+classified failure rows.
 
 ## Provenance and environments
 
@@ -265,8 +327,8 @@ checks, and {len(failures)} explicitly classified failure rows.
   {str(environment.get('gcc', {}).get('stdout', '')).splitlines()[0] if environment.get('gcc') else 'n/a'},
   MPFR {str(environment.get('mpfr', {}).get('stdout', '')).strip() or 'n/a'},
   GMP {str(environment.get('gmp', {}).get('stdout', '')).strip() or 'n/a'}.
-- CPU: {environment.get('cpu_model', 'n/a')}; batch size one.  No CUDA
-  acceleration row was eligible on this host.
+- CPU: {environment.get('cpu_model', 'n/a')}; batch size one.  Secondary
+  accelerator availability and measurements are reported separately below.
 - Frozen inputs unchanged:
   {correctness.get('frozen_inputs', {}).get('unchanged', False)}.
 
@@ -290,7 +352,10 @@ analytic violations retained as evidence:
 Van der Pol harness preserves the upstream schedule and the root-cause variant
 reaches T=10: {flow_parity.get('root_cause_variant_reached_horizon_10', False)}
 in {flow_parity.get('root_cause_segments', 'n/a')} segments.  Corrected
-refinement can legitimately choose a different adaptive schedule.
+refinement can legitimately choose a different adaptive schedule.  The
+adaptive endpoint export has a deterministic-trajectory bug-check failure:
+{adaptive_flowstar_trajectory_failure}; it is retained as horizon/correctness
+audit evidence but excluded from primary width/Pareto rankings.
 
 Refinement/candidate control:
 
@@ -320,11 +385,20 @@ At the requested final common times, the smallest maximum-component widths are:
 {_winner_text(affine_widths)}.  These are the valid “first-order carry”
 comparisons.  Differences that remain come from each native local polynomial
 construction, range evaluation, and validator; carried degree and endpoint
-projection are controlled.
+projection are controlled.  A failed short prefix is never ranked against a
+solver that reached the requested final time.
 
 {_markdown_table(
     ['tool', 'variant', 'system', 'h', 'time', 'max width'],
     ((row['tool'], row['variant'], row['system'], row['h'], _fmt(row['time']), _fmt(row['width'])) for row in affine_widths),
+)}
+
+Configurations that did not reach their requested common time remain useful
+successful-horizon evidence but are unavailable for the final-time ranking:
+
+{_markdown_table(
+    ['tool', 'variant', 'protocol', 'system', 'h', 'last valid time', 'max width'],
+    ((row['tool'], row['variant'], row['protocol'], row['system'], row['h'], _fmt(row['time']), _fmt(row['width'])) for row in incomplete_carry_widths),
 )}
 
 ## RQ3 — common box carry and native low order
@@ -332,8 +406,8 @@ projection are controlled.
 Box carry removes generator correlations.  The measured final width ratios are:
 
 {_markdown_table(
-    ['tool', 'system', 'h', 'affine', 'box', 'box/affine'],
-    ((tool, system, h, _fmt(a), _fmt(b), _fmt(ratio)) for tool, system, h, a, b, ratio in losses),
+    ['tool', 'system', 'h', 'time', 'affine', 'box', 'box/affine'],
+    ((tool, system, h, _fmt(time_value), _fmt(a), _fmt(b), _fmt(ratio)) for tool, system, h, time_value, a, b, ratio in losses),
 )}
 
 Native low-order rows are deliberately labelled with their actual bases:
@@ -368,7 +442,9 @@ full-configuration repetitions.  Nondominated rows:
 No universal winner follows from these rows.  A width/runtime point at T=1 is
 not ranked against Flow*'s adaptive T=10 point.  Compile/JIT/build costs remain
 separate from steady full-horizon execution, and backend throughput is not
-presented as pure algorithmic speed.
+presented as pure algorithmic speed.  Any configuration with a deterministic
+trajectory sanity failure has `primary_numerical_eligible=false` and is not a
+frontier candidate.
 
 ## RQ5 — component and matched-basis attribution
 
@@ -416,6 +492,17 @@ Torch orchestration/arithmetic/validation are distinct categories.  JAX
 fusion/JIT and C++ compilation are backend effects; term count, Picard
 refinement, range operations, and resets are algorithmic effects.
 
+## Secondary native acceleration
+
+These rows compare implementation/hardware throughput, not algorithmic
+fairness.  The CPU and accelerator rows for a given tool use the same selected
+full configuration on the cross-term-active coupled quadratic benchmark.
+
+{_markdown_table(
+    ['tool', 'backend', 'status', 'system', 'h', 'repetitions', 'median full s', 'speedup vs same-tool CPU', 'message'],
+    ((row.get('tool',''), row.get('backend',''), row.get('backend_status',''), row.get('system',''), row.get('h',''), row.get('runtime_repetitions',''), _fmt(row.get('median_full_configuration_time_s')), _fmt(row.get('speedup_vs_same_tool_cpu')), row.get('message','')) for row in acceleration),
+)}
+
 ## Direct answers to the eleven final questions
 
 1. **Why same order is impossible.** Torch order 1 is a complete affine
@@ -435,8 +522,10 @@ refinement, range operations, and resets are algorithmic effects.
    state-state/cubic terms can dominate on coupled or Van der Pol dynamics.
 6. **When Flow* helps.** Complete higher order helps when nonlinear terms remain
    useful through composition; adaptive step and symbolic remainder help on
-   longer nonlinear horizons.  The original corrected Van der Pol path reaches
-   T=10.
+   longer nonlinear horizons.  The corrected Van der Pol path reaches T=10,
+   but its exported raw endpoints fail a deterministic trajectory check at
+   several early steps, so this run proves successful horizon rather than an
+   admissible tightness curve.
 7. **Why Torch dependency propagation deteriorates.** Reusing an increasingly
    complicated generator polynomial and independent remainder amplifies
    dependency and range overestimation.  Recentered affine/QR reset controls
@@ -470,8 +559,14 @@ refinement, range operations, and resets are algorithmic effects.
   checkout and is labelled unavailable rather than emulated.
 - DiffReach does not expose a separately width-valued structured remainder in
   its public result, limiting that decomposition.
-- GPU throughput remains unresolved because this host reports no usable CUDA
-  device.
+- The corrected adaptive Flow* Van der Pol run reaches T=10 but its raw
+  endpoint export excludes deterministic DOP853 samples in several early
+  segments; that configuration is excluded from numerical frontiers pending a
+  source-level endpoint/symbolic-remainder investigation.
+- Torch CPU/CUDA throughput is measured when `torch.cuda` exposes a device.
+  This DiffReach environment exposes {environment.get('jax_probe', {}).get('devices', [])};
+  a missing JAX GPU backend is recorded as unavailable rather than inferred
+  from Torch's CUDA visibility.
 
 The three-tool study therefore satisfies the original research request in its
 scientifically valid form: it identifies the valid controlled comparisons,
@@ -485,7 +580,7 @@ and runtime controls.
 cd {HERE.parents[1]}
 experiments/three_tool_deep_study/run_smoke.sh
 experiments/three_tool_deep_study/launch_background.sh
-tmux attach -t tm_three_tool_deep_study
+tmux -S /tmp/tm_three_tool_deep_study.sock attach -t tm_three_tool_deep_study
 ```
 
 Full artifacts are in `{output}`.  The eighteen figures are under `plots/`.
@@ -497,7 +592,10 @@ The completed three-tool study passes its primary gates:
 **{correctness.get('primary_gates_passed', False)}**.  It contains
 {correctness.get('analytic_checks', 0)} analytic containment checks,
 {correctness.get('common_segment_point_checks', 0)} common-export point
-checks, and {len(repeated)} selected full-configuration runtime rows with at
+containment checks,
+{correctness.get('common_segment_native_round_trip_checks', 0)}
+native/export round-trip evaluations, and {len(repeated)} selected
+full-configuration runtime rows with at
 least ten repetitions.
 
 The literal question “which tool is best at order 1?” has no sound universal
@@ -511,7 +609,8 @@ remain valid when labelled with their actual bases, successful horizon, common
 absolute evaluation time, and numerical guarantee.  Flow*'s variable-leaf
 cache patch and full-Picard revalidation both eliminate the stock Riccati
 under-enclosure; the corrected original Van der Pol configuration reaches
-T=10.
+T=10, but its exported adaptive raw endpoints fail the separate deterministic
+trajectory sanity check and are excluded from numerical Pareto claims.
 
 The matched-basis experiment shows what changes from B1/B_DR/B2/B3 inside one
 engine.  The reset controls show why Torch's unchecked dependency carry

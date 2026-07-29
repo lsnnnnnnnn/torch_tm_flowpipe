@@ -306,9 +306,20 @@ def _affine_center_generator_remainder(
     """Convert affine TMs on arbitrary boxes to normalized generators."""
     dimension = len(tm)
     variables = tm.n_vars
-    center = torch.zeros(dimension, dtype=torch.float64)
-    generator = torch.zeros((dimension, variables), dtype=torch.float64)
-    remainder_radius = torch.zeros(dimension, dtype=torch.float64)
+    if not dimension:
+        raise ValueError("affine reset requires at least one state")
+    template = tm[0].remainder.lo
+    center = torch.zeros(
+        dimension, dtype=template.dtype, device=template.device
+    )
+    generator = torch.zeros(
+        (dimension, variables),
+        dtype=template.dtype,
+        device=template.device,
+    )
+    remainder_radius = torch.zeros(
+        dimension, dtype=template.dtype, device=template.device
+    )
     for state, model in enumerate(tm):
         for exponent, coefficient in model.polynomial.terms.items():
             degree = sum(exponent)
@@ -354,7 +365,13 @@ def affine_reset(
         )
     else:
         raise ValueError("reset method must be 'box' or 'qr'")
-    domain = [Interval(-1.0, 1.0) for _ in range(dimension)]
+    domain = [
+        Interval(
+            torch.as_tensor(-1.0, dtype=center.dtype, device=center.device),
+            torch.as_tensor(1.0, dtype=center.dtype, device=center.device),
+        )
+        for _ in range(dimension)
+    ]
     models = []
     for state in range(dimension):
         terms: dict[tuple[int, ...], Any] = {
@@ -369,7 +386,7 @@ def affine_reset(
         models.append(
             TaylorModel(
                 Polynomial(terms, dimension),
-                Interval.zero(),
+                Interval.zero(dtype=center.dtype, device=center.device),
                 domain,
                 order=2,
             )
@@ -390,13 +407,30 @@ def normalized_initial_tm(
     initial_box: Sequence[Sequence[float]],
     *,
     order: int = 2,
+    dtype: torch.dtype = torch.float64,
+    device: torch.device | str = "cpu",
 ) -> TMVector:
     dimension = len(initial_box)
-    domain = [Interval(-1.0, 1.0) for _ in range(dimension)]
+    device_value = torch.device(device)
+    domain = [
+        Interval(
+            torch.as_tensor(-1.0, dtype=dtype, device=device_value),
+            torch.as_tensor(1.0, dtype=dtype, device=device_value),
+        )
+        for _ in range(dimension)
+    ]
     models = []
     for state, (lower, upper) in enumerate(initial_box):
-        center = 0.5 * (float(lower) + float(upper))
-        radius = 0.5 * (float(upper) - float(lower))
+        center = torch.as_tensor(
+            0.5 * (float(lower) + float(upper)),
+            dtype=dtype,
+            device=device_value,
+        )
+        radius = torch.as_tensor(
+            0.5 * (float(upper) - float(lower)),
+            dtype=dtype,
+            device=device_value,
+        )
         constant = (0,) * dimension
         exponent = [0] * dimension
         exponent[state] = 1
@@ -406,7 +440,7 @@ def normalized_initial_tm(
         models.append(
             TaylorModel(
                 Polynomial(terms, dimension),
-                Interval.zero(),
+                Interval.zero(dtype=dtype, device=device_value),
                 domain,
                 order=order,
             )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import copy
 import math
 
 from common import (
@@ -27,6 +28,19 @@ def test_torch_export_round_trip_and_endpoint_tube_contract() -> None:
                 sample["point"],
             )
             assert math.isclose(actual, expected, rel_tol=0.0, abs_tol=2e-14)
+
+
+def test_native_round_trip_mismatch_is_a_hard_record_failure() -> None:
+    record = export_segment(
+        load_spec(), system_name="riccati", h=0.01, order=2
+    )
+    broken = copy.deepcopy(record)
+    broken["native_metadata"]["native_point_samples"][0][
+        "polynomial_values"
+    ][0] += 1e-4
+    checks = validate_record(broken)
+    assert checks["native_point_evaluation_violations"] == 1
+    assert not checks["passed"]
 
 
 def test_coupled_quadratic_activates_cross_terms() -> None:
