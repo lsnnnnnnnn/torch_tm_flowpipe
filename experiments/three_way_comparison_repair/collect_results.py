@@ -252,7 +252,24 @@ def _common_time_summary(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
     return result
 
 
-def _failure_summary(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+def _original_parity_successful_horizon(
+    parity_rows: Iterable[Mapping[str, str]],
+) -> float:
+    """Return the completed stock-original horizon from the parity artifact."""
+    completed_times = [
+        float(row["absolute_time"])
+        for row in parity_rows
+        if row.get("implementation") == "original"
+        and _bool(str(row.get("completed", "")))
+    ]
+    return max(completed_times, default=0.0)
+
+
+def _failure_summary(
+    rows: list[dict[str, str]],
+    parity_rows: Iterable[Mapping[str, str]] = (),
+) -> list[dict[str, Any]]:
+    original_parity_horizon = _original_parity_successful_horizon(parity_rows)
     by_run: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
         by_run[row["run_id"]].append(row)
@@ -265,6 +282,18 @@ def _failure_summary(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
         ]
         failures = [row for row in group if row["interval_kind"] == "failure"]
         first = group[0]
+        successful_horizon = max(
+            (_float(row, "absolute_time") for row in endpoints), default=0.0
+        )
+        if (
+            first["tool_variant"]
+            == "flowstar_original_benchmark_configuration"
+            and first["protocol"] == "known_working_tool_sanity"
+        ):
+            # The unified row is a schema marker, not an endpoint.  Its
+            # successful horizon must be derived from the dedicated parity
+            # schedule, where every accepted adaptive segment is recorded.
+            successful_horizon = original_parity_horizon
         result.append(
             {
                 "run_id": run_id,
@@ -274,9 +303,7 @@ def _failure_summary(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
                 "system": first["system"],
                 "h": first["h"],
                 "requested_horizon": first["requested_horizon"],
-                "successful_horizon": max(
-                    (_float(row, "absolute_time") for row in endpoints), default=0.0
-                ),
+                "successful_horizon": successful_horizon,
                 "failure_category": failures[0]["failure_category"] if failures else "",
                 "failure_message": failures[0]["failure_message"] if failures else "",
             }
@@ -421,6 +448,26 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
     parity = json.loads(
         (output / "flowstar_original_parity_summary.json").read_text(encoding="utf-8")
     )
+    parity_rows = read_csv(output / "flowstar_original_parity.csv")
+    failure_summary = _failure_summary(rows, parity_rows)
+    original_failure_rows = [
+        row
+        for row in failure_summary
+        if row["tool_variant"]
+        == "flowstar_original_benchmark_configuration"
+    ]
+    requested_original_horizon = float(
+        spec["flowstar"]["original_vanderpol"]["horizon"]
+    )
+    original_summary_horizon_ok = (
+        len(original_failure_rows) == 1
+        and math.isclose(
+            float(original_failure_rows[0]["successful_horizon"]),
+            requested_original_horizon,
+            rel_tol=0.0,
+            abs_tol=1e-12,
+        )
+    )
     before = json.loads(
         (output / "frozen_manifest_before.json").read_text(encoding="utf-8")
     )
@@ -455,6 +502,17 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
         "flowstar_original_parity": {
             "passed": bool(parity["passed"]),
             "violations": 0 if parity["passed"] else 1,
+        },
+        "flowstar_original_failure_summary_horizon": {
+            "passed": original_summary_horizon_ok,
+            "violations": 0 if original_summary_horizon_ok else 1,
+            "expected": requested_original_horizon,
+            "actual": (
+                original_failure_rows[0]["successful_horizon"]
+                if len(original_failure_rows) == 1
+                else None
+            ),
+            "source": "flowstar_original_parity.csv",
         },
         "torch_and_diffreach_exact_references": {
             "passed": not non_flowstar_exact_failures,
@@ -538,7 +596,7 @@ def collect(spec: Mapping[str, Any], output: Path, strict: bool) -> dict[str, An
         writer.writerows(rows)
     _write_table(output / "corrected_one_step_summary.csv", _one_step_summary(rows))
     _write_table(output / "corrected_common_time_summary.csv", _common_time_summary(rows))
-    _write_table(output / "corrected_failure_horizon_summary.csv", _failure_summary(rows))
+    _write_table(output / "corrected_failure_horizon_summary.csv", failure_summary)
     claims = _claim_rows()
     _write_table(output / "claim_audit.csv", claims)
     write_json(output / "correctness_checks.json", result)

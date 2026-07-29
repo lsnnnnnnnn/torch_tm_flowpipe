@@ -119,6 +119,13 @@ def generate(output: Path) -> tuple[str, str]:
         kind="endpoint_raw",
     )
     failure_frame = pd.read_csv(output / "corrected_failure_horizon_summary.csv")
+    original_parity_failure_row = failure_frame[
+        failure_frame.tool_variant
+        == "flowstar_original_benchmark_configuration"
+    ]
+    original_parity_summary_horizon = float(
+        original_parity_failure_row.iloc[0].successful_horizon
+    )
     flow_failures = failure_frame[
         (failure_frame.tool == "flowstar")
         & failure_frame.failure_category.fillna("").ne("")
@@ -204,6 +211,11 @@ def generate(output: Path) -> tuple[str, str]:
         f"Schedule agreement is `{parity['schedule_agreement']}` and generated "
         f"versus generic bound agreement is "
         f"`{parity['generated_vs_generic_bound_agreement']}`.",
+        "",
+        "`corrected_failure_horizon_summary.csv` derives the original "
+        "configuration's successful horizon from the completed adaptive rows in "
+        "`flowstar_original_parity.csv`; the resulting value is "
+        f"**{_fmt(original_parity_summary_horizon)}**, not zero.",
         "",
         "## 6. Flow* stock refinement investigation",
         "",

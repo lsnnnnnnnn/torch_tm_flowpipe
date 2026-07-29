@@ -30,6 +30,8 @@ Top-level historical artifact regeneration status: `exact`. Report match: `True`
 
 The actual local upstream benchmark reached T=10: `True`. Original/generated/generic segment counts are 290/290/290. Schedule agreement is `True` and generated versus generic bound agreement is `True`.
 
+`corrected_failure_horizon_summary.csv` derives the original configuration's successful horizon from the completed adaptive rows in `flowstar_original_parity.csv`; the resulting value is **10**, not zero.
+
 ## 6. Flow* stock refinement investigation
 
 At Riccati h=0.01 the stock raw endpoint width is 0.100125100228; candidate reinjection produces 0.1003. The stock upper miss is 1.24236723825e-08. The diagnostic that fully revalidates the refined remainder returns width 0.100125650631 and contains the analytic endpoint.

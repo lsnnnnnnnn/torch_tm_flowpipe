@@ -7,6 +7,7 @@ from collect_results import (
     _common_time_summary,
     _failure_summary,
     _late_point_violations,
+    _original_parity_successful_horizon,
     collect,
 )
 from common import (
@@ -124,6 +125,46 @@ def test_failure_categories_are_nonempty_and_summaries_preserve_them() -> None:
     assert all(category for category in FAILURE_CATEGORIES)
 
 
+def test_original_parity_horizon_is_derived_from_completed_parity_rows() -> None:
+    sanity = _row(
+        tool_variant="flowstar_original_benchmark_configuration",
+        protocol="known_working_tool_sanity",
+        h="",
+        requested_horizon="10.0",
+        step_index="3",
+        absolute_time="10.0",
+        interval_kind="sanity_status",
+        lower="",
+        upper="",
+        width="",
+    )
+    parity_rows = [
+        {
+            "implementation": "original",
+            "absolute_time": "4.0",
+            "completed": "True",
+        },
+        {
+            "implementation": "original",
+            "absolute_time": "10.0",
+            "completed": "True",
+        },
+        {
+            "implementation": "generated_identical",
+            "absolute_time": "12.0",
+            "completed": "True",
+        },
+        {
+            "implementation": "original",
+            "absolute_time": "11.0",
+            "completed": "False",
+        },
+    ]
+    assert _original_parity_successful_horizon(parity_rows) == 10.0
+    summary = _failure_summary([sanity], parity_rows)
+    assert summary[0]["successful_horizon"] == 10.0
+
+
 def test_frozen_historical_result_manifest_is_unchanged() -> None:
     assert FROZEN_RESULT.exists()
     assert (
@@ -173,6 +214,14 @@ def test_original_flowstar_parity_configuration_is_exact() -> None:
         "ode.reach(result, initial_set, 10.0, setting, safe_set, symbolic);",
     ):
         assert fragment in source
+
+
+def test_report_uses_corrected_original_parity_horizon() -> None:
+    import generate_report
+
+    source = inspect.getsource(generate_report.generate)
+    assert "original_parity_summary_horizon" in source
+    assert "flowstar_original_benchmark_configuration" in source
 
 
 def test_partial_outcome_does_not_hide_flowstar_violations(tmp_path: Path) -> None:
