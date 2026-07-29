@@ -1,0 +1,451 @@
+From a707461e51919a1e02b4f9dd12fda6dd94a13f06 Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 29 Jul 2026 03:27:38 +0000
+Subject: [PATCH 2/4] validate Flowstar cached remainder refinements
+
+---
+ flowstar-toolbox/Continuous.cpp           | 164 +++++++++++++++-------
+ flowstar-toolbox/expression.h             |  30 +++-
+ tests/README.md                           |  18 +++
+ tests/refinement_revalidation_riccati.cpp |  92 ++++++++++++
+ tests/run_refinement_revalidation.sh      |  19 +++
+ 5 files changed, 268 insertions(+), 55 deletions(-)
+ create mode 100644 tests/README.md
+ create mode 100644 tests/refinement_revalidation_riccati.cpp
+ create mode 100755 tests/run_refinement_revalidation.sh
+
+diff --git a/flowstar-toolbox/Continuous.cpp b/flowstar-toolbox/Continuous.cpp
+index 9e8ae9d..bb15b3c 100644
+--- a/flowstar-toolbox/Continuous.cpp
++++ b/flowstar-toolbox/Continuous.cpp
+@@ -1046,7 +1046,6 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	}
+ 
+ 	bool bfound = true;
+-	std::vector<Interval> accepted_initial_remainders;
+ 
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+@@ -1132,7 +1131,6 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			x.tms[i].remainder = tmvTmp.tms[i].remainder;
+-			accepted_initial_remainders.push_back(x.tms[i].remainder);
+ 			flowstar_audit_interval(
+ 				"accepted_initial_remainder", i,
+ 				x.tms[i].remainder, -1, 1, __LINE__);
+@@ -1152,12 +1150,16 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		!disable_refinement && !bfinished && (rSteps <= MAX_REFINEMENT_STEPS);
+ 		++rSteps)
+ 	{
+-		bfinished = true;
+-
+ 		std::vector<Interval> newRemainders;
+ 		x.Picard_ctrunc_normal_remainder(newRemainders, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
+ 
+-		// add the uncertainties and the cutoff intervals onto the result
++		// Add the polynomial-difference, uncertainty and cutoff intervals.
++		// In stock mode Flow* accepts the cached remainder-only result directly.
++		// The experiment-local correctness mode below treats it only as a
++		// proposal and regenerates every quantity used by the full Picard
++		// inclusion test before changing x.
++		std::vector<double> widthRatios(rangeDim);
++		bool cachedProposalIsSubset = true;
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			flowstar_audit_interval(
+@@ -1168,6 +1170,7 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 				x.tms[i].remainder);
+ 			const double width_ratio =
+ 				x.tms[i].remainder.widthRatio(newRemainders[i]);
++			widthRatios[i] = width_ratio;
+ 			flowstar_audit_interval(
+ 				"refinement_output_remainder", i,
+ 				newRemainders[i], rSteps, subset ? 1 : 0, __LINE__);
+@@ -1183,67 +1186,121 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 					__LINE__);
+ 			}
+ 
+-			if(subset)
++			if(!subset)
++				cachedProposalIsSubset = false;
++		}
++
++		if(flowstar_audit_revalidate_refinement())
++		{
++			if(!cachedProposalIsSubset)
+ 			{
+-				if(width_ratio <= STOP_RATIO)
++				bfinished = true;
++				if(flowstar_audit_trace_enabled())
+ 				{
+-					bfinished = false;
++					printf(
++						"FLOWSTAR_AUDIT step=%s "
++						"phase=refined_full_picard_revalidation round=%d "
++						"subset=0 action=retain_last_completely_validated_remainder "
++						"reason=cached_proposal_non_subset source_line=%d\n",
++						flowstar_audit_step(), rSteps, __LINE__);
+ 				}
++				break;
++			}
+ 
+-				x.tms[i].remainder = newRemainders[i];
++			TaylorModelVec<Real> proposedX = x;
++			for(unsigned int i=0; i<rangeDim; ++i)
++				proposedX.tms[i].remainder = newRemainders[i];
++
++			TaylorModelVec<Interval> fullPicard;
++			std::list<Interval> freshIntermediateRanges;
++			proposedX.Picard_ctrunc_normal(
++				fullPicard, new_x0, ode, tm_setting.step_exp_table,
++				rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold,
++				freshIntermediateRanges, g_setting);
++
++			std::vector<Interval> freshIntDifferences;
++			bool completeImageIsSubset = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				flowstar_audit_interval(
++					"refined_full_picard_remainder_before_int_difference",
++					i, fullPicard.tms[i].remainder, rSteps, -1, __LINE__);
++
++				Polynomial<Interval> freshPolyDifference;
++				freshPolyDifference =
++					fullPicard.tms[i].expansion -
++					proposedX.tms[i].expansion;
++				Interval freshIntDifference;
++				freshPolyDifference.intEvalNormal(
++					freshIntDifference, tm_setting.step_exp_table);
++				freshIntDifferences.push_back(freshIntDifference);
++				flowstar_audit_interval(
++					"refined_polynomial_difference_interval", i,
++					freshIntDifference, rSteps, -1, __LINE__);
++
++				fullPicard.tms[i].remainder += freshIntDifference;
++				const bool subset =
++					fullPicard.tms[i].remainder.subseteq(
++						proposedX.tms[i].remainder);
++				flowstar_audit_interval(
++					"refined_full_picard_revalidation_image", i,
++					fullPicard.tms[i].remainder, rSteps,
++					subset ? 1 : 0, __LINE__);
++				if(!subset)
++					completeImageIsSubset = false;
+ 			}
+-			else
++
++			if(flowstar_audit_trace_enabled())
++			{
++				printf(
++					"FLOWSTAR_AUDIT step=%s "
++					"phase=refined_full_picard_revalidation round=%d "
++					"subset=%d action=%s source_line=%d\n",
++					flowstar_audit_step(), rSteps,
++					completeImageIsSubset ? 1 : 0,
++					completeImageIsSubset ? "accept_complete_image" :
++						"retain_last_completely_validated_remainder",
++					__LINE__);
++			}
++
++			if(!completeImageIsSubset)
+ 			{
+ 				bfinished = true;
+ 				break;
+ 			}
+-		}
+-	}
+ 
+-	if(flowstar_audit_revalidate_refinement() && !disable_refinement)
+-	{
+-		TaylorModelVec<Interval> revalidatedPicard;
+-		std::list<Interval> revalidatedIntermediateRanges;
+-		x.Picard_ctrunc_normal(
+-			revalidatedPicard, new_x0, ode, tm_setting.step_exp_table,
+-			rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold,
+-			revalidatedIntermediateRanges, g_setting);
+-
+-		bool refinedVectorValidated = true;
+-		for(unsigned int i=0; i<rangeDim; ++i)
+-		{
+-			Polynomial<Interval> refinedDifference;
+-			refinedDifference =
+-				revalidatedPicard.tms[i].expansion - x.tms[i].expansion;
+-			Interval refinedIntDifference;
+-			refinedDifference.intEvalNormal(
+-				refinedIntDifference, tm_setting.step_exp_table);
+-			revalidatedPicard.tms[i].remainder += refinedIntDifference;
+-			const bool subset = revalidatedPicard.tms[i].remainder.subseteq(
+-				x.tms[i].remainder);
+-			flowstar_audit_interval(
+-				"refined_full_picard_revalidation_image", i,
+-				revalidatedPicard.tms[i].remainder, -1,
+-				subset ? 1 : 0, __LINE__);
+-			if(!subset)
+-				refinedVectorValidated = false;
+-		}
+-
+-		if(flowstar_audit_trace_enabled())
+-		{
+-			printf(
+-				"FLOWSTAR_AUDIT step=%s "
+-				"phase=refined_full_picard_revalidation subset=%d "
+-				"action=%s source_line=%d\n",
+-				flowstar_audit_step(), refinedVectorValidated ? 1 : 0,
+-				refinedVectorValidated ? "keep_refined" :
+-					"restore_initial_validated_remainder",
+-				__LINE__);
++			// Commit the vector proposal atomically only after its complete
++			// Picard image has passed.  Caches and polynomial differences are
++			// advanced together with the candidate they were regenerated for.
++			x = proposedX;
++			intermediate_ranges = freshIntermediateRanges;
++			intDifferences = freshIntDifferences;
++			bfinished = true;
++			for(unsigned int i=0; i<rangeDim; ++i)
++			{
++				if(widthRatios[i] <= STOP_RATIO)
++					bfinished = false;
++			}
+ 		}
+-		if(!refinedVectorValidated)
++		else
+ 		{
++			// Preserve the upstream componentwise stock refinement behavior
++			// byte-for-byte when correctness revalidation is not requested.
++			bfinished = true;
+ 			for(unsigned int i=0; i<rangeDim; ++i)
+-				x.tms[i].remainder = accepted_initial_remainders[i];
++			{
++				if(newRemainders[i].subseteq(x.tms[i].remainder))
++				{
++					if(widthRatios[i] <= STOP_RATIO)
++						bfinished = false;
++					x.tms[i].remainder = newRemainders[i];
++				}
++				else
++				{
++					bfinished = true;
++					break;
++				}
++			}
+ 		}
+ 	}
+ 
+@@ -12603,4 +12660,3 @@ void test_domain_contraction(Result_of_Reachability & contraction_result, Result
+ 
+ 
+ 
+-
+diff --git a/flowstar-toolbox/expression.h b/flowstar-toolbox/expression.h
+index f6f049f..698b09b 100644
+--- a/flowstar-toolbox/expression.h
++++ b/flowstar-toolbox/expression.h
+@@ -7,6 +7,7 @@
+ #define EXPRESSION_H_
+ 
+ #include "TaylorModel.h"
++#include <cstdlib>
+ 
+ #define OPT_PLUS		0
+ #define OPT_MINU		1
+@@ -34,6 +35,17 @@ void parseExpression();
+ namespace flowstar
+ {
+ 
++// Experiment-local switch for the minimal cached-remainder correctness patch.
++// The full evaluator truncates a variable Taylor model to the RHS order before
++// using it.  Upstream's remainder-only replay returned only the variable's
++// pre-existing remainder and therefore omitted the remainder generated by that
++// leaf truncation.  Keep stock behavior available unless explicitly requested.
++inline bool flowstar_cache_leaf_truncation_enabled()
++{
++	const char * value = std::getenv("FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION");
++	return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
+ inline void exp_taylor_only_remainder(Interval & result, const Interval & remainder, std::list<Interval>::iterator & iterRange, const unsigned int order, const Global_Setting & setting)
+ {
+ 	result = 0;
+@@ -1626,7 +1638,18 @@ void AST_Node<DATA_TYPE>::evaluate(TaylorModel<Interval> & result, const std::ve
+ 		if(node_value.var.type == VAR_ID)
+ 		{
+ 			result = tms_of_vars[node_value.var.id];
+-			result.ctrunc_normal(step_exp_table, order);
++			if(flowstar_cache_leaf_truncation_enabled())
++			{
++				Interval leafTruncation;
++				result.expansion.ctrunc_normal(
++					leafTruncation, step_exp_table, order);
++				result.remainder += leafTruncation;
++				intermediate_ranges.push_back(leafTruncation);
++			}
++			else
++			{
++				result.ctrunc_normal(step_exp_table, order);
++			}
+ 		}
+ 		else
+ 		{
+@@ -1974,6 +1997,11 @@ void AST_Node<DATA_TYPE>::evaluate_remainder(Interval & result, const std::vecto
+ 		if(node_value.var.type == VAR_ID)
+ 		{
+ 			result = tms_of_vars[node_value.var.id].remainder;
++			if(flowstar_cache_leaf_truncation_enabled())
++			{
++				result += *iter;
++				++iter;
++			}
+ 		}
+ 		else
+ 		{
+diff --git a/tests/README.md b/tests/README.md
+new file mode 100644
+index 0000000..0d070a9
+--- /dev/null
++++ b/tests/README.md
+@@ -0,0 +1,18 @@
++# Refinement correctness regression
++
++Run:
++
++```bash
++./tests/run_refinement_revalidation.sh
++```
++
++The scalar Riccati case intentionally preserves the stock under-enclosure as
++audit evidence. The test then requires both experiment-local corrections to
++contain the analytic endpoint and requires every raw endpoint to remain inside
++its whole-segment tube:
++
++- `full_picard` regenerates and checks the complete Picard image before every
++  proposed refined remainder is accepted.
++- `root_cause` records the interval generated when an expression variable is
++  degree-truncated and replays that interval in the cached remainder-only
++  evaluator.
+diff --git a/tests/refinement_revalidation_riccati.cpp b/tests/refinement_revalidation_riccati.cpp
+new file mode 100644
+index 0000000..836201f
+--- /dev/null
++++ b/tests/refinement_revalidation_riccati.cpp
+@@ -0,0 +1,92 @@
++#include "Continuous.h"
++
++#include <cmath>
++#include <cstdio>
++#include <cstdlib>
++#include <string>
++#include <vector>
++
++using namespace flowstar;
++using namespace std;
++
++static vector<Real> endpoint_powers(
++	const Interval & time_domain, const unsigned int order)
++{
++	Real h;
++	time_domain.sup(h);
++	vector<Real> powers(order + 1, 1);
++	for(unsigned int i = 1; i <= order; ++i)
++		powers[i] = powers[i-1] * h;
++	return powers;
++}
++
++int main(int argc, char ** argv)
++{
++	const string mode = argc > 1 ? argv[1] : "stock";
++	unsetenv("FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT");
++	unsetenv("FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION");
++	if(mode == "full_picard")
++		setenv("FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT", "1", 1);
++	else if(mode == "root_cause")
++		setenv("FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION", "1", 1);
++	else if(mode != "stock")
++		return 64;
++
++	Variables vars;
++	const int x_id = vars.declareVar("x");
++	ODE<Real> ode({"x^2"}, vars);
++	Computational_Setting setting(vars);
++	if(!setting.setFixedStepsize(0.01, 2))
++		return 65;
++	setting.setCutoffThreshold(1e-15);
++	setting.setRemainderEstimation(
++		vector<Interval>(vars.size(), Interval(-1e-4, 1e-4)));
++	setting.printOff();
++
++	vector<Interval> initial_box(vars.size());
++	initial_box[x_id] = Interval(0.0, 0.1);
++	Flowpipe current(initial_box);
++	Flowpipe next;
++	vector<Constraint> invariant;
++	const int advanced = current.advance(
++		next, ode.expressions, setting.tm_setting, invariant, setting.g_setting);
++	if(advanced != 1)
++		return 66;
++
++	TaylorModelVec<Real> composed;
++	next.compose(
++		composed, setting.tm_setting.order,
++		setting.tm_setting.cutoff_threshold);
++	vector<Interval> tube;
++	composed.intEval(tube, next.domain);
++
++	TaylorModelVec<Real> endpoint;
++	composed.evaluate_time(
++		endpoint,
++		endpoint_powers(next.domain[0], setting.tm_setting.order));
++	vector<Interval> endpoint_domain = next.domain;
++	endpoint_domain[0] = Interval(0.0);
++	vector<Interval> endpoint_box;
++	endpoint.intEval(endpoint_box, endpoint_domain);
++
++	const double exact_lower = 0.0;
++	const double exact_upper = 0.1 / (1.0 - 0.1 * 0.01);
++	const bool analytic_contained =
++		endpoint_box[0].inf() <= exact_lower &&
++		endpoint_box[0].sup() >= exact_upper;
++	const bool endpoint_in_tube =
++		tube[0].inf() <= endpoint_box[0].inf() &&
++		tube[0].sup() >= endpoint_box[0].sup();
++	printf(
++		"mode=%s endpoint=[%.17g,%.17g] tube=[%.17g,%.17g] "
++		"exact=[%.17g,%.17g] analytic_contained=%d endpoint_in_tube=%d\n",
++		mode.c_str(), endpoint_box[0].inf(), endpoint_box[0].sup(),
++		tube[0].inf(), tube[0].sup(), exact_lower, exact_upper,
++		analytic_contained ? 1 : 0, endpoint_in_tube ? 1 : 0);
++
++	if(!endpoint_in_tube)
++		return 67;
++	if(mode == "stock")
++		return analytic_contained ? 68 : 0;
++	return analytic_contained ? 0 : 69;
++}
+diff --git a/tests/run_refinement_revalidation.sh b/tests/run_refinement_revalidation.sh
+new file mode 100755
+index 0000000..b6479d7
+--- /dev/null
++++ b/tests/run_refinement_revalidation.sh
+@@ -0,0 +1,19 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++ROOT="$(cd "$HERE/.." && pwd)"
++BUILD_DIR="$(mktemp -d /tmp/flowstar_refinement_regression.XXXXXX)"
++trap 'rm -rf "$BUILD_DIR"' EXIT
++
++make -C "$ROOT/flowstar-toolbox" -j4
++g++ -O3 -w -fpermissive -std=c++11 \
++  -I "$ROOT/flowstar-toolbox" \
++  "$HERE/refinement_revalidation_riccati.cpp" \
++  -L "$ROOT/flowstar-toolbox" \
++  -o "$BUILD_DIR/refinement_revalidation_riccati" \
++  -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk
++
++"$BUILD_DIR/refinement_revalidation_riccati" stock
++"$BUILD_DIR/refinement_revalidation_riccati" full_picard
++"$BUILD_DIR/refinement_revalidation_riccati" root_cause
+-- 
+2.53.0
+

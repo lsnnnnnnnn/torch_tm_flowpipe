@@ -1,0 +1,44 @@
+From 94cf3cbb8fa38330d9b92eb07477f906b214c2fd Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 29 Jul 2026 03:28:47 +0000
+Subject: [PATCH 3/4] expose read-only polynomial term export
+
+---
+ flowstar-toolbox/Term.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/flowstar-toolbox/Term.h b/flowstar-toolbox/Term.h
+index 62294ac..946789b 100644
+--- a/flowstar-toolbox/Term.h
++++ b/flowstar-toolbox/Term.h
+@@ -32,6 +32,8 @@ public:
+ 
+ 	unsigned int degree() const;		// degree of the term
+ 	unsigned int dimension() const;		// dimension of the term
++	void getCoefficient(DATA_TYPE & result) const;
++	void getDegrees(std::vector<unsigned int> & result) const;
+ 
+ 	void evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const;	// evaluation of the term
+ 
+@@ -133,6 +135,18 @@ unsigned int Term<DATA_TYPE>::dimension() const
+ 	return degrees.size();
+ }
+ 
++template <class DATA_TYPE>
++void Term<DATA_TYPE>::getCoefficient(DATA_TYPE & result) const
++{
++	result = coefficient;
++}
++
++template <class DATA_TYPE>
++void Term<DATA_TYPE>::getDegrees(std::vector<unsigned int> & result) const
++{
++	result = degrees;
++}
++
+ template <class DATA_TYPE>
+ void Term<DATA_TYPE>::evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const
+ {
+-- 
+2.53.0
+

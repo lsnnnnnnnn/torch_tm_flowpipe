@@ -75,6 +75,7 @@ def render_cpp(
     candidate: float,
     cutoff: float,
     variant: str,
+    precision_bits: int = 53,
 ) -> str:
     names = list(system["state_names"])
     expressions = [
@@ -181,6 +182,7 @@ static void print_sample(
 }}
 
 int main() {{
+  intervalNumPrecision = {precision_bits};
   setenv("FLOWSTAR_AUDIT_TRACE", "1", 1);
   unsetenv("FLOWSTAR_AUDIT_DISABLE_REFINEMENT");
   unsetenv("FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT");
@@ -437,6 +439,7 @@ def export_segment(
     order: int,
     variant: str,
     work_dir: str | Path,
+    precision_bits: int = 53,
 ) -> dict[str, Any]:
     if variant not in spec["flowstar"]["audit_variants"]:
         raise ValueError(f"unknown Flow* variant {variant}")
@@ -455,6 +458,7 @@ def export_segment(
             candidate=float(spec["flowstar"]["candidate_remainder"][system_name]),
             cutoff=float(spec["flowstar"]["cutoff"]),
             variant=variant,
+            precision_bits=precision_bits,
         ),
         encoding="utf-8",
     )
@@ -475,7 +479,8 @@ def export_segment(
     (run_dir / "run.stderr.txt").write_text(process.stderr, encoding="utf-8")
     if process.returncode:
         raise RuntimeError(
-            f"Flow* exporter returned {process.returncode}: {process.stderr[-2000:]}"
+            f"Flow* exporter returned {process.returncode}; "
+            f"stdout={process.stdout[-4000:]}; stderr={process.stderr[-2000:]}"
         )
     record = _parse(
         process.stdout, variant=variant, system=system_name, h=h
@@ -483,6 +488,7 @@ def export_segment(
     record["native_metadata"]["compile_time_s"] = compile_time
     record["native_metadata"]["execution_time_s"] = execution_time
     record["native_metadata"]["requested_order"] = order
+    record["native_metadata"]["interval_precision_bits"] = precision_bits
     return record
 
 
@@ -503,6 +509,7 @@ def main() -> None:
     )
     parser.add_argument("--work-dir", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--precision-bits", type=int, default=53)
     args = parser.parse_args()
     record = export_segment(
         load_spec(args.spec),
@@ -511,6 +518,7 @@ def main() -> None:
         order=args.order,
         variant=args.variant,
         work_dir=args.work_dir,
+        precision_bits=args.precision_bits,
     )
     write_json(args.output, record)
     print(args.output)

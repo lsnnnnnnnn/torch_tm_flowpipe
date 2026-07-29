@@ -30,6 +30,8 @@ progress "acceptance tests"
 progress "Flowstar correctness matrix and original parity"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_correctness.py" \
   --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_root_cause.py" \
+  --output-dir "${OUTPUT_DIR}/flowstar_root_cause"
 
 progress "controlled protocols: Torch"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/run_controlled.py" \

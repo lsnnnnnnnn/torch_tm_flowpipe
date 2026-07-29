@@ -24,6 +24,8 @@ cd "${REPO_ROOT}"
 
 "${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_correctness.py" \
   --smoke --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_root_cause.py" \
+  --output-dir "${OUTPUT_DIR}/flowstar_root_cause"
 
 "${CONDA}" run -n py11 python "${STUDY_DIR}/run_controlled.py" \
   --tool torch --smoke --output-dir "${OUTPUT_DIR}"

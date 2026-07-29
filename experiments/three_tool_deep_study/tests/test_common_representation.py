@@ -12,6 +12,7 @@ from common import (
     validate_record,
 )
 from export_torch_segment import export_segment
+from export_flowstar_segment import render_cpp
 
 
 def test_torch_export_round_trip_and_endpoint_tube_contract() -> None:
@@ -95,3 +96,25 @@ def test_analytic_references() -> None:
     assert harmonic is not None
     assert math.isclose(harmonic[0][0], -0.1, abs_tol=1e-15)
     assert math.isclose(harmonic[1][1], 0.1, abs_tol=1e-15)
+
+
+def test_flowstar_exporter_sets_requested_mpfr_precision() -> None:
+    spec = load_spec()
+    source = render_cpp(
+        spec["systems"]["riccati"],
+        h=0.01,
+        order=2,
+        candidate=1e-4,
+        cutoff=1e-15,
+        variant="flowstar_stock",
+        precision_bits=256,
+    )
+    assert "intervalNumPrecision = 256;" in source
+
+
+def test_vanderpol_state_semantics_are_explicit() -> None:
+    spec = load_spec()
+    assert spec["systems"]["van_der_pol"]["state_names"] == [
+        "position",
+        "velocity",
+    ]

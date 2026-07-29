@@ -1,0 +1,365 @@
+From 316128e46202605c47d8131870dff265f96b7f3b Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Tue, 28 Jul 2026 13:55:19 +0000
+Subject: [PATCH 1/3] instrument Flowstar refinement validation
+
+---
+ benchmarks/continuous/vanderpol/Makefile |   2 +-
+ flowstar-toolbox/Continuous.cpp          | 240 ++++++++++++++++++++++-
+ flowstar-toolbox/Makefile                |   2 +-
+ 3 files changed, 233 insertions(+), 11 deletions(-)
+
+diff --git a/benchmarks/continuous/vanderpol/Makefile b/benchmarks/continuous/vanderpol/Makefile
+index ba19e49..61ff256 100644
+--- a/benchmarks/continuous/vanderpol/Makefile
++++ b/benchmarks/continuous/vanderpol/Makefile
+@@ -2,7 +2,7 @@ CXX = g++
+ HOME= /usr/local/include
+ LIB_HOME = ../../../flowstar-toolbox
+ LIBS = -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk
+-CFLAGS = -I . -I $(HOME) -g -O3 -std=c++11
++CFLAGS = -I . -I $(HOME) -g -O3 -std=c++11 -fpermissive
+ LINK_FLAGS = -g -L$(LIB_HOME) -L/usr/local/lib
+ 
+ all: vanderpol
+diff --git a/flowstar-toolbox/Continuous.cpp b/flowstar-toolbox/Continuous.cpp
+index 9cba9bb..9e8ae9d 100644
+--- a/flowstar-toolbox/Continuous.cpp
++++ b/flowstar-toolbox/Continuous.cpp
+@@ -4,9 +4,56 @@
+ ---*/
+ 
+ #include "Continuous.h"
++#include <cstdlib>
+ 
+ using namespace flowstar;
+ 
++namespace
++{
++bool flowstar_audit_trace_enabled()
++{
++	const char * value = std::getenv("FLOWSTAR_AUDIT_TRACE");
++	return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
++bool flowstar_audit_no_refinement()
++{
++	const char * value = std::getenv("FLOWSTAR_AUDIT_DISABLE_REFINEMENT");
++	return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
++bool flowstar_audit_revalidate_refinement()
++{
++	const char * value = std::getenv("FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT");
++	return value != NULL && value[0] != '\0' && value[0] != '0';
++}
++
++const char * flowstar_audit_step()
++{
++	const char * value = std::getenv("FLOWSTAR_AUDIT_STEP");
++	return value == NULL ? "unknown" : value;
++}
++
++void flowstar_audit_interval(
++	const char * phase,
++	const unsigned int state,
++	const Interval & value,
++	const int refinement_round,
++	const int subset_result,
++	const int source_line)
++{
++	if(!flowstar_audit_trace_enabled())
++		return;
++
++	printf(
++		"FLOWSTAR_AUDIT step=%s phase=%s state=%u round=%d "
++		"lower=%.17g upper=%.17g width=%.17g subset=%d source_line=%d\n",
++		flowstar_audit_step(), phase, state, refinement_round,
++		value.inf(), value.sup(), value.sup() - value.inf(),
++		subset_result, source_line);
++}
++}
++
+ 
+ 
+ Symbolic_Remainder::Symbolic_Remainder()
+@@ -861,6 +908,30 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	Interval intUnit(-1,1);
+ 	result.clear();
+ 
++	if(flowstar_audit_trace_enabled())
++	{
++		printf(
++			"FLOWSTAR_AUDIT step=%s phase=advance_enter dimension=%u "
++			"order=%u step_lower=%.17g step_upper=%.17g "
++			"cutoff_lower=%.17g cutoff_upper=%.17g source_line=%d\n",
++			flowstar_audit_step(), rangeDim, tm_setting.order,
++			tm_setting.step_exp_table[1].inf(),
++			tm_setting.step_exp_table[1].sup(),
++			tm_setting.cutoff_threshold.inf(),
++			tm_setting.cutoff_threshold.sup(), __LINE__);
++		for(unsigned int i=0; i<rangeDim; ++i)
++		{
++			flowstar_audit_interval(
++				"configured_candidate_remainder", i,
++				tm_setting.remainder_estimation[i], -1, -1, __LINE__);
++		}
++		for(unsigned int i=0; i<domain.size(); ++i)
++		{
++			flowstar_audit_interval(
++				"current_input_domain", i, domain[i], -1, -1, __LINE__);
++		}
++	}
++
+ 	// evaluate the the initial set x0
+ 	TaylorModelVec<Real> tmv_of_x0;
+ 	tmvPre.evaluate_time(tmv_of_x0, tm_setting.step_end_exp_table);
+@@ -922,6 +993,11 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	{
+ 		result.tmv.intEvalNormal(range_of_x0, tm_setting.step_end_exp_table);
+ 	}
++	for(unsigned int i=0; i<rangeDim; ++i)
++	{
++		flowstar_audit_interval(
++			"current_input_box", i, range_of_x0[i], -1, -1, __LINE__);
++	}
+ 
+ 
+ 	// Compute the scaling matrix S.
+@@ -956,7 +1032,21 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		x.Picard_no_remainder_assign(new_x0, ode, rangeDimExt, i, tm_setting.cutoff_threshold);
+ 	}
+ 
++	if(flowstar_audit_trace_enabled())
++	{
++		for(unsigned int i=0; i<rangeDim; ++i)
++		{
++			Interval polynomialCore;
++			x.tms[i].expansion.intEvalNormal(
++				polynomialCore, tm_setting.step_exp_table);
++			flowstar_audit_interval(
++				"polynomial_core_before_validation", i,
++				polynomialCore, -1, -1, __LINE__);
++		}
++	}
++
+ 	bool bfound = true;
++	std::vector<Interval> accepted_initial_remainders;
+ 
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+@@ -979,6 +1069,11 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		polyTmp.intEvalNormal(I, tm_setting.step_exp_table);
+ 
+ 		intDifferences.push_back(I);
++		flowstar_audit_interval(
++			"first_picard_image_remainder_before_int_difference", i,
++			tmvTmp.tms[i].remainder, -1, -1, __LINE__);
++		flowstar_audit_interval(
++			"polynomial_difference_interval", i, I, -1, -1, __LINE__);
+ 	}
+ 
+ 	// add the uncertainties and the cutoff intervals onto the result
+@@ -986,9 +1081,44 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	{
+ 		tmvTmp.tms[i].remainder += intDifferences[i];
+ 
+-		if( ! tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder) )
++		const bool subset = tmvTmp.tms[i].remainder.subseteq(
++			x.tms[i].remainder);
++		if(flowstar_audit_trace_enabled())
++		{
++			printf(
++				"FLOWSTAR_AUDIT step=%s "
++				"phase=candidate_minus_picard_margins state=%u "
++				"lower_margin=%.17g upper_margin=%.17g "
++				"source_line=%d\n",
++				flowstar_audit_step(), i,
++				tmvTmp.tms[i].remainder.inf() -
++					x.tms[i].remainder.inf(),
++				x.tms[i].remainder.sup() -
++					tmvTmp.tms[i].remainder.sup(),
++				__LINE__);
++			printf(
++				"FLOWSTAR_AUDIT step=%s "
++				"phase=cutoff_and_uncertainty_accounting state=%u "
++				"cutoff_contribution=embedded_in_picard_remainder "
++				"uncertainty_contribution=embedded_in_picard_remainder "
++				"separately_exposed=0 source_line=%d\n",
++				flowstar_audit_step(), i, __LINE__);
++		}
++		flowstar_audit_interval(
++			"first_picard_image_remainder_with_int_difference", i,
++			tmvTmp.tms[i].remainder, -1, subset ? 1 : 0, __LINE__);
++
++		if(!subset)
+ 		{
+ 			bfound = false;
++			if(flowstar_audit_trace_enabled())
++			{
++				printf(
++					"FLOWSTAR_AUDIT step=%s phase=advance_return "
++					"reason=first_picard_inclusion_failed failing_state=%u "
++					"return_code=0 source_line=%d\n",
++					flowstar_audit_step(), i, __LINE__);
++			}
+ 			break;
+ 		}
+ 	}
+@@ -1002,11 +1132,25 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			x.tms[i].remainder = tmvTmp.tms[i].remainder;
++			accepted_initial_remainders.push_back(x.tms[i].remainder);
++			flowstar_audit_interval(
++				"accepted_initial_remainder", i,
++				x.tms[i].remainder, -1, 1, __LINE__);
+ 		}
+ 	}
+ 
+ 	bool bfinished = false;
+-	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
++	const bool disable_refinement = flowstar_audit_no_refinement();
++	if(disable_refinement && flowstar_audit_trace_enabled())
++	{
++		printf(
++			"FLOWSTAR_AUDIT step=%s phase=refinement_disabled "
++			"reason=explicit_diagnostic_variant source_line=%d\n",
++			flowstar_audit_step(), __LINE__);
++	}
++	for(int rSteps = 0;
++		!disable_refinement && !bfinished && (rSteps <= MAX_REFINEMENT_STEPS);
++		++rSteps)
+ 	{
+ 		bfinished = true;
+ 
+@@ -1016,11 +1160,32 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		// add the uncertainties and the cutoff intervals onto the result
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
++			flowstar_audit_interval(
++				"refinement_input_remainder", i,
++				x.tms[i].remainder, rSteps, -1, __LINE__);
+ 			newRemainders[i] += intDifferences[i];
+-
+-			if(newRemainders[i].subseteq(x.tms[i].remainder))
+-			{
+-				if(x.tms[i].remainder.widthRatio(newRemainders[i]) <= STOP_RATIO)
++			const bool subset = newRemainders[i].subseteq(
++				x.tms[i].remainder);
++			const double width_ratio =
++				x.tms[i].remainder.widthRatio(newRemainders[i]);
++			flowstar_audit_interval(
++				"refinement_output_remainder", i,
++				newRemainders[i], rSteps, subset ? 1 : 0, __LINE__);
++			if(flowstar_audit_trace_enabled())
++			{
++				printf(
++					"FLOWSTAR_AUDIT step=%s phase=refinement_decision "
++					"state=%u round=%d subset=%d width_ratio=%.17g "
++					"stop_ratio=%.17g continue=%d source_line=%d\n",
++					flowstar_audit_step(), i, rSteps, subset ? 1 : 0,
++					width_ratio, (double)STOP_RATIO,
++					(subset && width_ratio <= STOP_RATIO) ? 1 : 0,
++					__LINE__);
++			}
++
++			if(subset)
++			{
++				if(width_ratio <= STOP_RATIO)
+ 				{
+ 					bfinished = false;
+ 				}
+@@ -1035,9 +1200,69 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		}
+ 	}
+ 
++	if(flowstar_audit_revalidate_refinement() && !disable_refinement)
++	{
++		TaylorModelVec<Interval> revalidatedPicard;
++		std::list<Interval> revalidatedIntermediateRanges;
++		x.Picard_ctrunc_normal(
++			revalidatedPicard, new_x0, ode, tm_setting.step_exp_table,
++			rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold,
++			revalidatedIntermediateRanges, g_setting);
++
++		bool refinedVectorValidated = true;
++		for(unsigned int i=0; i<rangeDim; ++i)
++		{
++			Polynomial<Interval> refinedDifference;
++			refinedDifference =
++				revalidatedPicard.tms[i].expansion - x.tms[i].expansion;
++			Interval refinedIntDifference;
++			refinedDifference.intEvalNormal(
++				refinedIntDifference, tm_setting.step_exp_table);
++			revalidatedPicard.tms[i].remainder += refinedIntDifference;
++			const bool subset = revalidatedPicard.tms[i].remainder.subseteq(
++				x.tms[i].remainder);
++			flowstar_audit_interval(
++				"refined_full_picard_revalidation_image", i,
++				revalidatedPicard.tms[i].remainder, -1,
++				subset ? 1 : 0, __LINE__);
++			if(!subset)
++				refinedVectorValidated = false;
++		}
++
++		if(flowstar_audit_trace_enabled())
++		{
++			printf(
++				"FLOWSTAR_AUDIT step=%s "
++				"phase=refined_full_picard_revalidation subset=%d "
++				"action=%s source_line=%d\n",
++				flowstar_audit_step(), refinedVectorValidated ? 1 : 0,
++				refinedVectorValidated ? "keep_refined" :
++					"restore_initial_validated_remainder",
++				__LINE__);
++		}
++		if(!refinedVectorValidated)
++		{
++			for(unsigned int i=0; i<rangeDim; ++i)
++				x.tms[i].remainder = accepted_initial_remainders[i];
++		}
++	}
++
+ 	result.tmvPre = x;
+ 	result.domain = domain;
+ 	result.domain[0] = tm_setting.step_exp_table[1];
++	for(unsigned int i=0; i<rangeDim; ++i)
++	{
++		flowstar_audit_interval(
++			"final_native_returned_remainder", i,
++			result.tmvPre.tms[i].remainder, -1, 1, __LINE__);
++	}
++	if(flowstar_audit_trace_enabled())
++	{
++		printf(
++			"FLOWSTAR_AUDIT step=%s phase=advance_return reason=success "
++			"return_code=1 source_line=%d\n",
++			flowstar_audit_step(), __LINE__);
++	}
+ 
+ 	return 1;
+ }
+@@ -12379,6 +12604,3 @@ void test_domain_contraction(Result_of_Reachability & contraction_result, Result
+ 
+ 
+ 
+-
+-
+-
+diff --git a/flowstar-toolbox/Makefile b/flowstar-toolbox/Makefile
+index 86afc60..f273fa4 100644
+--- a/flowstar-toolbox/Makefile
++++ b/flowstar-toolbox/Makefile
+@@ -1,7 +1,7 @@
+ CXX = g++
+ include makefile.local
+ LIBS = -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk
+-CFLAGS = -I . -I $(GMP_HOME) -g -O3 -std=c++11
++CFLAGS = -I . -I $(GMP_HOME) -g -O3 -std=c++11 -fpermissive
+ LINK_FLAGS = -g -L $(GMP_LIB_HOME)
+ OBJS = Interval.o Variables.o settings.o Matrix.o Geometry.o Constraints.o Continuous.o Discrete.o Hybrid.o
+ 
+-- 
+2.53.0
+

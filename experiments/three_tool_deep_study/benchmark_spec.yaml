@@ -46,7 +46,7 @@ systems:
           - {coefficient: 1.0, powers: [2, 0]}
           - {coefficient: -1.0, powers: [0, 1]}
   van_der_pol:
-    state_names: [x1, x2]
+    state_names: [position, velocity]
     initial_box: [[1.10, 1.40], [2.35, 2.45]]
     rhs:
       - terms:
@@ -106,7 +106,7 @@ flowstar:
   orders: [2, 3, 4, 6]
   cutoff: 1.0e-15
   candidate_remainder:
-    riccati: 1.0e-3
+    riccati: 1.0e-4
     harmonic: 1.0e-3
     coupled_quadratic: 1.0e-4
     van_der_pol: 1.0e-2

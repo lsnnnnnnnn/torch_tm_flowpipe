@@ -1,0 +1,78 @@
+From fa39f7ac29d5dc6ca09c2ee3f2d11454f6e6a353 Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 29 Jul 2026 06:47:17 +0000
+Subject: [PATCH] trace cached variable leaf truncation
+
+---
+ flowstar-toolbox/expression.h        | 23 ++++++++++++++++++++++-
+ tests/run_refinement_revalidation.sh |  9 ++++++++-
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/flowstar-toolbox/expression.h b/flowstar-toolbox/expression.h
+index 698b09b..aeb6b42 100644
+--- a/flowstar-toolbox/expression.h
++++ b/flowstar-toolbox/expression.h
+@@ -46,6 +46,20 @@ inline bool flowstar_cache_leaf_truncation_enabled()
+ 	return value != NULL && value[0] != '\0' && value[0] != '0';
+ }
+ 
++inline void flowstar_cache_leaf_trace(
++	const char * phase, const Interval & value, const int source_line)
++{
++	const char * enabled = std::getenv("FLOWSTAR_AUDIT_TRACE");
++	if(enabled == NULL || enabled[0] == '\0' || enabled[0] == '0')
++		return;
++	const char * step = std::getenv("FLOWSTAR_AUDIT_STEP");
++	printf(
++		"FLOWSTAR_AUDIT step=%s phase=%s state=-1 round=-1 "
++		"lower=%.17g upper=%.17g width=%.17g subset=-1 source_line=%d\n",
++		step == NULL ? "unknown" : step, phase,
++		value.inf(), value.sup(), value.sup() - value.inf(), source_line);
++}
++
+ inline void exp_taylor_only_remainder(Interval & result, const Interval & remainder, std::list<Interval>::iterator & iterRange, const unsigned int order, const Global_Setting & setting)
+ {
+ 	result = 0;
+@@ -1645,6 +1659,9 @@ void AST_Node<DATA_TYPE>::evaluate(TaylorModel<Interval> & result, const std::ve
+ 					leafTruncation, step_exp_table, order);
+ 				result.remainder += leafTruncation;
+ 				intermediate_ranges.push_back(leafTruncation);
++				flowstar_cache_leaf_trace(
++					"cache_leaf_truncation_recorded",
++					leafTruncation, __LINE__);
+ 			}
+ 			else
+ 			{
+@@ -1999,7 +2016,11 @@ void AST_Node<DATA_TYPE>::evaluate_remainder(Interval & result, const std::vecto
+ 			result = tms_of_vars[node_value.var.id].remainder;
+ 			if(flowstar_cache_leaf_truncation_enabled())
+ 			{
+-				result += *iter;
++				const Interval leafTruncation = *iter;
++				flowstar_cache_leaf_trace(
++					"cache_leaf_truncation_replayed",
++					leafTruncation, __LINE__);
++				result += leafTruncation;
+ 				++iter;
+ 			}
+ 		}
+diff --git a/tests/run_refinement_revalidation.sh b/tests/run_refinement_revalidation.sh
+index b6479d7..ea43aee 100755
+--- a/tests/run_refinement_revalidation.sh
++++ b/tests/run_refinement_revalidation.sh
+@@ -16,4 +16,11 @@ g++ -O3 -w -fpermissive -std=c++11 \
+ 
+ "$BUILD_DIR/refinement_revalidation_riccati" stock
+ "$BUILD_DIR/refinement_revalidation_riccati" full_picard
+-"$BUILD_DIR/refinement_revalidation_riccati" root_cause
++FLOWSTAR_AUDIT_TRACE=1 FLOWSTAR_AUDIT_STEP=1 \
++  "$BUILD_DIR/refinement_revalidation_riccati" root_cause \
++  > "$BUILD_DIR/root_cause_trace.txt"
++grep -q 'phase=cache_leaf_truncation_recorded' \
++  "$BUILD_DIR/root_cause_trace.txt"
++grep -q 'phase=cache_leaf_truncation_replayed' \
++  "$BUILD_DIR/root_cause_trace.txt"
++cat "$BUILD_DIR/root_cause_trace.txt"
+-- 
+2.53.0
+

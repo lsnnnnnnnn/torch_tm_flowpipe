@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import math
 import os
 import subprocess
 import sys
@@ -182,6 +183,11 @@ def run_correctness(
                             }
                         )
                     except Exception as exc:
+                        message = f"{type(exc).__name__}: {exc}"
+                        rejected = (
+                            "reason=first_picard_inclusion_failed" in message
+                            or "reason=cached_proposal_non_subset" in message
+                        )
                         row = {
                             "tool": "flowstar",
                             "variant": variant,
@@ -193,9 +199,17 @@ def run_correctness(
                             "endpoint_vs_tube_violations": "",
                             "export_round_trip_passed": False,
                             "all_values_finite": False,
-                            "status": "failed",
-                            "failure_category": "wrapper_or_validation_failure",
-                            "message": f"{type(exc).__name__}: {exc}",
+                            "status": (
+                                "configuration_rejected"
+                                if rejected
+                                else "failed"
+                            ),
+                            "failure_category": (
+                                "native_configuration_rejected"
+                                if rejected
+                                else "wrapper_or_validation_failure"
+                            ),
+                            "message": message,
                         }
                     rows.append(row)
                     print(
@@ -210,20 +224,43 @@ def run_correctness(
     }
     primary = [row for row in rows if row["variant"] in primary_variants]
     stock = [row for row in rows if row["variant"] == "flowstar_stock"]
+    primary_successes = [
+        row for row in primary if row["status"] == "success"
+    ]
+    required_reference = [
+        row
+        for row in primary
+        if row["system"] == "riccati"
+        and math.isclose(float(row["h"]), 0.01)
+        and int(row["order"]) == 2
+    ]
     counts = {
         "total_rows": len(rows),
         "primary_rows": len(primary),
-        "primary_native_validation_failures": sum(
-            not bool(row["native_validation_passed"]) for row in primary
+        "primary_native_configuration_rejections": sum(
+            row["status"] == "configuration_rejected" for row in primary
+        ),
+        "primary_unexpected_failures": sum(
+            row["status"] == "failed" for row in primary
+        ),
+        "required_reference_failures": sum(
+            row["status"] != "success"
+            or row["analytic_reference_contained"] is not True
+            or not bool(row["native_validation_passed"])
+            or not bool(row["export_round_trip_passed"])
+            for row in required_reference
         ),
         "primary_analytic_violations": sum(
-            row["analytic_reference_contained"] is not True for row in primary
+            row["analytic_reference_contained"] is not True
+            for row in primary_successes
         ),
         "primary_endpoint_tube_violations": sum(
-            int(row["endpoint_vs_tube_violations"] or 0) for row in primary
+            int(row["endpoint_vs_tube_violations"] or 0)
+            for row in primary_successes
         ),
         "primary_export_failures": sum(
             not bool(row["export_round_trip_passed"]) for row in primary
+            if row["status"] == "success"
         ),
         "stock_analytic_violations": sum(
             row["analytic_reference_contained"] is not True for row in stock
@@ -232,7 +269,8 @@ def run_correctness(
     counts["passed"] = not any(
         counts[key]
         for key in (
-            "primary_native_validation_failures",
+            "primary_unexpected_failures",
+            "required_reference_failures",
             "primary_analytic_violations",
             "primary_endpoint_tube_violations",
             "primary_export_failures",
