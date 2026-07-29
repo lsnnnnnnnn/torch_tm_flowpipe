@@ -355,9 +355,19 @@ def collect_tables(
             )
     write_csv(output / "failure_summary.csv", failures)
 
-    representation_checks = []
+    representation_records: dict[tuple[Any, ...], tuple[Path, dict[str, Any]]] = {}
     for path in sorted((output / "common_segments").glob("*.json")):
         record = json.loads(path.read_text(encoding="utf-8"))
+        key = (
+            record["tool"],
+            record["variant"],
+            record["system"],
+            float(record["h"]),
+            record.get("native_metadata", {}).get("requested_order"),
+        )
+        representation_records[key] = (path, record)
+    representation_checks = []
+    for path, record in representation_records.values():
         representation_checks.append(
             {
                 "path": str(path),

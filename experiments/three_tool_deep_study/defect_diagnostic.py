@@ -310,11 +310,21 @@ def run_diagnostics(
         raise RuntimeError(
             f"no common segment records found under {segment_dir}"
         )
+    unique: dict[tuple[Any, ...], tuple[Path, dict[str, Any]]] = {}
+    for path in paths:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        key = (
+            record["tool"],
+            record["variant"],
+            record["system"],
+            float(record["h"]),
+            record.get("native_metadata", {}).get("requested_order"),
+        )
+        unique[key] = (path, record)
     rows: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
-    for path in paths:
+    for path, record in unique.values():
         try:
-            record = json.loads(path.read_text(encoding="utf-8"))
             rows.extend(
                 diagnose_record(
                     record, spec["systems"][record["system"]]
@@ -331,7 +341,8 @@ def run_diagnostics(
     write_csv(output / "defect_summary.csv", rows)
     write_json(output / "defect_failures.json", failures)
     summary = {
-        "segment_records": len(paths),
+        "segment_records": len(unique),
+        "duplicate_superseded_records": len(paths) - len(unique),
         "component_rows": len(rows),
         "failures": len(failures),
         "passed": not failures,
