@@ -115,6 +115,15 @@ def _one_step_cases(spec: Mapping[str, Any], smoke: bool):
             yield system_name, h
 
 
+def _save_common_segment(output: Path, record: Mapping[str, Any]) -> None:
+    variant = str(record["variant"]).replace("/", "_")
+    name = (
+        f"{record['tool']}_{variant}_{record['system']}_"
+        f"h{float(record['h']):g}.json"
+    )
+    write_json(output / "common_segments" / name, record)
+
+
 def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, Any]:
     src_root = REPO_ROOT / "src"
     followup = HERE.parent / "first_order_followup"
@@ -135,6 +144,7 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
             record = export_segment(
                 spec, system_name=system_name, h=h, order=order
             )
+            _save_common_segment(output, record)
             runtime = time.perf_counter() - started
             rows.extend(
                 _record_rows(
@@ -311,6 +321,7 @@ def run_diffreach(
             record = export_segment(
                 spec, system_name=system_name, h=h, affine=affine
             )
+            _save_common_segment(output, record)
             runtime = time.perf_counter() - started
             rows.extend(
                 _record_rows(
@@ -509,6 +520,7 @@ def run_flowstar(
                     / f"one_step_{system_name}_h{h:g}_o{order}"
                 ),
             )
+            _save_common_segment(output, record)
             runtime = time.perf_counter() - started
             rows.extend(
                 _record_rows(
