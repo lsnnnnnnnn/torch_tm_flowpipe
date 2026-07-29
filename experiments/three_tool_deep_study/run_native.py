@@ -59,7 +59,11 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
         if str(candidate) not in sys.path:
             sys.path.insert(0, str(candidate))
     from export_torch_segment import rhs_from_spec
-    from torch_basis import affine_reset, normalized_initial_tm
+    from torch_basis import (
+        affine_reset,
+        normalized_initial_tm,
+        project_to_basis,
+    )
     from torch_tm_flowpipe import Interval, TMVector, flowpipe_step, flowpipe_step_from_tm
 
     rows: list[dict[str, Any]] = []
@@ -87,6 +91,7 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
             timings: list[float] = []
             completed = 0
             analytic_violations = 0
+            reset_discarded_total = 0
             failure = ""
             for step in range(1, steps + 1):
                 started = time.perf_counter()
@@ -161,6 +166,9 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
                                 "order": order,
                                 "basis": f"complete_total_degree_{order}",
                                 "carry": mode,
+                                "reset_discarded_term_count": (
+                                    reset_discarded_total
+                                ),
                                 "native_validation_passed": True,
                                 "analytic_reference_contained": (
                                     exact if interval_kind == "endpoint_raw" else ""
@@ -178,9 +186,29 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
                         for interval in raw_endpoint.range_box()
                     ]
                 elif mode == "affine_reset":
-                    current, _ = affine_reset(carry_endpoint, method="box")
+                    affine_endpoint, discarded = project_to_basis(
+                        carry_endpoint,
+                        "B1",
+                        tau_index=None,
+                        stage="native_affine_reset_projection",
+                        iteration=step,
+                    )
+                    reset_discarded_total += len(discarded)
+                    current, _ = affine_reset(
+                        affine_endpoint, method="box"
+                    )
                 elif mode == "qr_reset":
-                    current, _ = affine_reset(carry_endpoint, method="qr")
+                    affine_endpoint, discarded = project_to_basis(
+                        carry_endpoint,
+                        "B1",
+                        tau_index=None,
+                        stage="native_qr_reset_projection",
+                        iteration=step,
+                    )
+                    reset_discarded_total += len(discarded)
+                    current, _ = affine_reset(
+                        affine_endpoint, method="qr"
+                    )
                 else:
                     current = carry_endpoint
                 completed = step
@@ -206,6 +234,7 @@ def run_torch(spec: dict[str, Any], output: Path, *, smoke: bool) -> dict[str, A
                     "successful_horizon": completed * h,
                     "native_validation_passed": completed == steps,
                     "analytic_reference_violations": analytic_violations,
+                    "reset_discarded_term_count": reset_discarded_total,
                     "first_call_time_s": timings[0] if timings else math.nan,
                     "steady_step_time_s": (
                         statistics.median(timings[1:] or timings)
