@@ -190,6 +190,8 @@ def generate(output: Path) -> tuple[str, str]:
     flowstar_ablation = _read(
         output / "flowstar_component_ablation.csv"
     )
+    bern = _read(output / "bern_feasibility.csv")
+    bern_decision = _json(output / "bern_feasibility.json")
 
     one_endpoint = _max_width_rows(one_step, kind="endpoint_raw")
     affine_complete = [
@@ -495,6 +497,31 @@ full configuration on the cross-term-active coupled quadratic benchmark.
     ((row.get('tool',''), row.get('backend',''), row.get('backend_status',''), row.get('system',''), row.get('h',''), row.get('runtime_repetitions',''), _fmt(row.get('median_full_configuration_time_s')), _fmt(row.get('speedup_vs_same_tool_cpu')), row.get('message','')) for row in acceleration),
 )}
 
+## RQ6 — BERN/IBF feasibility and literature position
+
+BERN is evaluated as a range-query component, not a fourth reachability tool.
+The clean-room CPU prototype preserves the polynomial's cross terms and applies
+the Bernstein coefficient hull to five analytic terms drawn from cancellation,
+the coupled quadratic system, and Van der Pol:
+
+{_markdown_table(
+    ['case', 'purpose', 'current width', 'Bernstein width', 'ratio', 'exact contained', 'median Bernstein s'],
+    ((row.get('case',''), row.get('purpose',''), _fmt(row.get('current_width')), _fmt(row.get('bernstein_width')), _fmt(row.get('bernstein_over_current_width')), row.get('bernstein_exact_range_contained',''), _fmt(row.get('bernstein_runtime_median_s'))) for row in bern),
+)}
+
+All analytic ranges were contained:
+{bern_decision.get('all_bernstein_exact_ranges_contained', False)}; the
+Bernstein candidate was strictly tighter in
+{bern_decision.get('strictly_tighter_cases', 0)} cases.  This is
+exact-arithmetic Bernstein evidence plus a conservative float64 allowance, not
+a complete roundoff proof.  The external CUDA code is not placed in the primary
+correctness path, and no singleton GPU timing is reported.  The evidence-backed
+decision is to continue only toward a formally enclosed sparse range backend.
+BERN does not supply local-time integration, truncation-to-remainder, Picard
+validation, endpoint substitution, or multi-step reset.  NN controller methods
+remain indirect because this benchmark is plant-only.  See
+`BERN_FEASIBILITY.md` and `LITERATURE_MAP.md`.
+
 ## Direct answers to the eleven final questions
 
 1. **Why same order is impossible.** Torch order 1 is a complete affine
@@ -537,10 +564,12 @@ full configuration on the cross-term-active coupled quadratic benchmark.
     range bounding and local-time overflow attribution; expose validator timing
     and defect diagnostics; and add a strict directed-rounding/MPFR validation
     backend before making proof-strength claims.
-11. **BERN-NN-IBF.** The need exposed here is primarily improved polynomial
-    storage/range bounding, not neural-network abstraction.  It may help if it
-    supplies a tighter polynomial range backend, but this plant-only study
-    provides no evidence yet for starting NN/CROWN integration.
+11. **BERN-NN-IBF.** The range-only prototype contains all five analytic
+    cases and is strictly tighter on
+    {bern_decision.get('strictly_tighter_cases', 0)} cancellation cases.
+    Continue only toward a sparse, formally enclosed polynomial range backend.
+    It is not a fourth solver and this plant-only evidence does not justify
+    NN/CROWN integration.
 
 ## Validity limits and unresolved questions
 
@@ -619,8 +648,11 @@ adaptation at the cost of MPFR/C++ workload.
 Recommended Torch work: supported normalized affine/QR reset, a restricted
 time-state basis, better polynomial range bounding and overflow attribution,
 validator/runtime observability, and a strict directed-rounding backend.
-BERN-NN-IBF is relevant only if it improves polynomial storage/range bounding;
-this plant-only evidence does not motivate NN abstraction work yet.
+The BERN range-only prototype contains all
+{bern_decision.get('cases', 0)} analytic cases and tightens
+{bern_decision.get('strictly_tighter_cases', 0)} cancellation cases.  It is
+worth continuing only as a sparse, formally enclosed range backend; this
+plant-only evidence does not motivate NN abstraction work or a fourth solver.
 
 See `three_tool_deep_study_report.md` for tables, validity limits, and all six
 research questions plus the eleven required final answers.

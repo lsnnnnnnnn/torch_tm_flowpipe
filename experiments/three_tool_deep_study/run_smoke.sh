@@ -53,6 +53,8 @@ cd "${REPO_ROOT}"
   --mode collect --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 python "${STUDY_DIR}/defect_diagnostic.py" \
   --output-dir "${OUTPUT_DIR}"
+"${CONDA}" run -n py11 python "${STUDY_DIR}/bern_feasibility.py" \
+  --repetitions 2 --output-dir "${OUTPUT_DIR}"
 "${CONDA}" run -n py11 pytest -q \
   "${STUDY_DIR}/tests/test_external_exports.py" \
   --torch-segment "${OUTPUT_DIR}/common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.01.json" \

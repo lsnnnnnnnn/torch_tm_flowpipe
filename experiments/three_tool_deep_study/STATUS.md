@@ -9,7 +9,7 @@ Last updated: 2026-07-29 UTC.
 | 2. Flow* root cause | complete | audit branch `fa39f7a`; standalone and integrated smoke pass stock miss plus both corrected containments, 53/256-bit comparison, original/generated schedule parity, and original/repaired Van der Pol reach to T=10; exact trace/report and format-patch series committed |
 | 3. Common intermediate representation | complete | CIR v2 schema and semantic validator cover every required field; Torch/Flow*/DiffReach adapters emit explicit unavailable markers and all three external schema/round-trip tests pass |
 | 4. Fair protocols | complete | B1/B_DR/B2/B3 semantics, explicit native capability gaps, required metric annotations, and within-tool-only Pareto flags pass 23 focused tests, matched-basis smoke, and an integrated 18-plot/1,280-row smoke with no verification failures; the authoritative ten-repetition run remains a Phase 6 gate |
-| 5. BERN and literature | pending final consolidation | local BERN feasibility branch exists at `dd82032`; required literature map is not yet present |
+| 5. BERN and literature | complete | range-only clean-room feasibility prototype contains all 5 analytic cases and tightens 2 cancellation cases; 18 deep tests plus 15 recovered BERN CPU-reference tests pass; `BERN_FEASIBILITY.md` and `LITERATURE_MAP.md` distinguish direct plant evidence from CROWN/β-CROWN, IBP, relaxations, MILP/BaB, VNN-COMP, attacks, and course material |
 | 6. Repository/final delivery | in progress | required bilingual reports, artifact index, reproducibility guide, results manifest, README update, full tests, clean status, commits, and pushes remain |
 
 Checkpoint policy: update this file in every phase checkpoint.  Timestamped

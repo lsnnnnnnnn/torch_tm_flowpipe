@@ -919,9 +919,26 @@ def verify_completed_output(
         "raw_results.csv",
         "correctness_checks.json",
         "failure_summary.csv",
+        "bern_feasibility.csv",
+        "bern_feasibility.json",
     ):
         if not (output / name).is_file():
             failures.append(f"missing final artifact: {name}")
+
+    bern_path = output / "bern_feasibility.json"
+    bern = (
+        json.loads(bern_path.read_text(encoding="utf-8"))
+        if bern_path.exists()
+        else {}
+    )
+    if bern and (
+        int(bern.get("cases", 0)) < 5
+        or not bern.get("all_bernstein_exact_ranges_contained", False)
+        or bern.get("decision", {}).get(
+            "fourth_comparable_reachability_tool", True
+        )
+    ):
+        failures.append("BERN range-only feasibility gates did not pass")
 
     pareto = (
         json.loads(
@@ -986,6 +1003,7 @@ def verify_completed_output(
         ),
         "mandatory_plot_count": len(mandatory_plots) - len(missing_plots),
         "pareto_checks": pareto,
+        "bern_feasibility": bern,
     }
     write_json(output / "final_acceptance.json", result)
     if failures:

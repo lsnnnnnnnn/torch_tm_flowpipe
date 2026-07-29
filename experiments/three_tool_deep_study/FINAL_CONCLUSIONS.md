@@ -36,8 +36,11 @@ adaptation at the cost of MPFR/C++ workload.
 Recommended Torch work: supported normalized affine/QR reset, a restricted
 time-state basis, better polynomial range bounding and overflow attribution,
 validator/runtime observability, and a strict directed-rounding backend.
-BERN-NN-IBF is relevant only if it improves polynomial storage/range bounding;
-this plant-only evidence does not motivate NN abstraction work yet.
+The BERN range-only prototype contains all
+5 analytic cases and tightens
+2 cancellation cases.  It is
+worth continuing only as a sparse, formally enclosed range backend; this
+plant-only evidence does not motivate NN abstraction work or a fourth solver.
 
 See `three_tool_deep_study_report.md` for tables, validity limits, and all six
 research questions plus the eleven required final answers.
