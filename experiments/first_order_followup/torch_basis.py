@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math
 import sys
+from itertools import combinations_with_replacement
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
@@ -23,7 +24,7 @@ import torch_tm_flowpipe.flowpipe as flowpipe_core
 
 torch.set_default_dtype(torch.float64)
 
-BASIS_NAMES = ("B1", "B_DR", "B2")
+BASIS_NAMES = ("B1", "B_DR", "B2", "B3")
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,8 @@ def exponent_is_retained(
         return degree <= 1
     if basis == "B2":
         return degree <= 2
+    if basis == "B3":
+        return degree <= 3
     if basis != "B_DR":
         raise ValueError(f"unknown finite basis {basis!r}")
     if degree <= 1:
@@ -74,15 +77,15 @@ def retained_dictionary(
         exp = [0] * n_vars
         exp[index] = 1
         candidates.append(tuple(exp))
-    if basis in {"B_DR", "B2"}:
-        for left in range(n_vars):
-            for right in range(left, n_vars):
-                exp = [0] * n_vars
-                exp[left] += 1
-                exp[right] += 1
-                exp_t = tuple(exp)
-                if exponent_is_retained(exp_t, basis, tau_index=tau_index):
-                    candidates.append(exp_t)
+    maximum_degree = 3 if basis == "B3" else 2
+    for degree in range(2, maximum_degree + 1):
+        for indices in combinations_with_replacement(range(n_vars), degree):
+            exp = [0] * n_vars
+            for index in indices:
+                exp[index] += 1
+            exp_t = tuple(exp)
+            if exponent_is_retained(exp_t, basis, tau_index=tau_index):
+                candidates.append(exp_t)
     return tuple(sorted(set(candidates), key=lambda exp: (sum(exp), exp)))
 
 
@@ -105,6 +108,7 @@ def project_to_basis(
     tau_index: int | None,
     stage: str,
     iteration: int,
+    arithmetic_order: int | None = None,
 ) -> tuple[TMVector, list[BasisProjectionRecord]]:
     """Project polynomial support and independently range every removed term."""
     projected: list[TaylorModel] = []
@@ -136,7 +140,11 @@ def project_to_basis(
                 Polynomial(kept, model.n_vars),
                 remainder,
                 list(model.domain),
-                order=2,
+                order=(
+                    int(arithmetic_order)
+                    if arithmetic_order is not None
+                    else max(3 if basis == "B3" else 2, model.order)
+                ),
                 truncation_range_split=model.truncation_range_split,
             )
         )
@@ -150,6 +158,7 @@ def _finite_basis_picard(
     basis: str,
     *,
     iterations: int,
+    arithmetic_order: int,
 ) -> tuple[TMVector, list[BasisProjectionRecord]]:
     domain = base_poly_ext.domain
     current = base_poly_ext
@@ -165,17 +174,18 @@ def _finite_basis_picard(
             tau_index=tau_index,
             stage="picard",
             iteration=iteration,
+            arithmetic_order=arithmetic_order,
         )
         records.extend(iteration_records)
-        # Keep a fixed complete-degree-two arithmetic ceiling.  The finite
+        # Keep a fixed arithmetic ceiling selected by the caller.  The finite
         # dictionary projection, not a changing arithmetic order, distinguishes
-        # B1, B_DR, and B2.
+        # the compared bases.
         current = TMVector(
             TaylorModel(
                 model.polynomial,
                 model.remainder,
                 domain,
-                order=2,
+                order=arithmetic_order,
                 truncation_range_split=model.truncation_range_split,
             )
             for model in current
@@ -194,12 +204,18 @@ def finite_basis_step_from_tm(
     validation_eps: float = 1e-12,
     growth_factor: float = 1.25,
     diagnostics: list[dict[str, Any]] | None = None,
+    arithmetic_order: int = 2,
 ) -> tuple[FlowpipeSegment, list[BasisProjectionRecord]]:
     """Construct and validate one segment using a fixed exponent dictionary."""
     if basis not in BASIS_NAMES:
         raise ValueError(f"basis must be one of {BASIS_NAMES}")
     if h <= 0:
         raise ValueError("h must be positive")
+    minimum_order = 3 if basis == "B3" else 2
+    if arithmetic_order < minimum_order:
+        raise ValueError(
+            f"{basis} requires arithmetic_order >= {minimum_order}"
+        )
     tau_interval = Interval(0.0, float(h))
     base_ext = x0_tm.extend_domain(tau_interval)
     tau_index = x0_tm.n_vars
@@ -209,7 +225,7 @@ def finite_basis_step_from_tm(
             model.polynomial,
             Interval.zero(dtype=model.remainder.dtype, device=model.remainder.device),
             domain,
-            order=2,
+            order=arithmetic_order,
         )
         for model in base_ext
     )
@@ -219,6 +235,7 @@ def finite_basis_step_from_tm(
         tau_index,
         basis,
         iterations=picard_iterations,
+        arithmetic_order=arithmetic_order,
     )
     candidate_remainders = [model.remainder.to_tuple() for model in candidate]
     validated, status, attempts, message = flowpipe_core._validate_picard(
@@ -226,7 +243,7 @@ def finite_basis_step_from_tm(
         base_ext,
         candidate,
         tau_index,
-        2,
+        arithmetic_order,
         None,
         max_attempts=max_validation_attempts,
         validation_eps=validation_eps,
@@ -245,6 +262,7 @@ def finite_basis_step_from_tm(
         tau_index=tau_index,
         stage="validated_segment",
         iteration=picard_iterations,
+        arithmetic_order=arithmetic_order,
     )
     records.extend(final_projection_records)
     final_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
@@ -253,7 +271,7 @@ def finite_basis_step_from_tm(
         final_tm=final_tm,
         status=status,
         h=float(h),
-        order=2,
+        order=arithmetic_order,
         validation_attempts=attempts,
         message=message,
         tau_index=tau_index,

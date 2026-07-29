@@ -32,13 +32,18 @@ def _rhs(system):
     return rhs
 
 
-@pytest.mark.parametrize("basis", ["B1", "B_DR", "B2"])
+@pytest.mark.parametrize("basis", ["B1", "B_DR", "B2", "B3"])
 def test_one_step_support_matches_finite_dictionary(basis):
     spec = load_spec(EXPERIMENT / "benchmark_spec.yaml")
     system = spec["systems"]["harmonic"]
     initial = normalized_initial_tm(system["initial_box"])
     segment, records = finite_basis_step_from_tm(
-        _rhs(system), initial, 0.01, basis, picard_iterations=2
+        _rhs(system),
+        initial,
+        0.01,
+        basis,
+        picard_iterations=2,
+        arithmetic_order=3 if basis == "B3" else 2,
     )
     assert segment.status == "validated"
     allowed = set(
@@ -59,8 +64,10 @@ def test_one_step_support_matches_finite_dictionary(basis):
             exponent[segment.tau_index] == 1 and sum(exponent) == 2
             for exponent in support
         )
-    else:
+    elif basis == "B2":
         assert all(sum(exponent) <= 2 for exponent in support)
+    else:
+        assert all(sum(exponent) <= 3 for exponent in support)
     assert all(
         segment.final_tm.active_variables() <= set(range(initial.n_vars))
         for _ in [0]
@@ -75,6 +82,13 @@ def test_bdr_keeps_time_state_but_discards_state_state():
     assert (0, 0, 2) in dictionary
     assert (2, 0, 0) not in dictionary
     assert (1, 1, 0) not in dictionary
+
+
+def test_b3_dictionary_contains_cubic_cross_terms():
+    dictionary = set(retained_dictionary("B3", 3, tau_index=2))
+    assert (1, 1, 1) in dictionary
+    assert (2, 0, 1) in dictionary
+    assert (0, 0, 3) in dictionary
 
 
 def test_affine_box_and_qr_resets_contain_input():
