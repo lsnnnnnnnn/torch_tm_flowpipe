@@ -18,11 +18,13 @@ Completed:
 - a second formal attempt passed its then-current auditor, but manual semantic
   review found that Pareto dominance was incorrectly partitioned by tool; the
   bundle is rejected and the cross-tool grouping now has a regression test;
+- cross-tool Pareto smoke passed at
+  `2d870f6fd12595eed0a23da59f945986a310e245`;
 - old run `20260730T015245Z` marked provisional.
 
 Pending at this checkpoint:
 
-- validate and freeze the cross-tool Pareto correction;
+- freeze the cross-tool Pareto correction;
 - run and independently accept the formal profile;
 - commit/push the formal artifact and canonical branch;
 - refresh after-inventory and main merge plan.

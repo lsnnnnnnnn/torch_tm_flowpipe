@@ -1,0 +1,213 @@
+{
+  "benchmark_sha256": "d8ec2995247bac0ca9b00aa98e92b7bce0e05feba28fc54ce3c834cf67f35fb0",
+  "expected_configuration_count": 12,
+  "expected_configurations": [
+    {
+      "basis_id": "restricted_quasiquadratic_symbolic_window100",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "c5db5d2738f35bdacbfc3003111fed4b40bfb2a3b58b21908fcdefb3d6d93010",
+      "effective_order": "restricted_quasiquadratic_round5",
+      "h": 0.005,
+      "remainder_policy": "frr_round5_stop_ratio_0.95",
+      "requested_horizon": 0.015,
+      "requested_order": "not_applicable",
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "coupled_quadratic",
+      "tool": "diffreach",
+      "variant": "restricted_quasi_window100_round5_selected"
+    },
+    {
+      "basis_id": "restricted_quasiquadratic_symbolic_window100",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "facfc8ece7a7e330adfbb32509b03e21a83b6e07d4ac966cbd35b2dc021c66f8",
+      "effective_order": "restricted_quasiquadratic_round5",
+      "h": 0.01,
+      "remainder_policy": "frr_round5_stop_ratio_0.95",
+      "requested_horizon": 0.03,
+      "requested_order": "not_applicable",
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "harmonic",
+      "tool": "diffreach",
+      "variant": "restricted_quasi_window100_round5_selected"
+    },
+    {
+      "basis_id": "restricted_quasiquadratic_symbolic_window100",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "5fe3002d42cc6aebb5683f7c303f2826466b52e43c1ca849749019a4ed7582ef",
+      "effective_order": "restricted_quasiquadratic_round5",
+      "h": 0.01,
+      "remainder_policy": "frr_round5_stop_ratio_0.95",
+      "requested_horizon": 0.03,
+      "requested_order": "not_applicable",
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "riccati",
+      "tool": "diffreach",
+      "variant": "restricted_quasi_window100_round5_selected"
+    },
+    {
+      "basis_id": "restricted_quasiquadratic_symbolic_window100",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "d271a96a02ab66aea5d33391b0458eafd6ec037678e52cc01d2bdc63481e1290",
+      "effective_order": "restricted_quasiquadratic_round5",
+      "h": 0.005,
+      "remainder_policy": "frr_round5_stop_ratio_0.95",
+      "requested_horizon": 0.015,
+      "requested_order": "not_applicable",
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "van_der_pol",
+      "tool": "diffreach",
+      "variant": "restricted_quasi_window100_round5_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_4",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "8b918589006b1d5beed2074b2ee4f5f94d939c8f28b7cd41e4094b84a9dc75f2",
+      "effective_order": 4,
+      "h": 0.005,
+      "remainder_policy": "validated_interval_candidate",
+      "requested_horizon": 0.015,
+      "requested_order": 4,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "coupled_quadratic",
+      "tool": "flowstar",
+      "variant": "root_cause_order4_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_4",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "a52b187d1684b0935c76d8da970c30b5f34ee09cbd613f77d2dec7e5cb71eafa",
+      "effective_order": 4,
+      "h": 0.01,
+      "remainder_policy": "validated_interval_candidate",
+      "requested_horizon": 0.03,
+      "requested_order": 4,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "harmonic",
+      "tool": "flowstar",
+      "variant": "root_cause_order4_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_4",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "e0521867563eb82c4eae885bbe6c5ea5824778cdccfeed5960c53bb73b98bca0",
+      "effective_order": 4,
+      "h": 0.01,
+      "remainder_policy": "validated_interval_candidate",
+      "requested_horizon": 0.03,
+      "requested_order": 4,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "riccati",
+      "tool": "flowstar",
+      "variant": "root_cause_order4_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_4",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "b74a6fa727158953f962ea00a9bdca3c58f041924dd88251a4f8cda818c96180",
+      "effective_order": 4,
+      "h": 0.005,
+      "remainder_policy": "validated_interval_candidate",
+      "requested_horizon": 0.015,
+      "requested_order": 4,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "van_der_pol",
+      "tool": "flowstar",
+      "variant": "root_cause_order4_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_2",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "64c7af00e2666b055b4645f33690c1bdd49fe4647c4bd59e18ab0224852f5db2",
+      "effective_order": 2,
+      "h": 0.005,
+      "remainder_policy": "validated_interval",
+      "requested_horizon": 0.015,
+      "requested_order": 2,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "coupled_quadratic",
+      "tool": "torch_tm_flowpipe",
+      "variant": "order2_affine_reset_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_2",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "181ee9493da91bc296edd7640b6e10793a70cfba5622c87eecf325355b8bc14e",
+      "effective_order": 2,
+      "h": 0.01,
+      "remainder_policy": "validated_interval",
+      "requested_horizon": 0.03,
+      "requested_order": 2,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "harmonic",
+      "tool": "torch_tm_flowpipe",
+      "variant": "order2_affine_reset_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_2",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "ec48f443e2c745ccea5c54c2d2e3b7c470fd4151f01217f7f7ff6c2a753e1317",
+      "effective_order": 2,
+      "h": 0.01,
+      "remainder_policy": "validated_interval",
+      "requested_horizon": 0.03,
+      "requested_order": 2,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "riccati",
+      "tool": "torch_tm_flowpipe",
+      "variant": "order2_affine_reset_selected"
+    },
+    {
+      "basis_id": "complete_total_degree_2",
+      "bound_semantics": "raw_endpoint",
+      "config_id": "c2491955e4ad166ec53fc1c50f88510de333b9403687e52af4f2c97f54eab055",
+      "effective_order": 2,
+      "h": 0.005,
+      "remainder_policy": "validated_interval",
+      "requested_horizon": 0.015,
+      "requested_order": 2,
+      "runtime_boundary_version": "total_configuration_v2",
+      "step_policy": "fixed",
+      "system": "van_der_pol",
+      "tool": "torch_tm_flowpipe",
+      "variant": "order2_affine_reset_selected"
+    }
+  ],
+  "profile": {
+    "authoritative": false,
+    "canonical_spec": "canonical.yaml",
+    "configuration_source": "smoke",
+    "profile": "smoke",
+    "runtime_repetitions": 1,
+    "schema_version": 1,
+    "tools": {
+      "diffreach": {
+        "variants": [
+          "restricted_quasi_window100_round5_selected"
+        ]
+      },
+      "flowstar": {
+        "variants": [
+          "root_cause_order4_selected"
+        ]
+      },
+      "torch_tm_flowpipe": {
+        "variants": [
+          "order2_affine_reset_selected"
+        ]
+      }
+    }
+  },
+  "profile_sha256": "a42294a97a9201e335b75c72fa46478a8d12126286b1c97cb0bb16b07d0c0c65",
+  "required_repetitions": 1
+}

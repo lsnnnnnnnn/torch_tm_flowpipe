@@ -22,7 +22,8 @@ but a manual cross-tool review found that both collector and independent
 auditor partitioned Pareto dominance by tool. Its key evidence is retained
 under `08_rejected_formal_semantic_review/`; it is not citable. The corrected
 contract groups by system and evaluation horizon so eligible tool families
-can dominate one another.
+can dominate one another. Smoke version 6 accepts this correction at
+`2d870f6fd12595eed0a23da59f945986a310e245`.
 
 Remaining continuation:
 
