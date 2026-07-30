@@ -24,7 +24,9 @@ Eligibility is evaluated before Pareto dominance. A primary row requires:
 
 `not_applicable` is a separate enum, never a truthy Boolean substitute.
 Single sweeps and smoke rows stay exploratory/excluded. The auditor recomputes
-the frontier from eligible rows and compares exact config IDs.
+the cross-tool frontier within each system and requested evaluation horizon,
+then compares exact config IDs. Tool identity is not a grouping boundary:
+eligible Torch, DiffReach, and Flowstar rows can dominate one another.
 
 The shared failure taxonomy is `completed`, `validation_rejected`,
 `nonfinite`, `timeout`, `process_error`, `compile_error`,

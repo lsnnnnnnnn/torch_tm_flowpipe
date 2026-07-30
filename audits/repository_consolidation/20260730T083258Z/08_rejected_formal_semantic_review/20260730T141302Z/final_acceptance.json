@@ -1,0 +1,238 @@
+{
+  "authoritative": true,
+  "checks": {
+    "bound_partition": {
+      "failed_config_ids": [],
+      "passed": true
+    },
+    "code_freeze": {
+      "actual_sha": "e50fe9d52d62f3e0892f39ac76dd4281499a1d34",
+      "passed": true,
+      "run_sha": "e50fe9d52d62f3e0892f39ac76dd4281499a1d34"
+    },
+    "complete_test_log": {
+      "exit_codes": [
+        "0",
+        "0",
+        "0"
+      ],
+      "passed": true
+    },
+    "configuration_identity_uniqueness": {
+      "duplicates": [],
+      "passed": true
+    },
+    "eligibility_before_pareto": {
+      "eligible_ids": [
+        "01058514092b3f4cbf2135f59c54cb8b00f049ce93d6f563ba7ef06a9bc7ce07",
+        "026a983a860b0d34bc938f010fd6714059087270c30feb9c66bc6dd785e98d4f",
+        "1260897d36dcd3692303c9f35fe30b22335ae7ccbf0fe895d652fab6ab4e897b",
+        "178b26b5538e8b6f581921f6479f8518a8baf43ffef0e627ed7225bb52211ad1",
+        "1a5af2e7bf7e8b8f2b52c7762b8e2644dd806e39a80800ef1703db79bfff8cee",
+        "2f95ed673f2e18e60e17fe3158f9c59c735e57e2871a2ead123bf1971df6eae1",
+        "3351b4f622ff2f68a6d3a06f6be8d51ec4e1a0d1cd2717784ebec6f4be87494a",
+        "3465edfb03bee2e969ef570e7f5d195eccc0d7ed2a21c0b4acfa8cd92f45f67f",
+        "350c520f94bcf97f23c6415b462ac4b61c6dfddd8d74fe772cfe3b54a699ea73",
+        "39d79ee485748b6588623af25b7f92f1ead14a6ec6b30e0e9f2bcd41ded1c63e",
+        "3df668fc9fe887e73dacbb967a63b8f9401e8554fdc6fe197dd137e1ac85bc25",
+        "4136d2274c87d41d17846d254faee47554d3b98b51700e19a4ff4aad9c726a8f",
+        "48c15bb79d99a61ec47dbe29026e9f960be20b3d30fdbad71a3ac3bd644c89ef",
+        "4aa17db604b8e9969ead6859e7a02cfef2c3ce48cb41e4486773c920cd28a168",
+        "57f32b4047037314028914e45706dedd7fd8feb0ff6c54bd85217250dbf830c4",
+        "62d38f9209929b7bb1e3aa95a7cbb727e720dfb4f7a2a97cd57bcf227ff21481",
+        "6e7799577a58f6c0c621f7ac5c3fb21d1a487d981c05682f0072962416d757f1",
+        "71afad7d86c30572664a0499a5a6c3f2a1599b2416f2cbae2be139ea63a6101d",
+        "76dbbb650f77a4f0b3155713a8f6360c99aa2a0a3ced0e352a726de3f7e18d15",
+        "a3effd8cd5a813cd9e20ed79387aa023e2277b3407a6f1945fdcc0cde2376699",
+        "a6d757927e24331d4b754357866f23bc015ddf8d5f567695635c22a4eca36d85",
+        "b720c82f5c8b4f0d7b33345a8aa93716ab5866a325def687bd690b8a1eb12097",
+        "f77c5ca16c8e44b0b357fd797ccadde2c95458dc616a137b1bb5c473be8d9dc1",
+        "fc1a95ebfd753bf72e54eedb69c2671529b2d7d319d8512cd27bb778e50d59a5"
+      ],
+      "excluded_marked_frontier": [],
+      "passed": true,
+      "primary_ids": [
+        "01058514092b3f4cbf2135f59c54cb8b00f049ce93d6f563ba7ef06a9bc7ce07",
+        "026a983a860b0d34bc938f010fd6714059087270c30feb9c66bc6dd785e98d4f",
+        "1260897d36dcd3692303c9f35fe30b22335ae7ccbf0fe895d652fab6ab4e897b",
+        "178b26b5538e8b6f581921f6479f8518a8baf43ffef0e627ed7225bb52211ad1",
+        "1a5af2e7bf7e8b8f2b52c7762b8e2644dd806e39a80800ef1703db79bfff8cee",
+        "2f95ed673f2e18e60e17fe3158f9c59c735e57e2871a2ead123bf1971df6eae1",
+        "3351b4f622ff2f68a6d3a06f6be8d51ec4e1a0d1cd2717784ebec6f4be87494a",
+        "3465edfb03bee2e969ef570e7f5d195eccc0d7ed2a21c0b4acfa8cd92f45f67f",
+        "350c520f94bcf97f23c6415b462ac4b61c6dfddd8d74fe772cfe3b54a699ea73",
+        "39d79ee485748b6588623af25b7f92f1ead14a6ec6b30e0e9f2bcd41ded1c63e",
+        "3df668fc9fe887e73dacbb967a63b8f9401e8554fdc6fe197dd137e1ac85bc25",
+        "4136d2274c87d41d17846d254faee47554d3b98b51700e19a4ff4aad9c726a8f",
+        "48c15bb79d99a61ec47dbe29026e9f960be20b3d30fdbad71a3ac3bd644c89ef",
+        "4aa17db604b8e9969ead6859e7a02cfef2c3ce48cb41e4486773c920cd28a168",
+        "57f32b4047037314028914e45706dedd7fd8feb0ff6c54bd85217250dbf830c4",
+        "62d38f9209929b7bb1e3aa95a7cbb727e720dfb4f7a2a97cd57bcf227ff21481",
+        "6e7799577a58f6c0c621f7ac5c3fb21d1a487d981c05682f0072962416d757f1",
+        "71afad7d86c30572664a0499a5a6c3f2a1599b2416f2cbae2be139ea63a6101d",
+        "76dbbb650f77a4f0b3155713a8f6360c99aa2a0a3ced0e352a726de3f7e18d15",
+        "a3effd8cd5a813cd9e20ed79387aa023e2277b3407a6f1945fdcc0cde2376699",
+        "a6d757927e24331d4b754357866f23bc015ddf8d5f567695635c22a4eca36d85",
+        "b720c82f5c8b4f0d7b33345a8aa93716ab5866a325def687bd690b8a1eb12097",
+        "f77c5ca16c8e44b0b357fd797ccadde2c95458dc616a137b1bb5c473be8d9dc1",
+        "fc1a95ebfd753bf72e54eedb69c2671529b2d7d319d8512cd27bb778e50d59a5"
+      ]
+    },
+    "expected_configurations": {
+      "expected": 24,
+      "missing": [],
+      "observed": 24,
+      "passed": true,
+      "unexpected": []
+    },
+    "fail_closed_validations": {
+      "failures": [],
+      "passed": true
+    },
+    "failure_completeness": {
+      "delivered_failure_ids": [],
+      "expected_failure_ids": [],
+      "passed": true
+    },
+    "figure_sources": {
+      "failures": [],
+      "passed": true
+    },
+    "flowstar_order_basis_identity": {
+      "passed": true,
+      "rows": [
+        [
+          "3351b4f622ff2f68a6d3a06f6be8d51ec4e1a0d1cd2717784ebec6f4be87494a",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ],
+        [
+          "2f95ed673f2e18e60e17fe3158f9c59c735e57e2871a2ead123bf1971df6eae1",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ],
+        [
+          "6e7799577a58f6c0c621f7ac5c3fb21d1a487d981c05682f0072962416d757f1",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ],
+        [
+          "026a983a860b0d34bc938f010fd6714059087270c30feb9c66bc6dd785e98d4f",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ],
+        [
+          "39d79ee485748b6588623af25b7f92f1ead14a6ec6b30e0e9f2bcd41ded1c63e",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ],
+        [
+          "a3effd8cd5a813cd9e20ed79387aa023e2277b3407a6f1945fdcc0cde2376699",
+          "4",
+          "4",
+          "complete_total_degree_4"
+        ]
+      ]
+    },
+    "formal_repetitions": {
+      "failed_config_ids": [],
+      "passed": true,
+      "required": 10
+    },
+    "fresh_output_no_stale_files": {
+      "passed": true
+    },
+    "horizon_semantics": {
+      "failed_config_ids": [],
+      "passed": true
+    },
+    "independent_pareto": {
+      "delivered": [
+        "01058514092b3f4cbf2135f59c54cb8b00f049ce93d6f563ba7ef06a9bc7ce07",
+        "026a983a860b0d34bc938f010fd6714059087270c30feb9c66bc6dd785e98d4f",
+        "1260897d36dcd3692303c9f35fe30b22335ae7ccbf0fe895d652fab6ab4e897b",
+        "178b26b5538e8b6f581921f6479f8518a8baf43ffef0e627ed7225bb52211ad1",
+        "1a5af2e7bf7e8b8f2b52c7762b8e2644dd806e39a80800ef1703db79bfff8cee",
+        "2f95ed673f2e18e60e17fe3158f9c59c735e57e2871a2ead123bf1971df6eae1",
+        "3351b4f622ff2f68a6d3a06f6be8d51ec4e1a0d1cd2717784ebec6f4be87494a",
+        "3465edfb03bee2e969ef570e7f5d195eccc0d7ed2a21c0b4acfa8cd92f45f67f",
+        "350c520f94bcf97f23c6415b462ac4b61c6dfddd8d74fe772cfe3b54a699ea73",
+        "39d79ee485748b6588623af25b7f92f1ead14a6ec6b30e0e9f2bcd41ded1c63e",
+        "3df668fc9fe887e73dacbb967a63b8f9401e8554fdc6fe197dd137e1ac85bc25",
+        "48c15bb79d99a61ec47dbe29026e9f960be20b3d30fdbad71a3ac3bd644c89ef",
+        "4aa17db604b8e9969ead6859e7a02cfef2c3ce48cb41e4486773c920cd28a168",
+        "57f32b4047037314028914e45706dedd7fd8feb0ff6c54bd85217250dbf830c4",
+        "62d38f9209929b7bb1e3aa95a7cbb727e720dfb4f7a2a97cd57bcf227ff21481",
+        "6e7799577a58f6c0c621f7ac5c3fb21d1a487d981c05682f0072962416d757f1",
+        "71afad7d86c30572664a0499a5a6c3f2a1599b2416f2cbae2be139ea63a6101d",
+        "76dbbb650f77a4f0b3155713a8f6360c99aa2a0a3ced0e352a726de3f7e18d15",
+        "a3effd8cd5a813cd9e20ed79387aa023e2277b3407a6f1945fdcc0cde2376699",
+        "b720c82f5c8b4f0d7b33345a8aa93716ab5866a325def687bd690b8a1eb12097",
+        "f77c5ca16c8e44b0b357fd797ccadde2c95458dc616a137b1bb5c473be8d9dc1",
+        "fc1a95ebfd753bf72e54eedb69c2671529b2d7d319d8512cd27bb778e50d59a5"
+      ],
+      "passed": true,
+      "recomputed": [
+        "01058514092b3f4cbf2135f59c54cb8b00f049ce93d6f563ba7ef06a9bc7ce07",
+        "026a983a860b0d34bc938f010fd6714059087270c30feb9c66bc6dd785e98d4f",
+        "1260897d36dcd3692303c9f35fe30b22335ae7ccbf0fe895d652fab6ab4e897b",
+        "178b26b5538e8b6f581921f6479f8518a8baf43ffef0e627ed7225bb52211ad1",
+        "1a5af2e7bf7e8b8f2b52c7762b8e2644dd806e39a80800ef1703db79bfff8cee",
+        "2f95ed673f2e18e60e17fe3158f9c59c735e57e2871a2ead123bf1971df6eae1",
+        "3351b4f622ff2f68a6d3a06f6be8d51ec4e1a0d1cd2717784ebec6f4be87494a",
+        "3465edfb03bee2e969ef570e7f5d195eccc0d7ed2a21c0b4acfa8cd92f45f67f",
+        "350c520f94bcf97f23c6415b462ac4b61c6dfddd8d74fe772cfe3b54a699ea73",
+        "39d79ee485748b6588623af25b7f92f1ead14a6ec6b30e0e9f2bcd41ded1c63e",
+        "3df668fc9fe887e73dacbb967a63b8f9401e8554fdc6fe197dd137e1ac85bc25",
+        "48c15bb79d99a61ec47dbe29026e9f960be20b3d30fdbad71a3ac3bd644c89ef",
+        "4aa17db604b8e9969ead6859e7a02cfef2c3ce48cb41e4486773c920cd28a168",
+        "57f32b4047037314028914e45706dedd7fd8feb0ff6c54bd85217250dbf830c4",
+        "62d38f9209929b7bb1e3aa95a7cbb727e720dfb4f7a2a97cd57bcf227ff21481",
+        "6e7799577a58f6c0c621f7ac5c3fb21d1a487d981c05682f0072962416d757f1",
+        "71afad7d86c30572664a0499a5a6c3f2a1599b2416f2cbae2be139ea63a6101d",
+        "76dbbb650f77a4f0b3155713a8f6360c99aa2a0a3ced0e352a726de3f7e18d15",
+        "a3effd8cd5a813cd9e20ed79387aa023e2277b3407a6f1945fdcc0cde2376699",
+        "b720c82f5c8b4f0d7b33345a8aa93716ab5866a325def687bd690b8a1eb12097",
+        "f77c5ca16c8e44b0b357fd797ccadde2c95458dc616a137b1bb5c473be8d9dc1",
+        "fc1a95ebfd753bf72e54eedb69c2671529b2d7d319d8512cd27bb778e50d59a5"
+      ]
+    },
+    "raw_observation_repetitions": {
+      "expected_configurations": 24,
+      "failures": [],
+      "observed_groups": 24,
+      "passed": true,
+      "required_steady_repetitions": 10,
+      "unexpected_groups": []
+    },
+    "report_traceability": {
+      "missing": [],
+      "passed": true
+    },
+    "required_files": {
+      "missing": [],
+      "passed": true
+    },
+    "runtime_boundary": {
+      "failed_config_ids": [],
+      "passed": true
+    },
+    "sha256_manifest": {
+      "failures": [],
+      "passed": true
+    },
+    "worktree_changes_confined_to_run": {
+      "applicability": "required",
+      "outside_changes": [],
+      "passed": true
+    }
+  },
+  "failures": [],
+  "passed": true,
+  "status": "accepted_authoritative"
+}

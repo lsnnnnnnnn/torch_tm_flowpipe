@@ -10,6 +10,7 @@
 | `canonical-smoke-20260730-v4` | consolidation smoke at `73c07c9` | accepted non-authoritative | pipeline and audit validation only |
 | `20260730T124958Z` | first formal freeze `1adb631` | `failed_acceptance` | numerical gates passed; repository-hygiene side effect fixed in `9bef0ac` |
 | `canonical-smoke-20260730-v5` | corrected smoke at `9bef0ac` | accepted non-authoritative | regression verifies outputs remain inside run directory |
+| `20260730T141302Z` | second formal freeze `e50fe9d` | rejected after semantic review | old auditor grouped Pareto by tool instead of cross-tool; not citable |
 
 The full pre-consolidation deep-study tree is recoverable through annotated tag
 `archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study`

@@ -18,7 +18,7 @@ def recompute_pareto(
     rows: Sequence[MutableMapping[str, Any]],
 ) -> None:
     """Recompute dominance only on the already-eligible input rows."""
-    groups: dict[tuple[str, str, float], list[MutableMapping[str, Any]]] = (
+    groups: dict[tuple[str, float], list[MutableMapping[str, Any]]] = (
         defaultdict(list)
     )
     for row in rows:
@@ -29,7 +29,6 @@ def recompute_pareto(
             raise ValueError("evaluation_time must be finite")
         groups[
             (
-                str(row["tool"]),
                 str(row["system"]),
                 round(evaluation_time, 12),
             )

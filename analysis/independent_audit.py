@@ -107,13 +107,12 @@ def _observation_key(row: Mapping[str, Any]) -> tuple[str, str, str, float, floa
 
 
 def _pareto_ids(rows: Iterable[Mapping[str, str]]) -> set[str]:
-    groups: dict[tuple[str, str, float], list[Mapping[str, str]]] = (
+    groups: dict[tuple[str, float], list[Mapping[str, str]]] = (
         defaultdict(list)
     )
     for row in rows:
         groups[
             (
-                row["tool"],
                 row["system"],
                 round(float(row["evaluation_time"]), 12),
             )

@@ -131,7 +131,7 @@ def test_pareto_is_recomputed_after_eligibility_filtering() -> None:
 
 @pytest.mark.unit
 @pytest.mark.protocol
-def test_pareto_never_compares_different_tool_families() -> None:
+def test_primary_pareto_compares_tool_families_cross_tool() -> None:
     left = eligible_row(
         tool="torch_tm_flowpipe",
         width_at_evaluation_time=2.0,
@@ -144,7 +144,8 @@ def test_pareto_never_compares_different_tool_families() -> None:
     )
     primary, rejected = partition_and_recompute_pareto([left, right])
     assert not rejected
-    assert all(row["width_runtime_pareto"] is True for row in primary)
+    flags = {row["tool"]: row["width_runtime_pareto"] for row in primary}
+    assert flags == {"torch_tm_flowpipe": False, "flowstar": True}
 
 
 @pytest.mark.unit

@@ -15,11 +15,14 @@ Completed:
   repository hygiene when a legacy diagnostic wrote outside its output;
 - the side effect is fixed and the corrected smoke passed at source SHA
   `9bef0ac87544aa97a8088c32e2a6e5cc2ab830a5`;
+- a second formal attempt passed its then-current auditor, but manual semantic
+  review found that Pareto dominance was incorrectly partitioned by tool; the
+  bundle is rejected and the cross-tool grouping now has a regression test;
 - old run `20260730T015245Z` marked provisional.
 
 Pending at this checkpoint:
 
-- create the corrected clean code-freeze commit;
+- validate and freeze the cross-tool Pareto correction;
 - run and independently accept the formal profile;
 - commit/push the formal artifact and canonical branch;
 - refresh after-inventory and main merge plan.

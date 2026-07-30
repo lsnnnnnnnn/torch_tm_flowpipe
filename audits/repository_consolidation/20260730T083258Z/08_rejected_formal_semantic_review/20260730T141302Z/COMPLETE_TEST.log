@@ -1,0 +1,33 @@
+[test_command_1]
+command=/opt/anaconda3/envs/onmi/bin/python -m pytest -q
+exit_code=0
+
+[stdout]
+.......s.......ss....................................................... [ 33%]
+........................................................................ [ 67%]
+.....................................................................    [100%]
+210 passed, 3 skipped in 34.04s
+
+[stderr]
+
+
+[test_command_2]
+command=/opt/anaconda3/envs/onmi/bin/python -m pytest -q experiments/three_tool_deep_study/tests
+exit_code=0
+
+[stdout]
+...........ssss..                                                        [100%]
+13 passed, 4 skipped in 2.85s
+
+[stderr]
+
+
+[test_command_3]
+command=/Users/shengenli/Documents/Codex/2026-07-30/c/work/diffreach312/bin/python -m pytest -q experiments/first_order_followup/tests/test_diffreach_projection.py
+exit_code=0
+
+[stdout]
+......                                                                   [100%]
+6 passed in 4.55s
+
+[stderr]

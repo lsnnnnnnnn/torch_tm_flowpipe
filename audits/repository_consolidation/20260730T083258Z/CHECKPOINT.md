@@ -17,6 +17,13 @@ the requested output and adds a regression test. Version 5 validates the
 corrected source with 12 exact identities, 24 raw observations, zero primary
 rows, and passing independent acceptance.
 
+The second formal attempt `20260730T141302Z` passed its then-current auditor,
+but a manual cross-tool review found that both collector and independent
+auditor partitioned Pareto dominance by tool. Its key evidence is retained
+under `08_rejected_formal_semantic_review/`; it is not citable. The corrected
+contract groups by system and evaluation horizon so eligible tool families
+can dominate one another.
+
 Remaining continuation:
 
 ```bash

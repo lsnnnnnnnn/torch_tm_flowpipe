@@ -1184,40 +1184,6 @@ def _runtime(summary: Mapping[str, Any]) -> float:
     return step * steps
 
 
-def _pareto_flags(rows: list[dict[str, Any]]) -> None:
-    # Native practical configurations do not share exact bases/backends.
-    # Pareto dominance is therefore meaningful only among configurations of
-    # the same tool at the same system and absolute evaluation time.
-    groups: dict[tuple[str, str, float], list[dict[str, Any]]] = defaultdict(list)
-    for row in rows:
-        evaluation_time = _float(row.get("evaluation_time"))
-        if not math.isfinite(evaluation_time):
-            continue
-        groups[
-            (
-                str(row["tool"]),
-                str(row["system"]),
-                round(evaluation_time, 12),
-            )
-        ].append(row)
-    for group in groups.values():
-        for candidate in group:
-            candidate["width_runtime_pareto"] = not any(
-                other is not candidate
-                and _float(other["width_at_evaluation_time"])
-                <= _float(candidate["width_at_evaluation_time"])
-                and _float(other["steady_full_configuration_time_s"])
-                <= _float(candidate["steady_full_configuration_time_s"])
-                and (
-                    _float(other["width_at_evaluation_time"])
-                    < _float(candidate["width_at_evaluation_time"])
-                    or _float(other["steady_full_configuration_time_s"])
-                    < _float(candidate["steady_full_configuration_time_s"])
-                )
-                for other in group
-            )
-
-
 def _collect_acceleration(output: Path) -> list[dict[str, Any]]:
     observations: list[dict[str, Any]] = []
     for tool in ("torch", "diffreach", "flowstar"):
