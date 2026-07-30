@@ -20,6 +20,7 @@ from common import (
 )
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 Number = TypeVar("Number", int, float, Fraction)
 Exponent = tuple[int, ...]
 Polynomial = dict[Exponent, Any]
@@ -355,7 +356,9 @@ def run_diagnostics(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--output-dir", required=True)
     args = parser.parse_args()
     spec = load_spec(args.spec)

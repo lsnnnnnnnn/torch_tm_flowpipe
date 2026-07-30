@@ -6,6 +6,7 @@ import hashlib
 import itertools
 import json
 import math
+import os
 import subprocess
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
@@ -14,6 +15,7 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
+CANONICAL_SPEC = REPO_ROOT / "benchmarks" / "canonical.yaml"
 SCHEMA_VERSION = 2
 
 
@@ -31,11 +33,37 @@ def is_unavailable(value: Any) -> bool:
     )
 
 
-def load_spec(path: str | Path = HERE / "benchmark_spec.yaml") -> dict[str, Any]:
+def load_spec(path: str | Path = CANONICAL_SPEC) -> dict[str, Any]:
     with Path(path).open(encoding="utf-8") as handle:
         value = yaml.safe_load(handle)
     if value.get("schema_version") != 1:
         raise ValueError("unsupported benchmark schema")
+    work_parent = REPO_ROOT.parent
+    repository_defaults = {
+        "torch": REPO_ROOT,
+        "torch_repaired_base": REPO_ROOT,
+        "diffreach": work_parent / "DiffReach",
+        "flowstar_original": work_parent / "flowstar",
+        "flowstar_audit": work_parent / "flowstar-audit",
+    }
+    repository_environment = {
+        "torch": "TORCH_REPO_ROOT",
+        "torch_repaired_base": "TORCH_REPAIRED_ROOT",
+        "diffreach": "DIFFREACH_ROOT",
+        "flowstar_original": "FLOWSTAR_ROOT",
+        "flowstar_audit": "FLOWSTAR_AUDIT_ROOT",
+    }
+    configured = value.setdefault("repositories", {})
+    for name, default in repository_defaults.items():
+        override = os.environ.get(repository_environment[name])
+        configured_path = Path(str(configured.get(name, "")))
+        if override:
+            resolved = Path(override).expanduser().resolve()
+        elif configured_path.is_absolute() and configured_path.exists():
+            resolved = configured_path.resolve()
+        else:
+            resolved = default.resolve()
+        configured[name] = str(resolved)
     return value
 
 

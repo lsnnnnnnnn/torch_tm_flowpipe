@@ -18,6 +18,7 @@ from scipy.integrate import solve_ivp
 from common import git_sha, load_spec, write_csv, write_json
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 
 
 def _parse_tokens(line: str, prefix: str) -> dict[str, str] | None:
@@ -165,6 +166,8 @@ def _compile(
     flowstar_root: Path,
     timeout: float,
 ) -> dict[str, Any]:
+    system_include = os.environ.get("FLOWSTAR_SYSTEM_INCLUDE", "/opt/homebrew/include")
+    system_library = os.environ.get("FLOWSTAR_SYSTEM_LIB", "/opt/homebrew/lib")
     command = [
         "g++",
         "-O3",
@@ -173,9 +176,13 @@ def _compile(
         "-std=c++11",
         "-I",
         str(flowstar_root / "flowstar-toolbox"),
+        "-I",
+        system_include,
         str(source),
         "-L",
         str(flowstar_root / "flowstar-toolbox"),
+        "-L",
+        system_library,
         "-o",
         str(executable),
         "-lflowstar",
@@ -549,7 +556,9 @@ def main() -> None:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--parity-output", required=True)
     parser.add_argument("--parity-summary", required=True)
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     args = parser.parse_args()
     summary = json.loads(Path(args.parity_summary).read_text(encoding="utf-8"))
     run_adaptive_audit(

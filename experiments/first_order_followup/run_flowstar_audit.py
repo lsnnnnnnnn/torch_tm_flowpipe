@@ -14,7 +14,10 @@ from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
-FLOWSTAR_ROOT = Path(os.environ.get("FLOWSTAR_ROOT", "/srv/local/shengenli/flowstar"))
+REPO_ROOT = HERE.parents[1]
+FLOWSTAR_ROOT = Path(
+    os.environ.get("FLOWSTAR_ROOT", REPO_ROOT.parent / "flowstar")
+).resolve()
 ROW_RE = re.compile(
     r"^AUDIT_ROW (?P<step>\d+) (?P<time>[-+0-9.eE]+) (?P<path>[A-Za-z0-9_]+) "
     r"(?P<state>\d+) (?P<lo>[-+0-9.eE]+) (?P<hi>[-+0-9.eE]+)$"

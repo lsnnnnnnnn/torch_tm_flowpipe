@@ -14,17 +14,29 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
-BASELINE_RESULT = Path(
-    "/srv/local/shengenli/torch_tm_flowpipe_first_order_bench/"
-    "experiments/first_order_three_way/results/20260723T173852Z"
+WORK_PARENT = REPO_ROOT.parent
+BASELINE_WORKTREE = Path(
+    os.environ.get(
+        "TORCH_BASELINE_ROOT",
+        WORK_PARENT / "torch_tm_flowpipe_first_order_bench",
+    )
+).resolve()
+BASELINE_RESULT = (
+    BASELINE_WORKTREE
+    / "experiments"
+    / "first_order_three_way"
+    / "results"
+    / "20260723T173852Z"
 )
 REPOSITORIES = {
     "followup": REPO_ROOT,
-    "frozen_baseline_worktree": Path(
-        "/srv/local/shengenli/torch_tm_flowpipe_first_order_bench"
-    ),
-    "diffreach": Path("/srv/local/shengenli/DiffReach"),
-    "flowstar": Path("/srv/local/shengenli/flowstar"),
+    "frozen_baseline_worktree": BASELINE_WORKTREE,
+    "diffreach": Path(
+        os.environ.get("DIFFREACH_ROOT", WORK_PARENT / "DiffReach")
+    ).resolve(),
+    "flowstar": Path(
+        os.environ.get("FLOWSTAR_ROOT", WORK_PARENT / "flowstar")
+    ).resolve(),
 }
 
 

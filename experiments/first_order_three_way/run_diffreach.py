@@ -19,10 +19,13 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
-DIFFREACH_ROOT = Path(os.environ.get("DIFFREACH_ROOT", "/srv/local/shengenli/DiffReach")).resolve()
+DIFFREACH_ROOT = Path(
+    os.environ.get("DIFFREACH_ROOT", REPO_ROOT.parent / "DiffReach")
+).resolve()
 if str(DIFFREACH_ROOT) not in sys.path:
     sys.path.insert(0, str(DIFFREACH_ROOT))
 

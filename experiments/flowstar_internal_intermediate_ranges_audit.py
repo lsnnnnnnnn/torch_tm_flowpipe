@@ -20,14 +20,14 @@ DEFAULT_OUT_DIR = ROOT / "outputs" / "flowstar_internal_intermediate_ranges_audi
 GAP_MATCH_TOL = 1e-10
 
 FLOWSTAR_SOURCE_REFERENCES = [
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal(... Expression ..., intermediate_ranges, Global_Setting)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal_remainder(... Expression ..., intermediate_ranges, Global_Setting)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::TaylorModel<DATA_TYPE>::mul_insert_ctrunc_normal(... Interval &tm1, Interval &intTrunc ...)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::HornerForm<DATA_TYPE>::insert_ctrunc_normal(... intermediate_ranges ...)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate(... intermediate_ranges ...)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate_remainder(... iterator over intermediate_ranges ...)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp::advance/result constructions around Picard_ctrunc_normal",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.cpp::not present in this checkout; relevant template implementations are in TaylorModel.h",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal(... Expression ..., intermediate_ranges, Global_Setting)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal_remainder(... Expression ..., intermediate_ranges, Global_Setting)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::TaylorModel<DATA_TYPE>::mul_insert_ctrunc_normal(... Interval &tm1, Interval &intTrunc ...)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::HornerForm<DATA_TYPE>::insert_ctrunc_normal(... intermediate_ranges ...)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate(... intermediate_ranges ...)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate_remainder(... iterator over intermediate_ranges ...)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/Continuous.cpp::advance/result constructions around Picard_ctrunc_normal",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.cpp::not present in this checkout; relevant template implementations are in TaylorModel.h",
     "experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp::traced_advance_adaptive_symbolic",
 ]
 

@@ -244,7 +244,9 @@ def export_segment(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--system", default="coupled_quadratic")
     parser.add_argument("--h", type=float, default=0.01)
     parser.add_argument("--order", type=int, default=2)

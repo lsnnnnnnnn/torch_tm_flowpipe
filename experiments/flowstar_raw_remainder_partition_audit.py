@@ -20,10 +20,10 @@ DEFAULT_OUT_DIR = ROOT / "outputs" / "flowstar_raw_remainder_partition_audit"
 GAP_MATCH_TOL = 1e-10
 
 FLOWSTAR_SOURCE_REFERENCES = [
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal(... Expression ..., intermediate_ranges, Global_Setting)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal_remainder(... Expression ..., intermediate_ranges, Global_Setting)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate(... step_exp_table ..., intermediate_ranges, Global_Setting)",
-    "/srv/local/shengenli/flowstar/flowstar-toolbox/TaylorModel.h::HornerForm<DATA_TYPE>::insert_ctrunc_normal(... intermediate_ranges ...)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal(... Expression ..., intermediate_ranges, Global_Setting)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::TaylorModelVec<DATA_TYPE>::Picard_ctrunc_normal_remainder(... Expression ..., intermediate_ranges, Global_Setting)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/expression.h::AST_Node<DATA_TYPE>::evaluate(... step_exp_table ..., intermediate_ranges, Global_Setting)",
+    "$FLOWSTAR_ROOT/flowstar-toolbox/TaylorModel.h::HornerForm<DATA_TYPE>::insert_ctrunc_normal(... intermediate_ranges ...)",
     "experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp::traced_advance_adaptive_symbolic",
 ]
 

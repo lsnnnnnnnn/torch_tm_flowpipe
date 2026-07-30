@@ -7,6 +7,7 @@ import copy
 import csv
 import json
 import math
+import os
 import statistics
 import sys
 import time
@@ -15,7 +16,12 @@ from typing import Any, Mapping
 
 HERE = Path(__file__).resolve().parent
 BASELINE_EXPERIMENT = HERE.parent / "first_order_three_way"
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+DIFFREACH_ROOT = Path(
+    os.environ.get(
+        "DIFFREACH_ROOT",
+        HERE.parents[2].parent / "DiffReach",
+    )
+).resolve()
 for path in (HERE, BASELINE_EXPERIMENT, DIFFREACH_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))

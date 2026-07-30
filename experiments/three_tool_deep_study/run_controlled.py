@@ -500,7 +500,9 @@ def _load_module(name: str, path: Path):
 def _load_diffreach_followup():
     followup = HERE.parent / "first_order_followup"
     baseline = HERE.parent / "first_order_three_way"
-    diffreach = Path("/srv/local/shengenli/DiffReach")
+    diffreach = Path(
+        os.environ.get("DIFFREACH_ROOT", REPO_ROOT.parent / "DiffReach")
+    ).expanduser().resolve()
     for path in (followup, baseline, diffreach):
         if str(path) not in sys.path:
             sys.path.insert(0, str(path))
@@ -755,7 +757,9 @@ def collect(output: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--tool", choices=["torch", "diffreach", "flowstar", "collect"], required=True

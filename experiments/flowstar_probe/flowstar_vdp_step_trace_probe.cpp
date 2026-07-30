@@ -586,7 +586,7 @@ void write_metadata_csv(const string &trace_path, double horizon, const Taylor_M
         metadata_path += "_metadata.csv";
     }
     const char *env_root = getenv("FLOWSTAR_ROOT");
-    string flowstar_root = env_root == NULL ? "/srv/local/shengenli/flowstar" : string(env_root);
+    string flowstar_root = env_root == NULL ? "../flowstar" : string(env_root);
     string flowstar_head = shell_output("git -C " + flowstar_root + " rev-parse HEAD 2>/dev/null");
     ofstream out(metadata_path.c_str());
     out << "key,value\n";

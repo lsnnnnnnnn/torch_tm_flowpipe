@@ -1,13 +1,19 @@
 """Plant-only DiffReach adapters used by the follow-up experiment."""
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
 BASELINE_EXPERIMENT = HERE.parent / "first_order_three_way"
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+DIFFREACH_ROOT = Path(
+    os.environ.get(
+        "DIFFREACH_ROOT",
+        HERE.parents[2].parent / "DiffReach",
+    )
+).resolve()
 for path in (HERE, BASELINE_EXPERIMENT, DIFFREACH_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))

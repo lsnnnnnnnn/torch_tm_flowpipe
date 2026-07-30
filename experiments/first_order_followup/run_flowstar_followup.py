@@ -23,7 +23,7 @@ if str(BASELINE_EXPERIMENT) not in sys.path:
 from common import exact_endpoint, flowstar_expression, git_sha, load_spec
 
 FLOWSTAR_ROOT = Path(
-    os.environ.get("FLOWSTAR_ROOT", "/srv/local/shengenli/flowstar")
+    os.environ.get("FLOWSTAR_ROOT", HERE.parents[1].parent / "flowstar")
 ).resolve()
 ROW_RE = re.compile(
     r"^MATCHED_ROW (?P<step>\d+) (?P<time>[-+0-9.eE]+) "
@@ -210,11 +210,15 @@ def _compile_and_run(
     executable: Path,
     timeout_s: float,
 ) -> tuple[subprocess.CompletedProcess[str], subprocess.CompletedProcess[str], float, float]:
+    system_include = os.environ.get("FLOWSTAR_SYSTEM_INCLUDE", "/opt/homebrew/include")
+    system_library = os.environ.get("FLOWSTAR_SYSTEM_LIB", "/opt/homebrew/lib")
     command = [
         "g++", "-O3", "-w", "-fpermissive", "-std=c++11",
         "-I", str(FLOWSTAR_ROOT / "flowstar-toolbox"),
+        "-I", system_include,
         str(source),
         "-L", str(FLOWSTAR_ROOT / "flowstar-toolbox"),
+        "-L", system_library,
         "-o", str(executable),
         "-lflowstar", "-lmpfr", "-lgmp", "-lgsl", "-lgslcblas", "-lm", "-lglpk",
     ]

@@ -1242,7 +1242,7 @@ This directory contains the Van der Pol Flow* original benchmark parity audit.
 
 ## Scope
 
-- Original Flow*: `/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol`
+- Original Flow*: `$FLOWSTAR_ROOT/benchmarks/continuous/vanderpol`
 - Generated Flow*: C++ harness generated from `original_flowstar_params.json`
 - PyTorch TM range-only: weak baseline over the original Flow* segment time grid
 - PyTorch TM dependency-preserving: fairer TM comparison that propagates `seg.final_tm` between original Flow* segments
@@ -1279,12 +1279,16 @@ No CROWN, no auto_LiRPA, no Jacobian bounds, no sin/cos support, no hybrid autom
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Flow* original Van der Pol benchmark parity audit.")
-    parser.add_argument("--flowstar-root", default=None, help="Flow* repository root; defaults to FLOWSTAR_ROOT or /srv/local/shengenli/flowstar")
+    parser.add_argument(
+        "--flowstar-root",
+        default=None,
+        help="Flow* repository root; defaults to FLOWSTAR_ROOT or a sibling checkout",
+    )
     parser.add_argument("--out-dir", default=str(REPO_ROOT / "outputs" / "flowstar_benchmark_parity"))
     parser.add_argument("--timeout-s", type=float, default=300.0)
     args = parser.parse_args()
 
-    explicit = args.flowstar_root or str(Path("/srv/local/shengenli/flowstar"))
+    explicit = args.flowstar_root or str(REPO_ROOT.parent / "flowstar")
     root = find_flowstar_root(explicit)
     if root is None:
         raise SystemExit("Flow* root not found; pass --flowstar-root or set FLOWSTAR_ROOT")

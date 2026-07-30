@@ -30,7 +30,7 @@ candidate remainder whose self-map was validated before stock refinement.
 From the required worktree:
 
 ```bash
-cd /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+cd "$(git rev-parse --show-toplevel)"
 experiments/three_way_common_contract/run_smoke.sh
 experiments/three_way_common_contract/launch_background.sh
 tmux attach -t tm_three_way_common_contract

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FLOWSTAR_ROOT=${FLOWSTAR_ROOT:-${1:-/srv/local/shengenli/flowstar}}
+REPO_ROOT=$(git rev-parse --show-toplevel)
+WORK_PARENT=$(dirname "$REPO_ROOT")
+FLOWSTAR_ROOT=${FLOWSTAR_ROOT:-${1:-"$WORK_PARENT/flowstar"}}
 CONDA_ENV=${CONDA_ENV:-py11}
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$ROOT"

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import math
+import os
 import sys
 import time
 import types
@@ -12,7 +13,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HERE = Path(__file__).resolve().parent
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+REPO_ROOT = HERE.parents[1]
+DIFFREACH_ROOT = Path(
+    os.environ.get("DIFFREACH_ROOT", REPO_ROOT.parent / "DiffReach")
+).resolve()
 for candidate in (HERE, DIFFREACH_ROOT):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))

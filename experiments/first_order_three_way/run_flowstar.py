@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
@@ -30,7 +31,7 @@ from common import (
     write_json,
 )
 
-FLOWSTAR_ROOT_DEFAULT = Path("/srv/local/shengenli/flowstar")
+FLOWSTAR_ROOT_DEFAULT = REPO_ROOT.parent / "flowstar"
 ROW_RE = re.compile(
     r"^FLOWSTAR_ROW\s+(?P<step>\d+)\s+(?P<time>[-+0-9.eE]+)\s+"
     r"(?P<kind>\w+)\s+(?P<state>\d+)\s+(?P<lo>[-+0-9.eE]+)\s+(?P<hi>[-+0-9.eE]+)$"
@@ -278,7 +279,7 @@ def _make_output(
         cutoff=float(spec["flowstar"]["cutoff"]),
         dtype="MPFR_interval",
         device="cpu",
-        git_commit=git_sha(Path("/srv/local/shengenli/flowstar")),
+        git_commit=git_sha(FLOWSTAR_ROOT_DEFAULT),
         environment="system_g++_flowstar_toolbox",
     )
     status = first_status

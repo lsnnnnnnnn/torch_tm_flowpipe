@@ -346,6 +346,8 @@ int main() {{
 def _compile(
     source: Path, executable: Path, flowstar_root: Path, timeout: float
 ) -> tuple[subprocess.CompletedProcess[str], float]:
+    system_include = os.environ.get("FLOWSTAR_SYSTEM_INCLUDE", "/opt/homebrew/include")
+    system_library = os.environ.get("FLOWSTAR_SYSTEM_LIB", "/opt/homebrew/lib")
     command = [
         "g++",
         "-O3",
@@ -354,9 +356,13 @@ def _compile(
         "-std=c++11",
         "-I",
         str(flowstar_root / "flowstar-toolbox"),
+        "-I",
+        system_include,
         str(source),
         "-L",
         str(flowstar_root / "flowstar-toolbox"),
+        "-L",
+        system_library,
         "-o",
         str(executable),
         "-lflowstar",

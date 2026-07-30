@@ -725,7 +725,9 @@ def collect(output: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--tool", choices=["torch", "diffreach", "flowstar", "collect"], required=True

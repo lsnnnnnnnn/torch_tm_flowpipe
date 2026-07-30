@@ -20,6 +20,7 @@ from common import (
 )
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 TERM_RE = re.compile(
     r"^FS_TERM kind=(?P<kind>tube|endpoint) state=(?P<state>\d+) "
     r"coefficient=(?P<coefficient>[-+0-9.eE]+) exponents=(?P<exponents>[0-9,]*)$"
@@ -294,12 +295,24 @@ def _ensure_library(flowstar_root: Path, timeout: float) -> None:
     )
     if stale:
         subprocess.run(["make", "clean"], cwd=toolbox, check=True, timeout=timeout)
-    subprocess.run(["make", "-j4"], cwd=toolbox, check=True, timeout=timeout)
+    subprocess.run(
+        [
+            "make",
+            "-j4",
+            f"GMP_HOME={os.environ.get('FLOWSTAR_SYSTEM_INCLUDE', '/opt/homebrew/include')}",
+            f"GMP_LIB_HOME={os.environ.get('FLOWSTAR_SYSTEM_LIB', '/opt/homebrew/lib')}",
+        ],
+        cwd=toolbox,
+        check=True,
+        timeout=timeout,
+    )
 
 
 def _compile(
     source: Path, executable: Path, flowstar_root: Path, timeout: float
 ) -> float:
+    system_include = os.environ.get("FLOWSTAR_SYSTEM_INCLUDE", "/opt/homebrew/include")
+    system_library = os.environ.get("FLOWSTAR_SYSTEM_LIB", "/opt/homebrew/lib")
     command = [
         "g++",
         "-O3",
@@ -308,9 +321,13 @@ def _compile(
         "-std=c++11",
         "-I",
         str(flowstar_root / "flowstar-toolbox"),
+        "-I",
+        system_include,
         str(source),
         "-L",
         str(flowstar_root / "flowstar-toolbox"),
+        "-L",
+        system_library,
         "-o",
         str(executable),
         "-lflowstar",
@@ -647,7 +664,9 @@ def export_segment(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--system", default="coupled_quadratic")
     parser.add_argument("--h", type=float, default=0.01)
     parser.add_argument("--order", type=int, default=2)

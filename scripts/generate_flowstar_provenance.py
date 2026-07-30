@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import re
 import subprocess
 from collections import Counter
@@ -10,7 +11,9 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-FLOWSTAR_ROOT = Path('/srv/local/shengenli/flowstar')
+FLOWSTAR_ROOT = Path(
+    os.environ.get("FLOWSTAR_ROOT", ROOT.parent / "flowstar")
+).resolve()
 CSV_PATH = ROOT / 'outputs' / 'flowstar_vdp_remainder_cutoff_sweep.csv'
 LIB_PATH = FLOWSTAR_ROOT / 'flowstar-toolbox' / 'libflowstar.a'
 ARTIFACT_BUNDLE_COMMIT_NOTE = (

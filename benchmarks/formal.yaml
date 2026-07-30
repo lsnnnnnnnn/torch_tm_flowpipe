@@ -1,0 +1,15 @@
+schema_version: 1
+profile: formal
+canonical_spec: canonical.yaml
+runtime_repetitions: 10
+configuration_source: multi_step
+tools:
+  torch_tm_flowpipe:
+    variants:
+      - order2_affine_reset_selected
+      - order4_affine_reset_selected
+  diffreach:
+    variants: [restricted_quasi_window100_round5_selected]
+  flowstar:
+    variants: [root_cause_order4_selected]
+authoritative: true

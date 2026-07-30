@@ -24,7 +24,7 @@ does not retain the same intermediate basis as Torch order 1.
 - `diffreach312`: Python 3.12 with CPU `jax==0.10.2`, SciPy, PyYAML, and
   pytest. JAX x64 is explicitly enabled by the adapter.
 - Flow*: system GCC/G++ 15.2 and the existing
-  `/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a`.
+  `$FLOWSTAR_ROOT/flowstar-toolbox/libflowstar.a`.
 
 The declared editable DiffReach install was attempted but its dependency
 resolver found incompatible Equinox requirements between `jax2onnx` and
@@ -43,7 +43,7 @@ extraction is required for this benchmark's long-form schema.
 From the benchmark worktree:
 
 ```bash
-cd /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+cd "$(git rev-parse --show-toplevel)"
 experiments/first_order_three_way/run_smoke.sh
 experiments/first_order_three_way/run_all.sh
 ```

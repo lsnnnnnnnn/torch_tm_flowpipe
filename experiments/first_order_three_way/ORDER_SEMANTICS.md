@@ -25,14 +25,14 @@ cutoff, no adaptive step, and no rescue.
 The installed toolbox's
 `Computational_Setting::setFixedStepsize(step, order)` explicitly returns
 false when `order < 2`
-(`/srv/local/shengenli/flowstar/flowstar-toolbox/Continuous.cpp`). The adapter
+(`$FLOWSTAR_ROOT/flowstar-toolbox/Continuous.cpp`). The adapter
 checks that return value and records `unsupported_order` for both native and
 strict order-one protocols. It never silently substitutes order 2.
 
 For the labeled supplemental diagnostic, Flow* `Polynomial::ctrunc` compares
 the `Term.d` total degree with the requested order and interval-evaluates
 dropped terms into the remainder
-(`/srv/local/shengenli/flowstar/flowstar-toolbox/Polynomial.h`). The diagnostic
+(`$FLOWSTAR_ROOT/flowstar-toolbox/Polynomial.h`). The diagnostic
 therefore retains complete total degree at most two in local time and
 normalized generators. It uses a fixed step and order, QR normalization,
 symbolic-remainder size zero, cutoff `1e-15`, and remainder estimate `1e-4`.
@@ -50,9 +50,9 @@ The native `TRUNCATE_TO_AFFINE=True` path is affine only after the step's
 final projection. Time integration first creates nonzero `Lt` terms, so its
 transient effective degree is two. The implemented polynomial projection
 bounds `Lt`, shifts its midpoint into `c`, and embeds its radius into reused
-`L` generator coefficients (`/srv/local/shengenli/DiffReach/src/polynomial.py`).
+`L` generator coefficients (`$DIFFREACH_ROOT/src/polynomial.py`).
 `QuadTM.truncate_to_affine` keeps the existing TM remainder and calls that
-projection (`/srv/local/shengenli/DiffReach/src/taylor_model.py`). This is not
+projection (`$DIFFREACH_ROOT/src/taylor_model.py`). This is not
 the independent interval-remainder projection needed to establish strict
 common-affine semantics, so the strict DiffReach protocol is recorded as
 unsupported.

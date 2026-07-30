@@ -6,10 +6,10 @@ trajectory_tolerance: 2.0e-8
 timeout_s: 600
 
 repositories:
-  torch: /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
-  diffreach: /srv/local/shengenli/DiffReach
-  flowstar_original: /srv/local/shengenli/flowstar
-  flowstar_audit: /srv/local/shengenli/flowstar_three_way_audit
+  torch: .
+  diffreach: ../DiffReach
+  flowstar_original: ../flowstar
+  flowstar_audit: ../flowstar-audit
 
 frozen_result: experiments/three_way_common_contract/results/20260724T132534Z
 

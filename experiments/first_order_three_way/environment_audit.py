@@ -18,11 +18,22 @@ if str(HERE) not in sys.path:
 
 from common import output_dir_from_args, utc_timestamp, write_json
 
+REPO_ROOT = HERE.parents[1]
+WORK_PARENT = REPO_ROOT.parent
+FLOWSTAR_ROOT = Path(
+    os.environ.get("FLOWSTAR_ROOT", WORK_PARENT / "flowstar")
+).resolve()
 REPOSITORIES = {
-    "torch_original_checkout": Path("/srv/local/shengenli/torch_tm_flowpipe"),
-    "torch_benchmark_worktree": Path("/srv/local/shengenli/torch_tm_flowpipe_first_order_bench"),
-    "diffreach": Path("/srv/local/shengenli/DiffReach"),
-    "flowstar": Path("/srv/local/shengenli/flowstar"),
+    "torch_original_checkout": Path(
+        os.environ.get(
+            "TORCH_ORIGINAL_ROOT", WORK_PARENT / "torch_tm_flowpipe"
+        )
+    ).resolve(),
+    "torch_benchmark_worktree": REPO_ROOT,
+    "diffreach": Path(
+        os.environ.get("DIFFREACH_ROOT", WORK_PARENT / "DiffReach")
+    ).resolve(),
+    "flowstar": FLOWSTAR_ROOT,
 }
 
 
@@ -107,7 +118,8 @@ def main() -> None:
         "os_release": ["cat", "/etc/os-release"],
         "tmux_version": ["tmux", "-V"],
         "flowstar_library": [
-            "file", "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a"
+            "file",
+            str(FLOWSTAR_ROOT / "flowstar-toolbox" / "libflowstar.a"),
         ],
         "flowstar_dependency_cache": ["ldconfig", "-p"],
     }
@@ -124,7 +136,7 @@ def main() -> None:
         },
         "paths": {
             "flowstar_library_exists": Path(
-                "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a"
+                FLOWSTAR_ROOT / "flowstar-toolbox" / "libflowstar.a"
             ).exists(),
             "tmux": shutil.which("tmux"),
             "python_executable_for_audit": sys.executable,

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
 import types
@@ -10,7 +11,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 HERE = Path(__file__).resolve().parent
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+REPO_ROOT = HERE.parents[1]
+DIFFREACH_ROOT = Path(
+    os.environ.get("DIFFREACH_ROOT", REPO_ROOT.parent / "DiffReach")
+).resolve()
 for candidate in (HERE, DIFFREACH_ROOT):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
@@ -383,7 +387,9 @@ def export_segment(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--system", default="coupled_quadratic")
     parser.add_argument("--h", type=float, default=0.01)
     parser.add_argument("--affine", action="store_true")

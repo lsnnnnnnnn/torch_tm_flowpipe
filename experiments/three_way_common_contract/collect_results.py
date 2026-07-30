@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import platform
 import subprocess
 import sys
@@ -423,15 +424,21 @@ def _diffreach_gate(
     if not provenance_path.exists():
         return _gate(0, [{"reason": "missing provenance"}])
     provenance = read_json(provenance_path)
+    diffreach_src = str(
+        Path(
+            os.environ.get(
+                "DIFFREACH_ROOT", HERE.parents[1].parent / "DiffReach"
+            )
+        ).resolve()
+        / "src"
+    )
     for key in (
         "upstream_step_source_file",
         "upstream_picard_source_file",
         "upstream_taylor_model_source_file",
     ):
         checks += 1
-        if not str(provenance.get(key, "")).startswith(
-            "/srv/local/shengenli/DiffReach/src/"
-        ):
+        if not str(provenance.get(key, "")).startswith(diffreach_src):
             violations.append({"reason": key, "actual": provenance.get(key)})
     for key in (
         "upstream_step_callable_identity",

@@ -22,6 +22,7 @@ from common import (
 from export_flowstar_segment import export_segment
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 REPAIR = HERE.parent / "three_way_comparison_repair"
 
 
@@ -281,7 +282,9 @@ def run_correctness(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--skip-parity", action="store_true")

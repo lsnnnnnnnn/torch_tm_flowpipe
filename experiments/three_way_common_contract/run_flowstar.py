@@ -38,7 +38,7 @@ from common import (
 )
 
 FLOWSTAR_ROOT = Path(
-    os.environ.get("FLOWSTAR_ROOT", "/srv/local/shengenli/flowstar")
+    os.environ.get("FLOWSTAR_ROOT", REPO_ROOT.parent / "flowstar")
 ).resolve()
 
 ROW_RE = re.compile(

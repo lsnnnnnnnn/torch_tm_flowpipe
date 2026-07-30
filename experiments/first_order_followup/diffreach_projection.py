@@ -17,8 +17,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[1]
 DIFFREACH_ROOT = Path(
-    os.environ.get("DIFFREACH_ROOT", "/srv/local/shengenli/DiffReach")
+    os.environ.get("DIFFREACH_ROOT", REPO_ROOT.parent / "DiffReach")
 ).resolve()
 if str(DIFFREACH_ROOT) not in sys.path:
     sys.path.insert(0, str(DIFFREACH_ROOT))

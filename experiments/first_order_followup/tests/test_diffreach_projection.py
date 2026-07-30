@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -11,7 +12,9 @@ import jax.numpy as jnp
 import numpy as np
 
 EXPERIMENT = Path(__file__).resolve().parents[1]
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+DIFFREACH_ROOT = Path(
+    os.environ.get("DIFFREACH_ROOT", EXPERIMENT.parents[1] / "DiffReach")
+).resolve()
 for path in (EXPERIMENT, DIFFREACH_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))

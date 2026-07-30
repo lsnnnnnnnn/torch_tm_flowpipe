@@ -435,7 +435,7 @@ def generate(output: Path) -> str:
         "## Reproduction",
         "",
         "```bash",
-        "cd /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison",
+        'cd "$(git rev-parse --show-toplevel)"',
         "experiments/three_way_common_contract/run_smoke.sh",
         "experiments/three_way_common_contract/run_all.sh",
         "# or after the interactive smoke gate:",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import os
 import sys
 from pathlib import Path
 
@@ -13,7 +14,9 @@ import numpy as np
 
 EXPERIMENT = Path(__file__).resolve().parents[1]
 BASELINE_EXPERIMENT = EXPERIMENT.parent / "first_order_three_way"
-DIFFREACH_ROOT = Path("/srv/local/shengenli/DiffReach")
+DIFFREACH_ROOT = Path(
+    os.environ.get("DIFFREACH_ROOT", EXPERIMENT.parents[1] / "DiffReach")
+).resolve()
 for path in (EXPERIMENT, BASELINE_EXPERIMENT, DIFFREACH_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))

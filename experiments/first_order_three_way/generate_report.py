@@ -692,7 +692,7 @@ def main() -> None:
         "## Reproduction",
         "",
         "```bash",
-        "cd /srv/local/shengenli/torch_tm_flowpipe_first_order_bench",
+        'cd "$(git rev-parse --show-toplevel)"',
         "experiments/first_order_three_way/run_smoke.sh",
         "experiments/first_order_three_way/run_all.sh",
         "# or: experiments/first_order_three_way/launch_background.sh",
