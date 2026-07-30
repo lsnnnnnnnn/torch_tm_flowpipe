@@ -1,12 +1,18 @@
 from pathlib import Path
 import sys
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "comparisons" / "flowstar"))
 
 from export_flowstar_model import load_config, render_legacy_model, render_model, render_toolbox_cpp
 from parse_flowstar_output import parse_files, parse_text, widths
 from run_flowstar import find_flowstar_root
+
+pytestmark = pytest.mark.integration
+
+
 def test_toolbox_export_matches_current_flowstar_cpp_api():
     cfg = load_config(ROOT / "comparisons" / "flowstar" / "configs" / "scalar_quadratic.yaml")
     text = render_toolbox_cpp(cfg, h=0.01, steps=5, order=4, output_prefix="case")
