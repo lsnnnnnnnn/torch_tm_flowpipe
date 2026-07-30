@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CONDA="/srv/local/shengenli/miniforge3/condabin/conda"
+CONDA="${CONDA_EXE:-$(command -v conda)}"
 DEEP_RESULTS="${DEEP_STUDY_RESULTS_DIR:-}"
 
 cd "${REPO_ROOT}"

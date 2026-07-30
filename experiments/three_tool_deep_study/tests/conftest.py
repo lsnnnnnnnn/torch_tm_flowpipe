@@ -17,3 +17,10 @@ for candidate in (EXPERIMENT, SRC_ROOT):
 def pytest_addoption(parser: pytest.Parser) -> None:
     for name in ("torch", "diffreach", "flowstar"):
         parser.addoption(f"--{name}-segment", default="")
+
+
+def pytest_collection_modifyitems(
+    items: list[pytest.Item],
+) -> None:
+    for item in items:
+        item.add_marker(pytest.mark.integration)

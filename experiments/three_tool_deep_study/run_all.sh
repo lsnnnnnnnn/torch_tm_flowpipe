@@ -1,127 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-STUDY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${STUDY_DIR}/../.." && pwd)"
-CONDA="/srv/local/shengenli/miniforge3/condabin/conda"
-TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-OUTPUT_DIR="${1:-${STUDY_DIR}/results/${TIMESTAMP}}"
-RUN_ID="$(basename "${OUTPUT_DIR}")"
-PROGRESS_LOG="${OUTPUT_DIR}/progress.log"
-mkdir -p "${OUTPUT_DIR}"
-export MPLCONFIGDIR="${OUTPUT_DIR}/.matplotlib"
-
-progress() {
-  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1" | tee -a "${PROGRESS_LOG}"
-}
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PYTHON_BIN="${PYTHON_BIN:-python}"
+OUTPUT_ARGUMENT=()
+if [[ $# -gt 0 ]]; then
+  OUTPUT_ARGUMENT=(--output-dir "$1")
+fi
 
 cd "${REPO_ROOT}"
-progress "phase0 provenance and initial frozen checksums"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
-  --mode initialize --output-dir "${OUTPUT_DIR}"
-
-progress "acceptance tests"
-"${CONDA}" run -n py11 pytest -q \
-  experiments/first_order_followup/tests/test_torch_basis.py
-"${CONDA}" run -n diffreach312 pytest -q \
-  experiments/first_order_followup/tests/test_diffreach_projection.py
-"${CONDA}" run -n py11 pytest -q \
-  experiments/three_tool_deep_study/tests
-
-progress "Flowstar correctness matrix and original parity"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_correctness.py" \
-  --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/flowstar_root_cause.py" \
-  --output-dir "${OUTPUT_DIR}/flowstar_root_cause"
-
-progress "controlled protocols: Torch"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_controlled.py" \
-  --tool torch --output-dir "${OUTPUT_DIR}"
-progress "controlled protocols: DiffReach"
-"${CONDA}" run -n diffreach312 python "${STUDY_DIR}/run_controlled.py" \
-  --tool diffreach --output-dir "${OUTPUT_DIR}"
-progress "controlled protocols: Flowstar"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_controlled.py" \
-  --tool flowstar --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_controlled.py" \
-  --tool collect --output-dir "${OUTPUT_DIR}"
-
-progress "native protocols: Torch"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_native.py" \
-  --tool torch --output-dir "${OUTPUT_DIR}"
-progress "native protocols: DiffReach"
-"${CONDA}" run -n diffreach312 python "${STUDY_DIR}/run_native.py" \
-  --tool diffreach --output-dir "${OUTPUT_DIR}"
-progress "native protocols: Flowstar"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_native.py" \
-  --tool flowstar --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_native.py" \
-  --tool collect --output-dir "${OUTPUT_DIR}"
-
-progress "matched basis and component ablations"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_ablation.py" \
-  --mode matched --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_ablation.py" \
-  --mode flowstar --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_ablation.py" \
-  --mode collect --output-dir "${OUTPUT_DIR}"
-
-progress "common defect diagnostics"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/defect_diagnostic.py" \
-  --output-dir "${OUTPUT_DIR}"
-progress "BERN range-only feasibility"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/bern_feasibility.py" \
-  --repetitions 10 --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 pytest -q \
-  "${STUDY_DIR}/tests/test_external_exports.py" \
-  --torch-segment "${OUTPUT_DIR}/common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.01.json" \
-  --diffreach-segment "${OUTPUT_DIR}/common_segments/diffreach_upstream_affine_flag_riccati_h0.01.json" \
-  --flowstar-segment "${OUTPUT_DIR}/common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.01_o2.json"
-
-progress "ten-repetition native practical timing: Torch"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_pareto.py" \
-  --tool torch --output-dir "${OUTPUT_DIR}"
-progress "ten-repetition native practical timing: DiffReach"
-"${CONDA}" run -n diffreach312 python "${STUDY_DIR}/run_pareto.py" \
-  --tool diffreach --output-dir "${OUTPUT_DIR}"
-progress "ten-repetition native practical timing: Flowstar"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_pareto.py" \
-  --tool flowstar --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/run_pareto.py" \
-  --tool collect --output-dir "${OUTPUT_DIR}"
-
-progress "final frozen checksums, collection, plots, report"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
-  --mode finalize --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
-  --mode tables --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/plot_results.py" \
-  --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/generate_report.py" \
-  --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
-  --mode verify --require-ten-repetitions --output-dir "${OUTPUT_DIR}"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/audit_results.py" \
-  --output-dir "${OUTPUT_DIR}"
-
-progress "complete isolated repository-wide pytest matrix"
-DEEP_STUDY_RESULTS_DIR="${OUTPUT_DIR}" \
-  "${REPO_ROOT}/scripts/run_complete_pytest.sh" 2>&1 \
-  | tee "${OUTPUT_DIR}/complete_pytest.log"
-
-progress "write completion record"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/collect_results.py" \
-  --mode complete --output-dir "${OUTPUT_DIR}"
-
-ARTIFACT_DIR="${STUDY_DIR}/artifacts/authoritative/${RUN_ID}"
-progress "curate authoritative artifact"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/curate_artifacts.py" \
-  --source "${OUTPUT_DIR}" --destination "${ARTIFACT_DIR}"
-
-progress "generate bilingual final delivery"
-"${CONDA}" run -n py11 python "${STUDY_DIR}/generate_final_delivery.py" \
-  --artifact-dir "${ARTIFACT_DIR}" --destination "${STUDY_DIR}"
-
-progress "complete"
-printf 'Full study output: %s\n' "${OUTPUT_DIR}"
-printf 'Curated authoritative artifact: %s\n' "${ARTIFACT_DIR}"
+exec "${PYTHON_BIN}" experiments/consolidated_study/cli.py \
+  formal "${OUTPUT_ARGUMENT[@]}"
