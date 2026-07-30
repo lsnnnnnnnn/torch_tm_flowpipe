@@ -8,6 +8,8 @@
 | `20260728T140456Z` | three-way correctness repair | historical repair evidence | code/tests migrated; outputs archived |
 | `20260730T015245Z` | deep study | `provisional_due_to_known_protocol_defects` | no runtime/Pareto/failure headline claim |
 | `canonical-smoke-20260730-v4` | consolidation smoke at `73c07c9` | accepted non-authoritative | pipeline and audit validation only |
+| `20260730T124958Z` | first formal freeze `1adb631` | `failed_acceptance` | numerical gates passed; repository-hygiene side effect fixed in `9bef0ac` |
+| `canonical-smoke-20260730-v5` | corrected smoke at `9bef0ac` | accepted non-authoritative | regression verifies outputs remain inside run directory |
 
 The full pre-consolidation deep-study tree is recoverable through annotated tag
 `archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study`

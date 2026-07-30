@@ -8,11 +8,14 @@ verified deep-study recovery tag, base test suite, protocol regression layer,
 portable external adapters, canonical configuration/profile files, supported
 runner, independent auditor, and removal of legacy output paths.
 
-The accepted non-authoritative pre-freeze smoke is
-`06_smoke/canonical-smoke-20260730-v4`. It records source SHA
-`73c07c9fa6e23eeb8475bcd482eaa6f21c811238`, 12 exact configuration
-identities, 24 raw observations, zero primary rows, and passing independent
-acceptance.
+Accepted non-authoritative smoke evidence is under `06_smoke/`. Version 4
+validated the initial freeze. The first formal attempt
+`20260730T124958Z` then exposed a legacy diagnostic write outside the run
+directory; the independent auditor correctly returned `failed_acceptance`.
+Commit `9bef0ac87544aa97a8088c32e2a6e5cc2ab830a5` confines that document to
+the requested output and adds a regression test. Version 5 validates the
+corrected source with 12 exact identities, 24 raw observations, zero primary
+rows, and passing independent acceptance.
 
 Remaining continuation:
 
