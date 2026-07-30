@@ -1,0 +1,108 @@
+{
+  "benchmark": "benchmarks/canonical.yaml",
+  "benchmark_sha256": "d8ec2995247bac0ca9b00aa98e92b7bce0e05feba28fc54ce3c834cf67f35fb0",
+  "captured_utc": "2026-07-30T12:48:21Z",
+  "code_sha": "73c07c9fa6e23eeb8475bcd482eaa6f21c811238",
+  "dependencies": {
+    "diffreach": {
+      "dirty": false,
+      "dirty_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/Users/shengenli/Documents/Codex/2026-07-30/c/DiffReach",
+      "remote": "https://github.com/trustworthyrobotics/DiffReach.git",
+      "sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "status_porcelain_v2": ""
+    },
+    "flowstar": {
+      "dirty": true,
+      "dirty_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/Users/shengenli/Documents/Codex/2026-07-30/c/flowstar",
+      "remote": "https://github.com/chenxin415/flowstar.git",
+      "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "status_porcelain_v2": "? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o"
+    },
+    "flowstar_audit": {
+      "dirty": true,
+      "dirty_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "/Users/shengenli/Documents/Codex/2026-07-30/c/flowstar-audit",
+      "remote": "https://github.com/chenxin415/flowstar.git",
+      "sha": "547e405ccdfd1f7389181588b1f63b218a45d774",
+      "status_porcelain_v2": "? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o"
+    }
+  },
+  "profile_sha256": "a42294a97a9201e335b75c72fa46478a8d12126286b1c97cb0bb16b07d0c0c65",
+  "runner": "experiments/consolidated_study/cli.py",
+  "runner_command": [
+    "experiments/consolidated_study/cli.py",
+    "smoke",
+    "--output-dir",
+    "/private/tmp/canonical-smoke-20260730-v4"
+  ],
+  "runner_commands": [
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "torch",
+      "--smoke"
+    ],
+    [
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/work/diffreach312/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "diffreach",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "flowstar",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "collect",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/analysis/independent_audit.py",
+      "/private/tmp/canonical-smoke-20260730-v4"
+    ]
+  ],
+  "runtime_boundary_version": "total_configuration_v2",
+  "schema_version": "2.0.0",
+  "temporary_builds_removed": [
+    "logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.015_o4_r0.0001_c1e-15_p53/repair",
+    "logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T0.03_o4_r0.001_c1e-15_p53/repair",
+    "logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T0.03_o4_r0.0001_c1e-15_p53/repair",
+    "logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T0.015_o4_r0.01_c1e-15_p53/repair"
+  ],
+  "test_commands": [
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_protocol_contracts.py"
+    ]
+  ]
+}

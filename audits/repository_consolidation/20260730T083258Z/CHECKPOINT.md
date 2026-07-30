@@ -8,10 +8,11 @@ verified deep-study recovery tag, base test suite, protocol regression layer,
 portable external adapters, canonical configuration/profile files, supported
 runner, independent auditor, and removal of legacy output paths.
 
-The earlier development smoke was deliberately kept outside the branch
-because later core/auditor changes advanced the code SHA. A fresh smoke from
-the final pre-freeze source is the next gate and will be stored under
-`06_smoke/`.
+The accepted non-authoritative pre-freeze smoke is
+`06_smoke/canonical-smoke-20260730-v4`. It records source SHA
+`73c07c9fa6e23eeb8475bcd482eaa6f21c811238`, 12 exact configuration
+identities, 24 raw observations, zero primary rows, and passing independent
+acceptance.
 
 Remaining continuation:
 
@@ -19,7 +20,6 @@ Remaining continuation:
 cd "$(git rev-parse --show-toplevel)"
 python -m pytest -q
 git diff --check
-# run a fresh smoke and commit its accepted evidence
 # create the final code-freeze commit
 python experiments/consolidated_study/cli.py formal \
   --output-dir artifacts/runs/<NEW_RUN_ID>

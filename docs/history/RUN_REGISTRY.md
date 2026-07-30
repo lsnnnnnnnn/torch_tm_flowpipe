@@ -7,7 +7,7 @@
 | `20260724T132534Z` | common contract | superseded schema/protocol | no active table consumption |
 | `20260728T140456Z` | three-way correctness repair | historical repair evidence | code/tests migrated; outputs archived |
 | `20260730T015245Z` | deep study | `provisional_due_to_known_protocol_defects` | no runtime/Pareto/failure headline claim |
-| `canonical-smoke-20260730-v3` | consolidation smoke | accepted non-authoritative | pipeline and audit validation only |
+| `canonical-smoke-20260730-v4` | consolidation smoke at `73c07c9` | accepted non-authoritative | pipeline and audit validation only |
 
 The full pre-consolidation deep-study tree is recoverable through annotated tag
 `archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study`

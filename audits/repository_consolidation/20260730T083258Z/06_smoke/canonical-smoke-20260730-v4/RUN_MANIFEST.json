@@ -1,0 +1,82 @@
+{
+  "authoritative_requested": false,
+  "code_freeze_sha": "73c07c9fa6e23eeb8475bcd482eaa6f21c811238",
+  "code_sha": "73c07c9fa6e23eeb8475bcd482eaa6f21c811238",
+  "completed_utc": "2026-07-30T12:48:53Z",
+  "counts": {
+    "eligible_rows": 0,
+    "excluded_rows": 12,
+    "exploratory_rows": 0,
+    "failure_rows": 0,
+    "raw_observations": 24,
+    "summary_rows": 12
+  },
+  "output_directory_empty_at_start": true,
+  "output_preexisted": false,
+  "profile": "smoke",
+  "run_id": "canonical-smoke-20260730-v4",
+  "runner_commands": [
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "torch",
+      "--smoke"
+    ],
+    [
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/work/diffreach312/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "diffreach",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "flowstar",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/experiments/three_tool_deep_study/run_pareto.py",
+      "--spec",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/benchmarks/canonical.yaml",
+      "--output-dir",
+      "/private/tmp/canonical-smoke-20260730-v4",
+      "--tool",
+      "collect",
+      "--smoke"
+    ],
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/analysis/independent_audit.py",
+      "/private/tmp/canonical-smoke-20260730-v4"
+    ]
+  ],
+  "runtime_boundary_version": "total_configuration_v2",
+  "schema_version": "2.0.0",
+  "started_utc": "2026-07-30T12:48:20Z",
+  "status": "candidate_complete",
+  "test_commands": [
+    [
+      "/opt/anaconda3/envs/onmi/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_protocol_contracts.py"
+    ]
+  ]
+}

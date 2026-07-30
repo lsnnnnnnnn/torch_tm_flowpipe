@@ -10,12 +10,12 @@ Completed:
 - base suite passed with 270 tests and three explicit CUDA skips;
 - versioned schema, fail-closed eligibility, canonical config identity, total
   runtime boundary, and post-filter Pareto implementation added;
-- local Torch, DiffReach, and Flowstar smoke pipeline independently accepted;
+- local Torch, DiffReach, and Flowstar smoke pipeline independently accepted
+  at source SHA `73c07c9fa6e23eeb8475bcd482eaa6f21c811238`;
 - old run `20260730T015245Z` marked provisional.
 
 Pending at this checkpoint:
 
-- finish legacy artifact removal and documentation migration;
 - create the clean code-freeze commit;
 - run and independently accept the formal profile;
 - commit/push the formal artifact and canonical branch;
