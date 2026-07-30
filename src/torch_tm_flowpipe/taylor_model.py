@@ -180,8 +180,8 @@ class TaylorModel:
     def clone(self) -> "TaylorModel":
         return TaylorModel(
             self.polynomial.clone(),
-            self.remainder,
-            list(self.domain),
+            Interval(self.remainder.lo, self.remainder.hi),
+            [Interval(item.lo, item.hi) for item in self.domain],
             self.order,
             truncation_range_split=self.truncation_range_split,
         )

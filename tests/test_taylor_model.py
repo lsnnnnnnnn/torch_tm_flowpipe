@@ -1,4 +1,8 @@
+import pytest
+
 from torch_tm_flowpipe import Interval, TaylorModel, TMVector, taylor_model_mul_breakdown
+
+pytestmark = pytest.mark.unit
 
 
 def test_taylor_model_multiplication_range_contains_samples():
@@ -50,3 +54,14 @@ def test_taylor_model_mul_breakdown_records_split():
     breakdown = taylor_model_mul_breakdown(x * y, x + y, order=1)
 
     assert breakdown["truncation_range_split"] == 2
+
+
+def test_clone_does_not_alias_remainder_or_domain_tensors() -> None:
+    original = TaylorModel.variable(
+        0, [Interval(-1.0, 1.0)], order=2
+    ).with_remainder(Interval(-0.1, 0.1))
+    cloned = original.clone()
+    cloned.remainder.lo.add_(1.0)
+    cloned.domain[0].lo.add_(1.0)
+    assert original.remainder.to_tuple() == (-0.1, 0.1)
+    assert original.domain[0].to_tuple() == (-1.0, 1.0)

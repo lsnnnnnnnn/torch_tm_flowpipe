@@ -4105,18 +4105,24 @@ def flowpipe_multi_step(
     segments: list[FlowpipeSegment] = []
     if mode == "range_only":
         current_box = _as_interval_list(x0_box)
-        current_final: TMVector | None = None
+        current_final = TMVector.identity(current_box, order=order)
         for segment_index in range(steps):
             step_kwargs = _step_diagnostics_kwargs(kwargs, mode, segment_index)
             seg = flowpipe_step(ode_fn, current_box, h, order, u_box=u_box, affine_u=affine_u, **step_kwargs)
             segments.append(seg)
+            if seg.status != "validated":
+                break
             current_box = [iv.inflate(range_only_inflate) for iv in seg.final_tm.range_box()]
             # The range-only baseline intentionally forgets symbolic dependency at
             # step boundaries.  Represent the compressed box as fresh identity TMs
             # so returned widths match the actual state passed to the next step.
             current_final = TMVector.identity(current_box, order=order)
-        assert current_final is not None
-        status = "validated" if all(s.status == "validated" for s in segments) else "failed"
+        status = (
+            "validated"
+            if len(segments) == steps
+            and all(s.status == "validated" for s in segments)
+            else "failed"
+        )
         return FlowpipeResult(segments, status, current_final, mode)
 
     if mode == "flowstar_style":
@@ -4137,6 +4143,13 @@ def flowpipe_multi_step(
         step_kwargs = _step_diagnostics_kwargs(kwargs, mode, segment_index)
         seg = flowpipe_step_from_tm(ode_fn, current_tm, h, order, u_box=u_box, affine_u=affine_u, **step_kwargs)
         segments.append(seg)
+        if seg.status != "validated":
+            break
         current_tm = seg.final_tm
-    status = "validated" if all(s.status == "validated" for s in segments) else "failed"
+    status = (
+        "validated"
+        if len(segments) == steps
+        and all(s.status == "validated" for s in segments)
+        else "failed"
+    )
     return FlowpipeResult(segments, status, current_tm, mode)

@@ -1,4 +1,8 @@
+import pytest
+
 from torch_tm_flowpipe import Interval, Polynomial, evaluate_interval_normal
+
+pytestmark = pytest.mark.unit
 
 
 def test_polynomial_interval_evaluation():
@@ -72,3 +76,13 @@ def test_evaluate_interval_normal_without_time_var_contains_samples():
     for x_v in [-1.0, -0.5, 0.0, 1.0]:
         for y_v in [-1.0, 0.25, 1.0]:
             assert normal.contains(poly.evaluate_point([x_v, y_v]), tol=1e-12)
+
+
+def test_monomial_iteration_order_is_deterministic() -> None:
+    terms = {
+        (2, 0): 1.0,
+        (0, 1): 2.0,
+        (1, 0): 3.0,
+        (0, 0): 4.0,
+    }
+    assert list(Polynomial(terms, n_vars=2).terms) == sorted(terms)

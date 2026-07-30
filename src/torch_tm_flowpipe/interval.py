@@ -62,6 +62,8 @@ class Interval:
             lo_t, hi_t = torch.broadcast_tensors(lo_t, hi_t)
         lo_t = lo_t.clone()
         hi_t = hi_t.clone()
+        if torch.any(torch.isnan(lo_t)) or torch.any(torch.isnan(hi_t)):
+            raise ValueError("interval bounds must not be NaN")
         if torch.any(lo_t > hi_t):
             raise ValueError(f"invalid interval with lo > hi: {lo_t} > {hi_t}")
         object.__setattr__(self, "lo", lo_t)

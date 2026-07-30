@@ -157,6 +157,7 @@ class Polynomial:
             if not _is_zero_tensor(c_t):
                 clean[exp_t] = clean.get(exp_t, torch.zeros_like(c_t)) + c_t
         clean = {e: c for e, c in clean.items() if not _is_zero_tensor(c)}
+        clean = dict(sorted(clean.items()))
         object.__setattr__(self, "terms", clean)
         object.__setattr__(self, "n_vars", int(n_vars))
 

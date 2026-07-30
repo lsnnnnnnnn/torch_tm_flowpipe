@@ -1,6 +1,9 @@
 import torch
+import pytest
 
 from torch_tm_flowpipe import Interval
+
+pytestmark = pytest.mark.unit
 
 
 def test_interval_add_mul_contains():
@@ -26,3 +29,8 @@ def test_interval_outward_width_positive():
     w = Interval(0.0, 1.0).width()
     assert torch.isfinite(w)
     assert float(w) >= 1.0
+
+
+def test_interval_rejects_nan_bounds() -> None:
+    with pytest.raises(ValueError, match="must not be NaN"):
+        Interval(float("nan"), 1.0)

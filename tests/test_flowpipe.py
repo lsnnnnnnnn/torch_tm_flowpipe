@@ -1,7 +1,12 @@
 import math
+from types import SimpleNamespace
+
+import pytest
 
 from torch_tm_flowpipe import Interval, flowpipe_multi_step, flowpipe_step, flowpipe_step_flowstar_style_adaptive
 from torch_tm_flowpipe.ode_examples import affine_controlled_ode, scalar_quadratic_ode, van_der_pol_ode
+
+pytestmark = pytest.mark.unit
 
 
 def test_scalar_quadratic_one_step_validated_and_contains_exact_samples():
@@ -55,6 +60,43 @@ def test_local_tau_not_active_after_each_dependency_preserving_step():
     for seg in res.segments:
         assert seg.final_tm.n_vars == 1
         assert seg.final_tm.active_variables() == {0}
+
+
+@pytest.mark.parametrize(
+    ("mode", "patched_name"),
+    [
+        ("range_only", "flowpipe_step"),
+        ("dependency_preserving", "flowpipe_step_from_tm"),
+    ],
+)
+def test_failed_segment_is_never_carried_to_later_steps(
+    monkeypatch: pytest.MonkeyPatch,
+    mode: str,
+    patched_name: str,
+) -> None:
+    import torch_tm_flowpipe.flowpipe as flowpipe_module
+    from torch_tm_flowpipe import TMVector
+
+    failed_tm = TMVector.identity([Interval(99.0, 100.0)], order=2)
+    calls = 0
+
+    def fail_once(*args: object, **kwargs: object):
+        nonlocal calls
+        calls += 1
+        return SimpleNamespace(status="failed", final_tm=failed_tm)
+
+    monkeypatch.setattr(flowpipe_module, patched_name, fail_once)
+    result = flowpipe_module.flowpipe_multi_step(
+        scalar_quadratic_ode,
+        [Interval(0.0, 0.1)],
+        h=0.01,
+        steps=3,
+        order=2,
+        mode=mode,
+    )
+    assert result.status == "failed"
+    assert calls == 1
+    assert len(result.segments) == 1
 
 
 def test_affine_control_smoke_validated():
