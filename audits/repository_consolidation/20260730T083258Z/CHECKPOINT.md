@@ -32,14 +32,23 @@ accepted: 24 exact eligible configurations, 264 raw observations, zero
 failures/exclusions, 12 cross-tool frontier points, complete checksum
 verification, and no writes outside the run directory.
 
+The canonical publication commit
+`269f3599fcc480984ff651c6c1e083a8ceac74e9` is pushed. Eleven annotated
+archive tags were remotely verified; the single fully redundant branch
+`codex/flowstar-ctrunc-rescue-diagnostics` was then deleted, while all 11
+other original heads were retained. `main` remains unchanged at
+`b2f34f5b2077e34662a2559d8c09b1d264bd7d98`.
+
 Remaining continuation:
 
 ```bash
 cd "$(git rev-parse --show-toplevel)"
-python analysis/independent_audit.py artifacts/runs/20260730T153654Z
-git fetch origin --prune --tags
-# publish canonical branch, verify archive tags, and converge eligible refs
+python -m compileall src analysis experiments/consolidated_study
+python -m pytest -q -m unit
+python -m pytest -q -m integration
+git diff --check
 ```
 
-Do not treat `20260730T015245Z` as authoritative. Do not delete remote branches
-until all archive tags pass independent remote verification.
+Do not treat `20260730T015245Z`, either failed formal attempt, or any smoke
+run as authoritative. Do not delete any additional remote branch without a
+new branch-specific proof.

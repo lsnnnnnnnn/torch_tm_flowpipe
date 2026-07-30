@@ -1,6 +1,6 @@
 # Status
 
-Current state: `formal_accepted_branch_convergence_pending`.
+Current state: `branch_converged_final_quality_pending`.
 
 Completed:
 
@@ -27,11 +27,24 @@ Completed:
   checksum and independent-audit gates passing;
 - the accepted formal artifact is authoritative for the bounded claims in
   `docs/RESULTS.md`;
+- canonical publication commit `269f3599fcc480984ff651c6c1e083a8ceac74e9`
+  is pushed to `origin/codex/repository-consolidation-v1`;
+- 11 annotated archive tags are pushed and their remote peeled targets match
+  every non-main historical head;
+- the fully redundant
+  `codex/flowstar-ctrunc-rescue-diagnostics` remote branch was deleted after
+  all eight safety conditions passed; its verified archive tag is the exact
+  recovery point;
+- the other 11 original remote heads are retained, one canonical head is
+  added, and the final remote still has 12 heads;
+- `main` remains unchanged at `b2f34f5b2077e34662a2559d8c09b1d264bd7d98`;
+  a conflict-free, reviewed fast-forward plan is documented;
+- before/after inventories and raw post-convergence refs are recorded under
+  `audits/repository_consolidation/20260730T083258Z/09_branch_convergence/`;
 - old run `20260730T015245Z` marked provisional.
 
 Pending at this checkpoint:
 
-- commit and push the formal artifact and canonical branch;
-- create and remotely verify the remaining annotated archive tags;
-- delete only the one fully redundant patch-equivalent remote branch;
-- refresh after-inventory and main merge plan.
+- execute the final compile, marker, shell, path, size, secret, and Git hygiene
+  checks;
+- commit and push the convergence and final-quality evidence.

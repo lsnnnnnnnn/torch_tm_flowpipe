@@ -75,3 +75,23 @@ common contracts, correctness repair, and deep-study Pareto machinery.
 
 No branch is deleted in Phase 1. Unique branch content remains reachable from
 the original remote ref until an annotated archive tag is pushed and verified.
+
+## Post-acceptance convergence
+
+Formal run `20260730T153654Z` passed independent acceptance at frozen code SHA
+`0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781`; publication commit
+`269f3599fcc480984ff651c6c1e083a8ceac74e9` was then pushed to
+`origin/codex/repository-consolidation-v1`.
+
+All 11 non-main historical heads received annotated
+`archive/pre-consolidation-20260730/*` tags. A post-push `ls-remote` verified
+each tag object and peeled target. Only
+`codex/flowstar-ctrunc-rescue-diagnostics` was deleted: it is non-protected,
+appears in no worktree, has zero commits beyond canonical, is an ancestor of
+canonical, has no unmigrated unique content, has audit evidence, and its tag
+peels to exact tip `bf19292a12bee4695bfc4f44a24be4ea0d341848`.
+
+The other 11 original remote heads remain. Adding the canonical continuation
+and deleting the one redundant head leaves 12 remote heads. `main` is
+unchanged. Exact before/after inventories, retained/deleted lists, archive
+tags, and post-convergence refs are under `09_branch_convergence/`.
