@@ -96,7 +96,7 @@ def _artifact_mapping(relative: str) -> tuple[str, str, str]:
         ),
         "07_native_low_order_width_curves.png": (
             "native_low_order_summary.csv",
-            "Protocol D: accurately labelled native low order",
+            "Protocol D: raw/primary native low order; tightened Torch excluded",
         ),
         "08_native_practical_width_runtime_pareto.png": (
             "native_pareto_summary.csv",

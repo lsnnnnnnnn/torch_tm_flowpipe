@@ -20,6 +20,7 @@ from run_pareto import (
     _pareto_flags,
     _projected_affine_box_reset,
 )
+from plot_results import plot_native_low
 
 
 def _row(
@@ -295,3 +296,41 @@ def test_tightened_torch_endpoint_is_supplemental_only() -> None:
         "",
         "",
     )
+
+
+def test_native_low_plot_filters_tightened_before_grouping(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = [
+        {
+            "tool": "torch_tm_flowpipe",
+            "variant": "order1_legacy_tightened",
+            "system": "riccati",
+            "interval_kind": "endpoint_raw",
+            "time": "1.0",
+            "width": "0.1",
+        },
+        {
+            "tool": "flowstar",
+            "variant": "root_cause_fixed_order_2",
+            "system": "riccati",
+            "interval_kind": "endpoint_raw",
+            "time": "1.0",
+            "width": "0.2",
+        },
+    ]
+    labels: list[str] = []
+
+    def record_plot(
+        self: object,
+        *args: object,
+        **kwargs: object,
+    ) -> None:
+        labels.append(str(kwargs.get("label", "")))
+
+    monkeypatch.setattr("matplotlib.axes.Axes.plot", record_plot)
+    plot_native_low(rows, tmp_path)
+
+    assert "flowstar:root_cause_fixed_order_2" in labels
+    assert all("legacy_tightened" not in label for label in labels)

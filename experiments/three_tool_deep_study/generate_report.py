@@ -11,6 +11,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
+from collect_results import _supplemental_tightened_endpoint
+
 HERE = Path(__file__).resolve().parent
 
 
@@ -212,6 +214,16 @@ def generate(output: Path) -> tuple[str, str]:
         affine_incomplete + box_incomplete
     )
     native_widths = _max_width_rows(native_low, kind="endpoint_raw")
+    primary_native_widths = [
+        row
+        for row in native_widths
+        if not _supplemental_tightened_endpoint(row)
+    ]
+    supplemental_tightened_widths = [
+        row
+        for row in native_widths
+        if _supplemental_tightened_endpoint(row)
+    ]
     losses = _carry_loss(affine_complete, box_complete)
     matched_rows = _matched_summary(matched)
 
@@ -399,11 +411,22 @@ Box carry removes generator correlations.  The measured final width ratios are:
     ((tool, system, h, _fmt(time_value), _fmt(a), _fmt(b), _fmt(ratio)) for tool, system, h, time_value, a, b, ratio in losses),
 )}
 
-Native low-order rows are deliberately labelled with their actual bases:
+Primary native low-order rows are deliberately labelled with their actual
+bases.  Supplemental Torch tightened endpoints are excluded from this
+cross-tool raw/native table:
 
 {_markdown_table(
     ['tool', 'variant', 'system', 'h', 'time', 'max width'],
-    ((row['tool'], row['variant'], row['system'], row['h'], _fmt(row['time']), _fmt(row['width'])) for row in native_widths),
+    ((row['tool'], row['variant'], row['system'], row['h'], _fmt(row['time']), _fmt(row['width'])) for row in primary_native_widths),
+)}
+
+For preservation and Torch-internal diagnosis only, the tightened endpoints
+are listed separately below.  They are not juxtaposed with or ranked against
+another tool's raw/native endpoint:
+
+{_markdown_table(
+    ['tool', 'variant', 'system', 'h', 'time', 'max width'],
+    ((row['tool'], row['variant'], row['system'], row['h'], _fmt(row['time']), _fmt(row['width'])) for row in supplemental_tightened_widths),
 )}
 
 DiffReach's affine flag and restricted quasi-quadratic mode are not the same
@@ -609,12 +632,13 @@ and runtime controls.
 
 ```bash
 cd {HERE.parents[1]}
-experiments/three_tool_deep_study/run_smoke.sh
-experiments/three_tool_deep_study/launch_background.sh
-tmux -S /tmp/tm_three_tool_deep_study.sock attach -t tm_three_tool_deep_study
+experiments/three_tool_deep_study/run_all.sh experiments/three_tool_deep_study/results/{output.name}
 ```
 
-Full artifacts are in `{output}`.  The eighteen figures are under `plots/`.
+Full scratch output is in `{output}`.  The curated authoritative bundle is
+published under
+`experiments/three_tool_deep_study/artifacts/authoritative/{output.name}`;
+the eighteen figures are in its `plots/` directory.
 """
 
     executive = f"""# Executive summary

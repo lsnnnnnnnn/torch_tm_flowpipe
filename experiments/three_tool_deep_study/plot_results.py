@@ -16,6 +16,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+from collect_results import _supplemental_tightened_endpoint
+
 HERE = Path(__file__).resolve().parent
 COLORS = {
     "torch_tm_flowpipe": "#d95f02",
@@ -272,6 +274,7 @@ def plot_native_low(rows: list[dict[str, Any]], plots: Path) -> None:
             for row in rows
             if row.get("system") == system
             and row.get("interval_kind") == "endpoint_raw"
+            and not _supplemental_tightened_endpoint(row)
         ]
         grouped = _group_max(
             selected, ("tool", "variant", "time"), "width"
@@ -296,7 +299,7 @@ def plot_native_low(rows: list[dict[str, Any]], plots: Path) -> None:
     _finish(
         figure,
         plots / "07_native_low_order_width_curves.png",
-        "Native low-order width curves (bases differ)",
+        "Native raw/primary low-order curves (tightened Torch excluded)",
     )
 
 
