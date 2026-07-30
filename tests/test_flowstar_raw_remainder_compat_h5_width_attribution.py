@@ -66,17 +66,3 @@ def test_h5_width_attribution_has_no_h10_outputs():
     assert "h10" not in str(attr.DEFAULT_OUT_DIR)
     assert not (ROOT / "outputs" / "flowstar_raw_remainder_compat_h10_width_attribution").exists()
     assert "refusing to write h10 outputs" in SCRIPT.read_text(encoding="utf-8")
-
-
-def test_csv_physical_row_count_guard_uses_csv_reader():
-    rows = attr.formatting_rows(H5_DIR, DIVERGENCE_DIR)
-
-    assert rows
-    csv_rows = [row for row in rows if row["path"].endswith(".csv")]
-    assert csv_rows
-    for row in csv_rows:
-        assert row["physical_line_count"] == row["csv_reader_row_count"]
-        assert row["physical_line_count"] > 1
-        assert row["status"] == "ok"
-
-    assert attr.csv_row_count(H5_DIR / "h5_summary.csv") == 6

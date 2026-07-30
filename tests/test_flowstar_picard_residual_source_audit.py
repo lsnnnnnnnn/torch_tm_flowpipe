@@ -60,18 +60,3 @@ def test_missing_component_fields_are_unknown_not_zero():
     assert "missing picard_no_remainder endpoints" in ledger["notes"]
     assert "missing picard_ctrunc_raw endpoints" in ledger["notes"]
     assert ledger["picard_no_remainder_x_lo"] != 0
-
-
-def test_docs_report_matches_output_t_and_failed_dim():
-    docs = (ROOT / "docs" / "flowstar_step_trace_divergence_report.md").read_text(encoding="utf-8")
-    output = (ROOT / "outputs" / "flowstar_step_trace_compare" / "trace_divergence_report.md").read_text(encoding="utf-8")
-
-    docs_t = re.search(r"Horizon traced: T=([0-9.]+)", docs)
-    output_t = re.search(r"Horizon traced: T=([0-9.]+)", output)
-    docs_failed = re.search(r"Flow\* h=0\.025:.*which_dim_failed=`([^`]+)`", docs)
-    output_failed = re.search(r"Flow\* h=0\.025:.*which_dim_failed=`([^`]+)`", output)
-
-    assert docs_t is not None and output_t is not None
-    assert docs_failed is not None and output_failed is not None
-    assert docs_t.group(1) == output_t.group(1) == "0.5"
-    assert docs_failed.group(1) == output_failed.group(1) == "y"

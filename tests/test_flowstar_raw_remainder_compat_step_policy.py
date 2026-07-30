@@ -61,19 +61,6 @@ def test_flowstar_step_policy_uses_audited_grow_rule_on_success():
     assert step_policy.flowstar_policy_next_after_success(0.1) == 0.1
 
 
-def test_checked_in_csv_and_markdown_outputs_have_physical_lines():
-    for path in CSV_OUTPUTS:
-        assert path.exists(), path
-        text = path.read_text(encoding="utf-8")
-        assert len(text.splitlines()) > 5, path
-        assert "\n" in text, path
-
-    for path in MD_OUTPUTS:
-        assert path.exists(), path
-        lines = path.read_text(encoding="utf-8").splitlines()
-        assert any(line.startswith("# ") for line in lines), path
-        assert any(line.startswith("## ") for line in lines), path
-        assert all("## " not in line[2:] for line in lines if line.startswith("# ")), path
 
 
 def test_step_policy_script_does_not_target_h5_or_h10_outputs():

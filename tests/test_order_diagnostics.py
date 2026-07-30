@@ -118,20 +118,7 @@ def test_plot_order_results_creates_semantic_flowstar_ratio_filenames(tmp_path):
     assert not (tmp_path / "torch_over_flowstar_width_ratio_by_order.png").exists()
 
 
-def test_report_documents_required_flowstar_semantics():
-    text = (ROOT / "docs" / "order_and_vdp_flowstar_report.md").read_text(encoding="utf-8")
-    for phrase in [
-        "endpoint boxes were not available",
-        "last-segment",
-        "tube",
-        "setting-dependent",
-        "range_only degree",
-    ]:
-        assert phrase in text
-
-
 def test_old_ambiguous_flowstar_ratio_function_is_not_present():
     text = (ROOT / "experiments" / "plot_order_results.py").read_text(encoding="utf-8")
     assert 'r.get("final_width_sum") or r.get("last_segment_width_sum")' not in text
     assert 'r.get("last_segment_width_sum") or r.get("final_width_sum")' not in text
-

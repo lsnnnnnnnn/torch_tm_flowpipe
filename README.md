@@ -1,148 +1,39 @@
 # torch-tm-flowpipe
 
-## Authoritative three-tool deep study
+`torch-tm-flowpipe` is a PyTorch research prototype for Taylor-model
+flowpipes of polynomial plant dynamics. The canonical development line is
+`codex/repository-consolidation-v1`.
 
-The current research-delivery branch is
-`codex/torch-flowstar-diffreach-deep-study`, based on the repaired correctness
-delivery at `9024a8a29bdc0ad668a7c0620bd53872f4313cc8`. The default branch may be
-stale and must not be used as the source of the current Torch TM / DiffReach /
-Flow* conclusions.
+The supported package API is under `src/torch_tm_flowpipe`. The only supported
+three-tool study entrypoint is:
 
-The study does not name a cross-tool “order-1 winner”: the native order labels
-do not select matched bases, validators, resets, or arithmetic. It instead uses
-raw one-step output, common affine and box carry contracts, accurately labelled
-native modes, one-engine matched-basis controls, and within-tool-only Pareto
-frontiers. The Flow* correctness path is the `fa39f7a` audit patch series under
-`experiments/three_tool_deep_study/flowstar_patches/fa39f7a_series/`.
-
-The final reports and authoritative curated artifact will be linked here after
-the mandatory ten-repetition run passes:
-
-- `experiments/three_tool_deep_study/FINAL_REPORT.md`
-- `experiments/three_tool_deep_study/FINAL_REPORT_ZH.md`
-- `experiments/three_tool_deep_study/ARTIFACT_INDEX.md`
-- `experiments/three_tool_deep_study/REPRODUCIBILITY.md`
-- `experiments/three_tool_deep_study/RESULTS_MANIFEST.csv`
-
-`torch-tm-flowpipe` is a small PyTorch-native research prototype for fixed-step
-Taylor-model flowpipes of polynomial plant dynamics, including a
-dependency-preserving multi-step propagation mode. It implements only the
-plant-side Taylor model kernel used conceptually by NNCS reachability methods:
-
-```python
-from torch_tm_flowpipe import Interval, flowpipe_step
-from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode
-
-segment = flowpipe_step(
-    scalar_quadratic_ode,
-    [Interval(0.0, 0.5)],
-    h=0.1,
-    order=4,
-)
-
-print(segment.status)
-print(segment.tm.range_box())
-print(segment.final_tm.range_box())
+```bash
+python experiments/consolidated_study/cli.py smoke
+python experiments/consolidated_study/cli.py formal
 ```
 
-The package supports:
+The runner uses `benchmarks/canonical.yaml` plus the versioned
+`benchmarks/smoke.yaml` or `benchmarks/formal.yaml` profile. It refuses a
+non-empty output directory. A formal run also refuses a dirty worktree.
 
-- scalar interval arithmetic with conservative outward rounding using
-  `torch.nextafter` where available;
-- sparse total-degree multivariate polynomials;
-- scalar Taylor models `p(vars) + I`;
-- fixed-step Picard iteration for polynomial ODEs;
-- one-step and multi-step flowpipe construction;
-- dependency-preserving multi-step propagation that carries `final_tm` forward
-  instead of compressing every step to a box;
-- constant interval controls and affine controls of the form
-  `u = A x0 + b + error`, with `error in [-r, r]`.
+## Install and test
 
-It intentionally does not integrate CROWN-Reach, CROWN, auto_LiRPA, Flow*
-source code or a Flow* runtime backend, hybrid automata machinery, guards,
-jumps, adaptive order as a supported default, symbolic remainders,
-branch-and-bound, Jacobian/sensitivity bounds, or transcendental functions.
-
-## Development
-
-From an activated Python environment, install the package editable and run the
-baseline checks:
+Use a local environment compatible with the lock/provenance recorded for the
+run:
 
 ```bash
 python -m pip install -e ".[test]"
-pytest -q
-python examples/scalar_quadratic.py
-python examples/van_der_pol_short.py
-python examples/affine_controlled.py
+python -m pytest -q
+python -m pytest -q -m unit
+python -m pytest -q -m integration
 ```
 
-Development setup and checks are split so repeated checks do not reinstall:
+Flowstar and DiffReach are read-only sibling dependencies. The runner resolves
+`FLOWSTAR_ROOT`, `FLOWSTAR_AUDIT_ROOT`, `DIFFREACH_ROOT`, and
+`DIFFREACH_PYTHON`; otherwise it checks documented sibling defaults. Missing
+dependencies are errors, not passes.
 
-```bash
-bash scripts/setup_dev.sh
-bash scripts/check_all.sh
-```
-
-For the requested `py11` environment, run the same commands through `conda`:
-
-```bash
-conda run -n py11 python -m pip install -e ".[test]"
-conda run -n py11 pytest -q
-conda run -n py11 python examples/scalar_quadratic.py
-conda run -n py11 python examples/van_der_pol_short.py
-conda run -n py11 python examples/affine_controlled.py
-```
-
-Experiment scripts keep their stdout output unchanged and can also write CSV
-results:
-
-```bash
-python experiments/scalar_quadratic_grid.py --csv outputs/scalar_quadratic_grid.csv
-python experiments/harmonic_oscillator.py --csv outputs/harmonic_oscillator.csv
-python experiments/van_der_pol_sampling.py --csv outputs/van_der_pol_sampling.csv
-```
-
-## Diagnostics artifacts
-
-The committed Flow* Van der Pol diagnostics artifacts live under
-`outputs/flowstar_benchmark_diagnostics/`,
-`outputs/flowstar_benchmark_diagnostics_stage2/`, and
-`outputs/flowstar_benchmark_diagnostics_stage3/`. Stage 3 contains an
-experimental diagnostic-only symbolic remainder prototype/result. It is not
-part of the supported default API and did not improve the benchmark objective.
-See `docs/flowstar_vanderpol_pytorch_diagnostics_conclusion.md` for the final
-decision record.
-
-## Experimental Flowstar-style rescue mode
-
-`experiments/flowstar_style_rescue_vanderpol.py` contains an experimental
-clean-room Flow*-inspired rescue path for the Van der Pol diagnostic case. It
-uses recenter/rescale normalization, target remainder validation, and adaptive
-step shrinkage to study whether the PyTorch-native Taylor-model prototype can
-continue farther than the earlier failure point. It is not copied Flow* code,
-does not make Flow* a package backend, and must not be described as Flow* parity
-unless horizon 10 is reached and numerical box comparisons are reported.
-
-The default package remains a PyTorch-native prototype. The rescue mode is an
-experiment artifact, not an advertised full Flow* implementation or a supported
-replacement for the Flow* toolbox.
-
-A newer opt-in diagnostic mode,
-`reset_mode="normalized_insertion_symqueue_split"`, separates propagated
-Flow*-style symbolic queue width from the ordinary target-remainder channel. In
-the H10 Van der Pol diagnostics it beats the older symqueue failure point
-(t~=3.35) and reaches the no-queue horizons (o4 t~=6.473, o6 t~=7.496), but it
-does not reach horizon 10 and does not beat the no-queue baselines. The best
-split run passes the 500-sample containment sanity check, while the after-split
-one-step Flow* oracle also rejects the same wider local box. Treat this as an
-experimental semantics diagnostic, not a Flow* parity result.
-
-The follow-up `normalized_insertion_symqueue_v2` audit reaches the same best
-horizon as no-queue/split and is documented in
-`docs/flowstar_symbolic_queue_v2_audit_conclusion.md`.
-
-
-## Dependency-preserving multi-step example
+## Package example
 
 ```python
 from torch_tm_flowpipe import Interval, flowpipe_multi_step
@@ -156,64 +47,22 @@ result = flowpipe_multi_step(
     order=4,
     mode="dependency_preserving",
 )
-
-print(result.status)
-print(result.final_tm.range_box())
+print(result.status, result.final_tm.range_box())
 ```
 
-The experiment scripts write CSV files with these columns: `system`, `h`,
-`order`, `status`, `final_width`, `flowpipe_width`, `runtime_s`,
-`validation_attempts`, `containment_failures`, `device`, and `dtype`.
+`range_only` and `dependency_preserving` are distinct contracts.
+`range_only` collapses the carried set to a box; it must not be interpreted as
+dependency preservation.
 
-Optional plots can be generated from the CSV files:
+## Evidence
 
-```bash
-python experiments/plot_results.py outputs/scalar_quadratic_grid.csv \
-  outputs/harmonic_oscillator.csv outputs/van_der_pol_sampling.csv \
-  --out-dir outputs
-```
+Repository and branch archaeology is under
+`audits/repository_consolidation/20260730T083258Z`. Current architecture,
+protocol, limitations, results, and reproduction instructions are in `docs/`.
+Historical experiment directories remain supporting evidence only and are not
+alternative recommended entrypoints.
 
-## Flow* plant-only comparison suite
-
-The plant-only comparison utilities live under `comparisons/flowstar/`.  They
-export fixed-step/fixed-order Flow* models, optionally run a Flow* executable,
-parse box-style range output when available, and compare against both
-`torch_tm_flowpipe` multi-step modes.
-
-```bash
-python comparisons/flowstar/compare_against_torch_tm.py \
-  --all \
-  --csv outputs/flowstar_comparison.csv
-```
-
-If Flow* is not available on `PATH` or via `FLOWSTAR_BIN`, the script still runs
-the torch baselines and writes Flow* rows with `status=skipped`.  See
-`docs/flowstar_comparison.md` for details, limitations, and the CSV schema.
-
-
-## Flow* comparison backend note
-
-The plant-only comparison suite under `comparisons/flowstar/` defaults to the current `chenxin415/flowstar` toolbox interface. It generates C++ benchmark programs that include `Continuous.h` and link against `flowstar-toolbox/libflowstar.a`. Older `.model` file export remains available with `--flowstar-target legacy_model`, but it is not the default.
-
-For the local server setup used by the generated reports:
-
-```bash
-cd /srv/local/shengenli/torch_tm_flowpipe
-export FLOWSTAR_ROOT=/srv/local/shengenli/flowstar
-conda run -n py11 python -m pip install -e ".[test]"
-conda run -n py11 pytest -q
-```
-
-
-## Evidence and comparison reports
-
-After running the Flow* comparison script, summarize whether the new
-`dependency_preserving` mode is useful with:
-
-```bash
-python comparisons/flowstar/summarize_comparison.py   outputs/flowstar_comparison.csv   --out outputs/flowstar_comparison_summary.md
-```
-
-The summary reports dependency-preserving/range-only width ratios and, when
-Flow* is installed and parseable, torch/Flow* width ratios.  See
-`docs/technical_validation.md` for what these results do and do not prove.
+The implementation uses float64 interval operations with conservative
+`nextafter` expansion where implemented. It is not a general proof of directed
+rounding across every backend. Sampling-based trajectory checks are regression
+evidence, not formal proofs.

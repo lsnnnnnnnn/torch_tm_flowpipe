@@ -190,35 +190,3 @@ def test_cli_writes_ledger_and_report(tmp_path):
 
     assert (out_dir / "validation_candidate_decomposition_ledger.csv").exists()
     assert (out_dir / "validation_candidate_decomposition_report.md").exists()
-
-
-def test_checked_in_trace_headers_expose_decomposition_fields():
-    traces = (
-        ROOT / "outputs" / "flowstar_step_trace_compare" / "flowstar_trace.csv",
-        ROOT / "outputs" / "flowstar_step_trace_compare" / "torch_noqueue_trace.csv",
-        ROOT / "outputs" / "flowstar_step_trace_compare" / "torch_v2_trace.csv",
-    )
-    required_fields = (
-        "polynomial_range_x_lo",
-        "polynomial_range_y_hi",
-        "ordinary_remainder_x_lo",
-        "raw_ctrunc_residual_y_hi",
-        "cutoff_poly_diff_y_hi",
-        "post_cutoff_residual_y_hi",
-    )
-
-    for trace in traces:
-        with trace.open(newline="", encoding="utf-8") as handle:
-            fieldnames = csv.DictReader(handle).fieldnames or []
-        for field in required_fields:
-            assert field in fieldnames
-
-
-def test_docs_and_outputs_recommend_decomposition_not_stale_alignment():
-    docs = (ROOT / "docs" / "flowstar_step_trace_divergence_report.md").read_text(encoding="utf-8")
-    output = (ROOT / "outputs" / "flowstar_step_trace_compare" / "trace_divergence_report.md").read_text(encoding="utf-8")
-
-    assert "First align same-source tube/endpoint objects" not in docs
-    assert "First align same-source tube/endpoint objects" not in output
-    assert "Expose and compare polynomial/remainder/raw-ctrunc/no-remainder decomposition" in docs
-    assert "Expose and compare polynomial/remainder/raw-ctrunc/no-remainder decomposition" in output

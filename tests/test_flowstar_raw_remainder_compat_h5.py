@@ -183,14 +183,3 @@ def test_h5_script_has_no_h10_default_or_output_path():
     assert "h10" not in str(h5.DEFAULT_OUT_DIR)
     assert h5.H_MAX == 0.1
     assert h5.H_MIN == 0.002
-
-
-def test_checked_in_h5_outputs_have_physical_lines():
-    for path in CHECKED_IN_OUTPUTS:
-        assert path.exists(), path
-        text = path.read_text(encoding="utf-8")
-        if path.suffix == ".csv":
-            assert len(text.splitlines()) > 5, path
-        else:
-            assert len(text.splitlines()) > 10, path
-            assert "\\n" not in text

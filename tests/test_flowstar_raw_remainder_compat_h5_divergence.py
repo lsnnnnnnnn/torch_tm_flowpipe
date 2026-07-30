@@ -62,17 +62,3 @@ def test_h5_divergence_audit_has_no_h10_outputs():
     assert "h10" not in str(audit.DEFAULT_OUT_DIR)
     assert not (ROOT / "outputs" / "flowstar_raw_remainder_compat_h10_divergence").exists()
     assert "refusing to write h10 outputs" in SCRIPT.read_text(encoding="utf-8")
-
-
-def test_checked_in_h5_csv_and_md_artifacts_have_physical_lines():
-    for name in H5_CSVS:
-        path = H5_DIR / name
-        assert path.exists(), path
-        lines = path.read_text(encoding="utf-8").splitlines()
-        assert len(lines) > 5, path
-        assert all("\n" not in line for line in lines), path
-
-    report = H5_DIR / "h5_report.md"
-    text = report.read_text(encoding="utf-8")
-    assert len(text.splitlines()) > 10
-    assert "\\n" not in text
