@@ -16,6 +16,18 @@ test = ["pytest", "pandas"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+markers = [
+    "unit: fast isolated unit tests",
+    "property: invariant and property-style tests",
+    "regression: regression tests for confirmed historical defects",
+    "integration: multi-module or subprocess integration tests",
+    "protocol: experiment schema, eligibility, timing, and reporting contracts",
+    "flowstar: requires the pinned external Flowstar checkout and build",
+    "diffreach: requires the pinned external DiffReach checkout and JAX environment",
+    "cuda: requires an NVIDIA CUDA device",
+    "slow: intentionally long-running checks",
+    "formal_run: validates a frozen formal experiment artifact",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
