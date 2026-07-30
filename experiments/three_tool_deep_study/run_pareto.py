@@ -7,7 +7,6 @@ import csv
 import json
 import math
 import os
-import resource
 import statistics
 import subprocess
 import sys
@@ -22,6 +21,23 @@ from common import analytic_contained, load_spec, write_csv, write_json
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
+SRC_ROOT = REPO_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
+from torch_tm_flowpipe.protocol.eligibility import (
+    partition_and_recompute_pareto,
+)
+from torch_tm_flowpipe.protocol.config import configuration_semantics
+from torch_tm_flowpipe.protocol.carry import projected_affine_box_reset
+from torch_tm_flowpipe.protocol.provenance import canonical_config_identity
+from torch_tm_flowpipe.protocol.schema import (
+    Applicability,
+    BoundSemantics,
+    FailureCategory,
+    RUNTIME_BOUNDARY_VERSION,
+)
+from torch_tm_flowpipe.protocol.runtime import measure_configuration_step
 
 
 def _float(value: Any, default: float = math.nan) -> float:
@@ -64,26 +80,6 @@ def _acceleration_case(
     )
 
 
-def _projected_affine_box_reset(
-    endpoint: Any,
-    *,
-    project_to_basis: Any,
-    affine_reset: Any,
-    stage: str,
-    iteration: int,
-) -> tuple[Any, int]:
-    """Project a possibly nonlinear endpoint before the affine-only reset."""
-    affine_endpoint, discarded = project_to_basis(
-        endpoint,
-        "B1",
-        tau_index=None,
-        stage=stage,
-        iteration=iteration,
-    )
-    current, _ = affine_reset(affine_endpoint, method="box")
-    return current, len(discarded)
-
-
 def run_torch_repetitions(
     spec: Mapping[str, Any], output: Path, *, smoke: bool
 ) -> dict[str, Any]:
@@ -110,44 +106,68 @@ def run_torch_repetitions(
         rhs = rhs_from_spec(system)
         steps = round(horizon / h)
         for order in orders:
-            for repetition in range(repetitions):
+            for repetition in range(repetitions + 1):
                 current = normalized_initial_tm(
                     system["initial_box"], order=order
                 )
-                timings: list[float] = []
+                total_timings: list[float] = []
+                engine_timings: list[float] = []
                 completed = 0
                 reset_discarded_total = 0
                 endpoint_box: list[list[float]] = []
                 failure = ""
                 for step in range(1, steps + 1):
-                    started = time.perf_counter()
-                    segment = flowpipe_step_from_tm(
-                        rhs, current, h, order
+                    def complete_segment(segment: Any):
+                        if (
+                            segment.status != "validated"
+                            or segment.endpoint_raw_tm is None
+                        ):
+                            return None
+                        endpoint = segment.endpoint_raw_tm
+                        box = [
+                            [
+                                float(interval.lo.detach().cpu()),
+                                float(interval.hi.detach().cpu()),
+                            ]
+                            for interval in endpoint.range_box()
+                        ]
+                        carried, discarded_count = (
+                            projected_affine_box_reset(
+                                endpoint,
+                                project_to_basis=project_to_basis,
+                                affine_reset=affine_reset,
+                                stage=(
+                                    "pareto_affine_reset_projection"
+                                ),
+                                iteration=step,
+                            )
+                        )
+                        return box, carried, discarded_count
+
+                    timing = measure_configuration_step(
+                        lambda: flowpipe_step_from_tm(
+                            rhs, current, h, order
+                        ),
+                        complete_segment,
                     )
-                    timings.append(time.perf_counter() - started)
+                    segment = timing.engine_result
+                    engine_timings.append(timing.engine_seconds)
+                    total_timings.append(timing.total_seconds)
                     if (
                         segment.status != "validated"
                         or segment.endpoint_raw_tm is None
                     ):
                         failure = segment.message or "validation failure"
                         break
-                    endpoint = segment.endpoint_raw_tm
-                    endpoint_box = [
-                        [
-                            float(interval.lo.detach().cpu()),
-                            float(interval.hi.detach().cpu()),
-                        ]
-                        for interval in endpoint.range_box()
-                    ]
-                    current, discarded_count = _projected_affine_box_reset(
-                        endpoint,
-                        project_to_basis=project_to_basis,
-                        affine_reset=affine_reset,
-                        stage="pareto_affine_reset_projection",
-                        iteration=step,
+                    if timing.completion_result is None:
+                        failure = "validated segment lacked completion data"
+                        break
+                    endpoint_box, current, discarded_count = (
+                        timing.completion_result
                     )
                     reset_discarded_total += discarded_count
                     completed = step
+                validation_started = time.perf_counter()
                 exact = (
                     analytic_contained(
                         system_name,
@@ -158,6 +178,10 @@ def run_torch_repetitions(
                     if endpoint_box
                     else None
                 )
+                posthoc_validation_s = (
+                    time.perf_counter() - validation_started
+                )
+                total_configuration_s = sum(total_timings)
                 rows.append(
                     {
                         "tool": "torch_tm_flowpipe",
@@ -167,6 +191,9 @@ def run_torch_repetitions(
                         "requested_horizon": horizon,
                         "evaluation_time": completed * h,
                         "repetition": repetition,
+                        "measurement_phase": (
+                            "cold" if repetition == 0 else "steady"
+                        ),
                         "requested_steps": steps,
                         "completed_steps": completed,
                         "successful_horizon": completed * h,
@@ -175,27 +202,71 @@ def run_torch_repetitions(
                             default=math.nan,
                         ),
                         "native_validation_passed": completed == steps,
+                        "completed_requested_horizon": completed == steps,
+                        "trajectory_sanity_passed": (
+                            completed == steps
+                            and bool(endpoint_box)
+                            and all(
+                                math.isfinite(bound)
+                                for box in endpoint_box
+                                for bound in box
+                            )
+                            and all(
+                                box[0] <= box[1] for box in endpoint_box
+                            )
+                        ),
                         "reset_discarded_term_count": (
                             reset_discarded_total
                         ),
                         "analytic_reference_contained": exact,
+                        "analytic_containment_passed": exact is True,
+                        "analytic_containment_applicability": (
+                            Applicability.REQUIRED.value
+                            if exact is not None
+                            else Applicability.NOT_APPLICABLE.value
+                        ),
                         "compile_or_jit_time_s": 0.0,
                         "first_step_time_s": (
-                            timings[0] if timings else math.nan
-                        ),
-                        "steady_full_configuration_time_s": sum(timings),
-                        "steady_step_time_s": (
-                            statistics.median(timings[1:] or timings)
-                            if timings
+                            total_timings[0]
+                            if total_timings
                             else math.nan
                         ),
-                        "peak_process_rss_kib": resource.getrusage(
-                            resource.RUSAGE_SELF
-                        ).ru_maxrss,
+                        "cold_total_configuration_time_s": (
+                            total_configuration_s
+                            if repetition == 0
+                            else 0.0
+                        ),
+                        "steady_total_configuration_time_s": (
+                            total_configuration_s
+                        ),
+                        "steady_full_configuration_time_s": (
+                            total_configuration_s
+                        ),
+                        "engine_internal_time_s": sum(engine_timings),
+                        "posthoc_validation_time_s": posthoc_validation_s,
+                        "plot_report_time_s": 0.0,
+                        "runtime_boundary_version": (
+                            RUNTIME_BOUNDARY_VERSION
+                        ),
+                        "steady_step_time_s": (
+                            statistics.median(
+                                total_timings[1:] or total_timings
+                            )
+                            if total_timings
+                            else math.nan
+                        ),
+                        "peak_process_rss_kib": "unavailable",
+                        "memory_measurement": "unavailable",
+                        "memory_unavailable_reason": (
+                            "configuration did not run in an isolated "
+                            "measurement subprocess"
+                        ),
                         "device": "cpu",
                         "dtype": "float64",
                         "failure_category": (
-                            "" if completed == steps else "validation_failure"
+                            "completed"
+                            if completed == steps
+                            else "validation_rejected"
                         ),
                         "message": failure,
                     }
@@ -259,33 +330,40 @@ def run_torch_repetitions(
                     f"{warm_segment.message}"
                 )
 
-            for repetition in range(repetitions):
+            for repetition in range(repetitions + 1):
                 current = normalized_initial_tm(
                     system["initial_box"],
                     order=order,
                     dtype=torch.float64,
                     device=device,
                 )
-                timings: list[float] = []
+                total_timings: list[float] = []
+                engine_timings: list[float] = []
                 endpoint_box: list[list[float]] = []
                 completed = 0
                 reset_discarded_total = 0
                 failure = ""
                 torch.cuda.reset_peak_memory_stats(device)
                 for step in range(1, steps + 1):
+                    total_started = time.perf_counter()
                     torch.cuda.synchronize(device)
-                    started = time.perf_counter()
+                    engine_started = time.perf_counter()
                     segment = flowpipe_step_from_tm(
                         rhs, current, acceleration_h, order
                     )
                     torch.cuda.synchronize(device)
-                    timings.append(time.perf_counter() - started)
+                    engine_timings.append(
+                        time.perf_counter() - engine_started
+                    )
                     if (
                         segment.status != "validated"
                         or segment.endpoint_raw_tm is None
                     ):
                         failure = (
                             segment.message or "CUDA validation failure"
+                        )
+                        total_timings.append(
+                            time.perf_counter() - total_started
                         )
                         break
                     endpoint = segment.endpoint_raw_tm
@@ -296,7 +374,7 @@ def run_torch_repetitions(
                         ]
                         for interval in endpoint.range_box()
                     ]
-                    current, discarded_count = _projected_affine_box_reset(
+                    current, discarded_count = projected_affine_box_reset(
                         endpoint,
                         project_to_basis=project_to_basis,
                         affine_reset=affine_reset,
@@ -305,6 +383,11 @@ def run_torch_repetitions(
                     )
                     reset_discarded_total += discarded_count
                     completed = step
+                    torch.cuda.synchronize(device)
+                    total_timings.append(
+                        time.perf_counter() - total_started
+                    )
+                total_configuration_s = sum(total_timings)
                 acceleration_rows.append(
                     {
                         "tool": "torch_tm_flowpipe",
@@ -314,6 +397,9 @@ def run_torch_repetitions(
                         "requested_horizon": acceleration_horizon,
                         "evaluation_time": completed * acceleration_h,
                         "repetition": repetition,
+                        "measurement_phase": (
+                            "cold" if repetition == 0 else "steady"
+                        ),
                         "requested_steps": steps,
                         "completed_steps": completed,
                         "successful_horizon": completed * acceleration_h,
@@ -325,20 +411,57 @@ def run_torch_repetitions(
                             default=math.nan,
                         ),
                         "native_validation_passed": completed == steps,
+                        "completed_requested_horizon": completed == steps,
+                        "trajectory_sanity_passed": (
+                            completed == steps
+                            and bool(endpoint_box)
+                            and all(
+                                math.isfinite(bound)
+                                for box in endpoint_box
+                                for bound in box
+                            )
+                            and all(
+                                box[0] <= box[1] for box in endpoint_box
+                            )
+                        ),
                         "reset_discarded_term_count": (
                             reset_discarded_total
                         ),
                         "analytic_reference_contained": "",
+                        "analytic_containment_passed": "",
+                        "analytic_containment_applicability": (
+                            Applicability.NOT_APPLICABLE.value
+                        ),
                         "compile_or_jit_time_s": (
                             warmup_time if repetition == 0 else 0.0
                         ),
                         "first_step_time_s": (
-                            timings[0] if timings else math.nan
+                            total_timings[0]
+                            if total_timings
+                            else math.nan
                         ),
-                        "steady_full_configuration_time_s": sum(timings),
+                        "cold_total_configuration_time_s": (
+                            total_configuration_s
+                            if repetition == 0
+                            else 0.0
+                        ),
+                        "steady_total_configuration_time_s": (
+                            total_configuration_s
+                        ),
+                        "steady_full_configuration_time_s": (
+                            total_configuration_s
+                        ),
+                        "engine_internal_time_s": sum(engine_timings),
+                        "posthoc_validation_time_s": 0.0,
+                        "plot_report_time_s": 0.0,
+                        "runtime_boundary_version": (
+                            RUNTIME_BOUNDARY_VERSION
+                        ),
                         "steady_step_time_s": (
-                            statistics.median(timings[1:] or timings)
-                            if timings
+                            statistics.median(
+                                total_timings[1:] or total_timings
+                            )
+                            if total_timings
                             else math.nan
                         ),
                         "peak_process_rss_kib": "unavailable",
@@ -350,9 +473,9 @@ def run_torch_repetitions(
                         "backend_status": "available",
                         "dtype": "float64",
                         "failure_category": (
-                            ""
+                            "completed"
                             if completed == steps
-                            else "validation_failure"
+                            else "validation_rejected"
                         ),
                         "message": failure,
                         "acceleration_scope": (
@@ -447,16 +570,18 @@ def run_diffreach_repetitions(
         )
         compile_first = time.perf_counter() - started
         del warm
-        for repetition in range(repetitions):
-            started = time.perf_counter()
+        for repetition in range(repetitions + 1):
+            total_started = time.perf_counter()
+            engine_started = time.perf_counter()
             result = jax.tree.map(
                 lambda value: value.block_until_ready()
                 if hasattr(value, "block_until_ready")
                 else value,
                 compiled(carry),
             )
-            elapsed = time.perf_counter() - started
-            _, (_, his, contraction) = result
+            engine_elapsed = time.perf_counter() - engine_started
+            _, (los_raw, his, contraction) = result
+            los = np.asarray(los_raw)[:, 0, :]
             uppers = np.asarray(his)[:, 0, :]
             contractions = np.asarray(contraction)
             valid = np.all(
@@ -468,13 +593,16 @@ def run_diffreach_repetitions(
             completed = int(bad[0]) if bad.size else steps
             endpoint: list[list[float]] = []
             if completed:
-                los = np.asarray(result[1][0])[:, 0, :]
                 endpoint = [
                     [float(lo), float(hi)]
                     for lo, hi in zip(
                         los[completed - 1], uppers[completed - 1]
                     )
                 ]
+            total_configuration_s = (
+                time.perf_counter() - total_started
+            )
+            validation_started = time.perf_counter()
             exact = (
                 analytic_contained(
                     system_name,
@@ -485,6 +613,9 @@ def run_diffreach_repetitions(
                 if endpoint
                 else None
             )
+            posthoc_validation_s = (
+                time.perf_counter() - validation_started
+            )
             rows.append(
                 {
                     "tool": "diffreach",
@@ -494,6 +625,9 @@ def run_diffreach_repetitions(
                     "requested_horizon": horizon,
                     "evaluation_time": completed * h,
                     "repetition": repetition,
+                    "measurement_phase": (
+                        "cold" if repetition == 0 else "steady"
+                    ),
                     "requested_steps": steps,
                     "completed_steps": completed,
                     "successful_horizon": completed * h,
@@ -502,20 +636,57 @@ def run_diffreach_repetitions(
                         default=math.nan,
                     ),
                     "native_validation_passed": completed == steps,
+                    "completed_requested_horizon": completed == steps,
+                    "trajectory_sanity_passed": (
+                        completed == steps
+                        and bool(endpoint)
+                        and bool(np.all(np.isfinite(los)))
+                        and bool(np.all(np.isfinite(uppers)))
+                        and bool(np.all(los <= uppers))
+                    ),
                     "analytic_reference_contained": exact,
+                    "analytic_containment_passed": exact is True,
+                    "analytic_containment_applicability": (
+                        Applicability.REQUIRED.value
+                        if exact is not None
+                        else Applicability.NOT_APPLICABLE.value
+                    ),
                     "compile_or_jit_time_s": (
                         compile_first if repetition == 0 else 0.0
                     ),
                     "first_step_time_s": "",
-                    "steady_full_configuration_time_s": elapsed,
-                    "steady_step_time_s": elapsed / max(steps, 1),
-                    "peak_process_rss_kib": resource.getrusage(
-                        resource.RUSAGE_SELF
-                    ).ru_maxrss,
+                    "cold_total_configuration_time_s": (
+                        total_configuration_s
+                        if repetition == 0
+                        else 0.0
+                    ),
+                    "steady_total_configuration_time_s": (
+                        total_configuration_s
+                    ),
+                    "steady_full_configuration_time_s": (
+                        total_configuration_s
+                    ),
+                    "engine_internal_time_s": engine_elapsed,
+                    "posthoc_validation_time_s": posthoc_validation_s,
+                    "plot_report_time_s": 0.0,
+                    "runtime_boundary_version": (
+                        RUNTIME_BOUNDARY_VERSION
+                    ),
+                    "steady_step_time_s": (
+                        total_configuration_s / max(steps, 1)
+                    ),
+                    "peak_process_rss_kib": "unavailable",
+                    "memory_measurement": "unavailable",
+                    "memory_unavailable_reason": (
+                        "configuration did not run in an isolated "
+                        "measurement subprocess"
+                    ),
                     "device": "cpu",
                     "dtype": "float64",
                     "failure_category": (
-                        "" if completed == steps else "validation_failure"
+                        "completed"
+                        if completed == steps
+                        else "validation_rejected"
                     ),
                     "message": "",
                 }
@@ -600,15 +771,18 @@ def run_diffreach_repetitions(
                 )
                 compile_first = time.perf_counter() - started
                 del warm
-                for repetition in range(repetitions):
-                    started = time.perf_counter()
+                for repetition in range(repetitions + 1):
+                    total_started = time.perf_counter()
+                    engine_started = time.perf_counter()
                     result = jax.tree.map(
                         lambda value: value.block_until_ready()
                         if hasattr(value, "block_until_ready")
                         else value,
                         compiled(carry),
                     )
-                    elapsed = time.perf_counter() - started
+                    engine_elapsed = (
+                        time.perf_counter() - engine_started
+                    )
                     los = np.asarray(result[1][0])[:, 0, :]
                     uppers = np.asarray(result[1][1])[:, 0, :]
                     contractions = np.asarray(result[1][2])
@@ -630,6 +804,9 @@ def run_diffreach_repetitions(
                         if completed
                         else []
                     )
+                    total_configuration_s = (
+                        time.perf_counter() - total_started
+                    )
                     acceleration_rows.append(
                         {
                             "tool": "diffreach",
@@ -641,6 +818,9 @@ def run_diffreach_repetitions(
                             "requested_horizon": acceleration_horizon,
                             "evaluation_time": completed * acceleration_h,
                             "repetition": repetition,
+                            "measurement_phase": (
+                                "cold" if repetition == 0 else "steady"
+                            ),
                             "requested_steps": steps,
                             "completed_steps": completed,
                             "successful_horizon": (
@@ -656,26 +836,62 @@ def run_diffreach_repetitions(
                             "native_validation_passed": (
                                 completed == steps
                             ),
+                            "completed_requested_horizon": (
+                                completed == steps
+                            ),
+                            "trajectory_sanity_passed": (
+                                completed == steps
+                                and bool(endpoint)
+                                and bool(np.all(np.isfinite(los)))
+                                and bool(np.all(np.isfinite(uppers)))
+                                and bool(np.all(los <= uppers))
+                            ),
                             "analytic_reference_contained": "",
+                            "analytic_containment_passed": "",
+                            "analytic_containment_applicability": (
+                                Applicability.NOT_APPLICABLE.value
+                            ),
                             "compile_or_jit_time_s": (
                                 compile_first
                                 if repetition == 0
                                 else 0.0
                             ),
                             "first_step_time_s": "",
-                            "steady_full_configuration_time_s": elapsed,
-                            "steady_step_time_s": elapsed / max(steps, 1),
-                            "peak_process_rss_kib": resource.getrusage(
-                                resource.RUSAGE_SELF
-                            ).ru_maxrss,
+                            "cold_total_configuration_time_s": (
+                                total_configuration_s
+                                if repetition == 0
+                                else 0.0
+                            ),
+                            "steady_total_configuration_time_s": (
+                                total_configuration_s
+                            ),
+                            "steady_full_configuration_time_s": (
+                                total_configuration_s
+                            ),
+                            "engine_internal_time_s": engine_elapsed,
+                            "posthoc_validation_time_s": 0.0,
+                            "plot_report_time_s": 0.0,
+                            "runtime_boundary_version": (
+                                RUNTIME_BOUNDARY_VERSION
+                            ),
+                            "steady_step_time_s": (
+                                total_configuration_s
+                                / max(steps, 1)
+                            ),
+                            "peak_process_rss_kib": "unavailable",
+                            "memory_measurement": "unavailable",
+                            "memory_unavailable_reason": (
+                                "configuration did not run in an isolated "
+                                "measurement subprocess"
+                            ),
                             "device": str(device),
                             "backend": "jax_cuda",
                             "backend_status": "available",
                             "dtype": "float64",
                             "failure_category": (
-                                ""
+                                "completed"
                                 if completed == steps
-                                else "validation_failure"
+                                else "validation_rejected"
                             ),
                             "message": "",
                             "acceleration_scope": (
@@ -745,8 +961,9 @@ def run_flowstar_repetitions(
             variant="root_cause_order4_selected",
         )
         executable = Path(run["source"]).with_suffix("")
-        for repetition in range(repetitions):
-            started = time.perf_counter()
+        for repetition in range(repetitions + 1):
+            total_started = time.perf_counter()
+            engine_started = time.perf_counter()
             process = subprocess.run(
                 [str(executable)],
                 cwd=executable.parent,
@@ -756,7 +973,7 @@ def run_flowstar_repetitions(
                 check=False,
                 timeout=float(spec["timeout_s"]),
             )
-            elapsed = time.perf_counter() - started
+            engine_elapsed = time.perf_counter() - engine_started
             parsed = runner._parse_fixed(process.stdout)
             endpoint_rows = [
                 row
@@ -775,6 +992,8 @@ def run_flowstar_repetitions(
                 [float(row["lower"]), float(row["upper"])]
                 for row in sorted(final_rows, key=lambda item: item["state"])
             ]
+            total_configuration_s = time.perf_counter() - total_started
+            validation_started = time.perf_counter()
             exact = (
                 analytic_contained(
                     system_name,
@@ -785,6 +1004,21 @@ def run_flowstar_repetitions(
                 if endpoint
                 else None
             )
+            posthoc_validation_s = time.perf_counter() - validation_started
+            requested_steps = round(horizon / h)
+            completed_requested_horizon = (
+                process.returncode == 0 and completed == requested_steps
+            )
+            if process.returncode != 0:
+                failure_category = FailureCategory.PROCESS_ERROR.value
+            elif not completed_requested_horizon:
+                failure_category = FailureCategory.INCOMPLETE_UNKNOWN.value
+            elif exact is False:
+                failure_category = (
+                    FailureCategory.ANALYTIC_CONTAINMENT_FAILED.value
+                )
+            else:
+                failure_category = FailureCategory.COMPLETED.value
             rows.append(
                 {
                     "tool": "flowstar",
@@ -794,18 +1028,40 @@ def run_flowstar_repetitions(
                     "requested_horizon": horizon,
                     "evaluation_time": completed * h,
                     "repetition": repetition,
-                    "requested_steps": round(horizon / h),
+                    "measurement_phase": (
+                        "cold" if repetition == 0 else "steady"
+                    ),
+                    "requested_steps": requested_steps,
                     "completed_steps": completed,
                     "successful_horizon": completed * h,
+                    "completed_requested_horizon": (
+                        completed_requested_horizon
+                    ),
                     "width_at_evaluation_time": max(
                         (box[1] - box[0] for box in endpoint),
                         default=math.nan,
                     ),
-                    "native_validation_passed": (
-                        process.returncode == 0
-                        and completed == round(horizon / h)
+                    "native_validation_passed": completed_requested_horizon,
+                    "trajectory_sanity_passed": (
+                        completed_requested_horizon
+                        and len(endpoint_rows)
+                        == requested_steps * len(
+                            spec["systems"][system_name]["initial_box"]
+                        )
+                        and all(
+                            math.isfinite(float(row["lower"]))
+                            and math.isfinite(float(row["upper"]))
+                            and float(row["lower"]) <= float(row["upper"])
+                            for row in endpoint_rows
+                        )
                     ),
                     "analytic_reference_contained": exact,
+                    "analytic_containment_passed": exact is True,
+                    "analytic_containment_applicability": (
+                        Applicability.REQUIRED.value
+                        if exact is not None
+                        else Applicability.NOT_APPLICABLE.value
+                    ),
                     "compile_or_jit_time_s": (
                         run["build_time_s"] if repetition == 0 else 0.0
                     ),
@@ -814,7 +1070,21 @@ def run_flowstar_repetitions(
                         if parsed["steps"]
                         else ""
                     ),
-                    "steady_full_configuration_time_s": elapsed,
+                    "cold_total_configuration_time_s": (
+                        total_configuration_s if repetition == 0 else 0.0
+                    ),
+                    "steady_total_configuration_time_s": (
+                        total_configuration_s
+                    ),
+                    "steady_full_configuration_time_s": (
+                        total_configuration_s
+                    ),
+                    "engine_internal_time_s": engine_elapsed,
+                    "posthoc_validation_time_s": posthoc_validation_s,
+                    "plot_report_time_s": 0.0,
+                    "runtime_boundary_version": (
+                        RUNTIME_BOUNDARY_VERSION
+                    ),
                     "steady_step_time_s": (
                         statistics.median(
                             [
@@ -830,13 +1100,13 @@ def run_flowstar_repetitions(
                         else math.nan
                     ),
                     "peak_process_rss_kib": "unavailable",
+                    "memory_measurement_reason": (
+                        "repetitions share a parent process; isolated "
+                        "configuration peak was not measured"
+                    ),
                     "device": "cpu",
                     "dtype": "MPFR_interval_53_bit",
-                    "failure_category": (
-                        ""
-                        if process.returncode == 0
-                        else "native_process_failure"
-                    ),
+                    "failure_category": failure_category,
                     "message": process.stderr[-1000:],
                 }
             )
@@ -963,6 +1233,7 @@ def _collect_acceleration(output: Path) -> list[dict[str, Any]]:
         row
         for row in observations
         if str(row.get("backend_status", "")).lower() == "available"
+        and row.get("measurement_phase", "steady") == "steady"
     ]
     grouped: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     for row in available:
@@ -1080,9 +1351,22 @@ def _collect_acceleration(output: Path) -> list[dict[str, Any]]:
     return summaries
 
 
-def collect(output: Path) -> dict[str, Any]:
+def _explicit_true(value: Any) -> bool:
+    if type(value) is bool:
+        return value
+    return isinstance(value, str) and value.strip().lower() == "true"
+
+
+def _finite_values(rows: Sequence[Mapping[str, Any]], field: str) -> list[float]:
+    values = [_float(row.get(field)) for row in rows]
+    return [value for value in values if math.isfinite(value)]
+
+
+def collect(
+    output: Path, spec: Mapping[str, Any], *, smoke: bool = False
+) -> dict[str, Any]:
     native_widths = _native_widths(output)
-    rows: list[dict[str, Any]] = []
+    exploratory_rows: list[dict[str, Any]] = []
     for tool in ("torch", "diffreach", "flowstar"):
         path = output / f"native_{tool}_summary.json"
         if not path.exists():
@@ -1097,7 +1381,7 @@ def collect(output: Path) -> dict[str, Any]:
             width, evaluation_time = native_widths.get(
                 key, (math.nan, math.nan)
             )
-            rows.append(
+            exploratory_rows.append(
                 {
                     "tool": key[0],
                     "variant": key[1],
@@ -1121,6 +1405,13 @@ def collect(output: Path) -> dict[str, Any]:
                     ),
                     "runtime_repetitions": 1,
                     "runtime_statistic": "single_native_sweep",
+                    "primary_numerical_eligible": False,
+                    "excluded_from_authoritative": True,
+                    "exclusion_reason": (
+                        "exploratory_single_sweep;"
+                        "insufficient_runtime_repetitions"
+                    ),
+                    "width_runtime_pareto": False,
                     "native_validation_passed": summary.get(
                         "native_validation_passed",
                         summary.get("status") == "success",
@@ -1132,6 +1423,9 @@ def collect(output: Path) -> dict[str, Any]:
                     ),
                 }
             )
+    write_csv(output / "native_pareto_exploratory.csv", exploratory_rows)
+    write_csv(output / "EXPLORATORY.csv", exploratory_rows)
+
     repetition_rows: list[dict[str, Any]] = []
     for tool in ("torch", "diffreach", "flowstar"):
         repetition_rows.extend(
@@ -1142,65 +1436,210 @@ def collect(output: Path) -> dict[str, Any]:
         grouped[
             tuple(
                 str(row.get(field, ""))
-                for field in ("tool", "variant", "system", "h")
+                for field in (
+                    "tool",
+                    "variant",
+                    "system",
+                    "h",
+                    "requested_horizon",
+                )
             )
         ].append(row)
+    expected_repetitions = (
+        1 if smoke else int(spec["runtime"]["repetitions"])
+    )
     runtime_rows: list[dict[str, Any]] = []
-    for key, values in grouped.items():
-        successful = [
+    for key, all_values in sorted(grouped.items()):
+        cold = [
             row
+            for row in all_values
+            if row.get("measurement_phase") == "cold"
+        ]
+        values = [
+            row
+            for row in all_values
+            if row.get("measurement_phase", "steady") == "steady"
+        ]
+        repetition_indices = {
+            int(_float(row.get("repetition"), -1.0)) for row in values
+        }
+        all_required_repetitions_present = (
+            len(values) == expected_repetitions
+            and repetition_indices
+            == set(range(1, expected_repetitions + 1))
+        )
+        runtimes = _finite_values(
+            values, "steady_total_configuration_time_s"
+        )
+        widths = _finite_values(values, "width_at_evaluation_time")
+        horizons = _finite_values(values, "successful_horizon")
+        engine_times = _finite_values(values, "engine_internal_time_s")
+        validation_times = _finite_values(
+            values, "posthoc_validation_time_s"
+        )
+        plot_times = _finite_values(values, "plot_report_time_s")
+        compile_costs = _finite_values(
+            all_values, "compile_or_jit_time_s"
+        )
+        cold_times = _finite_values(
+            cold, "cold_total_configuration_time_s"
+        )
+        native_passed = bool(values) and all(
+            _explicit_true(row.get("native_validation_passed"))
             for row in values
-            if str(row.get("native_validation_passed", "")).lower()
-            == "true"
+        )
+        analytic_not_applicable = bool(values) and all(
+            row.get("analytic_containment_applicability")
+            == Applicability.NOT_APPLICABLE.value
+            for row in values
+        )
+        analytic_passed = bool(values) and all(
+            _explicit_true(row.get("analytic_containment_passed"))
+            or row.get("analytic_containment_applicability")
+            == Applicability.NOT_APPLICABLE.value
+            for row in values
+        )
+        trajectory_passed = bool(values) and all(
+            _explicit_true(row.get("trajectory_sanity_passed"))
+            for row in values
+        )
+        completed = bool(values) and all(
+            _explicit_true(row.get("completed_requested_horizon"))
+            for row in values
+        )
+        failure_categories = [
+            str(row.get("failure_category", ""))
+            for row in values
+            if str(row.get("failure_category", ""))
+            not in ("", FailureCategory.COMPLETED.value)
         ]
-        source = successful or values
-        runtimes = [
-            _float(row.get("steady_full_configuration_time_s"))
-            for row in source
+        if not completed:
+            failure_category = (
+                failure_categories[0]
+                if failure_categories
+                else FailureCategory.INCOMPLETE_UNKNOWN.value
+            )
+        elif not analytic_passed:
+            failure_category = (
+                FailureCategory.ANALYTIC_CONTAINMENT_FAILED.value
+            )
+        elif not trajectory_passed:
+            failure_category = (
+                FailureCategory.TRAJECTORY_SANITY_FAILED.value
+            )
+        elif not native_passed:
+            failure_category = FailureCategory.VALIDATION_REJECTED.value
+        else:
+            failure_category = FailureCategory.COMPLETED.value
+        successful_horizon = (
+            statistics.median(horizons) if horizons else math.nan
+        )
+        steady_runtime = (
+            statistics.median(runtimes) if runtimes else math.nan
+        )
+        completed_steps = [
+            int(_float(item.get("completed_steps"), 0.0))
+            for item in values
         ]
-        widths = [
-            _float(row.get("width_at_evaluation_time")) for row in source
-        ]
-        horizons = [_float(row.get("successful_horizon")) for row in source]
-        compile_costs = [
-            _float(row.get("compile_or_jit_time_s"), 0.0)
-            for row in source
+        requested_steps = [
+            int(_float(item.get("requested_steps"), 0.0))
+            for item in values
         ]
         row = {
             "tool": key[0],
             "variant": key[1],
             "system": key[2],
-            "h": key[3],
-            "evaluation_time": statistics.median(horizons),
-            "requested_horizon": source[0].get("requested_horizon", ""),
-            "successful_horizon": statistics.median(horizons),
-            "width_at_evaluation_time": statistics.median(widths),
-            "steady_full_configuration_time_s": statistics.median(
-                runtimes
+            "h": float(key[3]),
+            "evaluation_time": successful_horizon,
+            "requested_horizon": float(key[4]),
+            "successful_horizon": successful_horizon,
+            "completed_requested_horizon": completed,
+            "last_valid_step": (
+                min(completed_steps) if completed_steps else 0
             ),
-            "runtime_min_s": min(runtimes),
-            "runtime_max_s": max(runtimes),
-            "compile_or_jit_time_s": max(compile_costs),
+            "failure_step": (
+                min(completed_steps) + 1
+                if completed_steps and not completed
+                else ""
+            ),
+            "failure_category": failure_category,
+            "failure_message": "; ".join(
+                sorted(
+                    {
+                        str(item.get("message", "")).strip()
+                        for item in values
+                        if str(item.get("message", "")).strip()
+                    }
+                )
+            ),
+            "width_at_evaluation_time": (
+                statistics.median(widths) if widths else math.nan
+            ),
+            "cold_total_configuration_time_s": (
+                max(cold_times) if cold_times else 0.0
+            ),
+            "steady_total_configuration_time_s": steady_runtime,
+            "steady_full_configuration_time_s": steady_runtime,
+            "engine_internal_time_s": (
+                statistics.median(engine_times)
+                if engine_times
+                else 0.0
+            ),
+            "compile_or_jit_time_s": (
+                max(compile_costs) if compile_costs else 0.0
+            ),
+            "posthoc_validation_time_s": (
+                statistics.median(validation_times)
+                if validation_times
+                else 0.0
+            ),
+            "plot_report_time_s": (
+                statistics.median(plot_times) if plot_times else 0.0
+            ),
+            "runtime_boundary_version": RUNTIME_BOUNDARY_VERSION,
+            "runtime_min_s": min(runtimes) if runtimes else math.nan,
+            "runtime_max_s": max(runtimes) if runtimes else math.nan,
             "runtime_repetitions": len(values),
             "runtime_statistic": "median_full_configuration",
-            "native_validation_passed": len(successful) == len(values),
-            "memory_kib": _maximum_measured_memory(
-                [
-                    item.get("peak_process_rss_kib")
-                    for item in source
-                ]
+            "all_required_repetitions_present": (
+                all_required_repetitions_present
             ),
-            "basis": "",
+            "native_validation_passed": native_passed,
+            "analytic_containment_passed": analytic_passed,
+            "analytic_containment_applicability": (
+                Applicability.NOT_APPLICABLE.value
+                if analytic_not_applicable
+                else Applicability.REQUIRED.value
+            ),
+            "trajectory_sanity_passed": trajectory_passed,
+            "bound_semantics": BoundSemantics.RAW_ENDPOINT.value,
+            "primary_comparable": True,
+            "memory_kib": "unavailable",
+            "memory_measurement_reason": (
+                "configurations were not launched in isolated "
+                "peak-memory subprocesses"
+            ),
+            "requested_steps": (
+                max(requested_steps) if requested_steps else 0
+            ),
             "carry_or_preconditioning": "selected_native_practical",
+            **configuration_semantics(key[0], key[1]),
         }
-        rows.append(row)
+        row["config_id"] = canonical_config_identity(row)
         runtime_rows.append(row)
-    _pareto_flags(rows)
-    write_csv(output / "native_pareto_summary.csv", rows)
+
+    primary_rows, excluded_rows = partition_and_recompute_pareto(
+        runtime_rows,
+        required_repetitions=int(spec["runtime"]["repetitions"]),
+    )
+    write_csv(output / "native_pareto_summary.csv", primary_rows)
+    write_csv(output / "native_pareto_excluded.csv", excluded_rows)
     write_csv(output / "runtime_summary.csv", runtime_rows)
     acceleration = _collect_acceleration(output)
     result = {
-        "pareto_rows": len(rows),
+        "pareto_rows": len(primary_rows),
+        "excluded_repeated_configuration_rows": len(excluded_rows),
+        "exploratory_single_sweep_rows": len(exploratory_rows),
         "repeated_configuration_rows": len(runtime_rows),
         "repetition_observations": len(repetition_rows),
         "acceleration_rows": len(acceleration),
@@ -1209,7 +1648,10 @@ def collect(output: Path) -> dict[str, Any]:
             for row in acceleration
         ),
         "all_selected_have_ten_repetitions": all(
-            int(row["runtime_repetitions"]) >= 10 for row in runtime_rows
+            int(row["runtime_repetitions"])
+            >= int(spec["runtime"]["repetitions"])
+            and row["all_required_repetitions_present"] is True
+            for row in runtime_rows
         )
         if runtime_rows
         else False,
@@ -1220,7 +1662,9 @@ def collect(output: Path) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", default=str(HERE / "benchmark_spec.yaml"))
+    parser.add_argument(
+        "--spec", default=str(REPO_ROOT / "benchmarks" / "canonical.yaml")
+    )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--tool",
@@ -1243,7 +1687,7 @@ def main() -> None:
             spec, output, smoke=args.smoke
         )
     else:
-        result = collect(output)
+        result = collect(output, spec, smoke=args.smoke)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 

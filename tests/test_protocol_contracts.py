@@ -3,7 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import yaml
 
+from torch_tm_flowpipe.protocol.config import expected_configuration_rows
+from torch_tm_flowpipe.protocol.carry import projected_affine_box_reset
 from torch_tm_flowpipe.protocol.eligibility import (
     evaluate_primary_eligibility,
     partition_and_recompute_pareto,
@@ -128,6 +131,24 @@ def test_pareto_is_recomputed_after_eligibility_filtering() -> None:
 
 @pytest.mark.unit
 @pytest.mark.protocol
+def test_pareto_never_compares_different_tool_families() -> None:
+    left = eligible_row(
+        tool="torch_tm_flowpipe",
+        width_at_evaluation_time=2.0,
+        steady_total_configuration_time_s=2.0,
+    )
+    right = eligible_row(
+        tool="flowstar",
+        width_at_evaluation_time=1.0,
+        steady_total_configuration_time_s=1.0,
+    )
+    primary, rejected = partition_and_recompute_pareto([left, right])
+    assert not rejected
+    assert all(row["width_runtime_pareto"] is True for row in primary)
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
 def test_requested_and_successful_horizon_never_alias_prefix_time() -> None:
     row = normalize_observation(
         eligible_row(
@@ -208,3 +229,59 @@ def test_total_timer_includes_completion_boundary(
     assert sample.engine_seconds == 2.0
     assert sample.total_seconds == 7.0
     assert sample.completion_result == "SEGMENT"
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+def test_nonlinear_endpoint_is_projected_before_affine_reset() -> None:
+    nonlinear_endpoint = object()
+    affine_endpoint = object()
+    reset_endpoint = object()
+    calls: list[tuple[object, ...]] = []
+
+    def project(value: object, basis: str, **kwargs: object):
+        calls.append(("project", value, basis, kwargs))
+        return affine_endpoint, ["quadratic", "cubic"]
+
+    def reset(value: object, *, method: str):
+        calls.append(("reset", value, method))
+        assert value is affine_endpoint
+        return reset_endpoint, {}
+
+    result, discarded = projected_affine_box_reset(
+        nonlinear_endpoint,
+        project_to_basis=project,
+        affine_reset=reset,
+        stage="pareto_affine_reset_projection",
+        iteration=7,
+    )
+    assert result is reset_endpoint
+    assert discarded == 2
+    assert calls[0][0] == "project"
+    assert calls[1] == ("reset", affine_endpoint, "box")
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+def test_versioned_profiles_enumerate_exact_expected_configs() -> None:
+    root = Path(__file__).parents[1]
+    benchmark = yaml.safe_load(
+        (root / "benchmarks" / "canonical.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    smoke = yaml.safe_load(
+        (root / "benchmarks" / "smoke.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    formal = yaml.safe_load(
+        (root / "benchmarks" / "formal.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    smoke_rows = expected_configuration_rows(benchmark, smoke)
+    formal_rows = expected_configuration_rows(benchmark, formal)
+    assert len(smoke_rows) == 12
+    assert len(formal_rows) == 24
+    assert len({row["config_id"] for row in formal_rows}) == 24
