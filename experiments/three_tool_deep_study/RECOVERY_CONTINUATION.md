@@ -157,6 +157,33 @@ and final-delivery generation produced both reports, conclusions, artifact
 index, reproducibility record, and a 55-row manifest.  The focused study suite
 passes 29 tests with five environment skips.
 
-These checks validate code paths only.  The next authoritative run must still
-start from a new empty timestamped directory and recompute every numerical
-stage.
+At that checkpoint these checks validated code paths only, so the next
+authoritative run still had to start from a new empty timestamped directory
+and recompute every numerical stage.  The authoritative closure below records
+that this requirement was subsequently satisfied.
+
+## Authoritative closure
+
+Clean run `20260730T015245Z` subsequently recomputed every numerical stage from
+pushed SHA `129b63322d7ec5e9617f54579a30ebdd6adc4c43`.  It passed final
+acceptance, recursive artifact quality, frozen-input integrity, all
+ten-repetition gates, and the complete isolated matrix; it wrote
+`RUN_COMPLETE` and became the sole authoritative numerical run.
+
+A post-run presentation audit found that the broad native-low table and plot
+still displayed supplemental Torch tightened endpoints alongside raw/native
+rows, although they were already absent from Pareto eligibility and rankings.
+Checkpoint `b0d20d421319a0c66bac4ef54a70e0f8fb2b52dc` filters plot 07 and
+separates those six rows into an explicitly Torch-internal diagnostic table.
+It does not alter any numerical CSV, acceptance decision, or repetition.
+
+The accepted run was re-curated after this post-processing correction.  Its
+185-file checksum ledger has zero missing or mismatched files, the 55-row
+delivery manifest maps 37 tables and 18 plots without a missing/hash-mismatched
+entry, and the exact final-code canonical sandbox matrix passed 350 tests,
+skipped ten environment-dependent cases, and failed zero.  The immutable
+numerical-producer host matrix remains 354 passed, five skipped, and zero
+failed.  Post-report host escalation was rejected before process creation, so
+no unexecuted 355/5 estimate is presented as evidence.  This closes the
+recovery sequence; all earlier attempts above remain preserved and
+non-authoritative.

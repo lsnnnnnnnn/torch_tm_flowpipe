@@ -1,6 +1,6 @@
 # Deep-study status
 
-Last updated: 2026-07-30T01:31:58Z.
+Last updated: 2026-07-30T04:52:31Z.
 
 | phase | status | evidence / next gate |
 |---|---|---|
@@ -8,9 +8,9 @@ Last updated: 2026-07-30T01:31:58Z.
 | 1. Correctness delivery repair | complete | collector now derives the stock-original Van der Pol horizon from `flowstar_original_parity.csv`; regression suite: 16 passed; CSV, correctness JSON, plots, and report regenerated |
 | 2. Flow* root cause | complete | audit branch now includes local SHA `2310c1a` after `fa39f7a`; standalone and integrated audits pass the stock Riccati miss plus both corrected containments, 53/256-bit comparison, original/generated T=10 schedule parity, and the adaptive endpoint-path audit; the five-commit portable format-patch series is retained in this repository |
 | 3. Common intermediate representation | complete | CIR v2 schema and semantic validator cover every required field; Torch/Flow*/DiffReach adapters emit explicit unavailable markers and all three external schema/round-trip tests pass |
-| 4. Fair protocols | complete | B1/B_DR/B2/B3 semantics, explicit native capability gaps, required metric annotations, and within-tool-only Pareto flags pass 23 focused tests, matched-basis smoke, and an integrated 18-plot/1,280-row smoke with no verification failures; the authoritative ten-repetition run remains a Phase 6 gate |
+| 4. Fair protocols | complete | B1/B_DR/B2/B3 semantics, explicit native capability gaps, required metric annotations, within-tool-only Pareto flags, and the authoritative 240-observation timing matrix all pass; 103 primary Pareto rows and 18 explicit exclusions remain after final collection |
 | 5. BERN and literature | complete | range-only clean-room feasibility prototype contains all 5 analytic cases and tightens 2 cancellation cases; the exact 16 requested PDF filenames were absent in a server-wide filename search and are recorded without invented page claims in `MATERIALS_MISSING.md`; `LITERATURE_MAP.md` now separates the two Week-4 files, Lecture 12 / Modeling Physics, Homework 2, attachment names, and public-schedule numbering |
-| 6. Repository/final delivery | in progress | formal run `20260730T015245Z` from pushed SHA `129b633` recomputed every stage, passed acceptance and recursive quality audit over 195,551 CSV rows, completed 240 repetition observations, generated 18 plots, passed the complete matrix with 354 passed / 5 skipped / 0 failed, wrote `RUN_COMPLETE`, and curated the artifact; independent review found one presentation-only separation defect in the broad native-low-order report table/plot (supplemental tightened Torch rows shared the view with other raw/native rows despite no ranking); the producer now filters plot 07 and separates the tightened rows into a Torch-internal table, with 14 focused passes / 1 environment skip; regenerate/audit/recurate, run the final-code complete matrix, commit artifacts, push, and verify clean remote HEAD remain |
+| 6. Repository/final delivery | complete | formal run `20260730T015245Z` from frozen SHA `129b633` passed acceptance, recursive quality audit over 195,551 CSV rows, 240 repetition observations, 18 plots, and its host-visible complete matrix (354 passed / 5 skipped / 0 failed); post-processing checkpoint `b0d20d4` separates tightened Torch diagnostics from every cross-tool raw/native view; the re-curated 185-entry bundle has zero checksum mismatches, its 55-row manifest has zero missing/mismatched entries, and the exact final-code canonical sandbox matrix passed 350 / skipped 10 / failed 0 |
 
 Checkpoint policy: update this file in every phase checkpoint.  Timestamped
 scratch runs are never authoritative unless all final verification gates pass.
@@ -148,3 +148,13 @@ table, plot 07 filters them, and its protocol mapping says so explicitly.  The
 stale background-launch reproduction snippet is also replaced by the exact
 `run_all.sh` invocation.  These are report-only changes; no numerical CSV,
 acceptance decision, or repetition result is altered.
+
+The post-processing checkpoint is `b0d20d421319a0c66bac4ef54a70e0f8fb2b52dc`.
+The accepted scratch run was re-audited and re-curated without
+changing numerical CSVs.  The final bundle contains 185 checksum entries with
+zero missing files or mismatches; `RESULTS_MANIFEST.csv` maps 37 tables and all
+18 plots with zero missing files or hash mismatches.  The exact documented
+artifact-bound command then passed 350 tests, skipped ten, and failed zero in
+the final sandbox.  `FINAL_DELIVERY_TEST_RECORD.md` records the group totals,
+log digest, CUDA visibility difference, and the separate 354/5/0 host matrix
+frozen in the numerical run's `RUN_COMPLETE`.

@@ -1,0 +1,21 @@
+{
+  "all_bernstein_exact_ranges_contained": true,
+  "all_current_exact_ranges_contained": true,
+  "cases": 5,
+  "cuda_available": true,
+  "decision": {
+    "cross_term_dependency_preservation": "algebraically_preserved_inside_each_polynomial;does_not_solve_multistep_TM_reset_or_remainder_dependency",
+    "fourth_comparable_reachability_tool": false,
+    "gpu_batching": "potentially_relevant_only_for_sufficient_batch_workload;not_measured_without_CUDA",
+    "nn_controller_bounds": "indirectly_relevant_but_not_exercised_by_plant_only_study",
+    "polynomial_range_bounding": "promising_after_formal_roundoff_backend_and_sparse_dimension_guard"
+  },
+  "external_bern_sha": "ebcf54a0e06597a5388db0387865493c1dc96c07",
+  "external_bern_used_as_runtime_dependency": false,
+  "prototype_scope": "polynomial_range_query_only",
+  "strictly_tighter_case_names": [
+    "difference_squared",
+    "difference_fourth"
+  ],
+  "strictly_tighter_cases": 2
+}

@@ -1,0 +1,1072 @@
+{
+  "dependency_semantics": {
+    "generator_variables": [
+      "x0_x1",
+      "x0_x2"
+    ],
+    "independent_remainder_semantics": "per-state interval independent of polynomial generators",
+    "noise_variables": []
+  },
+  "domains": [
+    [
+      0.08,
+      0.12
+    ],
+    [
+      0.18,
+      0.22
+    ],
+    [
+      0.0,
+      0.0025
+    ]
+  ],
+  "enclosures": {
+    "endpoint_raw": {
+      "box": [
+        [
+          0.0799915643737489,
+          0.1200742706262511
+        ],
+        [
+          0.17954541406124605,
+          0.21949127343875396
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0": 1.0
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -8.43562625106253e-06,
+            7.427062625106262e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.0,
+              "exponents": [
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 1,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 0.9975
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -4.585938753875012e-06,
+            4.127343875387508e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.9975,
+              "exponents": [
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 1,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        }
+      ]
+    },
+    "endpoint_tightened": {
+      "box": [
+        [
+          0.08003582898275348,
+          0.12006605323953962
+        ],
+        [
+          0.179566454252461,
+          0.21948674354201303
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0": 1.0
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            3.582898275351745e-05,
+            6.605323953957467e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.0,
+              "exponents": [
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 1,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 0.9975
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            1.6454252461066543e-05,
+            3.6743542012950185e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.9975,
+              "exponents": [
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 1,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        }
+      ]
+    },
+    "tube": {
+      "box": [
+        [
+          0.0799915643737489,
+          0.1200742706262511
+        ],
+        [
+          0.179445414061246,
+          0.220041273438754
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0,0": 1.0
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -8.43562625106253e-06,
+            7.427062625106262e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.0,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 1,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1,0": 1.0
+          },
+          "constant_term": 0.0,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -4.585938753875012e-06,
+            4.127343875387508e-05
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "time_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.0,
+              "exponents": [
+                0,
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": -1.0,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 2,
+          "time_only_coefficients": [],
+          "time_state_coefficients": [
+            {
+              "coefficient": -1.0,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "execution": {
+    "backend": "torch",
+    "device": "cpu",
+    "dtype": "torch.float64",
+    "repository_commit": "129b63322d7ec5e9617f54579a30ebdd6adc4c43",
+    "runtime": {
+      "export_s": 0.0012860260903835297,
+      "propagation_s": 0.053355720825493336,
+      "setup_s": {
+        "availability": "unavailable",
+        "reason": "setup is included in one-step propagation timing"
+      }
+    }
+  },
+  "generator_domains": [
+    [
+      0.08,
+      0.12
+    ],
+    [
+      0.18,
+      0.22
+    ]
+  ],
+  "h": 0.0025,
+  "local_time_domain": [
+    0.0,
+    0.0025
+  ],
+  "local_time_index": 2,
+  "native_metadata": {
+    "device": "cpu",
+    "directed_rounding_or_mpfr": "torch_nextafter_outward",
+    "dtype": "torch.float64",
+    "floating_point_enclosure_candidate": true,
+    "message": "",
+    "native_point_samples": [
+      {
+        "point": [
+          0.08,
+          0.18,
+          0.0
+        ],
+        "polynomial_values": [
+          0.08,
+          0.18
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.1799954140612461,
+            0.18004127343875387
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.18,
+          0.00125
+        ],
+        "polynomial_values": [
+          0.08,
+          0.179775
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.1797704140612461,
+            0.17981627343875387
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.18,
+          0.0025
+        ],
+        "polynomial_values": [
+          0.08,
+          0.17955
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.1795454140612461,
+            0.17959127343875386
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.2,
+          0.0
+        ],
+        "polynomial_values": [
+          0.08,
+          0.2
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.19999541406124613,
+            0.20004127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.2,
+          0.00125
+        ],
+        "polynomial_values": [
+          0.08,
+          0.19975
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.19974541406124613,
+            0.19979127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.2,
+          0.0025
+        ],
+        "polynomial_values": [
+          0.08,
+          0.1995
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.19949541406124613,
+            0.19954127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.22,
+          0.0
+        ],
+        "polynomial_values": [
+          0.08,
+          0.22
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.21999541406124612,
+            0.22004127343875388
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.22,
+          0.00125
+        ],
+        "polynomial_values": [
+          0.08,
+          0.219725
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.21972041406124612,
+            0.21976627343875388
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.08,
+          0.22,
+          0.0025
+        ],
+        "polynomial_values": [
+          0.08,
+          0.21945
+        ],
+        "total_intervals": [
+          [
+            0.07999156437374894,
+            0.08007427062625107
+          ],
+          [
+            0.21944541406124612,
+            0.21949127343875388
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.18,
+          0.0
+        ],
+        "polynomial_values": [
+          0.1,
+          0.18
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.1799954140612461,
+            0.18004127343875387
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.18,
+          0.00125
+        ],
+        "polynomial_values": [
+          0.1,
+          0.179775
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.1797704140612461,
+            0.17981627343875387
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.18,
+          0.0025
+        ],
+        "polynomial_values": [
+          0.1,
+          0.17955
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.1795454140612461,
+            0.17959127343875386
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.2,
+          0.0
+        ],
+        "polynomial_values": [
+          0.1,
+          0.2
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.19999541406124613,
+            0.20004127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.2,
+          0.00125
+        ],
+        "polynomial_values": [
+          0.1,
+          0.19975
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.19974541406124613,
+            0.19979127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.2,
+          0.0025
+        ],
+        "polynomial_values": [
+          0.1,
+          0.1995
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.19949541406124613,
+            0.19954127343875389
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.1,
+          0.22,
+          0.0
+        ],
+        "polynomial_values": [
+          0.1,
+          0.22
+        ],
+        "total_intervals": [
+          [
+            0.09999156437374894,
+            0.10007427062625107
+          ],
+          [
+            0.21999541406124612,
+            0.22004127343875388
+          ]
+        ]
+      }
+    ],
+    "order": 2,
+    "status": "validated",
+    "validation_attempts": 2
+  },
+  "native_validation_passed": true,
+  "outcome": {
+    "category": "",
+    "reason": "",
+    "requested_horizon_reached": true,
+    "status": "success"
+  },
+  "polynomial_representation": {
+    "coefficient_representation": "Torch sparse exponent tuple to tensor coefficient",
+    "name": "complete_total_degree_2",
+    "native_order": 2,
+    "requested_order": 2
+  },
+  "raw_endpoint": [
+    {
+      "affine_state_generator_coefficients": {
+        "1,0": 1.0
+      },
+      "constant_term": 0.0,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -8.43562625106253e-06,
+        7.427062625106262e-05
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 1.0,
+          "exponents": [
+            1,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 1,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,1": 0.9975
+      },
+      "constant_term": 0.0,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -4.585938753875012e-06,
+        4.127343875387508e-05
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.9975,
+          "exponents": [
+            0,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 1,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    }
+  ],
+  "raw_endpoint_box": [
+    [
+      0.0799915643737489,
+      0.1200742706262511
+    ],
+    [
+      0.17954541406124605,
+      0.21949127343875396
+    ]
+  ],
+  "reset_carry_policy": {
+    "endpoint_tightening_applied": false,
+    "preconditioning": "none",
+    "reset": "none_one_step",
+    "supplemental_tightened_endpoint_available": true
+  },
+  "reset_preconditioning_metadata": {
+    "endpoint_tightening_applied": false,
+    "preconditioning": "none",
+    "reset": "none_one_step",
+    "supplemental_tightened_endpoint_available": true
+  },
+  "schema_version": 2,
+  "state_dimension": 2,
+  "states": [
+    {
+      "affine_state_generator_coefficients": {
+        "1,0,0": 1.0
+      },
+      "constant_term": 0.0,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -8.43562625106253e-06,
+        7.427062625106262e-05
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 1.0,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 1,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,1,0": 1.0
+      },
+      "constant_term": 0.0,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -4.585938753875012e-06,
+        4.127343875387508e-05
+      ],
+      "max_degree": 2,
+      "monomial_families": {
+        "affine_state": 1,
+        "time_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 1.0,
+          "exponents": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "coefficient": -1.0,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 2,
+      "time_only_coefficients": [],
+      "time_state_coefficients": [
+        {
+          "coefficient": -1.0,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "step_semantics": {
+    "accepted_step": 0.0025,
+    "requested_step": 0.0025
+  },
+  "system": "coupled_quadratic",
+  "system_definition": {
+    "equations": [
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              2,
+              0
+            ]
+          },
+          {
+            "coefficient": -1.0,
+            "powers": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "initial_domain": [
+      [
+        0.08,
+        0.12
+      ],
+      [
+        0.18,
+        0.22
+      ]
+    ],
+    "name": "coupled_quadratic",
+    "state_names": [
+      "x1",
+      "x2"
+    ]
+  },
+  "time_semantics": {
+    "initial_time": 0.0,
+    "requested_horizon": 0.0025,
+    "segment_end": 0.0025,
+    "segment_start": 0.0
+  },
+  "tool": "torch_tm_flowpipe",
+  "validation_trace": [
+    {
+      "attempt_index": 1,
+      "candidate_final_width_sum": 0.07990000000400027,
+      "candidate_final_width_x": 0.040000000002000095,
+      "candidate_final_width_y": 0.039900000002000176,
+      "candidate_order": 2,
+      "candidate_segment_width_sum": 0.08055000000400034,
+      "candidate_segment_width_x": 0.040000000002000095,
+      "candidate_segment_width_y": 0.04055000000200024,
+      "candidate_terms_after_selective_high_degree_term_count": 0,
+      "candidate_terms_after_selective_max_degree": 2,
+      "candidate_terms_after_selective_term_count": 3,
+      "candidate_terms_after_selective_terms_hash": "64c1be9e824164b7",
+      "candidate_terms_before_validation_high_degree_term_count": 0,
+      "candidate_terms_before_validation_max_degree": 2,
+      "candidate_terms_before_validation_term_count": 3,
+      "candidate_terms_before_validation_terms_hash": "64c1be9e824164b7",
+      "endpoint_semantics": "raw_and_tightened_separate",
+      "finite_residual": true,
+      "h": 0.0025,
+      "mode": "",
+      "normal_eval_range_split": "",
+      "order": 2,
+      "output_order": 2,
+      "polynomial_range_hi_x": 0.12000000000000002,
+      "polynomial_range_hi_y": 0.22000000000000008,
+      "polynomial_range_lo_x": 0.07999999999999997,
+      "polynomial_range_lo_y": 0.17944999999999992,
+      "polynomial_range_width_sum": 0.08055000000000023,
+      "polynomial_range_width_x": 0.040000000000000056,
+      "polynomial_range_width_y": 0.040550000000000176,
+      "protocol": "common_segment_export",
+      "remainder_width_sum": 4.0000000000000015e-12,
+      "remainder_width_x": 2.0000000000000008e-12,
+      "remainder_width_y": 2.0000000000000008e-12,
+      "residual_hi_x": 6.600000100085007e-05,
+      "residual_hi_y": 3.6687501003100046e-05,
+      "residual_lo_x": -1.6500100085000032e-07,
+      "residual_lo_y": -1.0031000000000027e-12,
+      "residual_width_sum": 0.00010285250400790015,
+      "residual_width_x": 6.616500200170009e-05,
+      "residual_width_y": 3.6687502006200054e-05,
+      "segment_index": "",
+      "total_range_width_sum": 0.08055000000400034,
+      "total_range_width_x": 0.040000000002000095,
+      "total_range_width_y": 0.04055000000200024,
+      "truncation_range_split": "",
+      "validation_candidate_after_internal_high_degree_term_count": 0,
+      "validation_candidate_after_internal_max_degree": 2,
+      "validation_candidate_after_internal_term_count": 3,
+      "validation_candidate_after_internal_terms_hash": "64c1be9e824164b7",
+      "validation_candidate_inside_high_degree_term_count": 0,
+      "validation_candidate_inside_max_degree": 2,
+      "validation_candidate_inside_term_count": 3,
+      "validation_candidate_inside_terms_hash": "64c1be9e824164b7",
+      "validation_message": "residual not contained by current remainder",
+      "validation_status": "needs_growth"
+    },
+    {
+      "attempt_index": 2,
+      "candidate_final_width_sum": 0.08002856563001014,
+      "candidate_final_width_x": 0.040082706252502216,
+      "candidate_final_width_y": 0.03994585937750792,
+      "candidate_order": 2,
+      "candidate_segment_width_sum": 0.0806785656300102,
+      "candidate_segment_width_x": 0.040082706252502216,
+      "candidate_segment_width_y": 0.04059585937750799,
+      "candidate_terms_after_selective_high_degree_term_count": 0,
+      "candidate_terms_after_selective_max_degree": 2,
+      "candidate_terms_after_selective_term_count": 3,
+      "candidate_terms_after_selective_terms_hash": "64c1be9e824164b7",
+      "candidate_terms_before_validation_high_degree_term_count": 0,
+      "candidate_terms_before_validation_max_degree": 2,
+      "candidate_terms_before_validation_term_count": 3,
+      "candidate_terms_before_validation_terms_hash": "64c1be9e824164b7",
+      "endpoint_semantics": "raw_and_tightened_separate",
+      "finite_residual": true,
+      "h": 0.0025,
+      "mode": "",
+      "normal_eval_range_split": "",
+      "order": 2,
+      "output_order": 2,
+      "polynomial_range_hi_x": 0.12000000000000002,
+      "polynomial_range_hi_y": 0.22000000000000008,
+      "polynomial_range_lo_x": 0.07999999999999997,
+      "polynomial_range_lo_y": 0.17944999999999992,
+      "polynomial_range_width_sum": 0.08055000000000023,
+      "polynomial_range_width_x": 0.040000000000000056,
+      "polynomial_range_width_y": 0.040550000000000176,
+      "protocol": "common_segment_export",
+      "remainder_width_sum": 0.00012856563000987524,
+      "remainder_width_x": 8.270625250212516e-05,
+      "remainder_width_y": 4.585937750775009e-05,
+      "residual_hi_x": 6.605323953957467e-05,
+      "residual_hi_y": 3.6743542012950185e-05,
+      "residual_lo_x": -1.710172464825058e-07,
+      "residual_lo_y": -1.0824753893343668e-07,
+      "residual_width_sum": 0.00010307604633794082,
+      "residual_width_x": 6.622425678605719e-05,
+      "residual_width_y": 3.685178955188363e-05,
+      "segment_index": "",
+      "total_range_width_sum": 0.0806785656300102,
+      "total_range_width_x": 0.040082706252502216,
+      "total_range_width_y": 0.04059585937750799,
+      "truncation_range_split": "",
+      "validation_candidate_after_internal_high_degree_term_count": 0,
+      "validation_candidate_after_internal_max_degree": 2,
+      "validation_candidate_after_internal_term_count": 3,
+      "validation_candidate_after_internal_terms_hash": "64c1be9e824164b7",
+      "validation_candidate_inside_high_degree_term_count": 0,
+      "validation_candidate_inside_max_degree": 2,
+      "validation_candidate_inside_term_count": 3,
+      "validation_candidate_inside_terms_hash": "64c1be9e824164b7",
+      "validation_message": "",
+      "validation_status": "validated"
+    }
+  ],
+  "variable_names": [
+    "x0_x1",
+    "x0_x2",
+    "tau"
+  ],
+  "variable_roles": [
+    "state_generator",
+    "state_generator",
+    "local_time"
+  ],
+  "variable_semantics": [
+    {
+      "domain": [
+        0.08,
+        0.12
+      ],
+      "name": "x0_x1",
+      "role": "state_generator"
+    },
+    {
+      "domain": [
+        0.18,
+        0.22
+      ],
+      "name": "x0_x2",
+      "role": "state_generator"
+    },
+    {
+      "domain": [
+        0.0,
+        0.0025
+      ],
+      "name": "tau",
+      "role": "local_time"
+    }
+  ],
+  "variant": "complete_total_degree_2",
+  "whole_tube_box": [
+    [
+      0.0799915643737489,
+      0.1200742706262511
+    ],
+    [
+      0.179445414061246,
+      0.220041273438754
+    ]
+  ]
+}

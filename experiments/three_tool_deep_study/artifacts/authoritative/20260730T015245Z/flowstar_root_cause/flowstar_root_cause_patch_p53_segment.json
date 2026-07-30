@@ -1,0 +1,781 @@
+{
+  "dependency_semantics": {
+    "generator_variables": [
+      "xi_0"
+    ],
+    "independent_remainder_semantics": "per-state interval independent of polynomial generators",
+    "noise_variables": []
+  },
+  "domains": [
+    [
+      0.0,
+      0.01
+    ],
+    [
+      -1.0,
+      1.0
+    ]
+  ],
+  "enclosures": {
+    "endpoint_raw": {
+      "box": [
+        [
+          -2.511281417887415e-05,
+          0.10010018797692961
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1": 0.050050000000000004
+          },
+          "constant_term": 0.0500250125,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -1.2531417887032208e-07,
+            2.5175476929599843e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Flow* structured symbolic remainder is not losslessly available as one per-state interval"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.0500250125,
+              "exponents": [
+                0
+              ]
+            },
+            {
+              "coefficient": 0.050050000000000004,
+              "exponents": [
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 2,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        }
+      ]
+    },
+    "endpoint_tightened": {
+      "box": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint box"
+      },
+      "states": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint"
+      }
+    },
+    "tube": {
+      "box": [
+        [
+          -2.512531417887451e-05,
+          0.10010018797692961
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 0.05
+          },
+          "constant_term": 0.05,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -1.2531417887032208e-07,
+            2.5175476929585965e-05
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 2,
+            "time_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Flow* structured symbolic remainder is not losslessly available as one per-state interval"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.05,
+              "exponents": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.05,
+              "exponents": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.0025000000000000005,
+              "exponents": [
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.005000000000000001,
+              "exponents": [
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.00012500000000000003,
+              "exponents": [
+                2,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 5,
+          "time_only_coefficients": [
+            {
+              "coefficient": 0.0025000000000000005,
+              "exponents": [
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.00012500000000000003,
+              "exponents": [
+                2,
+                0
+              ]
+            }
+          ],
+          "time_state_coefficients": [
+            {
+              "coefficient": 0.005000000000000001,
+              "exponents": [
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "execution": {
+    "backend": "flowstar_cpp_mpfr",
+    "device": "cpu",
+    "dtype": "MPFR_interval_53_bit",
+    "repository_commit": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+    "runtime": {
+      "export_s": {
+        "availability": "unavailable",
+        "reason": "native print/export time is included in process execution"
+      },
+      "propagation_s": 0.002954362891614437,
+      "setup_s": 1.7212572377175093
+    }
+  },
+  "generator_domains": [
+    [
+      -1.0,
+      1.0
+    ]
+  ],
+  "h": 0.01,
+  "local_time_domain": [
+    0.0,
+    0.01
+  ],
+  "local_time_index": 0,
+  "native_metadata": {
+    "advance_seconds": 0.000165,
+    "compile_time_s": 1.7212572377175093,
+    "directed_rounding_or_mpfr": true,
+    "endpoint_path_audit": [
+      {
+        "collapsed_lower": -2.511281417887415e-05,
+        "collapsed_upper": 0.1001001879769296,
+        "native_lower": -2.511281417887415e-05,
+        "native_upper": 0.10010018797692961,
+        "padding_lower": 0.0,
+        "padding_upper": 1.3877787807814457e-17,
+        "repaired_lower": -2.511281417887415e-05,
+        "repaired_upper": 0.10010018797692961,
+        "state": 0
+      }
+    ],
+    "endpoint_path_semantics": "raw endpoint is the hull of composed.evaluate_time and the composed native flowpipe evaluated on tau=[h,h]; the hull delta is explicit in the independent remainder",
+    "execution_time_s": 0.002954362891614437,
+    "floating_point_enclosure_candidate": false,
+    "interval_precision_bits": 53,
+    "native_point_samples": [
+      {
+        "kind": "tube",
+        "point": [
+          0.0,
+          -1.0
+        ],
+        "sample": 0,
+        "state": 0,
+        "total_interval": [
+          -1.2531417887032208e-07,
+          2.5175476929585965e-05
+        ]
+      },
+      {
+        "kind": "endpoint",
+        "point": [
+          -1.0
+        ],
+        "sample": 0,
+        "state": 0,
+        "total_interval": [
+          -2.511281417887415e-05,
+          1.8797692959601664e-07
+        ]
+      },
+      {
+        "kind": "tube",
+        "point": [
+          0.005,
+          0.0
+        ],
+        "sample": 1,
+        "state": 0,
+        "total_interval": [
+          0.05001237781082112,
+          0.05003767860192959
+        ]
+      },
+      {
+        "kind": "endpoint",
+        "point": [
+          0.0
+        ],
+        "sample": 1,
+        "state": 0,
+        "total_interval": [
+          0.050024887185821126,
+          0.0500501879769296
+        ]
+      },
+      {
+        "kind": "tube",
+        "point": [
+          0.01,
+          1.0
+        ],
+        "sample": 2,
+        "state": 0,
+        "total_interval": [
+          0.10007488718582112,
+          0.10010018797692961
+        ]
+      },
+      {
+        "kind": "endpoint",
+        "point": [
+          1.0
+        ],
+        "sample": 2,
+        "state": 0,
+        "total_interval": [
+          0.10007488718582112,
+          0.10010018797692961
+        ]
+      }
+    ],
+    "order": 2,
+    "requested_order": 2,
+    "status": "validated"
+  },
+  "native_validation_passed": true,
+  "outcome": {
+    "category": "",
+    "reason": "",
+    "requested_horizon_reached": true,
+    "status": "success"
+  },
+  "polynomial_representation": {
+    "coefficient_representation": "Flow* sparse Polynomial<Real> terms",
+    "name": "complete_total_degree_2",
+    "native_order": 2,
+    "requested_order": 2
+  },
+  "raw_endpoint": [
+    {
+      "affine_state_generator_coefficients": {
+        "1": 0.050050000000000004
+      },
+      "constant_term": 0.0500250125,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -1.2531417887032208e-07,
+        2.5175476929599843e-05
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Flow* structured symbolic remainder is not losslessly available as one per-state interval"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.0500250125,
+          "exponents": [
+            0
+          ]
+        },
+        {
+          "coefficient": 0.050050000000000004,
+          "exponents": [
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 2,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    }
+  ],
+  "raw_endpoint_box": [
+    [
+      -2.511281417887415e-05,
+      0.10010018797692961
+    ]
+  ],
+  "reset_carry_policy": {
+    "candidate_reinjection": false,
+    "composition": "Flowpipe::compose_official",
+    "post_advance_remainder_mutation": false,
+    "preconditioning": "native_diagonal_scaling_one_step",
+    "reset": "Flowpipe_normalized_composition"
+  },
+  "reset_preconditioning_metadata": {
+    "candidate_reinjection": false,
+    "composition": "Flowpipe::compose_official",
+    "post_advance_remainder_mutation": false,
+    "preconditioning": "native_diagonal_scaling_one_step",
+    "reset": "Flowpipe_normalized_composition"
+  },
+  "schema_version": 2,
+  "state_dimension": 1,
+  "states": [
+    {
+      "affine_state_generator_coefficients": {
+        "0,1": 0.05
+      },
+      "constant_term": 0.05,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -1.2531417887032208e-07,
+        2.5175476929585965e-05
+      ],
+      "max_degree": 2,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1,
+        "time_only": 2,
+        "time_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Flow* structured symbolic remainder is not losslessly available as one per-state interval"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.05,
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.05,
+          "exponents": [
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": 0.0025000000000000005,
+          "exponents": [
+            1,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.005000000000000001,
+          "exponents": [
+            1,
+            1
+          ]
+        },
+        {
+          "coefficient": 0.00012500000000000003,
+          "exponents": [
+            2,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 5,
+      "time_only_coefficients": [
+        {
+          "coefficient": 0.0025000000000000005,
+          "exponents": [
+            1,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.00012500000000000003,
+          "exponents": [
+            2,
+            0
+          ]
+        }
+      ],
+      "time_state_coefficients": [
+        {
+          "coefficient": 0.005000000000000001,
+          "exponents": [
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "step_semantics": {
+    "accepted_step": 0.01,
+    "requested_step": 0.01
+  },
+  "system": "riccati",
+  "system_definition": {
+    "equations": [
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              2
+            ]
+          }
+        ]
+      }
+    ],
+    "initial_domain": [
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "name": "riccati",
+    "state_names": [
+      "x"
+    ]
+  },
+  "time_semantics": {
+    "initial_time": 0.0,
+    "requested_horizon": 0.01,
+    "segment_end": 0.01,
+    "segment_start": 0.0
+  },
+  "tool": "flowstar",
+  "validation_trace": [
+    {
+      "cutoff_lower": "-1.0000000000000001e-15",
+      "cutoff_upper": "1.0000000000000001e-15",
+      "dimension": "1",
+      "order": "2",
+      "phase": "advance_enter",
+      "source_line": "921",
+      "step": "1",
+      "step_lower": "0",
+      "step_upper": "0.01"
+    },
+    {
+      "lower": "-0.0001",
+      "phase": "configured_candidate_remainder",
+      "round": "-1",
+      "source_line": "926",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "0.0001",
+      "width": "0.00020000000000000001"
+    },
+    {
+      "lower": "0",
+      "phase": "current_input_domain",
+      "round": "-1",
+      "source_line": "931",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "0",
+      "width": "0"
+    },
+    {
+      "lower": "-1",
+      "phase": "current_input_domain",
+      "round": "-1",
+      "source_line": "931",
+      "state": "1",
+      "step": "1",
+      "subset": "-1",
+      "upper": "1",
+      "width": "2"
+    },
+    {
+      "lower": "-0.050000000000000003",
+      "phase": "current_input_box",
+      "round": "-1",
+      "source_line": "999",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "0.050000000000000003",
+      "width": "0.10000000000000001"
+    },
+    {
+      "lower": "-5.0000000000000016e-05",
+      "phase": "polynomial_core_before_validation",
+      "round": "-1",
+      "source_line": "1044",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "0.10007501250000003",
+      "width": "0.10012501250000003"
+    },
+    {
+      "lower": "-5.0000000000000016e-05",
+      "phase": "cache_leaf_truncation_recorded",
+      "round": "-1",
+      "source_line": "1664",
+      "state": "-1",
+      "step": "1",
+      "subset": "-1",
+      "upper": "5.0012500000000016e-05",
+      "width": "0.00010001250000000003"
+    },
+    {
+      "lower": "-3.2530001875000023e-07",
+      "phase": "first_picard_image_remainder_before_int_difference",
+      "round": "-1",
+      "source_line": "1073",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "2.5325331293751576e-05",
+      "width": "2.5650631312501577e-05"
+    },
+    {
+      "lower": "-1.3010426069826054e-20",
+      "phase": "polynomial_difference_interval",
+      "round": "-1",
+      "source_line": "1075",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "8.6763278853152506e-21",
+      "width": "2.1686753955141303e-20"
+    },
+    {
+      "lower_margin": "9.9674699981249987e-05",
+      "phase": "candidate_minus_picard_margins",
+      "source_line": "1097",
+      "state": "0",
+      "step": "1",
+      "upper_margin": "7.4674668706248412e-05"
+    },
+    {
+      "cutoff_contribution": "embedded_in_picard_remainder",
+      "phase": "cutoff_and_uncertainty_accounting",
+      "separately_exposed": "0",
+      "source_line": "1104",
+      "state": "0",
+      "step": "1",
+      "uncertainty_contribution": "embedded_in_picard_remainder"
+    },
+    {
+      "lower": "-3.2530001875001326e-07",
+      "phase": "first_picard_image_remainder_with_int_difference",
+      "round": "-1",
+      "source_line": "1108",
+      "state": "0",
+      "step": "1",
+      "subset": "1",
+      "upper": "2.5325331293751586e-05",
+      "width": "2.5650631312501601e-05"
+    },
+    {
+      "lower": "-3.2530001875001326e-07",
+      "phase": "accepted_initial_remainder",
+      "round": "-1",
+      "source_line": "1136",
+      "state": "0",
+      "step": "1",
+      "subset": "1",
+      "upper": "2.5325331293751586e-05",
+      "width": "2.5650631312501601e-05"
+    },
+    {
+      "lower": "-5.0000000000000016e-05",
+      "phase": "cache_leaf_truncation_replayed",
+      "round": "-1",
+      "source_line": "2022",
+      "state": "-1",
+      "step": "1",
+      "subset": "-1",
+      "upper": "5.0012500000000016e-05",
+      "width": "0.00010001250000000003"
+    },
+    {
+      "lower": "-3.2530001875001326e-07",
+      "phase": "refinement_input_remainder",
+      "round": "0",
+      "source_line": "1167",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "2.5325331293751586e-05",
+      "width": "2.5650631312501601e-05"
+    },
+    {
+      "lower": "-1.2571367667714871e-07",
+      "phase": "refinement_output_remainder",
+      "round": "0",
+      "source_line": "1176",
+      "state": "0",
+      "step": "1",
+      "subset": "1",
+      "upper": "2.5175776339391416e-05",
+      "width": "2.5301490016068565e-05"
+    },
+    {
+      "continue": "1",
+      "phase": "refinement_decision",
+      "round": "0",
+      "source_line": "1186",
+      "state": "0",
+      "step": "1",
+      "stop_ratio": "0.98999999999999999",
+      "subset": "1",
+      "width_ratio": "0.98638858856222889"
+    },
+    {
+      "lower": "-5.0000000000000016e-05",
+      "phase": "cache_leaf_truncation_replayed",
+      "round": "-1",
+      "source_line": "2022",
+      "state": "-1",
+      "step": "1",
+      "subset": "-1",
+      "upper": "5.0012500000000016e-05",
+      "width": "0.00010001250000000003"
+    },
+    {
+      "lower": "-1.2571367667714871e-07",
+      "phase": "refinement_input_remainder",
+      "round": "1",
+      "source_line": "1167",
+      "state": "0",
+      "step": "1",
+      "subset": "-1",
+      "upper": "2.5175776339391416e-05",
+      "width": "2.5301490016068565e-05"
+    },
+    {
+      "lower": "-1.2531417887032208e-07",
+      "phase": "refinement_output_remainder",
+      "round": "1",
+      "source_line": "1176",
+      "state": "0",
+      "step": "1",
+      "subset": "1",
+      "upper": "2.5175476929585965e-05",
+      "width": "2.5300791108456286e-05"
+    },
+    {
+      "continue": "0",
+      "phase": "refinement_decision",
+      "round": "1",
+      "source_line": "1186",
+      "state": "0",
+      "step": "1",
+      "stop_ratio": "0.98999999999999999",
+      "subset": "1",
+      "width_ratio": "0.99997237682002793"
+    },
+    {
+      "lower": "-1.2531417887032208e-07",
+      "phase": "final_native_returned_remainder",
+      "round": "-1",
+      "source_line": "1314",
+      "state": "0",
+      "step": "1",
+      "subset": "1",
+      "upper": "2.5175476929585965e-05",
+      "width": "2.5300791108456286e-05"
+    },
+    {
+      "phase": "advance_return",
+      "reason": "success",
+      "return_code": "1",
+      "source_line": "1321",
+      "step": "1"
+    }
+  ],
+  "variable_names": [
+    "tau",
+    "xi_0"
+  ],
+  "variable_roles": [
+    "local_time",
+    "state_generator"
+  ],
+  "variable_semantics": [
+    {
+      "domain": [
+        0.0,
+        0.01
+      ],
+      "name": "tau",
+      "role": "local_time"
+    },
+    {
+      "domain": [
+        -1.0,
+        1.0
+      ],
+      "name": "xi_0",
+      "role": "state_generator"
+    }
+  ],
+  "variant": "flowstar_root_cause_patch",
+  "whole_tube_box": [
+    [
+      -2.512531417887451e-05,
+      0.10010018797692961
+    ]
+  ]
+}

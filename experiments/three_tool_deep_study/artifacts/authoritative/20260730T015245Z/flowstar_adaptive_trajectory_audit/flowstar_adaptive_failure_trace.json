@@ -1,0 +1,3724 @@
+{
+  "classification": "collapsed evaluate_time endpoint under-enclosure; native fixed-domain evaluation contains all deterministic samples",
+  "equation": [
+    "x' = y",
+    "y' = y - x - x^2*y"
+  ],
+  "first_failure": {
+    "absolute_time": 0.04137500000000001,
+    "accepted_step": 0.015125000000000006,
+    "flowstar_lower": 1.195701727252073,
+    "flowstar_upper": 1.4980826940976244,
+    "initial_box": [
+      [
+        1.1,
+        1.4
+      ],
+      [
+        2.35,
+        2.45
+      ]
+    ],
+    "local_tau_domain": [
+      0.0,
+      0.015125000000000006
+    ],
+    "lower_under_enclosure_gap": 8.314335673276219e-07,
+    "native_end_first_lower": 1.1957018336891618,
+    "native_end_first_upper": 1.4980825865273175,
+    "native_fixed_domain_lower": 1.1946195451854615,
+    "native_fixed_domain_upper": 1.4991648761642355,
+    "reference_lower": 1.1957008958185056,
+    "reference_lower_initial_point": [
+      1.1,
+      2.35
+    ],
+    "reference_upper": 1.4979810784919865,
+    "reference_upper_initial_point": [
+      1.4,
+      2.45
+    ],
+    "repaired_lower": 1.1946195451854615,
+    "repaired_upper": 1.4991648761642355,
+    "requested_step": 0.015125000000000006,
+    "segment_index": 3,
+    "segment_start": 0.026250000000000002,
+    "state_index": 0,
+    "tolerance": 2e-08,
+    "upper_under_enclosure_gap": 0.0
+  },
+  "mu": 1.0,
+  "original_benchmark": {
+    "generated_schedule_agreement": true,
+    "reached_horizon_10": true,
+    "segments": 290,
+    "stdout": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/logs/flowstar_original_parity/original/stdout.txt"
+  },
+  "passed": true,
+  "provenance": {
+    "benchmark_sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d",
+    "benchmark_source": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+    "exporter_sha256": "14e2e5a1579ae46834d4b99c5eaab8d023ddfff70e755a60c4eb8de6cce611f2",
+    "exporter_source": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_way_comparison_repair/run_flowstar_audit.py",
+    "flowstar_audit_sha": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+    "flowstar_stock_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "torch_sha": "129b63322d7ec5e9617f54579a30ebdd6adc4c43"
+  },
+  "repair": {
+    "collapsed_padding_is_explicit_independent_remainder": true,
+    "decision": "use_native_fixed_domain_hull",
+    "excluded_from_authoritative": false,
+    "raw_endpoint_semantics": "hull(collapsed evaluate_time endpoint, composed native flowpipe evaluated with local time fixed to accepted h)"
+  },
+  "sampling_scope": "deterministic_DOP853_numerical_sanity_check_non_proof",
+  "source_locations": {
+    "adaptive_symbolic_advance": "flowstar-toolbox/Continuous.cpp::Flowpipe::advance_adaptive_stepsize(..., Symbolic_Remainder&)",
+    "coefficient_substitution": "flowstar-toolbox/Polynomial.h::Polynomial::evaluate_time",
+    "collapsed_endpoint": "flowstar-toolbox/TaylorModel.h::TaylorModelVec::evaluate_time",
+    "flowpipe_compose": "flowstar-toolbox/Continuous.cpp::Flowpipe::compose",
+    "generated_exporter": "experiments/three_way_comparison_repair/run_flowstar_audit.py::render_parity_cpp",
+    "native_fixed_domain": "flowstar-toolbox/TaylorModel.h::TaylorModelVec::intEval"
+  },
+  "state_order": [
+    "position",
+    "velocity"
+  ],
+  "variants": {
+    "full_picard_revalidation": {
+      "checks": {
+        "collapsed_evaluate_time": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957036376264245,
+              "flowstar_upper": 1.4980787722286153,
+              "lower_under_enclosure_gap": 2.741807918926753e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332096147810758,
+              "flowstar_upper": 1.5355365999123527,
+              "lower_under_enclosure_gap": 1.8821000612234684e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736866267354106,
+              "flowstar_upper": 1.5753128437651667,
+              "lower_under_enclosure_gap": 2.5295560329929856e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171776958588566,
+              "flowstar_upper": 1.6172744896628062,
+              "lower_under_enclosure_gap": 2.07412828954201e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.3406078958979906,
+              "flowstar_upper": 1.6395177889065466,
+              "lower_under_enclosure_gap": 2.0164685244905556e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659542397845876,
+              "flowstar_upper": 1.6632844645464842,
+              "lower_under_enclosure_gap": 2.0019163514684024e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932933681433208,
+              "flowstar_upper": 1.6885665495583515,
+              "lower_under_enclosure_gap": 1.857816904005105e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226831388230121,
+              "flowstar_upper": 1.715317050947682,
+              "lower_under_enclosure_gap": 1.7291892146387156e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.454148618967465,
+              "flowstar_upper": 1.7434441387110673,
+              "lower_under_enclosure_gap": 1.6223606661425194e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876717520150968,
+              "flowstar_upper": 1.7727988530155716,
+              "lower_under_enclosure_gap": 1.54129747820253e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056111943727146,
+              "flowstar_upper": 1.7882293492069914,
+              "lower_under_enclosure_gap": 1.916431178528022e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249223967496264,
+              "flowstar_upper": 1.804620329651073,
+              "lower_under_enclosure_gap": 2.333514943120285e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456408734593052,
+              "flowstar_upper": 1.8219500046708417,
+              "lower_under_enclosure_gap": 2.441724365120912e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567790696889035,
+              "flowstar_upper": 1.8401646161018517,
+              "lower_under_enclosure_gap": 2.5885776562484253e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.5913676114832889,
+              "flowstar_upper": 1.8591821313238523,
+              "lower_under_enclosure_gap": 2.774885322498477e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163347397754844,
+              "flowstar_upper": 1.878882558386264,
+              "lower_under_enclosure_gap": 2.9969306362342962e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.642613518259585,
+              "flowstar_upper": 1.8991011257712365,
+              "lower_under_enclosure_gap": 3.243660671414794e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.670073372384256,
+              "flowstar_upper": 1.9196214875822752,
+              "lower_under_enclosure_gap": 3.4922869697640024e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845090597058527,
+              "flowstar_upper": 1.9301749494059526,
+              "lower_under_enclosure_gap": 1.77616968537464e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957036376264245,
+            "flowstar_upper": 1.4980787722286153,
+            "lower_under_enclosure_gap": 2.741807918926753e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_end_first": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957037410021834,
+              "flowstar_upper": 1.4980786676140236,
+              "lower_under_enclosure_gap": 2.845183677768759e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332098045466542,
+              "flowstar_upper": 1.5355364101792197,
+              "lower_under_enclosure_gap": 1.901076619059694e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736869348029518,
+              "flowstar_upper": 1.5753125357623052,
+              "lower_under_enclosure_gap": 2.5603627871184642e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.317178210795733,
+              "flowstar_upper": 1.6172739748340335,
+              "lower_under_enclosure_gap": 2.1256219771892404e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.340608074200736,
+              "flowstar_upper": 1.63951761064069,
+              "lower_under_enclosure_gap": 2.0342987990362715e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659544787631803,
+              "flowstar_upper": 1.6632842256276388,
+              "lower_under_enclosure_gap": 2.0258142107376642e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932936888423917,
+              "flowstar_upper": 1.6885662289684822,
+              "lower_under_enclosure_gap": 1.889886811090591e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226835650771925,
+              "flowstar_upper": 1.7153166248851266,
+              "lower_under_enclosure_gap": 1.7718146326783923e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.4541491792623944,
+              "flowstar_upper": 1.743443578741952,
+              "lower_under_enclosure_gap": 1.6783901590766703e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876724791772282,
+              "flowstar_upper": 1.7727981263930745,
+              "lower_under_enclosure_gap": 1.6140136913422864e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056113318180626,
+              "flowstar_upper": 1.7882292119798975,
+              "lower_under_enclosure_gap": 1.930175713327209e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249225977183984,
+              "flowstar_upper": 1.804620128993571,
+              "lower_under_enclosure_gap": 2.3536118203271172e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456411708681579,
+              "flowstar_upper": 1.8219497076954343,
+              "lower_under_enclosure_gap": 2.471465250386551e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567791130068762,
+              "flowstar_upper": 1.8401641835266875,
+              "lower_under_enclosure_gap": 2.631895628946168e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.591368233719712,
+              "flowstar_upper": 1.8591815099284383,
+              "lower_under_enclosure_gap": 2.837108964803825e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163356215048705,
+              "flowstar_upper": 1.8788816778224773,
+              "lower_under_enclosure_gap": 3.0851035748513667e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.6426147504024997,
+              "flowstar_upper": 1.8990998952358538,
+              "lower_under_enclosure_gap": 3.366874962895672e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.6700750689842252,
+              "flowstar_upper": 1.9196197931854644,
+              "lower_under_enclosure_gap": 3.661946966682095e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845096444455128,
+              "flowstar_upper": 1.9301743654153765,
+              "lower_under_enclosure_gap": 1.834643651377199e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957037410021834,
+            "flowstar_upper": 1.4980786676140236,
+            "lower_under_enclosure_gap": 2.845183677768759e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_fixed_domain": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        },
+        "repaired_raw_endpoint": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        }
+      },
+      "endpoint_path_rows": 580,
+      "first_endpoint_path": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "first_path_divergence": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "flowstar_root": "/srv/local/shengenli/flowstar_three_way_audit",
+      "flowstar_sha": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+      "full_picard_revalidation": true,
+      "leaf_patch": false,
+      "returncode": 0,
+      "seconds": 1.499073451384902,
+      "segments": 290,
+      "stdout_path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/full_picard_revalidation.stdout.txt"
+    },
+    "generated_identical_stock": {
+      "checks": {
+        "collapsed_evaluate_time": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957036376264245,
+              "flowstar_upper": 1.4980787722286153,
+              "lower_under_enclosure_gap": 2.741807918926753e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332096147810758,
+              "flowstar_upper": 1.5355365999123527,
+              "lower_under_enclosure_gap": 1.8821000612234684e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736866267354106,
+              "flowstar_upper": 1.5753128437651667,
+              "lower_under_enclosure_gap": 2.5295560329929856e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171776958588566,
+              "flowstar_upper": 1.6172744896628062,
+              "lower_under_enclosure_gap": 2.07412828954201e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.3406078958979906,
+              "flowstar_upper": 1.6395177889065466,
+              "lower_under_enclosure_gap": 2.0164685244905556e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659542397845876,
+              "flowstar_upper": 1.6632844645464842,
+              "lower_under_enclosure_gap": 2.0019163514684024e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932933681433208,
+              "flowstar_upper": 1.6885665495583515,
+              "lower_under_enclosure_gap": 1.857816904005105e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226831388230121,
+              "flowstar_upper": 1.715317050947682,
+              "lower_under_enclosure_gap": 1.7291892146387156e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.454148618967465,
+              "flowstar_upper": 1.7434441387110673,
+              "lower_under_enclosure_gap": 1.6223606661425194e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876717520150968,
+              "flowstar_upper": 1.7727988530155716,
+              "lower_under_enclosure_gap": 1.54129747820253e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056111943727146,
+              "flowstar_upper": 1.7882293492069914,
+              "lower_under_enclosure_gap": 1.916431178528022e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249223967496264,
+              "flowstar_upper": 1.804620329651073,
+              "lower_under_enclosure_gap": 2.333514943120285e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456408734593052,
+              "flowstar_upper": 1.8219500046708417,
+              "lower_under_enclosure_gap": 2.441724365120912e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567790696889035,
+              "flowstar_upper": 1.8401646161018517,
+              "lower_under_enclosure_gap": 2.5885776562484253e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.5913676114832889,
+              "flowstar_upper": 1.8591821313238523,
+              "lower_under_enclosure_gap": 2.774885322498477e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163347397754844,
+              "flowstar_upper": 1.878882558386264,
+              "lower_under_enclosure_gap": 2.9969306362342962e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.642613518259585,
+              "flowstar_upper": 1.8991011257712365,
+              "lower_under_enclosure_gap": 3.243660671414794e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.670073372384256,
+              "flowstar_upper": 1.9196214875822752,
+              "lower_under_enclosure_gap": 3.4922869697640024e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845090597058527,
+              "flowstar_upper": 1.9301749494059526,
+              "lower_under_enclosure_gap": 1.77616968537464e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957036376264245,
+            "flowstar_upper": 1.4980787722286153,
+            "lower_under_enclosure_gap": 2.741807918926753e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_end_first": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957037410021834,
+              "flowstar_upper": 1.4980786676140236,
+              "lower_under_enclosure_gap": 2.845183677768759e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332098045466542,
+              "flowstar_upper": 1.5355364101792197,
+              "lower_under_enclosure_gap": 1.901076619059694e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736869348029518,
+              "flowstar_upper": 1.5753125357623052,
+              "lower_under_enclosure_gap": 2.5603627871184642e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.317178210795733,
+              "flowstar_upper": 1.6172739748340335,
+              "lower_under_enclosure_gap": 2.1256219771892404e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.340608074200736,
+              "flowstar_upper": 1.63951761064069,
+              "lower_under_enclosure_gap": 2.0342987990362715e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659544787631803,
+              "flowstar_upper": 1.6632842256276388,
+              "lower_under_enclosure_gap": 2.0258142107376642e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932936888423917,
+              "flowstar_upper": 1.6885662289684822,
+              "lower_under_enclosure_gap": 1.889886811090591e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226835650771925,
+              "flowstar_upper": 1.7153166248851266,
+              "lower_under_enclosure_gap": 1.7718146326783923e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.4541491792623944,
+              "flowstar_upper": 1.743443578741952,
+              "lower_under_enclosure_gap": 1.6783901590766703e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876724791772282,
+              "flowstar_upper": 1.7727981263930745,
+              "lower_under_enclosure_gap": 1.6140136913422864e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056113318180626,
+              "flowstar_upper": 1.7882292119798975,
+              "lower_under_enclosure_gap": 1.930175713327209e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249225977183984,
+              "flowstar_upper": 1.804620128993571,
+              "lower_under_enclosure_gap": 2.3536118203271172e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456411708681579,
+              "flowstar_upper": 1.8219497076954343,
+              "lower_under_enclosure_gap": 2.471465250386551e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567791130068762,
+              "flowstar_upper": 1.8401641835266875,
+              "lower_under_enclosure_gap": 2.631895628946168e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.591368233719712,
+              "flowstar_upper": 1.8591815099284383,
+              "lower_under_enclosure_gap": 2.837108964803825e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163356215048705,
+              "flowstar_upper": 1.8788816778224773,
+              "lower_under_enclosure_gap": 3.0851035748513667e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.6426147504024997,
+              "flowstar_upper": 1.8990998952358538,
+              "lower_under_enclosure_gap": 3.366874962895672e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.6700750689842252,
+              "flowstar_upper": 1.9196197931854644,
+              "lower_under_enclosure_gap": 3.661946966682095e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845096444455128,
+              "flowstar_upper": 1.9301743654153765,
+              "lower_under_enclosure_gap": 1.834643651377199e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957037410021834,
+            "flowstar_upper": 1.4980786676140236,
+            "lower_under_enclosure_gap": 2.845183677768759e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_fixed_domain": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        },
+        "repaired_raw_endpoint": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        }
+      },
+      "endpoint_path_rows": 580,
+      "first_endpoint_path": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "first_path_divergence": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "flowstar_root": "/srv/local/shengenli/flowstar_three_way_audit",
+      "flowstar_sha": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+      "full_picard_revalidation": false,
+      "leaf_patch": false,
+      "returncode": 0,
+      "seconds": 1.5140100549906492,
+      "segments": 290,
+      "stdout_path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/generated_identical_stock.stdout.txt"
+    },
+    "stock_upstream": {
+      "checks": {
+        "collapsed_evaluate_time": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957036376264245,
+              "flowstar_upper": 1.4980787722286153,
+              "lower_under_enclosure_gap": 2.741807918926753e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332096147810758,
+              "flowstar_upper": 1.5355365999123527,
+              "lower_under_enclosure_gap": 1.8821000612234684e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736866267354106,
+              "flowstar_upper": 1.5753128437651667,
+              "lower_under_enclosure_gap": 2.5295560329929856e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171776958588566,
+              "flowstar_upper": 1.6172744896628062,
+              "lower_under_enclosure_gap": 2.07412828954201e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.3406078958979906,
+              "flowstar_upper": 1.6395177889065466,
+              "lower_under_enclosure_gap": 2.0164685244905556e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659542397845876,
+              "flowstar_upper": 1.6632844645464842,
+              "lower_under_enclosure_gap": 2.0019163514684024e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932933681433208,
+              "flowstar_upper": 1.6885665495583515,
+              "lower_under_enclosure_gap": 1.857816904005105e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226831388230121,
+              "flowstar_upper": 1.715317050947682,
+              "lower_under_enclosure_gap": 1.7291892146387156e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.454148618967465,
+              "flowstar_upper": 1.7434441387110673,
+              "lower_under_enclosure_gap": 1.6223606661425194e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876717520150968,
+              "flowstar_upper": 1.7727988530155716,
+              "lower_under_enclosure_gap": 1.54129747820253e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056111943727146,
+              "flowstar_upper": 1.7882293492069914,
+              "lower_under_enclosure_gap": 1.916431178528022e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249223967496264,
+              "flowstar_upper": 1.804620329651073,
+              "lower_under_enclosure_gap": 2.333514943120285e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456408734593052,
+              "flowstar_upper": 1.8219500046708417,
+              "lower_under_enclosure_gap": 2.441724365120912e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567790696889035,
+              "flowstar_upper": 1.8401646161018517,
+              "lower_under_enclosure_gap": 2.5885776562484253e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.5913676114832889,
+              "flowstar_upper": 1.8591821313238523,
+              "lower_under_enclosure_gap": 2.774885322498477e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163347397754844,
+              "flowstar_upper": 1.878882558386264,
+              "lower_under_enclosure_gap": 2.9969306362342962e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.642613518259585,
+              "flowstar_upper": 1.8991011257712365,
+              "lower_under_enclosure_gap": 3.243660671414794e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.670073372384256,
+              "flowstar_upper": 1.9196214875822752,
+              "lower_under_enclosure_gap": 3.4922869697640024e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845090597058527,
+              "flowstar_upper": 1.9301749494059526,
+              "lower_under_enclosure_gap": 1.77616968537464e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957036376264245,
+            "flowstar_upper": 1.4980787722286153,
+            "lower_under_enclosure_gap": 2.741807918926753e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_end_first": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957037410021834,
+              "flowstar_upper": 1.4980786676140236,
+              "lower_under_enclosure_gap": 2.845183677768759e-06,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332098045466542,
+              "flowstar_upper": 1.5355364101792197,
+              "lower_under_enclosure_gap": 1.901076619059694e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736869348029518,
+              "flowstar_upper": 1.5753125357623052,
+              "lower_under_enclosure_gap": 2.5603627871184642e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.317178210795733,
+              "flowstar_upper": 1.6172739748340335,
+              "lower_under_enclosure_gap": 2.1256219771892404e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.340608074200736,
+              "flowstar_upper": 1.63951761064069,
+              "lower_under_enclosure_gap": 2.0342987990362715e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659544787631803,
+              "flowstar_upper": 1.6632842256276388,
+              "lower_under_enclosure_gap": 2.0258142107376642e-05,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932936888423917,
+              "flowstar_upper": 1.6885662289684822,
+              "lower_under_enclosure_gap": 1.889886811090591e-05,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226835650771925,
+              "flowstar_upper": 1.7153166248851266,
+              "lower_under_enclosure_gap": 1.7718146326783923e-05,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.16404235663187505,
+              "flowstar_lower": 1.4541491792623944,
+              "flowstar_upper": 1.743443578741952,
+              "lower_under_enclosure_gap": 1.6783901590766703e-05,
+              "reference_lower": 1.4541323953608036,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7423198187288842,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 11,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.18187433604506256,
+              "flowstar_lower": 1.4876724791772282,
+              "flowstar_upper": 1.7727981263930745,
+              "lower_under_enclosure_gap": 1.6140136913422864e-05,
+              "reference_lower": 1.4876563390403148,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7715345642701796,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 12,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.19168192472231568,
+              "flowstar_lower": 1.5056113318180626,
+              "flowstar_upper": 1.7882292119798975,
+              "lower_under_enclosure_gap": 1.930175713327209e-05,
+              "reference_lower": 1.5055920300609293,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7869011553893666,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 13,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5249225977183984,
+              "flowstar_upper": 1.804620128993571,
+              "lower_under_enclosure_gap": 2.3536118203271172e-05,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456411708681579,
+              "flowstar_upper": 1.8219497076954343,
+              "lower_under_enclosure_gap": 2.471465250386551e-05,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.22739135509619435,
+              "flowstar_lower": 1.567791130068762,
+              "flowstar_upper": 1.8401641835266875,
+              "lower_under_enclosure_gap": 2.631895628946168e-05,
+              "reference_lower": 1.5677648111124725,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8386659652137873,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 16,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.24175064567856067,
+              "flowstar_lower": 1.591368233719712,
+              "flowstar_upper": 1.8591815099284383,
+              "lower_under_enclosure_gap": 2.837108964803825e-05,
+              "reference_lower": 1.5913398626300639,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.857649887974539,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 17,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2575458653191636,
+              "flowstar_lower": 1.6163356215048705,
+              "flowstar_upper": 1.8788816778224773,
+              "lower_under_enclosure_gap": 3.0851035748513667e-05,
+              "reference_lower": 1.616304770469122,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8773400685648023,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 18,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.27492060692382686,
+              "flowstar_lower": 1.6426147504024997,
+              "flowstar_upper": 1.8990998952358538,
+              "lower_under_enclosure_gap": 3.366874962895672e-05,
+              "reference_lower": 1.6425810816528708,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8975811761463348,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 19,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.2940328226889564,
+              "flowstar_lower": 1.6700750689842252,
+              "flowstar_upper": 1.9196197931854644,
+              "lower_under_enclosure_gap": 3.661946966682095e-05,
+              "reference_lower": 1.6700384495145584,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.918168353641882,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 20,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.3045445413597777,
+              "flowstar_lower": 1.6845096444455128,
+              "flowstar_upper": 1.9301743654153765,
+              "lower_under_enclosure_gap": 1.834643651377199e-05,
+              "reference_lower": 1.684491298008999,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.9287589510114056,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 21,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957037410021834,
+            "flowstar_upper": 1.4980786676140236,
+            "lower_under_enclosure_gap": 2.845183677768759e-06,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 19
+        },
+        "native_fixed_domain": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        },
+        "repaired_raw_endpoint": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        }
+      },
+      "compile": {
+        "command": [
+          "g++",
+          "-O3",
+          "-w",
+          "-fpermissive",
+          "-std=c++11",
+          "-I",
+          "/srv/local/shengenli/flowstar/flowstar-toolbox",
+          "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/logs/flowstar_original_parity/generated_identical/parity.cpp",
+          "-L",
+          "/srv/local/shengenli/flowstar/flowstar-toolbox",
+          "-o",
+          "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/stock_upstream_parity",
+          "-lflowstar",
+          "-lmpfr",
+          "-lgmp",
+          "-lgsl",
+          "-lgslcblas",
+          "-lm",
+          "-lglpk"
+        ],
+        "returncode": 0,
+        "seconds": 2.1282664169557393
+      },
+      "endpoint_path_rows": 580,
+      "first_endpoint_path": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "first_path_divergence": {
+        "direct_lower": 1.129076615711507,
+        "direct_upper": 1.4305072524230584,
+        "export_lower": 1.1292455913330481,
+        "export_upper": 1.4303382768015172,
+        "label": "generated_identical",
+        "native_lower": 1.1292455913330481,
+        "native_upper": 1.4303382768015172,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076615711507,
+        "repaired_upper": 1.4305072524230584,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "flowstar_root": "/srv/local/shengenli/flowstar",
+      "flowstar_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "full_picard_revalidation": false,
+      "leaf_patch": false,
+      "returncode": 0,
+      "seconds": 1.6125356778502464,
+      "segments": 290,
+      "stdout_path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/stock_upstream.stdout.txt"
+    },
+    "variable_leaf_patch": {
+      "checks": {
+        "collapsed_evaluate_time": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "accepted_step": 0.015125000000000006,
+              "flowstar_lower": 1.195701727252073,
+              "flowstar_upper": 1.4980826940976244,
+              "initial_box": [
+                [
+                  1.1,
+                  1.4
+                ],
+                [
+                  2.35,
+                  2.45
+                ]
+              ],
+              "local_tau_domain": [
+                0.0,
+                0.015125000000000006
+              ],
+              "lower_under_enclosure_gap": 8.314335673276219e-07,
+              "native_end_first_lower": 1.1957018336891618,
+              "native_end_first_upper": 1.4980825865273175,
+              "native_fixed_domain_lower": 1.1946195451854615,
+              "native_fixed_domain_upper": 1.4991648761642355,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "repaired_lower": 1.1946195451854615,
+              "repaired_upper": 1.4991648761642355,
+              "requested_step": 0.015125000000000006,
+              "segment_index": 3,
+              "segment_start": 0.026250000000000002,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332062701100144,
+              "flowstar_upper": 1.5355431688929346,
+              "lower_under_enclosure_gap": 1.5476329550789814e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.273681118163998,
+              "flowstar_upper": 1.575323206120709,
+              "lower_under_enclosure_gap": 1.9786988917358528e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171689674017728,
+              "flowstar_upper": 1.617290225938293,
+              "lower_under_enclosure_gap": 1.2012825811646977e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.3405982833210959,
+              "flowstar_upper": 1.6395346994522084,
+              "lower_under_enclosure_gap": 1.0552108350214695e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659434663514851,
+              "flowstar_upper": 1.6633029242297561,
+              "lower_under_enclosure_gap": 9.245730412166253e-06,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932811202145894,
+              "flowstar_upper": 1.688586996709647,
+              "lower_under_enclosure_gap": 6.330240308605184e-06,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226689441512093,
+              "flowstar_upper": 1.7153401121848741,
+              "lower_under_enclosure_gap": 3.0972203435286616e-06,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.52489960059035,
+              "flowstar_upper": 1.804654019081199,
+              "lower_under_enclosure_gap": 5.389901547303566e-07,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "accepted_step": 0.015125000000000006,
+            "flowstar_lower": 1.195701727252073,
+            "flowstar_upper": 1.4980826940976244,
+            "initial_box": [
+              [
+                1.1,
+                1.4
+              ],
+              [
+                2.35,
+                2.45
+              ]
+            ],
+            "local_tau_domain": [
+              0.0,
+              0.015125000000000006
+            ],
+            "lower_under_enclosure_gap": 8.314335673276219e-07,
+            "native_end_first_lower": 1.1957018336891618,
+            "native_end_first_upper": 1.4980825865273175,
+            "native_fixed_domain_lower": 1.1946195451854615,
+            "native_fixed_domain_upper": 1.4991648761642355,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "repaired_lower": 1.1946195451854615,
+            "repaired_upper": 1.4991648761642355,
+            "requested_step": 0.015125000000000006,
+            "segment_index": 3,
+            "segment_start": 0.026250000000000002,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 9
+        },
+        "native_end_first": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957018336891618,
+              "flowstar_upper": 1.4980825865273175,
+              "lower_under_enclosure_gap": 9.378706562479522e-07,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332064671501732,
+              "flowstar_upper": 1.5355429720887221,
+              "lower_under_enclosure_gap": 1.5673369709645613e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736814417370776,
+              "flowstar_upper": 1.5753228829474448,
+              "lower_under_enclosure_gap": 2.0110561997022103e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171695135394432,
+              "flowstar_upper": 1.6172896803923895,
+              "lower_under_enclosure_gap": 1.2558963482067753e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.340598476606924,
+              "flowstar_upper": 1.6395345063505025,
+              "lower_under_enclosure_gap": 1.0745394178446332e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.365943725304895,
+              "flowstar_upper": 1.6633026655320502,
+              "lower_under_enclosure_gap": 9.504683821992543e-06,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932814679559922,
+              "flowstar_upper": 1.6885866493925064,
+              "lower_under_enclosure_gap": 6.677981711389336e-06,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226694076001023,
+              "flowstar_upper": 1.7153396494248516,
+              "lower_under_enclosure_gap": 3.5606692365686143e-06,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5248998361581743,
+              "flowstar_upper": 1.8046537844270116,
+              "lower_under_enclosure_gap": 7.745579790885415e-07,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456166853447337,
+              "flowstar_upper": 1.8219851969882528,
+              "lower_under_enclosure_gap": 2.2912907970962237e-07,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957018336891618,
+            "flowstar_upper": 1.4980825865273175,
+            "lower_under_enclosure_gap": 9.378706562479522e-07,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 10
+        },
+        "native_fixed_domain": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        },
+        "repaired_raw_endpoint": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        }
+      },
+      "endpoint_path_rows": 606,
+      "first_endpoint_path": {
+        "direct_lower": 1.129076241225221,
+        "direct_upper": 1.430508096943875,
+        "export_lower": 1.1292452168467622,
+        "export_upper": 1.4303391213223338,
+        "label": "generated_identical",
+        "native_lower": 1.1292452168467622,
+        "native_upper": 1.4303391213223338,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076241225221,
+        "repaired_upper": 1.430508096943875,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "first_path_divergence": {
+        "direct_lower": 1.129076241225221,
+        "direct_upper": 1.430508096943875,
+        "export_lower": 1.1292452168467622,
+        "export_upper": 1.4303391213223338,
+        "label": "generated_identical",
+        "native_lower": 1.1292452168467622,
+        "native_upper": 1.4303391213223338,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076241225221,
+        "repaired_upper": 1.430508096943875,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "flowstar_root": "/srv/local/shengenli/flowstar_three_way_audit",
+      "flowstar_sha": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+      "full_picard_revalidation": false,
+      "leaf_patch": true,
+      "returncode": 0,
+      "seconds": 1.578871374949813,
+      "segments": 303,
+      "stdout_path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/variable_leaf_patch.stdout.txt"
+    },
+    "variable_leaf_plus_full_picard": {
+      "checks": {
+        "collapsed_evaluate_time": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.195701727252073,
+              "flowstar_upper": 1.4980826940976244,
+              "lower_under_enclosure_gap": 8.314335673276219e-07,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332062701100144,
+              "flowstar_upper": 1.5355431688929346,
+              "lower_under_enclosure_gap": 1.5476329550789814e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.273681118163998,
+              "flowstar_upper": 1.575323206120709,
+              "lower_under_enclosure_gap": 1.9786988917358528e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171689674017728,
+              "flowstar_upper": 1.617290225938293,
+              "lower_under_enclosure_gap": 1.2012825811646977e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.3405982833210959,
+              "flowstar_upper": 1.6395346994522084,
+              "lower_under_enclosure_gap": 1.0552108350214695e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.3659434663514851,
+              "flowstar_upper": 1.6633029242297561,
+              "lower_under_enclosure_gap": 9.245730412166253e-06,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932811202145894,
+              "flowstar_upper": 1.688586996709647,
+              "lower_under_enclosure_gap": 6.330240308605184e-06,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226689441512093,
+              "flowstar_upper": 1.7153401121848741,
+              "lower_under_enclosure_gap": 3.0972203435286616e-06,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.52489960059035,
+              "flowstar_upper": 1.804654019081199,
+              "lower_under_enclosure_gap": 5.389901547303566e-07,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.195701727252073,
+            "flowstar_upper": 1.4980826940976244,
+            "lower_under_enclosure_gap": 8.314335673276219e-07,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 9
+        },
+        "native_end_first": {
+          "failures": [
+            {
+              "absolute_time": 0.04137500000000001,
+              "flowstar_lower": 1.1957018336891618,
+              "flowstar_upper": 1.4980825865273175,
+              "lower_under_enclosure_gap": 9.378706562479522e-07,
+              "reference_lower": 1.1957008958185056,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.4979810784919865,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 3,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.05801250000000001,
+              "flowstar_lower": 1.2332064671501732,
+              "flowstar_upper": 1.5355429720887221,
+              "lower_under_enclosure_gap": 1.5673369709645613e-05,
+              "reference_lower": 1.2331907937804636,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5353417609376874,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 4,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.07631375000000001,
+              "flowstar_lower": 1.2736814417370776,
+              "flowstar_upper": 1.5753228829474448,
+              "lower_under_enclosure_gap": 2.0110561997022103e-05,
+              "reference_lower": 1.2736613311750806,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.5749881283958587,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 5,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.09644512500000002,
+              "flowstar_lower": 1.3171695135394432,
+              "flowstar_upper": 1.6172896803923895,
+              "lower_under_enclosure_gap": 1.2558963482067753e-05,
+              "reference_lower": 1.3171569545759612,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6167723974126984,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 6,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.10751738125000003,
+              "flowstar_lower": 1.340598476606924,
+              "flowstar_upper": 1.6395345063505025,
+              "lower_under_enclosure_gap": 1.0745394178446332e-05,
+              "reference_lower": 1.3405877312127457,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6389136308928267,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 7,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.11969686312500004,
+              "flowstar_lower": 1.365943725304895,
+              "flowstar_upper": 1.6633026655320502,
+              "lower_under_enclosure_gap": 9.504683821992543e-06,
+              "reference_lower": 1.365934220621073,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.6625658691515726,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 8,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.13309429318750005,
+              "flowstar_lower": 1.3932814679559922,
+              "flowstar_upper": 1.6885866493925064,
+              "lower_under_enclosure_gap": 6.677981711389336e-06,
+              "reference_lower": 1.3932747899742808,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.687720606198652,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 9,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.14783146625625004,
+              "flowstar_lower": 1.4226694076001023,
+              "flowstar_upper": 1.7153396494248516,
+              "lower_under_enclosure_gap": 3.5606692365686143e-06,
+              "reference_lower": 1.4226658469308657,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.7143344471666642,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 10,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.20247027226729414,
+              "flowstar_lower": 1.5248998361581743,
+              "flowstar_upper": 1.8046537844270116,
+              "lower_under_enclosure_gap": 7.745579790885415e-07,
+              "reference_lower": 1.5248990616001952,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.8032304525334502,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 14,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            },
+            {
+              "absolute_time": 0.21433745456677042,
+              "flowstar_lower": 1.5456166853447337,
+              "flowstar_upper": 1.8219851969882528,
+              "lower_under_enclosure_gap": 2.2912907970962237e-07,
+              "reference_lower": 1.545616456215654,
+              "reference_lower_initial_point": [
+                1.1,
+                2.35
+              ],
+              "reference_upper": 1.820500760186748,
+              "reference_upper_initial_point": [
+                1.4,
+                2.45
+              ],
+              "segment_index": 15,
+              "state_index": 0,
+              "tolerance": 2e-08,
+              "upper_under_enclosure_gap": 0.0
+            }
+          ],
+          "first_failure": {
+            "absolute_time": 0.04137500000000001,
+            "flowstar_lower": 1.1957018336891618,
+            "flowstar_upper": 1.4980825865273175,
+            "lower_under_enclosure_gap": 9.378706562479522e-07,
+            "reference_lower": 1.1957008958185056,
+            "reference_lower_initial_point": [
+              1.1,
+              2.35
+            ],
+            "reference_upper": 1.4979810784919865,
+            "reference_upper_initial_point": [
+              1.4,
+              2.45
+            ],
+            "segment_index": 3,
+            "state_index": 0,
+            "tolerance": 2e-08,
+            "upper_under_enclosure_gap": 0.0
+          },
+          "trajectory_failures": 10
+        },
+        "native_fixed_domain": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        },
+        "repaired_raw_endpoint": {
+          "failures": [],
+          "first_failure": null,
+          "trajectory_failures": 0
+        }
+      },
+      "endpoint_path_rows": 606,
+      "first_endpoint_path": {
+        "direct_lower": 1.129076241225221,
+        "direct_upper": 1.430508096943875,
+        "export_lower": 1.1292452168467622,
+        "export_upper": 1.4303391213223338,
+        "label": "generated_identical",
+        "native_lower": 1.1292452168467622,
+        "native_upper": 1.4303391213223338,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076241225221,
+        "repaired_upper": 1.430508096943875,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "first_path_divergence": {
+        "direct_lower": 1.129076241225221,
+        "direct_upper": 1.430508096943875,
+        "export_lower": 1.1292452168467622,
+        "export_upper": 1.4303391213223338,
+        "label": "generated_identical",
+        "native_lower": 1.1292452168467622,
+        "native_upper": 1.4303391213223338,
+        "padding_lower": -0.0001689756215410565,
+        "padding_upper": 0.00016897562154127854,
+        "repaired_lower": 1.129076241225221,
+        "repaired_upper": 1.430508096943875,
+        "state": 0,
+        "step": 1,
+        "time": 0.0125
+      },
+      "flowstar_root": "/srv/local/shengenli/flowstar_three_way_audit",
+      "flowstar_sha": "2310c1ac55357d0b48af3b37495a82a3e10ea4ff",
+      "full_picard_revalidation": true,
+      "leaf_patch": true,
+      "returncode": 0,
+      "seconds": 1.529236834961921,
+      "segments": 303,
+      "stdout_path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_study/experiments/three_tool_deep_study/results/20260730T015245Z/flowstar_adaptive_trajectory_audit/variable_leaf_plus_full_picard.stdout.txt"
+    }
+  }
+}

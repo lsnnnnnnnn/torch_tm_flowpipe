@@ -1,0 +1,937 @@
+{
+  "dependency_semantics": {
+    "generator_variables": [
+      "xi_x1",
+      "xi_x2"
+    ],
+    "independent_remainder_semantics": "per-state interval independent of polynomial generators",
+    "noise_variables": []
+  },
+  "domains": [
+    [
+      0.0,
+      0.005
+    ],
+    [
+      -1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      1.0
+    ]
+  ],
+  "enclosures": {
+    "endpoint_raw": {
+      "box": [
+        [
+          0.0800675985274008,
+          0.12013221623098684
+        ],
+        [
+          0.17892931553676836,
+          0.21917508715310235
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0": 0.02003018497231875
+          },
+          "constant_term": 0.10009990676212445,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -2.123262404892115e-06,
+            2.1244965436488226e-06
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.10009990676212445,
+              "exponents": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.02003018497231875,
+              "exponents": [
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 2,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 0.0201218519326571
+          },
+          "constant_term": 0.19905120635151072,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -3.888208528724372e-08,
+            2.02886893451666e-06
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.19905120635151072,
+              "exponents": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.0201218519326571,
+              "exponents": [
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 2,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        }
+      ]
+    },
+    "endpoint_tightened": {
+      "box": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint box"
+      },
+      "states": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint"
+      }
+    },
+    "tube": {
+      "box": [
+        [
+          0.07996759801489785,
+          0.12013221623098684
+        ],
+        [
+          0.17892931553676836,
+          0.22012509330939167
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "0,1,0": 0.02003018497231875
+          },
+          "constant_term": 0.09999990624962149,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -2.123262404892115e-06,
+            2.1244965436488226e-06
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.09999990624962149,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.02000010250059063,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.02003018497231875,
+              "exponents": [
+                0,
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 3,
+          "time_only_coefficients": [
+            {
+              "coefficient": 0.02000010250059063,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,0,1": 0.0201218519326571
+          },
+          "constant_term": 0.20000121250780006,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -3.888208528724372e-08,
+            2.02886893451666e-06
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 0.20000121250780006,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": -0.19000123125786697,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.0201218519326571,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 3,
+          "time_only_coefficients": [
+            {
+              "coefficient": -0.19000123125786697,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "time_state_coefficients": []
+        }
+      ]
+    }
+  },
+  "execution": {
+    "backend": "jax",
+    "device": "cpu:0",
+    "dtype": "float64",
+    "repository_commit": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "runtime": {
+      "export_s": 0.00018531270325183868,
+      "propagation_s": 0.8660566369071603,
+      "setup_s": 0.006296785082668066
+    }
+  },
+  "generator_domains": [
+    [
+      -1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      1.0
+    ]
+  ],
+  "h": 0.005,
+  "local_time_domain": [
+    0.0,
+    0.005
+  ],
+  "local_time_index": 0,
+  "native_metadata": {
+    "affine_flag": true,
+    "basis": "{1,tau,xi_i}",
+    "directed_rounding_or_mpfr": false,
+    "dtype": "float64",
+    "floating_point_enclosure_candidate": true,
+    "jax_x64_enabled": true,
+    "local_tm": {
+      "L": [
+        [
+          [
+            0.02000010250059063,
+            0.020030184973320257,
+            0.0
+          ],
+          [
+            -0.19000123125786697,
+            0.0,
+            0.02012185193366319
+          ]
+        ]
+      ],
+      "Lt": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "c": [
+        [
+          0.09999990624962149,
+          0.20000121250780006
+        ]
+      ],
+      "remainder_hi": [
+        [
+          2.1244965436488226e-06,
+          2.02886893451666e-06
+        ]
+      ],
+      "remainder_lo": [
+        [
+          -2.123262404892115e-06,
+          -3.888208528724372e-08
+        ]
+      ]
+    },
+    "native_point_samples": [
+      {
+        "point": [
+          0.0,
+          -1.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.07996972127730274,
+          0.17987936057514298
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          0.07996972127730274,
+          0.20000121250780006
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          -1.0,
+          1.0
+        ],
+        "polynomial_values": [
+          0.07996972127730274,
+          0.22012306444045715
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.09999990624962149,
+          0.17987936057514298
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "polynomial_values": [
+          0.09999990624962149,
+          0.20000121250780006
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "polynomial_values": [
+          0.09999990624962149,
+          0.22012306444045715
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          1.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.12003009122194024,
+          0.17987936057514298
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          0.12003009122194024,
+          0.20000121250780006
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          1.0,
+          1.0
+        ],
+        "polynomial_values": [
+          0.12003009122194024,
+          0.22012306444045715
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          -1.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.08001972153355422,
+          0.1794043574969983
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          -1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          0.08001972153355422,
+          0.1995262094296554
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          -1.0,
+          1.0
+        ],
+        "polynomial_values": [
+          0.08001972153355422,
+          0.2196480613623125
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          0.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.10004990650587296,
+          0.1794043574969983
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          0.0,
+          0.0
+        ],
+        "polynomial_values": [
+          0.10004990650587296,
+          0.1995262094296554
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          0.0,
+          1.0
+        ],
+        "polynomial_values": [
+          0.10004990650587296,
+          0.2196480613623125
+        ]
+      },
+      {
+        "point": [
+          0.0025,
+          1.0,
+          -1.0
+        ],
+        "polynomial_values": [
+          0.12008009147819171,
+          0.1794043574969983
+        ]
+      }
+    ],
+    "optional_jax_verify_shim_used": true,
+    "parameterization": {
+      "L": [
+        [
+          [
+            0.0,
+            0.9999999999500001,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.99999999995
+          ]
+        ]
+      ],
+      "Lt": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "c": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "remainder_hi": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "remainder_lo": [
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "status": "validated"
+  },
+  "native_validation_passed": true,
+  "outcome": {
+    "category": "",
+    "reason": "",
+    "requested_horizon_reached": true,
+    "status": "success"
+  },
+  "polynomial_representation": {
+    "coefficient_representation": "DiffReach dense c/L/Lt arrays mapped losslessly to sparse terms",
+    "name": "B1_affine",
+    "native_order": 1,
+    "requested_order": {
+      "availability": "unavailable",
+      "reason": "DiffReach selects a restricted basis rather than a total order"
+    }
+  },
+  "raw_endpoint": [
+    {
+      "affine_state_generator_coefficients": {
+        "1,0": 0.02003018497231875
+      },
+      "constant_term": 0.10009990676212445,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -2.123262404892115e-06,
+        2.1244965436488226e-06
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.10009990676212445,
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.02003018497231875,
+          "exponents": [
+            1,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 2,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,1": 0.0201218519326571
+      },
+      "constant_term": 0.19905120635151072,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -3.888208528724372e-08,
+        2.02886893451666e-06
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.19905120635151072,
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.0201218519326571,
+          "exponents": [
+            0,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 2,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    }
+  ],
+  "raw_endpoint_box": [
+    [
+      0.0800675985274008,
+      0.12013221623098684
+    ],
+    [
+      0.17892931553676836,
+      0.21917508715310235
+    ]
+  ],
+  "reset_carry_policy": {
+    "preconditioning": "diagonal_scale",
+    "reset": "upstream_symbolic_linear_normalization",
+    "symbolic_window": 100
+  },
+  "reset_preconditioning_metadata": {
+    "preconditioning": "diagonal_scale",
+    "reset": "upstream_symbolic_linear_normalization",
+    "symbolic_window": 100
+  },
+  "schema_version": 2,
+  "state_dimension": 2,
+  "states": [
+    {
+      "affine_state_generator_coefficients": {
+        "0,1,0": 0.02003018497231875
+      },
+      "constant_term": 0.09999990624962149,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -2.123262404892115e-06,
+        2.1244965436488226e-06
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1,
+        "time_only": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.09999990624962149,
+          "exponents": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.02000010250059063,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.02003018497231875,
+          "exponents": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 3,
+      "time_only_coefficients": [
+        {
+          "coefficient": 0.02000010250059063,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "time_state_coefficients": []
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,0,1": 0.0201218519326571
+      },
+      "constant_term": 0.20000121250780006,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -3.888208528724372e-08,
+        2.02886893451666e-06
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1,
+        "time_only": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "DiffReach symbolic carry is stored in native metadata, not as a single lossless per-state interval object"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 0.20000121250780006,
+          "exponents": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": -0.19000123125786697,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.0201218519326571,
+          "exponents": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 3,
+      "time_only_coefficients": [
+        {
+          "coefficient": -0.19000123125786697,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        }
+      ],
+      "time_state_coefficients": []
+    }
+  ],
+  "step_semantics": {
+    "accepted_step": 0.005,
+    "requested_step": 0.005
+  },
+  "system": "coupled_quadratic",
+  "system_definition": {
+    "equations": [
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              2,
+              0
+            ]
+          },
+          {
+            "coefficient": -1.0,
+            "powers": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "initial_domain": [
+      [
+        0.08,
+        0.12
+      ],
+      [
+        0.18,
+        0.22
+      ]
+    ],
+    "name": "coupled_quadratic",
+    "state_names": [
+      "x1",
+      "x2"
+    ]
+  },
+  "time_semantics": {
+    "initial_time": 0.0,
+    "requested_horizon": 0.005,
+    "segment_end": 0.005,
+    "segment_start": 0.0
+  },
+  "tool": "diffreach",
+  "validation_trace": [
+    {
+      "frr_rounds": 5,
+      "frr_stop_ratio": 0.95,
+      "initial_picard_contraction": [
+        [
+          true,
+          true
+        ]
+      ],
+      "upstream_step_once": true
+    }
+  ],
+  "variable_names": [
+    "tau",
+    "xi_x1",
+    "xi_x2"
+  ],
+  "variable_roles": [
+    "local_time",
+    "state_generator",
+    "state_generator"
+  ],
+  "variable_semantics": [
+    {
+      "domain": [
+        0.0,
+        0.005
+      ],
+      "name": "tau",
+      "role": "local_time"
+    },
+    {
+      "domain": [
+        -1.0,
+        1.0
+      ],
+      "name": "xi_x1",
+      "role": "state_generator"
+    },
+    {
+      "domain": [
+        -1.0,
+        1.0
+      ],
+      "name": "xi_x2",
+      "role": "state_generator"
+    }
+  ],
+  "variant": "upstream_affine_flag",
+  "whole_tube_box": [
+    [
+      0.07996759801489785,
+      0.12013221623098684
+    ],
+    [
+      0.17892931553676836,
+      0.22012509330939167
+    ]
+  ]
+}

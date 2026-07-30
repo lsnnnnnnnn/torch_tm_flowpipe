@@ -1,0 +1,1099 @@
+{
+  "csv_file_count": 36,
+  "csv_files": [
+    {
+      "columns": 26,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "acceleration_diffreach.csv",
+      "rows": 11,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 26,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "acceleration_flowstar.csv",
+      "rows": 10,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 19,
+      "horizon_columns": [
+        "median_successful_horizon",
+        "requested_horizon"
+      ],
+      "path": "acceleration_summary.csv",
+      "rows": 5,
+      "runtime_unit_columns": [
+        "compile_or_context_time_s",
+        "median_full_configuration_time_s"
+      ]
+    },
+    {
+      "columns": 28,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "acceleration_torch.csv",
+      "rows": 20,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 64,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "affine_carry_summary.csv",
+      "rows": 73,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 28,
+      "horizon_columns": [],
+      "path": "bern_feasibility.csv",
+      "rows": 5,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 64,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "box_carry_summary.csv",
+      "rows": 64,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 43,
+      "horizon_columns": [
+        "horizon",
+        "requested_horizon"
+      ],
+      "path": "component_ablation.csv",
+      "rows": 828,
+      "runtime_unit_columns": [
+        "build_time_s",
+        "execution_time_s",
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 49,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "controlled_diffreach.csv",
+      "rows": 5783,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 50,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "controlled_flowstar.csv",
+      "rows": 4934,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 50,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "controlled_raw.csv",
+      "rows": 15969,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 29,
+      "horizon_columns": [
+        "horizon",
+        "time"
+      ],
+      "path": "controlled_torch.csv",
+      "rows": 5252,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 21,
+      "horizon_columns": [],
+      "path": "defect_summary.csv",
+      "rows": 167,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 9,
+      "horizon_columns": [],
+      "path": "failure_summary.csv",
+      "rows": 32,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 9,
+      "horizon_columns": [
+        "time"
+      ],
+      "path": "flowstar_adaptive_trajectory_audit/adaptive_flowstar_repaired_rows.csv",
+      "rows": 606,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 29,
+      "horizon_columns": [
+        "requested_horizon"
+      ],
+      "path": "flowstar_component_ablation.csv",
+      "rows": 12,
+      "runtime_unit_columns": [
+        "build_time_s",
+        "execution_time_s"
+      ]
+    },
+    {
+      "columns": 13,
+      "horizon_columns": [],
+      "path": "flowstar_correctness.csv",
+      "rows": 96,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 29,
+      "horizon_columns": [],
+      "path": "flowstar_root_cause/flowstar_riccati_stage_trace.csv",
+      "rows": 84,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 16,
+      "horizon_columns": [],
+      "path": "flowstar_root_cause/flowstar_riccati_summary.csv",
+      "rows": 4,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 5,
+      "horizon_columns": [],
+      "path": "matched_basis_capabilities.csv",
+      "rows": 12,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 12,
+      "horizon_columns": [],
+      "path": "matched_basis_discarded_terms.csv",
+      "rows": 288,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 24,
+      "horizon_columns": [],
+      "path": "matched_basis_summary.csv",
+      "rows": 32,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 9,
+      "horizon_columns": [],
+      "path": "matched_basis_support.csv",
+      "rows": 272,
+      "runtime_unit_columns": []
+    },
+    {
+      "columns": 25,
+      "horizon_columns": [
+        "horizon",
+        "time"
+      ],
+      "path": "native_diffreach.csv",
+      "rows": 6342,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 26,
+      "horizon_columns": [
+        "horizon",
+        "time"
+      ],
+      "path": "native_flowstar.csv",
+      "rows": 7206,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 45,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "native_low_order_summary.csv",
+      "rows": 154,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 23,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "native_pareto_excluded.csv",
+      "rows": 18,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "steady_full_configuration_time_s"
+      ]
+    },
+    {
+      "columns": 22,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "native_pareto_summary.csv",
+      "rows": 103,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "steady_full_configuration_time_s"
+      ]
+    },
+    {
+      "columns": 29,
+      "horizon_columns": [
+        "horizon",
+        "time"
+      ],
+      "path": "native_raw.csv",
+      "rows": 47844,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 26,
+      "horizon_columns": [
+        "horizon",
+        "time"
+      ],
+      "path": "native_torch.csv",
+      "rows": 34296,
+      "runtime_unit_columns": [
+        "runtime_s"
+      ]
+    },
+    {
+      "columns": 66,
+      "horizon_columns": [
+        "horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "one_step_summary.csv",
+      "rows": 334,
+      "runtime_unit_columns": [
+        "compile_time_s",
+        "first_call_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 22,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "pareto_repetitions_diffreach.csv",
+      "rows": 60,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 22,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "pareto_repetitions_flowstar.csv",
+      "rows": 60,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 23,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "pareto_repetitions_torch.csv",
+      "rows": 120,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "first_step_time_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s"
+      ]
+    },
+    {
+      "columns": 137,
+      "horizon_columns": [
+        "horizon",
+        "requested_horizon",
+        "successful_horizon",
+        "time"
+      ],
+      "path": "raw_results.csv",
+      "rows": 64431,
+      "runtime_unit_columns": [
+        "build_time_s",
+        "compile_or_jit_time_s",
+        "compile_time_s",
+        "execution_time_s",
+        "first_call_time_s",
+        "first_step_time_s",
+        "python_orchestration_time_s",
+        "runtime_s",
+        "steady_full_configuration_time_s",
+        "steady_step_time_s",
+        "total_runtime_s"
+      ]
+    },
+    {
+      "columns": 19,
+      "horizon_columns": [
+        "requested_horizon",
+        "successful_horizon"
+      ],
+      "path": "runtime_summary.csv",
+      "rows": 24,
+      "runtime_unit_columns": [
+        "compile_or_jit_time_s",
+        "steady_full_configuration_time_s"
+      ]
+    }
+  ],
+  "csv_total_rows": 195551,
+  "failures": [],
+  "horizon_or_step_violations": [],
+  "json_file_count": 127,
+  "json_files": [
+    {
+      "entries": 7,
+      "path": ".matplotlib/fontlist-v390.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 11,
+      "path": "artifact_quality_audit.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 10,
+      "path": "bern_feasibility.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_coupled_quadratic_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_coupled_quadratic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_coupled_quadratic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_coupled_quadratic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_harmonic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_harmonic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_harmonic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_harmonic_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_riccati_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_riccati_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_riccati_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_riccati_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_van_der_pol_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_van_der_pol_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_van_der_pol_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_affine_flag_van_der_pol_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_coupled_quadratic_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_coupled_quadratic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_coupled_quadratic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_coupled_quadratic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_harmonic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_harmonic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_harmonic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_harmonic_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_riccati_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_riccati_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_riccati_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_riccati_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_van_der_pol_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_van_der_pol_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_van_der_pol_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/diffreach_upstream_restricted_quasi_quadratic_van_der_pol_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.0025_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.0025_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.005_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.005_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.01_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.01_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.02_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_coupled_quadratic_h0.02_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.005_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.005_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.01_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.01_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.02_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.02_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.05_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_harmonic_h0.05_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.005_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.005_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.01_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.01_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.02_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.02_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_riccati_h0.05_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.0025_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.0025_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.005_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.005_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.01_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.01_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.02_o2.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/flowstar_flowstar_root_cause_patch_van_der_pol_h0.02_o4.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_coupled_quadratic_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_coupled_quadratic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_coupled_quadratic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_coupled_quadratic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_harmonic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_harmonic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_harmonic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_harmonic_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_riccati_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_van_der_pol_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_van_der_pol_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_van_der_pol_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_1_van_der_pol_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_coupled_quadratic_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_coupled_quadratic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_coupled_quadratic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_coupled_quadratic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_harmonic_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_harmonic_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_harmonic_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_harmonic_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_riccati_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_riccati_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_riccati_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_riccati_h0.05.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_van_der_pol_h0.0025.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_van_der_pol_h0.005.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_van_der_pol_h0.01.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "common_segments/torch_tm_flowpipe_complete_total_degree_2_van_der_pol_h0.02.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 3,
+      "path": "component_ablation_summary.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 44,
+      "path": "controlled_diffreach_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 44,
+      "path": "controlled_flowstar_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 132,
+      "path": "controlled_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 44,
+      "path": "controlled_torch_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 16,
+      "path": "correctness_checks.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 5,
+      "path": "defect_checks.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 0,
+      "path": "defect_failures.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 16,
+      "path": "environment.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 7,
+      "path": "final_acceptance.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 12,
+      "path": "flowstar_adaptive_trajectory_audit/flowstar_adaptive_failure_trace.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 8,
+      "path": "flowstar_adaptive_trajectory_audit/flowstar_adaptive_trajectory_summary.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 4,
+      "path": "flowstar_correctness_summary.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 93,
+      "path": "flowstar_correctness_traces.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 30,
+      "path": "flowstar_root_cause/flowstar_full_picard_revalidated_p53_segment.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 9,
+      "path": "flowstar_root_cause/flowstar_riccati_evidence.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 4,
+      "path": "flowstar_root_cause/flowstar_riccati_records.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 30,
+      "path": "flowstar_root_cause/flowstar_root_cause_patch_p53_segment.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "flowstar_root_cause/flowstar_stock_p256_segment.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 30,
+      "path": "flowstar_root_cause/flowstar_stock_p53_segment.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 5,
+      "path": "frozen_input_integrity.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 81,
+      "path": "frozen_input_manifest_final.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 81,
+      "path": "frozen_input_manifest_initial.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 24,
+      "path": "native_diffreach_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 25,
+      "path": "native_flowstar_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 97,
+      "path": "native_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 48,
+      "path": "native_torch_summary.json",
+      "top_level_type": "list"
+    },
+    {
+      "entries": 6,
+      "path": "pareto_checks.json",
+      "top_level_type": "dict"
+    },
+    {
+      "entries": 5,
+      "path": "repository_audit.json",
+      "top_level_type": "dict"
+    }
+  ],
+  "nonfinite_csv_cells": [],
+  "passed": true,
+  "sampling_policy": "deterministic trajectory sampling is non-proof",
+  "unit_policy": "seconds use *_s fields; widths are in native state units; memory fields name KiB or bytes; unavailable is never zero"
+}
