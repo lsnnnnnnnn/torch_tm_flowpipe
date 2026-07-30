@@ -40,5 +40,12 @@ dirty states, and patch hashes are captured in the run.
 To re-audit a delivered run:
 
 ```bash
-python analysis/independent_audit.py artifacts/runs/<RUN_ID>
+python analysis/independent_audit.py artifacts/runs/20260730T153654Z
+cd artifacts/runs/20260730T153654Z
+shasum -a 256 -c SHA256SUMS
 ```
+
+The delivered authoritative run is `20260730T153654Z` at code freeze
+`0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781`. Reproduction on other hardware
+must use a new run ID and must not combine timing with this Apple Silicon CPU
+run.

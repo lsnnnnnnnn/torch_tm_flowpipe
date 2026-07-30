@@ -12,9 +12,10 @@
 | `canonical-smoke-20260730-v5` | corrected smoke at `9bef0ac` | accepted non-authoritative | regression verifies outputs remain inside run directory |
 | `20260730T141302Z` | second formal freeze `e50fe9d` | rejected after semantic review | old auditor grouped Pareto by tool instead of cross-tool; not citable |
 | `canonical-smoke-20260730-v6` | cross-tool Pareto smoke at `2d870f6` | accepted non-authoritative | cross-tool grouping and independent recomputation validated |
+| `20260730T153654Z` | final formal freeze `0dfdf58` | `accepted_authoritative` | sole citable consolidated width/runtime result; 24 eligible configs, 264 raw observations, 12 cross-tool frontier points |
 
 The full pre-consolidation deep-study tree is recoverable through annotated tag
 `archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study`
 at `9a684d9106633e067bfac0747244b769fa49aa0b`. Other branch-specific archive
-tags are created only after formal acceptance and revalidated before any
-remote branch deletion.
+tags are created after formal acceptance and revalidated before any remote
+branch deletion.

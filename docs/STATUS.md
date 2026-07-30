@@ -1,6 +1,6 @@
 # Status
 
-Current state: `consolidation_in_progress`.
+Current state: `formal_accepted_branch_convergence_pending`.
 
 Completed:
 
@@ -20,14 +20,18 @@ Completed:
   bundle is rejected and the cross-tool grouping now has a regression test;
 - cross-tool Pareto smoke passed at
   `2d870f6fd12595eed0a23da59f945986a310e245`;
+- final code freeze recorded at
+  `0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781`;
+- formal run `20260730T153654Z` completed from a fresh directory with 24 exact
+  configurations, 264 raw observations, zero failures/exclusions, and all
+  checksum and independent-audit gates passing;
+- the accepted formal artifact is authoritative for the bounded claims in
+  `docs/RESULTS.md`;
 - old run `20260730T015245Z` marked provisional.
 
 Pending at this checkpoint:
 
-- freeze the cross-tool Pareto correction;
-- run and independently accept the formal profile;
-- commit/push the formal artifact and canonical branch;
+- commit and push the formal artifact and canonical branch;
+- create and remotely verify the remaining annotated archive tags;
+- delete only the one fully redundant patch-equivalent remote branch;
 - refresh after-inventory and main merge plan.
-
-No formal numerical conclusion is authoritative until those remaining gates
-pass.

@@ -25,16 +25,21 @@ contract groups by system and evaluation horizon so eligible tool families
 can dominate one another. Smoke version 6 accepts this correction at
 `2d870f6fd12595eed0a23da59f945986a310e245`.
 
+The final freeze is
+`0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781`. Formal run
+`20260730T153654Z` was created from a fresh directory and independently
+accepted: 24 exact eligible configurations, 264 raw observations, zero
+failures/exclusions, 12 cross-tool frontier points, complete checksum
+verification, and no writes outside the run directory.
+
 Remaining continuation:
 
 ```bash
 cd "$(git rev-parse --show-toplevel)"
-python -m pytest -q
-git diff --check
-# create the final code-freeze commit
-python experiments/consolidated_study/cli.py formal \
-  --output-dir artifacts/runs/<NEW_RUN_ID>
+python analysis/independent_audit.py artifacts/runs/20260730T153654Z
+git fetch origin --prune --tags
+# publish canonical branch, verify archive tags, and converge eligible refs
 ```
 
 Do not treat `20260730T015245Z` as authoritative. Do not delete remote branches
-until the formal artifact and all archive tags pass independent verification.
+until all archive tags pass independent remote verification.
