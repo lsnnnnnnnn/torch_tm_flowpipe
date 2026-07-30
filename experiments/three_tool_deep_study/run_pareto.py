@@ -33,6 +33,16 @@ def _float(value: Any, default: float = math.nan) -> float:
         return default
 
 
+def _maximum_measured_memory(values: Sequence[Any]) -> float | str:
+    """Return a measured positive peak, never a fabricated zero."""
+    measured = [
+        value
+        for item in values
+        if math.isfinite(value := _float(item)) and value > 0.0
+    ]
+    return max(measured) if measured else "unavailable"
+
+
 def _multi_cases(spec: Mapping[str, Any], smoke: bool):
     for system_name, configurations in spec["multi_step"].items():
         selected = [spec["smoke"][system_name]] if smoke else configurations
@@ -331,7 +341,7 @@ def run_torch_repetitions(
                             if timings
                             else math.nan
                         ),
-                        "peak_process_rss_kib": "",
+                        "peak_process_rss_kib": "unavailable",
                         "peak_device_memory_bytes": (
                             torch.cuda.max_memory_allocated(device)
                         ),
@@ -819,7 +829,7 @@ def run_flowstar_repetitions(
                         if parsed["steps"]
                         else math.nan
                     ),
-                    "peak_process_rss_kib": "",
+                    "peak_process_rss_kib": "unavailable",
                     "device": "cpu",
                     "dtype": "MPFR_interval_53_bit",
                     "failure_category": (
@@ -1115,7 +1125,7 @@ def collect(output: Path) -> dict[str, Any]:
                         "native_validation_passed",
                         summary.get("status") == "success",
                     ),
-                    "memory_kib": "",
+                    "memory_kib": "unavailable",
                     "basis": summary.get("basis", ""),
                     "carry_or_preconditioning": summary.get(
                         "carry", summary.get("preconditioning", "")
@@ -1174,12 +1184,11 @@ def collect(output: Path) -> dict[str, Any]:
             "runtime_repetitions": len(values),
             "runtime_statistic": "median_full_configuration",
             "native_validation_passed": len(successful) == len(values),
-            "memory_kib": max(
-                (
-                    _float(item.get("peak_process_rss_kib"), 0.0)
+            "memory_kib": _maximum_measured_memory(
+                [
+                    item.get("peak_process_rss_kib")
                     for item in source
-                ),
-                default=0.0,
+                ]
             ),
             "basis": "",
             "carry_or_preconditioning": "selected_native_practical",

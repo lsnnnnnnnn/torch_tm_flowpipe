@@ -482,22 +482,28 @@ time-state 基、改进多项式范围界和 overflow 归因、暴露验证器�
             "tool",
             "variant",
             "system",
+            "h",
             "time",
             "width",
             "successful horizon",
             "steady s",
             "memory KiB",
+            "basis",
+            "carry/preconditioning",
         ],
         [
             [
                 row.get("tool", ""),
                 row.get("variant", ""),
                 row.get("system", ""),
+                row.get("h", ""),
                 row.get("evaluation_time", ""),
                 row.get("width_at_evaluation_time", ""),
                 row.get("successful_horizon", ""),
                 row.get("steady_full_configuration_time_s", ""),
                 row.get("memory_kib", ""),
+                row.get("basis", ""),
+                row.get("carry_or_preconditioning", ""),
             ]
             for row in frontier
         ],

@@ -98,3 +98,65 @@ The run has no `RUN_COMPLETE`, `final_acceptance.json`,
 ignored `results/20260729T093319Z/INCOMPLETE` record and remains
 **non-authoritative**.  Its partial data must not be reused by the replacement
 formal run.
+
+## Preserved quality-gated run `20260729T162851Z`
+
+Replacement run `20260729T162851Z` used pushed SHA
+`a781c705404c30a2f895a985c8e49d57ba727ae5`.  It recomputed every experimental
+stage, including 240 native-practical repetition observations, passed the
+primary correctness and ten-repetition verification gates, and generated all
+18 mandatory figures.  `final_acceptance.json` passed.
+
+The recursive artifact-quality audit then rejected 36 CSV cells.  They are
+three width fields in four failed `candidate=1e-6` Flow* ablation rows, repeated
+through `flowstar_component_ablation.csv`, `component_ablation.csv`, and
+`raw_results.csv`.  The configurations correctly reported
+`first_picard_inclusion_failed`, but their absent endpoint, polynomial, and
+remainder widths were serialized as `nan` rather than the required explicit
+`unavailable` marker.
+
+The producer now computes a finite maximum when data exist and otherwise emits
+`unavailable`; it never substitutes zero.  A full 12-row Flow* ablation
+reproduction in `/tmp/flowstar_ablation_quality_fix.55P9l0` contains no
+`nan`/`inf`, and the first four rejected rows carry `unavailable` in all three
+width fields.  Unit coverage checks empty, non-finite, mixed, and finite inputs.
+
+The run has no `RUN_COMPLETE` and was never curated.  It is recorded by
+`results/20260729T162851Z/INCOMPLETE` and remains **non-authoritative**.  Its
+experimental rows will not be mixed with the next clean formal run.
+
+## Disposable downstream rehearsal after the quality fix
+
+To reduce the risk of discovering another report-only defect after a
+multi-hour recomputation, the downstream-only transformations were exercised
+on a disposable copy at
+`/tmp/three_tool_downstream_validation.RIulsy`.  This was a validation fixture,
+not a recovery or an authoritative run.
+
+The rehearsal exposed and closed four provenance defects:
+
+1. absent Flow* process RSS was being coerced to `0.0`; it is now the literal
+   `unavailable`, while positive measured Torch/DiffReach peaks remain numeric;
+2. six Torch `order1_legacy_tightened` rows could enter the primary within-tool
+   Pareto table; they are now supplemental-only explicit exclusions and cannot
+   support cross-tool raw-endpoint claims;
+3. provisional report generation wrote `FINAL_CONCLUSIONS.md` into the source
+   tree before the quality gate; it now writes only inside the timestamped run,
+   and repository-level conclusions are produced only after curation; and
+4. rerunning table collection on a filtered result could erase the exclusion
+   partition and leave a headerless CSV; collection now merges and deduplicates
+   both partitions and always writes a schema header.
+
+After those repairs, collection was run twice.  Both passes retained 103
+eligible and 18 excluded Pareto rows, with zero tightened rows eligible, six
+tightened rows explicitly excluded, Flow* memory equal to `unavailable`, and
+zero memory placeholders absent.  Plotting produced all 18 figures.  The
+recursive audit passed 36 CSV files / 195,551 rows with no non-finite cells and
+no horizon/step violations.  Curation selected 185 files (110,274,524 bytes),
+and final-delivery generation produced both reports, conclusions, artifact
+index, reproducibility record, and a 55-row manifest.  The focused study suite
+passes 29 tests with five environment skips.
+
+These checks validate code paths only.  The next authoritative run must still
+start from a new empty timestamped directory and recompute every numerical
+stage.

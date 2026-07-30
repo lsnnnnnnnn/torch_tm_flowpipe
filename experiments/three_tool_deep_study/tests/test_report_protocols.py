@@ -9,8 +9,17 @@ from generate_report import (
     _at_requested_horizon,
     _carry_loss,
 )
-from collect_results import _annotate_required_metrics
-from run_pareto import _pareto_flags, _projected_affine_box_reset
+from collect_results import (
+    _annotate_required_metrics,
+    _pareto_identity,
+    _supplemental_tightened_endpoint,
+)
+from run_ablation import _finite_max_or_unavailable
+from run_pareto import (
+    _maximum_measured_memory,
+    _pareto_flags,
+    _projected_affine_box_reset,
+)
 
 
 def _row(
@@ -247,3 +256,42 @@ def test_torch_cuda_pareto_reset_accepts_projected_nonlinear_endpoint() -> None:
     )
     assert len(reset) == len(system["initial_box"])
     assert discarded > 0
+
+
+def test_failed_ablation_widths_are_explicitly_unavailable() -> None:
+    assert _finite_max_or_unavailable([]) == "unavailable"
+    assert _finite_max_or_unavailable([float("nan"), float("inf")]) == (
+        "unavailable"
+    )
+    assert _finite_max_or_unavailable(["unavailable", 0.2, 0.1]) == 0.2
+
+
+def test_missing_memory_is_unavailable_not_zero() -> None:
+    assert _maximum_measured_memory(["", None, 0.0]) == "unavailable"
+    assert _maximum_measured_memory(
+        ["unavailable", float("nan"), 1024, 2048]
+    ) == 2048.0
+
+
+def test_tightened_torch_endpoint_is_supplemental_only() -> None:
+    row = {
+        "tool": "torch_tm_flowpipe",
+        "variant": "order1_legacy_tightened",
+        "system": "riccati",
+        "h": "0.01",
+    }
+    assert _supplemental_tightened_endpoint(row)
+    assert _pareto_identity(row) == (
+        "torch_tm_flowpipe",
+        "order1_legacy_tightened",
+        "riccati",
+        "0.01",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+    )

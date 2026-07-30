@@ -679,7 +679,8 @@ def main() -> None:
     (output / "executive_summary.md").write_text(
         executive, encoding="utf-8"
     )
-    (HERE / "FINAL_CONCLUSIONS.md").write_text(
+    conclusions = output / "FINAL_CONCLUSIONS.md"
+    conclusions.write_text(
         executive
         + "\n\nThe complete generated report is stored with the timestamped "
         "results directory.\n",
@@ -692,7 +693,7 @@ def main() -> None:
                     output / "three_tool_deep_study_report.md"
                 ),
                 "executive_summary": str(output / "executive_summary.md"),
-                "conclusions": str(HERE / "FINAL_CONCLUSIONS.md"),
+                "conclusions": str(conclusions),
             },
             indent=2,
         )

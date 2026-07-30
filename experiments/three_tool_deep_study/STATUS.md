@@ -1,6 +1,6 @@
 # Deep-study status
 
-Last updated: 2026-07-29T16:24:31Z.
+Last updated: 2026-07-30T01:31:58Z.
 
 | phase | status | evidence / next gate |
 |---|---|---|
@@ -10,7 +10,7 @@ Last updated: 2026-07-29T16:24:31Z.
 | 3. Common intermediate representation | complete | CIR v2 schema and semantic validator cover every required field; Torch/Flow*/DiffReach adapters emit explicit unavailable markers and all three external schema/round-trip tests pass |
 | 4. Fair protocols | complete | B1/B_DR/B2/B3 semantics, explicit native capability gaps, required metric annotations, and within-tool-only Pareto flags pass 23 focused tests, matched-basis smoke, and an integrated 18-plot/1,280-row smoke with no verification failures; the authoritative ten-repetition run remains a Phase 6 gate |
 | 5. BERN and literature | complete | range-only clean-room feasibility prototype contains all 5 analytic cases and tightens 2 cancellation cases; the exact 16 requested PDF filenames were absent in a server-wide filename search and are recorded without invented page claims in `MATERIALS_MISSING.md`; `LITERATURE_MAP.md` now separates the two Week-4 files, Lecture 12 / Modeling Physics, Homework 2, attachment names, and public-schedule numbering |
-| 6. Repository/final delivery | in progress | formal attempt `20260729T093319Z` passed every solver/correctness stage through BERN, then exposed a secondary CUDA Pareto reset bug; both CPU and CUDA paths now share an explicit B1 projection before affine reset; 26 focused tests pass with 5 expected environment/argument skips; a fresh checkpointed formal run, final artifact generation, full repository test matrix, clean status, artifact commit, and push remain |
+| 6. Repository/final delivery | in progress | replacement `20260729T162851Z` recomputed all stages, 240 repetition observations, acceptance, and 18 plots, then the recursive audit caught four rejected Flow* ablation rows using `nan` for absent widths; the producer now emits explicit `unavailable`; a full downstream rehearsal passes recursive audit over 195,551 CSV rows, keeps all six legacy-tightened Torch configurations supplemental/excluded, preserves Flow* memory as `unavailable`, survives repeated collection, generates 18 plots and a 185-file curated artifact, and passes 29 focused tests / 5 environment skips; a fresh checkpointed formal run, curation, full repository test matrix, clean status, artifact commit, and push remain |
 
 Checkpoint policy: update this file in every phase checkpoint.  Timestamped
 scratch runs are never authoritative unless all final verification gates pass.
@@ -87,3 +87,34 @@ or acceptance markers, and is recorded in `RECOVERY_CONTINUATION.md` plus its
 ignored `INCOMPLETE` marker.  The repair now makes CPU and CUDA call the same
 project-then-reset helper and records discarded terms.  No prior numerical
 rows will be mixed into the replacement run.
+
+## Preserved quality-gated attempt `20260729T162851Z`
+
+The replacement attempt fixed the CUDA reset path and passed all numerical,
+correctness, Pareto repetition, plot, and final-acceptance gates.  The recursive
+quality audit then found 36 repeated `nan` cells originating from three absent
+width fields on four explicitly rejected Flow* ablation configurations.
+Those rows now use `unavailable`, never zero.  A full standalone reproduction
+of all 12 ablation rows contains no non-finite CSV values.
+
+Because the run stopped before `RUN_COMPLETE` and curation, it is preserved as
+incomplete/non-authoritative.  Exact cell provenance and the clean-run rule are
+recorded in `RECOVERY_CONTINUATION.md`.
+
+The repaired downstream path was rehearsed against a disposable copy of the
+complete numerical output.  Repeated table collection is now idempotent:
+103 primary Pareto rows and 18 exclusions remain stable, all six
+`order1_legacy_tightened` configurations are excluded with reason
+`supplemental_tightened_endpoint_not_raw_comparable`, and no tightened row
+appears in the primary table.  Missing Flow* RSS is serialized as
+`unavailable`, never `0`; measured Torch/DiffReach peaks remain numeric.
+Report generation writes its provisional conclusions only inside the run
+directory, so an incomplete run cannot overwrite the repository-level final
+conclusion.  The final frontier table now includes step size, basis, and
+carry/preconditioning columns.
+
+The rehearsal generated all 18 plots, passed the recursive audit over 36 CSV
+files / 195,551 rows with no non-finite cells or horizon/step violations,
+curated 185 files, and generated the bilingual delivery plus a 55-row manifest.
+This validates downstream transformations only; it does not make
+`20260729T162851Z` authoritative or permit reuse of its numerical rows.

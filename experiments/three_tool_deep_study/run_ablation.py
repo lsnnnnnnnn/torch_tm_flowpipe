@@ -29,6 +29,16 @@ def _scalar(value: Any, default: float = math.nan) -> float:
         return default
 
 
+def _finite_max_or_unavailable(values: Iterable[Any]) -> float | str:
+    """Return a finite maximum or an explicit nonnumeric availability marker."""
+    finite = [
+        number
+        for value in values
+        if math.isfinite(number := _scalar(value))
+    ]
+    return max(finite) if finite else "unavailable"
+
+
 def _tm_interval(value: Any) -> list[float]:
     return [
         float(value.lo.detach().cpu()),
@@ -314,26 +324,19 @@ def run_flowstar_ablation(
                     for row in case_rows
                     if row.get("interval_kind") == "endpoint_raw"
                 ]
-                widths = [_scalar(row.get("width")) for row in endpoint]
                 rows.append(
                     {
                         **run,
                         "ablation_family": "flowstar_refinement_candidate",
                         "leaf_cache_patch": leaf_patch,
-                        "endpoint_max_width": max(widths, default=math.nan),
-                        "polynomial_max_width": max(
-                            (
-                                _scalar(row.get("polynomial_width"))
-                                for row in endpoint
-                            ),
-                            default=math.nan,
+                        "endpoint_max_width": _finite_max_or_unavailable(
+                            row.get("width") for row in endpoint
                         ),
-                        "remainder_max_width": max(
-                            (
-                                _scalar(row.get("remainder_width"))
-                                for row in endpoint
-                            ),
-                            default=math.nan,
+                        "polynomial_max_width": _finite_max_or_unavailable(
+                            row.get("polynomial_width") for row in endpoint
+                        ),
+                        "remainder_max_width": _finite_max_or_unavailable(
+                            row.get("remainder_width") for row in endpoint
                         ),
                         "analytic_reference_violations": sum(
                             row.get("analytic_reference_status") == "failed"

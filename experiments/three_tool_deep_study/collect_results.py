@@ -227,6 +227,64 @@ def _truth(value: Any) -> bool | None:
     return None
 
 
+def _pareto_identity(row: Mapping[str, Any]) -> tuple[str, ...]:
+    return tuple(
+        str(row.get(field, ""))
+        for field in (
+            "tool",
+            "variant",
+            "system",
+            "h",
+            "evaluation_time",
+            "requested_horizon",
+            "successful_horizon",
+            "width_at_evaluation_time",
+            "steady_full_configuration_time_s",
+            "runtime_repetitions",
+            "basis",
+            "carry_or_preconditioning",
+        )
+    )
+
+
+def _supplemental_tightened_endpoint(row: Mapping[str, Any]) -> bool:
+    return (
+        str(row.get("tool", "")).strip().lower()
+        in {"torch", "torch_tm_flowpipe"}
+        and "legacy_tightened"
+        in str(row.get("variant", "")).strip().lower()
+    )
+
+
+def _write_pareto_csv(
+    path: Path,
+    rows: list[dict[str, Any]],
+    *,
+    schema_source: list[dict[str, Any]],
+) -> None:
+    """Write a header even when an exclusion partition is empty."""
+    if rows:
+        write_csv(path, rows)
+        return
+    fields = sorted(
+        {
+            key
+            for row in schema_source
+            for key in row
+        }
+        | {
+            "excluded_from_authoritative",
+            "exclusion_reason",
+            "primary_numerical_eligible",
+        }
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        csv.DictWriter(
+            handle, fieldnames=fields, lineterminator="\n"
+        ).writeheader()
+
+
 def _number(value: Any, default: float = 0.0) -> float:
     try:
         if value in ("", None):
@@ -792,6 +850,15 @@ def collect_tables(
     pareto_path = output / "native_pareto_summary.csv"
     if pareto_path.exists():
         pareto_rows = _read_csv(pareto_path)
+        prior_excluded_rows = _read_csv(
+            output / "native_pareto_excluded.csv"
+        )
+        pareto_rows = list(
+            {
+                _pareto_identity(row): row
+                for row in prior_excluded_rows + pareto_rows
+            }.values()
+        )
         eligible_pareto_rows = []
         excluded_pareto_rows = []
         for row in pareto_rows:
@@ -806,32 +873,43 @@ def collect_tables(
             native_passed = (
                 _truth(row.get("native_validation_passed")) is not False
             )
+            supplemental_tightened = _supplemental_tightened_endpoint(row)
             row["trajectory_sanity_passed"] = trajectory_passed
             row["primary_numerical_eligible"] = (
                 trajectory_passed
                 and native_passed
                 and not explicitly_excluded
+                and not supplemental_tightened
             )
             if not row["primary_numerical_eligible"]:
                 row["width_runtime_pareto"] = False
                 row["excluded_from_authoritative"] = True
                 row["exclusion_reason"] = (
-                    "explicit_configuration_exclusion"
-                    if explicitly_excluded
+                    "supplemental_tightened_endpoint_not_raw_comparable"
+                    if supplemental_tightened
                     else (
-                        "trajectory_sanity_failure"
-                        if not trajectory_passed
-                        else "native_validation_failure"
+                        "explicit_configuration_exclusion"
+                        if explicitly_excluded
+                        else (
+                            "trajectory_sanity_failure"
+                            if not trajectory_passed
+                            else "native_validation_failure"
+                        )
                     )
                 )
                 excluded_pareto_rows.append(row)
             else:
                 row["excluded_from_authoritative"] = False
                 eligible_pareto_rows.append(row)
-        write_csv(pareto_path, eligible_pareto_rows)
-        write_csv(
+        _write_pareto_csv(
+            pareto_path,
+            eligible_pareto_rows,
+            schema_source=pareto_rows,
+        )
+        _write_pareto_csv(
             output / "native_pareto_excluded.csv",
             excluded_pareto_rows,
+            schema_source=pareto_rows,
         )
     flowstar_summary_path = output / "flowstar_correctness_summary.json"
     flowstar_summary = (
