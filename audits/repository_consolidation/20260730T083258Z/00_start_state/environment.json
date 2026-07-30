@@ -1,0 +1,105 @@
+{
+  "commands": {
+    "cc": {
+      "argv": [
+        "cc",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n"
+    },
+    "conda_envs": {
+      "argv": [
+        "conda",
+        "env",
+        "list"
+      ],
+      "exit_code": 0,
+      "stderr": "sysctl: sysctl fmt -1 1024 1: Operation not permitted\nsysctl: sysctl fmt -1 1024 1: Operation not permitted\nsysctl: unknown oid 'machdep.cpu.leaf7_features'\nsysctl: unknown oid 'machdep.cpu.vendor'\nsysctl: sysctl fmt -1 1024 1: Operation not permitted\n",
+      "stdout": "\n# conda environments:\n#\nbase                   /opt/anaconda3\njing                   /opt/anaconda3/envs/jing\nnewenv                 /opt/anaconda3/envs/newenv\nonmi                 * /opt/anaconda3/envs/onmi\n\n"
+    },
+    "git_head": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "b2f34f5b2077e34662a2559d8c09b1d264bd7d98\n"
+    },
+    "git_status": {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe",
+        "status",
+        "--porcelain=v2",
+        "--branch"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "# branch.oid b2f34f5b2077e34662a2559d8c09b1d264bd7d98\n# branch.head main\n# branch.upstream origin/main\n# branch.ab +0 -0\n? audits/\n"
+    },
+    "hardware": {
+      "argv": [
+        "system_profiler",
+        "SPHardwareDataType"
+      ],
+      "exit_code": 0,
+      "stderr": "2026-07-30 16:35:05.174 system_profiler[46471:5497001] Error fetching hw.cpufamily: -1\n",
+      "stdout": "Hardware:\n\n    Hardware Overview:\n\n      Model Name: MacBook Air\n      Model Identifier: MacBookAir10,1\n      Model Number: Z127000CGCH/A\n      Chip: Apple M1\n      Total Number of Cores: 8 (4 Performance and 4 Efficiency)\n      Memory: 16 GB\n      System Firmware Version: 18000.121.3\n      OS Loader Version: 18000.121.3\n      Serial Number (system): FVFKX0DV1WGC\n      Hardware UUID: 1FFA9168-9BD7-511B-9DE2-E9B4559BEC19\n      Provisioning UDID: 00008103-000879510E62201E\n\n"
+    }
+  },
+  "environment_variables": {
+    "CONDA_ALLOW_SOFTLINKS": "false",
+    "CONDA_DEFAULT_ENV": "onmi",
+    "CONDA_EXE": "/opt/anaconda3/bin/conda",
+    "CONDA_PREFIX": "/opt/anaconda3/envs/onmi",
+    "CONDA_PREFIX_1": "/opt/anaconda3",
+    "CONDA_PROMPT_MODIFIER": "(onmi) ",
+    "CONDA_PYTHON_EXE": "/opt/anaconda3/bin/python",
+    "CONDA_ROOT": "/opt/anaconda3",
+    "CONDA_SHLVL": "2",
+    "_CE_CONDA": ""
+  },
+  "external_roots": {
+    "DIFFREACH_ROOT": "/Users/shengenli/Documents/Codex/2026-07-30/c/DiffReach",
+    "FLOWSTAR_ROOT": "/Users/shengenli/Documents/Codex/2026-07-30/c/flowstar"
+  },
+  "machine": "arm64",
+  "packages": {
+    "jax": null,
+    "matplotlib": "3.10.0",
+    "pandas": "2.2.3",
+    "pytest": "9.0.3",
+    "torch": "2.5.1",
+    "yaml": "6.0.2"
+  },
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "python": {
+    "executable": "/opt/anaconda3/envs/onmi/bin/python",
+    "version": "3.11.11"
+  },
+  "release": "25.5.0",
+  "repo_root": "/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe",
+  "system": "Darwin",
+  "tools": {
+    "conda": "/opt/anaconda3/condabin/conda",
+    "flowstar": null,
+    "git": "/usr/bin/git",
+    "nvcc": null,
+    "ruff": null,
+    "shellcheck": null
+  },
+  "torch_runtime": {
+    "cuda_available": false,
+    "cuda_version": null,
+    "mps_available": false,
+    "version": "2.5.1"
+  },
+  "work_parent": "/Users/shengenli/Documents/Codex/2026-07-30/c"
+}

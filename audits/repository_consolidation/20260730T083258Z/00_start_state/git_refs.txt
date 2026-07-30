@@ -1,0 +1,54 @@
+$ git status --porcelain=v2 --branch
+# branch.oid b2f34f5b2077e34662a2559d8c09b1d264bd7d98
+# branch.head main
+# branch.upstream origin/main
+# branch.ab +0 -0
+? audits/
+
+$ git remote -v
+origin	https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git (fetch)
+origin	https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git (push)
+
+$ git rev-parse HEAD
+b2f34f5b2077e34662a2559d8c09b1d264bd7d98
+
+$ git symbolic-ref --short HEAD
+main
+
+$ git branch -vv --all
+* main                                                                b2f34f5 [origin/main] Refresh Flowstar ctrunc validation outputs
+  remotes/origin/HEAD                                                 -> origin/main
+  remotes/origin/codex/batched-dense-nncs-gpu                         6b2c78c Improve batched dense TM range remainder kernels
+  remotes/origin/codex/first-order-followup-correctness-matched-basis 3d0ae54 add validated focused follow-up results
+  remotes/origin/codex/first-order-three-way-benchmark                13e5eec add reproducible benchmark report and curated results
+  remotes/origin/codex/flowstar-ctrunc-rescue-diagnostics             bf19292 Add Flowstar ctrunc rescue diagnostics
+  remotes/origin/codex/flowstar-kernel-alignment                      54704e8 Add Flowstar width-control diagnostics
+  remotes/origin/codex/flowstar-normalized-insertion                  3bd72ca Audit Flowstar internal intermediate ranges
+  remotes/origin/codex/flowstar-raw-remainder-compat                  26a254e Correct h10 centering audit semantics and add handoff
+  remotes/origin/codex/three-way-common-contract-comparison           7251adf add validated three-way comparison results
+  remotes/origin/codex/three-way-comparison-correctness-repair        9024a8a add corrected comparison results and report
+  remotes/origin/codex/torch-flowstar-diffreach-deep-study            9a684d9 publish authoritative three-tool deep study
+  remotes/origin/main                                                 b2f34f5 Refresh Flowstar ctrunc validation outputs
+  remotes/origin/master                                               93e623e initialize
+
+$ git worktree list --porcelain
+worktree /Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe
+HEAD b2f34f5b2077e34662a2559d8c09b1d264bd7d98
+branch refs/heads/main
+
+
+$ git tag --list --sort=creatordate
+
+$ git count-objects -vH
+count: 0
+size: 0 bytes
+in-pack: 2932
+packs: 1
+size-pack: 72.21 MiB
+prune-packable: 0
+garbage: 0
+size-garbage: 0 bytes
+
+$ git submodule status
+
+$ git fsck --full

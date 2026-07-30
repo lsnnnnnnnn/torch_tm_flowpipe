@@ -1,0 +1,12 @@
+command=MPLCONFIGDIR=/private/tmp/codex-mplconfig conda run -n onmi pytest -ra -q
+commit=b2f34f5b2077e34662a2559d8c09b1d264bd7d98
+started_utc=2026-07-30T08:36:41Z
+ss...................................................................... [ 70%]
+..............................                                           [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_cuda.py:8: CUDA not available
+SKIPPED [1] tests/test_cuda.py:21: CUDA not available
+100 passed, 2 skipped in 36.74s
+
+exit_code=0
+finished_utc=2026-07-30T08:37:21Z

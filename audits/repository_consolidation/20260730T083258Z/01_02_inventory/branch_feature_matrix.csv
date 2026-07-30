@@ -1,0 +1,222 @@
+branch_name,feature,status,evidence
+main,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+main,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+main,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+main,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+main,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+main,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+main,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+main,raw remainder compatibility,absent,
+main,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+main,normalized insertion,absent,
+main,Flow* correctness patch/exporter,absent,
+main,first-order three-tool benchmark,absent,
+main,matched-basis study,absent,matched
+main,common-contract study,absent,
+main,deep-study runtime/Pareto,absent,
+main,tests,present,tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py;tests/test_flowstar_comparison.py;tests/test_flowstar_diagnostics_conclusion.py;tests/test_flowstar_provenance.py
+main,reports/artifacts,present,outputs/README_RESULTS.md;outputs/final_audit_summary.md;outputs/flowstar_benchmark_diagnostics/README.md;outputs/flowstar_benchmark_diagnostics/diagnostic_report.md;outputs/flowstar_benchmark_diagnostics/diagnostic_runs_summary.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_segments.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_validation_attempts.csv;outputs/flowstar_benchmark_diagnostics/last_validated_t_by_run.png
+origin/codex/batched-dense-nncs-gpu,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/batched-dense-nncs-gpu,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/batched-dense-nncs-gpu,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/batched-dense-nncs-gpu,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/batched-dense-nncs-gpu,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/batched-dense-nncs-gpu,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/batched-dense-nncs-gpu,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/batched-dense-nncs-gpu,raw remainder compatibility,absent,
+origin/codex/batched-dense-nncs-gpu,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/batched-dense-nncs-gpu,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/batched-dense-nncs-gpu,Flow* correctness patch/exporter,absent,
+origin/codex/batched-dense-nncs-gpu,first-order three-tool benchmark,absent,
+origin/codex/batched-dense-nncs-gpu,matched-basis study,absent,matched
+origin/codex/batched-dense-nncs-gpu,common-contract study,absent,
+origin/codex/batched-dense-nncs-gpu,deep-study runtime/Pareto,absent,
+origin/codex/batched-dense-nncs-gpu,tests,present,tests/test_batched_dense_many_box_flowpipe_demo.py;tests/test_batched_dense_nncs_demo.py;tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py
+origin/codex/batched-dense-nncs-gpu,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_many_box_flowpipe_demo/many_box_report.md;outputs/batched_dense_many_box_flowpipe_demo/many_box_summary.csv;outputs/batched_dense_nncs_demo/nncs_report.md;outputs/batched_dense_nncs_demo/nncs_summary.csv;outputs/batched_dense_range_remainder_engineering/range_remainder_report.md;outputs/batched_dense_range_remainder_engineering/range_remainder_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md
+origin/codex/first-order-followup-correctness-matched-basis,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/first-order-followup-correctness-matched-basis,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/first-order-followup-correctness-matched-basis,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/first-order-followup-correctness-matched-basis,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/first-order-followup-correctness-matched-basis,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/first-order-followup-correctness-matched-basis,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/first-order-followup-correctness-matched-basis,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/first-order-followup-correctness-matched-basis,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/first-order-followup-correctness-matched-basis,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/first-order-followup-correctness-matched-basis,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/first-order-followup-correctness-matched-basis,Flow* correctness patch/exporter,absent,
+origin/codex/first-order-followup-correctness-matched-basis,first-order three-tool benchmark,present,experiments/first_order_three_way/ORDER_SEMANTICS.md;experiments/first_order_three_way/README.md;experiments/first_order_three_way/benchmark_spec.yaml;experiments/first_order_three_way/collect_results.py;experiments/first_order_three_way/common.py;experiments/first_order_three_way/compute_references.py;experiments/first_order_three_way/environment_audit.py;experiments/first_order_three_way/flowstar/generated/.gitignore
+origin/codex/first-order-followup-correctness-matched-basis,matched-basis study,present,experiments/first_order_followup/DIFFREACH_AFFINE_PROJECTION.md;experiments/first_order_followup/FLOWSTAR_EXTRACTION_AUDIT.md;experiments/first_order_followup/MATCHED_BASIS.md;experiments/first_order_followup/README.md;experiments/first_order_followup/TORCH_DEPENDENCY_AUDIT.md;experiments/first_order_followup/audit_environment.py;experiments/first_order_followup/benchmark_spec.yaml;experiments/first_order_followup/collect_results.py;matched
+origin/codex/first-order-followup-correctness-matched-basis,common-contract study,absent,
+origin/codex/first-order-followup-correctness-matched-basis,deep-study runtime/Pareto,absent,
+origin/codex/first-order-followup-correctness-matched-basis,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/first-order-followup-correctness-matched-basis,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/first-order-three-way-benchmark,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/first-order-three-way-benchmark,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/first-order-three-way-benchmark,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/first-order-three-way-benchmark,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/first-order-three-way-benchmark,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/first-order-three-way-benchmark,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/first-order-three-way-benchmark,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/first-order-three-way-benchmark,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/first-order-three-way-benchmark,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/first-order-three-way-benchmark,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/first-order-three-way-benchmark,Flow* correctness patch/exporter,absent,
+origin/codex/first-order-three-way-benchmark,first-order three-tool benchmark,present,experiments/first_order_three_way/ORDER_SEMANTICS.md;experiments/first_order_three_way/README.md;experiments/first_order_three_way/benchmark_spec.yaml;experiments/first_order_three_way/collect_results.py;experiments/first_order_three_way/common.py;experiments/first_order_three_way/compute_references.py;experiments/first_order_three_way/environment_audit.py;experiments/first_order_three_way/flowstar/generated/.gitignore
+origin/codex/first-order-three-way-benchmark,matched-basis study,absent,matched
+origin/codex/first-order-three-way-benchmark,common-contract study,absent,
+origin/codex/first-order-three-way-benchmark,deep-study runtime/Pareto,absent,
+origin/codex/first-order-three-way-benchmark,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/first-order-three-way-benchmark,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/flowstar-ctrunc-rescue-diagnostics,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/flowstar-ctrunc-rescue-diagnostics,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/flowstar-ctrunc-rescue-diagnostics,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/flowstar-ctrunc-rescue-diagnostics,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/flowstar-ctrunc-rescue-diagnostics,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/flowstar-ctrunc-rescue-diagnostics,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/flowstar-ctrunc-rescue-diagnostics,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/flowstar-ctrunc-rescue-diagnostics,raw remainder compatibility,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/flowstar-ctrunc-rescue-diagnostics,normalized insertion,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,Flow* correctness patch/exporter,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,first-order three-tool benchmark,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,matched-basis study,absent,matched
+origin/codex/flowstar-ctrunc-rescue-diagnostics,common-contract study,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,deep-study runtime/Pareto,absent,
+origin/codex/flowstar-ctrunc-rescue-diagnostics,tests,present,tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py;tests/test_flowstar_comparison.py;tests/test_flowstar_diagnostics_conclusion.py;tests/test_flowstar_provenance.py
+origin/codex/flowstar-ctrunc-rescue-diagnostics,reports/artifacts,present,outputs/README_RESULTS.md;outputs/final_audit_summary.md;outputs/flowstar_benchmark_diagnostics/README.md;outputs/flowstar_benchmark_diagnostics/diagnostic_report.md;outputs/flowstar_benchmark_diagnostics/diagnostic_runs_summary.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_segments.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_validation_attempts.csv;outputs/flowstar_benchmark_diagnostics/last_validated_t_by_run.png
+origin/codex/flowstar-kernel-alignment,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/flowstar-kernel-alignment,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/flowstar-kernel-alignment,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/flowstar-kernel-alignment,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/flowstar-kernel-alignment,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/flowstar-kernel-alignment,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/flowstar-kernel-alignment,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/flowstar-kernel-alignment,raw remainder compatibility,absent,
+origin/codex/flowstar-kernel-alignment,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/flowstar-kernel-alignment,normalized insertion,absent,
+origin/codex/flowstar-kernel-alignment,Flow* correctness patch/exporter,absent,
+origin/codex/flowstar-kernel-alignment,first-order three-tool benchmark,absent,
+origin/codex/flowstar-kernel-alignment,matched-basis study,absent,matched
+origin/codex/flowstar-kernel-alignment,common-contract study,absent,
+origin/codex/flowstar-kernel-alignment,deep-study runtime/Pareto,absent,
+origin/codex/flowstar-kernel-alignment,tests,present,tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py;tests/test_flowstar_comparison.py;tests/test_flowstar_diagnostics_conclusion.py;tests/test_flowstar_provenance.py
+origin/codex/flowstar-kernel-alignment,reports/artifacts,present,outputs/README_RESULTS.md;outputs/final_audit_summary.md;outputs/flowstar_benchmark_diagnostics/README.md;outputs/flowstar_benchmark_diagnostics/diagnostic_report.md;outputs/flowstar_benchmark_diagnostics/diagnostic_runs_summary.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_segments.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_validation_attempts.csv;outputs/flowstar_benchmark_diagnostics/last_validated_t_by_run.png
+origin/codex/flowstar-normalized-insertion,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/flowstar-normalized-insertion,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/flowstar-normalized-insertion,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/flowstar-normalized-insertion,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/flowstar-normalized-insertion,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/flowstar-normalized-insertion,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/flowstar-normalized-insertion,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/flowstar-normalized-insertion,raw remainder compatibility,absent,
+origin/codex/flowstar-normalized-insertion,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/flowstar-normalized-insertion,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/flowstar-normalized-insertion,Flow* correctness patch/exporter,absent,
+origin/codex/flowstar-normalized-insertion,first-order three-tool benchmark,absent,
+origin/codex/flowstar-normalized-insertion,matched-basis study,absent,matched
+origin/codex/flowstar-normalized-insertion,common-contract study,absent,
+origin/codex/flowstar-normalized-insertion,deep-study runtime/Pareto,absent,
+origin/codex/flowstar-normalized-insertion,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/flowstar-normalized-insertion,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/flowstar-raw-remainder-compat,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/flowstar-raw-remainder-compat,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/flowstar-raw-remainder-compat,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/flowstar-raw-remainder-compat,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/flowstar-raw-remainder-compat,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/flowstar-raw-remainder-compat,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/flowstar-raw-remainder-compat,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/flowstar-raw-remainder-compat,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/flowstar-raw-remainder-compat,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/flowstar-raw-remainder-compat,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/flowstar-raw-remainder-compat,Flow* correctness patch/exporter,absent,
+origin/codex/flowstar-raw-remainder-compat,first-order three-tool benchmark,absent,
+origin/codex/flowstar-raw-remainder-compat,matched-basis study,absent,matched
+origin/codex/flowstar-raw-remainder-compat,common-contract study,absent,
+origin/codex/flowstar-raw-remainder-compat,deep-study runtime/Pareto,absent,
+origin/codex/flowstar-raw-remainder-compat,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/flowstar-raw-remainder-compat,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/three-way-common-contract-comparison,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/three-way-common-contract-comparison,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/three-way-common-contract-comparison,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/three-way-common-contract-comparison,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/three-way-common-contract-comparison,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/three-way-common-contract-comparison,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/three-way-common-contract-comparison,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/three-way-common-contract-comparison,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/three-way-common-contract-comparison,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/three-way-common-contract-comparison,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/three-way-common-contract-comparison,Flow* correctness patch/exporter,absent,
+origin/codex/three-way-common-contract-comparison,first-order three-tool benchmark,present,experiments/first_order_three_way/ORDER_SEMANTICS.md;experiments/first_order_three_way/README.md;experiments/first_order_three_way/benchmark_spec.yaml;experiments/first_order_three_way/collect_results.py;experiments/first_order_three_way/common.py;experiments/first_order_three_way/compute_references.py;experiments/first_order_three_way/environment_audit.py;experiments/first_order_three_way/flowstar/generated/.gitignore
+origin/codex/three-way-common-contract-comparison,matched-basis study,present,experiments/first_order_followup/DIFFREACH_AFFINE_PROJECTION.md;experiments/first_order_followup/FLOWSTAR_EXTRACTION_AUDIT.md;experiments/first_order_followup/MATCHED_BASIS.md;experiments/first_order_followup/README.md;experiments/first_order_followup/TORCH_DEPENDENCY_AUDIT.md;experiments/first_order_followup/audit_environment.py;experiments/first_order_followup/benchmark_spec.yaml;experiments/first_order_followup/collect_results.py;matched
+origin/codex/three-way-common-contract-comparison,common-contract study,absent,
+origin/codex/three-way-common-contract-comparison,deep-study runtime/Pareto,absent,
+origin/codex/three-way-common-contract-comparison,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/three-way-common-contract-comparison,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/three-way-comparison-correctness-repair,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/three-way-comparison-correctness-repair,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/three-way-comparison-correctness-repair,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/three-way-comparison-correctness-repair,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/three-way-comparison-correctness-repair,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/three-way-comparison-correctness-repair,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/three-way-comparison-correctness-repair,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/three-way-comparison-correctness-repair,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/three-way-comparison-correctness-repair,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/three-way-comparison-correctness-repair,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/three-way-comparison-correctness-repair,Flow* correctness patch/exporter,absent,
+origin/codex/three-way-comparison-correctness-repair,first-order three-tool benchmark,present,experiments/first_order_three_way/ORDER_SEMANTICS.md;experiments/first_order_three_way/README.md;experiments/first_order_three_way/benchmark_spec.yaml;experiments/first_order_three_way/collect_results.py;experiments/first_order_three_way/common.py;experiments/first_order_three_way/compute_references.py;experiments/first_order_three_way/environment_audit.py;experiments/first_order_three_way/flowstar/generated/.gitignore
+origin/codex/three-way-comparison-correctness-repair,matched-basis study,present,experiments/first_order_followup/DIFFREACH_AFFINE_PROJECTION.md;experiments/first_order_followup/FLOWSTAR_EXTRACTION_AUDIT.md;experiments/first_order_followup/MATCHED_BASIS.md;experiments/first_order_followup/README.md;experiments/first_order_followup/TORCH_DEPENDENCY_AUDIT.md;experiments/first_order_followup/audit_environment.py;experiments/first_order_followup/benchmark_spec.yaml;experiments/first_order_followup/collect_results.py;matched
+origin/codex/three-way-comparison-correctness-repair,common-contract study,absent,
+origin/codex/three-way-comparison-correctness-repair,deep-study runtime/Pareto,absent,
+origin/codex/three-way-comparison-correctness-repair,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/three-way-comparison-correctness-repair,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/codex/torch-flowstar-diffreach-deep-study,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/codex/torch-flowstar-diffreach-deep-study,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/codex/torch-flowstar-diffreach-deep-study,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/codex/torch-flowstar-diffreach-deep-study,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/codex/torch-flowstar-diffreach-deep-study,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/codex/torch-flowstar-diffreach-deep-study,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/codex/torch-flowstar-diffreach-deep-study,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/codex/torch-flowstar-diffreach-deep-study,raw remainder compatibility,present,experiments/flowstar_raw_remainder_compat_experiment.py
+origin/codex/torch-flowstar-diffreach-deep-study,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/codex/torch-flowstar-diffreach-deep-study,normalized insertion,present,tests/test_normalized_insertion.py
+origin/codex/torch-flowstar-diffreach-deep-study,Flow* correctness patch/exporter,present,experiments/three_tool_deep_study/flowstar_correctness.py
+origin/codex/torch-flowstar-diffreach-deep-study,first-order three-tool benchmark,present,experiments/first_order_three_way/HISTORICAL_RESULTS_NOTICE.md;experiments/first_order_three_way/ORDER_SEMANTICS.md;experiments/first_order_three_way/README.md;experiments/first_order_three_way/benchmark_spec.yaml;experiments/first_order_three_way/collect_results.py;experiments/first_order_three_way/common.py;experiments/first_order_three_way/compute_references.py;experiments/first_order_three_way/environment_audit.py
+origin/codex/torch-flowstar-diffreach-deep-study,matched-basis study,present,experiments/first_order_followup/DIFFREACH_AFFINE_PROJECTION.md;experiments/first_order_followup/FLOWSTAR_EXTRACTION_AUDIT.md;experiments/first_order_followup/MATCHED_BASIS.md;experiments/first_order_followup/README.md;experiments/first_order_followup/TORCH_DEPENDENCY_AUDIT.md;experiments/first_order_followup/audit_environment.py;experiments/first_order_followup/benchmark_spec.yaml;experiments/first_order_followup/collect_results.py;matched
+origin/codex/torch-flowstar-diffreach-deep-study,common-contract study,present,experiments/three_tool_deep_study/run_controlled.py
+origin/codex/torch-flowstar-diffreach-deep-study,deep-study runtime/Pareto,present,experiments/three_tool_deep_study/run_pareto.py
+origin/codex/torch-flowstar-diffreach-deep-study,tests,present,tests/test_batched_dense_tm.py;tests/test_batched_tm_gpu_microbench.py;tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_acceptance_predicate_audit.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py
+origin/codex/torch-flowstar-diffreach-deep-study,reports/artifacts,present,outputs/README_RESULTS.md;outputs/batched_dense_tm_prototype/dense_tm_demo_report.md;outputs/batched_dense_tm_prototype/dense_tm_microbench_summary.csv;outputs/batched_dense_tm_prototype/dense_tm_parity_report.md;outputs/batched_dense_tm_prototype/dense_tm_parity_summary.csv;outputs/batched_tm_gpu_microbench/gpu_microbench_report.md;outputs/batched_tm_gpu_microbench/gpu_microbench_summary.csv;outputs/final_audit_summary.md
+origin/main,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/main,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/main,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/main,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/main,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/main,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/main,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/main,raw remainder compatibility,absent,
+origin/main,symbolic queue,present,src/torch_tm_flowpipe/symbolic_remainder.py
+origin/main,normalized insertion,absent,
+origin/main,Flow* correctness patch/exporter,absent,
+origin/main,first-order three-tool benchmark,absent,
+origin/main,matched-basis study,absent,matched
+origin/main,common-contract study,absent,
+origin/main,deep-study runtime/Pareto,absent,
+origin/main,tests,present,tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_benchmark_diagnostics.py;tests/test_flowstar_benchmark_parity.py;tests/test_flowstar_benchmark_stage2_diagnostics.py;tests/test_flowstar_comparison.py;tests/test_flowstar_diagnostics_conclusion.py;tests/test_flowstar_provenance.py
+origin/main,reports/artifacts,present,outputs/README_RESULTS.md;outputs/final_audit_summary.md;outputs/flowstar_benchmark_diagnostics/README.md;outputs/flowstar_benchmark_diagnostics/diagnostic_report.md;outputs/flowstar_benchmark_diagnostics/diagnostic_runs_summary.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_segments.csv;outputs/flowstar_benchmark_diagnostics/diagnostic_validation_attempts.csv;outputs/flowstar_benchmark_diagnostics/last_validated_t_by_run.png
+origin/master,interval arithmetic,present,src/torch_tm_flowpipe/interval.py
+origin/master,polynomial arithmetic,present,src/torch_tm_flowpipe/polynomial.py
+origin/master,TaylorModel core,present,src/torch_tm_flowpipe/taylor_model.py
+origin/master,one-step propagation,present,src/torch_tm_flowpipe/flowpipe.py;flowpipe_step
+origin/master,multi-step range_only,present,src/torch_tm_flowpipe/flowpipe.py;range_only
+origin/master,multi-step dependency_preserving,present,src/torch_tm_flowpipe/flowpipe.py;dependency_preserving
+origin/master,Flow* compatibility,present,comparisons/flowstar/README.md;comparisons/flowstar/__init__.py;comparisons/flowstar/build_flowstar_case.py;comparisons/flowstar/compare_against_torch_tm.py;comparisons/flowstar/configs/affine_controlled.yaml;comparisons/flowstar/configs/harmonic_oscillator.yaml;comparisons/flowstar/configs/scalar_quadratic.yaml;comparisons/flowstar/configs/van_der_pol.yaml
+origin/master,raw remainder compatibility,absent,
+origin/master,symbolic queue,absent,
+origin/master,normalized insertion,absent,
+origin/master,Flow* correctness patch/exporter,absent,
+origin/master,first-order three-tool benchmark,absent,
+origin/master,matched-basis study,absent,
+origin/master,common-contract study,absent,
+origin/master,deep-study runtime/Pareto,absent,
+origin/master,tests,present,tests/test_cuda.py;tests/test_flowpipe.py;tests/test_flowstar_comparison.py;tests/test_interval.py;tests/test_polynomial.py;tests/test_taylor_model.py
+origin/master,reports/artifacts,absent,

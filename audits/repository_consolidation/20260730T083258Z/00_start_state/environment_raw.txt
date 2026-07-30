@@ -1,0 +1,82 @@
+$ uname -a
+Darwin Shengens-MacBook-Air-6.local 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:26:46 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T8103 arm64
+
+$ sw_vers
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+
+$ system_profiler SPHardwareDataType
+2026-07-30 16:34:52.536 system_profiler[46413:5496544] Error fetching hw.cpufamily: -1
+Hardware:
+
+    Hardware Overview:
+
+      Model Name: MacBook Air
+      Model Identifier: MacBookAir10,1
+      Model Number: Z127000CGCH/A
+      Chip: Apple M1
+      Total Number of Cores: 8 (4 Performance and 4 Efficiency)
+      Memory: 16 GB
+      System Firmware Version: 18000.121.3
+      OS Loader Version: 18000.121.3
+      Serial Number (system): FVFKX0DV1WGC
+      Hardware UUID: 1FFA9168-9BD7-511B-9DE2-E9B4559BEC19
+      Provisioning UDID: 00008103-000879510E62201E
+
+
+$ python3 --version
+Python 3.11.9
+
+$ which python3
+/Library/Frameworks/Python.framework/Versions/3.11/bin/python3
+
+$ conda env list
+
+# conda environments:
+#
+base                 * /opt/anaconda3
+jing                   /opt/anaconda3/envs/jing
+newenv                 /opt/anaconda3/envs/newenv
+onmi                   /opt/anaconda3/envs/onmi
+
+
+$ conda run -n onmi python --version
+Python 3.11.11
+
+
+$ conda run -n onmi python -m pip show torch-tm-flowpipe
+WARNING: The directory '/Users/shengenli/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+
+Name: torch-tm-flowpipe
+Version: 0.1.0
+Summary: Minimal PyTorch-native Taylor model flowpipe prototype for polynomial NNCS plant dynamics.
+Home-page: 
+Author: 
+Author-email: 
+License: 
+Location: /opt/anaconda3/envs/onmi/lib/python3.11/site-packages
+Editable project location: /Users/shengenli/Desktop/flow/torch_tm_flowpipe
+Requires: torch
+Required-by: 
+
+
+$ cc --version
+Apple clang version 21.0.0 (clang-2100.1.1.101)
+Target: arm64-apple-darwin25.5.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+
+$ c++ --version
+Apple clang version 21.0.0 (clang-2100.1.1.101)
+Target: arm64-apple-darwin25.5.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+
+$ command -v flowstar
+
+$ command -v nvcc
+
+$ command -v shellcheck
+
+$ command -v ruff

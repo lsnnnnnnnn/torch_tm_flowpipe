@@ -1,0 +1,645 @@
+command=MPLCONFIGDIR=/private/tmp/codex-mplconfig conda run -n onmi pytest -ra -q
+commit=b2f34f5b2077e34662a2559d8c09b1d264bd7d98
+started_utc=2026-07-30T08:35:32Z
+ss....................................................F........FFFFF.... [ 70%]
+..............................                                           [100%]
+=================================== FAILURES ===================================
+_________ test_flowstar_style_rescue_experiment_smoke_selected_config __________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_flowstar_style_rescue_exp0')
+
+    def test_flowstar_style_rescue_experiment_smoke_selected_config(tmp_path):
+        out_dir = tmp_path / "rescue"
+    
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_target",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...h3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_flowstar_style_rescue_exp0/rescue', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_flowstar_style_rescue_exp0/rescue', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_target']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+________________ test_candidate_order_specialized_outputs_smoke ________________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_candidate_order_specializ0')
+
+    def test_candidate_order_specialized_outputs_smoke(tmp_path):
+        out_dir = tmp_path / "flowstar_style_candidate_order"
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_candidate8_output6",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...-of-shengenli/pytest-0/test_candidate_order_specializ0/flowstar_style_candidate_order', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_candidate_order_specializ0/flowstar_style_candidate_order', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_candidate8_output6']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+______________ test_residual_centering_specialized_outputs_smoke _______________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_residual_centering_specia0')
+
+    def test_residual_centering_specialized_outputs_smoke(tmp_path):
+        out_dir = tmp_path / "flowstar_style_residual_centering"
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_target_centered",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...-shengenli/pytest-0/test_residual_centering_specia0/flowstar_style_residual_centering', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_residual_centering_specia0/flowstar_style_residual_centering', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_target_centered']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+________________ test_selective_terms_specialized_outputs_smoke ________________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_selective_terms_specializ0')
+
+    def test_selective_terms_specialized_outputs_smoke(tmp_path):
+        out_dir = tmp_path / "flowstar_style_selective_terms"
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_candidate8_output6_keep1",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:290: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...-of-shengenli/pytest-0/test_selective_terms_specializ0/flowstar_style_selective_terms', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_selective_terms_specializ0/flowstar_style_selective_terms', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_candidate8_output6_keep1']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+_______________ test_ctrunc_validation_specialized_outputs_smoke _______________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_ctrunc_validation_special0')
+
+    def test_ctrunc_validation_specialized_outputs_smoke(tmp_path):
+        out_dir = tmp_path / "flowstar_style_ctrunc_validation"
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_target_flowstar_ctrunc",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:327: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...f-shengenli/pytest-0/test_ctrunc_validation_special0/flowstar_style_ctrunc_validation', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_ctrunc_validation_special0/flowstar_style_ctrunc_validation', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_target_flowstar_ctrunc']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+______________ test_selective_validation_path_audit_outputs_smoke ______________
+
+tmp_path = PosixPath('/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_selective_validation_path0')
+
+    def test_selective_validation_path_audit_outputs_smoke(tmp_path):
+        out_dir = tmp_path / "flowstar_style_selective_terms"
+>       subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "--out-dir",
+                str(out_dir),
+                "--max-horizon",
+                "0.02",
+                "--wall-cap-s",
+                "60",
+                "--configs",
+                "flowstar_style_o6_candidate8_output6_keep4",
+            ],
+            check=True,
+        )
+
+tests/test_flowstar_style_rescue_experiment.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/...-of-shengenli/pytest-0/test_selective_validation_path0/flowstar_style_selective_terms', '--max-horizon', '0.02', ...],)
+kwargs = {}
+process = <Popen: returncode: -6 args: ['/opt/anaconda3/envs/onmi/bin/python', '/Users...>
+stdout = None, stderr = None, retcode = -6
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/opt/anaconda3/envs/onmi/bin/python', '/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe/experiments/flowstar_style_rescue_vanderpol.py', '--out-dir', '/private/var/folders/hq/xxy49vtj1x73w3hh3fzf_fdm0000gn/T/pytest-of-shengenli/pytest-0/test_selective_validation_path0/flowstar_style_selective_terms', '--max-horizon', '0.02', '--wall-cap-s', '60', '--configs', 'flowstar_style_o6_candidate8_output6_keep4']' died with <Signals.SIGABRT: 6>.
+
+/opt/anaconda3/envs/onmi/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+OMP: Error #179: Function Can't open SHM failed:
+OMP: System error #0: Undefined error: 0
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_cuda.py:8: CUDA not available
+SKIPPED [1] tests/test_cuda.py:21: CUDA not available
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_flowstar_style_rescue_experiment_smoke_selected_config
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_candidate_order_specialized_outputs_smoke
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_residual_centering_specialized_outputs_smoke
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_selective_terms_specialized_outputs_smoke
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_ctrunc_validation_specialized_outputs_smoke
+FAILED tests/test_flowstar_style_rescue_experiment.py::test_selective_validation_path_audit_outputs_smoke
+6 failed, 94 passed, 2 skipped in 38.12s
+ERROR conda.cli.main_run:execute(125): `conda run pytest -ra -q` failed. (See above for error)
+
+exit_code=1
+finished_utc=2026-07-30T08:36:15Z
