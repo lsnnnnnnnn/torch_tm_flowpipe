@@ -1983,7 +1983,7 @@ def write_report(
     return text
 
 
-def write_plan_doc() -> None:
+def write_plan_doc(output: Path) -> None:
     text = """# Flow* Accepted-Step Trace Plan
 
 This diagnostic uses a repo-local C++ probe in `experiments/flowstar_probe/` and does not commit Flow* source changes.
@@ -2005,7 +2005,9 @@ Required channels:
 
 This is not a Flow* parity proof. It is a short-horizon probe for localizing the first material divergence channel.
 """
-    (ROOT / "docs" / "flowstar_accepted_step_trace_plan.md").write_text(text, encoding="utf-8")
+    (output / "flowstar_accepted_step_trace_plan.md").write_text(
+        text, encoding="utf-8"
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -2055,7 +2057,7 @@ def main() -> int:
     args = parse_args()
     out_dir = Path(args.out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
-    write_plan_doc()
+    write_plan_doc(out_dir)
 
     _flowstar_trace, flowstar_rows = _load_or_generate_flowstar(args, out_dir)
     noqueue_rows = _load_or_generate_torch(args, out_dir, "torch_noqueue")

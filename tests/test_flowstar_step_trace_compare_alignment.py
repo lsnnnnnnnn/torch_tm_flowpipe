@@ -164,3 +164,5 @@ def test_cli_smoke_writes_attempt_and_forced_outputs(tmp_path):
     assert (out_dir / "attempt_aligned_trace_diff.csv").exists()
     assert (out_dir / "forced_h_trace_diff.csv").exists()
     assert (out_dir / "trace_divergence_report.md").exists()
+    assert (out_dir / "flowstar_accepted_step_trace_plan.md").exists()
+    assert not (ROOT / "docs" / "flowstar_accepted_step_trace_plan.md").exists()
