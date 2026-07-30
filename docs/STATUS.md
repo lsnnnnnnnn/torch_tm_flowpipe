@@ -1,6 +1,6 @@
 # Status
 
-Current state: `branch_converged_final_quality_pending`.
+Current state: `consolidation_complete_recommended_next_main`.
 
 Completed:
 
@@ -41,10 +41,20 @@ Completed:
   a conflict-free, reviewed fast-forward plan is documented;
 - before/after inventories and raw post-convergence refs are recorded under
   `audits/repository_consolidation/20260730T083258Z/09_branch_convergence/`;
+- the final quality audit at source `61ab2e348af63aed855d0fdaa865fc79a2c0b3d4`
+  passed compileall, `210 passed / 3 skipped` full pytest, `48 passed` unit
+  marker, `12 passed` integration marker, all tracked shell syntax, artifact
+  checksums, editable import, path/secret/compiled-file scans, size policy,
+  and Git diff checks;
+- shellcheck was unavailable and ruff was not adopted; both are explicit
+  tooling skips, not test passes;
 - old run `20260730T015245Z` marked provisional.
 
-Pending at this checkpoint:
+No consolidation gate remains pending. `main` promotion is deliberately a
+separate protected-branch review step, with exact commands in
+`docs/history/MAIN_MERGE_PLAN.md`.
 
-- execute the final compile, marker, shell, path, size, secret, and Git hygiene
-  checks;
-- commit and push the convergence and final-quality evidence.
+Do not delete any additional historical branch without a new branch-specific
+audit. The largest tracked file is the necessary 72,039,158-byte Flowstar
+harmonic raw log; GitHub accepted it with a warning because it exceeds the
+50 MB recommendation but remains below the 100 MB hard limit.

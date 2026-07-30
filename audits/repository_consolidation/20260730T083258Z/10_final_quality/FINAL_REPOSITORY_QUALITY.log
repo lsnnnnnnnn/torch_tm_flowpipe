@@ -1,0 +1,235 @@
+captured_utc=2026-07-30T17:07:13Z
+
+[command]
+git rev-parse HEAD
+61ab2e348af63aed855d0fdaa865fc79a2c0b3d4
+exit_code=0
+
+[command]
+git status --short --branch
+## codex/repository-consolidation-v1...origin/codex/repository-consolidation-v1 [ahead 2]
+exit_code=0
+
+[command]
+conda run -n onmi python -c import\ pathlib\,\ torch_tm_flowpipe\;\ print\(pathlib.Path\(torch_tm_flowpipe.__file__\).resolve\(\)\)
+/Users/shengenli/Documents/Codex/2026-07-30/c/torch_tm_flowpipe-repository-consolidation-v1/src/torch_tm_flowpipe/__init__.py
+
+exit_code=0
+
+[command]
+env PYTHONPYCACHEPREFIX=/private/tmp/torch_tm_flowpipe_compileall_20260730 conda run -n onmi python -m compileall -q src analysis experiments/consolidated_study experiments/three_tool_deep_study experiments/first_order_followup
+exit_code=0
+
+[command]
+conda run -n onmi python -m pytest -q
+.......s.......ss....................................................... [ 33%]
+........................................................................ [ 67%]
+.....................................................................    [100%]
+210 passed, 3 skipped in 16.14s
+
+exit_code=0
+
+[command]
+conda run -n onmi python -m pytest -q -m unit
+................................................                         [100%]
+48 passed, 165 deselected in 2.73s
+
+exit_code=0
+
+[command]
+conda run -n onmi python -m pytest -q -m integration
+............                                                             [100%]
+12 passed, 201 deselected in 1.04s
+
+exit_code=0
+
+[command]
+bash -n experiments/first_order_followup/launch_background.sh
+exit_code=0
+
+[command]
+bash -n experiments/first_order_followup/run_all.sh
+exit_code=0
+
+[command]
+bash -n experiments/first_order_followup/run_smoke.sh
+exit_code=0
+
+[command]
+bash -n experiments/first_order_three_way/launch_background.sh
+exit_code=0
+
+[command]
+bash -n experiments/first_order_three_way/run_all.sh
+exit_code=0
+
+[command]
+bash -n experiments/first_order_three_way/run_smoke.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_tool_deep_study/run_all.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_tool_deep_study/run_smoke.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_common_contract/launch_background.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_common_contract/run_all.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_common_contract/run_smoke.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_comparison_repair/launch_background.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_comparison_repair/run_all.sh
+exit_code=0
+
+[command]
+bash -n experiments/three_way_comparison_repair/run_smoke.sh
+exit_code=0
+
+[command]
+bash -n scripts/check_all.sh
+exit_code=0
+
+[command]
+bash -n scripts/check_flowstar_comparison.sh
+exit_code=0
+
+[command]
+bash -n scripts/run_all.sh
+exit_code=0
+
+[command]
+bash -n scripts/run_complete_pytest.sh
+exit_code=0
+
+[command]
+bash -n scripts/run_vdp_order_flowstar_study.sh
+exit_code=0
+
+[command]
+bash -n scripts/setup_dev.sh
+exit_code=0
+
+[shellcheck]
+skipped=true
+reason=executable unavailable
+
+[ruff]
+skipped=true
+reason=project has no adopted ruff configuration or executable unavailable
+
+[command]
+git diff --check
+exit_code=0
+
+[command]
+bash -c cd\ artifacts/runs/20260730T153654Z\ \&\&\ shasum\ -a\ 256\ -c\ SHA256SUMS
+COMPLETE_TEST.log: OK
+CONFIG_MANIFEST.json: OK
+ELIGIBILITY.csv: OK
+ENVIRONMENT.json: OK
+EXPLORATORY.csv: OK
+FAILURES.csv: OK
+FIGURE_MANIFEST.csv: OK
+PRIMARY_PARETO.csv: OK
+PROVENANCE.json: OK
+RAW_OBSERVATIONS.csv: OK
+REPORT.md: OK
+RUN_MANIFEST.json: OK
+SUMMARY.csv: OK
+acceleration_diffreach.csv: OK
+acceleration_flowstar.csv: OK
+acceleration_summary.csv: OK
+acceleration_torch.csv: OK
+figures/width_runtime.png: OK
+logs/collect.log: OK
+logs/diffreach.log: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.25_o4_r0.0001_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.25_o4_r0.0001_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.25_o4_r0.0001_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.25_o4_r0.0001_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.005_T0.25_o4_r0.0001_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.01_T0.25_o4_r0.0001_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.01_T0.25_o4_r0.0001_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.01_T0.25_o4_r0.0001_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.01_T0.25_o4_r0.0001_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_coupled_quadratic_h0.01_T0.25_o4_r0.0001_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T1_o4_r0.0001_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T1_o4_r0.0001_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T1_o4_r0.0001_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T1_o4_r0.0001_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_riccati_h0.01_T1_o4_r0.0001_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T1_o4_r0.01_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T1_o4_r0.01_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T1_o4_r0.01_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T1_o4_r0.01_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.005_T1_o4_r0.01_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.01_T1_o4_r0.01_c1e-15_p53/compile.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.01_T1_o4_r0.01_c1e-15_p53/compile.stdout.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.01_T1_o4_r0.01_c1e-15_p53/repair.cpp: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.01_T1_o4_r0.01_c1e-15_p53/run.stderr.txt: OK
+logs/flowstar/root_cause_order4_selected_native_representation_van_der_pol_h0.01_T1_o4_r0.01_c1e-15_p53/run.stdout.txt: OK
+logs/flowstar.log: OK
+logs/torch.log: OK
+native_pareto_excluded.csv: OK
+native_pareto_exploratory.csv: OK
+native_pareto_summary.csv: OK
+pareto_checks.json: OK
+pareto_repetitions_diffreach.csv: OK
+pareto_repetitions_flowstar.csv: OK
+pareto_repetitions_torch.csv: OK
+runtime_summary.csv: OK
+exit_code=0
+
+[command]
+conda run -n onmi python -c import\ json\;\ p=json.load\(open\(\"artifacts/runs/20260730T153654Z/final_acceptance.json\"\)\)\;\ assert\ p\[\"authoritative\"\]\ is\ True\ and\ p\[\"passed\"\]\ is\ True\ and\ p\[\"status\"\]==\"accepted_authoritative\"\;\ print\(p\[\"status\"\]\)
+accepted_authoritative
+
+exit_code=0
+
+[command]
+python -c import\ os\,subprocess\;\ paths=subprocess.check_output\(\[\"git\"\,\"ls-files\"\,\"-z\"\]\).split\(b\"\\0\"\)\;\ paths=\[p.decode\(\)\ for\ p\ in\ paths\ if\ p\]\;\ sizes=\[\(os.path.getsize\(p\)\,p\)\ for\ p\ in\ paths\]\;\ size\,path=max\(sizes\)\;\ print\(f\"tracked_files=\{len\(paths\)\}\"\)\;\ print\(f\"largest_tracked_file_bytes=\{size\}\"\)\;\ print\(f\"largest_tracked_file=\{path\}\"\)\;\ assert\ size\ \<\ 100_000_000
+tracked_files=546
+largest_tracked_file_bytes=72039158
+largest_tracked_file=artifacts/runs/20260730T153654Z/logs/flowstar/root_cause_order4_selected_native_representation_harmonic_h0.01_T4_o4_r0.001_c1e-15_p53/run.stdout.txt
+exit_code=0
+
+[command]
+rg -n \^artifacts/runs/\\\*\$\|__pycache__\|\\.py\\\[co\\\] .gitignore
+1:__pycache__/
+19:artifacts/runs/*
+exit_code=0
+
+[check_no_matches:active_absolute_paths]
+unexpected_match=false
+
+[check_no_matches:active_secret_patterns]
+unexpected_match=false
+
+[check_no_matches:tracked_compiled_or_cache_files]
+unexpected_match=false
+
+[command]
+git status --short --branch
+## codex/repository-consolidation-v1...origin/codex/repository-consolidation-v1 [ahead 2]
+exit_code=0
+
+final_exit_code=0

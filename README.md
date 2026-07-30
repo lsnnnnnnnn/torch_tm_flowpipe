@@ -62,6 +62,12 @@ protocol, limitations, results, and reproduction instructions are in `docs/`.
 Historical experiment directories remain supporting evidence only and are not
 alternative recommended entrypoints.
 
+The sole authoritative consolidated result is formal run
+`artifacts/runs/20260730T153654Z`, generated from frozen source
+`0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781` and accepted by the independent
+auditor. `docs/RESULTS.md` states the bounded citable claims; older formal and
+smoke runs are explicitly non-citable.
+
 The implementation uses float64 interval operations with conservative
 `nextafter` expansion where implemented. It is not a general proof of directed
 rounding across every backend. Sampling-based trajectory checks are regression

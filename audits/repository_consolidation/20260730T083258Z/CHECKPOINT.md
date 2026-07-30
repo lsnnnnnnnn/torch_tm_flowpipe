@@ -39,16 +39,19 @@ archive tags were remotely verified; the single fully redundant branch
 other original heads were retained. `main` remains unchanged at
 `b2f34f5b2077e34662a2559d8c09b1d264bd7d98`.
 
-Remaining continuation:
+Final repository quality at
+`61ab2e348af63aed855d0fdaa865fc79a2c0b3d4` passed:
 
-```bash
-cd "$(git rev-parse --show-toplevel)"
-python -m compileall src analysis experiments/consolidated_study
-python -m pytest -q -m unit
-python -m pytest -q -m integration
-git diff --check
-```
+- compileall;
+- full pytest (`210 passed`, three explicit CUDA skips);
+- unit marker (`48 passed`);
+- integration marker (`12 passed`);
+- all tracked shell syntax;
+- formal artifact checksums and acceptance;
+- canonical editable import;
+- active path, secret, compiled/cache, tracked-size, and Git diff checks.
 
 Do not treat `20260730T015245Z`, either failed formal attempt, or any smoke
 run as authoritative. Do not delete any additional remote branch without a
-new branch-specific proof.
+new branch-specific proof. The consolidation is complete; the only next step
+is the separate reviewed fast-forward of the protected `main` branch.
