@@ -1,0 +1,37 @@
+{
+  "applies_to": [
+    "patched-audit",
+    "torch-dense-prototype",
+    "all_primary_rows"
+  ],
+  "automated_test": "tests/test_backend_identity.py",
+  "blocker": null,
+  "facts": {
+    "audit_environment_rejections": {
+      "FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION": "primary Flowstar environment enables audit behavior: FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION",
+      "FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT": "primary Flowstar environment enables audit behavior: FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT"
+    },
+    "dense_kernel_semantics": "Euler feasibility prototype, not a validated TM flowpipe",
+    "dense_row_errors": [
+      "primary backend is categorically ineligible"
+    ],
+    "patched_row_errors": [
+      "primary backend is categorically ineligible"
+    ]
+  },
+  "gate": "patched_rows_excluded_from_primary",
+  "inputs": [
+    {
+      "path": "raw/flowstar_official_vdp/evidence.json",
+      "sha256": "9bd6b2d665720de429727eb95234c91b404619da4096f5ab08f055072774ca6f"
+    },
+    {
+      "path": "one_step_trace/flowstar_van_der_pol_official_o4.json",
+      "sha256": "d2ff6ba849d691e26007b5a23577d1b3627bbf3607a37927993bebc53f824536"
+    }
+  ],
+  "passed": true,
+  "report": "docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

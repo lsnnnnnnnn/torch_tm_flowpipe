@@ -1,0 +1,29 @@
+{
+  "command": [
+    "g++",
+    "-O3",
+    "-w",
+    "-std=c++11",
+    "-I",
+    "/srv/local/shengenli/flowstar/flowstar-toolbox",
+    "-I",
+    "/usr/local/include",
+    "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp",
+    "-L",
+    "/srv/local/shengenli/flowstar/flowstar-toolbox",
+    "-L",
+    "/usr/local/lib",
+    "-o",
+    "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_vdp_step_trace_probe",
+    "-lflowstar",
+    "-lmpfr",
+    "-lgmp",
+    "-lgsl",
+    "-lgslcblas",
+    "-lm",
+    "-lglpk"
+  ],
+  "return_code": 0,
+  "stderr": "flowstar_probe_compile.stderr.txt",
+  "stdout": "flowstar_probe_compile.stdout.txt"
+}

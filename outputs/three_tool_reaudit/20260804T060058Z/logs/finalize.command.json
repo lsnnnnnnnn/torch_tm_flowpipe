@@ -1,0 +1,28 @@
+{
+  "command": [
+    "env",
+    "DIFFREACH_PYTHON=/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+    "conda",
+    "run",
+    "-n",
+    "py11",
+    "python",
+    "scripts/three_tool_reaudit.py",
+    "finalize",
+    "20260804T060058Z",
+    "--flowstar-root",
+    "/srv/local/shengenli/flowstar",
+    "--diffreach-root",
+    "/srv/local/shengenli/DiffReach",
+    "--xiangru-root",
+    "/srv/local/shengenli/CROWN-Reach_Development"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+  "elapsed_s": 2.7227459559217095,
+  "exit_code": 0,
+  "finished_utc": "2026-08-04T07:08:24Z",
+  "schema_version": "reaudit-command-1.0.0",
+  "started_utc": "2026-08-04T07:08:22Z",
+  "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/finalize.stderr.txt",
+  "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/finalize.stdout.txt"
+}

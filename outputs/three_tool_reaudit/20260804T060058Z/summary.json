@@ -1,0 +1,171 @@
+{
+  "gate_counts": {
+    "blocked": 3,
+    "passed": 5
+  },
+  "headline_comparison_generated": false,
+  "headline_pareto_generated": false,
+  "headline_speedup_generated": false,
+  "passed_gates": [
+    "completion_validation_fail_closed",
+    "order_basis_contract",
+    "patched_rows_excluded_from_primary",
+    "raw_tightened_separation",
+    "stock_backend_identity"
+  ],
+  "remaining_blockers": [
+    "endpoint_segment_tube_exporter_semantics",
+    "official_parser_generated_stock_field_parity",
+    "runtime_boundary_parity"
+  ],
+  "rows": [
+    {
+      "accepted_segments": 290,
+      "backend": "official-stock",
+      "backend_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "blocker": "native raw fixed-time endpoint and matched 1+10 timing are unavailable",
+      "cold_runtime_s": 1.0744500504806638,
+      "completed_horizon": 10.0,
+      "effective_support_sha256": "unavailable_on_official_program_route",
+      "eligibility_errors": "row is explicitly primary-ineligible;primary width must use raw_endpoint;runtime boundary mismatch",
+      "endpoint_semantics": "unavailable",
+      "lane": "native_reproduction",
+      "primary_eligible": false,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "correctness_reproduction_process_wall_v1",
+      "soundness_level": "formal_outward_rounding",
+      "steady_runtime_s": [
+        1.065326001495123,
+        1.085777691565454,
+        1.0676622092723846
+      ],
+      "validation_status": "completed"
+    },
+    {
+      "accepted_segments": 290,
+      "backend": "generated-stock",
+      "backend_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "blocker": "plot boxes match, but official internal fields and native endpoint are unavailable",
+      "completed_horizon": 10.0,
+      "effective_support_sha256": "unavailable_on_official_program_route",
+      "eligibility_errors": "failed/incomplete row cannot be primary;row is explicitly primary-ineligible;primary width must use raw_endpoint;runtime boundary mismatch",
+      "endpoint_semantics": "segment_box",
+      "lane": "native_reproduction",
+      "plot_segment_max_abs_difference": 0.0,
+      "primary_eligible": false,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "unmatched_generated_process_wall_v1",
+      "soundness_level": "formal_outward_rounding",
+      "validation_status": "schema_invalid"
+    },
+    {
+      "accepted_steps": 308,
+      "backend": "torch-sparse-constant_adaptive_h10",
+      "backend_sha": "1d95f2d6e4a1db82009560eca31a5a519e9c35e0",
+      "blocker": "Flowstar raw remainder compat residual not subset of target remainder",
+      "completed_horizon": 6.3172908799330765,
+      "effective_support_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994",
+      "eligibility_errors": "failed/incomplete row cannot be primary;requested horizon was not completed;row is explicitly primary-ineligible;runtime boundary mismatch",
+      "endpoint_semantics": "raw_endpoint",
+      "final_segment_width_sum": 4.186469493368901,
+      "lane": "native_reproduction",
+      "primary_eligible": false,
+      "rejected_attempts": 48,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "diagnostic_mode_elapsed_v1",
+      "runtime_s": 245.25890390202403,
+      "soundness_level": "safeguarded_float64_not_fully_proved",
+      "validation_status": "validation_rejected"
+    },
+    {
+      "accepted_steps": 293,
+      "backend": "torch-sparse-range_midpoint_adaptive_h10",
+      "backend_sha": "1d95f2d6e4a1db82009560eca31a5a519e9c35e0",
+      "blocker": "Flowstar raw remainder compat residual not subset of target remainder",
+      "completed_horizon": 6.390931109681597,
+      "effective_support_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994",
+      "eligibility_errors": "failed/incomplete row cannot be primary;requested horizon was not completed;row is explicitly primary-ineligible;runtime boundary mismatch",
+      "endpoint_semantics": "raw_endpoint",
+      "final_segment_width_sum": 4.236462260124895,
+      "lane": "native_reproduction",
+      "primary_eligible": false,
+      "rejected_attempts": 46,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "diagnostic_mode_elapsed_v1",
+      "runtime_s": 291.15100900363177,
+      "soundness_level": "safeguarded_float64_not_fully_proved",
+      "validation_status": "validation_rejected"
+    },
+    {
+      "backend": "diffreach-native",
+      "backend_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "blocker": "Unsupported primitive in quadratic poly eval: stack with operands [<class 'src.polynomial.QuadPoly'>, <class 'src.polynomial.QuadPoly'>]",
+      "completed_horizon": 0.0,
+      "effective_support_sha256": "d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c",
+      "eligibility_errors": "failed/incomplete row cannot be primary;requested horizon was not completed;row is explicitly primary-ineligible;primary width must use raw_endpoint;runtime boundary mismatch",
+      "endpoint_semantics": "unavailable",
+      "lane": "native_reproduction",
+      "primary_eligible": false,
+      "requested_horizon": 1.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "setup_failed_before_runtime_boundary",
+      "soundness_level": "unknown",
+      "validation_status": "unsupported_configuration"
+    },
+    {
+      "backend": "diffreach-canonical-adapter",
+      "backend_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "blocker": "adapter is non-native, lacks directed rounding/raw endpoint, and has only one steady run",
+      "cold_runtime_s": 3.867959477007389,
+      "completed_horizon": 10.0,
+      "effective_support_sha256": "d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c",
+      "eligibility_errors": "row is explicitly primary-ineligible;primary width must use raw_endpoint;runtime boundary mismatch",
+      "endpoint_box": [
+        [
+          -1.3964496622619964,
+          -1.2195880852525323
+        ],
+        [
+          -2.5022073238147615,
+          -2.2803967985311817
+        ]
+      ],
+      "endpoint_semantics": "unavailable",
+      "lane": "matched_plant_backend",
+      "partitions": 64,
+      "primary_eligible": false,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "compile_and_execute_plus_execute_v1",
+      "soundness_level": "unknown",
+      "steady_runtime_s": [
+        2.9015426244586706
+      ],
+      "validation_status": "completed"
+    },
+    {
+      "backend": "xiangru-private-2026",
+      "backend_sha": "unavailable_missing_private_source",
+      "blocker": "private 2026 experiment source and raw JSON/log artifacts are absent",
+      "completed_horizon": 0.0,
+      "effective_support_sha256": "unavailable_missing_private_source",
+      "eligibility_errors": "failed/incomplete row cannot be primary;requested horizon was not completed;row is explicitly primary-ineligible;primary width must use raw_endpoint;runtime boundary mismatch",
+      "endpoint_semantics": "unavailable",
+      "historical_timing_recomputed": false,
+      "lane": "native_end_to_end_certificate",
+      "primary_eligible": false,
+      "requested_horizon": 10.0,
+      "run_authority": "authoritative",
+      "runtime_boundary": "unavailable",
+      "soundness_level": "unknown",
+      "validation_status": "blocked_missing_source"
+    }
+  ],
+  "run_id": "20260804T060058Z",
+  "schema_version": "three-tool-summary-1.0.0",
+  "status": "fail_closed_gate_blocked"
+}

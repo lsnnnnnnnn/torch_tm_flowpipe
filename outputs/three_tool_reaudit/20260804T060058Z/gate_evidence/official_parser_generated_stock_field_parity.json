@@ -1,0 +1,42 @@
+{
+  "applies_to": [
+    "official-stock",
+    "generated-stock",
+    "van_der_pol_order4_t10"
+  ],
+  "automated_test": "tests/test_current_run_gate_evidence.py::test_every_gate_has_current_machine_evidence",
+  "blocker": "official program exposes plot segment boxes but not the required internal field trace",
+  "facts": {
+    "max_abs_plot_segment_field_difference": 0.0,
+    "partial_plot_parity_does_not_upgrade_gate": true,
+    "plot_segment_parity_passed": true,
+    "required_fields_unavailable_on_official_route": [
+      "source_polynomial_and_raw_remainder",
+      "picard_iteration",
+      "discarded_monomials",
+      "candidate_self_map_defect",
+      "native_fixed_time_endpoint",
+      "accepted_and_rejected_attempt_reason"
+    ],
+    "segments": 290
+  },
+  "gate": "official_parser_generated_stock_field_parity",
+  "inputs": [
+    {
+      "path": "raw/flowstar_official_generated_parity/generated_flowstar_vs_original_comparison.csv",
+      "sha256": "05ec1f681f382201737345d67ffd8033a54378bf4d1aa90beb2881a6b82fa86c"
+    },
+    {
+      "path": "raw/flowstar_official_generated_parity/parity_report.md",
+      "sha256": "1ae60a8912ce6af7ff58dfcfeb697506d960642bfe2d8416250b88394e52c6a0"
+    },
+    {
+      "path": "raw/flowstar_official_vdp/evidence.json",
+      "sha256": "9bd6b2d665720de429727eb95234c91b404619da4096f5ab08f055072774ca6f"
+    }
+  ],
+  "passed": false,
+  "report": "docs/TORCH_FLOWSTAR_ONE_STEP_TRACE_PARITY.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

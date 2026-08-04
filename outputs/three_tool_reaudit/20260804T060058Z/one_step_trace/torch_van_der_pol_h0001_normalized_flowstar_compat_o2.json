@@ -1,0 +1,1803 @@
+{
+  "dependency_semantics": {
+    "generator_variables": [
+      "x0_x",
+      "x0_y"
+    ],
+    "independent_remainder_semantics": "per-state interval independent of polynomial generators",
+    "noise_variables": []
+  },
+  "domains": [
+    [
+      -1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      1.0
+    ],
+    [
+      0.0,
+      0.001
+    ]
+  ],
+  "enclosures": {
+    "endpoint_collapsed": {
+      "box": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a collapsed evaluate-time endpoint box"
+      },
+      "states": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a collapsed evaluate-time endpoint"
+      }
+    },
+    "endpoint_raw": {
+      "box": [
+        [
+          1.102347514203249,
+          1.4024498781280008
+        ],
+        [
+          2.346288847482516,
+          2.4484407086779756
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 5.000000000000005e-05,
+            "1,0": 0.14999999999999994
+          },
+          "constant_term": 1.2523986999999999,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -1.1857967500000042e-06,
+            1.1781280000000042e-06
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 2,
+            "constant": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.2523986999999999,
+              "exponents": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 5.000000000000005e-05,
+              "exponents": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.14999999999999994,
+              "exponents": [
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 3,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1": 0.049971875000000054,
+            "1,0": -0.0010499999999999997
+          },
+          "constant_term": 2.3973923312500003,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -8.160876748219253e-05,
+            2.6502427973218023e-05
+          ],
+          "max_degree": 1,
+          "monomial_families": {
+            "affine_state": 2,
+            "constant": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 2.3973923312500003,
+              "exponents": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 0.049971875000000054,
+              "exponents": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -0.0010499999999999997,
+              "exponents": [
+                1,
+                0
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 3,
+          "time_only_coefficients": [],
+          "time_state_coefficients": []
+        }
+      ]
+    },
+    "endpoint_tightened": {
+      "box": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint box"
+      },
+      "states": {
+        "availability": "unavailable",
+        "reason": "backend does not expose a distinct tightened endpoint"
+      }
+    },
+    "full_tube": {
+      "box": [
+        [
+          1.0999475142032487,
+          1.4024511781280014
+        ],
+        [
+          2.3462325974825147,
+          2.451104627427977
+        ]
+      ],
+      "provenance": "single_segment_export",
+      "segments": 1
+    },
+    "last_segment": {
+      "box": [
+        [
+          1.0999475142032487,
+          1.4024511781280014
+        ],
+        [
+          2.3462325974825147,
+          2.451104627427977
+        ]
+      ],
+      "provenance": "single_segment_export",
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0,0": 0.14999999999999994
+          },
+          "constant_term": 1.25,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -1.1857967500000038e-06,
+            1.1781280000000037e-06
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 2,
+            "time_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.25,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.14999999999999994,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": -1.3,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 5,
+          "time_only_coefficients": [
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.3,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            }
+          ],
+          "time_state_coefficients": [
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1,0": 0.05000000000000005
+          },
+          "constant_term": 2.4000000000000004,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -8.16087674821925e-05,
+            2.6502427973218016e-05
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 2,
+            "time_state": 2
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": -2.6,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": -7.668750000000002,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient": -0.028125000000000032,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.0499999999999996,
+              "exponents": [
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 6,
+          "time_only_coefficients": [
+            {
+              "coefficient": -2.6,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -7.668750000000002,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            }
+          ],
+          "time_state_coefficients": [
+            {
+              "coefficient": -0.028125000000000032,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.0499999999999996,
+              "exponents": [
+                1,
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "repaired_hull": {
+      "box": {
+        "availability": "unavailable",
+        "reason": "no diagnostic repaired hull was constructed"
+      },
+      "states": {
+        "availability": "unavailable",
+        "reason": "repaired hull is a diagnostic box, not a Taylor model"
+      }
+    },
+    "tube": {
+      "box": [
+        [
+          1.0999475142032487,
+          1.4024511781280014
+        ],
+        [
+          2.3462325974825147,
+          2.451104627427977
+        ]
+      ],
+      "states": [
+        {
+          "affine_state_generator_coefficients": {
+            "1,0,0": 0.14999999999999994
+          },
+          "constant_term": 1.25,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -1.1857967500000038e-06,
+            1.1781280000000037e-06
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 2,
+            "time_state": 1
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 1.25,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.14999999999999994,
+              "exponents": [
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": -1.3,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 5,
+          "time_only_coefficients": [
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.3,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            }
+          ],
+          "time_state_coefficients": [
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "affine_state_generator_coefficients": {
+            "0,1,0": 0.05000000000000005
+          },
+          "constant_term": 2.4000000000000004,
+          "higher_order_coefficients": [],
+          "independent_interval_remainder": [
+            -8.16087674821925e-05,
+            2.6502427973218016e-05
+          ],
+          "max_degree": 2,
+          "monomial_families": {
+            "affine_state": 1,
+            "constant": 1,
+            "time_only": 2,
+            "time_state": 2
+          },
+          "native_structured_symbolic_remainder": {
+            "availability": "unavailable",
+            "reason": "Torch TM exposes one independent interval remainder only"
+          },
+          "polynomial_terms": [
+            {
+              "coefficient": 2.4000000000000004,
+              "exponents": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient": -2.6,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": 0.05000000000000005,
+              "exponents": [
+                0,
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient": -7.668750000000002,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient": -0.028125000000000032,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.0499999999999996,
+              "exponents": [
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "state_state_coefficients": [],
+          "term_count": 6,
+          "time_only_coefficients": [
+            {
+              "coefficient": -2.6,
+              "exponents": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient": -7.668750000000002,
+              "exponents": [
+                0,
+                0,
+                2
+              ]
+            }
+          ],
+          "time_state_coefficients": [
+            {
+              "coefficient": -0.028125000000000032,
+              "exponents": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient": -1.0499999999999996,
+              "exponents": [
+                1,
+                0,
+                1
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "execution": {
+    "backend": "torch",
+    "device": "cpu",
+    "dtype": "torch.float64",
+    "repository_commit": "8d7bfa59f78d347eeb97d13796665bd9336aced9",
+    "runtime": {
+      "export_s": 0.002823963761329651,
+      "propagation_s": 0.21020472887903452,
+      "setup_s": {
+        "availability": "unavailable",
+        "reason": "setup is included in one-step propagation timing"
+      }
+    }
+  },
+  "generator_domains": [
+    [
+      -1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      1.0
+    ]
+  ],
+  "h": 0.001,
+  "last_segment_box": [
+    [
+      1.0999475142032487,
+      1.4024511781280014
+    ],
+    [
+      2.3462325974825147,
+      2.451104627427977
+    ]
+  ],
+  "local_time_domain": [
+    0.0,
+    0.001
+  ],
+  "local_time_index": 2,
+  "native_metadata": {
+    "candidate_remainder": 0.0001,
+    "cutoff": 1e-10,
+    "device": "cpu",
+    "directed_rounding_or_mpfr": "torch_nextafter_outward",
+    "dtype": "torch.float64",
+    "floating_point_enclosure_candidate": true,
+    "message": "",
+    "native_point_samples": [
+      {
+        "point": [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.1,
+          2.35
+        ],
+        "total_intervals": [
+          [
+            1.0999988142032502,
+            1.1000011781280001
+          ],
+          [
+            2.349918391232518,
+            2.350026502427973
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          -1.0,
+          0.0005
+        ],
+        "polynomial_values": [
+          1.1011746750000002,
+          2.3492371453125003
+        ],
+        "total_intervals": [
+          [
+            1.1011734892032503,
+            1.1011758531280003
+          ],
+          [
+            2.3491555365450183,
+            2.3492636477404734
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          -1.0,
+          0.001
+        ],
+        "polynomial_values": [
+          1.1023486999999998,
+          2.3484704562500003
+        ],
+        "total_intervals": [
+          [
+            1.10234751420325,
+            1.102349878128
+          ],
+          [
+            2.3483888474825183,
+            2.3484969586779734
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.1,
+          2.4000000000000004
+        ],
+        "total_intervals": [
+          [
+            1.0999988142032502,
+            1.1000011781280001
+          ],
+          [
+            2.3999183912325184,
+            2.4000265024279734
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          0.0,
+          0.0005
+        ],
+        "polynomial_values": [
+          1.1011996750000002,
+          2.3992230828125005
+        ],
+        "total_intervals": [
+          [
+            1.1011984892032503,
+            1.1012008531280002
+          ],
+          [
+            2.3991414740450185,
+            2.3992495852404736
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          0.0,
+          0.001
+        ],
+        "polynomial_values": [
+          1.1023987,
+          2.3984423312500005
+        ],
+        "total_intervals": [
+          [
+            1.10239751420325,
+            1.102399878128
+          ],
+          [
+            2.3983607224825185,
+            2.3984688336779736
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.1,
+          2.4500000000000006
+        ],
+        "total_intervals": [
+          [
+            1.0999988142032502,
+            1.1000011781280001
+          ],
+          [
+            2.4499183912325186,
+            2.4500265024279737
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          1.0,
+          0.0005
+        ],
+        "polynomial_values": [
+          1.101224675,
+          2.4492090203125008
+        ],
+        "total_intervals": [
+          [
+            1.1012234892032502,
+            1.1012258531280001
+          ],
+          [
+            2.449127411545019,
+            2.449235522740474
+          ]
+        ]
+      },
+      {
+        "point": [
+          -1.0,
+          1.0,
+          0.001
+        ],
+        "polynomial_values": [
+          1.1024487,
+          2.4484142062500007
+        ],
+        "total_intervals": [
+          [
+            1.1024475142032502,
+            1.102449878128
+          ],
+          [
+            2.4483325974825187,
+            2.448440708677974
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.25,
+          2.35
+        ],
+        "total_intervals": [
+          [
+            1.24999881420325,
+            1.250001178128
+          ],
+          [
+            2.349918391232518,
+            2.350026502427973
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          -1.0,
+          0.0005
+        ],
+        "polynomial_values": [
+          1.2511746750000001,
+          2.3487121453125
+        ],
+        "total_intervals": [
+          [
+            1.2511734892032502,
+            1.2511758531280002
+          ],
+          [
+            2.348630536545018,
+            2.3487386477404733
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          -1.0,
+          0.001
+        ],
+        "polynomial_values": [
+          1.2523486999999998,
+          2.34742045625
+        ],
+        "total_intervals": [
+          [
+            1.2523475142032499,
+            1.2523498781279998
+          ],
+          [
+            2.347338847482518,
+            2.347446958677973
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.25,
+          2.4000000000000004
+        ],
+        "total_intervals": [
+          [
+            1.24999881420325,
+            1.250001178128
+          ],
+          [
+            2.3999183912325184,
+            2.4000265024279734
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          0.0005
+        ],
+        "polynomial_values": [
+          1.251199675,
+          2.3986980828125004
+        ],
+        "total_intervals": [
+          [
+            1.2511984892032502,
+            1.2512008531280001
+          ],
+          [
+            2.3986164740450184,
+            2.3987245852404735
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          0.0,
+          0.001
+        ],
+        "polynomial_values": [
+          1.2523986999999999,
+          2.3973923312500003
+        ],
+        "total_intervals": [
+          [
+            1.25239751420325,
+            1.252399878128
+          ],
+          [
+            2.3973107224825183,
+            2.3974188336779734
+          ]
+        ]
+      },
+      {
+        "point": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "polynomial_values": [
+          1.25,
+          2.4500000000000006
+        ],
+        "total_intervals": [
+          [
+            1.24999881420325,
+            1.250001178128
+          ],
+          [
+            2.4499183912325186,
+            2.4500265024279737
+          ]
+        ]
+      }
+    ],
+    "order": 2,
+    "source_coordinates": "flowstar_normalized",
+    "status": "validated",
+    "validation_attempts": 1,
+    "validation_mode": "flowstar_raw_remainder_compat"
+  },
+  "native_validation_passed": true,
+  "outcome": {
+    "category": "",
+    "reason": "",
+    "requested_horizon_reached": true,
+    "status": "success"
+  },
+  "polynomial_representation": {
+    "coefficient_representation": "Torch sparse exponent tuple to tensor coefficient",
+    "name": "complete_total_degree_2",
+    "native_order": 2,
+    "requested_order": 2
+  },
+  "raw_endpoint": [
+    {
+      "affine_state_generator_coefficients": {
+        "0,1": 5.000000000000005e-05,
+        "1,0": 0.14999999999999994
+      },
+      "constant_term": 1.2523986999999999,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -1.1857967500000042e-06,
+        1.1781280000000042e-06
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 2,
+        "constant": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 1.2523986999999999,
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 5.000000000000005e-05,
+          "exponents": [
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": 0.14999999999999994,
+          "exponents": [
+            1,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 3,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,1": 0.049971875000000054,
+        "1,0": -0.0010499999999999997
+      },
+      "constant_term": 2.3973923312500003,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -8.160876748219253e-05,
+        2.6502427973218023e-05
+      ],
+      "max_degree": 1,
+      "monomial_families": {
+        "affine_state": 2,
+        "constant": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 2.3973923312500003,
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 0.049971875000000054,
+          "exponents": [
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": -0.0010499999999999997,
+          "exponents": [
+            1,
+            0
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 3,
+      "time_only_coefficients": [],
+      "time_state_coefficients": []
+    }
+  ],
+  "raw_endpoint_box": [
+    [
+      1.102347514203249,
+      1.4024498781280008
+    ],
+    [
+      2.346288847482516,
+      2.4484407086779756
+    ]
+  ],
+  "reset_carry_policy": {
+    "endpoint_tightening_applied": false,
+    "preconditioning": "none",
+    "reset": "none_one_step",
+    "supplemental_tightened_endpoint_available": false
+  },
+  "reset_preconditioning_metadata": {
+    "endpoint_tightening_applied": false,
+    "preconditioning": "none",
+    "reset": "none_one_step",
+    "supplemental_tightened_endpoint_available": false
+  },
+  "schema_version": 2,
+  "state_dimension": 2,
+  "states": [
+    {
+      "affine_state_generator_coefficients": {
+        "1,0,0": 0.14999999999999994
+      },
+      "constant_term": 1.25,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -1.1857967500000038e-06,
+        1.1781280000000037e-06
+      ],
+      "max_degree": 2,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1,
+        "time_only": 2,
+        "time_state": 1
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 1.25,
+          "exponents": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": 2.4000000000000004,
+          "exponents": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": 0.14999999999999994,
+          "exponents": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": -1.3,
+          "exponents": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "coefficient": 0.05000000000000005,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 5,
+      "time_only_coefficients": [
+        {
+          "coefficient": 2.4000000000000004,
+          "exponents": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": -1.3,
+          "exponents": [
+            0,
+            0,
+            2
+          ]
+        }
+      ],
+      "time_state_coefficients": [
+        {
+          "coefficient": 0.05000000000000005,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "affine_state_generator_coefficients": {
+        "0,1,0": 0.05000000000000005
+      },
+      "constant_term": 2.4000000000000004,
+      "higher_order_coefficients": [],
+      "independent_interval_remainder": [
+        -8.16087674821925e-05,
+        2.6502427973218016e-05
+      ],
+      "max_degree": 2,
+      "monomial_families": {
+        "affine_state": 1,
+        "constant": 1,
+        "time_only": 2,
+        "time_state": 2
+      },
+      "native_structured_symbolic_remainder": {
+        "availability": "unavailable",
+        "reason": "Torch TM exposes one independent interval remainder only"
+      },
+      "polynomial_terms": [
+        {
+          "coefficient": 2.4000000000000004,
+          "exponents": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": -2.6,
+          "exponents": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": 0.05000000000000005,
+          "exponents": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "coefficient": -7.668750000000002,
+          "exponents": [
+            0,
+            0,
+            2
+          ]
+        },
+        {
+          "coefficient": -0.028125000000000032,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "coefficient": -1.0499999999999996,
+          "exponents": [
+            1,
+            0,
+            1
+          ]
+        }
+      ],
+      "state_state_coefficients": [],
+      "term_count": 6,
+      "time_only_coefficients": [
+        {
+          "coefficient": -2.6,
+          "exponents": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": -7.668750000000002,
+          "exponents": [
+            0,
+            0,
+            2
+          ]
+        }
+      ],
+      "time_state_coefficients": [
+        {
+          "coefficient": -0.028125000000000032,
+          "exponents": [
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "coefficient": -1.0499999999999996,
+          "exponents": [
+            1,
+            0,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "step_semantics": {
+    "accepted_step": 0.001,
+    "requested_step": 0.001
+  },
+  "system": "van_der_pol",
+  "system_definition": {
+    "equations": [
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "terms": [
+          {
+            "coefficient": 1.0,
+            "powers": [
+              0,
+              1
+            ]
+          },
+          {
+            "coefficient": -1.0,
+            "powers": [
+              1,
+              0
+            ]
+          },
+          {
+            "coefficient": -1.0,
+            "powers": [
+              2,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "initial_domain": [
+      [
+        1.1,
+        1.4
+      ],
+      [
+        2.35,
+        2.45
+      ]
+    ],
+    "name": "van_der_pol",
+    "state_names": [
+      "x",
+      "y"
+    ]
+  },
+  "time_semantics": {
+    "initial_time": 0.0,
+    "requested_horizon": 0.001,
+    "segment_end": 0.001,
+    "segment_start": 0.0
+  },
+  "tool": "torch_tm_flowpipe",
+  "validation_trace": [
+    {
+      "accumulated_remainder_after_x0_add_center_x": -3.834375000000043e-09,
+      "accumulated_remainder_after_x0_add_center_y": -2.7553169754487233e-05,
+      "accumulated_remainder_after_x0_add_hi_x": 1.1781270000000033e-06,
+      "accumulated_remainder_after_x0_add_hi_y": 2.650242697321801e-05,
+      "accumulated_remainder_after_x0_add_lo_x": -1.1857957500000034e-06,
+      "accumulated_remainder_after_x0_add_lo_y": -8.160876648219248e-05,
+      "accumulated_remainder_after_x0_add_radius_x": 1.1819613750000036e-06,
+      "accumulated_remainder_after_x0_add_radius_y": 5.405559672770525e-05,
+      "accumulated_remainder_after_x0_add_width_sum": 0.0001104751162054105,
+      "accumulated_remainder_after_x0_add_width_x": 2.3639227500000073e-06,
+      "accumulated_remainder_after_x0_add_width_y": 0.0001081111934554105,
+      "accumulated_remainder_before_x0_add_center_x": -3.834375000000043e-09,
+      "accumulated_remainder_before_x0_add_center_y": -2.7553169754487226e-05,
+      "accumulated_remainder_before_x0_add_hi_x": 1.1781260000000028e-06,
+      "accumulated_remainder_before_x0_add_hi_y": 2.6502425973218004e-05,
+      "accumulated_remainder_before_x0_add_lo_x": -1.185794750000003e-06,
+      "accumulated_remainder_before_x0_add_lo_y": -8.160876548219245e-05,
+      "accumulated_remainder_before_x0_add_radius_x": 1.181960375000003e-06,
+      "accumulated_remainder_before_x0_add_radius_y": 5.4055595727705234e-05,
+      "accumulated_remainder_before_x0_add_width_sum": 0.00011047511220541048,
+      "accumulated_remainder_before_x0_add_width_x": 2.363920750000006e-06,
+      "accumulated_remainder_before_x0_add_width_y": 0.00010811119145541047,
+      "attempt_index": 1,
+      "candidate_final_width_sum": 0.4022542251202113,
+      "candidate_final_width_x": 0.3001023639247518,
+      "candidate_final_width_y": 0.1021518611954595,
+      "candidate_order": 2,
+      "candidate_segment_width_sum": 0.40737569387021516,
+      "candidate_segment_width_x": 0.30250366392475275,
+      "candidate_segment_width_y": 0.10487202994546242,
+      "candidate_terms_after_selective_high_degree_term_count": 0,
+      "candidate_terms_after_selective_max_degree": 2,
+      "candidate_terms_after_selective_term_count": 11,
+      "candidate_terms_after_selective_terms_hash": "20cbd63fb55d23a8",
+      "candidate_terms_before_validation_high_degree_term_count": 0,
+      "candidate_terms_before_validation_max_degree": 2,
+      "candidate_terms_before_validation_term_count": 11,
+      "candidate_terms_before_validation_terms_hash": "20cbd63fb55d23a8",
+      "current_raw_ctrunc_residual_center_x": -1.2781249999999968e-09,
+      "current_raw_ctrunc_residual_center_y": -2.6773971496451627e-05,
+      "current_raw_ctrunc_residual_hi_x": 6.390635000000007e-07,
+      "current_raw_ctrunc_residual_hi_y": 2.1915431586055342e-05,
+      "current_raw_ctrunc_residual_lo_x": -6.416197500000007e-07,
+      "current_raw_ctrunc_residual_lo_y": -7.54633745789586e-05,
+      "current_raw_ctrunc_residual_radius_x": 6.403416250000009e-07,
+      "current_raw_ctrunc_residual_radius_y": 4.8689403082506976e-05,
+      "current_raw_ctrunc_residual_width_sum": 9.865948941501395e-05,
+      "current_raw_ctrunc_residual_width_x": 1.2806832500000018e-06,
+      "current_raw_ctrunc_residual_width_y": 9.737880616501395e-05,
+      "endpoint_semantics": "raw_and_tightened_separate",
+      "finite_residual": true,
+      "flowstar_raw_remainder_compat_check_remainder_center_x": -3.834375000000043e-09,
+      "flowstar_raw_remainder_compat_check_remainder_center_y": -2.7553169754487236e-05,
+      "flowstar_raw_remainder_compat_check_remainder_hi_x": 1.1781280000000035e-06,
+      "flowstar_raw_remainder_compat_check_remainder_hi_y": 2.6502427973218013e-05,
+      "flowstar_raw_remainder_compat_check_remainder_lo_x": -1.1857967500000036e-06,
+      "flowstar_raw_remainder_compat_check_remainder_lo_y": -8.160876748219249e-05,
+      "flowstar_raw_remainder_compat_check_remainder_radius_x": 1.1819623750000039e-06,
+      "flowstar_raw_remainder_compat_check_remainder_radius_y": 5.405559772770525e-05,
+      "flowstar_raw_remainder_compat_check_remainder_width_sum": 0.00011047512020541051,
+      "flowstar_raw_remainder_compat_check_remainder_width_x": 2.3639247500000078e-06,
+      "flowstar_raw_remainder_compat_check_remainder_width_y": 0.0001081111954554105,
+      "flowstar_raw_remainder_compat_enabled": true,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_center_x": -3.834375000000043e-09,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_center_y": -2.7553169754487233e-05,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_hi_x": 1.1781270000000033e-06,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_hi_y": 2.650242697321801e-05,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_lo_x": -1.1857957500000034e-06,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_lo_y": -8.160876648219248e-05,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_radius_x": 1.1819613750000036e-06,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_radius_y": 5.405559672770525e-05,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_width_sum": 0.0001104751162054105,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_width_x": 2.3639227500000073e-06,
+      "flowstar_raw_remainder_compat_raw_ctrunc_residual_width_y": 0.0001081111934554105,
+      "flowstar_raw_remainder_compat_rhs_remainder_center_x": -3.834375000000105e-06,
+      "flowstar_raw_remainder_compat_rhs_remainder_center_y": -0.027553169754487215,
+      "flowstar_raw_remainder_compat_rhs_remainder_hi_x": 0.0011781250000000023,
+      "flowstar_raw_remainder_compat_rhs_remainder_hi_y": 0.026502424973217996,
+      "flowstar_raw_remainder_compat_rhs_remainder_lo_x": -0.0011857937500000025,
+      "flowstar_raw_remainder_compat_rhs_remainder_lo_y": -0.08160876448219243,
+      "flowstar_raw_remainder_compat_rhs_remainder_radius_x": 0.0011819593750000026,
+      "flowstar_raw_remainder_compat_rhs_remainder_radius_y": 0.05405559472770522,
+      "flowstar_raw_remainder_compat_rhs_remainder_width_sum": 0.11047510820541044,
+      "flowstar_raw_remainder_compat_rhs_remainder_width_x": 0.0023639187500000053,
+      "flowstar_raw_remainder_compat_rhs_remainder_width_y": 0.10811118945541044,
+      "h": 0.001,
+      "mode": "",
+      "normal_eval_range_center_x": 0.0,
+      "normal_eval_range_center_y": 0.0,
+      "normal_eval_range_hi_x": 1.0000000000000002e-12,
+      "normal_eval_range_hi_y": 1.0000000000000002e-12,
+      "normal_eval_range_lo_x": -1.0000000000000002e-12,
+      "normal_eval_range_lo_y": -1.0000000000000002e-12,
+      "normal_eval_range_radius_x": 1.0000000000000004e-12,
+      "normal_eval_range_radius_y": 1.0000000000000004e-12,
+      "normal_eval_range_split": "",
+      "normal_eval_range_width_sum": 4.0000000000000015e-12,
+      "normal_eval_range_width_x": 2.0000000000000008e-12,
+      "normal_eval_range_width_y": 2.0000000000000008e-12,
+      "order": 2,
+      "ordinary_remainder_missing_reason": "PyTorch ordinary_residual_range is exposed separately; it is not included in raw_ctrunc_residual",
+      "ordinary_residual_range_center_x": -1.2781249999999968e-09,
+      "ordinary_residual_range_center_y": -2.6773971496451627e-05,
+      "ordinary_residual_range_hi_x": 6.390635000000006e-07,
+      "ordinary_residual_range_hi_y": 2.1915431586055345e-05,
+      "ordinary_residual_range_lo_x": -6.416197500000006e-07,
+      "ordinary_residual_range_lo_y": -7.54633745789586e-05,
+      "ordinary_residual_range_radius_x": 6.403416250000007e-07,
+      "ordinary_residual_range_radius_y": 4.8689403082506976e-05,
+      "ordinary_residual_range_width_sum": 9.865948941501395e-05,
+      "ordinary_residual_range_width_x": 1.2806832500000014e-06,
+      "ordinary_residual_range_width_y": 9.737880616501395e-05,
+      "output_order": 2,
+      "poly_diff_range_center_x": 0.0,
+      "poly_diff_range_center_y": 0.0,
+      "poly_diff_range_hi_x": 1.0000000000000002e-12,
+      "poly_diff_range_hi_y": 1.0000000000000002e-12,
+      "poly_diff_range_lo_x": -1.0000000000000002e-12,
+      "poly_diff_range_lo_y": -1.0000000000000002e-12,
+      "poly_diff_range_radius_x": 1.0000000000000004e-12,
+      "poly_diff_range_radius_y": 1.0000000000000004e-12,
+      "poly_diff_range_width_sum": 4.0000000000000015e-12,
+      "poly_diff_range_width_x": 2.0000000000000008e-12,
+      "poly_diff_range_width_y": 2.0000000000000008e-12,
+      "polynomial_range_hi_x": 1.402450000000001,
+      "polynomial_range_hi_y": 2.4510781250000035,
+      "polynomial_range_lo_x": 1.0999486999999988,
+      "polynomial_range_lo_y": 2.346314206249997,
+      "polynomial_range_width_sum": 0.4072652187500088,
+      "polynomial_range_width_x": 0.30250130000000236,
+      "polynomial_range_width_y": 0.10476391875000647,
+      "protocol": "common_segment_export",
+      "raw_ctrunc_polynomial_range_center_x": 1.2511993499999998,
+      "raw_ctrunc_polynomial_range_center_y": 2.398696165625,
+      "raw_ctrunc_polynomial_range_hi_x": 1.402450000000001,
+      "raw_ctrunc_polynomial_range_hi_y": 2.4510781250000035,
+      "raw_ctrunc_polynomial_range_lo_x": 1.0999486999999988,
+      "raw_ctrunc_polynomial_range_lo_y": 2.346314206249997,
+      "raw_ctrunc_polynomial_range_radius_x": 0.15125065000000118,
+      "raw_ctrunc_polynomial_range_radius_y": 0.052381959375003236,
+      "raw_ctrunc_polynomial_range_width_sum": 0.4072652187500088,
+      "raw_ctrunc_polynomial_range_width_x": 0.30250130000000236,
+      "raw_ctrunc_polynomial_range_width_y": 0.10476391875000647,
+      "raw_ctrunc_remainder_center_x": -3.834375000000043e-09,
+      "raw_ctrunc_remainder_center_y": -2.7553169754487233e-05,
+      "raw_ctrunc_remainder_hi_x": 1.1781270000000033e-06,
+      "raw_ctrunc_remainder_hi_y": 2.650242697321801e-05,
+      "raw_ctrunc_remainder_lo_x": -1.1857957500000034e-06,
+      "raw_ctrunc_remainder_lo_y": -8.160876648219248e-05,
+      "raw_ctrunc_remainder_radius_x": 1.1819613750000036e-06,
+      "raw_ctrunc_remainder_radius_y": 5.405559672770525e-05,
+      "raw_ctrunc_remainder_width_sum": 0.0001104751162054105,
+      "raw_ctrunc_remainder_width_x": 2.3639227500000073e-06,
+      "raw_ctrunc_remainder_width_y": 0.0001081111934554105,
+      "raw_ctrunc_residual_added_component": "none_before_cutoff_polyDiff",
+      "raw_ctrunc_residual_center_x": -3.834375000000043e-09,
+      "raw_ctrunc_residual_center_y": -2.7553169754487233e-05,
+      "raw_ctrunc_residual_domain_semantics": "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff",
+      "raw_ctrunc_residual_hi_x": 1.1781270000000033e-06,
+      "raw_ctrunc_residual_hi_y": 2.650242697321801e-05,
+      "raw_ctrunc_residual_includes_cutoff_poly_diff": false,
+      "raw_ctrunc_residual_includes_ordinary_remainder": false,
+      "raw_ctrunc_residual_includes_target_remainder": false,
+      "raw_ctrunc_residual_lo_x": -1.1857957500000034e-06,
+      "raw_ctrunc_residual_lo_y": -8.160876648219248e-05,
+      "raw_ctrunc_residual_notes": "compat mode checks replayed raw remainder plus poly_diff_range; target remainder is only the containment set",
+      "raw_ctrunc_residual_radius_x": 1.1819613750000036e-06,
+      "raw_ctrunc_residual_radius_y": 5.405559672770525e-05,
+      "raw_ctrunc_residual_source_object": "flowstar_raw_remainder_compat Expression::evaluate_remainder replay before poly_diff_range",
+      "raw_ctrunc_residual_width_sum": 0.0001104751162054105,
+      "raw_ctrunc_residual_width_x": 2.3639227500000073e-06,
+      "raw_ctrunc_residual_width_y": 0.0001081111934554105,
+      "raw_remainder_after_cutoff_center_x": -1.2781249999999968e-09,
+      "raw_remainder_after_cutoff_center_y": -2.6773971496451623e-05,
+      "raw_remainder_after_cutoff_hi_x": 6.390625000000006e-07,
+      "raw_remainder_after_cutoff_hi_y": 2.191543058605534e-05,
+      "raw_remainder_after_cutoff_lo_x": -6.416187500000006e-07,
+      "raw_remainder_after_cutoff_lo_y": -7.546337357895859e-05,
+      "raw_remainder_after_cutoff_radius_x": 6.403406250000007e-07,
+      "raw_remainder_after_cutoff_radius_y": 4.8689402082506966e-05,
+      "raw_remainder_after_cutoff_width_sum": 9.865948541501394e-05,
+      "raw_remainder_after_cutoff_width_x": 1.2806812500000013e-06,
+      "raw_remainder_after_cutoff_width_y": 9.737880416501393e-05,
+      "raw_remainder_after_dropped_terms_center_x": -1.2781249999999968e-09,
+      "raw_remainder_after_dropped_terms_center_y": -2.677397149645162e-05,
+      "raw_remainder_after_dropped_terms_hi_x": 6.390625000000005e-07,
+      "raw_remainder_after_dropped_terms_hi_y": 2.1915430586055336e-05,
+      "raw_remainder_after_dropped_terms_lo_x": -6.416187500000005e-07,
+      "raw_remainder_after_dropped_terms_lo_y": -7.546337357895857e-05,
+      "raw_remainder_after_dropped_terms_radius_x": 6.403406250000007e-07,
+      "raw_remainder_after_dropped_terms_radius_y": 4.868940208250696e-05,
+      "raw_remainder_after_dropped_terms_width_sum": 9.865948541501392e-05,
+      "raw_remainder_after_dropped_terms_width_x": 1.2806812500000013e-06,
+      "raw_remainder_after_dropped_terms_width_y": 9.737880416501392e-05,
+      "raw_remainder_after_integration_center_x": 0.0,
+      "raw_remainder_after_integration_center_y": 2.2349689156921388e-07,
+      "raw_remainder_after_integration_hi_x": 1.0000000000000021e-07,
+      "raw_remainder_after_integration_hi_y": 2.7620900183469767e-06,
+      "raw_remainder_after_integration_lo_x": -1.0000000000000021e-07,
+      "raw_remainder_after_integration_lo_y": -2.315096235208549e-06,
+      "raw_remainder_after_integration_radius_x": 1.0000000000000022e-07,
+      "raw_remainder_after_integration_radius_y": 2.5385931267777634e-06,
+      "raw_remainder_after_integration_width_sum": 5.2771862535555275e-06,
+      "raw_remainder_after_integration_width_x": 2.0000000000000044e-07,
+      "raw_remainder_after_integration_width_y": 5.077186253555527e-06,
+      "raw_remainder_after_poly_diff_center_x": -1.2781249999999968e-09,
+      "raw_remainder_after_poly_diff_center_y": -2.6773971496451633e-05,
+      "raw_remainder_after_poly_diff_hi_x": 6.39065500000001e-07,
+      "raw_remainder_after_poly_diff_hi_y": 2.1915433586055348e-05,
+      "raw_remainder_after_poly_diff_lo_x": -6.41621750000001e-07,
+      "raw_remainder_after_poly_diff_lo_y": -7.546337657895861e-05,
+      "raw_remainder_after_poly_diff_radius_x": 6.403436250000012e-07,
+      "raw_remainder_after_poly_diff_radius_y": 4.868940508250699e-05,
+      "raw_remainder_after_poly_diff_width_sum": 9.865949741501398e-05,
+      "raw_remainder_after_poly_diff_width_x": 1.2806872500000023e-06,
+      "raw_remainder_after_poly_diff_width_y": 9.737881016501398e-05,
+      "raw_remainder_before_accumulation_center_x": 0.0,
+      "raw_remainder_before_accumulation_center_y": 0.0,
+      "raw_remainder_before_accumulation_hi_x": 0.0,
+      "raw_remainder_before_accumulation_hi_y": 0.0,
+      "raw_remainder_before_accumulation_lo_x": 0.0,
+      "raw_remainder_before_accumulation_lo_y": 0.0,
+      "raw_remainder_before_accumulation_radius_x": 5e-324,
+      "raw_remainder_before_accumulation_radius_y": 5e-324,
+      "raw_remainder_before_accumulation_width_sum": 1e-323,
+      "raw_remainder_before_accumulation_width_x": 5e-324,
+      "raw_remainder_before_accumulation_width_y": 5e-324,
+      "raw_remainder_before_poly_diff_center_x": -1.2781249999999968e-09,
+      "raw_remainder_before_poly_diff_center_y": -2.6773971496451623e-05,
+      "raw_remainder_before_poly_diff_hi_x": 6.390625000000006e-07,
+      "raw_remainder_before_poly_diff_hi_y": 2.191543058605534e-05,
+      "raw_remainder_before_poly_diff_lo_x": -6.416187500000006e-07,
+      "raw_remainder_before_poly_diff_lo_y": -7.546337357895859e-05,
+      "raw_remainder_before_poly_diff_radius_x": 6.403406250000007e-07,
+      "raw_remainder_before_poly_diff_radius_y": 4.8689402082506966e-05,
+      "raw_remainder_before_poly_diff_width_sum": 9.865948541501394e-05,
+      "raw_remainder_before_poly_diff_width_x": 1.2806812500000013e-06,
+      "raw_remainder_before_poly_diff_width_y": 9.737880416501393e-05,
+      "raw_remainder_dropped_terms_range_center_x": -1.2781249999999968e-09,
+      "raw_remainder_dropped_terms_range_center_y": -2.6997468388020832e-05,
+      "raw_remainder_dropped_terms_range_hi_x": 5.390625000000003e-07,
+      "raw_remainder_dropped_terms_range_hi_y": 1.915334056770836e-05,
+      "raw_remainder_dropped_terms_range_lo_x": -5.416187500000003e-07,
+      "raw_remainder_dropped_terms_range_lo_y": -7.314827734375003e-05,
+      "raw_remainder_dropped_terms_range_radius_x": 5.403406250000003e-07,
+      "raw_remainder_dropped_terms_range_radius_y": 4.61508089557292e-05,
+      "raw_remainder_dropped_terms_range_width_sum": 9.33822991614584e-05,
+      "raw_remainder_dropped_terms_range_width_x": 1.0806812500000007e-06,
+      "raw_remainder_dropped_terms_range_width_y": 9.23016179114584e-05,
+      "raw_remainder_integration_remainder_center_x": 0.0,
+      "raw_remainder_integration_remainder_center_y": 2.2349689156921388e-07,
+      "raw_remainder_integration_remainder_hi_x": 1.0000000000000021e-07,
+      "raw_remainder_integration_remainder_hi_y": 2.7620900183469767e-06,
+      "raw_remainder_integration_remainder_lo_x": -1.0000000000000021e-07,
+      "raw_remainder_integration_remainder_lo_y": -2.315096235208549e-06,
+      "raw_remainder_integration_remainder_radius_x": 1.0000000000000022e-07,
+      "raw_remainder_integration_remainder_radius_y": 2.5385931267777634e-06,
+      "raw_remainder_integration_remainder_width_sum": 5.2771862535555275e-06,
+      "raw_remainder_integration_remainder_width_x": 2.0000000000000044e-07,
+      "raw_remainder_integration_remainder_width_y": 5.077186253555527e-06,
+      "raw_remainder_mode": "flowstar_compat",
+      "raw_remainder_multiplication_remainder_center_x": 0.0,
+      "raw_remainder_multiplication_remainder_center_y": 2.2349689156921388e-07,
+      "raw_remainder_multiplication_remainder_hi_x": 1.000000000000002e-07,
+      "raw_remainder_multiplication_remainder_hi_y": 2.7620900183469762e-06,
+      "raw_remainder_multiplication_remainder_lo_x": -1.000000000000002e-07,
+      "raw_remainder_multiplication_remainder_lo_y": -2.3150962352085485e-06,
+      "raw_remainder_multiplication_remainder_radius_x": 1.0000000000000021e-07,
+      "raw_remainder_multiplication_remainder_radius_y": 2.5385931267777626e-06,
+      "raw_remainder_multiplication_remainder_width_sum": 5.277186253555526e-06,
+      "raw_remainder_multiplication_remainder_width_x": 2.0000000000000041e-07,
+      "raw_remainder_multiplication_remainder_width_y": 5.077186253555525e-06,
+      "raw_remainder_normal_domain_scaling": "none_after_Picard_call; intervals are over the physical full-step tau domain",
+      "raw_remainder_partition_missing_reason": "compat mode reconstructs the replayed raw remainder; Flow* source-level intermediate_ranges remain the exact reference",
+      "raw_remainder_range_enclosure_method": "Flowstar Expression::evaluate_remainder-style replay over polynomial ranges and truncation intervals",
+      "rejection_reason": "",
+      "remainder_width_sum": 0.00011047512020541051,
+      "remainder_width_x": 2.3639247500000078e-06,
+      "remainder_width_y": 0.0001081111954554105,
+      "residual_hi_x": 6.390635000000006e-07,
+      "residual_hi_y": 2.1915431586055345e-05,
+      "residual_lo_x": -6.416197500000006e-07,
+      "residual_lo_y": -7.54633745789586e-05,
+      "residual_width_sum": 9.865948941501395e-05,
+      "residual_width_x": 1.2806832500000014e-06,
+      "residual_width_y": 9.737880616501395e-05,
+      "segment_index": "",
+      "subset_flowstar_raw_remainder_compat": true,
+      "subset_flowstar_raw_remainder_compat_x": true,
+      "subset_flowstar_raw_remainder_compat_y": true,
+      "subset_ordinary_residual": true,
+      "subset_result": true,
+      "subset_tmp_remainder": true,
+      "target_checked_width": 0.0004000000000000001,
+      "target_remainder_before_ctrunc_center_x": 0.0,
+      "target_remainder_before_ctrunc_center_y": 0.0,
+      "target_remainder_before_ctrunc_hi_x": 0.0001,
+      "target_remainder_before_ctrunc_hi_y": 0.0001,
+      "target_remainder_before_ctrunc_lo_x": -0.0001,
+      "target_remainder_before_ctrunc_lo_y": -0.0001,
+      "target_remainder_before_ctrunc_radius_x": 0.00010000000000000002,
+      "target_remainder_before_ctrunc_radius_y": 0.00010000000000000002,
+      "target_remainder_before_ctrunc_width_sum": 0.0004000000000000001,
+      "target_remainder_before_ctrunc_width_x": 0.00020000000000000004,
+      "target_remainder_before_ctrunc_width_y": 0.00020000000000000004,
+      "target_remainder_radius": 0.0001,
+      "target_remainder_width": 0.0004000000000000001,
+      "target_remainder_width_sum": 0.0004000000000000001,
+      "tmp_remainder_center_x": -1.2781249999999968e-09,
+      "tmp_remainder_center_y": -2.6773971496451633e-05,
+      "tmp_remainder_hi_x": 6.39065500000001e-07,
+      "tmp_remainder_hi_y": 2.1915433586055348e-05,
+      "tmp_remainder_lo_x": -6.41621750000001e-07,
+      "tmp_remainder_lo_y": -7.546337657895861e-05,
+      "tmp_remainder_radius_x": 6.403436250000012e-07,
+      "tmp_remainder_radius_y": 4.868940508250699e-05,
+      "tmp_remainder_width_sum": 9.865949741501398e-05,
+      "tmp_remainder_width_x": 1.2806872500000023e-06,
+      "tmp_remainder_width_y": 9.737881016501398e-05,
+      "total_range_width_sum": 0.40737569387021516,
+      "total_range_width_x": 0.30250366392475275,
+      "total_range_width_y": 0.10487202994546242,
+      "truncation_range_split": "",
+      "validation_candidate_after_internal_high_degree_term_count": 0,
+      "validation_candidate_after_internal_max_degree": 2,
+      "validation_candidate_after_internal_term_count": 11,
+      "validation_candidate_after_internal_terms_hash": "20cbd63fb55d23a8",
+      "validation_candidate_inside_high_degree_term_count": 0,
+      "validation_candidate_inside_max_degree": 2,
+      "validation_candidate_inside_term_count": 11,
+      "validation_candidate_inside_terms_hash": "20cbd63fb55d23a8",
+      "validation_decision_difference": false,
+      "validation_message": "",
+      "validation_mode": "flowstar_raw_remainder_compat",
+      "validation_status": "validated"
+    }
+  ],
+  "variable_names": [
+    "x0_x",
+    "x0_y",
+    "tau"
+  ],
+  "variable_roles": [
+    "state_generator",
+    "state_generator",
+    "local_time"
+  ],
+  "variable_semantics": [
+    {
+      "domain": [
+        -1.0,
+        1.0
+      ],
+      "name": "x0_x",
+      "role": "state_generator"
+    },
+    {
+      "domain": [
+        -1.0,
+        1.0
+      ],
+      "name": "x0_y",
+      "role": "state_generator"
+    },
+    {
+      "domain": [
+        0.0,
+        0.001
+      ],
+      "name": "tau",
+      "role": "local_time"
+    }
+  ],
+  "variant": "complete_total_degree_2",
+  "whole_tube_box": [
+    [
+      1.0999475142032487,
+      1.4024511781280014
+    ],
+    [
+      2.3462325974825147,
+      2.451104627427977
+    ]
+  ]
+}

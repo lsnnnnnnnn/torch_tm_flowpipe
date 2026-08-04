@@ -1,0 +1,60 @@
+{
+  "backend": "diffreach-native",
+  "command": [
+    "experiments/three_tool_reaudit/diffreach_native_reproduction.py",
+    "--horizon",
+    "1.0",
+    "--steady-runs",
+    "1",
+    "--rhs-route",
+    "upstream-model",
+    "--output",
+    "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_native_vdp_t1.json"
+  ],
+  "completion": {
+    "completed_horizon": 0.0,
+    "failure_category": "unsupported_native_rhs_primitive",
+    "requested_horizon_reached": false,
+    "upstream_scan_returned_horizon": 0.0,
+    "validation_status": "unsupported_configuration"
+  },
+  "config": {
+    "dynamics_path": "/srv/local/shengenli/DiffReach/models/dynamics/ct_dyn/van_der_pol.py",
+    "dynamics_sha256": "17308d9d0536f00442879544e090785a30a8582a56de43378d7c5a640ed7121a",
+    "n_steps": 100,
+    "partitions": 64,
+    "path": "/srv/local/shengenli/DiffReach/config/ct_dyn/van_der_pol.yaml",
+    "requested_horizon": 1.0,
+    "rhs_route": "upstream-model",
+    "sha256": "b473527ffceb621eafbdc99f1121b497f84908402efe4ab9e3899d4179061eb6",
+    "step_size": 0.01
+  },
+  "execution": {
+    "devices": [
+      "cpu:0"
+    ],
+    "jax_enable_x64": true,
+    "jax_version": "0.10.2",
+    "optional_jax_verify_shim_used": true
+  },
+  "failure": {
+    "exception_type": "TypeError",
+    "fail_closed": true,
+    "message": "Unsupported primitive in quadratic poly eval: stack with operands [<class 'src.polynomial.QuadPoly'>, <class 'src.polynomial.QuadPoly'>]",
+    "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/experiments/three_tool_reaudit/diffreach_native_reproduction.py\", line 227, in run_native\n    cold = execute()\n           ^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/experiments/three_tool_reaudit/diffreach_native_reproduction.py\", line 213, in execute\n    times, lowers, uppers, final_tm, contraction = verify(\n                                                   ^^^^^^^\n  File \"/srv/local/shengenli/DiffReach/src/reachability.py\", line 228, in verify\n    (xF, _, _), (los, his, init_shrinked) = jax.lax.scan(self.step_once, (x_tm0, result_0, sr0), None, length=n_total_steps)\n                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/DiffReach/src/reachability.py\", line 157, in step_once\n    poly1 = self.rhs_poly_fn(baseP, step_lo, step_hi).integrate_time_trunc()\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/DiffReach/src/rhs_eval.py\", line 210, in eval_poly\n    raise TypeError(\nTypeError: Unsupported primitive in quadratic poly eval: stack with operands [<class 'src.polynomial.QuadPoly'>, <class 'src.polynomial.QuadPoly'>]\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.\n"
+  },
+  "lane": "native_reproduction",
+  "repository": {
+    "branch": "main",
+    "dirty": false,
+    "path": "/srv/local/shengenli/DiffReach",
+    "remote": "https://github.com/trustworthyrobotics/DiffReach",
+    "sha": "dd628eb443b517d6415de93e7035b4baef73963e"
+  },
+  "run_authority": "authoritative",
+  "schema_version": "diffreach-native-reproduction-1.0.0",
+  "soundness": {
+    "level": "unknown",
+    "reason": "native route did not produce an enclosure"
+  }
+}

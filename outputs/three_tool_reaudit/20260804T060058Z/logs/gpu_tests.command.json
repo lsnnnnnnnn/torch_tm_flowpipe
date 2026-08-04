@@ -1,0 +1,21 @@
+{
+  "command": [
+    "conda",
+    "run",
+    "-n",
+    "py11",
+    "pytest",
+    "-q",
+    "tests/test_cuda.py",
+    "tests/test_batched_dense_tm.py::test_device_roundtrip_and_cuda_if_available[cuda]",
+    "-rs"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+  "elapsed_s": 4.89882596489042,
+  "exit_code": 0,
+  "finished_utc": "2026-08-04T07:06:39Z",
+  "schema_version": "reaudit-command-1.0.0",
+  "started_utc": "2026-08-04T07:06:34Z",
+  "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gpu_tests.stderr.txt",
+  "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gpu_tests.stdout.txt"
+}

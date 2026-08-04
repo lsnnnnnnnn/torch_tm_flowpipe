@@ -1,0 +1,19 @@
+scalar_quadratic: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.10011 time=0.0393s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.10011 time=0.0364s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+harmonic_oscillator: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.40398 time=0.0156s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.40398 time=0.0142s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+van_der_pol: 1 case(s)
+  torch/range_only: h=0.0025 steps=1 order=4 status=validated final_sum=0.406245 time=0.1519s failures=0
+  torch/dependency_preserving: h=0.0025 steps=1 order=4 status=validated final_sum=0.406245 time=0.1496s failures=0
+  flowstar/fixed: h=0.0025 steps=1 order=4 status=skipped
+affine_controlled: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.100702 time=0.0295s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.100702 time=0.0280s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+wrote outputs/flowstar_comparison_smoke.csv
+wrote outputs/flowstar_comparison_smoke_summary.md
+outputs/flowstar_comparison_smoke_summary.md

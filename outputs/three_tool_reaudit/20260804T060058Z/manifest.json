@@ -1,0 +1,750 @@
+{
+  "benchmark_files": [
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/cross_tool_gates.yaml",
+      "sha256": "0afbe2c2cac0e5606cf40d4120e8067c8f8e869ea8237906171953d81e2747c0"
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/canonical.yaml",
+      "sha256": "697e187c85da8b7c6f125d3a7d42d208dcd1b6359f5d5f24a4218cfef3dce484"
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/three_tool_matched_contract.yaml",
+      "sha256": "5a56397682af95095e9098a352f774e87b30918454a7e5484171c4b7acec8f9e"
+    },
+    {
+      "path": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d"
+    }
+  ],
+  "benchmark_files_at_finalize": [
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/cross_tool_gates.yaml",
+      "sha256": "50fbaa4a0f8450c1532c348a2d2aad77656a582aee3dcfc32de5144217f9a33c"
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/canonical.yaml",
+      "sha256": "697e187c85da8b7c6f125d3a7d42d208dcd1b6359f5d5f24a4218cfef3dce484"
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/benchmarks/three_tool_matched_contract.yaml",
+      "sha256": "a3661c36b51118a06f799e6369390b05e2687f0c0cf11a24481a501ae73c14b8"
+    },
+    {
+      "path": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d"
+    }
+  ],
+  "commands": [
+    {
+      "capture_kind": "direct_reproduction_runner_capture",
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "elapsed_s": 1.0744500504806638,
+      "exit_code": 0,
+      "phase": "cold",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/cold.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/cold.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_reproduction_runner_capture",
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "elapsed_s": 1.065326001495123,
+      "exit_code": 0,
+      "phase": "steady_1",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_1.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_1.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_reproduction_runner_capture",
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "elapsed_s": 1.085777691565454,
+      "exit_code": 0,
+      "phase": "steady_2",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_2.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_2.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_reproduction_runner_capture",
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "elapsed_s": 1.0676622092723846,
+      "exit_code": 0,
+      "phase": "steady_3",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_3.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_vdp/steady_3.stdout.txt"
+    },
+    {
+      "capture_kind": "structured_runner_output",
+      "capture_note": "The runner stores completion and any internal exception in this single structured artifact; separate process streams were not retained.",
+      "command": [
+        "experiments/three_tool_reaudit/diffreach_native_reproduction.py",
+        "--horizon",
+        "1.0",
+        "--steady-runs",
+        "1",
+        "--rhs-route",
+        "upstream-model",
+        "--output",
+        "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_native_vdp_t1.json"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_native_vdp_t1.json",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_native_vdp_t1.json"
+    },
+    {
+      "capture_kind": "structured_runner_output",
+      "capture_note": "The runner stores completion and any internal exception in this single structured artifact; separate process streams were not retained.",
+      "command": [
+        "experiments/three_tool_reaudit/diffreach_native_reproduction.py",
+        "--horizon",
+        "1.0",
+        "--steady-runs",
+        "1",
+        "--rhs-route",
+        "canonical-polynomial-adapter",
+        "--output",
+        "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t1.json"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t1.json",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t1.json"
+    },
+    {
+      "capture_kind": "structured_runner_output",
+      "capture_note": "The runner stores completion and any internal exception in this single structured artifact; separate process streams were not retained.",
+      "command": [
+        "experiments/three_tool_reaudit/diffreach_native_reproduction.py",
+        "--horizon",
+        "10.0",
+        "--steady-runs",
+        "1",
+        "--rhs-route",
+        "canonical-polynomial-adapter",
+        "--output",
+        "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t10.json"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t10.json",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t10.json"
+    },
+    {
+      "capture_kind": "structured_runner_output",
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/experiments/flowstar_step_trace_compare.py",
+        "--flowstar-root",
+        "/srv/local/shengenli/flowstar",
+        "--out-dir",
+        "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection",
+        "--horizon",
+        "0.1",
+        "--max-segments",
+        "1",
+        "--order",
+        "2",
+        "--compare-mode",
+        "attempt_aligned"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/diagnostic_manifest.json",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/diagnostic_manifest.json"
+    },
+    {
+      "capture_kind": "direct_diagnostic_runner_capture",
+      "command": [
+        "g++",
+        "-O3",
+        "-w",
+        "-std=c++11",
+        "-I",
+        "/srv/local/shengenli/flowstar/flowstar-toolbox",
+        "-I",
+        "/usr/local/include",
+        "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp",
+        "-L",
+        "/srv/local/shengenli/flowstar/flowstar-toolbox",
+        "-L",
+        "/usr/local/lib",
+        "-o",
+        "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_vdp_step_trace_probe",
+        "-lflowstar",
+        "-lmpfr",
+        "-lgmp",
+        "-lgsl",
+        "-lgslcblas",
+        "-lm",
+        "-lglpk"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "phase": "flowstar_order2_probe_compile",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_probe_compile.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_probe_compile.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_diagnostic_runner_capture",
+      "command": [
+        "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_vdp_step_trace_probe",
+        "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit/outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_trace.csv",
+        "0.10000000000000001",
+        "1",
+        "2"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "exit_code": 0,
+      "phase": "flowstar_order2_probe_run",
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_probe_run.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/one_step_trace/flowstar_vdp_o2_rejection/flowstar_probe_run.stdout.txt"
+    },
+    {
+      "capture_kind": "recovered_from_exact_documented_command_and_raw_artifacts",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "python",
+        "experiments/flowstar_raw_remainder_compat_h10_right_map_centering.py",
+        "--horizon",
+        "10",
+        "--wall-cap-s",
+        "300",
+        "--flowstar-segments",
+        "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_generated_parity/original_flowstar/original_flowstar_segments.csv",
+        "--out-dir",
+        "outputs/three_tool_reaudit/20260804T060058Z/vdp_t10/h10_right_map_centering"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "environment": {
+        "OMP_NUM_THREADS": "1"
+      },
+      "exit_code": 0,
+      "schema_version": "reaudit-command-1.0.0",
+      "stderr_path": {
+        "availability": "unavailable",
+        "reason": "the long-horizon runner's separate process stderr was not retained"
+      },
+      "stdout_path": {
+        "availability": "unavailable",
+        "reason": "the long-horizon runner's separate process stdout was not retained"
+      },
+      "structured_output_path": "outputs/three_tool_reaudit/20260804T060058Z/vdp_t10/h10_right_map_centering/h10_right_map_centering_summary.csv"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "bash",
+        "scripts/check_all.sh"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 45.22924362961203,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:07:32Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_all.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:06:47Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_all.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_all.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "bash",
+        "scripts/check_flowstar_comparison.sh"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 4.080279261805117,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:07:43Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_flowstar_comparison.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:07:39Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_flowstar_comparison.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/check_flowstar_comparison.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "env",
+        "FLOWSTAR_ROOT=/srv/local/shengenli/flowstar",
+        "DIFFREACH_ROOT=/srv/local/shengenli/DiffReach",
+        "DIFFREACH_PYTHON=/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "pytest",
+        "-q",
+        "-m",
+        "flowstar or diffreach",
+        "-rs"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 4.9088639272376895,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:06:29Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/external_backend_tests.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:06:24Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/external_backend_tests.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/external_backend_tests.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "env",
+        "DIFFREACH_PYTHON=/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "python",
+        "scripts/three_tool_reaudit.py",
+        "finalize",
+        "20260804T060058Z",
+        "--flowstar-root",
+        "/srv/local/shengenli/flowstar",
+        "--diffreach-root",
+        "/srv/local/shengenli/DiffReach",
+        "--xiangru-root",
+        "/srv/local/shengenli/CROWN-Reach_Development"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 2.7227459559217095,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:08:24Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/finalize.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:08:22Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/finalize.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/finalize.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "pytest",
+        "-q",
+        "-rs"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 45.740318620577455,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:06:15Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/full_pytest.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:05:30Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/full_pytest.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/full_pytest.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "experiments/three_tool_reaudit/build_gate_evidence.py",
+        "--run-dir",
+        "outputs/three_tool_reaudit/20260804T060058Z",
+        "--flowstar-root",
+        "/srv/local/shengenli/flowstar"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 0.3924090573564172,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:02:49Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gate_evidence.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:02:49Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gate_evidence.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gate_evidence.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 0.0028300704434514046,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:07:50Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/git_diff_check.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:07:50Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/git_diff_check.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/git_diff_check.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "pytest",
+        "-q",
+        "tests/test_cuda.py",
+        "tests/test_batched_dense_tm.py::test_device_roundtrip_and_cuda_if_available[cuda]",
+        "-rs"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 4.89882596489042,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:06:39Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gpu_tests.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:06:34Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gpu_tests.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/gpu_tests.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "-e",
+        ".[test]"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 4.174062050879002,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T06:58:08Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/install_editable.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T06:58:04Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/install_editable.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/install_editable.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "experiments/three_tool_reaudit/analyze_one_step.py",
+        "--run-dir",
+        "outputs/three_tool_reaudit/20260804T060058Z",
+        "--output",
+        "outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/one_step_parity.json"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 0.30322415567934513,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T06:56:40Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/one_step_analysis.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T06:56:40Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/one_step_analysis.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/one_step_analysis.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "experiments/three_tool_reaudit/build_run_summary.py",
+        "--run-dir",
+        "outputs/three_tool_reaudit/20260804T060058Z"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 0.043293699622154236,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T07:07:58Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/run_summary.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T07:07:58Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/run_summary.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/run_summary.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "conda",
+        "run",
+        "-n",
+        "py11",
+        "pytest",
+        "-q",
+        "tests/test_reaudit_protocol.py",
+        "tests/test_current_run_gate_evidence.py",
+        "tests/test_one_step_source_coordinates.py",
+        "tests/test_backend_identity.py",
+        "tests/test_diffreach_native_reproduction.py",
+        "tests/test_protocol_contracts.py"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 4.4695018688216805,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T06:57:40Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/targeted_tests.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T06:57:35Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/targeted_tests.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/targeted_tests.stdout.txt"
+    },
+    {
+      "capture_kind": "direct_stream_capture",
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "experiments/three_tool_reaudit/xiangru_source_inventory.py",
+        "--workspace",
+        "/srv/local/shengenli",
+        "--output",
+        "outputs/three_tool_reaudit/20260804T060058Z/raw/xiangru_source_inventory.json"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "elapsed_s": 0.046338293701410294,
+      "exit_code": 0,
+      "finished_utc": "2026-08-04T06:56:32Z",
+      "record_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/xiangru_inventory.command.json",
+      "schema_version": "reaudit-command-1.0.0",
+      "started_utc": "2026-08-04T06:56:31Z",
+      "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/xiangru_inventory.stderr.txt",
+      "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/xiangru_inventory.stdout.txt"
+    }
+  ],
+  "execution_contract": {
+    "device": "recorded per command/row",
+    "dtype": "float64 unless backend-native lane says otherwise",
+    "environment": {
+      "CUDA_DEVICE_ORDER": "PCI_BUS_ID",
+      "CUDA_MODULE_LOADING": "LAZY",
+      "OMP_NUM_THREADS": "1"
+    },
+    "thread_count": "1"
+  },
+  "finalized_utc": "2026-08-04T07:08:36Z",
+  "flowstar_backend_identity": {
+    "audit_behavior_variables_enabled": [],
+    "backend_class": "stock-plus-gcc15-compat",
+    "canonical_root": "/srv/local/shengenli/flowstar",
+    "dirty": true,
+    "execution_route": "generated-stock",
+    "gcc15_derivative_compatibility_change": true,
+    "library_path": "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a",
+    "library_sha256": "3a658f952cf8e4c30e04adb778a51c19047c37b6c8bf79f18ebae8120eefb117",
+    "patch_manifest": null,
+    "patch_manifest_sha256": null,
+    "primary_eligible": true,
+    "remote": "https://github.com/chenxin415/flowstar",
+    "repository_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "status_porcelain_v2": "# branch.oid b85a3211748cb77b736fe4ad42ee02d8d2b81148\n# branch.head master\n# branch.upstream origin/master\n# branch.ab +0 -0\n1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h\n? benchmarks/continuous/simple/simple\n? benchmarks/continuous/simple/simple.o\n? benchmarks/continuous/simple/simple.plt\n? benchmarks/continuous/vanderpol/vanderpol\n? benchmarks/continuous/vanderpol/vanderpol.o\n? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n? flowstar-2.1.0/__MACOSX/\n? flowstar-2.1.0/flowstar-2.1.0/\n? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o",
+    "tracked_changed_paths": [
+      "flowstar-toolbox/TaylorModel.h"
+    ],
+    "tracked_patch_sha256": "8f2c7128aa842c01869c4fd7a8ee89e3d3c799b9eb6966c2f406268fab5d8f91"
+  },
+  "flowstar_binary": {
+    "ldd": [
+      "\tlinux-vdso.so.1 (0x00007fe7ee12e000)",
+      "\tlibmpfr.so.6 => /usr/lib/x86_64-linux-gnu/libmpfr.so.6 (0x00007fe7edf78000)",
+      "\tlibgsl.so.28 => /usr/lib/x86_64-linux-gnu/libgsl.so.28 (0x00007fe7edc00000)",
+      "\tlibglpk.so.40 => /usr/lib/x86_64-linux-gnu/libglpk.so.40 (0x00007fe7edb2a000)",
+      "\tlibstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fe7ed800000)",
+      "\tlibgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fe7edf4a000)",
+      "\tlibc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x00007fe7ed400000)",
+      "\tlibgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007fe7edaa4000)",
+      "\t/lib64/ld-linux-x86-64.so.2 (0x00007fe7ee130000)",
+      "\tlibgslcblas.so.0 => /usr/lib/x86_64-linux-gnu/libgslcblas.so.0 (0x00007fe7edefe000)",
+      "\tlibm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x00007fe7ed6da000)",
+      "\tlibcolamd.so.3 => /usr/lib/x86_64-linux-gnu/libcolamd.so.3 (0x00007fe7edef5000)",
+      "\tlibamd.so.3 => /usr/lib/x86_64-linux-gnu/libamd.so.3 (0x00007fe7edee6000)",
+      "\tlibz.so.1 => /usr/lib/x86_64-linux-gnu/libz.so.1 (0x00007fe7ed6bc000)",
+      "\tlibltdl.so.7 => /usr/lib/x86_64-linux-gnu/libltdl.so.7 (0x00007fe7ed6b1000)",
+      "\tlibsuitesparseconfig.so.7 => /usr/lib/x86_64-linux-gnu/libsuitesparseconfig.so.7 (0x00007fe7ed6ac000)",
+      "\tlibgomp.so.1 => /usr/lib/x86_64-linux-gnu/libgomp.so.1 (0x00007fe7ed64d000)"
+    ],
+    "ldd_exit_code": 0,
+    "ldd_stderr": "",
+    "path": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol",
+    "sha256": "c4eca6f591f820513e5ec695666cd8cc43393a97d945c9ad3ecb36bae53ed6dc"
+  },
+  "host": {
+    "cpu_count": 80,
+    "cpu_model": "Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz",
+    "gpu": {
+      "available": true,
+      "devices": [
+        "0, Tesla V100-SXM2-16GB, GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae, 580.159.03, 16384",
+        "1, NVIDIA Graphics Device, GPU-1c6effec-22d4-17fd-fdf1-7ce10166132e, 580.159.03, 16384",
+        "2, Tesla V100-SXM2-16GB, GPU-698a9283-60ee-cc64-7d87-4e33f6fabc82, 580.159.03, 16384",
+        "3, Tesla V100-SXM2-16GB, GPU-1ad11bb9-50d4-6b9d-22f8-fc8c33180e56, 580.159.03, 16384"
+      ],
+      "error": ""
+    },
+    "hostname": "huan-c4140-server-3",
+    "os": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+    "ram_bytes": 399703318528
+  },
+  "repositories": {
+    "diffreach": {
+      "branch": "main",
+      "dirty": false,
+      "path": "/srv/local/shengenli/DiffReach",
+      "remote": "https://github.com/trustworthyrobotics/DiffReach",
+      "sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid dd628eb443b517d6415de93e7035b4baef73963e\n# branch.head main\n# branch.upstream origin/main\n# branch.ab +0 -0",
+      "submodules": []
+    },
+    "flowstar": {
+      "branch": "master",
+      "dirty": true,
+      "path": "/srv/local/shengenli/flowstar",
+      "remote": "https://github.com/chenxin415/flowstar",
+      "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid b85a3211748cb77b736fe4ad42ee02d8d2b81148\n# branch.head master\n# branch.upstream origin/master\n# branch.ab +0 -0\n1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h\n? benchmarks/continuous/simple/simple\n? benchmarks/continuous/simple/simple.o\n? benchmarks/continuous/simple/simple.plt\n? benchmarks/continuous/vanderpol/vanderpol\n? benchmarks/continuous/vanderpol/vanderpol.o\n? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n? flowstar-2.1.0/__MACOSX/\n? flowstar-2.1.0/flowstar-2.1.0/\n? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o",
+      "submodules": []
+    },
+    "torch_tm_flowpipe": {
+      "branch": "codex/three-tool-correctness-parity-20260804",
+      "dirty": false,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "remote": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+      "sha": "6b984a6229dc195b914374257deb958b1317645b",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid 6b984a6229dc195b914374257deb958b1317645b\n# branch.head codex/three-tool-correctness-parity-20260804\n# branch.upstream origin/codex/repository-cleanup-before-external-torch-audit\n# branch.ab +1 -0",
+      "submodules": []
+    },
+    "xiangru": {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development",
+      "source_kind": "missing"
+    }
+  },
+  "repositories_at_finalize": {
+    "diffreach": {
+      "branch": "main",
+      "dirty": false,
+      "path": "/srv/local/shengenli/DiffReach",
+      "remote": "https://github.com/trustworthyrobotics/DiffReach",
+      "sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid dd628eb443b517d6415de93e7035b4baef73963e\n# branch.head main\n# branch.upstream origin/main\n# branch.ab +0 -0",
+      "submodules": []
+    },
+    "flowstar": {
+      "branch": "master",
+      "dirty": true,
+      "path": "/srv/local/shengenli/flowstar",
+      "remote": "https://github.com/chenxin415/flowstar",
+      "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid b85a3211748cb77b736fe4ad42ee02d8d2b81148\n# branch.head master\n# branch.upstream origin/master\n# branch.ab +0 -0\n1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h\n? benchmarks/continuous/simple/simple\n? benchmarks/continuous/simple/simple.o\n? benchmarks/continuous/simple/simple.plt\n? benchmarks/continuous/vanderpol/vanderpol\n? benchmarks/continuous/vanderpol/vanderpol.o\n? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n? flowstar-2.1.0/__MACOSX/\n? flowstar-2.1.0/flowstar-2.1.0/\n? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o",
+      "submodules": []
+    },
+    "torch_tm_flowpipe": {
+      "branch": "codex/three-tool-correctness-parity-20260804",
+      "dirty": false,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+      "remote": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+      "sha": "1d95f2d6e4a1db82009560eca31a5a519e9c35e0",
+      "source_kind": "git_checkout",
+      "status_porcelain_v2": "# branch.oid 1d95f2d6e4a1db82009560eca31a5a519e9c35e0\n# branch.head codex/three-tool-correctness-parity-20260804\n# branch.upstream origin/codex/repository-cleanup-before-external-torch-audit\n# branch.ab +3 -0",
+      "submodules": []
+    },
+    "xiangru": {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development",
+      "source_kind": "missing"
+    }
+  },
+  "run_id": "20260804T060058Z",
+  "runner": "scripts/three_tool_reaudit.py",
+  "runner_command": [
+    "scripts/three_tool_reaudit.py",
+    "init",
+    "20260804T060058Z"
+  ],
+  "schema_version": "three-tool-reaudit-1.0.0",
+  "software": {
+    "cmake": {
+      "command": [
+        "cmake",
+        "--version"
+      ],
+      "exit_code": 0,
+      "version": [
+        "cmake version 4.2.3",
+        "",
+        "CMake suite maintained and supported by Kitware (kitware.com/cmake)."
+      ]
+    },
+    "compiler": {
+      "command": [
+        "g++",
+        "--version"
+      ],
+      "exit_code": 0,
+      "version": [
+        "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+        "Copyright (C) 2025 Free Software Foundation, Inc.",
+        "This is free software; see the source for copying conditions.  There is NO"
+      ]
+    },
+    "jax": {
+      "available": true,
+      "devices": [
+        "cpu:0"
+      ],
+      "probe_stderr": "An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.\n",
+      "python_executable": "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+      "version": "0.10.2",
+      "x64": false
+    },
+    "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+    "python_executable": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "torch": {
+      "available": true,
+      "cuda_available": true,
+      "cuda_version": "12.1",
+      "devices": [
+        "Tesla V100-SXM2-16GB",
+        "NVIDIA Graphics Device",
+        "Tesla V100-SXM2-16GB",
+        "Tesla V100-SXM2-16GB"
+      ],
+      "version": "2.5.1+cu121"
+    }
+  },
+  "started_local": "2026-08-04T06:01:00.734577+00:00",
+  "started_utc": "2026-08-04T06:01:00Z"
+}

@@ -1,0 +1,24 @@
+{
+  "command": [
+    "conda",
+    "run",
+    "-n",
+    "py11",
+    "pytest",
+    "-q",
+    "tests/test_reaudit_protocol.py",
+    "tests/test_current_run_gate_evidence.py",
+    "tests/test_one_step_source_coordinates.py",
+    "tests/test_backend_identity.py",
+    "tests/test_diffreach_native_reproduction.py",
+    "tests/test_protocol_contracts.py"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit",
+  "elapsed_s": 4.4695018688216805,
+  "exit_code": 0,
+  "finished_utc": "2026-08-04T06:57:40Z",
+  "schema_version": "reaudit-command-1.0.0",
+  "started_utc": "2026-08-04T06:57:35Z",
+  "stderr_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/targeted_tests.stderr.txt",
+  "stdout_path": "outputs/three_tool_reaudit/20260804T060058Z/logs/targeted_tests.stdout.txt"
+}

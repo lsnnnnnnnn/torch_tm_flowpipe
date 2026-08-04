@@ -1,0 +1,160 @@
+{
+  "applies_to": [
+    "all_primary_rows",
+    "pareto",
+    "time_to_certificate"
+  ],
+  "automated_test": "tests/test_diffreach_native_reproduction.py::test_completion_requires_every_picard_contraction",
+  "blocker": null,
+  "facts": {
+    "diffreach_canonical_adapter": {
+      "completed_horizon": 10.0,
+      "failure_category": null,
+      "first_failed_step_index": null,
+      "first_failed_step_number": null,
+      "requested_horizon_reached": true,
+      "upstream_scan_returned_horizon": 10.0,
+      "validation_status": "completed"
+    },
+    "diffreach_upstream_native": {
+      "completed_horizon": 0.0,
+      "failure_category": "unsupported_native_rhs_primitive",
+      "requested_horizon_reached": false,
+      "upstream_scan_returned_horizon": 0.0,
+      "validation_status": "unsupported_configuration"
+    },
+    "failed_rows_enter_headline": false,
+    "flowstar_order2": {
+      "accepted_segment_count": 0,
+      "attempted_step_schedule": [
+        0.1,
+        0.05,
+        0.025,
+        0.0125,
+        0.00625,
+        0.003125
+      ],
+      "candidate_remainder": {
+        "x": [
+          -1.1075096130371092e-05,
+          1.0841064453124997e-05
+        ],
+        "y": [
+          -0.00027793541151873634,
+          0.00010625822419835969
+        ]
+      },
+      "completed_full_horizon": false,
+      "completed_requested_scope": false,
+      "cutoff_polynomial_difference": {
+        "x": [
+          0.0,
+          0.0
+        ],
+        "y": [
+          -2.099015405931937e-18,
+          6.938893903907229e-19
+        ]
+      },
+      "diagnostic_status": "validation_rejected",
+      "effective_degree": 2,
+      "failing_dimension": "y",
+      "failure_category": "validation_rejected",
+      "failure_reason": "remainder_self_map_failed",
+      "last_accepted_time": 0.0,
+      "maximum_segments": 1,
+      "minimum_step": 0.002,
+      "multiplication_remainder_contribution": {
+        "x": null,
+        "y": [
+          -0.0002634297524249997,
+          9.120953758124978e-05
+        ]
+      },
+      "next_halving_below_minimum": true,
+      "picard_image_raw_ctrunc_remainder": {
+        "x": [
+          -1.1075096130371092e-05,
+          1.0841064453124997e-05
+        ],
+        "y": [
+          -0.0002779354115187342,
+          0.00010625822419835899
+        ]
+      },
+      "probe_process_status": "completed_without_process_error",
+      "requested_horizon": 0.1,
+      "requested_scope": "single_step_probe",
+      "self_map_defect": {
+        "x": 0.0,
+        "y": 0.00017793541151873635
+      },
+      "symbolic_propagated_width": {
+        "sum": 0.0,
+        "x": 0.0,
+        "y": 0.0
+      },
+      "target_remainder": {
+        "x": [
+          -0.0001,
+          0.0001
+        ],
+        "y": [
+          -0.0001,
+          0.0001
+        ]
+      },
+      "terminal_trace_message": "Flow* traced advance failed below minimum step",
+      "terminal_trace_status": "rejected"
+    },
+    "torch_incomplete_rows": [
+      {
+        "mode": "constant_adaptive_h10",
+        "reached_h10": "false",
+        "reached_t": "6.3172908799330765",
+        "status": "failed"
+      },
+      {
+        "mode": "range_midpoint_adaptive_h10",
+        "reached_h10": "false",
+        "reached_t": "6.3909311096815973",
+        "status": "failed"
+      },
+      {
+        "mode": "range_midpoint_on_constant_schedule",
+        "reached_h10": "false",
+        "reached_t": "6.0736617494140468",
+        "status": "timeout"
+      },
+      {
+        "mode": "constant_on_range_midpoint_schedule",
+        "reached_h10": "false",
+        "reached_t": "0.43677646366378969",
+        "status": "failed"
+      }
+    ]
+  },
+  "gate": "completion_validation_fail_closed",
+  "inputs": [
+    {
+      "path": "one_step_trace/flowstar_vdp_o2_rejection/order2_failure_manifest.json",
+      "sha256": "ff4898a32b1d3490224c808c36066c09c82a5df265e60bec96037b4477a670c0"
+    },
+    {
+      "path": "raw/diffreach_native_vdp_t1.json",
+      "sha256": "d8ec671d2aa621d5938a8a0cb154b6906de7c5d0e11fe2ca89d7cbdf472d0492"
+    },
+    {
+      "path": "raw/diffreach_adapter_vdp_t10.json",
+      "sha256": "0320f6903e9ce022a888989eb3310898376a096739677b028666613447aa3609"
+    },
+    {
+      "path": "vdp_t10/h10_right_map_centering/h10_right_map_centering_summary.csv",
+      "sha256": "a6686e683119daf39d2b09ebfaf4b8a97bd66bde9157969c4dfa3e9fb5bcf91b"
+    }
+  ],
+  "passed": true,
+  "report": "docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

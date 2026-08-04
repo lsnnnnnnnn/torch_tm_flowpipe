@@ -1,0 +1,54 @@
+[check] pytest
+.......................................ss............................... [ 27%]
+........................................................................ [ 54%]
+........................................................................ [ 81%]
+................................................                         [100%]
+262 passed, 2 skipped in 33.41s
+[check] examples and experiments
+[runtime] examples/scalar_quadratic.py
+status=validated
+attempts=2
+flowpipe_range=(-4.5725272587835205e-05, 0.5642031941093939)
+final_range=(0.05003912943870898, 0.5641806788798291)
+[runtime] examples/van_der_pol_short.py
+status=validated
+attempts=3
+flowpipe_range=[(0.999943744687557, 1.0505037147524827), (-0.011129383597652934, 0.05058454113927471)]
+final_range=[(0.9999468208088564, 1.0504506704123935), (-0.011059645836531524, 0.040514768998232795)]
+[runtime] examples/affine_controlled.py
+status=validated
+attempts=2
+flowpipe_range=[(-0.10276520833460841, 0.10276520833460841), (-0.1017751250012751, 0.1017751250012751)]
+final_range=[(-0.10269016916769222, 0.10269016916769222), (-0.10070010416769222, 0.10070010416769222)]
+[runtime] experiments/scalar_quadratic_grid.py
+scalar_quadratic/range_only: h=0.01 order=4 status=validated final_width=0.100755 flowpipe_width=0.110775 failures=0 time=0.2156s
+scalar_quadratic/dependency_preserving: h=0.01 order=4 status=validated final_width=0.100755 flowpipe_width=0.110775 failures=0 time=0.5336s
+scalar_quadratic/range_only: h=0.02 order=4 status=validated final_width=0.102031 flowpipe_width=0.122195 failures=0 time=0.2150s
+scalar_quadratic/dependency_preserving: h=0.02 order=4 status=validated final_width=0.102031 flowpipe_width=0.122195 failures=0 time=0.5169s
+[runtime] experiments/harmonic_oscillator.py
+harmonic_oscillator/range_only: h=0.02 order=4 status=validated final_width=0.121659 flowpipe_width=0.13923 failures=0 time=0.1940s
+harmonic_oscillator/dependency_preserving: h=0.02 order=4 status=validated final_width=0.117874 flowpipe_width=0.136379 failures=0 time=0.2378s
+[runtime] experiments/van_der_pol_sampling.py
+van_der_pol/range_only: h=0.005 order=4 status=validated final_width=0.0540041 flowpipe_width=0.0590379 failures=0 time=0.9009s
+van_der_pol/dependency_preserving: h=0.005 order=4 status=validated final_width=0.0540048 flowpipe_width=0.0592459 failures=0 time=1.8382s
+[check] Flow* comparison smoke (Flow* optional)
+scalar_quadratic: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.10011 time=0.0425s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.10011 time=0.0354s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+harmonic_oscillator: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.40398 time=0.0153s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.40398 time=0.0136s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+van_der_pol: 1 case(s)
+  torch/range_only: h=0.0025 steps=1 order=4 status=validated final_sum=0.406245 time=0.1521s failures=0
+  torch/dependency_preserving: h=0.0025 steps=1 order=4 status=validated final_sum=0.406245 time=0.1575s failures=0
+  flowstar/fixed: h=0.0025 steps=1 order=4 status=skipped
+affine_controlled: 1 case(s)
+  torch/range_only: h=0.01 steps=1 order=3 status=validated final_sum=0.100702 time=0.0297s failures=0
+  torch/dependency_preserving: h=0.01 steps=1 order=3 status=validated final_sum=0.100702 time=0.0279s failures=0
+  flowstar/fixed: h=0.01 steps=1 order=3 status=skipped
+wrote outputs/flowstar_comparison_smoke.csv
+wrote outputs/flowstar_comparison_smoke_summary.md
+outputs/flowstar_comparison_smoke_summary.md
+[check] done

@@ -1,0 +1,298 @@
+{
+  "backend": "official-stock",
+  "binary": {
+    "path": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol",
+    "sha256": "c4eca6f591f820513e5ec695666cd8cc43393a97d945c9ad3ecb36bae53ed6dc"
+  },
+  "execution_route": "official_program",
+  "flowstar_root": "/srv/local/shengenli/flowstar",
+  "library": {
+    "path": "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a",
+    "sha256": "3a658f952cf8e4c30e04adb778a51c19047c37b6c8bf79f18ebae8120eefb117"
+  },
+  "limitations": [
+    "GNUplot boxes are last-segment/full-tube data, not fixed-time endpoints",
+    "official program does not expose rejected adaptive attempts"
+  ],
+  "make": {
+    "command": [
+      "make"
+    ],
+    "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+    "exit_code": 0,
+    "stderr": "make.stderr.txt",
+    "stdout": "make.stdout.txt",
+    "wall_time_s": 0.0017632879316806793
+  },
+  "model_contract": {
+    "adaptive_step": {
+      "maximum": 0.1,
+      "minimum": 0.002
+    },
+    "candidate_remainder": [
+      -0.0001,
+      0.0001
+    ],
+    "cutoff": [
+      -1e-10,
+      1e-10
+    ],
+    "initial_set": [
+      [
+        1.1,
+        1.4
+      ],
+      [
+        2.35,
+        2.45
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "ode": [
+      "y",
+      "(1 - x^2) * y - x",
+      "1"
+    ],
+    "order": 4,
+    "precision_bits": 53,
+    "requested_horizon": 10.0,
+    "state_order": [
+      "x",
+      "y",
+      "t"
+    ],
+    "symbolic_remainder_queue": 100
+  },
+  "passed": true,
+  "repository_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "runs": [
+    {
+      "accepted_segments": 290,
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "completed_horizon": 10.0,
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "exit_code": 0,
+      "phase": "cold",
+      "plots": {
+        "x": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.022605,
+            "value_upper": 2.067539
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -1.469806,
+            "value_upper": -1.175589
+          },
+          "path": "cold_t_x.plt",
+          "segments": 290,
+          "sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+        },
+        "y": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.754938,
+            "value_upper": 2.72123
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -2.588135,
+            "value_upper": -2.177639
+          },
+          "path": "cold_t_y.plt",
+          "segments": 290,
+          "sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        }
+      },
+      "rejected_attempts": {
+        "availability": "unavailable",
+        "reason": "official stock program does not print adaptive rejected attempts"
+      },
+      "requested_horizon": 10.0,
+      "started_utc": "2026-08-04T06:02:23Z",
+      "status": "completed",
+      "stderr": "cold.stderr.txt",
+      "stdout": "cold.stdout.txt",
+      "validation_status": "completed",
+      "wall_time_s": 1.0744500504806638
+    },
+    {
+      "accepted_segments": 290,
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "completed_horizon": 10.0,
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "exit_code": 0,
+      "phase": "steady_1",
+      "plots": {
+        "x": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.022605,
+            "value_upper": 2.067539
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -1.469806,
+            "value_upper": -1.175589
+          },
+          "path": "steady_1_t_x.plt",
+          "segments": 290,
+          "sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+        },
+        "y": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.754938,
+            "value_upper": 2.72123
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -2.588135,
+            "value_upper": -2.177639
+          },
+          "path": "steady_1_t_y.plt",
+          "segments": 290,
+          "sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        }
+      },
+      "rejected_attempts": {
+        "availability": "unavailable",
+        "reason": "official stock program does not print adaptive rejected attempts"
+      },
+      "requested_horizon": 10.0,
+      "started_utc": "2026-08-04T06:02:25Z",
+      "status": "completed",
+      "stderr": "steady_1.stderr.txt",
+      "stdout": "steady_1.stdout.txt",
+      "validation_status": "completed",
+      "wall_time_s": 1.065326001495123
+    },
+    {
+      "accepted_segments": 290,
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "completed_horizon": 10.0,
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "exit_code": 0,
+      "phase": "steady_2",
+      "plots": {
+        "x": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.022605,
+            "value_upper": 2.067539
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -1.469806,
+            "value_upper": -1.175589
+          },
+          "path": "steady_2_t_x.plt",
+          "segments": 290,
+          "sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+        },
+        "y": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.754938,
+            "value_upper": 2.72123
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -2.588135,
+            "value_upper": -2.177639
+          },
+          "path": "steady_2_t_y.plt",
+          "segments": 290,
+          "sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        }
+      },
+      "rejected_attempts": {
+        "availability": "unavailable",
+        "reason": "official stock program does not print adaptive rejected attempts"
+      },
+      "requested_horizon": 10.0,
+      "started_utc": "2026-08-04T06:02:26Z",
+      "status": "completed",
+      "stderr": "steady_2.stderr.txt",
+      "stdout": "steady_2.stdout.txt",
+      "validation_status": "completed",
+      "wall_time_s": 1.085777691565454
+    },
+    {
+      "accepted_segments": 290,
+      "command": [
+        "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol"
+      ],
+      "completed_horizon": 10.0,
+      "cwd": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol",
+      "exit_code": 0,
+      "phase": "steady_3",
+      "plots": {
+        "x": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.022605,
+            "value_upper": 2.067539
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -1.469806,
+            "value_upper": -1.175589
+          },
+          "path": "steady_3_t_x.plt",
+          "segments": 290,
+          "sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+        },
+        "y": {
+          "completed_horizon": 10.0,
+          "full_tube": {
+            "value_lower": -2.754938,
+            "value_upper": 2.72123
+          },
+          "last_segment": {
+            "t_lower": 9.995128,
+            "t_upper": 10.0,
+            "value_lower": -2.588135,
+            "value_upper": -2.177639
+          },
+          "path": "steady_3_t_y.plt",
+          "segments": 290,
+          "sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        }
+      },
+      "rejected_attempts": {
+        "availability": "unavailable",
+        "reason": "official stock program does not print adaptive rejected attempts"
+      },
+      "requested_horizon": 10.0,
+      "started_utc": "2026-08-04T06:02:27Z",
+      "status": "completed",
+      "stderr": "steady_3.stderr.txt",
+      "stdout": "steady_3.stdout.txt",
+      "validation_status": "completed",
+      "wall_time_s": 1.0676622092723846
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "path": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+    "sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d"
+  }
+}

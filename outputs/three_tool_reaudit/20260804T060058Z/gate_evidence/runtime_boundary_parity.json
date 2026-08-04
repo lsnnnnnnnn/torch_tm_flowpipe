@@ -1,0 +1,67 @@
+{
+  "applies_to": [
+    "all_performance_rows",
+    "time_to_certificate",
+    "headline_speedup"
+  ],
+  "automated_test": "tests/test_protocol_contracts.py::test_total_timer_includes_completion_boundary",
+  "blocker": "current run lacks matched 1-cold plus 10-steady total-configuration timing for every eligible backend",
+  "facts": {
+    "diffreach_steady_repetitions": 1,
+    "official_correctness_repetitions": 4,
+    "official_steady_repetitions": 3,
+    "required_steady_repetitions_for_timing": 10,
+    "time_to_certificate_ranking_allowed": false,
+    "torch_long_horizon_rows": [
+      {
+        "mode": "constant_adaptive_h10",
+        "reached_t": "6.3172908799330765",
+        "runtime_s": "245.25890390202403",
+        "status": "failed"
+      },
+      {
+        "mode": "range_midpoint_adaptive_h10",
+        "reached_t": "6.3909311096815973",
+        "runtime_s": "291.15100900363177",
+        "status": "failed"
+      },
+      {
+        "mode": "range_midpoint_on_constant_schedule",
+        "reached_t": "6.0736617494140468",
+        "runtime_s": "300.42172997444868",
+        "status": "timeout"
+      },
+      {
+        "mode": "constant_on_range_midpoint_schedule",
+        "reached_t": "0.43677646366378969",
+        "runtime_s": "34.903798415325582",
+        "status": "failed"
+      }
+    ],
+    "xiangru_historical_timing_recomputed": false,
+    "xiangru_private_source_status": "blocked_missing_source"
+  },
+  "gate": "runtime_boundary_parity",
+  "inputs": [
+    {
+      "path": "raw/flowstar_official_vdp/evidence.json",
+      "sha256": "9bd6b2d665720de429727eb95234c91b404619da4096f5ab08f055072774ca6f"
+    },
+    {
+      "path": "raw/diffreach_adapter_vdp_t10.json",
+      "sha256": "0320f6903e9ce022a888989eb3310898376a096739677b028666613447aa3609"
+    },
+    {
+      "path": "vdp_t10/h10_right_map_centering/h10_right_map_centering_summary.csv",
+      "sha256": "a6686e683119daf39d2b09ebfaf4b8a97bd66bde9157969c4dfa3e9fb5bcf91b"
+    },
+    {
+      "path": "raw/xiangru_source_inventory.json",
+      "sha256": "e3145065c265fac1a4a0f26721072d51362d59aa9cc53d07fa9736d1b4ab2af0"
+    }
+  ],
+  "passed": false,
+  "report": "docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

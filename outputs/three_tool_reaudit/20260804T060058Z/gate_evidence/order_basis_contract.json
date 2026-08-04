@@ -1,0 +1,119 @@
+{
+  "applies_to": [
+    "one_step_matched_suite",
+    "diffreach-canonical-adapter",
+    "all_order_grouping"
+  ],
+  "automated_test": "tests/test_current_run_gate_evidence.py::test_current_support_contract_records_match_and_mismatch",
+  "blocker": null,
+  "facts": {
+    "diffreach_restricted_support": {
+      "effective_support": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ]
+      ],
+      "effective_support_sha256": "d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c",
+      "name": "restricted_quasi_quadratic",
+      "variable_order": [
+        "tau",
+        "xi_x",
+        "xi_y"
+      ]
+    },
+    "diffreach_support_intentionally_not_grouped_as_complete_order": true,
+    "flowstar_torch_observed_support": {
+      "harmonic_oscillator_o4_h001": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894",
+        "torch_sha256": "f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894"
+      },
+      "scalar_affine_o4_h001": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true
+        ],
+        "flowstar_sha256": "8b5fa9f0fc43f61a2b65708caad87bb6742a6505437006b5423bbf69047b7877",
+        "torch_sha256": "8b5fa9f0fc43f61a2b65708caad87bb6742a6505437006b5423bbf69047b7877"
+      },
+      "scalar_quadratic_o4_h001": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true
+        ],
+        "flowstar_sha256": "b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f",
+        "torch_sha256": "b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f"
+      },
+      "van_der_pol_o2_h0001_sensitivity": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "8354507afc643f6a340078f82b9bd3ef305f6c52f3b67e2364f850e6c71adeed",
+        "torch_sha256": "8354507afc643f6a340078f82b9bd3ef305f6c52f3b67e2364f850e6c71adeed"
+      },
+      "van_der_pol_o4_h0005": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994",
+        "torch_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994"
+      }
+    },
+    "nominal_order_only_grouping_forbidden": true
+  },
+  "gate": "order_basis_contract",
+  "inputs": [
+    {
+      "path": "gate_evidence/one_step_parity.json",
+      "sha256": "b896cea0373f27ab1bae1d2b07efce6acc6fa37597be892cbf4deac4fe37a046"
+    },
+    {
+      "path": "raw/diffreach_adapter_vdp_t10.json",
+      "sha256": "0320f6903e9ce022a888989eb3310898376a096739677b028666613447aa3609"
+    }
+  ],
+  "passed": true,
+  "report": "docs/TORCH_FLOWSTAR_ONE_STEP_TRACE_PARITY.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

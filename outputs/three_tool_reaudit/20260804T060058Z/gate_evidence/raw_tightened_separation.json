@@ -1,0 +1,75 @@
+{
+  "applies_to": [
+    "all_exported_endpoint_fields",
+    "primary_raw_endpoint"
+  ],
+  "automated_test": "tests/test_protocol_contracts.py::test_diagnostic_endpoint_semantics_are_distinct_and_primary_ineligible",
+  "blocker": null,
+  "facts": {
+    "collapsed_under_enclosure_diagnostic_states": [
+      {
+        "collapsed_lower": 1.1117297578906438,
+        "collapsed_upper": 1.4122046058051303,
+        "native_lower": 1.1117027715758652,
+        "native_upper": 1.412231592119909,
+        "padding_lower": -2.6986314778598697e-05,
+        "padding_upper": 2.6986314778598697e-05,
+        "repaired_lower": 1.1117027715758652,
+        "repaired_upper": 1.412231592119909,
+        "state": 0
+      },
+      {
+        "collapsed_lower": 2.331340614180853,
+        "collapsed_upper": 2.4422774751283174,
+        "native_lower": 2.331030135359564,
+        "native_upper": 2.442587953949606,
+        "padding_lower": -0.0003104788212886511,
+        "padding_upper": 0.0003104788212886511,
+        "repaired_lower": 2.331030135359564,
+        "repaired_upper": 2.442587953949606,
+        "state": 1
+      }
+    ],
+    "fallback_forbidden": true,
+    "flowstar_vdp_endpoint_path_audit": [
+      {
+        "collapsed_lower": 1.1117297578906438,
+        "collapsed_upper": 1.4122046058051303,
+        "native_lower": 1.1117027715758652,
+        "native_upper": 1.412231592119909,
+        "padding_lower": -2.6986314778598697e-05,
+        "padding_upper": 2.6986314778598697e-05,
+        "repaired_lower": 1.1117027715758652,
+        "repaired_upper": 1.412231592119909,
+        "state": 0
+      },
+      {
+        "collapsed_lower": 2.331340614180853,
+        "collapsed_upper": 2.4422774751283174,
+        "native_lower": 2.331030135359564,
+        "native_upper": 2.442587953949606,
+        "padding_lower": -0.0003104788212886511,
+        "padding_upper": 0.0003104788212886511,
+        "repaired_lower": 2.331030135359564,
+        "repaired_upper": 2.442587953949606,
+        "state": 1
+      }
+    ],
+    "primary_field": "endpoint_raw"
+  },
+  "gate": "raw_tightened_separation",
+  "inputs": [
+    {
+      "path": "one_step_trace/flowstar_van_der_pol_official_o4.json",
+      "sha256": "d2ff6ba849d691e26007b5a23577d1b3627bbf3607a37927993bebc53f824536"
+    },
+    {
+      "path": "gate_evidence/one_step_parity.json",
+      "sha256": "b896cea0373f27ab1bae1d2b07efce6acc6fa37597be892cbf4deac4fe37a046"
+    }
+  ],
+  "passed": true,
+  "report": "docs/FLOWSTAR_ENDPOINT_EXPORTER_AUDIT.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

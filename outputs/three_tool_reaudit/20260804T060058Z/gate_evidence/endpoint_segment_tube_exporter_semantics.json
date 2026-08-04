@@ -1,0 +1,65 @@
+{
+  "applies_to": [
+    "generated-stock",
+    "torch-sparse",
+    "one_step_matched_suite"
+  ],
+  "automated_test": "tests/test_one_step_source_coordinates.py::test_current_run_trajectory_sanity_is_fail_closed",
+  "blocker": "independent trajectory sanity found an exported enclosure violation",
+  "facts": {
+    "official_t10_fixed_endpoint_available": false,
+    "raw_endpoint_inside_segment_all_cases": true,
+    "trajectory_failures": {
+      "scalar_affine_o4_h001": {
+        "flowstar": {
+          "corner_count": 2,
+          "endpoint_violations": [
+            {
+              "initial": [
+                0.0
+              ],
+              "state": 0,
+              "value": 0.010100670013377895
+            },
+            {
+              "initial": [
+                0.1
+              ],
+              "state": 0,
+              "value": 0.11212080401605326
+            }
+          ],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": false,
+          "segment_violations": [
+            {
+              "initial": [
+                0.1
+              ],
+              "sample_index": 1000,
+              "state": 0,
+              "value": 0.11212080401605326
+            }
+          ]
+        }
+      }
+    },
+    "zero_violations_would_be_sanity_not_proof": true
+  },
+  "gate": "endpoint_segment_tube_exporter_semantics",
+  "inputs": [
+    {
+      "path": "gate_evidence/one_step_parity.json",
+      "sha256": "b896cea0373f27ab1bae1d2b07efce6acc6fa37597be892cbf4deac4fe37a046"
+    },
+    {
+      "path": "one_step_trace/flowstar_van_der_pol_official_o4.json",
+      "sha256": "d2ff6ba849d691e26007b5a23577d1b3627bbf3607a37927993bebc53f824536"
+    }
+  ],
+  "passed": false,
+  "report": "docs/FLOWSTAR_ENDPOINT_EXPORTER_AUDIT.md",
+  "run_id": "20260804T060058Z",
+  "schema_version": "cross-tool-gate-evidence-1.0.0"
+}

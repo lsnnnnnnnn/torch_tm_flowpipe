@@ -1,0 +1,1530 @@
+{
+  "blocker": "stock Flowstar exporter does not expose source/Picard iteration, discarded-term, and candidate self-map fields; output-only agreement cannot establish field parity",
+  "cases": {
+    "harmonic_oscillator_o4_h001": {
+      "acceptance": {
+        "flowstar": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        },
+        "match": true,
+        "torch": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        }
+      },
+      "coefficients": {
+        "comparison_is_diagnostic_without_preregistered_tolerance": true,
+        "max_absolute_difference": 4.163336342344337e-17,
+        "rows": [
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              0
+            ],
+            "flowstar": 1.0,
+            "state": 0,
+            "torch": 1.0
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              2
+            ],
+            "flowstar": -0.5,
+            "state": 0,
+            "torch": -0.5
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              4
+            ],
+            "flowstar": 0.041666666666666664,
+            "state": 0,
+            "torch": 0.041666666666666664
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              0,
+              1,
+              1
+            ],
+            "flowstar": 0.1,
+            "state": 0,
+            "torch": 0.10000000000000002
+          },
+          {
+            "absolute_difference": 3.469446951953614e-18,
+            "canonical_exponent": [
+              0,
+              1,
+              3
+            ],
+            "flowstar": -0.016666666666666666,
+            "state": 0,
+            "torch": -0.01666666666666667
+          },
+          {
+            "absolute_difference": 4.163336342344337e-17,
+            "canonical_exponent": [
+              1,
+              0,
+              0
+            ],
+            "flowstar": 0.10000000000000009,
+            "state": 0,
+            "torch": 0.10000000000000005
+          },
+          {
+            "absolute_difference": 2.0816681711721685e-17,
+            "canonical_exponent": [
+              1,
+              0,
+              2
+            ],
+            "flowstar": -0.050000000000000044,
+            "state": 0,
+            "torch": -0.050000000000000024
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              1
+            ],
+            "flowstar": -1.0,
+            "state": 1,
+            "torch": -1.0
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              3
+            ],
+            "flowstar": 0.16666666666666666,
+            "state": 1,
+            "torch": 0.16666666666666666
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              0,
+              1,
+              0
+            ],
+            "flowstar": 0.1,
+            "state": 1,
+            "torch": 0.10000000000000002
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              0,
+              1,
+              2
+            ],
+            "flowstar": -0.05,
+            "state": 1,
+            "torch": -0.05000000000000001
+          },
+          {
+            "absolute_difference": 4.163336342344337e-17,
+            "canonical_exponent": [
+              1,
+              0,
+              1
+            ],
+            "flowstar": -0.10000000000000009,
+            "state": 1,
+            "torch": -0.10000000000000005
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              1,
+              0,
+              3
+            ],
+            "flowstar": 0.01666666666666668,
+            "state": 1,
+            "torch": 0.016666666666666673
+          }
+        ]
+      },
+      "effective_support": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894",
+        "torch_sha256": "f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894"
+      },
+      "enclosures": {
+        "flowstar_collapsed_available": true,
+        "flowstar_collapsed_contains_flowstar_raw": false,
+        "flowstar_raw_collapsed_separated": true,
+        "flowstar_raw_contains_torch_raw": true,
+        "flowstar_raw_endpoint_inside_flowstar_last_segment": true,
+        "raw_endpoint_max_absolute_difference": 3.316366663230763e-08,
+        "torch_raw_contains_flowstar_raw": false,
+        "torch_raw_endpoint_inside_torch_last_segment": true
+      },
+      "first_contract_blocker": "flowstar.validation_trace.picard_iteration[0]_unavailable",
+      "h_equal": true,
+      "independent_remainders": {
+        "first_observable_output_difference": "independent_interval_remainder",
+        "flowstar": [
+          [
+            -3.504529626402777e-24,
+            3.782057629758731e-24
+          ],
+          [
+            -3.507277428420369e-24,
+            3.126007776401157e-23
+          ]
+        ],
+        "max_absolute_endpoint_difference": 1.0000173833333383e-05,
+        "torch": [
+          [
+            -1.0000169666666703e-05,
+            1.0000169666666703e-05
+          ],
+          [
+            -1.0000173833333383e-05,
+            1.0000169666666715e-05
+          ]
+        ]
+      },
+      "inputs": {
+        "flowstar": "one_step_trace/flowstar_harmonic_oscillator_o4.json",
+        "flowstar_sha256": "425f75ec5c1c86b429acbd544d7c0682f4cec55b3ff1a7c8e0186e314f0795c1",
+        "torch": "one_step_trace/torch_harmonic_oscillator_normalized_flowstar_compat_o4.json",
+        "torch_sha256": "d02ae27e95683b8c9f8c63f50cd6daa8b02474af1217df92e5acf5d128e3dcd1"
+      },
+      "picard_trace": {
+        "field_parity_testable": false,
+        "flowstar_available": false,
+        "torch_available": true
+      },
+      "source_coordinate_contract": {
+        "canonical_order": [
+          "state_generators_in_state_order",
+          "local_time"
+        ],
+        "domains_equal_after_permutation": true,
+        "flowstar_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "flowstar_roles": [
+          "local_time",
+          "state_generator",
+          "state_generator"
+        ],
+        "torch_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "torch_roles": [
+          "state_generator",
+          "state_generator",
+          "local_time"
+        ],
+        "torch_source_coordinates": "flowstar_normalized"
+      },
+      "state_count_equal": true,
+      "system_equal": true,
+      "trajectory_sanity": {
+        "flowstar": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        },
+        "interpretation": "zero violations is a sanity check, not a formal enclosure proof",
+        "torch": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        }
+      }
+    },
+    "scalar_affine_o4_h001": {
+      "acceptance": {
+        "flowstar": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        },
+        "match": true,
+        "torch": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        }
+      },
+      "coefficients": {
+        "comparison_is_diagnostic_without_preregistered_tolerance": true,
+        "max_absolute_difference": 1.3877787807814457e-17,
+        "rows": [
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0
+            ],
+            "flowstar": 0.05,
+            "state": 0,
+            "torch": 0.05
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              1
+            ],
+            "flowstar": 1.1,
+            "state": 0,
+            "torch": 1.1
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              2
+            ],
+            "flowstar": 1.1,
+            "state": 0,
+            "torch": 1.1
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              3
+            ],
+            "flowstar": 0.7333333333333334,
+            "state": 0,
+            "torch": 0.7333333333333334
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              4
+            ],
+            "flowstar": 0.3666666666666667,
+            "state": 0,
+            "torch": 0.3666666666666667
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              1,
+              0
+            ],
+            "flowstar": 0.05,
+            "state": 0,
+            "torch": 0.05000000000000001
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              1,
+              1
+            ],
+            "flowstar": 0.1,
+            "state": 0,
+            "torch": 0.10000000000000002
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              1,
+              2
+            ],
+            "flowstar": 0.1,
+            "state": 0,
+            "torch": 0.10000000000000002
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              1,
+              3
+            ],
+            "flowstar": 0.06666666666666667,
+            "state": 0,
+            "torch": 0.06666666666666668
+          }
+        ]
+      },
+      "effective_support": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true
+        ],
+        "flowstar_sha256": "8b5fa9f0fc43f61a2b65708caad87bb6742a6505437006b5423bbf69047b7877",
+        "torch_sha256": "8b5fa9f0fc43f61a2b65708caad87bb6742a6505437006b5423bbf69047b7877"
+      },
+      "enclosures": {
+        "flowstar_collapsed_available": true,
+        "flowstar_collapsed_contains_flowstar_raw": true,
+        "flowstar_raw_collapsed_separated": true,
+        "flowstar_raw_contains_torch_raw": false,
+        "flowstar_raw_endpoint_inside_flowstar_last_segment": true,
+        "raw_endpoint_max_absolute_difference": 2.0014096666909342e-06,
+        "torch_raw_contains_flowstar_raw": true,
+        "torch_raw_endpoint_inside_torch_last_segment": true
+      },
+      "first_contract_blocker": "flowstar.validation_trace.picard_iteration[0]_unavailable",
+      "h_equal": true,
+      "independent_remainders": {
+        "first_observable_output_difference": "independent_interval_remainder",
+        "flowstar": [
+          [
+            -2.265795929406518e-18,
+            3.4655412233824323e-23
+          ]
+        ],
+        "max_absolute_endpoint_difference": 2.001409666666673e-06,
+        "torch": [
+          [
+            -2.0013363333333394e-06,
+            2.001409666666673e-06
+          ]
+        ]
+      },
+      "inputs": {
+        "flowstar": "one_step_trace/flowstar_scalar_affine_o4.json",
+        "flowstar_sha256": "971748a7cced1ea0df15613493085e64e55335808a620abd147f5eb8a2a6432a",
+        "torch": "one_step_trace/torch_scalar_affine_normalized_flowstar_compat_o4.json",
+        "torch_sha256": "55ed88edead889d3e48ffdb1bd5646bc78dad95ef9303b58db23e646739d6d4c"
+      },
+      "picard_trace": {
+        "field_parity_testable": false,
+        "flowstar_available": false,
+        "torch_available": true
+      },
+      "source_coordinate_contract": {
+        "canonical_order": [
+          "state_generators_in_state_order",
+          "local_time"
+        ],
+        "domains_equal_after_permutation": true,
+        "flowstar_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "flowstar_roles": [
+          "local_time",
+          "state_generator"
+        ],
+        "torch_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "torch_roles": [
+          "state_generator",
+          "local_time"
+        ],
+        "torch_source_coordinates": "flowstar_normalized"
+      },
+      "state_count_equal": true,
+      "system_equal": true,
+      "trajectory_sanity": {
+        "flowstar": {
+          "corner_count": 2,
+          "endpoint_violations": [
+            {
+              "initial": [
+                0.0
+              ],
+              "state": 0,
+              "value": 0.010100670013377895
+            },
+            {
+              "initial": [
+                0.1
+              ],
+              "state": 0,
+              "value": 0.11212080401605326
+            }
+          ],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": false,
+          "segment_violations": [
+            {
+              "initial": [
+                0.1
+              ],
+              "sample_index": 1000,
+              "state": 0,
+              "value": 0.11212080401605326
+            }
+          ]
+        },
+        "interpretation": "zero violations is a sanity check, not a formal enclosure proof",
+        "torch": {
+          "corner_count": 2,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        }
+      }
+    },
+    "scalar_quadratic_o4_h001": {
+      "acceptance": {
+        "flowstar": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        },
+        "match": true,
+        "torch": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        }
+      },
+      "coefficients": {
+        "comparison_is_diagnostic_without_preregistered_tolerance": true,
+        "max_absolute_difference": 6.938893903907228e-18,
+        "rows": [
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0
+            ],
+            "flowstar": 0.05,
+            "state": 0,
+            "torch": 0.05
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              1
+            ],
+            "flowstar": 1.0025,
+            "state": 0,
+            "torch": 1.0025
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              2
+            ],
+            "flowstar": 0.050125,
+            "state": 0,
+            "torch": 0.050125
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              3
+            ],
+            "flowstar": 0.3366729166666666,
+            "state": 0,
+            "torch": 0.3366729166666666
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              4
+            ],
+            "flowstar": 0.033541979166666666,
+            "state": 0,
+            "torch": 0.033541979166666666
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              1,
+              0
+            ],
+            "flowstar": 0.05,
+            "state": 0,
+            "torch": 0.05000000000000001
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              1,
+              1
+            ],
+            "flowstar": 0.005000000000000001,
+            "state": 0,
+            "torch": 0.005000000000000001
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              1,
+              2
+            ],
+            "flowstar": 0.050375,
+            "state": 0,
+            "torch": 0.05037500000000001
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              1,
+              3
+            ],
+            "flowstar": 0.006691666666666668,
+            "state": 0,
+            "torch": 0.006691666666666668
+          },
+          {
+            "absolute_difference": 4.336808689942018e-19,
+            "canonical_exponent": [
+              2,
+              1
+            ],
+            "flowstar": 0.0025000000000000005,
+            "state": 0,
+            "torch": 0.002500000000000001
+          },
+          {
+            "absolute_difference": 1.6263032587282567e-19,
+            "canonical_exponent": [
+              2,
+              2
+            ],
+            "flowstar": 0.00037500000000000006,
+            "state": 0,
+            "torch": 0.0003750000000000002
+          }
+        ]
+      },
+      "effective_support": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true
+        ],
+        "flowstar_sha256": "b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f",
+        "torch_sha256": "b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f"
+      },
+      "enclosures": {
+        "flowstar_collapsed_available": true,
+        "flowstar_collapsed_contains_flowstar_raw": true,
+        "flowstar_raw_collapsed_separated": true,
+        "flowstar_raw_contains_torch_raw": false,
+        "flowstar_raw_endpoint_inside_flowstar_last_segment": true,
+        "raw_endpoint_max_absolute_difference": 2.4817204037149918e-05,
+        "torch_raw_contains_flowstar_raw": false,
+        "torch_raw_endpoint_inside_torch_last_segment": true
+      },
+      "first_contract_blocker": "flowstar.validation_trace.picard_iteration[0]_unavailable",
+      "h_equal": true,
+      "independent_remainders": {
+        "first_observable_output_difference": "independent_interval_remainder",
+        "flowstar": [
+          [
+            -2.6438323556452334e-08,
+            3.661774567197155e-08
+          ]
+        ],
+        "max_absolute_endpoint_difference": 2.203412780675854e-07,
+        "torch": [
+          [
+            -2.467342863791303e-07,
+            2.5695902373955696e-07
+          ]
+        ]
+      },
+      "inputs": {
+        "flowstar": "one_step_trace/flowstar_scalar_quadratic_o4.json",
+        "flowstar_sha256": "bb09026fa290afb087a899ed0c125b851ce0356c493afa505c6f643359bd8673",
+        "torch": "one_step_trace/torch_scalar_quadratic_normalized_flowstar_compat_o4.json",
+        "torch_sha256": "d372e765b1e3f1ba3735f5fd536a2bef47889307579b568be7e8560907138ccf"
+      },
+      "picard_trace": {
+        "field_parity_testable": false,
+        "flowstar_available": false,
+        "torch_available": true
+      },
+      "source_coordinate_contract": {
+        "canonical_order": [
+          "state_generators_in_state_order",
+          "local_time"
+        ],
+        "domains_equal_after_permutation": true,
+        "flowstar_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "flowstar_roles": [
+          "local_time",
+          "state_generator"
+        ],
+        "torch_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.01
+          ]
+        ],
+        "torch_roles": [
+          "state_generator",
+          "local_time"
+        ],
+        "torch_source_coordinates": "flowstar_normalized"
+      },
+      "state_count_equal": true,
+      "system_equal": true,
+      "trajectory_sanity": {
+        "flowstar": {
+          "corner_count": 2,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        },
+        "interpretation": "zero violations is a sanity check, not a formal enclosure proof",
+        "torch": {
+          "corner_count": 2,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        }
+      }
+    },
+    "van_der_pol_o2_h0001_sensitivity": {
+      "acceptance": {
+        "flowstar": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        },
+        "match": true,
+        "torch": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        }
+      },
+      "coefficients": {
+        "comparison_is_diagnostic_without_preregistered_tolerance": true,
+        "max_absolute_difference": 2.2898349882893854e-16,
+        "rows": [
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              0
+            ],
+            "flowstar": 1.25,
+            "state": 0,
+            "torch": 1.25
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              1
+            ],
+            "flowstar": 2.4000000000000004,
+            "state": 0,
+            "torch": 2.4000000000000004
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              2
+            ],
+            "flowstar": -1.3,
+            "state": 0,
+            "torch": -1.3
+          },
+          {
+            "absolute_difference": 2.2898349882893854e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              1
+            ],
+            "flowstar": 0.04999999999999982,
+            "state": 0,
+            "torch": 0.05000000000000005
+          },
+          {
+            "absolute_difference": 2.7755575615628914e-17,
+            "canonical_exponent": [
+              1,
+              0,
+              0
+            ],
+            "flowstar": 0.1499999999999999,
+            "state": 0,
+            "torch": 0.14999999999999994
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              0
+            ],
+            "flowstar": 2.4000000000000004,
+            "state": 1,
+            "torch": 2.4000000000000004
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              1
+            ],
+            "flowstar": -2.6,
+            "state": 1,
+            "torch": -2.6
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              2
+            ],
+            "flowstar": -7.668750000000002,
+            "state": 1,
+            "torch": -7.668750000000002
+          },
+          {
+            "absolute_difference": 2.2898349882893854e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              0
+            ],
+            "flowstar": 0.04999999999999982,
+            "state": 1,
+            "torch": 0.05000000000000005
+          },
+          {
+            "absolute_difference": 1.3183898417423734e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              1
+            ],
+            "flowstar": -0.0281249999999999,
+            "state": 1,
+            "torch": -0.028125000000000032
+          },
+          {
+            "absolute_difference": 2.220446049250313e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              1
+            ],
+            "flowstar": -1.0499999999999994,
+            "state": 1,
+            "torch": -1.0499999999999996
+          }
+        ]
+      },
+      "effective_support": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "8354507afc643f6a340078f82b9bd3ef305f6c52f3b67e2364f850e6c71adeed",
+        "torch_sha256": "8354507afc643f6a340078f82b9bd3ef305f6c52f3b67e2364f850e6c71adeed"
+      },
+      "enclosures": {
+        "flowstar_collapsed_available": true,
+        "flowstar_collapsed_contains_flowstar_raw": false,
+        "flowstar_raw_collapsed_separated": true,
+        "flowstar_raw_contains_torch_raw": false,
+        "flowstar_raw_endpoint_inside_flowstar_last_segment": true,
+        "raw_endpoint_max_absolute_difference": 5.17262911241545e-05,
+        "torch_raw_contains_flowstar_raw": false,
+        "torch_raw_endpoint_inside_torch_last_segment": true
+      },
+      "first_contract_blocker": "flowstar.validation_trace.picard_iteration[0]_unavailable",
+      "h_equal": true,
+      "independent_remainders": {
+        "first_observable_output_difference": "independent_interval_remainder",
+        "flowstar": [
+          [
+            -7.704866161779855e-08,
+            2.1978821162839924e-08
+          ],
+          [
+            -7.704856016294213e-05,
+            2.1978719098930252e-05
+          ]
+        ],
+        "max_absolute_endpoint_difference": 4.5602073192503736e-06,
+        "torch": [
+          [
+            -1.1857967500000038e-06,
+            1.1781280000000037e-06
+          ],
+          [
+            -8.16087674821925e-05,
+            2.6502427973218016e-05
+          ]
+        ]
+      },
+      "inputs": {
+        "flowstar": "one_step_trace/flowstar_van_der_pol_h0001_o2.json",
+        "flowstar_sha256": "fe53126c75e1e7f6f76573df5627cbe542ec047baea94bcd2a52b5d0319dafcb",
+        "torch": "one_step_trace/torch_van_der_pol_h0001_normalized_flowstar_compat_o2.json",
+        "torch_sha256": "3dbde13b43451208dbf212e6000e27b8ff55dffd6111a9e64e4fa3873a9966c1"
+      },
+      "picard_trace": {
+        "field_parity_testable": false,
+        "flowstar_available": false,
+        "torch_available": true
+      },
+      "source_coordinate_contract": {
+        "canonical_order": [
+          "state_generators_in_state_order",
+          "local_time"
+        ],
+        "domains_equal_after_permutation": true,
+        "flowstar_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.001
+          ]
+        ],
+        "flowstar_roles": [
+          "local_time",
+          "state_generator",
+          "state_generator"
+        ],
+        "torch_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.001
+          ]
+        ],
+        "torch_roles": [
+          "state_generator",
+          "state_generator",
+          "local_time"
+        ],
+        "torch_source_coordinates": "flowstar_normalized"
+      },
+      "state_count_equal": true,
+      "system_equal": true,
+      "trajectory_sanity": {
+        "flowstar": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        },
+        "interpretation": "zero violations is a sanity check, not a formal enclosure proof",
+        "torch": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        }
+      }
+    },
+    "van_der_pol_o4_h0005": {
+      "acceptance": {
+        "flowstar": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        },
+        "match": true,
+        "torch": {
+          "category": "",
+          "reason": "",
+          "requested_horizon_reached": true,
+          "status": "success"
+        }
+      },
+      "coefficients": {
+        "comparison_is_diagnostic_without_preregistered_tolerance": true,
+        "max_absolute_difference": 3.552713678800501e-15,
+        "rows": [
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              0
+            ],
+            "flowstar": 1.25,
+            "state": 0,
+            "torch": 1.25
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              1
+            ],
+            "flowstar": 2.4000000000000004,
+            "state": 0,
+            "torch": 2.4000000000000004
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              2
+            ],
+            "flowstar": -1.3,
+            "state": 0,
+            "torch": -1.3
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              3
+            ],
+            "flowstar": -2.556250000000001,
+            "state": 0,
+            "torch": -2.556250000000001
+          },
+          {
+            "absolute_difference": 4.440892098500626e-16,
+            "canonical_exponent": [
+              0,
+              0,
+              4
+            ],
+            "flowstar": 1.2658059895833331,
+            "state": 0,
+            "torch": 1.2658059895833336
+          },
+          {
+            "absolute_difference": 2.2898349882893854e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              1
+            ],
+            "flowstar": 0.04999999999999982,
+            "state": 0,
+            "torch": 0.05000000000000005
+          },
+          {
+            "absolute_difference": 6.591949208711867e-17,
+            "canonical_exponent": [
+              0,
+              1,
+              2
+            ],
+            "flowstar": -0.01406249999999995,
+            "state": 0,
+            "torch": -0.014062500000000016
+          },
+          {
+            "absolute_difference": 4.996003610813204e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              3
+            ],
+            "flowstar": -0.10569661458333297,
+            "state": 0,
+            "torch": -0.10569661458333347
+          },
+          {
+            "absolute_difference": 2.7755575615628914e-17,
+            "canonical_exponent": [
+              1,
+              0,
+              0
+            ],
+            "flowstar": 0.1499999999999999,
+            "state": 0,
+            "torch": 0.14999999999999994
+          },
+          {
+            "absolute_difference": 1.1102230246251565e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              2
+            ],
+            "flowstar": -0.5249999999999997,
+            "state": 0,
+            "torch": -0.5249999999999998
+          },
+          {
+            "absolute_difference": 1.1102230246251565e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              3
+            ],
+            "flowstar": -0.027062500000000028,
+            "state": 0,
+            "torch": -0.02706250000000014
+          },
+          {
+            "absolute_difference": 4.336808689942018e-17,
+            "canonical_exponent": [
+              1,
+              1,
+              2
+            ],
+            "flowstar": -0.009374999999999961,
+            "state": 0,
+            "torch": -0.009375000000000005
+          },
+          {
+            "absolute_difference": 6.938893903907228e-18,
+            "canonical_exponent": [
+              2,
+              0,
+              2
+            ],
+            "flowstar": -0.026999999999999975,
+            "state": 0,
+            "torch": -0.026999999999999982
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              0
+            ],
+            "flowstar": 2.4000000000000004,
+            "state": 1,
+            "torch": 2.4000000000000004
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              1
+            ],
+            "flowstar": -2.6,
+            "state": 1,
+            "torch": -2.6
+          },
+          {
+            "absolute_difference": 0.0,
+            "canonical_exponent": [
+              0,
+              0,
+              2
+            ],
+            "flowstar": -7.668750000000002,
+            "state": 1,
+            "torch": -7.668750000000002
+          },
+          {
+            "absolute_difference": 1.7763568394002505e-15,
+            "canonical_exponent": [
+              0,
+              0,
+              3
+            ],
+            "flowstar": 5.0632239583333325,
+            "state": 1,
+            "torch": 5.063223958333334
+          },
+          {
+            "absolute_difference": 3.552713678800501e-15,
+            "canonical_exponent": [
+              0,
+              0,
+              4
+            ],
+            "flowstar": 20.640046630859384,
+            "state": 1,
+            "torch": 20.64004663085938
+          },
+          {
+            "absolute_difference": 2.2898349882893854e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              0
+            ],
+            "flowstar": 0.04999999999999982,
+            "state": 1,
+            "torch": 0.05000000000000005
+          },
+          {
+            "absolute_difference": 1.3183898417423734e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              1
+            ],
+            "flowstar": -0.0281249999999999,
+            "state": 1,
+            "torch": -0.028125000000000032
+          },
+          {
+            "absolute_difference": 1.4988010832439613e-15,
+            "canonical_exponent": [
+              0,
+              1,
+              2
+            ],
+            "flowstar": -0.31708984374999893,
+            "state": 1,
+            "torch": -0.31708984375000043
+          },
+          {
+            "absolute_difference": 2.0122792321330962e-16,
+            "canonical_exponent": [
+              0,
+              1,
+              3
+            ],
+            "flowstar": 0.023016845703124827,
+            "state": 1,
+            "torch": 0.023016845703125028
+          },
+          {
+            "absolute_difference": 2.905661822261152e-17,
+            "canonical_exponent": [
+              0,
+              2,
+              2
+            ],
+            "flowstar": -0.0031249999999999776,
+            "state": 1,
+            "torch": -0.0031250000000000067
+          },
+          {
+            "absolute_difference": 2.220446049250313e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              1
+            ],
+            "flowstar": -1.0499999999999994,
+            "state": 1,
+            "torch": -1.0499999999999996
+          },
+          {
+            "absolute_difference": 3.3306690738754696e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              2
+            ],
+            "flowstar": -0.08118750000000008,
+            "state": 1,
+            "torch": -0.08118750000000041
+          },
+          {
+            "absolute_difference": 8.881784197001252e-16,
+            "canonical_exponent": [
+              1,
+              0,
+              3
+            ],
+            "flowstar": 5.2348164062499976,
+            "state": 1,
+            "torch": 5.234816406249998
+          },
+          {
+            "absolute_difference": 8.673617379884035e-17,
+            "canonical_exponent": [
+              1,
+              1,
+              1
+            ],
+            "flowstar": -0.018749999999999923,
+            "state": 1,
+            "torch": -0.01875000000000001
+          },
+          {
+            "absolute_difference": 1.2836953722228372e-16,
+            "canonical_exponent": [
+              1,
+              1,
+              2
+            ],
+            "flowstar": -0.025453124999999896,
+            "state": 1,
+            "torch": -0.025453125000000024
+          },
+          {
+            "absolute_difference": 1.3877787807814457e-17,
+            "canonical_exponent": [
+              2,
+              0,
+              1
+            ],
+            "flowstar": -0.05399999999999995,
+            "state": 1,
+            "torch": -0.053999999999999965
+          },
+          {
+            "absolute_difference": 5.551115123125783e-17,
+            "canonical_exponent": [
+              2,
+              0,
+              2
+            ],
+            "flowstar": 0.24131249999999976,
+            "state": 1,
+            "torch": 0.24131249999999982
+          },
+          {
+            "absolute_difference": 5.637851296924623e-18,
+            "canonical_exponent": [
+              2,
+              1,
+              1
+            ],
+            "flowstar": -0.0011249999999999947,
+            "state": 1,
+            "torch": -0.0011250000000000003
+          }
+        ]
+      },
+      "effective_support": {
+        "all_equal": true,
+        "equal_by_state_after_variable_permutation": [
+          true,
+          true
+        ],
+        "flowstar_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994",
+        "torch_sha256": "61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994"
+      },
+      "enclosures": {
+        "flowstar_collapsed_available": true,
+        "flowstar_collapsed_contains_flowstar_raw": false,
+        "flowstar_raw_collapsed_separated": true,
+        "flowstar_raw_contains_torch_raw": true,
+        "flowstar_raw_endpoint_inside_flowstar_last_segment": true,
+        "raw_endpoint_max_absolute_difference": 0.0005689103854540356,
+        "torch_raw_contains_flowstar_raw": false,
+        "torch_raw_endpoint_inside_torch_last_segment": true
+      },
+      "first_contract_blocker": "flowstar.validation_trace.picard_iteration[0]_unavailable",
+      "h_equal": true,
+      "independent_remainders": {
+        "first_observable_output_difference": "independent_interval_remainder",
+        "flowstar": [
+          [
+            -7.151624110747678e-09,
+            8.327640701280682e-09
+          ],
+          [
+            -1.4302650846040557e-06,
+            1.665468206204935e-06
+          ]
+        ],
+        "max_absolute_endpoint_difference": 5.61668669534845e-06,
+        "torch": [
+          [
+            -5.349864114074726e-07,
+            5.64824349053194e-07
+          ],
+          [
+            -7.0469517799525065e-06,
+            7.2792165381501774e-06
+          ]
+        ]
+      },
+      "inputs": {
+        "flowstar": "one_step_trace/flowstar_van_der_pol_official_o4.json",
+        "flowstar_sha256": "d2ff6ba849d691e26007b5a23577d1b3627bbf3607a37927993bebc53f824536",
+        "torch": "one_step_trace/torch_van_der_pol_normalized_flowstar_compat_o4.json",
+        "torch_sha256": "fc692994675a14270ea21cbdb4cd33befda6b0ceb3e8b71603440d4bb5c6ecca"
+      },
+      "picard_trace": {
+        "field_parity_testable": false,
+        "flowstar_available": false,
+        "torch_available": true
+      },
+      "source_coordinate_contract": {
+        "canonical_order": [
+          "state_generators_in_state_order",
+          "local_time"
+        ],
+        "domains_equal_after_permutation": true,
+        "flowstar_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.005
+          ]
+        ],
+        "flowstar_roles": [
+          "local_time",
+          "state_generator",
+          "state_generator"
+        ],
+        "torch_domains_canonical": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.005
+          ]
+        ],
+        "torch_roles": [
+          "state_generator",
+          "state_generator",
+          "local_time"
+        ],
+        "torch_source_coordinates": "flowstar_normalized"
+      },
+      "state_count_equal": true,
+      "system_equal": true,
+      "trajectory_sanity": {
+        "flowstar": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        },
+        "interpretation": "zero violations is a sanity check, not a formal enclosure proof",
+        "torch": {
+          "corner_count": 4,
+          "endpoint_violations": [],
+          "formal_proof": false,
+          "method": "deterministic_RK4_1000_substeps_at_initial_box_corners",
+          "passed": true,
+          "segment_violations": []
+        }
+      }
+    }
+  },
+  "gate_passed": false,
+  "headline_use_allowed": false,
+  "run_id": "20260804T060058Z",
+  "schema_version": "one-step-parity-evidence-1.0.0"
+}

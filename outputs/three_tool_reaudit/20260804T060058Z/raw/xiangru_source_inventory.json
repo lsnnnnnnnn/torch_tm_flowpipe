@@ -1,0 +1,37 @@
+{
+  "headline_b48_ratio_allowed": false,
+  "historical_timing_blocker": "private 2026 experiment source and raw JSON/log artifacts are absent",
+  "historical_timing_recomputed": false,
+  "matching_archives": [],
+  "private_expected_root": "/srv/local/shengenli/CROWN-Reach_Development",
+  "private_git_identity": null,
+  "private_raw_timing_artifacts": [],
+  "private_source_status": "blocked_missing_source",
+  "public_release": {
+    "branch": "main",
+    "controller_json_as_float_calls": [
+      {
+        "line": 98,
+        "text": "T[j][i] = output_coefficients[\"T\"][sub_iter][j][i].asFloat();"
+      },
+      {
+        "line": 100,
+        "text": "double u_max = output_coefficients[\"u_max\"][sub_iter][j].asFloat();"
+      },
+      {
+        "line": 101,
+        "text": "double u_min = output_coefficients[\"u_min\"][sub_iter][j].asFloat();"
+      }
+    ],
+    "crown_cpp_path": "/srv/local/shengenli/CROWN-Reach/src/CrownReach.cpp",
+    "crown_cpp_sha256": "8c42701b26507bf333db91b19b564943c905b65d124f33364290399c88ead32c",
+    "dirty": false,
+    "exists": true,
+    "is_substitute_for_private_2026_experiment": false,
+    "path": "/srv/local/shengenli/CROWN-Reach",
+    "remote": "https://github.com/Verified-Intelligence/CROWN-Reach",
+    "sha": "7b90f30831212f0c59c44c67aa428932d5307a81"
+  },
+  "reason": "source identity, B48 workload, completion, property, and runtime boundaries cannot be verified",
+  "schema_version": "xiangru-source-inventory-1.0.0"
+}

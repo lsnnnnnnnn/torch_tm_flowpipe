@@ -1,0 +1,159 @@
+{
+  "backend": "diffreach-canonical-adapter",
+  "basis": {
+    "effective_support": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1
+      ],
+      [
+        1,
+        1,
+        0
+      ],
+      [
+        2,
+        0,
+        0
+      ]
+    ],
+    "effective_support_sha256": "d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c",
+    "name": "restricted_quasi_quadratic",
+    "variable_order": [
+      "tau",
+      "xi_x",
+      "xi_y"
+    ]
+  },
+  "command": [
+    "experiments/three_tool_reaudit/diffreach_native_reproduction.py",
+    "--horizon",
+    "1.0",
+    "--steady-runs",
+    "1",
+    "--rhs-route",
+    "canonical-polynomial-adapter",
+    "--output",
+    "outputs/three_tool_reaudit/20260804T060058Z/raw/diffreach_adapter_vdp_t1.json"
+  ],
+  "completion": {
+    "completed_horizon": 1.0,
+    "failure_category": null,
+    "first_failed_step_index": null,
+    "first_failed_step_number": null,
+    "requested_horizon_reached": true,
+    "upstream_scan_returned_horizon": 1.0,
+    "validation_status": "completed"
+  },
+  "config": {
+    "dynamics_path": "/srv/local/shengenli/DiffReach/models/dynamics/ct_dyn/van_der_pol.py",
+    "dynamics_sha256": "17308d9d0536f00442879544e090785a30a8582a56de43378d7c5a640ed7121a",
+    "frr_rounds": 10,
+    "frr_stop_ratio": 0.95,
+    "init_remainder": 0.01,
+    "initial_set": [
+      [
+        1.1,
+        1.4
+      ],
+      [
+        2.35,
+        2.45
+      ]
+    ],
+    "n_steps": 100,
+    "partitions": 64,
+    "path": "/srv/local/shengenli/DiffReach/config/ct_dyn/van_der_pol.yaml",
+    "requested_horizon": 1.0,
+    "rhs_route": "canonical-polynomial-adapter",
+    "sha256": "b473527ffceb621eafbdc99f1121b497f84908402efe4ab9e3899d4179061eb6",
+    "splits": {
+      "0": 8,
+      "1": 8
+    },
+    "step_size": 0.01,
+    "symbolic_window": 100
+  },
+  "execution": {
+    "actual_model_dtype": "float64",
+    "cold_compile_and_execute_s": 1.0060379412025213,
+    "devices": [
+      "cpu:0"
+    ],
+    "jax_enable_x64": true,
+    "jax_version": "0.10.2",
+    "optional_jax_verify_shim_used": true,
+    "selected_execute_s": 0.06951356306672096,
+    "steady_execute_s": [
+      0.06951356306672096
+    ],
+    "thread_count": "1"
+  },
+  "lane": "matched_plant_backend",
+  "native_behavior": {
+    "contraction_rate": 1.0,
+    "contraction_shape": [
+      100,
+      64,
+      2
+    ],
+    "contraction_total": 12800,
+    "contraction_true": 12800,
+    "first_failed_step_mask": null,
+    "steps_all_dimensions_contracted": 100,
+    "verify_returned_all_requested_scan_steps": true,
+    "warning_is_not_promoted_to_process_failure_upstream": true,
+    "wrapper_fail_closed": true
+  },
+  "output": {
+    "endpoint_box": [
+      [
+        1.875656929541089,
+        1.946865506238771
+      ],
+      [
+        -0.4707897256012218,
+        -0.3711442165869679
+      ]
+    ],
+    "full_tube_boxes_returned": true,
+    "last_segment_supported": false,
+    "note": "verify returns interval boxes, not lossless native raw endpoint Taylor models",
+    "raw_endpoint_supported": false
+  },
+  "repository": {
+    "branch": "main",
+    "dirty": false,
+    "path": "/srv/local/shengenli/DiffReach",
+    "remote": "https://github.com/trustworthyrobotics/DiffReach",
+    "sha": "dd628eb443b517d6415de93e7035b4baef73963e"
+  },
+  "run_authority": "authoritative",
+  "schema_version": "diffreach-native-reproduction-1.0.0",
+  "soundness": {
+    "directed_rounding_or_mpfr": false,
+    "level": "unknown",
+    "reason": "native JAX operations use round-to-nearest; no complete outward-rounding proof was found"
+  }
+}
