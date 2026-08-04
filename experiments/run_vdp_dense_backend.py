@@ -202,6 +202,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         raise FileExistsError(f"refusing non-empty output directory: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    diagnostic_factors = []
+    if args.reset_mode != contract["reset_mode"]:
+        diagnostic_factors.append(f"reset_mode={args.reset_mode}")
+    if args.right_map_center_mode != "constant":
+        diagnostic_factors.append(f"right_map_center_mode={args.right_map_center_mode}")
+    if args.right_map_range_mode != "standard":
+        diagnostic_factors.append(f"right_map_range_mode={args.right_map_range_mode}")
     config_snapshot = {
         "contract": contract,
         "requested_horizon": requested_horizon,
@@ -210,7 +217,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reset_mode": args.reset_mode,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
-        "single_factor_diagnostic": args.reset_mode != contract["reset_mode"],
+        "diagnostic_factors": diagnostic_factors,
+        "single_factor_diagnostic": len(diagnostic_factors) == 1,
     }
     (output_dir / "config_snapshot.yaml").write_text(yaml.safe_dump(config_snapshot, sort_keys=True), encoding="utf-8")
     command = {
@@ -398,7 +406,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reset_mode": args.reset_mode,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
-        "single_factor_diagnostic": args.reset_mode != contract["reset_mode"],
+        "diagnostic_factors": diagnostic_factors,
+        "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "accepted_steps": sum(row["status"] == "accepted" for row in segment_rows),
         "rejected_step_records": sum(row["status"] == "rejected" for row in segment_rows),
         "rejected_attempts": sum(str(row.get("validation_status", "")).lower() == "failed" for row in attempt_rows),
@@ -434,6 +443,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "failure_type": failure_type,
             "backend_lane": summary["backend_lane"],
             "reset_mode": args.reset_mode,
+            "diagnostic_factors": diagnostic_factors,
             "single_factor_diagnostic": summary["single_factor_diagnostic"],
             "fallback_count": fallback_count,
             "no_endpoint_repair": True,

@@ -83,3 +83,23 @@ def test_runner_refuses_nonempty_output_directory(tmp_path):
     with pytest.raises(FileExistsError, match="refusing non-empty"):
         runner.run(args)
     assert (output / "sentinel").read_text(encoding="utf-8") == "preserve"
+
+
+def test_runner_labels_exactly_one_noncanonical_factor(tmp_path):
+    runner = _runner_module()
+    output = tmp_path / "range_midpoint"
+    args = runner.parse_args(
+        [
+            "--output-dir",
+            str(output),
+            "--tm-backend",
+            "dense",
+            "--horizon",
+            "0.02",
+            "--right-map-center-mode",
+            "range_midpoint",
+        ]
+    )
+    summary = runner.run(args)
+    assert summary["single_factor_diagnostic"] is True
+    assert summary["diagnostic_factors"] == ["right_map_center_mode=range_midpoint"]
