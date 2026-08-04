@@ -60,6 +60,7 @@ def _fixture(tmp_path: Path) -> tuple[dict, Path]:
         "reference_artifacts": [
             {"path": str(reference), "sha256": _sha(reference)}
         ],
+        "reference_evidence_location": "server_local_private_reference",
         "comparison_result": {
             "path": str(comparison),
             "sha256": _sha(comparison),
@@ -143,6 +144,58 @@ def test_declared_tolerance_requires_source(tmp_path: Path) -> None:
     row["reproduction_status"] = "reproduced_with_declared_tolerance"
     row["tolerance"] = {"value": 1e-6, "source": ""}
     assert any("tolerance.source" in error for error in _errors(registry, tmp_path))
+
+
+def test_runtime_timeout_is_a_valid_native_status(tmp_path: Path) -> None:
+    registry, _ = _fixture(tmp_path)
+    row = registry["native_reproductions"][0]
+    row["reproduction_status"] = "runtime_timeout"
+    row["completion_status"] = "partial"
+    row["certificate_status"] = "partial"
+    row["primary_comparison_eligible"] = False
+    row["tolerance"] = None
+    assert _errors(registry, tmp_path) == []
+
+
+@pytest.mark.parametrize(
+    ("path", "location", "error_fragment"),
+    [
+        (
+            "relative/reference.json",
+            "server_local_private_reference",
+            "portable_committed",
+        ),
+        (
+            "/srv/local/private/reference.json",
+            "portable_committed",
+            "server_local_private_reference",
+        ),
+    ],
+)
+def test_reference_evidence_location_matches_path_kind(
+    tmp_path: Path, path: str, location: str, error_fragment: str
+) -> None:
+    registry, _ = _fixture(tmp_path)
+    row = registry["native_reproductions"][0]
+    row["reference_artifacts"][0]["path"] = path
+    row["reference_evidence_location"] = location
+    errors = _errors(registry, tmp_path)
+    assert any(error_fragment in error for error in errors)
+
+
+def test_empty_reference_list_is_not_applicable(tmp_path: Path) -> None:
+    registry, _ = _fixture(tmp_path)
+    row = registry["native_reproductions"][0]
+    row["reproduction_status"] = "runtime_timeout"
+    row["completion_status"] = "partial"
+    row["certificate_status"] = "partial"
+    row["primary_comparison_eligible"] = False
+    row["fresh_artifacts"] = []
+    row["reference_artifacts"] = []
+    row["reference_evidence_location"] = "portable_committed"
+    row["comparison_result"] = None
+    errors = _errors(registry, tmp_path)
+    assert any("not_applicable" in error for error in errors)
 
 
 @pytest.mark.parametrize(

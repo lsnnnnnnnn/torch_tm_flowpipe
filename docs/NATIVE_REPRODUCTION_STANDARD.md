@@ -32,7 +32,7 @@ The only permitted values are:
 - `native_run_completed_reference_unavailable`: the official/native run completed,
   but the upstream repository supplies no raw reference artifact;
 - `native_algorithm_failed`, `native_unsupported_configuration`,
-  `environment_failed`, `build_failed`, `reference_command_ambiguous`,
+  `environment_failed`, `runtime_timeout`, `build_failed`, `reference_command_ambiguous`,
   `source_identity_unknown`, `patched_diagnostic_only`, and `not_attempted` have
   their literal meanings.
 
@@ -62,6 +62,11 @@ The machine enforcement is
 artifacts and rejects missing evidence, dirty exact claims, partial completion
 claims, formal claims from empirical/unknown rows, and diagnostics in the native
 table.
+
+Every row also declares `reference_evidence_location`: relative committed
+references are `portable_committed`, absolute `/srv/local/...` references are
+`server_local_private_reference`, and an empty reference list is
+`not_applicable`.  The validator rejects a mismatched path/location claim.
 
 ## What is not native reproduction
 

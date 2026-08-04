@@ -44,8 +44,9 @@ The byte-identical U0 config fixes 12 partitions, 200 steps of 0.1 seconds and a
 one-second controller period.  The unmodified GPU command enters verification but
 the available V100/cuDNN stack cannot select a valid float64 convolution during
 XLA autotuning.  It exits 1 before the first step and writes no flowpipe.  Status:
-`native_algorithm_failed`; the failure is preserved rather than replacing the
-convolution or controller.
+`environment_failed`; this GPU-backend execution failure is not a native
+algorithm rejection and is preserved rather than replacing the convolution or
+controller.
 
 A clearly separated CPU supplemental run uses the same config and native
 `run_ctl.py`.  It completes all 200 process steps, warns that only 66.22% of Picard

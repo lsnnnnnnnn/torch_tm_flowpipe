@@ -1,5 +1,14 @@
 # Three-tool final correctness report
 
+> **SUPERSEDED STATUS REPORT.** `superseded_by`:
+> [`NATIVE_REPRODUCTION_MATRIX.md`](NATIVE_REPRODUCTION_MATRIX.md),
+> [`RESULTS_STATUS.md`](RESULTS_STATUS.md), and
+> [`FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md`](FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md).
+> The historical claims below that Xiangru's source was missing and that upstream
+> DiffReach could not enter the official VDP interpreter were disproved by later
+> native evidence. Retain this file for provenance only; do not use its status
+> table as current evidence.
+
 ## Executive conclusion
 
 Official stock Flowstar order-4 Van der Pol reproduced T=10 four times with 290 segments. Torch sparse did not reach T=10; its best current validated native horizon is `6.39093111` before a finite self-map rejection. DiffReach's checked-out official VDP model cannot enter its native RHS interpreter because `jnp.stack` is unsupported; a separately labeled canonical-polynomial adapter completed T=10 for 64 partitions with every initial contraction flag true. The private Xiangru 2026 source and raw timing artifacts are absent.

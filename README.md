@@ -2,7 +2,8 @@
 
 `torch-tm-flowpipe` is a PyTorch-native, plant-only Taylor-model flowpipe
 prototype for polynomial ODEs. The active evidence branch is
-`codex/native-reproduction-no-adapters-20260804`; the canonical package is
+`codex/flowstar-scalar-affine-correctness-closure-20260804`, descended from the
+verified native-reproduction tip `438ee68`; the canonical package is
 `src/torch_tm_flowpipe`.
 
 The project implements interval arithmetic, sparse total-degree polynomials,
@@ -49,6 +50,10 @@ author/stock entrypoints for Xiangru, stock Flow*, upstream DiffReach and this
 project.  Reproduction, horizon completion, property/certificate, soundness and
 comparison eligibility are reported separately; adapters, generated harnesses and
 endpoint repair are excluded from native rows.
+
+Registry rows label reference evidence as `portable_committed`,
+`server_local_private_reference`, or `not_applicable`; an absolute private path is
+never presented as portable evidence.
 
 See the [native matrix](docs/NATIVE_REPRODUCTION_MATRIX.md),
 [standard](docs/NATIVE_REPRODUCTION_STANDARD.md), and

@@ -1,6 +1,12 @@
 # Next matched experiment decision
 
-The single next experiment worth considering is a TORA B48 matched-input study:
+Decision: the TORA B48 matched-input study described below is designed but **not
+authorized** while the Flow* scalar-affine and Xiangru complete-Q3 interval
+soundness gates remain open.  The next separate task after this scalar-affine
+diagnosis is the Xiangru complete-Q3 interval-soundness audit; only after both
+soundness gates close may the TORA study be authorized.
+
+The deferred TORA B48 matched-input design is:
 the stock/author-native Flow* plant lane and Xiangru's complete-Q3 PyTorch dynamics
 lane would receive the same 48 initial leaves, held controller affine bounds,
 controller periods, plant constants, 0.1-second segment boundaries, T=20 target and

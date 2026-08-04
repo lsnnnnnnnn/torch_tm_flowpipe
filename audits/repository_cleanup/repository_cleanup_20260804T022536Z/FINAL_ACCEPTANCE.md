@@ -1,5 +1,13 @@
 # Final acceptance
 
+> **SUPERSEDED STATUS REPORT.** `superseded_by`:
+> [`docs/NATIVE_REPRODUCTION_MATRIX.md`](../../../docs/NATIVE_REPRODUCTION_MATRIX.md),
+> [`docs/RESULTS_STATUS.md`](../../../docs/RESULTS_STATUS.md), and
+> [`docs/XIANGRU_VS_OUR_TORCH_TM_CODE_AUDIT.md`](../../../docs/XIANGRU_VS_OUR_TORCH_TM_CODE_AUDIT.md).
+> The cleanup-era statement that the external PyTorch implementation was
+> unidentified is no longer current. This acceptance narrative remains provenance
+> only.
+
 Status: `passed_ready_for_external_pytorch_audit_repository_contract_only`.
 
 ## Repository and history

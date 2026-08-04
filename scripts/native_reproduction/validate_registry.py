@@ -23,6 +23,7 @@ REPRODUCTION_STATUSES = {
     "native_algorithm_failed",
     "native_unsupported_configuration",
     "environment_failed",
+    "runtime_timeout",
     "build_failed",
     "reference_command_ambiguous",
     "source_identity_unknown",
@@ -49,6 +50,11 @@ CERTIFICATE_STATUSES = {
     "not_applicable",
 }
 SOUNDNESS_LEVELS = {"formal", "empirical", "unknown"}
+REFERENCE_EVIDENCE_LOCATIONS = {
+    "portable_committed",
+    "server_local_private_reference",
+    "not_applicable",
+}
 
 
 def sha256(path: Path) -> str:
@@ -172,6 +178,12 @@ def validate_row(
     if not isinstance(row.get("primary_comparison_eligible"), bool):
         errors.append("primary_comparison_eligible must be boolean")
 
+    reference_location = row.get("reference_evidence_location")
+    if reference_location not in REFERENCE_EVIDENCE_LOCATIONS:
+        errors.append(
+            "invalid reference_evidence_location: " f"{reference_location!r}"
+        )
+
     if diagnostic:
         if execution_kind not in DIAGNOSTIC_EXECUTION_KINDS:
             errors.append(
@@ -208,6 +220,37 @@ def validate_row(
             required=reproduced,
         )
     )
+    references = row.get("reference_artifacts")
+    if isinstance(references, list):
+        reference_paths = [
+            artifact.get("path")
+            for artifact in references
+            if isinstance(artifact, Mapping)
+            and _nonempty_string(artifact.get("path"))
+        ]
+        if not reference_paths:
+            if reference_location != "not_applicable":
+                errors.append(
+                    "empty reference_artifacts requires "
+                    "reference_evidence_location=not_applicable"
+                )
+        elif all(not Path(path).is_absolute() for path in reference_paths):
+            if reference_location != "portable_committed":
+                errors.append(
+                    "relative reference_artifacts require "
+                    "reference_evidence_location=portable_committed"
+                )
+        elif all(Path(path).is_absolute() for path in reference_paths):
+            if reference_location != "server_local_private_reference":
+                errors.append(
+                    "absolute reference_artifacts require "
+                    "reference_evidence_location=server_local_private_reference"
+                )
+        else:
+            errors.append(
+                "reference_artifacts must not mix portable relative and "
+                "server-local absolute paths"
+            )
     errors.extend(
         _artifact_errors(
             row.get("reference_artifacts"),

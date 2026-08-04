@@ -27,6 +27,7 @@
           "sha256": "99de29173076e5f10c40a22cfec4dea5675be197ff3d3c4daa2403bb9c494aa6"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x1_crownreach_flowstar_full_rootless/comparison.json",
         "sha256": "b36e0c7d75443d440b37036ab9b5dfd7389dbc9e9451094bbf3b24db0567e0d6"
@@ -63,10 +64,11 @@
           "sha256": "8ea83095c9947b75c4b74bf0e675f45f9db81d95210e4d61a13c503b35518dc4"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": null,
       "requested_horizon": 20.0,
       "reached_horizon": 0.0,
-      "reproduction_status": "native_algorithm_failed",
+      "reproduction_status": "environment_failed",
       "completion_status": "failed",
       "certificate_status": "failed",
       "property_status": "not_reached_first_step",
@@ -74,7 +76,7 @@
       "certificate_claim": "none",
       "primary_comparison_eligible": false,
       "tolerance": null,
-      "notes": "The exact GPU command entered verification but V100/cuDNN autotuning found no valid f64 convolution configuration. No step artifact was written."
+      "notes": "Environment/GPU-backend execution failure before the first step: the exact command entered verification, but V100/cuDNN float64 convolution autotuning returned NOT_FOUND: No valid config found. No step artifact was written; this is not a native algorithm rejection."
     },
     {
       "id": "xiangru_diffreach_tora_u0_cpu_reference_failure",
@@ -101,6 +103,7 @@
           "sha256": "48d68f0a89d3e7148d0872cc0a07e70ee79595b8dbc88f4a262e3c46b11bac6e"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x2_diffreach_u0_full_cpu_native/comparison.json",
         "sha256": "eecb589bb6a8ccc7844d92dc0267b3a87efaf04965bb37219891ddd37b77a925"
@@ -142,6 +145,7 @@
           "sha256": "5ae2abf56e7ba25c34931db12b5d51e95aedcdc15a1eb00518c778d1b939b15a"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x3_complete_q3_b48_native_cleanenv/comparison_declared_tolerance.json",
         "sha256": "790a0eb2b0ca160ec7abcaf38ca8fb7486b577caaec5dd403d26d318b84f2f8c"
@@ -185,6 +189,7 @@
           "sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b12_native/comparison_dirty_reference.json",
         "sha256": "9c4dd2541da7f1caab635feb6ecf11264534a45c893351d38de6e5a6feb6e359"
@@ -225,6 +230,7 @@
           "sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
         }
       ],
+      "reference_evidence_location": "server_local_private_reference",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b24_native/comparison_dirty_reference.json",
         "sha256": "f2900406eb521941b06c5bd20fcb25790c973639ff07064fb3441f41a7d2ab71"
@@ -255,6 +261,7 @@
       "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_build/command.json",
       "fresh_artifacts": [],
       "reference_artifacts": [],
+      "reference_evidence_location": "not_applicable",
       "comparison_result": null,
       "requested_horizon": 10.0,
       "reached_horizon": 0.0,
@@ -296,6 +303,7 @@
         }
       ],
       "reference_artifacts": [],
+      "reference_evidence_location": "not_applicable",
       "comparison_result": null,
       "requested_horizon": 10.0,
       "reached_horizon": 10.0,
@@ -332,6 +340,7 @@
         }
       ],
       "reference_artifacts": [],
+      "reference_evidence_location": "not_applicable",
       "comparison_result": null,
       "requested_horizon": 20.0,
       "reached_horizon": 20.0,
@@ -368,6 +377,7 @@
         }
       ],
       "reference_artifacts": [],
+      "reference_evidence_location": "not_applicable",
       "comparison_result": null,
       "requested_horizon": 10.0,
       "reached_horizon": 10.0,
@@ -406,13 +416,14 @@
           "sha256": "a6686e683119daf39d2b09ebfaf4b8a97bd66bde9157969c4dfa3e9fb5bcf91b"
         }
       ],
+      "reference_evidence_location": "portable_committed",
       "comparison_result": {
         "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10/comparison_prior_same_command.json",
         "sha256": "2ec36aa11b03cab667de285daef71af0f0e7f0106ee4aab724066d894feb6409"
       },
       "requested_horizon": 10.0,
       "reached_horizon": 6.0490383280541096,
-      "reproduction_status": "native_algorithm_failed",
+      "reproduction_status": "runtime_timeout",
       "completion_status": "partial",
       "certificate_status": "partial",
       "property_status": "not_applicable_reachability_run",
@@ -420,7 +431,7 @@
       "certificate_claim": "none",
       "primary_comparison_eligible": false,
       "tolerance": null,
-      "notes": "The same command did not reproduce the prior natural failure at 6.390931. Constant and range-midpoint adaptive lanes hit the 300 s per-lane wall cap at 5.904687 and 6.049038; no lane reached T=10."
+      "notes": "The same command did not reproduce the prior natural failure at 6.390931. Constant and range-midpoint adaptive lanes hit the declared 300 s per-lane wall cap at 5.904687 and 6.049038; no lane reached T=10. This is runtime timeout/resource exhaustion, not a mathematical solver rejection."
     }
   ],
   "diagnostics": [
@@ -443,6 +454,7 @@
         }
       ],
       "reference_artifacts": [],
+      "reference_evidence_location": "not_applicable",
       "comparison_result": null,
       "requested_horizon": 0.01,
       "reached_horizon": 0.01,

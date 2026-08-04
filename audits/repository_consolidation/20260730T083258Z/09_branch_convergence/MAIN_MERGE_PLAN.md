@@ -1,42 +1,32 @@
 # Main merge plan
 
-The GitHub default branch is `main` at
-`b2f34f5b2077e34662a2559d8c09b1d264bd7d98`. The selected integration base is
-the deep-study tip `9a684d9106633e067bfac0747244b769fa49aa0b`. The published
-formal-artifact anchor on `codex/repository-consolidation-v1` is
-`269f3599fcc480984ff651c6c1e083a8ceac74e9`.
+Status: refreshed for current integration lineage; **plan only, do not execute**.
 
-Post-convergence verification found:
+The observed GitHub default branch is `main` at
+`b2f34f5b2077e34662a2559d8c09b1d264bd7d98`.  The current integration lineage is:
 
-- `merge-base(origin/main, canonical) = b2f34f5...`;
-- publication-anchor counts are `0` main-only and `112` canonical-only;
-- `git merge-tree --write-tree origin/main 269f359...` completed without a
-  conflict and produced tree `2b599f1db1319039ae00abcf7b777be7796616ee`;
-- the canonical branch is therefore a clean fast-forward of the observed main,
-  not a history rewrite.
+1. published consolidation/history anchors;
+2. three-tool correctness parity at
+   `308b735ac577cfea39172976a4c08716f1e54d2f`;
+3. verified native reproduction at
+   `438ee68fd71fa6182eb66cac17229e20dd3cb7d3f`;
+4. `codex/flowstar-scalar-affine-correctness-closure-20260804`, created directly
+   from `438ee68` for the repository-status and Flow* scalar-affine diagnosis.
 
-`main` remains unchanged because it is the default/protected branch and the
-existing local main worktree contains user changes. Do not use that dirty
-worktree and do not force-push. Review and advance main through the normal
-protected-branch flow:
+The older instruction to fast-forward `main` directly to
+`codex/repository-consolidation-v1` is superseded.  Later lineage contains the
+governance corrections and native primary evidence that must not be bypassed.
+No main integration is authorized in the scalar-affine task, and the existing
+dirty user worktree must not be touched.
 
-```bash
-git fetch origin --prune --tags
-test "$(git rev-parse origin/main)" = \
-  b2f34f5b2077e34662a2559d8c09b1d264bd7d98
-git merge-base --is-ancestor \
-  origin/main origin/codex/repository-consolidation-v1
-git worktree add -b codex/main-merge-review \
-  ../torch_tm_flowpipe-main-merge-review origin/main
-git -C ../torch_tm_flowpipe-main-merge-review merge --ff-only \
-  origin/codex/repository-consolidation-v1
-cd ../torch_tm_flowpipe-main-merge-review
-python -m pytest -q
-git push origin HEAD:main
-```
+When a separate merge-review task is eventually authorized, it must first:
 
-If branch protection requires a pull request, use
-`codex/repository-consolidation-v1` as the head and `main` as the base instead
-of the final push command. Re-fetch immediately before approval; any changed
-main tip invalidates the recorded fast-forward proof and requires a new
-merge-tree/test pass.
+- fetch and record the then-current `origin/main` and all lineage branch tips;
+- require the reviewed closure commit to descend from exact `438ee68`;
+- inspect every commit after `438ee68` and select the reviewed integration tip;
+- recompute ancestry and merge-tree evidence against the then-current `main`;
+- rerun the full suite and registry/evidence validators from a new clean worktree;
+- use the protected-branch pull-request flow without force-push or history rewrite.
+
+The Flow* gate and primary comparison eligibility remain independent of Git
+mergeability.  A clean merge-tree or green tests cannot close a scientific gate.

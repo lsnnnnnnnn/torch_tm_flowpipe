@@ -15,13 +15,21 @@ device and timing boundary, and every row is currently
 - Xiangru DiffReach CPU U0: the failed/conservative NPZ is byte-identical; only
   66.22% of returned initial shrink flags are true.  This is a reproduced failure,
   not verification.
+- Xiangru DiffReach GPU U0: `environment_failed` before step one because the V100
+  cuDNN backend found no valid float64 convolution configuration.  This is not a
+  native algorithm rejection.
 - Stock Flow* official VDP order 4: clean source, official program, 290 segments,
   T=10 and native safe verdict.  Upstream supplies no raw reference.
 - Upstream DiffReach official VDP: official README command, 64 partitions, 1,000
   steps and T=10.  Upstream supplies no raw reference, and its returned flag does
   not cover every roundoff-inclusive refinement.
 - Our Torch order-4 H10 command: no lane reaches T=10; best fresh adaptive horizon
-  is T=6.049038 before the declared wall cap.  It is a partial failed result.
+  is T=6.049038 before the declared wall cap.  It is a partial `runtime_timeout`,
+  not an observed mathematical self-map rejection.
+
+The external PyTorch Taylor-model code is no longer unidentified: the clean
+Xiangru `27d29050...` complete-Q3 implementation has a field-level code audit.
+Its NNCS/controller orchestration is not part of this plant-only core.
 
 ## Open correctness gates
 

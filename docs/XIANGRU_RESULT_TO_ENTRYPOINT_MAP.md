@@ -100,7 +100,8 @@ partitions，不是任意吞吐 batch。
   upstream 官方 TORA benchmark，也不进入无 adapter 的跨工具 comparison。
 - fresh outcome：现场建立了 exact JAX/JAXlib 0.8.3 dependency stack。V100 GPU
   进入 verify 后在 cuDNN float64 convolution autotune 报
-  `NOT_FOUND: No valid config found`，T=0，状态 `native_algorithm_failed`。
+  `NOT_FOUND: No valid config found`，T=0，状态 `environment_failed`（GPU backend
+  execution failure，不是 native algorithm rejection）。
   分开的 CPU supplemental 完成 200 steps，但只有 66.22% shrink flags，fresh
   NPZ 与作者 CPU NPZ byte-identical；这是 `reference_failure_reproduced`，不是
   verified。
