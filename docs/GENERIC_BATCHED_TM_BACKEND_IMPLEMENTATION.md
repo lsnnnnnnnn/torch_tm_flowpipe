@@ -57,8 +57,9 @@ remainder replay is expression-tree sensitive.
 ## Validation and performance boundary
 
 The final suite is 343 passed and 2 optional external-backend skips. Dense and
-sparse schedules and reported ranges are bit-identical through T=1. The CUDA
-test executes true Picard/self-map validation, not the removed Euler helper.
+sparse schedules are exact through T=1, and the largest shared reported-range
+difference is `6.661338147750939e-16`. The CUDA test executes true
+Picard/self-map validation, not the removed Euler helper.
 
 The production microbenchmark calls package operators directly. On the
 available V100, CUDA loses to CPU for every batch-1 operation; at batch 128 only

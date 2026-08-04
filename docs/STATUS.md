@@ -5,8 +5,9 @@
 Branch `codex/generic-batched-tm-backend-vdp-t10-20260805` reaches S3
 (`dense_multistep_integrated`). The canonical dense module now performs true
 local-time Picard and remainder self-map validation; final pytest is 343 passed,
-2 skipped, including CUDA true-Picard parity. Dense/sparse short-horizon results
-are exact through T=1. The authoritative VDP T=10 request naturally stops at
+2 skipped, including CUDA true-Picard parity. Dense/sparse short-horizon
+schedules are exact through T=1 and shared ranges agree within `6.67e-16`. The
+authoritative VDP T=10 request naturally stops at
 T=6.3172908799330765 with `minimum_step_reached`; a single range-midpoint
 diagnostic reaches 6.390931109681597 but also fails. See
 [`VDP_T10_DENSE_BACKEND_CLOSURE.md`](VDP_T10_DENSE_BACKEND_CLOSURE.md).

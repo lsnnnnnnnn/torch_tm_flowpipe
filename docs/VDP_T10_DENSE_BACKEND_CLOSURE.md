@@ -46,7 +46,7 @@ slots. Remainders are `[batch, state_output]` and domains are
 | G2 operator parity | PASS | retained/dropped multiply, range, integration, conversion and adversarial tests |
 | G3 analytic one-step | PASS | constant, affine and quadratic true-Picard tests |
 | G4 VDP one-step | PASS | h=0.005/0.01 dense/sparse status and coefficients/remainders align |
-| G5 short multi-step | PASS | T=0.1/0.5/1.0 exact schedules and reported ranges; 7/34/52 steps |
+| G5 short multi-step | PASS | T=0.1/0.5/1.0 exact schedules, ranges within 6.67e-16; 7/34/52 steps |
 | G6 T=10 | FAIL | natural minimum-step rejection at 6.3172908799330765 |
 | G7 internal performance | PASS (diagnostic) | synchronized CPU/CUDA production-operator timings |
 
