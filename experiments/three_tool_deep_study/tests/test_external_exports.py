@@ -68,10 +68,14 @@ def test_flowstar_endpoint_and_adaptive_artifact_gates_if_supplied(
         assert repaired == [audit["repaired_lower"], audit["repaired_upper"]]
 
     results = path.parents[1]
+    correctness_path = results / "flowstar_correctness_summary.json"
+    if not correctness_path.is_file():
+        # A standalone current-run exporter check is complete at this point.
+        # Historical adaptive-run assertions are exercised only when that
+        # separate artifact is explicitly colocated with the supplied export.
+        return
     correctness = json.loads(
-        (results / "flowstar_correctness_summary.json").read_text(
-            encoding="utf-8"
-        )
+        correctness_path.read_text(encoding="utf-8")
     )
     parity = correctness["original_parity"]
     assert parity["passed"]

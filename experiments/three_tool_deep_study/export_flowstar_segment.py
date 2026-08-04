@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 import time
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -21,6 +22,11 @@ from common import (
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
+SRC_ROOT = REPO_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
+from torch_tm_flowpipe.protocol.backend_identity import inspect_primary_flowstar_backend
 TERM_RE = re.compile(
     r"^FS_TERM kind=(?P<kind>tube|collapsed) state=(?P<state>\d+) "
     r"coefficient=(?P<coefficient>[-+0-9.eE]+) exponents=(?P<exponents>[0-9,]*)$"
@@ -119,7 +125,9 @@ def render_cpp(
         ),
     }[variant]
     return f"""
+#define protected public
 #include "Continuous.h"
+#undef protected
 #include <cstdio>
 #include <cstdlib>
 #include <list>
@@ -146,8 +154,8 @@ static void print_terms(
         term != tmv.tms[state].expansion.terms.end(); ++term) {{
       Real coefficient;
       vector<unsigned int> degrees;
-      term->getCoefficient(coefficient);
-      term->getDegrees(degrees);
+      coefficient = term->coefficient;
+      degrees = term->degrees;
       printf("FS_TERM kind=%s state=%u coefficient=%.17g exponents=",
              kind, state, coefficient.toDouble());
       for(unsigned int i = 0; i < degrees.size(); ++i)
@@ -557,6 +565,10 @@ def _parse(
                 "tau=[h,h]; evaluate_time is endpoint_collapsed and its hull "
                 "with native is repaired_hull; no field falls back to another"
             ),
+            "term_export_access": (
+                "generated harness compile-time protected-to-public access shim; "
+                "stock headers/library are unmodified and numerical code is unchanged"
+            ),
         },
         system_definition={
             "name": system,
@@ -605,15 +617,20 @@ def _parse(
             "Flow* exporter did not emit one endpoint-path audit per state"
         )
     for state, path in endpoint_paths.items():
-        repaired = boxes["endpoint"][state]
+        raw = record["raw_endpoint_box"][state]
+        collapsed = record["enclosures"]["endpoint_collapsed"]["box"][state]
+        repaired = record["enclosures"]["repaired_hull"]["box"][state]
         native = [path["native_lower"], path["native_upper"]]
-        if (
-            repaired[0] > native[0] + 1e-12
-            or repaired[1] < native[1] - 1e-12
-        ):
+        if raw != native:
             raise RuntimeError(
-                "repaired Flow* endpoint does not contain native fixed-domain "
-                f"evaluation for state {state}: {repaired} vs {native}"
+                f"raw endpoint is not the native fixed-time box: {raw} vs {native}"
+            )
+        if repaired[0] > min(native[0], collapsed[0]) + 1e-12 or repaired[1] < max(
+            native[1], collapsed[1]
+        ) - 1e-12:
+            raise RuntimeError(
+                "diagnostic repaired hull does not contain native and collapsed "
+                f"paths for state {state}"
             )
     return record
 
@@ -627,10 +644,24 @@ def export_segment(
     variant: str,
     work_dir: str | Path,
     precision_bits: int = 53,
+    candidate_remainder: float | None = None,
+    cutoff: float | None = None,
 ) -> dict[str, Any]:
-    if variant not in spec["flowstar"]["audit_variants"]:
+    allowed = {
+        "flowstar_stock",
+        "flowstar_full_picard_revalidated",
+        "flowstar_root_cause_patch",
+    }
+    if variant not in allowed:
         raise ValueError(f"unknown Flow* variant {variant}")
-    flowstar_root = Path(spec["repositories"]["flowstar_audit"])
+    if variant == "flowstar_stock":
+        flowstar_root = Path(spec["repositories"]["flowstar_original"])
+        inspect_primary_flowstar_backend(flowstar_root, environment=os.environ)
+    else:
+        configured = spec["repositories"].get("flowstar_audit")
+        if not configured:
+            raise ValueError("patched Flowstar export requires flowstar_audit checkout")
+        flowstar_root = Path(configured)
     timeout = float(spec["timeout_s"])
     _ensure_library(flowstar_root, timeout)
     run_dir = Path(work_dir).resolve()
@@ -642,8 +673,14 @@ def export_segment(
             spec["systems"][system_name],
             h=h,
             order=order,
-            candidate=float(spec["flowstar"]["candidate_remainder"][system_name]),
-            cutoff=float(spec["flowstar"]["cutoff"]),
+            candidate=float(
+                spec["flowstar"]["candidate_remainder"][system_name]
+                if candidate_remainder is None
+                else candidate_remainder
+            ),
+            cutoff=float(
+                spec["flowstar"]["cutoff"] if cutoff is None else cutoff
+            ),
             variant=variant,
             precision_bits=precision_bits,
         ),
@@ -708,6 +745,8 @@ def main() -> None:
     parser.add_argument("--work-dir", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--precision-bits", type=int, default=53)
+    parser.add_argument("--candidate-remainder", type=float)
+    parser.add_argument("--cutoff", type=float)
     args = parser.parse_args()
     record = export_segment(
         load_spec(args.spec),
@@ -717,6 +756,8 @@ def main() -> None:
         variant=args.variant,
         work_dir=args.work_dir,
         precision_bits=args.precision_bits,
+        candidate_remainder=args.candidate_remainder,
+        cutoff=args.cutoff,
     )
     write_json(args.output, record)
     print(args.output)

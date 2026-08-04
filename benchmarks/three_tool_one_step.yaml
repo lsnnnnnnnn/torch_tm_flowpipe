@@ -1,0 +1,56 @@
+schema_version: 1
+name: three_tool_one_step_trace_contract
+timeout_s: 300
+repositories:
+  torch: .
+  torch_repaired_base: .
+  diffreach: ../DiffReach
+  flowstar_original: ../flowstar
+systems:
+  scalar_affine:
+    state_names: [x]
+    initial_box: [[0.0, 0.1]]
+    rhs:
+      - terms:
+          - {coefficient: 1.0, powers: [0]}
+          - {coefficient: 2.0, powers: [1]}
+  scalar_quadratic:
+    state_names: [x]
+    initial_box: [[0.0, 0.1]]
+    rhs:
+      - terms:
+          - {coefficient: 1.0, powers: [0]}
+          - {coefficient: 1.0, powers: [2]}
+  harmonic_oscillator:
+    state_names: [x, y]
+    initial_box: [[0.9, 1.1], [-0.1, 0.1]]
+    rhs:
+      - terms:
+          - {coefficient: 1.0, powers: [0, 1]}
+      - terms:
+          - {coefficient: -1.0, powers: [1, 0]}
+  van_der_pol:
+    state_names: [x, y]
+    initial_box: [[1.1, 1.4], [2.35, 2.45]]
+    rhs:
+      - terms:
+          - {coefficient: 1.0, powers: [0, 1]}
+      - terms:
+          - {coefficient: 1.0, powers: [0, 1]}
+          - {coefficient: -1.0, powers: [1, 0]}
+          - {coefficient: -1.0, powers: [2, 1]}
+flowstar:
+  cutoff: 1.0e-15
+  candidate_remainder:
+    scalar_affine: 1.0e-4
+    scalar_quadratic: 1.0e-4
+    harmonic_oscillator: 1.0e-3
+    van_der_pol: 1.0e-2
+torch:
+  validation_mode: growth
+  max_validation_attempts: 20
+diffreach:
+  init_remainder: 0.1
+  frr_rounds: 5
+  frr_stop_ratio: 0.95
+  symbolic_windows: 100
