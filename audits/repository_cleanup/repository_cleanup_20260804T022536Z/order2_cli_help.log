@@ -1,0 +1,33 @@
+usage: flowstar_step_trace_compare.py [-h] [--flowstar-root FLOWSTAR_ROOT]
+                                      [--out-dir OUT_DIR] [--horizon HORIZON]
+                                      [--max-segments MAX_SEGMENTS]
+                                      [--order ORDER] [--compiler COMPILER]
+                                      [--skip-flowstar]
+                                      [--compare-mode {accepted_ordinal,attempt_aligned,forced_h,all}]
+                                      [--flowstar-trace FLOWSTAR_TRACE]
+                                      [--torch-noqueue-trace TORCH_NOQUEUE_TRACE]
+                                      [--torch-v2-trace TORCH_V2_TRACE]
+                                      [--torch-noqueue-forced-trace TORCH_NOQUEUE_FORCED_TRACE]
+                                      [--torch-v2-forced-trace TORCH_V2_FORCED_TRACE]
+
+Generate Flow* and PyTorch accepted-step traces for Van der Pol diagnostics.
+This is intentionally a local diagnostic runner, not a new reachability mode.
+It compiles a repo-local C++ probe against the local Flow* toolbox and
+converts existing PyTorch normalized-insertion diagnostics into the same step
+schema.
+
+options:
+  -h, --help            show this help message and exit
+  --flowstar-root FLOWSTAR_ROOT
+  --out-dir OUT_DIR
+  --horizon HORIZON
+  --max-segments MAX_SEGMENTS
+  --order ORDER
+  --compiler COMPILER
+  --skip-flowstar
+  --compare-mode {accepted_ordinal,attempt_aligned,forced_h,all}
+  --flowstar-trace FLOWSTAR_TRACE
+  --torch-noqueue-trace TORCH_NOQUEUE_TRACE
+  --torch-v2-trace TORCH_V2_TRACE
+  --torch-noqueue-forced-trace TORCH_NOQUEUE_FORCED_TRACE
+  --torch-v2-forced-trace TORCH_V2_FORCED_TRACE

@@ -1,0 +1,243 @@
+path,symbol_or_cli,purpose,classification,replacement
+analysis/independent_audit.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/build_flowstar_case.py,__main__,"Build one generated Flow* toolbox C++ case.
+
+This is a thin CLI wrapper around :mod:`run_flowstar`.  It is useful when you
+want to inspect compiler/linker failures without running the full comparison
+suite.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/compare_against_torch_tm.py,__main__,"Plant-only comparison suite: torch_tm_flowpipe vs. Flow*.
+
+This script deliberately compares isolated polynomial plant ODEs.  It does not
+run CROWN, auto_LiRPA, NNCS controllers, Jacobian bounds, or Flow* bindings in
+the core library.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/export_flowstar_model.py,__main__,"Export plant-only polynomial ODE benchmarks to Flow* inputs.
+
+The default target is the current ``chenxin415/flowstar`` toolbox repository,
+which exposes Flow* as a C++ static library rather than as a standalone model
+file executable.  A legacy ``.model`` renderer is kept for older Flow* 2.x style
+installations, but the comparison script defaults to toolbox C++.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/parse_flowstar_output.py,__main__,"Best-effort parser for Flow* text output.
+
+Flow* can emit several text formats depending on version and settings.  This
+parser starts with conservative box parsing: it scans stdout/stderr or generated
+text files for variable ranges of the form ``x in [lo, hi]`` and returns (i) a
+proxy for the final reachable box and (ii) the hull of all seen boxes.
+
+For the current ``chenxin415/flowstar`` toolbox runner, generated C++ programs
+emit GNUPLOT interval files.  When ``parse_files(..., numeric_plot_vars=...)`` is
+used, this parser also scans two-column numeric plot blocks and interprets the
+second column as the plotted state variable range.  This is still a box/range
+comparison, not Taylor-model coefficient parsing.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/run_flowstar.py,__main__,"Runners for Flow* comparison backends.
+
+Current ``chenxin415/flowstar`` exposes the toolbox as a C++ static library.
+The preferred runner therefore compiles a generated C++ benchmark against
+``flowstar-toolbox/libflowstar.a`` and executes the resulting binary.  A legacy
+stdin-based executable runner is retained for older Flow* parser builds.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/run_flowstar_case.py,__main__,Run one generated Flow* toolbox C++ case and leave stdout/stderr/artifacts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+comparisons/flowstar/summarize_comparison.py,__main__,"Summarize plant-only Flow* comparison CSV files.
+
+The summary is intentionally conservative: it reports torch-vs-torch evidence
+whenever Flow* is unavailable, and only reports torch/Flow* ratios for rows with
+parsed Flow* boxes.  Sampling containment is labeled as a regression sanity
+check, not a proof.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+examples/affine_controlled.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+examples/scalar_quadratic.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+examples/van_der_pol_short.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/batched_dense_tm_flowpipe_demo.py,__main__,"Small dense batched Taylor-model prototype demo.
+
+This experiment intentionally does not call Flow* and does not claim end-to-end
+reachability speedups. It benchmarks a fixed dense Taylor-model step for a
+Van der Pol-like vector field against a small scalar Python-loop baseline when
+that baseline is still feasible.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/batched_tm_gpu_microbench.py,__main__,"Batched Taylor-model GPU feasibility microbenchmark.
+
+This file is diagnostic-only. It does not add a reachability algorithm, a Flow*
+mechanism, or a symbolic queue. The benchmark asks whether dense, batched
+Taylor-model kernels have a speed path that the current sparse Python object
+representation cannot expose.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/consolidated_study/cli.py,__main__,Python CLI,canonical_active,none
+experiments/diagnose_van_der_pol.py,__main__,"Focused diagnostics for the Van der Pol benchmark.
+
+This diagnostic decomposes final Taylor-model width into polynomial interval
+range and interval remainder contributions, and compares against a dense RK4
+sampling estimate of the true final box.  The sampling estimate is not a proof.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/audit_environment.py,__main__,Capture repository provenance and verify the frozen result artifact.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/collect_results.py,__main__,Merge tool outputs and enforce common validation semantics.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/generate_artifacts.py,__main__,Generate the required plots and evidence-classified report.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/launch_background.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_diffreach_followup.py,__main__,Run the experimental strict-affine DiffReach protocol.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_flowstar_audit.py,__main__,Generate and run the focused Flow* representation-layer audit.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_flowstar_followup.py,__main__,Run Flow* order-2 local construction with safe affine carry.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_smoke.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_followup/run_torch_followup.py,__main__,Run Torch dependency forensics and the B1/B_DR/B2 ablation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/collect_results.py,__main__,"Merge adapter output, enforce sanity checks, and compute long-form summaries.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/compute_references.py,__main__,Compute exact endpoint hulls and deterministic simulation-only trajectories.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/environment_audit.py,__main__,"Capture the mandated repository, software, and hardware audit.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/generate_report.py,__main__,Generate an evidence-backed Markdown report from collected benchmark data.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/launch_background.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/plot_results.py,__main__,Generate the benchmark's PNG/PDF visualization suite.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/run_diffreach.py,__main__,"Run DiffReach through a read-only, plant-only adapter.
+
+This intentionally imports only DiffReach's analytic Taylor-model path.  Its
+published project dependency set is currently internally inconsistent
+(`jax2onnx` and `immrax` require incompatible Equinox versions), so the
+benchmark uses a dedicated Python 3.12 environment with CPU JAX and does not
+import controller/CROWN code.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/run_flowstar.py,__main__,"Generate, compile, and run fixed-setting Flow* toolbox benchmarks.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/run_smoke.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/first_order_three_way/run_torch.py,__main__,Run the canonical benchmark with torch_tm_flowpipe.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_acceptance_predicate_audit.py,__main__,"Audit the first Flow* vs PyTorch acceptance-predicate divergence.
+
+This is a diagnostic report generator. It reads the short step traces produced by
+``experiments/flowstar_step_trace_compare.py`` and writes a component-level
+ledger for the first same-t/h divergence at t ~= 0, h = 0.025.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_benchmark_failure_diagnostics.py,__main__,Diagnose PyTorch Taylor-model failures on the original Flow* Van der Pol grid.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_benchmark_parity.py,__main__,Generate Flow* original Van der Pol benchmark parity artifacts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_benchmark_stage2_diagnostics.py,__main__,Stage-2 diagnostic localization for PyTorch Taylor-model Van der Pol failures.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_benchmark_symbolic_remainder_diagnostics.py,__main__,Stage-3 symbolic-remainder diagnostics for Van der Pol PyTorch TMs.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_box_lifecycle_alignment_audit.py,__main__,"Audit Flow* vs PyTorch box lifecycle alignment at the first mismatch.
+
+This diagnostic reads the stage-labeled traces emitted by
+``experiments/flowstar_step_trace_compare.py``. It does not add a solver
+mechanism, change default solver behavior, rerun h10, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_checkpoint_replay.py,__main__,Replay Flow* and PyTorch from shared normalized-insertion checkpoints.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_endpoint_pre_center_source_audit.py,__main__,"Audit endpoint-before-center source objects for the first Van der Pol mismatch.
+
+This is a diagnostic-only report. It reads existing Flow*/PyTorch trace
+artifacts and does not change solver behavior, rerun h10, add queue variants, or
+claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_insertion_width_attribution.py,__main__,Attribute normalized-insertion width growth by component.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_internal_intermediate_ranges_audit.py,__main__,"Audit Flow* internal intermediate_ranges at the first Van der Pol divergence.
+
+This diagnostic consumes the same short Flow*/PyTorch step traces used by the
+raw ctrunc residual audit. It is passive: it does not change solver behavior,
+rerun h10, add queue variants, commit Flow* source, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_normalized_insertion_h10_failure.py,__main__,Localize normalized-insertion h10 failures from recorded artifacts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_one_step_oracle.py,__main__,Local one-step Flow* oracle for the Flowstar-style Van der Pol rescue.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_picard_residual_source_audit.py,__main__,"Audit the source of the first Flow* vs PyTorch Picard residual mismatch.
+
+This diagnostic reads the step traces produced by
+``experiments/flowstar_step_trace_compare.py`` and writes a source-component
+ledger for the first same-t/h acceptance divergence at t ~= 0, h = 0.025.
+It does not add a solver mechanism and does not rerun h10.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_queue_state_audit.py,__main__,Audit normalized-insertion symbolic queue state channels.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_ctrunc_residual_audit.py,__main__,"Audit raw Picard_ctrunc_normal residual construction at first divergence.
+
+This diagnostic reads the same-source Flow*/PyTorch step traces at the first
+same-t/h validation candidate divergence, t ~= 0 and h = 0.025. It does not
+change solver behavior, rerun h10, add queue variants, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_attempt_sequence.py,__main__,Compare Flow* and opt-in raw-remainder compat on the first adaptive attempts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_experiment.py,__main__,"One-step Flow* raw remainder compatibility comparator.
+
+This script is intentionally local and narrow. It compares the first Van der Pol
+same-t/h validation divergence at h=0.025 and does not run h10, NNCS, GPU demos,
+or symbolic queue variants beyond the existing v2 comparison mode.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h10_right_map_centering.py,__main__,h10 audit for opt-in range-midpoint-centered right-map insertion.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h10_right_map_centering_handoff.py,__main__,Frozen range-midpoint schedule handoff into standard adaptive continuation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h5.py,__main__,Horizon-5 audit for opt-in Flowstar raw-remainder compatibility.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h5_divergence_audit.py,__main__,"Audit h5 divergence for opt-in Flowstar raw-remainder compatibility.
+
+This reads the h5 artifacts and performs only a short first-divergence diagnostic
+probe. It does not run h10, add NNCS/GPU work, add symbolic queue variants,
+change default solver behavior, or claim Flowstar parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h5_right_map_centering.py,__main__,"h5-only audit for opt-in range-midpoint-centered right-map insertion.
+
+This script does not run h10, does not change default solver behavior, and does
+not treat sample containment as a soundness proof.  It compares the existing
+raw-remainder-compatible h5 path against an opt-in right-map center mode that
+moves the inserted range midpoint from the Taylor-model polynomial constant
+into the normal-form center.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_h5_width_attribution.py,__main__,"Attribute h5 raw-remainder compat width accumulation before any h10 run.
+
+This is an attribution audit only. It reads h5 artifacts, replays only the
+opt-in h5 compat path for selected event windows to expose component diagnostics,
+and does not run h10, add NNCS/GPU work, add symbolic queue variants, change
+solver defaults, or claim Flowstar parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_short_horizon.py,__main__,Short-horizon Flow* raw-remainder compatibility diagnostic.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_compat_step_policy.py,__main__,Audit Flow* raw-remainder compat adaptive step policy on short horizons.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_raw_remainder_partition_audit.py,__main__,"Audit partitions of the raw Picard_ctrunc_normal returned remainder.
+
+This diagnostic reads the same-source Flow*/PyTorch step traces at the first
+same-t/h Van der Pol validation divergence, t ~= 0 and h = 0.025. It does not
+change solver behavior, rerun h10, add queue variants, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_right_map_scaling_diagnostics.py,__main__,Right-map scaling diagnostics for normalized-insertion Van der Pol runs.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_same_source_endpoint_tube_compare.py,__main__,"Compare same-source Flow*/PyTorch full-step tubes and tau=h endpoints.
+
+This is diagnostic-only. It reads committed/generated trace artifacts and does
+not change solver behavior, rerun h10, add queue variants, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_step_trace_compare.py,__main__,"Generate Flow* and PyTorch accepted-step traces for Van der Pol diagnostics.
+
+This is intentionally a local diagnostic runner, not a new reachability mode.
+It compiles a repo-local C++ probe against the local Flow* toolbox and converts
+existing PyTorch normalized-insertion diagnostics into the same step schema.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_style_failure_localization.py,__main__,Localize the Flowstar-style Van der Pol target-remainder failure.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_style_rescue_vanderpol.py,__main__,Flow*-style rescue experiment for the Van der Pol PyTorch TM benchmark.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_style_sample_containment.py,__main__,Diagnostic sample containment check for normalized-insertion Van der Pol boxes.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_symbolic_step_trace.py,__main__,Trace the PyTorch symbolic-queue components at the old symqueue failure.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_validation_candidate_decomposition_audit.py,__main__,"Audit full-step validation candidate decomposition at first divergence.
+
+This diagnostic reads the same-source Flow*/PyTorch step traces at the first
+same-t/h acceptance divergence, t ~= 0 and h = 0.025. It does not change solver
+behavior, rerun h10, add symbolic queue variants, or claim Flow* parity.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_vdp_width_trajectory_audit.py,__main__,"Consolidate Van der Pol Flow*/PyTorch width and trajectory evidence.
+
+This script is an audit over existing artifacts. It does not add a flowpipe
+mechanism, create a symbolic queue variant, or rerun the expensive h10 runs by
+default.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/flowstar_width_growth_diagnostics.py,__main__,Compare PyTorch Flow*-style reset/segment width growth against original Flow* boxes.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/harmonic_oscillator.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/plot_order_results.py,__main__,Generate order-sweep plots and a Flow* status table for Van der Pol.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/plot_results.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/scalar_quadratic_grid.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/defect_diagnostic.py,__main__,Common polynomial defect and comparison-radius diagnostic.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/export_diffreach_segment.py,__main__,Export one upstream DiffReach segment to the common read-only representation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/export_flowstar_segment.py,__main__,Export an officially composed Flow* segment to the common representation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/export_torch_segment.py,__main__,Export one native Torch TM segment to the common read-only representation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/flowstar_adaptive_trajectory_audit.py,__main__,Audit adaptive Flow* endpoints against native fixed-time evaluation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/flowstar_correctness.py,__main__,"Run the Flow* analytic, refinement-trace, and original-parity gates.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/flowstar_root_cause.py,__main__,Generate the minimal Flow* Riccati root-cause evidence bundle.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_ablation.py,__main__,Run component attribution and the common-engine matched-basis experiment.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_controlled.py,__main__,"Run one-step, common-affine-carry, and common-box-carry protocols.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_native.py,__main__,Run genuine native low-order and practical-capability configurations.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_pareto.py,__main__,Repeat selected full configurations and construct native Pareto tables.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_tool_deep_study/run_smoke.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/collect_results.py,__main__,"Collect adapter output, enforce correctness gates, and build comparison CSVs.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/generate_report.py,__main__,Generate an evidence-derived Markdown report for the full experiment.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/launch_background.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/plot_results.py,__main__,Generate the seven mandatory comparison figures.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/run_diffreach.py,__main__,Run the real upstream DiffReach plant reachability implementation.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/run_flowstar.py,__main__,Compile and run Flow* fixed-order-2 segments for all three contracts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/run_smoke.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_common_contract/run_torch.py,__main__,"Run Torch TM under one-step, common-box, and native-carry contracts.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/collect_results.py,__main__,Collect repaired outputs and enforce semantic and correctness gates.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/generate_report.py,__main__,Generate the detailed technical report from validated repair artifacts.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/launch_background.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/plot_results.py,__main__,Generate the mandatory repair figures in PNG and PDF.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_corrected_comparison.py,__main__,"Orchestrate environment capture, historical reproduction, and repaired runs.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_diffreach_audit.py,__main__,Audit the unchanged upstream DiffReach endpoint and carry semantics.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_flowstar_audit.py,__main__,"Run stock, reinjection, refinement, failure, and original-parity Flow* audits.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_smoke.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/three_way_comparison_repair/run_torch_audit.py,__main__,Run Torch with raw and fixed-time-tightened endpoints kept separate.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/tm_order_audit.py,__main__,"Audit the actual polynomial dependency degree retained by torch_tm_flowpipe.
+
+This script is intentionally diagnostic-only.  The comparison CSV has an
+``order`` column, but this audit makes explicit what the code actually retains:
+all monomials whose *total degree* is <= order over the active dependency
+variables.  For dependency-preserving runs, each segment temporarily adds a
+local time variable tau; after endpoint substitution tau is dropped.",supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/trajectory_visual_audit.py,__main__,Generate structured Van der Pol trajectory audit data and plots.,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+experiments/van_der_pol_sampling.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/check_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/check_flowstar_comparison.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/check_runtime.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/generate_flowstar_provenance.py,__main__,Python CLI,supported_diagnostic_or_historical,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/run_all.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/run_complete_pytest.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/run_vdp_order_flowstar_study.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration
+scripts/setup_dev.sh,shell_script,script entrypoint,historical_or_supported_diagnostic,experiments/consolidated_study/cli.py for supported study orchestration

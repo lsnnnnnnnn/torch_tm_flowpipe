@@ -1,0 +1,102 @@
+worktree /srv/local/shengenli/torch_tm_flowpipe
+HEAD 26a254ef585a9dee394b7e41922c06bf8799f501
+branch refs/heads/codex/flowstar-raw-remainder-compat
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study
+HEAD dd820324902c7d8c13c61c161fa830ae04b52f80
+branch refs/heads/codex/bern-ibf-tm-feasibility
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair
+HEAD 387c1188e1183a9c92521a545243a0c5aae5d51b
+branch refs/heads/codex/deep-study-protocol-repair-v2
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+HEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34
+branch refs/heads/codex/first-order-three-way-benchmark
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup
+HEAD 3d0ae5444435974e7509e176129fb796c76312ab
+branch refs/heads/codex/first-order-followup-correctness-matched-basis
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study
+HEAD 9a684d9106633e067bfac0747244b769fa49aa0b
+branch refs/heads/codex/torch-flowstar-diffreach-deep-study
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+HEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+branch refs/heads/codex/three-way-common-contract-comparison
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+HEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8
+branch refs/heads/codex/three-way-comparison-correctness-repair
+
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe
+# branch.oid 26a254ef585a9dee394b7e41922c06bf8799f501
+# branch.head codex/flowstar-raw-remainder-compat
+1 .M N... 100644 100644 100644 ad5e52b75f1c4e85930bf768bd6f6519d70fdaa1 ad5e52b75f1c4e85930bf768bd6f6519d70fdaa1 README.md
+1 .M N... 100644 100644 100644 6bcc4efdced006e0736cc1eb711f30ffa4f2060a 6bcc4efdced006e0736cc1eb711f30ffa4f2060a experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
+1 .M N... 100644 100644 100644 87aaa4c6690c12bdb42de423fa56102d9d5428b2 87aaa4c6690c12bdb42de423fa56102d9d5428b2 experiments/flowstar_step_trace_compare.py
+1 .M N... 100644 100644 100644 7267072c71518c0489d3b304787f5638ae23b035 7267072c71518c0489d3b304787f5638ae23b035 tests/test_flowstar_step_trace_compare_alignment.py
+? docs/flowstar_order2_vanderpol_failure.md
+ README.md                                          |  4 +++
+ .../flowstar_vdp_step_trace_probe.cpp              | 16 ++++++++++--
+ experiments/flowstar_step_trace_compare.py         | 24 ++++++++++++++----
+ .../test_flowstar_step_trace_compare_alignment.py  | 29 ++++++++++++++++++++++
+ 4 files changed, 66 insertions(+), 7 deletions(-)
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study
+# branch.oid dd820324902c7d8c13c61c161fa830ae04b52f80
+# branch.head codex/bern-ibf-tm-feasibility
+1 .M N... 100644 100644 100644 bbfe95725aa4b4feb01362cdca0242c49d1a4ce2 bbfe95725aa4b4feb01362cdca0242c49d1a4ce2 experiments/bern_ibf_tm_study/adapters/bern_cuda.py
+1 .M N... 100644 100644 100644 27abe074970e2e56072d97eb6a933fa045ee8965 27abe074970e2e56072d97eb6a933fa045ee8965 experiments/bern_ibf_tm_study/adapters/torch_tm_range.py
+1 .M N... 100644 100644 100644 aa6e289da77e0b1f96babf5fe58fec4dd7ad5331 aa6e289da77e0b1f96babf5fe58fec4dd7ad5331 experiments/bern_ibf_tm_study/benchmark_spec.yaml
+1 .M N... 100644 100644 100644 a7d5b5f4ec57b4ced9b07971b6a8ace263d124fd a7d5b5f4ec57b4ced9b07971b6a8ace263d124fd experiments/bern_ibf_tm_study/reference/dense_bernstein.py
+1 .M N... 100644 100644 100644 1ad443e60ed8331e21ba200f65e399e90f930047 1ad443e60ed8331e21ba200f65e399e90f930047 experiments/bern_ibf_tm_study/tests/test_reference.py
+? experiments/bern_ibf_tm_study/README.md
+? experiments/bern_ibf_tm_study/adapters/run_bern_reproduction.py
+? experiments/bern_ibf_tm_study/corpus.py
+? experiments/bern_ibf_tm_study/generate_report.py
+? experiments/bern_ibf_tm_study/launch_background.sh
+? experiments/bern_ibf_tm_study/plot_results.py
+? experiments/bern_ibf_tm_study/prototypes/
+? experiments/bern_ibf_tm_study/results/
+? experiments/bern_ibf_tm_study/run_all.sh
+? experiments/bern_ibf_tm_study/run_smoke.sh
+? experiments/bern_ibf_tm_study/run_study.py
+? experiments/bern_ibf_tm_study/tests/test_cuda_adapter.py
+? experiments/bern_ibf_tm_study/tests/test_study.py
+ .../bern_ibf_tm_study/adapters/bern_cuda.py        |  3 ++
+ .../bern_ibf_tm_study/adapters/torch_tm_range.py   | 63 +++++++++++++++++++++-
+ experiments/bern_ibf_tm_study/benchmark_spec.yaml  |  9 +++-
+ .../bern_ibf_tm_study/reference/dense_bernstein.py | 40 +++++++-------
+ .../bern_ibf_tm_study/tests/test_reference.py      |  4 +-
+ 5 files changed, 92 insertions(+), 27 deletions(-)
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair
+# branch.oid 387c1188e1183a9c92521a545243a0c5aae5d51b
+# branch.head codex/deep-study-protocol-repair-v2
+# branch.upstream origin/codex/torch-flowstar-diffreach-deep-study
+# branch.ab +5 -0
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+# branch.oid 13e5eece2002e009429d6fb463eed4bc1c53ae34
+# branch.head codex/first-order-three-way-benchmark
+# branch.upstream origin/codex/first-order-three-way-benchmark
+# branch.ab +0 -0
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_first_order_followup
+# branch.oid 3d0ae5444435974e7509e176129fb796c76312ab
+# branch.head codex/first-order-followup-correctness-matched-basis
+# branch.upstream origin/codex/first-order-followup-correctness-matched-basis
+# branch.ab +0 -0
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_three_tool_study
+# branch.oid 9a684d9106633e067bfac0747244b769fa49aa0b
+# branch.head codex/torch-flowstar-diffreach-deep-study
+# branch.upstream origin/codex/torch-flowstar-diffreach-deep-study
+# branch.ab +0 -0
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+# branch.oid 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+# branch.head codex/three-way-common-contract-comparison
+# branch.upstream origin/codex/three-way-common-contract-comparison
+# branch.ab +0 -0
+WORKTREE /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+# branch.oid 9024a8a29bdc0ad668a7c0620bd53872f4313cc8
+# branch.head codex/three-way-comparison-correctness-repair
+# branch.upstream origin/codex/three-way-comparison-correctness-repair
+# branch.ab +0 -0

@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 725, in <module>
+    main()
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 720, in main
+    result = execute(args.profile, output)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 488, in execute
+    prepare_output_directory(output)
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/src/torch_tm_flowpipe/protocol/provenance.py", line 37, in prepare_output_directory
+    raise FileExistsError(f"refusing non-empty output directory: {output}")
+FileExistsError: refusing non-empty output directory: /tmp/torch-tm-output-safety-nvF2EN
+ERROR conda.cli.main_run:execute(148): `conda run python experiments/consolidated_study/cli.py smoke --output-dir /tmp/torch-tm-output-safety-nvF2EN` failed. (See above for error)

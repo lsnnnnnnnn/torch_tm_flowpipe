@@ -1,0 +1,139 @@
+{
+  "command": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/flowstar_step_trace_compare.py",
+    "--flowstar-root",
+    "/srv/local/shengenli/flowstar",
+    "--out-dir",
+    "audits/repository_cleanup/repository_cleanup_20260804T022536Z/order2_smoke",
+    "--horizon",
+    "0.1",
+    "--max-segments",
+    "1",
+    "--order",
+    "2",
+    "--compare-mode",
+    "attempt_aligned"
+  ],
+  "configuration": {
+    "compare_mode": "attempt_aligned",
+    "effective_degree": 2,
+    "flowstar_trace_supplied": false,
+    "horizon": 0.1,
+    "max_segments": 1
+  },
+  "flowstar_backend": {
+    "audit_behavior_variables_enabled": [],
+    "backend_class": "stock-plus-gcc15-compat",
+    "canonical_root": "/srv/local/shengenli/flowstar",
+    "dirty": true,
+    "execution_route": "generated-stock",
+    "gcc15_derivative_compatibility_change": true,
+    "library_path": "/srv/local/shengenli/flowstar/flowstar-toolbox/libflowstar.a",
+    "library_sha256": "3a658f952cf8e4c30e04adb778a51c19047c37b6c8bf79f18ebae8120eefb117",
+    "patch_manifest": null,
+    "patch_manifest_sha256": null,
+    "primary_eligible": true,
+    "remote": "https://github.com/chenxin415/flowstar",
+    "repository_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "status_porcelain_v2": "# branch.oid b85a3211748cb77b736fe4ad42ee02d8d2b81148\n# branch.head master\n# branch.upstream origin/master\n# branch.ab +0 -0\n1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h\n? benchmarks/continuous/simple/simple\n? benchmarks/continuous/simple/simple.o\n? benchmarks/continuous/simple/simple.plt\n? benchmarks/continuous/vanderpol/vanderpol\n? benchmarks/continuous/vanderpol/vanderpol.o\n? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n? flowstar-2.1.0/__MACOSX/\n? flowstar-2.1.0/flowstar-2.1.0/\n? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o",
+    "tracked_changed_paths": [
+      "flowstar-toolbox/TaylorModel.h"
+    ],
+    "tracked_patch_sha256": "8f2c7128aa842c01869c4fd7a8ee89e3d3c799b9eb6966c2f406268fab5d8f91"
+  },
+  "flowstar_diagnostic": {
+    "accepted_segment_count": 0,
+    "attempted_step_schedule": [
+      0.1,
+      0.05,
+      0.025,
+      0.0125,
+      0.00625,
+      0.003125
+    ],
+    "candidate_remainder": {
+      "x": [
+        -1.1075096130371092e-05,
+        1.0841064453124997e-05
+      ],
+      "y": [
+        -0.00027793541151873634,
+        0.00010625822419835969
+      ]
+    },
+    "completed_full_horizon": false,
+    "completed_requested_scope": false,
+    "cutoff_polynomial_difference": {
+      "x": [
+        0.0,
+        0.0
+      ],
+      "y": [
+        -2.099015405931937e-18,
+        6.938893903907229e-19
+      ]
+    },
+    "diagnostic_status": "validation_rejected",
+    "effective_degree": 2,
+    "failing_dimension": "y",
+    "failure_category": "validation_rejected",
+    "failure_reason": "remainder_self_map_failed",
+    "last_accepted_time": 0.0,
+    "maximum_segments": 1,
+    "minimum_step": 0.002,
+    "multiplication_remainder_contribution": {
+      "x": null,
+      "y": [
+        -0.0002634297524249997,
+        9.120953758124978e-05
+      ]
+    },
+    "next_halving_below_minimum": true,
+    "picard_image_raw_ctrunc_remainder": {
+      "x": [
+        -1.1075096130371092e-05,
+        1.0841064453124997e-05
+      ],
+      "y": [
+        -0.0002779354115187342,
+        0.00010625822419835899
+      ]
+    },
+    "probe_process_status": "completed_without_process_error",
+    "requested_horizon": 0.1,
+    "requested_scope": "single_step_probe",
+    "self_map_defect": {
+      "x": 0.0,
+      "y": 0.00017793541151873635
+    },
+    "symbolic_propagated_width": {
+      "sum": 0.0,
+      "x": 0.0,
+      "y": 0.0
+    },
+    "target_remainder": {
+      "x": [
+        -0.0001,
+        0.0001
+      ],
+      "y": [
+        -0.0001,
+        0.0001
+      ]
+    },
+    "terminal_trace_message": "Flow* traced advance failed below minimum step",
+    "terminal_trace_status": "rejected"
+  },
+  "primary_backend_verified": true,
+  "process_records": {
+    "compile": "flowstar_probe_compile.json",
+    "run": "flowstar_probe_run.json"
+  },
+  "result_semantics": {
+    "bound_kind": "raw_validation_remainder",
+    "exporter": "flowstar_step_trace_probe",
+    "formal_cross_tool_eligible": false,
+    "refinement_semantics": "none"
+  }
+}

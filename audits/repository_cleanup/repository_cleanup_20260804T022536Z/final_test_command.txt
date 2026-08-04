@@ -1,0 +1,16 @@
+Environment for backend suites:
+FLOWSTAR_ROOT=<workspace-parent>/flowstar
+DIFFREACH_ROOT=<workspace-parent>/DiffReach
+DIFFREACH_PYTHON=<conda-root>/envs/diffreach312/bin/python
+
+Commands:
+conda run -n py11 python -m pip install -e ".[test]"
+conda run -n py11 python -m compileall -q src/torch_tm_flowpipe experiments/consolidated_study/cli.py experiments/flowstar_step_trace_compare.py experiments/three_tool_deep_study/common.py experiments/three_tool_deep_study/run_pareto.py analysis/independent_audit.py
+conda run -n py11 pytest -q -rsxX
+conda run -n py11 pytest -q -m unit -rsxX
+conda run -n py11 pytest -q -m integration -rsxX
+conda run -n py11 pytest -q -m flowstar -rsxX
+conda run -n py11 pytest -q -m diffreach -rsxX
+conda run -n py11 python experiments/consolidated_study/cli.py --help
+conda run -n py11 python experiments/flowstar_step_trace_compare.py --help
+git diff --check

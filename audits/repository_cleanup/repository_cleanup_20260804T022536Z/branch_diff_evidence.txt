@@ -1,0 +1,1947 @@
+## origin/codex/repository-consolidation-v1...codex/batched-dense-nncs-gpu
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+> 6b2c78c Improve batched dense TM range remainder kernels
+> 6b5e6e6 Clean up B-line benchmark artifact formatting
+> ad9fe38 Add batched dense NNCS GPU path demo
+
+docs/batched_dense_gpu_b_line_report.md            |  59 ++
+ docs/flowstar_archeology_boundary_report.md        |  44 ++
+ .../batched_dense_many_box_flowpipe_demo.py        | 642 +++++++++++++++++++++
+ experiments/batched_dense_nncs_demo.py             | 561 ++++++++++++++++++
+ .../many_box_report.md                             |  86 +++
+ .../many_box_summary.csv                           |  64 ++
+ outputs/batched_dense_nncs_demo/nncs_report.md     |  46 ++
+ outputs/batched_dense_nncs_demo/nncs_summary.csv   |  25 +
+ .../range_remainder_report.md                      |  33 ++
+ .../range_remainder_summary.csv                    |  97 ++++
+ src/torch_tm_flowpipe/batched_dense_tm.py          | 378 ++++++++++--
+ tests/test_batched_dense_many_box_flowpipe_demo.py | 130 +++++
+ tests/test_batched_dense_nncs_demo.py              | 112 ++++
+ tests/test_batched_dense_tm.py                     | 195 +++++++
+ 14 files changed, 2438 insertions(+), 34 deletions(-)
+
+## origin/codex/repository-consolidation-v1...codex/bern-ibf-tm-feasibility
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+> dd82032 add independent Bernstein reference and tests
+> 9fbe724 audit BERN paper code and environment
+> 8fbe4b7 add three-way robustness appendix
+
+.gitignore                                         |     4 +
+ experiments/__init__.py                            |     1 +
+ experiments/bern_ibf_tm_study/CODE_AUDIT.md        |   109 +
+ .../bern_ibf_tm_study/LICENSE_AND_PROVENANCE.md    |    56 +
+ experiments/bern_ibf_tm_study/PAPER_NOTES.md       |   110 +
+ experiments/bern_ibf_tm_study/__init__.py          |     1 +
+ experiments/bern_ibf_tm_study/adapters/__init__.py |     1 +
+ .../bern_ibf_tm_study/adapters/bern_cuda.py        |    50 +
+ .../adapters/find_indices_extension.py             |    10 +
+ .../bern_ibf_tm_study/adapters/torch_tm_range.py   |   145 +
+ experiments/bern_ibf_tm_study/benchmark_spec.yaml  |    38 +
+ .../bern_ibf_tm_study/reference/__init__.py        |    16 +
+ .../bern_ibf_tm_study/reference/dense_bernstein.py |   279 +
+ .../reference/implicit_bernstein.py                |   109 +
+ .../bern_ibf_tm_study/tests/test_reference.py      |   148 +
+ .../three_way_robustness_appendix/README.md        |    43 +
+ .../benchmark_spec.yaml                            |    63 +
+ .../collect_results.py                             |   682 +
+ .../generate_report.py                             |   247 +
+ .../launch_background.sh                           |    23 +
+ .../three_way_robustness_appendix/plot_results.py  |   241 +
+ .../results/.gitignore                             |     2 +
+ .../results/20260724T214155Z/benchmark_spec.yaml   |    63 +
+ .../20260724T214155Z/correctness_checks.json       |    87 +
+ .../20260724T214155Z/diffreach_sensitivity.csv     |    19 +
+ .../results/20260724T214155Z/environment.json      |    20 +
+ .../20260724T214155Z/flowstar_sensitivity.csv      |    73 +
+ .../diffreach_seed_refinement_sensitivity.png      |   Bin 0 -> 70083 bytes
+ .../flowstar_order_remainder_common_time_width.png |   Bin 0 -> 146416 bytes
+ ...flowstar_order_remainder_successful_horizon.png |   Bin 0 -> 227469 bytes
+ .../flowstar_stock_vs_candidate_retention.png      |   Bin 0 -> 103497 bytes
+ .../plots/torch_full_run_runtime_distributions.png |   Bin 0 -> 30716 bytes
+ .../results/20260724T214155Z/raw_results.csv       | 87925 +++++++++++++++++++
+ .../20260724T214155Z/robustness_appendix_report.md |    83 +
+ .../20260724T214155Z/runtime_repetitions.csv       |    31 +
+ .../three_way_robustness_appendix/run_all.sh       |    33 +
+ .../three_way_robustness_appendix/run_appendix.py  |  1057 +
+ .../three_way_robustness_appendix/run_smoke.sh     |    25 +
+ .../tests/test_appendix.py                         |   111 +
+ 39 files changed, 91905 insertions(+)
+
+## origin/codex/repository-consolidation-v1...codex/deep-study-protocol-repair-v2
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+> 387c118 classify deep-study partial completions
+> eb7c1bd integrate independent deep-study acceptance
+> 41a8cc6 repair deep-study timing and schema protocol
+> 0a972f8 define fail-closed deep-study protocol v2
+> 5418695 reproduce deep-study protocol defects
+
+.../three_tool_deep_study/BERN_FEASIBILITY.md      |    2 +-
+ .../three_tool_deep_study/FINAL_CONCLUSIONS.md     |    4 +-
+ experiments/three_tool_deep_study/FINAL_REPORT.md  |   10 +-
+ .../three_tool_deep_study/LITERATURE_MAP.md        |  162 --
+ .../three_tool_deep_study/MATERIALS_MISSING.md     |   43 -
+ .../three_tool_deep_study/PARETO_PROTOCOL.md       |   38 +-
+ experiments/three_tool_deep_study/README.md        |   28 +-
+ experiments/three_tool_deep_study/RUN_REGISTRY.md  |   16 +
+ .../three_tool_deep_study/SCHEMA_AND_PROTOCOL.md   |  268 +++
+ experiments/three_tool_deep_study/STATUS.md        |    6 +-
+ .../three_tool_deep_study/audit_final_bundle.py    |  688 ++++++++
+ .../three_tool_deep_study/benchmark_spec.yaml      |    2 +-
+ .../three_tool_deep_study/collect_results.py       |  955 +++++++++--
+ experiments/three_tool_deep_study/common.py        |   45 +-
+ .../three_tool_deep_study/curate_artifacts.py      |   16 +-
+ .../expected_timing_manifest.json                  |  555 ++++++
+ .../generate_bundle_manifest.py                    |   75 +
+ .../generate_expected_timing_manifest.py           |  150 ++
+ .../generate_final_delivery.py                     |  186 +-
+ .../three_tool_deep_study/generate_report.py       |  193 ++-
+ experiments/three_tool_deep_study/plot_results.py  |  401 ++++-
+ .../baseline_contract_failures.log                 |  541 ++++++
+ .../baseline_known_defect_reproductions.log        |  466 +++++
+ .../baseline_regression_failures.log               |  285 ++++
+ .../initial_environment.log                        |   69 +
+ .../old_baseline_contract_failures.log             |  541 ++++++
+ .../three_tool_deep_study/protocol_schema.py       | 1399 +++++++++++++++
+ experiments/three_tool_deep_study/run_all.sh       |   28 +-
+ .../three_tool_deep_study/run_controlled.py        |  204 ++-
+ .../three_tool_deep_study/run_logged_command.py    |   61 +
+ experiments/three_tool_deep_study/run_native.py    |  152 ++
+ experiments/three_tool_deep_study/run_pareto.py    | 1791 +++++++++++++++-----
+ experiments/three_tool_deep_study/run_smoke.sh     |   20 +-
+ .../three_tool_deep_study/runtime_protocol.py      |   60 +
+ .../tests/test_protocol_repair_contracts.py        |  583 +++++++
+ .../tests/test_protocol_repair_regressions.py      |  640 +++++++
+ .../tests/test_report_protocols.py                 |   25 +-
+ .../run_flowstar_audit.py                          |   93 +-
+ 38 files changed, 9821 insertions(+), 980 deletions(-)
+
+## origin/codex/repository-consolidation-v1...codex/first-order-followup-correctness-matched-basis
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+
+
+
+## origin/codex/repository-consolidation-v1...codex/first-order-three-way-benchmark
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+
+
+
+## origin/codex/repository-consolidation-v1...codex/flowstar-kernel-alignment
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+< 3bd72ca Audit Flowstar internal intermediate ranges
+< 823699e Partition Flowstar raw ctrunc remainder gap
+< dda7ce9 Audit Flowstar raw ctrunc residual construction
+< 7f613e4 Expose Flowstar validation candidate decomposition fields
+< c791195 Audit Flowstar validation candidate decomposition
+< fd606c8 Add same-source Flowstar endpoint tube comparison
+< 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+< 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+< 2973097 Align Flowstar Picard residual box lifecycle stages
+< 7094373 Audit Flowstar Picard residual source mismatch
+< 754e064 Add Flowstar acceptance predicate audit
+< 1998b68 Add batched dense Taylor model prototype
+< 10dd6b3 Add attempt-aligned Flowstar step comparator
+< e42ca83 Clean up Van der Pol audit formatting
+< 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+< 7101408 Publish batched TM GPU microbenchmark evidence
+< b2b1a6d Add batched TM GPU microbenchmark
+< 4d8f1e7 Add Flowstar accepted step trace comparator
+< c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+< 7e81d6a Add Flowstar symbolic queue v2 audit
+< 346772e Add Horner insertion diagnostics
+< 3778e90 Add normal-eval right-map diagnostics
+< c56f817 Add Flowstar width attribution and scalar fix run
+< a2ac372 Add split symbolic queue semantics diagnostics
+< 82a814c Fix h10 failure target width diagnostics
+< ed23e61 Add normalized insertion symqueue diagnostics
+< f667f73 Add normalized insertion h10 diagnostics
+< 6b66196 Add Flowstar normalized insertion rescue
+
+
+
+## origin/codex/repository-consolidation-v1...codex/flowstar-normalized-insertion
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+
+
+
+## origin/codex/repository-consolidation-v1...codex/flowstar-raw-remainder-compat
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+
+
+
+## origin/codex/repository-consolidation-v1...codex/three-way-common-contract-comparison
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+
+
+
+## origin/codex/repository-consolidation-v1...codex/three-way-comparison-correctness-repair
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+
+
+
+## origin/codex/repository-consolidation-v1...codex/torch-flowstar-diffreach-deep-study
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+
+
+
+## origin/codex/repository-consolidation-v1...main
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+< 3bd72ca Audit Flowstar internal intermediate ranges
+< 823699e Partition Flowstar raw ctrunc remainder gap
+< dda7ce9 Audit Flowstar raw ctrunc residual construction
+< 7f613e4 Expose Flowstar validation candidate decomposition fields
+< c791195 Audit Flowstar validation candidate decomposition
+< fd606c8 Add same-source Flowstar endpoint tube comparison
+< 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+< 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+< 2973097 Align Flowstar Picard residual box lifecycle stages
+< 7094373 Audit Flowstar Picard residual source mismatch
+< 754e064 Add Flowstar acceptance predicate audit
+< 1998b68 Add batched dense Taylor model prototype
+< 10dd6b3 Add attempt-aligned Flowstar step comparator
+< e42ca83 Clean up Van der Pol audit formatting
+< 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+< 7101408 Publish batched TM GPU microbenchmark evidence
+< b2b1a6d Add batched TM GPU microbenchmark
+< 4d8f1e7 Add Flowstar accepted step trace comparator
+< c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+< 7e81d6a Add Flowstar symbolic queue v2 audit
+< 346772e Add Horner insertion diagnostics
+< 3778e90 Add normal-eval right-map diagnostics
+< c56f817 Add Flowstar width attribution and scalar fix run
+< a2ac372 Add split symbolic queue semantics diagnostics
+< 82a814c Fix h10 failure target width diagnostics
+< ed23e61 Add normalized insertion symqueue diagnostics
+< f667f73 Add normalized insertion h10 diagnostics
+< 6b66196 Add Flowstar normalized insertion rescue
+< 54704e8 Add Flowstar width-control diagnostics
+< 461c95f Align Flowstar one-step oracle reporting
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/batched-dense-nncs-gpu
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+> 6b2c78c Improve batched dense TM range remainder kernels
+> 6b5e6e6 Clean up B-line benchmark artifact formatting
+> ad9fe38 Add batched dense NNCS GPU path demo
+
+docs/batched_dense_gpu_b_line_report.md            |  59 ++
+ docs/flowstar_archeology_boundary_report.md        |  44 ++
+ .../batched_dense_many_box_flowpipe_demo.py        | 642 +++++++++++++++++++++
+ experiments/batched_dense_nncs_demo.py             | 561 ++++++++++++++++++
+ .../many_box_report.md                             |  86 +++
+ .../many_box_summary.csv                           |  64 ++
+ outputs/batched_dense_nncs_demo/nncs_report.md     |  46 ++
+ outputs/batched_dense_nncs_demo/nncs_summary.csv   |  25 +
+ .../range_remainder_report.md                      |  33 ++
+ .../range_remainder_summary.csv                    |  97 ++++
+ src/torch_tm_flowpipe/batched_dense_tm.py          | 378 ++++++++++--
+ tests/test_batched_dense_many_box_flowpipe_demo.py | 130 +++++
+ tests/test_batched_dense_nncs_demo.py              | 112 ++++
+ tests/test_batched_dense_tm.py                     | 195 +++++++
+ 14 files changed, 2438 insertions(+), 34 deletions(-)
+
+## origin/codex/repository-consolidation-v1...origin/codex/first-order-followup-correctness-matched-basis
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/first-order-three-way-benchmark
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/flowstar-kernel-alignment
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+< 3bd72ca Audit Flowstar internal intermediate ranges
+< 823699e Partition Flowstar raw ctrunc remainder gap
+< dda7ce9 Audit Flowstar raw ctrunc residual construction
+< 7f613e4 Expose Flowstar validation candidate decomposition fields
+< c791195 Audit Flowstar validation candidate decomposition
+< fd606c8 Add same-source Flowstar endpoint tube comparison
+< 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+< 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+< 2973097 Align Flowstar Picard residual box lifecycle stages
+< 7094373 Audit Flowstar Picard residual source mismatch
+< 754e064 Add Flowstar acceptance predicate audit
+< 1998b68 Add batched dense Taylor model prototype
+< 10dd6b3 Add attempt-aligned Flowstar step comparator
+< e42ca83 Clean up Van der Pol audit formatting
+< 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+< 7101408 Publish batched TM GPU microbenchmark evidence
+< b2b1a6d Add batched TM GPU microbenchmark
+< 4d8f1e7 Add Flowstar accepted step trace comparator
+< c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+< 7e81d6a Add Flowstar symbolic queue v2 audit
+< 346772e Add Horner insertion diagnostics
+< 3778e90 Add normal-eval right-map diagnostics
+< c56f817 Add Flowstar width attribution and scalar fix run
+< a2ac372 Add split symbolic queue semantics diagnostics
+< 82a814c Fix h10 failure target width diagnostics
+< ed23e61 Add normalized insertion symqueue diagnostics
+< f667f73 Add normalized insertion h10 diagnostics
+< 6b66196 Add Flowstar normalized insertion rescue
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/flowstar-normalized-insertion
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/flowstar-raw-remainder-compat
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/repository-consolidation-v1
+
+
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/three-way-common-contract-comparison
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/three-way-comparison-correctness-repair
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+
+
+
+## origin/codex/repository-consolidation-v1...origin/codex/torch-flowstar-diffreach-deep-study
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+
+
+
+## origin/codex/repository-consolidation-v1...origin/main
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+< 3bd72ca Audit Flowstar internal intermediate ranges
+< 823699e Partition Flowstar raw ctrunc remainder gap
+< dda7ce9 Audit Flowstar raw ctrunc residual construction
+< 7f613e4 Expose Flowstar validation candidate decomposition fields
+< c791195 Audit Flowstar validation candidate decomposition
+< fd606c8 Add same-source Flowstar endpoint tube comparison
+< 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+< 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+< 2973097 Align Flowstar Picard residual box lifecycle stages
+< 7094373 Audit Flowstar Picard residual source mismatch
+< 754e064 Add Flowstar acceptance predicate audit
+< 1998b68 Add batched dense Taylor model prototype
+< 10dd6b3 Add attempt-aligned Flowstar step comparator
+< e42ca83 Clean up Van der Pol audit formatting
+< 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+< 7101408 Publish batched TM GPU microbenchmark evidence
+< b2b1a6d Add batched TM GPU microbenchmark
+< 4d8f1e7 Add Flowstar accepted step trace comparator
+< c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+< 7e81d6a Add Flowstar symbolic queue v2 audit
+< 346772e Add Horner insertion diagnostics
+< 3778e90 Add normal-eval right-map diagnostics
+< c56f817 Add Flowstar width attribution and scalar fix run
+< a2ac372 Add split symbolic queue semantics diagnostics
+< 82a814c Fix h10 failure target width diagnostics
+< ed23e61 Add normalized insertion symqueue diagnostics
+< f667f73 Add normalized insertion h10 diagnostics
+< 6b66196 Add Flowstar normalized insertion rescue
+< 54704e8 Add Flowstar width-control diagnostics
+< 461c95f Align Flowstar one-step oracle reporting
+
+
+
+## origin/codex/repository-consolidation-v1...origin/master
+
+< 08b6f24 complete repository consolidation quality audit
+< 61ab2e3 mark adapter coverage as integration tests
+< 0aab0b7 refresh clean post-convergence branch snapshot
+< ec2a2dc record verified remote branch convergence
+< 269f359 publish independently validated formal run
+< 0dfdf58 freeze final cross-tool Pareto study for formal run
+< 62f5068 record cross-tool Pareto smoke
+< 2d870f6 compute Pareto across eligible tool families
+< e50fe9d freeze corrected consolidated study for formal run
+< e205d38 record corrected smoke and failed formal audit
+< 9bef0ac confine diagnostic outputs to run directories
+< 1adb631 freeze consolidated study code for formal run
+< dbba1e0 record independently accepted pre-freeze smoke
+< 73c07c9 record pre-freeze consolidation checkpoint
+< ed5bd87 archive legacy paths and document migration
+< b206af7 consolidate analysis plots and reports
+< 6059254 repair timing completion and Pareto contracts
+< 2bac163 unify benchmark adapters and runners
+< 4c2e1f2 consolidate Taylor model core
+< 628b722 add protocol regression tests and schemas
+< ceba8b6 audit repository and branch lineage
+< 9a684d9 publish authoritative three-tool deep study
+< b0d20d4 separate tightened endpoints from raw reports
+< 129b633 close formal artifact provenance gates
+< a781c70 project CUDA Pareto endpoints before affine reset
+< 7868274 mark checkpoint push incident resolved
+< fab3141 record checkpoint push infrastructure blocker
+< 9a60e74 close adaptive Flowstar endpoint correctness gate
+< 266bed4 record interrupted authoritative run recovery
+< 3bf1e25 add fail-closed final delivery workflow
+< 89456b8 add range-only BERN feasibility and literature map
+< 8ddb829 record passing integrated protocol smoke
+< f7621d8 enforce matched basis and within-tool Pareto semantics
+< c49570a add explicit three-tool CIR v2 schema
+< cf23002 record passing Flowstar integrated smoke gates
+< 0a6cd4b document and reproduce Flowstar cache root cause
+< 4194e34 fix original Flowstar parity horizon collection
+< a87708a checkpoint recovered deep study implementation
+< 2cd48b5 soundly project repeated Torch reset endpoints
+< ef0a677 deduplicate superseded common segment artifacts
+< 92ee79c preserve every ordered common segment export
+< 50624d6 cover every native multi-step configuration
+< 6cfea9f soundly project nonlinear native reset endpoints
+< f792a76 validate Flowstar Van der Pol one-step candidates
+< 94d93b3 validate Flowstar large-step order-two candidates
+< 04708d3 add Pareto analysis plots and final reporting
+< ec82643 add common polynomial defect diagnostics
+< ecc796d add component and matched-basis ablations
+< 08bebe5 add native capability comparison regimes
+< cddc921 add controlled affine and box protocols
+< 6fe9120 add Flowstar correctness-revalidated path
+< 3dd02ff add common segment export and tool semantics
+< 9024a8a add corrected comparison results and report
+< 4274d9a document high precision Flowstar audit
+< bd88988 preserve Flowstar failures in partial outcome gate
+< 04f1f1a add corrected protocols and correctness gates
+< 8a5450e audit DiffReach raw endpoint semantics
+< 55ea10c expose raw and tightened Torch endpoints
+< 3e35997 separate Flowstar stock and diagnostic audit paths
+< 7884bf7 invalidate historical comparison and add repair harness
+< 7251adf add validated three-way comparison results
+< c12de37 add three-way common-contract reachability comparison
+< 3d0ae54 add validated focused follow-up results
+< 206b7d3 normalize Flowstar audit CSV line endings
+< 0c46c8c clarify Torch overflow decomposition plot
+< 75c1f93 support validated-test reuse in background sweeps
+< 82f3400 report validated Flowstar prefixes accurately
+< e959d60 add matched protocols runners and reporting
+< c1da8dc add sound DiffReach strict-affine projection
+< 3c2d219 add Torch dependency and finite-basis diagnostics
+< 2ab7b4a add Flowstar extraction correctness audit
+< 13e5eec add reproducible benchmark report and curated results
+< 5582ae9 tighten validation metadata and quantitative reporting
+< 62edadc add result collection plots report and runners
+< 589ac46 add semantics and correctness tests
+< 074a381 add canonical first-order three-way adapters
+< 26a254e Correct h10 centering audit semantics and add handoff
+< 7231eb0 Audit h10 right-map range midpoint centering
+< 06809ee Audit h10 right-map range midpoint centering
+< 46a7dd7 Audit h5 right-map range midpoint centering
+< 8bea95a Attribute h5 Flowstar raw remainder compat width growth
+< 3b79151 Audit h5 Flowstar raw remainder compat divergence
+< f08856c Run h5 Flowstar raw remainder compat audit
+< 8aa7976 Align Flowstar raw remainder compat step policy
+< e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+< 426f8f9 Add Flowstar raw remainder compatibility experiment
+< 3bd72ca Audit Flowstar internal intermediate ranges
+< 823699e Partition Flowstar raw ctrunc remainder gap
+< dda7ce9 Audit Flowstar raw ctrunc residual construction
+< 7f613e4 Expose Flowstar validation candidate decomposition fields
+< c791195 Audit Flowstar validation candidate decomposition
+< fd606c8 Add same-source Flowstar endpoint tube comparison
+< 1a4f093 Audit Flowstar endpoint pre-center source mismatch
+< 3d1e0d9 Refresh lifecycle-labeled Flowstar step traces
+< 2973097 Align Flowstar Picard residual box lifecycle stages
+< 7094373 Audit Flowstar Picard residual source mismatch
+< 754e064 Add Flowstar acceptance predicate audit
+< 1998b68 Add batched dense Taylor model prototype
+< 10dd6b3 Add attempt-aligned Flowstar step comparator
+< e42ca83 Clean up Van der Pol audit formatting
+< 6c4fea2 Consolidate Van der Pol Flowstar width trajectory audit
+< 7101408 Publish batched TM GPU microbenchmark evidence
+< b2b1a6d Add batched TM GPU microbenchmark
+< 4d8f1e7 Add Flowstar accepted step trace comparator
+< c07a0b8 Add three-way Flowstar symqueue v2 audit evidence
+< 7e81d6a Add Flowstar symbolic queue v2 audit
+< 346772e Add Horner insertion diagnostics
+< 3778e90 Add normal-eval right-map diagnostics
+< c56f817 Add Flowstar width attribution and scalar fix run
+< a2ac372 Add split symbolic queue semantics diagnostics
+< 82a814c Fix h10 failure target width diagnostics
+< ed23e61 Add normalized insertion symqueue diagnostics
+< f667f73 Add normalized insertion h10 diagnostics
+< 6b66196 Add Flowstar normalized insertion rescue
+< 54704e8 Add Flowstar width-control diagnostics
+< 461c95f Align Flowstar one-step oracle reporting
+< b2f34f5 Refresh Flowstar ctrunc validation outputs
+< 2dcab97 Run Flowstar one-step oracle and complete selective audit
+< d6d7556 Add validation mode to rescue reset boxes
+< bf19292 Add Flowstar ctrunc rescue diagnostics
+< 06ddeaa Add Flowstar-style rescue diagnostics
+< 443c4b6 Add Flowstar-style truncation diagnostics
+< dd978be Add Flowstar-style rescue diagnostics
+< 3e1f6f1 Extend Flowstar-style rescue to long-horizon comparison
+< d81feb7 Add Flowstar-style rescue mode
+< d83a57b Finalize Flow* Van der Pol PyTorch diagnostics conclusion
+< 79dc5aa Add symbolic remainder diagnostics
+< db9c837 Add stage-2 Taylor-model diagnostics
+< d9227c1 Add Flowstar PyTorch TM failure diagnostics
+< eb36930 Add dependency-preserving torch parity run
+< 9d498f9 2026-06-03-flowstar-vanderpol-benchmark-parity
+< 41d0669 2026-06-03-trajectory-visual-audit
+< 5b3ce73 2026-06-02-final-output-table-format-fix
+< 0499bc6 2026-06-02-final-provenance-output-cleanup
+< c74de89 2026-06-02-final-audit-source-snapshot
+< 9e96bbc 2026-06-02-flowstar-provenance-audit
+< ad8f748 2026-06-02-output-manifest-and-flowstar-doc-fix
+< 3956c91 2026-06-01-vdp-report-fix
+< 3353edb 2026-06-01-vdp-flowstar-metric-fix
+< 8b1ae42 2026-06-01
+< a185cde Initial commit

@@ -1,0 +1,47 @@
+{
+  "captured_utc": "2026-08-04T02:41:13.444065+00:00",
+  "diffreach": {
+    "backend_class": "diffreach-upstream-clean",
+    "branch": "main",
+    "diff_stat": "",
+    "dirty": false,
+    "dirty_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exists": true,
+    "path": "/srv/local/shengenli/DiffReach",
+    "primary_eligible": true,
+    "remote": "https://github.com/trustworthyrobotics/DiffReach",
+    "sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "status_porcelain_v2": "# branch.oid dd628eb443b517d6415de93e7035b4baef73963e\n# branch.head main\n# branch.upstream origin/main\n# branch.ab +0 -0",
+    "tracked_diff": ""
+  },
+  "flowstar": {
+    "backend_class": "stock-plus-gcc15-compat",
+    "branch": "master",
+    "diff_stat": "flowstar-toolbox/TaylorModel.h | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)",
+    "dirty": true,
+    "dirty_patch_sha256": "8f2c7128aa842c01869c4fd7a8ee89e3d3c799b9eb6966c2f406268fab5d8f91",
+    "exists": true,
+    "gcc15_derivative_compatibility_change": true,
+    "generated_build_mtime_utc": "2026-08-01T04:27:15.879243+00:00",
+    "generated_build_present": true,
+    "generated_build_sha256": "3a658f952cf8e4c30e04adb778a51c19047c37b6c8bf79f18ebae8120eefb117",
+    "path": "/srv/local/shengenli/flowstar",
+    "primary_eligible": true,
+    "remote": "https://github.com/chenxin415/flowstar",
+    "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "status_porcelain_v2": "# branch.oid b85a3211748cb77b736fe4ad42ee02d8d2b81148\n# branch.head master\n# branch.upstream origin/master\n# branch.ab +0 -0\n1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h\n? benchmarks/continuous/simple/simple\n? benchmarks/continuous/simple/simple.o\n? benchmarks/continuous/simple/simple.plt\n? benchmarks/continuous/vanderpol/vanderpol\n? benchmarks/continuous/vanderpol/vanderpol.o\n? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n? flowstar-2.1.0/__MACOSX/\n? flowstar-2.1.0/flowstar-2.1.0/\n? flowstar-toolbox/Constraints.o\n? flowstar-toolbox/Continuous.o\n? flowstar-toolbox/Discrete.o\n? flowstar-toolbox/Geometry.o\n? flowstar-toolbox/Hybrid.o\n? flowstar-toolbox/Interval.o\n? flowstar-toolbox/Matrix.o\n? flowstar-toolbox/Variables.o\n? flowstar-toolbox/lex.yy.c\n? flowstar-toolbox/lex.yy.o\n? flowstar-toolbox/libflowstar.a\n? flowstar-toolbox/modelParser.output\n? flowstar-toolbox/modelParser.tab.c\n? flowstar-toolbox/modelParser.tab.h\n? flowstar-toolbox/modelParser.tab.o\n? flowstar-toolbox/settings.o",
+    "torch_linkage_contract": "supported Flowstar harnesses compile/link against FLOWSTAR_ROOT/flowstar-toolbox/libflowstar.a; baseline unit suite did not invoke a Flowstar marker",
+    "tracked_diff": "diff --git a/flowstar-toolbox/TaylorModel.h b/flowstar-toolbox/TaylorModel.h\nindex 401c759..7decdf6 100644\n--- a/flowstar-toolbox/TaylorModel.h\n+++ b/flowstar-toolbox/TaylorModel.h\n@@ -897,7 +897,7 @@ template <class DATA_TYPE>\n void TaylorModel<DATA_TYPE>::derivative(TaylorModel<DATA_TYPE> & result, const unsigned int varIndex) const\n {\n \texpansion.derivative(result.expansion, varIndex);\n-\tremainder = 0;\n+\tresult.remainder = 0;\n }\n \n template <class DATA_TYPE>"
+  },
+  "flowstar_audit": {
+    "backend_class": "patched-audit",
+    "exists": false,
+    "path": "/srv/local/shengenli/flowstar-audit",
+    "primary_eligible": false
+  },
+  "identity_policy": {
+    "generated_stock": "generated harness linked to the selected stock-style library; distinct from official program",
+    "official_parser_program": "official-program route; distinct from generated harness",
+    "patched_audit": "diagnostic-only; never primary eligible"
+  }
+}

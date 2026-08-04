@@ -1,0 +1,3 @@
+cd /srv/local/shengenli/torch_tm_flowpipe
+conda run -n py11 env FLOWSTAR_ROOT=/srv/local/shengenli/flowstar DIFFREACH_ROOT=/srv/local/shengenli/DiffReach python -m pip install -e ".[test]"
+conda run -n py11 env FLOWSTAR_ROOT=/srv/local/shengenli/flowstar DIFFREACH_ROOT=/srv/local/shengenli/DiffReach pytest -q -rsxX

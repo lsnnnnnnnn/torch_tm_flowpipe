@@ -1,0 +1,77 @@
+{
+  "captured_utc": "2026-08-04T02:41:13.444530+00:00",
+  "cmake": {
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "cmake version 4.2.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake)."
+  },
+  "current_python": {
+    "command": [
+      "python",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "Python 3.11.15"
+  },
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+  "gcc": {
+    "command": [
+      "gcc",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+  },
+  "gxx": {
+    "command": [
+      "g++",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+  },
+  "nvidia_smi": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,driver_version,memory.total",
+      "--format=csv,noheader"
+    ],
+    "exit_code": 0,
+    "output": "Tesla V100-SXM2-16GB, 580.159.03, 16384 MiB\nNVIDIA Graphics Device, 580.159.03, 16384 MiB\nTesla V100-SXM2-16GB, 580.159.03, 16384 MiB\nTesla V100-SXM2-16GB, 580.159.03, 16384 MiB"
+  },
+  "py11_python": {
+    "command": [
+      "conda",
+      "run",
+      "-n",
+      "py11",
+      "python",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "Python 3.11.15"
+  },
+  "py11_torch": {
+    "command": [
+      "conda",
+      "run",
+      "-n",
+      "py11",
+      "python",
+      "-c",
+      "import torch,json; print(json.dumps({'torch':torch.__version__,'cuda_version':torch.version.cuda,'cuda_available':torch.cuda.is_available()}))"
+    ],
+    "exit_code": 0,
+    "output": "{\"torch\": \"2.5.1+cu121\", \"cuda_version\": \"12.1\", \"cuda_available\": true}"
+  },
+  "relevant_environment": {
+    "CONDA_PREFIX": "/srv/local/shengenli/miniforge3/envs/py11",
+    "CONDA_PREFIX_1": "/srv/local/shengenli/miniforge3",
+    "CONDA_PREFIX_2": "/srv/local/shengenli/miniforge3/envs/codex",
+    "CONDA_PREFIX_3": "/srv/local/shengenli/miniforge3",
+    "CUDA_DEVICE_ORDER": "PCI_BUS_ID"
+  }
+}

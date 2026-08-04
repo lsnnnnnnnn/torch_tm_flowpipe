@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 725, in <module>
+    main()
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 720, in main
+    result = execute(args.profile, output)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/experiments/consolidated_study/cli.py", line 479, in execute
+    flowstar_identity = inspect_primary_flowstar_backend(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit/src/torch_tm_flowpipe/protocol/backend_identity.py", line 204, in inspect_primary_flowstar_backend
+    raise BackendIdentityError(
+torch_tm_flowpipe.protocol.backend_identity.BackendIdentityError: primary Flowstar environment enables audit behavior: FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION
+ERROR conda.cli.main_run:execute(148): `conda run python experiments/consolidated_study/cli.py smoke --output-dir /tmp/torch-tm-cleanup-invalid-backend-20260804` failed. (See above for error)
