@@ -7,6 +7,35 @@ python -m pip install -e ".[test]"
 python -m pytest -q
 ```
 
+Run the canonical dense VDP lane into a new directory:
+
+```bash
+conda run -n py11 python experiments/run_vdp_dense_backend.py \
+  --output-dir /tmp/vdp-dense-t10-new \
+  --tm-backend dense --device cpu --horizon 10 --wall-cap-s 480
+```
+
+The expected unmodified result at commit `6bf0d9a6...` is a fail-closed
+`minimum_step_reached` at `6.3172908799330765`, not T=10 completion. The sole
+diagnostic factor is reproduced by adding
+`--right-map-center-mode range_midpoint`; it must remain labeled diagnostic.
+
+Run the production operator microbenchmark with synchronized CUDA timing:
+
+```bash
+conda run -n py11 python experiments/batched_tm_gpu_microbench.py \
+  --output-dir /tmp/dense-tm-microbench-new --dtype float64 \
+  --batches 1,8,32,48,128 --devices cpu,cuda \
+  --warmup 1 --repeats 5 --max-scalar-batch 8
+```
+
+Verify the committed closure bundle:
+
+```bash
+cd evidence/generic_batched_tm_backend_vdp_t10/20260804T152536Z
+sha256sum -c SHA256SUMS
+```
+
 Resolve the read-only sibling dependencies without hard-coded private paths:
 
 ```bash

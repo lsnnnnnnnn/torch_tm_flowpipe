@@ -28,7 +28,11 @@ The current formal comparison remains disabled because three cross-tool gates ar
 - Flowstar's official output path transforms flowpipes for plotting and writes GNUPLOT segment rectangles (`benchmarks/continuous/vanderpol/vanderpol.cpp:115-130`). These are segment/tube boxes, not fixed-time endpoints.
 - Torch now exports `endpoint_raw`, optional `endpoint_tightened`, `last_segment`, and `full_tube` as separate fields; `collapsed_endpoint` and `repaired_hull` cannot fall back to either (`experiments/three_tool_deep_study/common.py`, schema `cir-1.2.0`).
 - DiffReach's native `verify` returns interval boxes for every scan step, not a lossless raw endpoint Taylor model, last-segment object, and whole-tube metadata. The adapter records those unavailable fields rather than inventing them.
-- The Torch dense path is currently an Euler/kernel feasibility prototype: `fixed_picard_step_vdp` is exactly `self + h*rhs` and ignores `order`; `recenter_rescale` is a no-op (`src/torch_tm_flowpipe/batched_dense_tm.py:603-604`, `:640-645`). Protocol validation categorically excludes `torch-dense-prototype` from primary rows.
+- The historical Torch dense path was an Euler/kernel feasibility prototype. It
+  has now been replaced in the canonical module by true Picard/self-map
+  validation; the production identity is `hybrid_dense_core`, not the frozen
+  `torch-dense-prototype` artifact. It remains ineligible for a T=10 claim
+  because the unmodified lane stops at 6.3172908799330765.
 - Controller bounds are outside the matched plant suite. The public CROWN-Reach C++ route reads controller coefficients via `asFloat()` before constructing Flowstar Taylor models (`CROWN-Reach/src/CrownReach.cpp:88-115`). No private Xiangru source was available, so that public path is not treated as the private 2026 experiment.
 
 ## Failure and timing semantics

@@ -86,7 +86,10 @@ No private raw artifact exists from which to recompute the historical B12/B48 fi
 - Plot segment parity is not field-level parity.
 - Collapsed or repaired endpoints are not raw endpoints.
 - Partial horizons and warning-bearing scans are not certificates.
-- The dense GPU Euler kernel is not a Taylor-model flowpipe.
+- The dense GPU Euler artifact in this historical three-tool report is not a
+  Taylor-model flowpipe. A later, separately versioned generic dense backend now
+  performs Picard/self-map validation; it does not retroactively change these
+  frozen results and does not complete VDP T=10.
 - The public release is not the private Xiangru 2026 experiment.
 
 ## Minimum next research step

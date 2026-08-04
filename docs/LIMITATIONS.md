@@ -16,3 +16,10 @@
 - The supported formal runner covers the versioned selected practical
   configurations. Historical diagnostic matrices remain recoverable from
   archive tags but are not headline results.
+- The dense flowpipe is hybrid: normalized insertion and cross-step right-map
+  composition remain sparse/CPU boundary work. It is S3, not full-dense S5.
+- The authoritative VDP order-4 lane stops at T=6.3172908799330765 because the
+  y remainder self-map fails before h_min; T=10 is not closed.
+- CUDA correctness is exercised, but batch-1 CUDA is slower and only multiply
+  wins at batch 128 in the recorded V100 microbenchmark. No end-to-end GPU or
+  cross-tool speedup is claimed.

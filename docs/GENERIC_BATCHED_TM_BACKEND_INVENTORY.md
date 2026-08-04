@@ -8,6 +8,11 @@ Design decision: **extend** the existing canonical
 `src/torch_tm_flowpipe/batched_dense_tm.py`.  No second dense solver or
 comparison adapter will be introduced.
 
+This document records the pre-implementation audit. The completed upgrade and
+its S3 outcome are documented in
+[`GENERIC_BATCHED_TM_BACKEND_IMPLEMENTATION.md`](GENERIC_BATCHED_TM_BACKEND_IMPLEMENTATION.md)
+and [`VDP_T10_DENSE_BACKEND_CLOSURE.md`](VDP_T10_DENSE_BACKEND_CLOSURE.md).
+
 ## Existing dense API and layout
 
 The baseline module exports `BatchedMonomialBasis`, `BatchedPolynomial`, and
@@ -60,12 +65,12 @@ physical time and does not multiply by `h` again.
 
 ## Solver and carry findings
 
-`fixed_picard_step_vdp` ignores `order` and returns `self + h*rhs`; both it and
+At baseline, `fixed_picard_step_vdp` ignored `order` and returned `self + h*rhs`; both it and
 `one_fixed_tm_step_vdp` are Euler aliases.  Existing tests check sampled Euler
 containment, not a Taylor/Picard fixed point.  The demo repeats the same Euler
 kernel and is not a reachability solver.
 
-`recenter_rescale()` returns `self`, which silently prevents a correct
+At baseline, `recenter_rescale()` returned `self`, which silently prevented a correct
 normalized cross-step map.  The production sparse solver already supplies the
 scheduler, target-remainder subset validation, raw endpoint, segment tube,
 adaptive rejection/retry, normalized insertion, right-map composition, and

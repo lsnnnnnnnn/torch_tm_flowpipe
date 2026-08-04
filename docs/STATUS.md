@@ -1,5 +1,19 @@
 # Status
 
+## Generic batched dense TM backend (2026-08-04/05)
+
+Branch `codex/generic-batched-tm-backend-vdp-t10-20260805` reaches S3
+(`dense_multistep_integrated`). The canonical dense module now performs true
+local-time Picard and remainder self-map validation; final pytest is 343 passed,
+2 skipped, including CUDA true-Picard parity. Dense/sparse short-horizon results
+are exact through T=1. The authoritative VDP T=10 request naturally stops at
+T=6.3172908799330765 with `minimum_step_reached`; a single range-midpoint
+diagnostic reaches 6.390931109681597 but also fails. See
+[`VDP_T10_DENSE_BACKEND_CLOSURE.md`](VDP_T10_DENSE_BACKEND_CLOSURE.md).
+
+The status below is the earlier scalar-affine/native-reproduction closure and
+remains historical context.
+
 Current branch: `codex/flowstar-scalar-affine-correctness-closure-20260804`, based
 on the verified native-reproduction tip
 `438ee68fd71fa6182eb66cac17229e20dd3cb7d3`.  The launch document appended an

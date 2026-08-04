@@ -7,6 +7,8 @@ keeps comparison protocol code outside the numerical core.
 src/torch_tm_flowpipe/
   interval.py                 canonical interval arithmetic
   polynomial.py               canonical sparse total-degree polynomial
+  batched_dense_tm.py         canonical batched tensor TM/Picard core
+  polynomial_ode.py           ordered config-driven polynomial RHS
   taylor_model.py, tm_vector.py
   flowpipe.py                 one- and multi-step propagation
   symbolic_remainder.py       diagnostic symbolic-remainder support
@@ -48,6 +50,12 @@ tests/                         unit, protocol, regression, integration
 Historical experiment directories remain recoverable scientific lineage.
 They are not supported orchestration entrypoints and may not publish a current
 winner/Pareto claim.
+
+The dense flowpipe selector has two identities. `sparse_reference` stays the
+semantic oracle. `hybrid_dense_core` converts once on entry and once on exit of
+each attempted segment, runs all Picard and remainder validation on dense
+tensors, and reuses sparse normalized insertion/right-map carry. Full-dense is
+not claimed until that boundary path is replaced and T=10 completes.
 
 The evidence chain is:
 

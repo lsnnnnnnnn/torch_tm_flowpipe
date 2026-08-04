@@ -120,8 +120,8 @@ def _git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
 
-def build(run_root: Path, evidence_root: Path) -> None:
-    if evidence_root.exists() and any(evidence_root.iterdir()):
+def build(run_root: Path, evidence_root: Path, *, refresh: bool = False) -> None:
+    if evidence_root.exists() and any(evidence_root.iterdir()) and not refresh:
         raise FileExistsError(f"refusing non-empty evidence directory: {evidence_root}")
     evidence_root.mkdir(parents=True, exist_ok=True)
 
@@ -260,6 +260,24 @@ def build(run_root: Path, evidence_root: Path) -> None:
 
     for filename in ("environment.txt", "external_repo_status.txt", "git_state.txt"):
         _copy(run_root / "00_provenance" / filename, evidence_root / "00_provenance" / filename)
+    external_repositories = []
+    for name, path in (
+        ("CROWN-Reach_Development", ROOT.parent / "CROWN-Reach_Development"),
+        ("flowstar", ROOT.parent / "flowstar"),
+        ("DiffReach", ROOT.parent / "DiffReach"),
+    ):
+        external_repositories.append(
+            {
+                "name": name,
+                "path": str(path),
+                "head": subprocess.run(["git", "-C", str(path), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip(),
+                "status": subprocess.run(["git", "-C", str(path), "status", "--short", "--branch"], check=True, capture_output=True, text=True).stdout.splitlines(),
+            }
+        )
+    _write_json(
+        evidence_root / "00_provenance" / "external_repo_status_end.json",
+        {"repositories": external_repositories, "operation": "read_only_status_capture"},
+    )
     for filename in (
         "baseline_full_pytest.log",
         "baseline_targeted_pytest.log",
@@ -279,7 +297,11 @@ def build(run_root: Path, evidence_root: Path) -> None:
         },
     )
 
-    payload_files = sorted(path for path in evidence_root.rglob("*") if path.is_file())
+    payload_files = sorted(
+        path
+        for path in evidence_root.rglob("*")
+        if path.is_file() and path.name not in {"manifest.json", "SHA256SUMS"}
+    )
     manifest = {
         "run_id": RUN_ID,
         "repository": str(ROOT),
@@ -302,12 +324,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-root", type=Path, default=DEFAULT_RUN_ROOT)
     parser.add_argument("--evidence-root", type=Path, default=DEFAULT_EVIDENCE_ROOT)
+    parser.add_argument("--refresh", action="store_true", help="Refresh an existing evidence directory in place.")
     return parser.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
-    build(args.run_root.resolve(), args.evidence_root.resolve())
+    build(args.run_root.resolve(), args.evidence_root.resolve(), refresh=args.refresh)
     print(args.evidence_root.resolve())
     return 0
 

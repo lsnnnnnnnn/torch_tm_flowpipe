@@ -1,5 +1,15 @@
 # Results status
 
+## Current dense-backend result
+
+The generic dense backend has passed operator, one-step, CUDA, and short
+multi-step gates and is integrated as `hybrid_dense_core` (S3). It does not
+complete authoritative VDP order-4 T=10: the exact unmodified validated horizon
+is 6.3172908799330765, classified `minimum_step_reached`. The single-factor
+range-midpoint diagnostic reaches 6.390931109681597 and remains incomplete.
+Neither result uses endpoint repair or hidden fallback. These internal results
+do not open any cross-tool speed/ranking claim.
+
 No cross-tool speedup, Pareto frontier, winner or runtime/tightness ranking is
 citable.  Workloads differ in plant/controller, partitions, effective support,
 device and timing boundary, and every row is currently
