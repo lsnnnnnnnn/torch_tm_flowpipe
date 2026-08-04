@@ -161,6 +161,53 @@ def _torch_record() -> dict[str, Any]:
     }
 
 
+def _jax_record() -> dict[str, Any]:
+    configured = os.environ.get("DIFFREACH_PYTHON")
+    candidates = [Path(configured)] if configured else []
+    candidates.append(
+        Path(sys.executable).resolve().parents[2]
+        / "diffreach312"
+        / "bin"
+        / "python"
+    )
+    executable = next((path for path in candidates if path.is_file()), None)
+    if executable is None:
+        return {"available": False, "reason": "DiffReach Python environment not found"}
+    probe = _run(
+        (
+            str(executable),
+            "-c",
+            (
+                "import json,jax; print(json.dumps({"
+                "'version':jax.__version__,'x64':bool(jax.config.jax_enable_x64),"
+                "'devices':[str(x) for x in jax.devices()]}))"
+            ),
+        )
+    )
+    if probe["exit_code"]:
+        return {
+            "available": False,
+            "python_executable": str(executable),
+            "error": probe["stderr"],
+        }
+    try:
+        record = json.loads(str(probe["stdout"]).splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as error:
+        return {
+            "available": False,
+            "python_executable": str(executable),
+            "error": repr(error),
+            "stdout": probe["stdout"],
+            "stderr": probe["stderr"],
+        }
+    return {
+        "available": True,
+        "python_executable": str(executable),
+        **record,
+        "probe_stderr": probe["stderr"],
+    }
+
+
 def collect_manifest(
     *,
     run_id: str,
@@ -217,6 +264,7 @@ def collect_manifest(
             "compiler": _version(("g++", "--version")),
             "cmake": _version(("cmake", "--version")),
             "torch": _torch_record(),
+            "jax": _jax_record(),
         },
         "repositories": repositories,
         "flowstar_backend_identity": flowstar_identity,
@@ -270,6 +318,32 @@ def validate_manifest(manifest: Mapping[str, Any]) -> list[str]:
         for name in ("torch_tm_flowpipe", "flowstar", "diffreach", "xiangru"):
             if name not in repositories:
                 errors.append(f"missing repository record: {name}")
+    software = manifest.get("software")
+    if not isinstance(software, Mapping):
+        errors.append("software must be a mapping")
+    else:
+        for name in ("python", "compiler", "cmake", "torch", "jax"):
+            if name not in software:
+                errors.append(f"missing software record: {name}")
+    commands = manifest.get("commands")
+    if not isinstance(commands, list):
+        errors.append("commands must be a list")
+    else:
+        if manifest.get("finalized_utc") and not commands:
+            errors.append("finalized manifest must contain command records")
+        for index, command in enumerate(commands):
+            if not isinstance(command, Mapping):
+                errors.append(f"command record {index} must be a mapping")
+                continue
+            for name in ("command", "cwd", "exit_code", "stdout_path", "stderr_path"):
+                if name not in command or command.get(name) in (None, ""):
+                    errors.append(f"command record {index} missing {name}")
+            if type(command.get("exit_code")) is not int:
+                errors.append(f"command record {index} exit_code must be an integer")
+    if manifest.get("finalized_utc"):
+        finalized_benchmarks = manifest.get("benchmark_files_at_finalize")
+        if not isinstance(finalized_benchmarks, list) or not finalized_benchmarks:
+            errors.append("finalized manifest must contain benchmark_files_at_finalize")
     return errors
 
 
@@ -316,4 +390,3 @@ def write_json(path: Path, value: Any) -> None:
         json.dumps(value, indent=2, sort_keys=True, default=str) + "\n",
         encoding="utf-8",
     )
-

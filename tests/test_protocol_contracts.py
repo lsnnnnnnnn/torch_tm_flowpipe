@@ -383,7 +383,8 @@ def test_formal_profile_is_blocked_until_all_cross_tool_gates_are_verified() -> 
     gates = cli._load_cross_tool_gates(formal)
 
     assert len(gates["gates"]) == 8
-    assert not any(record["verified"] for record in gates["gates"].values())
+    assert any(record["verified"] for record in gates["gates"].values())
+    assert any(not record["verified"] for record in gates["gates"].values())
     with pytest.raises(RuntimeError, match="blocked by unverified gates"):
         cli._require_cross_tool_gates(gates)
     RefinementSemantics,

@@ -63,17 +63,12 @@ def validate_cross_tool_gate_manifest(
         if type(verified) is not bool:
             errors.append(f"{name}: verified must be a boolean")
             continue
-        if verified is False:
-            pending.append(name)
-            if not str(record.get("blocker", "")).strip():
-                errors.append(f"{name}: pending gate requires blocker")
-            continue
         for key in ("evidence", "evidence_sha256", "report", "test"):
             if not str(record.get(key, "")).strip():
-                errors.append(f"{name}: verified gate missing {key}")
+                errors.append(f"{name}: gate missing {key}")
         applies_to = record.get("applies_to")
         if not isinstance(applies_to, list) or not applies_to:
-            errors.append(f"{name}: verified gate missing applies_to list")
+            errors.append(f"{name}: gate missing applies_to list")
         evidence_text = str(record.get("evidence", ""))
         report_text = str(record.get("report", ""))
         if evidence_text:
@@ -90,5 +85,8 @@ def validate_cross_tool_gate_manifest(
                 errors.append(f"{name}: report escapes repository")
             elif not report.is_file():
                 errors.append(f"{name}: report does not exist")
+        if verified is False:
+            pending.append(name)
+            if not str(record.get("blocker", "")).strip():
+                errors.append(f"{name}: pending gate requires blocker")
     return GateManifestDecision(not errors and not pending, tuple(errors), tuple(pending))
-

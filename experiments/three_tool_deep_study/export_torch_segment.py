@@ -25,7 +25,14 @@ from common import (
     unavailable,
     write_json,
 )
-from torch_tm_flowpipe import Interval, TaylorModel, TMVector, flowpipe_step
+from torch_tm_flowpipe import (
+    FlowstarNormalFlowpipeState,
+    Interval,
+    TaylorModel,
+    TMVector,
+    flowpipe_step,
+    flowpipe_step_from_tm,
+)
 
 torch.set_default_dtype(torch.float64)
 
@@ -109,17 +116,45 @@ def export_segment(
     system_name: str,
     h: float,
     order: int,
+    validation_mode: str | None = None,
+    candidate_remainder: float | None = None,
+    cutoff: float | None = None,
+    source_coordinates: str = "physical_identity",
 ) -> dict[str, Any]:
     system = spec["systems"][system_name]
     diagnostics: list[dict[str, Any]] = []
     propagation_started = time.perf_counter()
-    segment = flowpipe_step(
+    selected_validation_mode = (
+        str(spec["torch"]["validation_mode"])
+        if validation_mode is None
+        else validation_mode
+    )
+    selected_candidate_remainder = (
+        float(candidate_remainder)
+        if candidate_remainder is not None
+        else 1.0e-4
+    )
+    initial_box = [Interval(*bounds) for bounds in system["initial_box"]]
+    step_builder = flowpipe_step
+    step_source: Any = initial_box
+    if source_coordinates == "flowstar_normalized":
+        step_builder = flowpipe_step_from_tm
+        step_source = FlowstarNormalFlowpipeState.from_initial_box(
+            initial_box, int(order)
+        ).normalized_initial_tm(int(order))
+    elif source_coordinates != "physical_identity":
+        raise ValueError(
+            "source_coordinates must be physical_identity or flowstar_normalized"
+        )
+    segment = step_builder(
         rhs_from_spec(system),
-        [Interval(*bounds) for bounds in system["initial_box"]],
+        step_source,
         float(h),
         int(order),
         max_validation_attempts=int(spec["torch"]["max_validation_attempts"]),
-        validation_mode=str(spec["torch"]["validation_mode"]),
+        validation_mode=selected_validation_mode,
+        target_remainder_radius=selected_candidate_remainder,
+        cutoff_threshold=cutoff,
         diagnostics=diagnostics,
         diagnostics_context={
             "protocol": "common_segment_export",
@@ -195,6 +230,10 @@ def export_segment(
             "device": "cpu",
             "directed_rounding_or_mpfr": "torch_nextafter_outward",
             "floating_point_enclosure_candidate": True,
+            "validation_mode": selected_validation_mode,
+            "candidate_remainder": selected_candidate_remainder,
+            "cutoff": cutoff,
+            "source_coordinates": source_coordinates,
             "native_point_samples": _native_samples(tube),
         },
         system_definition={
@@ -250,6 +289,14 @@ def main() -> None:
     parser.add_argument("--system", default="coupled_quadratic")
     parser.add_argument("--h", type=float, default=0.01)
     parser.add_argument("--order", type=int, default=2)
+    parser.add_argument("--validation-mode")
+    parser.add_argument("--candidate-remainder", type=float)
+    parser.add_argument("--cutoff", type=float)
+    parser.add_argument(
+        "--source-coordinates",
+        choices=("physical_identity", "flowstar_normalized"),
+        default="physical_identity",
+    )
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     record = export_segment(
@@ -257,6 +304,10 @@ def main() -> None:
         system_name=args.system,
         h=args.h,
         order=args.order,
+        validation_mode=args.validation_mode,
+        candidate_remainder=args.candidate_remainder,
+        cutoff=args.cutoff,
+        source_coordinates=args.source_coordinates,
     )
     write_json(args.output, record)
     print(args.output)

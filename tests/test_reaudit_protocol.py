@@ -74,14 +74,18 @@ def test_invalid_primary_rows_are_never_eligible(changes: dict[str, object]) -> 
 
 @pytest.mark.unit
 @pytest.mark.protocol
-def test_current_gate_manifest_has_exact_eight_pending_gates() -> None:
+def test_current_gate_manifest_has_exact_eight_evidence_backed_gates() -> None:
     root = Path(__file__).parents[1]
     manifest = yaml.safe_load(
         (root / "benchmarks" / "cross_tool_gates.yaml").read_text(encoding="utf-8")
     )
     decision = validate_cross_tool_gate_manifest(manifest, repo_root=root)
     assert decision.errors == ()
-    assert decision.pending == REQUIRED_CROSS_TOOL_GATES
+    assert decision.pending == (
+        "official_parser_generated_stock_field_parity",
+        "endpoint_segment_tube_exporter_semantics",
+        "runtime_boundary_parity",
+    )
     assert not decision.passed
 
 
@@ -94,7 +98,15 @@ def test_verified_gate_requires_real_checksum_report_test_and_scope(tmp_path: Pa
     report.write_text("evidence\n", encoding="utf-8")
     checksum = hashlib.sha256(evidence.read_bytes()).hexdigest()
     gates = {
-        name: {"verified": False, "blocker": "pending", "applies_to": ["fixture"]}
+        name: {
+            "verified": False,
+            "blocker": "pending",
+            "evidence": evidence.name,
+            "evidence_sha256": checksum,
+            "report": report.name,
+            "test": "tests/test_reaudit_protocol.py::test_fixture",
+            "applies_to": ["fixture"],
+        }
         for name in REQUIRED_CROSS_TOOL_GATES
     }
     gates[REQUIRED_CROSS_TOOL_GATES[0]] = {
@@ -122,7 +134,13 @@ def test_manifest_schema_requires_all_repository_identities() -> None:
         "started_utc": "2026-08-04T00:00:00Z",
         "started_local": "2026-08-04T00:00:00+00:00",
         "host": {},
-        "software": {},
+        "software": {
+            "python": "fixture",
+            "compiler": {},
+            "cmake": {},
+            "torch": {},
+            "jax": {},
+        },
         "repositories": {
             name: {"source_kind": "missing"}
             for name in ("torch_tm_flowpipe", "flowstar", "diffreach", "xiangru")
@@ -136,3 +154,52 @@ def test_manifest_schema_requires_all_repository_identities() -> None:
     assert validate_manifest(manifest) == []
     del manifest["repositories"]["xiangru"]
     assert validate_manifest(manifest) == ["missing repository record: xiangru"]
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+def test_finalized_manifest_requires_auditable_command_records() -> None:
+    manifest = {
+        "schema_version": "three-tool-reaudit-1.0.0",
+        "run_id": "fixture",
+        "started_utc": "2026-08-04T00:00:00Z",
+        "started_local": "2026-08-04T00:00:00+00:00",
+        "finalized_utc": "2026-08-04T01:00:00Z",
+        "host": {},
+        "software": {
+            "python": "fixture",
+            "compiler": {},
+            "cmake": {},
+            "torch": {},
+            "jax": {},
+        },
+        "repositories": {
+            name: {"source_kind": "missing"}
+            for name in ("torch_tm_flowpipe", "flowstar", "diffreach", "xiangru")
+        },
+        "flowstar_backend_identity": {},
+        "flowstar_binary": {},
+        "benchmark_files": [],
+        "benchmark_files_at_finalize": [
+            {"path": "/tmp/config.yaml", "sha256": "f" * 64}
+        ],
+        "execution_contract": {},
+        "commands": [],
+    }
+    assert validate_manifest(manifest) == [
+        "finalized manifest must contain command records"
+    ]
+    manifest["commands"] = [
+        {
+            "command": ["pytest", "-q"],
+            "cwd": "/tmp/repo",
+            "exit_code": 0,
+            "stdout_path": "logs/pytest.stdout.txt",
+            "stderr_path": "logs/pytest.stderr.txt",
+        }
+    ]
+    assert validate_manifest(manifest) == []
+    del manifest["commands"][0]["stderr_path"]
+    assert validate_manifest(manifest) == [
+        "command record 0 missing stderr_path"
+    ]

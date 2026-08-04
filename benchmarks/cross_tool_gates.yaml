@@ -1,35 +1,67 @@
 schema_version: 2
-status: blocked_pending_reaudit
+status: partially_verified_fail_closed
 gates:
   stock_backend_identity:
-    verified: false
-    blocker: current-run official/generated binary and library identity evidence not yet complete
+    verified: true
+    blocker: ""
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/stock_backend_identity.json
+    evidence_sha256: acb45845d135f2f036d33925e023f8e896b02f77ba3770177989fb75f8552121
+    report: docs/FLOWSTAR_STOCK_VDP_REPRODUCTION.md
+    test: tests/test_backend_identity.py
     applies_to: [van_der_pol_order4_t10, official-stock, generated-stock]
   official_parser_generated_stock_field_parity:
     verified: false
-    blocker: field-level official/generated trace parity has not passed
+    blocker: official program exposes plot segment boxes but not source/Picard/candidate/native-endpoint fields
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/official_parser_generated_stock_field_parity.json
+    evidence_sha256: 5380a79ab9f8fbc5ccd52de98e898eba78305cbbc25bec96aadac8dd2127a76e
+    report: docs/TORCH_FLOWSTAR_ONE_STEP_TRACE_PARITY.md
+    test: tests/test_current_run_gate_evidence.py::test_every_gate_has_current_machine_evidence
     applies_to: [van_der_pol_order4_t10, official-stock, generated-stock]
   endpoint_segment_tube_exporter_semantics:
     verified: false
-    blocker: independent raw endpoint, last segment, and full tube evidence has not passed
-    applies_to: [van_der_pol_order4_t10, generated-stock, torch-sparse]
+    blocker: Flowstar scalar-affine export misses two analytic endpoint corners by up to 3.50e-10
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/endpoint_segment_tube_exporter_semantics.json
+    evidence_sha256: 2bbb5c6781eab830ec717bbb79cb6b69d50e2290654386c97f3bdc42c4106272
+    report: docs/FLOWSTAR_ENDPOINT_EXPORTER_AUDIT.md
+    test: tests/test_one_step_source_coordinates.py::test_current_run_trajectory_sanity_is_fail_closed
+    applies_to: [one_step_matched_suite, generated-stock, torch-sparse]
   raw_tightened_separation:
-    verified: false
-    blocker: collapsed and repaired outputs remain diagnostic until exporter evidence passes
+    verified: true
+    blocker: ""
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/raw_tightened_separation.json
+    evidence_sha256: 0518a96bf32d7f89d75504dd84d716548b7c2b30aa3690fbc3bea2d57a914f90
+    report: docs/FLOWSTAR_ENDPOINT_EXPORTER_AUDIT.md
+    test: tests/test_protocol_contracts.py::test_diagnostic_endpoint_semantics_are_distinct_and_primary_ineligible
     applies_to: [all_matched_plant_contracts]
   order_basis_contract:
-    verified: false
-    blocker: effective support hashes are not yet available for every matched backend
+    verified: true
+    blocker: ""
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/order_basis_contract.json
+    evidence_sha256: 5db2ec1ed4c01049ec75320bced4177ab5ced0e745d91d6ea62ce0147b11957f
+    report: docs/TORCH_FLOWSTAR_ONE_STEP_TRACE_PARITY.md
+    test: tests/test_current_run_gate_evidence.py::test_current_support_contract_records_match_and_mismatch
     applies_to: [scalar_quadratic, harmonic_oscillator, van_der_pol]
   runtime_boundary_parity:
     verified: false
-    blocker: cold, steady, compile, core, and process boundaries are not yet matched
+    blocker: current run lacks matched 1-cold plus 10-steady total-configuration timing for every eligible backend
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/runtime_boundary_parity.json
+    evidence_sha256: 6f1db5f201b1bb8eb239e81560e2b1e5a17daa0032b34f2b8d34c9fedd7ba94b
+    report: docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md
+    test: tests/test_protocol_contracts.py::test_total_timer_includes_completion_boundary
     applies_to: [all_performance_rows]
   completion_validation_fail_closed:
-    verified: false
-    blocker: current-run external incomplete and warning-path evidence has not passed
+    verified: true
+    blocker: ""
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/completion_validation_fail_closed.json
+    evidence_sha256: 2756ea023dc382091b9a44f33a8636ca4cdab222ac5c70bc1675cc113349151a
+    report: docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md
+    test: tests/test_diffreach_native_reproduction.py::test_completion_requires_every_picard_contraction
     applies_to: [all_primary_rows]
   patched_rows_excluded_from_primary:
-    verified: false
-    blocker: current-run negative evidence has not yet been generated and checksummed
+    verified: true
+    blocker: ""
+    evidence: outputs/three_tool_reaudit/20260804T060058Z/gate_evidence/patched_rows_excluded_from_primary.json
+    evidence_sha256: eda0be5af7791fda7e81813c24ac94521c9c106737dbef75cae3fb78b4aeac12
+    report: docs/THREE_TOOL_FINAL_CORRECTNESS_REPORT.md
+    test: tests/test_backend_identity.py
     applies_to: [patched-audit, torch-dense-prototype, all_primary_rows]

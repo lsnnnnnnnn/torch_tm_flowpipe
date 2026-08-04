@@ -19,7 +19,9 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from torch_tm_flowpipe.protocol.reaudit import (
+    _jax_record,
     collect_manifest,
+    repository_record,
     validate_manifest,
     validate_primary_row,
     write_json,
@@ -121,6 +123,28 @@ def finalize(arguments: argparse.Namespace) -> int:
     output = REPO_ROOT / "outputs" / "three_tool_reaudit" / arguments.run_id
     manifest_path = output / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    now = _utc_now()
+    manifest["finalized_utc"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    manifest["software"]["jax"] = _jax_record()
+    manifest["repositories_at_finalize"] = {
+        name: repository_record(path) for name, path in _paths(arguments).items()
+    }
+    manifest["benchmark_files_at_finalize"] = [
+        {
+            "path": record["path"],
+            "sha256": hashlib.sha256(Path(record["path"]).read_bytes()).hexdigest(),
+        }
+        for record in manifest.get("benchmark_files", [])
+        if Path(record["path"]).is_file()
+    ]
+    command_records = output / "logs" / "command_records.json"
+    if command_records.is_file():
+        manifest["commands"] = json.loads(
+            command_records.read_text(encoding="utf-8")
+        )
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     errors = validate_manifest(manifest)
     if errors:
         raise ValueError("; ".join(errors))
@@ -133,6 +157,10 @@ def finalize(arguments: argparse.Namespace) -> int:
         row["eligibility_errors"] = ";".join(row_errors)
         row["primary_eligible"] = not row_errors
         eligibility_rows.append(row)
+    summary["rows"] = eligibility_rows
+    (output / "summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     fields = sorted({field for row in eligibility_rows for field in row})
     required = [
         "backend",

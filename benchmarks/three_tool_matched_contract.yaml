@@ -32,10 +32,10 @@ systems:
     remainder_initialization: [[-1.0e-10, 1.0e-10]]
     cutoff: 1.0e-15
     effective_support:
-      official-stock: not_matched
-      generated-stock: not_matched
-      torch-sparse: not_matched
-      diffreach-native: not_matched
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f}
+      torch-sparse: {kind: observed_segment_support, sha256: b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: 7e0864b0ef83c2e7c36305f73482057cd512bca0a7d6d91aa2c26704ecacb77e, matched_to_complete_order4: false}
   harmonic_oscillator:
     state_order: [x, y]
     ode: ["y", "-x"]
@@ -49,10 +49,10 @@ systems:
     remainder_initialization: [[-1.0e-10, 1.0e-10], [-1.0e-10, 1.0e-10]]
     cutoff: 1.0e-15
     effective_support:
-      official-stock: not_matched
-      generated-stock: not_matched
-      torch-sparse: not_matched
-      diffreach-native: not_matched
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894}
+      torch-sparse: {kind: observed_segment_support, sha256: f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c, matched_to_complete_order4: false}
   van_der_pol:
     state_order: [x, y]
     ode: ["y", "(1 - x^2) * y - x"]
@@ -69,10 +69,10 @@ systems:
     remainder_initialization: [[-1.0e-4, 1.0e-4], [-1.0e-4, 1.0e-4]]
     cutoff: 1.0e-10
     effective_support:
-      official-stock: not_matched
-      generated-stock: not_matched
-      torch-sparse: not_matched
-      diffreach-native: not_matched
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: 61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994}
+      torch-sparse: {kind: observed_segment_support, sha256: 61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c, matched_to_complete_order4: false}
 output_contract:
   raw_endpoint: required
   tightened_endpoint: independent_optional_field
@@ -82,6 +82,7 @@ output_contract:
   full_tube: required
   fallback_between_fields: forbidden
 blocked_fields:
-  - reason: effective support hashes await current-run export evidence
-  - reason: Flowstar accepted-step replay schedule awaits field-level stock exporter
-  - reason: DiffReach validation and completion semantics await native reproduction
+  - reason: official Flowstar program route does not export internal polynomial/Picard support fields
+  - reason: Flowstar accepted-step replay has plot boxes and time intervals but lacks field-level stock trace
+  - reason: upstream DiffReach VDP model uses an unsupported stack primitive; canonical polynomial adapter is a separate lane
+  - reason: runtime boundaries lack matched 1-cold plus 10-steady repetitions
