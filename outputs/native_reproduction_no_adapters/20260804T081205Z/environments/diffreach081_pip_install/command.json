@@ -1,0 +1,27 @@
+{
+  "label": "diffreach081_pip_install",
+  "cwd": "/srv/local/shengenli/DiffReach",
+  "argv": [
+    "/srv/local/shengenli/native_envs/diffreach081/bin/pip",
+    "install",
+    "jax[cuda12]==0.8.1",
+    "jax2onnx==0.10.1",
+    "jax-verify @ git+https://github.com/keyis2/jax_verify.git@a6aff819731cfb037f4d497c2decf8840a011e67",
+    "jaxonnxruntime @ git+https://github.com/keyis2/jaxonnxruntime.git@51fcb6ebde31620a81bf6656b0762ef6914ea534",
+    "immrax[cuda] @ git+https://github.com/keyis2/immrax.git@a433de615cf4d683a4705706c18d7e71e82c4914",
+    "pyyaml",
+    "matplotlib",
+    "onnxruntime"
+  ],
+  "environment_overrides": {},
+  "start_time_utc": "2026-08-04T09:23:31.350582Z",
+  "end_time_utc": "2026-08-04T09:25:05.847526Z",
+  "wall_seconds": 94.49694081582129,
+  "timeout_seconds": 3600.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "59c22d318c128eee33fda1875f0feb16b98320cc53eee0c98bcb059f44da2e7d",
+  "stderr_sha256": "323564eb899f72b49a335a463a9834196ab5a20bdfbd78d892a65ef75fb6699b"
+}

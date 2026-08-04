@@ -1,0 +1,28 @@
+{
+  "label": "xiangru_x1_native_full_initial",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "scripts/reachbench_crown_docker.sh",
+    "run",
+    "tora_homogeneous",
+    "--backend",
+    "crownreach_submit",
+    "--profile",
+    "full",
+    "--timeout",
+    "180"
+  ],
+  "environment_overrides": {
+    "CROWN_REACH_GPU": "0"
+  },
+  "start_time_utc": "2026-08-04T08:23:35.377456Z",
+  "end_time_utc": "2026-08-04T08:23:35.399170Z",
+  "wall_seconds": 0.021707823500037193,
+  "timeout_seconds": 240.0,
+  "timeout_expired": false,
+  "exit_code": 1,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "7f82543b38da1e2daad7c74045136e02753ca9315fce32ce59da86bdda722d11"
+}

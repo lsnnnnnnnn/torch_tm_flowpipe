@@ -1,0 +1,30 @@
+{
+  "label": "flowstar_official_vanderpol_t10_order4_fresh",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh_artifacts",
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/srv/local/shengenli/flowstar_stock_gcc11:/workspace:ro",
+    "-v",
+    "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh_artifacts:/evidence",
+    "-w",
+    "/evidence",
+    "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+    "/workspace/benchmarks/continuous/vanderpol/vanderpol"
+  ],
+  "environment_overrides": {
+    "DOCKER_HOST": "unix:///run/user/1061/docker.sock"
+  },
+  "start_time_utc": "2026-08-04T09:22:06.729516Z",
+  "end_time_utc": "2026-08-04T09:22:08.430759Z",
+  "wall_seconds": 1.7012420799583197,
+  "timeout_seconds": 1800.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "ba0cce55ad192cb2bbab58a073c0ad32d20b0bdadb512d76f6d3657b86dc3a5b",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/DiffReach/run_ctl.py", line 16, in <module>
+    from src.utils.load import (
+  File "/srv/local/shengenli/DiffReach/src/utils/load.py", line 10, in <module>
+    from jaxonnxruntime.backend import Backend as ONNXJaxBackend
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/__init__.py", line 18, in <module>
+    from jaxonnxruntime import backend
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/backend.py", line 33, in <module>
+    from jaxonnxruntime.core import call_onnx
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/core/__init__.py", line 19, in <module>
+    from jaxonnxruntime.core import onnx_graph
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/core/onnx_graph.py", line 35, in <module>
+    from jaxonnxruntime.core import onnx_node
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/core/onnx_node.py", line 32, in <module>
+    from jaxonnxruntime.core.onnx_utils import contain_subgraph
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/jaxonnxruntime/core/onnx_utils.py", line 21, in <module>
+    from absl.testing import parameterized
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/absl/testing/parameterized.py", line 222, in <module>
+    from absl.testing import absltest
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/absl/testing/absltest.py", line 202, in <module>
+    get_default_test_tmpdir(),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/native_envs/diffreach083/lib/python3.12/site-packages/absl/testing/absltest.py", line 141, in get_default_test_tmpdir
+    tmpdir = os.path.join(tempfile.gettempdir(), 'absl_testing')
+                          ^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/miniforge3/envs/diffreach312/lib/python3.12/tempfile.py", line 315, in gettempdir
+    return _os.fsdecode(_gettempdir())
+                        ^^^^^^^^^^^^^
+  File "/srv/local/shengenli/miniforge3/envs/diffreach312/lib/python3.12/tempfile.py", line 308, in _gettempdir
+    tempdir = _get_default_tempdir()
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/miniforge3/envs/diffreach312/lib/python3.12/tempfile.py", line 223, in _get_default_tempdir
+    raise FileNotFoundError(_errno.ENOENT,
+FileNotFoundError: [Errno 2] No usable temporary directory found in ['/tmp', '/var/tmp', '/usr/tmp', '/srv/local/shengenli/DiffReach']

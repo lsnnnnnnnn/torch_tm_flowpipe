@@ -1,0 +1,24 @@
+{
+  "label": "docker_rootless_images",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "docker",
+    "image",
+    "ls",
+    "--digests",
+    "--no-trunc"
+  ],
+  "environment_overrides": {
+    "DOCKER_HOST": "unix:///run/user/1061/docker.sock"
+  },
+  "start_time_utc": "2026-08-04T08:24:09.155250Z",
+  "end_time_utc": "2026-08-04T08:24:09.172642Z",
+  "wall_seconds": 0.017384231090545654,
+  "timeout_seconds": null,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "34ccac461c475c84e6690b65bafc622a40489421a5099ee8e81817eeeb9734be",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

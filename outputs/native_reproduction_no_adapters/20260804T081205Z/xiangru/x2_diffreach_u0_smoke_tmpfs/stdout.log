@@ -1,0 +1,11 @@
+usage: run_ctl.py [-h] [--sim] [--ver] [--debug] [--load] config
+
+positional arguments:
+  config      Path to YAML config.
+
+options:
+  -h, --help  show this help message and exit
+  --sim       Run trajectory simulation.
+  --ver       Run reachability analysis.
+  --debug     Enable debug mode.
+  --load      Load results from output directory instead of running.

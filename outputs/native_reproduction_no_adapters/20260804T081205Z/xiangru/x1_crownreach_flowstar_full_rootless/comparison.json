@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "PASS_EXACT",
+  "reference": "/srv/local/shengenli/CROWN-Reach_Development/experiments/reachability/results/s3c_fair_timing_raw/flowstar_rep1_reachbench/run.json",
+  "reference_sha256": "99de29173076e5f10c40a22cfec4dea5675be197ff3d3c4daa2403bb9c494aa6",
+  "fresh": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x1_crownreach_flowstar_full_rootless/fresh_artifacts/run.json",
+  "fresh_sha256": "f4c7ba0b4629c909a6c851fd6b7449c721c3b894b5e7905879a9c7f73ba55f0e",
+  "fields": [
+    {
+      "field": "config_sha256",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": "9aa0d59810a54fcd0accdaaed53746fed8fb578c9021985a724f2aedca410178",
+      "fresh": "9aa0d59810a54fcd0accdaaed53746fed8fb578c9021985a724f2aedca410178",
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "manifest_sha256",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": "d6510b5bf927a8ffeb8455e62ed25c06a0d7d504c8a1708580f2fcc04c9e0d10",
+      "fresh": "d6510b5bf927a8ffeb8455e62ed25c06a0d7d504c8a1708580f2fcc04c9e0d10",
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "returncode",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": 0,
+      "fresh": 0,
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "status",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": "success",
+      "fresh": "success",
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "execution_contract",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": {
+        "control_updates": 20,
+        "controller_period": 1.0,
+        "horizon": 20.0,
+        "initial_partitions": 12,
+        "ode_step_size": 0.1
+      },
+      "fresh": {
+        "control_updates": 20,
+        "controller_period": 1.0,
+        "horizon": 20.0,
+        "initial_partitions": 12,
+        "ode_step_size": 0.1
+      },
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "metrics.certification_status",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": "COMPUTED",
+      "fresh": "COMPUTED",
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "metrics.flowstar_terminated",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": false,
+      "fresh": false,
+      "comparison": "exact",
+      "equal": true
+    },
+    {
+      "field": "metrics.verdict",
+      "reference_present": true,
+      "fresh_present": true,
+      "reference": "VERIFIED",
+      "fresh": "VERIFIED",
+      "comparison": "exact",
+      "equal": true
+    }
+  ],
+  "missing_field_fallback": false,
+  "tolerance": null,
+  "tolerance_source": null
+}

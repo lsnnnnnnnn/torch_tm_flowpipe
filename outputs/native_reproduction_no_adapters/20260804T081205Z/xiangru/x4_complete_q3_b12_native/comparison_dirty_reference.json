@@ -1,0 +1,478 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "reference": "/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/results/s0_tora_static_partition_sweep.json",
+  "reference_sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb",
+  "fresh": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b12_native_workspace/s0_q3_b12.json",
+  "fresh_sha256": "13bfcbb927a4c694fae7ce94392e04e7396e3d0292db0bd1f1fce3987168659a",
+  "policy": "b12_archcomp",
+  "method": "complete_q3",
+  "source_identity": {
+    "reference_sha": "0a2cfcfad95ff6493f37a526bcfe3316bfb31746",
+    "reference_dirty": true,
+    "fresh_sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+    "fresh_dirty": false,
+    "exact": false
+  },
+  "input_hashes": [
+    {
+      "field": "source_dr_sha256",
+      "reference": "e8fb151837d73bed94d8f75ac11248169859991c7d93f2b20a32826a122edc5b",
+      "fresh": "e8fb151837d73bed94d8f75ac11248169859991c7d93f2b20a32826a122edc5b",
+      "equal": true
+    },
+    {
+      "field": "source_q3_sha256",
+      "reference": "89eaab1eaae13d136a32e6f9a7988625228a125692354b22cd90f69856039893",
+      "fresh": "89eaab1eaae13d136a32e6f9a7988625228a125692354b22cd90f69856039893",
+      "equal": true
+    },
+    {
+      "field": "fixture_sha256",
+      "reference": "7c279b46d2a9345f820c0f2f209288ee3d95d4fad7cb42cfddd0245776d127b9",
+      "fresh": "7c279b46d2a9345f820c0f2f209288ee3d95d4fad7cb42cfddd0245776d127b9",
+      "equal": true
+    },
+    {
+      "field": "config_sha256",
+      "reference": "13b28acaa6addad27b12f2e00d1e6a81920bfebe849382ddb6b9a736bb4ff090",
+      "fresh": "13b28acaa6addad27b12f2e00d1e6a81920bfebe849382ddb6b9a736bb4ff090",
+      "equal": true
+    },
+    {
+      "field": "controller_sha256",
+      "reference": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e",
+      "fresh": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e",
+      "equal": true
+    }
+  ],
+  "comparison_policy": {
+    "numeric_absolute_tolerance": 1e-06,
+    "tolerance_source": "Xiangru run_s0_tora_static_partition_sweep.py CONTROLLER_TOLERANCE = 1e-6",
+    "relative_error_denominator": "max(abs(reference), numeric_absolute_tolerance)",
+    "excluded_from_correctness": [
+      "*.peak_cuda_memory_bytes",
+      "*.timing",
+      "*._seconds"
+    ],
+    "runtime_compared": false
+  },
+  "numeric_fields_compared": 2207,
+  "maximum_absolute_error": 1.1581846592889633e-11,
+  "maximum_relative_error": 3.219646771412954e-09,
+  "excluded_runtime_or_memory_fields": 2,
+  "differences": [
+    {
+      "path": "cells.b12_archcomp.complete_q3",
+      "reference_keys": [
+        "algorithmic_work",
+        "certified_horizon",
+        "controller_periods",
+        "first_failure",
+        "method",
+        "peak_cuda_memory_bytes",
+        "representation",
+        "retry_segments",
+        "segments",
+        "segments_attempted",
+        "status",
+        "timing",
+        "validator",
+        "validity"
+      ],
+      "fresh_keys": [
+        "algorithmic_work",
+        "certified_horizon",
+        "controller_periods",
+        "first_failure",
+        "implementation",
+        "method",
+        "peak_cuda_memory_bytes",
+        "representation",
+        "retry_segments",
+        "segments",
+        "segments_attempted",
+        "status",
+        "timing",
+        "validator",
+        "validity"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[0]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[1]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[2]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[3]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[4]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[5]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[6]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[7]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[8]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[9]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[10]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[11]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[12]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[13]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    },
+    {
+      "path": "cells.b12_archcomp.complete_q3.controller_periods[14]",
+      "reference_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period"
+      ],
+      "fresh_keys": [
+        "first_segment",
+        "maximum_action_polynomial_width",
+        "maximum_action_remainder_width",
+        "maximum_action_total_width",
+        "maximum_precontrol_width",
+        "maximum_raw_crown_bias_width",
+        "maximum_slope_gap",
+        "period",
+        "transport_timing",
+        "worker_timing"
+      ]
+    }
+  ],
+  "reproduction_eligible": false
+}

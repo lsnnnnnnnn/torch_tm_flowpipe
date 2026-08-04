@@ -1,0 +1,74 @@
+Client: Docker Engine - Community
+ Version:    29.6.1
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.35.0
+    Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+    Version:  v5.3.1
+    Path:     /usr/libexec/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 0
+ Server Version: 29.6.1
+ Storage Driver: overlayfs
+  driver-type: io.containerd.snapshotter.v1
+ Logging Driver: json-file
+ Cgroup Driver: systemd
+ Cgroup Version: 2
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+ CDI spec directories:
+  /etc/cdi
+  /run/.ro1028126863/cdi
+  /home/shengenli/.config/cdi
+  /run/user/1061/cdi
+ Discovered Devices:
+  cdi: nvidia.com/gpu=0
+  cdi: nvidia.com/gpu=1
+  cdi: nvidia.com/gpu=2
+  cdi: nvidia.com/gpu=3
+  cdi: nvidia.com/gpu=GPU-1ad11bb9-50d4-6b9d-22f8-fc8c33180e56
+  cdi: nvidia.com/gpu=GPU-1c6effec-22d4-17fd-fdf1-7ce10166132e
+  cdi: nvidia.com/gpu=GPU-698a9283-60ee-cc64-7d87-4e33f6fabc82
+  cdi: nvidia.com/gpu=GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae
+  cdi: nvidia.com/gpu=all
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 11ce9d5f3c68c941867e82890e93e815c1304f1b
+ runc version: v1.3.6-0-g491b69ba
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: builtin
+  rootless
+  cgroupns
+ Kernel Version: 7.0.0-22-generic
+ Operating System: Ubuntu 26.04 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 80
+ Total Memory: 372.3GiB
+ Name: huan-c4140-server-3
+ ID: 17a39aff-9f69-46c1-a246-b42159bffa3b
+ Docker Root Dir: /srv/local/shengenli/docker-rootless-data
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  ::1/128
+  127.0.0.0/8
+ Live Restore Enabled: false
+ Firewall Backend: iptables
+  EnableUserlandProxy: true
+  UserlandProxyPath: /usr/bin/docker-proxy
+

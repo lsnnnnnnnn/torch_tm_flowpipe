@@ -1,9 +1,9 @@
 # torch-tm-flowpipe
 
 `torch-tm-flowpipe` is a PyTorch-native, plant-only Taylor-model flowpipe
-prototype for polynomial ODEs. The active branch is
-`codex/repository-cleanup-before-external-torch-audit`; the canonical package
-is `src/torch_tm_flowpipe`.
+prototype for polynomial ODEs. The active evidence branch is
+`codex/native-reproduction-no-adapters-20260804`; the canonical package is
+`src/torch_tm_flowpipe`.
 
 The project implements interval arithmetic, sparse total-degree polynomials,
 Taylor models `p + R`, one-step Picard/Taylor propagation, and multi-step
@@ -41,6 +41,20 @@ but is not guaranteed to produce a tighter range.
 
 ## Runners and results
 
+The current native-reproduction registry is
+[`benchmarks/native_reproduction_registry.json`](benchmarks/native_reproduction_registry.json),
+with raw command/artifact evidence under
+`outputs/native_reproduction_no_adapters/20260804T081205Z`.  It directly runs the
+author/stock entrypoints for Xiangru, stock Flow*, upstream DiffReach and this
+project.  Reproduction, horizon completion, property/certificate, soundness and
+comparison eligibility are reported separately; adapters, generated harnesses and
+endpoint repair are excluded from native rows.
+
+See the [native matrix](docs/NATIVE_REPRODUCTION_MATRIX.md),
+[standard](docs/NATIVE_REPRODUCTION_STANDARD.md), and
+[current results status](docs/RESULTS_STATUS.md).  No cross-tool speedup, Pareto
+frontier or winner is currently citable.
+
 The canonical comparison runner is
 `experiments/consolidated_study/cli.py`. Formal comparison is fail-closed
 until every gate in `benchmarks/cross_tool_gates.yaml` is independently
@@ -62,7 +76,6 @@ It writes only to a new output directory. Its known outcome is a Picard
 remainder self-map validation rejection at the configured step-size floor,
 not a crash and not evidence that Flowstar does not support order 2.
 
-No cross-tool winner, Pareto frontier, or runtime/tightness ranking is
-currently citable. See [results status](docs/RESULTS_STATUS.md),
-[reproducibility](docs/REPRODUCIBILITY.md), and the single
+Historical comparison artifacts retain their earlier status. See
+[reproducibility](docs/REPRODUCIBILITY.md) and the single
 [history index](docs/history/BRANCH_AUDIT.md).

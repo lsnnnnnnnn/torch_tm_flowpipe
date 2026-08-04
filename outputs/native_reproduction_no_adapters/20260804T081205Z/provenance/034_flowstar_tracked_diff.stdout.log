@@ -1,0 +1,13 @@
+diff --git a/flowstar-toolbox/TaylorModel.h b/flowstar-toolbox/TaylorModel.h
+index 401c759..7decdf6 100644
+--- a/flowstar-toolbox/TaylorModel.h
++++ b/flowstar-toolbox/TaylorModel.h
+@@ -897,7 +897,7 @@ template <class DATA_TYPE>
+ void TaylorModel<DATA_TYPE>::derivative(TaylorModel<DATA_TYPE> & result, const unsigned int varIndex) const
+ {
+ 	expansion.derivative(result.expansion, varIndex);
+-	remainder = 0;
++	result.remainder = 0;
+ }
+ 
+ template <class DATA_TYPE>

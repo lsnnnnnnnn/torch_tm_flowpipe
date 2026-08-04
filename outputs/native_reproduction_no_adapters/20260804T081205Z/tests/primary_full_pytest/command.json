@@ -1,0 +1,25 @@
+{
+  "label": "primary_full_pytest",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+  "argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "environment_overrides": {
+    "FLOWSTAR_ROOT": "/srv/local/shengenli/flowstar_stock_gcc11",
+    "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach_native_dd628eb",
+    "DIFFREACH_PYTHON": "/srv/local/shengenli/native_envs/diffreach081/bin/python"
+  },
+  "start_time_utc": "2026-08-04T09:47:45.330392Z",
+  "end_time_utc": "2026-08-04T09:48:20.142353Z",
+  "wall_seconds": 34.81198348477483,
+  "timeout_seconds": 1800.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "6311726475f5d176befe31086022a86ee28b2883152cd1fc1e9b618f209a4899",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

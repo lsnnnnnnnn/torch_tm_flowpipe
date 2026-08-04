@@ -1,0 +1,17 @@
+W0804 08:47:31.383064 3122032 autotuner.cc:485] No reference output found even though buffer checking was requested while autotuning
+Traceback (most recent call last):
+  File "/srv/local/shengenli/DiffReach/run_ctl.py", line 131, in <module>
+    main()
+  File "/srv/local/shengenli/DiffReach/run_ctl.py", line 128, in main
+    launcher.run()
+  File "/srv/local/shengenli/DiffReach/run_dyn.py", line 335, in run
+    self._verify()
+  File "/srv/local/shengenli/DiffReach/run_ctl.py", line 111, in _verify
+    return super()._verify(reference_seq = self.reference_seq)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/DiffReach/run_dyn.py", line 202, in _verify
+    ts, L, U, _, shrinked = verify_func(self.x0_lo, self.x0_hi, self.n_total_steps, *args, **kwargs)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jax.errors.JaxRuntimeError: INTERNAL: Autotuning failed for HLO: %cudnn-conv.15 = (f64[200,1,1,4]{3,2,1,0}, u8[0]{0}) custom-call(%bitcast.1034, %constant.1318), window={size=1x4 pad=0_0x3_3}, dim_labels=bf01_oi01->bf01, operand_precision={highest,highest}, custom_call_target="__cudnn$convForward", metadata={op_name="jit(verify)/while/body/closed_call/vmap(vmap(transpose(jvp())))/conv_general_dilated" stack_frame_id=151}, backend_config={"operation_queue_id":"0","wait_on_operation_queues":[],"cudnn_conv_backend_config":{"activation_mode":"kNone","conv_result_scale":1,"side_input_scale":0,"leakyrelu_alpha":0},"force_earliest_schedule":false,"reification_cost":[],"device_type":"DEVICE_TYPE_INVALID"} with error: NOT_FOUND: No valid config found!
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.

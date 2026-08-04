@@ -1,0 +1,61 @@
+{
+  "controller": "Benchmark9-Tora/controllerTora.onnx",
+  "controller_postprocess": "u enters dynamics as network_output - 10",
+  "initial_set": [
+    {
+      "interval": [
+        0.6,
+        0.7
+      ],
+      "name": "x1",
+      "splits": 4
+    },
+    {
+      "interval": [
+        -0.7,
+        -0.6
+      ],
+      "name": "x2",
+      "splits": 3
+    },
+    {
+      "interval": [
+        -0.4,
+        -0.3
+      ],
+      "name": "x3",
+      "splits": 1
+    },
+    {
+      "interval": [
+        0.5,
+        0.6
+      ],
+      "name": "x4",
+      "splits": 1
+    },
+    {
+      "interval": [
+        0.0,
+        0.0
+      ],
+      "name": "t"
+    },
+    {
+      "interval": [
+        0.0,
+        0.0
+      ],
+      "name": "u1"
+    }
+  ],
+  "ode_order": 3,
+  "ode_step_size": 0.1,
+  "property": "all four states remain in [-2, 2]",
+  "split_vars": [
+    "x1",
+    "x2"
+  ],
+  "step_size": 1.0,
+  "steps": 20
+}

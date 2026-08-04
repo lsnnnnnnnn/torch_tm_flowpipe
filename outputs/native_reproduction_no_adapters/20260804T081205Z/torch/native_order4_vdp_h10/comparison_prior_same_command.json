@@ -1,0 +1,1029 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "reference": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/three_tool_reaudit/20260804T060058Z/vdp_t10/h10_right_map_centering/h10_right_map_centering_summary.csv",
+  "reference_sha256": "a6686e683119daf39d2b09ebfaf4b8a97bd66bde9157969c4dfa3e9fb5bcf91b",
+  "fresh": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10_artifacts/h10_right_map_centering_summary.csv",
+  "fresh_sha256": "b283d54d654652b2f9bbf5494df0d912f9ede7c0ed78a19dc85aeaa718abf5e8",
+  "key": "mode",
+  "fields": [
+    "source",
+    "run_kind",
+    "right_map_center_mode",
+    "status",
+    "reached_t",
+    "reached_h10",
+    "accepted_steps",
+    "rejected_attempts",
+    "first_failure_step",
+    "first_failure_time",
+    "first_failure_reason",
+    "replay_status",
+    "source_schedule_steps",
+    "replayed_schedule_steps",
+    "reached_source_schedule_end",
+    "source_schedule_end_time",
+    "shared_schedule_end_time",
+    "sample_sanity_violations",
+    "sample_sanity_status",
+    "accepted_raw_target_violations",
+    "rejected_raw_target_attempts",
+    "terminal_raw_target_rejection",
+    "accepted_nonfinite_enclosures",
+    "decision"
+  ],
+  "excluded_fields": [
+    "runtime_s",
+    "width_fields"
+  ],
+  "rows": [
+    {
+      "key": "constant_adaptive_h10",
+      "fields": [
+        {
+          "field": "source",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "torch",
+          "fresh": "torch",
+          "equal": true
+        },
+        {
+          "field": "run_kind",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "constant adaptive",
+          "fresh": "constant adaptive",
+          "equal": true
+        },
+        {
+          "field": "right_map_center_mode",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "constant",
+          "fresh": "constant",
+          "equal": true
+        },
+        {
+          "field": "status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "failed",
+          "fresh": "timeout",
+          "equal": false
+        },
+        {
+          "field": "reached_t",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.3172908799330765",
+          "fresh": "5.904686584519073",
+          "equal": false
+        },
+        {
+          "field": "reached_h10",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "accepted_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "308",
+          "fresh": "236",
+          "equal": false
+        },
+        {
+          "field": "rejected_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "48",
+          "fresh": "36",
+          "equal": false
+        },
+        {
+          "field": "first_failure_step",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "308",
+          "fresh": "236",
+          "equal": false
+        },
+        {
+          "field": "first_failure_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.3172908799330765",
+          "fresh": "5.904686584519073",
+          "equal": false
+        },
+        {
+          "field": "first_failure_reason",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "Flowstar raw remainder compat residual not subset of target remainder",
+          "fresh": "wall-time cap reached before segment 236",
+          "equal": false
+        },
+        {
+          "field": "replay_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "replayed_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "reached_source_schedule_end",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "shared_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "passed",
+          "fresh": "passed",
+          "equal": true
+        },
+        {
+          "field": "accepted_raw_target_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "rejected_raw_target_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "48",
+          "fresh": "36",
+          "equal": false
+        },
+        {
+          "field": "terminal_raw_target_rejection",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "true",
+          "fresh": "false",
+          "equal": false
+        },
+        {
+          "field": "accepted_nonfinite_enclosures",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "decision",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "key": "constant_on_range_midpoint_schedule",
+      "fields": [
+        {
+          "field": "source",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "torch",
+          "fresh": "torch",
+          "equal": true
+        },
+        {
+          "field": "run_kind",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "constant on range_midpoint schedule",
+          "fresh": "constant on range_midpoint schedule",
+          "equal": true
+        },
+        {
+          "field": "right_map_center_mode",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "constant",
+          "fresh": "constant",
+          "equal": true
+        },
+        {
+          "field": "status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "failed",
+          "fresh": "failed",
+          "equal": true
+        },
+        {
+          "field": "reached_t",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0.43677646366378969",
+          "fresh": "0.43677646366378969",
+          "equal": true
+        },
+        {
+          "field": "reached_h10",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "accepted_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "29",
+          "fresh": "29",
+          "equal": true
+        },
+        {
+          "field": "rejected_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "1",
+          "fresh": "1",
+          "equal": true
+        },
+        {
+          "field": "first_failure_step",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "29",
+          "fresh": "29",
+          "equal": true
+        },
+        {
+          "field": "first_failure_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0.43677646366378969",
+          "fresh": "0.43677646366378969",
+          "equal": true
+        },
+        {
+          "field": "first_failure_reason",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "Flowstar raw remainder compat residual not subset of target remainder",
+          "fresh": "Flowstar raw remainder compat residual not subset of target remainder",
+          "equal": true
+        },
+        {
+          "field": "replay_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "validation_failed",
+          "fresh": "validation_failed",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "293",
+          "fresh": "230",
+          "equal": false
+        },
+        {
+          "field": "replayed_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "29",
+          "fresh": "29",
+          "equal": true
+        },
+        {
+          "field": "reached_source_schedule_end",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "shared_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0.43677646366378969",
+          "fresh": "0.43677646366378969",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "passed",
+          "fresh": "passed",
+          "equal": true
+        },
+        {
+          "field": "accepted_raw_target_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "rejected_raw_target_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "1",
+          "fresh": "1",
+          "equal": true
+        },
+        {
+          "field": "terminal_raw_target_rejection",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "true",
+          "fresh": "true",
+          "equal": true
+        },
+        {
+          "field": "accepted_nonfinite_enclosures",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "decision",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "key": "generated_flowstar_h10_reference",
+      "fields": [
+        {
+          "field": "source",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "flowstar",
+          "fresh": "flowstar",
+          "equal": true
+        },
+        {
+          "field": "run_kind",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "reference",
+          "fresh": "reference",
+          "equal": true
+        },
+        {
+          "field": "right_map_center_mode",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "not_applicable",
+          "fresh": "not_applicable",
+          "equal": true
+        },
+        {
+          "field": "status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "completed",
+          "fresh": "completed",
+          "equal": true
+        },
+        {
+          "field": "reached_t",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "10",
+          "fresh": "10",
+          "equal": true
+        },
+        {
+          "field": "reached_h10",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "true",
+          "fresh": "true",
+          "equal": true
+        },
+        {
+          "field": "accepted_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "290",
+          "fresh": "290",
+          "equal": true
+        },
+        {
+          "field": "rejected_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "first_failure_step",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "first_failure_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "first_failure_reason",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "replay_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "replayed_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "reached_source_schedule_end",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "shared_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "accepted_raw_target_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "rejected_raw_target_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "terminal_raw_target_rejection",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "accepted_nonfinite_enclosures",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "decision",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "reference_only",
+          "fresh": "reference_only",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "key": "range_midpoint_adaptive_h10",
+      "fields": [
+        {
+          "field": "source",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "torch",
+          "fresh": "torch",
+          "equal": true
+        },
+        {
+          "field": "run_kind",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "range_midpoint adaptive",
+          "fresh": "range_midpoint adaptive",
+          "equal": true
+        },
+        {
+          "field": "right_map_center_mode",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "range_midpoint",
+          "fresh": "range_midpoint",
+          "equal": true
+        },
+        {
+          "field": "status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "failed",
+          "fresh": "timeout",
+          "equal": false
+        },
+        {
+          "field": "reached_t",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.3909311096815973",
+          "fresh": "6.0490383280541096",
+          "equal": false
+        },
+        {
+          "field": "reached_h10",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "accepted_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "293",
+          "fresh": "230",
+          "equal": false
+        },
+        {
+          "field": "rejected_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "46",
+          "fresh": "35",
+          "equal": false
+        },
+        {
+          "field": "first_failure_step",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "293",
+          "fresh": "230",
+          "equal": false
+        },
+        {
+          "field": "first_failure_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.3909311096815973",
+          "fresh": "6.0490383280541096",
+          "equal": false
+        },
+        {
+          "field": "first_failure_reason",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "Flowstar raw remainder compat residual not subset of target remainder",
+          "fresh": "wall-time cap reached before segment 230",
+          "equal": false
+        },
+        {
+          "field": "replay_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "replayed_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "reached_source_schedule_end",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "shared_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "passed",
+          "fresh": "passed",
+          "equal": true
+        },
+        {
+          "field": "accepted_raw_target_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "rejected_raw_target_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "46",
+          "fresh": "35",
+          "equal": false
+        },
+        {
+          "field": "terminal_raw_target_rejection",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "true",
+          "fresh": "false",
+          "equal": false
+        },
+        {
+          "field": "accepted_nonfinite_enclosures",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "decision",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "h10_not_reached_no_material_improvement",
+          "fresh": "h10_not_reached_no_material_improvement",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "key": "range_midpoint_on_constant_schedule",
+      "fields": [
+        {
+          "field": "source",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "torch",
+          "fresh": "torch",
+          "equal": true
+        },
+        {
+          "field": "run_kind",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "range_midpoint on constant schedule",
+          "fresh": "range_midpoint on constant schedule",
+          "equal": true
+        },
+        {
+          "field": "right_map_center_mode",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "range_midpoint",
+          "fresh": "range_midpoint",
+          "equal": true
+        },
+        {
+          "field": "status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "timeout",
+          "fresh": "completed_source_schedule",
+          "equal": false
+        },
+        {
+          "field": "reached_t",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.0736617494140468",
+          "fresh": "5.904686584519073",
+          "equal": false
+        },
+        {
+          "field": "reached_h10",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "accepted_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "255",
+          "fresh": "236",
+          "equal": false
+        },
+        {
+          "field": "rejected_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "first_failure_step",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "255",
+          "fresh": "",
+          "equal": false
+        },
+        {
+          "field": "first_failure_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.0736617494140468",
+          "fresh": "",
+          "equal": false
+        },
+        {
+          "field": "first_failure_reason",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "wall-time cap reached before segment 255",
+          "fresh": "",
+          "equal": false
+        },
+        {
+          "field": "replay_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "completed_source_schedule",
+          "fresh": "completed_source_schedule",
+          "equal": true
+        },
+        {
+          "field": "source_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "308",
+          "fresh": "236",
+          "equal": false
+        },
+        {
+          "field": "replayed_schedule_steps",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "255",
+          "fresh": "236",
+          "equal": false
+        },
+        {
+          "field": "reached_source_schedule_end",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "true",
+          "equal": false
+        },
+        {
+          "field": "source_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "5.904686584519073",
+          "equal": false
+        },
+        {
+          "field": "shared_schedule_end_time",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "6.0736617494140468",
+          "fresh": "5.904686584519073",
+          "equal": false
+        },
+        {
+          "field": "sample_sanity_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "sample_sanity_status",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "passed",
+          "fresh": "passed",
+          "equal": true
+        },
+        {
+          "field": "accepted_raw_target_violations",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "rejected_raw_target_attempts",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "terminal_raw_target_rejection",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "false",
+          "fresh": "false",
+          "equal": true
+        },
+        {
+          "field": "accepted_nonfinite_enclosures",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "0",
+          "fresh": "0",
+          "equal": true
+        },
+        {
+          "field": "decision",
+          "reference_present": true,
+          "fresh_present": true,
+          "reference": "",
+          "fresh": "",
+          "equal": true
+        }
+      ]
+    }
+  ],
+  "missing_field_fallback": false,
+  "tolerance": null,
+  "tolerance_source": null
+}

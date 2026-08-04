@@ -1,0 +1,25 @@
+{
+  "label": "diffreach083_probe_after_linrax",
+  "cwd": "/srv/local/shengenli/DiffReach",
+  "argv": [
+    "/srv/local/shengenli/native_envs/diffreach083/bin/python",
+    "-c",
+    "import json,platform,jax,jaxlib,immrax,linrax,numpy,jax_verify; print(json.dumps({'python':platform.python_version(),'jax':jax.__version__,'jaxlib':jaxlib.__version__,'jax_x64':jax.config.x64_enabled,'devices':[str(x) for x in jax.devices()],'immrax':immrax.__file__,'linrax':linrax.__file__,'jax_verify':jax_verify.__file__,'numpy':numpy.__version__},indent=2))"
+  ],
+  "environment_overrides": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORMS": "cuda",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "start_time_utc": "2026-08-04T08:45:23.708944Z",
+  "end_time_utc": "2026-08-04T08:45:25.804074Z",
+  "wall_seconds": 2.0951422518119216,
+  "timeout_seconds": 180.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "e95dae0eb1cb4c0063834d2bcc9806adf285bc7a2ee9cf5c378bdd4c11724f3c",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,29 @@
+{
+  "label": "torch_native_order4_vdp_h10",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+  "argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "experiments/flowstar_raw_remainder_compat_h10_right_map_centering.py",
+    "--horizon",
+    "10",
+    "--wall-cap-s",
+    "300",
+    "--flowstar-segments",
+    "outputs/three_tool_reaudit/20260804T060058Z/raw/flowstar_official_generated_parity/original_flowstar/original_flowstar_segments.csv",
+    "--out-dir",
+    "outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10_artifacts"
+  ],
+  "environment_overrides": {
+    "OMP_NUM_THREADS": "1"
+  },
+  "start_time_utc": "2026-08-04T09:28:48.873919Z",
+  "end_time_utc": "2026-08-04T09:44:08.773066Z",
+  "wall_seconds": 919.8991446122527,
+  "timeout_seconds": 1800.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "c59e11c9af4434515a693281e587e5ef566812bc7c2c0e39d5ae5437fe9efa52",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

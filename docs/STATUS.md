@@ -1,27 +1,29 @@
 # Status
 
-Current state: `ready_for_external_pytorch_audit_repository_contract_only`.
+Current branch: `codex/native-reproduction-no-adapters-20260804`, based on
+`308b735ac577cfea39172976a4c08716f1e54d2f`.  Current evidence run:
+`outputs/native_reproduction_no_adapters/20260804T081205Z`.
 
-Completed repository-contract work:
+The native reproduction phase is complete:
 
-- exhaustive branch/worktree/tag and repository-content inventories;
-- clean base selection at `08b6f2416122cbf4220ff351e663caa1a0af13a2`;
-- baseline install and test evidence;
-- one numerical core, canonical benchmark source, supported comparison CLI,
-  and supported order-2 diagnostic;
-- fail-closed backend identity and explicit bound/order/completion contracts;
-- withdrawal registries without modifying frozen artifacts;
-- formal cross-tool execution blocked on eight explicit gates.
+- Xiangru CROWN-Reach/Flow* B12 TORA is `reproduced_exact` at T=20;
+- Xiangru complete-Q3 B48 is `reproduced_with_declared_tolerance` at T=20;
+- Xiangru DiffReach CPU failed behavior is byte-exact; its GPU path fails before
+  step one on the available V100;
+- historical B12/B24 Q3 references remain `source_identity_unknown` because the
+  saved source was dirty without a patch;
+- clean stock Flow* official VDP and upstream DiffReach official VDP complete T=10,
+  with no upstream raw reference artifact;
+- our exact order-4 Torch command does not reach T=10 and does not reproduce the
+  prior natural failure boundary: the two adaptive lanes hit their 300-second wall
+  caps at T=5.904687 and T=6.049038.
 
-Final verification passed: editable install, compileall, 228-test full suite,
-unit/integration/Flowstar/DiffReach marker suites, CLI help, README example,
-invalid-backend and output-safety checks, structured-file and path scans,
-frozen-artifact identity, and Git whitespace checks. The order-2 smoke is
-recorded as a validation rejection rather than a crash.
+No adapter, rewritten ODE, generated harness or endpoint repair is counted as a
+native reproduction.  The scalar-affine recheck stays in the separate diagnostic
+registry and still finds Flow* empirical containment violations.
 
-`main` is not changed. No branch or tag is deleted. External repositories are
-read-only. No formal three-tool matrix is rerun.
-
-This readiness label covers repository organization and the comparison
-contract. The external PyTorch implementation is still unidentified, and all
-eight formal cross-tool comparison gates remain pending.
+Primary repository full pytest passes: 285 tests.  Xiangru exact-27d full pytest
+executes with 111 passed, 4 skipped and one missing-historical-artifact failure;
+the absent ignored `run.json` is not fabricated.  Registry validation and final
+checksum verification are required before release/push; see the run manifest for
+the final command records.

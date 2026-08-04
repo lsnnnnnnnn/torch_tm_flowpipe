@@ -1,0 +1,67 @@
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/flowstar/flowstar-toolbox'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Interval.o Interval.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Variables.o Variables.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o settings.o settings.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Matrix.o Matrix.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Geometry.o Geometry.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Constraints.o Constraints.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Continuous.o Continuous.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Discrete.o Discrete.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Hybrid.o Hybrid.cpp
+bison -d -v modelParser.y
+flex modelLexer.l
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o modelParser.tab.o modelParser.tab.c
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o lex.yy.o lex.yy.c
+ar rcs libflowstar.a Interval.o Variables.o settings.o Matrix.o Geometry.o Constraints.o Continuous.o Discrete.o Hybrid.o lex.yy.o modelParser.tab.o
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/flowstar/flowstar-toolbox'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/src'
+g++ -O3 -c -I . -I /usr/local/include -I /usr/include/jsoncpp -I /usr/include/yaml-cpp -g -O3 -std=c++11 -o CrownSettings.o CrownSettings.cpp
+g++ -O3 -c -I . -I /usr/local/include -I /usr/include/jsoncpp -I /usr/include/yaml-cpp -g -O3 -std=c++11 -o CrownReach.o CrownReach.cpp
+g++ -O3 -w -g -L../flowstar/flowstar-toolbox -L/usr/local/lib -o CrownSettings CrownSettings.o CrownReach.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -lyaml-cpp -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/src'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o tora_sigmoid.o tora_sigmoid.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o tora_relu_tanh.o tora_relu_tanh.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Tora.o Tora.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -DTORA_X1_SPLITS=1 -DTORA_X2_SPLITS=1 -o Tora_b1.o Tora.cpp
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o tora_relu_tanh tora_relu_tanh.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o tora_sigmoid tora_sigmoid.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o Tora_b1 Tora_b1.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o Tora Tora.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/ACC'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o acc.o acc.cpp
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o acc acc.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/ACC'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/CartPole'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o balancing.o balancing.cpp
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o balancing balancing.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/CartPole'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/DoublePendulum'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o double_pendulum_less_robust.o double_pendulum_less_robust.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o double_pendulum_more_robust.o double_pendulum_more_robust.cpp
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o double_pendulum_more_robust double_pendulum_more_robust.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o double_pendulum_less_robust double_pendulum_less_robust.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/DoublePendulum'
+make: Entering directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/NAV'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o NAV_standard.o NAV_standard.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o NAV_robust.o NAV_robust.cpp
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o NAV_standard NAV_standard.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+g++ -O3 -w -g -L../../flowstar/flowstar-toolbox -L/usr/local/lib -o NAV_robust NAV_robust.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk -ljsoncpp -lcurl -ljsonrpccpp-common -ljsonrpccpp-client -lboost_thread -lboost_system
+make: Leaving directory '/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/NAV'
+[OK  ] CROWN-Reach repository: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905
+[FAIL] DiffReach repository: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/external/DiffReach
+[OK  ] CROWN-Reach executable: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/src/CrownSettings
+[OK  ] submit TORA/Tora: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA/Tora
+[OK  ] submit TORA/tora_sigmoid: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA/tora_sigmoid
+[OK  ] submit TORA/tora_relu_tanh: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA/tora_relu_tanh
+[OK  ] submit ACC/acc: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/ACC/acc
+[OK  ] submit CartPole/balancing: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/CartPole/balancing
+[OK  ] submit DoublePendulum/less: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/DoublePendulum/double_pendulum_less_robust
+[OK  ] submit DoublePendulum/more: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/DoublePendulum/double_pendulum_more_robust
+[OK  ] submit NAV/robust: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/NAV/NAV_robust
+[OK  ] submit NAV/standard: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/NAV/NAV_standard
+[OK  ] CROWN-Reach Python: /usr/bin/python3
+[FAIL] DiffReach Python: /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/.venvs/diffreach/bin/python
+[OK  ] CROWN Python imports: torch=2.8.0+cu128 cuda=True auto_LiRPA=/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/auto_LiRPA/__init__.py
+[OK  ] NVIDIA GPU: Tesla V100-SXM2-16GB, 580.159.03, 16384 MiB

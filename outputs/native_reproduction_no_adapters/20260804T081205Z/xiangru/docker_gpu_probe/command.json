@@ -1,0 +1,26 @@
+{
+  "label": "crownreach_docker_gpu_probe",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "--device",
+    "nvidia.com/gpu=0",
+    "crown-reach-experiments:local",
+    "python3",
+    "-c",
+    "import json,torch; print(json.dumps({'torch':torch.__version__,'torch_cuda':torch.version.cuda,'cuda_available':torch.cuda.is_available(),'device_count':torch.cuda.device_count(),'device_name':torch.cuda.get_device_name(0) if torch.cuda.is_available() else None}))"
+  ],
+  "environment_overrides": {},
+  "start_time_utc": "2026-08-04T08:23:00.550858Z",
+  "end_time_utc": "2026-08-04T08:23:00.565512Z",
+  "wall_seconds": 0.014645003713667393,
+  "timeout_seconds": 120.0,
+  "timeout_expired": false,
+  "exit_code": 1,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "7f82543b38da1e2daad7c74045136e02753ca9315fce32ce59da86bdda722d11"
+}

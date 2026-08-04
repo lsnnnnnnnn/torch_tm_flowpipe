@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    "crownreach_submit_config.json",
+    "stdout.log"
+  ],
+  "backend": "crownreach_submit",
+  "benchmark": "tora_homogeneous",
+  "command": [
+    "/usr/bin/python3",
+    "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/experiments/reachability/tools/run_crown_submit.py",
+    "--server",
+    "crown.py",
+    "--binary",
+    "./Tora"
+  ],
+  "comparison_contract": {
+    "controller": "ARCH-COMP Benchmark9-Tora/controllerTora.onnx",
+    "controller_period": 1.0,
+    "dynamics": [
+      "x2",
+      "-x1 + 0.1*sin(x3)",
+      "x4",
+      "u1 - 10"
+    ],
+    "full_horizon": 20.0,
+    "initial_partitions": {
+      "x1": 4,
+      "x2": 3,
+      "x3": 1,
+      "x4": 1
+    },
+    "initial_set": [
+      [
+        0.6,
+        0.7
+      ],
+      [
+        -0.7,
+        -0.6
+      ],
+      [
+        -0.4,
+        -0.3
+      ],
+      [
+        0.5,
+        0.6
+      ]
+    ],
+    "notes": "The CROWN backend invokes the exact submit-package crown.py + Tora binary. The DiffReach adapter only removes legacy initializer-as-input entries and adds a flat-input Reshape to the same ONNX graph.",
+    "property": "all four states remain in [-2, 2] for the full horizon",
+    "state_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4"
+    ]
+  },
+  "config_sha256": "9aa0d59810a54fcd0accdaaed53746fed8fb578c9021985a724f2aedca410178",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/submit/CROWN-Reach/archcomp/TORA",
+  "execution_contract": {
+    "control_updates": 20,
+    "controller_period": 1.0,
+    "horizon": 20.0,
+    "initial_partitions": 12,
+    "ode_step_size": 0.1
+  },
+  "finished_at": "2026-08-04T08:39:48.740731+00:00",
+  "git_revisions": {
+    "crownreach": null,
+    "diffreach": null
+  },
+  "host": "69999501e8de",
+  "kind": "crownreach_submit",
+  "manifest": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/experiments/reachability/benchmarks/tora_homogeneous.json",
+  "manifest_sha256": "d6510b5bf927a8ffeb8455e62ed25c06a0d7d504c8a1708580f2fcc04c9e0d10",
+  "metrics": {
+    "certification_status": "COMPUTED",
+    "controller_seconds": 1.207641,
+    "dynamics_seconds": 0.912211,
+    "flowstar_terminated": false,
+    "residual_seconds": 0.067537,
+    "solver_seconds": 2.187389,
+    "verdict": "VERIFIED"
+  },
+  "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.35",
+  "profile": "full",
+  "returncode": 0,
+  "schema_version": 1,
+  "started_at": "2026-08-04T08:39:43.093760+00:00",
+  "status": "success",
+  "timed_out": false,
+  "timeout_seconds": 180.0,
+  "wall_seconds": 5.643241032026708
+}

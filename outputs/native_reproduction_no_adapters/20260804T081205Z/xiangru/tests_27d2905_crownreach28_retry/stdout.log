@@ -1,0 +1,52 @@
+..................................................F............ [ 54%]
+...............ssss..................................                    [100%]
+=================================== FAILURES ===================================
+___________ ReachBenchTests.test_tora_tradeoff_matrix_is_consistent ____________
+
+self = <test_reachbench.ReachBenchTests testMethod=test_tora_tradeoff_matrix_is_consistent>
+
+    def test_tora_tradeoff_matrix_is_consistent(self):
+        reachability_root = Path(__file__).resolve().parents[1]
+        repository_root = reachability_root.parents[1]
+        matrix = json.loads(
+            (reachability_root / "tora_tradeoff_matrix.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(matrix["benchmark"], "tora_homogeneous")
+        self.assertEqual(
+            matrix["comparison_contract"]["horizon"], 20.0
+        )
+    
+        methods = matrix["bound_methods"]
+        certificate_policies = matrix["certificate_policies"]
+        policies = matrix["branching_policies"]
+        backends = matrix["implementation_backends"]
+        cell_ids = set()
+        for cell in matrix["recorded_cells"]:
+            self.assertNotIn(cell["id"], cell_ids)
+            cell_ids.add(cell["id"])
+            self.assertIn(cell["bound_method"], methods)
+            self.assertIn(
+                cell["certificate_policy"], certificate_policies
+            )
+            self.assertIn(cell["branching_policy"], policies)
+            self.assertIn(cell["implementation_backend"], backends)
+            for artifact in cell["artifacts"]:
+>               self.assertTrue((repository_root / artifact).is_file())
+E               AssertionError: False is not true
+
+experiments/reachability/tests/test_reachbench.py:93: AssertionError
+=============================== warnings summary ===============================
+experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py::NativeToraControllerTest::test_flat_mlp_matches_original_onnx_graph
+  /srv/local/shengenli/native_envs/crownreach28/lib/python3.11/site-packages/onnx2pytorch/convert/layer.py:29: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:203.)
+    layer.weight.data = torch.from_numpy(numpy_helper.to_array(weight))
+
+experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py::NativeToraControllerTest::test_flat_mlp_matches_original_onnx_graph
+  /srv/local/shengenli/native_envs/crownreach28/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:151: UserWarning: Using experimental implementation that allows 'batch_size > 1'.Batchnorm layers could potentially produce false outputs.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED experiments/reachability/tests/test_reachbench.py::ReachBenchTests::test_tora_tradeoff_matrix_is_consistent
+1 failed, 111 passed, 4 skipped, 2 warnings, 9 subtests passed in 32.22s

@@ -1,0 +1,27 @@
+{
+  "label": "diffreach_official_vanderpol_native",
+  "cwd": "/srv/local/shengenli/DiffReach_native_dd628eb",
+  "argv": [
+    "/srv/local/shengenli/native_envs/diffreach081/bin/python",
+    "run_dyn.py",
+    "config/ct_dyn/van_der_pol.yaml",
+    "--sim",
+    "--ver"
+  ],
+  "environment_overrides": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "JAX_ENABLE_X64": "true",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+    "MPLBACKEND": "Agg"
+  },
+  "start_time_utc": "2026-08-04T09:26:17.902098Z",
+  "end_time_utc": "2026-08-04T09:26:34.971333Z",
+  "wall_seconds": 17.069232371635735,
+  "timeout_seconds": 1800.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "a50f960cd3fa0d1ce1446e976d03a51a0587da33163cfe0029d10631c5a63d53",
+  "stderr_sha256": "ec1542af4f8d6c9ebb6f8e85155dac614ba48288e82dab529bc1041960773d51"
+}

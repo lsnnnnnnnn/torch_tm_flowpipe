@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "run_id": "20260804T081205Z",
+  "native_reproductions": [
+    {
+      "id": "xiangru_crownreach_flowstar_tora_b12",
+      "repo_path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "source_sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "source_changed": false,
+      "execution_kind": "author_native",
+      "native_entrypoint": "scripts/reachbench_crown_docker.sh run tora_homogeneous --backend crownreach_submit --profile full --timeout 180",
+      "input_hashes": {
+        "config_sha256": "9aa0d59810a54fcd0accdaaed53746fed8fb578c9021985a724f2aedca410178",
+        "manifest_sha256": "d6510b5bf927a8ffeb8455e62ed25c06a0d7d504c8a1708580f2fcc04c9e0d10",
+        "controller_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x1_crownreach_flowstar_full_rootless/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x1_crownreach_flowstar_full_rootless/fresh_artifacts/run.json",
+          "sha256": "f4c7ba0b4629c909a6c851fd6b7449c721c3b894b5e7905879a9c7f73ba55f0e"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/reachability/results/s3c_fair_timing_raw/flowstar_rep1_reachbench/run.json",
+          "sha256": "99de29173076e5f10c40a22cfec4dea5675be197ff3d3c4daa2403bb9c494aa6"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x1_crownreach_flowstar_full_rootless/comparison.json",
+        "sha256": "b36e0c7d75443d440b37036ab9b5dfd7389dbc9e9451094bbf3b24db0567e0d6"
+      },
+      "requested_horizon": 20.0,
+      "reached_horizon": 20.0,
+      "reproduction_status": "reproduced_exact",
+      "completion_status": "completed",
+      "certificate_status": "completed",
+      "property_status": "verified_full_tube_inside_minus2_plus2",
+      "soundness_level": "unknown",
+      "certificate_claim": "native_verifier_result",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "20/20 control updates, B12, VERIFIED, no Flowstar termination. Backend-wide formal gate remains blocked by the scalar-affine diagnostic."
+    },
+    {
+      "id": "xiangru_diffreach_tora_u0_gpu_v100",
+      "repo_path": "/srv/local/shengenli/DiffReach",
+      "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_changed": false,
+      "execution_kind": "author_native",
+      "native_entrypoint": "run_ctl.py <u0_diffreach_gpu_config.json> --ver",
+      "input_hashes": {
+        "config_sha256": "354b8f88c8f45161e10cc6e528a355aa29b15c3faf486d7cc662cb63f5f478fb",
+        "controller_sha256": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e",
+        "dynamics_sha256": "7d2fc0652a6eff0063a2bf8bba0536a98e5445c8808707cbf8960c27d628ca34"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x2_diffreach_u0_full_native/command.json",
+      "fresh_artifacts": [],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/results/u0_diffreach_native_gpu.json",
+          "sha256": "8ea83095c9947b75c4b74bf0e675f45f9db81d95210e4d61a13c503b35518dc4"
+        }
+      ],
+      "comparison_result": null,
+      "requested_horizon": 20.0,
+      "reached_horizon": 0.0,
+      "reproduction_status": "native_algorithm_failed",
+      "completion_status": "failed",
+      "certificate_status": "failed",
+      "property_status": "not_reached_first_step",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "The exact GPU command entered verification but V100/cuDNN autotuning found no valid f64 convolution configuration. No step artifact was written."
+    },
+    {
+      "id": "xiangru_diffreach_tora_u0_cpu_reference_failure",
+      "repo_path": "/srv/local/shengenli/DiffReach",
+      "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_changed": false,
+      "execution_kind": "author_native",
+      "native_entrypoint": "run_ctl.py <u0_diffreach_gpu_config.json> --ver (JAX CPU supplemental)",
+      "input_hashes": {
+        "config_sha256": "354b8f88c8f45161e10cc6e528a355aa29b15c3faf486d7cc662cb63f5f478fb",
+        "controller_sha256": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e",
+        "dynamics_sha256": "7d2fc0652a6eff0063a2bf8bba0536a98e5445c8808707cbf8960c27d628ca34"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x2_diffreach_u0_full_cpu_native/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x2_diffreach_u0_native/fresh_workspace_cpu/flowpipe/flowpipe_ver.npz",
+          "sha256": "48d68f0a89d3e7148d0872cc0a07e70ee79595b8dbc88f4a262e3c46b11bac6e"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/results/u0_diffreach_cpu_flowpipe.npz",
+          "sha256": "48d68f0a89d3e7148d0872cc0a07e70ee79595b8dbc88f4a262e3c46b11bac6e"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x2_diffreach_u0_full_cpu_native/comparison.json",
+        "sha256": "eecb589bb6a8ccc7844d92dc0267b3a87efaf04965bb37219891ddd37b77a925"
+      },
+      "requested_horizon": 20.0,
+      "reached_horizon": 20.0,
+      "reproduction_status": "reference_failure_reproduced",
+      "completion_status": "completed",
+      "certificate_status": "partial",
+      "property_status": "failed_conservative_or_unsound_warning",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Fresh NPZ is byte-identical to the saved CPU artifact. Only 66.22% of returned initial shrink flags are true and the bounds explode; this reproduces failed behavior, not verification."
+    },
+    {
+      "id": "xiangru_complete_q3_dr_rp_b48",
+      "repo_path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "source_sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "source_changed": false,
+      "execution_kind": "author_native",
+      "native_entrypoint": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py --device cuda --policies b48_static --methods complete_q3 --cap 200 --q3-engine dynamic --controller-backend autolirpa --controller-platform cuda --controller-mode eager --controller-composition outward",
+      "input_hashes": {
+        "entrypoint_sha256": "9789664a933490cdbf198063cff02b078a1e60e08099e87c9fcc1870f2be5623",
+        "generated_config_sha256": "13b28acaa6addad27b12f2e00d1e6a81920bfebe849382ddb6b9a736bb4ff090",
+        "controller_sha256": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x3_complete_q3_b48_native_cleanenv/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x3_complete_q3_b48_native_workspace/s3r_q3_b48_rep1.json",
+          "sha256": "a8324823f7e717afd71adfc196f7a04b488ec8212a024edce8e654b08c565414"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/reachability/results/s3c_fair_timing_raw/rep1_q3/s3r_q3_b48_rep1.json",
+          "sha256": "5ae2abf56e7ba25c34931db12b5d51e95aedcdc15a1eb00518c778d1b939b15a"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x3_complete_q3_b48_native_cleanenv/comparison_declared_tolerance.json",
+        "sha256": "790a0eb2b0ca160ec7abcaf38ca8fb7486b577caaec5dd403d26d318b84f2f8c"
+      },
+      "requested_horizon": 20.0,
+      "reached_horizon": 20.0,
+      "reproduction_status": "reproduced_with_declared_tolerance",
+      "completion_status": "completed",
+      "certificate_status": "completed",
+      "property_status": "verified_full_tube_inside_minus2_plus2",
+      "soundness_level": "empirical",
+      "certificate_claim": "native_float64_validation",
+      "primary_comparison_eligible": false,
+      "tolerance": {
+        "value": 0.000001,
+        "source": "Xiangru run_s0_tora_static_partition_sweep.py CONTROLLER_TOLERANCE = 1e-6"
+      },
+      "notes": "200/200 segments, B48, no retry. 2,850 numeric fields: max abs 1.421e-13 and max relative 1.665e-9; runtime/memory excluded. Ordinary float64 dynamics is not classified formal outward rounding."
+    },
+    {
+      "id": "xiangru_complete_q3_b12_dirty_reference",
+      "repo_path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "source_sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "source_changed": true,
+      "execution_kind": "author_native",
+      "native_entrypoint": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py --device cuda --policies b12_archcomp --methods complete_q3 --cap 200",
+      "input_hashes": {
+        "entrypoint_sha256": "9789664a933490cdbf198063cff02b078a1e60e08099e87c9fcc1870f2be5623",
+        "dirty_reference_sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b12_native/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b12_native_workspace/s0_q3_b12.json",
+          "sha256": "13bfcbb927a4c694fae7ce94392e04e7396e3d0292db0bd1f1fce3987168659a"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/results/s0_tora_static_partition_sweep.json",
+          "sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b12_native/comparison_dirty_reference.json",
+        "sha256": "9c4dd2541da7f1caab635feb6ecf11264534a45c893351d38de6e5a6feb6e359"
+      },
+      "requested_horizon": 20.0,
+      "reached_horizon": 15.0,
+      "reproduction_status": "source_identity_unknown",
+      "completion_status": "partial",
+      "certificate_status": "partial",
+      "property_status": "failed_at_segment_151",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Clean 27d run fails at attempted segment 151 and certifies through T=15.0. The historical reference records dirty source 0a2cfcf without its patch, so matching the boundary is not exact reproduction."
+    },
+    {
+      "id": "xiangru_complete_q3_b24_dirty_reference",
+      "repo_path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "source_sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "source_changed": true,
+      "execution_kind": "author_native",
+      "native_entrypoint": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py --device cuda --policies b24_static --methods complete_q3 --cap 200",
+      "input_hashes": {
+        "entrypoint_sha256": "9789664a933490cdbf198063cff02b078a1e60e08099e87c9fcc1870f2be5623",
+        "dirty_reference_sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b24_native/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b24_native_workspace/s0_q3_b24.json",
+          "sha256": "93c15544aa286c2f8d18f1ef46fb82566d9c14045e278e2aeb59d6ce8dd57d1b"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/results/s0_tora_static_partition_sweep.json",
+          "sha256": "ebf60960332294d4dd5d3a7664a5d25b88e18780b09dd3d5b13aea326076faeb"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/xiangru/x4_complete_q3_b24_native/comparison_dirty_reference.json",
+        "sha256": "f2900406eb521941b06c5bd20fcb25790c973639ff07064fb3441f41a7d2ab71"
+      },
+      "requested_horizon": 20.0,
+      "reached_horizon": 18.0,
+      "reproduction_status": "source_identity_unknown",
+      "completion_status": "partial",
+      "certificate_status": "partial",
+      "property_status": "failed_at_segment_181",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Clean 27d run fails at attempted segment 181 and certifies through T=18.0. The dirty historical source bytes are unavailable."
+    },
+    {
+      "id": "flowstar_stock_host_gcc15_build",
+      "repo_path": "/srv/local/shengenli/flowstar_stock_gcc11",
+      "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "source_changed": false,
+      "execution_kind": "stock_official",
+      "native_entrypoint": "benchmarks/continuous/vanderpol/Makefile",
+      "input_hashes": {
+        "vanderpol_cpp_sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d",
+        "compiler_identity": "host_gcc_15.1.0"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_build/command.json",
+      "fresh_artifacts": [],
+      "reference_artifacts": [],
+      "comparison_result": null,
+      "requested_horizon": 10.0,
+      "reached_horizon": 0.0,
+      "reproduction_status": "build_failed",
+      "completion_status": "not_started",
+      "certificate_status": "not_applicable",
+      "property_status": "not_started",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Unmodified stock headers fail to compile with host GCC 15 at TaylorModel.h:900. This is a build/compiler result, not an algorithm failure."
+    },
+    {
+      "id": "flowstar_stock_official_vanderpol_order4_t10",
+      "repo_path": "/srv/local/shengenli/flowstar_stock_gcc11",
+      "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "source_changed": false,
+      "execution_kind": "stock_official",
+      "native_entrypoint": "benchmarks/continuous/vanderpol/vanderpol",
+      "input_hashes": {
+        "vanderpol_cpp_sha256": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d",
+        "binary_sha256": "266ba4edf9b905a185efcae4f72c28f2a9ca34362c5960e2995ea0e2bb35d51f",
+        "compiler_identity": "Ubuntu_GCC_11.4.0"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh/summary.json",
+          "sha256": "4159b16f782355c43e5b8188054255573c2ed02c2597c3c449bd96e54d3acd13"
+        },
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh_artifacts/vanderpol_t_x.plt",
+          "sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+        },
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/flowstar/official_vanderpol_t10_order4_fresh_artifacts/vanderpol_t_y.plt",
+          "sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        }
+      ],
+      "reference_artifacts": [],
+      "comparison_result": null,
+      "requested_horizon": 10.0,
+      "reached_horizon": 10.0,
+      "reproduction_status": "native_run_completed_reference_unavailable",
+      "completion_status": "completed",
+      "certificate_status": "completed",
+      "property_status": "safe",
+      "soundness_level": "unknown",
+      "certificate_claim": "native_verifier_result",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Official C++ benchmark, 290 order-4 segments, no termination, T=10 safe. Upstream has no raw reference; prior local plot bytes match but came from a dirty compatibility checkout and are not promoted to an upstream reference."
+    },
+    {
+      "id": "diffreach_upstream_official_dt_plan_smoke",
+      "repo_path": "/srv/local/shengenli/DiffReach_native_dd628eb",
+      "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_changed": false,
+      "execution_kind": "stock_official",
+      "native_entrypoint": "run_plan.py config/dt_plan/test.yaml --ver",
+      "input_hashes": {
+        "config_sha256": "e85316e30f1176e9be4cc317ef1551d21791e41997dfc9d8b9ca620a940a4925",
+        "jax_stack": "README_exact_JAX_0.8.1"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_dt_plan_smoke/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_smoke_workspace/dt_plan/test/flowpipe_ver.npz",
+          "sha256": "bd7cea76f669b235ac868faee3e27252da5fcfe48986871fb2f76fbb8d4ac4b0"
+        },
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_dt_plan_smoke/summary.json",
+          "sha256": "d53f994eacdbad4dacf324436f16cf84465c39467fa02d3b3aa25e78792fffe5"
+        }
+      ],
+      "reference_artifacts": [],
+      "comparison_result": null,
+      "requested_horizon": 20.0,
+      "reached_horizon": 20.0,
+      "reproduction_status": "native_run_completed_reference_unavailable",
+      "completion_status": "completed",
+      "certificate_status": "not_exposed",
+      "property_status": "reachability_only",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Official smoke completed 20 steps. Its shrinked array is source placeholder ones, not a contraction result."
+    },
+    {
+      "id": "diffreach_upstream_official_vanderpol_t10",
+      "repo_path": "/srv/local/shengenli/DiffReach_native_dd628eb",
+      "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "source_changed": false,
+      "execution_kind": "stock_official",
+      "native_entrypoint": "run_dyn.py config/ct_dyn/van_der_pol.yaml --sim --ver",
+      "input_hashes": {
+        "config_sha256": "b473527ffceb621eafbdc99f1121b497f84908402efe4ab9e3899d4179061eb6",
+        "jax_stack": "README_exact_JAX_0.8.1"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_vanderpol_native/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_smoke_workspace/ct_dyn/van_der_pol/flowpipe_ver.npz",
+          "sha256": "f02d2220848576bbd38873eca38b7cac7d6a3c9b08e10608e9ad32de8071b379"
+        },
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_vanderpol_native/summary.json",
+          "sha256": "854eb1a50921a1d64fa4d284a398f3f8f651d8062cccf2b0f6fd36642a7668bf"
+        }
+      ],
+      "reference_artifacts": [],
+      "comparison_result": null,
+      "requested_horizon": 10.0,
+      "reached_horizon": 10.0,
+      "reproduction_status": "native_run_completed_reference_unavailable",
+      "completion_status": "completed",
+      "certificate_status": "partial",
+      "property_status": "reachability_only",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Official README command completed 1,000 steps for 64 partitions. All returned initial shrink flags are true, but refinement roundoff inclusion/failure is not propagated into the returned flag. No upstream raw reference exists."
+    },
+    {
+      "id": "torch_sparse_native_vanderpol_order4_t10",
+      "repo_path": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+      "source_sha": "308b735ac577cfea39172976a4c08716f1e54d2f",
+      "source_changed": false,
+      "execution_kind": "current_native",
+      "native_entrypoint": "experiments/flowstar_raw_remainder_compat_h10_right_map_centering.py --horizon 10 --wall-cap-s 300",
+      "input_hashes": {
+        "entrypoint_sha256": "b6e56414b62c7a9f14b3b33a6229a27adcae015d6412a2f8a08eede517567932",
+        "flowstar_segments_sha256": "cee9d6fdd7d3b57807d305bd9743a0d89d8c54f53bc5d5fbbec06fe4557ddcb3",
+        "order": "4"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10_artifacts/h10_right_map_centering_summary.csv",
+          "sha256": "b283d54d654652b2f9bbf5494df0d912f9ede7c0ed78a19dc85aeaa718abf5e8"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "outputs/three_tool_reaudit/20260804T060058Z/vdp_t10/h10_right_map_centering/h10_right_map_centering_summary.csv",
+          "sha256": "a6686e683119daf39d2b09ebfaf4b8a97bd66bde9157969c4dfa3e9fb5bcf91b"
+        }
+      ],
+      "comparison_result": {
+        "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/torch/native_order4_vdp_h10/comparison_prior_same_command.json",
+        "sha256": "2ec36aa11b03cab667de285daef71af0f0e7f0106ee4aab724066d894feb6409"
+      },
+      "requested_horizon": 10.0,
+      "reached_horizon": 6.0490383280541096,
+      "reproduction_status": "native_algorithm_failed",
+      "completion_status": "partial",
+      "certificate_status": "partial",
+      "property_status": "not_applicable_reachability_run",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "The same command did not reproduce the prior natural failure at 6.390931. Constant and range-midpoint adaptive lanes hit the 300 s per-lane wall cap at 5.904687 and 6.049038; no lane reached T=10."
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "flowstar_scalar_affine_existing_generated_diagnostic_recheck",
+      "repo_path": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+      "source_sha": "308b735ac577cfea39172976a4c08716f1e54d2f",
+      "source_changed": false,
+      "execution_kind": "analysis_only",
+      "native_entrypoint": "experiments/three_tool_reaudit/analyze_one_step.py",
+      "input_hashes": {
+        "flowstar_generated_diagnostic_sha256": "971748a7cced1ea0df15613493085e64e55335808a620abd147f5eb8a2a6432a",
+        "torch_diagnostic_sha256": "55ed88edead889d3e48ffdb1bd5646bc78dad95ef9303b58db23e646739d6d4c"
+      },
+      "command_evidence": "outputs/native_reproduction_no_adapters/20260804T081205Z/diagnostics/flowstar_scalar_affine_recheck/command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diagnostics/flowstar_scalar_affine_recheck/one_step_parity.json",
+          "sha256": "b896cea0373f27ab1bae1d2b07efce6acc6fa37597be892cbf4deac4fe37a046"
+        }
+      ],
+      "reference_artifacts": [],
+      "comparison_result": null,
+      "requested_horizon": 0.01,
+      "reached_horizon": 0.01,
+      "reproduction_status": "patched_diagnostic_only",
+      "completion_status": "completed",
+      "certificate_status": "not_applicable",
+      "property_status": "flowstar_empirical_containment_failed",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "Fresh analysis of existing generated-stock diagnostic artifacts. Both endpoint corners miss the analytic/RK4 trajectory and the upper final path sample misses the segment; no repair applied."
+    }
+  ]
+}

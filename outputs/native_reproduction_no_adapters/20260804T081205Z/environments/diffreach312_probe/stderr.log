@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'immrax'
+ERROR conda.cli.main_run:execute(148): `conda run python -c import json,platform,jax,jaxlib,immrax; print(json.dumps({'python':platform.python_version(),'jax':jax.__version__,'jaxlib':jaxlib.__version__,'jax_x64':jax.config.x64_enabled,'devices':[str(x) for x in jax.devices()],'immrax':immrax.__file__},indent=2))` failed. (See above for error)

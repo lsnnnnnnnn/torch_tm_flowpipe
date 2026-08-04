@@ -1,0 +1,24 @@
+{
+  "label": "py11_torch_probe",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "conda",
+    "run",
+    "-n",
+    "py11",
+    "python",
+    "-c",
+    "import json,platform,torch,numpy; print(json.dumps({'python':platform.python_version(),'torch':torch.__version__,'torch_cuda':torch.version.cuda,'cuda_available':torch.cuda.is_available(),'devices':[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())],'numpy':numpy.__version__},indent=2))"
+  ],
+  "environment_overrides": {},
+  "start_time_utc": "2026-08-04T08:49:33.829854Z",
+  "end_time_utc": "2026-08-04T08:49:37.577661Z",
+  "wall_seconds": 3.7478118762373924,
+  "timeout_seconds": 180.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "8cac324f6d47c9785f80148657c94340a841637f7447184ebb71401fd6958df3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

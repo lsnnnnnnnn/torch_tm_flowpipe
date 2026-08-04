@@ -1,0 +1,25 @@
+In file included from ../../../flowstar-toolbox/Constraints.h:9,
+                 from ../../../flowstar-toolbox/Geometry.h:9,
+                 from ../../../flowstar-toolbox/Continuous.h:9,
+                 from vanderpol.cpp:1:
+../../../flowstar-toolbox/TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+../../../flowstar-toolbox/TaylorModel.h:900:21: error: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+../../../flowstar-toolbox/TaylorModel.h:900:21: note: there are 3 candidates
+In file included from ../../../flowstar-toolbox/Matrix.h:10,
+                 from ../../../flowstar-toolbox/Polynomial.h:10,
+                 from ../../../flowstar-toolbox/TaylorModel.h:9:
+../../../flowstar-toolbox/Interval.h:250:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  250 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+../../../flowstar-toolbox/Interval.h:250:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+../../../flowstar-toolbox/Interval.h:251:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  251 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+../../../flowstar-toolbox/Interval.h:251:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+../../../flowstar-toolbox/Interval.h:252:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  252 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+../../../flowstar-toolbox/Interval.h:252:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+make: *** [Makefile:17: vanderpol.o] Error 1

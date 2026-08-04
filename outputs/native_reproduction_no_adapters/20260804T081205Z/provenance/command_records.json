@@ -1,0 +1,1104 @@
+[
+  {
+    "name": "primary_realpath",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "realpath",
+      "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters"
+    ],
+    "start_time_utc": "2026-08-04T08:13:18.602662Z",
+    "end_time_utc": "2026-08-04T08:13:18.605316Z",
+    "exit_code": 0,
+    "stdout": "provenance/001_primary_realpath.stdout.log",
+    "stderr": "provenance/001_primary_realpath.stderr.log",
+    "stdout_sha256": "1fe3459d702efab0704514479b258db206ed527413ff5c4ab6452b3a8382d1c0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_status",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:18.605628Z",
+    "end_time_utc": "2026-08-04T08:13:18.901662Z",
+    "exit_code": 0,
+    "stdout": "provenance/002_primary_status.stdout.log",
+    "stderr": "provenance/002_primary_status.stderr.log",
+    "stdout_sha256": "6d5b3f2c713d2ec73a9cd49956ce56b17d51333820ed027b484627a1bda7092b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_fetch",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "fetch",
+      "--all",
+      "--prune"
+    ],
+    "start_time_utc": "2026-08-04T08:13:18.902025Z",
+    "end_time_utc": "2026-08-04T08:13:19.470184Z",
+    "exit_code": 0,
+    "stdout": "provenance/003_primary_fetch.stdout.log",
+    "stderr": "provenance/003_primary_fetch.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_status_after_fetch",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.470518Z",
+    "end_time_utc": "2026-08-04T08:13:19.476432Z",
+    "exit_code": 0,
+    "stdout": "provenance/004_primary_status_after_fetch.stdout.log",
+    "stderr": "provenance/004_primary_status_after_fetch.stderr.log",
+    "stdout_sha256": "6d5b3f2c713d2ec73a9cd49956ce56b17d51333820ed027b484627a1bda7092b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_head",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.476688Z",
+    "end_time_utc": "2026-08-04T08:13:19.478323Z",
+    "exit_code": 0,
+    "stdout": "provenance/005_primary_head.stdout.log",
+    "stderr": "provenance/005_primary_head.stderr.log",
+    "stdout_sha256": "8345546a4f2861e0439dc72edc95cc9e4057a1bb78823810e762c39f7308cf4a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_branch",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.478581Z",
+    "end_time_utc": "2026-08-04T08:13:19.480255Z",
+    "exit_code": 0,
+    "stdout": "provenance/006_primary_branch.stdout.log",
+    "stderr": "provenance/006_primary_branch.stderr.log",
+    "stdout_sha256": "bd4a2bc265ad05259ad33894e2f6e703a72fdc153c654f635b04b9abfd5c8081",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_remotes",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.480474Z",
+    "end_time_utc": "2026-08-04T08:13:19.481980Z",
+    "exit_code": 0,
+    "stdout": "provenance/007_primary_remotes.stdout.log",
+    "stderr": "provenance/007_primary_remotes.stderr.log",
+    "stdout_sha256": "83f5dda9f30ec589217fee1492306c0ee71536ee402ef414b916bce7f85c20f3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_recent_log",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "log",
+      "-12",
+      "--oneline",
+      "--decorate",
+      "--all"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.482214Z",
+    "end_time_utc": "2026-08-04T08:13:19.485785Z",
+    "exit_code": 0,
+    "stdout": "provenance/008_primary_recent_log.stdout.log",
+    "stderr": "provenance/008_primary_recent_log.stderr.log",
+    "stdout_sha256": "86d7b5b02309d8ea51b6f8ccae61f0592c78375243555cf1ef6af69154cb88d3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_branches",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "branch",
+      "-a",
+      "-vv"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.486024Z",
+    "end_time_utc": "2026-08-04T08:13:19.490152Z",
+    "exit_code": 0,
+    "stdout": "provenance/009_primary_branches.stdout.log",
+    "stderr": "provenance/009_primary_branches.stderr.log",
+    "stdout_sha256": "1650327054b94dd8b5bf8b3202f3549b523f8fca308d2770040f6a9bab438397",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_worktrees",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "worktree",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.490394Z",
+    "end_time_utc": "2026-08-04T08:13:19.492519Z",
+    "exit_code": 0,
+    "stdout": "provenance/010_primary_worktrees.stdout.log",
+    "stderr": "provenance/010_primary_worktrees.stderr.log",
+    "stdout_sha256": "4535368415828cdd00d19cfe9a1359895e2fcdfc42f32e9c783c446ec87c9ccb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_submodules",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "submodule",
+      "status",
+      "--recursive"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.492738Z",
+    "end_time_utc": "2026-08-04T08:13:19.523721Z",
+    "exit_code": 0,
+    "stdout": "provenance/011_primary_submodules.stdout.log",
+    "stderr": "provenance/011_primary_submodules.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_tracked_diff",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.523937Z",
+    "end_time_utc": "2026-08-04T08:13:19.527822Z",
+    "exit_code": 0,
+    "stdout": "provenance/012_primary_tracked_diff.stdout.log",
+    "stderr": "provenance/012_primary_tracked_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_cached_diff",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.528042Z",
+    "end_time_utc": "2026-08-04T08:13:19.530332Z",
+    "exit_code": 0,
+    "stdout": "provenance/013_primary_cached_diff.stdout.log",
+    "stderr": "provenance/013_primary_cached_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_realpath",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "realpath",
+      "/srv/local/shengenli/torch_tm_flowpipe"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.530565Z",
+    "end_time_utc": "2026-08-04T08:13:19.532971Z",
+    "exit_code": 0,
+    "stdout": "provenance/014_primary_user_worktree_realpath.stdout.log",
+    "stderr": "provenance/014_primary_user_worktree_realpath.stderr.log",
+    "stdout_sha256": "5b41e91d9e6681db8cd8a215496a9b59332a7bfc03ca14bf22774a17672f6737",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_status",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.533208Z",
+    "end_time_utc": "2026-08-04T08:13:19.537881Z",
+    "exit_code": 0,
+    "stdout": "provenance/015_primary_user_worktree_status.stdout.log",
+    "stderr": "provenance/015_primary_user_worktree_status.stderr.log",
+    "stdout_sha256": "3f090b497bf555e90f18db632c79fa9be05945f1be8c4b057742f61155f50116",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_head",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.538124Z",
+    "end_time_utc": "2026-08-04T08:13:19.539736Z",
+    "exit_code": 0,
+    "stdout": "provenance/016_primary_user_worktree_head.stdout.log",
+    "stderr": "provenance/016_primary_user_worktree_head.stderr.log",
+    "stdout_sha256": "6c87ca74b0fc7d4f5c41177e03c095721e5033d5b118898a6f0bc859f5a5b6f7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_branch",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.539982Z",
+    "end_time_utc": "2026-08-04T08:13:19.541498Z",
+    "exit_code": 0,
+    "stdout": "provenance/017_primary_user_worktree_branch.stdout.log",
+    "stderr": "provenance/017_primary_user_worktree_branch.stderr.log",
+    "stdout_sha256": "7177df4526adbc99c1b8ab664a044b22d66f92075374ccdf92c9f9bee9c83483",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_remotes",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.541729Z",
+    "end_time_utc": "2026-08-04T08:13:19.543377Z",
+    "exit_code": 0,
+    "stdout": "provenance/018_primary_user_worktree_remotes.stdout.log",
+    "stderr": "provenance/018_primary_user_worktree_remotes.stderr.log",
+    "stdout_sha256": "83f5dda9f30ec589217fee1492306c0ee71536ee402ef414b916bce7f85c20f3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_recent_log",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "log",
+      "-12",
+      "--oneline",
+      "--decorate",
+      "--all"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.543614Z",
+    "end_time_utc": "2026-08-04T08:13:19.547108Z",
+    "exit_code": 0,
+    "stdout": "provenance/019_primary_user_worktree_recent_log.stdout.log",
+    "stderr": "provenance/019_primary_user_worktree_recent_log.stderr.log",
+    "stdout_sha256": "d6cb0d927c19131ea12937a46a42d61cc2169fbdfbf960ec9a943f3b7fd90c4f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_branches",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "branch",
+      "-a",
+      "-vv"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.547395Z",
+    "end_time_utc": "2026-08-04T08:13:19.551352Z",
+    "exit_code": 0,
+    "stdout": "provenance/020_primary_user_worktree_branches.stdout.log",
+    "stderr": "provenance/020_primary_user_worktree_branches.stderr.log",
+    "stdout_sha256": "e977f961d446fb4f709a7c5ec63547f2a9cb2d8cd0183a89522e265b9a252ed7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_worktrees",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "worktree",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.551604Z",
+    "end_time_utc": "2026-08-04T08:13:19.553645Z",
+    "exit_code": 0,
+    "stdout": "provenance/021_primary_user_worktree_worktrees.stdout.log",
+    "stderr": "provenance/021_primary_user_worktree_worktrees.stderr.log",
+    "stdout_sha256": "4535368415828cdd00d19cfe9a1359895e2fcdfc42f32e9c783c446ec87c9ccb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_submodules",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "submodule",
+      "status",
+      "--recursive"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.553864Z",
+    "end_time_utc": "2026-08-04T08:13:19.576818Z",
+    "exit_code": 0,
+    "stdout": "provenance/022_primary_user_worktree_submodules.stdout.log",
+    "stderr": "provenance/022_primary_user_worktree_submodules.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_tracked_diff",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.577040Z",
+    "end_time_utc": "2026-08-04T08:13:19.582378Z",
+    "exit_code": 0,
+    "stdout": "provenance/023_primary_user_worktree_tracked_diff.stdout.log",
+    "stderr": "provenance/023_primary_user_worktree_tracked_diff.stderr.log",
+    "stdout_sha256": "d4279db38fa8d026b39b5397974bbe999808201bf862eb08db2bafdce3b0ed77",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "primary_user_worktree_cached_diff",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.582614Z",
+    "end_time_utc": "2026-08-04T08:13:19.584427Z",
+    "exit_code": 0,
+    "stdout": "provenance/024_primary_user_worktree_cached_diff.stdout.log",
+    "stderr": "provenance/024_primary_user_worktree_cached_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_realpath",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "realpath",
+      "/srv/local/shengenli/flowstar"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.584636Z",
+    "end_time_utc": "2026-08-04T08:13:19.587102Z",
+    "exit_code": 0,
+    "stdout": "provenance/025_flowstar_realpath.stdout.log",
+    "stderr": "provenance/025_flowstar_realpath.stderr.log",
+    "stdout_sha256": "e635de0b228ce7d7a3dc0ef6d2b207e5608d1d28ce283b13336a24545c29c791",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_status",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.587340Z",
+    "end_time_utc": "2026-08-04T08:13:19.589558Z",
+    "exit_code": 0,
+    "stdout": "provenance/026_flowstar_status.stdout.log",
+    "stderr": "provenance/026_flowstar_status.stderr.log",
+    "stdout_sha256": "bcd2c33cd72f541e26ffdcd5dc2d3d5837c86334e180d4498dde98e3fe5410b9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_head",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.589779Z",
+    "end_time_utc": "2026-08-04T08:13:19.591111Z",
+    "exit_code": 0,
+    "stdout": "provenance/027_flowstar_head.stdout.log",
+    "stderr": "provenance/027_flowstar_head.stderr.log",
+    "stdout_sha256": "76a0b31bde034b6cde175d653caef591bd183bb7e22a8b660188afa80a7b7932",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_branch",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.591325Z",
+    "end_time_utc": "2026-08-04T08:13:19.592613Z",
+    "exit_code": 0,
+    "stdout": "provenance/028_flowstar_branch.stdout.log",
+    "stderr": "provenance/028_flowstar_branch.stderr.log",
+    "stdout_sha256": "9b3162498c21d7f960877099174ecea13410bd21d12440b2ea8868117fc08ae0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_remotes",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.592828Z",
+    "end_time_utc": "2026-08-04T08:13:19.594138Z",
+    "exit_code": 0,
+    "stdout": "provenance/029_flowstar_remotes.stdout.log",
+    "stderr": "provenance/029_flowstar_remotes.stderr.log",
+    "stdout_sha256": "ca89bf695dccad5108721a8007e27470f86e738921754931657c70e7d7b72d7a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_recent_log",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "log",
+      "-12",
+      "--oneline",
+      "--decorate",
+      "--all"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.594362Z",
+    "end_time_utc": "2026-08-04T08:13:19.596414Z",
+    "exit_code": 0,
+    "stdout": "provenance/030_flowstar_recent_log.stdout.log",
+    "stderr": "provenance/030_flowstar_recent_log.stderr.log",
+    "stdout_sha256": "a48a0fe2c8c6dd85c6f8737d7bf2d58a27ae29d9b9a3a0fe96edf0420c744658",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_branches",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "branch",
+      "-a",
+      "-vv"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.596638Z",
+    "end_time_utc": "2026-08-04T08:13:19.598431Z",
+    "exit_code": 0,
+    "stdout": "provenance/031_flowstar_branches.stdout.log",
+    "stderr": "provenance/031_flowstar_branches.stderr.log",
+    "stdout_sha256": "3b5ea8b8632f9e53f02abde92505ba2d9014b593e8b15fd61547150e56b7b18f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_worktrees",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "worktree",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.598635Z",
+    "end_time_utc": "2026-08-04T08:13:19.600023Z",
+    "exit_code": 0,
+    "stdout": "provenance/032_flowstar_worktrees.stdout.log",
+    "stderr": "provenance/032_flowstar_worktrees.stderr.log",
+    "stdout_sha256": "77a2e0ee5d76a90ef54174aba852d07c9c808127ca3be30583b6683304142d65",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_submodules",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "submodule",
+      "status",
+      "--recursive"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.600242Z",
+    "end_time_utc": "2026-08-04T08:13:19.625774Z",
+    "exit_code": 0,
+    "stdout": "provenance/033_flowstar_submodules.stdout.log",
+    "stderr": "provenance/033_flowstar_submodules.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_tracked_diff",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.625980Z",
+    "end_time_utc": "2026-08-04T08:13:19.629360Z",
+    "exit_code": 0,
+    "stdout": "provenance/034_flowstar_tracked_diff.stdout.log",
+    "stderr": "provenance/034_flowstar_tracked_diff.stderr.log",
+    "stdout_sha256": "8f2c7128aa842c01869c4fd7a8ee89e3d3c799b9eb6966c2f406268fab5d8f91",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "flowstar_cached_diff",
+    "cwd": "/srv/local/shengenli/flowstar",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.629584Z",
+    "end_time_utc": "2026-08-04T08:13:19.631198Z",
+    "exit_code": 0,
+    "stdout": "provenance/035_flowstar_cached_diff.stdout.log",
+    "stderr": "provenance/035_flowstar_cached_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_realpath",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "realpath",
+      "/srv/local/shengenli/DiffReach"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.631407Z",
+    "end_time_utc": "2026-08-04T08:13:19.633893Z",
+    "exit_code": 0,
+    "stdout": "provenance/036_diffreach_realpath.stdout.log",
+    "stderr": "provenance/036_diffreach_realpath.stderr.log",
+    "stdout_sha256": "ea463561652b45f831899e8fcb0367860d1512630c1f0d2d2a01e7fdf68cc5a9",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_status",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.634111Z",
+    "end_time_utc": "2026-08-04T08:13:19.636205Z",
+    "exit_code": 0,
+    "stdout": "provenance/037_diffreach_status.stdout.log",
+    "stderr": "provenance/037_diffreach_status.stderr.log",
+    "stdout_sha256": "5fbcb2990ad25e368c12219bf3ddca36e464d044e7acac16696fa8cd54159185",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_head",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.636434Z",
+    "end_time_utc": "2026-08-04T08:13:19.638336Z",
+    "exit_code": 0,
+    "stdout": "provenance/038_diffreach_head.stdout.log",
+    "stderr": "provenance/038_diffreach_head.stderr.log",
+    "stdout_sha256": "2dda1b09b6d1ce74a22be3c65571be00fa47867c6b38f4ef905524a3d3369e37",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_branch",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.638732Z",
+    "end_time_utc": "2026-08-04T08:13:19.640158Z",
+    "exit_code": 0,
+    "stdout": "provenance/039_diffreach_branch.stdout.log",
+    "stderr": "provenance/039_diffreach_branch.stderr.log",
+    "stdout_sha256": "6403203dd5a0867eb14d104ee8a73730bd72dd9ad92e78d996a6dba0a5dcfc01",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_remotes",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.640402Z",
+    "end_time_utc": "2026-08-04T08:13:19.641791Z",
+    "exit_code": 0,
+    "stdout": "provenance/040_diffreach_remotes.stdout.log",
+    "stderr": "provenance/040_diffreach_remotes.stderr.log",
+    "stdout_sha256": "41696983a6287d032315e9ad2e802c00ef6823886f2a94b73736129081d0ab4e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_recent_log",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "log",
+      "-12",
+      "--oneline",
+      "--decorate",
+      "--all"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.642035Z",
+    "end_time_utc": "2026-08-04T08:13:19.643670Z",
+    "exit_code": 0,
+    "stdout": "provenance/041_diffreach_recent_log.stdout.log",
+    "stderr": "provenance/041_diffreach_recent_log.stderr.log",
+    "stdout_sha256": "c004e7ee9d306f345e1f93a918e369d931d156d3dca9733256595b23d6131b43",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_branches",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "branch",
+      "-a",
+      "-vv"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.643900Z",
+    "end_time_utc": "2026-08-04T08:13:19.645641Z",
+    "exit_code": 0,
+    "stdout": "provenance/042_diffreach_branches.stdout.log",
+    "stderr": "provenance/042_diffreach_branches.stderr.log",
+    "stdout_sha256": "bff71ddb7c7e2efe2f196989550b6ce5c7700e55fc8c8b8975d71168947c5c85",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_worktrees",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "worktree",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.645864Z",
+    "end_time_utc": "2026-08-04T08:13:19.647288Z",
+    "exit_code": 0,
+    "stdout": "provenance/043_diffreach_worktrees.stdout.log",
+    "stderr": "provenance/043_diffreach_worktrees.stderr.log",
+    "stdout_sha256": "33aa7b1e607c0adc19d232dc0dcb63b06e79a5dcca88bf9ee0d21ad8aa801aeb",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_submodules",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "submodule",
+      "status",
+      "--recursive"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.647512Z",
+    "end_time_utc": "2026-08-04T08:13:19.670863Z",
+    "exit_code": 0,
+    "stdout": "provenance/044_diffreach_submodules.stdout.log",
+    "stderr": "provenance/044_diffreach_submodules.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_tracked_diff",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.671102Z",
+    "end_time_utc": "2026-08-04T08:13:19.672743Z",
+    "exit_code": 0,
+    "stdout": "provenance/045_diffreach_tracked_diff.stdout.log",
+    "stderr": "provenance/045_diffreach_tracked_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "diffreach_cached_diff",
+    "cwd": "/srv/local/shengenli/DiffReach",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.672972Z",
+    "end_time_utc": "2026-08-04T08:13:19.674783Z",
+    "exit_code": 0,
+    "stdout": "provenance/046_diffreach_cached_diff.stdout.log",
+    "stderr": "provenance/046_diffreach_cached_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_realpath",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "realpath",
+      "/srv/local/shengenli/CROWN-Reach_Development"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.675089Z",
+    "end_time_utc": "2026-08-04T08:13:19.677643Z",
+    "exit_code": 0,
+    "stdout": "provenance/047_xiangru_realpath.stdout.log",
+    "stderr": "provenance/047_xiangru_realpath.stderr.log",
+    "stdout_sha256": "e50cc294688a40bbba52b5bbd40f64fee357ec99446ec491a77afd93377d8224",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_status",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "status",
+      "--short",
+      "--branch"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.677874Z",
+    "end_time_utc": "2026-08-04T08:13:19.682733Z",
+    "exit_code": 0,
+    "stdout": "provenance/048_xiangru_status.stdout.log",
+    "stderr": "provenance/048_xiangru_status.stderr.log",
+    "stdout_sha256": "d0a6cd22701262b7fb9cb2090317929defd1b8a1c58ec876dcc7115a022f7bec",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_head",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.682955Z",
+    "end_time_utc": "2026-08-04T08:13:19.684353Z",
+    "exit_code": 0,
+    "stdout": "provenance/049_xiangru_head.stdout.log",
+    "stderr": "provenance/049_xiangru_head.stderr.log",
+    "stdout_sha256": "4947194f1067f9811da1854e1b6b7252c45fbbe1453aa1cf125961dae3de65b1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_branch",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.684588Z",
+    "end_time_utc": "2026-08-04T08:13:19.685956Z",
+    "exit_code": 0,
+    "stdout": "provenance/050_xiangru_branch.stdout.log",
+    "stderr": "provenance/050_xiangru_branch.stderr.log",
+    "stdout_sha256": "f6a68fb58b3cdad4ef23b1734bbad6216d4402b04379d853de15487aa87bb13e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_remotes",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "remote",
+      "-v"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.686202Z",
+    "end_time_utc": "2026-08-04T08:13:19.687613Z",
+    "exit_code": 0,
+    "stdout": "provenance/051_xiangru_remotes.stdout.log",
+    "stderr": "provenance/051_xiangru_remotes.stderr.log",
+    "stdout_sha256": "5c337f9415aac14f4f84d8988f427c622da9277f05ae83d2c5431c336e90dd66",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_recent_log",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "log",
+      "-12",
+      "--oneline",
+      "--decorate",
+      "--all"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.687855Z",
+    "end_time_utc": "2026-08-04T08:13:19.689680Z",
+    "exit_code": 0,
+    "stdout": "provenance/052_xiangru_recent_log.stdout.log",
+    "stderr": "provenance/052_xiangru_recent_log.stderr.log",
+    "stdout_sha256": "31b22a77c9374685e8e8790b5745029d9a318c7a3958b5cbfaa69675a563ae91",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_branches",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "branch",
+      "-a",
+      "-vv"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.689919Z",
+    "end_time_utc": "2026-08-04T08:13:19.691896Z",
+    "exit_code": 0,
+    "stdout": "provenance/053_xiangru_branches.stdout.log",
+    "stderr": "provenance/053_xiangru_branches.stderr.log",
+    "stdout_sha256": "c5f8e84e02daf5f15cb1f3e089b839c4e3fd649694f902224829d33027449930",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_worktrees",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "worktree",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.692150Z",
+    "end_time_utc": "2026-08-04T08:13:19.693644Z",
+    "exit_code": 0,
+    "stdout": "provenance/054_xiangru_worktrees.stdout.log",
+    "stderr": "provenance/054_xiangru_worktrees.stderr.log",
+    "stdout_sha256": "192461be8ba0ef99075f71d33db667ee7a35bba922718e805a8148d582b1e271",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_submodules",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "submodule",
+      "status",
+      "--recursive"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.693879Z",
+    "end_time_utc": "2026-08-04T08:13:19.717019Z",
+    "exit_code": 0,
+    "stdout": "provenance/055_xiangru_submodules.stdout.log",
+    "stderr": "provenance/055_xiangru_submodules.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_tracked_diff",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.717247Z",
+    "end_time_utc": "2026-08-04T08:13:19.720199Z",
+    "exit_code": 0,
+    "stdout": "provenance/056_xiangru_tracked_diff.stdout.log",
+    "stderr": "provenance/056_xiangru_tracked_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "xiangru_cached_diff",
+    "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--no-ext-diff",
+      "--binary"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.720409Z",
+    "end_time_utc": "2026-08-04T08:13:19.722202Z",
+    "exit_code": 0,
+    "stdout": "provenance/057_xiangru_cached_diff.stdout.log",
+    "stderr": "provenance/057_xiangru_cached_diff.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "hostname",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "hostname"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.722426Z",
+    "end_time_utc": "2026-08-04T08:13:19.724439Z",
+    "exit_code": 0,
+    "stdout": "provenance/058_hostname.stdout.log",
+    "stderr": "provenance/058_hostname.stderr.log",
+    "stdout_sha256": "f18921c7e676a8a662ba4ecdb7b1cd5713fc673a76ec0bd5118c69f585ca83a7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "uname",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "uname",
+      "-a"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.725059Z",
+    "end_time_utc": "2026-08-04T08:13:19.727334Z",
+    "exit_code": 0,
+    "stdout": "provenance/059_uname.stdout.log",
+    "stderr": "provenance/059_uname.stderr.log",
+    "stdout_sha256": "74fb4757d2a817a8c41f5ec5a26931df98f912b161ebf7c59322ef3b99a525f1",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "cpu",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "lscpu"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.727572Z",
+    "end_time_utc": "2026-08-04T08:13:19.748023Z",
+    "exit_code": 0,
+    "stdout": "provenance/060_cpu.stdout.log",
+    "stderr": "provenance/060_cpu.stderr.log",
+    "stdout_sha256": "ebe09a6cef7c9913c671173a2cc7cfe684fa945a00d5db6e820e05214eff5aa8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "memory",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "free",
+      "-h"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.748245Z",
+    "end_time_utc": "2026-08-04T08:13:19.749519Z",
+    "exit_code": 0,
+    "stdout": "provenance/061_memory.stdout.log",
+    "stderr": "provenance/061_memory.stderr.log",
+    "stdout_sha256": "27e982664a98d0f3f6a6c0123b2ffcd444179bf379fa13aea0b9ce5da3b1d868",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "conda_env_list",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "conda",
+      "env",
+      "list"
+    ],
+    "start_time_utc": "2026-08-04T08:13:19.749753Z",
+    "end_time_utc": "2026-08-04T08:13:20.317452Z",
+    "exit_code": 0,
+    "stdout": "provenance/062_conda_env_list.stdout.log",
+    "stderr": "provenance/062_conda_env_list.stderr.log",
+    "stdout_sha256": "da7e53c2a9a79388cae3064f9eddfb4eec350efb896ba96539e13dab8a2ee6db",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "python_version",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "python",
+      "--version"
+    ],
+    "start_time_utc": "2026-08-04T08:13:20.317829Z",
+    "end_time_utc": "2026-08-04T08:13:20.318389Z",
+    "exit_code": 127,
+    "stdout": "provenance/063_python_version.stdout.log",
+    "stderr": "provenance/063_python_version.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "7369607662492d585fb5102a24f01de4a9f01cc617d9cde4969245d794333e50"
+  },
+  {
+    "name": "gcc_version",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "gcc",
+      "--version"
+    ],
+    "start_time_utc": "2026-08-04T08:13:20.318602Z",
+    "end_time_utc": "2026-08-04T08:13:20.320317Z",
+    "exit_code": 0,
+    "stdout": "provenance/064_gcc_version.stdout.log",
+    "stderr": "provenance/064_gcc_version.stderr.log",
+    "stdout_sha256": "6e876a25bb7fdb71ab2914e8f1eeaa00cc61d20a36a6c2981ab7d4d7ceab42f8",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "gxx_version",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "g++",
+      "--version"
+    ],
+    "start_time_utc": "2026-08-04T08:13:20.320524Z",
+    "end_time_utc": "2026-08-04T08:13:20.321869Z",
+    "exit_code": 0,
+    "stdout": "provenance/065_gxx_version.stdout.log",
+    "stderr": "provenance/065_gxx_version.stderr.log",
+    "stdout_sha256": "ac55452791ddd9d6e55f5e1f3dbcd5ee40f34b0b55ae18baade542748b008022",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "nvidia_smi",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "nvidia-smi"
+    ],
+    "start_time_utc": "2026-08-04T08:13:20.322087Z",
+    "end_time_utc": "2026-08-04T08:13:20.575736Z",
+    "exit_code": 0,
+    "stdout": "provenance/066_nvidia_smi.stdout.log",
+    "stderr": "provenance/066_nvidia_smi.stderr.log",
+    "stdout_sha256": "2dbf7763fcb7c6f29316d968cfff844f336e455b5d25baae341bac400c1b8b5a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "nvcc_version",
+    "cwd": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "argv": [
+      "nvcc",
+      "--version"
+    ],
+    "start_time_utc": "2026-08-04T08:13:20.576047Z",
+    "end_time_utc": "2026-08-04T08:13:20.576467Z",
+    "exit_code": 127,
+    "stdout": "provenance/067_nvcc_version.stdout.log",
+    "stderr": "provenance/067_nvcc_version.stderr.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "fe14a276279dc008d9ca831d8386bbf71cd1fc15da5505a016a66b7934ff3a4e"
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "input": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_smoke_workspace/dt_plan/test/flowpipe_ver.npz",
+  "input_sha256": "bd7cea76f669b235ac868faee3e27252da5fcfe48986871fb2f76fbb8d4ac4b0",
+  "required_keys": [
+    "ts",
+    "lowers",
+    "uppers",
+    "shrinked"
+  ],
+  "present_keys": [
+    "ts",
+    "lowers",
+    "uppers",
+    "shrinked"
+  ],
+  "missing_field_fallback": false,
+  "requested_horizon": 20.0,
+  "reached_horizon": 20.0,
+  "completion": true,
+  "partitions": 1,
+  "time_points": 21,
+  "state_dimensions": 4,
+  "lower_dtype": "float32",
+  "upper_dtype": "float32",
+  "finite": true,
+  "ordered": true,
+  "final_aggregate_lower": [
+    2.469700336456299,
+    4.20556640625,
+    0.0,
+    0.0
+  ],
+  "final_aggregate_upper": [
+    5.044776439666748,
+    5.533288955688477,
+    0.0,
+    0.0
+  ],
+  "initial_shrink_flags": {
+    "shape": [
+      20,
+      1,
+      1,
+      4
+    ],
+    "true": 80,
+    "total": 80,
+    "rate": 1.0,
+    "all_true": true,
+    "first_false_index": null,
+    "semantics": "placeholder",
+    "scope": "source-declared placeholder; not a contraction result"
+  }
+}

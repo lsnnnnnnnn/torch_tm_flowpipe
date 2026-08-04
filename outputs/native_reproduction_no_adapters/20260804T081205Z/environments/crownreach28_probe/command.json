@@ -1,0 +1,22 @@
+{
+  "label": "crownreach28_probe",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "/srv/local/shengenli/native_envs/crownreach28/bin/python",
+    "-c",
+    "import json,platform,torch,numpy,onnx,onnx2pytorch,auto_LiRPA; print(json.dumps({'python':platform.python_version(),'torch':torch.__version__,'torch_cuda':torch.version.cuda,'cuda_available':torch.cuda.is_available(),'devices':[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())],'numpy':numpy.__version__,'onnx':onnx.__version__,'onnx2pytorch':onnx2pytorch.__file__,'auto_lirpa_version':auto_LiRPA.__version__,'auto_lirpa':auto_LiRPA.__file__},indent=2))"
+  ],
+  "environment_overrides": {
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "start_time_utc": "2026-08-04T08:53:48.931632Z",
+  "end_time_utc": "2026-08-04T08:53:52.282143Z",
+  "wall_seconds": 3.350534111261368,
+  "timeout_seconds": 180.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "91a9d482521ec4a764d8873bab8dad91ce7e94a0c70e990f2eb1ab5ae9cd629f",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

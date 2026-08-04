@@ -1,0 +1,16 @@
+[info] Building reach function with step_size=0.01, n_total_steps=1000, and B=64...
+[info] initial-set splitting -> B=64 partitions.
+[info] Simulating trajectories...
+[warmup] 0.330s
+[after-JIT] 0.008s
+[OK] Sampled 64 trajectories of length 1001.
+[info] Verifying reachability...
+[warmup] 4.323s
+[after-JIT] 0.350s
+Total steps:  1000
+x1(T) ∈ [-1.3964494166017873, -1.2195860990449185]
+x2(T) ∈ [-2.502208485945201, -2.2803973198181486]
+vag volume = 1.717855e+00
+Saved figure to output/ct_dyn/van_der_pol/x1_1000_64_agg.png
+Saved figure to output/ct_dyn/van_der_pol/x2_1000_64_agg.png
+Saved figure to output/ct_dyn/van_der_pol/x1_x2_1000_64_agg.png

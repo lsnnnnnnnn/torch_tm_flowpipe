@@ -1,0 +1,51 @@
+
+==================================== ERRORS ====================================
+_______ ERROR collecting experiments/adaptive_tm/tests/test_tensor_tm.py _______
+ImportError while importing test module '/srv/local/shengenli/CROWN-Reach_Development/experiments/adaptive_tm/tests/test_tensor_tm.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+experiments/adaptive_tm/tests/test_tensor_tm.py:24: in <module>
+    from run_tora_20s_reference import (  # noqa: E402
+experiments/adaptive_tm/run_tora_20s_reference.py:24: in <module>
+    import onnx
+E   ModuleNotFoundError: No module named 'onnx'
+_______ ERROR collecting experiments/adaptive_tm/tests/test_tora_bnb.py ________
+ImportError while importing test module '/srv/local/shengenli/CROWN-Reach_Development/experiments/adaptive_tm/tests/test_tora_bnb.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+experiments/adaptive_tm/tests/test_tora_bnb.py:15: in <module>
+    from run_tora_20s_reference import (  # noqa: E402
+experiments/adaptive_tm/run_tora_20s_reference.py:24: in <module>
+    import onnx
+E   ModuleNotFoundError: No module named 'onnx'
+_ ERROR collecting experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py _
+ImportError while importing test module '/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py:4: in <module>
+    import onnx
+E   ModuleNotFoundError: No module named 'onnx'
+_ ERROR collecting experiments/remainder_ablation/tests/test_m3_controller_composition.py _
+ImportError while importing test module '/srv/local/shengenli/CROWN-Reach_Development/experiments/remainder_ablation/tests/test_m3_controller_composition.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+experiments/remainder_ablation/tests/test_m3_controller_composition.py:13: in <module>
+    from run_m3_controller_composition_screen import (  # noqa: E402
+experiments/remainder_ablation/run_m3_controller_composition_screen.py:19: in <module>
+    import onnx
+E   ModuleNotFoundError: No module named 'onnx'
+=========================== short test summary info ============================
+ERROR experiments/adaptive_tm/tests/test_tensor_tm.py
+ERROR experiments/adaptive_tm/tests/test_tora_bnb.py
+ERROR experiments/remainder_ablation/tests/test_c2_autolirpa_controller.py
+ERROR experiments/remainder_ablation/tests/test_m3_controller_composition.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!
+4 errors in 1.56s

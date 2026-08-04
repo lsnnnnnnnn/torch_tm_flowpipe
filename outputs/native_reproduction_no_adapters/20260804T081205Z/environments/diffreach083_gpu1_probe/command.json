@@ -1,0 +1,25 @@
+{
+  "label": "diffreach083_gpu1_probe",
+  "cwd": "/srv/local/shengenli/DiffReach",
+  "argv": [
+    "/srv/local/shengenli/native_envs/diffreach083/bin/python",
+    "-c",
+    "import json,jax; d=jax.devices()[0]; print(json.dumps({'device':str(d),'device_kind':d.device_kind,'platform':d.platform,'compute_capability':getattr(d,'compute_capability',None)},indent=2))"
+  ],
+  "environment_overrides": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORMS": "cuda",
+    "CUDA_VISIBLE_DEVICES": "1",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false"
+  },
+  "start_time_utc": "2026-08-04T08:48:02.130133Z",
+  "end_time_utc": "2026-08-04T08:48:03.092925Z",
+  "wall_seconds": 0.962789224460721,
+  "timeout_seconds": 180.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "3d6163969699e03d238940f6c0930dc6f7c692065622d7e82b0a96821273f4df",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

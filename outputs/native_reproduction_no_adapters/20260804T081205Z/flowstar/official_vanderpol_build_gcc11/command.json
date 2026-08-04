@@ -1,0 +1,30 @@
+{
+  "label": "flowstar_official_vanderpol_build_gcc11",
+  "cwd": "/srv/local/shengenli/flowstar_stock_gcc11",
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/srv/local/shengenli/flowstar_stock_gcc11:/workspace",
+    "-w",
+    "/workspace",
+    "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+    "bash",
+    "-lc",
+    "make -C flowstar-toolbox -j1 && make -C benchmarks/continuous/vanderpol -j1"
+  ],
+  "environment_overrides": {
+    "DOCKER_HOST": "unix:///run/user/1061/docker.sock"
+  },
+  "start_time_utc": "2026-08-04T09:20:19.372484Z",
+  "end_time_utc": "2026-08-04T09:20:54.566725Z",
+  "wall_seconds": 35.19425237271935,
+  "timeout_seconds": 1800.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "c3d0b8b040b194c5dd1aa89f6cd9ee4566bf0af806e26db422e47c28442105f1",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

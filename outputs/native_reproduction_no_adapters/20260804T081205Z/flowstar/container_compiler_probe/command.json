@@ -1,0 +1,25 @@
+{
+  "label": "flowstar_container_compiler_probe",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "sha256:6549fefc629e2668432247c6b27b3dcadf7ff8bf331f4fb6966701291efe8e58",
+    "g++",
+    "--version"
+  ],
+  "environment_overrides": {
+    "DOCKER_HOST": "unix:///run/user/1061/docker.sock"
+  },
+  "start_time_utc": "2026-08-04T09:19:37.642680Z",
+  "end_time_utc": "2026-08-04T09:19:37.659118Z",
+  "wall_seconds": 0.016433048993349075,
+  "timeout_seconds": 120.0,
+  "timeout_expired": false,
+  "exit_code": 125,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "3eff0536a030930fee27324b49a04afb3a4d8dbf9022fa0221d591eeceb59259"
+}

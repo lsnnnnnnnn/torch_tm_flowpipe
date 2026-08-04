@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "run_id": "20260804T081205Z",
+  "created_at_utc": "2026-08-04T08:12:05Z",
+  "output_root": "outputs/native_reproduction_no_adapters/20260804T081205Z",
+  "policy": {
+    "source_modified_for_native_execution": false,
+    "semantic_patch_used_for_native_execution": false,
+    "adapter_added_or_used_as_native_reproduction": false,
+    "model_rewrite_used": false,
+    "generated_harness_used_as_native_reproduction": false,
+    "endpoint_repair_used": false,
+    "existing_generated_artifact_read_in_diagnostics_only": true
+  },
+  "primary_repository": {
+    "path": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters",
+    "remote": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+    "branch": "codex/native-reproduction-no-adapters-20260804",
+    "base_ref": "origin/codex/three-tool-correctness-parity-20260804",
+    "base_sha": "308b735ac577cfea39172976a4c08716f1e54d2f",
+    "core_source_changed_from_base": false
+  },
+  "repositories": {
+    "xiangru_current": {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development",
+      "remote": "https://github.com/xiangruzh/CROWN-Reach_Development.git",
+      "branch": "2026_experiment",
+      "sha": "84184de6c2b3f1ff2da6755f732d91925037025d",
+      "origin_sha": "84184de6c2b3f1ff2da6755f732d91925037025d",
+      "dirty": false
+    },
+    "xiangru_executed": {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "sha": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "dirty": false
+    },
+    "xiangru_diffreach_provenance": {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce",
+      "sha": "9bf2ccea781cd47eca1d5ab5954f4e508ee8192f",
+      "dirty": false
+    },
+    "auto_lirpa": {
+      "path": "/srv/local/shengenli/auto_LiRPA_5a098e8",
+      "sha": "5a098e8f9fb5786a428a024981d833d303921f2d",
+      "dirty": false
+    },
+    "flowstar_stock": {
+      "path": "/srv/local/shengenli/flowstar_stock_gcc11",
+      "remote": "https://github.com/chenxin415/flowstar",
+      "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "tracked_dirty": false,
+      "untracked_build_outputs": true
+    },
+    "flowstar_user_worktree_preserved": {
+      "path": "/srv/local/shengenli/flowstar",
+      "sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "tracked_dirty": true,
+      "used_for_stock_native_result": false
+    },
+    "diffreach": {
+      "path": "/srv/local/shengenli/DiffReach_native_dd628eb",
+      "remote": "https://github.com/trustworthyrobotics/DiffReach",
+      "sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "dirty": false
+    }
+  },
+  "environments": {
+    "xiangru_q3": {
+      "python": "3.11.15",
+      "torch": "2.8.0+cu128",
+      "numpy": "2.3.3",
+      "onnx": "1.22.0",
+      "auto_lirpa": "0.7.2 at exact checkout 5a098e8",
+      "gpu": "Tesla V100-SXM2-16GB"
+    },
+    "xiangru_x1_docker": {
+      "image_id": "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+      "compiler": "GCC 11.4.0",
+      "source": "27d Dockerfile",
+      "runtime": "rootless Docker"
+    },
+    "diffreach_author": {
+      "python": "3.12.13",
+      "jax": "0.8.3",
+      "gpu": "Tesla V100-SXM2-16GB"
+    },
+    "diffreach_upstream": {
+      "python": "3.12.13",
+      "jax": "0.8.1",
+      "dependency_commits": "README/current-branch exact; see environments/diffreach081_pip_freeze.txt"
+    },
+    "flowstar_stock": {
+      "compiler": "Ubuntu GCC 11.4.0",
+      "host_gcc15_build_attempt_preserved": true
+    }
+  },
+  "outcomes": {
+    "native_rows": 11,
+    "diagnostic_rows": 1,
+    "reproduced_exact": 1,
+    "reproduced_with_declared_tolerance": 1,
+    "reference_failure_reproduced": 1,
+    "native_run_completed_reference_unavailable": 3,
+    "native_algorithm_failed": 2,
+    "source_identity_unknown": 2,
+    "build_failed": 1,
+    "primary_comparison_eligible_rows": 0
+  },
+  "tests": {
+    "primary_full_pytest": {
+      "result": "285 passed",
+      "evidence": "tests/primary_full_pytest_final/command.json"
+    },
+    "native_reproduction_targeted": {
+      "result": "21 passed",
+      "evidence": "tests/native_reproduction_targeted_final/command.json"
+    },
+    "xiangru_27d_full_pytest": {
+      "result": "111 passed, 4 skipped, 1 failed (absent ignored historical run.json)",
+      "evidence": "xiangru/tests_27d2905_crownreach28_retry/command.json"
+    },
+    "flowstar_external_smoke": "official VDP build and T=10 run",
+    "diffreach_external_smoke": "official run_plan test.yaml and official VDP commands"
+  },
+  "authoritative_registry": "benchmarks/native_reproduction_registry.json",
+  "checksums": "checksums.sha256",
+  "notes": [
+    "Every native command was recorded with literal argv, cwd, exit code and hashed stdout/stderr.",
+    "The X3 config was generated through the author's native prepare_run path; no config translator was written.",
+    "Runtime and memory were excluded from author-result comparisons.",
+    "External user worktrees and their existing changes were preserved."
+  ]
+}

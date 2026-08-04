@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "input": "/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters/outputs/native_reproduction_no_adapters/20260804T081205Z/diffreach/official_smoke_workspace/ct_dyn/van_der_pol/flowpipe_ver.npz",
+  "input_sha256": "f02d2220848576bbd38873eca38b7cac7d6a3c9b08e10608e9ad32de8071b379",
+  "required_keys": [
+    "ts",
+    "lowers",
+    "uppers",
+    "shrinked"
+  ],
+  "present_keys": [
+    "ts",
+    "lowers",
+    "uppers",
+    "shrinked"
+  ],
+  "missing_field_fallback": false,
+  "requested_horizon": 10.0,
+  "reached_horizon": 10.0,
+  "completion": true,
+  "partitions": 64,
+  "time_points": 1001,
+  "state_dimensions": 2,
+  "lower_dtype": "float64",
+  "upper_dtype": "float64",
+  "finite": true,
+  "ordered": true,
+  "final_aggregate_lower": [
+    -1.3964494166017873,
+    -2.502208485945201
+  ],
+  "final_aggregate_upper": [
+    -1.2195860990449185,
+    -2.2803973198181486
+  ],
+  "initial_shrink_flags": {
+    "shape": [
+      1000,
+      64,
+      2
+    ],
+    "true": 128000,
+    "total": 128000,
+    "rate": 1.0,
+    "all_true": true,
+    "first_false_index": null,
+    "scope": "only the initial contraction predicate returned by src.picard.remainder_picard; not all refinement rounds"
+  }
+}

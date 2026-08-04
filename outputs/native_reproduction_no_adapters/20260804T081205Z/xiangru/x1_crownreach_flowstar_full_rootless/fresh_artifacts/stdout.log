@@ -1,0 +1,30 @@
+/usr/local/lib/python3.10/dist-packages/onnx2pytorch/convert/layer.py:29: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:203.)
+  layer.weight.data = torch.from_numpy(numpy_helper.to_array(weight))
+/usr/local/lib/python3.10/dist-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Server started.
+Step 0
+Step 1
+Step 2
+Step 3
+Step 4
+Step 5
+Step 6
+Step 7
+Step 8
+Step 9
+Step 10
+Step 11
+Step 12
+Step 13
+Step 14
+Step 15
+Step 16
+Step 17
+Step 18
+Step 19
+VERIFIED
+time cost: 2.187389
+controller time: 1.207641
+flowstar dynamics time: 0.912211
+residual time: 0.067537

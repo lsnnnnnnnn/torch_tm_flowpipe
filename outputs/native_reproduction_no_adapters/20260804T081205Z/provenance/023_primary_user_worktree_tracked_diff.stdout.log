@@ -1,0 +1,174 @@
+diff --git a/README.md b/README.md
+index ad5e52b..f30c58a 100644
+--- a/README.md
++++ b/README.md
+@@ -89,6 +89,10 @@ part of the supported default API and did not improve the benchmark objective.
+ See `docs/flowstar_vanderpol_pytorch_diagnostics_conclusion.md` for the final
+ decision record.
+ 
++The stock Flow* adaptive order-2 first-step failure is isolated separately in
++`docs/flowstar_order2_vanderpol_failure.md`. The existing step-trace probe now
++accepts `--order 2` through `experiments/flowstar_step_trace_compare.py`.
++
+ ## Experimental Flowstar-style rescue mode
+ 
+ `experiments/flowstar_style_rescue_vanderpol.py` contains an experimental
+diff --git a/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp b/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
+index 6bcc4ef..5ae54cf 100644
+--- a/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
++++ b/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
+@@ -1223,6 +1223,7 @@ int traced_advance_adaptive_symbolic(
+ 
+ int main(int argc, char **argv)
+ {
++    // Positional arguments: output CSV, horizon, max accepted segments, TM order.
+     string output_csv = "flowstar_trace.csv";
+     if (argc > 1)
+     {
+@@ -1238,6 +1239,17 @@ int main(int argc, char **argv)
+     {
+         max_segments = atoi(argv[3]);
+     }
++    unsigned int order = 4;
++    if (argc > 4)
++    {
++        const int parsed_order = atoi(argv[4]);
++        if (parsed_order < 2)
++        {
++            fprintf(stderr, "Taylor-model order must be at least 2.\n");
++            return 2;
++        }
++        order = static_cast<unsigned int>(parsed_order);
++    }
+ 
+     Variables vars;
+     int x_id = vars.declareVar("x");
+@@ -1247,7 +1259,7 @@ int main(int argc, char **argv)
+     ODE<Real> ode({"y", "(1 - x^2) * y - x", "1"}, vars);
+     Computational_Setting setting(vars);
+     setting.printOff();
+-    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, 4, 4);
++    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, order, order);
+     setting.tm_setting.setCutoff(Interval(-1e-10, 1e-10));
+     vector<Interval> target_remainder_setting(ode.expressions.size(), Interval(-1e-4, 1e-4));
+     setting.tm_setting.setRemainderEstimation(target_remainder_setting);
+@@ -1263,7 +1275,7 @@ int main(int argc, char **argv)
+     Flowpipe currentFlowpipe = initialSet;
+     vector<Constraint> dummy_invariant;
+ 
+-    setting.tm_setting.setStepsize(setting.tm_setting.step_max, 4);
++    setting.tm_setting.setStepsize(setting.tm_setting.step_max, order);
+     double new_stepsize = -1;
+     double t = THRESHOLD_HIGH;
+     int step_index = 0;
+diff --git a/experiments/flowstar_step_trace_compare.py b/experiments/flowstar_step_trace_compare.py
+index 87aaa4c..f84c1de 100644
+--- a/experiments/flowstar_step_trace_compare.py
++++ b/experiments/flowstar_step_trace_compare.py
+@@ -812,11 +812,15 @@ def compile_probe(flowstar_root: Path, out_dir: Path, compiler: str = "g++") ->
+     return exe
+ 
+ 
+-def run_flowstar_probe(exe: Path, out_dir: Path, horizon: float, max_segments: int | None) -> Path:
++def run_flowstar_probe(
++    exe: Path,
++    out_dir: Path,
++    horizon: float,
++    max_segments: int | None,
++    order: int = 4,
++) -> Path:
+     trace = out_dir / "flowstar_trace.csv"
+-    cmd = [str(exe), str(trace), f"{horizon:.17g}"]
+-    if max_segments:
+-        cmd.append(str(max_segments))
++    cmd = [str(exe), str(trace), f"{horizon:.17g}", str(max_segments or 0), str(order)]
+     proc = subprocess.run(cmd, text=True, capture_output=True, cwd=str(out_dir), check=False)
+     (out_dir / "flowstar_probe_run.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
+     (out_dir / "flowstar_probe_run.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
+@@ -2014,6 +2018,7 @@ def parse_args() -> argparse.Namespace:
+     parser.add_argument("--out-dir", default=str(DEFAULT_OUT))
+     parser.add_argument("--horizon", type=float, default=1.0)
+     parser.add_argument("--max-segments", type=int, default=0)
++    parser.add_argument("--order", type=int, default=4)
+     parser.add_argument("--compiler", default=os.environ.get("CXX", "g++"))
+     parser.add_argument("--skip-flowstar", action="store_true")
+     parser.add_argument("--compare-mode", choices=["accepted_ordinal", "attempt_aligned", "forced_h", "all"], default="all")
+@@ -2032,7 +2037,13 @@ def _load_or_generate_flowstar(args: argparse.Namespace, out_dir: Path) -> tuple
+     flowstar_trace = out_dir / "flowstar_trace.csv"
+     if not args.skip_flowstar:
+         exe = compile_probe(Path(args.flowstar_root).resolve(), out_dir, compiler=args.compiler)
+-        flowstar_trace = run_flowstar_probe(exe, out_dir, args.horizon, args.max_segments or None)
++        flowstar_trace = run_flowstar_probe(
++            exe,
++            out_dir,
++            args.horizon,
++            args.max_segments or None,
++            order=args.order,
++        )
+     return flowstar_trace, _read_rows(flowstar_trace)
+ 
+ 
+@@ -2044,6 +2055,7 @@ def _load_or_generate_torch(args: argparse.Namespace, out_dir: Path, mode: str)
+         mode=mode,
+         horizon=args.horizon,
+         out_path=out_dir / f"{mode}_trace.csv",
++        order=args.order,
+         max_segments=args.max_segments or None,
+     )
+ 
+@@ -2083,6 +2095,7 @@ def main() -> int:
+                 mode="torch_noqueue",
+                 flowstar_rows=flowstar_rows,
+                 out_path=out_dir / "torch_noqueue_forced_h_trace.csv",
++                order=args.order,
+             )
+         if args.torch_v2_forced_trace:
+             forced_v2_rows = _read_rows(args.torch_v2_forced_trace.resolve())
+@@ -2093,6 +2106,7 @@ def main() -> int:
+                 mode="torch_v2",
+                 flowstar_rows=flowstar_rows,
+                 out_path=out_dir / "torch_v2_forced_h_trace.csv",
++                order=args.order,
+             )
+         forced_h = compare_forced_h(flowstar_rows, forced_noqueue_rows, forced_v2_rows)
+         _write_rows(out_dir / "forced_h_trace_diff.csv", FORCED_H_FIELDS, forced_h)
+diff --git a/tests/test_flowstar_step_trace_compare_alignment.py b/tests/test_flowstar_step_trace_compare_alignment.py
+index 7267072..30e1bc4 100644
+--- a/tests/test_flowstar_step_trace_compare_alignment.py
++++ b/tests/test_flowstar_step_trace_compare_alignment.py
+@@ -112,6 +112,35 @@ def test_missing_fields_mark_unknown_not_zero():
+     assert rows[0]["right_map_width_ratio_noqueue_over_flowstar"] is None
+ 
+ 
++def test_flowstar_probe_command_forwards_order_without_segment_limit(tmp_path, monkeypatch):
++    calls: list[list[str]] = []
++
++    def fake_run(cmd, **_kwargs):
++        calls.append(cmd)
++        return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
++
++    monkeypatch.setattr(compare.subprocess, "run", fake_run)
++
++    trace = compare.run_flowstar_probe(
++        tmp_path / "probe",
++        tmp_path,
++        horizon=0.1,
++        max_segments=None,
++        order=2,
++    )
++
++    assert trace == tmp_path / "flowstar_trace.csv"
++    assert calls == [
++        [
++            str(tmp_path / "probe"),
++            str(trace),
++            "0.10000000000000001",
++            "0",
++            "2",
++        ]
++    ]
++
++
+ def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
+     fields = sorted({field for row in rows for field in row})
+     path.parent.mkdir(parents=True, exist_ok=True)

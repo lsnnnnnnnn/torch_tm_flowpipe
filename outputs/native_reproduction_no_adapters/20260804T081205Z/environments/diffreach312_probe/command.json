@@ -1,0 +1,24 @@
+{
+  "label": "diffreach312_probe",
+  "cwd": "/srv/local/shengenli/CROWN-Reach_Development",
+  "argv": [
+    "conda",
+    "run",
+    "-n",
+    "diffreach312",
+    "python",
+    "-c",
+    "import json,platform,jax,jaxlib,immrax; print(json.dumps({'python':platform.python_version(),'jax':jax.__version__,'jaxlib':jaxlib.__version__,'jax_x64':jax.config.x64_enabled,'devices':[str(x) for x in jax.devices()],'immrax':immrax.__file__},indent=2))"
+  ],
+  "environment_overrides": {},
+  "start_time_utc": "2026-08-04T08:16:10.773272Z",
+  "end_time_utc": "2026-08-04T08:16:13.218760Z",
+  "wall_seconds": 2.4454831425100565,
+  "timeout_seconds": null,
+  "timeout_expired": false,
+  "exit_code": 1,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "45114c42fb448c2d85b7f9c4071bb36dc842385607ff0b7612e1d43e0aafe80e"
+}

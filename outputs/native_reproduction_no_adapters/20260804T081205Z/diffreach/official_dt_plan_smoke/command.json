@@ -1,0 +1,26 @@
+{
+  "label": "diffreach_official_dt_plan_smoke",
+  "cwd": "/srv/local/shengenli/DiffReach_native_dd628eb",
+  "argv": [
+    "/srv/local/shengenli/native_envs/diffreach081/bin/python",
+    "run_plan.py",
+    "config/dt_plan/test.yaml",
+    "--ver"
+  ],
+  "environment_overrides": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "JAX_ENABLE_X64": "true",
+    "XLA_PYTHON_CLIENT_PREALLOCATE": "false",
+    "MPLBACKEND": "Agg"
+  },
+  "start_time_utc": "2026-08-04T09:25:57.691566Z",
+  "end_time_utc": "2026-08-04T09:26:04.188125Z",
+  "wall_seconds": 6.496572781354189,
+  "timeout_seconds": 1200.0,
+  "timeout_expired": false,
+  "exit_code": 0,
+  "stdout": "stdout.log",
+  "stderr": "stderr.log",
+  "stdout_sha256": "9268423ba0d6a32c00cfbe74d131201a19e83cfc98cfd6d39981ad053251c1e8",
+  "stderr_sha256": "6b888af6e5d4b6cf9f255a96589db472be7fba0014c86462400f790eea40080a"
+}

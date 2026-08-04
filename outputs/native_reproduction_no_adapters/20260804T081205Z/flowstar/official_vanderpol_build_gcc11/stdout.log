@@ -1,0 +1,20 @@
+make: Entering directory '/workspace/flowstar-toolbox'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Interval.o Interval.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Variables.o Variables.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o settings.o settings.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Matrix.o Matrix.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Geometry.o Geometry.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Constraints.o Constraints.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Continuous.o Continuous.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Discrete.o Discrete.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Hybrid.o Hybrid.cpp
+bison -d -v modelParser.y
+flex modelLexer.l
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o lex.yy.o lex.yy.c
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o modelParser.tab.o modelParser.tab.c
+ar rcs libflowstar.a Interval.o Variables.o settings.o Matrix.o Geometry.o Constraints.o Continuous.o Discrete.o Hybrid.o lex.yy.o modelParser.tab.o
+make: Leaving directory '/workspace/flowstar-toolbox'
+make: Entering directory '/workspace/benchmarks/continuous/vanderpol'
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o vanderpol.o vanderpol.cpp
+g++ -O3 -w -g -L../../../flowstar-toolbox -L/usr/local/lib -o vanderpol vanderpol.o -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk
+make: Leaving directory '/workspace/benchmarks/continuous/vanderpol'

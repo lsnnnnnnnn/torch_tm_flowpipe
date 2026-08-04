@@ -1,0 +1,52 @@
+{
+  "action_dim": 1,
+  "controller": "/home/xiangru4/CROWN-Reach_Development/experiments/reachability/results/20260724T234338.154274Z__tora_homogeneous__diffreach__full/controller_transformed.onnx",
+  "dynamics": "/home/xiangru4/CROWN-Reach_Development/experiments/reachability/models/dynamics/tora_homogeneous.py",
+  "frr_rounds": 10,
+  "frr_stop_ratio": 0.95,
+  "init_remainder": 0.01,
+  "initial_set": [
+    [
+      0.6,
+      0.7
+    ],
+    [
+      -0.7,
+      -0.6
+    ],
+    [
+      -0.4,
+      -0.3
+    ],
+    [
+      0.5,
+      0.6
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "n_steps_per_control": 10,
+  "n_total_steps": 200,
+  "output_dir": "/home/xiangru4/CROWN-Reach_Development/experiments/reachability/results/20260724T234338.154274Z__tora_homogeneous__diffreach__full/flowpipe",
+  "sim_n_samples": 64,
+  "splits": {
+    "0": 4,
+    "1": 3
+  },
+  "sr_window_size": 1000,
+  "state_dim": 4,
+  "step_size": 0.1,
+  "variable_names": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "u1"
+  ],
+  "visualization": {
+    "aggregate_partitions": true,
+    "vis_stride": 1
+  }
+}

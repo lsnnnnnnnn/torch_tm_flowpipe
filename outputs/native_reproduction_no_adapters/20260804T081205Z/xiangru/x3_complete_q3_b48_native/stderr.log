@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/xiangru4/CROWN-Reach_Development/experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py", line 17, in <module>
+    import torch
+  File "/srv/local/shengenli/native_envs/crownreach28/lib/python3.11/site-packages/torch/__init__.py", line 2802, in <module>
+    _logging._init_logs()
+  File "/srv/local/shengenli/native_envs/crownreach28/lib/python3.11/site-packages/torch/_logging/_internal.py", line 1012, in _init_logs
+    for log_qname, level in log_state.get_log_level_pairs():
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'get_log_level_pairs'

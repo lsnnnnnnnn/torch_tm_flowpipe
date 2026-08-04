@@ -1,0 +1,67 @@
+[
+    {
+        "Id": "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+        "RepoTags": [
+            "crown-reach-experiments:local"
+        ],
+        "RepoDigests": [
+            "crown-reach-experiments@sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-08-04T08:32:24.495835024Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PYTHONPATH=/home/CROWN-Reach"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Labels": {
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.version": "22.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 10762109954,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:629ca62fb7c791374ce57626d6b8b62c76378be091a0daf1a60d32700b49add7",
+                "sha256:6a890c56f85cd84b8362ab1d6818e70417443ba338666b9019277f315aba492b",
+                "sha256:b524c6c9a24ffbe819589b73270edb05fa373663bec79baab33ddb053efee404",
+                "sha256:75f86948ddd57f81d7e1aa8d17a040f9e3f0fc2c4bf8c5fceb00cbdb67be7758",
+                "sha256:dcf9c7ecc98be76e984d8550e8e50f91aedc6c2b37f19de17ac8388b44733824",
+                "sha256:27f4ff46323aeb63261424a78aff8a1b75a07bbc1085d4453aff26ed2b58aa9b",
+                "sha256:ce8253db98271591fca4c9ffd6f75bbed84e515709ec0301bd0349c6745f5924",
+                "sha256:4563515be47ba1dcdff9fa54a646e8c4ba5c297e42cd1548beac31834ee915fb",
+                "sha256:da0759ba23132db3396ef12eadbde89b80aedccda763e565e234937454ff9d0b",
+                "sha256:c343db669ad2c980af29f975dee8c4b48d5612a1b45e42e7c66d3afbaa58057e",
+                "sha256:ac8177dd0d05b30d7fa83f1fd6e816eaa896a1b7d859f129facfb140542d6eac",
+                "sha256:9fd2cda3ecfd10de06b6d163ae196c467af946d18f8fe1775eac43f71657db9c",
+                "sha256:e8ef34ba54bdf7c19b61886697b8570378f73111ce7f66108a6bec45b01dc4f7",
+                "sha256:4dca7ffea2053fdc4f3f3b8f86085f4b07e20dd2d0b45165fd8f95c91b47b6fc",
+                "sha256:482890ab26706dae84321f6e05d997f9698dbb5eea641b591bfaa228188403ac",
+                "sha256:e22ab6813d68377d089b226888d5a93f539dc66399f5dd9ab5efb536e782a408",
+                "sha256:5857ec91805a59f48404785c44658d8578d35912cd617f5f4a50989909c55e57"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-08-04T08:36:13.58310722Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "tenplsxexyfawguohdigl0lx7",
+                    "CreatedAt": "2026-08-04T08:37:26.576162148Z"
+                }
+            ]
+        }
+    }
+]
