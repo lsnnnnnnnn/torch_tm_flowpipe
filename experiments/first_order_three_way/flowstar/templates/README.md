@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: experiments/consolidated_study/cli.py
+allowed_use: provenance only
+
 Generated C++ programs use the in-code template in `run_flowstar.py`.  The
 template deliberately checks the Boolean return from
 `Computational_Setting::setFixedStepsize`; this is how the benchmark records

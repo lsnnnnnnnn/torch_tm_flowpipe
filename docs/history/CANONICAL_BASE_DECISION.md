@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: 0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781
+superseded_by: audits/repository_cleanup/repository_cleanup_20260804T022536Z/CANONICAL_BASE_DECISION.md
+allowed_use: provenance only
+
 # Canonical base decision
 
 ## Selected base

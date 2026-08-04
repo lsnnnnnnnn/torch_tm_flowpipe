@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: provenance only
+
 # Protocols and finite bases
 
 ## Protocol A: `native_semantics`

@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: provenance only
+
 # Corrected comparison protocols
 
 All primary comparisons use the same ODE, initial componentwise box, requested

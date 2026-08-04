@@ -1,21 +1,21 @@
+status: historical
+valid_for_commit: 08b6f2416122cbf4220ff351e663caa1a0af13a2
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: provenance only
+
 # Historical run registry
 
-| Run | Source lineage | Status | Active use |
+| Run | Source lineage | Current status | Allowed use |
 |---|---|---|---|
 | `20260723T173852Z` | first-order three-way | historical | lineage evidence only |
-| `20260724T043709Z` | first-order matched-basis follow-up | historical scientifically relevant | conclusions require current-contract reproduction |
-| `20260724T132534Z` | common contract | superseded schema/protocol | no active table consumption |
-| `20260728T140456Z` | three-way correctness repair | historical repair evidence | code/tests migrated; outputs archived |
-| `20260730T015245Z` | deep study | `provisional_due_to_known_protocol_defects` | no runtime/Pareto/failure headline claim |
-| `canonical-smoke-20260730-v4` | consolidation smoke at `73c07c9` | accepted non-authoritative | pipeline and audit validation only |
-| `20260730T124958Z` | first formal freeze `1adb631` | `failed_acceptance` | numerical gates passed; repository-hygiene side effect fixed in `9bef0ac` |
-| `canonical-smoke-20260730-v5` | corrected smoke at `9bef0ac` | accepted non-authoritative | regression verifies outputs remain inside run directory |
-| `20260730T141302Z` | second formal freeze `e50fe9d` | rejected after semantic review | old auditor grouped Pareto by tool instead of cross-tool; not citable |
-| `canonical-smoke-20260730-v6` | cross-tool Pareto smoke at `2d870f6` | accepted non-authoritative | cross-tool grouping and independent recomputation validated |
-| `20260730T153654Z` | final formal freeze `0dfdf58` | `accepted_authoritative` | sole citable consolidated width/runtime result; 24 eligible configs, 264 raw observations, 12 cross-tool frontier points |
+| `20260724T043709Z` | first-order matched-basis | historical diagnostic | reproduce under current contract before conclusions |
+| `20260724T132534Z` | common contract | superseded protocol | provenance only |
+| `20260728T140456Z` | correctness repair | historical repair | code/test lineage only |
+| `20260730T015245Z` | deep study | provisional due to known defects | no runtime/Pareto/failure headline |
+| `20260730T124958Z` | first formal freeze | failed acceptance | numerical diagnostics only; wrote outside output |
+| `20260730T141302Z` | second formal freeze | rejected | Pareto incorrectly partitioned by tool |
+| `20260730T153654Z` | former final formal freeze | `withdrawn_do_not_cite` | frozen provenance only; patched audit backend |
+| consolidation smoke runs | pipeline checks | non-authoritative | pipeline diagnostics only |
 
-The full pre-consolidation deep-study tree is recoverable through annotated tag
-`archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study`
-at `9a684d9106633e067bfac0747244b769fa49aa0b`. Other branch-specific archive
-tags are created after formal acceptance and revalidated before any remote
-branch deletion.
+The frozen source and artifacts remain reachable through the selected base and
+existing archive tags. Current status does not edit historical bundle files.

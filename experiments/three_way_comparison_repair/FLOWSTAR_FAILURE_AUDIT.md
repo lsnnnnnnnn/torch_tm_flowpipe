@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/flowstar_order2_vanderpol_failure.md
+allowed_use: diagnostic only
+
 # Flow* failure-path audit
 
 The generated harness calls the fixed-step, fixed-order

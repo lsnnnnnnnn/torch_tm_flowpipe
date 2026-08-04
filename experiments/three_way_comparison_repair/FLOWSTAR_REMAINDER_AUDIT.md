@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: diagnostic only
+
 # Flow* remainder and Riccati under-enclosure audit
 
 ## Adapter mutation

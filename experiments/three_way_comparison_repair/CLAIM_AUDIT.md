@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: provenance only
+
 # Claim audit
 
 | Old claim | Original evidence | Confounder | Status | Corrected wording | New artifact |

@@ -1,3 +1,8 @@
+status: withdrawn
+valid_for_commit: unknown
+superseded_by: docs/history/WITHDRAWN_RESULTS.md
+allowed_use: provenance only
+
 # Historical result invalidation
 
 The report in

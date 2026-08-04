@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: 0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781
+superseded_by: docs/ARCHITECTURE.md
+allowed_use: provenance only
+
 # Target architecture decision
 
 The detailed design evidence is

@@ -1,22 +1,28 @@
 # Artifact policy
 
-Source-controlled by default:
+Tracked:
 
 - canonical benchmark/profile files;
-- curated formal summaries, eligibility, primary Pareto, figures, reports;
-- environment/provenance/config/run manifests;
-- essential command/test logs and SHA-256 manifest;
-- repository audit inventories.
+- versioned schemas;
+- curated diagnostic fixtures;
+- concise reports and registries;
+- selected figures whose source table/hash is explicit;
+- provenance manifests and checksums;
+- repository audit inventories and essential acceptance logs.
 
-Not source-controlled by default:
+Untracked:
 
 - caches and compiled files;
-- temporary Flowstar C++ builds;
+- temporary binaries and builds;
 - duplicated raw expansions;
-- debug dumps and intermediate plots;
-- profiler traces;
+- scratch logs and intermediate plots;
+- profiler dumps;
+- implicit `latest` links;
 - `__pycache__` and test caches.
 
-The full historical provisional bundles are removed from the active tree after
-their source SHA, classification, replacement, and verified archive tag are
-recorded. No history rewrite is used.
+Large or duplicated tracked artifacts may be removed only after inventorying
+the exact path, recording a recovery commit and replacement, proving active
+code/tests do not depend on it, and updating the migration map. No history is
+rewritten. Unknown files are investigated rather than hidden with a new
+ignore rule. Frozen withdrawn artifacts remain byte-for-byte provenance and
+must not be edited to repair a current claim.

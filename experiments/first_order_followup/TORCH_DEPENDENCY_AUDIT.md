@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/ALGORITHM.md
+allowed_use: diagnostic only
+
 # Torch dependency-preserving audit
 
 ## Exact diagnostic

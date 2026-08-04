@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: provenance only
+
 # First-order three-way benchmark
 
 > **Superseded for cross-tool ranking:** the committed

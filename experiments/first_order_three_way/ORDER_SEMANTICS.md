@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/ALGORITHM.md
+allowed_use: provenance only
+
 # Representation and order semantics
 
 This benchmark does not equate three similarly named flags. It audits the

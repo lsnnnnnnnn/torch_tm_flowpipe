@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: provenance only
+
 # Three-way low-order reachability comparison under common external contracts
 
 > **Superseded:** the committed `results/20260724T132534Z` directory is a

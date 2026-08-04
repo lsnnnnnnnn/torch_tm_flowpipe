@@ -1,60 +1,21 @@
 # Status
 
-Current state: `consolidation_complete_recommended_next_main`.
+Current state: `repository_cleanup_validation_in_progress`.
 
-Completed:
+Completed repository-contract work:
 
-- all refs/worktrees inventoried and classified;
-- selected base `9a684d9106633e067bfac0747244b769fa49aa0b`;
-- verified pre-consolidation archive tag pushed;
-- base suite passed with 270 tests and three explicit CUDA skips;
-- versioned schema, fail-closed eligibility, canonical config identity, total
-  runtime boundary, and post-filter Pareto implementation added;
-- local Torch, DiffReach, and Flowstar smoke pipeline independently accepted;
-- a first formal attempt completed all numerical gates but correctly failed
-  repository hygiene when a legacy diagnostic wrote outside its output;
-- the side effect is fixed and the corrected smoke passed at source SHA
-  `9bef0ac87544aa97a8088c32e2a6e5cc2ab830a5`;
-- a second formal attempt passed its then-current auditor, but manual semantic
-  review found that Pareto dominance was incorrectly partitioned by tool; the
-  bundle is rejected and the cross-tool grouping now has a regression test;
-- cross-tool Pareto smoke passed at
-  `2d870f6fd12595eed0a23da59f945986a310e245`;
-- final code freeze recorded at
-  `0dfdf587ee0fb9cff374dbc41ecdf17dfa2bf781`;
-- formal run `20260730T153654Z` completed from a fresh directory with 24 exact
-  configurations, 264 raw observations, zero failures/exclusions, and all
-  checksum and independent-audit gates passing;
-- the accepted formal artifact is authoritative for the bounded claims in
-  `docs/RESULTS.md`;
-- canonical publication commit `269f3599fcc480984ff651c6c1e083a8ceac74e9`
-  is pushed to `origin/codex/repository-consolidation-v1`;
-- 11 annotated archive tags are pushed and their remote peeled targets match
-  every non-main historical head;
-- the fully redundant
-  `codex/flowstar-ctrunc-rescue-diagnostics` remote branch was deleted after
-  all eight safety conditions passed; its verified archive tag is the exact
-  recovery point;
-- the other 11 original remote heads are retained, one canonical head is
-  added, and the final remote still has 12 heads;
-- `main` remains unchanged at `b2f34f5b2077e34662a2559d8c09b1d264bd7d98`;
-  a conflict-free, reviewed fast-forward plan is documented;
-- before/after inventories and raw post-convergence refs are recorded under
-  `audits/repository_consolidation/20260730T083258Z/09_branch_convergence/`;
-- the final quality audit at source `61ab2e348af63aed855d0fdaa865fc79a2c0b3d4`
-  passed compileall, `210 passed / 3 skipped` full pytest, `48 passed` unit
-  marker, `12 passed` integration marker, all tracked shell syntax, artifact
-  checksums, editable import, path/secret/compiled-file scans, size policy,
-  and Git diff checks;
-- shellcheck was unavailable and ruff was not adopted; both are explicit
-  tooling skips, not test passes;
-- old run `20260730T015245Z` marked provisional.
+- exhaustive branch/worktree/tag and repository-content inventories;
+- clean base selection at `08b6f2416122cbf4220ff351e663caa1a0af13a2`;
+- baseline install and test evidence;
+- one numerical core, canonical benchmark source, supported comparison CLI,
+  and supported order-2 diagnostic;
+- fail-closed backend identity and explicit bound/order/completion contracts;
+- withdrawal registries without modifying frozen artifacts;
+- formal cross-tool execution blocked on eight explicit gates.
 
-No consolidation gate remains pending. `main` promotion is deliberately a
-separate protected-branch review step, with exact commands in
-`docs/history/MAIN_MERGE_PLAN.md`.
+Pending in this cleanup turn: final install/tests, small order-2 smoke,
+acceptance record, commits, and push of only
+`codex/repository-cleanup-before-external-torch-audit`.
 
-Do not delete any additional historical branch without a new branch-specific
-audit. The largest tracked file is the necessary 72,039,158-byte Flowstar
-harmonic raw log; GitHub accepted it with a warning because it exceeds the
-50 MB recommendation but remains below the 100 MB hard limit.
+`main` is not changed. No branch or tag is deleted. External repositories are
+read-only. No formal three-tool matrix is rerun.

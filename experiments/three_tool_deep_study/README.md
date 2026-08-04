@@ -1,8 +1,9 @@
-# Historical deep-study support
-
 status: historical
-superseded_by: `experiments/consolidated_study/cli.py`
-valid_for_commit: `9a684d9106633e067bfac0747244b769fa49aa0b`
+valid_for_commit: 9a684d9106633e067bfac0747244b769fa49aa0b
+superseded_by: experiments/consolidated_study/cli.py
+allowed_use: supporting implementation and provenance only
+
+# Historical deep-study support
 
 This directory retains implementation support needed by the canonical
 three-tool runner: exporters, selected native adapters, correctness probes, and

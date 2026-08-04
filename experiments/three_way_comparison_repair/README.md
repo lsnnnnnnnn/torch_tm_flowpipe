@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: provenance only
+
 # Three-way comparison correctness repair
 
 This directory supersedes the preliminary `three_way_common_contract`

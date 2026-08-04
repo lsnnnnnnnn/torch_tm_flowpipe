@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: diagnostic provenance only
+
 # Flow* patch export
 
 `fa39f7a_series/` is the authoritative five-commit series from upstream

@@ -1,3 +1,8 @@
+status: withdrawn
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: provenance only
+
 # Superseded historical comparison
 
 `results/20260724T132534Z` is intentionally preserved as a record of a flawed

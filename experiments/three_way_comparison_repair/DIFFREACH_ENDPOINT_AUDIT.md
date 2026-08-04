@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/EXPERIMENT_PROTOCOL.md
+allowed_use: diagnostic only
+
 # DiffReach endpoint semantics audit
 
 The adapter saves and calls the actual upstream

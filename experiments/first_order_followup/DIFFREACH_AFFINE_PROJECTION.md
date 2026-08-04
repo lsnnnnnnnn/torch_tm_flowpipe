@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: diagnostic only
+
 # Experimental strict-affine DiffReach projection
 
 DiffReach's plant polynomial has the restricted form

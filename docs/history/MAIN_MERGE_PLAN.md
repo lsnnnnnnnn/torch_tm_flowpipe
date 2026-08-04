@@ -1,3 +1,8 @@
+status: historical
+valid_for_commit: 61ab2e348af63aed855d0fdaa865fc79a2c0b3d4
+superseded_by: none
+allowed_use: provenance only; not authorized in this cleanup
+
 # Main merge plan
 
 The GitHub default branch is `main` at

@@ -1,3 +1,8 @@
+status: diagnostic
+valid_for_commit: unknown
+superseded_by: docs/RESULTS_STATUS.md
+allowed_use: segment-box diagnostic only
+
 # Original Flow* Van der Pol parity
 
 The local upstream benchmark used for parity is
