@@ -69,6 +69,7 @@ CSV_FIELDS = [
 ]
 RECOMMENDATIONS = {
     "GPU_PATH_PROMISING",
+    "DENSE_GPU_PATH_LIMITED",
     "NEEDS_REPRESENTATION_REDESIGN",
     "STOP_PYTHON_PLANT_TM_FOR_SPEED",
 }
@@ -676,8 +677,8 @@ def _choose_recommendation(rows: Sequence[dict[str, Any]]) -> tuple[str, str]:
         )
     if strong or core_win_count > 0:
         return (
-            "NEEDS_REPRESENTATION_REDESIGN",
-            "Some dense CUDA kernels win, but the production sparse dict TM path cannot use that speed without a batched representation.",
+            "DENSE_GPU_PATH_LIMITED",
+            "The dense batched representation is operational, but its measured CUDA advantage is too narrow for an end-to-end GPU claim.",
         )
     return (
         "STOP_PYTHON_PLANT_TM_FOR_SPEED",
@@ -754,8 +755,8 @@ def _build_report(rows: Sequence[dict[str, Any]], *, output_dir: Path, dtype: to
         "",
         f"## Final Recommendation: {recommendation}",
         "",
-        "Allowed recommendation values are `GPU_PATH_PROMISING`, `NEEDS_REPRESENTATION_REDESIGN`, "
-        "and `STOP_PYTHON_PLANT_TM_FOR_SPEED`.",
+        "Allowed recommendation values are `GPU_PATH_PROMISING`, `DENSE_GPU_PATH_LIMITED`, "
+        "`NEEDS_REPRESENTATION_REDESIGN`, and `STOP_PYTHON_PLANT_TM_FOR_SPEED`.",
     ]
     return "\n".join(lines) + "\n"
 
