@@ -57,7 +57,9 @@ never presented as portable evidence.
 
 See the [native matrix](docs/NATIVE_REPRODUCTION_MATRIX.md),
 [standard](docs/NATIVE_REPRODUCTION_STANDARD.md), and
-[current results status](docs/RESULTS_STATUS.md).  No cross-tool speedup, Pareto
+[current results status](docs/RESULTS_STATUS.md). The clean-stock Flow* scalar
+diagnosis is in the
+[correctness closure](docs/FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md). No cross-tool speedup, Pareto
 frontier or winner is currently citable.
 
 The canonical comparison runner is

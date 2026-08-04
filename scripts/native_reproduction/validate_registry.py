@@ -28,6 +28,7 @@ REPRODUCTION_STATUSES = {
     "reference_command_ambiguous",
     "source_identity_unknown",
     "patched_diagnostic_only",
+    "diagnostic_containment_failed",
     "not_attempted",
 }
 REPRODUCED_STATUSES = {
@@ -40,6 +41,10 @@ DIAGNOSTIC_EXECUTION_KINDS = {
     "patched_diagnostic",
     "generated_diagnostic",
     "analysis_only",
+}
+DIAGNOSTIC_STATUSES = {
+    "patched_diagnostic_only",
+    "diagnostic_containment_failed",
 }
 COMPLETION_STATUSES = {"completed", "partial", "failed", "not_started", "not_applicable"}
 CERTIFICATE_STATUSES = {
@@ -190,8 +195,11 @@ def validate_row(
                 "diagnostic execution_kind must be patched_diagnostic, "
                 "generated_diagnostic, or analysis_only"
             )
-        if status != "patched_diagnostic_only":
-            errors.append("diagnostic reproduction_status must be patched_diagnostic_only")
+        if status not in DIAGNOSTIC_STATUSES:
+            errors.append(
+                "diagnostic reproduction_status must be patched_diagnostic_only "
+                "or diagnostic_containment_failed"
+            )
         if row.get("primary_comparison_eligible") is not False:
             errors.append("diagnostic cannot be primary comparison eligible")
     else:

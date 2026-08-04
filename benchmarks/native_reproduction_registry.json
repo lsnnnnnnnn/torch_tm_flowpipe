@@ -467,6 +467,63 @@
       "primary_comparison_eligible": false,
       "tolerance": null,
       "notes": "Fresh analysis of existing generated-stock diagnostic artifacts. Both endpoint corners miss the analytic/RK4 trajectory and the upper final path sample misses the segment; no repair applied."
+    },
+    {
+      "id": "flowstar_scalar_affine_clean_stock_correctness_closure",
+      "repo_path": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure",
+      "source_sha": "3e0a62230e10b2b4d7b32a88430e9d031b3e66f2",
+      "source_changed": true,
+      "execution_kind": "generated_diagnostic",
+      "native_entrypoint": "experiments/flowstar_scalar_affine_closure/run_closure.py --flowstar-root /srv/local/shengenli/flowstar_stock_gcc11 --run-root outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z",
+      "input_hashes": {
+        "primary_config_sha256": "942bb03da0c29d532fc1f3235a4cba143d90cd2aba1d4fe3c5acba2089ea2b59",
+        "generated_trace_source_sha256": "17a506792b298686527d37c08693612e8fbe08bbef0e55c91336d5ac8122340c",
+        "official_route_source_sha256": "43d70a77b83128657273304eac2337766f882a1c7a2f43326baf777a05ca6c2f",
+        "mpfr_oracle_source_sha256": "636d0ca038e498215b61f20639c6e7376f0df43f28049ebb964dc825f9d82b9d",
+        "stock_flowstar_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "libflowstar_sha256": "b5ff500af66354b0518cf12e7d951f4525f435e8e2d695cf84b91821992c9d9a"
+      },
+      "command_evidence": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/primary_command.json",
+      "fresh_artifacts": [
+        {
+          "path": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/first_containment_loss.json",
+          "sha256": "20e29f8ceea48b3f3924d05f94c59dda1288b0eebb67d88c128c8eda7c62169f"
+        },
+        {
+          "path": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/analytic_oracle.json",
+          "sha256": "628ed5a3d86f792f1ca1214a1f08f09f3db56ab71746d59d006e5834d649d4c5"
+        },
+        {
+          "path": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/official_generated_parity.json",
+          "sha256": "57b403c36f107440c9a1e7a085ce14c057b9516bb8985ef5c3cbbde69c2b20c6"
+        },
+        {
+          "path": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/step_order_corner_matrix.csv",
+          "sha256": "a1a68b97efe48b2aee99d0110d1d865bcaf784b138ed892964976fb18c9ff24c"
+        }
+      ],
+      "reference_artifacts": [
+        {
+          "path": "outputs/native_reproduction_no_adapters/20260804T081205Z/diagnostics/flowstar_scalar_affine_recheck/one_step_parity.json",
+          "sha256": "b896cea0373f27ab1bae1d2b07efce6acc6fa37597be892cbf4deac4fe37a046"
+        }
+      ],
+      "reference_evidence_location": "portable_committed",
+      "comparison_result": {
+        "path": "outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/primary_repeat_comparison.json",
+        "sha256": "59f6e0a614a0dd64dd98cead55664bce4b48ca6797a7b6a2285397043c610e29"
+      },
+      "requested_horizon": 0.01,
+      "reached_horizon": 0.01,
+      "reproduction_status": "diagnostic_containment_failed",
+      "completion_status": "completed",
+      "certificate_status": "failed",
+      "property_status": "strict_scalar_affine_containment_failed",
+      "soundness_level": "unknown",
+      "certificate_claim": "none",
+      "primary_comparison_eligible": false,
+      "tolerance": null,
+      "notes": "This route is unpatched generated-stock linked to the exact clean GCC 11 archive. Both official-stock and generated-stock under-enclose. The generated trace first loses containment at refinement_2_accepted_tmv in Continuous.cpp:1013-1029; no tolerance, repaired hull, widening, or Flow* source change was used. Outcome F; Flow* correctness gate remains open."
     }
   ]
 }

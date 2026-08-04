@@ -3,7 +3,9 @@
 Run ID: `20260804T123840Z`
 
 Scope: governance-only reconciliation from the verified native-reproduction tip
-`438ee68fd71fa6182eb66cac17229e20dd3cb7d3f`.  No native matrix row was rerun,
+`438ee68fd71fa6182eb66cac17229e20dd3cb7d3`.  The launch document's purported
+full SHA had an extra trailing `f`; the exact remote tip and worktree parent
+resolve to the 40-character value above.  No native matrix row was rerun,
 no scientific numeric field was changed, and every row remains
 `primary_comparison_eligible=false`.
 

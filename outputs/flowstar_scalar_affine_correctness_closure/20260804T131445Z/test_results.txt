@@ -1,0 +1,40 @@
+Environment: conda py11, Python 3.11.15
+
+Baseline installation:
+  conda run -n py11 python -m pip install -e ".[test]"
+  result: passed
+
+Baseline full repository suite before changes:
+  conda run -n py11 python -m pytest -q
+  result: 283 passed, 2 skipped in 34.22s
+
+Final targeted closure/provenance suite:
+  tests/test_flowstar_scalar_affine_correctness_closure.py
+  tests/test_backend_identity.py
+  tests/test_repository_status_closure.py
+  tests/test_native_reproduction_registry.py
+  result: 42 passed in 0.23s
+
+Final registry validation:
+  conda run -n py11 python scripts/native_reproduction/validate_registry.py benchmarks/native_reproduction_registry.json
+  result: validated 11 native rows and 2 diagnostic rows
+
+Final full repository suite:
+  conda run -n py11 python -m pytest -q
+  result: 299 passed, 2 skipped in 33.15s
+  skipped: tests/test_external_backends.py Flow* optional backend because FLOWSTAR_ROOT is not configured
+  skipped: tests/test_external_backends.py DiffReach optional backend because DIFFREACH_ROOT is not configured
+  failures: none
+
+Narrow compiled GCC 11 Flow* smoke:
+  image: sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf
+  generated_stock_trace: compile exit 0, run exit 0, advanced=1, endpoint_raw=[0.010100670333333329,0.1121208036666667]
+  official_scalar_affine: compile exit 0, run exit 0, completed=1, safe=1, segments=1, accepted_h=0.009999999999
+  mpfr_oracle: compile exit 0, run exit 0, 256-bit explicit directed rounding
+  temporary smoke binaries: removed after successful execution
+
+Prior native artifact integrity:
+  sha256sum -c outputs/native_reproduction_no_adapters/20260804T081205Z/checksums.sha256
+  result: exit 0, all 401 listed files OK
+
+Containment policy: strict; no tolerance, repaired hull, or hidden widening.

@@ -1,0 +1,36 @@
+{
+  "bounds": {
+    "endpoint_lower": {
+      "binary64": 0.11212080401605348,
+      "binary64_hex": "0x1.cb3f2f2733eaep-4",
+      "decimal": "1.12120804016053486096086352289890861182105394716355346364544633593858818801066285e-01",
+      "direction": "down"
+    },
+    "endpoint_upper": {
+      "binary64": 0.1121208040160535,
+      "binary64_hex": "0x1.cb3f2f2733eafp-4",
+      "decimal": "1.12120804016053486096086352289890861182105394716355346364544633593858818801100830e-01",
+      "direction": "up"
+    },
+    "tube_lower": {
+      "binary64": 0.09999999999999999,
+      "binary64_hex": "0x1.9999999999999p-4",
+      "decimal": "9.99999999999999999999999999999999999999999999999999999999999999999999999999948183e-02",
+      "direction": "down"
+    },
+    "tube_upper": {
+      "binary64": 0.1121208040160535,
+      "binary64_hex": "0x1.cb3f2f2733eafp-4",
+      "decimal": "1.12120804016053486096086352289890861182105394716355346364544633593858818801100830e-01",
+      "direction": "up"
+    }
+  },
+  "meta": {
+    "formula": "((x0+1/2)*exp(2*t))-1/2",
+    "monotone_reason": "exp(2*t)>0_and_(1+2*x0)*exp(2*t)>0",
+    "monotone_time": 1,
+    "monotone_x0": 1,
+    "precision_bits": 256,
+    "rounding": "explicit_directed"
+  }
+}

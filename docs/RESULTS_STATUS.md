@@ -33,9 +33,15 @@ Its NNCS/controller orchestration is not part of this plant-only core.
 
 ## Open correctness gates
 
-The existing Flow* scalar-affine generated diagnostic still misses both analytic
-endpoint corners by about `3.5e-10` at worst and misses the upper final path sample.
-The official VDP native completion does not close that backend-wide gate.
+The clean-stock Flow* scalar-affine diagnosis is complete, but the gate remains
+open. A 256-bit directed MPFR oracle gives endpoint
+`[0.010100670013377904, 0.1121208040160535]`; generated-stock exports
+`[0.010100670333333329, 0.1121208036666667]`, a strict maximum defect of
+`3.4938679727147814e-10`. Containment is first lost at
+`refinement_2_accepted_tmv` in unmodified `Continuous.cpp:1013-1029`. The
+official public-API route also under-encloses at its own accepted right time.
+This is Outcome F, not an exporter, serializer, oracle, or configuration repair.
+See [the scalar-affine closure](FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md).
 
 DiffReach `src/picard.py` returns the initial contraction flag while later
 roundoff-inclusive refinement failures are not combined into that returned flag.
@@ -46,4 +52,5 @@ interval add/mul/sin/cos path uses ordinary float64 operations.  Its fresh resul
 is recorded as empirical, not formal.
 
 See [native matrix](NATIVE_REPRODUCTION_MATRIX.md), [Xiangru reproduction](XIANGRU_NATIVE_REPRODUCTION.md),
-and [code audit](XIANGRU_VS_OUR_TORCH_TM_CODE_AUDIT.md).
+[code audit](XIANGRU_VS_OUR_TORCH_TM_CODE_AUDIT.md), and
+[Flow* scalar-affine closure](FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md).

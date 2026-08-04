@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    "/srv/local/shengenli/flowstar_stock_gcc11:/flowstar:ro",
+    "-v",
+    "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure:/repo:ro",
+    "-v",
+    "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure/outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z:/evidence",
+    "-w",
+    "/evidence/primary_repeat_1",
+    "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+    "/evidence/build/generated_stock_trace",
+    "0.01",
+    "4",
+    "0",
+    "0.1",
+    "0.0001",
+    "1e-15"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure",
+  "exit_code": 0,
+  "source": "commands.jsonl label=primary_repeat_1",
+  "stderr": "command_logs/primary_repeat_1/stderr.log",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout": "command_logs/primary_repeat_1/stdout.log",
+  "stdout_sha256": "365b25cf4d26b6eab0a48c50370a572811fae36d89ed40eebea28b419aa0ea52"
+}

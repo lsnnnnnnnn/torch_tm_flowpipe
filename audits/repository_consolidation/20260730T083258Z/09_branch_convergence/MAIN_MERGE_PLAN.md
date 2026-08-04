@@ -9,7 +9,7 @@ The observed GitHub default branch is `main` at
 2. three-tool correctness parity at
    `308b735ac577cfea39172976a4c08716f1e54d2f`;
 3. verified native reproduction at
-   `438ee68fd71fa6182eb66cac17229e20dd3cb7d3f`;
+   `438ee68fd71fa6182eb66cac17229e20dd3cb7d3`;
 4. `codex/flowstar-scalar-affine-correctness-closure-20260804`, created directly
    from `438ee68` for the repository-status and Flow* scalar-affine diagnosis.
 

@@ -6,6 +6,13 @@ soundness gates remain open.  The next separate task after this scalar-affine
 diagnosis is the Xiangru complete-Q3 interval-soundness audit; only after both
 soundness gates close may the TORA study be authorized.
 
+The Flow* diagnosis now selects Outcome F: the unmodified stock remainder
+refinement first loses scalar-affine containment at
+`Continuous.cpp:1013-1029`, and the gate remains open. This completed diagnosis
+does not authorize TORA. It does leave the previously declared next separate task
+unchanged: audit the complete-Q3 dynamics interval add/mul/sin/cos path for an
+outward-rounding guarantee, without changing its arithmetic in that audit.
+
 The deferred TORA B48 matched-input design is:
 the stock/author-native Flow* plant lane and Xiangru's complete-Q3 PyTorch dynamics
 lane would receive the same 48 initial leaves, held controller affine bounds,

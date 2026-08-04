@@ -1,0 +1,1753 @@
+{
+  "checks": {
+    "candidate_contains_picard_image": 1,
+    "refinement_0_state_0_subset": 1,
+    "refinement_10_state_0_subset": 1,
+    "refinement_11_state_0_subset": 1,
+    "refinement_1_state_0_subset": 1,
+    "refinement_2_state_0_subset": 1,
+    "refinement_3_state_0_subset": 1,
+    "refinement_4_state_0_subset": 1,
+    "refinement_5_state_0_subset": 1,
+    "refinement_6_state_0_subset": 1,
+    "refinement_7_state_0_subset": 1,
+    "refinement_8_state_0_subset": 1,
+    "refinement_9_state_0_subset": 1
+  },
+  "config": {
+    "candidate": 0.0001,
+    "cutoff": 1e-15,
+    "effective_rhs_order": 4,
+    "h": 0.01,
+    "order": 4,
+    "precision_bits": 53,
+    "preconditioning": "diagonal_scaling",
+    "route": "generated-stock",
+    "symbolic_remainder": "disabled",
+    "x0_lower": 0,
+    "x0_upper": 0
+  },
+  "domains": {
+    "accepted": {
+      "0": {
+        "lower": 0,
+        "upper": 0.01
+      },
+      "1": {
+        "lower": -1,
+        "upper": 1
+      }
+    }
+  },
+  "intervals": [
+    {
+      "lower": 0,
+      "stage": "roundoff_polynomial_difference",
+      "state": 0,
+      "upper": 1.1102230246251567e-22
+    },
+    {
+      "lower": -4.0000000000000014e-08,
+      "stage": "refinement_0_raw",
+      "state": 0,
+      "upper": 4.000133333333336e-08
+    },
+    {
+      "lower": -4.0000000000000014e-08,
+      "stage": "refinement_0_with_roundoff",
+      "state": 0,
+      "upper": 4.000133333333347e-08
+    },
+    {
+      "lower": -8.000000000000003e-10,
+      "stage": "refinement_1_raw",
+      "state": 0,
+      "upper": 8.000266666666695e-10
+    },
+    {
+      "lower": -8.000000000000003e-10,
+      "stage": "refinement_1_with_roundoff",
+      "state": 0,
+      "upper": 8.000266666667805e-10
+    },
+    {
+      "lower": -1.600000000000001e-11,
+      "stage": "refinement_2_raw",
+      "state": 0,
+      "upper": 1.6000533333335612e-11
+    },
+    {
+      "lower": -1.600000000000001e-11,
+      "stage": "refinement_2_with_roundoff",
+      "state": 0,
+      "upper": 1.6000533333446635e-11
+    },
+    {
+      "lower": -3.200000000000002e-13,
+      "stage": "refinement_3_raw",
+      "state": 0,
+      "upper": 3.2001066666893273e-13
+    },
+    {
+      "lower": -3.200000000000002e-13,
+      "stage": "refinement_3_with_roundoff",
+      "state": 0,
+      "upper": 3.2001066677995507e-13
+    },
+    {
+      "lower": -6.4000000000000046e-15,
+      "stage": "refinement_4_raw",
+      "state": 0,
+      "upper": 6.400213335599102e-15
+    },
+    {
+      "lower": -6.4000000000000046e-15,
+      "stage": "refinement_4_with_roundoff",
+      "state": 0,
+      "upper": 6.400213446621405e-15
+    },
+    {
+      "lower": -1.280000000000001e-16,
+      "stage": "refinement_5_raw",
+      "state": 0,
+      "upper": 1.280042689324281e-16
+    },
+    {
+      "lower": -1.280000000000001e-16,
+      "stage": "refinement_5_with_roundoff",
+      "state": 0,
+      "upper": 1.2800437995473059e-16
+    },
+    {
+      "lower": -2.5600000000000026e-18,
+      "stage": "refinement_6_raw",
+      "state": 0,
+      "upper": 2.5600875990946118e-18
+    },
+    {
+      "lower": -2.5600000000000026e-18,
+      "stage": "refinement_6_with_roundoff",
+      "state": 0,
+      "upper": 2.5601986213970744e-18
+    },
+    {
+      "lower": -5.1200000000000057e-20,
+      "stage": "refinement_7_raw",
+      "state": 0,
+      "upper": 5.120397242794149e-20
+    },
+    {
+      "lower": -5.1200000000000057e-20,
+      "stage": "refinement_7_with_roundoff",
+      "state": 0,
+      "upper": 5.131499473040401e-20
+    },
+    {
+      "lower": -1.0240000000000012e-21,
+      "stage": "refinement_8_raw",
+      "state": 0,
+      "upper": 1.0262998946080803e-21
+    },
+    {
+      "lower": -1.0240000000000012e-21,
+      "stage": "refinement_8_with_roundoff",
+      "state": 0,
+      "upper": 1.137322197070596e-21
+    },
+    {
+      "lower": -2.0480000000000027e-23,
+      "stage": "refinement_9_raw",
+      "state": 0,
+      "upper": 2.2746443941411924e-23
+    },
+    {
+      "lower": -2.0480000000000027e-23,
+      "stage": "refinement_9_with_roundoff",
+      "state": 0,
+      "upper": 1.3376874640392761e-22
+    },
+    {
+      "lower": -4.096000000000006e-25,
+      "stage": "refinement_10_raw",
+      "state": 0,
+      "upper": 2.6753749280785526e-24
+    },
+    {
+      "lower": -4.096000000000006e-25,
+      "stage": "refinement_10_with_roundoff",
+      "state": 0,
+      "upper": 1.1369767739059424e-22
+    },
+    {
+      "lower": -8.192000000000012e-27,
+      "stage": "refinement_11_raw",
+      "state": 0,
+      "upper": 2.273953547811885e-24
+    },
+    {
+      "lower": -8.192000000000012e-27,
+      "stage": "refinement_11_with_roundoff",
+      "state": 0,
+      "upper": 1.1329625601032756e-22
+    }
+  ],
+  "official": {},
+  "stages": {
+    "accepted_mirror_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -8.192000000000012e-27,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.192000000000012e-27,
+          "upper": 1.1329625601032756e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "accepted_native_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -8.192000000000012e-27,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.192000000000012e-27,
+          "upper": 1.1329625601032756e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "accepted_native_tmv_right": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "candidate_remainder_seed": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -0.0001,
+            "upper": 0.010200670000000002
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010000669999999996,
+            "upper": 0.010200670000000002
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010000669999999996,
+            "upper": 0.010200670000000002
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -0.0001,
+          "upper": 0.0001
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "composed_flowpipe": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -8.192000000000012e-27,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.192000000000012e-27,
+          "upper": 1.1329625601032756e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "endpoint_collapsed": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.010100669999999997,
+            "upper": 0.01010067
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.192000000000012e-27,
+          "upper": 1.1329625601032756e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.010100669999999999,
+          "coefficient_upper": 0.010100669999999999,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "endpoint_raw": {
+      "boxes": {
+        "full_initial_interval": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {},
+      "terms": []
+    },
+    "initial_time_evaluated": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "initial_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "initial_tmv_right": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -1,
+            "upper": 1
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            0,
+            1
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "normalization_map": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "normalized_initial": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "picard_ctrunc_raw": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -2.0000000000000003e-06,
+            "upper": 0.010102670066666668
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010098669999999997,
+            "upper": 0.010102670066666668
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010098669999999997,
+            "upper": 0.010102670066666668
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0000000000000003e-06,
+          "upper": 2.000066666666667e-06
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666667,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_1": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0.01
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.01,
+            "upper": 0.01
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.01,
+            "upper": 0.01
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_2": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0.010100000000000001
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010099999999999998,
+            "upper": 0.010100000000000001
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010099999999999998,
+            "upper": 0.010100000000000001
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_3": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0.01010066666666667
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100666666666664,
+            "upper": 0.01010066666666667
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100666666666664,
+            "upper": 0.01010066666666667
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_4": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0.01010067
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999997,
+            "upper": 0.01010067
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999997,
+            "upper": 0.01010067
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_0_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -4.0000000000000014e-08,
+            "upper": 0.010100710001333335
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100629999999996,
+            "upper": 0.010100710001333335
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100629999999996,
+            "upper": 0.010100710001333335
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -4.0000000000000014e-08,
+          "upper": 4.000133333333347e-08
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_10_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -4.096000000000006e-25,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -4.096000000000006e-25,
+          "upper": 1.1369767739059424e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_11_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -8.192000000000012e-27,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.192000000000012e-27,
+          "upper": 1.1329625601032756e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_1_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -8.000000000000003e-10,
+            "upper": 0.010100670800026669
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669199999997,
+            "upper": 0.010100670800026669
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669199999997,
+            "upper": 0.010100670800026669
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.000000000000003e-10,
+          "upper": 8.000266666667805e-10
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_2_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -1.600000000000001e-11,
+            "upper": 0.010100670016000535
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669983999996,
+            "upper": 0.010100670016000535
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669983999996,
+            "upper": 0.010100670016000535
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.600000000000001e-11,
+          "upper": 1.6000533333446635e-11
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_3_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -3.200000000000002e-13,
+            "upper": 0.010100670000320012
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999679996,
+            "upper": 0.010100670000320012
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999679996,
+            "upper": 0.010100670000320012
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -3.200000000000002e-13,
+          "upper": 3.2001066677995507e-13
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_4_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -6.4000000000000046e-15,
+            "upper": 0.010100670000006402
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999993596,
+            "upper": 0.010100670000006402
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999993596,
+            "upper": 0.010100670000006402
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -6.4000000000000046e-15,
+          "upper": 6.400213446621405e-15
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_5_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -1.280000000000001e-16,
+            "upper": 0.01010067000000013
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999869,
+            "upper": 0.01010067000000013
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999869,
+            "upper": 0.01010067000000013
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.280000000000001e-16,
+          "upper": 1.2800437995473059e-16
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_6_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -2.5600000000000026e-18,
+            "upper": 0.010100670000000004
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999994,
+            "upper": 0.010100670000000004
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999994,
+            "upper": 0.010100670000000004
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.5600000000000026e-18,
+          "upper": 2.5601986213970744e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_7_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -5.1200000000000057e-20,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -5.1200000000000057e-20,
+          "upper": 5.131499473040401e-20
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_8_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -1.0240000000000012e-21,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.0240000000000012e-21,
+          "upper": 1.137322197070596e-21
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_9_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -2.0480000000000027e-23,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010100669999999996,
+            "upper": 0.010100670000000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 1.3376874640392761e-22
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666666,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "validated_picard_image": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -2.0000000000000003e-06,
+            "upper": 0.010102670066666668
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.010098669999999997,
+            "upper": 0.010102670066666668
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.010098669999999997,
+            "upper": 0.010102670066666668
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0000000000000003e-06,
+          "upper": 2.0000666666666676e-06
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.6666666666666666,
+          "coefficient_upper": 0.6666666666666667,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.3333333333333333,
+          "coefficient_upper": 0.3333333333333333,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    }
+  },
+  "status": {
+    "advanced": 1
+  },
+  "unavailable": {
+    "endpoint_tightened": "no_distinct_stock_field",
+    "repaired_hull": "prohibited_not_computed"
+  }
+}

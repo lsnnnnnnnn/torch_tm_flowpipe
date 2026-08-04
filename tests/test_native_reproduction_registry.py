@@ -132,6 +132,19 @@ def test_patched_diagnostic_is_excluded_from_native_table(tmp_path: Path) -> Non
     assert _errors(registry, tmp_path)
 
 
+def test_generated_containment_failure_is_a_valid_diagnostic_status(
+    tmp_path: Path,
+) -> None:
+    registry, _ = _fixture(tmp_path)
+    row = registry["native_reproductions"].pop()
+    row["execution_kind"] = "generated_diagnostic"
+    row["reproduction_status"] = "diagnostic_containment_failed"
+    row["certificate_status"] = "failed"
+    row["primary_comparison_eligible"] = False
+    registry["diagnostics"].append(row)
+    assert _errors(registry, tmp_path) == []
+
+
 def test_nonformal_soundness_cannot_claim_formal(tmp_path: Path) -> None:
     registry, _ = _fixture(tmp_path)
     registry["native_reproductions"][0]["soundness_level"] = "unknown"

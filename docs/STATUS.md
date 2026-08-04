@@ -2,10 +2,12 @@
 
 Current branch: `codex/flowstar-scalar-affine-correctness-closure-20260804`, based
 on the verified native-reproduction tip
-`438ee68fd71fa6182eb66cac17229e20dd3cb7d3f`.  The native evidence run is
+`438ee68fd71fa6182eb66cac17229e20dd3cb7d3`.  The launch document appended an
+extra `f` to this 40-character remote tip; the resolved ancestry is recorded in
+the closure start state.  The native evidence run is
 `outputs/native_reproduction_no_adapters/20260804T081205Z`; the scalar-affine
-closure run is recorded separately under
-`outputs/flowstar_scalar_affine_correctness_closure/`.
+closure run is
+`outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z`.
 
 The native reproduction phase is complete:
 
@@ -24,15 +26,24 @@ The native reproduction phase is complete:
   mathematical solver rejection.
 
 No adapter, rewritten ODE, generated harness or endpoint repair is counted as a
-native reproduction.  The scalar-affine recheck stays in the separate diagnostic
-registry and still finds Flow* empirical containment violations.
+native reproduction. The clean-stock scalar-affine diagnosis stays in the
+separate diagnostic registry. Its generated observer first loses strict analytic
+containment at accepted remainder refinement 2 in unmodified
+`Continuous.cpp:1013-1029`; the official public-API route also under-encloses at
+its accepted right time. Outcome F is complete, but the Flow* correctness gate is
+open and primary comparison eligibility remains false. See
+[`FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md`](FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md).
 
 Xiangru's external PyTorch Taylor-model implementation is identified and audited
 as the complete-Q3 implementation at clean `27d29050...`.  Its surrounding
 NNCS/controller path remains outside this repository's plant-only numerical core.
 
-Primary repository full pytest passes: 285 tests.  Xiangru exact-27d full pytest
+The pre-change baseline was `283 passed, 2 skipped`; final validation is
+`299 passed, 2 skipped`. The two skips are optional external backend tests whose
+`FLOWSTAR_ROOT` and `DIFFREACH_ROOT` variables are deliberately not configured;
+the clean GCC 11 scalar binaries were compiled and run separately. Xiangru
+exact-27d full pytest
 executes with 111 passed, 4 skipped and one missing-historical-artifact failure;
-the absent ignored `run.json` is not fabricated.  Registry validation and final
-checksum verification are required before release/push; see the run manifest for
-the final command records.
+the absent ignored `run.json` is not fabricated. Registry validation passes for
+11 native and two diagnostic rows, all 401 prior native-run checksums verify, and
+the scalar closure manifest verifies; see the run evidence for command records.

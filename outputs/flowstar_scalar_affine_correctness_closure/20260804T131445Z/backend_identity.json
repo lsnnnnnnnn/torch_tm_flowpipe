@@ -1,0 +1,147 @@
+{
+  "audit_behavior_environment_variables_enabled": [],
+  "backend_identity": "clean-stock",
+  "build_command": "make -C flowstar-toolbox -j1 && make -C benchmarks/continuous/vanderpol -j1",
+  "checkout_path": "/srv/local/shengenli/flowstar_stock_gcc11",
+  "compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0",
+  "detached_head": true,
+  "diagnostic_binaries": {
+    "generated_stock_trace": {
+      "dynamic_linkage": [
+        "linux-vdso.so.1 (0x00007b9e2f31e000)",
+        "\tlibmpfr.so.6 => /lib/x86_64-linux-gnu/libmpfr.so.6 (0x00007b9e2ef91000)",
+        "\tlibgsl.so.27 => /lib/x86_64-linux-gnu/libgsl.so.27 (0x00007b9e2ecd2000)",
+        "\tlibglpk.so.40 => /lib/x86_64-linux-gnu/libglpk.so.40 (0x00007b9e2ebfa000)",
+        "\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007b9e2e9ce000)",
+        "\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007b9e2e9ae000)",
+        "\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007b9e2e783000)",
+        "\tlibgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x00007b9e2e701000)",
+        "\t/lib64/ld-linux-x86-64.so.2 (0x00007b9e2f320000)",
+        "\tlibgslcblas.so.0 => /lib/x86_64-linux-gnu/libgslcblas.so.0 (0x00007b9e2e6bf000)",
+        "\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007b9e2e5d8000)",
+        "\tlibcolamd.so.2 => /lib/x86_64-linux-gnu/libcolamd.so.2 (0x00007b9e2e5cf000)",
+        "\tlibamd.so.2 => /lib/x86_64-linux-gnu/libamd.so.2 (0x00007b9e2e5c4000)",
+        "\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007b9e2e5a6000)",
+        "\tlibltdl.so.7 => /lib/x86_64-linux-gnu/libltdl.so.7 (0x00007b9e2e59b000)",
+        "\tlibsuitesparseconfig.so.5 => /lib/x86_64-linux-gnu/libsuitesparseconfig.so.5 (0x00007b9e2e596000)"
+      ],
+      "ephemeral_path": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure/outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/build/generated_stock_trace",
+      "retained": false,
+      "retention_reason": "compact committed evidence keeps hashes and linkage, not binaries",
+      "sha256": "90b53a2b52b243263fe0680e36888505bdcd2338bb7d51d4376c87aa748ef5f9"
+    },
+    "mpfr_oracle": {
+      "dynamic_linkage": [
+        "linux-vdso.so.1 (0x0000717793567000)",
+        "\tlibmpfr.so.6 => /lib/x86_64-linux-gnu/libmpfr.so.6 (0x00007177932a4000)",
+        "\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000071779307b000)",
+        "\tlibgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x0000717792ff9000)",
+        "\t/lib64/ld-linux-x86-64.so.2 (0x0000717793569000)"
+      ],
+      "ephemeral_path": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure/outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/build/mpfr_oracle",
+      "retained": false,
+      "retention_reason": "compact committed evidence keeps hashes and linkage, not binaries",
+      "sha256": "3b9709f28fe6ba30f2535c392d557c0417dff8f3975a56fe52e45e1defb3b28a"
+    },
+    "official_scalar_affine": {
+      "dynamic_linkage": [
+        "linux-vdso.so.1 (0x00007e5bd9814000)",
+        "\tlibmpfr.so.6 => /lib/x86_64-linux-gnu/libmpfr.so.6 (0x00007e5bd9493000)",
+        "\tlibgsl.so.27 => /lib/x86_64-linux-gnu/libgsl.so.27 (0x00007e5bd91d4000)",
+        "\tlibglpk.so.40 => /lib/x86_64-linux-gnu/libglpk.so.40 (0x00007e5bd90fc000)",
+        "\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007e5bd8ed0000)",
+        "\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007e5bd8eb0000)",
+        "\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007e5bd8c85000)",
+        "\tlibgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x00007e5bd8c03000)",
+        "\t/lib64/ld-linux-x86-64.so.2 (0x00007e5bd9816000)",
+        "\tlibgslcblas.so.0 => /lib/x86_64-linux-gnu/libgslcblas.so.0 (0x00007e5bd8bc1000)",
+        "\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007e5bd8ada000)",
+        "\tlibcolamd.so.2 => /lib/x86_64-linux-gnu/libcolamd.so.2 (0x00007e5bd8ad1000)",
+        "\tlibamd.so.2 => /lib/x86_64-linux-gnu/libamd.so.2 (0x00007e5bd8ac6000)",
+        "\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007e5bd8aa8000)",
+        "\tlibltdl.so.7 => /lib/x86_64-linux-gnu/libltdl.so.7 (0x00007e5bd8a9d000)",
+        "\tlibsuitesparseconfig.so.5 => /lib/x86_64-linux-gnu/libsuitesparseconfig.so.5 (0x00007e5bd8a98000)"
+      ],
+      "ephemeral_path": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure/outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z/build/official_scalar_affine",
+      "retained": false,
+      "retention_reason": "compact committed evidence keeps hashes and linkage, not binaries",
+      "sha256": "8102947d4e0cce8545c1c0f03d45cef71a3d8a4e8a764acef93e936b7869f7bf"
+    }
+  },
+  "diagnostic_sources": {
+    "analysis.py": {
+      "path": "experiments/flowstar_scalar_affine_closure/analysis.py",
+      "sha256": "e1d7fc3191ede785cd764e68a64c4ec2a5bb401684fef740e6484a2221d14e80"
+    },
+    "generated_stock_trace.cpp": {
+      "path": "experiments/flowstar_scalar_affine_closure/generated_stock_trace.cpp",
+      "sha256": "17a506792b298686527d37c08693612e8fbe08bbef0e55c91336d5ac8122340c"
+    },
+    "mpfr_oracle.cpp": {
+      "path": "experiments/flowstar_scalar_affine_closure/mpfr_oracle.cpp",
+      "sha256": "636d0ca038e498215b61f20639c6e7376f0df43f28049ebb964dc825f9d82b9d"
+    },
+    "official_scalar_affine.cpp": {
+      "path": "experiments/flowstar_scalar_affine_closure/official_scalar_affine.cpp",
+      "sha256": "43d70a77b83128657273304eac2337766f882a1c7a2f43326baf777a05ca6c2f"
+    },
+    "run_closure.py": {
+      "path": "experiments/flowstar_scalar_affine_closure/run_closure.py",
+      "sha256": "77159a7d1e606863c5d6aac77229550b39d74f28a902966eaac90e6ee22c747d"
+    }
+  },
+  "docker_image": "sha256:6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf",
+  "dynamic_loader": "ldd (Ubuntu GLIBC 2.35-0ubuntu3.7) 2.35",
+  "execution_routes": [
+    "official-stock-native-api",
+    "generated-stock diagnostic"
+  ],
+  "flowstar_object_comment": "String dump of section '.comment':\n  [     1]  GCC: (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0",
+  "git_status_porcelain": [
+    "?? benchmarks/continuous/vanderpol/vanderpol",
+    "?? benchmarks/continuous/vanderpol/vanderpol.o",
+    "?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt",
+    "?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt",
+    "?? flowstar-toolbox/Constraints.o",
+    "?? flowstar-toolbox/Continuous.o",
+    "?? flowstar-toolbox/Discrete.o",
+    "?? flowstar-toolbox/Geometry.o",
+    "?? flowstar-toolbox/Hybrid.o",
+    "?? flowstar-toolbox/Interval.o",
+    "?? flowstar-toolbox/Matrix.o",
+    "?? flowstar-toolbox/Variables.o",
+    "?? flowstar-toolbox/lex.yy.c",
+    "?? flowstar-toolbox/lex.yy.o",
+    "?? flowstar-toolbox/libflowstar.a",
+    "?? flowstar-toolbox/modelParser.output",
+    "?? flowstar-toolbox/modelParser.tab.c",
+    "?? flowstar-toolbox/modelParser.tab.h",
+    "?? flowstar-toolbox/modelParser.tab.o",
+    "?? flowstar-toolbox/settings.o"
+  ],
+  "library": {
+    "path": "/srv/local/shengenli/flowstar_stock_gcc11/flowstar-toolbox/libflowstar.a",
+    "sha256": "b5ff500af66354b0518cf12e7d951f4525f435e8e2d695cf84b91821992c9d9a"
+  },
+  "link_contract": {
+    "archive_is_static": true,
+    "argument": "-lflowstar",
+    "ld_library_path_unset": true,
+    "library_search_path": "/srv/local/shengenli/flowstar_stock_gcc11/flowstar-toolbox"
+  },
+  "linker": "GNU ld (GNU Binutils for Ubuntu) 2.38",
+  "official_vdp_binary": {
+    "path": "/srv/local/shengenli/flowstar_stock_gcc11/benchmarks/continuous/vanderpol/vanderpol",
+    "sha256": "266ba4edf9b905a185efcae4f72c28f2a9ca34362c5960e2995ea0e2bb35d51f"
+  },
+  "patched_checkout_explicitly_excluded": {
+    "library_sha256": "3a658f952cf8e4c30e04adb778a51c19047c37b6c8bf79f18ebae8120eefb117",
+    "path": "/srv/local/shengenli/flowstar",
+    "used": false
+  },
+  "remote": "https://github.com/chenxin415/flowstar",
+  "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "tracked_diff": "",
+  "tracked_source_clean": true,
+  "untracked_build_outputs_only": true
+}
