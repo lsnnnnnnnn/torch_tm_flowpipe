@@ -29,6 +29,7 @@ from torch_tm_flowpipe.protocol.backend_identity import (
     inspect_primary_flowstar_backend,
 )
 from torch_tm_flowpipe.protocol.provenance import prepare_output_directory
+from torch_tm_flowpipe.protocol.gates import validate_cross_tool_gate_manifest
 from torch_tm_flowpipe.protocol.schema import (
     RUNTIME_BOUNDARY_VERSION,
     SCHEMA_VERSION,
@@ -417,15 +418,16 @@ def _load_cross_tool_gates(profile: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _require_cross_tool_gates(gates: Mapping[str, Any]) -> None:
-    pending = [
-        name
-        for name, record in dict(gates.get("gates", {})).items()
-        if not isinstance(record, dict) or record.get("verified") is not True
-    ]
-    if pending:
+    decision = validate_cross_tool_gate_manifest(gates, repo_root=REPO_ROOT)
+    if decision.errors:
+        raise RuntimeError(
+            "formal comparison gate manifest is invalid: "
+            + "; ".join(decision.errors)
+        )
+    if decision.pending:
         raise RuntimeError(
             "formal comparison is blocked by unverified gates: "
-            + ", ".join(pending)
+            + ", ".join(decision.pending)
         )
 
 

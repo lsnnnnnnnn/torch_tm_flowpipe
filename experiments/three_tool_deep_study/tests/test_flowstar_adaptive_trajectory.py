@@ -53,7 +53,7 @@ def test_first_adaptive_vanderpol_failure_and_native_repair() -> None:
     assert native == []
 
 
-def test_flowstar_exporter_hulls_collapsed_and_native_endpoint_paths() -> None:
+def test_flowstar_exporter_keeps_collapsed_native_and_repaired_paths_separate() -> None:
     spec = load_spec()
     source = render_cpp(
         spec["systems"]["riccati"],
@@ -65,6 +65,7 @@ def test_flowstar_exporter_hulls_collapsed_and_native_endpoint_paths() -> None:
     )
     assert "composed.evaluate_time(" in source
     assert "composed.intEval(native_endpoint_box, native_endpoint_domain)" in source
-    assert "endpoint.tms[state].remainder +=" in source
+    assert "endpoint.tms[state].remainder +=" not in source
+    assert 'print_terms("collapsed", endpoint);' in source
     assert "FS_ENDPOINT_PATH" in source
     assert "repaired Flow* endpoint" not in source

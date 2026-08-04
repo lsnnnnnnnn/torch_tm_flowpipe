@@ -19,13 +19,20 @@ from .config import configuration_semantics, expected_configuration_rows
 from .carry import projected_affine_box_reset
 from .pareto import recompute_pareto
 from .runtime import ConfigurationStepTiming, measure_configuration_step
+from .gates import (
+    GateManifestDecision,
+    REQUIRED_CROSS_TOOL_GATES,
+    validate_cross_tool_gate_manifest,
+)
 from .schema import (
     BoundKind,
     BoundSemantics,
+    ComparisonLane,
     FailureCategory,
     RefinementSemantics,
     RUNTIME_BOUNDARY_VERSION,
     SCHEMA_VERSION,
+    SoundnessLevel,
 )
 
 __all__ = [
@@ -33,13 +40,17 @@ __all__ = [
     "BackendIdentityError",
     "BoundKind",
     "BoundSemantics",
+    "ComparisonLane",
     "ConfigurationStepTiming",
     "EligibilityDecision",
     "FailureCategory",
     "FlowstarBackendIdentity",
+    "GateManifestDecision",
+    "REQUIRED_CROSS_TOOL_GATES",
     "RUNTIME_BOUNDARY_VERSION",
     "RefinementSemantics",
     "SCHEMA_VERSION",
+    "SoundnessLevel",
     "evaluate_primary_eligibility",
     "classify_flowstar_backend",
     "configuration_semantics",
@@ -51,4 +62,5 @@ __all__ = [
     "measure_configuration_step",
     "partition_and_recompute_pareto",
     "recompute_pareto",
+    "validate_cross_tool_gate_manifest",
 ]

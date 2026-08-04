@@ -7,8 +7,10 @@ from typing import Any, Mapping, Sequence
 from .schema import (
     Applicability,
     BoundSemantics,
+    ComparisonLane,
     FailureCategory,
     RUNTIME_BOUNDARY_VERSION,
+    SoundnessLevel,
 )
 
 
@@ -79,10 +81,26 @@ def evaluate_primary_eligibility(
         reasons.append("refinement_semantics_not_raw")
     if row.get("backend_class") in {"patched-audit", "unknown-dirty"}:
         reasons.append("backend_class_not_primary")
+    if row.get("backend_class") == "torch-dense-prototype":
+        reasons.append("dense_prototype_not_primary")
     if row.get("execution_route") == "patched-audit":
         reasons.append("patched_execution_route_not_primary")
     if row.get("runtime_boundary_version") != RUNTIME_BOUNDARY_VERSION:
         reasons.append("runtime_boundary_version_mismatch")
+    if row.get("lane") not in {
+        lane.value for lane in ComparisonLane
+    }:
+        reasons.append("comparison_lane_invalid")
+    if row.get("soundness_level") not in {
+        level.value for level in SoundnessLevel
+    }:
+        reasons.append("soundness_level_invalid")
+    if not str(row.get("effective_support_sha256", "")).strip():
+        reasons.append("effective_support_missing")
+    if not str(row.get("validation_status", "")).strip():
+        reasons.append("validation_status_missing")
+    if row.get("run_authority") != "authoritative":
+        reasons.append("run_not_authoritative")
     if not _finite_positive(row.get("steady_total_configuration_time_s")):
         reasons.append("steady_total_configuration_time_not_positive_finite")
     if row.get("failure_category") != FailureCategory.COMPLETED.value:

@@ -1,27 +1,35 @@
-schema_version: 1
+schema_version: 2
 status: blocked_pending_reaudit
 gates:
   stock_backend_identity:
     verified: false
-    evidence: runtime backend manifest required for the new run
+    blocker: current-run official/generated binary and library identity evidence not yet complete
+    applies_to: [van_der_pol_order4_t10, official-stock, generated-stock]
   official_parser_generated_stock_field_parity:
     verified: false
-    evidence: order-4 historical segment parity is insufficient for all fields/configs
+    blocker: field-level official/generated trace parity has not passed
+    applies_to: [van_der_pol_order4_t10, official-stock, generated-stock]
   endpoint_segment_tube_exporter_semantics:
     verified: false
-    evidence: field-level external exporter audit required
+    blocker: independent raw endpoint, last segment, and full tube evidence has not passed
+    applies_to: [van_der_pol_order4_t10, generated-stock, torch-sparse]
   raw_tightened_separation:
     verified: false
-    evidence: field-level external exporter audit required
+    blocker: collapsed and repaired outputs remain diagnostic until exporter evidence passes
+    applies_to: [all_matched_plant_contracts]
   order_basis_contract:
     verified: false
-    evidence: cross-tool effective-basis contract required
+    blocker: effective support hashes are not yet available for every matched backend
+    applies_to: [scalar_quadratic, harmonic_oscillator, van_der_pol]
   runtime_boundary_parity:
     verified: false
-    evidence: external runtime-boundary audit required
+    blocker: cold, steady, compile, core, and process boundaries are not yet matched
+    applies_to: [all_performance_rows]
   completion_validation_fail_closed:
     verified: false
-    evidence: external runner acceptance audit required
+    blocker: current-run external incomplete and warning-path evidence has not passed
+    applies_to: [all_primary_rows]
   patched_rows_excluded_from_primary:
     verified: false
-    evidence: current code enforces exclusion; new independent run evidence required
+    blocker: current-run negative evidence has not yet been generated and checksummed
+    applies_to: [patched-audit, torch-dense-prototype, all_primary_rows]

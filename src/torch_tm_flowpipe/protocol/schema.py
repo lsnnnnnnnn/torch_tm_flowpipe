@@ -12,6 +12,8 @@ RUNTIME_BOUNDARY_VERSION = "total_configuration_v2"
 class BoundSemantics(str, Enum):
     RAW_ENDPOINT = "raw_endpoint"
     TIGHTENED_ENDPOINT = "tightened_endpoint"
+    COLLAPSED_ENDPOINT = "collapsed_endpoint"
+    REPAIRED_HULL = "repaired_hull"
     SEGMENT_BOX = "segment_box"
     TUBE_BOX = "tube_box"
 
@@ -25,6 +27,23 @@ class BoundKind(str, Enum):
 class RefinementSemantics(str, Enum):
     RAW = "raw"
     TIGHTENED = "tightened"
+    COLLAPSED = "collapsed"
+    REPAIRED = "repaired"
+
+
+class ComparisonLane(str, Enum):
+    NATIVE_REPRODUCTION = "native_reproduction"
+    MATCHED_PLANT_BACKEND = "matched_plant_backend"
+    NATIVE_END_TO_END_CERTIFICATE = "native_end_to_end_certificate"
+
+
+class SoundnessLevel(str, Enum):
+    FORMAL_OUTWARD_ROUNDING = "formal_outward_rounding"
+    SAFEGUARDED_FLOAT64_NOT_FULLY_PROVED = (
+        "safeguarded_float64_not_fully_proved"
+    )
+    EMPIRICAL_ENCLOSURE_ONLY = "empirical_enclosure_only"
+    UNKNOWN = "unknown"
 
 
 class FailureCategory(str, Enum):
@@ -72,6 +91,9 @@ IDENTITY_FIELDS = (
     "refinement_semantics",
     "endpoint_exporter_semantics",
     "runtime_boundary_version",
+    "lane",
+    "soundness_level",
+    "effective_support_sha256",
 )
 
 REQUIRED_OBSERVATION_FIELDS = (
@@ -87,6 +109,11 @@ REQUIRED_OBSERVATION_FIELDS = (
     "backend_dirty",
     "backend_primary_eligible",
     "execution_route",
+    "lane",
+    "soundness_level",
+    "effective_support_sha256",
+    "validation_status",
+    "run_authority",
     "primary_comparable",
     "runtime_repetitions",
     "all_required_repetitions_present",
@@ -177,6 +204,14 @@ def validate_observation(row: Mapping[str, Any]) -> list[str]:
             BoundKind.ENDPOINT,
             RefinementSemantics.TIGHTENED,
         ),
+        BoundSemantics.COLLAPSED_ENDPOINT: (
+            BoundKind.ENDPOINT,
+            RefinementSemantics.COLLAPSED,
+        ),
+        BoundSemantics.REPAIRED_HULL: (
+            BoundKind.ENDPOINT,
+            RefinementSemantics.REPAIRED,
+        ),
         BoundSemantics.SEGMENT_BOX: (
             BoundKind.ACCEPTED_SEGMENT,
             RefinementSemantics.RAW,
@@ -207,6 +242,20 @@ def validate_observation(row: Mapping[str, Any]) -> list[str]:
         errors.append("execution_route must be explicit")
     if not str(row.get("endpoint_exporter_semantics", "")).strip():
         errors.append("endpoint_exporter_semantics must be explicit")
+    try:
+        ComparisonLane(str(row.get("lane")))
+    except ValueError:
+        errors.append("lane is invalid")
+    try:
+        SoundnessLevel(str(row.get("soundness_level")))
+    except ValueError:
+        errors.append("soundness_level is invalid")
+    if not str(row.get("effective_support_sha256", "")).strip():
+        errors.append("effective_support_sha256 must be explicit")
+    if not str(row.get("validation_status", "")).strip():
+        errors.append("validation_status must be explicit")
+    if row.get("run_authority") not in {"authoritative", "exploratory", "smoke"}:
+        errors.append("run_authority is invalid")
 
     if row.get("runtime_boundary_version") != RUNTIME_BOUNDARY_VERSION:
         errors.append(

@@ -22,9 +22,11 @@ from torch_tm_flowpipe.protocol.schema import (
     Applicability,
     BoundKind,
     BoundSemantics,
+    ComparisonLane,
     FailureCategory,
     RefinementSemantics,
     RUNTIME_BOUNDARY_VERSION,
+    SoundnessLevel,
     normalize_observation,
 )
 
@@ -70,6 +72,11 @@ def eligible_row(**overrides: object) -> dict[str, object]:
         "posthoc_validation_time_s": 0.01,
         "plot_report_time_s": 0.0,
         "runtime_boundary_version": RUNTIME_BOUNDARY_VERSION,
+        "lane": ComparisonLane.MATCHED_PLANT_BACKEND.value,
+        "soundness_level": SoundnessLevel.SAFEGUARDED_FLOAT64_NOT_FULLY_PROVED.value,
+        "effective_support_sha256": "a" * 64,
+        "validation_status": FailureCategory.COMPLETED.value,
+        "run_authority": "authoritative",
         "evaluation_time": 1.0,
         "width_at_evaluation_time": 2.0,
     }
@@ -103,6 +110,9 @@ def test_primary_requires_formal_repeated_complete_raw_row() -> None:
         ("execution_route", "patched-audit"),
         ("runtime_boundary_version", "engine_only_v1"),
         ("steady_total_configuration_time_s", 0.0),
+        ("run_authority", "smoke"),
+        ("effective_support_sha256", ""),
+        ("soundness_level", "unknown_level"),
     ):
         decision = evaluate_primary_eligibility(eligible_row(**{field: bad_value}))
         assert not decision.eligible, field
@@ -160,6 +170,24 @@ def test_explicit_not_applicable_is_separate_from_boolean_gate() -> None:
     )
     assert evaluate_primary_eligibility(row).eligible
     row["analytic_containment_applicability"] = "unknown"
+    assert not evaluate_primary_eligibility(row).eligible
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+@pytest.mark.parametrize(
+    ("semantics", "refinement"),
+    [
+        (BoundSemantics.COLLAPSED_ENDPOINT.value, "collapsed"),
+        (BoundSemantics.REPAIRED_HULL.value, "repaired"),
+    ],
+)
+def test_diagnostic_endpoint_semantics_are_distinct_and_primary_ineligible(
+    semantics: str, refinement: str
+) -> None:
+    row = normalize_observation(
+        eligible_row(bound_semantics=semantics, refinement_semantics=refinement)
+    )
     assert not evaluate_primary_eligibility(row).eligible
 
 

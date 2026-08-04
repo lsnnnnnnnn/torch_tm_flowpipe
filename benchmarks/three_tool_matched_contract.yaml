@@ -1,0 +1,87 @@
+schema_version: 1
+status: preregistered_fail_closed
+comparison_lanes:
+  lane_a: native_reproduction
+  lane_b: matched_plant_backend
+  lane_c: native_end_to_end_certificate
+runtime_boundary: total_configuration_v2
+primary_output_semantics: raw_endpoint
+completion_rule:
+  status: completed
+  requested_horizon_must_equal_completed_horizon: true
+  every_step_validation_must_pass: true
+  nonfinite_or_fallback_allowed: false
+soundness_levels:
+  official-stock: formal_outward_rounding
+  generated-stock: formal_outward_rounding
+  torch-sparse: safeguarded_float64_not_fully_proved
+  diffreach-native: unknown
+  xiangru-q3: empirical_enclosure_only
+  torch-dense-prototype: empirical_enclosure_only
+systems:
+  scalar_quadratic:
+    state_order: [x]
+    ode: ["1 + x^2"]
+    constants_decimal: [1.0]
+    constants_dtype: binary64
+    initial_set: [[0.0, 0.1]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy: {kind: fixed, h: 0.01}
+    horizon: 0.01
+    remainder_initialization: [[-1.0e-10, 1.0e-10]]
+    cutoff: 1.0e-15
+    effective_support:
+      official-stock: not_matched
+      generated-stock: not_matched
+      torch-sparse: not_matched
+      diffreach-native: not_matched
+  harmonic_oscillator:
+    state_order: [x, y]
+    ode: ["y", "-x"]
+    constants_decimal: [1.0, -1.0]
+    constants_dtype: binary64
+    initial_set: [[0.9, 1.1], [-0.1, 0.1]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy: {kind: fixed, h: 0.01}
+    horizon: 0.01
+    remainder_initialization: [[-1.0e-10, 1.0e-10], [-1.0e-10, 1.0e-10]]
+    cutoff: 1.0e-15
+    effective_support:
+      official-stock: not_matched
+      generated-stock: not_matched
+      torch-sparse: not_matched
+      diffreach-native: not_matched
+  van_der_pol:
+    state_order: [x, y]
+    ode: ["y", "(1 - x^2) * y - x"]
+    constants_decimal: [1.0, -1.0]
+    constants_dtype: binary64
+    initial_set: [[1.1, 1.4], [2.35, 2.45]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy:
+      native_flowstar: {kind: adaptive, minimum: 0.002, maximum: 0.1}
+      matched_fixed: {kind: fixed, h: 0.005}
+      flowstar_schedule_replay: not_matched
+    horizons: {one_step: 0.005, short: 1.0, target: 10.0}
+    remainder_initialization: [[-1.0e-4, 1.0e-4], [-1.0e-4, 1.0e-4]]
+    cutoff: 1.0e-10
+    effective_support:
+      official-stock: not_matched
+      generated-stock: not_matched
+      torch-sparse: not_matched
+      diffreach-native: not_matched
+output_contract:
+  raw_endpoint: required
+  tightened_endpoint: independent_optional_field
+  collapsed_endpoint: diagnostic_only
+  repaired_hull: diagnostic_only
+  last_segment: required
+  full_tube: required
+  fallback_between_fields: forbidden
+blocked_fields:
+  - reason: effective support hashes await current-run export evidence
+  - reason: Flowstar accepted-step replay schedule awaits field-level stock exporter
+  - reason: DiffReach validation and completion semantics await native reproduction

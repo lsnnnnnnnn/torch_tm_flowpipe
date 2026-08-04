@@ -60,7 +60,15 @@
     },
     "enclosures": {
       "type": "object",
-      "required": ["tube", "endpoint_raw", "endpoint_tightened"]
+      "required": [
+        "tube",
+        "endpoint_raw",
+        "endpoint_tightened",
+        "endpoint_collapsed",
+        "repaired_hull",
+        "last_segment",
+        "full_tube"
+      ]
     },
     "reset_carry_policy": {"type": "object"},
     "outcome": {

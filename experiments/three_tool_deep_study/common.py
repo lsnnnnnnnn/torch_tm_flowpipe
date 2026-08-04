@@ -275,6 +275,9 @@ def canonical_record(
     accepted_step: float | None = None,
     tightened_endpoint: Sequence[Mapping[str, Any]] | None = None,
     tightened_endpoint_box: Sequence[Sequence[float]] | None = None,
+    collapsed_endpoint: Sequence[Mapping[str, Any]] | None = None,
+    collapsed_endpoint_box: Sequence[Sequence[float]] | None = None,
+    repaired_hull_box: Sequence[Sequence[float]] | None = None,
     outcome: Mapping[str, Any] | None = None,
     execution_metadata: Mapping[str, Any] | None = None,
     basis_metadata: Mapping[str, Any] | None = None,
@@ -312,6 +315,29 @@ def canonical_record(
         tightened_box_record = [
             list(map(float, box)) for box in tightened_endpoint_box
         ]
+    if collapsed_endpoint is None:
+        collapsed_record: Any = unavailable(
+            "backend does not expose a collapsed evaluate-time endpoint"
+        )
+        collapsed_box_record: Any = unavailable(
+            "backend does not expose a collapsed evaluate-time endpoint box"
+        )
+    else:
+        if collapsed_endpoint_box is None:
+            raise ValueError(
+                "collapsed endpoint states require a collapsed endpoint box"
+            )
+        collapsed_record = [
+            decorate_state(dict(state), None) for state in collapsed_endpoint
+        ]
+        collapsed_box_record = [
+            list(map(float, box)) for box in collapsed_endpoint_box
+        ]
+    repaired_hull_record: Any = (
+        unavailable("no diagnostic repaired hull was constructed")
+        if repaired_hull_box is None
+        else [list(map(float, box)) for box in repaired_hull_box]
+    )
     system_record: Any = (
         dict(system_definition)
         if system_definition is not None
@@ -378,6 +404,7 @@ def canonical_record(
         "raw_endpoint": decorated_raw_endpoint,
         "raw_endpoint_box": raw_endpoint_box_record,
         "whole_tube_box": tube_box_record,
+        "last_segment_box": tube_box_record,
         "validation_trace": list(validation_trace),
         "reset_preconditioning_metadata": dict(reset_metadata),
         "native_metadata": dict(native_metadata),
@@ -420,6 +447,26 @@ def canonical_record(
                 "states": tightened_record,
                 "box": tightened_box_record,
             },
+            "endpoint_collapsed": {
+                "states": collapsed_record,
+                "box": collapsed_box_record,
+            },
+            "repaired_hull": {
+                "states": unavailable(
+                    "repaired hull is a diagnostic box, not a Taylor model"
+                ),
+                "box": repaired_hull_record,
+            },
+            "last_segment": {
+                "states": decorated_states,
+                "box": tube_box_record,
+                "provenance": "single_segment_export",
+            },
+            "full_tube": {
+                "segments": 1,
+                "box": tube_box_record,
+                "provenance": "single_segment_export",
+            },
         },
         "reset_carry_policy": dict(reset_metadata),
         "outcome": outcome_record,
@@ -446,6 +493,7 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
         "raw_endpoint",
         "raw_endpoint_box",
         "whole_tube_box",
+        "last_segment_box",
         "validation_trace",
         "reset_preconditioning_metadata",
         "system_definition",
@@ -505,6 +553,14 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
         raise ValueError(
             "tightened endpoint must be populated or explicitly unavailable"
         )
+    collapsed = record["enclosures"].get("endpoint_collapsed")
+    repaired = record["enclosures"].get("repaired_hull")
+    if not isinstance(collapsed, Mapping) or not isinstance(repaired, Mapping):
+        raise ValueError("collapsed and repaired enclosures must be explicit")
+    if record["enclosures"].get("last_segment", {}).get("box") != record["last_segment_box"]:
+        raise ValueError("last segment enclosure has inconsistent provenance")
+    if record["enclosures"].get("full_tube", {}).get("box") != record["whole_tube_box"]:
+        raise ValueError("full tube enclosure has inconsistent provenance")
     execution = record["execution"]
     for key in ("backend", "dtype", "device", "repository_commit", "runtime"):
         if key not in execution or execution[key] is None:
@@ -567,11 +623,12 @@ def validate_record(record: Mapping[str, Any], tolerance: float = 1e-10) -> dict
         elif "total_interval" in sample:
             state_index = int(sample.get("state", 0))
             kind = str(sample.get("kind", "tube"))
-            states = (
-                record["raw_endpoint"]
-                if kind == "endpoint"
-                else record["states"]
-            )
+            if kind == "endpoint":
+                states = record["raw_endpoint"]
+            elif kind == "collapsed":
+                states = record["enclosures"]["endpoint_collapsed"]["states"]
+            else:
+                states = record["states"]
             if state_index >= len(states):
                 native_point_violations += 1
                 continue

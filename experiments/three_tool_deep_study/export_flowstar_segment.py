@@ -22,15 +22,15 @@ from common import (
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[1]
 TERM_RE = re.compile(
-    r"^FS_TERM kind=(?P<kind>tube|endpoint) state=(?P<state>\d+) "
+    r"^FS_TERM kind=(?P<kind>tube|collapsed) state=(?P<state>\d+) "
     r"coefficient=(?P<coefficient>[-+0-9.eE]+) exponents=(?P<exponents>[0-9,]*)$"
 )
 BOX_RE = re.compile(
-    r"^FS_BOX kind=(?P<kind>tube|endpoint) state=(?P<state>\d+) "
+    r"^FS_BOX kind=(?P<kind>tube|collapsed) state=(?P<state>\d+) "
     r"lower=(?P<lower>[-+0-9.eE]+) upper=(?P<upper>[-+0-9.eE]+)$"
 )
 REMAINDER_RE = re.compile(
-    r"^FS_REMAINDER kind=(?P<kind>tube|endpoint) state=(?P<state>\d+) "
+    r"^FS_REMAINDER kind=(?P<kind>tube|collapsed) state=(?P<state>\d+) "
     r"lower=(?P<lower>[-+0-9.eE]+) upper=(?P<upper>[-+0-9.eE]+)$"
 )
 DOMAIN_RE = re.compile(
@@ -38,7 +38,7 @@ DOMAIN_RE = re.compile(
     r"upper=(?P<upper>[-+0-9.eE]+)$"
 )
 SAMPLE_RE = re.compile(
-    r"^FS_SAMPLE kind=(?P<kind>tube|endpoint) sample=(?P<sample>\d+) "
+    r"^FS_SAMPLE kind=(?P<kind>tube|collapsed) sample=(?P<sample>\d+) "
     r"state=(?P<state>\d+) lower=(?P<lower>[-+0-9.eE]+) "
     r"upper=(?P<upper>[-+0-9.eE]+) point=(?P<point>[-+0-9.eE,]+)$"
 )
@@ -262,8 +262,6 @@ int main() {{
         repaired_lower - collapsed_endpoint_box[state].inf();
     double padding_upper =
         repaired_upper - collapsed_endpoint_box[state].sup();
-    endpoint.tms[state].remainder +=
-        Interval(padding_lower, padding_upper);
     printf(
         "FS_ENDPOINT_PATH state=%u "
         "collapsed_lower=%.17g collapsed_upper=%.17g "
@@ -275,11 +273,11 @@ int main() {{
         native_endpoint_box[state].inf(), native_endpoint_box[state].sup(),
         repaired_lower, repaired_upper, padding_lower, padding_upper);
   }}
-  print_terms("endpoint", endpoint);
-  print_box("endpoint", endpoint, endpoint_domain);
+  print_terms("collapsed", endpoint);
+  print_box("collapsed", endpoint, endpoint_domain);
   for(unsigned int sample = 0; sample < 3; ++sample) {{
     print_sample("tube", sample, composed, next.domain, false);
-    print_sample("endpoint", sample, endpoint, endpoint_domain, true);
+    print_sample("collapsed", sample, endpoint, endpoint_domain, true);
   }}
   return 0;
 }}
@@ -367,10 +365,10 @@ def _parse(
 ) -> dict[str, Any]:
     terms: dict[str, dict[int, list[dict[str, Any]]]] = {
         "tube": {},
-        "endpoint": {},
+        "collapsed": {},
     }
-    remainders: dict[str, dict[int, list[float]]] = {"tube": {}, "endpoint": {}}
-    boxes: dict[str, dict[int, list[float]]] = {"tube": {}, "endpoint": {}}
+    remainders: dict[str, dict[int, list[float]]] = {"tube": {}, "collapsed": {}}
+    boxes: dict[str, dict[int, list[float]]] = {"tube": {}, "collapsed": {}}
     domains: dict[int, list[float]] = {}
     samples: list[dict[str, Any]] = []
     endpoint_paths: dict[int, dict[str, float]] = {}
@@ -459,7 +457,8 @@ def _parse(
         raise RuntimeError(f"Flow* export failed: {status}")
     ordered_domains = [domains[index] for index in sorted(domains)]
     tube_states = []
-    endpoint_states = []
+    collapsed_endpoint_states = []
+    raw_endpoint_states = []
     for state in range(dimension):
         tube_states.append(
             {
@@ -472,19 +471,35 @@ def _parse(
             }
         )
         # evaluate_time leaves a zero time exponent in the term dimension.
-        endpoint_states.append(
+        collapsed_endpoint_states.append(
             {
                 "polynomial_terms": [
                     {
                         **term,
                         "exponents": term["exponents"][1:],
                     }
-                    for term in terms["endpoint"][state]
+                    for term in terms["collapsed"][state]
                 ],
-                "independent_interval_remainder": remainders["endpoint"][state],
+                "independent_interval_remainder": remainders["collapsed"][state],
                 "native_structured_symbolic_remainder": unavailable(
                     "Flow* structured symbolic remainder is not losslessly "
                     "available as one per-state interval"
+                ),
+            }
+        )
+        native = endpoint_paths[state]
+        midpoint = 0.5 * (native["native_lower"] + native["native_upper"])
+        raw_endpoint_states.append(
+            {
+                "polynomial_terms": [
+                    {"exponents": [0] * dimension, "coefficient": midpoint}
+                ],
+                "independent_interval_remainder": [
+                    native["native_lower"] - midpoint,
+                    native["native_upper"] - midpoint,
+                ],
+                "native_structured_symbolic_remainder": unavailable(
+                    "native fixed-time box export intentionally drops polynomial dependency"
                 ),
             }
         )
@@ -497,9 +512,20 @@ def _parse(
         variable_roles=["local_time", *["state_generator"] * dimension],
         domains=ordered_domains,
         states=tube_states,
-        raw_endpoint=endpoint_states,
-        raw_endpoint_box=[boxes["endpoint"][state] for state in range(dimension)],
+        raw_endpoint=raw_endpoint_states,
+        raw_endpoint_box=[
+            [endpoint_paths[state]["native_lower"], endpoint_paths[state]["native_upper"]]
+            for state in range(dimension)
+        ],
         tube_box=[boxes["tube"][state] for state in range(dimension)],
+        collapsed_endpoint=collapsed_endpoint_states,
+        collapsed_endpoint_box=[
+            boxes["collapsed"][state] for state in range(dimension)
+        ],
+        repaired_hull_box=[
+            [endpoint_paths[state]["repaired_lower"], endpoint_paths[state]["repaired_upper"]]
+            for state in range(dimension)
+        ],
         validation_trace=traces,
         reset_metadata={
             "reset": "Flowpipe_normalized_composition",
@@ -527,9 +553,9 @@ def _parse(
                 for state in sorted(endpoint_paths)
             ],
             "endpoint_path_semantics": (
-                "raw endpoint is the hull of composed.evaluate_time and "
-                "the composed native flowpipe evaluated on tau=[h,h]; "
-                "the hull delta is explicit in the independent remainder"
+                "raw_endpoint is the composed native flowpipe evaluated on "
+                "tau=[h,h]; evaluate_time is endpoint_collapsed and its hull "
+                "with native is repaired_hull; no field falls back to another"
             ),
         },
         system_definition={

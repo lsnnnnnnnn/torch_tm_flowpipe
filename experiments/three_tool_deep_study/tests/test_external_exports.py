@@ -50,20 +50,22 @@ def test_flowstar_endpoint_and_adaptive_artifact_gates_if_supplied(
     assert len(endpoint_paths) == record["state_dimension"]
     for state, audit in enumerate(endpoint_paths):
         endpoint = record["raw_endpoint_box"][state]
-        assert endpoint[0] <= audit["native_lower"] + 1e-12
-        assert endpoint[1] >= audit["native_upper"] - 1e-12
         assert math.isclose(
             endpoint[0],
-            audit["repaired_lower"],
+            audit["native_lower"],
             rel_tol=0.0,
             abs_tol=1e-12,
         )
         assert math.isclose(
             endpoint[1],
-            audit["repaired_upper"],
+            audit["native_upper"],
             rel_tol=0.0,
             abs_tol=1e-12,
         )
+        collapsed = record["enclosures"]["endpoint_collapsed"]["box"][state]
+        repaired = record["enclosures"]["repaired_hull"]["box"][state]
+        assert collapsed == [audit["collapsed_lower"], audit["collapsed_upper"]]
+        assert repaired == [audit["repaired_lower"], audit["repaired_upper"]]
 
     results = path.parents[1]
     correctness = json.loads(
