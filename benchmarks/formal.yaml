@@ -1,6 +1,7 @@
 schema_version: 1
 profile: formal
 canonical_spec: canonical.yaml
+cross_tool_gate_manifest: cross_tool_gates.yaml
 runtime_repetitions: 10
 configuration_source: multi_step
 tools:
@@ -11,5 +12,5 @@ tools:
   diffreach:
     variants: [restricted_quasi_window100_round5_selected]
   flowstar:
-    variants: [root_cause_order4_selected]
+    variants: [generated_stock_order4_selected]
 authoritative: true

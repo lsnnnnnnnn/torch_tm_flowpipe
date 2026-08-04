@@ -48,6 +48,7 @@ def evaluate_primary_eligibility(
         "completed_requested_horizon",
         "all_required_repetitions_present",
         "primary_comparable",
+        "backend_primary_eligible",
     ):
         if not strict_required_true(row.get(field)):
             reasons.append(f"{field}_not_explicit_true")
@@ -72,6 +73,14 @@ def evaluate_primary_eligibility(
 
     if row.get("bound_semantics") != BoundSemantics.RAW_ENDPOINT.value:
         reasons.append("bound_semantics_not_raw_endpoint")
+    if row.get("bound_kind") != "endpoint":
+        reasons.append("bound_kind_not_endpoint")
+    if row.get("refinement_semantics") != "raw":
+        reasons.append("refinement_semantics_not_raw")
+    if row.get("backend_class") in {"patched-audit", "unknown-dirty"}:
+        reasons.append("backend_class_not_primary")
+    if row.get("execution_route") == "patched-audit":
+        reasons.append("patched_execution_route_not_primary")
     if row.get("runtime_boundary_version") != RUNTIME_BOUNDARY_VERSION:
         reasons.append("runtime_boundary_version_mismatch")
     if not _finite_positive(row.get("steady_total_configuration_time_s")):

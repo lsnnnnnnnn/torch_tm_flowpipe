@@ -10,7 +10,6 @@ repositories:
   torch_repaired_base: .
   diffreach: ../DiffReach
   flowstar_original: ../flowstar
-  flowstar_audit: ../flowstar-audit
 
 environments:
   torch: py11
@@ -94,11 +93,8 @@ diffreach:
   device: cpu
 
 flowstar:
-  primary_variant: flowstar_root_cause_patch
-  audit_variants:
-    - flowstar_stock
-    - flowstar_full_picard_revalidated
-    - flowstar_root_cause_patch
+  primary_variant: generated_stock_order4_selected
+  execution_route: generated-stock
   orders: [2, 3, 4, 6]
   cutoff: 1.0e-15
   candidate_remainder:

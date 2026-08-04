@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import json
 import math
@@ -28,6 +29,9 @@ if str(SRC_ROOT) not in sys.path:
 from torch_tm_flowpipe.protocol.eligibility import (
     partition_and_recompute_pareto,
 )
+from torch_tm_flowpipe.protocol.backend_identity import (
+    inspect_primary_flowstar_backend,
+)
 from torch_tm_flowpipe.protocol.config import configuration_semantics
 from torch_tm_flowpipe.protocol.carry import projected_affine_box_reset
 from torch_tm_flowpipe.protocol.provenance import canonical_config_identity
@@ -38,6 +42,46 @@ from torch_tm_flowpipe.protocol.schema import (
     RUNTIME_BOUNDARY_VERSION,
 )
 from torch_tm_flowpipe.protocol.runtime import measure_configuration_step
+
+
+def _environment_true(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() == "true"
+
+
+def _backend_metadata(tool: str) -> dict[str, Any]:
+    if tool == "flowstar":
+        return {
+            "backend_class": os.environ.get(
+                "FLOWSTAR_BACKEND_CLASS", "unknown-dirty"
+            ),
+            "backend_sha": os.environ.get("FLOWSTAR_BACKEND_SHA", "unknown"),
+            "backend_dirty": _environment_true("FLOWSTAR_BACKEND_DIRTY"),
+            "backend_primary_eligible": _environment_true(
+                "FLOWSTAR_BACKEND_PRIMARY_ELIGIBLE"
+            ),
+            "execution_route": os.environ.get(
+                "FLOWSTAR_EXECUTION_ROUTE", "unknown"
+            ),
+        }
+    if tool == "diffreach":
+        return {
+            "backend_class": "diffreach-native",
+            "backend_sha": os.environ.get("DIFFREACH_BACKEND_SHA", "unknown"),
+            "backend_dirty": False,
+            "backend_primary_eligible": bool(
+                os.environ.get("DIFFREACH_BACKEND_SHA")
+            ),
+            "execution_route": "diffreach-native",
+        }
+    return {
+        "backend_class": "torch-native",
+        "backend_sha": os.environ.get("TORCH_BACKEND_SHA", "unknown"),
+        "backend_dirty": False,
+        "backend_primary_eligible": bool(
+            os.environ.get("TORCH_BACKEND_SHA")
+        ),
+        "execution_route": "torch-native",
+    }
 
 
 def _float(value: Any, default: float = math.nan) -> float:
@@ -185,6 +229,7 @@ def run_torch_repetitions(
                 rows.append(
                     {
                         "tool": "torch_tm_flowpipe",
+                        **_backend_metadata("torch_tm_flowpipe"),
                         "variant": f"order{order}_affine_reset_selected",
                         "system": system_name,
                         "h": h,
@@ -619,6 +664,7 @@ def run_diffreach_repetitions(
             rows.append(
                 {
                     "tool": "diffreach",
+                    **_backend_metadata("diffreach"),
                     "variant": "restricted_quasi_window100_round5_selected",
                     "system": system_name,
                     "h": h,
@@ -939,17 +985,28 @@ def run_flowstar_repetitions(
     from run_native import _load_flowstar_repair
 
     runner = _load_flowstar_repair()
+    flowstar_identity = inspect_primary_flowstar_backend(
+        Path(spec["repositories"]["flowstar_original"]),
+        environment=os.environ,
+    )
+    primary_spec = copy.deepcopy(dict(spec))
+    primary_spec["repositories"]["flowstar_audit"] = str(
+        flowstar_identity.canonical_root
+    )
     repetitions = 1 if smoke else int(spec["runtime"]["repetitions"])
     rows: list[dict[str, Any]] = []
     environment = os.environ.copy()
-    environment["FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION"] = "1"
-    environment["FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT"] = "0"
+    for variable in (
+        "FLOWSTAR_AUDIT_CACHE_LEAF_TRUNCATION",
+        "FLOWSTAR_AUDIT_REVALIDATE_REFINEMENT",
+    ):
+        environment.pop(variable, None)
     for system_name, h, horizon in _multi_cases(spec, smoke):
         candidate = float(
             spec["flowstar"]["candidate_remainder"][system_name]
         )
         _, run, _ = runner.run_fixed_case(
-            spec,
+            primary_spec,
             output,
             system_name=system_name,
             protocol=runner.PROTOCOL_NATIVE,
@@ -958,7 +1015,7 @@ def run_flowstar_repetitions(
             order=4,
             candidate=candidate,
             cutoff=float(spec["flowstar"]["cutoff"]),
-            variant="root_cause_order4_selected",
+            variant="generated_stock_order4_selected",
         )
         executable = Path(run["source"]).with_suffix("")
         for repetition in range(repetitions + 1):
@@ -1022,7 +1079,8 @@ def run_flowstar_repetitions(
             rows.append(
                 {
                     "tool": "flowstar",
-                    "variant": "root_cause_order4_selected",
+                    **_backend_metadata("flowstar"),
+                    "variant": "generated_stock_order4_selected",
                     "system": system_name,
                     "h": h,
                     "requested_horizon": horizon,
@@ -1579,7 +1637,20 @@ def collect(
             ),
             "trajectory_sanity_passed": trajectory_passed,
             "bound_semantics": BoundSemantics.RAW_ENDPOINT.value,
-            "primary_comparable": True,
+            "bound_kind": "endpoint",
+            "refinement_semantics": "raw",
+            "endpoint_exporter_semantics": (
+                "generated_stock_raw_endpoint_at_requested_horizon"
+                if key[0] == "flowstar"
+                else "native_raw_endpoint_at_requested_horizon"
+            ),
+            **_backend_metadata(key[0]),
+            "primary_comparable": (
+                _environment_true("CROSS_TOOL_GATES_VERIFIED")
+                and _backend_metadata(key[0])[
+                    "backend_primary_eligible"
+                ]
+            ),
             "memory_kib": "unavailable",
             "memory_measurement_reason": (
                 "configurations were not launched in isolated "

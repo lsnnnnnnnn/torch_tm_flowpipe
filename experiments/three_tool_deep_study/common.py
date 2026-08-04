@@ -44,16 +44,20 @@ def load_spec(path: str | Path = CANONICAL_SPEC) -> dict[str, Any]:
         "torch_repaired_base": REPO_ROOT,
         "diffreach": work_parent / "DiffReach",
         "flowstar_original": work_parent / "flowstar",
-        "flowstar_audit": work_parent / "flowstar-audit",
     }
     repository_environment = {
         "torch": "TORCH_REPO_ROOT",
         "torch_repaired_base": "TORCH_REPAIRED_ROOT",
         "diffreach": "DIFFREACH_ROOT",
         "flowstar_original": "FLOWSTAR_ROOT",
-        "flowstar_audit": "FLOWSTAR_AUDIT_ROOT",
     }
     configured = value.setdefault("repositories", {})
+    # ``flowstar_audit`` is a historical diagnostic route.  Preserve it only
+    # for an explicitly historical specification; never synthesize it for the
+    # canonical supported runner.
+    if "flowstar_audit" in configured:
+        repository_defaults["flowstar_audit"] = work_parent / "flowstar-audit"
+        repository_environment["flowstar_audit"] = "FLOWSTAR_AUDIT_ROOT"
     for name, default in repository_defaults.items():
         override = os.environ.get(repository_environment[name])
         configured_path = Path(str(configured.get(name, "")))

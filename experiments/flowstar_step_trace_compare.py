@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
 import subprocess
@@ -22,6 +23,8 @@ if str(SRC) not in sys.path:
 
 from torch_tm_flowpipe import FlowstarNormalFlowpipeState, Interval, TMVector, flowpipe_step_flowstar_style_adaptive
 from torch_tm_flowpipe.ode_examples import van_der_pol_ode
+from torch_tm_flowpipe.protocol.backend_identity import inspect_primary_flowstar_backend
+from torch_tm_flowpipe.protocol.provenance import prepare_output_directory
 
 PROBE_CPP = ROOT / "experiments" / "flowstar_probe" / "flowstar_vdp_step_trace_probe.cpp"
 DEFAULT_OUT = ROOT / "outputs" / "flowstar_step_trace_compare"
@@ -807,19 +810,67 @@ def compile_probe(flowstar_root: Path, out_dir: Path, compiler: str = "g++") -> 
     proc = subprocess.run(cmd, text=True, capture_output=True, check=False)
     (out_dir / "flowstar_probe_compile.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
     (out_dir / "flowstar_probe_compile.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
+    (out_dir / "flowstar_probe_compile.json").write_text(
+        json.dumps(
+            {
+                "command": cmd,
+                "return_code": proc.returncode,
+                "stdout": "flowstar_probe_compile.stdout.txt",
+                "stderr": "flowstar_probe_compile.stderr.txt",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     if proc.returncode != 0:
         raise RuntimeError(f"Flow* probe compilation failed; see {out_dir / 'flowstar_probe_compile.stderr.txt'}")
     return exe
 
 
-def run_flowstar_probe(exe: Path, out_dir: Path, horizon: float, max_segments: int | None) -> Path:
+def run_flowstar_probe(
+    exe: Path,
+    out_dir: Path,
+    horizon: float,
+    max_segments: int | None,
+    order: int,
+    flowstar_root: Path,
+) -> Path:
     trace = out_dir / "flowstar_trace.csv"
-    cmd = [str(exe), str(trace), f"{horizon:.17g}"]
-    if max_segments:
-        cmd.append(str(max_segments))
-    proc = subprocess.run(cmd, text=True, capture_output=True, cwd=str(out_dir), check=False)
+    cmd = [
+        str(exe),
+        str(trace),
+        f"{horizon:.17g}",
+        str(max_segments or 0),
+        str(order),
+    ]
+    environment = dict(os.environ)
+    environment["FLOWSTAR_ROOT"] = str(flowstar_root)
+    proc = subprocess.run(
+        cmd,
+        text=True,
+        capture_output=True,
+        cwd=str(out_dir),
+        check=False,
+        env=environment,
+    )
     (out_dir / "flowstar_probe_run.stdout.txt").write_text(proc.stdout or "", encoding="utf-8")
     (out_dir / "flowstar_probe_run.stderr.txt").write_text(proc.stderr or "", encoding="utf-8")
+    (out_dir / "flowstar_probe_run.json").write_text(
+        json.dumps(
+            {
+                "command": cmd,
+                "return_code": proc.returncode,
+                "stdout": "flowstar_probe_run.stdout.txt",
+                "stderr": "flowstar_probe_run.stderr.txt",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     if proc.returncode != 0:
         raise RuntimeError(f"Flow* probe run failed; see {out_dir / 'flowstar_probe_run.stderr.txt'}")
     return trace
@@ -2019,6 +2070,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", default=str(DEFAULT_OUT))
     parser.add_argument("--horizon", type=float, default=1.0)
     parser.add_argument("--max-segments", type=int, default=0)
+    parser.add_argument("--order", type=int, default=4)
     parser.add_argument("--compiler", default=os.environ.get("CXX", "g++"))
     parser.add_argument("--skip-flowstar", action="store_true")
     parser.add_argument("--compare-mode", choices=["accepted_ordinal", "attempt_aligned", "forced_h", "all"], default="all")
@@ -2036,8 +2088,16 @@ def _load_or_generate_flowstar(args: argparse.Namespace, out_dir: Path) -> tuple
         return path, _read_rows(path)
     flowstar_trace = out_dir / "flowstar_trace.csv"
     if not args.skip_flowstar:
-        exe = compile_probe(Path(args.flowstar_root).resolve(), out_dir, compiler=args.compiler)
-        flowstar_trace = run_flowstar_probe(exe, out_dir, args.horizon, args.max_segments or None)
+        flowstar_root = Path(args.flowstar_root).resolve()
+        exe = compile_probe(flowstar_root, out_dir, compiler=args.compiler)
+        flowstar_trace = run_flowstar_probe(
+            exe,
+            out_dir,
+            args.horizon,
+            args.max_segments or None,
+            args.order,
+            flowstar_root,
+        )
     return flowstar_trace, _read_rows(flowstar_trace)
 
 
@@ -2050,13 +2110,171 @@ def _load_or_generate_torch(args: argparse.Namespace, out_dir: Path, mode: str) 
         horizon=args.horizon,
         out_path=out_dir / f"{mode}_trace.csv",
         max_segments=args.max_segments or None,
+        order=args.order,
     )
+
+
+def _row_interval(row: Mapping[str, Any], prefix: str, dimension: str) -> list[float] | None:
+    candidates = (
+        (f"{prefix}_{dimension}_lo", f"{prefix}_{dimension}_hi"),
+        (f"{prefix}_lo_{dimension}", f"{prefix}_hi_{dimension}"),
+    )
+    for low_key, high_key in candidates:
+        low = _float(row.get(low_key))
+        high = _float(row.get(high_key))
+        if low is not None and high is not None:
+            return [low, high]
+    return None
+
+
+def _interval_map(row: Mapping[str, Any], prefix: str) -> dict[str, list[float] | None]:
+    return {
+        dimension: _row_interval(row, prefix, dimension)
+        for dimension in ("x", "y")
+    }
+
+
+def summarize_flowstar_diagnostic(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    horizon: float,
+    max_segments: int,
+    order: int,
+) -> dict[str, Any]:
+    """Summarize solver validation separately from probe-process success."""
+    attempts = [row for row in rows if _h_try(row) is not None]
+    accepted = [row for row in attempts if _status(row) == "accepted"]
+    failure = next(
+        (row for row in reversed(attempts) if _status(row) != "accepted"),
+        None,
+    )
+    terminal = rows[-1] if rows else {}
+    schedule = [_h_try(row) for row in attempts]
+    last_time = max(
+        (_float(row.get("t_after")) or 0.0 for row in accepted),
+        default=0.0,
+    )
+    target = _interval_map(failure or {}, "target_remainder")
+    candidate = _interval_map(failure or {}, "picard_ctrunc_normal_residual")
+    defects: dict[str, float | None] = {}
+    for dimension in ("x", "y"):
+        wanted = target[dimension]
+        observed = candidate[dimension]
+        defects[dimension] = (
+            max(wanted[0] - observed[0], observed[1] - wanted[1], 0.0)
+            if wanted is not None and observed is not None
+            else None
+        )
+    numeric_defects = {
+        dimension: value for dimension, value in defects.items() if value is not None
+    }
+    failing_dimension = (
+        max(numeric_defects, key=numeric_defects.get) if numeric_defects else None
+    )
+    last_h = schedule[-1] if schedule else None
+    requested_scope = (
+        "single_step_probe" if max_segments == 1 else "bounded_horizon_diagnostic"
+    )
+    completed_scope = (
+        len(accepted) >= max_segments
+        if max_segments > 0
+        else last_time >= horizon - 1e-15
+    )
+    failed_validation = bool(failure) and not completed_scope
+    return {
+        "diagnostic_status": "validation_rejected" if failed_validation else "completed",
+        "failure_category": "validation_rejected" if failed_validation else None,
+        "failure_reason": "remainder_self_map_failed" if failed_validation else None,
+        "probe_process_status": "completed_without_process_error",
+        "requested_scope": requested_scope,
+        "completed_requested_scope": completed_scope,
+        "completed_full_horizon": last_time >= horizon - 1e-15,
+        "requested_horizon": horizon,
+        "maximum_segments": max_segments,
+        "effective_degree": order,
+        "accepted_segment_count": len(accepted),
+        "last_accepted_time": last_time,
+        "attempted_step_schedule": schedule,
+        "minimum_step": 0.002,
+        "next_halving_below_minimum": (
+            bool(failed_validation and last_h is not None and last_h * 0.5 < 0.002)
+        ),
+        "candidate_remainder": candidate,
+        "target_remainder": target,
+        "picard_image_raw_ctrunc_remainder": _interval_map(
+            failure or {}, "picard_ctrunc_raw_residual"
+        ),
+        "multiplication_remainder_contribution": _interval_map(
+            failure or {}, "mul_ctrunc_normal_remainder"
+        ),
+        "cutoff_polynomial_difference": _interval_map(
+            failure or {}, "cutoff_polynomial_difference"
+        ),
+        "self_map_defect": defects,
+        "failing_dimension": failing_dimension,
+        "symbolic_propagated_width": {
+            dimension: _float((failure or {}).get(f"symbolic_propagated_width_{dimension}"))
+            for dimension in ("x", "y", "sum")
+        },
+        "terminal_trace_status": _status(terminal),
+        "terminal_trace_message": terminal.get("message", ""),
+    }
+
+
+def write_diagnostic_manifest(
+    out_dir: Path,
+    args: argparse.Namespace,
+    flowstar_rows: Sequence[Mapping[str, Any]],
+    backend: Mapping[str, Any] | None,
+) -> None:
+    supplied = bool(args.flowstar_trace)
+    record = {
+        "command": [sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]],
+        "configuration": {
+            "horizon": args.horizon,
+            "max_segments": args.max_segments,
+            "effective_degree": args.order,
+            "compare_mode": args.compare_mode,
+            "flowstar_trace_supplied": supplied,
+        },
+        "flowstar_backend": backend,
+        "primary_backend_verified": bool(backend and backend.get("primary_eligible")),
+        "result_semantics": {
+            "bound_kind": "raw_validation_remainder",
+            "refinement_semantics": "none",
+            "exporter": "flowstar_step_trace_probe",
+            "formal_cross_tool_eligible": False,
+        },
+        "flowstar_diagnostic": summarize_flowstar_diagnostic(
+            flowstar_rows,
+            horizon=args.horizon,
+            max_segments=args.max_segments,
+            order=args.order,
+        ),
+        "process_records": {
+            "compile": "flowstar_probe_compile.json" if not supplied else None,
+            "run": "flowstar_probe_run.json" if not supplied else None,
+        },
+    }
+    rendered = json.dumps(record, indent=2, sort_keys=True) + "\n"
+    (out_dir / "diagnostic_manifest.json").write_text(rendered, encoding="utf-8")
+    if args.order == 2 and not supplied:
+        (out_dir / "order2_failure_manifest.json").write_text(
+            rendered, encoding="utf-8"
+        )
 
 
 def main() -> int:
     args = parse_args()
+    if args.order < 2:
+        raise ValueError("--order must be at least 2")
     out_dir = Path(args.out_dir).resolve()
-    out_dir.mkdir(parents=True, exist_ok=True)
+    backend: Mapping[str, Any] | None = None
+    if not args.flowstar_trace and not args.skip_flowstar:
+        backend = inspect_primary_flowstar_backend(
+            Path(args.flowstar_root), execution_route="generated-stock"
+        ).to_record()
+    prepare_output_directory(out_dir)
     write_plan_doc(out_dir)
 
     _flowstar_trace, flowstar_rows = _load_or_generate_flowstar(args, out_dir)
@@ -2088,6 +2306,7 @@ def main() -> int:
                 mode="torch_noqueue",
                 flowstar_rows=flowstar_rows,
                 out_path=out_dir / "torch_noqueue_forced_h_trace.csv",
+                order=args.order,
             )
         if args.torch_v2_forced_trace:
             forced_v2_rows = _read_rows(args.torch_v2_forced_trace.resolve())
@@ -2098,6 +2317,7 @@ def main() -> int:
                 mode="torch_v2",
                 flowstar_rows=flowstar_rows,
                 out_path=out_dir / "torch_v2_forced_h_trace.csv",
+                order=args.order,
             )
         forced_h = compare_forced_h(flowstar_rows, forced_noqueue_rows, forced_v2_rows)
         _write_rows(out_dir / "forced_h_trace_diff.csv", FORCED_H_FIELDS, forced_h)
@@ -2114,6 +2334,7 @@ def main() -> int:
         horizon=args.horizon,
         docs=out_dir == DEFAULT_OUT.resolve(),
     )
+    write_diagnostic_manifest(out_dir, args, flowstar_rows, backend)
     print(f"Wrote traces, comparators, and report to {out_dir}")
     return 0
 

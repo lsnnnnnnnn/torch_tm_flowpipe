@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "flowstar_step_trace_compare.py"
 
@@ -165,4 +167,60 @@ def test_cli_smoke_writes_attempt_and_forced_outputs(tmp_path):
     assert (out_dir / "forced_h_trace_diff.csv").exists()
     assert (out_dir / "trace_divergence_report.md").exists()
     assert (out_dir / "flowstar_accepted_step_trace_plan.md").exists()
+    assert (out_dir / "diagnostic_manifest.json").exists()
     assert not (ROOT / "docs" / "flowstar_accepted_step_trace_plan.md").exists()
+
+
+def test_order2_failure_summary_distinguishes_validation_from_process_error():
+    rows = [
+        _row(
+            trace_source="flowstar",
+            h=0.003125,
+            status="rejected",
+            target_remainder_x_lo=-1e-4,
+            target_remainder_x_hi=1e-4,
+            target_remainder_y_lo=-1e-4,
+            target_remainder_y_hi=1e-4,
+            picard_ctrunc_normal_residual_x_lo=-5e-5,
+            picard_ctrunc_normal_residual_x_hi=5e-5,
+            picard_ctrunc_normal_residual_y_lo=-2.8e-4,
+            picard_ctrunc_normal_residual_y_hi=1.1e-4,
+        ),
+        {"status": "failed", "message": "below minimum step"},
+    ]
+
+    summary = compare.summarize_flowstar_diagnostic(
+        rows, horizon=1.0, max_segments=1, order=2
+    )
+
+    assert summary["probe_process_status"] == "completed_without_process_error"
+    assert summary["failure_category"] == "validation_rejected"
+    assert summary["failure_reason"] == "remainder_self_map_failed"
+    assert summary["failing_dimension"] == "y"
+    assert summary["next_halving_below_minimum"] is True
+    assert summary["completed_requested_scope"] is False
+
+
+def test_cli_refuses_nonempty_output_directory(tmp_path):
+    out_dir = tmp_path / "occupied"
+    out_dir.mkdir()
+    (out_dir / "keep.txt").write_text("do not overwrite\n", encoding="utf-8")
+
+    process = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--flowstar-trace",
+            str(tmp_path / "missing.csv"),
+            "--out-dir",
+            str(out_dir),
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert process.returncode != 0
+    assert "refusing non-empty output directory" in process.stderr
+    assert (out_dir / "keep.txt").read_text(encoding="utf-8") == "do not overwrite\n"

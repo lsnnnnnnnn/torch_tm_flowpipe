@@ -3,7 +3,12 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from .provenance import canonical_config_identity
-from .schema import BoundSemantics, RUNTIME_BOUNDARY_VERSION
+from .schema import (
+    BoundKind,
+    BoundSemantics,
+    RefinementSemantics,
+    RUNTIME_BOUNDARY_VERSION,
+)
 
 
 def configuration_semantics(tool: str, variant: str) -> dict[str, Any]:
@@ -16,6 +21,7 @@ def configuration_semantics(tool: str, variant: str) -> dict[str, Any]:
         return {
             "requested_order": "not_applicable",
             "effective_order": "restricted_quasiquadratic_round5",
+            "effective_degree": "restricted_quasiquadratic_round5",
             "basis_id": "restricted_quasiquadratic_symbolic_window100",
             "remainder_policy": "frr_round5_stop_ratio_0.95",
             "step_policy": "fixed",
@@ -25,6 +31,7 @@ def configuration_semantics(tool: str, variant: str) -> dict[str, Any]:
         return {
             "requested_order": order,
             "effective_order": order,
+            "effective_degree": order,
             "basis_id": f"complete_total_degree_{order}",
             "remainder_policy": "validated_interval_candidate",
             "step_policy": "fixed",
@@ -33,6 +40,7 @@ def configuration_semantics(tool: str, variant: str) -> dict[str, Any]:
     return {
         "requested_order": order,
         "effective_order": order,
+        "effective_degree": order,
         "basis_id": f"complete_total_degree_{order}",
         "remainder_policy": "validated_interval",
         "step_policy": "fixed",
@@ -66,6 +74,13 @@ def expected_configuration_rows(
                         ),
                         "bound_semantics": (
                             BoundSemantics.RAW_ENDPOINT.value
+                        ),
+                        "bound_kind": BoundKind.ENDPOINT.value,
+                        "refinement_semantics": (
+                            RefinementSemantics.RAW.value
+                        ),
+                        "endpoint_exporter_semantics": (
+                            "raw_endpoint_at_requested_horizon"
                         ),
                         "runtime_boundary_version": (
                             RUNTIME_BOUNDARY_VERSION

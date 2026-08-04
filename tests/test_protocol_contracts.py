@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 from pathlib import Path
 
 import pytest
@@ -19,8 +20,10 @@ from torch_tm_flowpipe.protocol.provenance import (
 from torch_tm_flowpipe.protocol.runtime import measure_configuration_step
 from torch_tm_flowpipe.protocol.schema import (
     Applicability,
+    BoundKind,
     BoundSemantics,
     FailureCategory,
+    RefinementSemantics,
     RUNTIME_BOUNDARY_VERSION,
     normalize_observation,
 )
@@ -41,10 +44,19 @@ def eligible_row(**overrides: object) -> dict[str, object]:
         "failure_message": "",
         "requested_order": 2,
         "effective_order": 2,
+        "effective_degree": 2,
         "basis_id": "complete_total_degree_2",
         "remainder_policy": "validated_interval",
         "step_policy": "fixed",
         "bound_semantics": BoundSemantics.RAW_ENDPOINT.value,
+        "bound_kind": BoundKind.ENDPOINT.value,
+        "refinement_semantics": RefinementSemantics.RAW.value,
+        "endpoint_exporter_semantics": "raw_endpoint_at_requested_horizon",
+        "backend_class": "torch-native",
+        "backend_sha": "0123456789abcdef",
+        "backend_dirty": False,
+        "backend_primary_eligible": True,
+        "execution_route": "torch-native",
         "primary_comparable": True,
         "native_validation_passed": True,
         "analytic_containment_passed": True,
@@ -86,6 +98,9 @@ def test_primary_requires_formal_repeated_complete_raw_row() -> None:
         ("trajectory_sanity_passed", ""),
         ("bound_semantics", BoundSemantics.TIGHTENED_ENDPOINT.value),
         ("primary_comparable", False),
+        ("backend_primary_eligible", False),
+        ("backend_class", "patched-audit"),
+        ("execution_route", "patched-audit"),
         ("runtime_boundary_version", "engine_only_v1"),
         ("steady_total_configuration_time_s", 0.0),
     ):
@@ -95,6 +110,43 @@ def test_primary_requires_formal_repeated_complete_raw_row() -> None:
     assert not evaluate_primary_eligibility(
         eligible_row(failure_category="")
     ).eligible
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+@pytest.mark.parametrize(
+    ("bound_semantics", "bound_kind", "refinement"),
+    [
+        (
+            BoundSemantics.RAW_ENDPOINT.value,
+            BoundKind.ACCEPTED_SEGMENT.value,
+            RefinementSemantics.RAW.value,
+        ),
+        (
+            BoundSemantics.RAW_ENDPOINT.value,
+            BoundKind.ENDPOINT.value,
+            RefinementSemantics.TIGHTENED.value,
+        ),
+        (
+            BoundSemantics.TUBE_BOX.value,
+            BoundKind.ENDPOINT.value,
+            RefinementSemantics.RAW.value,
+        ),
+    ],
+)
+def test_bound_semantics_collisions_fail_closed(
+    bound_semantics: str,
+    bound_kind: str,
+    refinement: str,
+) -> None:
+    with pytest.raises(ValueError, match="collides"):
+        normalize_observation(
+            eligible_row(
+                bound_semantics=bound_semantics,
+                bound_kind=bound_kind,
+                refinement_semantics=refinement,
+            )
+        )
 
 
 @pytest.mark.unit
@@ -286,3 +338,24 @@ def test_versioned_profiles_enumerate_exact_expected_configs() -> None:
     assert len(smoke_rows) == 12
     assert len(formal_rows) == 24
     assert len({row["config_id"] for row in formal_rows}) == 24
+
+
+@pytest.mark.unit
+@pytest.mark.protocol
+def test_formal_profile_is_blocked_until_all_cross_tool_gates_are_verified() -> None:
+    root = Path(__file__).parents[1]
+    script = root / "experiments" / "consolidated_study" / "cli.py"
+    module_spec = importlib.util.spec_from_file_location("consolidated_cli", script)
+    assert module_spec is not None and module_spec.loader is not None
+    cli = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(cli)
+    formal = yaml.safe_load(
+        (root / "benchmarks" / "formal.yaml").read_text(encoding="utf-8")
+    )
+    gates = cli._load_cross_tool_gates(formal)
+
+    assert len(gates["gates"]) == 8
+    assert not any(record["verified"] for record in gates["gates"].values())
+    with pytest.raises(RuntimeError, match="blocked by unverified gates"):
+        cli._require_cross_tool_gates(gates)
+    RefinementSemantics,

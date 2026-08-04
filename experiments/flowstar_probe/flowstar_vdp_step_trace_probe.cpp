@@ -1,4 +1,4 @@
-#include "../../../flowstar/flowstar-toolbox/Continuous.h"
+#include "Continuous.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -1238,6 +1238,16 @@ int main(int argc, char **argv)
     {
         max_segments = atoi(argv[3]);
     }
+    unsigned int order = 4;
+    if (argc > 4)
+    {
+        order = static_cast<unsigned int>(atoi(argv[4]));
+    }
+    if (order < 2)
+    {
+        cerr << "Taylor-model order must be at least 2" << endl;
+        return 2;
+    }
 
     Variables vars;
     int x_id = vars.declareVar("x");
@@ -1247,7 +1257,7 @@ int main(int argc, char **argv)
     ODE<Real> ode({"y", "(1 - x^2) * y - x", "1"}, vars);
     Computational_Setting setting(vars);
     setting.printOff();
-    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, 4, 4);
+    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, order, order);
     setting.tm_setting.setCutoff(Interval(-1e-10, 1e-10));
     vector<Interval> target_remainder_setting(ode.expressions.size(), Interval(-1e-4, 1e-4));
     setting.tm_setting.setRemainderEstimation(target_remainder_setting);
@@ -1263,7 +1273,7 @@ int main(int argc, char **argv)
     Flowpipe currentFlowpipe = initialSet;
     vector<Constraint> dummy_invariant;
 
-    setting.tm_setting.setStepsize(setting.tm_setting.step_max, 4);
+    setting.tm_setting.setStepsize(setting.tm_setting.step_max, order);
     double new_stepsize = -1;
     double t = THRESHOLD_HIGH;
     int step_index = 0;

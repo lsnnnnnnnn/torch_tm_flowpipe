@@ -24,6 +24,10 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from torch_tm_flowpipe.protocol.config import expected_configuration_rows
+from torch_tm_flowpipe.protocol.backend_identity import (
+    FlowstarBackendIdentity,
+    inspect_primary_flowstar_backend,
+)
 from torch_tm_flowpipe.protocol.provenance import prepare_output_directory
 from torch_tm_flowpipe.protocol.schema import (
     RUNTIME_BOUNDARY_VERSION,
@@ -125,12 +129,10 @@ def _resolve_dependencies() -> dict[str, Path]:
     defaults = {
         "diffreach": work_parent / "DiffReach",
         "flowstar": work_parent / "flowstar",
-        "flowstar_audit": work_parent / "flowstar-audit",
     }
     environment_names = {
         "diffreach": "DIFFREACH_ROOT",
         "flowstar": "FLOWSTAR_ROOT",
-        "flowstar_audit": "FLOWSTAR_AUDIT_ROOT",
     }
     resolved = {
         name: Path(os.environ.get(environment_names[name], default))
@@ -351,6 +353,7 @@ def _write_report(
 def _environment_record(
     dependencies: Mapping[str, Path],
     diffreach_python: Path,
+    flowstar_identity: FlowstarBackendIdentity,
 ) -> dict[str, Any]:
     package_probe = _run(
         [sys.executable, "-m", "pip", "freeze"],
@@ -395,7 +398,35 @@ def _environment_record(
                 for name, path in dependencies.items()
             },
         },
+        "flowstar_backend_identity": flowstar_identity.to_record(),
     }
+
+
+def _load_cross_tool_gates(profile: Mapping[str, Any]) -> dict[str, Any]:
+    relative = profile.get("cross_tool_gate_manifest")
+    if not relative:
+        return {"status": "not_required_for_non_authoritative_profile", "gates": {}}
+    path = REPO_ROOT / "benchmarks" / str(relative)
+    value = _load_yaml(path)
+    gates = value.get("gates")
+    if not isinstance(gates, dict) or not gates:
+        raise ValueError(f"{path} must define non-empty gates")
+    value["path"] = str(path.relative_to(REPO_ROOT))
+    value["sha256"] = _sha256(path)
+    return value
+
+
+def _require_cross_tool_gates(gates: Mapping[str, Any]) -> None:
+    pending = [
+        name
+        for name, record in dict(gates.get("gates", {})).items()
+        if not isinstance(record, dict) or record.get("verified") is not True
+    ]
+    if pending:
+        raise RuntimeError(
+            "formal comparison is blocked by unverified gates: "
+            + ", ".join(pending)
+        )
 
 
 def _write_sha256s(output: Path) -> None:
@@ -444,6 +475,15 @@ def execute(profile_name: str, output: Path) -> Path:
             "formal run requires a clean code-freeze worktree"
         )
 
+    dependencies = _resolve_dependencies()
+    flowstar_identity = inspect_primary_flowstar_backend(
+        dependencies["flowstar"], environment=os.environ
+    )
+    diffreach_python = _resolve_diffreach_python()
+    cross_tool_gates = _load_cross_tool_gates(profile)
+    if profile_name == "formal":
+        _require_cross_tool_gates(cross_tool_gates)
+
     output_preexisted = output.exists()
     prepare_output_directory(output)
     run_id = output.name
@@ -478,8 +518,6 @@ def execute(profile_name: str, output: Path) -> Path:
         },
     )
 
-    dependencies = _resolve_dependencies()
-    diffreach_python = _resolve_diffreach_python()
     environment = os.environ.copy()
     environment.update(
         {
@@ -487,9 +525,20 @@ def execute(profile_name: str, output: Path) -> Path:
             "TORCH_REPAIRED_ROOT": str(REPO_ROOT),
             "DIFFREACH_ROOT": str(dependencies["diffreach"]),
             "FLOWSTAR_ROOT": str(dependencies["flowstar"]),
-            "FLOWSTAR_AUDIT_ROOT": str(
-                dependencies["flowstar_audit"]
+            "FLOWSTAR_BACKEND_CLASS": flowstar_identity.backend_class,
+            "FLOWSTAR_BACKEND_SHA": flowstar_identity.repository_sha,
+            "FLOWSTAR_BACKEND_DIRTY": str(flowstar_identity.dirty).lower(),
+            "FLOWSTAR_BACKEND_PRIMARY_ELIGIBLE": str(
+                flowstar_identity.primary_eligible
+            ).lower(),
+            "FLOWSTAR_EXECUTION_ROUTE": flowstar_identity.execution_route,
+            "TORCH_BACKEND_SHA": code_sha,
+            "DIFFREACH_BACKEND_SHA": _git(
+                "rev-parse", "HEAD", cwd=dependencies["diffreach"]
             ),
+            "CROSS_TOOL_GATES_VERIFIED": str(
+                profile_name == "formal"
+            ).lower(),
             "FLOWSTAR_SYSTEM_INCLUDE": environment.get(
                 "FLOWSTAR_SYSTEM_INCLUDE", "/opt/homebrew/include"
             ),
@@ -500,7 +549,9 @@ def execute(profile_name: str, output: Path) -> Path:
     )
     _write_json(
         output / "ENVIRONMENT.json",
-        _environment_record(dependencies, diffreach_python),
+        _environment_record(
+            dependencies, diffreach_python, flowstar_identity
+        ),
     )
     _write_json(
         output / "PROVENANCE.json",
@@ -518,6 +569,8 @@ def execute(profile_name: str, output: Path) -> Path:
                 name: _repository_state(path)
                 for name, path in dependencies.items()
             },
+            "flowstar_backend_identity": flowstar_identity.to_record(),
+            "cross_tool_gates": cross_tool_gates,
         },
     )
 

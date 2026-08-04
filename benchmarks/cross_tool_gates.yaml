@@ -1,0 +1,27 @@
+schema_version: 1
+status: blocked_pending_reaudit
+gates:
+  stock_backend_identity:
+    verified: false
+    evidence: runtime backend manifest required for the new run
+  official_parser_generated_stock_field_parity:
+    verified: false
+    evidence: order-4 historical segment parity is insufficient for all fields/configs
+  endpoint_segment_tube_exporter_semantics:
+    verified: false
+    evidence: field-level external exporter audit required
+  raw_tightened_separation:
+    verified: false
+    evidence: field-level external exporter audit required
+  order_basis_contract:
+    verified: false
+    evidence: cross-tool effective-basis contract required
+  runtime_boundary_parity:
+    verified: false
+    evidence: external runtime-boundary audit required
+  completion_validation_fail_closed:
+    verified: false
+    evidence: external runner acceptance audit required
+  patched_rows_excluded_from_primary:
+    verified: false
+    evidence: current code enforces exclusion; new independent run evidence required

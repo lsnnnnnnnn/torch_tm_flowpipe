@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Any, Mapping
 
 
-SCHEMA_VERSION = "2.0.0"
+SCHEMA_VERSION = "2.1.0"
 RUNTIME_BOUNDARY_VERSION = "total_configuration_v2"
 
 
@@ -14,6 +14,17 @@ class BoundSemantics(str, Enum):
     TIGHTENED_ENDPOINT = "tightened_endpoint"
     SEGMENT_BOX = "segment_box"
     TUBE_BOX = "tube_box"
+
+
+class BoundKind(str, Enum):
+    ENDPOINT = "endpoint"
+    ACCEPTED_SEGMENT = "accepted_segment"
+    FULL_TUBE = "full_tube"
+
+
+class RefinementSemantics(str, Enum):
+    RAW = "raw"
+    TIGHTENED = "tightened"
 
 
 class FailureCategory(str, Enum):
@@ -52,10 +63,14 @@ IDENTITY_FIELDS = (
     "requested_horizon",
     "requested_order",
     "effective_order",
+    "effective_degree",
     "basis_id",
     "remainder_policy",
     "step_policy",
     "bound_semantics",
+    "bound_kind",
+    "refinement_semantics",
+    "endpoint_exporter_semantics",
     "runtime_boundary_version",
 )
 
@@ -67,6 +82,11 @@ REQUIRED_OBSERVATION_FIELDS = (
     "failure_step",
     "failure_category",
     "failure_message",
+    "backend_class",
+    "backend_sha",
+    "backend_dirty",
+    "backend_primary_eligible",
+    "execution_route",
     "primary_comparable",
     "runtime_repetitions",
     "all_required_repetitions_present",
@@ -93,6 +113,7 @@ def normalize_observation(row: Mapping[str, Any]) -> dict[str, Any]:
     normalized.setdefault("failure_step", "")
     normalized.setdefault("requested_order", "")
     normalized.setdefault("effective_order", "")
+    normalized.setdefault("effective_degree", "")
     normalized.setdefault("basis_id", "")
     normalized.setdefault("remainder_policy", "")
     normalized.setdefault("step_policy", "")
@@ -131,9 +152,61 @@ def validate_observation(row: Mapping[str, Any]) -> list[str]:
     except ValueError:
         errors.append("failure_category is not in the canonical taxonomy")
     try:
-        BoundSemantics(str(row.get("bound_semantics")))
+        bound_semantics = BoundSemantics(str(row.get("bound_semantics")))
     except ValueError:
         errors.append("bound_semantics is invalid")
+        bound_semantics = None
+    try:
+        bound_kind = BoundKind(str(row.get("bound_kind")))
+    except ValueError:
+        errors.append("bound_kind is invalid")
+        bound_kind = None
+    try:
+        refinement = RefinementSemantics(
+            str(row.get("refinement_semantics"))
+        )
+    except ValueError:
+        errors.append("refinement_semantics is invalid")
+        refinement = None
+    expected_dimensions = {
+        BoundSemantics.RAW_ENDPOINT: (
+            BoundKind.ENDPOINT,
+            RefinementSemantics.RAW,
+        ),
+        BoundSemantics.TIGHTENED_ENDPOINT: (
+            BoundKind.ENDPOINT,
+            RefinementSemantics.TIGHTENED,
+        ),
+        BoundSemantics.SEGMENT_BOX: (
+            BoundKind.ACCEPTED_SEGMENT,
+            RefinementSemantics.RAW,
+        ),
+        BoundSemantics.TUBE_BOX: (
+            BoundKind.FULL_TUBE,
+            RefinementSemantics.RAW,
+        ),
+    }
+    if (
+        bound_semantics is not None
+        and bound_kind is not None
+        and refinement is not None
+        and (bound_kind, refinement) != expected_dimensions[bound_semantics]
+    ):
+        errors.append(
+            "bound_semantics collides with bound_kind/refinement_semantics"
+        )
+
+    for field in ("backend_dirty", "backend_primary_eligible"):
+        if type(row.get(field)) is not bool:
+            errors.append(f"{field} must be an explicit boolean")
+    if not str(row.get("backend_class", "")).strip():
+        errors.append("backend_class must be explicit")
+    if not str(row.get("backend_sha", "")).strip():
+        errors.append("backend_sha must be explicit")
+    if not str(row.get("execution_route", "")).strip():
+        errors.append("execution_route must be explicit")
+    if not str(row.get("endpoint_exporter_semantics", "")).strip():
+        errors.append("endpoint_exporter_semantics must be explicit")
 
     if row.get("runtime_boundary_version") != RUNTIME_BOUNDARY_VERSION:
         errors.append(

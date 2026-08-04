@@ -38,10 +38,14 @@ IDENTITY_FIELDS = (
     "requested_horizon",
     "requested_order",
     "effective_order",
+    "effective_degree",
     "basis_id",
     "remainder_policy",
     "step_policy",
     "bound_semantics",
+    "bound_kind",
+    "refinement_semantics",
+    "endpoint_exporter_semantics",
     "runtime_boundary_version",
 )
 
@@ -78,7 +82,7 @@ def _identity_payload(row: Mapping[str, Any]) -> dict[str, Any]:
     payload = {field: row.get(field, "") for field in IDENTITY_FIELDS}
     for field in ("h", "requested_horizon"):
         payload[field] = float(payload[field])
-    for field in ("requested_order", "effective_order"):
+    for field in ("requested_order", "effective_order", "effective_degree"):
         text = str(payload[field])
         if text.isdigit():
             payload[field] = int(text)
@@ -420,8 +424,14 @@ def audit(output: Path) -> dict[str, Any]:
     partition_failures = [
         row["config_id"]
         for row in eligibility
-        if row["bound_semantics"] != "raw_endpoint"
-        or not _explicit_true(row["primary_comparable"])
+        if _explicit_true(row.get("primary_numerical_eligible"))
+        and (
+            row.get("bound_semantics") != "raw_endpoint"
+            or row.get("bound_kind") != "endpoint"
+            or row.get("refinement_semantics") != "raw"
+            or not row.get("endpoint_exporter_semantics", "").strip()
+            or not _explicit_true(row.get("primary_comparable"))
+        )
     ]
     checks["bound_partition"] = {
         "passed": not partition_failures,
@@ -429,6 +439,56 @@ def audit(output: Path) -> dict[str, Any]:
     }
     if partition_failures:
         failures.append("raw/tightened comparison partition failed")
+
+    backend_failures: list[str] = []
+    prohibited_backend_classes = {"patched-audit", "unknown-dirty"}
+    for table_name, rows in (
+        ("primary", primary),
+        (
+            "eligible",
+            [
+                row
+                for row in eligibility
+                if _explicit_true(row.get("primary_numerical_eligible"))
+            ],
+        ),
+    ):
+        for row in rows:
+            config_id = row.get("config_id", "unknown")
+            if row.get("backend_class") in prohibited_backend_classes:
+                backend_failures.append(
+                    f"{table_name}:{config_id}:backend_class"
+                )
+            if row.get("execution_route") == "patched-audit":
+                backend_failures.append(
+                    f"{table_name}:{config_id}:execution_route"
+                )
+            if not _explicit_true(row.get("backend_primary_eligible")):
+                backend_failures.append(
+                    f"{table_name}:{config_id}:backend_primary_eligible"
+                )
+            if not row.get("backend_sha", "").strip():
+                backend_failures.append(
+                    f"{table_name}:{config_id}:backend_sha"
+                )
+    patched_marked_eligible = [
+        row.get("config_id", "unknown")
+        for row in eligibility
+        if (
+            row.get("backend_class") in prohibited_backend_classes
+            or row.get("execution_route") == "patched-audit"
+        )
+        and _explicit_true(row.get("primary_numerical_eligible"))
+    ]
+    backend_failures.extend(
+        f"eligible:{config_id}:patched_row" for config_id in patched_marked_eligible
+    )
+    checks["backend_identity_and_primary_route"] = {
+        "passed": not backend_failures,
+        "failures": backend_failures,
+    }
+    if backend_failures:
+        failures.append("backend identity or primary execution route failed")
 
     flowstar_keys = [
         (
