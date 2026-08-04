@@ -65,4 +65,3 @@ available V100, CUDA loses to CPU for every batch-1 operation; at batch 128 only
 truncated multiplication wins. This is internal backend evidence, not a
 cross-tool speed claim. See the checksum-addressed
 `evidence/generic_batched_tm_backend_vdp_t10/20260804T152536Z` bundle.
-
