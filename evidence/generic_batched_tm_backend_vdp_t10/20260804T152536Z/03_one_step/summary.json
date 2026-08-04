@@ -1,0 +1,20 @@
+{
+  "analytic_cases": [
+    "constant",
+    "scalar_affine",
+    "scalar_quadratic"
+  ],
+  "dense_sparse_status_match": true,
+  "gate": "passed",
+  "hidden_fallback_count": 0,
+  "self_map_validation": true,
+  "tests": [
+    "tests/test_batched_dense_picard.py",
+    "tests/test_batched_dense_vdp.py"
+  ],
+  "true_local_time_picard": true,
+  "vdp_h": [
+    0.005,
+    0.01
+  ]
+}

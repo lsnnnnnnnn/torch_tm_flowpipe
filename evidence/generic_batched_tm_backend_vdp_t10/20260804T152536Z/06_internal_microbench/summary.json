@@ -1,0 +1,18 @@
+{
+  "batches": [
+    1,
+    8,
+    32,
+    48,
+    128
+  ],
+  "conclusion": "CUDA loses at batch 1; only multiplication wins by batch 128 in this measured set",
+  "dense_ok_rows": 50,
+  "dtype": "float64",
+  "n_vars": 3,
+  "order": 4,
+  "steady_repetitions": 5,
+  "synchronized_cuda": true,
+  "term_count": 35,
+  "warmup": 1
+}

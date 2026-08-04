@@ -1,0 +1,202 @@
+{
+  "checkpoint_status": {
+    "t10_range_midpoint_single_factor": "failed",
+    "t10_unmodified": "failed",
+    "t4": "completed",
+    "t6": "completed",
+    "t7p5": "failed"
+  },
+  "classification": "minimum_step_reached",
+  "highest_state": "S3_dense_multistep_integrated",
+  "requested_horizon": 10.0,
+  "single_factor_diagnostic": {
+    "accepted_steps": 293,
+    "backend_lane": "hybrid_dense_core",
+    "branch": "codex/generic-batched-tm-backend-vdp-t10-20260805",
+    "commit": "4d1e92a12e77ccafab52ee5fd5f1ce0d76c3f248",
+    "completed_horizon": 6.390931109681597,
+    "completed_requested_horizon": false,
+    "config_sha256": "a447f9ee868126c7a4f1faafa92f7d4bd9dd2b30d41272601c7e47d311478812",
+    "contract_target_horizon": 10.0,
+    "cutoff": 1e-10,
+    "device": "cpu",
+    "device_transfer_count": 0,
+    "diagnostic_factors": [
+      "right_map_center_mode=range_midpoint"
+    ],
+    "endpoint_repair_used": false,
+    "endpoint_tightening_used": false,
+    "failure_type": "minimum_step_reached",
+    "fallback_count": 0,
+    "full_tube": {
+      "x_hi": 2.067842283285146,
+      "x_lo": -2.07716792874867,
+      "y_hi": 4.066467730691244,
+      "y_lo": -2.7404961794067972
+    },
+    "h_max": 0.1,
+    "h_min": 0.002,
+    "last_segment": {
+      "boundary_conversions": 2,
+      "index": 292,
+      "width_sum": 4.236462260125212,
+      "x_hi": 1.2544125125269379,
+      "x_lo": -0.0865528665678142,
+      "x_width": 1.340965379094752,
+      "y_hi": 4.066467730691244,
+      "y_lo": 1.1709708496607834,
+      "y_width": 2.8954968810304607
+    },
+    "message": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.002",
+    "raw_endpoint": {
+      "tightening_applied": false,
+      "width_sum": 4.222979061052227,
+      "x_hi": 1.2543800426662033,
+      "x_lo": -0.07742683236971729,
+      "x_width": 1.3318068750359207,
+      "y_hi": 4.066288694315774,
+      "y_lo": 1.175116508299468,
+      "y_width": 2.891172186016306
+    },
+    "rejected_attempts": 46,
+    "rejected_step_records": 1,
+    "requested_horizon": 10.0,
+    "requested_order": 4,
+    "reset_mode": "normalized_insertion",
+    "right_map_center_mode": "range_midpoint",
+    "right_map_range_mode": "standard",
+    "runtime_s": 131.0905124656856,
+    "sample_sanity_max_violation": 0.0,
+    "sample_sanity_status": "passed",
+    "sample_sanity_violations": 0,
+    "segment_boundary_conversion_count": 588,
+    "single_factor_diagnostic": true,
+    "status": "failed",
+    "target_remainder_radius": 0.0001,
+    "tm_backend": "dense",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_dirty": false
+  },
+  "single_factor_horizon_gain": 0.0736402297485208,
+  "terminal_dominant_remainder_categories": [
+    {
+      "category": "integration_overflow",
+      "component_widths": [
+        1.0776435222609169e-05,
+        8.090620099757617e-05
+      ],
+      "width_sum": 9.168263622018533e-05
+    },
+    {
+      "category": "polynomial_truncation",
+      "component_widths": [
+        1e-323,
+        4.8026837309266346e-05
+      ],
+      "width_sum": 4.8026837309266346e-05
+    },
+    {
+      "category": "remainder_times_poly",
+      "component_widths": [
+        1e-323,
+        7.771692346550991e-06
+      ],
+      "width_sum": 7.771692346550991e-06
+    },
+    {
+      "category": "initial_remainder",
+      "component_widths": [
+        7.971998864884066e-07,
+        1.5943997729768136e-06
+      ],
+      "width_sum": 2.39159965946522e-06
+    },
+    {
+      "category": "poly_times_remainder",
+      "component_widths": [
+        1e-323,
+        9.998714527894175e-07
+      ],
+      "width_sum": 9.998714527894175e-07
+    },
+    {
+      "category": "remainder_times_remainder",
+      "component_widths": [
+        1e-323,
+        1.9675553190395294e-10
+      ],
+      "width_sum": 1.9675553190395294e-10
+    }
+  ],
+  "terminal_subset_margin": [
+    [
+      9.96013970567558e-05,
+      -5.111670937766742e-06
+    ]
+  ],
+  "unmodified": {
+    "accepted_steps": 308,
+    "backend_lane": "hybrid_dense_core",
+    "branch": "codex/generic-batched-tm-backend-vdp-t10-20260805",
+    "commit": "6bf0d9a6b02e3dce8ef699369c4d9836685c6fb3",
+    "completed_horizon": 6.3172908799330765,
+    "completed_requested_horizon": false,
+    "config_sha256": "1b02636d5be3ddba97a8472029b9bc9fb6fdd9cf7eb0a35f0ee1119a32c91363",
+    "contract_target_horizon": 10.0,
+    "cutoff": 1e-10,
+    "device": "cpu",
+    "device_transfer_count": 0,
+    "endpoint_repair_used": false,
+    "endpoint_tightening_used": false,
+    "failure_type": "minimum_step_reached",
+    "fallback_count": 0,
+    "full_tube": {
+      "x_hi": 2.0682762406371054,
+      "x_lo": -2.080772432464312,
+      "y_hi": 3.9239453011994354,
+      "y_lo": -2.7508956997698877
+    },
+    "h_max": 0.1,
+    "h_min": 0.002,
+    "last_segment": {
+      "boundary_conversions": 2,
+      "index": 307,
+      "width_sum": 4.1864694933692235,
+      "x_hi": 1.1042977431645953,
+      "x_lo": -0.28159285770660925,
+      "x_width": 1.3858906008712046,
+      "y_hi": 3.9239453011994354,
+      "y_lo": 1.1233664087014161,
+      "y_width": 2.8005788924980193
+    },
+    "message": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.002",
+    "raw_endpoint": {
+      "tightening_applied": false,
+      "width_sum": 4.170903223078098,
+      "x_hi": 1.1042700274717072,
+      "x_lo": -0.27241256067287334,
+      "x_width": 1.3766825881445806,
+      "y_hi": 3.9238227592358608,
+      "y_lo": 1.1296021243023429,
+      "y_width": 2.794220634933518
+    },
+    "rejected_attempts": 48,
+    "rejected_step_records": 1,
+    "requested_horizon": 10.0,
+    "requested_order": 4,
+    "reset_mode": "normalized_insertion",
+    "right_map_center_mode": "constant",
+    "right_map_range_mode": "standard",
+    "runtime_s": 134.1679165037349,
+    "sample_sanity_max_violation": 0.0,
+    "sample_sanity_status": "passed",
+    "sample_sanity_violations": 0,
+    "segment_boundary_conversion_count": 618,
+    "single_factor_diagnostic": false,
+    "status": "failed",
+    "target_remainder_radius": 0.0001,
+    "tm_backend": "dense",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_dirty": false
+  }
+}

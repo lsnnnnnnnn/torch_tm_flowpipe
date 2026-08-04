@@ -1,0 +1,43 @@
+Script started on 2026-08-04 15:26:35+00:00 [COMMAND="for repo in /srv/local/shengenli/CROWN-Reach_Development /srv/local/shengenli/flowstar /srv/local/shengenli/DiffReach; do printf "\\nrepo=%s\\n" "$repo"; git -C "$repo" status --short --branch; git -C "$repo" rev-parse HEAD; done" <not executed on terminal>]
+
+repo=/srv/local/shengenli/CROWN-Reach_Development
+## 2026_experiment...origin/2026_experiment
+84184de6c2b3f1ff2da6755f732d91925037025d
+
+repo=/srv/local/shengenli/flowstar
+## master...origin/master
+ M flowstar-toolbox/TaylorModel.h
+?? benchmarks/continuous/simple/simple
+?? benchmarks/continuous/simple/simple.o
+?? benchmarks/continuous/simple/simple.plt
+?? benchmarks/continuous/vanderpol/vanderpol
+?? benchmarks/continuous/vanderpol/vanderpol.o
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+?? flowstar-2.1.0/__MACOSX/
+?? flowstar-2.1.0/flowstar-2.1.0/
+?? flowstar-toolbox/Constraints.o
+?? flowstar-toolbox/Continuous.o
+?? flowstar-toolbox/Discrete.o
+?? flowstar-toolbox/Geometry.o
+?? flowstar-toolbox/Hybrid.o
+?? flowstar-toolbox/Interval.o
+?? flowstar-toolbox/Matrix.o
+?? flowstar-toolbox/Variables.o
+?? flowstar-toolbox/lex.yy.c
+?? flowstar-toolbox/lex.yy.o
+?? flowstar-toolbox/libflowstar.a
+?? flowstar-toolbox/modelParser.output
+?? flowstar-toolbox/modelParser.tab.c
+?? flowstar-toolbox/modelParser.tab.h
+?? flowstar-toolbox/modelParser.tab.o
+?? flowstar-toolbox/settings.o
+b85a3211748cb77b736fe4ad42ee02d8d2b81148
+
+repo=/srv/local/shengenli/DiffReach
+## main...origin/main
+dd628eb443b517d6415de93e7035b4baef73963e
+
+Script done on 2026-08-04 15:26:35+00:00 [COMMAND_EXIT_CODE="0"]

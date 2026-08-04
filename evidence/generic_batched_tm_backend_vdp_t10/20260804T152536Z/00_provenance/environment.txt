@@ -1,0 +1,128 @@
+Script started on 2026-08-04 15:25:53+00:00 [COMMAND="conda env list; conda run -n py11 python -V; conda run -n py11 python -c "import json,platform,torch; print(json.dumps({\"platform\":platform.platform(),\"torch\":torch.__version__,\"cuda_available\":torch.cuda.is_available(),\"torch_cuda\":torch.version.cuda,\"default_dtype\":str(torch.get_default_dtype()),\"device_count\":torch.cuda.device_count()},indent=2))"; nvidia-smi; lscpu" <not executed on terminal>]
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /srv/local/shengenli/miniforge3
+bern-nn-ibf              /srv/local/shengenli/miniforge3/envs/bern-nn-ibf
+codex                *   /srv/local/shengenli/miniforge3/envs/codex
+diffreach312             /srv/local/shengenli/miniforge3/envs/diffreach312
+py11                     /srv/local/shengenli/miniforge3/envs/py11
+
+Python 3.11.15
+{
+  "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+  "torch": "2.5.1+cu121",
+  "cuda_available": true,
+  "torch_cuda": "12.1",
+  "default_dtype": "torch.float32",
+  "device_count": 4
+}
+Tue Aug  4 15:25:59 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.03             Driver Version: 580.159.03     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:1A:00.0 Off |                    0 |
+| N/A   35C    P0             43W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA Graphics Device         Off |   00000000:1C:00.0 Off |                  Off |
+| N/A   42C    P0             71W /  300W |    1976MiB /  16384MiB |     55%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  Tesla V100-SXM2-16GB           Off |   00000000:1D:00.0 Off |                    0 |
+| N/A   39C    P0             43W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  Tesla V100-SXM2-16GB           Off |   00000000:1E:00.0 Off |                    0 |
+| N/A   36C    P0             43W /  300W |       0MiB /  16384MiB |      1%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    1   N/A  N/A         3553638      C   python                                 1972MiB |
++-----------------------------------------------------------------------------------------+
+Architecture:                x86_64
+  CPU op-mode(s):            32-bit, 64-bit
+  Address sizes:             46 bits physical, 48 bits virtual
+  Byte Order:                Little Endian
+CPU(s):                      80
+  On-line CPU(s) list:       0-79
+Vendor ID:                   GenuineIntel
+  Model name:                Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz
+    CPU family:              6
+    Model:                   85
+    Thread(s) per core:      2
+    Core(s) per socket:      20
+    Socket(s):               2
+    Stepping:                4
+    CPU(s) scaling MHz:      31%
+    CPU max MHz:             3700.0000
+    CPU min MHz:             1000.0000
+    BogoMIPS:                4000.00
+    Flags:                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg
+                             e mca cmov pat pse36 clflush dts acpi mmx fxsr sse 
+                             sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm cons
+                             tant_tsc art arch_perfmon pebs bts rep_good nopl xt
+                             opology nonstop_tsc cpuid aperfmperf pni pclmulqdq 
+                             dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fm
+                             a cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movb
+                             e popcnt tsc_deadline_timer aes xsave avx f16c rdra
+                             nd lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3
+                              cdp_l3 intel_ppin ssbd mba ibrs ibpb stibp tpr_sha
+                             dow flexpriority ept vpid ept_ad fsgsbase tsc_adjus
+                             t bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx 
+                             rdt_a avx512f avx512dq rdseed adx smap clflushopt c
+                             lwb intel_pt avx512cd avx512bw avx512vl xsaveopt xs
+                             avec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_t
+                             otal cqm_mbm_local dtherm ida arat pln pts hwp hwp_
+                             act_window hwp_epp hwp_pkg_req vnmi pku ospke md_cl
+                             ear flush_l1d arch_capabilities
+Virtualization features:     
+  Virtualization:            VT-x
+Caches (sum of all):         
+  L1d:                       1.3 MiB (40 instances)
+  L1i:                       1.3 MiB (40 instances)
+  L2:                        40 MiB (40 instances)
+  L3:                        55 MiB (2 instances)
+NUMA:                        
+  NUMA node(s):              2
+  NUMA node0 CPU(s):         0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36
+                             ,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70
+                             ,72,74,76,78
+  NUMA node1 CPU(s):         1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37
+                             ,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71
+                             ,73,75,77,79
+Vulnerabilities:             
+  Gather data sampling:      Vulnerable
+  Ghostwrite:                Not affected
+  Indirect target selection: Not affected
+  Itlb multihit:             KVM: Vulnerable
+  L1tf:                      Mitigation; PTE Inversion; VMX vulnerable
+  Mds:                       Vulnerable; SMT vulnerable
+  Meltdown:                  Vulnerable
+  Mmio stale data:           Vulnerable
+  Old microcode:             Not affected
+  Reg file data sampling:    Not affected
+  Retbleed:                  Vulnerable
+  Spec rstack overflow:      Not affected
+  Spec store bypass:         Vulnerable
+  Spectre v1:                Vulnerable: __user pointer sanitization and usercop
+                             y barriers only; no swapgs barriers
+  Spectre v2:                Vulnerable; IBPB: disabled; STIBP: disabled; PBRSB-
+                             eIBRS: Not affected; BHI: Not affected
+  Srbds:                     Not affected
+  Tsa:                       Not affected
+  Tsx async abort:           Vulnerable
+  Vmscape:                   Vulnerable
+
+Script done on 2026-08-04 15:25:59+00:00 [COMMAND_EXIT_CODE="0"]
