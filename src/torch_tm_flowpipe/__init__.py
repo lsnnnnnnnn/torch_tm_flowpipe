@@ -10,6 +10,17 @@ from typing import Any
 
 
 _PUBLIC_MODULES = {
+    "BatchedMonomialBasis": ".batched_dense_tm",
+    "BatchedPolynomial": ".batched_dense_tm",
+    "BatchedTaylorModel": ".batched_dense_tm",
+    "DenseExecutionCounters": ".batched_dense_tm",
+    "DenseRemainderLedger": ".batched_dense_tm",
+    "DenseTMContract": ".batched_dense_tm",
+    "DenseValidatedStep": ".batched_dense_tm",
+    "dense_picard_validate_step": ".batched_dense_tm",
+    "dense_polynomial_picard": ".batched_dense_tm",
+    "dense_to_sparse_tmvector": ".batched_dense_tm",
+    "sparse_tmvector_to_dense": ".batched_dense_tm",
     "FlowpipeResult": ".flowpipe",
     "FlowpipeSegment": ".flowpipe",
     "FlowstarNormalFlowpipeState": ".flowpipe",
@@ -22,6 +33,8 @@ _PUBLIC_MODULES = {
     "insert_ctrunc_normal_like": ".flowpipe",
     "Interval": ".interval",
     "Polynomial": ".polynomial",
+    "PolynomialODE": ".polynomial_ode",
+    "PolynomialODETerm": ".polynomial_ode",
     "evaluate_interval_normal": ".polynomial",
     "FlowstarSymbolicRemainderQueue": ".symbolic_remainder",
     "SymbolicNoiseSymbol": ".symbolic_remainder",

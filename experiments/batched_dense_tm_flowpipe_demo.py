@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Small dense batched Taylor-model prototype demo.
+"""Legacy dense Euler feasibility demo, superseded by the production backend.
 
-This experiment intentionally does not call Flow* and does not claim end-to-end
-reachability speedups. It benchmarks a fixed dense Taylor-model step for a
-Van der Pol-like vector field against a small scalar Python-loop baseline when
-that baseline is still feasible.
+This historical experiment intentionally does not perform Picard iteration,
+self-map validation, or a flowpipe computation.  It must not be used as a
+reachability result.  Use ``run_vdp_dense_backend.py`` and
+``batched_tm_gpu_microbench.py`` for the production correctness/performance
+paths.
 """
 from __future__ import annotations
 
@@ -542,7 +543,7 @@ def run(args: argparse.Namespace) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run the dense batched Taylor-model prototype demo")
+    parser = argparse.ArgumentParser(description="Run the superseded legacy dense Euler feasibility demo")
     parser.add_argument("--out-dir", default="outputs/batched_dense_tm_prototype")
     parser.add_argument("--batches", default="1,8,32,128,512")
     parser.add_argument("--steps", type=int, default=10)
@@ -553,7 +554,7 @@ def main() -> None:
     parser.add_argument("--scalar-cap", type=int, default=32)
     args = parser.parse_args()
     recommendation = run(args)
-    print(f"dense batched TM prototype complete: next_step={recommendation}")
+    print(f"legacy Euler diagnostic complete (not a flowpipe): next_step={recommendation}")
     print(f"outputs written to {Path(args.out_dir)}")
 
 

@@ -65,14 +65,20 @@ class FlowpipeSegment:
     endpoint_semantics: str = "legacy_final_tm"
     endpoint_tightening_applied: bool = False
     endpoint_tightening_validation_method: str = ""
+    backend_lane: str = "sparse_reference"
+    backend_counters: Mapping[str, int] | None = None
+    backend_trace: Sequence[Mapping[str, Any]] | None = None
+    candidate_remainder: Sequence[Sequence[float]] | None = None
+    picard_image_remainder: Sequence[Sequence[float]] | None = None
+    subset_margin: Sequence[Sequence[float]] | None = None
 
     def __post_init__(self) -> None:
         # Older experiment helpers construct FlowpipeSegment directly.  Treat
         # their final_tm as both endpoint views unless the step builder supplied
         # the explicit objects.
-        if self.endpoint_raw_tm is None:
+        if self.status == "validated" and self.endpoint_raw_tm is None:
             self.endpoint_raw_tm = self.final_tm
-        if self.endpoint_tightened_tm is None:
+        if self.status == "validated" and self.endpoint_tightened_tm is None:
             self.endpoint_tightened_tm = self.final_tm
 
 
@@ -3458,6 +3464,138 @@ def _validate_picard_target_remainder_refined(
     return candidate, "failed", max_attempts, "remainder-only target refinement did not converge"
 
 
+def _flowpipe_step_from_tm_hybrid_dense(
+    ode_fn: ODEFunction,
+    x0_tm: TMVector,
+    h: float,
+    order: int,
+    *,
+    max_validation_attempts: int | None,
+    validation_eps: float,
+    validation_mode: str,
+    target_remainder_radius: float,
+    cutoff_threshold: float | None,
+    diagnostics: list[dict[str, Any]] | None,
+    diagnostics_mode: str | None,
+    diagnostics_segment_index: int | None,
+    diagnostics_context: Mapping[str, Any] | None,
+    candidate_order: int | None,
+    dense_device: torch.device | str,
+    dense_dtype: torch.dtype,
+    u_box: Sequence[Any] | None,
+    affine_u: dict[str, Any] | None,
+    symbolic_remainder: bool,
+    selective_high_degree_terms_top_k: int | None,
+    normal_eval_range_split: int | None,
+) -> FlowpipeSegment:
+    """Dense Picard/validation with one sparse bridge at each segment boundary."""
+    from .batched_dense_tm import (
+        DenseExecutionCounters,
+        dense_picard_validate_step,
+        dense_to_sparse_tmvector,
+        sparse_tmvector_to_dense,
+    )
+
+    if dense_dtype != torch.float64:
+        raise ValueError("the correctness dense flowpipe lane requires torch.float64")
+    if u_box is not None or affine_u is not None:
+        raise NotImplementedError("hybrid_dense_core currently supports uncontrolled polynomial plants")
+    if symbolic_remainder:
+        raise NotImplementedError("symbolic remainder carry is not yet part of hybrid_dense_core")
+    if int(selective_high_degree_terms_top_k or 0) > 0:
+        raise NotImplementedError("selective high-degree output truncation is not implemented for the dense core")
+    if candidate_order is not None and int(candidate_order) != int(order):
+        raise ValueError("hybrid_dense_core requires candidate_order == requested order")
+    if normal_eval_range_split not in {None, 0, 1}:
+        raise NotImplementedError("split normal evaluation is not yet implemented in the dense core")
+    if h <= 0:
+        raise ValueError("h must be positive")
+
+    tau_interval = Interval(0.0, float(h))
+    base_ext_sparse = x0_tm.extend_domain(tau_interval)
+    tau_index = x0_tm.n_vars
+    counters = DenseExecutionCounters()
+    base_ext_dense = sparse_tmvector_to_dense(
+        base_ext_sparse,
+        order=int(order),
+        device=dense_device,
+        dtype=dense_dtype,
+        counters=counters,
+        segment_boundary=True,
+    )
+    dense_result = dense_picard_validate_step(
+        ode_fn,
+        base_ext_dense,
+        h=float(h),
+        order=int(order),
+        tau_index=tau_index,
+        target_remainder_radius=target_remainder_radius,
+        cutoff_threshold=cutoff_threshold,
+        max_validation_attempts=2 if max_validation_attempts is None else int(max_validation_attempts),
+        validation_eps=validation_eps,
+        validation_mode=validation_mode,
+        counters=counters,
+    )
+    segment_tm = dense_to_sparse_tmvector(
+        dense_result.segment_tm,
+        counters=counters,
+        segment_boundary=True,
+    )
+    endpoint_raw_tm = (
+        segment_tm.substitute_const(tau_index, float(h)).drop_variable(tau_index).apply_cutoff(cutoff_threshold)
+        if dense_result.accepted
+        else None
+    )
+    final_tm = endpoint_raw_tm if endpoint_raw_tm is not None else x0_tm
+
+    context = dict(diagnostics_context or {})
+    mode = context.pop("mode", diagnostics_mode)
+    segment_index = context.pop("segment_index", diagnostics_segment_index)
+    if diagnostics is not None:
+        for dense_row in dense_result.trace:
+            if dense_row.get("phase") != "remainder_validation":
+                continue
+            row = dict(context)
+            row.update(dense_row)
+            row.setdefault("mode", mode)
+            row.setdefault("segment_index", segment_index)
+            row.setdefault("h", float(h))
+            row.setdefault("order", int(order))
+            row.setdefault("finite_residual", bool(dense_row.get("finite", True)))
+            row.setdefault("validation_message", dense_row.get("rejection_reason", ""))
+            diagnostics.append(row)
+
+    candidate_pair = [
+        dense_result.candidate_remainder_lo.detach().cpu().reshape(-1).tolist(),
+        dense_result.candidate_remainder_hi.detach().cpu().reshape(-1).tolist(),
+    ]
+    image_pair = [
+        dense_result.picard_image_remainder_lo.detach().cpu().reshape(-1).tolist(),
+        dense_result.picard_image_remainder_hi.detach().cpu().reshape(-1).tolist(),
+    ]
+    return FlowpipeSegment(
+        tm=segment_tm,
+        final_tm=final_tm,
+        status="validated" if dense_result.accepted else "failed",
+        h=float(h),
+        order=int(order),
+        validation_attempts=dense_result.validation_attempts,
+        message=dense_result.message,
+        tau_index=tau_index,
+        endpoint_raw_tm=endpoint_raw_tm,
+        endpoint_tightened_tm=endpoint_raw_tm,
+        endpoint_semantics=("endpoint_raw_segment_substitution" if dense_result.accepted else "unpublished_rejected_step"),
+        endpoint_tightening_applied=False,
+        endpoint_tightening_validation_method="not_applied_dense_raw_endpoint",
+        backend_lane="hybrid_dense_core",
+        backend_counters=counters.as_dict(),
+        backend_trace=dense_result.trace,
+        candidate_remainder=candidate_pair,
+        picard_image_remainder=image_pair,
+        subset_margin=dense_result.subset_margin.detach().cpu().tolist(),
+    )
+
+
 def flowpipe_step_from_tm(
     ode_fn: ODEFunction,
     x0_tm: TMVector,
@@ -3488,6 +3626,9 @@ def flowpipe_step_from_tm(
     truncation_range_split: int | None = None,
     selective_high_degree_terms_top_k: int | None = None,
     normal_eval_range_split: int | None = None,
+    tm_backend: str = "sparse",
+    dense_device: torch.device | str = "cpu",
+    dense_dtype: torch.dtype = torch.float64,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -3495,12 +3636,38 @@ def flowpipe_step_from_tm(
     ``x0_tm`` and adds one local time variable.  The segment's final TM has the
     local time variable substituted with ``h`` and dropped.
     """
+    if tm_backend not in {"sparse", "dense"}:
+        raise ValueError("tm_backend must be 'sparse' or 'dense'")
     if diagnostic_context is not None:
         diagnostics_context = diagnostic_context
     if diagnostic_mode is not None:
         diagnostics_mode = diagnostic_mode
     if diagnostic_segment_index is not None:
         diagnostics_segment_index = diagnostic_segment_index
+    if tm_backend == "dense":
+        return _flowpipe_step_from_tm_hybrid_dense(
+            ode_fn,
+            x0_tm,
+            h,
+            order,
+            max_validation_attempts=max_validation_attempts,
+            validation_eps=validation_eps,
+            validation_mode=validation_mode,
+            target_remainder_radius=target_remainder_radius,
+            cutoff_threshold=cutoff_threshold,
+            diagnostics=diagnostics,
+            diagnostics_mode=diagnostics_mode,
+            diagnostics_segment_index=diagnostics_segment_index,
+            diagnostics_context=diagnostics_context,
+            candidate_order=candidate_order,
+            dense_device=dense_device,
+            dense_dtype=dense_dtype,
+            u_box=u_box,
+            affine_u=affine_u,
+            symbolic_remainder=symbolic_remainder,
+            selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
+            normal_eval_range_split=normal_eval_range_split,
+        )
     if h <= 0:
         raise ValueError("h must be positive")
     output_order = int(order)
@@ -3869,6 +4036,9 @@ def flowpipe_step_flowstar_style_adaptive(
     right_map_center_mode: str = "constant",
     symbolic_queue_mode: str = "",
     horner_diagnostic: bool = False,
+    tm_backend: str = "sparse",
+    dense_device: torch.device | str = "cpu",
+    dense_dtype: torch.dtype = torch.float64,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -3905,6 +4075,8 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     if step_policy_mode not in {"", "flowstar_compat"}:
         raise ValueError("step_policy_mode must be empty or 'flowstar_compat'")
+    if tm_backend not in {"sparse", "dense"}:
+        raise ValueError("tm_backend must be 'sparse' or 'dense'")
     step_shrink_factor = FLOWSTAR_COMPAT_STEP_SHRINK
     effective_grow_factor = FLOWSTAR_COMPAT_STEP_GROW if step_policy_mode == "flowstar_compat" else float(grow_factor)
     normal_state = flowstar_normal_state
@@ -4007,6 +4179,9 @@ def flowpipe_step_flowstar_style_adaptive(
             truncation_range_split=truncation_range_split,
             selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
             normal_eval_range_split=normal_eval_range_split,
+            tm_backend=tm_backend,
+            dense_device=dense_device,
+            dense_dtype=dense_dtype,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -4049,6 +4224,9 @@ def flowpipe_step_flowstar_style_adaptive(
                 truncation_range_split=truncation_range_split,
                 selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
                 normal_eval_range_split=normal_eval_range_split,
+                tm_backend=tm_backend,
+                dense_device=dense_device,
+                dense_dtype=dense_dtype,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg
@@ -4061,7 +4239,8 @@ def flowpipe_step_flowstar_style_adaptive(
     assert last_seg is not None
     last_seg.step_rejections = rejections
     last_seg.next_h = h_try
-    last_seg.message = last_seg.message or "target remainder validation failed before h_min"
+    base_message = last_seg.message or "target remainder validation failed"
+    last_seg.message = f"{base_message}; minimum step reached before h_min={h_min:g}"
     return last_seg
 
 def _step_diagnostics_kwargs(kwargs: Mapping[str, Any], mode: str, segment_index: int) -> dict[str, Any]:

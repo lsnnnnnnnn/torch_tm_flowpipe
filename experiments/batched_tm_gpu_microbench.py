@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Batched Taylor-model GPU feasibility microbenchmark.
+"""Production batched Taylor-model CPU/CUDA microbenchmark.
 
 This file is diagnostic-only. It does not add a reachability algorithm, a Flow*
 mechanism, or a symbolic queue. The benchmark asks whether dense, batched
-Taylor-model kernels have a speed path that the current sparse Python object
-representation cannot expose.
+Taylor-model operators have a speed path that the sparse Python object
+representation cannot expose.  Every dense row calls the canonical package
+implementation; this file contains no duplicate multiplication/range kernel.
 """
 from __future__ import annotations
 
@@ -25,16 +26,22 @@ if str(SRC_ROOT) not in sys.path:
 
 import torch
 
-from torch_tm_flowpipe import Interval, Polynomial, TaylorModel, TMVector
+from torch_tm_flowpipe import Interval, Polynomial, PolynomialODE, TaylorModel, TMVector, flowpipe_step_from_tm
+from torch_tm_flowpipe.batched_dense_tm import (
+    BatchedMonomialBasis,
+    BatchedPolynomial,
+    BatchedTaylorModel,
+    dense_picard_validate_step,
+)
 
 
-DEFAULT_BATCHES = [1, 8, 32, 128, 512, 2048, 8192]
+DEFAULT_BATCHES = [1, 8, 32, 48, 128]
 CORE_OPERATIONS = [
-    "interval_affine_map",
-    "poly_coeff_add",
-    "poly_coeff_mul_trunc",
+    "tm_affine_map",
+    "polynomial_add",
+    "tm_mul_trunc",
     "tm_range_bound",
-    "fixed_picard_tm_step",
+    "picard_validate_step",
 ]
 CSV_FIELDS = [
     "case_name",
@@ -84,19 +91,9 @@ class MultiplicationPlan:
 
 
 def default_settings(include_order6: bool = False) -> list[BenchmarkSetting]:
-    settings = [
-        BenchmarkSetting("dim2_order4_vdp_like", 2, 4, "dense_total_degree_vdp_like_count"),
-        BenchmarkSetting("dim4_order4", 4, 4, "dense_total_degree"),
-        BenchmarkSetting("dim8_order4", 8, 4, "dense_total_degree"),
-    ]
+    settings = [BenchmarkSetting("vdp_nvars3_order4", 2, 4, "vdp_tau_plus_two_generators")]
     if include_order6:
-        settings.extend(
-            [
-                BenchmarkSetting("dim2_order6_optional", 2, 6, "dense_total_degree_optional"),
-                BenchmarkSetting("dim4_order6_optional", 4, 6, "dense_total_degree_optional"),
-                BenchmarkSetting("dim8_order6_optional", 8, 6, "dense_total_degree_optional"),
-            ]
-        )
+        settings.append(BenchmarkSetting("vdp_nvars3_order6_optional", 2, 6, "vdp_tau_plus_two_generators"))
     return settings
 
 
@@ -299,128 +296,6 @@ def _make_affine_data(
     return lo.to(device), hi.to(device), matrix.to(device), bias.to(device)
 
 
-def interval_affine_map_kernel(
-    lo: torch.Tensor,
-    hi: torch.Tensor,
-    matrix: torch.Tensor,
-    bias: torch.Tensor,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    center = (lo + hi) * 0.5
-    radius = (hi - lo) * 0.5
-    out_center = center @ matrix.T + bias
-    out_radius = radius @ torch.abs(matrix).T
-    return out_center - out_radius, out_center + out_radius
-
-
-def poly_coeff_add_kernel(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
-    return a + b
-
-
-def poly_coeff_mul_trunc_kernel(
-    a: torch.Tensor,
-    b: torch.Tensor,
-    plan: MultiplicationPlan,
-    term_count: int,
-) -> torch.Tensor:
-    products = a.index_select(-1, plan.left) * b.index_select(-1, plan.right)
-    out = torch.zeros((*products.shape[:-1], term_count), dtype=a.dtype, device=a.device)
-    target = plan.target.view(*([1] * (products.ndim - 1)), -1).expand_as(products)
-    out.scatter_add_(-1, target, products)
-    return out
-
-
-def _power_interval_for_terms(
-    lo: torch.Tensor,
-    hi: torch.Tensor,
-    powers: torch.Tensor,
-    order: int,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    lo_table = torch.stack([lo.pow(p) if p else torch.ones_like(lo) for p in range(order + 1)], dim=1)
-    hi_table = torch.stack([hi.pow(p) if p else torch.ones_like(hi) for p in range(order + 1)], dim=1)
-    lo_vals = lo_table.index_select(1, powers)
-    hi_vals = hi_table.index_select(1, powers)
-    endpoint_min = torch.minimum(lo_vals, hi_vals)
-    endpoint_max = torch.maximum(lo_vals, hi_vals)
-
-    lo_abs = torch.minimum(torch.abs(lo), torch.abs(hi))
-    hi_abs = torch.maximum(torch.abs(lo), torch.abs(hi))
-    lo_abs_table = torch.stack(
-        [lo_abs.pow(p) if p else torch.ones_like(lo_abs) for p in range(order + 1)],
-        dim=1,
-    )
-    hi_abs_table = torch.stack(
-        [hi_abs.pow(p) if p else torch.ones_like(hi_abs) for p in range(order + 1)],
-        dim=1,
-    )
-    even_lo = lo_abs_table.index_select(1, powers)
-    even_hi = hi_abs_table.index_select(1, powers)
-    crosses_zero = ((lo <= 0) & (hi >= 0)).view(-1, 1)
-    powers_row = powers.view(1, -1)
-    odd_or_zero = ((powers_row % 2 == 1) | (powers_row == 0))
-    zero = torch.zeros_like(even_lo)
-    return (
-        torch.where(odd_or_zero, endpoint_min, torch.where(crosses_zero, zero, even_lo)),
-        torch.where(odd_or_zero, endpoint_max, even_hi),
-    )
-
-
-def tm_range_bound_kernel(
-    coeffs: torch.Tensor,
-    domain_lo: torch.Tensor,
-    domain_hi: torch.Tensor,
-    remainder_lo: torch.Tensor,
-    remainder_hi: torch.Tensor,
-    exponents: torch.Tensor,
-    order: int,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    batch, _dim, term_count = coeffs.shape
-    mono_lo = torch.ones((batch, term_count), dtype=coeffs.dtype, device=coeffs.device)
-    mono_hi = torch.ones_like(mono_lo)
-    for var_index in range(exponents.shape[1]):
-        power_lo, power_hi = _power_interval_for_terms(
-            domain_lo[:, var_index],
-            domain_hi[:, var_index],
-            exponents[:, var_index],
-            order,
-        )
-        candidates = torch.stack(
-            [
-                mono_lo * power_lo,
-                mono_lo * power_hi,
-                mono_hi * power_lo,
-                mono_hi * power_hi,
-            ],
-            dim=0,
-        )
-        mono_lo = torch.min(candidates, dim=0).values
-        mono_hi = torch.max(candidates, dim=0).values
-
-    mono_lo = mono_lo[:, None, :]
-    mono_hi = mono_hi[:, None, :]
-    term_lo = torch.where(coeffs >= 0, coeffs * mono_lo, coeffs * mono_hi)
-    term_hi = torch.where(coeffs >= 0, coeffs * mono_hi, coeffs * mono_lo)
-    return term_lo.sum(dim=-1) + remainder_lo, term_hi.sum(dim=-1) + remainder_hi
-
-
-def fixed_picard_tm_step_kernel(
-    coeffs: torch.Tensor,
-    plan: MultiplicationPlan,
-    term_count: int,
-    h: float,
-) -> torch.Tensor:
-    dim = coeffs.shape[1]
-    if dim == 2:
-        x = coeffs[:, 0:1, :]
-        y = coeffs[:, 1:2, :]
-        x_sq = poly_coeff_mul_trunc_kernel(x, x, plan, term_count)
-        x_sq_y = poly_coeff_mul_trunc_kernel(x_sq, y, plan, term_count)
-        rhs = torch.cat([y, y - x_sq_y - x], dim=1)
-        return coeffs + float(h) * rhs
-    squared = poly_coeff_mul_trunc_kernel(coeffs, coeffs, plan, term_count)
-    rhs = torch.roll(coeffs, shifts=-1, dims=1) - coeffs + 0.1 * squared
-    return coeffs + float(h) * rhs
-
-
 def _operation_working_bytes(
     operation: str,
     *,
@@ -433,15 +308,15 @@ def _operation_working_bytes(
     element_size = torch.empty((), dtype=dtype).element_size()
     coeff_bytes = batch * dim * term_count * element_size
     pair_bytes = batch * dim * pair_count * element_size
-    if operation == "interval_affine_map":
+    if operation == "tm_affine_map":
         return batch * dim * element_size * 8 + dim * dim * element_size
-    if operation == "poly_coeff_add":
+    if operation == "polynomial_add":
         return coeff_bytes * 3
-    if operation == "poly_coeff_mul_trunc":
+    if operation == "tm_mul_trunc":
         return coeff_bytes * 3 + pair_bytes
     if operation == "tm_range_bound":
         return coeff_bytes * 2 + batch * term_count * dim * element_size * 4
-    if operation == "fixed_picard_tm_step":
+    if operation == "picard_validate_step":
         return coeff_bytes * 4 + pair_bytes * (2 if dim == 2 else 1)
     return coeff_bytes
 
@@ -469,68 +344,87 @@ def _run_torch_operation(
     repeats: int,
     seed: int,
 ) -> tuple[float, float, float, str]:
-    term_count = len(exponents)
-    plan = multiplication_plan(exponents, setting.order, device)
-    if operation == "interval_affine_map":
-        lo, hi, matrix, bias = _make_affine_data(
-            batch,
-            setting.dim,
-            dtype=dtype,
-            device=device,
-            seed=seed,
-        )
+    basis_dim = setting.dim + 1 if "vdp" in setting.monomial_profile else setting.dim
+    if operation == "picard_validate_step":
+        basis_dim = setting.dim + 1
+    basis = BatchedMonomialBasis.build(basis_dim, setting.order, device)
+    term_count = basis.num_terms
+    coeffs = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed)
+    domain_lo = torch.full((batch, basis_dim), -1.0, dtype=dtype, device=device)
+    domain_hi = torch.full((batch, basis_dim), 1.0, dtype=dtype, device=device)
+    if operation == "picard_validate_step":
+        domain_lo[:, -1] = 0.0
+        domain_hi[:, -1] = 0.01
+    remainder_radius = torch.full((batch, setting.dim), 1e-8, dtype=dtype, device=device)
+    tm = BatchedTaylorModel(
+        BatchedPolynomial(coeffs, basis),
+        -remainder_radius,
+        remainder_radius,
+        domain_lo,
+        domain_hi,
+    )
+    other = BatchedTaylorModel(
+        BatchedPolynomial(_make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed + 1), basis),
+        -remainder_radius,
+        remainder_radius,
+        domain_lo,
+        domain_hi,
+    )
+    if operation == "tm_affine_map":
+        _lo, _hi, matrix, bias = _make_affine_data(batch, setting.dim, dtype=dtype, device=device, seed=seed + 2)
 
         def fn() -> Any:
-            return interval_affine_map_kernel(lo, hi, matrix, bias)
+            return tm.affine_map(matrix, bias)
+
+        output_shape = f"tm=({batch},{setting.dim},{term_count})"
+    elif operation == "polynomial_add":
+
+        def fn() -> Any:
+            return tm.poly.add(other.poly)
+
+        output_shape = f"coeffs=({batch},{setting.dim},{term_count})"
+    elif operation == "tm_mul_trunc":
+
+        def fn() -> Any:
+            return tm.component(0).mul_trunc(other.component(0))
+
+        output_shape = f"tm=({batch},1,{term_count})"
+    elif operation == "tm_range_bound":
+
+        def fn() -> Any:
+            return tm.range_bound()
 
         output_shape = f"lo_hi=({batch},{setting.dim})"
-    elif operation == "poly_coeff_add":
-        a = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed)
-        b = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed + 1)
-
-        def fn() -> Any:
-            return poly_coeff_add_kernel(a, b)
-
-        output_shape = f"coeffs=({batch},{setting.dim},{term_count})"
-    elif operation == "poly_coeff_mul_trunc":
-        a = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed)
-        b = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed + 1)
-
-        def fn() -> Any:
-            return poly_coeff_mul_trunc_kernel(a, b, plan, term_count)
-
-        output_shape = f"coeffs=({batch},{setting.dim},{term_count})"
-    elif operation == "tm_range_bound":
-        coeffs = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed)
-        domain_lo, domain_hi, _matrix, _bias = _make_affine_data(
-            batch,
-            setting.dim,
-            dtype=dtype,
-            device=device,
-            seed=seed + 2,
+    elif operation == "picard_validate_step":
+        if setting.dim != 2:
+            raise ValueError("production Picard microbenchmark currently uses the two-state VDP plant")
+        ode = PolynomialODE.from_system_spec(
+            {
+                "state_names": ["x", "y"],
+                "rhs": [
+                    {"terms": [{"coefficient": 1.0, "powers": [0, 1]}]},
+                    {"terms": [
+                        {"coefficient": 1.0, "powers": [0, 1]},
+                        {"coefficient": -1.0, "powers": [1, 0]},
+                        {"coefficient": -1.0, "powers": [2, 1]},
+                    ]},
+                ],
+            }
         )
-        remainder_radius = torch.full((batch, setting.dim), 1e-6, dtype=dtype, device=device)
-        exponents_t = torch.as_tensor(exponents, dtype=torch.long, device=device)
 
         def fn() -> Any:
-            return tm_range_bound_kernel(
-                coeffs,
-                domain_lo,
-                domain_hi,
-                -remainder_radius,
-                remainder_radius,
-                exponents_t,
-                setting.order,
+            return dense_picard_validate_step(
+                ode,
+                tm,
+                h=0.01,
+                order=setting.order,
+                tau_index=basis_dim - 1,
+                target_remainder_radius=1.0,
+                cutoff_threshold=1e-10,
+                validation_mode="flowstar_raw_remainder_compat",
             )
 
-        output_shape = f"lo_hi=({batch},{setting.dim})"
-    elif operation == "fixed_picard_tm_step":
-        coeffs = _make_coefficients(batch, setting.dim, term_count, dtype=dtype, device=device, seed=seed)
-
-        def fn() -> Any:
-            return fixed_picard_tm_step_kernel(coeffs, plan, term_count, h=0.01)
-
-        output_shape = f"coeffs=({batch},{setting.dim},{term_count})"
+        output_shape = f"validated_tm=({batch},{setting.dim},{term_count})"
     else:
         raise ValueError(f"unknown operation: {operation}")
     min_ms, median_ms, mean_ms = _measure(fn, device=device, warmup=warmup, repeats=repeats)
@@ -568,15 +462,6 @@ def _make_scalar_polys(
     ]
 
 
-def _scalar_picard_once(tmv: TMVector) -> TMVector:
-    dim = len(tmv)
-    if dim == 2:
-        rhs = TMVector([tmv[1], tmv[1] - tmv[0] * tmv[0] * tmv[1] - tmv[0]])
-    else:
-        rhs = TMVector([tmv[(i + 1) % dim] - tmv[i] + 0.1 * (tmv[i] * tmv[i]) for i in range(dim)])
-    return TMVector([tmv[i] + 0.01 * rhs[i] for i in range(dim)])
-
-
 def _run_scalar_operation(
     operation: str,
     *,
@@ -589,7 +474,7 @@ def _run_scalar_operation(
     seed: int,
 ) -> tuple[float, float, float, str]:
     device = torch.device("cpu")
-    if operation == "interval_affine_map":
+    if operation == "tm_affine_map":
         lo, hi, matrix, bias = _make_affine_data(
             batch,
             setting.dim,
@@ -612,10 +497,10 @@ def _run_scalar_operation(
             return out
 
         output_shape = f"interval_objects={batch * setting.dim}"
-    elif operation in {"poly_coeff_add", "poly_coeff_mul_trunc"}:
+    elif operation in {"polynomial_add", "tm_mul_trunc"}:
         polys_a = _make_scalar_polys(batch, setting.dim, exponents, dtype=dtype, seed=seed)
         polys_b = _make_scalar_polys(batch, setting.dim, exponents, dtype=dtype, seed=seed + 1)
-        if operation == "poly_coeff_add":
+        if operation == "polynomial_add":
 
             def fn() -> Any:
                 return [
@@ -646,15 +531,39 @@ def _run_scalar_operation(
             return [[model.range_box() for model in row] for row in tms]
 
         output_shape = f"taylor_model_objects={batch * setting.dim}"
-    elif operation == "fixed_picard_tm_step":
+    elif operation == "picard_validate_step":
         domain = [Interval(-1.0, 1.0) for _ in range(setting.dim)]
         tmvs = [
             TMVector([TaylorModel(poly, Interval.zero(), domain, order=setting.order) for poly in row])
             for row in _make_scalar_polys(batch, setting.dim, exponents, dtype=dtype, seed=seed)
         ]
+        ode = PolynomialODE.from_system_spec(
+            {
+                "state_names": ["x", "y"],
+                "rhs": [
+                    {"terms": [{"coefficient": 1.0, "powers": [0, 1]}]},
+                    {"terms": [
+                        {"coefficient": 1.0, "powers": [0, 1]},
+                        {"coefficient": -1.0, "powers": [1, 0]},
+                        {"coefficient": -1.0, "powers": [2, 1]},
+                    ]},
+                ],
+            }
+        )
 
         def fn() -> Any:
-            return [_scalar_picard_once(tmv) for tmv in tmvs]
+            return [
+                flowpipe_step_from_tm(
+                    ode,
+                    tmv,
+                    h=0.01,
+                    order=setting.order,
+                    target_remainder_radius=1.0,
+                    cutoff_threshold=1e-10,
+                    validation_mode="flowstar_raw_remainder_compat",
+                )
+                for tmv in tmvs
+            ]
 
         output_shape = f"tmvector_objects={batch}"
     else:
@@ -835,12 +744,11 @@ def _build_report(rows: Sequence[dict[str, Any]], *, output_dir: Path, dtype: to
         "",
         f"- Which operation dominates torch CPU runtime? {_dominant_operation(rows, implementation='torch_dense', device='cpu')}",
         f"- Which operation dominates torch CUDA runtime? {_dominant_operation(rows, implementation='torch_dense', device='cuda')}",
-        f"- Are current data structures tensorizable, or are Python dict/sparse loops blocking GPU? "
-        f"The current production `Polynomial`/`TaylorModel` path uses Python dictionaries keyed by exponent tuples "
-        f"and scalar tensors, so Python object and sparse-loop overhead blocks real GPU use. {scalar_note}",
-        "- What representation change is needed for real GPU use? Use a canonical monomial basis per `(dim, order)`, "
-        "store coefficients as batched dense or blocked-sparse tensors, precompute multiplication/truncation scatter "
-        "plans, batch interval domains and remainders, and keep all hot-path arithmetic on device tensors.",
+        f"- Does the production representation expose tensorized work? Yes: these dense rows call "
+        f"`BatchedPolynomial`, `BatchedTaylorModel`, and `dense_picard_validate_step` directly. "
+        f"The sparse reference remains dictionary based. {scalar_note}",
+        "- What representation is measured? A canonical complete monomial basis with batched coefficient/domain/"
+        "remainder tensors and cached multiplication/integration routes; VDP order 4 uses three variables and 35 slots.",
         "- Is the project still justified as PyTorch-native, or should plant remain Flow* C++? "
         f"{recommendation_reason}",
         "",
@@ -876,8 +784,10 @@ def run_benchmark(
 
     for setting_index, setting in enumerate(selected_settings):
         exponents = total_degree_exponents(setting.dim, setting.order)
-        term_count = len(exponents)
-        pair_count = multiplication_plan(exponents, setting.order, torch.device("cpu")).pair_count
+        dense_basis_dim = setting.dim + 1 if "vdp" in setting.monomial_profile else setting.dim
+        dense_basis = BatchedMonomialBasis.build(dense_basis_dim, setting.order, "cpu")
+        term_count = dense_basis.num_terms
+        pair_count = int(dense_basis.mul_left_indices.numel())
         for batch in batch_sizes:
             for device_name in selected_devices:
                 if device_name == "cuda" and not torch.cuda.is_available():
@@ -1046,7 +956,7 @@ def run_benchmark(
                                 median_ms=median_ms,
                                 mean_ms=mean_ms,
                                 output_shape=output_shape,
-                                notes="existing Polynomial/TaylorModel sparse Python object path",
+                                notes="production sparse Polynomial/TaylorModel reference path",
                             )
                         )
                     except RuntimeError as exc:
@@ -1127,7 +1037,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         if args.batches is None:
             batches = [1]
     if args.quick:
-        settings = [BenchmarkSetting("dim2_order4_vdp_like", 2, 4, "dense_total_degree_vdp_like_count")]
+        settings = [BenchmarkSetting("vdp_nvars3_order4", 2, 4, "vdp_tau_plus_two_generators")]
         batches = [1, 8, 32]
         warmup = min(warmup, 1)
         repeats = min(repeats, 2)
@@ -1151,4 +1061,3 @@ def main(argv: Sequence[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
-

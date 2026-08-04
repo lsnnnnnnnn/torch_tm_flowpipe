@@ -179,30 +179,13 @@ def test_batched_taylor_model_shapes_and_sample_containment():
 
     mapped = tm.affine_map(torch.tensor([[1.0, 2.0], [-0.5, 0.25]], dtype=torch.float64), torch.tensor([0.1, -0.2]))
     product = tm.component(0).mul_trunc(tm.component(1))
-    stepped = tm.one_fixed_tm_step_vdp(0.01, order=3)
 
     assert mapped.poly.coeffs.shape == (2, 2, basis.num_terms)
     assert product.rem_lo.shape == (2, 1)
-    assert isinstance(stepped.poly.coeffs, torch.Tensor)
-    assert isinstance(stepped.rem_lo, torch.Tensor)
-    assert not isinstance(stepped.poly, Polynomial)
-
-    samples = torch.stack(
-        [
-            domain_lo,
-            domain_hi,
-            0.5 * (domain_lo + domain_hi),
-        ],
-        dim=1,
-    )
-    x0 = samples[..., 0]
-    y0 = samples[..., 1]
-    exact_step = torch.stack(
-        [x0 + 0.01 * y0, y0 + 0.01 * (y0 - x0 - x0 * x0 * y0)],
-        dim=-1,
-    )
-    lo, hi = stepped.range_bound()
-    _assert_contains(lo[:, None, :], hi[:, None, :], exact_step)
+    with pytest.raises(RuntimeError, match="Euler prototype"):
+        tm.one_fixed_tm_step_vdp(0.01, order=3)
+    with pytest.raises(NotImplementedError, match="not a valid no-op"):
+        tm.recenter_rescale()
 
 
 @pytest.mark.parametrize(
@@ -217,7 +200,7 @@ def test_device_roundtrip_and_cuda_if_available(device):
     domain_lo = torch.tensor([[-0.2, -0.1]], dtype=torch.float64, device=device)
     domain_hi = torch.tensor([[0.3, 0.4]], dtype=torch.float64, device=device)
     tm = BatchedTaylorModel.variables_from_domain(domain_lo, domain_hi, basis)
-    out = tm.one_fixed_tm_step_vdp(0.01, order=2)
+    out = tm.vanderpol_rhs()
     lo, hi = out.range_bound()
 
     assert out.poly.coeffs.device.type == torch.device(device).type
