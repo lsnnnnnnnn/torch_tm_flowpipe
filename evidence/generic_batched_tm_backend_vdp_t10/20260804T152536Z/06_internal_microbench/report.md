@@ -29,8 +29,8 @@ This report is diagnostic-only. It does not claim a new reachability algorithm, 
 - Which operation dominates torch CUDA runtime? picard_validate_step (203 ms summed over largest measured batches)
 - Does the production representation expose tensorized work? Yes: these dense rows call `BatchedPolynomial`, `BatchedTaylorModel`, and `dense_picard_validate_step` directly. The sparse reference remains dictionary based. Existing sparse Python rows ran at 0.000887x to 0.577x of torch dense CPU throughput for the measured scalar batches.
 - What representation is measured? A canonical complete monomial basis with batched coefficient/domain/remainder tensors and cached multiplication/integration routes; VDP order 4 uses three variables and 35 slots.
-- Is the project still justified as PyTorch-native, or should plant remain Flow* C++? Some dense CUDA kernels win, but the production sparse dict TM path cannot use that speed without a batched representation.
+- Is the project still justified as PyTorch-native, or should plant remain Flow* C++? The dense batched representation is operational, but its measured CUDA advantage is too narrow for an end-to-end GPU claim.
 
-## Final Recommendation: NEEDS_REPRESENTATION_REDESIGN
+## Final Recommendation: DENSE_GPU_PATH_LIMITED
 
-Allowed recommendation values are `GPU_PATH_PROMISING`, `NEEDS_REPRESENTATION_REDESIGN`, and `STOP_PYTHON_PLANT_TM_FOR_SPEED`.
+Allowed recommendation values are `GPU_PATH_PROMISING`, `DENSE_GPU_PATH_LIMITED`, `NEEDS_REPRESENTATION_REDESIGN`, and `STOP_PYTHON_PLANT_TM_FOR_SPEED`.

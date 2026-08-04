@@ -123,6 +123,7 @@ def _git(*args: str) -> str:
 def build(run_root: Path, evidence_root: Path, *, refresh: bool = False) -> None:
     if evidence_root.exists() and any(evidence_root.iterdir()) and not refresh:
         raise FileExistsError(f"refusing non-empty evidence directory: {evidence_root}")
+    tracked_worktree_status_at_start = _git("status", "--short", "--untracked-files=no")
     evidence_root.mkdir(parents=True, exist_ok=True)
 
     if str(SRC) not in __import__("sys").path:
@@ -291,7 +292,7 @@ def build(run_root: Path, evidence_root: Path, *, refresh: bool = False) -> None
             "branch": _git("branch", "--show-current"),
             "head": _git("rev-parse", "HEAD"),
             "base": "7d078b5f34467db8bbe4dd672b0136e2fa64a481",
-            "tracked_worktree_status": _git("status", "--short", "--untracked-files=no"),
+            "tracked_worktree_status_at_build_start": tracked_worktree_status_at_start,
             "full_pytest": {"passed": 343, "skipped": 2, "runtime_s": 36.87},
             "cuda_dense_tests": {"passed": 12, "runtime_s": 2.02},
         },
