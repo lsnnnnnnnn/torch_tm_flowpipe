@@ -406,6 +406,7 @@ class DensePolynomialRangeResult:
     selected_method: str
     cover: DenseSubdivisionCover
     coverage_report: Mapping[str, Any]
+    timings: Mapping[str, float]
     wall_s: float
 
 
@@ -603,13 +604,24 @@ def _range_for_terms_with_policy(
     trace: list[dict[str, Any]] | None = None,
 ) -> DensePolynomialRangeResult:
     started = time.perf_counter()
+    natural_started = time.perf_counter()
     natural_lo, natural_hi = _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+    natural_range_s = time.perf_counter() - natural_started
     if not policy.applies_to(context) or policy.max_depth == 0:
+        cover_started = time.perf_counter()
         owner = torch.arange(coeffs.shape[0], dtype=torch.long, device=coeffs.device)
         cover = DenseSubdivisionCover(domain_lo.clone(), domain_hi.clone(), owner, 0, tuple(1 for _ in range(coeffs.shape[0])), tuple(() for _ in range(coeffs.shape[0])))
         report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
-        result = DensePolynomialRangeResult(natural_lo, natural_hi, natural_lo, natural_hi, natural_lo, natural_hi, "natural", cover, report, time.perf_counter() - started)
+        timings = {
+            "natural_range_s": natural_range_s,
+            "cover_validation_s": time.perf_counter() - cover_started,
+            "leaf_evaluation_s": 0.0,
+            "hull_s": 0.0,
+            "selection_s": 0.0,
+        }
+        result = DensePolynomialRangeResult(natural_lo, natural_hi, natural_lo, natural_hi, natural_lo, natural_hi, "natural", cover, report, timings, time.perf_counter() - started)
     else:
+        cover_started = time.perf_counter()
         cover = build_dense_subdivision_cover(
             coeffs,
             exponents,
@@ -622,16 +634,22 @@ def _range_for_terms_with_policy(
         report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
         if not report["valid"]:
             raise RuntimeError(f"invalid subdivision cover: {report['reasons']}")
+        cover_validation_s = time.perf_counter() - cover_started
+        leaf_started = time.perf_counter()
         leaf_coeffs = coeffs.index_select(0, cover.owner)
         leaf_lo, leaf_hi = _range_for_terms(leaf_coeffs, exponents, cover.lo, cover.hi)
         if not bool(torch.all(torch.isfinite(leaf_lo)) and torch.all(torch.isfinite(leaf_hi))):
             raise FloatingPointError("non-finite subdivision leaf range")
+        leaf_evaluation_s = time.perf_counter() - leaf_started
+        hull_started = time.perf_counter()
         hull_lo = torch.full_like(natural_lo, torch.inf)
         hull_hi = torch.full_like(natural_hi, -torch.inf)
         hull_index = cover.owner.view(-1, 1).expand(-1, coeffs.shape[1])
         hull_lo.scatter_reduce_(0, hull_index, leaf_lo, reduce="amin", include_self=True)
         hull_hi.scatter_reduce_(0, hull_index, leaf_hi, reduce="amax", include_self=True)
         hull_lo, hull_hi = _down(hull_lo), _up(hull_hi)
+        hull_s = time.perf_counter() - hull_started
+        selection_started = time.perf_counter()
         use_subdivision = (hull_hi - hull_lo) <= (natural_hi - natural_lo)
         selected_lo = torch.where(use_subdivision, hull_lo, natural_lo)
         selected_hi = torch.where(use_subdivision, hull_hi, natural_hi)
@@ -641,7 +659,14 @@ def _range_for_terms_with_policy(
             selected_method = "mixed_natural_subdivision"
         else:
             selected_method = "natural_subdivision_wider"
-        result = DensePolynomialRangeResult(natural_lo, natural_hi, hull_lo, hull_hi, selected_lo, selected_hi, selected_method, cover, report, time.perf_counter() - started)
+        timings = {
+            "natural_range_s": natural_range_s,
+            "cover_validation_s": cover_validation_s,
+            "leaf_evaluation_s": leaf_evaluation_s,
+            "hull_s": hull_s,
+            "selection_s": time.perf_counter() - selection_started,
+        }
+        result = DensePolynomialRangeResult(natural_lo, natural_hi, hull_lo, hull_hi, selected_lo, selected_hi, selected_method, cover, report, timings, time.perf_counter() - started)
     if trace is not None:
         trace.append(
             {
@@ -665,6 +690,8 @@ def _range_for_terms_with_policy(
                 "coverage_valid": bool(result.coverage_report["valid"]),
                 "finite": bool(torch.all(torch.isfinite(result.selected_lo)) and torch.all(torch.isfinite(result.selected_hi))),
                 "device": str(coeffs.device),
+                **result.timings,
+                "range_attribution_s": result.wall_s,
                 "wall_s": result.wall_s,
             }
         )
