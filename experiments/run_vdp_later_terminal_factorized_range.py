@@ -315,6 +315,36 @@ def _write_decisions(output_root: Path, attribution: Sequence[Mapping[str, Any]]
     }
     d2_passed = bool(by_d["D2_horner_registered_best"]["accepted"])
     d3_passed = bool(by_d["D3_subdivision_then_horner"]["accepted"])
+    d1_ranges = {
+        row["range_call_index"]: row
+        for row in _read_jsonl(
+            output_root / "terminal_ab" / "formal" / "D1_existing_subdivision" / "range_context_trace.jsonl"
+        )
+        if row.get("context") == "polynomial_truncation"
+    }
+    d3_ranges = {
+        row["range_call_index"]: row
+        for row in _read_jsonl(
+            output_root / "terminal_ab" / "formal" / "D3_subdivision_then_horner" / "range_context_trace.jsonl"
+        )
+        if row.get("context") == "polynomial_truncation"
+    }
+    gains = {
+        call: d1_ranges[call]["selected_width"][0][0] - d3_ranges[call]["selected_width"][0][0]
+        for call in sorted(set(d1_ranges) & set(d3_ranges))
+    }
+    dominant_call = max(gains, key=gains.get)
+    dominant_row = d3_ranges[dominant_call]
+    dominant_stages = [
+        row
+        for row in _read_jsonl(
+            output_root / "terminal_ab" / "formal" / "D3_subdivision_then_horner" / "horner_stage_trace.jsonl"
+        )
+        if row.get("range_call_index") == dominant_call
+        and row.get("scope") == "subdivision_leaf"
+        and row.get("stage_depth") == 0
+        and row.get("degree") == 0
+    ]
     terminal_decision = {
         "stop_go_gate": "GO" if d2_passed or d3_passed else "STOP",
         "horner_only_closed_step": d2_passed,
@@ -325,6 +355,42 @@ def _write_decisions(output_root: Path, attribution: Sequence[Mapping[str, Any]]
         "horner_and_subdivision_complementary": (
             by_d["D3_subdivision_then_horner"]["y_subset_margin"]
             > by_d["D1_existing_subdivision"]["y_subset_margin"]
+        ),
+        "combined_margin_gain_over_subdivision": (
+            by_d["D3_subdivision_then_horner"]["y_subset_margin"]
+            - by_d["D1_existing_subdivision"]["y_subset_margin"]
+        ),
+        "aggregation_only_margin_delta_from_natural": (
+            by_d["D2_horner_registered_best"]["y_subset_margin"]
+            - by_d["D0_natural"]["y_subset_margin"]
+        ),
+        "improvement_context": "polynomial_truncation",
+        "dominant_improvement_range_call_index": dominant_call,
+        "dominant_range_width_before": d1_ranges[dominant_call]["selected_width"][0][0],
+        "dominant_range_width_after": dominant_row["selected_width"][0][0],
+        "dominant_range_width_gain": gains[dominant_call],
+        "dominant_per_leaf_selected_order_index": dominant_row["horner"]["per_leaf"]["selected_order_index"],
+        "dominant_per_leaf_selected_orders": [
+            {
+                "variable_order": order["variable_order"],
+                "selected_mask": order["selected_mask"],
+            }
+            for order in dominant_row["horner"]["per_leaf"]["orders"]
+        ],
+        "dominant_factorization_stages": [
+            {
+                "stage_index": stage["stage_index"],
+                "variable_order": stage["variable_order"],
+                "variable": stage["variable"],
+                "operation": stage["operation"],
+                "intermediate_lo": stage["intermediate_lo"],
+                "intermediate_hi": stage["intermediate_hi"],
+            }
+            for stage in dominant_stages
+        ],
+        "improvement_mechanism": (
+            "per-leaf dependency preservation in the final top-level Horner multiply-add; "
+            "not coefficient aggregation, whose Horner-only terminal-margin delta is at float64 safeguard scale"
         ),
         "candidate_polynomial_unchanged": True,
         "fresh_horizons_authorized": d2_passed or d3_passed,

@@ -413,6 +413,8 @@ def canonicalize_dense_polynomial(
         raise ValueError("canonicalization coefficient/exponent term mismatch")
     if not torch.is_floating_point(coeffs):
         raise TypeError("canonicalization coefficients must use a floating dtype")
+    if exponents.dtype not in {torch.int8, torch.int16, torch.int32, torch.int64, torch.uint8}:
+        raise TypeError("canonicalization exponents must use an integer dtype")
     if not bool(torch.all(torch.isfinite(coeffs))):
         raise FloatingPointError("canonicalization coefficients must be finite")
     exponents_cpu = exponents.detach().cpu().to(dtype=torch.long)

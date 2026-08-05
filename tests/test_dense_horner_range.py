@@ -243,6 +243,11 @@ def test_nonfinite_fail_closed_and_invalid_horner_explicitly_falls_back_to_natur
             torch.tensor([[[torch.inf]]], dtype=DTYPE),
             torch.tensor([[0]], dtype=torch.long),
         )
+    with pytest.raises(TypeError, match="integer dtype"):
+        canonicalize_dense_polynomial(
+            torch.tensor([[[1.0]]], dtype=DTYPE),
+            torch.tensor([[0.5]], dtype=DTYPE),
+        )
     with pytest.raises(ValueError, match="permutation"):
         evaluate_dense_horner_range(coeffs, exponents, domain, domain, (1,))
 
