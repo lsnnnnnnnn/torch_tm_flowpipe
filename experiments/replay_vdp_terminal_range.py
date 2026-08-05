@@ -60,6 +60,14 @@ def _git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
 
+def _variable_orders(value: str) -> tuple[tuple[int, ...], ...]:
+    return tuple(
+        tuple(int(index) for index in order.split(",") if index.strip())
+        for order in value.split(";")
+        if order.strip()
+    )
+
+
 def _candidate_hashes(trace: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     rows = [row for row in trace if row.get("phase") == "polynomial_picard"]
     if not rows:
@@ -125,6 +133,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     split_vars = tuple(int(item) for item in args.split_vars.split(",") if item.strip())
     named_contexts = tuple(item.strip() for item in args.named_contexts.split(",") if item.strip())
+    variable_orders = _variable_orders(args.variable_orders)
     if args.subdivision_depth < 0 or args.max_leaves <= 0:
         raise ValueError("subdivision depth must be nonnegative and max leaves positive")
 
@@ -150,6 +159,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "max_leaves": int(args.max_leaves),
         "split_vars": split_vars,
         "named_contexts": named_contexts,
+        "variable_orders": variable_orders,
         "trigger": args.trigger,
         "device": args.device,
         "contract": contract,
@@ -174,6 +184,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         split_vars=split_vars,
         trigger=args.trigger,
         named_contexts=named_contexts,
+        variable_orders=variable_orders,
     )
     ode = PolynomialODE.from_system_spec(contract["canonical_system_spec"])
     started = time.perf_counter()
@@ -220,6 +231,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "backend_lane": segment.backend_lane,
         "backend_counters": segment.backend_counters,
         "range_method": args.range_method,
+        "variable_orders": [list(order) for order in variable_orders],
         "range_leaf_count": sum(
             int(row.get("leaf_count", 0))
             for row in (segment.backend_trace or [])
@@ -252,10 +264,33 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     )
     _write_json(output_dir / "summary.json", summary)
     _write_json(output_dir / "hash_comparison.json", {"state_hashes_equal": current_hashes == normalized_hashes, **comparison})
-    trace = [dict(row) for row in (segment.backend_trace or [])]
+    trace: list[dict[str, Any]] = []
+    stage_rows: list[dict[str, Any]] = []
+    range_call_index = 0
+    for source_row in segment.backend_trace or []:
+        row = dict(source_row)
+        stages = list(row.pop("horner_stages", []))
+        if row.get("phase") == "polynomial_range":
+            encoded_stages = json.dumps(_jsonable(stages), sort_keys=True, separators=(",", ":")).encode("utf-8")
+            row["range_call_index"] = range_call_index
+            row["horner_stage_count"] = len(stages)
+            row["horner_stage_sha256"] = hashlib.sha256(encoded_stages).hexdigest()
+            for stage in stages:
+                stage_rows.append(
+                    {
+                        "range_call_index": range_call_index,
+                        "context": row.get("context"),
+                        **dict(stage),
+                    }
+                )
+            range_call_index += 1
+        trace.append(row)
     _write_jsonl(output_dir / "picard_trace.jsonl", trace)
     _write_jsonl(output_dir / "remainder_ledger.jsonl", [row for row in trace if row.get("phase") == "remainder_validation"])
-    _write_jsonl(output_dir / "range_contexts.jsonl", [row for row in trace if row.get("phase") == "polynomial_range"])
+    range_rows = [row for row in trace if row.get("phase") == "polynomial_range"]
+    _write_jsonl(output_dir / "range_contexts.jsonl", range_rows)
+    _write_jsonl(output_dir / "range_context_trace.jsonl", range_rows)
+    _write_jsonl(output_dir / "horner_stage_trace.jsonl", stage_rows)
     _write_json(
         output_dir / "range_leaves.json",
         {
@@ -275,11 +310,28 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--range-method", choices=("natural", "subdivision", "adaptive_subdivision"), default="natural")
+    parser.add_argument(
+        "--range-method",
+        choices=(
+            "natural",
+            "subdivision",
+            "adaptive_subdivision",
+            "horner_fixed",
+            "horner_registered_best",
+            "subdivision_then_horner",
+            "horner_per_leaf",
+        ),
+        default="natural",
+    )
     parser.add_argument("--subdivision-depth", type=int, default=0)
     parser.add_argument("--max-leaves", type=int, default=64)
     parser.add_argument("--split-vars", default="0,1")
     parser.add_argument("--named-contexts", default="", help="optional comma-separated range contexts")
+    parser.add_argument(
+        "--variable-orders",
+        default="0,1,2;1,0,2;2,0,1",
+        help="semicolon-separated Horner variable permutations",
+    )
     parser.add_argument(
         "--trigger",
         choices=("always", "on_validation_failure", "proactive_depth1_on_named_contexts"),

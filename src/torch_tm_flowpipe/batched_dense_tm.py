@@ -190,6 +190,16 @@ class DenseRemainderLedger:
             for name, (lo, hi) in self.entries.items()
         }
 
+    def intervals(self) -> dict[str, dict[str, list[list[float]]]]:
+        return {
+            name: {
+                "lo": lo.detach().cpu().tolist(),
+                "hi": hi.detach().cpu().tolist(),
+                "width": (hi - lo).detach().cpu().tolist(),
+            }
+            for name, (lo, hi) in self.entries.items()
+        }
+
 
 def _as_device(device: torch.device | str | None) -> torch.device:
     return torch.device("cpu") if device is None else torch.device(device)
@@ -356,6 +366,369 @@ def _range_for_terms(
     return _down(lo_sum - roundoff), _up(hi_sum + roundoff)
 
 
+def _tensor_sha256(value: torch.Tensor) -> str:
+    tensor = value.detach().cpu().contiguous()
+    return hashlib.sha256(tensor.numpy().tobytes()).hexdigest()
+
+
+def _interval_is_valid(lo: torch.Tensor, hi: torch.Tensor) -> bool:
+    return bool(
+        torch.all(torch.isfinite(lo))
+        and torch.all(torch.isfinite(hi))
+        and torch.all(lo <= hi)
+    )
+
+
+@dataclass(frozen=True)
+class DenseCanonicalPolynomial:
+    """Deterministic exponent-grouped coefficient intervals.
+
+    The input float coefficients are treated as exact binary64 values.  Equal
+    exponents are aggregated in original term-index order with an outward
+    interval addition at every step.  Consequently cancellation cannot erase
+    the aggregation error, and no assumption is made that ``scatter_add`` is
+    an exact reduction.
+    """
+
+    coefficient_lo: torch.Tensor
+    coefficient_hi: torch.Tensor
+    exponents: torch.Tensor
+    exponent_tuples: tuple[tuple[int, ...], ...]
+    source_term_count: int
+    unique_term_count: int
+    duplicate_group_count: int
+    coefficient_interval_sha256: str
+    exponent_sha256: str
+    safeguard: str = "sequential_original_index_interval_add_nextafter"
+
+
+def canonicalize_dense_polynomial(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+) -> DenseCanonicalPolynomial:
+    """Canonicalize a generic dense polynomial without mutating its tensors."""
+    if coeffs.ndim != 3 or exponents.ndim != 2:
+        raise ValueError("canonicalization expects coeffs [batch,output,term] and exponents [term,var]")
+    if coeffs.shape[-1] != exponents.shape[0]:
+        raise ValueError("canonicalization coefficient/exponent term mismatch")
+    if not torch.is_floating_point(coeffs):
+        raise TypeError("canonicalization coefficients must use a floating dtype")
+    if not bool(torch.all(torch.isfinite(coeffs))):
+        raise FloatingPointError("canonicalization coefficients must be finite")
+    exponents_cpu = exponents.detach().cpu().to(dtype=torch.long)
+    if bool(torch.any(exponents_cpu < 0)):
+        raise ValueError("polynomial exponents must be nonnegative")
+    exponent_rows = tuple(tuple(int(item) for item in row) for row in exponents_cpu.tolist())
+    unique_rows = tuple(sorted(set(exponent_rows)))
+    members = {row: [] for row in unique_rows}
+    for term_index, row in enumerate(exponent_rows):
+        members[row].append(term_index)
+
+    coefficient_lows: list[torch.Tensor] = []
+    coefficient_highs: list[torch.Tensor] = []
+    for row in unique_rows:
+        indices = members[row]
+        first = coeffs[..., indices[0]]
+        aggregate_lo = first.clone()
+        aggregate_hi = first.clone()
+        for term_index in indices[1:]:
+            coefficient = coeffs[..., term_index]
+            aggregate_lo, aggregate_hi = _interval_add(
+                aggregate_lo,
+                aggregate_hi,
+                coefficient,
+                coefficient,
+            )
+        coefficient_lows.append(aggregate_lo)
+        coefficient_highs.append(aggregate_hi)
+
+    if unique_rows:
+        coefficient_lo = torch.stack(coefficient_lows, dim=-1)
+        coefficient_hi = torch.stack(coefficient_highs, dim=-1)
+        canonical_exponents = torch.as_tensor(unique_rows, dtype=torch.long, device=exponents.device)
+    else:
+        coefficient_lo = torch.empty((*coeffs.shape[:-1], 0), dtype=coeffs.dtype, device=coeffs.device)
+        coefficient_hi = coefficient_lo.clone()
+        canonical_exponents = torch.empty((0, exponents.shape[1]), dtype=torch.long, device=exponents.device)
+    if not _interval_is_valid(coefficient_lo, coefficient_hi):
+        raise FloatingPointError("canonical coefficient aggregation produced an invalid interval")
+    coefficient_hash = hashlib.sha256(
+        coefficient_lo.detach().cpu().contiguous().numpy().tobytes()
+        + coefficient_hi.detach().cpu().contiguous().numpy().tobytes()
+    ).hexdigest()
+    return DenseCanonicalPolynomial(
+        coefficient_lo,
+        coefficient_hi,
+        canonical_exponents,
+        unique_rows,
+        int(coeffs.shape[-1]),
+        len(unique_rows),
+        sum(len(indices) > 1 for indices in members.values()),
+        coefficient_hash,
+        _tensor_sha256(canonical_exponents),
+    )
+
+
+def registered_dense_horner_orders(dim: int) -> tuple[tuple[int, ...], ...]:
+    """Return the finite generic order family used by production selection.
+
+    For three variables this is exactly ``(u0,u1,tau)``, ``(u1,u0,tau)``,
+    and ``(tau,u0,u1)``.  The construction remains valid for any positive
+    dimension and removes duplicate permutations for dimensions one and two.
+    """
+    if int(dim) <= 0:
+        raise ValueError("Horner variable dimension must be positive")
+    natural = tuple(range(int(dim)))
+    swapped = ((1, 0, *range(2, int(dim)))) if int(dim) >= 2 else natural
+    last_first = (int(dim) - 1, *range(0, int(dim) - 1))
+    ordered: list[tuple[int, ...]] = []
+    for candidate in (natural, tuple(swapped), tuple(last_first)):
+        if candidate not in ordered:
+            ordered.append(candidate)
+    return tuple(ordered)
+
+
+def _validate_variable_order(order: Sequence[int], dim: int) -> tuple[int, ...]:
+    normalized = tuple(int(index) for index in order)
+    if len(normalized) != int(dim) or tuple(sorted(normalized)) != tuple(range(int(dim))):
+        raise ValueError(f"Horner variable order must be a permutation of range({int(dim)})")
+    return normalized
+
+
+@dataclass(frozen=True)
+class DenseHornerOrderResult:
+    lo: torch.Tensor
+    hi: torch.Tensor
+    variable_order: tuple[int, ...]
+    stages: tuple[Mapping[str, Any], ...]
+    reconstructed_exponents: tuple[tuple[int, ...], ...]
+    reconstruction_valid: bool
+    validated: bool
+    fallback_reason: str
+    canonical: DenseCanonicalPolynomial
+
+
+def _evaluate_canonical_horner_range(
+    canonical: DenseCanonicalPolynomial,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    variable_order: Sequence[int],
+    *,
+    scope: str = "whole_domain",
+) -> DenseHornerOrderResult:
+    dim = int(canonical.exponents.shape[1])
+    order = _validate_variable_order(variable_order, dim)
+    lo = domain_lo.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
+    hi = domain_hi.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
+    expected_domain_shape = (canonical.coefficient_lo.shape[0], dim)
+    if lo.shape != expected_domain_shape or hi.shape != expected_domain_shape:
+        raise ValueError(f"Horner domains must have shape {expected_domain_shape}")
+    if not bool(torch.all(torch.isfinite(lo)) and torch.all(torch.isfinite(hi))):
+        raise FloatingPointError("Horner domains must be finite")
+    if not bool(torch.all(lo <= hi)):
+        raise ValueError("Horner domain lower bounds must not exceed upper bounds")
+
+    stages: list[Mapping[str, Any]] = []
+    visited: list[tuple[int, ...]] = []
+    zero = torch.zeros(canonical.coefficient_lo.shape[:2], dtype=lo.dtype, device=lo.device)
+
+    def recurse(term_indices: tuple[int, ...], depth: int, path: tuple[tuple[int, int], ...]) -> tuple[torch.Tensor, torch.Tensor]:
+        if not term_indices:
+            return zero, zero
+        if depth == dim:
+            if len(term_indices) != 1:
+                raise RuntimeError("canonical Horner leaf does not contain exactly one exponent")
+            term_index = term_indices[0]
+            exponent = canonical.exponent_tuples[term_index]
+            visited.append(exponent)
+            return canonical.coefficient_lo[..., term_index], canonical.coefficient_hi[..., term_index]
+
+        variable = order[depth]
+        groups: dict[int, list[int]] = {}
+        for term_index in term_indices:
+            degree = canonical.exponent_tuples[term_index][variable]
+            groups.setdefault(degree, []).append(term_index)
+        coefficients = {
+            degree: recurse(tuple(groups[degree]), depth + 1, path + ((variable, degree),))
+            for degree in sorted(groups)
+        }
+        maximum_degree = max(coefficients)
+        accumulator_lo, accumulator_hi = coefficients[maximum_degree]
+        stages.append(
+            {
+                "scope": scope,
+                "stage_depth": depth,
+                "variable": variable,
+                "degree": maximum_degree,
+                "path": [list(item) for item in path],
+                "operation": "seed",
+                "coefficient_lo": accumulator_lo.detach().cpu().tolist(),
+                "coefficient_hi": accumulator_hi.detach().cpu().tolist(),
+                "intermediate_lo": accumulator_lo.detach().cpu().tolist(),
+                "intermediate_hi": accumulator_hi.detach().cpu().tolist(),
+                "safeguard": "canonical_coefficient_interval",
+            }
+        )
+        variable_lo = lo[:, variable].view(-1, 1)
+        variable_hi = hi[:, variable].view(-1, 1)
+        for degree in range(maximum_degree - 1, -1, -1):
+            prior_lo, prior_hi = accumulator_lo, accumulator_hi
+            product_lo, product_hi = _interval_mul(prior_lo, prior_hi, variable_lo, variable_hi)
+            coefficient_lo, coefficient_hi = coefficients.get(degree, (zero, zero))
+            accumulator_lo, accumulator_hi = _interval_add(
+                product_lo,
+                product_hi,
+                coefficient_lo,
+                coefficient_hi,
+            )
+            stages.append(
+                {
+                    "scope": scope,
+                    "stage_depth": depth,
+                    "variable": variable,
+                    "degree": degree,
+                    "path": [list(item) for item in path],
+                    "operation": "multiply_add",
+                    "prior_lo": prior_lo.detach().cpu().tolist(),
+                    "prior_hi": prior_hi.detach().cpu().tolist(),
+                    "variable_lo": variable_lo.detach().cpu().tolist(),
+                    "variable_hi": variable_hi.detach().cpu().tolist(),
+                    "product_lo": product_lo.detach().cpu().tolist(),
+                    "product_hi": product_hi.detach().cpu().tolist(),
+                    "coefficient_lo": coefficient_lo.detach().cpu().tolist(),
+                    "coefficient_hi": coefficient_hi.detach().cpu().tolist(),
+                    "intermediate_lo": accumulator_lo.detach().cpu().tolist(),
+                    "intermediate_hi": accumulator_hi.detach().cpu().tolist(),
+                    "safeguard": "nextafter_each_interval_multiply_and_add",
+                }
+            )
+        return accumulator_lo, accumulator_hi
+
+    if canonical.unique_term_count == 0:
+        result_lo, result_hi = zero, zero
+    else:
+        result_lo, result_hi = recurse(tuple(range(canonical.unique_term_count)), 0, ())
+    reconstructed = tuple(sorted(visited))
+    reconstruction_valid = reconstructed == canonical.exponent_tuples
+    interval_valid = _interval_is_valid(result_lo, result_hi)
+    validated = bool(reconstruction_valid and interval_valid)
+    reasons = []
+    if not reconstruction_valid:
+        reasons.append("exponent coverage/reconstruction mismatch")
+    if not interval_valid:
+        reasons.append("nonfinite or inverted Horner interval")
+    return DenseHornerOrderResult(
+        result_lo,
+        result_hi,
+        order,
+        tuple(stages),
+        reconstructed,
+        reconstruction_valid,
+        validated,
+        "; ".join(reasons),
+        canonical,
+    )
+
+
+def evaluate_dense_horner_range(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    variable_order: Sequence[int],
+    *,
+    scope: str = "whole_domain",
+) -> DenseHornerOrderResult:
+    """Evaluate one specified multivariate Horner factorization."""
+    return _evaluate_canonical_horner_range(
+        canonicalize_dense_polynomial(coeffs, exponents),
+        domain_lo,
+        domain_hi,
+        variable_order,
+        scope=scope,
+    )
+
+
+@dataclass(frozen=True)
+class DenseRegisteredHornerResult:
+    lo: torch.Tensor
+    hi: torch.Tensor
+    order_results: tuple[DenseHornerOrderResult, ...]
+    selected_order_index: torch.Tensor
+    validated: bool
+    fallback_reason: str
+
+
+def _evaluate_registered_horner_canonical(
+    canonical: DenseCanonicalPolynomial,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    variable_orders: Sequence[Sequence[int]],
+    *,
+    scope: str,
+) -> DenseRegisteredHornerResult:
+    dim = int(canonical.exponents.shape[1])
+    orders = tuple(sorted({_validate_variable_order(order, dim) for order in variable_orders}))
+    if not orders:
+        raise ValueError("registered Horner evaluation requires at least one variable order")
+    results: list[DenseHornerOrderResult] = []
+    failures: list[str] = []
+    for order in orders:
+        try:
+            result = _evaluate_canonical_horner_range(
+                canonical,
+                domain_lo,
+                domain_hi,
+                order,
+                scope=scope,
+            )
+        except (FloatingPointError, RuntimeError, ValueError) as exc:
+            failures.append(f"{list(order)}:{type(exc).__name__}:{exc}")
+            continue
+        results.append(result)
+        if not result.validated:
+            failures.append(f"{list(order)}:{result.fallback_reason}")
+    valid_results = [(index, result) for index, result in enumerate(results) if result.validated]
+    if not valid_results:
+        shape = canonical.coefficient_lo.shape[:2]
+        nan = torch.full(shape, torch.nan, dtype=canonical.coefficient_lo.dtype, device=canonical.coefficient_lo.device)
+        selected = torch.full(shape, -1, dtype=torch.long, device=canonical.coefficient_lo.device)
+        return DenseRegisteredHornerResult(nan, nan.clone(), tuple(results), selected, False, "; ".join(failures) or "no valid Horner order")
+
+    first_index, first_result = valid_results[0]
+    best_lo = first_result.lo
+    best_hi = first_result.hi
+    selected_index = torch.full(best_lo.shape, first_index, dtype=torch.long, device=best_lo.device)
+    for result_index, result in valid_results[1:]:
+        use_result = (result.hi - result.lo) < (best_hi - best_lo)
+        best_lo = torch.where(use_result, result.lo, best_lo)
+        best_hi = torch.where(use_result, result.hi, best_hi)
+        selected_index = torch.where(use_result, torch.full_like(selected_index, result_index), selected_index)
+    return DenseRegisteredHornerResult(
+        best_lo,
+        best_hi,
+        tuple(results),
+        selected_index,
+        True,
+        "; ".join(failures),
+    )
+
+
+def evaluate_dense_registered_horner_range(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    variable_orders: Sequence[Sequence[int]] | None = None,
+    *,
+    scope: str = "whole_domain",
+) -> DenseRegisteredHornerResult:
+    """Evaluate every pre-registered order and select width/lexicographically."""
+    canonical = canonicalize_dense_polynomial(coeffs, exponents)
+    orders = variable_orders or registered_dense_horner_orders(exponents.shape[1])
+    return _evaluate_registered_horner_canonical(canonical, domain_lo, domain_hi, orders, scope=scope)
+
+
 @dataclass(frozen=True)
 class DenseRangePolicy:
     """Explicit polynomial range semantics for the dense core."""
@@ -366,10 +739,20 @@ class DenseRangePolicy:
     split_vars: tuple[int, ...] = (0, 1)
     trigger: str = "always"
     named_contexts: tuple[str, ...] = ()
+    variable_orders: tuple[tuple[int, ...], ...] = ()
 
     def __post_init__(self) -> None:
-        if self.method not in {"natural", "subdivision", "adaptive_subdivision"}:
-            raise ValueError("dense range method must be natural, subdivision, or adaptive_subdivision")
+        supported = {
+            "natural",
+            "subdivision",
+            "adaptive_subdivision",
+            "horner_fixed",
+            "horner_registered_best",
+            "subdivision_then_horner",
+            "horner_per_leaf",
+        }
+        if self.method not in supported:
+            raise ValueError(f"dense range method must be one of {sorted(supported)}")
         if self.max_depth < 0:
             raise ValueError("dense range max_depth must be nonnegative")
         if self.max_leaves <= 0 or self.max_leaves > 64:
@@ -378,6 +761,12 @@ class DenseRangePolicy:
             raise ValueError("dense range split_vars must be unique")
         if self.trigger not in {"always", "on_validation_failure", "proactive_depth1_on_named_contexts"}:
             raise ValueError("invalid dense range trigger")
+        normalized_orders = tuple(tuple(int(index) for index in order) for order in self.variable_orders)
+        if len(set(normalized_orders)) != len(normalized_orders):
+            raise ValueError("dense Horner variable orders must be unique")
+        if any(len(set(order)) != len(order) for order in normalized_orders):
+            raise ValueError("each dense Horner variable order must contain unique indices")
+        object.__setattr__(self, "variable_orders", normalized_orders)
 
     def applies_to(self, context: str) -> bool:
         return self.method != "natural" and (not self.named_contexts or context in self.named_contexts)
@@ -401,11 +790,16 @@ class DensePolynomialRangeResult:
     natural_hi: torch.Tensor
     subdivision_lo: torch.Tensor
     subdivision_hi: torch.Tensor
+    horner_lo: torch.Tensor
+    horner_hi: torch.Tensor
     selected_lo: torch.Tensor
     selected_hi: torch.Tensor
     selected_method: str
     cover: DenseSubdivisionCover
     coverage_report: Mapping[str, Any]
+    horner_report: Mapping[str, Any]
+    horner_stages: tuple[Mapping[str, Any], ...]
+    fallback_reason: str
     timings: Mapping[str, float]
     wall_s: float
 
@@ -593,6 +987,128 @@ def validate_dense_subdivision_cover(
     }
 
 
+def _identity_dense_cover(
+    coeffs: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+) -> tuple[DenseSubdivisionCover, Mapping[str, Any]]:
+    owner = torch.arange(coeffs.shape[0], dtype=torch.long, device=coeffs.device)
+    cover = DenseSubdivisionCover(
+        domain_lo.clone(),
+        domain_hi.clone(),
+        owner,
+        0,
+        tuple(1 for _ in range(coeffs.shape[0])),
+        tuple(() for _ in range(coeffs.shape[0])),
+    )
+    return cover, validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
+
+
+def _range_for_canonical_terms(
+    canonical: DenseCanonicalPolynomial,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Natural monomial range with interval-valued canonical coefficients."""
+    if canonical.unique_term_count == 0:
+        zero = torch.zeros(
+            canonical.coefficient_lo.shape[:2],
+            dtype=canonical.coefficient_lo.dtype,
+            device=canonical.coefficient_lo.device,
+        )
+        return zero, zero
+    lo = domain_lo.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
+    hi = domain_hi.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
+    monomial_lo, monomial_hi = _monomial_interval_bounds_for_exponents(lo, hi, canonical.exponents)
+    term_lo, term_hi = _interval_mul(
+        canonical.coefficient_lo,
+        canonical.coefficient_hi,
+        monomial_lo[:, None, :],
+        monomial_hi[:, None, :],
+    )
+    result_lo = term_lo[..., 0]
+    result_hi = term_hi[..., 0]
+    for term_index in range(1, canonical.unique_term_count):
+        result_lo, result_hi = _interval_add(
+            result_lo,
+            result_hi,
+            term_lo[..., term_index],
+            term_hi[..., term_index],
+        )
+    return result_lo, result_hi
+
+
+def _policy_horner_orders(policy: DenseRangePolicy, dim: int) -> tuple[tuple[int, ...], ...]:
+    registered = policy.variable_orders or registered_dense_horner_orders(dim)
+    validated = tuple(_validate_variable_order(order, dim) for order in registered)
+    if policy.method == "horner_fixed":
+        return (validated[0],)
+    return validated
+
+
+def _horner_report(
+    result: DenseRegisteredHornerResult,
+    *,
+    requested_orders: Sequence[Sequence[int]],
+) -> tuple[dict[str, Any], tuple[Mapping[str, Any], ...]]:
+    orders: list[dict[str, Any]] = []
+    stages: list[Mapping[str, Any]] = []
+    for order_index, order_result in enumerate(result.order_results):
+        selected_mask = result.selected_order_index == order_index
+        orders.append(
+            {
+                "variable_order": list(order_result.variable_order),
+                "lo": order_result.lo.detach().cpu().tolist(),
+                "hi": order_result.hi.detach().cpu().tolist(),
+                "width": (order_result.hi - order_result.lo).detach().cpu().tolist(),
+                "validated": order_result.validated,
+                "reconstruction_valid": order_result.reconstruction_valid,
+                "fallback_reason": order_result.fallback_reason,
+                "selected_mask": selected_mask.detach().cpu().tolist(),
+                "canonical_coefficient_interval_sha256": order_result.canonical.coefficient_interval_sha256,
+                "canonical_exponent_sha256": order_result.canonical.exponent_sha256,
+                "source_term_count": order_result.canonical.source_term_count,
+                "unique_term_count": order_result.canonical.unique_term_count,
+                "duplicate_group_count": order_result.canonical.duplicate_group_count,
+                "coefficient_aggregation_safeguard": order_result.canonical.safeguard,
+            }
+        )
+        for stage_index, stage in enumerate(order_result.stages):
+            stages.append(
+                {
+                    "variable_order": list(order_result.variable_order),
+                    "order_result_index": order_index,
+                    "stage_index": stage_index,
+                    **stage,
+                }
+            )
+    report = {
+        "requested": True,
+        "validated": result.validated,
+        "fallback_reason": result.fallback_reason,
+        "requested_orders": [list(order) for order in requested_orders],
+        "selection_rule": "minimum_width_then_lexicographic_variable_order",
+        "selected_order_index": result.selected_order_index.detach().cpu().tolist(),
+        "orders": orders,
+    }
+    return report, tuple(stages)
+
+
+def _hull_owner_intervals(
+    leaf_lo: torch.Tensor,
+    leaf_hi: torch.Tensor,
+    owner: torch.Tensor,
+    owner_count: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    hull_shape = (int(owner_count), leaf_lo.shape[1])
+    hull_lo = torch.full(hull_shape, torch.inf, dtype=leaf_lo.dtype, device=leaf_lo.device)
+    hull_hi = torch.full(hull_shape, -torch.inf, dtype=leaf_hi.dtype, device=leaf_hi.device)
+    hull_index = owner.view(-1, 1).expand(-1, leaf_lo.shape[1])
+    hull_lo.scatter_reduce_(0, hull_index, leaf_lo, reduce="amin", include_self=True)
+    hull_hi.scatter_reduce_(0, hull_index, leaf_hi, reduce="amax", include_self=True)
+    return _down(hull_lo), _up(hull_hi)
+
+
 def _range_for_terms_with_policy(
     coeffs: torch.Tensor,
     exponents: torch.Tensor,
@@ -605,22 +1121,50 @@ def _range_for_terms_with_policy(
 ) -> DensePolynomialRangeResult:
     started = time.perf_counter()
     natural_started = time.perf_counter()
-    natural_lo, natural_hi = _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
-    natural_range_s = time.perf_counter() - natural_started
-    if not policy.applies_to(context) or policy.max_depth == 0:
-        cover_started = time.perf_counter()
-        owner = torch.arange(coeffs.shape[0], dtype=torch.long, device=coeffs.device)
-        cover = DenseSubdivisionCover(domain_lo.clone(), domain_hi.clone(), owner, 0, tuple(1 for _ in range(coeffs.shape[0])), tuple(() for _ in range(coeffs.shape[0])))
-        report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
-        timings = {
-            "natural_range_s": natural_range_s,
-            "cover_validation_s": time.perf_counter() - cover_started,
-            "leaf_evaluation_s": 0.0,
-            "hull_s": 0.0,
-            "selection_s": 0.0,
-        }
-        result = DensePolynomialRangeResult(natural_lo, natural_hi, natural_lo, natural_hi, natural_lo, natural_hi, "natural", cover, report, timings, time.perf_counter() - started)
+    horner_method = policy.method in {
+        "horner_fixed",
+        "horner_registered_best",
+        "subdivision_then_horner",
+        "horner_per_leaf",
+    }
+    canonical: DenseCanonicalPolynomial | None = None
+    if policy.applies_to(context) and horner_method:
+        canonical = canonicalize_dense_polynomial(coeffs, exponents)
+        natural_lo, natural_hi = _range_for_canonical_terms(canonical, domain_lo, domain_hi)
     else:
+        natural_lo, natural_hi = _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+    natural_range_s = time.perf_counter() - natural_started
+    natural_valid = _interval_is_valid(natural_lo, natural_hi)
+    subdivision_method = policy.method in {"subdivision", "adaptive_subdivision"}
+    if not natural_valid and not subdivision_method:
+        raise FloatingPointError("natural polynomial range failed finite/ordering validation")
+
+    cover_started = time.perf_counter()
+    cover, report = _identity_dense_cover(coeffs, domain_lo, domain_hi)
+    cover_validation_s = time.perf_counter() - cover_started
+    horner_report: Mapping[str, Any] = {
+        "requested": False,
+        "validated": False,
+        "fallback_reason": "Horner not requested for this named context",
+        "requested_orders": [],
+        "orders": [],
+    }
+    horner_stages: tuple[Mapping[str, Any], ...] = ()
+    horner_lo, horner_hi = natural_lo, natural_hi
+    subdivision_lo, subdivision_hi = natural_lo, natural_hi
+    selected_lo, selected_hi = natural_lo, natural_hi
+    selected_method = "natural"
+    fallback_reason = ""
+    leaf_evaluation_s = 0.0
+    hull_s = 0.0
+    horner_range_s = 0.0
+    selection_s = 0.0
+
+    applies = policy.applies_to(context)
+    combined_method = policy.method in {"subdivision_then_horner", "horner_per_leaf"}
+    if not applies or (subdivision_method and policy.max_depth == 0):
+        pass
+    elif subdivision_method:
         cover_started = time.perf_counter()
         cover = build_dense_subdivision_cover(
             coeffs,
@@ -638,35 +1182,162 @@ def _range_for_terms_with_policy(
         leaf_started = time.perf_counter()
         leaf_coeffs = coeffs.index_select(0, cover.owner)
         leaf_lo, leaf_hi = _range_for_terms(leaf_coeffs, exponents, cover.lo, cover.hi)
-        if not bool(torch.all(torch.isfinite(leaf_lo)) and torch.all(torch.isfinite(leaf_hi))):
+        if not _interval_is_valid(leaf_lo, leaf_hi):
             raise FloatingPointError("non-finite subdivision leaf range")
+        if not natural_valid:
+            raise FloatingPointError("natural polynomial range failed finite/ordering validation")
         leaf_evaluation_s = time.perf_counter() - leaf_started
         hull_started = time.perf_counter()
-        hull_lo = torch.full_like(natural_lo, torch.inf)
-        hull_hi = torch.full_like(natural_hi, -torch.inf)
-        hull_index = cover.owner.view(-1, 1).expand(-1, coeffs.shape[1])
-        hull_lo.scatter_reduce_(0, hull_index, leaf_lo, reduce="amin", include_self=True)
-        hull_hi.scatter_reduce_(0, hull_index, leaf_hi, reduce="amax", include_self=True)
-        hull_lo, hull_hi = _down(hull_lo), _up(hull_hi)
+        subdivision_lo, subdivision_hi = _hull_owner_intervals(
+            leaf_lo,
+            leaf_hi,
+            cover.owner,
+            coeffs.shape[0],
+        )
         hull_s = time.perf_counter() - hull_started
         selection_started = time.perf_counter()
-        use_subdivision = (hull_hi - hull_lo) <= (natural_hi - natural_lo)
-        selected_lo = torch.where(use_subdivision, hull_lo, natural_lo)
-        selected_hi = torch.where(use_subdivision, hull_hi, natural_hi)
+        use_subdivision = (subdivision_hi - subdivision_lo) <= (natural_hi - natural_lo)
+        selected_lo = torch.where(use_subdivision, subdivision_lo, natural_lo)
+        selected_hi = torch.where(use_subdivision, subdivision_hi, natural_hi)
         if bool(torch.all(use_subdivision)):
             selected_method = "subdivision"
         elif bool(torch.any(use_subdivision)):
             selected_method = "mixed_natural_subdivision"
         else:
             selected_method = "natural_subdivision_wider"
-        timings = {
-            "natural_range_s": natural_range_s,
-            "cover_validation_s": cover_validation_s,
-            "leaf_evaluation_s": leaf_evaluation_s,
-            "hull_s": hull_s,
-            "selection_s": time.perf_counter() - selection_started,
-        }
-        result = DensePolynomialRangeResult(natural_lo, natural_hi, hull_lo, hull_hi, selected_lo, selected_hi, selected_method, cover, report, timings, time.perf_counter() - started)
+            fallback_reason = "validated subdivision enclosure is wider than natural"
+        selection_s = time.perf_counter() - selection_started
+    elif horner_method:
+        assert canonical is not None
+        orders = _policy_horner_orders(policy, exponents.shape[1])
+        horner_started = time.perf_counter()
+        registered = _evaluate_registered_horner_canonical(
+            canonical,
+            domain_lo,
+            domain_hi,
+            orders,
+            scope="whole_domain",
+        )
+        horner_range_s = time.perf_counter() - horner_started
+        report_value, stage_value = _horner_report(registered, requested_orders=orders)
+        horner_report = report_value
+        horner_stages = stage_value
+        if registered.validated:
+            horner_lo, horner_hi = registered.lo, registered.hi
+            selection_started = time.perf_counter()
+            use_horner = (horner_hi - horner_lo) <= (natural_hi - natural_lo)
+            selected_lo = torch.where(use_horner, horner_lo, natural_lo)
+            selected_hi = torch.where(use_horner, horner_hi, natural_hi)
+            if bool(torch.all(use_horner)):
+                selected_method = "horner_fixed" if policy.method == "horner_fixed" else "horner_registered_best"
+            elif bool(torch.any(use_horner)):
+                selected_method = "mixed_natural_horner"
+            else:
+                selected_method = "natural_horner_wider"
+                fallback_reason = "validated Horner enclosure is wider than natural"
+            selection_s = time.perf_counter() - selection_started
+        else:
+            fallback_reason = f"explicit natural fallback: {registered.fallback_reason}"
+
+        if combined_method and registered.validated and policy.max_depth > 0:
+            cover_started = time.perf_counter()
+            cover = build_dense_subdivision_cover(
+                coeffs,
+                exponents,
+                domain_lo,
+                domain_hi,
+                depth=policy.max_depth,
+                max_leaves=policy.max_leaves,
+                split_vars=policy.split_vars,
+            )
+            report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
+            if not report["valid"]:
+                raise RuntimeError(f"invalid subdivision cover: {report['reasons']}")
+            cover_validation_s = time.perf_counter() - cover_started
+            leaf_started = time.perf_counter()
+            leaf_coeffs = coeffs.index_select(0, cover.owner)
+            leaf_canonical = canonicalize_dense_polynomial(leaf_coeffs, exponents)
+            leaf_natural_lo, leaf_natural_hi = _range_for_canonical_terms(
+                leaf_canonical,
+                cover.lo,
+                cover.hi,
+            )
+            if not _interval_is_valid(leaf_natural_lo, leaf_natural_hi):
+                raise FloatingPointError("per-leaf natural polynomial range failed validation")
+            leaf_registered = _evaluate_registered_horner_canonical(
+                leaf_canonical,
+                cover.lo,
+                cover.hi,
+                orders,
+                scope="subdivision_leaf",
+            )
+            if not leaf_registered.validated:
+                fallback_reason = f"explicit whole-domain fallback: invalid per-leaf Horner: {leaf_registered.fallback_reason}"
+            else:
+                leaf_report, leaf_stages = _horner_report(leaf_registered, requested_orders=orders)
+                use_leaf_horner = (
+                    (leaf_registered.hi - leaf_registered.lo)
+                    <= (leaf_natural_hi - leaf_natural_lo)
+                )
+                leaf_selected_lo = torch.where(use_leaf_horner, leaf_registered.lo, leaf_natural_lo)
+                leaf_selected_hi = torch.where(use_leaf_horner, leaf_registered.hi, leaf_natural_hi)
+                horner_report = {
+                    **dict(horner_report),
+                    "per_leaf": {
+                        **leaf_report,
+                        "natural_lo": leaf_natural_lo.detach().cpu().tolist(),
+                        "natural_hi": leaf_natural_hi.detach().cpu().tolist(),
+                        "natural_width": (leaf_natural_hi - leaf_natural_lo).detach().cpu().tolist(),
+                        "horner_selected_mask": use_leaf_horner.detach().cpu().tolist(),
+                        "sound_selection_rule": "validated_horner_and_width_not_greater_than_natural_per_leaf",
+                    },
+                }
+                horner_stages = (*horner_stages, *leaf_stages)
+                leaf_evaluation_s = time.perf_counter() - leaf_started
+                hull_started = time.perf_counter()
+                subdivision_lo, subdivision_hi = _hull_owner_intervals(
+                    leaf_selected_lo,
+                    leaf_selected_hi,
+                    cover.owner,
+                    coeffs.shape[0],
+                )
+                hull_s = time.perf_counter() - hull_started
+                selection_started = time.perf_counter()
+                use_combined = (subdivision_hi - subdivision_lo) < (selected_hi - selected_lo)
+                selected_lo = torch.where(use_combined, subdivision_lo, selected_lo)
+                selected_hi = torch.where(use_combined, subdivision_hi, selected_hi)
+                if bool(torch.all(use_combined)):
+                    selected_method = "subdivision_then_horner"
+                elif bool(torch.any(use_combined)):
+                    selected_method = "mixed_natural_horner_subdivision"
+                selection_s += time.perf_counter() - selection_started
+
+    timings = {
+        "natural_range_s": natural_range_s,
+        "horner_range_s": horner_range_s,
+        "cover_validation_s": cover_validation_s,
+        "leaf_evaluation_s": leaf_evaluation_s,
+        "hull_s": hull_s,
+        "selection_s": selection_s,
+    }
+    result = DensePolynomialRangeResult(
+        natural_lo=natural_lo,
+        natural_hi=natural_hi,
+        subdivision_lo=subdivision_lo,
+        subdivision_hi=subdivision_hi,
+        horner_lo=horner_lo,
+        horner_hi=horner_hi,
+        selected_lo=selected_lo,
+        selected_hi=selected_hi,
+        selected_method=selected_method,
+        cover=cover,
+        coverage_report=report,
+        horner_report=horner_report,
+        horner_stages=horner_stages,
+        fallback_reason=fallback_reason,
+        timings=timings,
+        wall_s=time.perf_counter() - started,
+    )
     if trace is not None:
         trace.append(
             {
@@ -680,6 +1351,12 @@ def _range_for_terms_with_policy(
                 "tightened_lo": result.subdivision_lo.detach().cpu().tolist(),
                 "tightened_hi": result.subdivision_hi.detach().cpu().tolist(),
                 "tightened_width": (result.subdivision_hi - result.subdivision_lo).detach().cpu().tolist(),
+                "horner_lo": result.horner_lo.detach().cpu().tolist(),
+                "horner_hi": result.horner_hi.detach().cpu().tolist(),
+                "horner_width": (result.horner_hi - result.horner_lo).detach().cpu().tolist(),
+                "horner": result.horner_report,
+                "horner_stages": list(result.horner_stages),
+                "fallback_reason": result.fallback_reason,
                 "selected_lo": result.selected_lo.detach().cpu().tolist(),
                 "selected_hi": result.selected_hi.detach().cpu().tolist(),
                 "selected_width": (result.selected_hi - result.selected_lo).detach().cpu().tolist(),
@@ -688,6 +1365,8 @@ def _range_for_terms_with_policy(
                 "split_variables": [list(items) for items in result.cover.split_variables],
                 "depth": int(result.cover.requested_depth),
                 "coverage_valid": bool(result.coverage_report["valid"]),
+                "natural_validated": _interval_is_valid(result.natural_lo, result.natural_hi),
+                "horner_validated": bool(result.horner_report.get("validated", False)),
                 "finite": bool(torch.all(torch.isfinite(result.selected_lo)) and torch.all(torch.isfinite(result.selected_hi))),
                 "device": str(coeffs.device),
                 **result.timings,
@@ -1158,7 +1837,15 @@ class BatchedPolynomial:
             zeros = torch.zeros(products.shape[:-1], dtype=self.coeffs.dtype, device=self.coeffs.device)
             return poly, zeros, zeros
         dropped = self.coeffs.index_select(-1, dropped_left) * other_coeffs.index_select(-1, dropped_right)
-        if dropped_merge_mode == "merged":
+        policy = range_policy or DenseRangePolicy()
+        factorized_method = policy.method in {
+            "horner_fixed",
+            "horner_registered_best",
+            "subdivision_then_horner",
+            "horner_per_leaf",
+        }
+        factorized_context = factorized_method and policy.applies_to(range_context)
+        if dropped_merge_mode == "merged" and not factorized_context:
             dropped = _merge_coefficients_by_index(
                 dropped,
                 dropped_merge,
@@ -1166,16 +1853,14 @@ class BatchedPolynomial:
             )
             dropped_exponents = dropped_unique_exponents
         else:
-            # Reconstruct the route-level exponents for the diagnostic-only
-            # termwise bound.  The production default is exponent-grouped.
-            dropped_exponents = torch.cat(
-                [
-                    basis.exponents.index_select(0, basis.mul_out_indices[basis.degree.index_select(0, basis.mul_out_indices) > (basis.order if max_degree is None else int(max_degree))]),
-                    basis.trunc_exponents,
-                ],
-                dim=0,
+            # Horner canonicalization receives the original route coefficients
+            # and exponents so it can enclose aggregation error before equal
+            # exponents are combined.  The candidate/kept coefficient tensor
+            # above is deliberately untouched.
+            dropped_exponents = (
+                basis.exponents.index_select(0, dropped_left)
+                + basis.exponents.index_select(0, dropped_right)
             )
-        policy = range_policy or DenseRangePolicy()
         trunc_result = _range_for_terms_with_policy(
             dropped,
             dropped_exponents,
@@ -1200,19 +1885,29 @@ class BatchedPolynomial:
         subdivision_depth: int = 1,
         max_leaves: int = 64,
         split_vars: Sequence[int] = (0, 1),
+        variable_orders: Sequence[Sequence[int]] = (),
         context: str = "retained_polynomial",
         trace: list[dict[str, Any]] | None = None,
         return_result: bool = False,
         policy: DenseRangePolicy | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor] | DensePolynomialRangeResult:
         normalized_method = "natural" if method in {"interval", "natural"} else method
-        if normalized_method not in {"natural", "subdivision"}:
-            raise ValueError("range method must be interval/natural or subdivision")
+        supported = {
+            "natural",
+            "subdivision",
+            "horner_fixed",
+            "horner_registered_best",
+            "subdivision_then_horner",
+            "horner_per_leaf",
+        }
+        if normalized_method not in supported:
+            raise ValueError(f"range method must be one of {sorted(supported)}")
         policy = policy or DenseRangePolicy(
             method=normalized_method,
-            max_depth=0 if normalized_method == "natural" else int(subdivision_depth),
+            max_depth=int(subdivision_depth) if normalized_method in {"subdivision", "subdivision_then_horner", "horner_per_leaf"} else 0,
             max_leaves=int(max_leaves),
             split_vars=tuple(int(index) for index in split_vars),
+            variable_orders=tuple(tuple(int(index) for index in order) for order in variable_orders),
         )
         result = _range_for_terms_with_policy(
             self.coeffs,
@@ -2090,7 +2785,9 @@ def _dense_flowstar_raw_compat_image(
         "poly_diff_range_lo": diff_lo.detach().cpu().tolist(),
         "poly_diff_range_hi": diff_hi.detach().cpu().tolist(),
         "raw_remainder_ledger_widths": raw_rhs.ledger.widths(),
+        "raw_remainder_ledger_intervals": raw_rhs.ledger.intervals(),
         "tmp_remainder_ledger_widths": tmp.ledger.widths(),
+        "tmp_remainder_ledger_intervals": tmp.ledger.intervals(),
     }
 
 
@@ -2141,7 +2838,9 @@ def dense_polynomial_picard(
                     torch.any(g.poly.coeffs != 0, dim=(0, 1)).detach().cpu().numpy().tobytes()
                 ).hexdigest(),
                 "discarded_remainder_widths": picard.ledger.widths(),
+                "discarded_remainder_intervals": picard.ledger.intervals(),
                 "cutoff_remainder_widths": g.ledger.widths(),
+                "cutoff_remainder_intervals": g.ledger.intervals(),
                 "finite": g.is_finite(),
                 "range_method": g.range_policy.method,
                 "subdivision_depth": g.range_policy.max_depth,
@@ -2348,6 +3047,7 @@ def dense_picard_validate_step(
                 "ordinary_residual_hi": ordinary_hi.detach().cpu().tolist(),
                 "subset_margin": last_margin.detach().cpu().tolist(),
                 "remainder_ledger_widths": residual.ledger.widths(),
+                "remainder_ledger_intervals": residual.ledger.intervals(),
                 "raw_ctrunc_residual_width_sum": float(torch.sum(image_hi - image_lo).detach().cpu()),
                 "ordinary_residual_width_sum": float(torch.sum(ordinary_hi - ordinary_lo).detach().cpu()),
                 "polynomial_range_width_sum": float(
@@ -2436,7 +3136,10 @@ __all__ = [
     "BatchedMonomialBasis",
     "BatchedPolynomial",
     "BatchedTaylorModel",
+    "DenseCanonicalPolynomial",
+    "DenseHornerOrderResult",
     "DensePolynomialRangeResult",
+    "DenseRegisteredHornerResult",
     "DenseRangePolicy",
     "DenseSubdivisionCover",
     "DenseExecutionCounters",
@@ -2449,6 +3152,10 @@ __all__ = [
     "dense_polynomial_picard",
     "dense_to_sparse_tmvector",
     "build_dense_subdivision_cover",
+    "canonicalize_dense_polynomial",
+    "evaluate_dense_horner_range",
+    "evaluate_dense_registered_horner_range",
+    "registered_dense_horner_orders",
     "validate_dense_subdivision_cover",
     "sparse_tmvector_to_dense",
 ]

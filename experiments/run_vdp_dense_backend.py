@@ -131,6 +131,14 @@ def _git(args: Sequence[str]) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
 
+def _variable_orders(value: str) -> tuple[tuple[int, ...], ...]:
+    return tuple(
+        tuple(int(index) for index in order.split(",") if index.strip())
+        for order in value.split(";")
+        if order.strip()
+    )
+
+
 def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -256,6 +264,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "dense_range_max_leaves": int(args.dense_range_max_leaves),
         "dense_range_split_vars": [int(item) for item in args.dense_range_split_vars.split(",") if item.strip()],
         "dense_range_contexts": [item.strip() for item in args.dense_range_contexts.split(",") if item.strip()],
+        "dense_range_variable_orders": [list(order) for order in _variable_orders(args.dense_range_variable_orders)],
     }
     (output_dir / "config_snapshot.yaml").write_text(yaml.safe_dump(config_snapshot, sort_keys=True), encoding="utf-8")
     command = {
@@ -280,6 +289,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         split_vars=tuple(int(item) for item in args.dense_range_split_vars.split(",") if item.strip()),
         trigger=args.dense_range_trigger,
         named_contexts=tuple(item.strip() for item in args.dense_range_contexts.split(",") if item.strip()),
+        variable_orders=_variable_orders(args.dense_range_variable_orders),
     )
     current: TMVector | list[Interval] = initial_box
     normal_state: FlowstarNormalFlowpipeState | None = None
@@ -293,6 +303,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     ledger_rows: list[dict[str, Any]] = []
     profile_rows: list[dict[str, Any]] = []
     range_trace_rows: list[dict[str, Any]] = []
+    horner_stage_rows: list[dict[str, Any]] = []
+    range_call_count = 0
     total_sample_violations = 0
     max_sample_violation = 0.0
     tube_lo = [math.inf, math.inf]
@@ -397,7 +409,25 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             if trace_row.get("phase") == "remainder_validation":
                 ledger_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(trace_row)})
             if trace_row.get("phase") in {"polynomial_range", "range_validation_lane", "range_fail_closed"}:
-                range_trace_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(trace_row)})
+                compact_trace = dict(trace_row)
+                stages = list(compact_trace.pop("horner_stages", []))
+                if compact_trace.get("phase") == "polynomial_range":
+                    stage_bytes = json.dumps(_jsonable(stages), sort_keys=True, separators=(",", ":")).encode("utf-8")
+                    compact_trace["range_call_index"] = range_call_count
+                    compact_trace["horner_stage_count"] = len(stages)
+                    compact_trace["horner_stage_sha256"] = hashlib.sha256(stage_bytes).hexdigest()
+                    horner_stage_rows.extend(
+                        {
+                            "segment_index": len(segment_rows) - 1,
+                            "t_before": current_time,
+                            "range_call_index": range_call_count,
+                            "context": compact_trace.get("context"),
+                            **dict(stage),
+                        }
+                        for stage in stages
+                    )
+                    range_call_count += 1
+                range_trace_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(compact_trace)})
         profile_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, "h_attempted": h_try, "total_wall_s": step_wall, "backend_lane": segment.backend_lane})
 
         if not accepted:
@@ -481,6 +511,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
         _write_csv(output_dir / "profile.csv", profile_rows)
         _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
+        _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
 
     runtime = time.perf_counter() - start
     completed = status == "completed" and current_time >= requested_horizon - 1e-12
@@ -518,6 +549,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "dense_range_max_depth": int(args.dense_range_max_depth),
         "dense_range_max_leaves": int(args.dense_range_max_leaves),
         "dense_range_contexts": list(dense_range_policy.named_contexts),
+        "dense_range_variable_orders": [list(order) for order in dense_range_policy.variable_orders],
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "accepted_steps": sum(row["status"] == "accepted" for row in segment_rows),
@@ -549,6 +581,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
     _write_csv(output_dir / "profile.csv", profile_rows)
     _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
+    _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
     _atomic_json(output_dir / "summary.json", summary)
     _atomic_json(
         output_dir / "decision.json",
@@ -582,7 +615,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--right-map-center-mode", choices=("constant", "range_midpoint"), default="constant")
     parser.add_argument("--right-map-range-mode", choices=("standard", "normal_eval"), default="standard")
-    parser.add_argument("--dense-range-method", choices=("natural", "subdivision", "adaptive_subdivision"), default="natural")
+    parser.add_argument(
+        "--dense-range-method",
+        choices=(
+            "natural",
+            "subdivision",
+            "adaptive_subdivision",
+            "horner_fixed",
+            "horner_registered_best",
+            "subdivision_then_horner",
+            "horner_per_leaf",
+        ),
+        default="natural",
+    )
     parser.add_argument(
         "--dense-range-trigger",
         choices=("always", "on_validation_failure", "proactive_depth1_on_named_contexts"),
@@ -592,6 +637,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dense-range-max-leaves", type=int, default=64)
     parser.add_argument("--dense-range-split-vars", default="0,1")
     parser.add_argument("--dense-range-contexts", default="")
+    parser.add_argument(
+        "--dense-range-variable-orders",
+        default="0,1,2;1,0,2;2,0,1",
+        help="semicolon-separated Horner variable permutations",
+    )
     parser.add_argument(
         "--save-terminal-checkpoint",
         action=argparse.BooleanOptionalAction,
