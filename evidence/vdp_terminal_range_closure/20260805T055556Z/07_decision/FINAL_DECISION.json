@@ -1,9 +1,24 @@
 {
-  "current_state": "R4",
+  "accepted_steps": 307,
+  "authoritative_contract_unchanged": true,
+  "backend_lane": "hybrid_dense_core",
+  "baseline_commit": "82c54a244d996ccc08b09cb4ded5f48167415585",
+  "completed_t10": false,
+  "completed_t7p5": false,
+  "crossed_6p390931109681597": true,
+  "cuda_test_status": "3 passed, 37 deselected in 2.13s",
+  "current_range_closure_state": "R4_historical_range_midpoint_horizon_crossed",
   "endpoint_repair_used": false,
   "fallback_count": 0,
+  "final_commit": "f746551c6cdfb4934a9eacb25ba086aaac210b18",
+  "first_remaining_blocker": "At t=6.397083942944808 the unchanged raw-remainder self-map y margin is -1.99995911680722e-5; depth 1 through the 64-leaf cap give the same bound.",
+  "full_pytest_status": "400 passed, 2 skipped in 45.27s",
   "highest_validated_horizon": 6.397083942944808,
   "historical_horizon": 6.390931109681597,
+  "natural_terminal_margin_y": -5.111670937766742e-06,
+  "natural_terminal_reproduced": true,
+  "nonfinite_count": 0,
+  "original_terminal_margin_y_after": 2.8883253329832075e-05,
   "original_terminal_natural_margin": [
     [
       9.96013970567558e-05,
@@ -16,7 +31,9 @@
       2.8883253329832075e-05
     ]
   ],
-  "previous_state": "S3",
+  "original_terminal_step_accepted": true,
+  "previous_state": "S3_dense_multistep_integrated",
+  "push_status": "pushed_and_local_remote_sha_verified",
   "r0_baseline_reproduced": true,
   "r1_terminal_state_replay_exact": true,
   "r2_validated_dense_subdivision_range": true,
@@ -25,8 +42,14 @@
   "r5_vdp_t7p5_completed": false,
   "r6_vdp_t10_completed": false,
   "r7_second_t10_reproduction": false,
-  "remaining_blocker": "At t=6.397083942944808 the unchanged raw-remainder self-map y margin is -1.99995911680722e-5; depth 1 through the 64-leaf cap give the same bound.",
+  "range_leaf_evaluations": 17248,
+  "range_subdivision_invocations": 4312,
+  "rejected_attempts": 48,
   "sample_sanity_violations": 0,
+  "selected_max_leaves": 4,
+  "selected_range_method": "adaptive_subdivision:polynomial_truncation",
+  "single_next_step": "On the frozen t=6.397083942944808 pre-state, implement and validate one deterministic factorized/Horner range A/B for the same raw-RHS polynomial_truncation payload before any further fresh horizon run.",
   "t10_completed": false,
-  "t10_status": "failed"
+  "t10_status": "failed",
+  "terminal_checkpoint_roundtrip": true
 }

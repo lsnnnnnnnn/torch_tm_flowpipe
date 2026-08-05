@@ -187,3 +187,10 @@ runtime tables, the R4 decision, a manifest, and SHA256SUMS.
 
 Because the T=10 request failed, the success-only second T=10 reproduction was
 not run and R7 is false.
+
+The single evidence-supported next step is to use the frozen
+`t=6.397083942944808` pre-state for one deterministic factorized/Horner range
+A/B on the identical raw-RHS `polynomial_truncation` coefficient payload. That
+correctness gate must precede any further fresh horizon run; it may not change
+the ODE, order, remainder, cutoff, h_min, validation predicate, or endpoint
+semantics.

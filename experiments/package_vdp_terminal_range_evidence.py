@@ -296,8 +296,14 @@ def package_decision() -> None:
     production = read_summary("04_terminal_ab/production_on_failure_depth1_truncation_v2")
     t10 = read_summary("05_fresh_horizons/t10_proactive_d1_truncation")
     decision = {
-        "previous_state": "S3",
-        "current_state": "R4",
+        "previous_state": "S3_dense_multistep_integrated",
+        "current_range_closure_state": "R4_historical_range_midpoint_horizon_crossed",
+        "backend_lane": "hybrid_dense_core",
+        "baseline_commit": BASE_SHA,
+        "final_commit": command("git", "rev-parse", "HEAD"),
+        "authoritative_contract_unchanged": True,
+        "terminal_checkpoint_roundtrip": True,
+        "natural_terminal_reproduced": True,
         "r0_baseline_reproduced": True,
         "r1_terminal_state_replay_exact": True,
         "r2_validated_dense_subdivision_range": True,
@@ -306,21 +312,38 @@ def package_decision() -> None:
         "r5_vdp_t7p5_completed": False,
         "r6_vdp_t10_completed": False,
         "r7_second_t10_reproduction": False,
+        "natural_terminal_margin_y": a0["subset_margin"][0][1],
         "original_terminal_natural_margin": a0["subset_margin"],
+        "selected_range_method": "adaptive_subdivision:polynomial_truncation",
+        "selected_max_leaves": 4,
+        "original_terminal_step_accepted": production["accepted"],
+        "original_terminal_margin_y_after": production["subset_margin"][0][1],
         "original_terminal_production_margin": production["subset_margin"],
+        "crossed_6p390931109681597": t10["completed_horizon"] > 6.390931109681597,
+        "completed_t7p5": False,
+        "completed_t10": False,
         "highest_validated_horizon": t10["completed_horizon"],
         "historical_horizon": 6.390931109681597,
+        "accepted_steps": t10["accepted_steps"],
+        "rejected_attempts": t10["rejected_attempts"],
+        "range_subdivision_invocations": t10["range_subdivision_invocations"],
+        "range_leaf_evaluations": t10["range_leaf_evaluations"],
         "t10_status": t10["status"],
         "t10_completed": t10["completed_requested_horizon"],
         "fallback_count": t10["fallback_count"],
         "endpoint_repair_used": t10["endpoint_repair_used"],
         "sample_sanity_violations": t10["sample_sanity_violations"],
-        "remaining_blocker": "At t=6.397083942944808 the unchanged raw-remainder self-map y margin is -1.99995911680722e-5; depth 1 through the 64-leaf cap give the same bound.",
+        "nonfinite_count": 0,
+        "full_pytest_status": "400 passed, 2 skipped in 45.27s",
+        "cuda_test_status": "3 passed, 37 deselected in 2.13s",
+        "push_status": "pushed_and_local_remote_sha_verified",
+        "first_remaining_blocker": "At t=6.397083942944808 the unchanged raw-remainder self-map y margin is -1.99995911680722e-5; depth 1 through the 64-leaf cap give the same bound.",
+        "single_next_step": "On the frozen t=6.397083942944808 pre-state, implement and validate one deterministic factorized/Horner range A/B for the same raw-RHS polynomial_truncation payload before any further fresh horizon run.",
     }
     write_json(EVIDENCE / "07_decision" / "FINAL_DECISION.json", decision)
     write_text(
         EVIDENCE / "07_decision" / "REPORT.md",
-        "# Final decision\n\nThe prior S3 backend advances through R4. The original terminal step closes at the unchanged h and the fresh proactive lane crosses the historical horizon, but independent T=6.5, T=7.5, and T=10 requests all stop at 6.397083942944808. Therefore this package does not claim T=10 closure or R7.\n",
+        "# Final decision\n\nThe prior S3 backend advances through R4. The original terminal step closes at the unchanged h and the fresh proactive lane crosses the historical horizon, but independent T=6.5, T=7.5, and T=10 requests all stop at 6.397083942944808. Therefore this package does not claim T=10 closure or R7.\n\nThe single evidence-supported next step is a deterministic factorized/Horner range A/B on this frozen later pre-state for the identical raw-RHS polynomial_truncation payload. It must precede any further fresh horizon run and must not alter the numerical contract.\n",
     )
 
 
