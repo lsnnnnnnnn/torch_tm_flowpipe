@@ -67,6 +67,7 @@ def test_dense_runner_writes_fail_closed_parseable_outputs(tmp_path):
         "segments.csv",
         "checkpoints.csv",
         "remainder_ledger.jsonl",
+        "range_trace.jsonl",
         "profile.csv",
         "summary.json",
         "decision.json",

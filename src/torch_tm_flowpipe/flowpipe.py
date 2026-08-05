@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Callable, Iterable, List, Mapping, Sequence
 
 import torch
@@ -3487,9 +3487,12 @@ def _flowpipe_step_from_tm_hybrid_dense(
     symbolic_remainder: bool,
     selective_high_degree_terms_top_k: int | None,
     normal_eval_range_split: int | None,
+    dense_range_policy: Any | None,
 ) -> FlowpipeSegment:
     """Dense Picard/validation with one sparse bridge at each segment boundary."""
     from .batched_dense_tm import (
+        BatchedTaylorModel,
+        DenseRangePolicy,
         DenseExecutionCounters,
         dense_picard_validate_step,
         dense_to_sparse_tmvector,
@@ -3515,6 +3518,13 @@ def _flowpipe_step_from_tm_hybrid_dense(
     base_ext_sparse = x0_tm.extend_domain(tau_interval)
     tau_index = x0_tm.n_vars
     counters = DenseExecutionCounters()
+    range_policy = dense_range_policy or DenseRangePolicy()
+    initial_policy = (
+        DenseRangePolicy()
+        if range_policy.trigger == "on_validation_failure" and range_policy.method != "natural"
+        else range_policy
+    )
+    range_trace: list[dict[str, Any]] = []
     base_ext_dense = sparse_tmvector_to_dense(
         base_ext_sparse,
         order=int(order),
@@ -3522,20 +3532,112 @@ def _flowpipe_step_from_tm_hybrid_dense(
         dtype=dense_dtype,
         counters=counters,
         segment_boundary=True,
+        range_policy=initial_policy,
+        range_trace=range_trace,
     )
-    dense_result = dense_picard_validate_step(
-        ode_fn,
-        base_ext_dense,
-        h=float(h),
-        order=int(order),
-        tau_index=tau_index,
-        target_remainder_radius=target_remainder_radius,
-        cutoff_threshold=cutoff_threshold,
-        max_validation_attempts=2 if max_validation_attempts is None else int(max_validation_attempts),
-        validation_eps=validation_eps,
-        validation_mode=validation_mode,
-        counters=counters,
-    )
+
+    def _with_policy(model: BatchedTaylorModel, policy: DenseRangePolicy, trace: list[dict[str, Any]]) -> BatchedTaylorModel:
+        return BatchedTaylorModel(
+            model.poly,
+            model.rem_lo,
+            model.rem_hi,
+            model.domain_lo,
+            model.domain_hi,
+            model.ledger,
+            policy,
+            trace,
+        )
+
+    def _validate(model: BatchedTaylorModel):
+        return dense_picard_validate_step(
+            ode_fn,
+            model,
+            h=float(h),
+            order=int(order),
+            tau_index=tau_index,
+            target_remainder_radius=target_remainder_radius,
+            cutoff_threshold=cutoff_threshold,
+            max_validation_attempts=2 if max_validation_attempts is None else int(max_validation_attempts),
+            validation_eps=validation_eps,
+            validation_mode=validation_mode,
+            counters=counters,
+        )
+
+    lane_trace: list[Mapping[str, Any]] = []
+    try:
+        dense_result = _validate(base_ext_dense)
+        lane_trace.extend(dense_result.trace)
+        lane_trace.extend(range_trace)
+        lane_trace.append(
+            {
+                "phase": "range_validation_lane",
+                "range_method": initial_policy.method,
+                "subdivision_depth": initial_policy.max_depth,
+                "validation_status": dense_result.status,
+                "natural_validation_failed": initial_policy.method == "natural" and not dense_result.accepted,
+                "subdivision_validation_passed": False,
+            }
+        )
+        if (
+            not dense_result.accepted
+            and range_policy.trigger == "on_validation_failure"
+            and range_policy.method != "natural"
+        ):
+            for depth in range(1, int(range_policy.max_depth) + 1):
+                level_trace: list[dict[str, Any]] = []
+                level_policy = replace(range_policy, max_depth=depth, trigger="always")
+                level_result = _validate(_with_policy(base_ext_dense, level_policy, level_trace))
+                lane_trace.extend(level_result.trace)
+                lane_trace.extend(level_trace)
+                lane_trace.append(
+                    {
+                        "phase": "range_validation_lane",
+                        "range_method": level_policy.method,
+                        "subdivision_depth": depth,
+                        "validation_status": level_result.status,
+                        "natural_validation_failed": True,
+                        "subdivision_validation_passed": level_result.accepted,
+                    }
+                )
+                dense_result = level_result
+                if level_result.accepted:
+                    break
+    except (FloatingPointError, RuntimeError, ValueError) as exc:
+        lane_trace.extend(range_trace)
+        lane_trace.append(
+            {
+                "phase": "range_fail_closed",
+                "finite": False,
+                "range_method": range_policy.method,
+                "rejection_reason": f"{type(exc).__name__}: {exc}",
+            }
+        )
+        segment_tm = dense_to_sparse_tmvector(base_ext_dense, counters=counters, segment_boundary=True)
+        return FlowpipeSegment(
+            tm=segment_tm,
+            final_tm=x0_tm,
+            status="failed",
+            h=float(h),
+            order=int(order),
+            validation_attempts=0,
+            message=f"dense polynomial range failed closed: {type(exc).__name__}: {exc}",
+            tau_index=tau_index,
+            endpoint_raw_tm=None,
+            endpoint_tightened_tm=None,
+            endpoint_semantics="unpublished_rejected_step",
+            endpoint_tightening_applied=False,
+            endpoint_tightening_validation_method="not_applied_range_failure",
+            backend_lane="hybrid_dense_core",
+            backend_counters=counters.as_dict(),
+            backend_trace=tuple(lane_trace),
+        )
+    subdivision_rows = [
+        row for row in lane_trace
+        if row.get("phase") == "polynomial_range" and int(row.get("leaf_count", 1)) > 1
+    ]
+    counters.range_subdivision_invocations += len(subdivision_rows)
+    counters.range_leaf_evaluations += sum(int(row.get("leaf_count", 0)) for row in subdivision_rows)
+    dense_result = replace(dense_result, trace=tuple(lane_trace))
     segment_tm = dense_to_sparse_tmvector(
         dense_result.segment_tm,
         counters=counters,
@@ -3629,6 +3731,7 @@ def flowpipe_step_from_tm(
     tm_backend: str = "sparse",
     dense_device: torch.device | str = "cpu",
     dense_dtype: torch.dtype = torch.float64,
+    dense_range_policy: Any | None = None,
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -3667,6 +3770,7 @@ def flowpipe_step_from_tm(
             symbolic_remainder=symbolic_remainder,
             selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
             normal_eval_range_split=normal_eval_range_split,
+            dense_range_policy=dense_range_policy,
         )
     if h <= 0:
         raise ValueError("h must be positive")
@@ -4039,6 +4143,7 @@ def flowpipe_step_flowstar_style_adaptive(
     tm_backend: str = "sparse",
     dense_device: torch.device | str = "cpu",
     dense_dtype: torch.dtype = torch.float64,
+    dense_range_policy: Any | None = None,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -4182,6 +4287,7 @@ def flowpipe_step_flowstar_style_adaptive(
             tm_backend=tm_backend,
             dense_device=dense_device,
             dense_dtype=dense_dtype,
+            dense_range_policy=dense_range_policy,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -4227,6 +4333,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 tm_backend=tm_backend,
                 dense_device=dense_device,
                 dense_dtype=dense_dtype,
+                dense_range_policy=dense_range_policy,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg

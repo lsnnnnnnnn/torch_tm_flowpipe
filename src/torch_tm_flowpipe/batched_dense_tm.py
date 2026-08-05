@@ -12,7 +12,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from functools import lru_cache
 import hashlib
+from itertools import product
 import math
+import time
 from typing import Any, Callable, Mapping, Sequence
 
 import torch
@@ -116,6 +118,8 @@ class DenseExecutionCounters:
     sparse_fallback_count: int = 0
     boundary_scalar_loop_count: int = 0
     inner_loop_scalar_count: int = 0
+    range_subdivision_invocations: int = 0
+    range_leaf_evaluations: int = 0
 
     def as_dict(self) -> dict[str, int]:
         return {name: int(getattr(self, name)) for name in self.__dataclass_fields__}
@@ -350,6 +354,321 @@ def _range_for_terms(
     magnitude = torch.maximum(torch.abs(term_lo), torch.abs(term_hi)).sum(dim=-1)
     roundoff = magnitude * gamma_n + torch.finfo(coeffs.dtype).tiny
     return _down(lo_sum - roundoff), _up(hi_sum + roundoff)
+
+
+@dataclass(frozen=True)
+class DenseRangePolicy:
+    """Explicit polynomial range semantics for the dense core."""
+
+    method: str = "natural"
+    max_depth: int = 0
+    max_leaves: int = 64
+    split_vars: tuple[int, ...] = (0, 1)
+    trigger: str = "always"
+    named_contexts: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.method not in {"natural", "subdivision", "adaptive_subdivision"}:
+            raise ValueError("dense range method must be natural, subdivision, or adaptive_subdivision")
+        if self.max_depth < 0:
+            raise ValueError("dense range max_depth must be nonnegative")
+        if self.max_leaves <= 0 or self.max_leaves > 64:
+            raise ValueError("dense range max_leaves must lie in [1, 64]")
+        if len(set(self.split_vars)) != len(self.split_vars):
+            raise ValueError("dense range split_vars must be unique")
+        if self.trigger not in {"always", "on_validation_failure", "proactive_depth1_on_named_contexts"}:
+            raise ValueError("invalid dense range trigger")
+
+    def applies_to(self, context: str) -> bool:
+        return self.method != "natural" and (not self.named_contexts or context in self.named_contexts)
+
+
+@dataclass(frozen=True)
+class DenseSubdivisionCover:
+    """Flat leaf tensor with explicit original-batch ownership."""
+
+    lo: torch.Tensor
+    hi: torch.Tensor
+    owner: torch.Tensor
+    requested_depth: int
+    leaf_counts: tuple[int, ...]
+    split_variables: tuple[tuple[int, ...], ...]
+
+
+@dataclass(frozen=True)
+class DensePolynomialRangeResult:
+    natural_lo: torch.Tensor
+    natural_hi: torch.Tensor
+    subdivision_lo: torch.Tensor
+    subdivision_hi: torch.Tensor
+    selected_lo: torch.Tensor
+    selected_hi: torch.Tensor
+    selected_method: str
+    cover: DenseSubdivisionCover
+    coverage_report: Mapping[str, Any]
+    wall_s: float
+
+
+def _subdivision_influence_scores(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+) -> torch.Tensor:
+    """Deterministic width-times-derivative-magnitude split heuristic."""
+    max_abs = torch.maximum(torch.abs(domain_lo), torch.abs(domain_hi))
+    widths = domain_hi - domain_lo
+    exponents_t = exponents.to(device=coeffs.device, dtype=torch.long)
+    scores: list[torch.Tensor] = []
+    abs_coeff = torch.abs(coeffs).sum(dim=1)
+    for var_index in range(exponents_t.shape[1]):
+        powers = exponents_t[:, var_index]
+        derivative = torch.ones((coeffs.shape[0], exponents_t.shape[0]), dtype=coeffs.dtype, device=coeffs.device)
+        for other_index in range(exponents_t.shape[1]):
+            other_powers = exponents_t[:, other_index]
+            if other_index == var_index:
+                other_powers = torch.clamp(other_powers - 1, min=0)
+            derivative = derivative * max_abs[:, other_index : other_index + 1].pow(other_powers.view(1, -1))
+        derivative = derivative * powers.to(dtype=coeffs.dtype).view(1, -1)
+        score = widths[:, var_index] * torch.sum(abs_coeff * derivative, dim=-1)
+        scores.append(score)
+    return torch.stack(scores, dim=1) if scores else torch.empty((coeffs.shape[0], 0), device=coeffs.device)
+
+
+def _split_leaf_pair(lo: torch.Tensor, hi: torch.Tensor, var_index: int) -> list[tuple[torch.Tensor, torch.Tensor]]:
+    midpoint = lo[var_index] + (hi[var_index] - lo[var_index]) * 0.5
+    if not bool(midpoint > lo[var_index] and midpoint < hi[var_index]):
+        return [(lo, hi)]
+    left_hi = hi.clone()
+    left_hi[var_index] = midpoint
+    right_lo = lo.clone()
+    right_lo[var_index] = midpoint
+    if not bool(left_hi[var_index] == right_lo[var_index]):
+        raise RuntimeError("subdivision children do not share an exact boundary")
+    return [(lo, left_hi), (right_lo, hi)]
+
+
+def build_dense_subdivision_cover(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    *,
+    depth: int,
+    max_leaves: int = 64,
+    split_vars: Sequence[int] = (0, 1),
+) -> DenseSubdivisionCover:
+    """Build the pre-registered 4/8/16/... leaf hierarchical box cover."""
+    if coeffs.ndim != 3 or domain_lo.ndim != 2 or domain_hi.shape != domain_lo.shape:
+        raise ValueError("subdivision expects coeffs [batch,output,term] and domains [batch,var]")
+    if coeffs.shape[0] != domain_lo.shape[0] or exponents.shape != (coeffs.shape[-1], domain_lo.shape[1]):
+        raise ValueError("subdivision coefficient/exponent/domain shape mismatch")
+    if depth < 0:
+        raise ValueError("subdivision depth must be nonnegative")
+    if max_leaves <= 0 or max_leaves > 64:
+        raise ValueError("max_leaves must lie in [1, 64]")
+    if not bool(torch.all(torch.isfinite(coeffs)) and torch.all(torch.isfinite(domain_lo)) and torch.all(torch.isfinite(domain_hi))):
+        raise FloatingPointError("subdivision inputs must be finite")
+    if not bool(torch.all(domain_lo <= domain_hi)):
+        raise ValueError("subdivision domain lower bounds must not exceed upper bounds")
+    selected = tuple(int(index) for index in split_vars)
+    if len(set(selected)) != len(selected) or any(index < 0 or index >= domain_lo.shape[1] for index in selected):
+        raise ValueError("subdivision split_vars are invalid")
+    scores = _subdivision_influence_scores(coeffs, exponents, domain_lo, domain_hi)
+    all_lo: list[torch.Tensor] = []
+    all_hi: list[torch.Tensor] = []
+    owners: list[int] = []
+    leaf_counts: list[int] = []
+    histories: list[tuple[int, ...]] = []
+    for batch_index in range(coeffs.shape[0]):
+        leaves = [(domain_lo[batch_index].clone(), domain_hi[batch_index].clone())]
+        history: list[int] = []
+        if depth >= 1:
+            for var_index in selected:
+                proposed: list[tuple[torch.Tensor, torch.Tensor]] = []
+                for leaf_lo, leaf_hi in leaves:
+                    proposed.extend(_split_leaf_pair(leaf_lo, leaf_hi, var_index))
+                if len(proposed) > max_leaves:
+                    raise ValueError("max_leaves exceeded while building depth-1 subdivision cover")
+                if len(proposed) > len(leaves):
+                    history.append(var_index)
+                leaves = proposed
+        for _level in range(2, depth + 1):
+            candidates = [index for index in selected if bool(domain_hi[batch_index, index] > domain_lo[batch_index, index])]
+            if not candidates:
+                break
+            ranked = sorted(candidates, key=lambda index: (-float(scores[batch_index, index].detach().cpu()), index))
+            var_index = ranked[0]
+            proposed = []
+            for leaf_lo, leaf_hi in leaves:
+                proposed.extend(_split_leaf_pair(leaf_lo, leaf_hi, var_index))
+            if len(proposed) > max_leaves:
+                raise ValueError("max_leaves exceeded while building subdivision cover")
+            if len(proposed) == len(leaves):
+                break
+            history.append(var_index)
+            leaves = proposed
+        leaf_counts.append(len(leaves))
+        histories.append(tuple(history))
+        for leaf_lo, leaf_hi in leaves:
+            all_lo.append(leaf_lo)
+            all_hi.append(leaf_hi)
+            owners.append(batch_index)
+    return DenseSubdivisionCover(
+        torch.stack(all_lo, dim=0),
+        torch.stack(all_hi, dim=0),
+        torch.as_tensor(owners, dtype=torch.long, device=domain_lo.device),
+        int(depth),
+        tuple(leaf_counts),
+        tuple(histories),
+    )
+
+
+def validate_dense_subdivision_cover(
+    cover: DenseSubdivisionCover,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+) -> dict[str, Any]:
+    """Independently validate owner-local box coverage and interior disjointness."""
+    reasons: list[str] = []
+    if cover.lo.shape != cover.hi.shape or cover.lo.ndim != 2 or cover.owner.shape != (cover.lo.shape[0],):
+        return {"valid": False, "reasons": ["cover shape mismatch"], "leaf_count": int(cover.lo.shape[0])}
+    if not bool(torch.all(torch.isfinite(cover.lo)) and torch.all(torch.isfinite(cover.hi))):
+        reasons.append("nonfinite leaf")
+    if not bool(torch.all(cover.lo <= cover.hi)):
+        reasons.append("invalid leaf interval")
+    lo_cpu = domain_lo.detach().cpu()
+    hi_cpu = domain_hi.detach().cpu()
+    leaf_lo = cover.lo.detach().cpu()
+    leaf_hi = cover.hi.detach().cpu()
+    owner = cover.owner.detach().cpu()
+    if owner.numel() and (int(torch.min(owner)) < 0 or int(torch.max(owner)) >= domain_lo.shape[0]):
+        reasons.append("corrupted leaf ownership")
+    checked_cells = 0
+    for batch_index in range(domain_lo.shape[0]):
+        indices = torch.nonzero(owner == batch_index, as_tuple=False).reshape(-1)
+        if indices.numel() == 0:
+            reasons.append(f"owner {batch_index} has no leaves")
+            continue
+        boxes_lo = leaf_lo.index_select(0, indices)
+        boxes_hi = leaf_hi.index_select(0, indices)
+        if bool(torch.any(boxes_lo < lo_cpu[batch_index])) or bool(torch.any(boxes_hi > hi_cpu[batch_index])):
+            reasons.append(f"owner {batch_index} leaf exceeds parent")
+        signatures = {
+            tuple(float(value).hex() for value in torch.cat([lo_row, hi_row]).tolist())
+            for lo_row, hi_row in zip(boxes_lo, boxes_hi)
+        }
+        if len(signatures) != int(indices.numel()):
+            reasons.append(f"owner {batch_index} has duplicate leaves")
+        axes: list[list[tuple[float, float]]] = []
+        for var_index in range(domain_lo.shape[1]):
+            endpoints = sorted(
+                {
+                    float(lo_cpu[batch_index, var_index]),
+                    float(hi_cpu[batch_index, var_index]),
+                    *[float(value) for value in boxes_lo[:, var_index]],
+                    *[float(value) for value in boxes_hi[:, var_index]],
+                }
+            )
+            cells = [(left, right) for left, right in zip(endpoints[:-1], endpoints[1:]) if left < right]
+            axes.append(cells or [(endpoints[0], endpoints[0])])
+        for cell in product(*axes):
+            point = torch.tensor(
+                [left if left == right else left + (right - left) * 0.5 for left, right in cell],
+                dtype=boxes_lo.dtype,
+            )
+            memberships = torch.all((point >= boxes_lo) & (point <= boxes_hi), dim=1)
+            checked_cells += 1
+            if int(torch.count_nonzero(memberships)) != 1:
+                reasons.append(f"owner {batch_index} gap or interior overlap")
+                break
+    return {
+        "valid": not reasons,
+        "reasons": sorted(set(reasons)),
+        "leaf_count": int(cover.lo.shape[0]),
+        "leaf_counts": list(cover.leaf_counts),
+        "checked_cells": checked_cells,
+        "split_variables": [list(items) for items in cover.split_variables],
+    }
+
+
+def _range_for_terms_with_policy(
+    coeffs: torch.Tensor,
+    exponents: torch.Tensor,
+    domain_lo: torch.Tensor,
+    domain_hi: torch.Tensor,
+    *,
+    policy: DenseRangePolicy,
+    context: str,
+    trace: list[dict[str, Any]] | None = None,
+) -> DensePolynomialRangeResult:
+    started = time.perf_counter()
+    natural_lo, natural_hi = _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+    if not policy.applies_to(context) or policy.max_depth == 0:
+        owner = torch.arange(coeffs.shape[0], dtype=torch.long, device=coeffs.device)
+        cover = DenseSubdivisionCover(domain_lo.clone(), domain_hi.clone(), owner, 0, tuple(1 for _ in range(coeffs.shape[0])), tuple(() for _ in range(coeffs.shape[0])))
+        report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
+        result = DensePolynomialRangeResult(natural_lo, natural_hi, natural_lo, natural_hi, natural_lo, natural_hi, "natural", cover, report, time.perf_counter() - started)
+    else:
+        cover = build_dense_subdivision_cover(
+            coeffs,
+            exponents,
+            domain_lo,
+            domain_hi,
+            depth=policy.max_depth,
+            max_leaves=policy.max_leaves,
+            split_vars=policy.split_vars,
+        )
+        report = validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
+        if not report["valid"]:
+            raise RuntimeError(f"invalid subdivision cover: {report['reasons']}")
+        leaf_coeffs = coeffs.index_select(0, cover.owner)
+        leaf_lo, leaf_hi = _range_for_terms(leaf_coeffs, exponents, cover.lo, cover.hi)
+        if not bool(torch.all(torch.isfinite(leaf_lo)) and torch.all(torch.isfinite(leaf_hi))):
+            raise FloatingPointError("non-finite subdivision leaf range")
+        hull_lo = torch.full_like(natural_lo, torch.inf)
+        hull_hi = torch.full_like(natural_hi, -torch.inf)
+        hull_index = cover.owner.view(-1, 1).expand(-1, coeffs.shape[1])
+        hull_lo.scatter_reduce_(0, hull_index, leaf_lo, reduce="amin", include_self=True)
+        hull_hi.scatter_reduce_(0, hull_index, leaf_hi, reduce="amax", include_self=True)
+        hull_lo, hull_hi = _down(hull_lo), _up(hull_hi)
+        use_subdivision = (hull_hi - hull_lo) <= (natural_hi - natural_lo)
+        selected_lo = torch.where(use_subdivision, hull_lo, natural_lo)
+        selected_hi = torch.where(use_subdivision, hull_hi, natural_hi)
+        if bool(torch.all(use_subdivision)):
+            selected_method = "subdivision"
+        elif bool(torch.any(use_subdivision)):
+            selected_method = "mixed_natural_subdivision"
+        else:
+            selected_method = "natural_subdivision_wider"
+        result = DensePolynomialRangeResult(natural_lo, natural_hi, hull_lo, hull_hi, selected_lo, selected_hi, selected_method, cover, report, time.perf_counter() - started)
+    if trace is not None:
+        trace.append(
+            {
+                "phase": "polynomial_range",
+                "context": context,
+                "method_requested": policy.method,
+                "method_used": result.selected_method,
+                "natural_lo": result.natural_lo.detach().cpu().tolist(),
+                "natural_hi": result.natural_hi.detach().cpu().tolist(),
+                "natural_width": (result.natural_hi - result.natural_lo).detach().cpu().tolist(),
+                "tightened_lo": result.subdivision_lo.detach().cpu().tolist(),
+                "tightened_hi": result.subdivision_hi.detach().cpu().tolist(),
+                "tightened_width": (result.subdivision_hi - result.subdivision_lo).detach().cpu().tolist(),
+                "selected_lo": result.selected_lo.detach().cpu().tolist(),
+                "selected_hi": result.selected_hi.detach().cpu().tolist(),
+                "selected_width": (result.selected_hi - result.selected_lo).detach().cpu().tolist(),
+                "leaf_count": int(result.cover.lo.shape[0]),
+                "leaf_counts": list(result.cover.leaf_counts),
+                "split_variables": [list(items) for items in result.cover.split_variables],
+                "depth": int(result.cover.requested_depth),
+                "coverage_valid": bool(result.coverage_report["valid"]),
+                "finite": bool(torch.all(torch.isfinite(result.selected_lo)) and torch.all(torch.isfinite(result.selected_hi))),
+                "device": str(coeffs.device),
+                "wall_s": result.wall_s,
+            }
+        )
+    return result
 
 
 def _merge_coefficients_by_index(
@@ -786,6 +1105,9 @@ class BatchedPolynomial:
         domain_hi: torch.Tensor | None = None,
         dropped_merge_mode: str = "merged",
         max_degree: int | None = None,
+        range_policy: DenseRangePolicy | None = None,
+        range_trace: list[dict[str, Any]] | None = None,
+        range_context: str = "polynomial_truncation",
     ) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
         if dropped_merge_mode not in {"merged", "termwise"}:
             raise ValueError("dropped_merge_mode must be 'merged' or 'termwise'")
@@ -826,7 +1148,17 @@ class BatchedPolynomial:
                 ],
                 dim=0,
             )
-        trunc_lo, trunc_hi = _range_for_terms(dropped, dropped_exponents, domain_lo, domain_hi)
+        policy = range_policy or DenseRangePolicy()
+        trunc_result = _range_for_terms_with_policy(
+            dropped,
+            dropped_exponents,
+            domain_lo,
+            domain_hi,
+            policy=policy,
+            context=range_context,
+            trace=range_trace,
+        )
+        trunc_lo, trunc_hi = trunc_result.selected_lo, trunc_result.selected_hi
         return poly, trunc_lo, trunc_hi
 
     def square_trunc(self, **kwargs: Any) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
@@ -837,10 +1169,34 @@ class BatchedPolynomial:
         domain_lo: torch.Tensor,
         domain_hi: torch.Tensor,
         method: str = "interval",
-    ) -> tuple[torch.Tensor, torch.Tensor]:
-        if method != "interval":
-            raise ValueError("only interval range bounds are implemented")
-        return _range_for_terms(self.coeffs, self.basis.exponents, domain_lo, domain_hi)
+        *,
+        subdivision_depth: int = 1,
+        max_leaves: int = 64,
+        split_vars: Sequence[int] = (0, 1),
+        context: str = "retained_polynomial",
+        trace: list[dict[str, Any]] | None = None,
+        return_result: bool = False,
+        policy: DenseRangePolicy | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor] | DensePolynomialRangeResult:
+        normalized_method = "natural" if method in {"interval", "natural"} else method
+        if normalized_method not in {"natural", "subdivision"}:
+            raise ValueError("range method must be interval/natural or subdivision")
+        policy = policy or DenseRangePolicy(
+            method=normalized_method,
+            max_depth=0 if normalized_method == "natural" else int(subdivision_depth),
+            max_leaves=int(max_leaves),
+            split_vars=tuple(int(index) for index in split_vars),
+        )
+        result = _range_for_terms_with_policy(
+            self.coeffs,
+            self.basis.exponents,
+            domain_lo,
+            domain_hi,
+            policy=policy,
+            context=context,
+            trace=trace,
+        )
+        return result if return_result else (result.selected_lo, result.selected_hi)
 
     def integrate(
         self,
@@ -849,6 +1205,9 @@ class BatchedPolynomial:
         domain_lo: torch.Tensor | None = None,
         domain_hi: torch.Tensor | None = None,
         return_overflow_bound: bool = False,
+        range_policy: DenseRangePolicy | None = None,
+        range_trace: list[dict[str, Any]] | None = None,
+        range_context: str = "integration_overflow",
     ) -> "BatchedPolynomial" | tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
         kept_in, kept_out, kept_factor, overflow_in, overflow_exp, overflow_factor = self.basis.integration_plan(
             var_index,
@@ -867,7 +1226,16 @@ class BatchedPolynomial:
             zeros = torch.zeros(self.coeffs.shape[:2], dtype=self.coeffs.dtype, device=self.coeffs.device)
             return result, zeros, zeros
         overflow_coeffs = self.coeffs.index_select(-1, overflow_in) * overflow_factor.view(1, 1, -1)
-        overflow_lo, overflow_hi = _range_for_terms(overflow_coeffs, overflow_exp, domain_lo, domain_hi)
+        overflow_result = _range_for_terms_with_policy(
+            overflow_coeffs,
+            overflow_exp,
+            domain_lo,
+            domain_hi,
+            policy=range_policy or DenseRangePolicy(),
+            context=range_context,
+            trace=range_trace,
+        )
+        overflow_lo, overflow_hi = overflow_result.selected_lo, overflow_result.selected_hi
         return result, overflow_lo, overflow_hi
 
     def apply_cutoff(
@@ -875,6 +1243,10 @@ class BatchedPolynomial:
         threshold: float | None,
         domain_lo: torch.Tensor,
         domain_hi: torch.Tensor,
+        *,
+        range_policy: DenseRangePolicy | None = None,
+        range_trace: list[dict[str, Any]] | None = None,
+        range_context: str = "cutoff",
     ) -> tuple["BatchedPolynomial", torch.Tensor, torch.Tensor]:
         if threshold is None:
             zeros = torch.zeros(self.coeffs.shape[:2], dtype=self.coeffs.dtype, device=self.coeffs.device)
@@ -882,7 +1254,16 @@ class BatchedPolynomial:
         mask = self.basis.cutoff_mask(self.coeffs, threshold)
         removed = torch.where(mask, self.coeffs, torch.zeros_like(self.coeffs))
         kept = torch.where(mask, torch.zeros_like(self.coeffs), self.coeffs)
-        removed_lo, removed_hi = _range_for_terms(removed, self.basis.exponents, domain_lo, domain_hi)
+        removed_result = _range_for_terms_with_policy(
+            removed,
+            self.basis.exponents,
+            domain_lo,
+            domain_hi,
+            policy=range_policy or DenseRangePolicy(),
+            context=range_context,
+            trace=range_trace,
+        )
+        removed_lo, removed_hi = removed_result.selected_lo, removed_result.selected_hi
         return BatchedPolynomial(kept, self.basis), removed_lo, removed_hi
 
     def substitute_const_and_drop(self, var_index: int, value: Any) -> "BatchedPolynomial":
@@ -947,6 +1328,8 @@ class BatchedTaylorModel:
     domain_lo: torch.Tensor
     domain_hi: torch.Tensor
     ledger: DenseRemainderLedger = field(default_factory=DenseRemainderLedger.empty)
+    range_policy: DenseRangePolicy = field(default_factory=DenseRangePolicy)
+    range_trace: list[dict[str, Any]] | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         batch, out_dim, _terms = self.poly.coeffs.shape
@@ -975,6 +1358,9 @@ class BatchedTaylorModel:
         domain_lo: torch.Tensor,
         domain_hi: torch.Tensor,
         basis: BatchedMonomialBasis,
+        *,
+        range_policy: DenseRangePolicy | None = None,
+        range_trace: list[dict[str, Any]] | None = None,
     ) -> "BatchedTaylorModel":
         lo = torch.as_tensor(domain_lo)
         hi = torch.as_tensor(domain_hi, dtype=lo.dtype, device=lo.device)
@@ -982,7 +1368,7 @@ class BatchedTaylorModel:
             raise ValueError("domain bounds must have shape [batch, dim]")
         poly = BatchedPolynomial.variables(lo.shape[0], lo.shape[1], basis, device=lo.device, dtype=lo.dtype)
         rem = torch.zeros((lo.shape[0], lo.shape[1]), dtype=lo.dtype, device=lo.device)
-        return BatchedTaylorModel(poly, rem, rem.clone(), lo, hi, DenseRemainderLedger.empty())
+        return BatchedTaylorModel(poly, rem, rem.clone(), lo, hi, DenseRemainderLedger.empty(), range_policy or DenseRangePolicy(), range_trace)
 
     @staticmethod
     def constants_like(values: Any, template: "BatchedTaylorModel") -> "BatchedTaylorModel":
@@ -1007,6 +1393,8 @@ class BatchedTaylorModel:
             template.domain_lo,
             template.domain_hi,
             DenseRemainderLedger.empty(),
+            template.range_policy,
+            template.range_trace,
         )
 
     def clone(self) -> "BatchedTaylorModel":
@@ -1019,6 +1407,8 @@ class BatchedTaylorModel:
             DenseRemainderLedger(
                 {name: (lo.clone(), hi.clone()) for name, (lo, hi) in self.ledger.entries.items()}
             ),
+            self.range_policy,
+            self.range_trace,
         )
 
     def to(self, device: torch.device | str) -> "BatchedTaylorModel":
@@ -1032,6 +1422,8 @@ class BatchedTaylorModel:
             DenseRemainderLedger(
                 {name: (lo.to(device_t), hi.to(device_t)) for name, (lo, hi) in self.ledger.entries.items()}
             ),
+            self.range_policy,
+            self.range_trace,
         )
 
     def _check_domain(self, other: "BatchedTaylorModel") -> None:
@@ -1040,6 +1432,10 @@ class BatchedTaylorModel:
             raise ValueError("domain lower bounds mismatch")
         if self.domain_hi.shape != other.domain_hi.shape or not torch.allclose(self.domain_hi, other.domain_hi):
             raise ValueError("domain upper bounds mismatch")
+        if self.range_policy != other.range_policy:
+            raise ValueError("dense range policy mismatch")
+        if self.range_trace is not other.range_trace:
+            raise ValueError("dense range trace ownership mismatch")
 
     def _coerce(self, other: Any) -> "BatchedTaylorModel":
         if isinstance(other, BatchedTaylorModel):
@@ -1063,7 +1459,7 @@ class BatchedTaylorModel:
             except RuntimeError as exc:
                 raise ValueError("remainder cannot broadcast to [batch, output]") from exc
         ledger = DenseRemainderLedger.empty().add(category, lo, hi)
-        return BatchedTaylorModel(self.poly, lo, hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(self.poly, lo, hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def without_remainder(self) -> "BatchedTaylorModel":
         zeros = torch.zeros_like(self.rem_lo)
@@ -1074,6 +1470,8 @@ class BatchedTaylorModel:
             self.domain_lo,
             self.domain_hi,
             DenseRemainderLedger.empty(),
+            self.range_policy,
+            self.range_trace,
         )
 
     def add(self, other: Any) -> "BatchedTaylorModel":
@@ -1081,14 +1479,14 @@ class BatchedTaylorModel:
         self._check_domain(other)
         rem_lo, rem_hi = _interval_add(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
         ledger = self.ledger.merge(other.ledger)
-        return BatchedTaylorModel(self.poly.add(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(self.poly.add(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def sub(self, other: Any) -> "BatchedTaylorModel":
         other = self._coerce(other)
         self._check_domain(other)
         rem_lo, rem_hi = _interval_sub(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
         ledger = self.ledger.merge(other.ledger.negate())
-        return BatchedTaylorModel(self.poly.sub(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(self.poly.sub(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def __rsub__(self, other: Any) -> "BatchedTaylorModel":
         return self._coerce(other).sub(self)
@@ -1105,6 +1503,8 @@ class BatchedTaylorModel:
             self.domain_lo,
             self.domain_hi,
             self.ledger.scale(scalar),
+            self.range_policy,
+            self.range_trace,
         )
 
     def affine_map(self, W: torch.Tensor, b: torch.Tensor | None = None) -> "BatchedTaylorModel":
@@ -1131,6 +1531,8 @@ class BatchedTaylorModel:
                 _down(rem_center - rem_radius),
                 _up(rem_center + rem_radius),
             ),
+            self.range_policy,
+            self.range_trace,
         )
 
     def mul_trunc(
@@ -1149,9 +1551,24 @@ class BatchedTaylorModel:
             domain_hi=self.domain_hi,
             dropped_merge_mode=dropped_merge_mode,
             max_degree=max_degree,
+            range_policy=self.range_policy,
+            range_trace=self.range_trace,
+            range_context="polynomial_truncation",
         )
-        p_lo, p_hi = self.poly.range_bound(self.domain_lo, self.domain_hi)
-        q_lo, q_hi = other.poly.range_bound(self.domain_lo, self.domain_hi)
+        p_lo, p_hi = self.poly.range_bound(
+            self.domain_lo,
+            self.domain_hi,
+            policy=self.range_policy,
+            context="poly_times_remainder",
+            trace=self.range_trace,
+        )
+        q_lo, q_hi = other.poly.range_bound(
+            self.domain_lo,
+            self.domain_hi,
+            policy=self.range_policy,
+            context="remainder_times_poly",
+            trace=self.range_trace,
+        )
         p_j_lo, p_j_hi = _interval_mul(p_lo, p_hi, other.rem_lo, other.rem_hi)
         q_i_lo, q_i_hi = _interval_mul(q_lo, q_hi, self.rem_lo, self.rem_hi)
         i_j_lo, i_j_hi = _interval_mul(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
@@ -1163,7 +1580,7 @@ class BatchedTaylorModel:
         ledger = ledger.add("poly_times_remainder", p_j_lo, p_j_hi)
         ledger = ledger.add("remainder_times_poly", q_i_lo, q_i_hi)
         ledger = ledger.add("remainder_times_remainder", i_j_lo, i_j_hi)
-        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def integrate(self, var_index: int) -> "BatchedTaylorModel":
         poly, overflow_lo, overflow_hi = self.poly.integrate(
@@ -1171,6 +1588,9 @@ class BatchedTaylorModel:
             domain_lo=self.domain_lo,
             domain_hi=self.domain_hi,
             return_overflow_bound=True,
+            range_policy=self.range_policy,
+            range_trace=self.range_trace,
+            range_context="integration_overflow",
         )
         tau_lo = self.domain_lo[:, int(var_index)].view(-1, 1)
         tau_hi = self.domain_hi[:, int(var_index)].view(-1, 1)
@@ -1181,16 +1601,29 @@ class BatchedTaylorModel:
             entry_lo, entry_hi = _interval_mul(tau_lo, tau_hi, lo, hi)
             ledger = ledger.add(category, entry_lo, entry_hi)
         ledger = ledger.add("integration_overflow", overflow_lo, overflow_hi)
-        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def apply_cutoff(self, threshold: float | None) -> "BatchedTaylorModel":
-        poly, cutoff_lo, cutoff_hi = self.poly.apply_cutoff(threshold, self.domain_lo, self.domain_hi)
+        poly, cutoff_lo, cutoff_hi = self.poly.apply_cutoff(
+            threshold,
+            self.domain_lo,
+            self.domain_hi,
+            range_policy=self.range_policy,
+            range_trace=self.range_trace,
+            range_context="cutoff",
+        )
         rem_lo, rem_hi = _interval_add(self.rem_lo, self.rem_hi, cutoff_lo, cutoff_hi)
         ledger = self.ledger.add("cutoff", cutoff_lo, cutoff_hi)
-        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger)
+        return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
-    def range_bound(self) -> tuple[torch.Tensor, torch.Tensor]:
-        poly_lo, poly_hi = self.poly.range_bound(self.domain_lo, self.domain_hi)
+    def range_bound(self, *, context: str = "retained_polynomial") -> tuple[torch.Tensor, torch.Tensor]:
+        poly_lo, poly_hi = self.poly.range_bound(
+            self.domain_lo,
+            self.domain_hi,
+            policy=self.range_policy,
+            context=context,
+            trace=self.range_trace,
+        )
         return _interval_add(poly_lo, poly_hi, self.rem_lo, self.rem_hi)
 
     def recenter_rescale(self) -> "BatchedTaylorModel":
@@ -1203,7 +1636,7 @@ class BatchedTaylorModel:
         index = int(var_index)
         domain_lo = torch.cat([self.domain_lo[:, :index], self.domain_lo[:, index + 1 :]], dim=1)
         domain_hi = torch.cat([self.domain_hi[:, :index], self.domain_hi[:, index + 1 :]], dim=1)
-        return BatchedTaylorModel(poly, self.rem_lo, self.rem_hi, domain_lo, domain_hi, self.ledger)
+        return BatchedTaylorModel(poly, self.rem_lo, self.rem_hi, domain_lo, domain_hi, self.ledger, self.range_policy, self.range_trace)
 
     def component(self, index: int) -> "BatchedTaylorModel":
         idx = int(index)
@@ -1216,6 +1649,8 @@ class BatchedTaylorModel:
             DenseRemainderLedger(
                 {name: (lo[:, idx : idx + 1], hi[:, idx : idx + 1]) for name, (lo, hi) in self.ledger.entries.items()}
             ),
+            self.range_policy,
+            self.range_trace,
         )
 
     @staticmethod
@@ -1254,6 +1689,8 @@ class BatchedTaylorModel:
                     if any(category in model.ledger.entries for model in models)
                 }
             ),
+            first.range_policy,
+            first.range_trace,
         )
 
     @property
@@ -1343,6 +1780,8 @@ def sparse_tmvector_to_dense(
     dtype: torch.dtype = torch.float64,
     counters: DenseExecutionCounters | None = None,
     segment_boundary: bool = True,
+    range_policy: DenseRangePolicy | None = None,
+    range_trace: list[dict[str, Any]] | None = None,
 ) -> BatchedTaylorModel:
     """Convert a sparse batch-one TM vector by exponent, rejecting overflow."""
     from .tm_vector import TMVector
@@ -1374,7 +1813,16 @@ def sparse_tmvector_to_dense(
         source_device = tmv[0].polynomial.device
         if torch.device(source_device) != torch.device(device):
             counters.device_transfer_count += 1
-    return BatchedTaylorModel(BatchedPolynomial(coeffs, basis), rem_lo, rem_hi, domain_lo, domain_hi, ledger)
+    return BatchedTaylorModel(
+        BatchedPolynomial(coeffs, basis),
+        rem_lo,
+        rem_hi,
+        domain_lo,
+        domain_hi,
+        ledger,
+        range_policy or DenseRangePolicy(),
+        range_trace,
+    )
 
 
 def dense_to_sparse_tmvector(
@@ -1596,7 +2044,13 @@ def _dense_flowstar_raw_compat_image(
     regular_rhs = call_dense_rhs(rhs_fn, candidate_with_target)
     tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
     poly_diff = tmp.poly.sub(candidate_poly.poly)
-    diff_lo, diff_hi = poly_diff.range_bound(candidate_poly.domain_lo, candidate_poly.domain_hi)
+    diff_lo, diff_hi = poly_diff.range_bound(
+        candidate_poly.domain_lo,
+        candidate_poly.domain_hi,
+        policy=candidate_poly.range_policy,
+        context="raw_compat_poly_diff",
+        trace=candidate_poly.range_trace,
+    )
     diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
     check_lo, check_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, before_lo, before_hi)
     check_lo, check_hi = _interval_add(check_lo, check_hi, diff_lo, diff_hi)
@@ -1641,6 +2095,8 @@ def dense_polynomial_picard(
             picard.domain_lo,
             picard.domain_hi,
             DenseRemainderLedger.empty(),
+            picard.range_policy,
+            picard.range_trace,
         ).apply_cutoff(cutoff_threshold)
         rows.append(
             {
@@ -1654,9 +2110,14 @@ def dense_polynomial_picard(
                 else 0,
                 "nonzero_coefficients": int(torch.count_nonzero(g.poly.coeffs).item()),
                 "coefficient_sha256": hashlib.sha256(g.poly.coeffs.detach().cpu().numpy().tobytes()).hexdigest(),
+                "exponent_support_sha256": hashlib.sha256(
+                    torch.any(g.poly.coeffs != 0, dim=(0, 1)).detach().cpu().numpy().tobytes()
+                ).hexdigest(),
                 "discarded_remainder_widths": picard.ledger.widths(),
                 "cutoff_remainder_widths": g.ledger.widths(),
                 "finite": g.is_finite(),
+                "range_method": g.range_policy.method,
+                "subdivision_depth": g.range_policy.max_depth,
             }
         )
         if not g.is_finite():
@@ -1807,7 +2268,7 @@ def dense_picard_validate_step(
         rhs = call_dense_rhs(rhs_fn, candidate_with_remainder)
         picard_image = base_ext.add(rhs.integrate(tau_index))
         residual = picard_image.sub(candidate.without_remainder())
-        ordinary_lo, ordinary_hi = residual.range_bound()
+        ordinary_lo, ordinary_hi = residual.range_bound(context="retained_polynomial")
         ordinary_lo, ordinary_hi = _inflate_tensor_interval(ordinary_lo, ordinary_hi, validation_eps)
         compat_extra: Mapping[str, Any] = {}
         if validation_mode == "flowstar_raw_remainder_compat":
@@ -1863,10 +2324,26 @@ def dense_picard_validate_step(
                 "raw_ctrunc_residual_width_sum": float(torch.sum(image_hi - image_lo).detach().cpu()),
                 "ordinary_residual_width_sum": float(torch.sum(ordinary_hi - ordinary_lo).detach().cpu()),
                 "polynomial_range_width_sum": float(
-                    torch.sum(candidate.poly.range_bound(candidate.domain_lo, candidate.domain_hi)[1]
-                    - candidate.poly.range_bound(candidate.domain_lo, candidate.domain_hi)[0]).detach().cpu()
+                    torch.sum(
+                        candidate.poly.range_bound(
+                            candidate.domain_lo,
+                            candidate.domain_hi,
+                            policy=candidate.range_policy,
+                            context="retained_polynomial",
+                            trace=None,
+                        )[1]
+                        - candidate.poly.range_bound(
+                            candidate.domain_lo,
+                            candidate.domain_hi,
+                            policy=candidate.range_policy,
+                            context="retained_polynomial",
+                            trace=None,
+                        )[0]
+                    ).detach().cpu()
                 ),
                 "rejection_reason": rejection_reason,
+                "range_method": candidate.range_policy.method,
+                "subdivision_depth": candidate.range_policy.max_depth,
                 **compat_extra,
             }
         )
@@ -1932,6 +2409,9 @@ __all__ = [
     "BatchedMonomialBasis",
     "BatchedPolynomial",
     "BatchedTaylorModel",
+    "DensePolynomialRangeResult",
+    "DenseRangePolicy",
+    "DenseSubdivisionCover",
     "DenseExecutionCounters",
     "DenseRemainderLedger",
     "DenseTMContract",
@@ -1941,5 +2421,7 @@ __all__ = [
     "dense_picard_validate_step",
     "dense_polynomial_picard",
     "dense_to_sparse_tmvector",
+    "build_dense_subdivision_cover",
+    "validate_dense_subdivision_cover",
     "sparse_tmvector_to_dense",
 ]

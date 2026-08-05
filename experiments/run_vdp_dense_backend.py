@@ -21,7 +21,15 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from torch_tm_flowpipe import FlowstarNormalFlowpipeState, Interval, PolynomialODE, TMVector, flowpipe_step_flowstar_style_adaptive
+from torch_tm_flowpipe import (
+    DenseRangePolicy,
+    FlowstarNormalFlowpipeState,
+    Interval,
+    PolynomialODE,
+    TMVector,
+    flowpipe_step_flowstar_style_adaptive,
+    save_terminal_checkpoint,
+)
 from torch_tm_flowpipe.safety import intervals_are_finite
 
 CANONICAL_CONFIG = ROOT / "benchmarks" / "canonical.yaml"
@@ -82,6 +90,10 @@ def _jsonable(value: Any) -> Any:
     return str(value)
 
 
+def _canonical_json_bytes(value: Any) -> bytes:
+    return (json.dumps(_jsonable(value), sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+
+
 def _atomic_json(path: Path, value: Any) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(_jsonable(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -117,6 +129,24 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
 
 def _git(args: Sequence[str]) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
+
+
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _candidate_trace_hashes(trace: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    rows = [row for row in trace if row.get("phase") == "polynomial_picard"]
+    if not rows:
+        return {}
+    terminal = rows[-1]
+    return {
+        "coefficient_sha256": terminal.get("coefficient_sha256"),
+        "exponent_support_sha256": terminal.get("exponent_support_sha256"),
+        "basis_hash": terminal.get("basis_hash"),
+        "effective_degree": terminal.get("effective_degree"),
+        "picard_iterations": int(terminal.get("iteration", len(rows))),
+    }
 
 
 def _rk4_step(point: Sequence[float], h: float) -> tuple[float, float]:
@@ -219,6 +249,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "right_map_range_mode": args.right_map_range_mode,
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
+        "save_terminal_checkpoint": bool(args.save_terminal_checkpoint),
+        "dense_range_method": args.dense_range_method,
+        "dense_range_trigger": args.dense_range_trigger,
+        "dense_range_max_depth": int(args.dense_range_max_depth),
+        "dense_range_max_leaves": int(args.dense_range_max_leaves),
+        "dense_range_split_vars": [int(item) for item in args.dense_range_split_vars.split(",") if item.strip()],
+        "dense_range_contexts": [item.strip() for item in args.dense_range_contexts.split(",") if item.strip()],
     }
     (output_dir / "config_snapshot.yaml").write_text(yaml.safe_dump(config_snapshot, sort_keys=True), encoding="utf-8")
     command = {
@@ -236,6 +273,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     initial_box = [Interval(*bounds) for bounds in contract["initial_box"]]
     ode = PolynomialODE.from_system_spec(contract["canonical_system_spec"])
+    dense_range_policy = DenseRangePolicy(
+        method=args.dense_range_method,
+        max_depth=0 if args.dense_range_method == "natural" else int(args.dense_range_max_depth),
+        max_leaves=int(args.dense_range_max_leaves),
+        split_vars=tuple(int(item) for item in args.dense_range_split_vars.split(",") if item.strip()),
+        trigger=args.dense_range_trigger,
+        named_contexts=tuple(item.strip() for item in args.dense_range_contexts.split(",") if item.strip()),
+    )
     current: TMVector | list[Interval] = initial_box
     normal_state: FlowstarNormalFlowpipeState | None = None
     samples = _samples(contract["initial_box"])
@@ -247,6 +292,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     checkpoint_rows: list[dict[str, Any]] = []
     ledger_rows: list[dict[str, Any]] = []
     profile_rows: list[dict[str, Any]] = []
+    range_trace_rows: list[dict[str, Any]] = []
     total_sample_violations = 0
     max_sample_violation = 0.0
     tube_lo = [math.inf, math.inf]
@@ -273,6 +319,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         if 0.0 < remaining - h_try < contract["h_min"]:
             h_try = remaining
         diagnostics: list[dict[str, Any]] = []
+        previous_rejection_count = sum(
+            str(row.get("validation_status", "")).lower() == "failed" for row in attempt_rows
+        )
         step_start = time.perf_counter()
         segment = flowpipe_step_flowstar_style_adaptive(
             ode,
@@ -293,6 +342,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             right_map_range_mode=args.right_map_range_mode,
             tm_backend=args.tm_backend,
             dense_device=args.device,
+            dense_range_policy=dense_range_policy,
             diagnostics=diagnostics,
             diagnostics_context={"segment_index": len(segment_rows), "t_before": current_time, "mode": args.tm_backend},
         )
@@ -346,9 +396,65 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for trace_row in segment.backend_trace or []:
             if trace_row.get("phase") == "remainder_validation":
                 ledger_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(trace_row)})
+            if trace_row.get("phase") in {"polynomial_range", "range_validation_lane", "range_fail_closed"}:
+                range_trace_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(trace_row)})
         profile_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, "h_attempted": h_try, "total_wall_s": step_wall, "backend_lane": segment.backend_lane})
 
         if not accepted:
+            if args.save_terminal_checkpoint:
+                if not isinstance(current, TMVector) or normal_state is None:
+                    raise RuntimeError("terminal checkpoint requires the canonical TMVector normal pre-state")
+                checkpoint_dir = output_dir / "terminal_checkpoint"
+                manifest = save_terminal_checkpoint(
+                    checkpoint_dir,
+                    current=current,
+                    normal_state=normal_state,
+                    scheduler={
+                        "current_time": current_time,
+                        "h_next": h_next,
+                        "h_attempted": h_try,
+                        "accepted_segment_count": len([item for item in segment_rows[:-1] if item.get("status") == "accepted"]),
+                        "previous_rejection_count": previous_rejection_count,
+                        "terminal_internal_step_rejections": int(segment.step_rejections),
+                        "next_retry_h": segment.next_h,
+                    },
+                    contract=contract,
+                    provenance={
+                        "branch": command["branch"],
+                        "commit": command["commit"],
+                        "tracked_diff_sha256": command["tracked_diff_sha256"],
+                        "config_sha256": command["config_sha256"],
+                        "source_hashes": {
+                            str(path.relative_to(ROOT)): _file_sha256(path)
+                            for path in (CANONICAL_CONFIG, MATCHED_CONTRACT)
+                        },
+                        "dtype": contract["dtype"],
+                        "device": args.device,
+                    },
+                )
+                validation_rows = [item for item in (segment.backend_trace or []) if item.get("phase") == "remainder_validation"]
+                terminal_reference = {
+                    "attempted_h": h_try,
+                    "t_before": current_time,
+                    "accepted": accepted,
+                    "status": segment.status,
+                    "message": segment.message,
+                    "validation_rejection_reason": (
+                        validation_rows[-1].get("rejection_reason", "") if validation_rows else ""
+                    ),
+                    "candidate_hashes": _candidate_trace_hashes(segment.backend_trace or []),
+                    "candidate_remainder": segment.candidate_remainder,
+                    "picard_image_remainder": segment.picard_image_remainder,
+                    "subset_margin": segment.subset_margin,
+                    "backend_lane": segment.backend_lane,
+                    "backend_counters": segment.backend_counters,
+                    "backend_trace": segment.backend_trace,
+                    "validation_rows": validation_rows,
+                    "checkpoint_manifest_sha256": hashlib.sha256(
+                        _canonical_json_bytes(manifest)
+                    ).hexdigest(),
+                }
+                _atomic_json(checkpoint_dir / "terminal_reference.json", terminal_reference)
             status = "failed"
             message = segment.message or "dense/sparse flowpipe validation rejected"
             break
@@ -374,6 +480,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
         _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
         _write_csv(output_dir / "profile.csv", profile_rows)
+        _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
 
     runtime = time.perf_counter() - start
     completed = status == "completed" and current_time >= requested_horizon - 1e-12
@@ -406,6 +513,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reset_mode": args.reset_mode,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
+        "dense_range_method": args.dense_range_method,
+        "dense_range_trigger": args.dense_range_trigger,
+        "dense_range_max_depth": int(args.dense_range_max_depth),
+        "dense_range_max_leaves": int(args.dense_range_max_leaves),
+        "dense_range_contexts": list(dense_range_policy.named_contexts),
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "accepted_steps": sum(row["status"] == "accepted" for row in segment_rows),
@@ -414,6 +526,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "fallback_count": fallback_count,
         "segment_boundary_conversion_count": conversion_count,
         "device_transfer_count": device_transfer_count,
+        "range_subdivision_invocations": sum(int(row.get("range_subdivision_invocations", 0)) for row in segment_rows),
+        "range_leaf_evaluations": sum(int(row.get("range_leaf_evaluations", 0)) for row in segment_rows),
         "sample_sanity_violations": total_sample_violations,
         "sample_sanity_max_violation": max_sample_violation,
         "sample_sanity_status": "passed" if total_sample_violations == 0 and segment_rows else "failed",
@@ -434,6 +548,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
     _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
     _write_csv(output_dir / "profile.csv", profile_rows)
+    _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
     _atomic_json(output_dir / "summary.json", summary)
     _atomic_json(
         output_dir / "decision.json",
@@ -467,6 +582,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--right-map-center-mode", choices=("constant", "range_midpoint"), default="constant")
     parser.add_argument("--right-map-range-mode", choices=("standard", "normal_eval"), default="standard")
+    parser.add_argument("--dense-range-method", choices=("natural", "subdivision", "adaptive_subdivision"), default="natural")
+    parser.add_argument(
+        "--dense-range-trigger",
+        choices=("always", "on_validation_failure", "proactive_depth1_on_named_contexts"),
+        default="always",
+    )
+    parser.add_argument("--dense-range-max-depth", type=int, default=1)
+    parser.add_argument("--dense-range-max-leaves", type=int, default=64)
+    parser.add_argument("--dense-range-split-vars", default="0,1")
+    parser.add_argument("--dense-range-contexts", default="")
+    parser.add_argument(
+        "--save-terminal-checkpoint",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="save the immutable pre-state and failed attempt reference on terminal rejection",
+    )
     return parser.parse_args(argv)
 
 
