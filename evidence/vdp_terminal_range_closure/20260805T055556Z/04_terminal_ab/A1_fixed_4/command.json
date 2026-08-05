@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "experiments/replay_vdp_terminal_range.py",
+    "--checkpoint",
+    "outputs/vdp_terminal_range_closure/20260805T055556Z/02_terminal_state_replay/freeze_run_v2/terminal_checkpoint",
+    "--output-dir",
+    "outputs/vdp_terminal_range_closure/20260805T055556Z/04_terminal_ab/A1_fixed_4",
+    "--range-method",
+    "subdivision",
+    "--subdivision-depth",
+    "1",
+    "--max-leaves",
+    "4",
+    "--split-vars",
+    "0,1",
+    "--device",
+    "cpu"
+  ],
+  "branch": "codex/vdp-terminal-range-closure-20260805",
+  "commit": "82c54a244d996ccc08b09cb4ded5f48167415585",
+  "config_sha256": "682785d41e69add9efae2e143abb8f4714a9218f177b542378a514d244274a43",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure",
+  "worktree_status": "M experiments/run_vdp_dense_backend.py\n M src/torch_tm_flowpipe/__init__.py\n M src/torch_tm_flowpipe/batched_dense_tm.py\n M src/torch_tm_flowpipe/flowpipe.py\n?? docs/VDP_TERMINAL_RANGE_CLOSURE.md\n?? experiments/replay_vdp_terminal_range.py\n?? src/torch_tm_flowpipe/terminal_checkpoint.py\n?? tests/test_dense_range_subdivision.py\n?? tests/test_vdp_terminal_state_replay.py"
+}

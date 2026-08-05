@@ -1,8 +1,27 @@
 # Results status
 
+## Current terminal-range result
+
+The dense backend now has a safe canonical terminal checkpoint/replay path and
+a fully tested batched subdivision polynomial-range evaluator. On the exact
+original terminal pre-state, natural range rejects with y margin
+`-5.111670937766742e-6`; the focused four-leaf
+`polynomial_truncation` range accepts the same coefficient payload, validation
+target, and `h=0.0039859994324420315` with y margin
+`2.8883253329832075e-5`. This establishes R3 without repair or fallback.
+
+The one pre-registered proactive depth-1 adjustment reaches
+`6.397083942944808` fresh from t=0 and establishes R4. It does not complete
+T=6.5, T=7.5, or T=10. All three requests deterministically stop at the same
+later terminal, where the unchanged raw-remainder y self-map margin is
+`-1.99995911680722e-5`; subdivision depths through the 64-leaf cap give the
+same bound. R5–R7 are false, and no successful second T=10 reproduction is
+claimed. See [the terminal-range closure](VDP_TERMINAL_RANGE_CLOSURE.md) and
+its complete hashed evidence bundle.
+
 ## Current dense-backend result
 
-The generic dense backend has passed operator, one-step, CUDA, and short
+The following paragraph records the preceding S3 baseline. The generic dense backend had passed operator, one-step, CUDA, and short
 multi-step gates and is integrated as `hybrid_dense_core` (S3). It does not
 complete authoritative VDP order-4 T=10: the exact unmodified validated horizon
 is 6.3172908799330765, classified `minimum_step_reached`. The single-factor

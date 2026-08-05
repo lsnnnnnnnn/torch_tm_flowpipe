@@ -1,5 +1,25 @@
 # Status
 
+## VDP terminal polynomial-range closure (2026-08-05)
+
+Branch `codex/vdp-terminal-range-closure-20260805`, implementation commits
+`24bd652` and `0360842`, advances the prior S3 dense
+backend through R4. A canonical frozen terminal checkpoint replays the natural
+failure exactly, and a validated batched subdivision evaluator closes the
+original `t=6.3172908799330765` step at the unchanged h. The production
+`polynomial_truncation` depth-1 policy then reaches a fresh validated horizon
+of `6.397083942944808`, strictly beyond the historical
+`6.390931109681597` diagnostic boundary.
+
+T=6.5, T=7.5, and T=10 requests all independently stop at that same later
+state with y self-map margin `-1.99995911680722e-5`. The 64-leaf frozen replay
+does not improve it. Current status is therefore R4, not T=10 closure or R7.
+All authoritative runs retain order 4, the original ODE/remainder/cutoff/step
+and validation contracts, `hybrid_dense_core`, zero fallback, zero repair, and
+zero sample violations. Final tests are 400 passed and 2 skipped, including
+three CUDA subdivision tests. See
+[`VDP_TERMINAL_RANGE_CLOSURE.md`](VDP_TERMINAL_RANGE_CLOSURE.md).
+
 ## Generic batched dense TM backend (2026-08-04/05)
 
 Branch `codex/generic-batched-tm-backend-vdp-t10-20260805` reaches S3

@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "experiments/run_vdp_dense_backend.py",
+    "--output-dir",
+    "outputs/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t0p1_natural",
+    "--tm-backend",
+    "dense",
+    "--device",
+    "cpu",
+    "--horizon",
+    "0.1",
+    "--wall-cap-s",
+    "1800"
+  ],
+  "branch": "codex/vdp-terminal-range-closure-20260805",
+  "commit": "82c54a244d996ccc08b09cb4ded5f48167415585",
+  "config_sha256": "4ddf85bec94ee63c3843d6117a88e6678836cf30d4e313215c6641a157baf870",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure",
+  "tracked_diff_sha256": "89a83a31407b357e3f7cb4ae86db49772708dcc1a3c9813bfa50c9733df44b27",
+  "worktree_status": "M experiments/run_vdp_dense_backend.py\n M src/torch_tm_flowpipe/__init__.py\n M src/torch_tm_flowpipe/batched_dense_tm.py\n M src/torch_tm_flowpipe/flowpipe.py\n M tests/test_batched_dense_runner_contract.py\n?? docs/VDP_TERMINAL_RANGE_CLOSURE.md\n?? experiments/replay_vdp_terminal_range.py\n?? src/torch_tm_flowpipe/terminal_checkpoint.py\n?? tests/test_dense_range_policy.py\n?? tests/test_dense_range_subdivision.py\n?? tests/test_vdp_terminal_state_replay.py"
+}

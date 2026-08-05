@@ -8,8 +8,9 @@ Flowstar and DiffReach, and bounded diagnostics.
 In scope are interval and polynomial arithmetic, total-degree truncation,
 remainder construction and validation, endpoint/segment/tube semantics,
 raw/tightened separation, reset and preconditioning, failure/completion
-semantics, repeated runtime measurement, provenance, and independent
-acceptance.
+semantics, deterministic finite domain subdivision for polynomial range
+enclosure, safe terminal-state replay, repeated runtime measurement,
+provenance, and independent acceptance.
 
 Out of scope are NNCS closed loops, controllers, CROWN/auto_LiRPA, BERN,
 Jacobian or sensitivity bounds, new adaptive-basis algorithms,

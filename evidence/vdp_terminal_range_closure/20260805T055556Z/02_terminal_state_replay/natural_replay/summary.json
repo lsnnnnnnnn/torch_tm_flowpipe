@@ -1,0 +1,72 @@
+{
+  "accepted": false,
+  "attempted_h": 0.0039859994324420315,
+  "backend_counters": {
+    "boundary_scalar_loop_count": 2,
+    "dense_to_sparse_conversions": 1,
+    "device_transfer_count": 0,
+    "inner_loop_conversions": 0,
+    "inner_loop_scalar_count": 0,
+    "segment_boundary_conversions": 2,
+    "sparse_fallback_count": 0,
+    "sparse_to_dense_conversions": 1
+  },
+  "backend_lane": "hybrid_dense_core",
+  "candidate_hashes": {
+    "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+    "coefficient_sha256": "da9db6557b41d24496f261854c6c75a58fd67b5ab1a09b1846c6c21d39d9de1f",
+    "effective_degree": 4,
+    "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+    "picard_iterations": 4
+  },
+  "candidate_remainder": [
+    [
+      -3.986029432442034e-07,
+      -9.569750747426827e-05
+    ],
+    [
+      3.986029432442034e-07,
+      0.00010511167093776675
+    ]
+  ],
+  "checkpoint_full_sha256": "a8d73320c8343ad815edd36e04c228f0693c6e78dda40a216c790fda1d45a343",
+  "contract_sha256": "8c29a59ac574dc463e3cb73909ba489a911fdeabb3d2b9a4d48507184d909547",
+  "current_hashes": {
+    "coefficient_sha256": "3ba0af3d84cd6418f869a43176886b93ba4a534c48dae07d2b5156c38eef65d2",
+    "domain_sha256": "7d3fd1439160440745dc6a2d357f74246226d6012352f4969a7936c3bdd05aca",
+    "exponent_support_sha256": "911cc53df83061c015fd22bd26c0b340a4659fe0b0b03630782094c3fc3cd7bc",
+    "tmvector_sha256": "02a101a8e961c694235f667a87d38bc24ebe546974dc17e1239d01c2a5d5d9df"
+  },
+  "endpoint_repair_used": false,
+  "fallback_count": 0,
+  "message": "Flowstar raw remainder compat residual not subset of target remainder",
+  "natural_replay_exact": true,
+  "normalized_current_hashes": {
+    "coefficient_sha256": "3ba0af3d84cd6418f869a43176886b93ba4a534c48dae07d2b5156c38eef65d2",
+    "domain_sha256": "7d3fd1439160440745dc6a2d357f74246226d6012352f4969a7936c3bdd05aca",
+    "exponent_support_sha256": "911cc53df83061c015fd22bd26c0b340a4659fe0b0b03630782094c3fc3cd7bc",
+    "tmvector_sha256": "02a101a8e961c694235f667a87d38bc24ebe546974dc17e1239d01c2a5d5d9df"
+  },
+  "picard_image_remainder": [
+    [
+      -3.986029432442034e-07,
+      -9.569750747426827e-05
+    ],
+    [
+      3.986029432442034e-07,
+      0.00010511167093776675
+    ]
+  ],
+  "range_leaf_count": 1,
+  "range_method": "natural",
+  "runtime_s": 0.08751139603555202,
+  "status": "failed",
+  "subset_margin": [
+    [
+      9.96013970567558e-05,
+      -5.111670937766742e-06
+    ]
+  ],
+  "t_before": 6.3172908799330765,
+  "validation_rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder"
+}

@@ -1,0 +1,88 @@
+schema_version: 1
+status: preregistered_fail_closed
+comparison_lanes:
+  lane_a: native_reproduction
+  lane_b: matched_plant_backend
+  lane_c: native_end_to_end_certificate
+runtime_boundary: total_configuration_v2
+primary_output_semantics: raw_endpoint
+completion_rule:
+  status: completed
+  requested_horizon_must_equal_completed_horizon: true
+  every_step_validation_must_pass: true
+  nonfinite_or_fallback_allowed: false
+soundness_levels:
+  official-stock: formal_outward_rounding
+  generated-stock: formal_outward_rounding
+  torch-sparse: safeguarded_float64_not_fully_proved
+  diffreach-native: unknown
+  xiangru-q3: empirical_enclosure_only
+  torch-dense-prototype: empirical_enclosure_only
+systems:
+  scalar_quadratic:
+    state_order: [x]
+    ode: ["1 + x^2"]
+    constants_decimal: [1.0]
+    constants_dtype: binary64
+    initial_set: [[0.0, 0.1]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy: {kind: fixed, h: 0.01}
+    horizon: 0.01
+    remainder_initialization: [[-1.0e-10, 1.0e-10]]
+    cutoff: 1.0e-15
+    effective_support:
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f}
+      torch-sparse: {kind: observed_segment_support, sha256: b6295cb4983bf2a7b9ff7c516e1778085bedd22d9cadec203983ee4398df820f}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: 7e0864b0ef83c2e7c36305f73482057cd512bca0a7d6d91aa2c26704ecacb77e, matched_to_complete_order4: false}
+  harmonic_oscillator:
+    state_order: [x, y]
+    ode: ["y", "-x"]
+    constants_decimal: [1.0, -1.0]
+    constants_dtype: binary64
+    initial_set: [[0.9, 1.1], [-0.1, 0.1]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy: {kind: fixed, h: 0.01}
+    horizon: 0.01
+    remainder_initialization: [[-1.0e-10, 1.0e-10], [-1.0e-10, 1.0e-10]]
+    cutoff: 1.0e-15
+    effective_support:
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894}
+      torch-sparse: {kind: observed_segment_support, sha256: f10191ca08000883dcf3b13e94abd84be575b273db1500e7494f57643a742894}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c, matched_to_complete_order4: false}
+  van_der_pol:
+    state_order: [x, y]
+    ode: ["y", "(1 - x^2) * y - x"]
+    constants_decimal: [1.0, -1.0]
+    constants_dtype: binary64
+    initial_set: [[1.1, 1.4], [2.35, 2.45]]
+    normalization: affine_generators_on_minus_one_one
+    requested_order: 4
+    step_policy:
+      native_flowstar: {kind: adaptive, minimum: 0.002, maximum: 0.1}
+      matched_fixed: {kind: fixed, h: 0.005}
+      flowstar_schedule_replay: not_matched
+    horizons: {one_step: 0.005, short: 1.0, target: 10.0}
+    remainder_initialization: [[-1.0e-4, 1.0e-4], [-1.0e-4, 1.0e-4]]
+    cutoff: 1.0e-10
+    effective_support:
+      official-stock: {status: unavailable_on_official_program_route}
+      generated-stock: {kind: observed_segment_support, sha256: 61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994}
+      torch-sparse: {kind: observed_segment_support, sha256: 61a0e19f805fd253ce21e64e2c85c5b4e9c8c86d9d2fbfdf155c1d6a32b98994}
+      diffreach-native: {kind: restricted_quasi_quadratic_allowed_support, sha256: d07f966b318e92719093dbe79ef9c2e57b91249733d1a66a47f2f17162216c4c, matched_to_complete_order4: false}
+output_contract:
+  raw_endpoint: required
+  tightened_endpoint: independent_optional_field
+  collapsed_endpoint: diagnostic_only
+  repaired_hull: diagnostic_only
+  last_segment: required
+  full_tube: required
+  fallback_between_fields: forbidden
+blocked_fields:
+  - reason: official Flowstar program route does not export internal polynomial/Picard support fields
+  - reason: Flowstar accepted-step replay has plot boxes and time intervals but lacks field-level stock trace
+  - reason: upstream DiffReach VDP model uses an unsupported stack primitive; canonical polynomial adapter is a separate lane
+  - reason: runtime boundaries lack matched 1-cold plus 10-steady repetitions

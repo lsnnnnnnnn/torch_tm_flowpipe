@@ -2,8 +2,8 @@
 
 `torch-tm-flowpipe` is a PyTorch-native, plant-only Taylor-model flowpipe
 prototype for polynomial ODEs. The active evidence branch is
-`codex/flowstar-scalar-affine-correctness-closure-20260804`, descended from the
-verified native-reproduction tip `438ee68`; the canonical package is
+`codex/vdp-terminal-range-closure-20260805`, descended from the generic dense
+backend tip `82c54a2`; the canonical package is
 `src/torch_tm_flowpipe`.
 
 The project implements interval arithmetic, sparse total-degree polynomials,
@@ -41,6 +41,15 @@ cross-step dependency. `dependency_preserving` carries polynomial structure,
 but is not guaranteed to produce a tighter range.
 
 ## Runners and results
+
+The current plant-only dense result includes an exact, safe JSON terminal-state
+replay and a validated batched subdivision polynomial-range path. It closes the
+original Van der Pol terminal step without changing the numerical contract and
+reaches R4 at a fresh horizon of `6.397083942944808`. It does not complete
+T=7.5 or T=10. See the
+[terminal-range closure](docs/VDP_TERMINAL_RANGE_CLOSURE.md) and the hashed
+evidence under
+`evidence/vdp_terminal_range_closure/20260805T055556Z`.
 
 The current native-reproduction registry is
 [`benchmarks/native_reproduction_registry.json`](benchmarks/native_reproduction_registry.json),

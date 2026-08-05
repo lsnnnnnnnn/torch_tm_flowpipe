@@ -10,6 +10,14 @@ Tracked:
 - provenance manifests and checksums;
 - repository audit inventories and essential acceptance logs.
 
+The VDP terminal-range bundle is a deliberate exception to omitting duplicated
+raw expansions: it tracks complete segments, attempts, remainder ledgers, and
+range traces needed to audit the terminal claim. Large raw CSV/JSONL files are
+stored as deterministic gzip (`compresslevel=9`, `mtime=0`). Its manifest
+records both uncompressed source hashes/sizes and stored hashes/sizes, while
+`SHA256SUMS` covers every committed stored file. Decompression does not change
+the evidentiary identity declared in the manifest.
+
 Untracked:
 
 - caches and compiled files;

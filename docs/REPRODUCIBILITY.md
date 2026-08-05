@@ -7,6 +7,52 @@ python -m pip install -e ".[test]"
 python -m pytest -q
 ```
 
+At implementation commits `24bd652` and `0360842`, the expected
+full-suite result is 400 passed and 2 skipped. Replay the committed original
+terminal fixture with the promoted fail-trigger policy:
+
+```bash
+conda run -n py11 python experiments/replay_vdp_terminal_range.py \
+  --checkpoint evidence/vdp_terminal_range_closure/20260805T055556Z/02_terminal_state_replay/original_terminal_checkpoint \
+  --output-dir /tmp/vdp-terminal-replay-new \
+  --range-method adaptive_subdivision --subdivision-depth 1 \
+  --max-leaves 4 --split-vars 0,1 \
+  --named-contexts polynomial_truncation \
+  --trigger on_validation_failure --device cpu
+```
+
+The expected result accepts the unchanged terminal h with x/y margins
+`9.96013970567558e-5` and `2.8883253329832075e-5`, zero fallback, and the same
+candidate coefficient/support hashes as natural replay.
+
+Run the final fresh policy into a new directory:
+
+```bash
+conda run -n py11 python experiments/run_vdp_dense_backend.py \
+  --output-dir /tmp/vdp-terminal-range-t10-new \
+  --tm-backend dense --device cpu --horizon 10 --wall-cap-s 3600 \
+  --dense-range-method adaptive_subdivision \
+  --dense-range-trigger proactive_depth1_on_named_contexts \
+  --dense-range-max-depth 1 --dense-range-max-leaves 4 \
+  --dense-range-split-vars 0,1 \
+  --dense-range-contexts polynomial_truncation
+```
+
+This command is expected to exit nonzero after writing a complete fail-closed
+result at `6.397083942944808`; it is not expected to complete T=10. Verify the
+tracked evidence, including deterministic gzip files, with:
+
+```bash
+cd evidence/vdp_terminal_range_closure/20260805T055556Z
+sha256sum -c SHA256SUMS
+find . -type f -name '*.gz' -print0 | xargs -0 -n1 gzip -t
+```
+
+If the corresponding local `outputs/vdp_terminal_range_closure/20260805T055556Z`
+tree is present, its tracked evidence form can be regenerated with
+`experiments/package_vdp_terminal_range_evidence.py`. The packager records the
+source and stored hashes for every compressed raw file.
+
 Run the canonical dense VDP lane into a new directory:
 
 ```bash
@@ -15,7 +61,8 @@ conda run -n py11 python experiments/run_vdp_dense_backend.py \
   --tm-backend dense --device cpu --horizon 10 --wall-cap-s 480
 ```
 
-The expected unmodified result at commit `6bf0d9a6...` is a fail-closed
+The following command and expected result describe the preceding natural S3
+baseline at commit `6bf0d9a6...`: it is a fail-closed
 `minimum_step_reached` at `6.3172908799330765`, not T=10 completion. The sole
 diagnostic factor is reproduced by adding
 `--right-map-center-mode range_midpoint`; it must remain labeled diagnostic.

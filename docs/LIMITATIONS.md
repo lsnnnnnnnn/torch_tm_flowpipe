@@ -18,8 +18,17 @@
   archive tags but are not headline results.
 - The dense flowpipe is hybrid: normalized insertion and cross-step right-map
   composition remain sparse/CPU boundary work. It is S3, not full-dense S5.
-- The authoritative VDP order-4 lane stops at T=6.3172908799330765 because the
-  y remainder self-map fails before h_min; T=10 is not closed.
+- Natural range still stops the authoritative VDP order-4 lane at
+  T=6.3172908799330765. The validated four-leaf terminal fix closes that step,
+  but the final proactive fresh lane stops at T=6.397083942944808 with y
+  self-map margin `-1.99995911680722e-5`; T=7.5 and T=10 remain unclosed.
+- Subdivision uses safeguarded float64 arithmetic and complete-cover tests, not
+  a machine-checked hardware-independent directed-rounding proof. Sampling is
+  only an independent sanity check.
+- The production policy is intentionally limited to four leaves on the
+  attributed `polynomial_truncation` context. Frozen depths through the 64-leaf
+  cap do not improve the later terminal, and no second policy adjustment or
+  reduced h_min was used.
 - CUDA correctness is exercised, but batch-1 CUDA is slower and only multiply
   wins at batch 128 in the recorded V100 microbenchmark. No end-to-end GPU or
   cross-tool speedup is claimed.
