@@ -1,0 +1,46 @@
+{
+  "absolute_difference": null,
+  "accepted_step_index": 0,
+  "behavior_relevance_at_first_occurrence": false,
+  "classification": "structural semantic difference",
+  "coefficient_comparison": {
+    "basis_equal": false,
+    "center_equal": false,
+    "coefficient_comparison_available": false,
+    "common_basis_transform_implemented": false,
+    "coordinate_metadata_available": false,
+    "exponent_semantics_equal": false,
+    "flowstar_basis": [
+      "tau",
+      "r0",
+      "r1",
+      "r2"
+    ],
+    "flowstar_center": null,
+    "flowstar_normalization_scale": null,
+    "local_time_identity_equal": false,
+    "normalization_scale_equal": false,
+    "reason": "basis/center/scale/exponent/local-time identity is missing or differs and no algebraically tested common-basis transform is implemented; coefficient comparison fails closed",
+    "torch_basis": [
+      "u0",
+      "u1"
+    ],
+    "torch_center": 0.0,
+    "torch_normalization_scale": null
+  },
+  "component": null,
+  "explanation": "The first trace-visible difference is structural, not JSON ordering. Flowstar's scheduler hook exposes its left/right composition basis but not a Torch-equivalent composed pre-state.",
+  "field": "basis_variable_order / physical composed state availability",
+  "flowstar_value": [
+    "tau",
+    "r0",
+    "r1",
+    "r2"
+  ],
+  "schema": "vdp_first_field_divergence_v1",
+  "stage": "step_pre_state",
+  "torch_value": [
+    "u0",
+    "u1"
+  ]
+}

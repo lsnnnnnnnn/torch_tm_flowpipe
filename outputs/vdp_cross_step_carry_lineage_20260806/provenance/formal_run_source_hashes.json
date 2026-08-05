@@ -1,0 +1,193 @@
+{
+  "commands": [
+    [
+      "git",
+      "ls-tree",
+      "-r",
+      "--name-only",
+      "a1fb3527bb7c12ce23aa2fb49d66f6380c463c90"
+    ],
+    [
+      "git",
+      "show",
+      "a1fb3527bb7c12ce23aa2fb49d66f6380c463c90:<path>"
+    ]
+  ],
+  "commit": "a1fb3527bb7c12ce23aa2fb49d66f6380c463c90",
+  "dirty": false,
+  "files": [
+    {
+      "bytes": 2955,
+      "path": "benchmarks/canonical.yaml",
+      "sha256": "697e187c85da8b7c6f125d3a7d42d208dcd1b6359f5d5f24a4218cfef3dce484"
+    },
+    {
+      "bytes": 4331,
+      "path": "benchmarks/three_tool_matched_contract.yaml",
+      "sha256": "a3661c36b51118a06f799e6369390b05e2687f0c0cf11a24481a501ae73c14b8"
+    },
+    {
+      "bytes": 88402,
+      "path": "evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint/terminal_reference.json",
+      "sha256": "1febfed80b3f0144790e4d1538b47a522433b434b8cc5a8ad2045459fc520462"
+    },
+    {
+      "bytes": 13813,
+      "path": "evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint/terminal_state.json",
+      "sha256": "8304000f298eee9c3a3d5b1f3ce0f61548639de63e9a51485ab5c01cb2d42c9c"
+    },
+    {
+      "bytes": 1585,
+      "path": "evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint/terminal_state_manifest.json",
+      "sha256": "ab011534814b40e0d3e046e1cc1828de7afeeb7c84a0d0438b39e6d009938ce3"
+    },
+    {
+      "bytes": 14846,
+      "path": "experiments/replay_vdp_terminal_range.py",
+      "sha256": "e310376c4bd2b7daa09590ffcf234660b2743a593be84654ba01685fdcef5bfd"
+    },
+    {
+      "bytes": 32023,
+      "path": "experiments/run_vdp_dense_backend.py",
+      "sha256": "8ccf80e257e8f69ab0f1d334a65b98d09874088d0852a9755fb66798d19c6e50"
+    },
+    {
+      "bytes": 17794,
+      "path": "experiments/run_vdp_later_terminal_factorized_range.py",
+      "sha256": "acad15426f1e266f4a5605de19fc2c1b8cd2d66c64f6c49cd703505868060954"
+    },
+    {
+      "bytes": 3431,
+      "path": "src/torch_tm_flowpipe/__init__.py",
+      "sha256": "1d332b9b5c99028eaed3d4d8c0dd3e961ce2292cc5a960802e2554c5446314aa"
+    },
+    {
+      "bytes": 136725,
+      "path": "src/torch_tm_flowpipe/batched_dense_tm.py",
+      "sha256": "4b77c4709331af8b0595e9ae33fb690c6dab337383ce16aa9f6ebf5c1f20739f"
+    },
+    {
+      "bytes": 189344,
+      "path": "src/torch_tm_flowpipe/flowpipe.py",
+      "sha256": "badc86709024da011a2a9343965021244442b940f0cd8ef27ec34bce67c82c65"
+    },
+    {
+      "bytes": 7445,
+      "path": "src/torch_tm_flowpipe/interval.py",
+      "sha256": "c7247b0830dc952cf238e9784a2b951a9c6673f5aefcb0d3ed0f14ac9b04d549"
+    },
+    {
+      "bytes": 1092,
+      "path": "src/torch_tm_flowpipe/ode_examples.py",
+      "sha256": "46d3594b643e8e6cfa95f03fbde1b68a0228604cfafd281f14899c1918ee810c"
+    },
+    {
+      "bytes": 230,
+      "path": "src/torch_tm_flowpipe/picard.py",
+      "sha256": "69cec5e696c5082bf4cf095909f9c1c80fa28e72ba96bc4899ca3e6a793f4f5e"
+    },
+    {
+      "bytes": 18166,
+      "path": "src/torch_tm_flowpipe/polynomial.py",
+      "sha256": "a42ed99e9d3929f55a5e7f97ca850e69381a84b28bc7f022101f1145993bfbad"
+    },
+    {
+      "bytes": 3237,
+      "path": "src/torch_tm_flowpipe/polynomial_ode.py",
+      "sha256": "675bc3baca5d8e3b6251d04b14d5198affc2a7c6ac40d6ff6c714fcddaea7f9d"
+    },
+    {
+      "bytes": 1835,
+      "path": "src/torch_tm_flowpipe/protocol/__init__.py",
+      "sha256": "36ff640d7b2ca74d8b8df47fe48f643263a498b6b91366df1cd4fc3b5927be95"
+    },
+    {
+      "bytes": 7628,
+      "path": "src/torch_tm_flowpipe/protocol/backend_identity.py",
+      "sha256": "ac730294bca6fdb8da112a97db9ed8af274fde0943010629ef94c219714141b2"
+    },
+    {
+      "bytes": 629,
+      "path": "src/torch_tm_flowpipe/protocol/carry.py",
+      "sha256": "619458303f9b6a077a496e4aaed7389770ecf4c4497f00cfc7574b2359e8197e"
+    },
+    {
+      "bytes": 3710,
+      "path": "src/torch_tm_flowpipe/protocol/config.py",
+      "sha256": "7bb14bc6d215f0eb32e34622abbc70fe76e9f45b500bd4ba50350bcbc08bbac3"
+    },
+    {
+      "bytes": 5635,
+      "path": "src/torch_tm_flowpipe/protocol/eligibility.py",
+      "sha256": "085734c85d51e23e11823f8b834cec1809228ca3e3feb79d2a8bba83de52506f"
+    },
+    {
+      "bytes": 3612,
+      "path": "src/torch_tm_flowpipe/protocol/gates.py",
+      "sha256": "a5b79e7c708cff92a8ab8a5819dc89dd0edd46d6d941de600bfef53eac637408"
+    },
+    {
+      "bytes": 2520,
+      "path": "src/torch_tm_flowpipe/protocol/pareto.py",
+      "sha256": "fcf03f8a19c9f76216667bb71b99711b3a4a72c5cbb20480c3637d1102eba0ff"
+    },
+    {
+      "bytes": 1454,
+      "path": "src/torch_tm_flowpipe/protocol/provenance.py",
+      "sha256": "702f3ad57cadaa1beb0dd6fab0fb0dd3c0ad0f1172c63921619a2da4f9ed79ed"
+    },
+    {
+      "bytes": 13550,
+      "path": "src/torch_tm_flowpipe/protocol/reaudit.py",
+      "sha256": "5e0a6f4e9acbac3f6b3b5c4f1e3901437154f96d32b90318c3b3cf5aed031b8c"
+    },
+    {
+      "bytes": 1583,
+      "path": "src/torch_tm_flowpipe/protocol/runtime.py",
+      "sha256": "124b7a054c605996ab7bd12e0b2e1d8c2fbf1d93bd89c6b35a008060f4ea9bb4"
+    },
+    {
+      "bytes": 8760,
+      "path": "src/torch_tm_flowpipe/protocol/schema.py",
+      "sha256": "7a105fa7712d64fcd72ce6f95b811b9200d6324439a0c79f2cff679550e094fe"
+    },
+    {
+      "bytes": 570,
+      "path": "src/torch_tm_flowpipe/safety.py",
+      "sha256": "41a32d3dae88ae252ad5d14685d04090821a2699592dddc7853414d999f3e115"
+    },
+    {
+      "bytes": 31674,
+      "path": "src/torch_tm_flowpipe/symbolic_remainder.py",
+      "sha256": "d6c124395eecd9541a41ba7245abcd9e0b44039c25c85fcde5d8c5d8859d1918"
+    },
+    {
+      "bytes": 13558,
+      "path": "src/torch_tm_flowpipe/taylor_model.py",
+      "sha256": "40e9103880ebc79f1f2618b71c9d175c628d94c0a581296b4c07c697ba6f3eca"
+    },
+    {
+      "bytes": 16431,
+      "path": "src/torch_tm_flowpipe/terminal_checkpoint.py",
+      "sha256": "089430a4d7d1ec97ff3bb5b8c026ad45fcc144ac96a75eb082ebdcb2211a81e4"
+    },
+    {
+      "bytes": 3633,
+      "path": "src/torch_tm_flowpipe/tm_vector.py",
+      "sha256": "8a966fc5ed59fce37a4d6c4282d77feeaa95de8408ee1f8521c348acc527407a"
+    },
+    {
+      "bytes": 15239,
+      "path": "tests/test_dense_horner_range.py",
+      "sha256": "a663e0abfb28ad77f504eb40e27a8bd8cc53996d852a84abd6cff7a61945cd41"
+    },
+    {
+      "bytes": 6197,
+      "path": "tests/test_vdp_later_terminal_factorized_range.py",
+      "sha256": "3388b9ee086352b21afad173dcda245ebd55b1f5b245c684590d74b3322787f7"
+    }
+  ],
+  "generated_at_utc": "2026-08-05T18:01:17.054180+00:00",
+  "schema": "torch_tm_flowpipe_source_hashes_v1",
+  "source_kind": "immutable_git_objects"
+}

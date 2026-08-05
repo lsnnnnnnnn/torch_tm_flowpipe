@@ -1,0 +1,40 @@
+{
+  "accepted_segment_count": 290,
+  "derived_attempt_count": 333,
+  "instrumentation_limit": "inner rejected Picard attempts and partitioned dropped terms are not exported by the scheduler hook; retry rows are explicitly marked derived and the separate probe lane is non-stock",
+  "observational_equivalence": {
+    "completion_equal": true,
+    "instrumented_exit_code": 0,
+    "instrumented_label": "stock Flow* + observation-only instrumentation",
+    "instrumented_segment_count": 290,
+    "passed": true,
+    "plot_files": [
+      {
+        "byte_equal": true,
+        "instrumented": "/srv/local/shengenli/flowstar_vdp_cross_step_instrumented_b85a321/benchmarks/continuous/vanderpol/vanderpol_t_x.plt",
+        "instrumented_sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4",
+        "stock": "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/benchmarks/continuous/vanderpol/vanderpol_t_x.plt",
+        "stock_sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4"
+      },
+      {
+        "byte_equal": true,
+        "instrumented": "/srv/local/shengenli/flowstar_vdp_cross_step_instrumented_b85a321/benchmarks/continuous/vanderpol/vanderpol_t_y.plt",
+        "instrumented_sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533",
+        "stock": "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/benchmarks/continuous/vanderpol/vanderpol_t_y.plt",
+        "stock_sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+      }
+    ],
+    "schedule_equal_as_printed": true,
+    "schema": "flowstar_observation_equivalence_v1",
+    "stock_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "stock_exit_code": 0,
+    "stock_segment_count": 290
+  },
+  "polynomial_term_count": 28303,
+  "raw_record_count": 37583,
+  "remainder_count": 3480,
+  "schema": "vdp_flowstar_observation_run_v1",
+  "source_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "tool": "stock Flow* + observation-only instrumentation",
+  "transition_count": 5510
+}

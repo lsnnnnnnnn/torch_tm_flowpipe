@@ -1,0 +1,42 @@
+{
+  "argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "experiments/run_vdp_dense_backend.py",
+    "--output-dir",
+    "outputs/vdp_cross_step_carry_lineage_20260806/torch_trace/fresh_t6p5_run",
+    "--tm-backend",
+    "dense",
+    "--device",
+    "cpu",
+    "--horizon",
+    "6.5",
+    "--wall-cap-s",
+    "3600",
+    "--dense-range-method",
+    "adaptive_subdivision",
+    "--dense-range-trigger",
+    "proactive_depth1_on_named_contexts",
+    "--dense-range-max-depth",
+    "1",
+    "--dense-range-max-leaves",
+    "4",
+    "--dense-range-split-vars",
+    "0,1",
+    "--dense-range-contexts",
+    "polynomial_truncation",
+    "--transition-trace-dir",
+    "outputs/vdp_cross_step_carry_lineage_20260806/torch_trace/fresh_t6p5_schema"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit",
+  "exit_code": 1,
+  "finished_at_utc": "2026-08-05T18:59:02.524563+00:00",
+  "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "runtime_s": 518.5473931590095,
+  "schema": "torch_tm_flowpipe_captured_command_v1",
+  "selected_environment": {
+    "CONDA_DEFAULT_ENV": "codex",
+    "CONDA_PREFIX": "/srv/local/shengenli/miniforge3/envs/codex"
+  },
+  "started_at_utc": "2026-08-05T18:50:23.977162+00:00"
+}

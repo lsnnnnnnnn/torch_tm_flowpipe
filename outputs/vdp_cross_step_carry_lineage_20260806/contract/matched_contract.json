@@ -1,0 +1,473 @@
+{
+  "all_fields_matched": false,
+  "authoritative_torch_switches": {
+    "backend_lane": "hybrid_dense_core",
+    "dense_range_contexts": [
+      "polynomial_truncation"
+    ],
+    "dense_range_max_depth": 1,
+    "dense_range_max_leaves": 4,
+    "dense_range_method": "adaptive_subdivision",
+    "dense_range_split_vars": [
+      0,
+      1
+    ],
+    "dense_range_trigger": "proactive_depth1_on_named_contexts",
+    "dense_range_variable_orders": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        1,
+        0,
+        2
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ],
+    "device": "cpu",
+    "dtype": "float64",
+    "endpoint_repair": false,
+    "endpoint_tightening": false,
+    "external_endpoint_substitution": false,
+    "max_validation_attempts": 2,
+    "reset_mode": "normalized_insertion",
+    "right_map_center_mode": "constant",
+    "right_map_range_mode": "standard",
+    "sparse_fallback": false,
+    "step_policy_mode": "flowstar_compat",
+    "symbolic_queue_enabled": false,
+    "symbolic_queue_max_size_inert": 100,
+    "tm_backend": "dense",
+    "validation_eps": {
+      "binary64_hex": "0x1.19799812dea11p-40",
+      "decimal": 1e-12
+    },
+    "validation_mode": "flowstar_raw_remainder_compat"
+  },
+  "behavioral_comparison_requires_lane_labels": [
+    "native_stock_flowstar",
+    "authoritative_torch_proactive_subdivision",
+    "torch_natural_shadow"
+  ],
+  "checkpoint_freeze": {
+    "accepted_segments": 307,
+    "attempted_h": {
+      "binary64_hex": "0x1.daf50aeab032ap-9",
+      "decimal": 0.003623635847674574
+    },
+    "current_time": {
+      "binary64_hex": "0x1.9969d2c52dbd5p+2",
+      "decimal": 6.397083942944808
+    },
+    "full_sha256": "dcb8f646d45c9742e0cff23fea596c12e53d8ccd00d1544f70564a44a7463420",
+    "symbolic_queue_present": false
+  },
+  "fields": {
+    "cutoff": {
+      "flowstar": {
+        "binary64_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "decimal": 1e-10
+      },
+      "matched": true,
+      "reason": "Absolute cutoff threshold matches.",
+      "torch": {
+        "binary64_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "decimal": 1e-10
+      }
+    },
+    "endpoint": {
+      "flowstar": "composed end-of-segment flowpipe at tau=h",
+      "matched": true,
+      "reason": "Semantic endpoints align; no segment box is substituted for an endpoint.",
+      "torch": "raw endpoint TM evaluated at tau=h before reset"
+    },
+    "h_max": {
+      "flowstar": {
+        "binary64_hex": "0x1.999999999999ap-4",
+        "decimal": 0.1
+      },
+      "matched": true,
+      "reason": "Source defaults match.",
+      "torch": {
+        "binary64_hex": "0x1.999999999999ap-4",
+        "decimal": 0.1
+      }
+    },
+    "h_min": {
+      "flowstar": {
+        "binary64_hex": "0x1.0624dd2f1a9fcp-9",
+        "decimal": 0.002
+      },
+      "matched": true,
+      "reason": "Source defaults match.",
+      "torch": {
+        "binary64_hex": "0x1.0624dd2f1a9fcp-9",
+        "decimal": 0.002
+      }
+    },
+    "initial_candidate_remainder": {
+      "flowstar": [
+        [
+          {
+            "binary64_hex": "-0x1.a36e2eb1c432dp-14",
+            "decimal": -0.0001
+          },
+          {
+            "binary64_hex": "0x1.a36e2eb1c432dp-14",
+            "decimal": 0.0001
+          }
+        ],
+        [
+          {
+            "binary64_hex": "-0x1.a36e2eb1c432dp-14",
+            "decimal": -0.0001
+          },
+          {
+            "binary64_hex": "0x1.a36e2eb1c432dp-14",
+            "decimal": 0.0001
+          }
+        ],
+        [
+          {
+            "binary64_hex": "-0x1.a36e2eb1c432dp-14",
+            "decimal": -0.0001
+          },
+          {
+            "binary64_hex": "0x1.a36e2eb1c432dp-14",
+            "decimal": 0.0001
+          }
+        ]
+      ],
+      "matched": true,
+      "reason": "The physical x/y candidate intervals match; stock also assigns the default interval to its clock component.",
+      "torch": [
+        [
+          {
+            "binary64_hex": "-0x1.a36e2eb1c432dp-14",
+            "decimal": -0.0001
+          },
+          {
+            "binary64_hex": "0x1.a36e2eb1c432dp-14",
+            "decimal": 0.0001
+          }
+        ],
+        [
+          {
+            "binary64_hex": "-0x1.a36e2eb1c432dp-14",
+            "decimal": -0.0001
+          },
+          {
+            "binary64_hex": "0x1.a36e2eb1c432dp-14",
+            "decimal": 0.0001
+          }
+        ]
+      ]
+    },
+    "initial_set": {
+      "flowstar": [
+        [
+          {
+            "binary64_hex": "0x1.199999999999ap+0",
+            "decimal": 1.1
+          },
+          {
+            "binary64_hex": "0x1.6666666666666p+0",
+            "decimal": 1.4
+          }
+        ],
+        [
+          {
+            "binary64_hex": "0x1.2cccccccccccdp+1",
+            "decimal": 2.35
+          },
+          {
+            "binary64_hex": "0x1.399999999999ap+1",
+            "decimal": 2.45
+          }
+        ],
+        [
+          {
+            "binary64_hex": "0x0.0p+0",
+            "decimal": 0.0
+          },
+          {
+            "binary64_hex": "0x0.0p+0",
+            "decimal": 0.0
+          }
+        ]
+      ],
+      "matched": true,
+      "reason": "The physical box is identical; stock's clock starts at the point interval zero.",
+      "torch": [
+        [
+          {
+            "binary64_hex": "0x1.199999999999ap+0",
+            "decimal": 1.1
+          },
+          {
+            "binary64_hex": "0x1.6666666666666p+0",
+            "decimal": 1.4
+          }
+        ],
+        [
+          {
+            "binary64_hex": "0x1.2cccccccccccdp+1",
+            "decimal": 2.35
+          },
+          {
+            "binary64_hex": "0x1.399999999999ap+1",
+            "decimal": 2.45
+          }
+        ]
+      ]
+    },
+    "initial_step": {
+      "flowstar": {
+        "binary64_hex": "0x1.999999999999ap-4",
+        "decimal": 0.1
+      },
+      "matched": true,
+      "reason": "Both start at h_max.",
+      "torch": {
+        "binary64_hex": "0x1.999999999999ap-4",
+        "decimal": 0.1
+      }
+    },
+    "local_time_domain": {
+      "flowstar": {
+        "index": 0,
+        "tau": "[0,h]"
+      },
+      "matched": true,
+      "reason": "Domains match after the explicit index permutation in field_map.md.",
+      "torch": {
+        "index": 2,
+        "tau": "[0,h]"
+      }
+    },
+    "local_variable_order": {
+      "flowstar": [
+        "tau",
+        "r0",
+        "r1",
+        "r2"
+      ],
+      "matched": false,
+      "reason": "Stock places local time at domain index 0 and includes one normalized generator for each x/y/t state; Torch omits the constant clock generator and places tau last.",
+      "torch": [
+        "u0",
+        "u1",
+        "tau"
+      ]
+    },
+    "normalized_insertion": {
+      "flowstar": {
+        "enabled": true,
+        "reset": "normalized insertion with tmvPre/tmvRight",
+        "right_map_center": "constant-part removal",
+        "right_map_range": "normal evaluation"
+      },
+      "matched": false,
+      "reason": "The broad normalized-insertion structure is analogous, but the evaluated range operators and stored state dimensions are not identical.",
+      "torch": {
+        "enabled": true,
+        "reset": "fresh affine center/scale variables",
+        "right_map_center": "constant",
+        "right_map_range": "standard"
+      }
+    },
+    "numeric_backend": {
+      "flowstar": {
+        "interval": "MPFR_RNDD/MPFR_RNDU directed rounding",
+        "precision_bits": 53,
+        "scalar": "MPFR"
+      },
+      "matched": false,
+      "reason": "Precision is nominally 53 bits, but the interval implementations and guarantees differ.",
+      "torch": {
+        "interval": "nextafter-safeguarded float64",
+        "proof_level": "safeguarded, not machine-checked directed rounding",
+        "scalar": "IEEE-754 binary64 via torch.float64"
+      }
+    },
+    "ode": {
+      "flowstar": [
+        "y",
+        "(1 - x^2) * y - x",
+        "1"
+      ],
+      "matched": true,
+      "reason": "The physical x/y equations match exactly; stock adds the clock state t'=1.",
+      "torch": [
+        "y",
+        "(1 - x^2) * y - x"
+      ]
+    },
+    "physical_state_order": {
+      "flowstar": [
+        "x",
+        "y"
+      ],
+      "matched": true,
+      "reason": "position/velocity aliases are mapped to stock x/y.",
+      "torch": [
+        "x",
+        "y"
+      ]
+    },
+    "picard_validation": {
+      "flowstar": {
+        "epsilon": null,
+        "iterations": "stock fixed-order Picard construction plus remainder subset validation",
+        "max_validation_attempts": null,
+        "predicate": "stock remainder estimation subset check"
+      },
+      "matched": false,
+      "reason": "The Torch predicate replays stock raw-remainder algebra, but iteration/control fields are not exposed as an identical public stock contract; nulls are not substituted.",
+      "torch": {
+        "epsilon": {
+          "binary64_hex": "0x1.19799812dea11p-40",
+          "decimal": 1e-12
+        },
+        "iterations": 1,
+        "max_validation_attempts": 2,
+        "predicate": "flowstar_raw_remainder_compat subset of [-1e-4,1e-4]"
+      }
+    },
+    "retained_degree": {
+      "flowstar": {
+        "complete_total_degree": 4,
+        "normal_ctrunc_order": 4
+      },
+      "matched": true,
+      "reason": "Both retain complete total degree <=4; the Torch raw-RHS replay uses degree 3 before tau integration.",
+      "torch": {
+        "candidate_rhs_degree": 3,
+        "complete_total_degree": 4,
+        "time_integration_restores_degree": 4
+      }
+    },
+    "segment": {
+      "flowstar": "validated TM flowpipe over local time in [0,h]",
+      "matched": true,
+      "reason": "Segment semantics align.",
+      "torch": "validated TM over tau in [0,h]"
+    },
+    "step_growth": {
+      "flowstar": {
+        "binary64_hex": "0x1.199999999999ap+0",
+        "decimal": 1.1
+      },
+      "matched": true,
+      "reason": "Accepted steps propose 1.1*h capped by h_max.",
+      "torch": {
+        "binary64_hex": "0x1.199999999999ap+0",
+        "decimal": 1.1
+      }
+    },
+    "step_shrink": {
+      "flowstar": {
+        "binary64_hex": "0x1.0000000000000p-1",
+        "decimal": 0.5
+      },
+      "matched": true,
+      "reason": "Rejected attempts are halved.",
+      "torch": {
+        "binary64_hex": "0x1.0000000000000p-1",
+        "decimal": 0.5
+      }
+    },
+    "stored_state_order": {
+      "flowstar": [
+        "x",
+        "y",
+        "t"
+      ],
+      "matched": false,
+      "reason": "stock stores an extra clock state used for plotting/safety.",
+      "torch": [
+        "x",
+        "y"
+      ]
+    },
+    "symbolic_remainder_queue": {
+      "flowstar": {
+        "enabled": true,
+        "max_size": 100,
+        "reset_when_J_size_reaches_max": true
+      },
+      "matched": false,
+      "reason": "This is a material cross-step representation difference, not a matched field.",
+      "torch": {
+        "checkpoint_present": false,
+        "configured_max_size_but_inert": 100,
+        "enabled": false
+      }
+    },
+    "taylor_order": {
+      "flowstar": 4,
+      "matched": true,
+      "reason": "Both use fixed Taylor order four.",
+      "torch": 4
+    },
+    "truncation": {
+      "flowstar": {
+        "complete_total_degree": 4,
+        "cutoff": "intervalized",
+        "selected_range": "stock natural interval evaluation"
+      },
+      "matched": false,
+      "reason": "The truncation support and cutoff match, but the authoritative Torch lane evaluates dropped polynomial ranges with four-leaf subdivision; stock does not.",
+      "torch": {
+        "complete_total_degree": 4,
+        "cutoff": "intervalized",
+        "selected_range": "depth-1 x/y subdivision only for polynomial_truncation"
+      }
+    },
+    "tube": {
+      "flowstar": "ordered vector of validated Taylor-model flowpipes (plus plot projections)",
+      "matched": false,
+      "reason": "Torch stores an aggregate x/y hull and segment records; stock retains the full ordered flowpipe vector. These are mapped but not equated.",
+      "torch": "hull of validated segment x/y boxes"
+    }
+  },
+  "schema": "vdp_cross_step_matched_contract_v1",
+  "scope": "Van der Pol order-4 native stock Flow* versus authoritative Torch H1/R4 lane",
+  "source_identity": {
+    "files": {
+      "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/benchmarks/continuous/vanderpol/vanderpol.cpp": "aab94a62ce2b7440769543b5caa882cc5baef64f00d4726b305348ff5311a40d",
+      "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/flowstar-toolbox/Continuous.cpp": "4d42b818521b2f434297852af12b7c6b1fa7b56ad7e6d32b5626ea3d0387b8f1",
+      "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/flowstar-toolbox/Continuous.h": "6c22a8bf3959ee2190b46e51fce90f391228df7c707a8411528aca6598f3eea2",
+      "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/flowstar-toolbox/Interval.cpp": "fd1d760eb239d13a783354a7e5aa7242e328cc2e9eb91fb55344d9543e981324",
+      "/srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321/flowstar-toolbox/include.h": "691afce6f5e065ab2cddee5b81941c6270ce966566045c6bf3270d91d6c250aa",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/benchmarks/canonical.yaml": "697e187c85da8b7c6f125d3a7d42d208dcd1b6359f5d5f24a4218cfef3dce484",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/benchmarks/three_tool_matched_contract.yaml": "a3661c36b51118a06f799e6369390b05e2687f0c0cf11a24481a501ae73c14b8",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint/terminal_state.json": "8304000f298eee9c3a3d5b1f3ce0f61548639de63e9a51485ab5c01cb2d42c9c",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint/terminal_state_manifest.json": "ab011534814b40e0d3e046e1cc1828de7afeeb7c84a0d0438b39e6d009938ce3",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/experiments/run_vdp_dense_backend.py": "64941fe810ecf0c922e33558f17b0154e75efa64a718604767228a922d80db7e",
+      "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/src/torch_tm_flowpipe/flowpipe.py": "badc86709024da011a2a9343965021244442b940f0cd8ef27ec34bce67c82c65"
+    },
+    "flowstar_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "torch_checkpoint_generating_source": {
+      "branch": "codex/vdp-terminal-range-closure-20260805",
+      "commit": "82c54a244d996ccc08b09cb4ded5f48167415585",
+      "config_sha256": "67ccd01127961e04bf1a1b1209f5d8f69512bf5edf14dec08db702a0c6f723f9",
+      "device": "cpu",
+      "dtype": "float64",
+      "source_hashes": {
+        "benchmarks/canonical.yaml": "697e187c85da8b7c6f125d3a7d42d208dcd1b6359f5d5f24a4218cfef3dce484",
+        "benchmarks/three_tool_matched_contract.yaml": "a3661c36b51118a06f799e6369390b05e2687f0c0cf11a24481a501ae73c14b8"
+      },
+      "tracked_diff_sha256": "89a83a31407b357e3f7cb4ae86db49772708dcc1a3c9813bfa50c9733df44b27"
+    },
+    "torch_formal_numerical_source": "a1fb3527bb7c12ce23aa2fb49d66f6380c463c90",
+    "torch_report_head": "455146df23940caa6f168877ffe6ec6f508c43a4"
+  },
+  "status": "partially_matched_fail_closed"
+}

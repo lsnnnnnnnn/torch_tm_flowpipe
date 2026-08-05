@@ -1,0 +1,91 @@
+$ git status --short --branch
+## master...origin/master
+ M flowstar-toolbox/TaylorModel.h
+?? benchmarks/continuous/simple/simple
+?? benchmarks/continuous/simple/simple.o
+?? benchmarks/continuous/simple/simple.plt
+?? benchmarks/continuous/vanderpol/vanderpol
+?? benchmarks/continuous/vanderpol/vanderpol.o
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+?? flowstar-2.1.0/__MACOSX/
+?? flowstar-2.1.0/flowstar-2.1.0/
+?? flowstar-toolbox/Constraints.o
+?? flowstar-toolbox/Continuous.o
+?? flowstar-toolbox/Discrete.o
+?? flowstar-toolbox/Geometry.o
+?? flowstar-toolbox/Hybrid.o
+?? flowstar-toolbox/Interval.o
+?? flowstar-toolbox/Matrix.o
+?? flowstar-toolbox/Variables.o
+?? flowstar-toolbox/lex.yy.c
+?? flowstar-toolbox/lex.yy.o
+?? flowstar-toolbox/libflowstar.a
+?? flowstar-toolbox/modelParser.output
+?? flowstar-toolbox/modelParser.tab.c
+?? flowstar-toolbox/modelParser.tab.h
+?? flowstar-toolbox/modelParser.tab.o
+?? flowstar-toolbox/settings.o
+[exit_code=0]
+$ git status --porcelain=v2
+1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h
+? benchmarks/continuous/simple/simple
+? benchmarks/continuous/simple/simple.o
+? benchmarks/continuous/simple/simple.plt
+? benchmarks/continuous/vanderpol/vanderpol
+? benchmarks/continuous/vanderpol/vanderpol.o
+? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+? flowstar-2.1.0/__MACOSX/
+? flowstar-2.1.0/flowstar-2.1.0/
+? flowstar-toolbox/Constraints.o
+? flowstar-toolbox/Continuous.o
+? flowstar-toolbox/Discrete.o
+? flowstar-toolbox/Geometry.o
+? flowstar-toolbox/Hybrid.o
+? flowstar-toolbox/Interval.o
+? flowstar-toolbox/Matrix.o
+? flowstar-toolbox/Variables.o
+? flowstar-toolbox/lex.yy.c
+? flowstar-toolbox/lex.yy.o
+? flowstar-toolbox/libflowstar.a
+? flowstar-toolbox/modelParser.output
+? flowstar-toolbox/modelParser.tab.c
+? flowstar-toolbox/modelParser.tab.h
+? flowstar-toolbox/modelParser.tab.o
+? flowstar-toolbox/settings.o
+[exit_code=0]
+$ git rev-parse HEAD
+b85a3211748cb77b736fe4ad42ee02d8d2b81148
+[exit_code=0]
+$ git log -8 --oneline --decorate
+b85a321 (HEAD -> master, origin/master, origin/HEAD) Merge branch 'master' of https://github.com/chenxin415/flowstar
+ed08e67 New constructors in TM class is added
+6172bcd Update Matrix.h
+a49d73f Update README.md
+f9855f0 Update README.md
+eac80d2 Update spring_pendulum.cpp
+f0a915c benchmark updated
+bd9c5ad new benchmark added
+[exit_code=0]
+$ git diff --check
+[exit_code=0]
+$ git diff -- flowstar-toolbox/TaylorModel.h
+diff --git a/flowstar-toolbox/TaylorModel.h b/flowstar-toolbox/TaylorModel.h
+index 401c759..7decdf6 100644
+--- a/flowstar-toolbox/TaylorModel.h
++++ b/flowstar-toolbox/TaylorModel.h
+@@ -897,7 +897,7 @@ template <class DATA_TYPE>
+ void TaylorModel<DATA_TYPE>::derivative(TaylorModel<DATA_TYPE> & result, const unsigned int varIndex) const
+ {
+ 	expansion.derivative(result.expansion, varIndex);
+-	remainder = 0;
++	result.remainder = 0;
+ }
+ 
+ template <class DATA_TYPE>
+[exit_code=0]

@@ -1,0 +1,89 @@
+{
+  "accepted_step_index": 12,
+  "behavior_change": "Torch accepts the candidate that stock Flowstar rejects; Flowstar then accepts one half-step.",
+  "classification": "behavior-relevant numerical difference",
+  "first_different_candidate_h": 0.019615177354506262,
+  "flowstar_attempts": [
+    {
+      "accepted": false,
+      "accepted_step_index": 12,
+      "attempt_index": 16,
+      "derivation": "reconstructed_from_previous_accepted_h_times_1.1_and_repeated_half_step",
+      "h_attempt": 0.019615177354506262,
+      "h_attempt_decimal": "0.019615177354506262",
+      "h_attempt_hex": "0x1.4160044f8ac26p-6",
+      "rejection_reason": "derived from exact stock half-step scheduler and final accepted h",
+      "retry_index": 0,
+      "run_id": "flowstar-stock-observation-20260806-v4",
+      "source_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "stage": "scheduler",
+      "state_component": "-1",
+      "t_pre": 0.18187433604506256,
+      "t_pre_decimal": "0.18187433604506256",
+      "t_pre_hex": "0x1.747a882a5cb01p-3",
+      "tool": "flowstar"
+    },
+    {
+      "accepted": true,
+      "accepted_step_index": 12,
+      "attempt_index": 17,
+      "derivation": "reconstructed_from_previous_accepted_h_times_1.1_and_repeated_half_step",
+      "h_attempt": 0.009807588677253131,
+      "h_attempt_decimal": "0.0098075886772531311",
+      "h_attempt_hex": "0x1.4160044f8ac26p-7",
+      "rejection_reason": "",
+      "retry_index": 1,
+      "run_id": "flowstar-stock-observation-20260806-v4",
+      "source_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "stage": "scheduler",
+      "state_component": "-1",
+      "t_pre": 0.18187433604506256,
+      "t_pre_decimal": "0.18187433604506256",
+      "t_pre_hex": "0x1.747a882a5cb01p-3",
+      "tool": "flowstar"
+    }
+  ],
+  "flowstar_retry_provenance": "derived from the exact stock grow/half scheduler and final accepted h; not an observed inner Picard record",
+  "flowstar_signature": [
+    [
+      0.019615177354506262,
+      false
+    ],
+    [
+      0.009807588677253131,
+      true
+    ]
+  ],
+  "schema": "vdp_first_schedule_divergence_v1",
+  "t_pre_flowstar": 0.18187433604506256,
+  "t_pre_torch": 0.18187433604506256,
+  "torch_attempts": [
+    {
+      "accepted": true,
+      "accepted_step_index": 12,
+      "attempt_index": 16,
+      "h_attempt": 0.019615177354506262,
+      "h_attempt_decimal": "0.019615177354506262",
+      "h_attempt_hex": "0x1.4160044f8ac26p-6",
+      "rejection_reason": "",
+      "retry_index": 0,
+      "run_id": "torch-authoritative-observation-20260806",
+      "source_commit": "455146df23940caa6f168877ffe6ec6f508c43a4",
+      "stage": "acceptance_predicate",
+      "state_component": "-1",
+      "subset_margin_x": "9.803847926454938e-05",
+      "subset_margin_y": "6.4106135232520195e-06",
+      "t_pre": 0.18187433604506256,
+      "t_pre_decimal": "0.18187433604506256",
+      "t_pre_hex": "0x1.747a882a5cb01p-3",
+      "tool": "torch",
+      "validation_status": "validated"
+    }
+  ],
+  "torch_signature": [
+    [
+      0.019615177354506262,
+      true
+    ]
+  ]
+}

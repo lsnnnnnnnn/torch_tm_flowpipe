@@ -1,0 +1,36 @@
+{
+  "collector_platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+  "collector_python": "3.14.4 (main, Jun 18 2026, 14:25:02) [GCC 15.2.0]",
+  "command": [
+    "conda",
+    "run",
+    "-n",
+    "py11",
+    "python",
+    "-c",
+    "import json,platform,sys,torch;print(json.dumps({'python':sys.version,'pytorch':torch.__version__,'cuda_version':torch.version.cuda,'cuda_available':torch.cuda.is_available(),'gpu_count':torch.cuda.device_count(),'gpu_names':[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())],'platform':platform.platform()},sort_keys=True))"
+  ],
+  "cuda_available": true,
+  "cuda_version": "12.1",
+  "environment_variables": {
+    "CONDA_DEFAULT_ENV": "codex",
+    "CONDA_PREFIX": "/srv/local/shengenli/miniforge3/envs/codex",
+    "FLOWSTAR_ROOT": "/srv/local/shengenli/flowstar"
+  },
+  "flowstar_build_compatibility_flag": "-fpermissive",
+  "flowstar_build_compatibility_reason": "exact stock TaylorModel.h assigns remainder in a const derivative method and GCC 15 rejects it",
+  "flowstar_exact_stock_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "flowstar_root": "/srv/local/shengenli/flowstar",
+  "generated_at_utc": "2026-08-05T18:01:16.987120+00:00",
+  "gpu_count": 4,
+  "gpu_names": [
+    "Tesla V100-SXM2-16GB",
+    "NVIDIA Graphics Device",
+    "Tesla V100-SXM2-16GB",
+    "Tesla V100-SXM2-16GB"
+  ],
+  "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "pytorch": "2.5.1+cu121",
+  "schema": "torch_tm_flowpipe_vdp_cross_step_environment_v1"
+}

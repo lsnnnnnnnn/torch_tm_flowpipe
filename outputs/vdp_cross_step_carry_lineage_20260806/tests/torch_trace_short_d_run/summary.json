@@ -1,0 +1,92 @@
+{
+  "accepted_steps": 7,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "codex/vdp-cross-step-carry-lineage-audit-20260806",
+  "commit": "455146df23940caa6f168877ffe6ec6f508c43a4",
+  "completed_horizon": 0.1,
+  "completed_requested_horizon": true,
+  "config_sha256": "02a5c287f808570e4d57ab02c77d71ef624d9528f3979d902936b59dff13e99c",
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_range_contexts": [
+    "polynomial_truncation"
+  ],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 4,
+  "dense_range_method": "adaptive_subdivision",
+  "dense_range_trigger": "proactive_depth1_on_named_contexts",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_transfer_count": 0,
+  "diagnostic_factors": [],
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 1.6252580793705977,
+    "x_lo": 1.0990754609166948,
+    "y_hi": 2.4638767057176887,
+    "y_lo": 1.9187256239861719
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 6,
+    "width_sum": 0.6255131370667968,
+    "x_hi": 1.6252580793705977,
+    "x_lo": 1.3165764693292967,
+    "x_width": 0.308681610041301,
+    "y_hi": 2.2355571510116676,
+    "y_lo": 1.9187256239861719,
+    "y_width": 0.3168315270254958
+  },
+  "message": "",
+  "range_leaf_evaluations": 392,
+  "range_subdivision_invocations": 98,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.6017265530067033,
+    "x_hi": 1.625217889841157,
+    "x_lo": 1.3240009654267988,
+    "x_width": 0.3012169244143581,
+    "y_hi": 2.2204855315472725,
+    "y_lo": 1.9199759029549273,
+    "y_width": 0.3005096285923452
+  },
+  "rejected_attempts": 3,
+  "rejected_step_records": 0,
+  "requested_horizon": 0.1,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 3.3109104400500655,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "segment_boundary_conversion_count": 14,
+  "single_factor_diagnostic": false,
+  "status": "completed",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "tracked_diff_sha256": "e6baded8867f9d32cad6154f895a03a60cd088855be8c11752c7c59500d3024e",
+  "worktree_dirty": true
+}

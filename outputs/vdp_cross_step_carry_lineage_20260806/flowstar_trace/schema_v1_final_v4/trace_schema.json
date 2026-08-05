@@ -1,0 +1,35 @@
+{
+  "null_policy": "unavailable non-equivalent fields are null and explained; substitution is forbidden",
+  "number_encoding": {
+    "decimal": "binary64 max_digits10 string",
+    "hex": "C/Python hexfloat string"
+  },
+  "required_common_fields": [
+    "accepted",
+    "accepted_step_index",
+    "attempt_index",
+    "h_attempt",
+    "rejection_reason",
+    "retry_index",
+    "run_id",
+    "source_commit",
+    "stage",
+    "state_component",
+    "t_pre",
+    "tool"
+  ],
+  "required_stages": [
+    "acceptance_predicate",
+    "insertion_input",
+    "insertion_output",
+    "next_step_pre_state",
+    "normalized_reset_input",
+    "normalized_reset_output",
+    "raw_picard_image",
+    "right_map_input",
+    "right_map_output",
+    "step_pre_state",
+    "truncation_cutoff"
+  ],
+  "schema": "vdp_transition_trace_schema_v1"
+}

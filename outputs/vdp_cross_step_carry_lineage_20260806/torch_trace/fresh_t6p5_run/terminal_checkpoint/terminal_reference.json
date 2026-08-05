@@ -1,0 +1,7743 @@
+{
+  "accepted": false,
+  "attempted_h": 0.003623635847674574,
+  "backend_counters": {
+    "boundary_scalar_loop_count": 2,
+    "dense_to_sparse_conversions": 1,
+    "device_transfer_count": 0,
+    "inner_loop_conversions": 0,
+    "inner_loop_scalar_count": 0,
+    "range_leaf_evaluations": 56,
+    "range_subdivision_invocations": 14,
+    "segment_boundary_conversions": 2,
+    "sparse_fallback_count": 0,
+    "sparse_to_dense_conversions": 1
+  },
+  "backend_lane": "hybrid_dense_core",
+  "backend_trace": [
+    {
+      "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+      "coefficient_sha256": "13eda7586442066875d3159bca9aa465c5517c6d63eca4b0acb4e0add3e051e4",
+      "cutoff_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        }
+      },
+      "cutoff_remainder_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ]
+      },
+      "discarded_remainder_intervals": {
+        "initial_remainder": {
+          "hi": [
+            [
+              5e-324,
+              5e-324
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5e-324
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1e-323
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              5e-324
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5e-324
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1e-323
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              8.062857397411e-311
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -8.062857397411e-311
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.6125714794822e-310
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              3.52647813610926e-310
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.52647813610926e-310
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              7.05295627221853e-310
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              5e-324
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5e-324
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1e-323
+            ]
+          ]
+        }
+      },
+      "discarded_remainder_widths": {
+        "initial_remainder": [
+          [
+            1e-323,
+            1e-323
+          ]
+        ],
+        "integration_overflow": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            1e-323
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            1.6125714794822e-310
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            7.05295627221853e-310
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            1e-323
+          ]
+        ]
+      },
+      "effective_degree": 4,
+      "exponent_support_sha256": "1d914f6a9120d806c38e805aa8a2efc567fe00086687d35664c8c68be14c7b09",
+      "finite": true,
+      "iteration": 1,
+      "nonzero_coefficients": 12,
+      "phase": "polynomial_picard",
+      "range_method": "adaptive_subdivision",
+      "subdivision_depth": 1
+    },
+    {
+      "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+      "coefficient_sha256": "b93ad7a234ef77c49f537284c5c80c4d57878fbb565958ecc391630778f54b65",
+      "cutoff_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        }
+      },
+      "cutoff_remainder_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ]
+      },
+      "discarded_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              8.062857397411e-311,
+              1.6125714794821e-310
+            ]
+          ],
+          "lo": [
+            [
+              -8.062857397411e-311,
+              -1.6125714794821e-310
+            ]
+          ],
+          "width": [
+            [
+              1.6125714794822e-310,
+              3.2251429589642e-310
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.5159685093023255e-06,
+              5.3882638840050586e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.5159685093023255e-06,
+              -5.401399983249652e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3031937018604651e-05,
+              0.0001078966386725471
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.56756880152075e-310
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.56756880152075e-310
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              3.1351376030415e-310
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.547166185700974e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.3396333182843115e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              7.886799503985286e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              1.344839117420643e-309
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.344839117420643e-309
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.689678234841286e-309
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              5e-324
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5e-324
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1e-323
+            ]
+          ]
+        }
+      },
+      "discarded_remainder_widths": {
+        "cutoff": [
+          [
+            1.6125714794822e-310,
+            3.2251429589642e-310
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3031937018604651e-05,
+            0.0001078966386725471
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            3.1351376030415e-310
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            7.886799503985286e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            2.689678234841286e-309
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            1e-323
+          ]
+        ]
+      },
+      "effective_degree": 4,
+      "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+      "finite": true,
+      "iteration": 2,
+      "nonzero_coefficients": 27,
+      "phase": "polynomial_picard",
+      "range_method": "adaptive_subdivision",
+      "subdivision_depth": 1
+    },
+    {
+      "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+      "coefficient_sha256": "fab72f85c9d8e93e1694ea6faa8f9148268049e0cbbfc6e2ac8704f3817bf08a",
+      "cutoff_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        }
+      },
+      "cutoff_remainder_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ]
+      },
+      "discarded_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              8.062857397411e-311,
+              1.6125714794821e-310
+            ]
+          ],
+          "lo": [
+            [
+              -8.062857397411e-311,
+              -1.6125714794821e-310
+            ]
+          ],
+          "width": [
+            [
+              1.6125714794822e-310,
+              3.2251429589642e-310
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.654711245845825e-06,
+              5.426857311493435e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672123543323514e-06,
+              -5.412641611588976e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3326834789169339e-05,
+              0.00010839498923082412
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.5675986011313e-310
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.5675986011313e-310
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              3.13519720226257e-310
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.6838621441137856e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447024449200768e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.130886593314554e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              5.123377999010084e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5.031866164243628e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.015524416325371e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              2.58928204e-315
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -2.58928204e-315
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              5.178564077e-315
+            ]
+          ]
+        }
+      },
+      "discarded_remainder_widths": {
+        "cutoff": [
+          [
+            1.6125714794822e-310,
+            3.2251429589642e-310
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3326834789169339e-05,
+            0.00010839498923082412
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            3.13519720226257e-310
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.130886593314554e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            1.015524416325371e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            5.178564077e-315
+          ]
+        ]
+      },
+      "effective_degree": 4,
+      "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+      "finite": true,
+      "iteration": 3,
+      "nonzero_coefficients": 31,
+      "phase": "polynomial_picard",
+      "range_method": "adaptive_subdivision",
+      "subdivision_depth": 1
+    },
+    {
+      "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+      "coefficient_sha256": "bc1433d0d3c89339fca6091e41c0a6667d70c92d2dd4e35ae8b14236d131863c",
+      "cutoff_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        }
+      },
+      "cutoff_remainder_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ]
+      },
+      "discarded_remainder_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              8.062857397411e-311,
+              1.6125714794821e-310
+            ]
+          ],
+          "lo": [
+            [
+              -8.062857397411e-311,
+              -1.6125714794821e-310
+            ]
+          ],
+          "width": [
+            [
+              1.6125714794822e-310,
+              3.2251429589642e-310
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.654898667786604e-06,
+              5.426897776039801e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672310790006729e-06,
+              -5.4126815578863826e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3327209457793334e-05,
+              0.00010839579333926183
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.56759862695427e-310
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.56759862695427e-310
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              3.13519725390854e-310
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.6841267277911616e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447246865724495e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.131373593515656e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              5.174238880086776e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -5.032718845042972e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.0206957725129747e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              2.61498628e-315
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -2.61498628e-315
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              5.229972556e-315
+            ]
+          ]
+        }
+      },
+      "discarded_remainder_widths": {
+        "cutoff": [
+          [
+            1.6125714794822e-310,
+            3.2251429589642e-310
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3327209457793334e-05,
+            0.00010839579333926183
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            3.13519725390854e-310
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.131373593515656e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            1.0206957725129747e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            5.229972556e-315
+          ]
+        ]
+      },
+      "effective_degree": 4,
+      "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+      "finite": true,
+      "iteration": 4,
+      "nonzero_coefficients": 31,
+      "phase": "polynomial_picard",
+      "range_method": "adaptive_subdivision",
+      "subdivision_depth": 1
+    },
+    {
+      "accumulated_before_x0_add_hi": [
+        [
+          3.6236458476745746e-07,
+          0.0001159907949598269
+        ]
+      ],
+      "accumulated_before_x0_add_lo": [
+        [
+          -3.6236458476745746e-07,
+          -0.00011999958916807217
+        ]
+      ],
+      "attempt": 1,
+      "candidate_remainder_hi": [
+        [
+          0.0001,
+          0.0001
+        ]
+      ],
+      "candidate_remainder_lo": [
+        [
+          -0.0001,
+          -0.0001
+        ]
+      ],
+      "finite": true,
+      "ordinary_residual_hi": [
+        [
+          7.017263415854513e-06,
+          0.00010750635755824542
+        ]
+      ],
+      "ordinary_residual_lo": [
+        [
+          -7.0346753341534005e-06,
+          -9.498124593733307e-05
+        ]
+      ],
+      "ordinary_residual_width_sum": 0.0002165395422455864,
+      "phase": "remainder_validation",
+      "picard_image_remainder_hi": [
+        [
+          3.6236658476745757e-07,
+          0.00011599079695982693
+        ]
+      ],
+      "picard_image_remainder_lo": [
+        [
+          -3.6236658476745757e-07,
+          -0.0001199995911680722
+        ]
+      ],
+      "poly_diff_range_hi": [
+        [
+          1.0000000000000002e-12,
+          1.0000000000000002e-12
+        ]
+      ],
+      "poly_diff_range_lo": [
+        [
+          -1.0000000000000002e-12,
+          -1.0000000000000002e-12
+        ]
+      ],
+      "polynomial_range_width_sum": 5.066633695808733,
+      "range_method": "adaptive_subdivision",
+      "raw_ctrunc_residual_width_sum": 0.00023671512129743404,
+      "raw_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              0.0,
+              2.2250738585072024e-308
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -2.2250738585072024e-308
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              4.450147717014405e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              0.0001,
+              0.00020000000000000006
+            ]
+          ],
+          "lo": [
+            [
+              -0.0001,
+              -0.00020000000000000006
+            ]
+          ],
+          "width": [
+            [
+              0.0002,
+              0.00040000000000000013
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              0.00019441790557796947
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.00019441790557796947
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.00038883581115593894
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              0.0,
+              0.030033333030343338
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.031177398762845948
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.06121073179318928
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              0.0,
+              0.0015817192904550308
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.0015439441392253288
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0031256634296803597
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              3.5925921640838e-08
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -3.5925921640838e-08
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              7.1851843281676e-08
+            ]
+          ]
+        }
+      },
+      "raw_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            0.0,
+            4.450147717014405e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            0.0002,
+            0.00040000000000000013
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            0.0,
+            0.00038883581115593894
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            0.0,
+            0.06121073179318928
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            0.0,
+            0.0031256634296803597
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            0.0,
+            7.1851843281676e-08
+          ]
+        ]
+      },
+      "raw_rhs_remainder_hi": [
+        [
+          0.0001,
+          0.03200950615229801
+        ]
+      ],
+      "raw_rhs_remainder_lo": [
+        [
+          -0.0001,
+          -0.03311579673357092
+        ]
+      ],
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "remainder_ledger_intervals": {
+        "initial_remainder": {
+          "hi": [
+            [
+              3.623635847674575e-07,
+              7.247271695349152e-07
+            ]
+          ],
+          "lo": [
+            [
+              -3.623635847674575e-07,
+              -7.247271695349152e-07
+            ]
+          ],
+          "width": [
+            [
+              7.24727169534915e-07,
+              1.4494543390698304e-06
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.6548988310870505e-06,
+              5.426897812623766e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672310749385938e-06,
+              -5.4126815578863826e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3327209580472988e-05,
+              0.00010839579370510149
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              7.045153224737924e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -7.045153224737924e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.4090306449475848e-06
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.684126690855926e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447246986215849e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.131373677071774e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              4.966756220465049e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.952604193327304e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              9.919360413792352e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.128109746541939e-10
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.128109746541939e-10
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.256219493083878e-10
+            ]
+          ]
+        }
+      },
+      "remainder_ledger_widths": {
+        "initial_remainder": [
+          [
+            7.24727169534915e-07,
+            1.4494543390698304e-06
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3327209580472988e-05,
+            0.00010839579370510149
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            1.4090306449475848e-06
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.131373677071774e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            9.919360413792352e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.256219493083878e-10
+          ]
+        ]
+      },
+      "subdivision_depth": 1,
+      "subset_margin": [
+        [
+          9.963763341523255e-05,
+          -1.99995911680722e-05
+        ]
+      ],
+      "subset_result": false,
+      "target_subset_result": false,
+      "tmp_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              3.623635847674575e-07,
+              7.247271695349152e-07
+            ]
+          ],
+          "lo": [
+            [
+              -3.623635847674575e-07,
+              -7.247271695349152e-07
+            ]
+          ],
+          "width": [
+            [
+              7.24727169534915e-07,
+              1.4494543390698304e-06
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.6548988310870505e-06,
+              5.426897812623766e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672310749385938e-06,
+              -5.4126815578863826e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3327209580472988e-05,
+              0.00010839579370510149
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              7.045153224737924e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -7.045153224737924e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.4090306449475848e-06
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.684126690855926e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447246986215849e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.131373677071774e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              4.966756220465049e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.952604193327304e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              9.919360413792352e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.128109746541939e-10
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.128109746541939e-10
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.256219493083878e-10
+            ]
+          ]
+        }
+      },
+      "tmp_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            7.24727169534915e-07,
+            1.4494543390698304e-06
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3327209580472988e-05,
+            0.00010839579370510149
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            1.4090306449475848e-06
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.131373677071774e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            9.919360413792352e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.256219493083878e-10
+          ]
+        ]
+      },
+      "validation_mode": "flowstar_raw_remainder_compat",
+      "validation_status": "failed"
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0010498147457838058,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "validated subdivision enclosure is wider than natural",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 5.4543837904930115e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0013482850044965744,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural_subdivision_wider",
+      "natural_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0012002335861325264,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.00407729297876358,
+      "selected_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 2.590194344520569e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          2.2250738585072024e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.2250738585072024e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014405e-308
+        ]
+      ],
+      "wall_s": 0.00407729297876358
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00029766280204057693,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "natural_range_s": 0.0008211042732000351,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011591678485274315,
+      "selected_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "wall_s": 0.0011591678485274315
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002887267619371414,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "natural_range_s": 0.0007928404957056046,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011628540232777596,
+      "selected_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3784916034151118
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.13366032117015292
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5121519245852646
+        ]
+      ],
+      "wall_s": 0.0011628540232777596
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009873416274785995,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "validated subdivision enclosure is wider than natural",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 4.186015576124191e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0012219315394759178,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural_subdivision_wider",
+      "natural_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.001035141758620739,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0036403443664312363,
+      "selected_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 2.4470500648021698e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          2.2250738585072024e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.2250738585072024e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014405e-308
+        ]
+      ],
+      "wall_s": 0.0036403443664312363
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00027828942984342575,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.900239100685933
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.5537857793014239
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.4540248799873567
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.900239100685933
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.5537857793014239
+        ]
+      ],
+      "natural_range_s": 0.0007957695052027702,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.4540248799873567
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011130105704069138,
+      "selected_hi": [
+        [
+          1.900239100685933
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.5537857793014239
+        ]
+      ],
+      "selected_width": [
+        [
+          2.4540248799873567
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.900239100685933
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.5537857793014239
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.4540248799873567
+        ]
+      ],
+      "wall_s": 0.0011130105704069138
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002752775326371193,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.373732489975402
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.9014183282268264
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.4723141617485753
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.373732489975402
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.9014183282268264
+        ]
+      ],
+      "natural_range_s": 0.000801832415163517,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.4723141617485753
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011163512244820595,
+      "selected_hi": [
+        [
+          4.373732489975402
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.9014183282268264
+        ]
+      ],
+      "selected_width": [
+        [
+          3.4723141617485753
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.373732489975402
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.9014183282268264
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.4723141617485753
+        ]
+      ],
+      "wall_s": 0.0011163512244820595
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.00028781313449144363,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.000861266627907753,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011893212795257568,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0011893212795257568
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.0003144368529319763,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0008855815976858139,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0012427624315023422,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0012427624315023422
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009798947721719742,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "validated subdivision enclosure is wider than natural",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 4.0179118514060974e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0012211482971906662,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural_subdivision_wider",
+      "natural_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0010531311854720116,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.003643687814474106,
+      "selected_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 2.3251399397850037e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          2.2250738585072024e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.2250738585072024e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014405e-308
+        ]
+      ],
+      "wall_s": 0.003643687814474106
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002703545615077019,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "natural_range_s": 0.0008075926452875137,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011164294555783272,
+      "selected_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "wall_s": 0.0011164294555783272
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002681966871023178,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "natural_range_s": 0.0007851794362068176,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010915501043200493,
+      "selected_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3943404172539255
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.13995152220560306
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5342919394595287
+        ]
+      ],
+      "wall_s": 0.0010915501043200493
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.001076042652130127,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.00940917892085814
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.012617497256746098
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.02202667617760424
+        ]
+      ],
+      "hull_s": 3.992859274148941e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.00121258944272995,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.00940917892085814
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.012617497256746098
+        ]
+      ],
+      "natural_range_s": 0.0011113155633211136,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.02202667617760424
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0037869736552238464,
+      "selected_hi": [
+        [
+          0.009216249807296396
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.012548628992670618
+        ]
+      ],
+      "selected_width": [
+        [
+          0.021764878799967014
+        ]
+      ],
+      "selection_s": 1.9113533198833466e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.009216249807296396
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.012548628992670618
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.021764878799967014
+        ]
+      ],
+      "wall_s": 0.0037869736552238464
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002716928720474243,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.9441851991878176
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.5857033352291291
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529888534416947
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.9441851991878176
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.5857033352291291
+        ]
+      ],
+      "natural_range_s": 0.0007935594767332077,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529888534416947
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011037150397896767,
+      "selected_hi": [
+        [
+          1.9441851991878176
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.5857033352291291
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529888534416947
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.9441851991878176
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.5857033352291291
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529888534416947
+        ]
+      ],
+      "wall_s": 0.0011037150397896767
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002693505957722664,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402438858355258
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8708479164763002
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.531590941878958
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402438858355258
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8708479164763002
+        ]
+      ],
+      "natural_range_s": 0.0007924577221274376,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.531590941878958
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010998435318470001,
+      "selected_hi": [
+        [
+          4.402438858355258
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8708479164763002
+        ]
+      ],
+      "selected_width": [
+        [
+          3.531590941878958
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402438858355258
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8708479164763002
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.531590941878958
+        ]
+      ],
+      "wall_s": 0.0010998435318470001
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.0002791471779346466,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          6.5159685093023255e-06,
+          5.3882638840050586e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -6.5159685093023255e-06,
+          -5.401399983249652e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.3031937018604651e-05,
+          0.0001078966386725471
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          6.5159685093023255e-06,
+          5.3882638840050586e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -6.5159685093023255e-06,
+          -5.401399983249652e-05
+        ]
+      ],
+      "natural_range_s": 0.0008293092250823975,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.3031937018604651e-05,
+          0.0001078966386725471
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011457046493887901,
+      "selected_hi": [
+        [
+          6.5159685093023255e-06,
+          5.3882638840050586e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -6.5159685093023255e-06,
+          -5.401399983249652e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          1.3031937018604651e-05,
+          0.0001078966386725471
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          6.5159685093023255e-06,
+          5.3882638840050586e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -6.5159685093023255e-06,
+          -5.401399983249652e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.3031937018604651e-05,
+          0.0001078966386725471
+        ]
+      ],
+      "wall_s": 0.0011457046493887901
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.00028413161635398865,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0007869433611631393,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011083846911787987,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0011083846911787987
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009744325652718544,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          3.2013965798796664e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -3.2114744838462146e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          6.41287106372588e-05
+        ]
+      ],
+      "hull_s": 3.950390964746475e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011882130056619644,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          3.2013965798796664e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -3.2114744838462146e-05
+        ]
+      ],
+      "natural_range_s": 0.0010248105973005295,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          6.41287106372588e-05
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.003563753329217434,
+      "selected_hi": [
+        [
+          3.154009967603276e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -3.211370245000569e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          6.365380212603845e-05
+        ]
+      ],
+      "selection_s": 1.8936581909656525e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          3.154009967603276e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -3.211370245000569e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          6.365380212603845e-05
+        ]
+      ],
+      "wall_s": 0.003563753329217434
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00027800630778074265,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "natural_range_s": 0.0007783630862832069,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010947640985250473,
+      "selected_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "wall_s": 0.0010947640985250473
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002886820584535599,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "natural_range_s": 0.0007714983075857162,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010980768129229546,
+      "selected_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.3943859119981752
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.1400003942570424
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343863062552177
+        ]
+      ],
+      "wall_s": 0.0010980768129229546
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009643016383051872,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.009776909110568742
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.01299602624734504
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.022772935357913783
+        ]
+      ],
+      "hull_s": 5.65946102142334e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011907946318387985,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.009776909110568742
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.01299602624734504
+        ]
+      ],
+      "natural_range_s": 0.0010398495942354202,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.022772935357913783
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035865753889083862,
+      "selected_hi": [
+        [
+          0.009512612729595483
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.012925863251738163
+        ]
+      ],
+      "selected_width": [
+        [
+          0.022438475981333646
+        ]
+      ],
+      "selection_s": 2.018176019191742e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.009512612729595483
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.012925863251738163
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.022438475981333646
+        ]
+      ],
+      "wall_s": 0.0035865753889083862
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002804528921842575,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.9442221583067478
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.5857765253845442
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529998683691292
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.9442221583067478
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.5857765253845442
+        ]
+      ],
+      "natural_range_s": 0.0008229967206716537,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529998683691292
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001142815686762333,
+      "selected_hi": [
+        [
+          1.9442221583067478
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.5857765253845442
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529998683691292
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.9442221583067478
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.5857765253845442
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529998683691292
+        ]
+      ],
+      "wall_s": 0.001142815686762333
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002655964344739914,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402724116197974
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8704777223358466
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.5322463938621276
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402724116197974
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8704777223358466
+        ]
+      ],
+      "natural_range_s": 0.0007898667827248573,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.5322463938621276
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001093016006052494,
+      "selected_hi": [
+        [
+          4.402724116197974
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8704777223358466
+        ]
+      ],
+      "selected_width": [
+        [
+          3.5322463938621276
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402724116197974
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8704777223358466
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.5322463938621276
+        ]
+      ],
+      "wall_s": 0.001093016006052494
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.00027528777718544006,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          6.654711245845825e-06,
+          5.426857311493435e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -6.672123543323514e-06,
+          -5.412641611588976e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.3326834789169339e-05,
+          0.00010839498923082412
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          6.654711245845825e-06,
+          5.426857311493435e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -6.672123543323514e-06,
+          -5.412641611588976e-05
+        ]
+      ],
+      "natural_range_s": 0.0008053313940763474,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.3326834789169339e-05,
+          0.00010839498923082412
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001117822714149952,
+      "selected_hi": [
+        [
+          6.654711245845825e-06,
+          5.426857311493435e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -6.672123543323514e-06,
+          -5.412641611588976e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          1.3326834789169339e-05,
+          0.00010839498923082412
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          6.654711245845825e-06,
+          5.426857311493435e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -6.672123543323514e-06,
+          -5.412641611588976e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.3326834789169339e-05,
+          0.00010839498923082412
+        ]
+      ],
+      "wall_s": 0.001117822714149952
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.00029083527624607086,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0007704123854637146,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010974826291203499,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0010974826291203499
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009718332439661026,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          3.2170289617935617e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -3.2433467210500884e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          6.46037568284365e-05
+        ]
+      ],
+      "hull_s": 3.9322301745414734e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011796383187174797,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          3.2170289617935617e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -3.2433467210500884e-05
+        ]
+      ],
+      "natural_range_s": 0.0010120067745447159,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          6.46037568284365e-05
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035299118608236313,
+      "selected_hi": [
+        [
+          3.15454428583699e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -3.243250059321356e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          6.397794345158346e-05
+        ]
+      ],
+      "selection_s": 1.9089318811893463e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          3.15454428583699e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -3.243250059321356e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          6.397794345158346e-05
+        ]
+      ],
+      "wall_s": 0.0035299118608236313
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00026564113795757294,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "natural_range_s": 0.0007724761962890625,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010756729170680046,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "wall_s": 0.0010756729170680046
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002715708687901497,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "natural_range_s": 0.0007622567936778069,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001071058213710785,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068491545362
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868024952445
+        ]
+      ],
+      "wall_s": 0.001071058213710785
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009764498099684715,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.009777527392372748
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.012996815657326521
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.022774343049699268
+        ]
+      ],
+      "hull_s": 3.905314952135086e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.001184326596558094,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.009777527392372748
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.012996815657326521
+        ]
+      ],
+      "natural_range_s": 0.0010185297578573227,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.022774343049699268
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035458263009786606,
+      "selected_hi": [
+        [
+          0.009513226523401141
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.012926593412517277
+        ]
+      ],
+      "selected_width": [
+        [
+          0.02243981993591842
+        ]
+      ],
+      "selection_s": 1.919921487569809e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.009513226523401141
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.012926593412517277
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.02243981993591842
+        ]
+      ],
+      "wall_s": 0.0035458263009786606
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002726558595895767,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.585776664938176
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529998855271972
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.585776664938176
+        ]
+      ],
+      "natural_range_s": 0.0007789647206664085,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529998855271972
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010891258716583252,
+      "selected_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.585776664938176
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529998855271972
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.585776664938176
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529998855271972
+        ]
+      ],
+      "wall_s": 0.0010891258716583252
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.00027160346508026123,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402724323086248
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8704774300196458
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.532246893066602
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402724323086248
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8704774300196458
+        ]
+      ],
+      "natural_range_s": 0.0007708501070737839,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.532246893066602
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010792575776576996,
+      "selected_hi": [
+        [
+          4.402724323086248
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8704774300196458
+        ]
+      ],
+      "selected_width": [
+        [
+          3.532246893066602
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402724323086248
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8704774300196458
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.532246893066602
+        ]
+      ],
+      "wall_s": 0.0010792575776576996
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.00026587769389152527,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          6.654898667786604e-06,
+          5.426897776039801e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -6.672310790006729e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.3327209457793334e-05,
+          0.00010839579333926183
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          6.654898667786604e-06,
+          5.426897776039801e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -6.672310790006729e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "natural_range_s": 0.000800812616944313,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.3327209457793334e-05,
+          0.00010839579333926183
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011038267984986305,
+      "selected_hi": [
+        [
+          6.654898667786604e-06,
+          5.426897776039801e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -6.672310790006729e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          1.3327209457793334e-05,
+          0.00010839579333926183
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          6.654898667786604e-06,
+          5.426897776039801e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -6.672310790006729e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.3327209457793334e-05,
+          0.00010839579333926183
+        ]
+      ],
+      "wall_s": 0.0011038267984986305
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.00026508700102567673,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0008072163909673691,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001109153963625431,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.001109153963625431
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.001011466607451439,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          3.217040795548898e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -3.2433587031030305e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          6.460399498651929e-05
+        ]
+      ],
+      "hull_s": 3.912951797246933e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0012146420776844025,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          3.217040795548898e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -3.2433587031030305e-05
+        ]
+      ],
+      "natural_range_s": 0.0010074516758322716,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          6.460399498651929e-05
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.003608033061027527,
+      "selected_hi": [
+        [
+          3.154556119367492e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -3.243262040982945e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          6.397818160350437e-05
+        ]
+      ],
+      "selection_s": 1.921132206916809e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          3.154556119367492e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -3.243262040982945e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          6.397818160350437e-05
+        ]
+      ],
+      "wall_s": 0.003608033061027527
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002654576674103737,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007723579183220863,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010746968910098076,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.0010746968910098076
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002679750323295593,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007768077775835991,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010823970660567284,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.0010823970660567284
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009566247463226318,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.009777527463709938
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.012996815564251935
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.02277434302796187
+        ]
+      ],
+      "hull_s": 3.8460828363895416e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011696051806211472,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.009777527463709938
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.012996815564251935
+        ]
+      ],
+      "natural_range_s": 0.001003822311758995,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.02277434302796187
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.003491525538265705,
+      "selected_hi": [
+        [
+          0.009513226855916216
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.012926593310588614
+        ]
+      ],
+      "selected_width": [
+        [
+          0.02243982016650483
+        ]
+      ],
+      "selection_s": 1.9136816263198853e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.009513226855916216
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.012926593310588614
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.02243982016650483
+        ]
+      ],
+      "wall_s": 0.003491525538265705
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002772025763988495,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "natural_range_s": 0.0007603764533996582,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010747527703642845,
+      "selected_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "wall_s": 0.0010747527703642845
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.000262996181845665,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "natural_range_s": 0.0007877768948674202,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010882504284381866,
+      "selected_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "selected_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "wall_s": 0.0010882504284381866
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.00027842260897159576,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "natural_range_s": 0.0008417153730988503,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001158975064754486,
+      "selected_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "wall_s": 0.001158975064754486
+    },
+    {
+      "context": "retained_polynomial",
+      "cover_validation_s": 0.000266512855887413,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0007989304140210152,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011020125821232796,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0011020125821232796
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009729769080877304,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          7.530496205743397e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -8.046524292009234e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.0001557702049775263
+        ]
+      ],
+      "hull_s": 3.8496218621730804e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.00118983443826437,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          7.530496205743397e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -8.046524292009234e-05
+        ]
+      ],
+      "natural_range_s": 0.0010220706462860107,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.0001557702049775263
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035496363416314125,
+      "selected_hi": [
+        [
+          7.179204364833859e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -8.037199289242136e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          0.00015216403654075994
+        ]
+      ],
+      "selection_s": 1.9446946680545807e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          7.179204364833859e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -8.037199289242136e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.00015216403654075994
+        ]
+      ],
+      "wall_s": 0.0035496363416314125
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00028169527649879456,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007711341604590416,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010902825742959976,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.0010902825742959976
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002637552097439766,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007883086800575256,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010894481092691422,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.0010894481092691422
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.0002717217430472374,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0007833810523152351,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010926881805062294,
+      "selected_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0010926881805062294
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.000967872329056263,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.04322156130771545
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.04655034641946534
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.08977190772718079
+        ]
+      ],
+      "hull_s": 3.842450678348541e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.001184173859655857,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.04322156130771545
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.04655034641946534
+        ]
+      ],
+      "natural_range_s": 0.0010184487327933311,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.08977190772718079
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.003534039482474327,
+      "selected_hi": [
+        [
+          0.031177398762845945
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.030033333030343334
+        ]
+      ],
+      "selected_width": [
+        [
+          0.06121073179318928
+        ]
+      ],
+      "selection_s": 1.901760697364807e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.031177398762845945
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.030033333030343334
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.06121073179318928
+        ]
+      ],
+      "wall_s": 0.003534039482474327
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002648802474141121,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.944179055779694
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.585728633378897
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529907689158591
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.944179055779694
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.585728633378897
+        ]
+      ],
+      "natural_range_s": 0.0007668053731322289,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529907689158591
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010689180344343185,
+      "selected_hi": [
+        [
+          1.944179055779694
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.585728633378897
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529907689158591
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.944179055779694
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.585728633378897
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529907689158591
+        ]
+      ],
+      "wall_s": 0.0010689180344343185
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.00027247704565525055,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "natural_range_s": 0.0007814709097146988,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010910062119364738,
+      "selected_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "selected_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "wall_s": 0.0010910062119364738
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.0002691661939024925,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0007861880585551262,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010930541902780533,
+      "selected_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0010930541902780533
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009762616828083992,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          3.217040795548898e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -3.2433587031030305e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          6.460399498651929e-05
+        ]
+      ],
+      "hull_s": 3.838632255792618e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011867983266711235,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          3.217040795548898e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -3.2433587031030305e-05
+        ]
+      ],
+      "natural_range_s": 0.0010377289727330208,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          6.460399498651929e-05
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035646799951791763,
+      "selected_hi": [
+        [
+          3.154556119367492e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -3.243262040982945e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          6.397818160350437e-05
+        ]
+      ],
+      "selection_s": 1.890026032924652e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          3.154556119367492e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -3.243262040982945e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          6.397818160350437e-05
+        ]
+      ],
+      "wall_s": 0.0035646799951791763
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.0002757161855697632,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007642526179552078,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.001077474094927311,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.001077474094927311
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.00026265159249305725,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "natural_range_s": 0.0007918886840343475,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010920027270913124,
+      "selected_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "selected_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.394386117579791
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.14000068499306265
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.5343868025728535
+        ]
+      ],
+      "wall_s": 0.0010920027270913124
+    },
+    {
+      "context": "polynomial_truncation",
+      "cover_validation_s": 0.0009655607864260674,
+      "coverage_valid": true,
+      "depth": 1,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          0.009777527463709938
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.012996815564251935
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          0.02277434302796187
+        ]
+      ],
+      "hull_s": 3.888644278049469e-05,
+      "leaf_count": 4,
+      "leaf_counts": [
+        4
+      ],
+      "leaf_evaluation_s": 0.0011859806254506111,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "subdivision",
+      "natural_hi": [
+        [
+          0.009777527463709938
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.012996815564251935
+        ]
+      ],
+      "natural_range_s": 0.0010119536891579628,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          0.02277434302796187
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0035370606929063797,
+      "selected_hi": [
+        [
+          0.009513226855916216
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.012926593310588614
+        ]
+      ],
+      "selected_width": [
+        [
+          0.02243982016650483
+        ]
+      ],
+      "selection_s": 1.895800232887268e-05,
+      "split_variables": [
+        [
+          0,
+          1
+        ]
+      ],
+      "tightened_hi": [
+        [
+          0.009513226855916216
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.012926593310588614
+        ]
+      ],
+      "tightened_width": [
+        [
+          0.02243982016650483
+        ]
+      ],
+      "wall_s": 0.0035370606929063797
+    },
+    {
+      "context": "poly_times_remainder",
+      "cover_validation_s": 0.00027153734117746353,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "horner_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "natural_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "natural_range_s": 0.0007759369909763336,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010845204815268517,
+      "selected_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "selected_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "selected_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          1.944222190333796
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -0.5857766650347861
+        ]
+      ],
+      "tightened_width": [
+        [
+          2.529998855368582
+        ]
+      ],
+      "wall_s": 0.0010845204815268517
+    },
+    {
+      "context": "remainder_times_poly",
+      "cover_validation_s": 0.0002628462389111519,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "horner_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "natural_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "natural_range_s": 0.0007949844002723694,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0010947147384285927,
+      "selected_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "selected_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "selected_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          4.402724323311574
+        ]
+      ],
+      "tightened_lo": [
+        [
+          0.8704774300756952
+        ]
+      ],
+      "tightened_width": [
+        [
+          3.532246893235879
+        ]
+      ],
+      "wall_s": 0.0010947147384285927
+    },
+    {
+      "context": "integration_overflow",
+      "cover_validation_s": 0.00028037186712026596,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "horner_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "natural_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "natural_range_s": 0.0008257022127509117,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011438466608524323,
+      "selected_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "selected_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "selected_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          6.6548988310870505e-06,
+          5.426897812623766e-05
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -6.672310749385938e-06,
+          -5.4126815578863826e-05
+        ]
+      ],
+      "tightened_width": [
+        [
+          1.3327209580472988e-05,
+          0.00010839579370510149
+        ]
+      ],
+      "wall_s": 0.0011438466608524323
+    },
+    {
+      "context": "cutoff",
+      "cover_validation_s": 0.00031011365354061127,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0008679796010255814,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0012289350852370262,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0012289350852370262
+    },
+    {
+      "context": "raw_compat_poly_diff",
+      "cover_validation_s": 0.00027386657893657684,
+      "coverage_valid": true,
+      "depth": 0,
+      "device": "cpu",
+      "fallback_reason": "",
+      "finite": true,
+      "horner": {
+        "fallback_reason": "Horner not requested for this named context",
+        "orders": [],
+        "requested": false,
+        "requested_orders": [],
+        "validated": false
+      },
+      "horner_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "horner_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "horner_range_s": 0.0,
+      "horner_stages": [],
+      "horner_validated": false,
+      "horner_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "hull_s": 0.0,
+      "leaf_count": 1,
+      "leaf_counts": [
+        1
+      ],
+      "leaf_evaluation_s": 0.0,
+      "method_requested": "adaptive_subdivision",
+      "method_used": "natural",
+      "natural_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "natural_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "natural_range_s": 0.0008003702387213707,
+      "natural_validated": true,
+      "natural_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "phase": "polynomial_range",
+      "range_attribution_s": 0.0011109644547104836,
+      "selected_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "selected_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "selected_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "selection_s": 0.0,
+      "split_variables": [
+        []
+      ],
+      "tightened_hi": [
+        [
+          2.225073858507202e-308,
+          2.225073858507202e-308
+        ]
+      ],
+      "tightened_lo": [
+        [
+          -2.225073858507202e-308,
+          -2.225073858507202e-308
+        ]
+      ],
+      "tightened_width": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "wall_s": 0.0011109644547104836
+    },
+    {
+      "natural_validation_failed": false,
+      "phase": "range_validation_lane",
+      "range_method": "adaptive_subdivision",
+      "subdivision_depth": 1,
+      "subdivision_validation_passed": false,
+      "validation_status": "failed"
+    }
+  ],
+  "candidate_hashes": {
+    "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+    "coefficient_sha256": "bc1433d0d3c89339fca6091e41c0a6667d70c92d2dd4e35ae8b14236d131863c",
+    "effective_degree": 4,
+    "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+    "picard_iterations": 4
+  },
+  "candidate_remainder": [
+    [
+      -3.6236658476745757e-07,
+      -0.0001199995911680722
+    ],
+    [
+      3.6236658476745757e-07,
+      0.00011599079695982693
+    ]
+  ],
+  "checkpoint_manifest_sha256": "fa1e0cd6eecd942804a4e31b4a917b501d4fd6beac9a464c53d96f5ba0f73159",
+  "message": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.002",
+  "picard_image_remainder": [
+    [
+      -3.6236658476745757e-07,
+      -0.0001199995911680722
+    ],
+    [
+      3.6236658476745757e-07,
+      0.00011599079695982693
+    ]
+  ],
+  "status": "failed",
+  "subset_margin": [
+    [
+      9.963763341523255e-05,
+      -1.99995911680722e-05
+    ]
+  ],
+  "t_before": 6.397083942944808,
+  "validation_rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+  "validation_rows": [
+    {
+      "accumulated_before_x0_add_hi": [
+        [
+          3.6236458476745746e-07,
+          0.0001159907949598269
+        ]
+      ],
+      "accumulated_before_x0_add_lo": [
+        [
+          -3.6236458476745746e-07,
+          -0.00011999958916807217
+        ]
+      ],
+      "attempt": 1,
+      "candidate_remainder_hi": [
+        [
+          0.0001,
+          0.0001
+        ]
+      ],
+      "candidate_remainder_lo": [
+        [
+          -0.0001,
+          -0.0001
+        ]
+      ],
+      "finite": true,
+      "ordinary_residual_hi": [
+        [
+          7.017263415854513e-06,
+          0.00010750635755824542
+        ]
+      ],
+      "ordinary_residual_lo": [
+        [
+          -7.0346753341534005e-06,
+          -9.498124593733307e-05
+        ]
+      ],
+      "ordinary_residual_width_sum": 0.0002165395422455864,
+      "phase": "remainder_validation",
+      "picard_image_remainder_hi": [
+        [
+          3.6236658476745757e-07,
+          0.00011599079695982693
+        ]
+      ],
+      "picard_image_remainder_lo": [
+        [
+          -3.6236658476745757e-07,
+          -0.0001199995911680722
+        ]
+      ],
+      "poly_diff_range_hi": [
+        [
+          1.0000000000000002e-12,
+          1.0000000000000002e-12
+        ]
+      ],
+      "poly_diff_range_lo": [
+        [
+          -1.0000000000000002e-12,
+          -1.0000000000000002e-12
+        ]
+      ],
+      "polynomial_range_width_sum": 5.066633695808733,
+      "range_method": "adaptive_subdivision",
+      "raw_ctrunc_residual_width_sum": 0.00023671512129743404,
+      "raw_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              0.0,
+              2.2250738585072024e-308
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -2.2250738585072024e-308
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              4.450147717014405e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              0.0001,
+              0.00020000000000000006
+            ]
+          ],
+          "lo": [
+            [
+              -0.0001,
+              -0.00020000000000000006
+            ]
+          ],
+          "width": [
+            [
+              0.0002,
+              0.00040000000000000013
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              0.00019441790557796947
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.00019441790557796947
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.00038883581115593894
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              0.0,
+              0.030033333030343338
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.031177398762845948
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.06121073179318928
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              0.0,
+              0.0015817192904550308
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.0015439441392253288
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0031256634296803597
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              3.5925921640838e-08
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -3.5925921640838e-08
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              7.1851843281676e-08
+            ]
+          ]
+        }
+      },
+      "raw_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            0.0,
+            4.450147717014405e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            0.0002,
+            0.00040000000000000013
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            0.0,
+            0.00038883581115593894
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            0.0,
+            0.06121073179318928
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            0.0,
+            0.0031256634296803597
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            0.0,
+            7.1851843281676e-08
+          ]
+        ]
+      },
+      "raw_rhs_remainder_hi": [
+        [
+          0.0001,
+          0.03200950615229801
+        ]
+      ],
+      "raw_rhs_remainder_lo": [
+        [
+          -0.0001,
+          -0.03311579673357092
+        ]
+      ],
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "remainder_ledger_intervals": {
+        "initial_remainder": {
+          "hi": [
+            [
+              3.623635847674575e-07,
+              7.247271695349152e-07
+            ]
+          ],
+          "lo": [
+            [
+              -3.623635847674575e-07,
+              -7.247271695349152e-07
+            ]
+          ],
+          "width": [
+            [
+              7.24727169534915e-07,
+              1.4494543390698304e-06
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.6548988310870505e-06,
+              5.426897812623766e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672310749385938e-06,
+              -5.4126815578863826e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3327209580472988e-05,
+              0.00010839579370510149
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              7.045153224737924e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -7.045153224737924e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.4090306449475848e-06
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.684126690855926e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447246986215849e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.131373677071774e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              4.966756220465049e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.952604193327304e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              9.919360413792352e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.128109746541939e-10
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.128109746541939e-10
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.256219493083878e-10
+            ]
+          ]
+        }
+      },
+      "remainder_ledger_widths": {
+        "initial_remainder": [
+          [
+            7.24727169534915e-07,
+            1.4494543390698304e-06
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3327209580472988e-05,
+            0.00010839579370510149
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            1.4090306449475848e-06
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.131373677071774e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            9.919360413792352e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.256219493083878e-10
+          ]
+        ]
+      },
+      "subdivision_depth": 1,
+      "subset_margin": [
+        [
+          9.963763341523255e-05,
+          -1.99995911680722e-05
+        ]
+      ],
+      "subset_result": false,
+      "target_subset_result": false,
+      "tmp_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              3.623635847674575e-07,
+              7.247271695349152e-07
+            ]
+          ],
+          "lo": [
+            [
+              -3.623635847674575e-07,
+              -7.247271695349152e-07
+            ]
+          ],
+          "width": [
+            [
+              7.24727169534915e-07,
+              1.4494543390698304e-06
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              6.6548988310870505e-06,
+              5.426897812623766e-05
+            ]
+          ],
+          "lo": [
+            [
+              -6.672310749385938e-06,
+              -5.4126815578863826e-05
+            ]
+          ],
+          "width": [
+            [
+              1.3327209580472988e-05,
+              0.00010839579370510149
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              7.045153224737924e-07
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -7.045153224737924e-07
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.4090306449475848e-06
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.684126690855926e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -3.447246986215849e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              8.131373677071774e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              4.966756220465049e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.952604193327304e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              9.919360413792352e-06
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.128109746541939e-10
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.128109746541939e-10
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.256219493083878e-10
+            ]
+          ]
+        }
+      },
+      "tmp_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            7.24727169534915e-07,
+            1.4494543390698304e-06
+          ]
+        ],
+        "integration_overflow": [
+          [
+            1.3327209580472988e-05,
+            0.00010839579370510149
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            1.4090306449475848e-06
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            8.131373677071774e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            9.919360413792352e-06
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.256219493083878e-10
+          ]
+        ]
+      },
+      "validation_mode": "flowstar_raw_remainder_compat",
+      "validation_status": "failed"
+    }
+  ]
+}

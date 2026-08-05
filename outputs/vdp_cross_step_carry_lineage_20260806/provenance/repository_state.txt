@@ -1,0 +1,60 @@
+$ pwd
+/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit
+[exit_code=0]
+$ git status --short --branch
+## codex/vdp-cross-step-carry-lineage-audit-20260806
+?? experiments/audit_vdp_cross_step_provenance.py
+?? experiments/capture_audit_command.py
+[exit_code=0]
+$ git status --porcelain=v2
+? experiments/audit_vdp_cross_step_provenance.py
+? experiments/capture_audit_command.py
+[exit_code=0]
+$ git rev-parse HEAD
+455146df23940caa6f168877ffe6ec6f508c43a4
+[exit_code=0]
+$ git log -15 --oneline --decorate
+455146d (HEAD -> codex/vdp-cross-step-carry-lineage-audit-20260806, origin/codex/vdp-later-terminal-factorized-range-20260805, codex/vdp-later-terminal-factorized-range-20260805) docs: publish later terminal factorized evidence
+2e45072 docs: add factorized terminal evidence workflow
+a1fb352 feat: add frozen later-terminal attribution runner
+f860408 feat: add deterministic dense Horner range evaluation
+cdb54bd (origin/codex/vdp-terminal-range-closure-20260805, codex/vdp-terminal-range-closure-20260805) fix: complete terminal closure decision metadata
+f746551 docs: publish R4 terminal range closure evidence
+0360842 perf: record subdivision range phase timings
+24bd652 feat: validate dense subdivision range for terminal replay
+82c54a2 (origin/codex/generic-batched-tm-backend-vdp-t10-20260805, codex/generic-batched-tm-backend-vdp-t10-20260805) Finalize clean dense backend evidence provenance
+ef746aa Stabilize evidence provenance across refreshes
+ccf95a6 Clarify limited dense CUDA benchmark result
+387830b Record generic dense TM backend closure evidence
+129215a Clarify dense sparse float64 range parity
+d2068d7 Fix dense backend documentation formatting
+53e4b73 Document dense VDP closure and evidence workflow
+[exit_code=0]
+$ git branch -vv
+  codex/batched-dense-nncs-gpu                              6b2c78c [origin/codex/batched-dense-nncs-gpu] Improve batched dense TM range remainder kernels
++ codex/bern-ibf-tm-feasibility                             dd82032 (/srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study) add independent Bernstein reference and tests
++ codex/deep-study-protocol-repair-v2                       387c118 (/srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair) [origin/codex/torch-flowstar-diffreach-deep-study: ahead 5] classify deep-study partial completions
++ codex/first-order-followup-correctness-matched-basis      3d0ae54 (/srv/local/shengenli/torch_tm_flowpipe_first_order_followup) [origin/codex/first-order-followup-correctness-matched-basis] add validated focused follow-up results
++ codex/first-order-three-way-benchmark                     13e5eec (/srv/local/shengenli/torch_tm_flowpipe_first_order_bench) [origin/codex/first-order-three-way-benchmark] add reproducible benchmark report and curated results
+  codex/flowstar-kernel-alignment                           54704e8 [origin/codex/flowstar-kernel-alignment] Add Flowstar width-control diagnostics
+  codex/flowstar-normalized-insertion                       3bd72ca [origin/codex/flowstar-normalized-insertion] Audit Flowstar internal intermediate ranges
++ codex/flowstar-raw-remainder-compat                       26a254e (/srv/local/shengenli/torch_tm_flowpipe) Correct h10 centering audit semantics and add handoff
++ codex/flowstar-scalar-affine-correctness-closure-20260804 7d078b5 (/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure) [origin/codex/flowstar-scalar-affine-correctness-closure-20260804] Diagnose clean-stock Flowstar scalar containment loss
++ codex/generic-batched-tm-backend-vdp-t10-20260805         82c54a2 (/srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10) [origin/codex/generic-batched-tm-backend-vdp-t10-20260805] Finalize clean dense backend evidence provenance
++ codex/native-reproduction-no-adapters-20260804            438ee68 (/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters) [origin/codex/native-reproduction-no-adapters-20260804] Reproduce Xiangru and native solver baselines
++ codex/repository-cleanup-before-external-torch-audit      7dddc97 (/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit) [origin/codex/repository-cleanup-before-external-torch-audit] Record repository cleanup audit and acceptance evidence
++ codex/three-tool-correctness-parity-20260804              308b735 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit) [origin/codex/three-tool-correctness-parity-20260804] Commit three-tool reaudit evidence closure
++ codex/three-way-common-contract-comparison                7251adf (/srv/local/shengenli/torch_tm_flowpipe_three_way_comparison) [origin/codex/three-way-common-contract-comparison] add validated three-way comparison results
++ codex/three-way-comparison-correctness-repair             9024a8a (/srv/local/shengenli/torch_tm_flowpipe_three_way_repair) [origin/codex/three-way-comparison-correctness-repair] add corrected comparison results and report
++ codex/torch-flowstar-diffreach-deep-study                 9a684d9 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_study) [origin/codex/torch-flowstar-diffreach-deep-study] publish authoritative three-tool deep study
+* codex/vdp-cross-step-carry-lineage-audit-20260806         455146d docs: publish later terminal factorized evidence
++ codex/vdp-later-terminal-factorized-range-20260805        455146d (/srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range) [origin/codex/vdp-later-terminal-factorized-range-20260805] docs: publish later terminal factorized evidence
++ codex/vdp-terminal-range-closure-20260805                 cdb54bd (/srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure) [origin/codex/vdp-terminal-range-closure-20260805] fix: complete terminal closure decision metadata
+  main                                                      b2f34f5 [origin/main] Refresh Flowstar ctrunc validation outputs
+[exit_code=0]
+$ git remote -v
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (fetch)
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (push)
+[exit_code=0]
+$ git diff --check
+[exit_code=0]

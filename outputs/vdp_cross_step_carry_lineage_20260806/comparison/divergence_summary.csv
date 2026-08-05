@@ -1,0 +1,8 @@
+kind,step,stage,component,field,classification,difference,behavior_effect
+first_trace_field,0,step_pre_state,,basis_variable_order / physical composed state availability,structural semantic difference,basis/availability mismatch,none at first occurrence
+first_native_schedule,12,acceptance_predicate/scheduler,y,accepted candidate,behavior-relevant numerical difference,"[(0.019615177354506262, True)] vs [(0.019615177354506262, False), (0.009807588677253131, True)]",Torch accepts the candidate that stock Flowstar rejects; Flowstar then accepts one half-step.
+coefficient_guard,0,all,,basis/center/scale,representation difference,basis/center/scale/exponent/local-time identity is missing or differs and no algebraically tested common-basis transform is implemented; coefficient comparison fails closed,coefficient comparison unavailable
+tolerance_sensitivity,12,scheduler,,abs_tol=0.0,behavior-relevant numerical difference,divergence_persists=True,native schedules remain different
+tolerance_sensitivity,12,scheduler,,abs_tol=1e-15,behavior-relevant numerical difference,divergence_persists=True,native schedules remain different
+tolerance_sensitivity,12,scheduler,,abs_tol=1e-12,behavior-relevant numerical difference,divergence_persists=True,native schedules remain different
+tolerance_sensitivity,12,scheduler,,abs_tol=1e-09,behavior-relevant numerical difference,divergence_persists=True,native schedules remain different

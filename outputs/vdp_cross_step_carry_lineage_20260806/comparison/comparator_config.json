@@ -1,0 +1,59 @@
+{
+  "coefficient_guard": {
+    "basis_equal": false,
+    "center_equal": false,
+    "coefficient_comparison_available": false,
+    "common_basis_transform_implemented": false,
+    "coordinate_metadata_available": false,
+    "exponent_semantics_equal": false,
+    "flowstar_basis": [
+      "tau",
+      "r0",
+      "r1",
+      "r2"
+    ],
+    "flowstar_center": null,
+    "flowstar_normalization_scale": null,
+    "local_time_identity_equal": false,
+    "normalization_scale_equal": false,
+    "reason": "basis/center/scale/exponent/local-time identity is missing or differs and no algebraically tested common-basis transform is implemented; coefficient comparison fails closed",
+    "torch_basis": [
+      "u0",
+      "u1"
+    ],
+    "torch_center": 0.0,
+    "torch_normalization_scale": null
+  },
+  "flowstar": {
+    "attempts": "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/outputs/vdp_cross_step_carry_lineage_20260806/flowstar_trace/schema_v1_final_v4/acceptance_attempts.csv",
+    "transitions": "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/outputs/vdp_cross_step_carry_lineage_20260806/flowstar_trace/schema_v1_final_v4/transitions.jsonl"
+  },
+  "numeric_tolerances_checked": [
+    0.0,
+    1e-15,
+    1e-12,
+    1e-09
+  ],
+  "raw_mismatches_preserved": true,
+  "schedule_sync_key_used": [
+    "accepted_step_index",
+    "retry_index",
+    "h_attempt",
+    "accepted"
+  ],
+  "schema": "vdp_streaming_comparator_config_v1",
+  "shadow_replay_used": false,
+  "sync_key": [
+    "accepted_step_index",
+    "retry_index",
+    "t_pre",
+    "h_attempt",
+    "stage",
+    "component"
+  ],
+  "time_alignment_absolute_tolerance": 2e-12,
+  "torch": {
+    "attempts": "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/outputs/vdp_cross_step_carry_lineage_20260806/torch_trace/prefix_t0p3_v2_schema/acceptance_attempts.csv",
+    "transitions": "/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit/outputs/vdp_cross_step_carry_lineage_20260806/torch_trace/prefix_t0p3_v2_schema/transitions.jsonl"
+  }
+}
