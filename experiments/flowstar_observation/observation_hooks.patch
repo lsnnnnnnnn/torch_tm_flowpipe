@@ -1,0 +1,35 @@
+diff --git a/flowstar-toolbox/Continuous.h b/flowstar-toolbox/Continuous.h
+index 74d120e..4b31cc0 100644
+--- a/flowstar-toolbox/Continuous.h
++++ b/flowstar-toolbox/Continuous.h
+@@ -7,6 +7,7 @@
+ #define CONTINUOUS_H_
+ 
+ #include "Geometry.h"
++#include "AuditTrace.h"
+ 
+ 
+ namespace flowstar
+@@ -925,7 +926,9 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder_adaptive_stepsize(std::list<Flowpip
+ 
+ 	for(double t=THRESHOLD_HIGH; t < time;)
+ 	{
++		flowstar_audit::set_step_context(static_cast<int>(flowpipes.size()), t);
+ 		int res = currentFlowpipe.advance_adaptive_stepsize(newFlowpipe, expressions, new_stepsize, tm_setting, dummy_invariant, g_setting, symbolic_remainder);
++		flowstar_audit::emit_observed_step(currentFlowpipe, newFlowpipe, tm_setting.step_exp_table, res == 1);
+ 
+ 		if(res == 1)
+ 		{
+diff --git a/flowstar-toolbox/Term.h b/flowstar-toolbox/Term.h
+index 62294ac..1a2001c 100644
+--- a/flowstar-toolbox/Term.h
++++ b/flowstar-toolbox/Term.h
+@@ -32,6 +32,8 @@ public:
+ 
+ 	unsigned int degree() const;		// degree of the term
+ 	unsigned int dimension() const;		// dimension of the term
++	const DATA_TYPE & auditCoefficient() const { return coefficient; }
++	const std::vector<unsigned int> & auditDegrees() const { return degrees; }
+ 
+ 	void evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const;	// evaluation of the term
+ 

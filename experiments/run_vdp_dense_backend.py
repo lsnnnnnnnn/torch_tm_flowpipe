@@ -31,6 +31,7 @@ from torch_tm_flowpipe import (
     save_terminal_checkpoint,
 )
 from torch_tm_flowpipe.safety import intervals_are_finite
+from torch_tm_flowpipe.audit_trace import TransitionTraceWriter
 
 CANONICAL_CONFIG = ROOT / "benchmarks" / "canonical.yaml"
 MATCHED_CONTRACT = ROOT / "benchmarks" / "three_tool_matched_contract.yaml"
@@ -280,6 +281,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     }
     _atomic_json(output_dir / "command.json", command)
 
+    transition_trace = (
+        TransitionTraceWriter(
+            args.transition_trace_dir,
+            run_id="torch-authoritative-observation-20260806",
+            source_commit=command["commit"],
+        )
+        if args.transition_trace_dir is not None
+        else None
+    )
+
     initial_box = [Interval(*bounds) for bounds in contract["initial_box"]]
     ode = PolynomialODE.from_system_spec(contract["canonical_system_spec"])
     dense_range_policy = DenseRangePolicy(
@@ -370,6 +381,19 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             finite = False
             segment.message = segment.message or f"range evaluation failed: {exc}"
         accepted = bool(accepted and finite)
+
+        if transition_trace is not None:
+            transition_trace.record_step(
+                step=len(segment_rows),
+                t_pre=current_time,
+                current=current,
+                previous_state=normal_state,
+                segment=segment,
+                diagnostics=diagnostics,
+                accepted=accepted,
+                attempted_h=h_try,
+                order=contract["requested_order"],
+            )
         t_hi = current_time + float(segment.h) if accepted else current_time
         counters = dict(segment.backend_counters or {})
         fallback_count += int(counters.get("sparse_fallback_count", 0))
@@ -598,6 +622,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "no_hidden_inner_sparse_fallback": fallback_count == 0,
         },
     )
+    if transition_trace is not None:
+        transition_trace.close(result_summary=summary)
     return summary
 
 
@@ -608,6 +634,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--horizon", type=float, default=10.0)
     parser.add_argument("--wall-cap-s", type=float, default=1800.0)
+    parser.add_argument("--transition-trace-dir", type=Path)
     parser.add_argument(
         "--reset-mode",
         choices=("normalized_insertion", "normalized_insertion_symqueue_v2"),
