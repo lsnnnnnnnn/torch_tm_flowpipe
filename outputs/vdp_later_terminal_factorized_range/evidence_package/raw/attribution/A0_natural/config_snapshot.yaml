@@ -1,0 +1,79 @@
+checkpoint: /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range/evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint
+checkpoint_full_sha256: dcb8f646d45c9742e0cff23fea596c12e53d8ccd00d1544f70564a44a7463420
+contract:
+  canonical_system_spec:
+    initial_box:
+    - - 1.1
+      - 1.4
+    - - 2.35
+      - 2.45
+    rhs:
+    - terms:
+      - coefficient: 1.0
+        powers:
+        - 0
+        - 1
+    - terms:
+      - coefficient: 1.0
+        powers:
+        - 0
+        - 1
+      - coefficient: -1.0
+        powers:
+        - 1
+        - 0
+      - coefficient: -1.0
+        powers:
+        - 2
+        - 1
+    state_names:
+    - position
+    - velocity
+  cutoff: 1.0e-10
+  dtype: float64
+  h_max: 0.1
+  h_min: 0.002
+  initial_box:
+  - - 1.1
+    - 1.4
+  - - 2.35
+    - 2.45
+  ode:
+  - y
+  - (1 - x^2) * y - x
+  output_contract:
+    collapsed_endpoint: diagnostic_only
+    fallback_between_fields: forbidden
+    full_tube: required
+    last_segment: required
+    raw_endpoint: required
+    repaired_hull: diagnostic_only
+    tightened_endpoint: independent_optional_field
+  requested_order: 4
+  reset_mode: normalized_insertion
+  source_files:
+  - benchmarks/canonical.yaml
+  - benchmarks/three_tool_matched_contract.yaml
+  step_policy_mode: flowstar_compat
+  target_horizon: 10.0
+  target_remainder_radius: 0.0001
+  validation_mode: flowstar_raw_remainder_compat
+device: cpu
+max_leaves: 1
+named_contexts: []
+range_method: natural
+split_vars:
+- 0
+- 1
+subdivision_depth: 0
+trigger: always
+variable_orders:
+- - 0
+  - 1
+  - 2
+- - 1
+  - 0
+  - 2
+- - 2
+  - 0
+  - 1

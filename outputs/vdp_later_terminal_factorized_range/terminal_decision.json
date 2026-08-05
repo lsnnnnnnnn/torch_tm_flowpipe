@@ -1,0 +1,218 @@
+{
+  "aggregation_only_margin_delta_from_natural": 9.025983085941824e-18,
+  "candidate_polynomial_unchanged": true,
+  "combined_closed_step": false,
+  "combined_margin_gain_over_subdivision": 4.139621740043708e-06,
+  "combined_y_margin": -1.5859969428028492e-05,
+  "dominant_factorization_stages": [
+    {
+      "intermediate_hi": [
+        [
+          0.019504259409813225
+        ],
+        [
+          0.019411700922398693
+        ],
+        [
+          0.03117119936564377
+        ],
+        [
+          0.01676101577498506
+        ]
+      ],
+      "intermediate_lo": [
+        [
+          -0.027254003391976325
+        ],
+        [
+          -0.027346561879390864
+        ],
+        [
+          -0.015587063436145774
+        ],
+        [
+          -0.02999724702680449
+        ]
+      ],
+      "operation": "multiply_add",
+      "stage_index": 218,
+      "variable": 0,
+      "variable_order": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "intermediate_hi": [
+        [
+          0.01950425940981322
+        ],
+        [
+          0.019411700922398686
+        ],
+        [
+          0.03117119936564377
+        ],
+        [
+          0.01676101577498506
+        ]
+      ],
+      "intermediate_lo": [
+        [
+          -0.027254003391976325
+        ],
+        [
+          -0.027346561879390864
+        ],
+        [
+          -0.015587063436145772
+        ],
+        [
+          -0.02999724702680449
+        ]
+      ],
+      "operation": "multiply_add",
+      "stage_index": 218,
+      "variable": 1,
+      "variable_order": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "intermediate_hi": [
+        [
+          0.017064450512472216
+        ],
+        [
+          0.019129889251632403
+        ],
+        [
+          0.021872596864378667
+        ],
+        [
+          0.016761015774985056
+        ]
+      ],
+      "intermediate_lo": [
+        [
+          -0.017137684108918756
+        ],
+        [
+          -0.022164761140650167
+        ],
+        [
+          -0.015452819283092865
+        ],
+        [
+          -0.03003333285753316
+        ]
+      ],
+      "operation": "multiply_add",
+      "stage_index": 218,
+      "variable": 2,
+      "variable_order": [
+        2,
+        0,
+        1
+      ]
+    }
+  ],
+  "dominant_improvement_range_call_index": 44,
+  "dominant_per_leaf_selected_order_index": [
+    [
+      2
+    ],
+    [
+      2
+    ],
+    [
+      2
+    ],
+    [
+      0
+    ]
+  ],
+  "dominant_per_leaf_selected_orders": [
+    {
+      "selected_mask": [
+        [
+          false
+        ],
+        [
+          false
+        ],
+        [
+          false
+        ],
+        [
+          true
+        ]
+      ],
+      "variable_order": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "selected_mask": [
+        [
+          false
+        ],
+        [
+          false
+        ],
+        [
+          false
+        ],
+        [
+          false
+        ]
+      ],
+      "variable_order": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "selected_mask": [
+        [
+          true
+        ],
+        [
+          true
+        ],
+        [
+          true
+        ],
+        [
+          false
+        ]
+      ],
+      "variable_order": [
+        2,
+        0,
+        1
+      ]
+    }
+  ],
+  "dominant_range_width_after": 0.05186984389118317,
+  "dominant_range_width_before": 0.06121073179318928,
+  "dominant_range_width_gain": 0.009340887902006115,
+  "factorized_state": "H1_factorized_range_correctness_complete",
+  "fresh_horizons_authorized": false,
+  "highest_fresh_validated_horizon": 6.397083942944808,
+  "horner_and_subdivision_complementary": true,
+  "horner_only_closed_step": false,
+  "horner_only_y_margin": -7.584392650574142e-05,
+  "improvement_context": "polynomial_truncation",
+  "improvement_mechanism": "per-leaf dependency preservation in the final top-level Horner multiply-add; not coefficient aggregation, whose Horner-only terminal-margin delta is at float64 safeguard scale",
+  "range_closure_state": "R4_historical_range_midpoint_horizon_crossed",
+  "remaining_blocker": "cross-step dependency/carry representation; frozen factorized range remains outside the unchanged target self-map",
+  "stop_go_gate": "STOP",
+  "subdivision_y_margin": -1.99995911680722e-05
+}

@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "command": "pytest -q",
+    "git_sha": "cdb54bd3d2ffb49a0b58245055932756ebc3aa47",
+    "result": "401 passed, 1 skipped in 45.49s"
+  },
+  "cuda": {
+    "command": "pytest -q tests/test_dense_horner_range.py -k cuda",
+    "devices_available": 4,
+    "result": "3 passed, 28 deselected in 1.83s"
+  },
+  "final_full": {
+    "command": "pytest -q",
+    "result": "434 passed, 1 skipped in 73.56s"
+  },
+  "focused": {
+    "command": "pytest -q tests/test_dense_horner_range.py tests/test_vdp_later_terminal_factorized_range.py tests/test_dense_range_subdivision.py tests/test_dense_range_policy.py tests/test_batched_dense_runner_contract.py",
+    "result": "85 passed in 13.35s"
+  }
+}
