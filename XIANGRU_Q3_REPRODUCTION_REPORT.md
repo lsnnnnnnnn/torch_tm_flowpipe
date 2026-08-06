@@ -38,3 +38,5 @@ These are native closed-loop GPU timings from one required exact reproduction. T
 - Author/fresh summary and strict diff: `reproduction_summary.csv` and `reproduction_diff.json`.
 
 No Xiangru algorithm or source file was modified. The isolated reproduction worktree remains clean.
+
+The Xiangru remainder-ablation suite passes `51 passed, 4 skipped`. The combined reachability/remainder run reports `77 passed, 4 skipped, 1 failed`; the sole failure is an upstream repository-inventory assertion because `tora_tradeoff_matrix.json` names the absent historical file `experiments/reachability/results/20260724T234338.154274Z__tora_homogeneous__diffreach__full/run.json`. This is recorded as a pre-existing missing artifact, not hidden or repaired. The exact fresh Q3 command itself exits 0 and produces the full T20 certificate described above.

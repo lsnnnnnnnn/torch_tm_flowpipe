@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "experiments/run_vdp_dense_backend.py",
+    "--tm-backend",
+    "dense",
+    "--device",
+    "cpu",
+    "--dense-range-method",
+    "adaptive_subdivision",
+    "--dense-range-trigger",
+    "proactive_depth1_on_named_contexts",
+    "--dense-range-max-depth",
+    "1",
+    "--dense-range-max-leaves",
+    "4",
+    "--dense-range-split-vars",
+    "0,1",
+    "--dense-range-contexts",
+    "polynomial_truncation",
+    "--no-save-terminal-checkpoint",
+    "--horizon",
+    "0.2",
+    "--output-dir",
+    "outputs/xiangru_q3_matched_audit_20260806/trace_repair/short_horizon/uninstrumented_run"
+  ],
+  "branch": "codex/xiangru-q3-matched-baseline-audit-20260806",
+  "commit": "b4b35dff55d1f4eded74214a537ddad532ce541a",
+  "config_sha256": "24734d7a2d30ad49517e0ba99294212982ce3ffe89d6df107c9db9b0c1d6a944",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "worktree_status": ""
+}

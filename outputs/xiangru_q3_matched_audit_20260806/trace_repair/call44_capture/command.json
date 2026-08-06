@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "experiments/trace_vdp_call44_lineage.py",
+    "--checkpoint",
+    "evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint",
+    "--prefix-segments",
+    "outputs/xiangru_q3_matched_audit_20260806/trace_repair/short_horizon/instrumented_run/segments.csv",
+    "--output-dir",
+    "outputs/xiangru_q3_matched_audit_20260806/trace_repair/call44"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit",
+  "elapsed_s": 7.7368128830567,
+  "exit_code": 0,
+  "finished_utc": "2026-08-06T03:37:34Z",
+  "schema_version": "reaudit-command-1.0.0",
+  "started_utc": "2026-08-06T03:37:26Z",
+  "stderr_path": "outputs/xiangru_q3_matched_audit_20260806/trace_repair/call44_capture/stderr.log",
+  "stdout_path": "outputs/xiangru_q3_matched_audit_20260806/trace_repair/call44_capture/stdout.log"
+}

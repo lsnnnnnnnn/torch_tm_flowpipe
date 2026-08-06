@@ -38,4 +38,4 @@ The frozen replay still classifies all 1,141 discarded routes, has no missing pa
 - Identity/equivalence: `lifecycle_identity.json` and `instrumentation_equivalence.json`.
 - Raw traces and captured commands/streams: `trace_repair/one_step/`, `short_horizon/`, `call44/`, and adjacent `*_capture/` directories.
 
-Focused trace, insertion and Q3-audit tests pass (`32 passed`). Full-suite results are recorded separately under `outputs/.../tests/` after final verification.
+Focused trace, insertion and Q3-audit tests pass (`32 passed`). The final Torch suite passes `455 passed, 2 skipped`; raw logs are under `outputs/.../tests/torch_pytest/`.

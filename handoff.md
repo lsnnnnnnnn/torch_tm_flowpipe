@@ -32,6 +32,14 @@
 - Formal runtime comparison: N/A.
 - Native fresh Xiangru CUDA timing is recorded by stage, but one reproduction is not a repeated performance benchmark and is not compared against CPU plant-only timing.
 
+## Final verification
+
+- Torch editable install: exit 0.
+- Torch full suite: `455 passed, 2 skipped`; `git diff --check` exit 0.
+- Xiangru remainder-ablation suite: `51 passed, 4 skipped`.
+- Xiangru combined reachability/remainder suite: `77 passed, 4 skipped, 1 failed`; the sole failure is the clean source tree's missing historical `experiments/reachability/results/20260724T234338.154274Z__tora_homogeneous__diffreach__full/run.json` referenced by `tora_tradeoff_matrix.json`.
+- Exact Xiangru reproduction worktree remains clean at `27d2905`; no source change was made to mask the inventory failure.
+
 ## One next action
 
 Implement a native Torch lane for the exact homogeneous-TORA plant, frozen controller/bounder, periodic control update, B48 initial partition and endpoint/tube contract. Validate it independently, then restart at Gate 1. Do not create a winner table before Gates 1–5 pass.

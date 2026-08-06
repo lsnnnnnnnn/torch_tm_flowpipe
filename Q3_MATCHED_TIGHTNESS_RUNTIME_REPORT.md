@@ -35,3 +35,5 @@ No trajectory overlay, interpolated interval endpoint, width ratio, speed ratio,
 The one fresh exact reproduction records 141.0664 s compile/warm separately excluded, 1.33359 s controller, 1.07129 s plant dynamics, 1.92362 s validation, 2.68962 s solver excluding validation and 4.61324 s total including validation. Cold process wall is 151.020 s on CUDA GPU 0. This is a native implementation observation from one reproduction, not the minimum five-repeat short-runtime protocol and not an algorithm-speed claim.
 
 Authoritative gate, runtime and provenance evidence is under `outputs/xiangru_q3_matched_audit_20260806/`; `manifest.sha256` covers every artifact except itself.
+
+Final Torch verification passes `455 passed, 2 skipped` and `git diff --check`. Xiangru's Q3/remainder tests pass `51 passed, 4 skipped`; its wider combined suite has one repository-inventory failure for a missing historical `run.json`, while 77 tests pass and 4 skip. The raw failing log is retained.

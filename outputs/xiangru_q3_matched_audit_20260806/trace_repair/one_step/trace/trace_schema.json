@@ -1,0 +1,38 @@
+{
+  "exponent_order": "tuple/list in the recorded basis_variable_order",
+  "null_policy": "unavailable fields are null with an explicit reason; cross-field substitution is forbidden",
+  "number_encoding": {
+    "decimal": "binary64 max_digits10 string",
+    "hex": "Python hexfloat string"
+  },
+  "object_content_sha256": "SHA256 over basis, domain, center, normalization scale, sorted coefficients, Taylor-model order/truncation metadata, and interval remainder",
+  "required_common_fields": [
+    "tool",
+    "source_commit",
+    "run_id",
+    "accepted_count_before_attempt",
+    "accepted_step_index",
+    "attempt_index",
+    "retry_index",
+    "t_pre",
+    "h_attempt",
+    "accepted",
+    "rejection_reason",
+    "state_component",
+    "stage"
+  ],
+  "required_stages": [
+    "step_pre_state",
+    "raw_picard_image",
+    "truncation_cutoff",
+    "insertion_input",
+    "insertion_output",
+    "right_map_input",
+    "right_map_output",
+    "normalized_reset_input",
+    "normalized_reset_output",
+    "next_step_pre_state",
+    "acceptance_predicate"
+  ],
+  "schema": "vdp_transition_trace_schema_v2"
+}

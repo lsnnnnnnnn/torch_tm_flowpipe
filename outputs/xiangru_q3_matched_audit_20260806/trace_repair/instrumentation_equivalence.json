@@ -1,0 +1,141 @@
+{
+  "fields": [
+    {
+      "equal": true,
+      "field": "status",
+      "instrumented": "completed",
+      "uninstrumented": "completed"
+    },
+    {
+      "equal": true,
+      "field": "requested_horizon",
+      "instrumented": 0.2,
+      "uninstrumented": 0.2
+    },
+    {
+      "equal": true,
+      "field": "completed_horizon",
+      "instrumented": 0.2,
+      "uninstrumented": 0.2
+    },
+    {
+      "equal": true,
+      "field": "completed_requested_horizon",
+      "instrumented": true,
+      "uninstrumented": true
+    },
+    {
+      "equal": true,
+      "field": "accepted_steps",
+      "instrumented": 13,
+      "uninstrumented": 13
+    },
+    {
+      "equal": true,
+      "field": "rejected_attempts",
+      "instrumented": 4,
+      "uninstrumented": 4
+    },
+    {
+      "equal": true,
+      "field": "full_tube",
+      "instrumented": {
+        "x_hi": 1.8080472952148388,
+        "x_lo": 1.0990754609166948,
+        "y_hi": 2.4638767057176887,
+        "y_lo": 1.4104663489384344
+      },
+      "uninstrumented": {
+        "x_hi": 1.8080472952148388,
+        "x_lo": 1.0990754609166948,
+        "y_hi": 2.4638767057176887,
+        "y_lo": 1.4104663489384344
+      }
+    },
+    {
+      "equal": true,
+      "field": "last_segment",
+      "instrumented": {
+        "boundary_conversions": 2,
+        "index": 12,
+        "width_sum": 0.868285597539743,
+        "x_hi": 1.8080472952148388,
+        "x_lo": 1.4829075108257341,
+        "x_width": 0.3251397843891046,
+        "y_hi": 1.9536121620890727,
+        "y_lo": 1.4104663489384344,
+        "y_width": 0.5431458131506384
+      },
+      "uninstrumented": {
+        "boundary_conversions": 2,
+        "index": 12,
+        "width_sum": 0.868285597539743,
+        "x_hi": 1.8080472952148388,
+        "x_lo": 1.4829075108257341,
+        "x_width": 0.3251397843891046,
+        "y_hi": 1.9536121620890727,
+        "y_lo": 1.4104663489384344,
+        "y_width": 0.5431458131506384
+      }
+    },
+    {
+      "equal": true,
+      "field": "raw_endpoint",
+      "instrumented": {
+        "tightening_applied": false,
+        "width_sum": 0.7253938990667779,
+        "x_hi": 1.8068810652919387,
+        "x_lo": 1.5145685087200402,
+        "x_width": 0.2923125565718985,
+        "y_hi": 1.8576284271295997,
+        "y_lo": 1.4245470846347204,
+        "y_width": 0.4330813424948794
+      },
+      "uninstrumented": {
+        "tightening_applied": false,
+        "width_sum": 0.7253938990667779,
+        "x_hi": 1.8068810652919387,
+        "x_lo": 1.5145685087200402,
+        "x_width": 0.2923125565718985,
+        "y_hi": 1.8576284271295997,
+        "y_lo": 1.4245470846347204,
+        "y_width": 0.4330813424948794
+      }
+    },
+    {
+      "equal": true,
+      "field": "range_leaf_evaluations",
+      "instrumented": 728,
+      "uninstrumented": 728
+    },
+    {
+      "equal": true,
+      "field": "range_subdivision_invocations",
+      "instrumented": 182,
+      "uninstrumented": 182
+    },
+    {
+      "equal": true,
+      "field": "segment_boundary_conversion_count",
+      "instrumented": 26,
+      "uninstrumented": 26
+    },
+    {
+      "equal": true,
+      "field": "sample_sanity_status",
+      "instrumented": "passed",
+      "uninstrumented": "passed"
+    },
+    {
+      "equal": true,
+      "field": "sample_sanity_max_violation",
+      "instrumented": 0.0,
+      "uninstrumented": 0.0
+    }
+  ],
+  "horizon": 0.2,
+  "numerically_equivalent": true,
+  "reason": "Trace/export overhead is observational and timing is not a numerical output.",
+  "runtime_intentionally_excluded": true,
+  "schema": "trace_instrumentation_equivalence_v1"
+}

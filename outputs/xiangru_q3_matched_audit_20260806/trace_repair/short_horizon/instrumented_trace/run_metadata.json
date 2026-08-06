@@ -1,0 +1,113 @@
+{
+  "counts": {
+    "attempts": 17,
+    "discarded_terms": 13,
+    "polynomial_terms": 1884,
+    "remainders": 232,
+    "transitions": 272
+  },
+  "file_sha256": {
+    "acceptance_attempts.csv": "a662f97673a1b5754880cef033a3623d05e550e803f00352aa0e6eacc0c89754",
+    "discarded_terms.jsonl": "ad56e87011e504fad3b4d315d358d930926e13cbd7ab4afed9f3900ce4ae1941",
+    "polynomial_terms.jsonl": "8757c3a58170331748dce9d5ec2a8d7de92054d5ad6f419815f808bac403520d",
+    "remainders.jsonl": "6efd470591cb8c243deeea5c2ce08cca31dec5e122876915ed11e3a5729ae56b",
+    "trace_schema.json": "e6eacff3898044220561839bdac951c791efea4cc8bf3e865b1a586c22629224",
+    "transitions.jsonl": "f98d98a43066baffd7bdd067e269bff7f9d78d51c2818fc77ae29595cfc660a6"
+  },
+  "observation_only": true,
+  "result_summary": {
+    "accepted_steps": 13,
+    "backend_lane": "hybrid_dense_core",
+    "branch": "codex/xiangru-q3-matched-baseline-audit-20260806",
+    "commit": "b4b35dff55d1f4eded74214a537ddad532ce541a",
+    "completed_horizon": 0.2,
+    "completed_requested_horizon": true,
+    "config_sha256": "24734d7a2d30ad49517e0ba99294212982ce3ffe89d6df107c9db9b0c1d6a944",
+    "contract_target_horizon": 10.0,
+    "cutoff": 1e-10,
+    "dense_range_contexts": [
+      "polynomial_truncation"
+    ],
+    "dense_range_max_depth": 1,
+    "dense_range_max_leaves": 4,
+    "dense_range_method": "adaptive_subdivision",
+    "dense_range_trigger": "proactive_depth1_on_named_contexts",
+    "dense_range_variable_orders": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        1,
+        0,
+        2
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ],
+    "device": "cpu",
+    "device_transfer_count": 0,
+    "diagnostic_factors": [],
+    "endpoint_repair_used": false,
+    "endpoint_tightening_used": false,
+    "failure_type": "",
+    "fallback_count": 0,
+    "full_tube": {
+      "x_hi": 1.8080472952148388,
+      "x_lo": 1.0990754609166948,
+      "y_hi": 2.4638767057176887,
+      "y_lo": 1.4104663489384344
+    },
+    "h_max": 0.1,
+    "h_min": 0.002,
+    "last_segment": {
+      "boundary_conversions": 2,
+      "index": 12,
+      "width_sum": 0.868285597539743,
+      "x_hi": 1.8080472952148388,
+      "x_lo": 1.4829075108257341,
+      "x_width": 0.3251397843891046,
+      "y_hi": 1.9536121620890727,
+      "y_lo": 1.4104663489384344,
+      "y_width": 0.5431458131506384
+    },
+    "message": "",
+    "range_leaf_evaluations": 728,
+    "range_subdivision_invocations": 182,
+    "raw_endpoint": {
+      "tightening_applied": false,
+      "width_sum": 0.7253938990667779,
+      "x_hi": 1.8068810652919387,
+      "x_lo": 1.5145685087200402,
+      "x_width": 0.2923125565718985,
+      "y_hi": 1.8576284271295997,
+      "y_lo": 1.4245470846347204,
+      "y_width": 0.4330813424948794
+    },
+    "rejected_attempts": 4,
+    "rejected_step_records": 0,
+    "requested_horizon": 0.2,
+    "requested_order": 4,
+    "reset_mode": "normalized_insertion",
+    "right_map_center_mode": "constant",
+    "right_map_range_mode": "standard",
+    "sample_sanity_max_violation": 0.0,
+    "sample_sanity_status": "passed",
+    "sample_sanity_violations": 0,
+    "segment_boundary_conversion_count": 26,
+    "single_factor_diagnostic": false,
+    "status": "completed",
+    "target_remainder_radius": 0.0001,
+    "tm_backend": "dense",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worktree_dirty": false
+  },
+  "run_id": "torch-authoritative-observation-20260806",
+  "schema": "vdp_torch_observation_run_v1",
+  "source_commit": "b4b35dff55d1f4eded74214a537ddad532ce541a",
+  "tool": "torch"
+}
