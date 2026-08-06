@@ -1,0 +1,40 @@
+{
+  "blocker": "No existing Torch lane runs the exact homogeneous-TORA plant, 5-state held-control representation, frozen NN controller, B48 initial partition, and 20 s closed-loop contract.",
+  "case": "B",
+  "formal_comparison_authorized": false,
+  "gates": [
+    {
+      "gate": 1,
+      "name": "initial set and coordinates",
+      "reason": "TORA 4D+B48+held control versus 2D VDP box; dynamics differ.",
+      "status": "FAIL"
+    },
+    {
+      "gate": 2,
+      "name": "order semantics",
+      "reason": "Retention predicate agrees, but dense/sparse basis, K2/K3 and remainder algorithms do not.",
+      "status": "FAIL"
+    },
+    {
+      "gate": 3,
+      "name": "one step",
+      "reason": "No identical pre-state, dynamics, h and controller contract after Gate 1 failure.",
+      "status": "NOT_RUN"
+    },
+    {
+      "gate": 4,
+      "name": "short horizon",
+      "reason": "Formal cross-tool run prohibited; Torch VDP trace repair smoke is diagnostic only.",
+      "status": "NOT_RUN"
+    },
+    {
+      "gate": 5,
+      "name": "common time grid",
+      "reason": "No common model/output contract to align.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "runtime_ranking": "N/A",
+  "schema": "q3_matched_gate_status_v1",
+  "tightness": "N/A"
+}

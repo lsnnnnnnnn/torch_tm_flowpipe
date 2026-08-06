@@ -1,0 +1,23 @@
+{
+  "comparison": "N/A: GPU closed-loop runtime is not ranked against CPU plant-only runtime.",
+  "formal_matched_runtime_authorized": false,
+  "native_xiangru_fresh": {
+    "compile_or_graph_construction_seconds": 141.06641076132655,
+    "device": "cuda",
+    "dtype": "float64",
+    "environment_setup_seconds": "unavailable",
+    "model_checkpoint_loading_seconds": "unavailable",
+    "nn_bound_and_controller_update_seconds": 1.3335942178964615,
+    "plant_propagation_seconds": 1.0712888417765498,
+    "scope": "native closed-loop implementation runtime; compile/warm is separately excluded",
+    "serialization_io_seconds": "unavailable",
+    "solver_seconds_excluding_validation": 2.689615928567946,
+    "total_end_to_end_seconds_including_validation": 4.613236092031002,
+    "validation_scheduler_seconds": 1.923620163463056,
+    "warm_up_seconds": "included_with_compile_graph_construction"
+  },
+  "process_wall_seconds_cold": 151.02014847565442,
+  "repeat_policy": "One required exact fresh reproduction was run. Its native timing is evidence, not a formal repeated performance benchmark.",
+  "resource_usage_file": "outputs/xiangru_q3_matched_audit_20260806/xiangru_reproduction/fresh_q3_b48_t20/resource_usage.txt",
+  "schema": "q3_runtime_classification_v1"
+}
