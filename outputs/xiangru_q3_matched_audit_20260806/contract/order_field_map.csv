@@ -1,0 +1,6 @@
+tool,field,value,source_file,source_line,comparison
+Xiangru,support,"complete total degree <=3, six variables, 84 slots",experiments/remainder_ablation/generic_fixed_basis.py,94-108,retention predicate agrees; basis arity/algorithm differ
+Xiangru,Picard,K2 polynomial + 10 DR-RP,experiments/remainder_ablation/tensor_fixed_basis.py,838-928,not Torch default order-3 K3
+Torch,support,sparse total degree <= order,src/torch_tm_flowpipe/polynomial.py,235-250,predicate agrees
+Torch,Picard,iterations defaults to order,src/torch_tm_flowpipe/flowpipe.py,1783-1805,order-3 defaults K3
+Flowstar,order,insertion/truncation order and order iterations,flowstar-toolbox/Continuous.cpp,"2781,2843,2920-2940",independent VDP reference; no Q3 TORA match

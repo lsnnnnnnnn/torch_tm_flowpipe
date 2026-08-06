@@ -1,0 +1,23 @@
+{
+  "adapter_added": false,
+  "candidates": [
+    {
+      "candidate": "Xiangru homogeneous-TORA B48 Q3",
+      "decision": "selected_native_only",
+      "reason": "Only completed existing Q3 baseline with frozen raw result."
+    },
+    {
+      "candidate": "Torch Van der Pol",
+      "decision": "rejected_formal_match",
+      "reason": "Different plant, state, controller, initial set, horizon, order lane, step policy and workload."
+    },
+    {
+      "candidate": "stock Flowstar Van der Pol",
+      "decision": "independent_reference",
+      "reason": "Matches the Torch VDP family but not Xiangru TORA; no three-way Q3 contract."
+    }
+  ],
+  "formal_cross_tool_selection": null,
+  "schema": "q3_benchmark_selection_v1",
+  "selected_native_reproduction": "Xiangru homogeneous-TORA B48 complete-Q3 T20"
+}

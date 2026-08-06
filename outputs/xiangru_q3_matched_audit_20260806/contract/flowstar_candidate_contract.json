@@ -1,0 +1,215 @@
+{
+  "fields": {
+    "controller": {
+      "evidence": "Stock source directly declares controller.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "23-26",
+      "value": "none"
+    },
+    "coordinate_transform": {
+      "evidence": "Stock source directly declares coordinate_transform.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "42-53",
+      "value": "Flowstar preconditioned Taylor-model flowpipe"
+    },
+    "cutoff_truncation": {
+      "evidence": "Stock source directly declares cutoff_truncation.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "32-35",
+      "value": {
+        "cutoff": 1e-10,
+        "order": 4
+      }
+    },
+    "device_threads": {
+      "evidence": "Stock source directly declares device_threads.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "9-11",
+      "value": {
+        "device": "CPU",
+        "dtype": "double",
+        "threads": "stock default"
+      }
+    },
+    "dynamics": {
+      "evidence": "Stock source directly declares dynamics.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "25-26",
+      "value": [
+        "x'=y",
+        "y'=(1-x^2)y-x",
+        "t'=1"
+      ]
+    },
+    "included_stages": {
+      "evidence": "Stock source directly declares included_stages.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "64-93",
+      "value": [
+        "plant propagation",
+        "validation",
+        "symbolic remainder",
+        "CPU clock timing"
+      ]
+    },
+    "initial_set": {
+      "evidence": "Stock source directly declares initial_set.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "42-53",
+      "value": [
+        [
+          1.1,
+          1.4
+        ],
+        [
+          2.35,
+          2.45
+        ]
+      ]
+    },
+    "interval_backend": {
+      "evidence": "Stock source directly declares interval_backend.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "9-11",
+      "value": {
+        "backend": "Flowstar stock interval",
+        "precision": "double default"
+      }
+    },
+    "local_time_interval": {
+      "evidence": "Stock source directly declares local_time_interval.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "23-26",
+      "value": "[0,h] per accepted flowpipe"
+    },
+    "order_semantics": {
+      "evidence": "Stock source directly declares order_semantics.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "33-35",
+      "value": {
+        "order": 4,
+        "polynomial_picard_loops": 4,
+        "total-order ctrunc": true
+      }
+    },
+    "output_semantics": {
+      "evidence": "Stock source directly declares output_semantics.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "114-129",
+      "value": {
+        "plot": "transformed Taylor models",
+        "tube": "flowpipe"
+      }
+    },
+    "picard_validation": {
+      "evidence": "Stock source directly declares picard_validation.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "32-35",
+      "value": "order polynomial iterations, ctrunc Picard, subset validation"
+    },
+    "plant_parameters": {
+      "evidence": "Stock source directly declares plant_parameters.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "25-26",
+      "value": {
+        "mu": 1.0
+      }
+    },
+    "property_set": {
+      "evidence": "Stock source directly declares property_set.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "56-58",
+      "value": "y<=2.75"
+    },
+    "remainder_policy": {
+      "evidence": "Stock source directly declares remainder_policy.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "67-74",
+      "value": {
+        "candidate": 0.0001,
+        "symbolic_queue": 100
+      }
+    },
+    "state_order": {
+      "evidence": "Stock source directly declares state_order.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "18-26",
+      "value": [
+        "x",
+        "y",
+        "t"
+      ]
+    },
+    "step_policy": {
+      "evidence": "Stock source directly declares step_policy.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "32-35",
+      "value": {
+        "h_max": 0.1,
+        "h_min": 0.002,
+        "kind": "adaptive"
+      }
+    },
+    "success_predicate": {
+      "evidence": "Stock source directly declares success_predicate.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "96-111",
+      "value": "result.isCompleted plus safety classification"
+    },
+    "target_horizon": {
+      "evidence": "Stock source directly declares target_horizon.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "74-89",
+      "value": 10.0
+    },
+    "transition_lifecycle": {
+      "evidence": "Stock source directly declares transition_lifecycle.",
+      "matched": false,
+      "reason": "Stock Flowstar candidate is an independent Van der Pol reference, not the Xiangru TORA benchmark.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "67-89",
+      "value": "insert_ctrunc_normal and symbolic J/Phi_L carry"
+    }
+  },
+  "role": "independent reference",
+  "schema": "q3_benchmark_contract_v1",
+  "tool": "flowstar"
+}

@@ -1,0 +1,215 @@
+{
+  "fields": {
+    "controller": {
+      "evidence": "Loaded contract contains no NN controller/checkpoint.",
+      "matched": false,
+      "reason": "Xiangru baseline contains the exact TORA NN and periodic control update.",
+      "source_file": "experiments/run_vdp_dense_backend.py",
+      "source_line": "48-78",
+      "value": "none (plant-only)"
+    },
+    "coordinate_transform": {
+      "evidence": "Current lifecycle is a three-variable sparse VDP map.",
+      "matched": false,
+      "reason": "Different state dimension and physical coordinates.",
+      "source_file": "src/torch_tm_flowpipe/flowpipe.py",
+      "source_line": "normalized insertion path",
+      "value": "normalized insertion with local time plus two uncertainty variables"
+    },
+    "cutoff_truncation": {
+      "evidence": "Sparse truncation/cutoff operation.",
+      "matched": false,
+      "reason": "Different cutoff and fixed-support overflow lifecycle.",
+      "source_file": "src/torch_tm_flowpipe/polynomial.py",
+      "source_line": "235-256",
+      "value": {
+        "cutoff": 1e-10,
+        "truncate": "total degree <= order with dropped range added to interval"
+      }
+    },
+    "device_threads": {
+      "evidence": "Candidate device is CPU.",
+      "matched": false,
+      "reason": "Device and end-to-end stages differ.",
+      "source_file": "experiments/run_vdp_dense_backend.py",
+      "source_line": "58-71",
+      "value": {
+        "device": "CPU",
+        "dtype": "float64",
+        "threads": "captured, not matched to GPU"
+      }
+    },
+    "dynamics": {
+      "evidence": "The current candidate uses the two-state polynomial Van der Pol RHS.",
+      "matched": false,
+      "reason": "Available Torch candidate is plant-only Van der Pol, not Xiangru closed-loop TORA.",
+      "source_file": "src/torch_tm_flowpipe/ode_examples.py",
+      "source_line": "21-23",
+      "value": [
+        "x'=y",
+        "y'=(1-x^2)y-x"
+      ]
+    },
+    "included_stages": {
+      "evidence": "No NN bound or controller update.",
+      "matched": false,
+      "reason": "Plant-only runtime cannot be ranked against Xiangru closed-loop total.",
+      "source_file": "experiments/run_vdp_dense_backend.py",
+      "source_line": "234-270",
+      "value": [
+        "plant propagation",
+        "validation/scheduler",
+        "serialization optional"
+      ]
+    },
+    "initial_set": {
+      "evidence": "Authoritative VDP box.",
+      "matched": false,
+      "reason": "Different dimension and values from TORA B48 initial set.",
+      "source_file": "experiments/three_way_comparison_repair/benchmark_spec.yaml",
+      "source_line": "systems.van_der_pol.initial_box",
+      "value": [
+        [
+          1.1,
+          1.4
+        ],
+        [
+          2.35,
+          2.45
+        ]
+      ]
+    },
+    "interval_backend": {
+      "evidence": "Candidate contract fixes float64 CPU.",
+      "matched": false,
+      "reason": "Xiangru reproduction is native CUDA closed-loop.",
+      "source_file": "experiments/run_vdp_dense_backend.py",
+      "source_line": "58-71",
+      "value": {
+        "backend": "torch.float64 interval arithmetic",
+        "device": "CPU for VDP candidate"
+      }
+    },
+    "local_time_interval": {
+      "evidence": "Local time is integrated and truncated per step.",
+      "matched": false,
+      "reason": "Step sizes and model differ from fixed h=0.1 TORA.",
+      "source_file": "src/torch_tm_flowpipe/flowpipe.py",
+      "source_line": "1783-1805",
+      "value": "[0,h] per adaptive accepted segment"
+    },
+    "order_semantics": {
+      "evidence": "Retention predicate matches at order 3, but current candidate is order 4 and algorithm/basis differ.",
+      "matched": false,
+      "reason": "Same digit alone is insufficient; full algorithmic order semantics do not match.",
+      "source_file": "src/torch_tm_flowpipe/polynomial.py",
+      "source_line": "235-250",
+      "value": {
+        "candidate_order": 4,
+        "order3_default_polynomial_picard_rounds": 3,
+        "order3_predicate": "sparse total degree <=3"
+      }
+    },
+    "output_semantics": {
+      "evidence": "Endpoint and tube remain distinct.",
+      "matched": false,
+      "reason": "No common dynamics/time interval on which to compare them.",
+      "source_file": "src/torch_tm_flowpipe/audit_trace.py",
+      "source_line": "transition trace schema v2",
+      "value": {
+        "endpoint": "tmv_right/raw endpoint",
+        "tube": "accepted segment TM over [0,h]"
+      }
+    },
+    "picard_validation": {
+      "evidence": "Order-3 would use K3 by default.",
+      "matched": false,
+      "reason": "Xiangru Q3 uses K2 plus ten componentwise DR-RP rounds.",
+      "source_file": "src/torch_tm_flowpipe/flowpipe.py",
+      "source_line": "1783-1805",
+      "value": "polynomial iterations default to order; interval self-map validation and adaptive rejection"
+    },
+    "plant_parameters": {
+      "evidence": "Van der Pol parameter mu defaults to one.",
+      "matched": false,
+      "reason": "No mapping to TORA sine gain/control offset.",
+      "source_file": "src/torch_tm_flowpipe/ode_examples.py",
+      "source_line": "21-23",
+      "value": {
+        "mu": 1.0
+      }
+    },
+    "property_set": {
+      "evidence": "Independent VDP property is not abs(TORA states)<=2.",
+      "matched": false,
+      "reason": "Properties and models differ.",
+      "source_file": "/srv/local/shengenli/flowstar/benchmarks/continuous/vanderpol/vanderpol.cpp",
+      "source_line": "56-58",
+      "value": "VDP y<=2.75 in stock reference; Torch candidate primarily propagates enclosures"
+    },
+    "remainder_policy": {
+      "evidence": "VDP candidate remainder differs.",
+      "matched": false,
+      "reason": "Not Xiangru seed 0.01/10-round DR-RP.",
+      "source_file": "experiments/three_way_comparison_repair/benchmark_spec.yaml",
+      "source_line": "flowstar.original_vanderpol.candidate_remainder",
+      "value": {
+        "initial_radius": 0.0001,
+        "validation": "raw-remainder compatibility"
+      }
+    },
+    "state_order": {
+      "evidence": "Two states rather than TORA x1..x4 plus held u1.",
+      "matched": false,
+      "reason": "Available Torch candidate is plant-only Van der Pol, not Xiangru closed-loop TORA.",
+      "source_file": "experiments/three_way_comparison_repair/benchmark_spec.yaml",
+      "source_line": "systems.van_der_pol.state_names",
+      "value": [
+        "x",
+        "y"
+      ]
+    },
+    "step_policy": {
+      "evidence": "Torch VDP compatibility lane follows adaptive policy.",
+      "matched": false,
+      "reason": "Xiangru baseline is fixed h=0.1 without runtime branching.",
+      "source_file": "experiments/three_way_comparison_repair/benchmark_spec.yaml",
+      "source_line": "flowstar.original_vanderpol.step_policy",
+      "value": {
+        "growth": 1.1,
+        "h_max": 0.1,
+        "h_min": 0.002,
+        "initial_h": 0.1,
+        "kind": "adaptive",
+        "reject": "halve"
+      }
+    },
+    "success_predicate": {
+      "evidence": "Completion requires current_time >= requested_horizon.",
+      "matched": false,
+      "reason": "Not the 48-leaf TORA full-tube certificate.",
+      "source_file": "experiments/run_vdp_dense_backend.py",
+      "source_line": "541-558",
+      "value": "validated adaptive VDP flowpipe reaches requested horizon; failed horizon retained"
+    },
+    "target_horizon": {
+      "evidence": "VDP target is 10 seconds.",
+      "matched": false,
+      "reason": "Xiangru Q3 target is 20 seconds.",
+      "source_file": "experiments/three_way_comparison_repair/benchmark_spec.yaml",
+      "source_line": "flowstar.original_vanderpol.horizon",
+      "value": 10.0
+    },
+    "transition_lifecycle": {
+      "evidence": "Actual transition objects are now captured by identity.",
+      "matched": false,
+      "reason": "Lifecycle is repaired but belongs to a different VDP algorithm/model.",
+      "source_file": "src/torch_tm_flowpipe/flowpipe.py",
+      "source_line": "FlowstarTransitionLifecycle",
+      "value": "right map -> insertion input/output -> normalized reset input/output"
+    }
+  },
+  "role": "available candidate",
+  "schema": "q3_benchmark_contract_v1",
+  "tool": "torch_tm_flowpipe"
+}

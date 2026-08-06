@@ -1,0 +1,250 @@
+{
+  "fields": {
+    "controller": {
+      "evidence": "Controller boundary is reprojected and bounded every ten 0.1 s segments.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py",
+      "source_line": "407-451,1080-1090",
+      "value": {
+        "bounder": "auto_LiRPA same-slope outward",
+        "kind": "homogeneous ReLU TORA NN, exact native flat MLP reconstruction of ONNX Conv/ReLU",
+        "source_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+        "transformed_sha256": "bb80479ce51b6f2558ac4a47cae2831ff3f49275ffaf7b1b874adf3c3b14703e",
+        "update_period": 1.0
+      }
+    },
+    "coordinate_transform": {
+      "evidence": "B48 partition metadata passes ordering, hull, adjacency and containment checks.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh raw JSON",
+      "source_line": "controls.grid_splits",
+      "value": "48 uniform Cartesian leaves [8,6,1,1]; normalized local variables with local time first"
+    },
+    "cutoff_truncation": {
+      "evidence": "Overflow route values are accumulated as intervals.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "149-162,605-648",
+      "value": "fixed support; every absent product/integration route is conservatively intervalized"
+    },
+    "device_threads": {
+      "evidence": "Fresh run used CUDA_VISIBLE_DEVICES=0.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh_q3_b48_t20/environment.json",
+      "source_line": "cuda_visible_devices/thread_environment",
+      "value": {
+        "device": "CUDA GPU 0 (V100 16GB)",
+        "dtype": "float64",
+        "threads": "captured environment; not forced"
+      }
+    },
+    "dynamics": {
+      "evidence": "Polynomial and TM RHS concatenate these five derivatives.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "745-836",
+      "value": [
+        "x1'=x2",
+        "x2'=-x1+0.1*sin(x3)",
+        "x3'=x4",
+        "x4'=u1-10",
+        "u1'=0 between controller updates"
+      ]
+    },
+    "included_stages": {
+      "evidence": "Measured timing dictionary exposes controller, dynamics, validation, compile/warm and totals.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py",
+      "source_line": "698-715",
+      "value": [
+        "initial NN bound",
+        "controller updates",
+        "plant propagation",
+        "validation",
+        "scheduler",
+        "compile/warm separately excluded from solver time"
+      ]
+    },
+    "initial_set": {
+      "evidence": "Frozen configuration SHA256 13b28a...",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh_q3_b48_t20/config_resolved.json",
+      "source_line": "initial_set",
+      "value": [
+        [
+          0.6,
+          0.7
+        ],
+        [
+          -0.7,
+          -0.6
+        ],
+        [
+          -0.4,
+          -0.3
+        ],
+        [
+          0.5,
+          0.6
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "interval_backend": {
+      "evidence": "CPU/CUDA replay maximum error <=1.776e-15 and validity passes.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh raw JSON",
+      "source_line": "controls",
+      "value": {
+        "backend": "PyTorch tensor interval arithmetic with outward controller composition",
+        "dtype": "float64"
+      }
+    },
+    "local_time_interval": {
+      "evidence": "Integration increments exponent slot 0; configured step is 0.1.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "149-162",
+      "value": [
+        0.0,
+        0.1
+      ]
+    },
+    "order_semantics": {
+      "evidence": "Direct monomial test and support count pass.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/generic_fixed_basis.py",
+      "source_line": "94-108",
+      "value": {
+        "polynomial_picard_rounds": 2,
+        "q": 3,
+        "remainder_rounds": 10,
+        "slots": 84,
+        "support": "complete total degree <=3",
+        "variables": 6
+      }
+    },
+    "output_semantics": {
+      "evidence": "Tube and endpoint are evaluated separately and retained as separate fields.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "928-940",
+      "value": {
+        "endpoint": "local time fixed at h",
+        "property_uses": "full tube",
+        "tube": "local time over [0,h]"
+      }
+    },
+    "picard_validation": {
+      "evidence": "Code constructs first and second iterates, then performs subseteq_elem updates.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "838-928",
+      "value": "K2 polynomial Picard, then seeded DR-RP componentwise self-map/shrink for 10 rounds"
+    },
+    "plant_parameters": {
+      "evidence": "Constants appear in x2' and x4'.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "754-760",
+      "value": {
+        "control_offset": -10.0,
+        "sine_gain": 0.1
+      }
+    },
+    "property_set": {
+      "evidence": "Margins are 2.0 - abs(tube/endpoint); certificate requires nonnegative tube margins.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_closed_loop.py",
+      "source_line": "521-522",
+      "value": "full tube and endpoint satisfy abs(x_i)<=2 for i=1..4"
+    },
+    "remainder_policy": {
+      "evidence": "Seeded interval remainder and componentwise shrink rounds.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/tensor_fixed_basis.py",
+      "source_line": "860-927",
+      "value": {
+        "failure_retry_seed": 0.1,
+        "initial_seed": 0.01,
+        "range": "natural",
+        "rounds": 10,
+        "stop_ratio": 0.95,
+        "symbolic_capacity": 200
+      }
+    },
+    "state_order": {
+      "evidence": "state_dim=4 and action_dim=1; u1 is held as a fifth state.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh_q3_b48_t20/config_resolved.json",
+      "source_line": "variable_names",
+      "value": [
+        "x1",
+        "x2",
+        "x3",
+        "x4",
+        "u1"
+      ]
+    },
+    "step_policy": {
+      "evidence": "No runtime step branching; 200 segments.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh raw JSON",
+      "source_line": "controls.step_size/controller_period",
+      "value": {
+        "controller_period_segments": 10,
+        "h": 0.1,
+        "h_max": "not_applicable",
+        "h_min": "not_applicable",
+        "kind": "fixed"
+      }
+    },
+    "success_predicate": {
+      "evidence": "Fresh cell is VERIFIED with first_failure=null and no retries.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py",
+      "source_line": "470-478,688-715",
+      "value": "all 48 leaves finite, DR-RP certified, full-tube property holds, 200 segments completed to t=20"
+    },
+    "target_horizon": {
+      "evidence": "200 fixed segments at h=0.1 reach 20.0.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "fresh raw JSON",
+      "source_line": "cells.b48_static.complete_q3.certified_horizon",
+      "value": 20.0
+    },
+    "transition_lifecycle": {
+      "evidence": "Control is refreshed before the next segment and step_closed_loop consumes pre_state.",
+      "matched": true,
+      "reason": "Reference baseline field.",
+      "source_file": "experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py",
+      "source_line": "407-462",
+      "value": "closed-loop boundary projection; controller imposed every 10 segments; fixed-basis current state carried"
+    }
+  },
+  "role": "reference baseline",
+  "schema": "q3_benchmark_contract_v1",
+  "tool": "xiangru"
+}

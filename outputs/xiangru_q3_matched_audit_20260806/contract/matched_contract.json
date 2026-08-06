@@ -1,0 +1,134 @@
+{
+  "blockers": [
+    {
+      "field": "dynamics",
+      "matched": false,
+      "reason": "Available Torch candidate is plant-only Van der Pol, not Xiangru closed-loop TORA.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "state_order",
+      "matched": false,
+      "reason": "Available Torch candidate is plant-only Van der Pol, not Xiangru closed-loop TORA.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "coordinate_transform",
+      "matched": false,
+      "reason": "Different state dimension and physical coordinates.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "plant_parameters",
+      "matched": false,
+      "reason": "No mapping to TORA sine gain/control offset.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "controller",
+      "matched": false,
+      "reason": "Xiangru baseline contains the exact TORA NN and periodic control update.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "initial_set",
+      "matched": false,
+      "reason": "Different dimension and values from TORA B48 initial set.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "property_set",
+      "matched": false,
+      "reason": "Properties and models differ.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "target_horizon",
+      "matched": false,
+      "reason": "Xiangru Q3 target is 20 seconds.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "order_semantics",
+      "matched": false,
+      "reason": "Same digit alone is insufficient; full algorithmic order semantics do not match.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "local_time_interval",
+      "matched": false,
+      "reason": "Step sizes and model differ from fixed h=0.1 TORA.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "step_policy",
+      "matched": false,
+      "reason": "Xiangru baseline is fixed h=0.1 without runtime branching.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "remainder_policy",
+      "matched": false,
+      "reason": "Not Xiangru seed 0.01/10-round DR-RP.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "cutoff_truncation",
+      "matched": false,
+      "reason": "Different cutoff and fixed-support overflow lifecycle.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "picard_validation",
+      "matched": false,
+      "reason": "Xiangru Q3 uses K2 plus ten componentwise DR-RP rounds.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "transition_lifecycle",
+      "matched": false,
+      "reason": "Lifecycle is repaired but belongs to a different VDP algorithm/model.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "interval_backend",
+      "matched": false,
+      "reason": "Xiangru reproduction is native CUDA closed-loop.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "output_semantics",
+      "matched": false,
+      "reason": "No common dynamics/time interval on which to compare them.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "included_stages",
+      "matched": false,
+      "reason": "Plant-only runtime cannot be ranked against Xiangru closed-loop total.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "device_threads",
+      "matched": false,
+      "reason": "Device and end-to-end stages differ.",
+      "tool": "torch_tm_flowpipe"
+    },
+    {
+      "field": "success_predicate",
+      "matched": false,
+      "reason": "Not the 48-leaf TORA full-tube certificate.",
+      "tool": "torch_tm_flowpipe"
+    }
+  ],
+  "candidate": "torch_tm_flowpipe",
+  "case": "B",
+  "first_failed_gate": "Gate 1: initial set, dimension, state order, coordinates, and dynamics",
+  "flowstar_role": "independent stock Van der Pol reference; excluded from formal three-way ranking",
+  "formal_comparison_authorized": false,
+  "full_algorithmic_order_semantics_equivalent": false,
+  "reference": "xiangru",
+  "retention_predicate_equivalent": true,
+  "schema": "q3_matched_contract_decision_v1",
+  "unique_decisive_blocker": "No existing Torch lane runs the exact homogeneous-TORA plant, 5-state held-control representation, frozen NN controller, B48 initial partition, and 20 s closed-loop contract."
+}

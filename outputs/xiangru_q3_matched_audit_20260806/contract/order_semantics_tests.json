@@ -1,0 +1,126 @@
+{
+  "algorithmic_blockers": [
+    "Xiangru complete-Q3 uses a dense fixed six-variable support; the current Torch VDP lane uses a sparse three-variable representation.",
+    "Xiangru performs exactly two polynomial Picard iterations plus ten DR-RP remainder rounds; Torch defaults polynomial Picard iterations to order (three at order 3).",
+    "The available models are different (closed-loop TORA versus plant-only Van der Pol)."
+  ],
+  "degree": 3,
+  "full_algorithmic_order_semantics_equivalent": false,
+  "monomials": [
+    {
+      "exponent_local_time_x": [
+        0,
+        0
+      ],
+      "monomial": "1",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        0,
+        1
+      ],
+      "monomial": "x",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        1,
+        0
+      ],
+      "monomial": "t",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        0,
+        2
+      ],
+      "monomial": "x^2",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        1,
+        1
+      ],
+      "monomial": "xt",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        2,
+        0
+      ],
+      "monomial": "t^2",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        0,
+        3
+      ],
+      "monomial": "x^3",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        1,
+        2
+      ],
+      "monomial": "x^2t",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        2,
+        1
+      ],
+      "monomial": "xt^2",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        3,
+        0
+      ],
+      "monomial": "t^3",
+      "predicate_equal": true,
+      "torch_order3_retained": true,
+      "xiangru_complete_q3_retained": true
+    },
+    {
+      "exponent_local_time_x": [
+        0,
+        4
+      ],
+      "monomial": "x^4",
+      "predicate_equal": true,
+      "torch_order3_retained": false,
+      "xiangru_complete_q3_retained": false
+    }
+  ],
+  "retention_predicate_equivalent": true,
+  "schema": "q3_order_semantics_tests_v1",
+  "xiangru_support_size_expected": 84,
+  "xiangru_support_size_observed": 84,
+  "xiangru_variable_count": 6
+}
