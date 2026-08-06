@@ -1,0 +1,138 @@
+{
+  "all_contain_high_precision_grid": true,
+  "cases": [
+    {
+      "contains_grid": true,
+      "high_precision_grid_sanity": [
+        -0.38941834230865047,
+        -0.29552020666133955
+      ],
+      "input": {
+        "affine_radius": 0.05,
+        "center": -0.35,
+        "physical_interval": [
+          -0.39999999999999997,
+          -0.3
+        ],
+        "remainder": [
+          0.0,
+          0.0
+        ]
+      },
+      "order": 2,
+      "output_enclosure": [
+        -0.38988727643115795,
+        -0.2954797162204254
+      ],
+      "remainder_ledger_categories": [
+        "composition_overflow",
+        "initial_remainder",
+        "poly_times_remainder",
+        "polynomial_truncation",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "roundoff_safeguard"
+      ]
+    },
+    {
+      "contains_grid": true,
+      "high_precision_grid_sanity": [
+        -0.3894183423086505,
+        0.0
+      ],
+      "input": {
+        "affine_radius": 0.2,
+        "center": -0.2,
+        "physical_interval": [
+          -0.4,
+          0.0
+        ],
+        "remainder": [
+          0.0,
+          0.0
+        ]
+      },
+      "order": 2,
+      "output_enclosure": [
+        -0.396015979696647,
+        0.0026507047224255775
+      ],
+      "remainder_ledger_categories": [
+        "composition_overflow",
+        "initial_remainder",
+        "poly_times_remainder",
+        "polynomial_truncation",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "roundoff_safeguard"
+      ]
+    },
+    {
+      "contains_grid": true,
+      "high_precision_grid_sanity": [
+        0.2955202066613396,
+        0.479425538604203
+      ],
+      "input": {
+        "affine_radius": 0.1,
+        "center": 0.4,
+        "physical_interval": [
+          0.30000000000000004,
+          0.5
+        ],
+        "remainder": [
+          0.0,
+          0.0
+        ]
+      },
+      "order": 2,
+      "output_enclosure": [
+        0.29519848453014697,
+        0.4816911083756108
+      ],
+      "remainder_ledger_categories": [
+        "composition_overflow",
+        "initial_remainder",
+        "poly_times_remainder",
+        "polynomial_truncation",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "roundoff_safeguard"
+      ]
+    },
+    {
+      "contains_grid": true,
+      "high_precision_grid_sanity": [
+        0.9489846193555862,
+        0.9999999999932537
+      ],
+      "input": {
+        "affine_radius": 0.25,
+        "center": 1.5,
+        "physical_interval": [
+          1.25,
+          1.75
+        ],
+        "remainder": [
+          0.0,
+          0.0
+        ]
+      },
+      "order": 2,
+      "output_enclosure": [
+        0.9460348011890748,
+        1.0177834536876584
+      ],
+      "remainder_ledger_categories": [
+        "composition_overflow",
+        "initial_remainder",
+        "poly_times_remainder",
+        "polynomial_truncation",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "roundoff_safeguard"
+      ]
+    }
+  ],
+  "schema": "sine_tm_tora_domain_cases_v1"
+}

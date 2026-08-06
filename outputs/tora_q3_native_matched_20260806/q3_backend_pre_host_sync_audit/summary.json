@@ -1,0 +1,113 @@
+{
+  "basis_and_route_construction_seconds": 0.2862945105880499,
+  "basis_fingerprint": "fa135259d41a68a73a6fc609880c4fd466bf2d53b2dddeba30298a484fa5e44d",
+  "batch": 48,
+  "cold_process_through_first_step_seconds": 2.90397953055799,
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.1",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "seed": 0,
+    "torch": "2.5.1+cu121",
+    "torch_num_threads": 1
+  },
+  "fallbacks": {
+    "cpu_fallback_inside_formal_math_count": 0,
+    "explicit_profiled_aten_to_events": 17745,
+    "range_fallback_count": 0,
+    "range_method": "natural",
+    "sparse_fallback_count": 0
+  },
+  "first_call_full_step_seconds": 2.4800995346158743,
+  "host_device_transfer": {
+    "explicit_benchmark_transfer_bytes_per_repeat": 161280,
+    "formal_math_transfer_count": 0,
+    "serialization_transfers_excluded_from_math_timings": true
+  },
+  "operations": {
+    "affine_parameterization_composition": {
+      "iqr_seconds": 0.00020558503456413746,
+      "max_seconds": 0.14326882176101208,
+      "mean_seconds": 0.13691900968551635,
+      "median_seconds": 0.13617796637117863,
+      "min_seconds": 0.1356834815815091,
+      "repeats": 10
+    },
+    "endpoint_substitution_and_evaluation": {
+      "iqr_seconds": 0.0002735094167292118,
+      "max_seconds": 0.025826554745435715,
+      "mean_seconds": 0.025083030853420497,
+      "median_seconds": 0.02493508206680417,
+      "min_seconds": 0.024812227115035057,
+      "repeats": 10
+    },
+    "explicit_device_to_host_coefficient_transfer": {
+      "iqr_seconds": 3.4172553569078445e-06,
+      "max_seconds": 0.00010536983609199524,
+      "mean_seconds": 8.572647348046303e-05,
+      "median_seconds": 8.379248902201653e-05,
+      "min_seconds": 8.109398186206818e-05,
+      "repeats": 10
+    },
+    "full_tube_evaluation": {
+      "iqr_seconds": 0.00028542964719235897,
+      "max_seconds": 0.01607942022383213,
+      "mean_seconds": 0.015519655775278807,
+      "median_seconds": 0.015533401630818844,
+      "min_seconds": 0.01508180983364582,
+      "repeats": 10
+    },
+    "steady_full_step_including_remainder_validation": {
+      "iqr_seconds": 0.006966024404391646,
+      "max_seconds": 2.4086811058223248,
+      "mean_seconds": 2.396471473388374,
+      "median_seconds": 2.395434686448425,
+      "min_seconds": 2.3886363487690687,
+      "repeats": 10
+    },
+    "steady_k2_polynomial_picard": {
+      "iqr_seconds": 0.00367001723498106,
+      "max_seconds": 0.3673931835219264,
+      "mean_seconds": 0.35934510119259355,
+      "median_seconds": 0.3587277536280453,
+      "min_seconds": 0.35542157385498285,
+      "repeats": 10
+    },
+    "steady_local_time_integration": {
+      "iqr_seconds": 0.0002928327303379774,
+      "max_seconds": 0.018453514203429222,
+      "mean_seconds": 0.01790617024526,
+      "median_seconds": 0.0179389794357121,
+      "min_seconds": 0.017491312697529793,
+      "repeats": 10
+    },
+    "steady_polynomial_rhs": {
+      "iqr_seconds": 0.004777952563017607,
+      "max_seconds": 0.16678176075220108,
+      "mean_seconds": 0.16021877638995646,
+      "median_seconds": 0.15856448514387012,
+      "min_seconds": 0.1568975979462266,
+      "repeats": 10
+    }
+  },
+  "peak_cuda_memory_bytes": 927302656,
+  "profiler": {
+    "aten_to_event_count": 17745,
+    "cpu_event_count": 1572248,
+    "cuda_event_count": 123968,
+    "reason": "",
+    "status": "measured"
+  },
+  "routes": {
+    "integration_kept": 28,
+    "integration_overflow": 56,
+    "multiplication_kept": 455,
+    "multiplication_overflow": 6601
+  },
+  "schema": "tora_q3_backend_microbenchmark_v1",
+  "state_dimension": 5,
+  "term_count": 84,
+  "variable_dimension": 6
+}

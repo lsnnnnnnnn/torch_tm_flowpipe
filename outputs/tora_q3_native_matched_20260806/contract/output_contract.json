@@ -1,0 +1,37 @@
+{
+  "alignment_key": [
+    "lane",
+    "segment_index",
+    "exact_physical_time",
+    "controller_period",
+    "leaf_id",
+    "state",
+    "enclosure_kind"
+  ],
+  "enclosure_kinds": {
+    "endpoint": "exact substitution at t=segment_index*0.1",
+    "tube": "full segment interval [(segment_index-1)*0.1,segment_index*0.1]"
+  },
+  "interpolation": "prohibited",
+  "levels": [
+    "per_leaf",
+    "b48_hull"
+  ],
+  "manually_transcribed": true,
+  "required_status": [
+    "validation_seed",
+    "validation_image",
+    "validation_margin",
+    "accepted_or_rejected",
+    "property_margin"
+  ],
+  "schema": "tora_q3_output_contract_v1",
+  "states": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "u1"
+  ],
+  "zero_width_ratio": "N/A"
+}

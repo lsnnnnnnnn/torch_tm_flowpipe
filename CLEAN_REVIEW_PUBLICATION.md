@@ -10,7 +10,9 @@ branch.
 - Source snapshot: `c49d74bbf48d1004f7f3818174e7f40b6200b142` plus the reviewed dirty-worktree changes
 - Sensitive controller/checkpoint bytes: excluded
 - Raw private traces, logs, paths, and observer patch: excluded
-- Publication status: bootstrap pending content verification
+- Bootstrap root commit: pushed successfully
+- Reviewed content verification: editable install PASS; `52 passed, 14 skipped`
+- Publication status: reviewed content ready; final post-commit history scan pending
 
 This review branch is not a license grant for any excluded historical asset
 and must not be merged into the authorization-unknown lineage until the owner

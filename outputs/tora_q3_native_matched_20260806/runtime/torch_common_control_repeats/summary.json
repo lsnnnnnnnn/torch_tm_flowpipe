@@ -1,0 +1,178 @@
+{
+  "batch": 48,
+  "cold_process_wall_including_warmup_and_repeats_seconds": 3153.0460958098993,
+  "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.1",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "seed": 0,
+    "torch": "2.5.1+cu121",
+    "torch_num_threads": 1
+  },
+  "lane": "common_control_plant_replay",
+  "measured_repeat_count": 5,
+  "repeats": [
+    {
+      "certified_horizon": 20.0,
+      "checksum": 190979.05951733922,
+      "completed_segments": 200,
+      "peak_cuda_memory_bytes": 927533568,
+      "repeat": 1,
+      "scopes": {
+        "affine_composition_and_physical_range": 38.059027708135545,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.284983905032277,
+        "normalization": 0.20378432236611843,
+        "period_boundary_setup": 0.025523051619529724,
+        "plant_local_step_including_validation": 483.189146486111,
+        "scheduler": 0.00011247489601373672,
+        "serialization_io": 0.0
+      },
+      "segment_max_seconds": 2.6617235420271754,
+      "segment_median_seconds": 2.6333016878925264,
+      "segment_min_seconds": 2.6111197723075747,
+      "solver_excluding_serialization_seconds": 526.7625779481605,
+      "status": "VERIFIED",
+      "wall_seconds": 526.775983097963
+    },
+    {
+      "certified_horizon": 20.0,
+      "checksum": 190979.05951733922,
+      "completed_segments": 200,
+      "peak_cuda_memory_bytes": 927533568,
+      "repeat": 2,
+      "scopes": {
+        "affine_composition_and_physical_range": 38.014998839236796,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.283853895030916,
+        "normalization": 0.20169913489371538,
+        "period_boundary_setup": 0.025374244898557663,
+        "plant_local_step_including_validation": 482.56647351477295,
+        "scheduler": 0.00011294055730104446,
+        "serialization_io": 0.0
+      },
+      "segment_max_seconds": 2.665918883867562,
+      "segment_median_seconds": 2.6289728432893753,
+      "segment_min_seconds": 2.615910390391946,
+      "solver_excluding_serialization_seconds": 526.0925125693902,
+      "status": "VERIFIED",
+      "wall_seconds": 526.1057616472244
+    },
+    {
+      "certified_horizon": 20.0,
+      "checksum": 190979.05951733922,
+      "completed_segments": 200,
+      "peak_cuda_memory_bytes": 927533568,
+      "repeat": 3,
+      "scopes": {
+        "affine_composition_and_physical_range": 37.994293415918946,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.28594568092376,
+        "normalization": 0.20298813935369253,
+        "period_boundary_setup": 0.025079253129661083,
+        "plant_local_step_including_validation": 482.3537449184805,
+        "scheduler": 0.00011233892291784286,
+        "serialization_io": 0.0
+      },
+      "segment_max_seconds": 2.6500547444447875,
+      "segment_median_seconds": 2.628242114558816,
+      "segment_min_seconds": 2.612615983001888,
+      "solver_excluding_serialization_seconds": 525.8621637467295,
+      "status": "VERIFIED",
+      "wall_seconds": 525.8754555601627
+    },
+    {
+      "certified_horizon": 20.0,
+      "checksum": 190979.05951733922,
+      "completed_segments": 200,
+      "peak_cuda_memory_bytes": 927533568,
+      "repeat": 4,
+      "scopes": {
+        "affine_composition_and_physical_range": 37.90466691553593,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.264870751649141,
+        "normalization": 0.20321780256927013,
+        "period_boundary_setup": 0.02538973279297352,
+        "plant_local_step_including_validation": 481.60872467420995,
+        "scheduler": 0.00011172331869602203,
+        "serialization_io": 0.0
+      },
+      "segment_max_seconds": 2.656137889251113,
+      "segment_median_seconds": 2.6274574198760092,
+      "segment_min_seconds": 2.580704802647233,
+      "solver_excluding_serialization_seconds": 525.006981600076,
+      "status": "VERIFIED",
+      "wall_seconds": 525.0204454632476
+    },
+    {
+      "certified_horizon": 20.0,
+      "checksum": 190979.05951733922,
+      "completed_segments": 200,
+      "peak_cuda_memory_bytes": 927533568,
+      "repeat": 5,
+      "scopes": {
+        "affine_composition_and_physical_range": 37.78442226909101,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.243154282681644,
+        "normalization": 0.201494375243783,
+        "period_boundary_setup": 0.025029475800693035,
+        "plant_local_step_including_validation": 479.32093907147646,
+        "scheduler": 0.0001232130452990532,
+        "serialization_io": 0.0
+      },
+      "segment_max_seconds": 2.6565682515501976,
+      "segment_median_seconds": 2.6172014879994094,
+      "segment_min_seconds": 2.575477478094399,
+      "solver_excluding_serialization_seconds": 522.5751626873389,
+      "status": "VERIFIED",
+      "wall_seconds": 522.5884620407596
+    }
+  ],
+  "schema": "torch_tora_q3_common_control_t20_runtime_v1",
+  "segments_per_repeat": 200,
+  "solver_excluding_serialization_statistics": {
+    "iqr_seconds": 1.0855309693142772,
+    "max_seconds": 526.7625779481605,
+    "mean_seconds": 525.259879710339,
+    "median_seconds": 525.8621637467295,
+    "min_seconds": 522.5751626873389
+  },
+  "status": "PASS",
+  "timing_scope_notes": {
+    "compile_graph_warmup": "one complete T20 run excluded from measured statistics",
+    "controller_bound_update": "zero: frozen Xiangru controller trace is replayed",
+    "serialization_io": "zero inside repeats; only timing summaries are written between repeats"
+  },
+  "wall_statistics": {
+    "iqr_seconds": 1.085316183976829,
+    "max_seconds": 526.775983097963,
+    "mean_seconds": 525.2732215618714,
+    "median_seconds": 525.8754555601627,
+    "min_seconds": 522.5884620407596
+  },
+  "warmup_excluded": {
+    "certified_horizon": 20.0,
+    "checksum": 190979.05951733922,
+    "completed_segments": 200,
+    "peak_cuda_memory_bytes": 927533568,
+    "scopes": {
+      "affine_composition_and_physical_range": 38.01681994833052,
+      "controller_bound_update": 0.0,
+      "endpoint_projection": 5.293519095517695,
+      "normalization": 0.27148665487766266,
+      "period_boundary_setup": 0.15882048197090626,
+      "plant_local_step_including_validation": 482.7324104234576,
+      "scheduler": 0.00011714734137058258,
+      "serialization_io": 0.0
+    },
+    "segment_max_seconds": 2.871373174712062,
+    "segment_median_seconds": 2.629399125929922,
+    "segment_min_seconds": 2.614024333655834,
+    "solver_excluding_serialization_seconds": 526.4731737514958,
+    "status": "VERIFIED",
+    "wall_seconds": 526.4867892405018
+  }
+}

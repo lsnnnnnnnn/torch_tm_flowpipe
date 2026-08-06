@@ -1,0 +1,83 @@
+{
+  "autolirpa_bound_statistics": {
+    "iqr_seconds": 0.001333344029262662,
+    "max_seconds": 0.03060369472950697,
+    "mean_seconds": 0.02648333953693509,
+    "median_seconds": 0.02586604282259941,
+    "min_seconds": 0.024853456765413284
+  },
+  "batch": 48,
+  "cold_process_through_benchmark_seconds": 1.8702120315283537,
+  "controller_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "torch": "2.8.0+cu128",
+    "torch_num_threads": 1
+  },
+  "measured_repeat_count": 10,
+  "model_build_seconds": 0.6561210500076413,
+  "outer_synchronized_statistics": {
+    "iqr_seconds": 0.0013374325353652239,
+    "max_seconds": 0.03191763162612915,
+    "mean_seconds": 0.0275664915330708,
+    "median_seconds": 0.026924851816147566,
+    "min_seconds": 0.026009161956608295
+  },
+  "outward_composition_statistics": {
+    "iqr_seconds": 5.491240881383419e-05,
+    "max_seconds": 0.00046892836689949036,
+    "mean_seconds": 0.0004086441360414028,
+    "median_seconds": 0.00040197791531682014,
+    "min_seconds": 0.0003640446811914444
+  },
+  "peak_cpu_resident_memory_bytes": 1260015616,
+  "peak_cuda_memory_bytes": 59592704,
+  "raw_samples": {
+    "autolirpa_bound_seconds": [
+      0.03060369472950697,
+      0.027939637191593647,
+      0.02690626960247755,
+      0.025469529442489147,
+      0.024853456765413284,
+      0.026078013703227043,
+      0.025469538755714893,
+      0.025366488844156265,
+      0.02649269439280033,
+      0.02565407194197178
+    ],
+    "outer_synchronized_seconds": [
+      0.03191763162612915,
+      0.029042351059615612,
+      0.02793112676590681,
+      0.026590225286781788,
+      0.026009161956608295,
+      0.027135559357702732,
+      0.026458635926246643,
+      0.026343596167862415,
+      0.02752248290926218,
+      0.0267141442745924
+    ],
+    "outward_composition_seconds": [
+      0.00046892836689949036,
+      0.0004038810729980469,
+      0.00038322992622852325,
+      0.0004561766982078552,
+      0.000449594110250473,
+      0.00038646068423986435,
+      0.00036703329533338547,
+      0.0003640446811914444,
+      0.0004070177674293518,
+      0.0004000747576355934
+    ]
+  },
+  "schema": "torch_tora_controller_runtime_v1",
+  "status": "PASS",
+  "warmup_excluded": {
+    "bound_seconds": 0.33361861389130354,
+    "composition_seconds": 0.0006048949435353279
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "claims": [
+    "physical enclosure tightness",
+    "property margin",
+    "measured stage runtime",
+    "completion horizon"
+  ],
+  "coefficient_comparison": "requires a separately tested per-segment normalization bijection; otherwise unavailable",
+  "common_workload": {
+    "controller_period": 1.0,
+    "device": "cuda",
+    "dtype": "float64",
+    "dynamics": [
+      "x1'=x2",
+      "x2'=-x1+0.1*sin(x3)",
+      "x3'=x4",
+      "x4'=u1-10",
+      "u1'=0"
+    ],
+    "extraction": {
+      "config_sha256": "13b28acaa6addad27b12f2e00d1e6a81920bfebe849382ddb6b9a736bb4ff090",
+      "source": {
+        "controller": {
+          "end_line": 140,
+          "extraction": "python_ast",
+          "function": "_normalized_inputs",
+          "function_source_sha256": "d007353ed3d9ef384099a3bbdec249b61c970d7c27c0e07f8907c2918c378ece",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/run_c2_autolirpa_feasibility.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "fb210f706093127ca839ca259a4b06e174b3b04541c0782a6eabe04dcd530ae6",
+          "start_line": 118
+        },
+        "dynamics": {
+          "end_line": 748,
+          "extraction": "python_ast",
+          "function": "tm_tora_rhs",
+          "function_source_sha256": "630a2b04e6fcff6a290d73a5abbb554a4b521a25f1079ab6aa1c0d680521829d",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/generic_fixed_basis.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "ee8112473af5a6ac25d21b1ce016bb95c6f77899765c8555bd6793aa08128adf",
+          "start_line": 728
+        },
+        "lane": {
+          "end_line": 726,
+          "extraction": "python_ast",
+          "function": "_run_lane",
+          "function_source_sha256": "a1facded8dd0ff46d713c89e0ba50dab25e8e9e7573caae3782c184a0d480747",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/run_s0_tora_static_partition_sweep.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "9789664a933490cdbf198063cff02b078a1e60e08099e87c9fcc1870f2be5623",
+          "start_line": 327
+        },
+        "outward": {
+          "end_line": 96,
+          "extraction": "python_ast",
+          "function": "outward_host_composition",
+          "function_source_sha256": "1b99c1ade9bd7ea1025078ae2db727e0fd5e8e199b1a7137884dfca7f851abc4",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/controller_outward.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "ab71b5bf380eab833167cda91747110bc68639a9e8a96cb658dcc50e9e44f9de",
+          "start_line": 40
+        },
+        "picard": {
+          "end_line": 838,
+          "extraction": "python_ast",
+          "function": "run_tora_remainder_picard",
+          "function_source_sha256": "56a65d39a9c0e66bd64b6e0b650d1ef42de888dc6de2e1d3108fbc5ec1ce7669",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/generic_fixed_basis.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "ee8112473af5a6ac25d21b1ce016bb95c6f77899765c8555bd6793aa08128adf",
+          "start_line": 764
+        },
+        "sine": {
+          "end_line": 707,
+          "extraction": "python_ast",
+          "function": "tm_sin",
+          "function_source_sha256": "370a19169f350f194e5a3609575df8d19aec63dc76388ca1ffd98407766aae08",
+          "logical_source": "xiangru@27d29050:experiments/remainder_ablation/generic_fixed_basis.py",
+          "manually_transcribed": false,
+          "source_file_sha256": "ee8112473af5a6ac25d21b1ce016bb95c6f77899765c8555bd6793aa08128adf",
+          "start_line": 681
+        },
+        "xiangru_commit": "27d29050a5f214b56f211ca9cb411e734ed80230"
+      }
+    },
+    "initial_set": [
+      [
+        0.6,
+        0.7
+      ],
+      [
+        -0.7,
+        -0.6
+      ],
+      [
+        -0.4,
+        -0.3
+      ],
+      [
+        0.5,
+        0.6
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "manually_transcribed_fields": [
+      "dynamics display strings",
+      "property predicate display string",
+      "b48 split tuple"
+    ],
+    "partition": {
+      "leaf_ids": "0..47",
+      "name": "b48_static",
+      "splits": [
+        8,
+        6,
+        1,
+        1
+      ]
+    },
+    "property": {
+      "physical_states": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "predicate": "abs(state)<=2"
+    },
+    "remainder_rounds": 10,
+    "schema": "tora_q3_workload_contract_v1",
+    "segments": 200,
+    "segments_per_controller_period": 10,
+    "state_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "u1"
+    ],
+    "step_size": 0.1,
+    "target_horizon": 20.0
+  },
+  "schema": "tora_q3_method_native_contract_v1",
+  "torch": "native generic dense complete-Q3 tensors with analytic outward sine and affine carry",
+  "xiangru": "frozen compiled GenericTM complete-Q3 with its native sine/remainder/carry"
+}

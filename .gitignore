@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+
+# Generated diagnostics and historical runner outputs are not active source.
+outputs/
+experiments/**/results/
+experiments/**/artifacts/
+experiments/**/generated/*
+!experiments/first_order_three_way/flowstar/generated/.gitignore
+
+# Formal runs are ignored while executing so the code-freeze worktree remains
+# clean. A run is force-added only after independent acceptance.
+artifacts/runs/*
+!artifacts/runs/.gitkeep
+
+# Common local caches and profiling outputs.
+.matplotlib/
+.matplotlib-cache/
+*.prof
+*.trace

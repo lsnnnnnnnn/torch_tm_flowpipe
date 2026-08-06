@@ -1,0 +1,298 @@
+{
+  "backend_short_repeat_scopes": {
+    "basis_and_route_construction_seconds": 0.2939892988651991,
+    "basis_fingerprint": "fa135259d41a68a73a6fc609880c4fd466bf2d53b2dddeba30298a484fa5e44d",
+    "batch": 48,
+    "cold_process_through_first_step_seconds": 2.860205912962556,
+    "device": "cuda",
+    "dtype": "float64",
+    "environment": {
+      "cuda_runtime": "12.1",
+      "gpu": "Tesla V100-SXM2-16GB",
+      "python": "3.11.15",
+      "seed": 0,
+      "torch": "2.5.1+cu121",
+      "torch_num_threads": 1
+    },
+    "fallbacks": {
+      "cpu_fallback_inside_formal_math_count": 0,
+      "explicit_profiled_aten_to_events": 17745,
+      "profiled_aten_item_events": 128472,
+      "profiled_host_scalar_sync_events": 128472,
+      "profiled_local_scalar_dense_events": 128472,
+      "range_fallback_count": 0,
+      "range_method": "natural",
+      "sparse_fallback_count": 0
+    },
+    "first_call_full_step_seconds": 2.4289534902200103,
+    "formal_gpu_speed_comparison_gate": {
+      "aten_item_event_count": 128472,
+      "host_scalar_sync_event_count": 128472,
+      "local_scalar_dense_event_count": 128472,
+      "meaning": "The mathematical tensors remain on CUDA, but Python boolean/validity checks can force device-to-host scalar synchronization. A GPU speedup claim is disallowed when this count is nonzero or the profiler evidence is unavailable. The count uses the maximum of paired aten::item and aten::_local_scalar_dense events to avoid double-counting one scalar extraction.",
+      "status": "FAIL_FREQUENT_HOST_SCALAR_SYNCHRONIZATION"
+    },
+    "host_device_transfer": {
+      "explicit_benchmark_transfer_bytes_per_repeat": 161280,
+      "formal_math_transfer_count": 0,
+      "serialization_transfers_excluded_from_math_timings": true
+    },
+    "operations": {
+      "affine_parameterization_composition": {
+        "iqr_seconds": 0.0007009189575910568,
+        "max_seconds": 0.13891700096428394,
+        "mean_seconds": 0.13401678958907723,
+        "median_seconds": 0.13340779673308134,
+        "min_seconds": 0.13282200042158365,
+        "repeats": 10
+      },
+      "endpoint_substitution_and_evaluation": {
+        "iqr_seconds": 0.0002553213853389025,
+        "max_seconds": 0.025043862871825695,
+        "mean_seconds": 0.024706646893173458,
+        "median_seconds": 0.024663681630045176,
+        "min_seconds": 0.024534203112125397,
+        "repeats": 10
+      },
+      "explicit_device_to_host_coefficient_transfer": {
+        "iqr_seconds": 1.969980075955391e-06,
+        "max_seconds": 9.018555283546448e-05,
+        "mean_seconds": 8.10825265944004e-05,
+        "median_seconds": 7.959175854921341e-05,
+        "min_seconds": 7.852725684642792e-05,
+        "repeats": 10
+      },
+      "full_tube_evaluation": {
+        "iqr_seconds": 0.0003287044819444418,
+        "max_seconds": 0.015515714883804321,
+        "mean_seconds": 0.015204944275319576,
+        "median_seconds": 0.015179002657532692,
+        "min_seconds": 0.014923425391316414,
+        "repeats": 10
+      },
+      "steady_full_step_including_remainder_validation": {
+        "iqr_seconds": 0.008878023363649845,
+        "max_seconds": 2.361687608063221,
+        "mean_seconds": 2.350669788289815,
+        "median_seconds": 2.3493081317283213,
+        "min_seconds": 2.3429213566705585,
+        "repeats": 10
+      },
+      "steady_k2_polynomial_picard": {
+        "iqr_seconds": 0.0021440244745463133,
+        "max_seconds": 0.35594380646944046,
+        "mean_seconds": 0.351213660556823,
+        "median_seconds": 0.3505060654133558,
+        "min_seconds": 0.3491681208834052,
+        "repeats": 10
+      },
+      "steady_local_time_integration": {
+        "iqr_seconds": 0.0001336401328444481,
+        "max_seconds": 0.017884657718241215,
+        "mean_seconds": 0.01756198946386576,
+        "median_seconds": 0.01752846548333764,
+        "min_seconds": 0.017336050979793072,
+        "repeats": 10
+      },
+      "steady_polynomial_rhs": {
+        "iqr_seconds": 0.003538883524015546,
+        "max_seconds": 0.16340932808816433,
+        "mean_seconds": 0.15704983621835708,
+        "median_seconds": 0.15592082357034087,
+        "min_seconds": 0.15431966446340084,
+        "repeats": 10
+      }
+    },
+    "peak_cpu_resident_memory_bytes": 8809627648,
+    "peak_cuda_memory_bytes": 927302656,
+    "profiler": {
+      "aten_item_event_count": 128472,
+      "aten_to_event_count": 17745,
+      "cpu_event_count": 1572248,
+      "cuda_event_count": 123968,
+      "local_scalar_dense_event_count": 128472,
+      "reason": "",
+      "status": "measured"
+    },
+    "routes": {
+      "integration_kept": 28,
+      "integration_overflow": 56,
+      "multiplication_kept": 455,
+      "multiplication_overflow": 6601
+    },
+    "schema": "tora_q3_backend_microbenchmark_v1",
+    "state_dimension": 5,
+    "term_count": 84,
+    "timing_scope_availability": {
+      "endpoint_evaluation": "measured",
+      "full_step_including_remainder_validation": "measured",
+      "host_device_transfer": "measured explicitly and excluded from formal math timings",
+      "plant_polynomial_propagation": "measured as steady_polynomial_rhs and steady_k2_polynomial_picard",
+      "remainder_validation_separate_from_full_step": "unavailable",
+      "tube_evaluation": "measured"
+    },
+    "variable_dimension": 6
+  },
+  "comparison": {
+    "denominator": "Xiangru median solver excluding serialization",
+    "interpretation": "The ratio is a measured end-to-end descriptive runtime ratio, not a pure GPU-kernel or algorithm-identical speedup.",
+    "numerator": "Torch median solver excluding serialization",
+    "speedup_claim_authorized": false,
+    "speedup_claim_blocker": {
+      "aten_item_event_count": 128472,
+      "host_scalar_sync_event_count": 128472,
+      "local_scalar_dense_event_count": 128472,
+      "meaning": "The mathematical tensors remain on CUDA, but Python boolean/validity checks can force device-to-host scalar synchronization. A GPU speedup claim is disallowed when this count is nonzero or the profiler evidence is unavailable. The count uses the maximum of paired aten::item and aten::_local_scalar_dense events to avoid double-counting one scalar extraction.",
+      "status": "FAIL_FREQUENT_HOST_SCALAR_SYNCHRONIZATION"
+    },
+    "torch_over_xiangru_solver_time_ratio": 508.8241436873818
+  },
+  "controller_runtime": {
+    "autolirpa_bound_statistics": {
+      "iqr_seconds": 0.001333344029262662,
+      "max_seconds": 0.03060369472950697,
+      "mean_seconds": 0.02648333953693509,
+      "median_seconds": 0.02586604282259941,
+      "min_seconds": 0.024853456765413284
+    },
+    "batch": 48,
+    "cold_process_through_benchmark_seconds": 1.8702120315283537,
+    "controller_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+    "device": "cuda",
+    "dtype": "float64",
+    "environment": {
+      "cuda_runtime": "12.8",
+      "gpu": "Tesla V100-SXM2-16GB",
+      "python": "3.11.15",
+      "torch": "2.8.0+cu128",
+      "torch_num_threads": 1
+    },
+    "measured_repeat_count": 10,
+    "model_build_seconds": 0.6561210500076413,
+    "outer_synchronized_statistics": {
+      "iqr_seconds": 0.0013374325353652239,
+      "max_seconds": 0.03191763162612915,
+      "mean_seconds": 0.0275664915330708,
+      "median_seconds": 0.026924851816147566,
+      "min_seconds": 0.026009161956608295
+    },
+    "outward_composition_statistics": {
+      "iqr_seconds": 5.491240881383419e-05,
+      "max_seconds": 0.00046892836689949036,
+      "mean_seconds": 0.0004086441360414028,
+      "median_seconds": 0.00040197791531682014,
+      "min_seconds": 0.0003640446811914444
+    },
+    "peak_cpu_resident_memory_bytes": 1260015616,
+    "peak_cuda_memory_bytes": 59592704,
+    "raw_samples": {
+      "autolirpa_bound_seconds": [
+        0.03060369472950697,
+        0.027939637191593647,
+        0.02690626960247755,
+        0.025469529442489147,
+        0.024853456765413284,
+        0.026078013703227043,
+        0.025469538755714893,
+        0.025366488844156265,
+        0.02649269439280033,
+        0.02565407194197178
+      ],
+      "outer_synchronized_seconds": [
+        0.03191763162612915,
+        0.029042351059615612,
+        0.02793112676590681,
+        0.026590225286781788,
+        0.026009161956608295,
+        0.027135559357702732,
+        0.026458635926246643,
+        0.026343596167862415,
+        0.02752248290926218,
+        0.0267141442745924
+      ],
+      "outward_composition_seconds": [
+        0.00046892836689949036,
+        0.0004038810729980469,
+        0.00038322992622852325,
+        0.0004561766982078552,
+        0.000449594110250473,
+        0.00038646068423986435,
+        0.00036703329533338547,
+        0.0003640446811914444,
+        0.0004070177674293518,
+        0.0004000747576355934
+      ]
+    },
+    "schema": "torch_tora_controller_runtime_v1",
+    "status": "PASS",
+    "warmup_excluded": {
+      "bound_seconds": 0.33361861389130354,
+      "composition_seconds": 0.0006048949435353279
+    }
+  },
+  "hardware": "same Tesla V100-SXM2-16GB; CUDA float64",
+  "native_full_closed_loop_runtime": {
+    "certified_horizon": 4.3,
+    "observed_failure_run_timing": {
+      "controller_bound_seconds": 0.4920562393963337,
+      "controller_build_seconds": 0.5935591887682676,
+      "controller_composition_seconds": 0.002454114146530628,
+      "normalization_seconds": 0.06460261065512896,
+      "peak_cuda_memory_bytes": 972638720,
+      "plant_seconds": 118.00480113364756,
+      "serialization_seconds": 0.0474267927929759,
+      "wall_seconds_including_serialization": 119.83808294776827
+    },
+    "reason": "formal acceptance failed at segment 44 before T5",
+    "t20": "N/A"
+  },
+  "schema": "tora_q3_runtime_summary_v1",
+  "status": "PASS_REPEATED_MEASUREMENT",
+  "torch_common_control": {
+    "cold_evidence_export_wall_seconds": 542.9654488125816,
+    "measured_repeat_count": 5,
+    "peak_cpu_resident_memory_bytes": 1074946048,
+    "peak_gpu_memory_bytes": 927533568,
+    "scope_note": "frozen control replay; controller bound time is zero",
+    "solver_excluding_serialization_statistics": {
+      "iqr_seconds": 1.0855309693142772,
+      "max_seconds": 526.7625779481605,
+      "mean_seconds": 525.259879710339,
+      "median_seconds": 525.8621637467295,
+      "min_seconds": 522.5751626873389
+    },
+    "wall_statistics": {
+      "iqr_seconds": 1.085316183976829,
+      "max_seconds": 526.775983097963,
+      "mean_seconds": 525.2732215618714,
+      "median_seconds": 525.8754555601627,
+      "min_seconds": 522.5884620407596
+    }
+  },
+  "unavailable_fields": [
+    "separate Torch polynomial-propagation versus remainder-validation time inside dense_tora_q3_dr_step",
+    "native full-closed-loop T20 runtime because the sound run fails at segment 44"
+  ],
+  "xiangru_common_control": {
+    "cold_evidence_export_wall_seconds": 138.84419736731797,
+    "engine_build_seconds": 1.2609721207991242,
+    "measured_repeat_count": 5,
+    "peak_cpu_resident_memory_bytes": 1455931392,
+    "peak_gpu_memory_bytes": 6471680,
+    "scope_note": "frozen control replay; controller bound time is zero",
+    "solver_excluding_serialization_statistics": {
+      "iqr_seconds": 0.0018460685387253761,
+      "max_seconds": 1.0349359204992652,
+      "mean_seconds": 1.0328397963196039,
+      "median_seconds": 1.0334850857034326,
+      "min_seconds": 1.0277682403102517
+    },
+    "wall_statistics": {
+      "iqr_seconds": 0.001829267479479313,
+      "max_seconds": 1.091232132166624,
+      "mean_seconds": 1.0890584394335747,
+      "median_seconds": 1.089861680753529,
+      "min_seconds": 1.0838101394474506
+    }
+  }
+}

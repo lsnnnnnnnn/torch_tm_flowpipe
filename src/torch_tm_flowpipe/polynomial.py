@@ -1,0 +1,435 @@
+"""Sparse bounded-degree multivariate polynomials over torch scalar tensors."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from itertools import product
+from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
+
+import torch
+
+from .interval import Interval
+
+Exponent = Tuple[int, ...]
+
+
+def _interval_point_like(value: Any, like: torch.Tensor) -> Interval:
+    return Interval.point(_coef(value, like=like))
+
+
+def _state_normal_factor(exp: Exponent, state_var_indices: set[int], like: torch.Tensor) -> Interval:
+    has_state_power = False
+    for index in state_var_indices:
+        power = exp[index]
+        if power == 0:
+            continue
+        has_state_power = True
+        if power % 2 == 1:
+            return Interval(
+                torch.as_tensor(-1.0, dtype=like.dtype, device=like.device),
+                torch.as_tensor(1.0, dtype=like.dtype, device=like.device),
+            )
+    if has_state_power:
+        return Interval(
+            torch.as_tensor(0.0, dtype=like.dtype, device=like.device),
+            torch.as_tensor(1.0, dtype=like.dtype, device=like.device),
+        )
+    return _interval_point_like(1.0, like)
+
+
+def _step_power_interval(
+    power: int,
+    domain: Sequence[Interval],
+    time_var_index: int,
+    step_exp_table: Sequence[Any] | Mapping[int, Any] | None,
+    like: torch.Tensor,
+) -> Interval:
+    if step_exp_table is not None:
+        if isinstance(step_exp_table, Mapping):
+            if power in step_exp_table:
+                value = step_exp_table[power]
+                return value if isinstance(value, Interval) else _interval_point_like(value, like)
+        elif 0 <= power < len(step_exp_table):
+            value = step_exp_table[power]
+            return value if isinstance(value, Interval) else _interval_point_like(value, like)
+    return domain[time_var_index].pow_int(power)
+
+
+def evaluate_interval_normal(
+    poly: "Polynomial",
+    domain: Iterable[Interval],
+    step_exp_table: Sequence[Any] | Mapping[int, Any] | None = None,
+    state_var_indices: Sequence[int] | None = None,
+    time_var_index: int | None = 0,
+) -> Interval:
+    """Evaluate a polynomial over Flow*-style normal coordinates.
+
+    The time variable is bounded through ``step_exp_table`` when supplied, or by
+    the time interval in ``domain``. State variables are assumed normalized to
+    ``[-1, 1]`` regardless of their stored domain. This mirrors Flow*'s
+    ``intEvalNormal`` term rule while remaining a conservative interval bound.
+    """
+    domain_l = list(domain)
+    if len(domain_l) != poly.n_vars:
+        raise ValueError(f"domain length {len(domain_l)} != n_vars {poly.n_vars}")
+    if time_var_index is not None and (time_var_index < 0 or time_var_index >= poly.n_vars):
+        raise IndexError(time_var_index)
+    if state_var_indices is None:
+        state_set = {i for i in range(poly.n_vars) if i != time_var_index}
+    else:
+        state_set = {int(i) for i in state_var_indices}
+    if any(i < 0 or i >= poly.n_vars for i in state_set):
+        raise IndexError("state_var_indices contains an out-of-range variable")
+    if time_var_index is not None:
+        state_set.discard(time_var_index)
+    if not poly.terms:
+        return Interval.zero()
+
+    acc = Interval.zero(dtype=poly.dtype, device=poly.device)
+    for exp, c in poly.terms.items():
+        term_iv = Interval.point(c)
+        if time_var_index is not None and exp[time_var_index]:
+            term_iv = term_iv * _step_power_interval(
+                exp[time_var_index],
+                domain_l,
+                time_var_index,
+                step_exp_table,
+                c,
+            )
+        term_iv = term_iv * _state_normal_factor(exp, state_set, c)
+        for index, power in enumerate(exp):
+            if power == 0 or index in state_set or index == time_var_index:
+                continue
+            term_iv = term_iv * domain_l[index].pow_int(power)
+        acc = acc + term_iv
+    return acc
+
+
+def _coef(x: Any, *, like: torch.Tensor | None = None) -> torch.Tensor:
+    if isinstance(x, torch.Tensor):
+        t = x.detach().clone() if x.requires_grad else x.clone()
+    else:
+        dtype = like.dtype if like is not None else torch.float64
+        device = like.device if like is not None else None
+        t = torch.as_tensor(x, dtype=dtype, device=device)
+    if not torch.is_floating_point(t):
+        dtype = like.dtype if like is not None else torch.float64
+        t = t.to(dtype=dtype)
+    return t.reshape(()) if t.numel() == 1 else t
+
+
+def _zero_like_from_terms(terms: Mapping[Exponent, torch.Tensor] | None = None) -> torch.Tensor:
+    if terms:
+        first = next(iter(terms.values()))
+        return torch.zeros_like(first)
+    return torch.zeros((), dtype=torch.float64)
+
+
+def _is_zero_tensor(x: torch.Tensor) -> bool:
+    return bool(torch.all(x == 0))
+
+
+@dataclass(frozen=True)
+class Polynomial:
+    """Sparse polynomial represented by ``{exponent_tuple: coefficient}``.
+
+    Exponents always have length ``n_vars``.  Coefficients are torch tensors,
+    typically scalar float64 tensors.
+    """
+
+    terms: Dict[Exponent, torch.Tensor]
+    n_vars: int
+
+    def __init__(self, terms: Mapping[Exponent, Any] | None = None, n_vars: int | None = None):
+        terms = dict(terms or {})
+        if n_vars is None:
+            if terms:
+                n_vars = len(next(iter(terms.keys())))
+            else:
+                n_vars = 0
+        clean: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in terms.items():
+            exp_t = tuple(int(e) for e in exp)
+            if len(exp_t) != n_vars:
+                raise ValueError(f"exponent length {len(exp_t)} != n_vars {n_vars}")
+            if any(e < 0 for e in exp_t):
+                raise ValueError(f"negative exponent in {exp_t}")
+            c_t = _coef(c)
+            if not _is_zero_tensor(c_t):
+                clean[exp_t] = clean.get(exp_t, torch.zeros_like(c_t)) + c_t
+        clean = {e: c for e, c in clean.items() if not _is_zero_tensor(c)}
+        clean = dict(sorted(clean.items()))
+        object.__setattr__(self, "terms", clean)
+        object.__setattr__(self, "n_vars", int(n_vars))
+
+    @staticmethod
+    def zero(n_vars: int, *, dtype: torch.dtype = torch.float64, device: torch.device | str | None = None) -> "Polynomial":
+        return Polynomial({}, n_vars=n_vars)
+
+    @staticmethod
+    def constant(value: Any, n_vars: int) -> "Polynomial":
+        c = _coef(value)
+        if _is_zero_tensor(c):
+            return Polynomial.zero(n_vars, dtype=c.dtype, device=c.device)
+        return Polynomial({(0,) * n_vars: c}, n_vars=n_vars)
+
+    @staticmethod
+    def variable(index: int, n_vars: int, *, dtype: torch.dtype = torch.float64, device: torch.device | str | None = None) -> "Polynomial":
+        if index < 0 or index >= n_vars:
+            raise IndexError(index)
+        exp = [0] * n_vars
+        exp[index] = 1
+        return Polynomial({tuple(exp): torch.ones((), dtype=dtype, device=device)}, n_vars=n_vars)
+
+    def clone(self) -> "Polynomial":
+        return Polynomial({e: c.clone() for e, c in self.terms.items()}, self.n_vars)
+
+    @property
+    def dtype(self) -> torch.dtype:
+        return next(iter(self.terms.values())).dtype if self.terms else torch.float64
+
+    @property
+    def device(self) -> torch.device:
+        return next(iter(self.terms.values())).device if self.terms else torch.device("cpu")
+
+    def degree(self) -> int:
+        return max((sum(e) for e in self.terms), default=0)
+
+    def _coerce(self, other: Any) -> "Polynomial":
+        if isinstance(other, Polynomial):
+            if other.n_vars != self.n_vars:
+                raise ValueError(f"n_vars mismatch {self.n_vars} != {other.n_vars}")
+            return other
+        return Polynomial.constant(other, self.n_vars)
+
+    def __add__(self, other: Any) -> "Polynomial":
+        other = self._coerce(other)
+        out = {e: c.clone() for e, c in self.terms.items()}
+        for e, c in other.terms.items():
+            out[e] = out.get(e, torch.zeros_like(c)) + c
+        return Polynomial(out, self.n_vars)
+
+    __radd__ = __add__
+
+    def __sub__(self, other: Any) -> "Polynomial":
+        other = self._coerce(other)
+        return self + (-other)
+
+    def __rsub__(self, other: Any) -> "Polynomial":
+        return self._coerce(other) - self
+
+    def __neg__(self) -> "Polynomial":
+        return Polynomial({e: -c for e, c in self.terms.items()}, self.n_vars)
+
+    def __mul__(self, other: Any) -> "Polynomial":
+        other = self._coerce(other)
+        out: Dict[Exponent, torch.Tensor] = {}
+        for e1, c1 in self.terms.items():
+            for e2, c2 in other.terms.items():
+                exp = tuple(a + b for a, b in zip(e1, e2))
+                val = c1 * c2
+                out[exp] = out.get(exp, torch.zeros_like(val)) + val
+        return Polynomial(out, self.n_vars)
+
+    __rmul__ = __mul__
+
+    def mul_truncate(self, other: Any, order: int) -> tuple["Polynomial", "Polynomial"]:
+        other = self._coerce(other)
+        kept: Dict[Exponent, torch.Tensor] = {}
+        dropped: Dict[Exponent, torch.Tensor] = {}
+        for e1, c1 in self.terms.items():
+            for e2, c2 in other.terms.items():
+                exp = tuple(a + b for a, b in zip(e1, e2))
+                val = c1 * c2
+                target = kept if sum(exp) <= order else dropped
+                target[exp] = target.get(exp, torch.zeros_like(val)) + val
+        return Polynomial(kept, self.n_vars), Polynomial(dropped, self.n_vars)
+
+    def truncate(self, order: int) -> tuple["Polynomial", "Polynomial"]:
+        kept = {e: c for e, c in self.terms.items() if sum(e) <= order}
+        dropped = {e: c for e, c in self.terms.items() if sum(e) > order}
+        return Polynomial(kept, self.n_vars), Polynomial(dropped, self.n_vars)
+
+    def cutoff(self, threshold: float | None, domain: Iterable[Interval]) -> tuple["Polynomial", Interval]:
+        """Drop small coefficients and return their conservative range.
+
+        The returned interval is the interval evaluation of all removed terms on
+        ``domain``.  Adding it to a Taylor-model remainder preserves containment.
+        """
+        domain_l = list(domain)
+        if len(domain_l) != self.n_vars:
+            raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
+        if threshold is None:
+            return self, Interval.zero(dtype=self.dtype, device=self.device)
+        threshold_t = torch.abs(_coef(threshold, like=next(iter(self.terms.values())) if self.terms else None))
+        kept: Dict[Exponent, torch.Tensor] = {}
+        removed: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            target = removed if bool(torch.all(torch.abs(c) <= threshold_t)) else kept
+            target[exp] = c
+        removed_range = (
+            Polynomial(removed, self.n_vars).evaluate_interval(domain_l)
+            if removed
+            else Interval.zero(dtype=self.dtype, device=self.device)
+        )
+        return Polynomial(kept, self.n_vars), removed_range
+
+    def pow_int(self, exponent: int, *, order: int | None = None) -> tuple["Polynomial", "Polynomial"] | "Polynomial":
+        if exponent < 0:
+            raise ValueError("Polynomial.pow_int only supports nonnegative exponents")
+        result = Polynomial.constant(1.0, self.n_vars)
+        dropped_total = Polynomial.zero(self.n_vars)
+        base = self
+        n = exponent
+        # For the small degrees in this prototype, repeated multiplication is clearer.
+        for _ in range(exponent):
+            if order is None:
+                result = result * self
+            else:
+                result, dropped = result.mul_truncate(self, order)
+                dropped_total = dropped_total + dropped
+        return (result, dropped_total) if order is not None else result
+
+    def integrate(self, var_index: int) -> "Polynomial":
+        if var_index < 0 or var_index >= self.n_vars:
+            raise IndexError(var_index)
+        out: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            exp_l = list(exp)
+            exp_l[var_index] += 1
+            denom = torch.as_tensor(exp_l[var_index], dtype=c.dtype, device=c.device)
+            out[tuple(exp_l)] = c / denom
+        return Polynomial(out, self.n_vars)
+
+    def derivative(self, var_index: int) -> "Polynomial":
+        if var_index < 0 or var_index >= self.n_vars:
+            raise IndexError(var_index)
+        out: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            if exp[var_index] == 0:
+                continue
+            exp_l = list(exp)
+            power = exp_l[var_index]
+            exp_l[var_index] -= 1
+            out[tuple(exp_l)] = c * power
+        return Polynomial(out, self.n_vars)
+
+    def evaluate_interval(self, domain: Iterable[Interval]) -> Interval:
+        domain_l = list(domain)
+        if len(domain_l) != self.n_vars:
+            raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
+        if not self.terms:
+            return Interval.zero()
+        acc = Interval.zero(dtype=self.dtype, device=self.device)
+        for exp, c in self.terms.items():
+            term_iv = Interval.point(c)
+            for power, dom in zip(exp, domain_l):
+                if power:
+                    term_iv = term_iv * dom.pow_int(power)
+            acc = acc + term_iv
+        return acc
+
+    def evaluate_interval_split(
+        self,
+        domain: Iterable[Interval],
+        splits: int,
+        *,
+        split_vars: Sequence[int] | None = None,
+    ) -> Interval:
+        """Evaluate conservatively over a small split-box cover of ``domain``.
+
+        This is intended for diagnostic truncation bounds.  By default it splits
+        the first two variables, matching the normalized state box in the current
+        Flow*-style Van der Pol experiments while leaving local time unsplit.
+        """
+        domain_l = list(domain)
+        if len(domain_l) != self.n_vars:
+            raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
+        if not self.terms:
+            return Interval.zero()
+        pieces = int(splits)
+        if pieces <= 1 or not domain_l:
+            return self.evaluate_interval(domain_l)
+        selected = list(split_vars) if split_vars is not None else list(range(min(2, self.n_vars)))
+        selected = [int(i) for i in selected if 0 <= int(i) < self.n_vars]
+        if not selected:
+            return self.evaluate_interval(domain_l)
+
+        partitions: list[list[Interval]] = []
+        for var_index in selected:
+            iv = domain_l[var_index]
+            width = iv.hi - iv.lo
+            boxes: list[Interval] = []
+            for i in range(pieces):
+                lo = iv.lo + width * (float(i) / float(pieces))
+                hi = iv.lo + width * (float(i + 1) / float(pieces))
+                if i == 0:
+                    lo = iv.lo
+                if i == pieces - 1:
+                    hi = iv.hi
+                boxes.append(Interval(lo, hi))
+            partitions.append(boxes)
+
+        hull: Interval | None = None
+        for parts in product(*partitions):
+            subdomain = list(domain_l)
+            for var_index, sub_iv in zip(selected, parts):
+                subdomain[var_index] = sub_iv
+            box = self.evaluate_interval(subdomain)
+            hull = box if hull is None else Interval.hull(hull, box)
+        return hull if hull is not None else self.evaluate_interval(domain_l)
+
+    def evaluate_point(self, values: Iterable[Any]) -> torch.Tensor:
+        vals = [_coef(v) for v in values]
+        if len(vals) != self.n_vars:
+            raise ValueError(f"values length {len(vals)} != n_vars {self.n_vars}")
+        total = torch.zeros_like(next(iter(self.terms.values()))) if self.terms else torch.zeros((), dtype=torch.float64)
+        for exp, c in self.terms.items():
+            term = c
+            for power, val in zip(exp, vals):
+                if power:
+                    term = term * val.pow(power)
+            total = total + term
+        return total
+
+    def substitute_const(self, var_index: int, value: Any) -> "Polynomial":
+        if var_index < 0 or var_index >= self.n_vars:
+            raise IndexError(var_index)
+        v = _coef(value, like=next(iter(self.terms.values())) if self.terms else None)
+        out: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            power = exp[var_index]
+            new_exp = list(exp)
+            new_exp[var_index] = 0
+            val = c * (v.pow(power) if power else torch.ones_like(c))
+            new_exp_t = tuple(new_exp)
+            out[new_exp_t] = out.get(new_exp_t, torch.zeros_like(val)) + val
+        return Polynomial(out, self.n_vars)
+
+    def drop_variable(self, var_index: int, *, require_zero_exponent: bool = True) -> "Polynomial":
+        if var_index < 0 or var_index >= self.n_vars:
+            raise IndexError(var_index)
+        out: Dict[Exponent, torch.Tensor] = {}
+        for exp, c in self.terms.items():
+            if require_zero_exponent and exp[var_index] != 0:
+                raise ValueError(f"cannot drop active variable {var_index}; exponent {exp[var_index]} in term {exp}")
+            new_exp = tuple(e for i, e in enumerate(exp) if i != var_index)
+            out[new_exp] = out.get(new_exp, torch.zeros_like(c)) + c
+        return Polynomial(out, self.n_vars - 1)
+
+    def extend_vars(self, n_new: int = 1) -> "Polynomial":
+        if n_new < 0:
+            raise ValueError("n_new must be nonnegative")
+        if n_new == 0:
+            return self
+        return Polynomial({e + (0,) * n_new: c for e, c in self.terms.items()}, self.n_vars + n_new)
+
+    def active_variables(self) -> set[int]:
+        active: set[int] = set()
+        for exp in self.terms:
+            for i, power in enumerate(exp):
+                if power:
+                    active.add(i)
+        return active
+
+    def __repr__(self) -> str:  # pragma: no cover - cosmetic
+        return f"Polynomial(n_vars={self.n_vars}, terms={self.terms})"

@@ -1,0 +1,119 @@
+{
+  "acceptance_relaxed": false,
+  "common_control_plant_replay": {
+    "behavior_relevant": true,
+    "both_completed_t20": true,
+    "classification": [
+      "sine enclosure",
+      "fixed-support overflow",
+      "Picard/remainder algorithm",
+      "expected method difference"
+    ],
+    "first_divergence": {
+      "coefficient": "unavailable_without_normalization_bijection",
+      "endpoint": {
+        "controller_period": 1,
+        "enclosure_kind": "endpoint",
+        "maximum_lower_abs_difference": 2.173854123377339e-07,
+        "maximum_upper_abs_difference": 3.823427394800127e-06,
+        "physical_time": 0.1,
+        "segment_index": 1,
+        "state": "x1"
+      },
+      "remainder_width": {
+        "absolute_width_difference": 4.012917276072551e-06,
+        "leaf_id": 0,
+        "physical_time": 0.1,
+        "segment_index": 1,
+        "state": "x1",
+        "torch_width": 0.00014535265990315552,
+        "xiangru_width": 0.00014936557717922807
+      },
+      "status": null,
+      "tube": {
+        "controller_period": 1,
+        "enclosure_kind": "tube",
+        "maximum_lower_abs_difference": 2.1738551814198814e-07,
+        "maximum_upper_abs_difference": 0.0010081585745042032,
+        "physical_time": 0.1,
+        "segment_index": 1,
+        "state": "x1"
+      }
+    },
+    "status_divergence": null
+  },
+  "controller_substituted": false,
+  "fixed_actual_implementation_bugs": {
+    "bugs": [
+      "physical tube/endpoint were exported before affine parameterization composition",
+      "exact-time endpoint terms were ranged before equal spatial exponents were aggregated"
+    ],
+    "post_fix_t1_x4_endpoint_max_abs_difference": 2.1974644326405723e-12,
+    "segments_sha256": "70a439fa47da516112f50db039f55774b09e9f4472384254e8740416f5eed158",
+    "summary_sha256": "2ed644d10c9d27f8214f2c59630bf51e4ee497f7b7cc603bc8e7742be100d459"
+  },
+  "native_full_closed_loop": {
+    "classification": [
+      "basis/normalization representation",
+      "Picard/remainder algorithm",
+      "controller bound/composition on a different sound input domain",
+      "expected method difference"
+    ],
+    "first_behavior_relevant_controller_difference": {
+      "after_lower_max_abs": 0.16733063796595893,
+      "after_lower_max_ulp": 94198774848895,
+      "after_upper_max_abs": 0.1711897364457684,
+      "after_upper_max_ulp": 96371254158352,
+      "before_lower_max_abs": 0.16733063796595893,
+      "before_upper_max_abs": 0.1711897364457684,
+      "candidate_contains_reference": 0,
+      "controller_period": 2,
+      "overlap": 48,
+      "physical_time": 1.0,
+      "pre_state_lower_max_abs": 0.014211021940625762,
+      "pre_state_upper_max_abs": 0.014211021940624874,
+      "reference_contains_candidate": 48,
+      "scalar_count": 48,
+      "segment_index": 11
+    },
+    "first_exact_controller_difference": {
+      "after_lower_max_abs": 3.552713678800501e-15,
+      "after_lower_max_ulp": 2,
+      "after_upper_max_abs": 3.552713678800501e-15,
+      "after_upper_max_ulp": 2,
+      "before_lower_max_abs": 3.552713678800501e-15,
+      "before_upper_max_abs": 3.552713678800501e-15,
+      "candidate_contains_reference": 33,
+      "controller_period": 1,
+      "overlap": 48,
+      "physical_time": 0.0,
+      "pre_state_lower_max_abs": 3.3306690738754696e-16,
+      "pre_state_upper_max_abs": 3.3306690738754696e-16,
+      "reference_contains_candidate": 28,
+      "scalar_count": 48,
+      "segment_index": 1
+    },
+    "first_failure": {
+      "acceptance_was_not_relaxed": true,
+      "classification": "method-native plant/state-projection enclosure growth feeds a different sound controller input box; x3 tube crosses the frozen property at the fifth controller period",
+      "failed_leaf_ids": [
+        0
+      ],
+      "first_failed_leaf": 0,
+      "physical_time": 4.4,
+      "property_margin": [
+        1.462985986924705,
+        1.1144023590499603,
+        -0.042012028629907494,
+        0.06265188348659256
+      ],
+      "segment_index": 44
+    }
+  },
+  "post_fix_gates_restarted_from_one_step": true,
+  "regression_tests": [
+    "test_affine_composition_materializes_local_spatial_coordinates",
+    "test_exact_time_endpoint_aggregates_equal_spatial_exponents_soundly"
+  ],
+  "schema": "tora_q3_first_divergence_root_cause_v1"
+}

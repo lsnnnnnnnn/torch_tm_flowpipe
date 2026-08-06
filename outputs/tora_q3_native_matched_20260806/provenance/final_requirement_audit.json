@@ -1,0 +1,243 @@
+{
+  "allowed_final_cases": [
+    "Case B: common-control plant passes; native full closed loop does not reach T20",
+    "Case D: historical authorization remains unknown; only the separately initialized clean review lineage may be pushed"
+  ],
+  "checks": [
+    {
+      "evidence": {
+        "missing": []
+      },
+      "requirement": "required_public_files",
+      "status": "PASS"
+    },
+    {
+      "evidence": "fa135259d41a68a73a6fc609880c4fd466bf2d53b2dddeba30298a484fa5e44d",
+      "requirement": "q3_basis_84_identity",
+      "status": "PASS"
+    },
+    {
+      "evidence": 20,
+      "requirement": "sine_soundness_cases",
+      "status": "PASS"
+    },
+    {
+      "evidence": "cuda",
+      "requirement": "six_variable_b48_cuda_backend",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 5.0,
+          "completed_segments": 50,
+          "expected_leaf_count": 48,
+          "gate": "b48_t5",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 10.0,
+          "completed_segments": 100,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 20.0,
+          "completed_segments": 200,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "status": "PASS"
+        }
+      ],
+      "requirement": "common_control_all_hierarchical_gates",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        {
+          "certified_horizon": 20.0,
+          "completed_segments": 200,
+          "first_failure": null,
+          "status": "VERIFIED",
+          "tool": "xiangru"
+        },
+        {
+          "certified_horizon": 20.0,
+          "completed_segments": 200,
+          "first_failure": null,
+          "status": "VERIFIED",
+          "tool": "torch"
+        }
+      ],
+      "requirement": "common_control_formal_t20_alignment",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "acceptance_was_not_relaxed": true,
+        "classification": "method-native plant/state-projection enclosure growth feeds a different sound controller input box; x3 tube crosses the frozen property at the fifth controller period",
+        "failed_leaf_ids": [
+          0
+        ],
+        "first_failed_leaf": 0,
+        "physical_time": 4.4,
+        "property_margin": [
+          1.462985986924705,
+          1.1144023590499603,
+          -0.042012028629907494,
+          0.06265188348659256
+        ],
+        "segment_index": 44
+      },
+      "requirement": "native_full_loop_fail_closed_classified",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "denominator": "Xiangru median solver excluding serialization",
+        "interpretation": "The ratio is a measured end-to-end descriptive runtime ratio, not a pure GPU-kernel or algorithm-identical speedup.",
+        "numerator": "Torch median solver excluding serialization",
+        "speedup_claim_authorized": false,
+        "speedup_claim_blocker": {
+          "aten_item_event_count": 128472,
+          "host_scalar_sync_event_count": 128472,
+          "local_scalar_dense_event_count": 128472,
+          "meaning": "The mathematical tensors remain on CUDA, but Python boolean/validity checks can force device-to-host scalar synchronization. A GPU speedup claim is disallowed when this count is nonzero or the profiler evidence is unavailable. The count uses the maximum of paired aten::item and aten::_local_scalar_dense events to avoid double-counting one scalar extraction.",
+          "status": "FAIL_FREQUENT_HOST_SCALAR_SYNCHRONIZATION"
+        },
+        "torch_over_xiangru_solver_time_ratio": 508.8241436873818
+      },
+      "requirement": "five_repeat_runtime",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        {
+          "exit_code": 0,
+          "label": "editable_test_install",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 59,
+          "stdout_sha256": "1d5bf96f3fbfdccca905f7b130fafc06cdc1a0b54b1bb664c995313386aac250",
+          "wall_seconds": 4.233994445763528
+        },
+        {
+          "exit_code": 0,
+          "label": "full_pytest",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 9,
+          "stdout_sha256": "a464f2eb1d63081f98cd9e46a935c5810dc596418b30aea969b960c01dc67c91",
+          "wall_seconds": 76.47122384048998
+        },
+        {
+          "exit_code": 0,
+          "label": "external_integration_py11",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 2,
+          "stdout_sha256": "4147b72406f513f3f7f2d9a4a0ef35a916a50babc64705709540b8a2d0fddecb",
+          "wall_seconds": 4.755174843594432
+        },
+        {
+          "exit_code": 0,
+          "label": "controller_external_environment_preflight",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 1,
+          "stdout_sha256": "d3ab9cab1db6a058cb1df82394f840c8cd1973443bc69101df53364988141288",
+          "wall_seconds": 2.3047426976263523
+        },
+        {
+          "exit_code": 0,
+          "label": "controller_external_integration_frozen_crown_env",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 2,
+          "stdout_sha256": "fa6cbf17adc30edb2dddaa90bf33272f1bfc90a405403a8bc55f1610cb4e5323",
+          "wall_seconds": 3.8274773554876447
+        },
+        {
+          "exit_code": 0,
+          "label": "git_diff_check",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 0,
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "wall_seconds": 0.007504608482122421
+        },
+        {
+          "exit_code": 0,
+          "label": "git_status_short_branch",
+          "stderr_line_count": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_line_count": 42,
+          "stdout_sha256": "4d16107ef96c5a6c82b6efe05022502d82cbb5327e3d6795a71f96d56d001511",
+          "wall_seconds": 0.006135331466794014
+        }
+      ],
+      "requirement": "quality_gates",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "credential_claim": "No credential conclusion is made from pattern scanning alone.",
+        "governance_status": "BLOCKED_UNKNOWN_AUTHORIZATION",
+        "new_deliverable_path_or_secret_pattern_match_count": 0,
+        "new_untracked_sensitive_binary_count": 0,
+        "raw_private_log_sha256": "1060656659e56669e827809491c3cb8b5aa112cf7e9309544401ae22aabbf486",
+        "scanner": "git history/index/object inventory + untracked inventory + scoped ripgrep of new deliverables",
+        "schema": "tora_q3_public_artifact_scan_summary_v2",
+        "tracked_path_or_secret_pattern_match_count": 0,
+        "tracked_sensitive_binary_count": 0
+      },
+      "requirement": "no_new_sensitive_binary",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "credential_claim": "No credential conclusion is made from pattern scanning alone.",
+        "governance_status": "BLOCKED_UNKNOWN_AUTHORIZATION",
+        "new_deliverable_path_or_secret_pattern_match_count": 0,
+        "new_untracked_sensitive_binary_count": 0,
+        "raw_private_log_sha256": "1060656659e56669e827809491c3cb8b5aa112cf7e9309544401ae22aabbf486",
+        "scanner": "git history/index/object inventory + untracked inventory + scoped ripgrep of new deliverables",
+        "schema": "tora_q3_public_artifact_scan_summary_v2",
+        "tracked_path_or_secret_pattern_match_count": 0,
+        "tracked_sensitive_binary_count": 0
+      },
+      "requirement": "no_new_public_path_or_secret_pattern",
+      "status": "PASS"
+    },
+    {
+      "evidence": "BLOCKED_UNKNOWN_AUTHORIZATION",
+      "requirement": "public_authorization_blocker_respected",
+      "status": "PASS"
+    }
+  ],
+  "schema": "tora_q3_final_requirement_audit_v1",
+  "status": "PASS",
+  "vdp_t_6_397_issue": "UNRESOLVED_AND_OUT_OF_SCOPE"
+}

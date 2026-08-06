@@ -1,0 +1,136 @@
+{
+  "certified_horizon": 4.3,
+  "closed_loop_gates": [
+    {
+      "certified_horizon": 1.0,
+      "gate": "b48_t1",
+      "status": "PASS"
+    },
+    {
+      "certified_horizon": 4.3,
+      "first_failed_segment": 44,
+      "gate": "b48_t5",
+      "status": "FAIL"
+    },
+    {
+      "gate": "b48_t10",
+      "reason": "earlier failure",
+      "status": "N/A"
+    },
+    {
+      "gate": "b48_t20",
+      "reason": "earlier failure",
+      "status": "N/A"
+    }
+  ],
+  "completed_segments": 43,
+  "controller_gates": [
+    {
+      "gate": "initial_b48",
+      "maximum_abs_difference": 3.552713678800501e-15,
+      "status": "PASS",
+      "tolerance": 1e-12
+    },
+    {
+      "controller_period": 2,
+      "gate": "first_refresh_at_t1",
+      "pre_state_max_abs_difference": 0.014211021940625762,
+      "status": "METHOD_INPUT_DIVERGENCE"
+    },
+    {
+      "completed_refreshes": 5,
+      "gate": "first_five_refreshes",
+      "status": "FAIL_ALIGNED_CONTRACT"
+    },
+    {
+      "gate": "all_twenty_refreshes",
+      "reason": "closed-loop acceptance failed at segment 44",
+      "status": "N/A"
+    }
+  ],
+  "first_behavior_relevant_controller_difference": {
+    "after_lower_max_abs": 0.16733063796595893,
+    "after_lower_max_ulp": 94198774848895,
+    "after_upper_max_abs": 0.1711897364457684,
+    "after_upper_max_ulp": 96371254158352,
+    "before_lower_max_abs": 0.16733063796595893,
+    "before_upper_max_abs": 0.1711897364457684,
+    "candidate_contains_reference": 0,
+    "controller_period": 2,
+    "overlap": 48,
+    "physical_time": 1.0,
+    "pre_state_lower_max_abs": 0.014211021940625762,
+    "pre_state_upper_max_abs": 0.014211021940624874,
+    "reference_contains_candidate": 48,
+    "scalar_count": 48,
+    "segment_index": 11
+  },
+  "first_exact_controller_difference": {
+    "after_lower_max_abs": 3.552713678800501e-15,
+    "after_lower_max_ulp": 2,
+    "after_upper_max_abs": 3.552713678800501e-15,
+    "after_upper_max_ulp": 2,
+    "before_lower_max_abs": 3.552713678800501e-15,
+    "before_upper_max_abs": 3.552713678800501e-15,
+    "candidate_contains_reference": 33,
+    "controller_period": 1,
+    "overlap": 48,
+    "physical_time": 0.0,
+    "pre_state_lower_max_abs": 3.3306690738754696e-16,
+    "pre_state_upper_max_abs": 3.3306690738754696e-16,
+    "reference_contains_candidate": 28,
+    "scalar_count": 48,
+    "segment_index": 1
+  },
+  "first_failure": {
+    "acceptance_was_not_relaxed": true,
+    "classification": "method-native plant/state-projection enclosure growth feeds a different sound controller input box; x3 tube crosses the frozen property at the fifth controller period",
+    "failed_leaf_ids": [
+      0
+    ],
+    "first_failed_leaf": 0,
+    "physical_time": 4.4,
+    "property_margin": [
+      1.462985986924705,
+      1.1144023590499603,
+      -0.042012028629907494,
+      0.06265188348659256
+    ],
+    "segment_index": 44
+  },
+  "nominal_gate": {
+    "candidate": "NativeToraController float64 flattened graph",
+    "maximum_absolute_error": 5.103408504680829e-07,
+    "reference": "ONNX ReferenceEvaluator float32 graph",
+    "status": "PASS",
+    "tolerance": 1e-06
+  },
+  "pre_fix_actual_bug_evidence": {
+    "bugs": [
+      "physical tube/endpoint were exported before affine parameterization composition",
+      "exact-time endpoint terms were ranged before equal spatial exponents were aggregated"
+    ],
+    "post_fix_t1_x4_endpoint_max_abs_difference": 2.1974644326405723e-12,
+    "segments_sha256": "70a439fa47da516112f50db039f55774b09e9f4472384254e8740416f5eed158",
+    "summary_sha256": "2ed644d10c9d27f8214f2c59630bf51e4ee497f7b7cc603bc8e7742be100d459"
+  },
+  "schema": "tora_q3_native_full_closed_loop_analysis_v1",
+  "source_hashes": {
+    "torch_controller_updates": "db2b1d71459f5afc3bd167f1ec5ee753c8664bc06840f4333584b0c45e15585c",
+    "torch_segments": "6b02cb6c0070417987c62a0a61ff60a37b58c0762167c76533ef5f2c801b050b",
+    "torch_summary": "cd645b82a656d3fffb2ed53432b1b89067ca16a83a643ef2c20e744063095ee9",
+    "xiangru_controller_observation": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+    "xiangru_plant_observation": "cdf0ead9538b061b3115802bc6a6e5d8dc07868076db678bdeb9db2bae27f114"
+  },
+  "status": "FAILED_AT_T4_4",
+  "timing": {
+    "controller_bound_seconds": 0.4920562393963337,
+    "controller_build_seconds": 0.5935591887682676,
+    "controller_composition_seconds": 0.002454114146530628,
+    "normalization_seconds": 0.06460261065512896,
+    "peak_cuda_memory_bytes": 972638720,
+    "plant_seconds": 118.00480113364756,
+    "serialization_seconds": 0.0474267927929759,
+    "wall_seconds_including_serialization": 119.83808294776827
+  }
+}
