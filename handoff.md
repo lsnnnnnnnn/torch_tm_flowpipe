@@ -1,59 +1,41 @@
-# Handoff: VDP cross-step carry-lineage audit
+# Handoff: Xiangru Q3 matched-baseline audit
 
 ## State
 
-- Branch: `codex/vdp-cross-step-carry-lineage-audit-20260806`.
-- Starting Torch HEAD: `455146df23940caa6f168877ffe6ec6f508c43a4`.
-- Formal H1 source: `a1fb3527bb7c12ce23aa2fb49d66f6380c463c90`.
-- H1 packaging/report source: `2e4507220a631a21dbe5227a7f9a5201948aedde`.
+- Branch: `codex/xiangru-q3-matched-baseline-audit-20260806`.
+- Starting Torch lineage: `4707abed5e8d28ec56c2b5e76b800bd284f0008b`.
+- Xiangru reproduction: clean detached `27d29050a5f214b56f211ca9cb411e734ed80230`.
+- Xiangru canonical checkout observed: `84184de6c2b3f1ff2da6755f732d91925037025d`; fetch/ls-remote unavailable because private HTTPS credentials were absent.
+- DiffReach: `dd628eb443b517d6415de93e7035b4baef73963e`.
 - Stock Flowstar: `b85a3211748cb77b736fe4ad42ee02d8d2b81148`.
-- Verdict: **Case C**. No Torch numerical fix and no new representation implemented.
-- Original Torch and Flowstar dirty worktrees were left untouched; all work was done in isolated worktrees.
+- Verdict: **Case B — FORMAL MATCHED COMPARISON NOT AUTHORIZED**.
 
-## Reproduced anchors
+## Reproduction and contract
 
-- 14/14 actual frozen H1 lanes reproduce exactly.
-- Frozen checkpoint SHA256: `dcb8f646d45c9742e0cff23fea596c12e53d8ccd00d1544f70564a44a7463420`.
-- Frozen point: `t=6.397083942944808`, `h=0.003623635847674574`.
-- D3 margin: `-1.5859969428028492e-5`.
-- Candidate/support SHA256: `bc1433d...` / `d0aa354b...`.
-- Fresh T=6.5 trace: expected exit 1 at the same frozen point after 307 accepted steps and 48 rejected attempts; terminal margins are `9.963763341523255e-5` (x) and `-1.99995911680722e-5` (y).
-- The fresh full checkpoint hash is `54185608...` because provenance/config packaging differs, while current-state, `tmv_pre`, and `tmv_right` TMVector hashes exactly match the frozen `dcb8f646...` artifact.
+- Fresh Xiangru B48 complete-Q3 verifies all 200 fixed 0.1 s segments to T=20 with no failure or retry.
+- Author/fresh semantic comparison: 2,850 numeric fields, max absolute error `1.1546319456101628e-13`, no difference outside declared `1e-6` tolerance.
+- Q3 is complete total degree <=3 over six variables (84 slots), K2 polynomial Picard plus ten DR-RP rounds.
+- Torch's degree-3 retention predicate agrees, but the full algorithm and model contract do not.
+- First gate blocker: Xiangru closed-loop homogeneous TORA + frozen NN + B48 + T20 versus available Torch plant-only Van der Pol + no controller + T10.
+- Stock Flowstar is an independent VDP reference, not a third Q3 winner.
 
-## New findings
+## Trace repair
 
-- First native schedule divergence: accepted step 12, `t=0.18187433604506256`, candidate `h=0.019615177354506262`; Torch accepts, stock Flowstar halves and accepts `0.009807588677253131`.
-- Last common accepted step: 11.
-- The authoritative contracts are only partially matched: proactive Torch truncation subdivision, local basis/state shape, interval backend, normalized insertion, tube storage, and the symbolic queue differ.
-- Flowstar stock/instrumented equivalence passes: 290 segments, exit 0, identical printed schedules, and byte-identical plot files.
-- Call-44 stable hash: `b7613d231be82bea5afc477540342cfa04ee17a6448d7bfb5921dc70ae341a9d`.
-- Call 44 is raw-remainder y `-x²y`; 1,141/1,141 discarded routes are classified, 1,510 DAG nodes have no parent gaps, and the selected interval reconstructs exactly.
-- First trajectory-wide Torch cross-step interval enclosure is after accepted step 0. The immediate terminal ancestry crosses boundary 307, then call 44 intervalizes its discarded degree-overflow polynomial.
+- Transition lifecycle stages now record actual objects and stable full-content hashes.
+- Rejected attempts use `accepted_step_index=null` and retain accepted-count-before-attempt.
+- Terminal call 44 is correctly y-component `-x²y`, after 307 accepted states in a rejected attempt; its DAG is explicitly terminal-local.
+- One-step, T=0.2 instrumented/uninstrumented and terminal replay evidence pass. Instrumentation numerical equivalence is exact for all selected fields.
 
-## Why Case C
+## N/A results
 
-No local implementation bug is visible, but the audit cannot isolate symbolic carry as the causal cross-tool difference. The first native schedule split is confounded by an intentional range-policy mismatch, coefficient comparison fails closed on basis/center/scale identity, and the observation-only stock hook cannot see the rejected Picard candidate/image, insertion discarded terms, or J/Phi_L parents.
+- Formal endpoint/tube tightness: N/A.
+- Formal runtime comparison: N/A.
+- Native fresh Xiangru CUDA timing is recorded by stage, but one reproduction is not a repeated performance benchmark and is not compared against CPU plant-only timing.
 
 ## One next action
 
-Instrument the exact stock symbolic `Flowpipe::advance_adaptive_stepsize` overload around `insert_ctrunc_normal`, `Picard_ctrunc_normal`, and the subset test. Limit the experiment to the last common state/first divergent h, export J/Phi_L lineage and pre/post polynomials, and implement/test a common-basis transform before comparing coefficients. Do not implement delayed carry/noise symbols yet.
+Implement a native Torch lane for the exact homogeneous-TORA plant, frozen controller/bounder, periodic control update, B48 initial partition and endpoint/tube contract. Validate it independently, then restart at Gate 1. Do not create a winner table before Gates 1–5 pass.
 
-## Commands
+## Evidence
 
-Focused tests:
-
-```bash
-conda run -n py11 pytest -q tests/test_vdp_cross_step_carry_lineage_audit.py
-```
-
-Final gate:
-
-```bash
-conda run -n py11 pytest -q
-git diff --check
-git status --short --branch
-```
-
-The exact captured commands, raw streams, exit codes, environment, and final hash manifest are under `outputs/vdp_cross_step_carry_lineage_20260806/`.
-
-Final verification: focused audit tests `8 passed in 7.48s`; full suite `441 passed, 2 skipped in 63.34s`. Both captures record source commit `7a40428bfdf018a0995daf5f9777afc9c807fe88` with an empty tracked diff.
+All raw commands, streams, exit codes, configs, contracts, traces, tests, environments and checksums are under `outputs/xiangru_q3_matched_audit_20260806/`. See the four top-level reports for the reproduction, order/contract, trace repair and gated comparison conclusions.
