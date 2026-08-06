@@ -14,12 +14,13 @@ from .interval import Interval
 from .tm_vector import TMVector
 
 
-SCHEMA = "vdp_transition_trace_schema_v1"
+SCHEMA = "vdp_transition_trace_schema_v2"
 SOURCE_COMMIT = "a1fb3527bb7c12ce23aa2fb49d66f6380c463c90"
 REQUIRED_COMMON = (
     "tool",
     "source_commit",
     "run_id",
+    "accepted_count_before_attempt",
     "accepted_step_index",
     "attempt_index",
     "retry_index",
@@ -76,6 +77,128 @@ def encode_interval(interval: Interval) -> dict[str, dict[str, str]]:
     return {"lower": lower, "upper": upper}
 
 
+def _basis_variable_order(tmv: TMVector) -> list[str]:
+    if tmv.n_vars == 3:
+        return ["u0", "u1", "tau"]
+    return [f"u{index}" for index in range(tmv.n_vars)]
+
+
+def _tmv_content_payload(
+    tmv: TMVector,
+    *,
+    centers: Sequence[float] | None = None,
+    scales: Sequence[float] | None = None,
+    basis_variable_order: Sequence[str] | None = None,
+) -> dict[str, Any]:
+    if not isinstance(tmv, TMVector) or not tmv.models:
+        raise ValueError("trace TMVector must be nonempty")
+    basis = list(basis_variable_order or _basis_variable_order(tmv))
+    if len(basis) != tmv.n_vars or len(set(basis)) != len(basis):
+        raise ValueError("trace basis variable order must name every variable exactly once")
+    resolved_centers = [
+        float(centers[index])
+        if centers is not None and index < len(centers)
+        else _model_constant(model)
+        for index, model in enumerate(tmv)
+    ]
+    resolved_scales: list[float | None] = [
+        (
+            float(scales[index])
+            if scales is not None
+            and index < len(scales)
+            and scales[index] is not None
+            else None
+        )
+        for index in range(len(tmv))
+    ]
+    models = []
+    for model in tmv:
+        models.append(
+            {
+                "n_vars": model.n_vars,
+                "order": model.order,
+                "truncation_range_split": model.truncation_range_split,
+                "domain": [encode_interval(interval) for interval in model.domain],
+                "polynomial_terms": [
+                    {
+                        "exponent_tuple": list(exponent),
+                        "coefficient": encode_float(coefficient),
+                    }
+                    for exponent, coefficient in sorted(model.polynomial.terms.items())
+                ],
+                "remainder": encode_interval(model.remainder),
+            }
+        )
+    return {
+        "basis_variable_order": basis,
+        "center": [encode_float(value) for value in resolved_centers],
+        "normalization_scale": [
+            encode_float(value) if value is not None else None
+            for value in resolved_scales
+        ],
+        "models": models,
+    }
+
+
+def tmv_content_hash(
+    tmv: TMVector,
+    *,
+    centers: Sequence[float] | None = None,
+    scales: Sequence[float] | None = None,
+    basis_variable_order: Sequence[str] | None = None,
+) -> str:
+    """Hash coefficients, remainders, domain/basis, center, and scale."""
+    payload = _tmv_content_payload(
+        tmv,
+        centers=centers,
+        scales=scales,
+        basis_variable_order=basis_variable_order,
+    )
+    encoded = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("ascii")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def verify_recorded_stage_hash(
+    transitions_path: Path,
+    *,
+    stage: str,
+    actual: TMVector,
+    centers: Sequence[float] | None = None,
+    scales: Sequence[float] | None = None,
+    accepted_count_before_attempt: int | None = None,
+) -> str:
+    """Fail closed unless one trace-stage hash matches the supplied object."""
+    rows = []
+    with Path(transitions_path).open(encoding="utf-8") as handle:
+        for line in handle:
+            row = json.loads(line)
+            if row.get("stage") != stage:
+                continue
+            if (
+                accepted_count_before_attempt is not None
+                and row.get("accepted_count_before_attempt")
+                != accepted_count_before_attempt
+            ):
+                continue
+            rows.append(row)
+    hashes = {row.get("object_content_sha256") for row in rows}
+    hashes.discard(None)
+    if len(hashes) != 1:
+        raise ValueError(
+            f"trace stage {stage!r} must contain exactly one non-null object hash"
+        )
+    observed = next(iter(hashes))
+    expected = tmv_content_hash(actual, centers=centers, scales=scales)
+    if observed != expected:
+        raise ValueError(
+            f"trace stage {stage!r} object hash mismatch: "
+            f"expected {expected}, observed {observed}"
+        )
+    return observed
+
+
 def _json_line(value: Mapping[str, Any]) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
 
@@ -110,7 +233,8 @@ class TransitionTraceWriter:
         self._remainders = (self.output_dir / "remainders.jsonl").open("w", encoding="utf-8")
         self._attempt_handle = (self.output_dir / "acceptance_attempts.csv").open("w", newline="", encoding="utf-8")
         self._attempt_fields = [
-            "tool", "source_commit", "run_id", "accepted_step_index", "attempt_index", "retry_index",
+            "tool", "source_commit", "run_id", "accepted_count_before_attempt",
+            "accepted_step_index", "attempt_index", "retry_index",
             "t_pre_decimal", "t_pre_hex", "h_attempt_decimal", "h_attempt_hex", "accepted",
             "rejection_reason", "state_component", "stage", "validation_status", "subset_margin_x", "subset_margin_y",
         ]
@@ -125,6 +249,10 @@ class TransitionTraceWriter:
             "required_common_fields": list(REQUIRED_COMMON),
             "required_stages": list(REQUIRED_STAGES),
             "number_encoding": {"decimal": "binary64 max_digits10 string", "hex": "Python hexfloat string"},
+            "object_content_sha256": (
+                "SHA256 over basis, domain, center, normalization scale, sorted coefficients, "
+                "Taylor-model order/truncation metadata, and interval remainder"
+            ),
             "exponent_order": "tuple/list in the recorded basis_variable_order",
             "null_policy": "unavailable fields are null with an explicit reason; cross-field substitution is forbidden",
         }
@@ -147,7 +275,8 @@ class TransitionTraceWriter:
             "tool": "torch",
             "source_commit": self.source_commit,
             "run_id": self.run_id,
-            "accepted_step_index": int(step),
+            "accepted_count_before_attempt": int(step),
+            "accepted_step_index": int(step) if accepted else None,
             "attempt_index": int(attempt),
             "retry_index": int(retry),
             "t_pre": encode_float(t_pre),
@@ -183,6 +312,8 @@ class TransitionTraceWriter:
                 "self_map_candidate_box": None,
                 "self_map_image": None,
                 "violation_margin": None,
+                "object_content_sha256": None,
+                "object_vector_components": None,
                 "unavailable_reason": reason,
             }
         )
@@ -198,13 +329,25 @@ class TransitionTraceWriter:
     ) -> None:
         if not isinstance(tmv, TMVector) or not tmv.models:
             raise ValueError("trace TMVector must be nonempty")
-        basis = [f"u{index}" for index in range(tmv.n_vars)]
-        if tmv.n_vars == 3:
-            basis = ["u0", "u1", "tau"]
+        basis = _basis_variable_order(tmv)
+        resolved_centers = [
+            centers[index] if centers is not None and index < len(centers) else _model_constant(model)
+            for index, model in enumerate(tmv)
+        ]
+        resolved_scales = [
+            scales[index] if scales is not None and index < len(scales) else None
+            for index in range(len(tmv))
+        ]
+        object_hash = tmv_content_hash(
+            tmv,
+            centers=resolved_centers,
+            scales=resolved_scales,
+            basis_variable_order=basis,
+        )
         for component, model in enumerate(tmv):
             component_base = dict(base, component=component)
-            center = centers[component] if centers is not None and component < len(centers) else _model_constant(model)
-            scale = scales[component] if scales is not None and component < len(scales) else None
+            center = resolved_centers[component]
+            scale = resolved_scales[component]
             polynomial_range = model.polynomial.evaluate_interval(model.domain)
             row = self._base(**component_base)
             row.update(
@@ -223,6 +366,8 @@ class TransitionTraceWriter:
                     "self_map_candidate_box": None,
                     "self_map_image": None,
                     "violation_margin": None,
+                    "object_content_sha256": object_hash,
+                    "object_vector_components": len(tmv),
                 }
             )
             self._write_transition(row)
@@ -288,7 +433,8 @@ class TransitionTraceWriter:
                     "tool": "torch",
                     "source_commit": self.source_commit,
                     "run_id": self.run_id,
-                    "accepted_step_index": step,
+                    "accepted_count_before_attempt": step,
+                    "accepted_step_index": step if accepted else "",
                     "attempt_index": self._attempt_index,
                     "retry_index": retry,
                     "t_pre_decimal": encoded_t["decimal"],
@@ -342,10 +488,9 @@ class TransitionTraceWriter:
         previous_scales = previous_state.scales if previous_state is not None else None
         self.emit_tmv(current_tmv, stage="step_pre_state", centers=previous_centers, scales=previous_scales, **common)
         if previous_state is not None:
-            self.emit_tmv(previous_state.tmv_pre, stage="right_map_input", centers=previous_centers, scales=previous_scales, **common)
+            self.emit_tmv(previous_state.tmv_right, stage="right_map_input", centers=previous_centers, scales=previous_scales, **common)
         else:
             self.emit_missing(stage="right_map_input", component=-1, reason="initial step has no historical right-map state", **common)
-            self.emit_missing(stage="right_map_output", component=-1, reason="initial step has no historical right-map state", **common)
 
         self.emit_tmv(segment.tm, stage="raw_picard_image", **common)
         self.emit_missing(
@@ -354,26 +499,50 @@ class TransitionTraceWriter:
             reason="aggregate range records exist in runner range_trace; per-term records are emitted by the call44 lineage recorder only",
             **common,
         )
-        if segment.endpoint_raw_tm is not None:
-            self.emit_tmv(segment.endpoint_raw_tm, stage="insertion_input", **common)
-            self.emit_tmv(segment.endpoint_raw_tm, stage="normalized_reset_input", **common)
-        else:
-            self.emit_missing(stage="insertion_input", component=-1, reason="rejected segment did not publish raw endpoint", **common)
-            self.emit_missing(stage="normalized_reset_input", component=-1, reason="rejected segment did not publish raw endpoint", **common)
+        lifecycle = segment.transition_lifecycle
         next_state = segment.flowstar_normal_state
-        if next_state is not None:
-            self.emit_tmv(next_state.tmv_pre, stage="insertion_output", centers=next_state.center, scales=next_state.scales, **common)
-            self.emit_tmv(next_state.tmv_right, stage="right_map_output", centers=next_state.center, scales=next_state.scales, **common)
-        else:
-            self.emit_missing(stage="insertion_output", component=-1, reason="rejected segment has no next normalized state", **common)
-        if segment.reset_tm is not None:
+        if lifecycle is not None:
+            if segment.reset_tm is not lifecycle.normalized_reset_output:
+                raise ValueError("normalized-reset lifecycle output is not the segment reset object")
+            if next_state is not None and next_state.tmv_pre is not segment.tm:
+                raise ValueError("next-state tmv_pre is not the validated segment TM")
+            self.emit_tmv(lifecycle.insertion_input, stage="insertion_input", **common)
+            self.emit_tmv(lifecycle.insertion_output, stage="insertion_output", **common)
+            self.emit_tmv(lifecycle.normalized_reset_input, stage="normalized_reset_input", **common)
             centers = next_state.center if next_state is not None else None
             scales = next_state.scales if next_state is not None else None
-            self.emit_tmv(segment.reset_tm, stage="normalized_reset_output", centers=centers, scales=scales, **common)
-            self.emit_tmv(segment.reset_tm, stage="next_step_pre_state", centers=centers, scales=scales, **common)
+            self.emit_tmv(
+                lifecycle.normalized_reset_output,
+                stage="normalized_reset_output",
+                centers=centers,
+                scales=scales,
+                **common,
+            )
+            self.emit_tmv(
+                lifecycle.normalized_reset_output,
+                stage="next_step_pre_state",
+                centers=centers,
+                scales=scales,
+                **common,
+            )
         else:
-            self.emit_missing(stage="normalized_reset_output", component=-1, reason="rejected segment has no reset", **common)
-            self.emit_missing(stage="next_step_pre_state", component=-1, reason="rejected segment has no next pre-state", **common)
+            unavailable = (
+                "rejected segment has no normalized-insertion lifecycle"
+                if not accepted
+                else "transition mode did not publish normalized-insertion lifecycle objects"
+            )
+            for stage in (
+                "insertion_input",
+                "insertion_output",
+                "normalized_reset_input",
+                "normalized_reset_output",
+                "next_step_pre_state",
+            ):
+                self.emit_missing(stage=stage, component=-1, reason=unavailable, **common)
+        if next_state is not None:
+            self.emit_tmv(next_state.tmv_right, stage="right_map_output", centers=next_state.center, scales=next_state.scales, **common)
+        else:
+            self.emit_missing(stage="right_map_output", component=-1, reason="rejected segment has no next normalized state", **common)
 
         image_pair = list(segment.picard_image_remainder or [])
         component_count = min(len(image_pair[0]), len(image_pair[1])) if len(image_pair) == 2 else 0
@@ -404,6 +573,8 @@ class TransitionTraceWriter:
                     "self_map_candidate_box": _interval_or_none(candidate),
                     "self_map_image": _interval_or_none(image),
                     "violation_margin": encode_float(margin) if margin is not None else None,
+                    "object_content_sha256": None,
+                    "object_vector_components": None,
                 }
             )
             self._write_transition(row)

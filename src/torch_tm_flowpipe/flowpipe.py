@@ -71,6 +71,7 @@ class FlowpipeSegment:
     candidate_remainder: Sequence[Sequence[float]] | None = None
     picard_image_remainder: Sequence[Sequence[float]] | None = None
     subset_margin: Sequence[Sequence[float]] | None = None
+    transition_lifecycle: "FlowstarTransitionLifecycle | None" = None
 
     def __post_init__(self) -> None:
         # Older experiment helpers construct FlowpipeSegment directly.  Treat
@@ -92,6 +93,21 @@ class FlowpipeResult:
     @property
     def validation_attempts(self) -> int:
         return sum(seg.validation_attempts for seg in self.segments)
+
+
+@dataclass(frozen=True)
+class FlowstarTransitionLifecycle:
+    """Exact objects created by one normalized-insertion transition.
+
+    The fields deliberately follow the implementation stages rather than
+    inferring them from the stored next state.  This object is observation-only
+    and is attached to the returned segment after the transition completes.
+    """
+
+    insertion_input: TMVector
+    insertion_output: TMVector
+    normalized_reset_input: TMVector
+    normalized_reset_output: TMVector
 
 
 @dataclass(frozen=True)
@@ -1324,7 +1340,12 @@ def _flowstar_normalized_insertion_transition(
     right_map_center_mode: str = "constant",
     horner_diagnostic: bool = False,
     horner_insertion: bool = False,
-) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
+) -> tuple[
+    TMVector,
+    FlowstarNormalFlowpipeState,
+    dict[str, Any],
+    FlowstarTransitionLifecycle,
+]:
     prev = previous_state
     if prev is None:
         prev = FlowstarNormalFlowpipeState(
@@ -1545,7 +1566,13 @@ def _flowstar_normalized_insertion_transition(
     diagnostics["tmv_pre_degree"] = _tm_max_degree(seg.tm)
     diagnostics["tmv_right_term_count"] = sum(len(model.polynomial.terms) for model in tmv_right)
     diagnostics["tmv_pre_term_count"] = sum(len(model.polynomial.terms) for model in seg.tm)
-    return reset_tm, state, diagnostics
+    lifecycle = FlowstarTransitionLifecycle(
+        insertion_input=endpoint_without_constants,
+        insertion_output=inserted,
+        normalized_reset_input=inserted_for_reset,
+        normalized_reset_output=reset_tm,
+    )
+    return reset_tm, state, diagnostics, lifecycle
 
 
 def _sum_interval_widths(boxes: Sequence[Interval]) -> float | str:
@@ -4210,7 +4237,7 @@ def flowpipe_step_flowstar_style_adaptive(
             use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} or use_v2
             use_split = reset_mode == "normalized_insertion_symqueue_split"
             use_horner = reset_mode == "normalized_insertion_horner"
-            reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
+            reset_tm, normal_state, normal_stats, transition_lifecycle = _flowstar_normalized_insertion_transition(
                 seg,
                 normal_state,
                 order,
@@ -4234,6 +4261,7 @@ def flowpipe_step_flowstar_style_adaptive(
             if use_symqueue and normal_state is not None:
                 queue_state = normal_state.symbolic_queue
             seg.reset_tm = reset_tm
+            seg.transition_lifecycle = transition_lifecycle
             seg.flowstar_normal_state = normal_state
             seg.flowstar_normal_stats = {**normal_stats, "reset_mode": reset_mode}
             seg.flowstar_symbolic_queue_state = queue_state

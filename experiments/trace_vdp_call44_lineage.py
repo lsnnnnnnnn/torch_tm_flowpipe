@@ -194,6 +194,7 @@ def _node(
     parents: Sequence[str],
     operation: str,
     source_class: str,
+    component: int,
     root_reason: str | None = None,
     first_intervalization: str | None = None,
     first_truncated_step: int | None = None,
@@ -204,13 +205,24 @@ def _node(
         "exponent_tuple": list(exponent),
         "degree": sum(exponent),
         "coefficient": _number(coefficient),
-        "state_component": 1,
+        "state_component": component,
+        "state_component_name": "x" if component == 0 else "y",
         "picard_iteration": "validation_attempt_1_raw_remainder_compat",
         "operation_type": operation,
         "parent_ids": list(parents),
         "source_class": source_class,
-        "first_produced_accepted_step": 307,
-        "first_cutoff_or_truncate_step": first_truncated_step,
+        "accepted_count_before_attempt": 307,
+        "accepted_step_index": None,
+        "attempt_outcome": "rejected",
+        "lineage_scope": "terminal_local_expression_lineage",
+        "cross_step_lineage_complete": False,
+        "first_produced_accepted_step": None,
+        "first_cutoff_or_truncate_step": None,
+        "first_cutoff_or_truncate_attempt": (
+            "terminal_rejected_attempt_after_307_accepted"
+            if first_truncated_step is not None
+            else None
+        ),
         "first_symbolic_to_interval_operation": first_intervalization,
         "terminal_y_remainder_path": [
             "call44_discarded_polynomial_range",
@@ -253,20 +265,23 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
         y_roots[index] = y_id
         root_explanation = (
             "Picard-candidate polynomial root. Its boundary ancestry is the fresh normalized current-state polynomial; "
-            "historical right-map/insertion dependence was already enclosed at accepted boundary step 307."
+            "historical right-map/insertion dependence was already enclosed in the pre-state after 307 accepted steps. "
+            "This export does not claim a complete cross-step ancestry."
         )
         nodes.append(
             _node(
                 x_id, kind="root_polynomial_term", exponent=exponent, coefficient=x43[index], parents=[],
                 operation="terminal_picard_candidate_x", source_class="current_state_polynomial",
-                root_reason=root_explanation, first_intervalization="ancestral_normalized_insertion_boundary_step_307",
+                component=0, root_reason=root_explanation,
+                first_intervalization="ancestral_normalized_insertion_boundary_before_terminal_attempt",
             )
         )
         nodes.append(
             _node(
                 y_id, kind="root_polynomial_term", exponent=exponent, coefficient=right44[index], parents=[],
                 operation="terminal_picard_candidate_y", source_class="current_state_polynomial",
-                root_reason=root_explanation, first_intervalization="ancestral_normalized_insertion_boundary_step_307",
+                component=1, root_reason=root_explanation,
+                first_intervalization="ancestral_normalized_insertion_boundary_before_terminal_attempt",
             )
         )
 
@@ -283,7 +298,7 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
             _node(
                 route_id, kind="multiplication_route", exponent=exponents[out_index], coefficient=coefficient,
                 parents=[x_roots[left_index], x_roots[right_index]], operation="x_times_x_kept_route",
-                source_class="current_state_polynomial",
+                source_class="current_state_polynomial", component=0,
             )
         )
 
@@ -297,6 +312,7 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
             _node(
                 aggregate_id, kind="coefficient_aggregate", exponent=exponent, coefficient=op43_output[index],
                 parents=parents, operation="scatter_add_equal_exponents", source_class="current_state_polynomial",
+                component=0,
                 root_reason=None if parents else "structurally zero basis slot above effective degree 3",
             )
         )
@@ -306,6 +322,7 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
             _node(
                 cutoff_id, kind="cutoff_result", exponent=exponent, coefficient=left44[index],
                 parents=[aggregate_id], operation="cutoff_keep_or_zero", source_class="current_state_polynomial",
+                component=0,
                 first_intervalization=("cutoff_interval_remainder" if abs(float(op43_output[index])) <= cutoff_threshold and float(op43_output[index]) != 0.0 else None),
                 first_truncated_step=(307 if abs(float(op43_output[index])) <= cutoff_threshold and float(op43_output[index]) != 0.0 else None),
             )
@@ -343,6 +360,7 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
             _node(
                 route_id, kind="discarded_multiplication_route", exponent=exponent, coefficient=coefficient,
                 parents=parents, operation="x_squared_times_y_degree_gt_3", source_class="current_state_polynomial",
+                component=1,
                 first_intervalization="call44_polynomial_truncation_range", first_truncated_step=307,
             )
         )
@@ -362,7 +380,14 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
                 "left_parent_id": parents[0],
                 "right_parent_id": parents[1],
                 "source_class": "current_state_polynomial",
-                "first_truncated_step": 307,
+                "state_component": 1,
+                "state_component_name": "y",
+                "accepted_count_before_attempt": 307,
+                "accepted_step_index": "",
+                "attempt_outcome": "rejected",
+                "lineage_scope": "terminal_local_expression_lineage",
+                "first_truncated_step": "",
+                "first_truncated_attempt": "terminal_rejected_attempt_after_307_accepted",
                 "first_intervalization_operation": "call44_polynomial_truncation_range",
             }
         )
@@ -377,7 +402,8 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
                 aggregate_id, kind="discarded_exponent_aggregate", exponent=exponent,
                 coefficient=merged_coefficients[index], parents=unique_parents[index],
                 operation="canonical_equal_exponent_aggregation_with_outward_rounding_for_range",
-                source_class="current_state_polynomial", first_intervalization="call44_polynomial_truncation_range",
+                source_class="current_state_polynomial", component=1,
+                first_intervalization="call44_polynomial_truncation_range",
                 first_truncated_step=307,
             )
         )
@@ -385,6 +411,12 @@ def _build_lineage(capture: _Capture) -> tuple[list[dict[str, Any]], list[dict[s
     identity_payload = {
         "stage": "validation_attempt_1_raw_remainder_compat",
         "component": 1,
+        "component_name": "y",
+        "accepted_count_before_attempt": 307,
+        "accepted_step_index": None,
+        "attempt_outcome": "rejected",
+        "lineage_scope": "terminal_local_expression_lineage",
+        "cross_step_lineage_complete": False,
         "rhs_operation": "negative_x_squared_times_y",
         "multiplication_operation_index": op_index,
         "range_context": call44["context"],
@@ -431,6 +463,7 @@ def _first_intervalization_rows(
         rows.append(
             {
                 "event_index": 0, "accepted_step": int(first["segment_index"]), "component": "x,y",
+                "accepted_count_before_attempt": int(first["segment_index"]), "attempt_outcome": "accepted",
                 "operation": "first_normalized_insertion_right_map_remainder_enclosure",
                 "lower": "", "upper": "",
                 "lineage_role": (
@@ -444,6 +477,7 @@ def _first_intervalization_rows(
             rows.append(
                 {
                     "event_index": 1, "accepted_step": int(first_truncation["segment_index"]), "component": "x,y",
+                    "accepted_count_before_attempt": int(first_truncation["segment_index"]), "attempt_outcome": "accepted",
                     "operation": "first_non_underflow_normalized_insertion_degree_truncation",
                     "lower": "", "upper": "",
                     "lineage_role": (
@@ -456,6 +490,7 @@ def _first_intervalization_rows(
     rows.extend([
         {
             "event_index": next_index, "accepted_step": normal["step_index"], "component": "x,y",
+            "accepted_count_before_attempt": normal["step_index"], "attempt_outcome": "accepted_boundary_state",
             "operation": "normalized_insertion_right_map_interval_enclosure",
             "lower": f"{right[0]['remainder']['lo_hex']};{right[1]['remainder']['lo_hex']}",
             "upper": f"{right[0]['remainder']['hi_hex']};{right[1]['remainder']['hi_hex']}",
@@ -463,12 +498,14 @@ def _first_intervalization_rows(
         },
         {
             "event_index": next_index + 1, "accepted_step": normal["step_index"], "component": "x,y",
+            "accepted_count_before_attempt": normal["step_index"], "attempt_outcome": "accepted_boundary_state",
             "operation": "normalized_insertion_degree_truncation",
             "lower": "", "upper": "",
             "lineage_role": f"sound interval widths x={diagnostics['insertion_truncation_width_x']:.17g};y={diagnostics['insertion_truncation_width_y']:.17g}",
         },
         {
-            "event_index": next_index + 2, "accepted_step": 307, "component": "y",
+            "event_index": next_index + 2, "accepted_step": "", "component": "y",
+            "accepted_count_before_attempt": 307, "attempt_outcome": "rejected",
             "operation": "call44_polynomial_truncation_range",
             "lower": _number(result.selected_lo[0, 0])["decimal"],
             "upper": _number(result.selected_hi[0, 0])["decimal"],
@@ -515,7 +552,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "current_state_polynomial", "historical_right_map_carry", "insertion_carry", "interval_remainder"
     }]
     identity_document = {
-        "schema": "vdp_call44_identity_v1",
+        "schema": "vdp_call44_identity_v2",
         "t_pre": _number(TARGET_T_PRE),
         "h": _number(TARGET_H),
         "checkpoint_full_sha256": TARGET_CHECKPOINT_SHA256,
@@ -544,7 +581,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         writer.writeheader()
         writer.writerows(events)
     coverage = {
-        "schema": "vdp_call44_lineage_coverage_v1",
+        "schema": "vdp_call44_lineage_coverage_v2",
         "discarded_route_count": len(terms),
         "discarded_routes_with_source_class": len(classified),
         "source_class_coverage": len(classified) / len(terms),
