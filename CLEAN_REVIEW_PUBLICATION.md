@@ -12,7 +12,7 @@ branch.
 - Raw private traces, logs, paths, and observer patch: excluded
 - Bootstrap root commit: pushed successfully
 - Reviewed content verification: editable install PASS; `52 passed, 14 skipped`
-- Publication status: reviewed content ready; final post-commit history scan pending
+- Publication status: post-commit history/artifact scan PASS; final reviewed tip ready for non-force push
 
 This review branch is not a license grant for any excluded historical asset
 and must not be merged into the authorization-unknown lineage until the owner
