@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "status": "PASS_WITH_DECLARED_TOLERANCE",
+  "reference": "/srv/local/shengenli/CROWN-Reach_Development/experiments/reachability/results/s3c_fair_timing_raw/rep1_q3/s3r_q3_b48_rep1.json",
+  "reference_sha256": "5ae2abf56e7ba25c34931db12b5d51e95aedcdc15a1eb00518c778d1b939b15a",
+  "fresh": "/srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit/outputs/xiangru_q3_matched_audit_20260806/xiangru_reproduction/fresh_q3_b48_t20/raw_outputs/s3r_q3_b48_rep1.json",
+  "fresh_sha256": "3a56fc53f34a804322b2de840c224e35639e7f8d90aae2d7775721f5e2051988",
+  "comparison_policy": {
+    "exact_top_level_fields": [
+      "schema_version",
+      "experiment",
+      "status",
+      "formal_scope",
+      "verified_cells",
+      "controls",
+      "validity",
+      "crown_reach_commit",
+      "crown_reach_dirty",
+      "diffreach_commit",
+      "artifacts"
+    ],
+    "cell_numeric_absolute_tolerance": 1e-06,
+    "relative_error_denominator": "max(abs(reference), cell_numeric_absolute_tolerance)",
+    "tolerance_source": "Xiangru run_s0_tora_static_partition_sweep.py CONTROLLER_TOLERANCE = 1e-6",
+    "excluded_from_correctness": [
+      "cells.*.peak_cuda_memory_bytes",
+      "cells.*.timing",
+      "cells.*.*_seconds"
+    ],
+    "runtime_compared": false
+  },
+  "exact_fields": [
+    {
+      "field": "schema_version",
+      "equal": true
+    },
+    {
+      "field": "experiment",
+      "equal": true
+    },
+    {
+      "field": "status",
+      "equal": true
+    },
+    {
+      "field": "formal_scope",
+      "equal": true
+    },
+    {
+      "field": "verified_cells",
+      "equal": true
+    },
+    {
+      "field": "controls",
+      "equal": true
+    },
+    {
+      "field": "validity",
+      "equal": true
+    },
+    {
+      "field": "crown_reach_commit",
+      "equal": true
+    },
+    {
+      "field": "crown_reach_dirty",
+      "equal": true
+    },
+    {
+      "field": "diffreach_commit",
+      "equal": true
+    },
+    {
+      "field": "artifacts",
+      "equal": true
+    }
+  ],
+  "numeric_fields_compared": 2850,
+  "maximum_absolute_error": 1.1546319456101628e-13,
+  "maximum_relative_error": 1.7763568394002505e-09,
+  "excluded_runtime_or_memory_fields": 154,
+  "differences": []
+}

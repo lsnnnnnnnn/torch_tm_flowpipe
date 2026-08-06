@@ -1,0 +1,529 @@
+## pwd
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: pwd
+exit_code: 0
+stdout:
+/srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+stderr:
+
+## status_short_branch
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git status --short --branch
+exit_code: 0
+stdout:
+## codex/xiangru-q3-matched-baseline-audit-20260806...origin/codex/vdp-cross-step-carry-lineage-audit-20260806
+?? scripts/collect_xiangru_q3_provenance.py
+stderr:
+
+## status_porcelain_v2
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git status --porcelain=v2
+exit_code: 0
+stdout:
+? scripts/collect_xiangru_q3_provenance.py
+stderr:
+
+## head
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git rev-parse HEAD
+exit_code: 0
+stdout:
+4707abed5e8d28ec56c2b5e76b800bd284f0008b
+stderr:
+
+## tree
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git rev-parse 'HEAD^{tree}'
+exit_code: 0
+stdout:
+bd66f0f4205255c6d41660a8a9d1e9c9bc410d9c
+stderr:
+
+## recent_log
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git log -15 --oneline --decorate
+exit_code: 0
+stdout:
+4707abe (HEAD -> codex/xiangru-q3-matched-baseline-audit-20260806, origin/codex/vdp-cross-step-carry-lineage-audit-20260806, codex/vdp-cross-step-carry-lineage-audit-20260806) Seal VDP carry lineage audit evidence manifest
+7e0bd0f Document VDP carry lineage findings and evidence
+7a40428 Add Flowstar Torch trace comparator and carry lineage audit
+93d7085 Add reproducible VDP transition trace instrumentation
+455146d (origin/codex/vdp-later-terminal-factorized-range-20260805, codex/vdp-later-terminal-factorized-range-20260805) docs: publish later terminal factorized evidence
+2e45072 docs: add factorized terminal evidence workflow
+a1fb352 feat: add frozen later-terminal attribution runner
+f860408 feat: add deterministic dense Horner range evaluation
+cdb54bd (origin/codex/vdp-terminal-range-closure-20260805, codex/vdp-terminal-range-closure-20260805) fix: complete terminal closure decision metadata
+f746551 docs: publish R4 terminal range closure evidence
+0360842 perf: record subdivision range phase timings
+24bd652 feat: validate dense subdivision range for terminal replay
+82c54a2 (origin/codex/generic-batched-tm-backend-vdp-t10-20260805, codex/generic-batched-tm-backend-vdp-t10-20260805) Finalize clean dense backend evidence provenance
+ef746aa Stabilize evidence provenance across refreshes
+ccf95a6 Clarify limited dense CUDA benchmark result
+stderr:
+
+## branches
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git branch -a -vv
+exit_code: 0
+stdout:
+  codex/batched-dense-nncs-gpu                                             6b2c78c [origin/codex/batched-dense-nncs-gpu] Improve batched dense TM range remainder kernels
++ codex/bern-ibf-tm-feasibility                                            dd82032 (/srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study) add independent Bernstein reference and tests
++ codex/deep-study-protocol-repair-v2                                      387c118 (/srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair) [origin/codex/torch-flowstar-diffreach-deep-study: ahead 5] classify deep-study partial completions
++ codex/first-order-followup-correctness-matched-basis                     3d0ae54 (/srv/local/shengenli/torch_tm_flowpipe_first_order_followup) [origin/codex/first-order-followup-correctness-matched-basis] add validated focused follow-up results
++ codex/first-order-three-way-benchmark                                    13e5eec (/srv/local/shengenli/torch_tm_flowpipe_first_order_bench) [origin/codex/first-order-three-way-benchmark] add reproducible benchmark report and curated results
+  codex/flowstar-kernel-alignment                                          54704e8 [origin/codex/flowstar-kernel-alignment] Add Flowstar width-control diagnostics
+  codex/flowstar-normalized-insertion                                      3bd72ca [origin/codex/flowstar-normalized-insertion] Audit Flowstar internal intermediate ranges
++ codex/flowstar-raw-remainder-compat                                      26a254e (/srv/local/shengenli/torch_tm_flowpipe) Correct h10 centering audit semantics and add handoff
++ codex/flowstar-scalar-affine-correctness-closure-20260804                7d078b5 (/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure) [origin/codex/flowstar-scalar-affine-correctness-closure-20260804] Diagnose clean-stock Flowstar scalar containment loss
++ codex/generic-batched-tm-backend-vdp-t10-20260805                        82c54a2 (/srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10) [origin/codex/generic-batched-tm-backend-vdp-t10-20260805] Finalize clean dense backend evidence provenance
++ codex/native-reproduction-no-adapters-20260804                           438ee68 (/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters) [origin/codex/native-reproduction-no-adapters-20260804] Reproduce Xiangru and native solver baselines
++ codex/repository-cleanup-before-external-torch-audit                     7dddc97 (/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit) [origin/codex/repository-cleanup-before-external-torch-audit] Record repository cleanup audit and acceptance evidence
++ codex/three-tool-correctness-parity-20260804                             308b735 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit) [origin/codex/three-tool-correctness-parity-20260804] Commit three-tool reaudit evidence closure
++ codex/three-way-common-contract-comparison                               7251adf (/srv/local/shengenli/torch_tm_flowpipe_three_way_comparison) [origin/codex/three-way-common-contract-comparison] add validated three-way comparison results
++ codex/three-way-comparison-correctness-repair                            9024a8a (/srv/local/shengenli/torch_tm_flowpipe_three_way_repair) [origin/codex/three-way-comparison-correctness-repair] add corrected comparison results and report
++ codex/torch-flowstar-diffreach-deep-study                                9a684d9 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_study) [origin/codex/torch-flowstar-diffreach-deep-study] publish authoritative three-tool deep study
++ codex/vdp-cross-step-carry-lineage-audit-20260806                        4707abe (/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit) [origin/codex/vdp-cross-step-carry-lineage-audit-20260806] Seal VDP carry lineage audit evidence manifest
++ codex/vdp-later-terminal-factorized-range-20260805                       455146d (/srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range) [origin/codex/vdp-later-terminal-factorized-range-20260805] docs: publish later terminal factorized evidence
++ codex/vdp-terminal-range-closure-20260805                                cdb54bd (/srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure) [origin/codex/vdp-terminal-range-closure-20260805] fix: complete terminal closure decision metadata
+* codex/xiangru-q3-matched-baseline-audit-20260806                         4707abe [origin/codex/vdp-cross-step-carry-lineage-audit-20260806] Seal VDP carry lineage audit evidence manifest
+  main                                                                     b2f34f5 [origin/main] Refresh Flowstar ctrunc validation outputs
+  remotes/origin/HEAD                                                      -> origin/main
+  remotes/origin/codex/batched-dense-nncs-gpu                              6b2c78c Improve batched dense TM range remainder kernels
+  remotes/origin/codex/first-order-followup-correctness-matched-basis      3d0ae54 add validated focused follow-up results
+  remotes/origin/codex/first-order-three-way-benchmark                     13e5eec add reproducible benchmark report and curated results
+  remotes/origin/codex/flowstar-kernel-alignment                           54704e8 Add Flowstar width-control diagnostics
+  remotes/origin/codex/flowstar-normalized-insertion                       3bd72ca Audit Flowstar internal intermediate ranges
+  remotes/origin/codex/flowstar-raw-remainder-compat                       26a254e Correct h10 centering audit semantics and add handoff
+  remotes/origin/codex/flowstar-scalar-affine-correctness-closure-20260804 7d078b5 Diagnose clean-stock Flowstar scalar containment loss
+  remotes/origin/codex/generic-batched-tm-backend-vdp-t10-20260805         82c54a2 Finalize clean dense backend evidence provenance
+  remotes/origin/codex/native-reproduction-no-adapters-20260804            438ee68 Reproduce Xiangru and native solver baselines
+  remotes/origin/codex/repository-cleanup-before-external-torch-audit      7dddc97 Record repository cleanup audit and acceptance evidence
+  remotes/origin/codex/repository-consolidation-v1                         08b6f24 complete repository consolidation quality audit
+  remotes/origin/codex/three-tool-correctness-parity-20260804              308b735 Commit three-tool reaudit evidence closure
+  remotes/origin/codex/three-way-common-contract-comparison                7251adf add validated three-way comparison results
+  remotes/origin/codex/three-way-comparison-correctness-repair             9024a8a add corrected comparison results and report
+  remotes/origin/codex/torch-flowstar-diffreach-deep-study                 9a684d9 publish authoritative three-tool deep study
+  remotes/origin/codex/vdp-cross-step-carry-lineage-audit-20260806         4707abe Seal VDP carry lineage audit evidence manifest
+  remotes/origin/codex/vdp-later-terminal-factorized-range-20260805        455146d docs: publish later terminal factorized evidence
+  remotes/origin/codex/vdp-terminal-range-closure-20260805                 cdb54bd fix: complete terminal closure decision metadata
+  remotes/origin/main                                                      b2f34f5 Refresh Flowstar ctrunc validation outputs
+  remotes/origin/master                                                    93e623e initialize
+stderr:
+
+## remotes
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git remote -v
+exit_code: 0
+stdout:
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (fetch)
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (push)
+stderr:
+
+## fetch_all_tags
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git fetch --all --tags
+exit_code: 0
+stdout:
+stderr:
+
+## ls_remote_origin
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git ls-remote origin
+exit_code: 0
+stdout:
+b2f34f5b2077e34662a2559d8c09b1d264bd7d98	HEAD
+6b2c78c86e6b5baf0e26c10438150535ff79a098	refs/heads/codex/batched-dense-nncs-gpu
+3d0ae5444435974e7509e176129fb796c76312ab	refs/heads/codex/first-order-followup-correctness-matched-basis
+13e5eece2002e009429d6fb463eed4bc1c53ae34	refs/heads/codex/first-order-three-way-benchmark
+54704e8f695802e373e2371fb0befed3b60ff3b5	refs/heads/codex/flowstar-kernel-alignment
+3bd72cac3aa993418fa0aa0e37da4367d5d7364f	refs/heads/codex/flowstar-normalized-insertion
+26a254ef585a9dee394b7e41922c06bf8799f501	refs/heads/codex/flowstar-raw-remainder-compat
+7d078b5f34467db8bbe4dd672b0136e2fa64a481	refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804
+82c54a244d996ccc08b09cb4ded5f48167415585	refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805
+438ee68fd71fa6182eb66cac17229e20dd3cb7d3	refs/heads/codex/native-reproduction-no-adapters-20260804
+7dddc97b5be64c36e530c3e231fd32d5cb834a17	refs/heads/codex/repository-cleanup-before-external-torch-audit
+08b6f2416122cbf4220ff351e663caa1a0af13a2	refs/heads/codex/repository-consolidation-v1
+308b735ac577cfea39172976a4c08716f1e54d2f	refs/heads/codex/three-tool-correctness-parity-20260804
+7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10	refs/heads/codex/three-way-common-contract-comparison
+9024a8a29bdc0ad668a7c0620bd53872f4313cc8	refs/heads/codex/three-way-comparison-correctness-repair
+9a684d9106633e067bfac0747244b769fa49aa0b	refs/heads/codex/torch-flowstar-diffreach-deep-study
+4707abed5e8d28ec56c2b5e76b800bd284f0008b	refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806
+455146df23940caa6f168877ffe6ec6f508c43a4	refs/heads/codex/vdp-later-terminal-factorized-range-20260805
+cdb54bd3d2ffb49a0b58245055932756ebc3aa47	refs/heads/codex/vdp-terminal-range-closure-20260805
+b2f34f5b2077e34662a2559d8c09b1d264bd7d98	refs/heads/main
+93e623e3ec2c8f71a305dfa5e94f47bfc0c3498d	refs/heads/master
+c2579db54e58f016bad567fc7a41d12d5932eb38	refs/tags/archive/pre-consolidation-20260730/codex-batched-dense-nncs-gpu
+6b2c78c86e6b5baf0e26c10438150535ff79a098	refs/tags/archive/pre-consolidation-20260730/codex-batched-dense-nncs-gpu^{}
+2b13512a2cc7ba576327e32d2634a21337027ff2	refs/tags/archive/pre-consolidation-20260730/codex-first-order-followup-correctness-matched-basis
+3d0ae5444435974e7509e176129fb796c76312ab	refs/tags/archive/pre-consolidation-20260730/codex-first-order-followup-correctness-matched-basis^{}
+dfe6e09fae211f3d8db7b6812b148f73f33888aa	refs/tags/archive/pre-consolidation-20260730/codex-first-order-three-way-benchmark
+13e5eece2002e009429d6fb463eed4bc1c53ae34	refs/tags/archive/pre-consolidation-20260730/codex-first-order-three-way-benchmark^{}
+59afeab76f5151a6f5f9e39f816d2baadd3663ee	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-ctrunc-rescue-diagnostics
+bf19292a12bee4695bfc4f44a24be4ea0d341848	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-ctrunc-rescue-diagnostics^{}
+ddd849b2ad712fd77c91ba4b9a8f306f3a302c07	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-kernel-alignment
+54704e8f695802e373e2371fb0befed3b60ff3b5	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-kernel-alignment^{}
+7ece152333e3b49ef45fff073467a7004a39a6a1	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-normalized-insertion
+3bd72cac3aa993418fa0aa0e37da4367d5d7364f	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-normalized-insertion^{}
+1c642ca63358811549f101d33b613853adc23810	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-raw-remainder-compat
+26a254ef585a9dee394b7e41922c06bf8799f501	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-raw-remainder-compat^{}
+2f0d3ae640df30132acda2c7dc4cee8f407829c6	refs/tags/archive/pre-consolidation-20260730/codex-three-way-common-contract-comparison
+7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10	refs/tags/archive/pre-consolidation-20260730/codex-three-way-common-contract-comparison^{}
+c04c9dea866bbba3272a52f0729b082f05303ca0	refs/tags/archive/pre-consolidation-20260730/codex-three-way-comparison-correctness-repair
+9024a8a29bdc0ad668a7c0620bd53872f4313cc8	refs/tags/archive/pre-consolidation-20260730/codex-three-way-comparison-correctness-repair^{}
+4125abe4e42afc81678d8d39b80a3a6e89073918	refs/tags/archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study
+9a684d9106633e067bfac0747244b769fa49aa0b	refs/tags/archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study^{}
+9279cce766bcc6ff20a0d411697b7ae073a038d6	refs/tags/archive/pre-consolidation-20260730/master
+93e623e3ec2c8f71a305dfa5e94f47bfc0c3498d	refs/tags/archive/pre-consolidation-20260730/master^{}
+stderr:
+
+## diff_check
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git diff --check
+exit_code: 0
+stdout:
+stderr:
+
+## worktree_list
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: git worktree list --porcelain
+exit_code: 0
+stdout:
+worktree /srv/local/shengenli/torch_tm_flowpipe
+HEAD 26a254ef585a9dee394b7e41922c06bf8799f501
+branch refs/heads/codex/flowstar-raw-remainder-compat
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study
+HEAD dd820324902c7d8c13c61c161fa830ae04b52f80
+branch refs/heads/codex/bern-ibf-tm-feasibility
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair
+HEAD 387c1188e1183a9c92521a545243a0c5aae5d51b
+branch refs/heads/codex/deep-study-protocol-repair-v2
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+HEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34
+branch refs/heads/codex/first-order-three-way-benchmark
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup
+HEAD 3d0ae5444435974e7509e176129fb796c76312ab
+branch refs/heads/codex/first-order-followup-correctness-matched-basis
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure
+HEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481
+branch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10
+HEAD 82c54a244d996ccc08b09cb4ded5f48167415585
+branch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters
+HEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3
+branch refs/heads/codex/native-reproduction-no-adapters-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit
+HEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17
+branch refs/heads/codex/repository-cleanup-before-external-torch-audit
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit
+HEAD 308b735ac577cfea39172976a4c08716f1e54d2f
+branch refs/heads/codex/three-tool-correctness-parity-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study
+HEAD 9a684d9106633e067bfac0747244b769fa49aa0b
+branch refs/heads/codex/torch-flowstar-diffreach-deep-study
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+HEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+branch refs/heads/codex/three-way-common-contract-comparison
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+HEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8
+branch refs/heads/codex/three-way-comparison-correctness-repair
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay
+HEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90
+detached
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit
+HEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+branch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range
+HEAD 455146df23940caa6f168877ffe6ec6f508c43a4
+branch refs/heads/codex/vdp-later-terminal-factorized-range-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure
+HEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47
+branch refs/heads/codex/vdp-terminal-range-closure-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+HEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+branch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806
+
+stderr:
+
+## pwd
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: pwd
+exit_code: 0
+stdout:
+/srv/local/shengenli/torch_tm_flowpipe
+stderr:
+
+## status_short_branch
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git status --short --branch
+exit_code: 0
+stdout:
+## codex/flowstar-raw-remainder-compat
+ M README.md
+ M experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
+ M experiments/flowstar_step_trace_compare.py
+ M tests/test_flowstar_step_trace_compare_alignment.py
+?? docs/flowstar_order2_vanderpol_failure.md
+stderr:
+
+## status_porcelain_v2
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git status --porcelain=v2
+exit_code: 0
+stdout:
+1 .M N... 100644 100644 100644 ad5e52b75f1c4e85930bf768bd6f6519d70fdaa1 ad5e52b75f1c4e85930bf768bd6f6519d70fdaa1 README.md
+1 .M N... 100644 100644 100644 6bcc4efdced006e0736cc1eb711f30ffa4f2060a 6bcc4efdced006e0736cc1eb711f30ffa4f2060a experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp
+1 .M N... 100644 100644 100644 87aaa4c6690c12bdb42de423fa56102d9d5428b2 87aaa4c6690c12bdb42de423fa56102d9d5428b2 experiments/flowstar_step_trace_compare.py
+1 .M N... 100644 100644 100644 7267072c71518c0489d3b304787f5638ae23b035 7267072c71518c0489d3b304787f5638ae23b035 tests/test_flowstar_step_trace_compare_alignment.py
+? docs/flowstar_order2_vanderpol_failure.md
+stderr:
+
+## head
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git rev-parse HEAD
+exit_code: 0
+stdout:
+26a254ef585a9dee394b7e41922c06bf8799f501
+stderr:
+
+## tree
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git rev-parse 'HEAD^{tree}'
+exit_code: 0
+stdout:
+92257d596a79d2b7599794a268b110cecc164266
+stderr:
+
+## recent_log
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git log -15 --oneline --decorate
+exit_code: 0
+stdout:
+26a254e (HEAD -> codex/flowstar-raw-remainder-compat, tag: archive/pre-consolidation-20260730/codex-flowstar-raw-remainder-compat, origin/codex/flowstar-raw-remainder-compat) Correct h10 centering audit semantics and add handoff
+7231eb0 Audit h10 right-map range midpoint centering
+06809ee Audit h10 right-map range midpoint centering
+46a7dd7 Audit h5 right-map range midpoint centering
+8bea95a Attribute h5 Flowstar raw remainder compat width growth
+3b79151 Audit h5 Flowstar raw remainder compat divergence
+f08856c Run h5 Flowstar raw remainder compat audit
+8aa7976 Align Flowstar raw remainder compat step policy
+e02f1c6 Validate Flowstar raw remainder compat attempt sequence
+426f8f9 Add Flowstar raw remainder compatibility experiment
+3bd72ca (tag: archive/pre-consolidation-20260730/codex-flowstar-normalized-insertion, origin/codex/flowstar-normalized-insertion, codex/flowstar-normalized-insertion) Audit Flowstar internal intermediate ranges
+823699e Partition Flowstar raw ctrunc remainder gap
+dda7ce9 Audit Flowstar raw ctrunc residual construction
+7f613e4 Expose Flowstar validation candidate decomposition fields
+c791195 Audit Flowstar validation candidate decomposition
+stderr:
+
+## branches
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git branch -a -vv
+exit_code: 0
+stdout:
+  codex/batched-dense-nncs-gpu                                             6b2c78c [origin/codex/batched-dense-nncs-gpu] Improve batched dense TM range remainder kernels
++ codex/bern-ibf-tm-feasibility                                            dd82032 (/srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study) add independent Bernstein reference and tests
++ codex/deep-study-protocol-repair-v2                                      387c118 (/srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair) [origin/codex/torch-flowstar-diffreach-deep-study: ahead 5] classify deep-study partial completions
++ codex/first-order-followup-correctness-matched-basis                     3d0ae54 (/srv/local/shengenli/torch_tm_flowpipe_first_order_followup) [origin/codex/first-order-followup-correctness-matched-basis] add validated focused follow-up results
++ codex/first-order-three-way-benchmark                                    13e5eec (/srv/local/shengenli/torch_tm_flowpipe_first_order_bench) [origin/codex/first-order-three-way-benchmark] add reproducible benchmark report and curated results
+  codex/flowstar-kernel-alignment                                          54704e8 [origin/codex/flowstar-kernel-alignment] Add Flowstar width-control diagnostics
+  codex/flowstar-normalized-insertion                                      3bd72ca [origin/codex/flowstar-normalized-insertion] Audit Flowstar internal intermediate ranges
+* codex/flowstar-raw-remainder-compat                                      26a254e Correct h10 centering audit semantics and add handoff
++ codex/flowstar-scalar-affine-correctness-closure-20260804                7d078b5 (/srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure) [origin/codex/flowstar-scalar-affine-correctness-closure-20260804] Diagnose clean-stock Flowstar scalar containment loss
++ codex/generic-batched-tm-backend-vdp-t10-20260805                        82c54a2 (/srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10) [origin/codex/generic-batched-tm-backend-vdp-t10-20260805] Finalize clean dense backend evidence provenance
++ codex/native-reproduction-no-adapters-20260804                           438ee68 (/srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters) [origin/codex/native-reproduction-no-adapters-20260804] Reproduce Xiangru and native solver baselines
++ codex/repository-cleanup-before-external-torch-audit                     7dddc97 (/srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit) [origin/codex/repository-cleanup-before-external-torch-audit] Record repository cleanup audit and acceptance evidence
++ codex/three-tool-correctness-parity-20260804                             308b735 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_audit) [origin/codex/three-tool-correctness-parity-20260804] Commit three-tool reaudit evidence closure
++ codex/three-way-common-contract-comparison                               7251adf (/srv/local/shengenli/torch_tm_flowpipe_three_way_comparison) [origin/codex/three-way-common-contract-comparison] add validated three-way comparison results
++ codex/three-way-comparison-correctness-repair                            9024a8a (/srv/local/shengenli/torch_tm_flowpipe_three_way_repair) [origin/codex/three-way-comparison-correctness-repair] add corrected comparison results and report
++ codex/torch-flowstar-diffreach-deep-study                                9a684d9 (/srv/local/shengenli/torch_tm_flowpipe_three_tool_study) [origin/codex/torch-flowstar-diffreach-deep-study] publish authoritative three-tool deep study
++ codex/vdp-cross-step-carry-lineage-audit-20260806                        4707abe (/srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit) [origin/codex/vdp-cross-step-carry-lineage-audit-20260806] Seal VDP carry lineage audit evidence manifest
++ codex/vdp-later-terminal-factorized-range-20260805                       455146d (/srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range) [origin/codex/vdp-later-terminal-factorized-range-20260805] docs: publish later terminal factorized evidence
++ codex/vdp-terminal-range-closure-20260805                                cdb54bd (/srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure) [origin/codex/vdp-terminal-range-closure-20260805] fix: complete terminal closure decision metadata
++ codex/xiangru-q3-matched-baseline-audit-20260806                         4707abe (/srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit) [origin/codex/vdp-cross-step-carry-lineage-audit-20260806] Seal VDP carry lineage audit evidence manifest
+  main                                                                     b2f34f5 [origin/main] Refresh Flowstar ctrunc validation outputs
+  remotes/origin/HEAD                                                      -> origin/main
+  remotes/origin/codex/batched-dense-nncs-gpu                              6b2c78c Improve batched dense TM range remainder kernels
+  remotes/origin/codex/first-order-followup-correctness-matched-basis      3d0ae54 add validated focused follow-up results
+  remotes/origin/codex/first-order-three-way-benchmark                     13e5eec add reproducible benchmark report and curated results
+  remotes/origin/codex/flowstar-kernel-alignment                           54704e8 Add Flowstar width-control diagnostics
+  remotes/origin/codex/flowstar-normalized-insertion                       3bd72ca Audit Flowstar internal intermediate ranges
+  remotes/origin/codex/flowstar-raw-remainder-compat                       26a254e Correct h10 centering audit semantics and add handoff
+  remotes/origin/codex/flowstar-scalar-affine-correctness-closure-20260804 7d078b5 Diagnose clean-stock Flowstar scalar containment loss
+  remotes/origin/codex/generic-batched-tm-backend-vdp-t10-20260805         82c54a2 Finalize clean dense backend evidence provenance
+  remotes/origin/codex/native-reproduction-no-adapters-20260804            438ee68 Reproduce Xiangru and native solver baselines
+  remotes/origin/codex/repository-cleanup-before-external-torch-audit      7dddc97 Record repository cleanup audit and acceptance evidence
+  remotes/origin/codex/repository-consolidation-v1                         08b6f24 complete repository consolidation quality audit
+  remotes/origin/codex/three-tool-correctness-parity-20260804              308b735 Commit three-tool reaudit evidence closure
+  remotes/origin/codex/three-way-common-contract-comparison                7251adf add validated three-way comparison results
+  remotes/origin/codex/three-way-comparison-correctness-repair             9024a8a add corrected comparison results and report
+  remotes/origin/codex/torch-flowstar-diffreach-deep-study                 9a684d9 publish authoritative three-tool deep study
+  remotes/origin/codex/vdp-cross-step-carry-lineage-audit-20260806         4707abe Seal VDP carry lineage audit evidence manifest
+  remotes/origin/codex/vdp-later-terminal-factorized-range-20260805        455146d docs: publish later terminal factorized evidence
+  remotes/origin/codex/vdp-terminal-range-closure-20260805                 cdb54bd fix: complete terminal closure decision metadata
+  remotes/origin/main                                                      b2f34f5 Refresh Flowstar ctrunc validation outputs
+  remotes/origin/master                                                    93e623e initialize
+stderr:
+
+## remotes
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git remote -v
+exit_code: 0
+stdout:
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (fetch)
+origin	git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git (push)
+stderr:
+
+## ls_remote_origin
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git ls-remote origin
+exit_code: 0
+stdout:
+b2f34f5b2077e34662a2559d8c09b1d264bd7d98	HEAD
+6b2c78c86e6b5baf0e26c10438150535ff79a098	refs/heads/codex/batched-dense-nncs-gpu
+3d0ae5444435974e7509e176129fb796c76312ab	refs/heads/codex/first-order-followup-correctness-matched-basis
+13e5eece2002e009429d6fb463eed4bc1c53ae34	refs/heads/codex/first-order-three-way-benchmark
+54704e8f695802e373e2371fb0befed3b60ff3b5	refs/heads/codex/flowstar-kernel-alignment
+3bd72cac3aa993418fa0aa0e37da4367d5d7364f	refs/heads/codex/flowstar-normalized-insertion
+26a254ef585a9dee394b7e41922c06bf8799f501	refs/heads/codex/flowstar-raw-remainder-compat
+7d078b5f34467db8bbe4dd672b0136e2fa64a481	refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804
+82c54a244d996ccc08b09cb4ded5f48167415585	refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805
+438ee68fd71fa6182eb66cac17229e20dd3cb7d3	refs/heads/codex/native-reproduction-no-adapters-20260804
+7dddc97b5be64c36e530c3e231fd32d5cb834a17	refs/heads/codex/repository-cleanup-before-external-torch-audit
+08b6f2416122cbf4220ff351e663caa1a0af13a2	refs/heads/codex/repository-consolidation-v1
+308b735ac577cfea39172976a4c08716f1e54d2f	refs/heads/codex/three-tool-correctness-parity-20260804
+7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10	refs/heads/codex/three-way-common-contract-comparison
+9024a8a29bdc0ad668a7c0620bd53872f4313cc8	refs/heads/codex/three-way-comparison-correctness-repair
+9a684d9106633e067bfac0747244b769fa49aa0b	refs/heads/codex/torch-flowstar-diffreach-deep-study
+4707abed5e8d28ec56c2b5e76b800bd284f0008b	refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806
+455146df23940caa6f168877ffe6ec6f508c43a4	refs/heads/codex/vdp-later-terminal-factorized-range-20260805
+cdb54bd3d2ffb49a0b58245055932756ebc3aa47	refs/heads/codex/vdp-terminal-range-closure-20260805
+b2f34f5b2077e34662a2559d8c09b1d264bd7d98	refs/heads/main
+93e623e3ec2c8f71a305dfa5e94f47bfc0c3498d	refs/heads/master
+c2579db54e58f016bad567fc7a41d12d5932eb38	refs/tags/archive/pre-consolidation-20260730/codex-batched-dense-nncs-gpu
+6b2c78c86e6b5baf0e26c10438150535ff79a098	refs/tags/archive/pre-consolidation-20260730/codex-batched-dense-nncs-gpu^{}
+2b13512a2cc7ba576327e32d2634a21337027ff2	refs/tags/archive/pre-consolidation-20260730/codex-first-order-followup-correctness-matched-basis
+3d0ae5444435974e7509e176129fb796c76312ab	refs/tags/archive/pre-consolidation-20260730/codex-first-order-followup-correctness-matched-basis^{}
+dfe6e09fae211f3d8db7b6812b148f73f33888aa	refs/tags/archive/pre-consolidation-20260730/codex-first-order-three-way-benchmark
+13e5eece2002e009429d6fb463eed4bc1c53ae34	refs/tags/archive/pre-consolidation-20260730/codex-first-order-three-way-benchmark^{}
+59afeab76f5151a6f5f9e39f816d2baadd3663ee	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-ctrunc-rescue-diagnostics
+bf19292a12bee4695bfc4f44a24be4ea0d341848	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-ctrunc-rescue-diagnostics^{}
+ddd849b2ad712fd77c91ba4b9a8f306f3a302c07	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-kernel-alignment
+54704e8f695802e373e2371fb0befed3b60ff3b5	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-kernel-alignment^{}
+7ece152333e3b49ef45fff073467a7004a39a6a1	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-normalized-insertion
+3bd72cac3aa993418fa0aa0e37da4367d5d7364f	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-normalized-insertion^{}
+1c642ca63358811549f101d33b613853adc23810	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-raw-remainder-compat
+26a254ef585a9dee394b7e41922c06bf8799f501	refs/tags/archive/pre-consolidation-20260730/codex-flowstar-raw-remainder-compat^{}
+2f0d3ae640df30132acda2c7dc4cee8f407829c6	refs/tags/archive/pre-consolidation-20260730/codex-three-way-common-contract-comparison
+7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10	refs/tags/archive/pre-consolidation-20260730/codex-three-way-common-contract-comparison^{}
+c04c9dea866bbba3272a52f0729b082f05303ca0	refs/tags/archive/pre-consolidation-20260730/codex-three-way-comparison-correctness-repair
+9024a8a29bdc0ad668a7c0620bd53872f4313cc8	refs/tags/archive/pre-consolidation-20260730/codex-three-way-comparison-correctness-repair^{}
+4125abe4e42afc81678d8d39b80a3a6e89073918	refs/tags/archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study
+9a684d9106633e067bfac0747244b769fa49aa0b	refs/tags/archive/pre-consolidation-20260730/codex-torch-flowstar-diffreach-deep-study^{}
+9279cce766bcc6ff20a0d411697b7ae073a038d6	refs/tags/archive/pre-consolidation-20260730/master
+93e623e3ec2c8f71a305dfa5e94f47bfc0c3498d	refs/tags/archive/pre-consolidation-20260730/master^{}
+stderr:
+
+## diff_check
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git diff --check
+exit_code: 0
+stdout:
+stderr:
+
+## worktree_list
+cwd: /srv/local/shengenli/torch_tm_flowpipe
+command: git worktree list --porcelain
+exit_code: 0
+stdout:
+worktree /srv/local/shengenli/torch_tm_flowpipe
+HEAD 26a254ef585a9dee394b7e41922c06bf8799f501
+branch refs/heads/codex/flowstar-raw-remainder-compat
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study
+HEAD dd820324902c7d8c13c61c161fa830ae04b52f80
+branch refs/heads/codex/bern-ibf-tm-feasibility
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair
+HEAD 387c1188e1183a9c92521a545243a0c5aae5d51b
+branch refs/heads/codex/deep-study-protocol-repair-v2
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench
+HEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34
+branch refs/heads/codex/first-order-three-way-benchmark
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup
+HEAD 3d0ae5444435974e7509e176129fb796c76312ab
+branch refs/heads/codex/first-order-followup-correctness-matched-basis
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure
+HEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481
+branch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10
+HEAD 82c54a244d996ccc08b09cb4ded5f48167415585
+branch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters
+HEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3
+branch refs/heads/codex/native-reproduction-no-adapters-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit
+HEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17
+branch refs/heads/codex/repository-cleanup-before-external-torch-audit
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit
+HEAD 308b735ac577cfea39172976a4c08716f1e54d2f
+branch refs/heads/codex/three-tool-correctness-parity-20260804
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study
+HEAD 9a684d9106633e067bfac0747244b769fa49aa0b
+branch refs/heads/codex/torch-flowstar-diffreach-deep-study
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison
+HEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10
+branch refs/heads/codex/three-way-common-contract-comparison
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair
+HEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8
+branch refs/heads/codex/three-way-comparison-correctness-repair
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay
+HEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90
+detached
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit
+HEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+branch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range
+HEAD 455146df23940caa6f168877ffe6ec6f508c43a4
+branch refs/heads/codex/vdp-later-terminal-factorized-range-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure
+HEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47
+branch refs/heads/codex/vdp-terminal-range-closure-20260805
+
+worktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+HEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+branch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806
+
+stderr:
+

@@ -1,0 +1,192 @@
+## pwd
+cwd: /srv/local/shengenli/flowstar
+command: pwd
+exit_code: 0
+stdout:
+/srv/local/shengenli/flowstar
+stderr:
+
+## status_short_branch
+cwd: /srv/local/shengenli/flowstar
+command: git status --short --branch
+exit_code: 0
+stdout:
+## master...origin/master
+ M flowstar-toolbox/TaylorModel.h
+?? benchmarks/continuous/simple/simple
+?? benchmarks/continuous/simple/simple.o
+?? benchmarks/continuous/simple/simple.plt
+?? benchmarks/continuous/vanderpol/vanderpol
+?? benchmarks/continuous/vanderpol/vanderpol.o
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+?? flowstar-2.1.0/__MACOSX/
+?? flowstar-2.1.0/flowstar-2.1.0/
+?? flowstar-toolbox/Constraints.o
+?? flowstar-toolbox/Continuous.o
+?? flowstar-toolbox/Discrete.o
+?? flowstar-toolbox/Geometry.o
+?? flowstar-toolbox/Hybrid.o
+?? flowstar-toolbox/Interval.o
+?? flowstar-toolbox/Matrix.o
+?? flowstar-toolbox/Variables.o
+?? flowstar-toolbox/lex.yy.c
+?? flowstar-toolbox/lex.yy.o
+?? flowstar-toolbox/libflowstar.a
+?? flowstar-toolbox/modelParser.output
+?? flowstar-toolbox/modelParser.tab.c
+?? flowstar-toolbox/modelParser.tab.h
+?? flowstar-toolbox/modelParser.tab.o
+?? flowstar-toolbox/settings.o
+stderr:
+
+## status_porcelain_v2
+cwd: /srv/local/shengenli/flowstar
+command: git status --porcelain=v2
+exit_code: 0
+stdout:
+1 .M N... 100644 100644 100644 401c759dea43c359523eec808d308a2733f8ed67 401c759dea43c359523eec808d308a2733f8ed67 flowstar-toolbox/TaylorModel.h
+? benchmarks/continuous/simple/simple
+? benchmarks/continuous/simple/simple.o
+? benchmarks/continuous/simple/simple.plt
+? benchmarks/continuous/vanderpol/vanderpol
+? benchmarks/continuous/vanderpol/vanderpol.o
+? benchmarks/continuous/vanderpol/vanderpol_t_x.eps
+? benchmarks/continuous/vanderpol/vanderpol_t_x.plt
+? benchmarks/continuous/vanderpol/vanderpol_t_y.eps
+? benchmarks/continuous/vanderpol/vanderpol_t_y.plt
+? flowstar-2.1.0/__MACOSX/
+? flowstar-2.1.0/flowstar-2.1.0/
+? flowstar-toolbox/Constraints.o
+? flowstar-toolbox/Continuous.o
+? flowstar-toolbox/Discrete.o
+? flowstar-toolbox/Geometry.o
+? flowstar-toolbox/Hybrid.o
+? flowstar-toolbox/Interval.o
+? flowstar-toolbox/Matrix.o
+? flowstar-toolbox/Variables.o
+? flowstar-toolbox/lex.yy.c
+? flowstar-toolbox/lex.yy.o
+? flowstar-toolbox/libflowstar.a
+? flowstar-toolbox/modelParser.output
+? flowstar-toolbox/modelParser.tab.c
+? flowstar-toolbox/modelParser.tab.h
+? flowstar-toolbox/modelParser.tab.o
+? flowstar-toolbox/settings.o
+stderr:
+
+## head
+cwd: /srv/local/shengenli/flowstar
+command: git rev-parse HEAD
+exit_code: 0
+stdout:
+b85a3211748cb77b736fe4ad42ee02d8d2b81148
+stderr:
+
+## tree
+cwd: /srv/local/shengenli/flowstar
+command: git rev-parse 'HEAD^{tree}'
+exit_code: 0
+stdout:
+8f2fd08d57ce74933f0909d9e25ba4fa84768fa4
+stderr:
+
+## recent_log
+cwd: /srv/local/shengenli/flowstar
+command: git log -15 --oneline --decorate
+exit_code: 0
+stdout:
+b85a321 (HEAD -> master, origin/master, origin/HEAD) Merge branch 'master' of https://github.com/chenxin415/flowstar
+ed08e67 New constructors in TM class is added
+6172bcd Update Matrix.h
+a49d73f Update README.md
+f9855f0 Update README.md
+eac80d2 Update spring_pendulum.cpp
+f0a915c benchmark updated
+bd9c5ad new benchmark added
+7005b8d Update README.md
+ac86b6e Create README.md
+0bd6179 performance improved
+1c6aba5 Update README.md
+4f06fd5 Update README.md
+260e69c Update lorenz.cpp
+3895b43 Update roessler.cpp
+stderr:
+
+## branches
+cwd: /srv/local/shengenli/flowstar
+command: git branch -a -vv
+exit_code: 0
+stdout:
++ codex/full-picard-revalidated    2310c1a (/srv/local/shengenli/flowstar_three_way_audit) extend full Picard revalidation across overloads
+  codex/three-way-refinement-audit 316128e instrument Flowstar refinement validation
+* master                           b85a321 [origin/master] Merge branch 'master' of https://github.com/chenxin415/flowstar
+  remotes/origin/HEAD              -> origin/master
+  remotes/origin/master            b85a321 Merge branch 'master' of https://github.com/chenxin415/flowstar
+stderr:
+
+## remotes
+cwd: /srv/local/shengenli/flowstar
+command: git remote -v
+exit_code: 0
+stdout:
+origin	https://github.com/chenxin415/flowstar (fetch)
+origin	https://github.com/chenxin415/flowstar (push)
+stderr:
+
+## fetch_all_tags
+cwd: /srv/local/shengenli/flowstar
+command: git fetch --all --tags
+exit_code: 0
+stdout:
+stderr:
+
+## ls_remote_origin
+cwd: /srv/local/shengenli/flowstar
+command: git ls-remote origin
+exit_code: 0
+stdout:
+b85a3211748cb77b736fe4ad42ee02d8d2b81148	HEAD
+b85a3211748cb77b736fe4ad42ee02d8d2b81148	refs/heads/master
+stderr:
+
+## diff_check
+cwd: /srv/local/shengenli/flowstar
+command: git diff --check
+exit_code: 0
+stdout:
+stderr:
+
+## worktree_list
+cwd: /srv/local/shengenli/flowstar
+command: git worktree list --porcelain
+exit_code: 0
+stdout:
+worktree /srv/local/shengenli/flowstar
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+branch refs/heads/master
+
+worktree /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/flowstar
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+detached
+
+worktree /srv/local/shengenli/flowstar_stock_gcc11
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+detached
+
+worktree /srv/local/shengenli/flowstar_three_way_audit
+HEAD 2310c1ac55357d0b48af3b37495a82a3e10ea4ff
+branch refs/heads/codex/full-picard-revalidated
+
+worktree /srv/local/shengenli/flowstar_vdp_cross_step_instrumented_b85a321
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+detached
+
+worktree /srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321
+HEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148
+detached
+
+stderr:
+

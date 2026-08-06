@@ -1,0 +1,194 @@
+## uname
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: uname -a
+exit_code: 0
+stdout:
+Linux huan-c4140-server-3 7.0.0-22-generic #22-Ubuntu SMP PREEMPT_DYNAMIC Mon May 25 15:54:34 UTC 2026 x86_64 GNU/Linux
+stderr:
+
+## lscpu
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: lscpu
+exit_code: 0
+stdout:
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           46 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  80
+On-line CPU(s) list:                     0-79
+Vendor ID:                               GenuineIntel
+Model name:                              Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz
+CPU family:                              6
+Model:                                   85
+Thread(s) per core:                      2
+Core(s) per socket:                      20
+Socket(s):                               2
+Stepping:                                4
+CPU(s) scaling MHz:                      31%
+CPU max MHz:                             3700.0000
+CPU min MHz:                             1000.0000
+BogoMIPS:                                4000.00
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cdp_l3 intel_ppin ssbd mba ibrs ibpb stibp tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb intel_pt avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts hwp hwp_act_window hwp_epp hwp_pkg_req vnmi pku ospke md_clear flush_l1d arch_capabilities
+Virtualization:                          VT-x
+L1d cache:                               1.3 MiB (40 instances)
+L1i cache:                               1.3 MiB (40 instances)
+L2 cache:                                40 MiB (40 instances)
+L3 cache:                                55 MiB (2 instances)
+NUMA node(s):                            2
+NUMA node0 CPU(s):                       0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78
+NUMA node1 CPU(s):                       1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79
+Vulnerability Gather data sampling:      Vulnerable
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             KVM: Vulnerable
+Vulnerability L1tf:                      Mitigation; PTE Inversion; VMX vulnerable
+Vulnerability Mds:                       Vulnerable; SMT vulnerable
+Vulnerability Meltdown:                  Vulnerable
+Vulnerability Mmio stale data:           Vulnerable
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Vulnerable
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Vulnerable
+Vulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers
+Vulnerability Spectre v2:                Vulnerable; IBPB: disabled; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Vulnerable
+Vulnerability Vmscape:                   Vulnerable
+stderr:
+
+## memory
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: free -h
+exit_code: 0
+stdout:
+               total        used        free      shared  buff/cache   available
+Mem:           372Gi        21Gi        74Gi       9.5Gi       288Gi       350Gi
+Swap:           31Gi       180Ki        31Gi
+stderr:
+
+## nvidia_smi
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: nvidia-smi
+exit_code: 0
+stdout:
+Thu Aug  6 03:09:24 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.159.03             Driver Version: 580.159.03     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla V100-SXM2-16GB           Off |   00000000:1A:00.0 Off |                    0 |
+| N/A   38C    P0             43W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA Graphics Device         Off |   00000000:1C:00.0 Off |                  Off |
+| N/A   35C    P0             42W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   2  Tesla V100-SXM2-16GB           Off |   00000000:1D:00.0 Off |                    0 |
+| N/A   38C    P0             43W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   3  Tesla V100-SXM2-16GB           Off |   00000000:1E:00.0 Off |                    0 |
+| N/A   39C    P0             43W /  300W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+stderr:
+
+## nvidia_smi_query
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: nvidia-smi --query-gpu=index,uuid,name,memory.total,driver_version,compute_mode --format=csv,noheader
+exit_code: 0
+stdout:
+0, GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae, Tesla V100-SXM2-16GB, 16384 MiB, 580.159.03, Default
+1, GPU-1c6effec-22d4-17fd-fdf1-7ce10166132e, NVIDIA Graphics Device, 16384 MiB, 580.159.03, Default
+2, GPU-698a9283-60ee-cc64-7d87-4e33f6fabc82, Tesla V100-SXM2-16GB, 16384 MiB, 580.159.03, Default
+3, GPU-1ad11bb9-50d4-6b9d-22f8-fc8c33180e56, Tesla V100-SXM2-16GB, 16384 MiB, 580.159.03, Default
+stderr:
+
+## conda_env_list
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: conda env list
+exit_code: 0
+stdout:
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /srv/local/shengenli/miniforge3
+bern-nn-ibf              /srv/local/shengenli/miniforge3/envs/bern-nn-ibf
+codex                *   /srv/local/shengenli/miniforge3/envs/codex
+diffreach312             /srv/local/shengenli/miniforge3/envs/diffreach312
+py11                     /srv/local/shengenli/miniforge3/envs/py11
+
+stderr:
+
+## gcc
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: gcc --version
+exit_code: 0
+stdout:
+gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+stderr:
+
+## gxx
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: g++ --version
+exit_code: 0
+stdout:
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+stderr:
+
+## cmake
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: cmake --version
+exit_code: 0
+stdout:
+cmake version 4.2.3
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+stderr:
+
+## nvcc
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: nvcc --version
+exit_code: 127
+stdout:
+stderr:
+[Errno 2] No such file or directory: 'nvcc'
+
+## selected_thread_environment
+cwd: /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit
+command: /srv/local/shengenli/miniforge3/envs/py11/bin/python -c 'import os; keys=('"'"'CUDA_VISIBLE_DEVICES'"'"','"'"'OMP_NUM_THREADS'"'"','"'"'MKL_NUM_THREADS'"'"','"'"'OPENBLAS_NUM_THREADS'"'"','"'"'NUMEXPR_NUM_THREADS'"'"','"'"'CUBLAS_WORKSPACE_CONFIG'"'"'); print('"'"'\n'"'"'.join(f'"'"'{key}={os.environ.get(key)!r}'"'"' for key in keys))'
+exit_code: 0
+stdout:
+CUDA_VISIBLE_DEVICES=None
+OMP_NUM_THREADS='1'
+MKL_NUM_THREADS=None
+OPENBLAS_NUM_THREADS=None
+NUMEXPR_NUM_THREADS=None
+CUBLAS_WORKSPACE_CONFIG=None
+stderr:
+
