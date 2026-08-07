@@ -1,0 +1,284 @@
+{
+  "comparisons": {
+    "same_software_stack_descriptive_ratio": {
+      "classification": "descriptive_baseline_runtime_ratio_not_optimized_speedup",
+      "denominator": "xiangru_matched_crown",
+      "numerator": "torch_matched_crown",
+      "torch_over_xiangru": 424.2969750895298
+    },
+    "torch_environment_effect": {
+      "classification": "environment_effect_only_not_implementation_speedup",
+      "denominator": "torch_matched_crown",
+      "numerator": "torch_py11",
+      "py11_over_matched_crown": 1.0027518296160611
+    }
+  },
+  "lanes": {
+    "torch_matched_crown": {
+      "batch": 48,
+      "cold_process_wall_seconds": 3098.6937915803865,
+      "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+      "device": "cuda",
+      "dtype": "float64",
+      "engine_build_seconds": null,
+      "environment": {
+        "cuda_runtime": "12.8",
+        "gpu": "Tesla V100-SXM2-16GB",
+        "python": "3.11.15",
+        "seed": 0,
+        "torch": "2.8.0+cu128",
+        "torch_num_threads": 1
+      },
+      "excluded_full_t20_warmup_seconds": 513.6097488012165,
+      "implementation": "torch_tm_flowpipe",
+      "label": "torch_matched_crown",
+      "peak_cpu_resident_memory_bytes": 1155473408,
+      "peak_cuda_memory_bytes": 927533568,
+      "private_summary_sha256": "26b8f13b78543fc7c6d4ef71f04b767e72c736b9838d1aed099c78ffdb1a31d8",
+      "repeat_checksums": [
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922
+      ],
+      "repeat_solver_seconds": [
+        514.112238724716,
+        511.28102162014693,
+        512.0116566913202,
+        511.3715916806832,
+        536.05111815501
+      ],
+      "repeat_status_output_sha256": "11512c58805dc81ad0559b2ba070eb1b40cad7941acae6a8b818f1b6f20f40d8",
+      "repeat_statuses": [
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED"
+      ],
+      "repeat_wall_seconds": [
+        514.1251694699749,
+        511.2939114533365,
+        512.0244269836694,
+        511.3843236034736,
+        536.0646435134113
+      ],
+      "runner_sha256": "8a51e1b344afd7d0cc2807b3bdd7d1648f1ceddec2b4f3c5dfae3078066b330f",
+      "segments_per_repeat": 200,
+      "source_commit": "54f0827c959145c1fee58688d5826d91f99479be",
+      "stable_status_and_output": true,
+      "steady_solver_statistics": {
+        "iqr_seconds": 2.740647044032812,
+        "max_seconds": 536.05111815501,
+        "mean_seconds": 516.9655253743753,
+        "median_seconds": 512.0116566913202,
+        "min_seconds": 511.28102162014693
+      },
+      "steady_stage_median_seconds": {
+        "affine_composition_and_physical_range": 36.57331415358931,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.132228286005557,
+        "normalization": 0.2008909722790122,
+        "period_boundary_setup": 0.024844606406986713,
+        "plant_local_step_including_validation": 470.09611880779266,
+        "scheduler": 0.00012221001088619232,
+        "serialization_io": 0.0
+      },
+      "steady_wall_statistics": {
+        "iqr_seconds": 2.7408458665013313,
+        "max_seconds": 536.0646435134113,
+        "mean_seconds": 516.9784950047731,
+        "median_seconds": 512.0244269836694,
+        "min_seconds": 511.2939114533365
+      },
+      "step_size": 0.1,
+      "timing_scope_notes": {
+        "compile_graph_warmup": "one complete T20 run excluded from measured statistics",
+        "controller_bound_update": "zero: frozen Xiangru controller trace is replayed",
+        "serialization_io": "zero inside repeats; only timing summaries are written between repeats"
+      }
+    },
+    "torch_py11": {
+      "batch": 48,
+      "cold_process_wall_seconds": 3371.5199989499524,
+      "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+      "device": "cuda",
+      "dtype": "float64",
+      "engine_build_seconds": null,
+      "environment": {
+        "cuda_runtime": "12.1",
+        "gpu": "Tesla V100-SXM2-16GB",
+        "python": "3.11.15",
+        "seed": 0,
+        "torch": "2.5.1+cu121",
+        "torch_num_threads": 1
+      },
+      "excluded_full_t20_warmup_seconds": 788.9966370807961,
+      "implementation": "torch_tm_flowpipe",
+      "label": "torch_py11",
+      "peak_cpu_resident_memory_bytes": 1074855936,
+      "peak_cuda_memory_bytes": 927533568,
+      "private_summary_sha256": "39fccbde211d1cde965c9ed832e205cd3c2c684a4aa97360013aee86cdde3038",
+      "repeat_checksums": [
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922,
+        190979.05951733922
+      ],
+      "repeat_solver_seconds": [
+        529.1192073784769,
+        513.0431192750111,
+        513.1550467619672,
+        513.4204616937786,
+        513.5328403664753
+      ],
+      "repeat_status_output_sha256": "11512c58805dc81ad0559b2ba070eb1b40cad7941acae6a8b818f1b6f20f40d8",
+      "repeat_statuses": [
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED"
+      ],
+      "repeat_wall_seconds": [
+        529.1326088597998,
+        513.0563260279596,
+        513.1680529676378,
+        513.4334309659898,
+        513.545809966512
+      ],
+      "runner_sha256": "8a51e1b344afd7d0cc2807b3bdd7d1648f1ceddec2b4f3c5dfae3078066b330f",
+      "segments_per_repeat": 200,
+      "source_commit": "54f0827c959145c1fee58688d5826d91f99479be",
+      "stable_status_and_output": true,
+      "steady_solver_statistics": {
+        "iqr_seconds": 0.37779360450804234,
+        "max_seconds": 529.1192073784769,
+        "mean_seconds": 516.4541350951419,
+        "median_seconds": 513.4204616937786,
+        "min_seconds": 513.0431192750111
+      },
+      "steady_stage_median_seconds": {
+        "affine_composition_and_physical_range": 37.19337923731655,
+        "controller_bound_update": 0.0,
+        "endpoint_projection": 5.155302512459457,
+        "normalization": 0.19939409382641315,
+        "period_boundary_setup": 0.024839299730956554,
+        "plant_local_step_including_validation": 470.85860884655267,
+        "scheduler": 0.00010322406888008118,
+        "serialization_io": 0.0
+      },
+      "steady_wall_statistics": {
+        "iqr_seconds": 0.3777569988742471,
+        "max_seconds": 529.1326088597998,
+        "mean_seconds": 516.4672457575798,
+        "median_seconds": 513.4334309659898,
+        "min_seconds": 513.0563260279596
+      },
+      "step_size": 0.1,
+      "timing_scope_notes": {
+        "compile_graph_warmup": "one complete T20 run excluded from measured statistics",
+        "controller_bound_update": "zero: frozen Xiangru controller trace is replayed",
+        "serialization_io": "zero inside repeats; only timing summaries are written between repeats"
+      }
+    },
+    "xiangru_matched_crown": {
+      "batch": 48,
+      "cold_process_wall_seconds": 62.5693284496665,
+      "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+      "device": "cuda",
+      "dtype": "float64",
+      "engine_build_seconds": 1.4717762609943748,
+      "environment": {
+        "cuda_runtime": "12.8",
+        "gpu": "Tesla V100-SXM2-16GB",
+        "python": "3.11.15",
+        "seed": 0,
+        "torch": "2.8.0+cu128",
+        "torch_num_threads": 1
+      },
+      "excluded_full_t20_warmup_seconds": 56.64902703370899,
+      "implementation": "xiangru_crown_reach",
+      "label": "xiangru_matched_crown",
+      "peak_cpu_resident_memory_bytes": 1463119872,
+      "peak_cuda_memory_bytes": 6471680,
+      "private_summary_sha256": "ea2d308baeedde564a28e1b51a7af57a2dea2a5ae84e10599a79db1e92ab9e99",
+      "repeat_checksums": [
+        190977.4069116018,
+        190977.4069116018,
+        190977.4069116018,
+        190977.4069116018,
+        190977.4069116018
+      ],
+      "repeat_solver_seconds": [
+        1.0881053432822227,
+        1.089706152677536,
+        1.1459899358451366,
+        1.1461585061624646,
+        1.1457819994539022
+      ],
+      "repeat_status_output_sha256": "53a40466bb16fa9ee9ca93ea67bf32f79c80d37cb0ed5de96857f080038f83f3",
+      "repeat_statuses": [
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED",
+        "VERIFIED"
+      ],
+      "repeat_wall_seconds": [
+        1.1469105891883373,
+        1.1481436183676124,
+        1.2067595506086946,
+        1.2069273237138987,
+        1.2074552681297064
+      ],
+      "runner_sha256": "ecdddc1395dcd157dcec3135c4d74f8292430c4b6cd74a0090ba7c14cdc41e6e",
+      "segments_per_repeat": 200,
+      "source_commit": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "stable_status_and_output": true,
+      "steady_solver_statistics": {
+        "iqr_seconds": 0.05628378316760063,
+        "max_seconds": 1.1461585061624646,
+        "mean_seconds": 1.1231483874842525,
+        "median_seconds": 1.1457819994539022,
+        "min_seconds": 1.0881053432822227
+      },
+      "steady_stage_median_seconds": {
+        "controller_bound_update": 0.0,
+        "period_boundary_setup": 0.011298568919301033,
+        "plant_step_including_validation_and_range": 1.1344392579048872,
+        "serialization_io": 0.0
+      },
+      "steady_wall_statistics": {
+        "iqr_seconds": 0.0587837053462863,
+        "max_seconds": 1.2074552681297064,
+        "mean_seconds": 1.1832392700016499,
+        "median_seconds": 1.2067595506086946,
+        "min_seconds": 1.1469105891883373
+      },
+      "step_size": 0.1,
+      "timing_scope_notes": {
+        "compile_graph_warmup": "one complete T20 run, including first lazy compilation, excluded",
+        "controller_bound_update": "zero: frozen controller trace is replayed",
+        "serialization_io": "zero inside repeats"
+      }
+    }
+  },
+  "schema": "tora_q3_baseline_runtime_public_v1",
+  "status": "PASS",
+  "workload": {
+    "batch": 48,
+    "controller_model_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+    "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+    "dtype": "float64",
+    "excluded_full_t20_warmups": 1,
+    "host_threads": 1,
+    "lane": "common_control_plant_replay",
+    "measured_repeats": 5,
+    "not_independent_closed_loop": true,
+    "segments": 200,
+    "step_size": 0.1
+  }
+}

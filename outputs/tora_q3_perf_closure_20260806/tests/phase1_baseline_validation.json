@@ -1,0 +1,51 @@
+{
+  "baseline_source_commit": "54f0827c959145c1fee58688d5826d91f99479be",
+  "controller_model_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+  "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+  "external_integration": {
+    "matched_crown_environment": {
+      "deselected": 70,
+      "passed": 2,
+      "skipped": 2,
+      "status": "PASS"
+    },
+    "py11_environment": {
+      "deselected": 70,
+      "passed": 0,
+      "reason": "optional ONNX dependency and private Xiangru observation were unavailable in this environment",
+      "skipped": 4,
+      "status": "PASS_WITH_EXPECTED_SKIPS"
+    }
+  },
+  "focused_phase1_tests": {
+    "command": "python -m pytest -q tests/test_manifest_builder.py tests/test_tora_runtime_summary.py tests/test_tora_baseline_freeze.py",
+    "passed": 6,
+    "status": "PASS"
+  },
+  "lane_boundary": {
+    "common_control_replay": true,
+    "independent_closed_loop": false
+  },
+  "one_step_cross_environment": {
+    "matched_crown_public_summary_sha256": "604352b1391f02f32b3c19ae0938b6cb7069f1e159514a5dd747d14299719ca6",
+    "py11_public_summary_sha256": "604352b1391f02f32b3c19ae0938b6cb7069f1e159514a5dd747d14299719ca6",
+    "status": "BYTE_IDENTICAL"
+  },
+  "runtime": {
+    "formal_protocol": {
+      "batch": 48,
+      "dtype": "float64",
+      "excluded_full_t20_warmups": 1,
+      "host_threads": 1,
+      "measured_repeats": 5,
+      "segments": 200,
+      "step_size": 0.1
+    },
+    "public_summary_sha256": "96ee398842f177f1938458cd89baecfce791fdb33b094a7924a617689044dc83",
+    "status": "PASS",
+    "three_lanes_completed": true
+  },
+  "schema": "tora_q3_phase1_baseline_validation_v1",
+  "status": "PASS",
+  "xiangru_source_commit": "27d29050a5f214b56f211ca9cb411e734ed80230"
+}
