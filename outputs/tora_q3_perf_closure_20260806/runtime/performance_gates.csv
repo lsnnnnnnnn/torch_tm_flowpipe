@@ -1,0 +1,6 @@
+gate,requirement,observed,status
+P0,no correctness regression,frozen one-leaf hash exact; compiled first-call bitwise verification; CPU/CUDA predicate tests,PASS
+P1,program host scalar sync <= 10 per logical step,3,PASS
+P2,aten::to reduction >= 90%,99.583897%,PASS
+P3,B48 one-step >= 10x,4.621012x,FAIL
+P4,common-control T20 >= 10x,4.854230x,FAIL

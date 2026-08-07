@@ -16,6 +16,12 @@ from typing import Any
 
 import torch
 
+from torch_tm_flowpipe.batched_dense_tm import (
+    compiled_point_enclosure_status,
+    dense_transient_ledger_suppressed,
+    dense_validation_batch,
+    monomial_interval_cache_status,
+)
 from torch_tm_flowpipe.tora_q3 import (
     build_tora_q3_box_model,
     compose_tora_q3_step,
@@ -62,7 +68,12 @@ def stats(values: list[float]) -> dict[str, float]:
     }
 
 
-def run_t20(rows: list[dict[str, Any]], device: torch.device) -> dict[str, Any]:
+def run_t20(
+    rows: list[dict[str, Any]],
+    device: torch.device,
+    *,
+    point_enclosure_backend: str,
+) -> dict[str, Any]:
     scopes = {
         "period_boundary_setup": 0.0,
         "normalization": 0.0,
@@ -122,16 +133,21 @@ def run_t20(rows: list[dict[str, Any]], device: torch.device) -> dict[str, Any]:
             scopes["normalization"] += time.perf_counter() - normalize_started
 
             plant_started = time.perf_counter()
-            local_step = dense_tora_q3_dr_step(
-                local_model, capture_trace=False
-            )
+            with dense_validation_batch():
+                with dense_transient_ledger_suppressed():
+                    local_step = dense_tora_q3_dr_step(
+                        local_model,
+                        capture_trace=False,
+                        point_enclosure_backend=point_enclosure_backend,
+                    )
             synchronize(device)
             scopes["plant_local_step_including_validation"] += (
                 time.perf_counter() - plant_started
             )
 
             composition_started = time.perf_counter()
-            physical_step = compose_tora_q3_step(local_step, carry)
+            with dense_validation_batch():
+                physical_step = compose_tora_q3_step(local_step, carry)
             synchronize(device)
             scopes["affine_composition_and_physical_range"] += (
                 time.perf_counter() - composition_started
@@ -184,6 +200,11 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--repeats", type=int, default=5)
+    parser.add_argument(
+        "--point-enclosure-backend",
+        choices=("eager", "compiled"),
+        default="eager",
+    )
     args = parser.parse_args()
     if args.repeats < 5:
         raise ValueError("formal full-T20 benchmark requires at least five repeats")
@@ -206,14 +227,24 @@ def main() -> int:
         raise RuntimeError("CUDA is unavailable")
 
     process_started = time.perf_counter()
-    warmup = run_t20(rows, device)
+    with torch.no_grad():
+        warmup = run_t20(
+            rows,
+            device,
+            point_enclosure_backend=args.point_enclosure_backend,
+        )
     if warmup["status"] != "VERIFIED":
         raise RuntimeError(f"warm-up failed: {warmup}")
     repeats = []
     for repeat in range(1, args.repeats + 1):
         if device.type == "cuda":
             torch.cuda.reset_peak_memory_stats(device)
-        result = run_t20(rows, device)
+        with torch.no_grad():
+            result = run_t20(
+                rows,
+                device,
+                point_enclosure_backend=args.point_enclosure_backend,
+            )
         result["repeat"] = repeat
         repeats.append(result)
         (output / "progress.json").write_text(
@@ -240,6 +271,9 @@ def main() -> int:
         "dtype": "float64",
         "batch": 48,
         "segments_per_repeat": 200,
+        "point_enclosure_backend_requested": args.point_enclosure_backend,
+        "point_enclosure_backend_status": compiled_point_enclosure_status(),
+        "monomial_interval_cache_status": monomial_interval_cache_status(),
         "warmup_excluded": warmup,
         "measured_repeat_count": len(repeats),
         "wall_statistics": stats(wall_values),

@@ -1,0 +1,26 @@
+{
+  "accepted": true,
+  "method": "TorchDispatchMode interception of aten._local_scalar_dense; profiler-internal events that do not pass dispatcher are excluded",
+  "program_issued_host_scalar_sync_count": 3,
+  "projection_shape": [
+    48,
+    5
+  ],
+  "schema": "tora_q3_program_dispatch_sync_audit_v1",
+  "scope": "B48 full logical one-step math",
+  "source_call_sites": [
+    {
+      "count": 1,
+      "source": "src/torch_tm_flowpipe/tora_q3.py:1091:dense_tora_q3_dr_step"
+    },
+    {
+      "count": 1,
+      "source": "src/torch_tm_flowpipe/tora_q3.py:428:compose_tora_q3_step"
+    },
+    {
+      "count": 1,
+      "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+    }
+  ],
+  "status": "PASS"
+}

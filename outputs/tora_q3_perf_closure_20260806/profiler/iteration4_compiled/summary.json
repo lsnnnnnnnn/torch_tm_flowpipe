@@ -1,0 +1,48 @@
+{
+  "batch": 48,
+  "commit": "c69134867e26f251be39da0c13f0dedcf5a630d8",
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.1",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "torch": "2.5.1+cu121",
+    "torch_num_threads": 1
+  },
+  "instrumentation_diff_sha256": "5078aa72b501a967362c69102deb6dcf21bd1fa9ebe5cb1f411e4a8c86274121",
+  "instrumented_worktree": true,
+  "output_status_sha256": "9a0bbdddb14de32ac61c35bcb89cf9672271ddfccb03969a363a81dda4567182",
+  "point_enclosure_backend_requested": "compiled",
+  "point_enclosure_backend_status": {
+    "compile_and_first_call_seconds": {
+      "(32, 'cuda:0', torch.float64, (48, 1))": 10.815538757480681
+    },
+    "compiled_calls": 26,
+    "disabled_signatures": {},
+    "eager_fallback_calls": 0,
+    "verification_count": 1,
+    "verified_signatures": 1
+  },
+  "profiled_source_sha256": {
+    "experiments/profile_tora_q3_stages.py": "0c25ab0c9ddee9674a3e3a6ad1829fbbc08b2ffd610455a3fea2a4dbc82a1947",
+    "src/torch_tm_flowpipe/batched_dense_tm.py": "a33ae28696ec7fe8c97b3d57072530dbb982edcf8db45d4a43e2a710ff261279",
+    "src/torch_tm_flowpipe/tora_q3.py": "32ab4d4fd5f86e8c08bfb748f184324a0d4168042e9274bfbe70b6776de2034c"
+  },
+  "raw_trace_public": false,
+  "raw_trace_sha256": "d1b593c24853504dc5084dbb2edef0646e2acd7eefb48b58530c5d544d155a4f",
+  "record_shapes": true,
+  "schema": "tora_q3_stage_profiler_summary_v1",
+  "status": "PASS",
+  "term_count": 84,
+  "timing_claim": "profiler timing is excluded from formal runtime claims",
+  "totals": {
+    "aten_event_count": 253767,
+    "aten_item_count": 253,
+    "aten_to_count": 80,
+    "host_scalar_sync_estimate": 253,
+    "local_scalar_dense_count": 253,
+    "targeted_repository_callsite_row_count": 0
+  },
+  "with_stack": true
+}

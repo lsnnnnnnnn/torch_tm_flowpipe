@@ -1,0 +1,139 @@
+{
+  "common_control_t20": {
+    "baseline_median_seconds": 512.0244269836694,
+    "excluded_warmup_seconds": 112.34311163239181,
+    "optimized_compiled_statistics": {
+      "iqr_seconds": 0.03397281374782324,
+      "max_seconds": 105.52895992808044,
+      "mean_seconds": 105.48514335248619,
+      "median_seconds": 105.48005206231028,
+      "min_seconds": 105.44367208052427
+    },
+    "optimized_solver_statistics": {
+      "iqr_seconds": 0.03386468440294266,
+      "max_seconds": 105.51688409596682,
+      "mean_seconds": 105.47301766257733,
+      "median_seconds": 105.46787149459124,
+      "min_seconds": 105.43157020676881
+    },
+    "peak_cpu_resident_memory_bytes": 1487536128,
+    "peak_cuda_memory_bytes": 1004825088,
+    "repeat_checksums": [
+      190979.05951733922,
+      190979.05951733922,
+      190979.05951733922,
+      190979.05951733922,
+      190979.05951733922
+    ],
+    "repeat_statuses": [
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED",
+      "VERIFIED"
+    ],
+    "speedup": 4.854229941801707,
+    "stable_status_and_checksum": true,
+    "stage_median_seconds": {
+      "affine_composition_and_physical_range": 11.325449747033417,
+      "controller_bound_update": 0.0,
+      "endpoint_projection": 3.0217242864891887,
+      "normalization": 0.18997908849269152,
+      "period_boundary_setup": 0.024137875996530056,
+      "plant_local_step_including_validation": 90.89854032173753,
+      "scheduler": 7.992982864379883e-05,
+      "serialization_io": 0.0
+    }
+  },
+  "gates": [
+    {
+      "gate": "P0",
+      "observed": "frozen one-leaf hash exact; compiled first-call bitwise verification; CPU/CUDA predicate tests",
+      "requirement": "no correctness regression",
+      "status": "PASS"
+    },
+    {
+      "gate": "P1",
+      "observed": "3",
+      "requirement": "program host scalar sync <= 10 per logical step",
+      "status": "PASS"
+    },
+    {
+      "gate": "P2",
+      "observed": "99.583897%",
+      "requirement": "aten::to reduction >= 90%",
+      "status": "PASS"
+    },
+    {
+      "gate": "P3",
+      "observed": "4.621012x",
+      "requirement": "B48 one-step >= 10x",
+      "status": "FAIL"
+    },
+    {
+      "gate": "P4",
+      "observed": "4.854230x",
+      "requirement": "common-control T20 >= 10x",
+      "status": "FAIL"
+    }
+  ],
+  "one_step": {
+    "baseline_dense_median_seconds": 2.349308,
+    "compiled_backend_status": {
+      "compile_and_first_call_seconds": {
+        "(32, 'cuda:0', torch.float64, (48, 1))": 11.751797281205654
+      },
+      "compiled_calls": 273,
+      "disabled_signatures": {},
+      "eager_fallback_calls": 0,
+      "verification_count": 1,
+      "verified_signatures": 1
+    },
+    "compiled_speedup": 4.621011893379862,
+    "excluded_compiled_warmup_seconds": 21.312084013596177,
+    "optimized_compiled": {
+      "iqr_seconds": 0.0014805260580033064,
+      "max_seconds": 0.5134464455768466,
+      "mean_seconds": 0.50878583798185,
+      "median_seconds": 0.508396873716265,
+      "min_seconds": 0.5045637870207429,
+      "repeats": 10
+    },
+    "optimized_eager": {
+      "iqr_seconds": 0.010723435087129474,
+      "max_seconds": 0.7005204819142818,
+      "mean_seconds": 0.6816656942479312,
+      "median_seconds": 0.6802301653660834,
+      "min_seconds": 0.6727408682927489,
+      "repeats": 10
+    }
+  },
+  "private_evidence_sha256": {
+    "optimized_compiled_one_step": "eb500dd3b8f9c55b5acc7eeb1230d1279f4ad030ec4a79e9ec54b8a19eea3779",
+    "optimized_compiled_t20": "c63d44fb7d4f5be0aea466c930f366a0dfcd9b5b3ae4f8b7034afca520942fc8",
+    "optimized_eager_one_step": "eafe7a4a10e80f18caa7df049b95697d75dd6959cea0ae5fbdf68f7845de2606"
+  },
+  "profiler": {
+    "aten_to_reduction_percent": 99.58389680640799,
+    "baseline_aten_to": 19226,
+    "baseline_kineto_host_scalar_events": 140012,
+    "compiled_point_kernel_graph_break_count": 0,
+    "final_aten_to": 80,
+    "final_kineto_host_scalar_events": 77,
+    "kineto_note": "77 final item/local events include 74 profiler observation events that do not pass Torch dispatcher; P1 uses the program-issued dispatch audit",
+    "object_level_compile_negative_result": "full object entry hit Dynamo cache limits and failed deferred ledger validation; it is not used",
+    "program_dispatch_host_scalar_sync": 3
+  },
+  "schema": "tora_q3_optimized_runtime_public_v1",
+  "soundness": {
+    "compiled_fallback_calls": 0,
+    "compiled_first_call_bitwise_verified": true,
+    "frozen_one_leaf_private_detail_sha256": "fdf35f29b67263f749a9c076ab056f0ef776db7cc14772107baa7ab660aaa396"
+  },
+  "status": "PASS_WITH_UNMET_PERFORMANCE_GATES",
+  "workload": {
+    "full": "frozen common-control B48 T20, 200 segments",
+    "one_step": "B48 complete-Q3 K2 plus ten remainder rounds",
+    "software_stack": "matched CROWN environment, Torch 2.8.0+cu128"
+  }
+}
