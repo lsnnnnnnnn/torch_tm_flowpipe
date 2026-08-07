@@ -172,6 +172,14 @@ def test_tora_one_step_fixed_u_validates_and_separates_tube_from_endpoint() -> N
     step = dense_tora_q3_dr_step(build_tora_q3_initial_model(lo, hi))
     assert step.status == "validated"
     assert int(step.accepted_by_leaf.sum()) == 48
+    expected_acceptance = (
+        step.finite_ok_by_leaf
+        & step.initial_subset_ok_by_leaf
+        & step.all_remainder_rounds_ok_by_leaf
+        & step.local_property_ok_by_leaf
+        & step.composed_property_ok_by_leaf
+    )
+    assert torch.equal(step.accepted_by_leaf, expected_acceptance)
     assert step.endpoint_lower.shape == step.tube_lower.shape == (48, 5)
     assert torch.all(step.tube_lower <= step.endpoint_lower)
     assert torch.all(step.tube_upper >= step.endpoint_upper)

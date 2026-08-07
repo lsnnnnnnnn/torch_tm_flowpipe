@@ -27,7 +27,9 @@ from .batched_dense_tm import (
     _subset_margin,
     _sound_mul_tm,
     _up,
+    dense_validation_batch,
     dense_polynomial_picard,
+    require_dense_condition,
     sin_tm,
 )
 
@@ -58,6 +60,11 @@ class ToraQ3Step:
     tube_upper: torch.Tensor
     endpoint_lower: torch.Tensor
     endpoint_upper: torch.Tensor
+    finite_ok_by_leaf: torch.Tensor
+    initial_subset_ok_by_leaf: torch.Tensor
+    all_remainder_rounds_ok_by_leaf: torch.Tensor
+    local_property_ok_by_leaf: torch.Tensor
+    composed_property_ok_by_leaf: torch.Tensor
     accepted_by_leaf: torch.Tensor
     initial_shrink_mask: torch.Tensor
     initial_margin: torch.Tensor
@@ -209,13 +216,11 @@ def compose_tora_q3_tm(
         raise ValueError("TORA parameterization remainder must have shape [batch,5]")
     if parameterization.remainder_upper.shape != (batch, 5):
         raise ValueError("TORA parameterization remainder must have shape [batch,5]")
-    if not bool(
-        torch.all(
-            parameterization.remainder_lower
-            <= parameterization.remainder_upper
-        )
-    ):
-        raise ValueError("TORA parameterization remainder is invalid")
+    require_dense_condition(
+        parameterization.remainder_lower
+        <= parameterization.remainder_upper,
+        "TORA parameterization remainder is invalid",
+    )
 
     basis = value.poly.basis
     dtype = value.poly.coeffs.dtype
@@ -358,27 +363,72 @@ def compose_tora_q3_step(
     parameterization: ToraQ3AffineCarry,
     *,
     h: float = 0.1,
+    profile_stages: bool = False,
 ) -> ToraQ3Step:
     """Return the physical-coordinate enclosure for a validated local step."""
-    composed = compose_tora_q3_tm(local_step.segment_tm, parameterization)
-    tube_lower, tube_upper = composed.range_bound(
-        context="tora_composed_step_tube"
+    composition_scope = (
+        torch.profiler.record_function("stage::affine_composition")
+        if profile_stages
+        else None
     )
-    endpoint_lower, endpoint_upper = _endpoint_bounds(composed, h=h)
-    finite = (
-        torch.isfinite(tube_lower).all(dim=1)
-        & torch.isfinite(tube_upper).all(dim=1)
-        & torch.isfinite(endpoint_lower).all(dim=1)
-        & torch.isfinite(endpoint_upper).all(dim=1)
-    )
-    property_ok = (
-        torch.maximum(
-            torch.abs(tube_lower[:, :4]), torch.abs(tube_upper[:, :4])
+    if composition_scope is not None:
+        composition_scope.__enter__()
+    try:
+        composed = compose_tora_q3_tm(local_step.segment_tm, parameterization)
+        tube_lower, tube_upper = composed.range_bound(
+            context="tora_composed_step_tube"
         )
-        <= 2.0
-    ).all(dim=1)
-    accepted = local_step.accepted_by_leaf & finite & property_ok
-    all_accepted = bool(torch.all(accepted))
+    finally:
+        if composition_scope is not None:
+            composition_scope.__exit__(None, None, None)
+    endpoint_scope = (
+        torch.profiler.record_function(
+            "stage::composed_exact_endpoint_substitution"
+        )
+        if profile_stages
+        else None
+    )
+    if endpoint_scope is not None:
+        endpoint_scope.__enter__()
+    try:
+        endpoint_lower, endpoint_upper = _endpoint_bounds(composed, h=h)
+    finally:
+        if endpoint_scope is not None:
+            endpoint_scope.__exit__(None, None, None)
+    decision_scope = (
+        torch.profiler.record_function(
+            "stage::composed_acceptance_property_decision"
+        )
+        if profile_stages
+        else None
+    )
+    if decision_scope is not None:
+        decision_scope.__enter__()
+    try:
+        finite = (
+            torch.isfinite(tube_lower).all(dim=1)
+            & torch.isfinite(tube_upper).all(dim=1)
+            & torch.isfinite(endpoint_lower).all(dim=1)
+            & torch.isfinite(endpoint_upper).all(dim=1)
+        )
+        property_ok = (
+            torch.maximum(
+                torch.abs(tube_lower[:, :4]), torch.abs(tube_upper[:, :4])
+            )
+            <= 2.0
+        ).all(dim=1)
+        finite_ok = local_step.finite_ok_by_leaf & finite
+        accepted = (
+            finite_ok
+            & local_step.initial_subset_ok_by_leaf
+            & local_step.all_remainder_rounds_ok_by_leaf
+            & local_step.local_property_ok_by_leaf
+            & property_ok
+        )
+        all_accepted = bool(torch.all(accepted))
+    finally:
+        if decision_scope is not None:
+            decision_scope.__exit__(None, None, None)
     return ToraQ3Step(
         segment_tm=composed,
         endpoint_tm=(
@@ -388,6 +438,13 @@ def compose_tora_q3_step(
         tube_upper=tube_upper,
         endpoint_lower=endpoint_lower,
         endpoint_upper=endpoint_upper,
+        finite_ok_by_leaf=finite_ok,
+        initial_subset_ok_by_leaf=local_step.initial_subset_ok_by_leaf,
+        all_remainder_rounds_ok_by_leaf=(
+            local_step.all_remainder_rounds_ok_by_leaf
+        ),
+        local_property_ok_by_leaf=local_step.local_property_ok_by_leaf,
+        composed_property_ok_by_leaf=property_ok,
         accepted_by_leaf=accepted,
         initial_shrink_mask=local_step.initial_shrink_mask,
         initial_margin=local_step.initial_margin,
@@ -435,6 +492,7 @@ def normalize_tora_q3_boundary(
     *,
     h: float = 0.1,
     epsilon: float = 1e-12,
+    range_policy: DenseRangePolicy | None = None,
 ) -> tuple[BatchedTaylorModel, ToraQ3AffineCarry]:
     """Normalize one affine boundary while retaining cross-state generators."""
     transformed = torch.matmul(boundary.linear, carry.linear)
@@ -495,7 +553,7 @@ def normalize_tora_q3_boundary(
         domain_lo,
         domain_hi,
         DenseRemainderLedger.empty(),
-        DenseRangePolicy(method="natural"),
+        range_policy or DenseRangePolicy(method="natural"),
     )
     return local, next_carry
 
@@ -505,52 +563,65 @@ def project_tora_q3_endpoint_to_affine(
     *,
     h: float = 0.1,
     epsilon: float = 1e-12,
+    profile_stages: bool = False,
 ) -> ToraQ3AffineBoundary:
     """Project the exact-time Q3 endpoint to constant/linear spatial terms."""
-    if model.poly.basis.dim != 6 or model.poly.out_dim != 5:
-        raise ValueError("endpoint projection requires a TORA-Q3 segment model")
-    endpoint = model.endpoint(0, float(h))
-    basis = endpoint.poly.basis
-    exponents = basis.exponents
-    spatial_degree = exponents.sum(dim=1)
-    constant_mask = spatial_degree == 0
-    center = endpoint.poly.coeffs[..., basis.constant_index]
-    linear = torch.zeros(
-        (model.poly.batch, 5, 5),
-        dtype=model.poly.coeffs.dtype,
-        device=model.poly.coeffs.device,
+    projection_scope = (
+        torch.profiler.record_function("stage::endpoint_projection")
+        if profile_stages
+        else None
     )
-    retained_mask = constant_mask.clone()
-    for variable in range(5):
-        target = torch.zeros(5, dtype=torch.long, device=exponents.device)
-        target[variable] = 1
-        mask = torch.all(exponents == target, dim=1)
-        linear[:, :, variable] = endpoint.poly.coeffs[..., mask].squeeze(-1)
-        retained_mask |= mask
+    if projection_scope is not None:
+        projection_scope.__enter__()
+    try:
+        if model.poly.basis.dim != 6 or model.poly.out_dim != 5:
+            raise ValueError("endpoint projection requires a TORA-Q3 segment model")
+        endpoint = model.endpoint(0, float(h))
+        basis = endpoint.poly.basis
+        exponents = basis.exponents
+        spatial_degree = exponents.sum(dim=1)
+        constant_mask = spatial_degree == 0
+        center = endpoint.poly.coeffs[..., basis.constant_index]
+        linear = torch.zeros(
+            (model.poly.batch, 5, 5),
+            dtype=model.poly.coeffs.dtype,
+            device=model.poly.coeffs.device,
+        )
+        retained_mask = constant_mask.clone()
+        for variable in range(5):
+            target = torch.zeros(5, dtype=torch.long, device=exponents.device)
+            target[variable] = 1
+            mask = torch.all(exponents == target, dim=1)
+            linear[:, :, variable] = endpoint.poly.coeffs[..., mask].squeeze(-1)
+            retained_mask |= mask
 
-    overflow_coefficients = torch.where(
-        retained_mask.view(1, 1, -1),
-        torch.zeros_like(endpoint.poly.coeffs),
-        endpoint.poly.coeffs,
-    )
-    overflow = BatchedPolynomial(overflow_coefficients, basis)
-    overflow_lo, overflow_hi = overflow.range_bound(
-        endpoint.domain_lo,
-        endpoint.domain_hi,
-        policy=endpoint.range_policy,
-        context="tora_endpoint_projection_overflow",
-        trace=endpoint.range_trace,
-    )
-    remainder_lo, remainder_hi = _interval_add(
-        endpoint.rem_lo,
-        endpoint.rem_hi,
-        overflow_lo,
-        overflow_hi,
-    )
-    pad = torch.full_like(remainder_lo, abs(float(epsilon)))
-    remainder_lo = _down(remainder_lo - pad)
-    remainder_hi = _up(remainder_hi + pad)
-    return ToraQ3AffineBoundary(center, linear, remainder_lo, remainder_hi)
+        overflow_coefficients = torch.where(
+            retained_mask.view(1, 1, -1),
+            torch.zeros_like(endpoint.poly.coeffs),
+            endpoint.poly.coeffs,
+        )
+        overflow = BatchedPolynomial(overflow_coefficients, basis)
+        overflow_lo, overflow_hi = overflow.range_bound(
+            endpoint.domain_lo,
+            endpoint.domain_hi,
+            policy=endpoint.range_policy,
+            context="tora_endpoint_projection_overflow",
+            trace=endpoint.range_trace,
+        )
+        remainder_lo, remainder_hi = _interval_add(
+            endpoint.rem_lo,
+            endpoint.rem_hi,
+            overflow_lo,
+            overflow_hi,
+        )
+        pad = torch.full_like(remainder_lo, abs(float(epsilon)))
+        remainder_lo = _down(remainder_lo - pad)
+        remainder_hi = _up(remainder_hi + pad)
+        result = ToraQ3AffineBoundary(center, linear, remainder_lo, remainder_hi)
+    finally:
+        if projection_scope is not None:
+            projection_scope.__exit__(None, None, None)
+    return result
 
 
 def tora_b48_boxes(
@@ -721,18 +792,48 @@ def tora_q3_rhs(
     state: BatchedTaylorModel,
     *,
     sine_order: int = 2,
+    profile_stages: bool = False,
+    point_enclosure_backend: str = "eager",
 ) -> BatchedTaylorModel:
-    if state.poly.out_dim != 5:
-        raise ValueError("TORA RHS requires [x1,x2,x3,x4,u1]")
-    x1 = state.component(0)
-    x2 = state.component(1)
-    x3 = state.component(2)
-    x4 = state.component(3)
-    control = state.component(4)
-    state2 = -x1 + sin_tm(x3, order=sine_order).scale(0.1)
-    state4 = control - 10.0
-    held = BatchedTaylorModel.constants_like(0.0, control)
-    return BatchedTaylorModel.concat((x2, state2, x4, state4, held))
+    rhs_scope = (
+        torch.profiler.record_function("stage::tora_rhs")
+        if profile_stages
+        else None
+    )
+    if rhs_scope is not None:
+        rhs_scope.__enter__()
+    try:
+        if state.poly.out_dim != 5:
+            raise ValueError("TORA RHS requires [x1,x2,x3,x4,u1]")
+        x1 = state.component(0)
+        x2 = state.component(1)
+        x3 = state.component(2)
+        x4 = state.component(3)
+        control = state.component(4)
+        sine_scope = (
+            torch.profiler.record_function("stage::sin_tm")
+            if profile_stages
+            else None
+        )
+        if sine_scope is not None:
+            sine_scope.__enter__()
+        try:
+            sine = sin_tm(
+                x3,
+                order=sine_order,
+                point_enclosure_backend=point_enclosure_backend,
+            )
+        finally:
+            if sine_scope is not None:
+                sine_scope.__exit__(None, None, None)
+        state2 = -x1 + sine.scale(0.1)
+        state4 = control - 10.0
+        held = BatchedTaylorModel.constants_like(0.0, control)
+        result = BatchedTaylorModel.concat((x2, state2, x4, state4, held))
+    finally:
+        if rhs_scope is not None:
+            rhs_scope.__exit__(None, None, None)
+    return result
 
 
 def _endpoint_bounds(
@@ -777,18 +878,32 @@ def dense_tora_q3_dr_step(
     remainder_rounds: int = 10,
     seed: float = 0.01,
     capture_trace: bool = True,
+    profile_stages: bool = False,
+    point_enclosure_backend: str = "eager",
 ) -> ToraQ3Step:
     """K2 plus componentwise ten-round remainder Picard on dense tensors."""
     if base.poly.basis.dim != 6 or base.poly.basis.order != 3:
         raise ValueError("TORA-Q3 step requires the six-variable complete-Q3 basis")
     if polynomial_picard_rounds <= 0 or remainder_rounds < 0:
         raise ValueError("Picard round counts are invalid")
-    if not torch.allclose(base.domain_lo[:, 0], torch.zeros_like(base.domain_lo[:, 0])):
-        raise ValueError("local time lower bound must be zero")
-    if not torch.allclose(base.domain_hi[:, 0], torch.full_like(base.domain_hi[:, 0], float(h))):
-        raise ValueError("local time upper bound must equal h")
+    require_dense_condition(
+        torch.isclose(base.domain_lo[:, 0], torch.zeros_like(base.domain_lo[:, 0])),
+        "local time lower bound must be zero",
+    )
+    require_dense_condition(
+        torch.isclose(
+            base.domain_hi[:, 0],
+            torch.full_like(base.domain_hi[:, 0], float(h)),
+        ),
+        "local time upper bound must equal h",
+    )
 
-    rhs = lambda value: tora_q3_rhs(value, sine_order=sine_order)
+    rhs = lambda value: tora_q3_rhs(
+        value,
+        sine_order=sine_order,
+        profile_stages=profile_stages,
+        point_enclosure_backend=point_enclosure_backend,
+    )
     candidate, polynomial_trace = dense_polynomial_picard(
         rhs,
         base.without_remainder(),
@@ -797,6 +912,9 @@ def dense_tora_q3_dr_step(
         iterations=polynomial_picard_rounds,
         cutoff_threshold=None,
         capture_trace=capture_trace,
+        profiler_stage_prefix=(
+            "polynomial_picard" if profile_stages else None
+        ),
     )
     seed_vector = torch.tensor(
         [seed, seed, seed, seed, 0.0],
@@ -804,95 +922,183 @@ def dense_tora_q3_dr_step(
         device=base.poly.coeffs.device,
     ).view(1, 5).expand(base.poly.batch, -1)
     seeded = candidate.with_remainder(-seed_vector, seed_vector)
-    initial_image = _zero_exact_held_remainder(
-        base.without_remainder().add(rhs(seeded).integrate(0))
+    initial_scope = (
+        torch.profiler.record_function("stage::initial_remainder_picard")
+        if profile_stages
+        else None
     )
-    initial_margin = _subset_margin(
-        -seed_vector,
-        seed_vector,
-        initial_image.rem_lo,
-        initial_image.rem_hi,
-    )
-    initial_shrink = initial_margin >= 0.0
+    if initial_scope is not None:
+        initial_scope.__enter__()
+    try:
+        initial_image = _zero_exact_held_remainder(
+            base.without_remainder().add(rhs(seeded).integrate(0))
+        )
+        initial_margin = _subset_margin(
+            -seed_vector,
+            seed_vector,
+            initial_image.rem_lo,
+            initial_image.rem_hi,
+        )
+        initial_shrink = initial_margin >= 0.0
+    finally:
+        if initial_scope is not None:
+            initial_scope.__exit__(None, None, None)
 
     difference = BatchedPolynomial(
         initial_image.poly.coeffs - seeded.poly.coeffs,
         seeded.poly.basis,
     )
-    roundoff_lo, roundoff_hi = difference.range_bound(
-        base.domain_lo,
-        base.domain_hi,
-        policy=base.range_policy,
-        context="tora_picard_roundoff",
-        trace=base.range_trace,
+    range_scope = (
+        torch.profiler.record_function(
+            "stage::natural_polynomial_range_picard_roundoff"
+        )
+        if profile_stages
+        else None
     )
+    if range_scope is not None:
+        range_scope.__enter__()
+    try:
+        roundoff_lo, roundoff_hi = difference.range_bound(
+            base.domain_lo,
+            base.domain_hi,
+            policy=base.range_policy,
+            context="tora_picard_roundoff",
+            trace=base.range_trace,
+        )
+    finally:
+        if range_scope is not None:
+            range_scope.__exit__(None, None, None)
     roundoff_lo[:, 4] = 0.0
     roundoff_hi[:, 4] = 0.0
     current = seeded
     rows: list[Mapping[str, Any]] = []
     all_rounds_shrink = torch.ones_like(initial_shrink)
     for round_index in range(1, remainder_rounds + 1):
-        image = _zero_exact_held_remainder(
-            base.without_remainder().add(rhs(current).integrate(0))
-        )
-        candidate_lo, candidate_hi = _interval_add(
-            image.rem_lo,
-            image.rem_hi,
-            roundoff_lo,
-            roundoff_hi,
-        )
-        candidate_lo[:, 4] = 0.0
-        candidate_hi[:, 4] = 0.0
-        margin = _subset_margin(
-            current.rem_lo,
-            current.rem_hi,
-            candidate_lo,
-            candidate_hi,
-        )
-        shrink = margin >= 0.0
-        accepted_lo = torch.where(shrink, candidate_lo, current.rem_lo)
-        accepted_hi = torch.where(shrink, candidate_hi, current.rem_hi)
-        all_rounds_shrink &= shrink
-        if capture_trace:
-            rows.append(
-                {
-                "round": round_index,
-                "candidate_lower": candidate_lo.detach().cpu().tolist(),
-                "candidate_upper": candidate_hi.detach().cpu().tolist(),
-                "accepted_lower": accepted_lo.detach().cpu().tolist(),
-                "accepted_upper": accepted_hi.detach().cpu().tolist(),
-                "shrink_mask": shrink.detach().cpu().tolist(),
-                "subset_margin": margin.detach().cpu().tolist(),
-                }
+        round_scope = (
+            torch.profiler.record_function(
+                f"stage::remainder_picard_round_{round_index:02d}"
             )
-        current = BatchedTaylorModel(
-            image.poly,
-            accepted_lo,
-            accepted_hi,
-            base.domain_lo,
-            base.domain_hi,
-            DenseRemainderLedger.empty().add(
-                "picard_residual", accepted_lo, accepted_hi
-            ),
-            base.range_policy,
-            base.range_trace,
+            if profile_stages
+            else None
         )
+        if round_scope is not None:
+            round_scope.__enter__()
+        try:
+            image = _zero_exact_held_remainder(
+                base.without_remainder().add(rhs(current).integrate(0))
+            )
+            candidate_lo, candidate_hi = _interval_add(
+                image.rem_lo,
+                image.rem_hi,
+                roundoff_lo,
+                roundoff_hi,
+            )
+            candidate_lo[:, 4] = 0.0
+            candidate_hi[:, 4] = 0.0
+            margin = _subset_margin(
+                current.rem_lo,
+                current.rem_hi,
+                candidate_lo,
+                candidate_hi,
+            )
+            shrink = margin >= 0.0
+            accepted_lo = torch.where(shrink, candidate_lo, current.rem_lo)
+            accepted_hi = torch.where(shrink, candidate_hi, current.rem_hi)
+            all_rounds_shrink &= shrink
+            if capture_trace:
+                rows.append(
+                    {
+                    "round": round_index,
+                    "candidate_lower": candidate_lo.detach().cpu().tolist(),
+                    "candidate_upper": candidate_hi.detach().cpu().tolist(),
+                    "accepted_lower": accepted_lo.detach().cpu().tolist(),
+                    "accepted_upper": accepted_hi.detach().cpu().tolist(),
+                    "shrink_mask": shrink.detach().cpu().tolist(),
+                    "subset_margin": margin.detach().cpu().tolist(),
+                    }
+                )
+            current = BatchedTaylorModel(
+                image.poly,
+                accepted_lo,
+                accepted_hi,
+                base.domain_lo,
+                base.domain_hi,
+                DenseRemainderLedger(
+                    {
+                        "picard_residual": (
+                            accepted_lo.clone(),
+                            accepted_hi.clone(),
+                        )
+                    }
+                ),
+                base.range_policy,
+                base.range_trace,
+            )
+        finally:
+            if round_scope is not None:
+                round_scope.__exit__(None, None, None)
 
-    tube_lower, tube_upper = current.range_bound(context="tora_full_step_tube")
-    endpoint_lower, endpoint_upper = _endpoint_bounds(current, h=h)
-    finite = (
-        torch.isfinite(tube_lower).all(dim=1)
-        & torch.isfinite(tube_upper).all(dim=1)
-        & torch.isfinite(endpoint_lower).all(dim=1)
-        & torch.isfinite(endpoint_upper).all(dim=1)
+    tube_scope = (
+        torch.profiler.record_function("stage::natural_polynomial_range_tube")
+        if profile_stages
+        else None
     )
-    property_ok = (
-        torch.maximum(torch.abs(tube_lower[:, :4]), torch.abs(tube_upper[:, :4]))
-        <= 2.0
-    ).all(dim=1)
-    certificate = initial_shrink.all(dim=1) & all_rounds_shrink.all(dim=1)
-    accepted = finite & property_ok & certificate
-    endpoint_tm = current.endpoint(0, float(h)) if bool(torch.all(accepted)) else None
+    if tube_scope is not None:
+        tube_scope.__enter__()
+    try:
+        tube_lower, tube_upper = current.range_bound(
+            context="tora_full_step_tube"
+        )
+    finally:
+        if tube_scope is not None:
+            tube_scope.__exit__(None, None, None)
+
+    endpoint_scope = (
+        torch.profiler.record_function("stage::exact_endpoint_substitution")
+        if profile_stages
+        else None
+    )
+    if endpoint_scope is not None:
+        endpoint_scope.__enter__()
+    try:
+        endpoint_lower, endpoint_upper = _endpoint_bounds(current, h=h)
+    finally:
+        if endpoint_scope is not None:
+            endpoint_scope.__exit__(None, None, None)
+
+    decision_scope = (
+        torch.profiler.record_function("stage::final_acceptance_property_decision")
+        if profile_stages
+        else None
+    )
+    if decision_scope is not None:
+        decision_scope.__enter__()
+    try:
+        finite = (
+            torch.isfinite(tube_lower).all(dim=1)
+            & torch.isfinite(tube_upper).all(dim=1)
+            & torch.isfinite(endpoint_lower).all(dim=1)
+            & torch.isfinite(endpoint_upper).all(dim=1)
+        )
+        property_ok = (
+            torch.maximum(torch.abs(tube_lower[:, :4]), torch.abs(tube_upper[:, :4]))
+            <= 2.0
+        ).all(dim=1)
+        initial_subset_ok = initial_shrink.all(dim=1)
+        all_remainder_rounds_ok = all_rounds_shrink.all(dim=1)
+        certificate = initial_subset_ok & all_remainder_rounds_ok
+        accepted = finite & property_ok & certificate
+        all_accepted = bool(torch.all(accepted))
+        endpoint_tm = current.endpoint(0, float(h)) if all_accepted else None
+        status = "validated" if all_accepted else "failed"
+        message = (
+            ""
+            if all_accepted
+            else "one or more leaves failed finiteness, property, or DR-style subset validation"
+        )
+    finally:
+        if decision_scope is not None:
+            decision_scope.__exit__(None, None, None)
     return ToraQ3Step(
         segment_tm=current,
         endpoint_tm=endpoint_tm,
@@ -900,17 +1106,18 @@ def dense_tora_q3_dr_step(
         tube_upper=tube_upper,
         endpoint_lower=endpoint_lower,
         endpoint_upper=endpoint_upper,
+        finite_ok_by_leaf=finite,
+        initial_subset_ok_by_leaf=initial_subset_ok,
+        all_remainder_rounds_ok_by_leaf=all_remainder_rounds_ok,
+        local_property_ok_by_leaf=property_ok,
+        composed_property_ok_by_leaf=property_ok,
         accepted_by_leaf=accepted,
         initial_shrink_mask=initial_shrink,
         initial_margin=initial_margin,
         round_trace=tuple(rows),
         polynomial_trace=polynomial_trace,
-        status="validated" if bool(torch.all(accepted)) else "failed",
-        message=(
-            ""
-            if bool(torch.all(accepted))
-            else "one or more leaves failed finiteness, property, or DR-style subset validation"
-        ),
+        status=status,
+        message=message,
     )
 
 
@@ -977,6 +1184,7 @@ __all__ = [
     "build_tora_q3_box_model",
     "compose_tora_q3_boundary",
     "compose_tora_q3_step",
+    "dense_validation_batch",
     "compose_tora_q3_tm",
     "dense_tora_q3_dr_step",
     "identity_tora_q3_carry",

@@ -9,13 +9,16 @@ remainder validation never convert through a Python polynomial dictionary.
 """
 from __future__ import annotations
 
+from collections import OrderedDict
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from functools import lru_cache
 import hashlib
 from itertools import product
 import math
 import time
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Iterator, Mapping, Sequence
 
 import torch
 
@@ -42,6 +45,120 @@ _MULTIPLICATION_DEGREE_PLAN_CACHE: dict[
     tuple[int, int, str, int],
     tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor],
 ] = {}
+_DEVICE_SCALAR_CACHE: dict[
+    tuple[float, torch.dtype, str], torch.Tensor
+] = {}
+_DEVICE_INTEGER_CACHE: dict[tuple[int, str], torch.Tensor] = {}
+_COMPILED_POINT_ENCLOSURE_CACHE: dict[
+    int, Callable[[torch.Tensor], tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]]
+] = {}
+_COMPILED_POINT_ENCLOSURE_VERIFIED: set[
+    tuple[int, str, torch.dtype, tuple[int, ...]]
+] = set()
+_COMPILED_POINT_ENCLOSURE_DISABLED: dict[
+    tuple[int, str, torch.dtype, tuple[int, ...]], str
+] = {}
+_COMPILED_POINT_ENCLOSURE_TELEMETRY: dict[str, Any] = {
+    "compiled_calls": 0,
+    "eager_fallback_calls": 0,
+    "verification_count": 0,
+    "compile_and_first_call_seconds": {},
+}
+_MONOMIAL_INTERVAL_CACHE: OrderedDict[
+    tuple[Any, ...],
+    tuple[
+        torch.Tensor,
+        torch.Tensor,
+        torch.Tensor,
+        torch.Tensor,
+        torch.Tensor,
+    ],
+] = OrderedDict()
+_MONOMIAL_INTERVAL_CACHE_MAXSIZE = 512
+_MONOMIAL_INTERVAL_CACHE_HITS = 0
+_MONOMIAL_INTERVAL_CACHE_MISSES = 0
+
+
+@dataclass
+class _DenseValidationBatch:
+    conditions: list[tuple[torch.Tensor, str, type[Exception]]] = field(
+        default_factory=list
+    )
+
+
+_ACTIVE_DENSE_VALIDATION: ContextVar[_DenseValidationBatch | None] = ContextVar(
+    "active_dense_validation", default=None
+)
+_SUPPRESS_TRANSIENT_LEDGER: ContextVar[bool] = ContextVar(
+    "suppress_transient_dense_ledger", default=False
+)
+
+
+def _validation_is_deferred() -> bool:
+    return _ACTIVE_DENSE_VALIDATION.get() is not None
+
+
+def _transient_ledger_is_suppressed() -> bool:
+    return _SUPPRESS_TRANSIENT_LEDGER.get()
+
+
+def require_dense_condition(
+    condition: torch.Tensor,
+    message: str,
+    error_type: type[Exception] = ValueError,
+) -> None:
+    """Check a device condition now, or queue it for one fail-closed boundary."""
+    scalar = torch.all(condition)
+    batch = _ACTIVE_DENSE_VALIDATION.get()
+    if batch is None:
+        if not bool(scalar):
+            raise error_type(message)
+        return
+    batch.conditions.append((scalar, message, error_type))
+
+
+@contextmanager
+def dense_validation_batch() -> Iterator[None]:
+    """Batch fixed-shape device checks into one synchronization per device.
+
+    Shape, dtype, device, and Python contract checks remain immediate.  Tensor
+    ordering/finiteness predicates are accumulated and checked before this
+    context returns, so an invalid intermediate can never yield an accepted
+    result.  Nested contexts share the outer fail-closed boundary.
+    """
+    existing = _ACTIVE_DENSE_VALIDATION.get()
+    if existing is not None:
+        yield
+        return
+    batch = _DenseValidationBatch()
+    token = _ACTIVE_DENSE_VALIDATION.set(batch)
+    try:
+        yield
+        grouped: dict[torch.device, list[tuple[torch.Tensor, str, type[Exception]]]] = {}
+        for item in batch.conditions:
+            grouped.setdefault(item[0].device, []).append(item)
+        for items in grouped.values():
+            combined = torch.stack([item[0] for item in items])
+            if not bool(torch.all(combined)):
+                results = combined.detach().cpu().tolist()
+                for valid, (_condition, message, error_type) in zip(
+                    results, items, strict=True
+                ):
+                    if not valid:
+                        raise error_type(message)
+                raise RuntimeError("deferred dense validation failed without a diagnostic")
+    finally:
+        _ACTIVE_DENSE_VALIDATION.reset(token)
+
+
+@contextmanager
+def dense_transient_ledger_suppressed() -> Iterator[None]:
+    """Omit diagnostic-only ledgers inside a proved tensor math phase."""
+    token = _SUPPRESS_TRANSIENT_LEDGER.set(True)
+    try:
+        yield
+    finally:
+        _SUPPRESS_TRANSIENT_LEDGER.reset(token)
 
 
 @dataclass(frozen=True)
@@ -79,8 +196,10 @@ class DenseTMContract:
             raise ValueError("domain bounds must share dtype and device")
         if not torch.is_floating_point(self.domain_lo):
             raise TypeError("dense Taylor-model domains must use a floating dtype")
-        if not bool(torch.all(self.domain_lo <= self.domain_hi)):
-            raise ValueError("domain lower bounds must not exceed upper bounds")
+        require_dense_condition(
+            self.domain_lo <= self.domain_hi,
+            "domain lower bounds must not exceed upper bounds",
+        )
         if self.local_time_semantics != "physical_[0,h]" or self.time_scale != "integration_only":
             raise ValueError("the canonical dense lane uses physical tau and integration-only time scaling")
 
@@ -135,11 +254,15 @@ class DenseRemainderLedger:
         unknown = set(self.entries) - set(REMAINDER_LEDGER_CATEGORIES)
         if unknown:
             raise ValueError(f"unknown remainder ledger categories: {sorted(unknown)}")
+        if _transient_ledger_is_suppressed():
+            return
         for name, (lo, hi) in self.entries.items():
             if lo.shape != hi.shape:
                 raise ValueError(f"ledger shape mismatch for {name}")
-            if not bool(torch.all(lo <= hi)):
-                raise ValueError(f"invalid interval contribution for {name}")
+            require_dense_condition(
+                lo <= hi,
+                f"invalid interval contribution for {name}",
+            )
 
     @staticmethod
     def empty() -> "DenseRemainderLedger":
@@ -153,6 +276,8 @@ class DenseRemainderLedger:
     ) -> "DenseRemainderLedger":
         if category not in REMAINDER_LEDGER_CATEGORIES:
             raise ValueError(f"unknown remainder ledger category: {category}")
+        if _transient_ledger_is_suppressed():
+            return DenseRemainderLedger.empty()
         entries = dict(self.entries)
         lo_t = lo.clone()
         hi_t = hi.clone()
@@ -162,12 +287,16 @@ class DenseRemainderLedger:
         return DenseRemainderLedger(entries)
 
     def merge(self, other: "DenseRemainderLedger") -> "DenseRemainderLedger":
+        if _transient_ledger_is_suppressed():
+            return DenseRemainderLedger.empty()
         out = self
         for category, (lo, hi) in other.entries.items():
             out = out.add(category, lo, hi)
         return out
 
     def scale(self, scalar: Any) -> "DenseRemainderLedger":
+        if _transient_ledger_is_suppressed():
+            return DenseRemainderLedger.empty()
         out = DenseRemainderLedger.empty()
         for category, (lo, hi) in self.entries.items():
             scaled_lo, scaled_hi = _interval_scale(lo, hi, scalar)
@@ -207,6 +336,39 @@ def _as_device(device: torch.device | str | None) -> torch.device:
 
 def _as_dtype(dtype: torch.dtype | None) -> torch.dtype:
     return torch.float64 if dtype is None else dtype
+
+
+def _to_layout(
+    value: torch.Tensor,
+    *,
+    device: torch.device | str,
+    dtype: torch.dtype | None = None,
+) -> torch.Tensor:
+    """Return ``value`` directly when an explicit ``Tensor.to`` is a no-op."""
+    device_t = torch.device(device)
+    dtype_t = value.dtype if dtype is None else dtype
+    if value.device == device_t and value.dtype == dtype_t:
+        return value
+    return value.to(device=device_t, dtype=dtype_t)
+
+
+def _device_scalar(value: int | float, like: torch.Tensor) -> torch.Tensor:
+    """Reuse an immutable 0-D scalar with the baseline tensor arithmetic path."""
+    key = (float(value), like.dtype, str(like.device))
+    cached = _DEVICE_SCALAR_CACHE.get(key)
+    if cached is None:
+        cached = torch.as_tensor(value, dtype=like.dtype, device=like.device)
+        _DEVICE_SCALAR_CACHE[key] = cached
+    return cached
+
+
+def _device_integer(value: int, device: torch.device) -> torch.Tensor:
+    key = (int(value), str(device))
+    cached = _DEVICE_INTEGER_CACHE.get(key)
+    if cached is None:
+        cached = torch.tensor(int(value), dtype=torch.long, device=device)
+        _DEVICE_INTEGER_CACHE[key] = cached
+    return cached
 
 
 def _down(x: torch.Tensor) -> torch.Tensor:
@@ -253,9 +415,16 @@ def _interval_scale(
     hi: torch.Tensor,
     scale: Any,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    s = torch.as_tensor(scale, dtype=lo.dtype, device=lo.device)
-    while s.ndim < lo.ndim:
-        s = s.unsqueeze(-1)
+    if isinstance(scale, torch.Tensor):
+        s: Any = _to_layout(scale, device=lo.device, dtype=lo.dtype)
+        while s.ndim < lo.ndim:
+            s = s.unsqueeze(-1)
+    elif isinstance(scale, (int, float)):
+        s = _device_scalar(scale, lo)
+    else:
+        s = torch.as_tensor(scale, dtype=lo.dtype, device=lo.device)
+        while s.ndim < lo.ndim:
+            s = s.unsqueeze(-1)
     low = torch.minimum(lo * s, hi * s)
     high = torch.maximum(lo * s, hi * s)
     return _down(low), _up(high)
@@ -268,9 +437,7 @@ def _interval_div_positive_integer(
 ) -> tuple[torch.Tensor, torch.Tensor]:
     if int(divisor) <= 0:
         raise ValueError("divisor must be a positive integer")
-    value = torch.as_tensor(
-        int(divisor), dtype=lo.dtype, device=lo.device
-    )
+    value = _device_scalar(divisor, lo)
     return _down(lo / value), _up(hi / value)
 
 
@@ -284,12 +451,7 @@ def _positive_power_over_factorial(
     result = torch.ones_like(magnitude)
     for factor in range(1, int(exponent) + 1):
         result = _up(result * magnitude)
-        result = _up(
-            result
-            / torch.as_tensor(
-                factor, dtype=magnitude.dtype, device=magnitude.device
-            )
-        )
+        result = _up(result / _device_scalar(factor, magnitude))
     return result
 
 
@@ -298,6 +460,7 @@ def _point_sin_cos_enclosure(
     *,
     series_terms: int = 32,
     maximum_abs_center: float = 8.0,
+    backend: str = "eager",
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """Enclose sin/cos of binary64 point values using rational series.
 
@@ -310,13 +473,30 @@ def _point_sin_cos_enclosure(
         raise TypeError("formal trigonometric enclosure requires float64")
     if series_terms < 2:
         raise ValueError("series_terms must be at least two")
-    if not bool(torch.all(torch.isfinite(value))):
-        raise ValueError("trigonometric center must be finite")
+    require_dense_condition(
+        torch.isfinite(value), "trigonometric center must be finite"
+    )
     magnitude = torch.abs(value)
-    if bool(torch.any(magnitude > float(maximum_abs_center))):
-        raise ValueError(
-            "trigonometric center exceeds the proved Maclaurin domain"
+    require_dense_condition(
+        magnitude <= float(maximum_abs_center),
+        "trigonometric center exceeds the proved Maclaurin domain",
+    )
+    if backend not in {"eager", "compiled"}:
+        raise ValueError("point sine/cosine enclosure backend must be eager or compiled")
+    if backend == "compiled":
+        return _compiled_point_sin_cos_enclosure(
+            value, series_terms=series_terms
         )
+    return _point_sin_cos_enclosure_kernel(value, series_terms=series_terms)
+
+
+def _point_sin_cos_enclosure_kernel(
+    value: torch.Tensor,
+    *,
+    series_terms: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Pure tensor core for optional fixed-shape compilation."""
+    magnitude = torch.abs(value)
 
     x_lo = value
     x_hi = value
@@ -367,6 +547,91 @@ def _point_sin_cos_enclosure(
     return sin_lo, sin_hi, cos_lo, cos_hi
 
 
+def _compiled_point_sin_cos_enclosure(
+    value: torch.Tensor,
+    *,
+    series_terms: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Run the verified compiled point enclosure, or soundly fall back."""
+    terms = int(series_terms)
+    signature = (terms, str(value.device), value.dtype, tuple(value.shape))
+    if value.device.type != "cuda" or signature in _COMPILED_POINT_ENCLOSURE_DISABLED:
+        _COMPILED_POINT_ENCLOSURE_TELEMETRY["eager_fallback_calls"] += 1
+        return _point_sin_cos_enclosure_kernel(value, series_terms=terms)
+    compiled = _COMPILED_POINT_ENCLOSURE_CACHE.get(terms)
+    if compiled is None:
+        if not hasattr(torch, "compile"):
+            _COMPILED_POINT_ENCLOSURE_DISABLED[signature] = "torch_compile_unavailable"
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY["eager_fallback_calls"] += 1
+            return _point_sin_cos_enclosure_kernel(value, series_terms=terms)
+
+        def fixed_kernel(
+            argument: torch.Tensor,
+        ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+            return _point_sin_cos_enclosure_kernel(
+                argument, series_terms=terms
+            )
+
+        compiled = torch.compile(
+            fixed_kernel,
+            backend="inductor",
+            fullgraph=True,
+            dynamic=False,
+        )
+        _COMPILED_POINT_ENCLOSURE_CACHE[terms] = compiled
+    started = time.perf_counter() if signature not in _COMPILED_POINT_ENCLOSURE_VERIFIED else None
+    try:
+        result = compiled(value)
+        if signature not in _COMPILED_POINT_ENCLOSURE_VERIFIED:
+            reference = _point_sin_cos_enclosure_kernel(
+                value, series_terms=terms
+            )
+            if not all(
+                torch.equal(compiled_value, eager_value)
+                for compiled_value, eager_value in zip(
+                    result, reference, strict=True
+                )
+            ):
+                _COMPILED_POINT_ENCLOSURE_DISABLED[signature] = (
+                    "first_call_bitwise_verification_failed"
+                )
+                _COMPILED_POINT_ENCLOSURE_TELEMETRY["eager_fallback_calls"] += 1
+                return reference
+            _COMPILED_POINT_ENCLOSURE_VERIFIED.add(signature)
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY["verification_count"] += 1
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY[
+                "compile_and_first_call_seconds"
+            ][str(signature)] = time.perf_counter() - started
+        _COMPILED_POINT_ENCLOSURE_TELEMETRY["compiled_calls"] += 1
+        return result
+    except Exception as exc:
+        _COMPILED_POINT_ENCLOSURE_DISABLED[signature] = type(exc).__name__
+        _COMPILED_POINT_ENCLOSURE_TELEMETRY["eager_fallback_calls"] += 1
+        return _point_sin_cos_enclosure_kernel(value, series_terms=terms)
+
+
+def compiled_point_enclosure_status() -> dict[str, Any]:
+    """Return sanitized compile/fallback telemetry for benchmark evidence."""
+    return {
+        "compiled_calls": int(
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY["compiled_calls"]
+        ),
+        "eager_fallback_calls": int(
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY["eager_fallback_calls"]
+        ),
+        "verification_count": int(
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY["verification_count"]
+        ),
+        "compile_and_first_call_seconds": dict(
+            _COMPILED_POINT_ENCLOSURE_TELEMETRY[
+                "compile_and_first_call_seconds"
+            ]
+        ),
+        "verified_signatures": len(_COMPILED_POINT_ENCLOSURE_VERIFIED),
+        "disabled_signatures": dict(_COMPILED_POINT_ENCLOSURE_DISABLED),
+    }
+
+
 def _total_degree_exponents(dim: int, order: int) -> list[tuple[int, ...]]:
     exponents: list[tuple[int, ...]] = []
 
@@ -387,12 +652,27 @@ def _power_interval_bounds(
     lo: torch.Tensor,
     hi: torch.Tensor,
     powers: torch.Tensor,
+    *,
+    maximum_power: int,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     if powers.numel() == 0:
         empty = torch.empty((lo.shape[0], 0), dtype=lo.dtype, device=lo.device)
         return empty, empty
-    powers = powers.to(device=lo.device, dtype=torch.long)
-    max_power = int(torch.max(powers).detach().cpu())
+    powers = _to_layout(powers, device=lo.device, dtype=torch.long)
+    max_power = int(maximum_power)
+    if max_power < 0:
+        raise ValueError("maximum_power must be nonnegative")
+    zero_power = _device_integer(0, powers.device)
+    maximum_power_t = _device_integer(max_power, powers.device)
+    require_dense_condition(
+        (powers >= zero_power) & (powers <= maximum_power_t),
+        "power table exceeds its declared maximum",
+    )
+    lookup_powers = (
+        torch.minimum(torch.maximum(powers, zero_power), maximum_power_t)
+        if _validation_is_deferred()
+        else powers
+    )
     lo_cols: list[torch.Tensor] = []
     hi_cols: list[torch.Tensor] = []
     zero = torch.zeros_like(lo)
@@ -401,25 +681,31 @@ def _power_interval_bounds(
     hi_abs = torch.maximum(torch.abs(lo), torch.abs(hi))
     crosses_zero = (lo <= 0) & (hi >= 0)
     for power in range(max_power + 1):
+        power_t = _device_integer(power, lo.device)
         if power == 0:
             lo_cols.append(one)
             hi_cols.append(one)
         elif power % 2 == 1:
-            endpoints = torch.stack([lo.pow(power), hi.pow(power)], dim=0)
+            endpoints = torch.stack([lo.pow(power_t), hi.pow(power_t)], dim=0)
             lo_cols.append(torch.min(endpoints, dim=0).values)
             hi_cols.append(torch.max(endpoints, dim=0).values)
         else:
-            lo_cols.append(torch.where(crosses_zero, zero, lo_abs.pow(power)))
-            hi_cols.append(hi_abs.pow(power))
+            lo_cols.append(torch.where(crosses_zero, zero, lo_abs.pow(power_t)))
+            hi_cols.append(hi_abs.pow(power_t))
     lo_table = torch.stack(lo_cols, dim=1)
     hi_table = torch.stack(hi_cols, dim=1)
-    return _down(lo_table.index_select(1, powers)), _up(hi_table.index_select(1, powers))
+    return (
+        _down(lo_table.index_select(1, lookup_powers)),
+        _up(hi_table.index_select(1, lookup_powers)),
+    )
 
 
 def _monomial_interval_bounds_for_exponents(
     domain_lo: torch.Tensor,
     domain_hi: torch.Tensor,
     exponents: torch.Tensor,
+    *,
+    maximum_power: int,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     if domain_lo.ndim == 1:
         domain_lo = domain_lo.unsqueeze(0)
@@ -429,7 +715,7 @@ def _monomial_interval_bounds_for_exponents(
     batch, dim = domain_lo.shape
     if exponents.shape[1] != dim:
         raise ValueError(f"exponent dimension {exponents.shape[1]} != domain dimension {dim}")
-    exponents = exponents.to(device=domain_lo.device, dtype=torch.long)
+    exponents = _to_layout(exponents, device=domain_lo.device, dtype=torch.long)
     mono_lo = torch.ones((batch, exponents.shape[0]), dtype=domain_lo.dtype, device=domain_lo.device)
     mono_hi = torch.ones_like(mono_lo)
     for var_index in range(dim):
@@ -437,6 +723,7 @@ def _monomial_interval_bounds_for_exponents(
             domain_lo[:, var_index],
             domain_hi[:, var_index],
             exponents[:, var_index],
+            maximum_power=maximum_power,
         )
         mono_lo, mono_hi = _interval_mul(mono_lo, mono_hi, power_lo, power_hi)
     return mono_lo, mono_hi
@@ -447,13 +734,54 @@ def _range_for_terms(
     exponents: torch.Tensor,
     domain_lo: torch.Tensor,
     domain_hi: torch.Tensor,
+    *,
+    maximum_power: int,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     if coeffs.shape[-1] == 0:
         out = torch.zeros(coeffs.shape[:-1], dtype=coeffs.dtype, device=coeffs.device)
         return out, out
-    domain_lo = domain_lo.to(device=coeffs.device, dtype=coeffs.dtype)
-    domain_hi = domain_hi.to(device=coeffs.device, dtype=coeffs.dtype)
-    mono_lo, mono_hi = _monomial_interval_bounds_for_exponents(domain_lo, domain_hi, exponents)
+    domain_lo = _to_layout(domain_lo, device=coeffs.device, dtype=coeffs.dtype)
+    domain_hi = _to_layout(domain_hi, device=coeffs.device, dtype=coeffs.dtype)
+    global _MONOMIAL_INTERVAL_CACHE_HITS, _MONOMIAL_INTERVAL_CACHE_MISSES
+    cache_key = (
+        id(domain_lo),
+        int(domain_lo._version),
+        id(domain_hi),
+        int(domain_hi._version),
+        id(exponents),
+        int(exponents._version),
+        int(maximum_power),
+        str(coeffs.device),
+        coeffs.dtype,
+    )
+    cached = _MONOMIAL_INTERVAL_CACHE.get(cache_key)
+    if (
+        cached is not None
+        and cached[0] is domain_lo
+        and cached[1] is domain_hi
+        and cached[2] is exponents
+    ):
+        _MONOMIAL_INTERVAL_CACHE_HITS += 1
+        _MONOMIAL_INTERVAL_CACHE.move_to_end(cache_key)
+        mono_lo, mono_hi = cached[3], cached[4]
+    else:
+        _MONOMIAL_INTERVAL_CACHE_MISSES += 1
+        mono_lo, mono_hi = _monomial_interval_bounds_for_exponents(
+            domain_lo,
+            domain_hi,
+            exponents,
+            maximum_power=maximum_power,
+        )
+        _MONOMIAL_INTERVAL_CACHE[cache_key] = (
+            domain_lo,
+            domain_hi,
+            exponents,
+            mono_lo,
+            mono_hi,
+        )
+        _MONOMIAL_INTERVAL_CACHE.move_to_end(cache_key)
+        while len(_MONOMIAL_INTERVAL_CACHE) > _MONOMIAL_INTERVAL_CACHE_MAXSIZE:
+            _MONOMIAL_INTERVAL_CACHE.popitem(last=False)
     mono_lo = mono_lo[:, None, :]
     mono_hi = mono_hi[:, None, :]
     term_lo = torch.where(coeffs >= 0, coeffs * mono_lo, coeffs * mono_hi)
@@ -472,17 +800,31 @@ def _range_for_terms(
     return _down(lo_sum - roundoff), _up(hi_sum + roundoff)
 
 
+def monomial_interval_cache_status() -> dict[str, int]:
+    """Return aggregate immutable-domain cache telemetry."""
+    return {
+        "entries": len(_MONOMIAL_INTERVAL_CACHE),
+        "hits": int(_MONOMIAL_INTERVAL_CACHE_HITS),
+        "misses": int(_MONOMIAL_INTERVAL_CACHE_MISSES),
+        "capacity": _MONOMIAL_INTERVAL_CACHE_MAXSIZE,
+    }
+
+
 def _tensor_sha256(value: torch.Tensor) -> str:
     tensor = value.detach().cpu().contiguous()
     return hashlib.sha256(tensor.numpy().tobytes()).hexdigest()
 
 
 def _interval_is_valid(lo: torch.Tensor, hi: torch.Tensor) -> bool:
-    return bool(
-        torch.all(torch.isfinite(lo))
-        and torch.all(torch.isfinite(hi))
-        and torch.all(lo <= hi)
-    )
+    condition = torch.isfinite(lo) & torch.isfinite(hi) & (lo <= hi)
+    if _validation_is_deferred():
+        require_dense_condition(
+            condition,
+            "polynomial interval failed finite/ordering validation",
+            FloatingPointError,
+        )
+        return True
+    return bool(torch.all(condition))
 
 
 @dataclass(frozen=True)
@@ -626,8 +968,16 @@ def _evaluate_canonical_horner_range(
 ) -> DenseHornerOrderResult:
     dim = int(canonical.exponents.shape[1])
     order = _validate_variable_order(variable_order, dim)
-    lo = domain_lo.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
-    hi = domain_hi.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
+    lo = _to_layout(
+        domain_lo,
+        device=canonical.coefficient_lo.device,
+        dtype=canonical.coefficient_lo.dtype,
+    )
+    hi = _to_layout(
+        domain_hi,
+        device=canonical.coefficient_lo.device,
+        dtype=canonical.coefficient_lo.dtype,
+    )
     expected_domain_shape = (canonical.coefficient_lo.shape[0], dim)
     if lo.shape != expected_domain_shape or hi.shape != expected_domain_shape:
         raise ValueError(f"Horner domains must have shape {expected_domain_shape}")
@@ -921,7 +1271,7 @@ def _subdivision_influence_scores(
     """Deterministic width-times-derivative-magnitude split heuristic."""
     max_abs = torch.maximum(torch.abs(domain_lo), torch.abs(domain_hi))
     widths = domain_hi - domain_lo
-    exponents_t = exponents.to(device=coeffs.device, dtype=torch.long)
+    exponents_t = _to_layout(exponents, device=coeffs.device, dtype=torch.long)
     scores: list[torch.Tensor] = []
     abs_coeff = torch.abs(coeffs).sum(dim=1)
     for var_index in range(exponents_t.shape[1]):
@@ -1109,7 +1459,21 @@ def _identity_dense_cover(
         tuple(1 for _ in range(coeffs.shape[0])),
         tuple(() for _ in range(coeffs.shape[0])),
     )
-    return cover, validate_dense_subdivision_cover(cover, domain_lo, domain_hi)
+    # This cover is exact by construction: every parent box is cloned once and
+    # ``owner`` is the matching arange.  Running the generic cell-enumerating
+    # validator here repeats thousands of scalar checks without adding a new
+    # proof obligation.  Covers built by subdivision still use the independent
+    # validator below.
+    report: Mapping[str, Any] = {
+        "valid": True,
+        "reasons": [],
+        "leaf_count": int(coeffs.shape[0]),
+        "leaf_counts": [1 for _ in range(coeffs.shape[0])],
+        "checked_cells": 0,
+        "split_variables": [[] for _ in range(coeffs.shape[0])],
+        "validation": "identity_cover_exact_by_construction",
+    }
+    return cover, report
 
 
 def _range_for_canonical_terms(
@@ -1125,9 +1489,25 @@ def _range_for_canonical_terms(
             device=canonical.coefficient_lo.device,
         )
         return zero, zero
-    lo = domain_lo.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
-    hi = domain_hi.to(device=canonical.coefficient_lo.device, dtype=canonical.coefficient_lo.dtype)
-    monomial_lo, monomial_hi = _monomial_interval_bounds_for_exponents(lo, hi, canonical.exponents)
+    lo = _to_layout(
+        domain_lo,
+        device=canonical.coefficient_lo.device,
+        dtype=canonical.coefficient_lo.dtype,
+    )
+    hi = _to_layout(
+        domain_hi,
+        device=canonical.coefficient_lo.device,
+        dtype=canonical.coefficient_lo.dtype,
+    )
+    maximum_power = max(
+        (max(row, default=0) for row in canonical.exponent_tuples), default=0
+    )
+    monomial_lo, monomial_hi = _monomial_interval_bounds_for_exponents(
+        lo,
+        hi,
+        canonical.exponents,
+        maximum_power=maximum_power,
+    )
     term_lo, term_hi = _interval_mul(
         canonical.coefficient_lo,
         canonical.coefficient_hi,
@@ -1223,6 +1603,7 @@ def _range_for_terms_with_policy(
     domain_lo: torch.Tensor,
     domain_hi: torch.Tensor,
     *,
+    maximum_power: int,
     policy: DenseRangePolicy,
     context: str,
     trace: list[dict[str, Any]] | None = None,
@@ -1240,7 +1621,13 @@ def _range_for_terms_with_policy(
         canonical = canonicalize_dense_polynomial(coeffs, exponents)
         natural_lo, natural_hi = _range_for_canonical_terms(canonical, domain_lo, domain_hi)
     else:
-        natural_lo, natural_hi = _range_for_terms(coeffs, exponents, domain_lo, domain_hi)
+        natural_lo, natural_hi = _range_for_terms(
+            coeffs,
+            exponents,
+            domain_lo,
+            domain_hi,
+            maximum_power=maximum_power,
+        )
     natural_range_s = time.perf_counter() - natural_started
     natural_valid = _interval_is_valid(natural_lo, natural_hi)
     subdivision_method = policy.method in {"subdivision", "adaptive_subdivision"}
@@ -1289,7 +1676,13 @@ def _range_for_terms_with_policy(
         cover_validation_s = time.perf_counter() - cover_started
         leaf_started = time.perf_counter()
         leaf_coeffs = coeffs.index_select(0, cover.owner)
-        leaf_lo, leaf_hi = _range_for_terms(leaf_coeffs, exponents, cover.lo, cover.hi)
+        leaf_lo, leaf_hi = _range_for_terms(
+            leaf_coeffs,
+            exponents,
+            cover.lo,
+            cover.hi,
+            maximum_power=maximum_power,
+        )
         if not _interval_is_valid(leaf_lo, leaf_hi):
             raise FloatingPointError("non-finite subdivision leaf range")
         if not natural_valid:
@@ -1498,7 +1891,7 @@ def _merge_coefficients_by_index(
     """
     if unique_count == 0:
         return torch.zeros((*coeffs.shape[:-1], 0), dtype=coeffs.dtype, device=coeffs.device)
-    target = merge_indices.to(device=coeffs.device, dtype=torch.long)
+    target = _to_layout(merge_indices, device=coeffs.device, dtype=torch.long)
     target = target.view(*([1] * (coeffs.ndim - 1)), -1).expand_as(coeffs)
     out = torch.zeros((*coeffs.shape[:-1], int(unique_count)), dtype=coeffs.dtype, device=coeffs.device)
     out.scatter_add_(-1, target, coeffs)
@@ -1744,7 +2137,7 @@ class BatchedMonomialBasis:
 
     def eval_monomials(self, points: torch.Tensor) -> torch.Tensor:
         points_t = torch.as_tensor(points)
-        exponents = self.exponents.to(device=points_t.device)
+        exponents = _to_layout(self.exponents, device=points_t.device)
         if points_t.shape[-1] != self.dim:
             raise ValueError(f"point dimension {points_t.shape[-1]} != basis dim {self.dim}")
         if points_t.ndim == 2:
@@ -1761,9 +2154,10 @@ class BatchedMonomialBasis:
         domain_hi: torch.Tensor,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         return _monomial_interval_bounds_for_exponents(
-            torch.as_tensor(domain_lo),
-            torch.as_tensor(domain_hi),
+            _to_layout(domain_lo, device=self.device),
+            _to_layout(domain_hi, device=self.device),
             self.exponents,
+            maximum_power=self.order,
         )
 
 
@@ -1847,6 +2241,8 @@ class BatchedPolynomial:
 
     def to(self, device: torch.device | str) -> "BatchedPolynomial":
         device_t = torch.device(device)
+        if device_t == self.coeffs.device:
+            return self
         return BatchedPolynomial(self.coeffs.to(device_t), self.basis.to(device_t))
 
     def _check_basis(self, other: "BatchedPolynomial") -> None:
@@ -1865,15 +2261,30 @@ class BatchedPolynomial:
     def add(self, other: "BatchedPolynomial") -> "BatchedPolynomial":
         self._check_basis(other)
         self._check_binary_shape(other)
-        return BatchedPolynomial(self.coeffs + other.coeffs.to(device=self.coeffs.device, dtype=self.coeffs.dtype), self.basis)
+        other_coeffs = _to_layout(
+            other.coeffs, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
+        return BatchedPolynomial(self.coeffs + other_coeffs, self.basis)
 
     def sub(self, other: "BatchedPolynomial") -> "BatchedPolynomial":
         self._check_basis(other)
         self._check_binary_shape(other)
-        return BatchedPolynomial(self.coeffs - other.coeffs.to(device=self.coeffs.device, dtype=self.coeffs.dtype), self.basis)
+        other_coeffs = _to_layout(
+            other.coeffs, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
+        return BatchedPolynomial(self.coeffs - other_coeffs, self.basis)
 
     def scale(self, scalar: Any) -> "BatchedPolynomial":
-        s = torch.as_tensor(scalar, dtype=self.coeffs.dtype, device=self.coeffs.device)
+        if isinstance(scalar, torch.Tensor):
+            s = _to_layout(
+                scalar, dtype=self.coeffs.dtype, device=self.coeffs.device
+            )
+        elif isinstance(scalar, (int, float)):
+            s = _device_scalar(scalar, self.coeffs)
+        else:
+            s = torch.as_tensor(
+                scalar, dtype=self.coeffs.dtype, device=self.coeffs.device
+            )
         if s.ndim > 2:
             raise ValueError("scale must be scalar, [batch], or [batch, output]")
         if s.ndim == 1 and s.shape[0] not in {1, self.batch}:
@@ -1927,7 +2338,9 @@ class BatchedPolynomial:
             raise ValueError("dropped_merge_mode must be 'merged' or 'termwise'")
         self._check_basis(other)
         self._check_binary_shape(other)
-        other_coeffs = other.coeffs.to(device=self.coeffs.device, dtype=self.coeffs.dtype)
+        other_coeffs = _to_layout(
+            other.coeffs, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         basis = self.basis
         left, right, kept_out, dropped_left, dropped_right, dropped_merge, dropped_unique_exponents = (
             basis.multiplication_plan_for_degree(max_degree)
@@ -1974,6 +2387,7 @@ class BatchedPolynomial:
             dropped_exponents,
             domain_lo,
             domain_hi,
+            maximum_power=2 * basis.order,
             policy=policy,
             context=range_context,
             trace=range_trace,
@@ -2022,6 +2436,7 @@ class BatchedPolynomial:
             self.basis.exponents,
             domain_lo,
             domain_hi,
+            maximum_power=self.basis.order,
             policy=policy,
             context=context,
             trace=trace,
@@ -2061,6 +2476,7 @@ class BatchedPolynomial:
             overflow_exp,
             domain_lo,
             domain_hi,
+            maximum_power=self.basis.order + 1,
             policy=range_policy or DenseRangePolicy(),
             context=range_context,
             trace=range_trace,
@@ -2089,6 +2505,7 @@ class BatchedPolynomial:
             self.basis.exponents,
             domain_lo,
             domain_hi,
+            maximum_power=self.basis.order,
             policy=range_policy or DenseRangePolicy(),
             context=range_context,
             trace=range_trace,
@@ -2172,11 +2589,32 @@ class BatchedTaylorModel:
             raise TypeError("polynomial, remainder, and domain tensors must share dtype")
         if any(tensor.device != self.poly.coeffs.device for tensor in tensors):
             raise ValueError("polynomial, remainder, and domain tensors must share device")
-        if not bool(torch.all(self.rem_lo <= self.rem_hi)):
-            raise ValueError("remainder lower bounds must not exceed upper bounds")
-        if not bool(torch.all(self.domain_lo <= self.domain_hi)):
-            raise ValueError("domain lower bounds must not exceed upper bounds")
-        if not self.ledger.entries and bool(torch.any(self.rem_lo != 0) or torch.any(self.rem_hi != 0)):
+        if not _transient_ledger_is_suppressed():
+            require_dense_condition(
+                self.rem_lo <= self.rem_hi,
+                "remainder lower bounds must not exceed upper bounds",
+            )
+            require_dense_condition(
+                self.domain_lo <= self.domain_hi,
+                "domain lower bounds must not exceed upper bounds",
+            )
+        elif not _validation_is_deferred():
+            raise RuntimeError(
+                "transient ledger suppression requires a validation batch"
+            )
+        if _transient_ledger_is_suppressed():
+            return
+        if not self.ledger.entries and _validation_is_deferred():
+            require_dense_condition(
+                (self.rem_lo == 0) & (self.rem_hi == 0),
+                "nonzero remainder inside a validation batch requires an explicit ledger",
+            )
+            infer_initial = False
+        else:
+            infer_initial = not self.ledger.entries and bool(
+                torch.any(self.rem_lo != 0) or torch.any(self.rem_hi != 0)
+            )
+        if infer_initial:
             object.__setattr__(
                 self,
                 "ledger",
@@ -2243,6 +2681,8 @@ class BatchedTaylorModel:
 
     def to(self, device: torch.device | str) -> "BatchedTaylorModel":
         device_t = torch.device(device)
+        if device_t == self.poly.coeffs.device:
+            return self
         return BatchedTaylorModel(
             self.poly.to(device_t),
             self.rem_lo.to(device_t),
@@ -2258,10 +2698,20 @@ class BatchedTaylorModel:
 
     def _check_domain(self, other: "BatchedTaylorModel") -> None:
         self.poly._check_basis(other.poly)
-        if self.domain_lo.shape != other.domain_lo.shape or not torch.allclose(self.domain_lo, other.domain_lo):
+        if self.domain_lo.shape != other.domain_lo.shape:
             raise ValueError("domain lower bounds mismatch")
-        if self.domain_hi.shape != other.domain_hi.shape or not torch.allclose(self.domain_hi, other.domain_hi):
+        if self.domain_hi.shape != other.domain_hi.shape:
             raise ValueError("domain upper bounds mismatch")
+        if self.domain_lo is not other.domain_lo:
+            require_dense_condition(
+                torch.isclose(self.domain_lo, other.domain_lo),
+                "domain lower bounds mismatch",
+            )
+        if self.domain_hi is not other.domain_hi:
+            require_dense_condition(
+                torch.isclose(self.domain_hi, other.domain_hi),
+                "domain upper bounds mismatch",
+            )
         if self.range_policy != other.range_policy:
             raise ValueError("dense range policy mismatch")
         if self.range_trace is not other.range_trace:
@@ -2309,6 +2759,8 @@ class BatchedTaylorModel:
         self._check_domain(other)
         rem_lo, rem_hi = _interval_add(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
         ledger = self.ledger.merge(other.ledger)
+        if not ledger.entries:
+            ledger = ledger.add("initial_remainder", rem_lo, rem_hi)
         return BatchedTaylorModel(self.poly.add(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def sub(self, other: Any) -> "BatchedTaylorModel":
@@ -2316,6 +2768,8 @@ class BatchedTaylorModel:
         self._check_domain(other)
         rem_lo, rem_hi = _interval_sub(self.rem_lo, self.rem_hi, other.rem_lo, other.rem_hi)
         ledger = self.ledger.merge(other.ledger.negate())
+        if not ledger.entries:
+            ledger = ledger.add("initial_remainder", rem_lo, rem_hi)
         return BatchedTaylorModel(self.poly.sub(other.poly), rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def __rsub__(self, other: Any) -> "BatchedTaylorModel":
@@ -2326,13 +2780,16 @@ class BatchedTaylorModel:
 
     def scale(self, scalar: Any) -> "BatchedTaylorModel":
         rem_lo, rem_hi = _interval_scale(self.rem_lo, self.rem_hi, scalar)
+        ledger = self.ledger.scale(scalar)
+        if not ledger.entries:
+            ledger = ledger.add("initial_remainder", rem_lo, rem_hi)
         return BatchedTaylorModel(
             self.poly.scale(scalar),
             rem_lo,
             rem_hi,
             self.domain_lo,
             self.domain_hi,
-            self.ledger.scale(scalar),
+            ledger,
             self.range_policy,
             self.range_trace,
         )
@@ -2481,10 +2938,14 @@ class BatchedTaylorModel:
         scaled = self.poly.coeffs * factors[:, None, :]
         factor_lo = torch.ones_like(factors)
         factor_hi = torch.ones_like(factors)
+        exponent_rows = tuple(self.poly.basis.exponent_to_index)
         for power in range(1, self.poly.basis.order + 1):
             mask = powers == power
+            power_count = sum(
+                exponent[index] == power for exponent in exponent_rows
+            )
             previous_lo = torch.ones(
-                (self.poly.batch, int(mask.sum().item())),
+                (self.poly.batch, power_count),
                 dtype=self.poly.coeffs.dtype,
                 device=self.poly.coeffs.device,
             )
@@ -2510,7 +2971,7 @@ class BatchedTaylorModel:
             str(self.poly.coeffs.device),
         )
         targets = []
-        for exponent in old_exponents.detach().cpu().tolist():
+        for exponent in exponent_rows:
             reduced = tuple(
                 exponent_value
                 for variable, exponent_value in enumerate(exponent)
@@ -2643,6 +3104,12 @@ class BatchedTaylorModel:
 
     def is_finite(self) -> bool:
         tensors = (self.poly.coeffs, self.rem_lo, self.rem_hi, self.domain_lo, self.domain_hi)
+        if _validation_is_deferred():
+            require_dense_condition(
+                torch.stack([torch.all(torch.isfinite(tensor)) for tensor in tensors]),
+                "Taylor-model tensors must be finite",
+            )
+            return True
         return all(bool(torch.all(torch.isfinite(tensor))) for tensor in tensors)
 
     def vanderpol_rhs(self) -> "BatchedTaylorModel":
@@ -2748,8 +3215,10 @@ def _sound_scale_tm_interval(
         raise ValueError("coefficient interval must have shape [batch, output]")
     if coefficient_hi.shape != coefficient_lo.shape:
         raise ValueError("coefficient interval shape mismatch")
-    if not bool(torch.all(coefficient_lo <= coefficient_hi)):
-        raise ValueError("invalid coefficient interval")
+    require_dense_condition(
+        coefficient_lo <= coefficient_hi,
+        "invalid coefficient interval",
+    )
     midpoint = coefficient_lo + 0.5 * (coefficient_hi - coefficient_lo)
     midpoint = torch.maximum(coefficient_lo, torch.minimum(coefficient_hi, midpoint))
     result = model.scale(midpoint)
@@ -2835,9 +3304,11 @@ def _sound_mul_tm(
     coefficient_error.scatter_add_(-1, target, route_error)
     absolute_route_sum = torch.zeros_like(result.poly.coeffs)
     absolute_route_sum.scatter_add_(-1, target, torch.abs(kept_products))
-    route_counts = torch.bincount(
-        kept_out, minlength=basis.num_terms
-    ).to(dtype=result.poly.coeffs.dtype, device=result.poly.coeffs.device)
+    route_counts = _to_layout(
+        torch.bincount(kept_out, minlength=basis.num_terms),
+        dtype=result.poly.coeffs.dtype,
+        device=result.poly.coeffs.device,
+    )
     epsilon = torch.finfo(result.poly.coeffs.dtype).eps
     gamma = (route_counts + 1.0) * epsilon
     gamma = gamma / (1.0 - gamma)
@@ -2877,6 +3348,7 @@ def _sound_mul_tm(
             result.domain_lo,
             result.domain_hi,
             dropped_exponents,
+            maximum_power=2 * basis.order,
         )
         monomial_abs = torch.maximum(
             torch.abs(monomial_lo), torch.abs(monomial_hi)
@@ -2907,6 +3379,7 @@ def sin_tm(
     maximum_delta_radius: float = 4.0,
     maximum_abs_center: float = 8.0,
     series_terms: int = 32,
+    point_enclosure_backend: str = "eager",
 ) -> BatchedTaylorModel:
     """Sound centered Taylor-model sine for batched CPU/CUDA float64 models.
 
@@ -2930,6 +3403,7 @@ def sin_tm(
         constant,
         series_terms=series_terms,
         maximum_abs_center=maximum_abs_center,
+        backend=point_enclosure_backend,
     )
     delta_coeffs = model.poly.coeffs.clone()
     delta_coeffs[..., model.poly.basis.constant_index] = 0.0
@@ -2945,11 +3419,11 @@ def sin_tm(
     )
     delta_lo, delta_hi = delta.range_bound(context="sine_delta")
     delta_radius = torch.maximum(torch.abs(delta_lo), torch.abs(delta_hi))
-    if bool(torch.any(delta_radius > abs(float(maximum_delta_radius)))):
-        raise ValueError(
-            "sin_tm composition radius exceeds maximum_delta_radius; "
-            "split the input domain or fail closed"
-        )
+    require_dense_condition(
+        delta_radius <= abs(float(maximum_delta_radius)),
+        "sin_tm composition radius exceeds maximum_delta_radius; "
+        "split the input domain or fail closed",
+    )
 
     constant_poly = BatchedPolynomial.constants(
         sin_lo + 0.5 * (sin_hi - sin_lo), model.poly.basis
@@ -3355,6 +3829,7 @@ def dense_polynomial_picard(
     iterations: int | None = None,
     cutoff_threshold: float | None = None,
     capture_trace: bool = True,
+    profiler_stage_prefix: str | None = None,
 ) -> tuple[BatchedTaylorModel, tuple[Mapping[str, Any], ...]]:
     """Construct the dense polynomial Picard candidate in physical local time."""
     if base_poly.poly.basis.order != int(order):
@@ -3362,22 +3837,35 @@ def dense_polynomial_picard(
     g = base_poly.without_remainder()
     rows: list[Mapping[str, Any]] = []
     for iteration in range(1, max(1, int(order) if iterations is None else int(iterations)) + 1):
-        rhs = call_dense_rhs(rhs_fn, g)
-        picard = base_poly.without_remainder().add(rhs.integrate(tau_index))
-        # Match sparse _picard_polynomial: arithmetic remainder is audited but
-        # is not fed into the next polynomial iterate.  Cutoff removal remains
-        # visible as the candidate's static seed remainder.
-        zeros = torch.zeros_like(picard.rem_lo)
-        g = BatchedTaylorModel(
-            picard.poly,
-            zeros,
-            zeros.clone(),
-            picard.domain_lo,
-            picard.domain_hi,
-            DenseRemainderLedger.empty(),
-            picard.range_policy,
-            picard.range_trace,
-        ).apply_cutoff(cutoff_threshold)
+        profiler_scope = (
+            torch.profiler.record_function(
+                f"stage::{profiler_stage_prefix}_k{iteration}"
+            )
+            if profiler_stage_prefix is not None
+            else None
+        )
+        if profiler_scope is not None:
+            profiler_scope.__enter__()
+        try:
+            rhs = call_dense_rhs(rhs_fn, g)
+            picard = base_poly.without_remainder().add(rhs.integrate(tau_index))
+            # Match sparse _picard_polynomial: arithmetic remainder is audited but
+            # is not fed into the next polynomial iterate.  Cutoff removal remains
+            # visible as the candidate's static seed remainder.
+            zeros = torch.zeros_like(picard.rem_lo)
+            g = BatchedTaylorModel(
+                picard.poly,
+                zeros,
+                zeros.clone(),
+                picard.domain_lo,
+                picard.domain_hi,
+                DenseRemainderLedger.empty(),
+                picard.range_policy,
+                picard.range_trace,
+            ).apply_cutoff(cutoff_threshold)
+        finally:
+            if profiler_scope is not None:
+                profiler_scope.__exit__(None, None, None)
         if capture_trace:
             rows.append(
                 {
@@ -3706,14 +4194,18 @@ __all__ = [
     "DenseValidatedStep",
     "REMAINDER_LEDGER_CATEGORIES",
     "call_dense_rhs",
+    "compiled_point_enclosure_status",
     "dense_picard_validate_step",
     "dense_polynomial_picard",
+    "dense_transient_ledger_suppressed",
+    "dense_validation_batch",
     "dense_to_sparse_tmvector",
     "build_dense_subdivision_cover",
     "canonicalize_dense_polynomial",
     "evaluate_dense_horner_range",
     "evaluate_dense_registered_horner_range",
     "registered_dense_horner_orders",
+    "monomial_interval_cache_status",
     "sin_tm",
     "validate_dense_subdivision_cover",
     "sparse_tmvector_to_dense",

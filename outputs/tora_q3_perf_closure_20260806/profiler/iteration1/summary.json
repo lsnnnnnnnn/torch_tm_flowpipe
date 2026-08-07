@@ -1,0 +1,37 @@
+{
+  "batch": 48,
+  "commit": "c69134867e26f251be39da0c13f0dedcf5a630d8",
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "torch": "2.8.0+cu128",
+    "torch_num_threads": 1
+  },
+  "instrumentation_diff_sha256": "4aadeca92a9a42c35194ea5aef4168fde03afe49808b1840f77827f0e8115c86",
+  "instrumented_worktree": true,
+  "output_status_sha256": "47b4111e5bd4c158b312606165de59a11336266aa47f2c4c4a20be4ceee43a66",
+  "profiled_source_sha256": {
+    "experiments/profile_tora_q3_stages.py": "bebf70fdf995eefbdee0850f3d328963717367607977f40b119ae865658abb9a",
+    "src/torch_tm_flowpipe/batched_dense_tm.py": "46efa086a95e107c24e2a1ceaa20b33febe3333007e85aa8249aae04651f1999",
+    "src/torch_tm_flowpipe/tora_q3.py": "9e735ee31565d682c8e37578d1ff99b9e147a448db6823e179597cfcfb544d2b"
+  },
+  "raw_trace_public": false,
+  "raw_trace_sha256": "3add9fe4d8ebee7c9a46623e6d20aec9f42a72e76c6785e6b5f1c63cd1a0eafc",
+  "record_shapes": true,
+  "schema": "tora_q3_stage_profiler_summary_v1",
+  "status": "PASS",
+  "term_count": 84,
+  "timing_claim": "profiler timing is excluded from formal runtime claims",
+  "totals": {
+    "aten_event_count": 386603,
+    "aten_item_count": 6585,
+    "aten_to_count": 12137,
+    "host_scalar_sync_estimate": 6585,
+    "local_scalar_dense_count": 6585,
+    "targeted_repository_callsite_row_count": 0
+  },
+  "with_stack": true
+}
