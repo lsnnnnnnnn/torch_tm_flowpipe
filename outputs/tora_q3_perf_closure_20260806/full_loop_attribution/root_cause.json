@@ -1,0 +1,316 @@
+{
+  "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+  "diagnostic_numerical_horizon": {
+    "first_numerical_certificate_failure_segment": 48,
+    "last_numerically_valid_segment": 47
+  },
+  "lane_results": {
+    "L0_baseline_native": {
+      "diagnostic_certificate_horizon": 4.7,
+      "diagnostic_failure": {
+        "reason": "numerical_certificate",
+        "segment": 48
+      },
+      "diagnostic_propagated_horizon": 4.800000000000001,
+      "formal_certified_horizon": 4.3,
+      "formal_first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "plant_seconds": 78.23438673838973,
+      "private_controller_updates_sha256": "8ab2d825291db518f4e2559973fe994a1004315807d662fb1f5212088caf3a70",
+      "private_replay_points_sha256": "8418c371399c9b38b248ee5b4f95bf5a6f293acee4de53222b5c6be642b993d7",
+      "private_segments_sha256": "5b11f0851dc43431f0bf9298956bf21e84da596563d138048c9f376789b3597b"
+    },
+    "L1_tight_endpoint_box_controller": {
+      "diagnostic_certificate_horizon": 4.0,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "reason": "numerical_certificate",
+        "segment": 41
+      },
+      "diagnostic_propagated_horizon": 4.1000000000000005,
+      "formal_certified_horizon": 2.1,
+      "formal_first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 22
+      },
+      "plant_seconds": 21.947253543883562,
+      "private_controller_updates_sha256": "74fafd3cbe5402a10180c20c72e787e5dac07801f3bab65336af82454347a0ef",
+      "private_replay_points_sha256": "aceb1de19e2fb4f45ef999ccfee2f77acc81b10ba4f873bb504533cd6e6c6159",
+      "private_segments_sha256": "b538ae11ffe216eb8a0e433b2646a7b5a9f099d7eef7da35842276759c69ca1c"
+    },
+    "L2_physical_endpoint_projection": {
+      "diagnostic_certificate_horizon": 4.6000000000000005,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "reason": "numerical_certificate",
+        "segment": 47
+      },
+      "diagnostic_propagated_horizon": 4.7,
+      "formal_certified_horizon": 4.3,
+      "formal_first_failure": {
+        "failed_leaf_ids": [
+          0,
+          6
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "plant_seconds": 32.675962494686246,
+      "private_controller_updates_sha256": "5d859d991a136086c0d6ba9701b7bb8755b02a84f7e9c5c2f72fda4f0ca78621",
+      "private_replay_points_sha256": "4d8edccdc1eb3555dd422141bac9bc7abca92309bee80e95ff14d70c6925a605",
+      "private_segments_sha256": "7c0f382390f15fa797fdb7ff976c9b1d0004b1d3b74cc1531f093b4ac0611c40"
+    },
+    "L3_horner_registered_best": {
+      "diagnostic_certificate_horizon": 4.7,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          2,
+          6,
+          7,
+          12,
+          18
+        ],
+        "reason": "numerical_certificate",
+        "segment": 48
+      },
+      "diagnostic_propagated_horizon": 4.800000000000001,
+      "formal_certified_horizon": 4.3,
+      "formal_first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "plant_seconds": 108.30999359954149,
+      "private_controller_updates_sha256": "1acb4f85219f5456fa9e1ef133c42710d98001c15b7b3384a26127fdd25a5af4",
+      "private_replay_points_sha256": "6a9d32eec0f6b53e6359ba561e179d264aaa23632a78036b69d1f1c7146a5e85",
+      "private_segments_sha256": "9364398c583de8c33968a4c567be69be3730cf459271c7b46c8850440db524d2"
+    },
+    "L4_k3_picard": {
+      "diagnostic_certificate_horizon": 4.7,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "reason": "numerical_certificate",
+        "segment": 48
+      },
+      "diagnostic_propagated_horizon": 4.800000000000001,
+      "formal_certified_horizon": 4.4,
+      "formal_first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "plant_seconds": 34.474094609729946,
+      "private_controller_updates_sha256": "55063d624888cd1da0294bcfd9b2ae32cc4b6bb617d1269bc1076c780b03136c",
+      "private_replay_points_sha256": "393ac93d7d6bafc56dc169725c5af7bd87cd413713941b50eb4a72e60311e667",
+      "private_segments_sha256": "be76ecea21d2be12eb4cd1fd8af2f481dc5f1be1b225ea150a10bf986c264bbc"
+    }
+  },
+  "schema": "tora_q3_t4_4_width_root_cause_v1",
+  "segment_40_width_decomposition": {
+    "candidate_compose_then_project": {
+      "maximum": 1.2366399331522282,
+      "median": 0.7635287949546221,
+      "sum": 146.66807028568337
+    },
+    "composed_exact_endpoint_direct": {
+      "maximum": 1.236639933150233,
+      "median": 0.7635287949532241,
+      "sum": 146.6680702852375
+    },
+    "current_affine_decomposition": {
+      "box_width": {
+        "maximum": 1.2366399331541036,
+        "median": 0.763528794954885,
+        "sum": 146.51971737961594
+      },
+      "linear_radius": {
+        "maximum": 0.07820338205547459,
+        "median": 0.015375618049037199,
+        "sum": 6.101220088658216
+      },
+      "maximum_absolute_center": 11.316661848875476,
+      "remainder_radius": {
+        "maximum": 0.6093092941023747,
+        "median": 0.31614362998788736,
+        "sum": 67.15863860114955
+      }
+    },
+    "current_project_local_then_compose": {
+      "maximum": 1.2366399331541036,
+      "median": 0.763528794954885,
+      "sum": 146.51971737961594
+    },
+    "current_projection_inflation_maximum": 3.915534563248002e-12,
+    "physical_affine_decomposition": {
+      "box_width": {
+        "maximum": 1.2366399331522282,
+        "median": 0.7635287949546221,
+        "sum": 146.66807028568337
+      },
+      "linear_radius": {
+        "maximum": 0.07820338205547459,
+        "median": 0.015375618049037199,
+        "sum": 6.101220088658216
+      },
+      "maximum_absolute_center": 11.316661848875476,
+      "remainder_radius": {
+        "maximum": 0.6093092941014369,
+        "median": 0.316143629987759,
+        "sum": 67.23281505418325
+      }
+    },
+    "physical_projection_inflation_maximum": 1.999511667349907e-12,
+    "pre_projection_interval_remainder": {
+      "maximum": 1.2186185882008733,
+      "median": 0.6322872599735179,
+      "sum": 134.46541600019737
+    },
+    "pre_projection_polynomial_range": {
+      "maximum": 0.15640676411155674,
+      "median": 0.030756745541988373,
+      "sum": 12.202654285039877
+    }
+  },
+  "segment_44_verdict": {
+    "all_remainder_rounds_ok_leaves": 48,
+    "finite_ok_leaves": 48,
+    "formal_first_failure": "property",
+    "initial_subset_ok_leaves": 48,
+    "interpretation": "reachability arithmetic remains numerically validated; the safety property is not proved"
+  },
+  "selected_candidate": {
+    "baseline_horizon": 4.3,
+    "candidate_horizon": 4.4,
+    "lane": "L4_k3_picard",
+    "method_note": "complete-Q3 K3 ablation; not algorithm-identical to the frozen K2 baseline",
+    "next_failure_segment": 45
+  },
+  "status": "PASS",
+  "t1_0_014211_attribution": {
+    "direct_exact_endpoint_vs_xiangru_max_abs": 0.014211021942602042,
+    "dominant_stage": "ten-segment plant propagation before projection",
+    "fraction_already_present_before_projection": 0.9992420957089847,
+    "projection_materialization_change_max_abs": 1.07787637813328e-05
+  }
+}

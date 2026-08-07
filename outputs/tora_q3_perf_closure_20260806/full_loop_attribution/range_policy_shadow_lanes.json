@@ -1,0 +1,50 @@
+{
+  "batch": 48,
+  "named_contexts": [
+    "tora_full_step_tube",
+    "tora_endpoint",
+    "tora_composed_step_tube",
+    "tora_endpoint_projection_overflow"
+  ],
+  "order": 3,
+  "picard": "K2 plus ten remainder rounds",
+  "rows": [
+    {
+      "accepted_leaves": 48,
+      "coverage_contract": "not applicable",
+      "maximum_endpoint_width": 0.400000000000567,
+      "maximum_tube_width": 0.4000000000008104,
+      "minimum_property_margin": 1.226005764128045,
+      "numerical_ok_leaves": 48,
+      "policy": "natural",
+      "status": "validated",
+      "wall_seconds_including_first_compile": 16.96675457805395
+    },
+    {
+      "accepted_leaves": 48,
+      "coverage_contract": "not applicable",
+      "maximum_endpoint_width": 0.40000000000003766,
+      "maximum_tube_width": 0.40000000000002345,
+      "minimum_property_margin": 1.226071343734823,
+      "numerical_ok_leaves": 48,
+      "policy": "horner_registered_best",
+      "status": "validated",
+      "wall_seconds_including_first_compile": 1.234489545226097
+    },
+    {
+      "accepted_leaves": 48,
+      "coverage_contract": "validated depth-1 owner-local cover",
+      "maximum_endpoint_width": 0.40000000000003766,
+      "maximum_tube_width": 0.40000000000002345,
+      "minimum_property_margin": 1.2279255084198115,
+      "numerical_ok_leaves": 48,
+      "policy": "subdivision_then_horner",
+      "status": "validated",
+      "wall_seconds_including_first_compile": 3.116011803969741
+    }
+  ],
+  "schema": "tora_q3_range_policy_shadow_lanes_v1",
+  "status": "PASS",
+  "step_size": 0.1,
+  "timing_claim": "diagnostic cold wall; not a formal speed claim"
+}
