@@ -9,6 +9,14 @@ This closure is Case C: the sound full-loop candidate improves the formal horizo
 - baseline segment 44 still passes finiteness and every numerical subset certificate
 - T5/T10/T20 widths are N/A after the hierarchical candidate gate fails at segment 45
 
+The explicit one-step/B48/T1/T5/T10/T20 gate sequence for both implementations,
+including source/config/private-trace hashes for the repeated T5 attempts, is
+in `outputs/tora_q3_perf_closure_20260806/full_closed_loop/hierarchical_gates.json`.
+Endpoint and tube statistics are kept separate by lane, scope, and state in
+`comparison/closed_loop_width_statistics.csv`; that table contains median,
+p95, maximum, worst segment, and worst leaf. Width/property/remainder evolution
+is in `comparison/property_margin_over_time.csv`.
+
 ## Root cause
 
 At T=1, 99.924% of the measured Torch/Xiangru difference is already present in the direct endpoint before projection. At segment 40, width is remainder-dominated; project/materialize inflation is about 1e-12.

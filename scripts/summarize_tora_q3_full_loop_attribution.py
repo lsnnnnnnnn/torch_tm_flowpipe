@@ -27,7 +27,7 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def write_csv(path: Path, fields: list[str], rows: list[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -52,6 +52,7 @@ def main() -> int:
             "segment_predicates.csv",
             "ledger_widths.csv",
             "root_cause.json",
+            "r1_r2_replay.json",
         }
         unexpected = {path.name for path in args.output_dir.iterdir()} - allowed
         if unexpected:
@@ -242,6 +243,9 @@ def main() -> int:
                 "controller_updates_sha256"
             ],
             "private_replay_points_sha256": summary["replay_points_sha256"],
+            "config": summary.get("config"),
+            "config_sha256": summary.get("config_sha256"),
+            "source_sha256": summary.get("source_sha256"),
         }
     root_cause = {
         "schema": "tora_q3_t4_4_width_root_cause_v1",

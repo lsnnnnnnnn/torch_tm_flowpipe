@@ -75,3 +75,29 @@ existing-history authorization question is resolved.
 
 No existing remote branch was deleted, rewritten, or force-pushed.  The only
 new remote ref is the explicitly requested parentless clean review branch.
+
+## Performance-closure publication result
+
+The performance/closed-loop closure continues exclusively on the parentless
+lineage. Its whole-tree and every-reachable-blob scanner reports
+`PASS_CLEAN_LINEAGE`, with zero unallowlisted path/credential matches, zero
+current-tree sensitive-suffix candidates, and zero high-entropy candidates.
+The aggregate scan record is
+`outputs/tora_q3_perf_closure_20260806/provenance/public_artifact_scan_summary.json`;
+raw matches and command logs remain private.
+
+Only sanitized aggregates were added for profiler iterations, runtime repeats,
+R1/R2 lifecycle replay, shadow lanes, and hierarchical full-loop gates. The
+R1/R2 public file is regenerated from a hash-verified private snapshot and
+contains no per-leaf endpoint/tube arrays. The original controller and observed
+trace remain external and are referenced only by expected SHA-256.
+
+Both public manifest locations cover the same complete tracked tree and exclude
+all `manifest.sha256` files to avoid circular dependencies:
+
+- `outputs/tora_q3_perf_closure_20260806/manifest.sha256`;
+- `outputs/tora_q3_native_matched_20260806/manifest.sha256` (compatibility path).
+
+Publication remains fail closed: any mismatch, newly tracked sensitive suffix,
+unallowlisted scanner match, or private/raw path in a public aggregate blocks a
+subsequent push.

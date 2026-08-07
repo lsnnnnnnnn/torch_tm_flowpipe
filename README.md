@@ -87,10 +87,16 @@ safety property. No T4.3 endpoint is compared as a T5/T10/T20 final width.
 - [Historical runtime report](TORA_Q3_RUNTIME_REPORT.md)
 - [Sine Taylor-model soundness report](SINE_TM_SOUNDNESS_REPORT.md)
 - [Public artifact governance audit](PUBLIC_ARTIFACT_GOVERNANCE_AUDIT.md)
+- [GPU bottleneck and source-stage attribution](TORA_Q3_GPU_BOTTLENECK_REPORT.md)
+- [Optimized matched-stack runtime report](TORA_Q3_OPTIMIZED_RUNTIME_REPORT.md)
+- [T4.4 lifecycle width attribution](TORA_Q3_T4_4_WIDTH_ATTRIBUTION_REPORT.md)
+- [Performance/full-loop closure](TORA_Q3_CLOSED_LOOP_CLOSURE_REPORT.md)
 - [Current handoff](handoff.md)
 
 The historical reports describe the reviewed source-worktree experiments. A
 result becomes current evidence for this performance/closed-loop closure branch
 only when its sanitized aggregate appears under
-`outputs/tora_q3_perf_closure_20260806/` and is covered by the current public
-manifest.
+`outputs/tora_q3_perf_closure_20260806/` and is covered by that directory's
+`manifest.sha256`. The older manifest location under
+`outputs/tora_q3_native_matched_20260806/` is retained for compatibility and
+must contain the identical complete-tree view.

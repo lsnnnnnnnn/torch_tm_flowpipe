@@ -1,0 +1,148 @@
+{
+  "common_control_substitution_forbidden": true,
+  "implementations": {
+    "baseline_native_k2": {
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "baseline_native",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 5,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 2,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "999e5e4d35b0268c024278e2112c47f38ec809b2590b8dc67cdda2ba26c577b7",
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "evidence": "tests/test_tora_q3.py::test_configurable_k2_and_k3_are_distinct_validated_picard_contracts",
+          "gate": "one_leaf_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "evidence": "full_loop_attribution/segment_predicates.csv:L0 segment 1",
+          "gate": "b48_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "evidence": "full_loop_attribution/segment_predicates.csv:L0 segment 10",
+          "gate": "b48_t1",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.3,
+          "evidence": "full_loop_attribution/root_cause.json:L0_baseline_native",
+          "gate": "b48_t5",
+          "reason": "property failure at segment 44; numerical certificate remains valid",
+          "status": "FAIL"
+        },
+        {
+          "evidence": "comparison/closure_summary.json",
+          "gate": "b48_t10",
+          "reason": "hierarchical gate stopped at T5",
+          "status": "NOT_RUN"
+        },
+        {
+          "evidence": "comparison/closure_summary.json",
+          "gate": "b48_t20",
+          "reason": "hierarchical gate stopped at T5",
+          "status": "NOT_RUN"
+        }
+      ],
+      "private_trace_sha256": {
+        "controller_updates": "36c6edd4982ff540cd3bf6d61c9e4a17eb279c84b5ac501a7f7fb298eddf8b4e",
+        "replay_points": "9a5c966e022fa27421960d12cb1782d64c8a94941b6c9ed2197b03343b1dbe9f",
+        "segments": "1bb527d84e7a5085165b32dfbce3a53f2548ec70769432a3950868c54eadb309"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      }
+    },
+    "best_sound_candidate_k3": {
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "k3_picard",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 5,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 3,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "9c47871cc87828cc28dfda1fdda0785502429cecb5873c28877910b1ea099a6b",
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "evidence": "tests/test_tora_q3.py::test_configurable_k2_and_k3_are_distinct_validated_picard_contracts",
+          "gate": "one_leaf_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "evidence": "full_loop_attribution/segment_predicates.csv:L4 segment 1",
+          "gate": "b48_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "evidence": "full_loop_attribution/segment_predicates.csv:L4 segment 10",
+          "gate": "b48_t1",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.4,
+          "evidence": "full_loop_attribution/root_cause.json:L4_k3_picard",
+          "gate": "b48_t5",
+          "reason": "property failure at segment 45; numerical certificate remains valid",
+          "status": "FAIL"
+        },
+        {
+          "evidence": "comparison/closure_summary.json",
+          "gate": "b48_t10",
+          "reason": "hierarchical gate stopped at T5",
+          "status": "NOT_RUN"
+        },
+        {
+          "evidence": "comparison/closure_summary.json",
+          "gate": "b48_t20",
+          "reason": "hierarchical gate stopped at T5",
+          "status": "NOT_RUN"
+        }
+      ],
+      "private_trace_sha256": {
+        "controller_updates": "c3a610095b15074f1d5e13aa2d7bbbd76bbf0a407c35b2b07d15c0a9b227b93a",
+        "replay_points": "fc72c0cda56951305c70ccf568dedaf9c0ab1d267e89a35d8bfdc2607cc36c99",
+        "segments": "33389fa1e20e5e989194d92e7d93c3e965befae902bd0213ceb2272de22a2f98"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      }
+    }
+  },
+  "schema": "tora_q3_hierarchical_full_closed_loop_gates_v1",
+  "status": "CASE_C_CANDIDATE_IMPROVES_4_3_TO_4_4",
+  "target_horizon_widths": {
+    "T10": "N/A",
+    "T20": "N/A",
+    "T5": "N/A (candidate first fails at segment 45)"
+  }
+}

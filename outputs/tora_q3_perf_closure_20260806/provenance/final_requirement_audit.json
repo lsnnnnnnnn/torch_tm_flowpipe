@@ -1,0 +1,171 @@
+{
+  "acceptance_requirement_count": 22,
+  "case": "CASE_C_FULL_LOOP_IMPROVED_PERFORMANCE_GATES_UNMET",
+  "requirements": [
+    {
+      "evidence": [
+        "provenance/phase0_lineage.json"
+      ],
+      "id": "clean_lineage",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "tests/test_portable_core.py",
+        "README.md"
+      ],
+      "id": "readme_links_and_publication_scope",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "README.md",
+        "tests/phase0_portable_validation.json"
+      ],
+      "id": "validation_terminology_separated",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "runtime/baseline_runtime_summary.json"
+      ],
+      "id": "same_stack_baseline_runtime",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "profiler/source_attribution_summary.json",
+        "TORA_Q3_GPU_BOTTLENECK_REPORT.md"
+      ],
+      "id": "source_line_and_stage_profiler",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "optimized_kernel/summary.json",
+        "tests/test_tora_performance_fastpaths.py"
+      ],
+      "id": "sound_performance_refactor",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "runtime/optimized_runtime_summary.json"
+      ],
+      "id": "optimized_common_control_t20",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "full_loop_attribution/segment_predicates.csv"
+      ],
+      "id": "separate_acceptance_predicates",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "full_loop_attribution/root_cause.json"
+      ],
+      "id": "t1_0_014211_attribution",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "full_loop_attribution/r1_r2_replay.json",
+        "experiments/replay_tora_q3_refresh_points.py"
+      ],
+      "id": "r1_r2_deterministic_replay",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "shadow_lanes/summary.json"
+      ],
+      "id": "sound_reconditioning_candidate",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "full_closed_loop/hierarchical_gates.json"
+      ],
+      "id": "candidate_t5_attempt",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "full_closed_loop/hierarchical_gates.json"
+      ],
+      "id": "hierarchical_t1_t5_t10_t20",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "comparison/closure_summary.json",
+        "TORA_Q3_CLOSED_LOOP_CLOSURE_REPORT.md"
+      ],
+      "id": "tightness_runtime_lane_separation",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "provenance/public_artifact_scan_summary.json"
+      ],
+      "id": "public_private_scan",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "manifest.sha256",
+        "outputs/tora_q3_native_matched_20260806/manifest.sha256"
+      ],
+      "id": "manifest_coverage",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "tests/final_validation.json"
+      ],
+      "id": "full_and_external_tests",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "handoff.md"
+      ],
+      "id": "checkpoint_publication",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "handoff.md"
+      ],
+      "id": "remote_head_verified",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "tests/final_validation.json"
+      ],
+      "id": "clean_worktree_verified",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "handoff.md"
+      ],
+      "id": "plain_language_handoff",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        "comparison/closure_summary.json",
+        "handoff.md"
+      ],
+      "id": "vdp_unresolved_boundary",
+      "status": "PASS"
+    }
+  ],
+  "schema": "tora_q3_perf_closure_final_requirement_audit_v1",
+  "status": "PASS",
+  "validation_record_status": "PASS"
+}

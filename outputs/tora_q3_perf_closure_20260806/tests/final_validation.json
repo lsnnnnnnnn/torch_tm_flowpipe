@@ -1,4 +1,25 @@
 {
+  "completion_reproductions": {
+    "baseline_native_t5": {
+      "certified_horizon": 4.3,
+      "first_failure_reason": "property",
+      "first_failure_segment": 44,
+      "source_and_config_hashes_recorded": true,
+      "status": "PASS"
+    },
+    "candidate_k3_t5": {
+      "certified_horizon": 4.4,
+      "first_failure_reason": "property",
+      "first_failure_segment": 45,
+      "source_and_config_hashes_recorded": true,
+      "status": "PASS"
+    },
+    "r1_r2_deterministic_replay": {
+      "private_snapshot_hash_verified": true,
+      "public_aggregate_contains_raw_per_leaf_arrays": false,
+      "status": "PASS"
+    }
+  },
   "environment": {
     "label": "matched_crownreach28",
     "python": "3.11",
@@ -6,7 +27,7 @@
   },
   "external_integration": {
     "command": "python -m pytest -q -m external_integration",
-    "deselected": 87,
+    "deselected": 93,
     "passed": 2,
     "private_assets_supplied_by_environment": true,
     "skipped": 2,
@@ -15,7 +36,7 @@
   },
   "full_test_suite": {
     "command": "python -m pytest -q",
-    "passed": 77,
+    "passed": 83,
     "skipped": 14,
     "status": "PASS"
   },
@@ -23,16 +44,16 @@
     "command": "python -m pip install -e .[test]",
     "status": "PASS"
   },
-  "portable_compile": {
-    "command": "python -m compileall -q src experiments scripts tests",
+  "manifest_check": {
+    "entry_count_each": 248,
+    "locations_are_byte_identical": true,
     "status": "PASS"
   },
-  "pre_evidence_manifest_check": {
-    "entry_count": 239,
-    "status": "PASS",
-    "superseded_by_final_index_manifest": true
+  "portable_compile": {
+    "command": "python -m compileall -q src tests experiments scripts",
+    "status": "PASS"
   },
-  "schema": "tora_q3_perf_closure_final_validation_v1",
-  "source_commit_before_evidence": "66f163d7e2eb72b00b1448c0765b6187c9a489d6",
+  "schema": "tora_q3_perf_closure_final_validation_v2",
+  "source_commit_before_completion_supplement": "059c7efcf11e8b7247bd4a5336aa9ecc9c806b5d",
   "status": "PASS"
 }

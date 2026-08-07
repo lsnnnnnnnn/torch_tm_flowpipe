@@ -102,12 +102,16 @@ def main() -> int:
             )
     width_path = args.output_dir / "closed_loop_width_statistics.csv"
     with width_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(width_rows[0]))
+        writer = csv.DictWriter(
+            handle, fieldnames=list(width_rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(width_rows)
     margin_path = args.output_dir / "property_margin_over_time.csv"
     with margin_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(margin_rows[0]))
+        writer = csv.DictWriter(
+            handle, fieldnames=list(margin_rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(margin_rows)
     horizon_rows = [
@@ -124,7 +128,9 @@ def main() -> int:
     ]
     horizon_path = args.output_dir / "lane_horizons.csv"
     with horizon_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(horizon_rows[0]))
+        writer = csv.DictWriter(
+            handle, fieldnames=list(horizon_rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(horizon_rows)
 

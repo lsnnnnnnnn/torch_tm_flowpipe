@@ -39,12 +39,25 @@ from torch_tm_flowpipe.tora_q3 import (
 )
 
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def canonical_sha256(payload: Any) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            payload,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
 
 
 def values(value: torch.Tensor) -> list[Any]:
@@ -143,6 +156,41 @@ def main() -> int:
     args = parser.parse_args()
     if not 1 <= args.periods <= 20:
         raise ValueError("periods must be between one and twenty")
+    polynomial_picard_rounds = 3 if args.lane == "k3_picard" else 2
+    run_config = {
+        "batch": 48,
+        "continue_after_property_failure": args.continue_after_property_failure,
+        "device": args.device,
+        "dtype": "float64",
+        "lane": args.lane,
+        "optimized_math": args.optimized_math,
+        "order": 3,
+        "periods": args.periods,
+        "point_enclosure_backend": args.point_enclosure_backend,
+        "polynomial_picard_rounds": polynomial_picard_rounds,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": (
+            args.lane
+            if args.lane in {
+                "horner_registered_best",
+                "subdivision_then_horner",
+            }
+            else "natural"
+        ),
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1,
+    }
+    source_sha256 = {
+        "experiments/run_tora_q3_full_closed_loop.py": sha256(
+            Path(__file__).resolve()
+        ),
+        "src/torch_tm_flowpipe/batched_dense_tm.py": sha256(
+            REPOSITORY_ROOT / "src/torch_tm_flowpipe/batched_dense_tm.py"
+        ),
+        "src/torch_tm_flowpipe/tora_q3.py": sha256(
+            REPOSITORY_ROOT / "src/torch_tm_flowpipe/tora_q3.py"
+        ),
+    }
     controller_value = os.environ.get("TORA_CONTROLLER_PATH")
     if not controller_value:
         raise RuntimeError("TORA_CONTROLLER_PATH is required")
@@ -334,9 +382,7 @@ def main() -> int:
                             local_step = dense_tora_q3_dr_step(
                                 local_model,
                                 capture_trace=False,
-                                polynomial_picard_rounds=(
-                                    3 if args.lane == "k3_picard" else 2
-                                ),
+                                polynomial_picard_rounds=polynomial_picard_rounds,
                                 point_enclosure_backend=(
                                     args.point_enclosure_backend
                                 ),
@@ -547,6 +593,9 @@ def main() -> int:
             else "STOPPED"
         ),
         "continue_after_property_failure": args.continue_after_property_failure,
+        "config": run_config,
+        "config_sha256": canonical_sha256(run_config),
+        "source_sha256": source_sha256,
         "point_enclosure_backend": args.point_enclosure_backend,
         "optimized_math": args.optimized_math,
         "requested_periods": args.periods,

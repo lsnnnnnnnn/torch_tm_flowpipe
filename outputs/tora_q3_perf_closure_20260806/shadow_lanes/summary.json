@@ -1,8 +1,25 @@
 {
-  "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
-  "diagnostic_numerical_horizon": {
-    "first_numerical_certificate_failure_segment": 48,
-    "last_numerically_valid_segment": 47
+  "lane_contracts": {
+    "L0_baseline_native": {
+      "classification": "formal baseline",
+      "controller_contract": "correlation-aware affine boundary"
+    },
+    "L1_tight_endpoint_box_controller": {
+      "classification": "method-native diagnostic only",
+      "controller_contract": "independent direct endpoint box; not algorithm-identical to the frozen correlation-aware controller composition"
+    },
+    "L2_physical_endpoint_projection": {
+      "classification": "sound formal shadow candidate",
+      "controller_contract": "compose physical endpoint then project"
+    },
+    "L3_horner_registered_best": {
+      "classification": "sound formal range-policy shadow",
+      "controller_contract": "unchanged"
+    },
+    "L4_k3_picard": {
+      "classification": "selected sound formal candidate",
+      "controller_contract": "unchanged; complete-Q3 K3 is a method ablation, not algorithm-identical to frozen K2"
+    }
   },
   "lane_results": {
     "L0_baseline_native": {
@@ -288,79 +305,57 @@
       }
     }
   },
-  "schema": "tora_q3_t4_4_width_root_cause_v1",
-  "segment_40_width_decomposition": {
-    "candidate_compose_then_project": {
-      "maximum": 1.2366399331522282,
-      "median": 0.7635287949546221,
-      "sum": 146.66807028568317
-    },
-    "composed_exact_endpoint_direct": {
-      "maximum": 1.236639933150233,
-      "median": 0.7635287949532241,
-      "sum": 146.66807028523726
-    },
-    "current_affine_decomposition": {
-      "box_width": {
-        "maximum": 1.2366399331541036,
-        "median": 0.763528794954885,
-        "sum": 146.5197173796157
+  "range_policy_one_step_shadow": {
+    "batch": 48,
+    "named_contexts": [
+      "tora_full_step_tube",
+      "tora_endpoint",
+      "tora_composed_step_tube",
+      "tora_endpoint_projection_overflow"
+    ],
+    "order": 3,
+    "picard": "K2 plus ten remainder rounds",
+    "rows": [
+      {
+        "accepted_leaves": 48,
+        "coverage_contract": "not applicable",
+        "maximum_endpoint_width": 0.400000000000567,
+        "maximum_tube_width": 0.4000000000008104,
+        "minimum_property_margin": 1.226005764128045,
+        "numerical_ok_leaves": 48,
+        "policy": "natural",
+        "status": "validated",
+        "wall_seconds_including_first_compile": 16.96675457805395
       },
-      "linear_radius": {
-        "maximum": 0.07820338205547453,
-        "median": 0.015375618049037193,
-        "sum": 6.101220088658215
+      {
+        "accepted_leaves": 48,
+        "coverage_contract": "not applicable",
+        "maximum_endpoint_width": 0.40000000000003766,
+        "maximum_tube_width": 0.40000000000002345,
+        "minimum_property_margin": 1.226071343734823,
+        "numerical_ok_leaves": 48,
+        "policy": "horner_registered_best",
+        "status": "validated",
+        "wall_seconds_including_first_compile": 1.234489545226097
       },
-      "maximum_absolute_center": 11.316661848875476,
-      "remainder_radius": {
-        "maximum": 0.6093092941023747,
-        "median": 0.3161436299878865,
-        "sum": 67.15863860114945
+      {
+        "accepted_leaves": 48,
+        "coverage_contract": "validated depth-1 owner-local cover",
+        "maximum_endpoint_width": 0.40000000000003766,
+        "maximum_tube_width": 0.40000000000002345,
+        "minimum_property_margin": 1.2279255084198115,
+        "numerical_ok_leaves": 48,
+        "policy": "subdivision_then_horner",
+        "status": "validated",
+        "wall_seconds_including_first_compile": 3.116011803969741
       }
-    },
-    "current_project_local_then_compose": {
-      "maximum": 1.2366399331541036,
-      "median": 0.763528794954885,
-      "sum": 146.5197173796157
-    },
-    "current_projection_inflation_maximum": 3.915534563248002e-12,
-    "physical_affine_decomposition": {
-      "box_width": {
-        "maximum": 1.2366399331522282,
-        "median": 0.7635287949546221,
-        "sum": 146.66807028568317
-      },
-      "linear_radius": {
-        "maximum": 0.07820338205547453,
-        "median": 0.015375618049037195,
-        "sum": 6.101220088658215
-      },
-      "maximum_absolute_center": 11.316661848875476,
-      "remainder_radius": {
-        "maximum": 0.6093092941014369,
-        "median": 0.31614362998775813,
-        "sum": 67.23281505418316
-      }
-    },
-    "physical_projection_inflation_maximum": 1.999511667349907e-12,
-    "pre_projection_interval_remainder": {
-      "maximum": 1.2186185882008733,
-      "median": 0.6322872599735161,
-      "sum": 134.46541600019717
-    },
-    "pre_projection_polynomial_range": {
-      "maximum": 0.15640676411155674,
-      "median": 0.030756745541988373,
-      "sum": 12.202654285039884
-    }
+    ],
+    "schema": "tora_q3_range_policy_shadow_lanes_v1",
+    "status": "PASS",
+    "step_size": 0.1,
+    "timing_claim": "diagnostic cold wall; not a formal speed claim"
   },
-  "segment_44_verdict": {
-    "all_remainder_rounds_ok_leaves": 48,
-    "finite_ok_leaves": 48,
-    "formal_first_failure": "property",
-    "initial_subset_ok_leaves": 48,
-    "interpretation": "reachability arithmetic remains numerically validated; the safety property is not proved"
-  },
+  "schema": "tora_q3_shadow_lanes_delivery_v1",
   "selected_candidate": {
     "baseline_horizon": 4.3,
     "candidate_horizon": 4.4,
@@ -368,11 +363,5 @@
     "method_note": "complete-Q3 K3 ablation; not algorithm-identical to the frozen K2 baseline",
     "next_failure_segment": 45
   },
-  "status": "PASS",
-  "t1_0_014211_attribution": {
-    "direct_exact_endpoint_vs_xiangru_max_abs": 0.014211021942602042,
-    "dominant_stage": "ten-segment plant propagation before projection",
-    "fraction_already_present_before_projection": 0.9992420957089847,
-    "projection_materialization_change_max_abs": 1.07787637813328e-05
-  }
+  "status": "PASS"
 }
