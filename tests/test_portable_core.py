@@ -129,3 +129,23 @@ def test_public_artifact_scan_covers_current_tree_and_clean_history() -> None:
         if record["scope"] in {"working_tracked_tree", "working_untracked_tree"}
     ]
     assert current_sensitive == []
+
+
+@pytest.mark.protocol
+def test_public_manifest_covers_every_tracked_non_manifest_file() -> None:
+    manifest = ROOT / "outputs/tora_q3_native_matched_20260806/manifest.sha256"
+    entries: dict[str, str] = {}
+    for line in manifest.read_text(encoding="utf-8").splitlines():
+        digest, relative = line.split("  ", 1)
+        entries[relative] = digest
+    tracked = subprocess.run(
+        ["git", "ls-files", "-z"], cwd=ROOT, check=True, capture_output=True
+    ).stdout.decode().split("\0")
+    expected = {
+        relative
+        for relative in tracked
+        if relative and Path(relative).name != "manifest.sha256"
+    }
+    assert set(entries) == expected
+    for relative, expected_digest in entries.items():
+        assert hashlib.sha256((ROOT / relative).read_bytes()).hexdigest() == expected_digest
