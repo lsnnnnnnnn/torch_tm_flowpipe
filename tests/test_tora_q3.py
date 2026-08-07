@@ -245,6 +245,35 @@ def test_tora_one_leaf_cpu_cuda_enclosure_parity() -> None:
         assert torch.allclose(cpu_value, gpu_value.cpu(), rtol=0.0, atol=2e-12)
 
 
+@pytest.mark.cuda
+@pytest.mark.integration
+def test_tora_b48_one_step_cpu_cuda_enclosure_parity() -> None:
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA is unavailable")
+    state_lo, state_hi = tora_b48_boxes()
+    control_lo, control_hi = _fixed_control(48)
+    cpu = dense_tora_q3_dr_step(
+        build_tora_q3_box_model(state_lo, state_hi, control_lo, control_hi)
+    )
+    gpu = dense_tora_q3_dr_step(
+        build_tora_q3_box_model(
+            state_lo.cuda(),
+            state_hi.cuda(),
+            control_lo.cuda(),
+            control_hi.cuda(),
+            device="cuda",
+        )
+    )
+    assert cpu.accepted and gpu.accepted
+    for cpu_value, gpu_value in (
+        (cpu.endpoint_lower, gpu.endpoint_lower),
+        (cpu.endpoint_upper, gpu.endpoint_upper),
+        (cpu.tube_lower, gpu.tube_lower),
+        (cpu.tube_upper, gpu.tube_upper),
+    ):
+        assert torch.allclose(cpu_value, gpu_value.cpu(), rtol=0.0, atol=2e-12)
+
+
 @pytest.mark.unit
 def test_tora_held_control_rhs_is_exact_zero() -> None:
     state_lo, state_hi = tora_b48_boxes()

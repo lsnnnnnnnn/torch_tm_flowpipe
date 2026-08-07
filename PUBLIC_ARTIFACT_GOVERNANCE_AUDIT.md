@@ -32,10 +32,13 @@ artifacts, and reports; it is not a license grant for excluded assets.
   New runners accept external assets through `TORA_CONTROLLER_PATH` or an
   explicit trace path and verify a declared SHA-256.
 
-The detailed inventory is in `public_artifact_inventory.csv`; origin and
-authorization decisions are in `license_and_origin_map.csv`.  The unsanitized
-scan is stored only under the private evidence root.  The public tree receives
-only its hash and aggregate counts.
+The historical inventory is in `public_artifact_inventory.csv`; origin and
+authorization decisions are in `license_and_origin_map.csv`. The Phase 0
+scanner now reads every tracked working-tree file, inventories every untracked
+file, and scans every blob/path reachable from clean-lineage `HEAD`. It also
+inventories sensitive suffixes, large files, and high-entropy candidates.
+Exact matches and paths remain under the private evidence root; the public tree
+receives sanitized counts, policy metadata, and a private-log hash only.
 
 ## Frozen boundary
 
@@ -65,10 +68,10 @@ existing-history authorization question is resolved.
    a reviewed `git filter-repo` path/object list.  Such a rewrite would require
    coordinated force updates and clone invalidation; it will not be performed
    without explicit user approval.
-4. Run the full-history secret/artifact scan again before any public push.
-   Completed for this parentless clean lineage: tracked sensitive binaries,
-   tracked path/secret-pattern matches, and new untracked sensitive binaries
-   were all zero.
+4. Run the complete clean-lineage history and whole-tree artifact scan before
+   every public push. Intentional hermetic sandbox mounts are enumerated by
+   exact literal and reason; the scanner does not construct strings to evade
+   its own patterns. Any unallowlisted match stops publication.
 
 No existing remote branch was deleted, rewritten, or force-pushed.  The only
 new remote ref is the explicitly requested parentless clean review branch.

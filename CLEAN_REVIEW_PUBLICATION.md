@@ -1,19 +1,28 @@
-# Clean TORA-Q3 review branch
+# Clean TORA-Q3 review lineage
 
-This parentless branch was created at the repository owner's explicit request
-so the native Torch TORA-Q3 implementation can be reviewed without making the
-authorization-unknown historical controller objects reachable from this
-branch.
+The parentless clean-review lineage was created at the repository owner's
+explicit request so the native Torch TORA-Q3 implementation can be reviewed
+without making authorization-unknown historical controller objects reachable.
 
-- Branch: `codex/tora-q3-native-clean-review-20260806`
-- Lineage: independently initialized; no parent commit
-- Source snapshot: `c49d74bbf48d1004f7f3818174e7f40b6200b142` plus the reviewed dirty-worktree changes
+- Bootstrap branch: `codex/tora-q3-native-clean-review-20260806`
+- Bootstrap reviewed tip: `7dcbe7cd901a941bd7508a107ecb0cc6f877ca1f`
+- Lineage root: `9fc45344c4379422244b75af705dffd17304f824`
+- Active descendant: `codex/tora-q3-performance-closed-loop-closure-20260806`
+- Blocked historical audit tip: `c49d74bbf48d1004f7f3818174e7f40b6200b142`
+- Merge base with blocked history: none
 - Sensitive controller/checkpoint bytes: excluded
 - Raw private traces, logs, paths, and observer patch: excluded
-- Bootstrap root commit: pushed successfully
-- Reviewed content verification: editable install PASS; `52 passed, 14 skipped`
-- Publication status: post-commit history/artifact scan PASS; final reviewed tip ready for non-force push
 
-This review branch is not a license grant for any excluded historical asset
-and must not be merged into the authorization-unknown lineage until the owner
-resolves that separate governance question.
+The earlier dirty source worktree reported
+`source_worktree_historical_validation = 506 passed, 6 skipped`. That result is
+historical context, not a clean-branch portable test result. The clean branch
+bootstrap independently reported
+`clean_branch_portable_validation = 52 passed, 14 skipped`. After the Phase 0
+portable review additions, the clean branch reports
+`clean_branch_portable_validation = 59 passed, 14 skipped` in the `py11`
+environment.
+
+This review lineage is not a license grant for excluded historical assets. It
+must not be merged into the authorization-unknown lineage until the owner
+resolves that separate governance question. No force push, history rewrite, or
+remote-branch deletion is part of this work.

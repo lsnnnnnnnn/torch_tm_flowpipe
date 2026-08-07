@@ -1,97 +1,96 @@
-# torch-tm-flowpipe
+# torch-tm-flowpipe: clean TORA-Q3 review surface
 
-`torch-tm-flowpipe` is a PyTorch-native, plant-only Taylor-model flowpipe
-prototype for polynomial ODEs. The active evidence branch is
-`codex/vdp-terminal-range-closure-20260805`, descended from the generic dense
-backend tip `82c54a2`; the canonical package is
-`src/torch_tm_flowpipe`.
+This branch is a self-contained review surface for the native Torch TORA-Q3
+plant and closed-loop implementation. It descends only from the parentless
+clean-review lineage rooted at `9fc45344c4379422244b75af705dffd17304f824`.
+It has no merge base with the historical audit lineage that contains
+authorization-unknown controller and raw-result objects.
 
-The project implements interval arithmetic, sparse total-degree polynomials,
-Taylor models `p + R`, one-step Picard/Taylor propagation, and multi-step
-`range_only` and `dependency_preserving` modes. It is not CROWN-Reach, a
-Flowstar rewrite, or a complete NNCS tool.
+The historical full repository included additional VDP, Flow*, DiffReach,
+benchmark-registry, and consolidated-study material. Those runners and
+artifacts are not part of this clean branch. In particular, the historical VDP
+failure near `t=6.397083942944808` remains unresolved; this branch makes no
+claim that it was fixed.
 
-## Supported quick start
+## Supported review surface
 
-```bash
-conda run -n py11 python -m pip install -e ".[test]"
-conda run -n py11 pytest -q
-conda run -n py11 python examples/scalar_quadratic.py
-```
+The supported surface is:
 
-The public package example is:
+- float64 interval arithmetic used by the TORA path, including outward
+  `torch.nextafter` rounding;
+- the fixed six-variable, complete total-degree Q3 dense Taylor-model kernel;
+- sound sine Taylor-model composition, endpoint evaluation, affine carry,
+  projection, and TORA one-step propagation;
+- the native controller adapter and the TORA common-control/full-loop runners;
+- portable contract, provenance, artifact-governance, and report tooling.
 
-```python
-from torch_tm_flowpipe import Interval, flowpipe_multi_step
-from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode
+Other generic source modules remain because the TORA implementation imports
+them or uses them as a semantic reference. This branch does not promise
+compatibility with every historical generic-flowpipe workflow.
 
-result = flowpipe_multi_step(
-    scalar_quadratic_ode,
-    [Interval(0.0, 0.1)],
-    h=0.01,
-    steps=5,
-    order=4,
-    mode="dependency_preserving",
-)
-print(result.status, result.final_tm.range_box())
-```
-
-`range_only` evaluates the carried set to a box at every step and loses
-cross-step dependency. `dependency_preserving` carries polynomial structure,
-but is not guaranteed to produce a tighter range.
-
-## Runners and results
-
-The current plant-only dense result includes an exact, safe JSON terminal-state
-replay and a validated batched subdivision polynomial-range path. It closes the
-original Van der Pol terminal step without changing the numerical contract and
-reaches R4 at a fresh horizon of `6.397083942944808`. It does not complete
-T=7.5 or T=10. See the
-[terminal-range closure](docs/VDP_TERMINAL_RANGE_CLOSURE.md) and the hashed
-evidence under
-`evidence/vdp_terminal_range_closure/20260805T055556Z`.
-
-The current native-reproduction registry is
-[`benchmarks/native_reproduction_registry.json`](benchmarks/native_reproduction_registry.json),
-with raw command/artifact evidence under
-`outputs/native_reproduction_no_adapters/20260804T081205Z`.  It directly runs the
-author/stock entrypoints for Xiangru, stock Flow*, upstream DiffReach and this
-project.  Reproduction, horizon completion, property/certificate, soundness and
-comparison eligibility are reported separately; adapters, generated harnesses and
-endpoint repair are excluded from native rows.
-
-Registry rows label reference evidence as `portable_committed`,
-`server_local_private_reference`, or `not_applicable`; an absolute private path is
-never presented as portable evidence.
-
-See the [native matrix](docs/NATIVE_REPRODUCTION_MATRIX.md),
-[standard](docs/NATIVE_REPRODUCTION_STANDARD.md), and
-[current results status](docs/RESULTS_STATUS.md). The clean-stock Flow* scalar
-diagnosis is in the
-[correctness closure](docs/FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md). No cross-tool speedup, Pareto
-frontier or winner is currently citable.
-
-The canonical comparison runner is
-`experiments/consolidated_study/cli.py`. Formal comparison is fail-closed
-until every gate in `benchmarks/cross_tool_gates.yaml` is independently
-verified. Do not use historical experiment scripts as alternate headline
-runners.
-
-The sole supported Flowstar order-2 diagnostic entrypoint is:
+## Portable quick start
 
 ```bash
-export FLOWSTAR_ROOT="$(dirname "$(git rev-parse --show-toplevel)")/flowstar"
-conda run -n py11 python experiments/flowstar_step_trace_compare.py \
-  --flowstar-root "$FLOWSTAR_ROOT" \
-  --out-dir /tmp/flowstar-order2-trace-new \
-  --horizon 0.1 --max-segments 1 --order 2 \
-  --compare-mode attempt_aligned
+python -m pip install -e ".[test]"
+pytest -q
+python examples/tora_q3_one_step.py
+python scripts/check_readme_surface.py
 ```
 
-It writes only to a new output directory. Its known outcome is a Picard
-remainder self-map validation rejection at the configured step-size floor,
-not a crash and not evidence that Flowstar does not support order 2.
+The example performs one CPU, float64, one-leaf TORA-Q3 plant step with a held
+control interval. It requires no external controller or private trace.
 
-Historical comparison artifacts retain their earlier status. See
-[reproducibility](docs/REPRODUCIBILITY.md) and the single
-[history index](docs/history/BRANCH_AUDIT.md).
+## External integration contract
+
+Controller and observation bytes are deliberately absent from Git. External
+integration is enabled only through explicit environment variables:
+
+```bash
+export XIANGRU_ROOT
+export TORA_CONTROLLER_PATH
+export TORA_CONTROLLER_TRACE_PATH
+pytest -q -m external_integration
+```
+
+`XIANGRU_ROOT` must identify the frozen Xiangru source at commit
+`27d29050a5f214b56f211ca9cb411e734ed80230`.
+`TORA_CONTROLLER_PATH` must identify the original controller with SHA-256
+`52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418`.
+If an external variable is absent, its optional test skips with an explicit
+reason. If it is supplied but missing or hash-mismatched, validation fails
+closed. Raw traces, controller bytes, observer patches, full environment dumps,
+and server paths stay outside the public tree.
+
+## Evidence and validation terminology
+
+Two test records must not be conflated:
+
+- `source_worktree_historical_validation`: `506 passed, 6 skipped`, reported
+  by the earlier dirty source worktree and retained only as historical context;
+- `clean_branch_portable_validation`: the test result produced directly from
+  this clean branch. The bootstrap result was `52 passed, 14 skipped`; current
+  results are regenerated as the review surface evolves.
+
+The common-control T20 workload is 20 matched, period-local plant replays. Each
+controller period restarts from the Xiangru-observed pre-controller state box
+and held-control interval. It is not an independent Torch closed loop. The
+native Torch full loop previously certified through `T=4.3` and failed closed
+at segment 44 (`T=4.4`) when leaf 0's `x3` tube crossed the fixed `[-2, 2]`
+safety property. No T4.3 endpoint is compared as a T5/T10/T20 final width.
+
+## Review documents
+
+- [Clean lineage publication note](CLEAN_REVIEW_PUBLICATION.md)
+- [Native TORA-Q3 implementation report](TORA_Q3_NATIVE_TORCH_IMPLEMENTATION_REPORT.md)
+- [Common-control comparison report](TORA_Q3_COMMON_CONTROL_COMPARISON_REPORT.md)
+- [Native full-loop comparison report](TORA_Q3_FULL_CLOSED_LOOP_COMPARISON_REPORT.md)
+- [Historical runtime report](TORA_Q3_RUNTIME_REPORT.md)
+- [Sine Taylor-model soundness report](SINE_TM_SOUNDNESS_REPORT.md)
+- [Public artifact governance audit](PUBLIC_ARTIFACT_GOVERNANCE_AUDIT.md)
+- [Current handoff](handoff.md)
+
+The historical reports describe the reviewed source-worktree experiments. A
+result becomes current evidence for this performance/closed-loop closure branch
+only when its sanitized aggregate appears under
+`outputs/tora_q3_perf_closure_20260806/` and is covered by the current public
+manifest.

@@ -1,0 +1,39 @@
+{
+  "schema": "tora_q3_phase0_portable_validation_v1",
+  "validation_name": "clean_branch_portable_validation",
+  "environment_label": "py11",
+  "install": {
+    "command_template": "python -m pip install -e .[test]",
+    "status": "PASS"
+  },
+  "compileall": {
+    "scope": [
+      "src",
+      "tests",
+      "experiments",
+      "scripts",
+      "examples"
+    ],
+    "status": "PASS"
+  },
+  "pytest": {
+    "command_template": "pytest -q",
+    "passed": 59,
+    "skipped": 14,
+    "failed": 0,
+    "seconds": 34.40,
+    "status": "PASS"
+  },
+  "readme_surface": {
+    "relative_links_checked": 8,
+    "relative_command_paths_checked": 2,
+    "missing": 0,
+    "status": "PASS"
+  },
+  "historical_record": {
+    "validation_name": "source_worktree_historical_validation",
+    "passed": 506,
+    "skipped": 6,
+    "provenance": "reported by the earlier dirty source worktree; not rerun or relabeled as clean-branch validation"
+  }
+}

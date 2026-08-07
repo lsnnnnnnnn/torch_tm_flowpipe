@@ -14,6 +14,7 @@ from torch_tm_flowpipe.tora_controller import (
     ToraAutoLirpaControllerBounder,
     _normalized_inputs,
     file_sha256,
+    resolve_external_controller_path,
 )
 from torch_tm_flowpipe.tora_q3 import (
     build_tora_q3_initial_model,
@@ -40,17 +41,25 @@ def test_controller_sha_contract_and_input_normalization_shapes() -> None:
     assert torch.equal(upper[:, 6:], torch.zeros((48, 4), dtype=torch.float64))
 
 
+@pytest.mark.unit
+def test_external_controller_absence_skips_but_supplied_asset_fails_closed(
+    tmp_path: Path,
+) -> None:
+    assert resolve_external_controller_path(environ={}) is None
+    with pytest.raises(FileNotFoundError, match="is not a file"):
+        resolve_external_controller_path(str(tmp_path / "missing.onnx"))
+    wrong = tmp_path / "wrong.onnx"
+    wrong.write_bytes(b"not the frozen controller")
+    with pytest.raises(ValueError, match="SHA-256 mismatch"):
+        resolve_external_controller_path(str(wrong))
+
+
 @pytest.mark.external_integration
 @pytest.mark.protocol
 def test_external_controller_sha_and_nominal_onnx_reference() -> None:
-    value = os.environ.get("TORA_CONTROLLER_PATH")
-    if not value:
+    path = resolve_external_controller_path()
+    if path is None:
         pytest.skip("TORA_CONTROLLER_PATH is required")
-    path = Path(value)
-    if not path.is_file():
-        pytest.skip("TORA_CONTROLLER_PATH does not exist")
-    if file_sha256(path) != EXPECTED_ORIGINAL_CONTROLLER_SHA256:
-        pytest.fail("external controller SHA-256 mismatch")
     try:
         import onnx
         from onnx.reference import ReferenceEvaluator

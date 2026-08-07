@@ -5,8 +5,10 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 import hashlib
+import os
 from pathlib import Path
 import time
+from typing import Mapping
 
 import numpy as np
 import torch
@@ -26,6 +28,35 @@ def file_sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def resolve_external_controller_path(
+    value: str | None = None,
+    *,
+    environ: Mapping[str, str] | None = None,
+    expected_sha256: str = EXPECTED_ORIGINAL_CONTROLLER_SHA256,
+) -> Path | None:
+    """Resolve the optional external controller and fail closed if supplied.
+
+    An absent variable means that a portable test may skip.  Once the user
+    supplies a value, a missing file or hash mismatch is a configuration
+    failure rather than another skip.
+    """
+    if value is None:
+        source = os.environ if environ is None else environ
+        value = source.get("TORA_CONTROLLER_PATH")
+    if not value:
+        return None
+    path = Path(value).expanduser()
+    if not path.is_file():
+        raise FileNotFoundError(f"TORA_CONTROLLER_PATH is not a file: {path}")
+    observed = file_sha256(path)
+    if observed != expected_sha256:
+        raise ValueError(
+            "controller SHA-256 mismatch: "
+            f"expected {expected_sha256}, observed {observed}"
+        )
+    return path.resolve()
 
 
 class NativeToraController(torch.nn.Module):
