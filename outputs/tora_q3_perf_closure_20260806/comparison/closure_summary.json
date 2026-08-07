@@ -1,0 +1,60 @@
+{
+  "baseline_horizon": 4.3,
+  "baseline_segment_44_is_property_failure": true,
+  "baseline_segment_44_numerical_certificate_ok": true,
+  "candidate_first_failure": {
+    "failed_leaf_ids": [
+      0,
+      1,
+      6
+    ],
+    "message": "local validation or composed physical-coordinate property check failed",
+    "reason": "property",
+    "segment": 45
+  },
+  "candidate_horizon": 4.4,
+  "common_formal_horizon": 4.3,
+  "next_smallest_technical_problem": "reduce remainder-dominated width entering the period-5 controller; at segment 40 the interval remainder width dominates the polynomial range, while projection inflation is only roundoff scale",
+  "performance_gates": [
+    {
+      "gate": "P0",
+      "observed": "frozen one-leaf hash exact; compiled first-call bitwise verification; CPU/CUDA predicate tests",
+      "requirement": "no correctness regression",
+      "status": "PASS"
+    },
+    {
+      "gate": "P1",
+      "observed": "3",
+      "requirement": "program host scalar sync <= 10 per logical step",
+      "status": "PASS"
+    },
+    {
+      "gate": "P2",
+      "observed": "99.583897%",
+      "requirement": "aten::to reduction >= 90%",
+      "status": "PASS"
+    },
+    {
+      "gate": "P3",
+      "observed": "4.621012x",
+      "requirement": "B48 one-step >= 10x",
+      "status": "FAIL"
+    },
+    {
+      "gate": "P4",
+      "observed": "4.854230x",
+      "requirement": "common-control T20 >= 10x",
+      "status": "FAIL"
+    }
+  ],
+  "root_cause_schema": "tora_q3_t4_4_width_root_cause_v1",
+  "schema": "tora_q3_closed_loop_closure_v1",
+  "selected_candidate": "complete-Q3 K3 polynomial Picard ablation",
+  "status": "CASE_C_FULL_LOOP_IMPROVED_PERFORMANCE_GATES_UNMET",
+  "target_horizon_widths": {
+    "T10": "N/A",
+    "T20": "N/A",
+    "T5": "N/A (candidate first fails at segment 45)"
+  },
+  "vdp_t_6_397_status": "unchanged and outside this TORA-Q3 branch scope"
+}
