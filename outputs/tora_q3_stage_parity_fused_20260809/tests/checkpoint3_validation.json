@@ -1,0 +1,49 @@
+{
+  "schema": "tora_q3_stage_parity_checkpoint3_validation_v1",
+  "status": "PASS",
+  "portable": {
+    "passed": 95,
+    "skipped": 15,
+    "seconds": 48.05,
+    "status": "PASS"
+  },
+  "external_integration": {
+    "passed": 3,
+    "skipped": 2,
+    "deselected": 105,
+    "seconds": 3.08,
+    "explicit_assets": true,
+    "status": "PASS"
+  },
+  "gpu_counterfactual": {
+    "actual_cuda_execution": true,
+    "device": "Tesla V100-SXM2-16GB",
+    "device_capability": [7, 0],
+    "driver": "580.159.03",
+    "python": "3.11.15",
+    "torch": "2.8.0+cu128",
+    "torch_cuda_runtime": "12.8",
+    "dtype": "float64",
+    "selected_segments": [1, 2, 10, 40, 43, 44, 45],
+    "minimum_k2_and_sine_error_reduction_fraction": 0.9817436186971831,
+    "maximum_k2_and_sine_error_reduction_fraction": 0.9971633266178722,
+    "private_counterfactual_sha256": "582c4b78181d70529dd74061ed0174501e7c96fe5142d867be508842a2e38bec",
+    "status": "PASS_DIAGNOSTIC_COMPLETE"
+  },
+  "reverse_substitution": {
+    "direction": "Torch sine to Xiangru downstream integration",
+    "diagnostic_counterfactual": true,
+    "formal_native_result": false,
+    "maximum_polynomial_difference": 1.1102230246251565e-16,
+    "maximum_remainder_width_difference": 0.0004493537215073773,
+    "private_result_sha256": "628efbef2b7cffc835a4d7ca478858b89f8550f5b18c05eb4e217b6d329870ad",
+    "status": "PASS"
+  },
+  "root_cause": {
+    "first_numerical_stage": "A2",
+    "first_material_stage": "A3",
+    "dominant_candidate": "A3 sine composition remainder routing and analytic tail",
+    "secondary_difference": "A7/A8 integration degree-overflow routing",
+    "status": "PASS_DOMINANT_STAGE_ISOLATED"
+  }
+}

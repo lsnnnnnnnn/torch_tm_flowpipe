@@ -1,0 +1,1837 @@
+{
+  "aggregate_effect": {
+    "maximum_k2_and_sine_local_remainder_error_reduction_fraction": 0.9971633266178722,
+    "minimum_k2_and_sine_local_remainder_error_reduction_fraction": 0.9817436186971831,
+    "minimum_k2_only_local_remainder_error_reduction_fraction": 8.865630362064891e-07
+  },
+  "diagnostic_counterfactual": true,
+  "formal_native_result": false,
+  "formal_runner_uses_xiangru_outputs": false,
+  "per_segment": {
+    "1": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1738491590580628e-07,
+          "maximum_absolute_upper_difference": 3.8234316057484844e-05,
+          "maximum_candidate_width": 0.00015482076640786326,
+          "maximum_center_difference": 1.910858437691572e-05,
+          "maximum_reference_width": 0.0001929921383088559,
+          "maximum_width_difference": 3.825146336113822e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 4.317014856258794e-06,
+          "maximum_absolute_upper_difference": 3.8234276356630126e-05,
+          "maximum_candidate_width": 0.311236843992317,
+          "maximum_center_difference": 1.6965425967852e-05,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 4.253770077755625e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1738486064866075e-07,
+          "maximum_absolute_upper_difference": 3.823431600538446e-05,
+          "maximum_candidate_width": 0.018539358584636702,
+          "maximum_center_difference": 1.9108584376915714e-05,
+          "maximum_reference_width": 0.01853935858311831,
+          "maximum_width_difference": 3.825146325693747e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221185,
+          "maximum_absolute_upper_difference": 0.004971106042173434,
+          "maximum_candidate_width": 0.3112368439925586,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 0.00964208923329346,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 4.648989939781584e-18,
+        "maximum_absolute_upper_difference": 5.014435047745458e-18,
+        "maximum_candidate_width": 0.00012388869444053443,
+        "maximum_center_difference": 1.8973538018496328e-19,
+        "maximum_reference_width": 0.00012388869444052476,
+        "maximum_width_difference": 9.676504389433127e-18,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1433139864252487e-07,
+          "maximum_absolute_upper_difference": 2.1375340288477644e-08,
+          "maximum_candidate_width": 0.0001929705604669792,
+          "maximum_center_difference": 1.0609692419477352e-07,
+          "maximum_reference_width": 0.0001929921383088559,
+          "maximum_width_difference": 2.164689531431222e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 4.286479658666131e-06,
+          "maximum_absolute_upper_difference": 2.1335639366348857e-08,
+          "maximum_candidate_width": 0.311236843992317,
+          "maximum_center_difference": 2.132572046953385e-06,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 4.307815274162685e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1433134774661815e-07,
+          "maximum_absolute_upper_difference": 2.1375288188090922e-08,
+          "maximum_candidate_width": 0.018539358584636702,
+          "maximum_center_difference": 1.0609692419480063e-07,
+          "maximum_reference_width": 0.01853935858311831,
+          "maximum_width_difference": 2.164688483955314e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221185,
+          "maximum_absolute_upper_difference": 0.005009226561584423,
+          "maximum_candidate_width": 0.3112368439925586,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 0.00964208923329346,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1738372269701055e-07,
+          "maximum_absolute_upper_difference": 3.8234257363931924e-05,
+          "maximum_candidate_width": 0.00015482083703350418,
+          "maximum_center_difference": 1.9108560996183238e-05,
+          "maximum_reference_width": 0.0001929921383088559,
+          "maximum_width_difference": 3.825139273549736e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 4.317002924247859e-06,
+          "maximum_absolute_upper_difference": 3.8234217663024594e-05,
+          "maximum_candidate_width": 0.311236843992317,
+          "maximum_center_difference": 1.6965402587110212e-05,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 4.2537630151828765e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1738366743986502e-07,
+          "maximum_absolute_upper_difference": 3.823425731183154e-05,
+          "maximum_candidate_width": 0.018539358584636702,
+          "maximum_center_difference": 1.910856099618323e-05,
+          "maximum_reference_width": 0.01853935858311831,
+          "maximum_width_difference": 3.825139263129661e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221185,
+          "maximum_absolute_upper_difference": 0.004971106100866929,
+          "maximum_candidate_width": 0.3112368439925586,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 0.00964208923329346,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.0001929921383088559,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.0001929921383088559,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 4.286222586302735e-06,
+          "maximum_absolute_upper_difference": 1.06403774680075e-12,
+          "maximum_candidate_width": 0.311236843992317,
+          "maximum_center_difference": 2.143111328178904e-06,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 4.286222516247662e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 7.693116976792425e-13,
+          "maximum_absolute_upper_difference": 7.693116976792425e-13,
+          "maximum_candidate_width": 0.018539358584636702,
+          "maximum_center_difference": 8.673617379884035e-19,
+          "maximum_reference_width": 0.01853935858311831,
+          "maximum_width_difference": 1.538623395358485e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221185,
+          "maximum_absolute_upper_difference": 0.005009247948363216,
+          "maximum_candidate_width": 0.3112368439925586,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439902191,
+          "maximum_width_difference": 0.00964208923329346,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 3.8234316057484844e-05,
+        "k2_and_sine_maximum_error": 2.1433139864252487e-07,
+        "k2_and_sine_substitution_fraction": 0.9943942661790973,
+        "k2_maximum_error": 3.8234257363931924e-05,
+        "k2_substitution_fraction": 1.5351014212017233e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 2.143111328529994e-07,
+        "output_remainder_maximum_width_difference": 2.1431113285285455e-07,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.00026978916998242846,
+        "composition_overflow_maximum_width_difference": 0.004000516161668665,
+        "point_enclosure_maximum_error": 3.6637359812630166e-15,
+        "retained_polynomial_maximum_error": 5.551115123125783e-17,
+        "same_input_integration_maximum_error": 2.1431113285300362e-07,
+        "sine_output_remainder_maximum_width_difference": 0.0037847516735547847
+      },
+      "segment": 1,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 5.6361634109824976e-11,
+        "xiangru_k2_then_torch": 3.92918310437914e-05
+      }
+    },
+    "10": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.456785797840932e-05,
+          "maximum_absolute_upper_difference": 2.5529780149994498e-06,
+          "maximum_candidate_width": 0.0001877835010497508,
+          "maximum_center_difference": 1.856041799670439e-05,
+          "maximum_reference_width": 0.00019052087169499696,
+          "maximum_width_difference": 3.201487996340987e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.456783139810238e-05,
+          "maximum_absolute_upper_difference": 1.213972589786394e-06,
+          "maximum_candidate_width": 0.31123684397431894,
+          "maximum_center_difference": 1.7890901993888875e-05,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 3.3353858808315984e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.456785816651365e-05,
+          "maximum_absolute_upper_difference": 2.5529778268885365e-06,
+          "maximum_candidate_width": 0.018539358583556795,
+          "maximum_center_difference": 1.8560417996700985e-05,
+          "maximum_reference_width": 0.018539358582038402,
+          "maximum_width_difference": 3.201488033962533e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233235507,
+          "maximum_absolute_upper_difference": 0.003886956457650026,
+          "maximum_candidate_width": 0.31123684397456053,
+          "maximum_center_difference": 0.004821044616574399,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 0.009642089233322104,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 6.488762541488362e-18,
+        "maximum_absolute_upper_difference": 6.993104012531504e-18,
+        "maximum_candidate_width": 0.00017291590866238884,
+        "maximum_center_difference": 2.574980159653073e-19,
+        "maximum_reference_width": 0.00017291590866237537,
+        "maximum_width_difference": 1.3471211993132393e-17,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.766986620312495e-09,
+          "maximum_absolute_upper_difference": 9.805772260452626e-08,
+          "maximum_candidate_width": 0.00019043610071314566,
+          "maximum_center_difference": 4.8540499251106405e-08,
+          "maximum_reference_width": 0.00019052087169499696,
+          "maximum_width_difference": 9.903444670681261e-08,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.740406259339807e-09,
+          "maximum_absolute_upper_difference": 1.3390956594694359e-06,
+          "maximum_candidate_width": 0.31123684397431894,
+          "maximum_center_difference": 6.64677626605048e-07,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 1.3488360657287757e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.767174724605379e-09,
+          "maximum_absolute_upper_difference": 9.805772206673488e-08,
+          "maximum_candidate_width": 0.018539358583556795,
+          "maximum_center_difference": 4.854049925103864e-08,
+          "maximum_reference_width": 0.018539358582038402,
+          "maximum_width_difference": 9.903444563160932e-08,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233235507,
+          "maximum_absolute_upper_difference": 0.003886956457650026,
+          "maximum_candidate_width": 0.31123684397456053,
+          "maximum_center_difference": 0.004821044616574399,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 0.009642089233322104,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.4567818450356346e-05,
+          "maximum_absolute_upper_difference": 2.5529859107064567e-06,
+          "maximum_candidate_width": 0.0001877835055603546,
+          "maximum_center_difference": 1.8560402180531403e-05,
+          "maximum_reference_width": 0.00019052087169499696,
+          "maximum_width_difference": 3.2014832539649886e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.4567791870054876e-05,
+          "maximum_absolute_upper_difference": 1.2139804854705005e-06,
+          "maximum_candidate_width": 0.31123684397431894,
+          "maximum_center_difference": 1.7890886177762688e-05,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 3.3353811384584375e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.456781863846073e-05,
+          "maximum_absolute_upper_difference": 2.5529857225955197e-06,
+          "maximum_candidate_width": 0.018539358583556795,
+          "maximum_center_difference": 1.856040218052796e-05,
+          "maximum_reference_width": 0.018539358582038402,
+          "maximum_width_difference": 3.201483291586553e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233235507,
+          "maximum_absolute_upper_difference": 0.003886956457650026,
+          "maximum_candidate_width": 0.31123684397456053,
+          "maximum_center_difference": 0.004821044616574399,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 0.009642089233322104,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.00019052087169499696,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.00019052087169499696,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.049826892085548e-12,
+          "maximum_absolute_upper_difference": 1.3389681374764706e-06,
+          "maximum_candidate_width": 0.31123684397431894,
+          "maximum_center_difference": 6.694841176990707e-07,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 1.3389680395547998e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 7.693116976792425e-13,
+          "maximum_absolute_upper_difference": 7.693116976792425e-13,
+          "maximum_candidate_width": 0.018539358583556795,
+          "maximum_center_difference": 3.686287386450715e-18,
+          "maximum_reference_width": 0.018539358582038402,
+          "maximum_width_difference": 1.538623395358485e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233235507,
+          "maximum_absolute_upper_difference": 0.003886956457650026,
+          "maximum_candidate_width": 0.31123684397456053,
+          "maximum_center_difference": 0.004821044616574399,
+          "maximum_reference_width": 0.31123684397221396,
+          "maximum_width_difference": 0.009642089233322104,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 3.456785797840932e-05,
+        "k2_and_sine_maximum_error": 9.805772260452626e-08,
+        "k2_and_sine_substitution_fraction": 0.9971633266178722,
+        "k2_maximum_error": 3.4567818450356346e-05,
+        "k2_substitution_fraction": 1.1434915349051167e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 9.804867619686033e-08,
+        "output_remainder_maximum_width_difference": 9.804867619684677e-08,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.0003404191810781671,
+        "composition_overflow_maximum_width_difference": 0.003483038024783055,
+        "point_enclosure_maximum_error": 3.6637359812630166e-15,
+        "retained_polynomial_maximum_error": 1.1102230246251565e-16,
+        "same_input_integration_maximum_error": 9.804867619697129e-08,
+        "sine_output_remainder_maximum_width_difference": 0.0031684925569035174
+      },
+      "segment": 10,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 9.804867618853907e-08,
+        "xiangru_k2_then_torch": 3.726580493376361e-05
+      }
+    },
+    "2": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.2206213312219946e-07,
+          "maximum_absolute_upper_difference": 3.667701718919507e-05,
+          "maximum_candidate_width": 0.0001578803356111806,
+          "maximum_center_difference": 1.83077027670597e-05,
+          "maximum_reference_width": 0.00018139621841729657,
+          "maximum_width_difference": 3.6738628844270736e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.709324035150452e-06,
+          "maximum_absolute_upper_difference": 3.667698610188008e-05,
+          "maximum_candidate_width": 0.3112368439903168,
+          "maximum_center_difference": 1.6489671085695434e-05,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 4.0374630032369296e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.2206208294435137e-07,
+          "maximum_absolute_upper_difference": 3.667701713789656e-05,
+          "maximum_candidate_width": 0.01853935858451671,
+          "maximum_center_difference": 1.8307702767059945e-05,
+          "maximum_reference_width": 0.01853935858299832,
+          "maximum_width_difference": 3.673862874167323e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221851,
+          "maximum_absolute_upper_difference": 0.005432913556182473,
+          "maximum_candidate_width": 0.31123684399055485,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 0.009642089233294793,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 5.0889220328087674e-18,
+        "maximum_absolute_upper_difference": 5.4752209710517974e-18,
+        "maximum_candidate_width": 0.0001356122329625795,
+        "maximum_center_difference": 2.168404344971009e-19,
+        "maximum_reference_width": 0.00013561223296256893,
+        "maximum_width_difference": 1.0570971181733668e-17,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.153565944070065e-07,
+          "maximum_absolute_upper_difference": 2.1484811694294894e-08,
+          "maximum_candidate_width": 0.00018137458999973645,
+          "maximum_center_difference": 1.0660404753642504e-07,
+          "maximum_reference_width": 0.00018139621841729657,
+          "maximum_width_difference": 2.175050937411663e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.641206986926271e-06,
+          "maximum_absolute_upper_difference": 2.1453495646639453e-08,
+          "maximum_candidate_width": 0.3112368439903168,
+          "maximum_center_difference": 1.8098767455843046e-06,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 3.6626604825729103e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.1535654816803018e-07,
+          "maximum_absolute_upper_difference": 2.1484763278894516e-08,
+          "maximum_candidate_width": 0.01853935858451671,
+          "maximum_center_difference": 1.066040475367232e-07,
+          "maximum_reference_width": 0.01853935858299832,
+          "maximum_width_difference": 2.1750500126259701e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221851,
+          "maximum_absolute_upper_difference": 0.0054692515933095764,
+          "maximum_candidate_width": 0.31123684399055485,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 0.009642089233294793,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.220608673640035e-07,
+          "maximum_absolute_upper_difference": 3.667696562192835e-05,
+          "maximum_candidate_width": 0.00015788034217147632,
+          "maximum_center_difference": 1.8307683342818528e-05,
+          "maximum_reference_width": 0.00018139621841729657,
+          "maximum_width_difference": 3.673856455821967e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.7093113776087705e-06,
+          "maximum_absolute_upper_difference": 3.66769345345741e-05,
+          "maximum_candidate_width": 0.3112368439903168,
+          "maximum_center_difference": 1.648965166145544e-05,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 4.037456574623732e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 2.220608171861554e-07,
+          "maximum_absolute_upper_difference": 3.6676965570629826e-05,
+          "maximum_candidate_width": 0.01853935858451671,
+          "maximum_center_difference": 1.8307683342818745e-05,
+          "maximum_reference_width": 0.01853935858299832,
+          "maximum_width_difference": 3.6738564455622135e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221851,
+          "maximum_absolute_upper_difference": 0.005432913607787304,
+          "maximum_candidate_width": 0.31123684399055485,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 0.009642089233294793,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.00018139621841729657,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.00018139621841729657,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 3.6409566777084734e-06,
+          "maximum_absolute_upper_difference": 1.0622613899613498e-12,
+          "maximum_candidate_width": 0.3112368439903168,
+          "maximum_center_difference": 1.8204783807096447e-06,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 3.640956593886635e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 7.693116976792425e-13,
+          "maximum_absolute_upper_difference": 7.693116976792425e-13,
+          "maximum_candidate_width": 0.01853935858451671,
+          "maximum_center_difference": 8.673617379884035e-19,
+          "maximum_reference_width": 0.01853935858299832,
+          "maximum_width_difference": 1.538623395358485e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.009642089233221851,
+          "maximum_absolute_upper_difference": 0.005469273043104406,
+          "maximum_candidate_width": 0.31123684399055485,
+          "maximum_center_difference": 0.00482104461657451,
+          "maximum_reference_width": 0.3112368439882154,
+          "maximum_width_difference": 0.009642089233294793,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 3.667701718919507e-05,
+        "k2_and_sine_maximum_error": 2.153565944070065e-07,
+        "k2_and_sine_substitution_fraction": 0.9941282958399776,
+        "k2_maximum_error": 3.667696562192835e-05,
+        "k2_substitution_fraction": 1.4059831107138265e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 2.1533629676330187e-07,
+        "output_remainder_maximum_width_difference": 2.153362967631765e-07,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.0002942620362276784,
+        "composition_overflow_maximum_width_difference": 0.0038728783576335766,
+        "point_enclosure_maximum_error": 3.774758283725532e-15,
+        "retained_polynomial_maximum_error": 1.1102230246251565e-16,
+        "same_input_integration_maximum_error": 2.1533629676331796e-07,
+        "sine_output_remainder_maximum_width_difference": 0.0036349766785091597
+      },
+      "segment": 2,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 4.935428628283223e-11,
+        "xiangru_k2_then_torch": 3.791298455632815e-05
+      }
+    },
+    "40": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502419812223797e-07,
+          "maximum_absolute_upper_difference": 5.066970771982073e-05,
+          "maximum_candidate_width": 0.00016506243763245133,
+          "maximum_center_difference": 2.5708412160504963e-05,
+          "maximum_reference_width": 0.0001699469079567968,
+          "maximum_width_difference": 4.992259111863155e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502486267270015e-07,
+          "maximum_absolute_upper_difference": 5.066958079447126e-05,
+          "maximum_candidate_width": 0.36314746142403465,
+          "maximum_center_difference": 2.5106581909239978e-05,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 5.112599777046256e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502421122904419e-07,
+          "maximum_absolute_upper_difference": 5.0669710729478457e-05,
+          "maximum_candidate_width": 0.22738289538432077,
+          "maximum_center_difference": 2.5708412117696894e-05,
+          "maximum_reference_width": 0.22738289538261675,
+          "maximum_width_difference": 4.992259722356486e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.007324918445239914,
+          "maximum_absolute_upper_difference": 0.008103470180059968,
+          "maximum_candidate_width": 0.3631474614243029,
+          "maximum_center_difference": 0.0038872324996672702,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 0.008432475360785396,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 6.044427111606687e-18,
+        "maximum_absolute_upper_difference": 5.623964303002854e-18,
+        "maximum_candidate_width": 0.00014987031680088506,
+        "maximum_center_difference": 2.168404344971009e-19,
+        "maximum_reference_width": 0.0001498703168008734,
+        "maximum_width_difference": 1.1655173354219173e-17,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.250455046353335e-07,
+          "maximum_absolute_upper_difference": 9.237030617046435e-08,
+          "maximum_candidate_width": 0.0001693233412164295,
+          "maximum_center_difference": 4.5790422265498914e-07,
+          "maximum_reference_width": 0.0001699469079567968,
+          "maximum_width_difference": 9.342825639606887e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.464863104705394e-06,
+          "maximum_absolute_upper_difference": 9.224338082258754e-08,
+          "maximum_candidate_width": 0.36314746142403465,
+          "maximum_center_difference": 6.921226707312655e-07,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 1.545480868059279e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.250456357023928e-07,
+          "maximum_absolute_upper_difference": 9.237331582718361e-08,
+          "maximum_candidate_width": 0.22738289538432077,
+          "maximum_center_difference": 4.5790422458120983e-07,
+          "maximum_reference_width": 0.22738289538261675,
+          "maximum_width_difference": 9.34282822242366e-07,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.007324918445239914,
+          "maximum_absolute_upper_difference": 0.008103470180059968,
+          "maximum_candidate_width": 0.3631474614243029,
+          "maximum_center_difference": 0.0038872324996672702,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 0.008432475360785396,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502413261104287e-07,
+          "maximum_absolute_upper_difference": 5.0669572213197214e-05,
+          "maximum_candidate_width": 0.00016506245172016849,
+          "maximum_center_difference": 2.570834766669652e-05,
+          "maximum_reference_width": 0.0001699469079567968,
+          "maximum_width_difference": 4.992244909300141e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502479716190892e-07,
+          "maximum_absolute_upper_difference": 5.066944528786532e-05,
+          "maximum_candidate_width": 0.36314746142403465,
+          "maximum_center_difference": 2.51065174154963e-05,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 5.112585574484907e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.502414571773254e-07,
+          "maximum_absolute_upper_difference": 5.066957522285517e-05,
+          "maximum_candidate_width": 0.22738289538432077,
+          "maximum_center_difference": 2.5708347623888163e-05,
+          "maximum_reference_width": 0.22738289538261675,
+          "maximum_width_difference": 4.992245519793402e-05,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.007324918445239914,
+          "maximum_absolute_upper_difference": 0.008103470180059968,
+          "maximum_candidate_width": 0.3631474614243029,
+          "maximum_center_difference": 0.0038872324996672702,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 0.008432475360785396,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.0001699469079567968,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.0001699469079567968,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.4639258013593448e-06,
+          "maximum_absolute_upper_difference": 1.184830011879967e-12,
+          "maximum_candidate_width": 0.36314746142403465,
+          "maximum_center_difference": 7.319629455881937e-07,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 1.4639257116533244e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.618383784408934e-13,
+          "maximum_absolute_upper_difference": 8.618383784408934e-13,
+          "maximum_candidate_width": 0.22738289538432077,
+          "maximum_center_difference": 2.0816681711721685e-17,
+          "maximum_reference_width": 0.22738289538261675,
+          "maximum_width_difference": 1.7236767568817868e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.007324918445239914,
+          "maximum_absolute_upper_difference": 0.008103470180059968,
+          "maximum_candidate_width": 0.3631474614243029,
+          "maximum_center_difference": 0.0038872324996672702,
+          "maximum_reference_width": 0.36314746142169696,
+          "maximum_width_difference": 0.008432475360785396,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 5.066970771982073e-05,
+        "k2_and_sine_maximum_error": 9.250455046353335e-07,
+        "k2_and_sine_substitution_fraction": 0.9817436186971831,
+        "k2_maximum_error": 5.0669572213197214e-05,
+        "k2_substitution_fraction": 2.674312318151628e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 9.24953638817575e-07,
+        "output_remainder_maximum_width_difference": 9.249536388175412e-07,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.00011004478726361731,
+        "composition_overflow_maximum_width_difference": 0.005011557643445616,
+        "point_enclosure_maximum_error": 4.107825191113079e-15,
+        "retained_polynomial_maximum_error": 2.220446049250313e-16,
+        "same_input_integration_maximum_error": 9.249536388176953e-07,
+        "sine_output_remainder_maximum_width_difference": 0.004933086859757036
+      },
+      "segment": 40,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 9.249536388113849e-07,
+        "xiangru_k2_then_torch": 5.072223512050597e-05
+      }
+    },
+    "43": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0167004726448995e-06,
+          "maximum_absolute_upper_difference": 0.00010520674625206955,
+          "maximum_candidate_width": 0.00015804902628933806,
+          "maximum_center_difference": 5.297275509335096e-05,
+          "maximum_reference_width": 0.00020952095559438575,
+          "maximum_width_difference": 0.00010446798231743716,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.016706911050047e-06,
+          "maximum_absolute_upper_difference": 0.00010520662507418344,
+          "maximum_candidate_width": 0.2277341753861002,
+          "maximum_center_difference": 5.240451669596968e-05,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.00010560421675653853,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.016700622687855e-06,
+          "maximum_absolute_upper_difference": 0.00010520674998715403,
+          "maximum_candidate_width": 0.14537609812343488,
+          "maximum_center_difference": 5.2972755001453806e-05,
+          "maximum_reference_width": 0.1453760981217228,
+          "maximum_width_difference": 0.00010446798997140218,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0044408887832868005,
+          "maximum_absolute_upper_difference": 0.001471015633977446,
+          "maximum_candidate_width": 0.22908515007493596,
+          "maximum_center_difference": 0.0022204443916122862,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.004440888783349084,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 5.5294310796760726e-18,
+        "maximum_absolute_upper_difference": 5.132053709560333e-18,
+        "maximum_candidate_width": 0.00013676162824865178,
+        "maximum_center_difference": 2.0328790734103208e-19,
+        "maximum_reference_width": 0.00013676162824864113,
+        "maximum_width_difference": 1.0652286344670081e-17,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.090685103158481e-06,
+          "maximum_absolute_upper_difference": 1.0893777879186946e-07,
+          "maximum_candidate_width": 0.000209422923156303,
+          "maximum_center_difference": 5.398956441411712e-07,
+          "maximum_reference_width": 0.00020952095559438575,
+          "maximum_width_difference": 1.1015789180346197e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.5024486077486188e-06,
+          "maximum_absolute_upper_difference": 1.0881660084116618e-07,
+          "maximum_candidate_width": 0.2277341753861002,
+          "maximum_center_difference": 7.027518842406266e-07,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 1.5993934470159843e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0906852532018702e-06,
+          "maximum_absolute_upper_difference": 1.0894151387594309e-07,
+          "maximum_candidate_width": 0.14537609812343488,
+          "maximum_center_difference": 5.398956483895767e-07,
+          "maximum_reference_width": 0.1453760981217228,
+          "maximum_width_difference": 1.1015792096245869e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0044408887832868005,
+          "maximum_absolute_upper_difference": 0.0015447450093007964,
+          "maximum_candidate_width": 0.22908515007493596,
+          "maximum_center_difference": 0.0022204443916122862,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.004440888783349084,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0166996215753591e-06,
+          "maximum_absolute_upper_difference": 0.00010520661338286889,
+          "maximum_candidate_width": 0.0001580490403256181,
+          "maximum_center_difference": 5.297269314081095e-05,
+          "maximum_reference_width": 0.00020952095559438575,
+          "maximum_width_difference": 0.00010446784048411589,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0167060600085875e-06,
+          "maximum_absolute_upper_difference": 0.0001052064922049123,
+          "maximum_candidate_width": 0.2277341753861002,
+          "maximum_center_difference": 5.2404454743415485e-05,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.00010560407492310464,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0166997716186399e-06,
+          "maximum_absolute_upper_difference": 0.00010520661711795228,
+          "maximum_candidate_width": 0.14537609812343488,
+          "maximum_center_difference": 5.2972693048913486e-05,
+          "maximum_reference_width": 0.1453760981217228,
+          "maximum_width_difference": 0.00010446784813808105,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0044408887832868005,
+          "maximum_absolute_upper_difference": 0.0014710157674157065,
+          "maximum_candidate_width": 0.22908515007493596,
+          "maximum_center_difference": 0.0022204443916122862,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.004440888783349084,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.00020952095559438575,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.00020952095559438575,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.501355024524642e-06,
+          "maximum_absolute_upper_difference": 1.1866063687193673e-12,
+          "maximum_candidate_width": 0.2277341753861002,
+          "maximum_center_difference": 7.506775537846622e-07,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 1.5013549413689375e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.620465452580106e-13,
+          "maximum_absolute_upper_difference": 8.620465452580106e-13,
+          "maximum_candidate_width": 0.14537609812343488,
+          "maximum_center_difference": 2.0816681711721685e-17,
+          "maximum_reference_width": 0.1453760981217228,
+          "maximum_width_difference": 1.7241208460916368e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0044408887832868005,
+          "maximum_absolute_upper_difference": 0.0015448181607722322,
+          "maximum_candidate_width": 0.22908515007493596,
+          "maximum_center_difference": 0.0022204443916122862,
+          "maximum_reference_width": 0.22773417538374652,
+          "maximum_width_difference": 0.004440888783349084,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 0.00010520674625206955,
+        "k2_and_sine_maximum_error": 1.090685103158481e-06,
+        "k2_and_sine_substitution_fraction": 0.98963293570029,
+        "k2_maximum_error": 0.00010520661338286889,
+        "k2_substitution_fraction": 1.2629342260872534e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 1.0905769102513093e-06,
+        "output_remainder_maximum_width_difference": 1.0905769102512178e-06,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.0004161751818318009,
+        "composition_overflow_maximum_width_difference": 0.010664680341047152,
+        "point_enclosure_maximum_error": 4.218847493575595e-15,
+        "retained_polynomial_maximum_error": 2.220446049250313e-16,
+        "same_input_integration_maximum_error": 1.0905769102514228e-06,
+        "sine_output_remainder_maximum_width_difference": 0.01033142426957604
+      },
+      "segment": 43,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 1.0905769102457358e-06,
+        "xiangru_k2_then_torch": 0.0001056008090664258
+      }
+    },
+    "44": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.950706661088828e-07,
+          "maximum_absolute_upper_difference": 0.00012470796150367632,
+          "maximum_candidate_width": 0.00015288893566920683,
+          "maximum_center_difference": 6.277688219287894e-05,
+          "maximum_reference_width": 0.00024601305679190934,
+          "maximum_width_difference": 0.0001238621586215948,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.95076931353811e-07,
+          "maximum_absolute_upper_difference": 0.00012470784378904032,
+          "maximum_candidate_width": 0.22773417538411422,
+          "maximum_center_difference": 6.217002656183634e-05,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00012507563445451897,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.95070826736999e-07,
+          "maximum_absolute_upper_difference": 0.00012470796527915343,
+          "maximum_candidate_width": 0.14537609812214508,
+          "maximum_center_difference": 6.277688208033115e-05,
+          "maximum_reference_width": 0.145376098120433,
+          "maximum_width_difference": 0.00012386216639764455,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.00444088878326343,
+          "maximum_absolute_upper_difference": 0.0014898218465869695,
+          "maximum_candidate_width": 0.23074361319003972,
+          "maximum_center_difference": 0.0022204443915925243,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00444088878334159,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 5.231275482242559e-18,
+        "maximum_absolute_upper_difference": 4.8523036185033005e-18,
+        "maximum_candidate_width": 0.00012930670277030057,
+        "maximum_center_difference": 1.8973538018496328e-19,
+        "maximum_reference_width": 0.0001293067027702905,
+        "maximum_width_difference": 1.0083080204115191e-17,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.077211002521272e-06,
+          "maximum_absolute_upper_difference": 1.0759354705740091e-07,
+          "maximum_candidate_width": 0.00024591437191877975,
+          "maximum_center_difference": 5.33225804060525e-07,
+          "maximum_reference_width": 0.00024601305679190934,
+          "maximum_width_difference": 1.0879703969214941e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.423404099254455e-06,
+          "maximum_absolute_upper_difference": 1.0747663414800712e-07,
+          "maximum_candidate_width": 0.22773417538411422,
+          "maximum_center_difference": 6.629038804550902e-07,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 1.521000437376685e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0772111631498354e-06,
+          "maximum_absolute_upper_difference": 1.0759758412026699e-07,
+          "maximum_candidate_width": 0.14537609812214508,
+          "maximum_center_difference": 5.332258094289249e-07,
+          "maximum_reference_width": 0.145376098120433,
+          "maximum_width_difference": 1.087970707441821e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.00444088878326343,
+          "maximum_absolute_upper_difference": 0.0015819686634881425,
+          "maximum_candidate_width": 0.23074361319003972,
+          "maximum_center_difference": 0.0022204443915925243,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00444088878334159,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.950697296777337e-07,
+          "maximum_absolute_upper_difference": 0.0001247078310696476,
+          "maximum_candidate_width": 0.00015288894953867697,
+          "maximum_center_difference": 6.277682193459418e-05,
+          "maximum_reference_width": 0.00024601305679190934,
+          "maximum_width_difference": 0.00012386201827010692,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.95075994936201e-07,
+          "maximum_absolute_upper_difference": 0.00012470771335504338,
+          "maximum_candidate_width": 0.22773417538411422,
+          "maximum_center_difference": 6.21699663035935e-05,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00012507549410301078,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.95069890305511e-07,
+          "maximum_absolute_upper_difference": 0.00012470783484512526,
+          "maximum_candidate_width": 0.14537609812214508,
+          "maximum_center_difference": 6.277682182204668e-05,
+          "maximum_reference_width": 0.145376098120433,
+          "maximum_width_difference": 0.00012386202604615718,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.00444088878326343,
+          "maximum_absolute_upper_difference": 0.001489821977576411,
+          "maximum_candidate_width": 0.23074361319003972,
+          "maximum_center_difference": 0.0022204443915925243,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00444088878334159,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.00024601305679190934,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.00024601305679190934,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.4223089739306971e-06,
+          "maximum_absolute_upper_difference": 1.1866063687193673e-12,
+          "maximum_candidate_width": 0.22773417538411422,
+          "maximum_center_difference": 7.111545267113328e-07,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 1.4223088943277062e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.620465452580106e-13,
+          "maximum_absolute_upper_difference": 8.620465452580106e-13,
+          "maximum_candidate_width": 0.14537609812214508,
+          "maximum_center_difference": 1.3877787807814457e-17,
+          "maximum_reference_width": 0.145376098120433,
+          "maximum_width_difference": 1.7240653349404056e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.00444088878326343,
+          "maximum_absolute_upper_difference": 0.0015820420888504882,
+          "maximum_candidate_width": 0.23074361319003972,
+          "maximum_center_difference": 0.0022204443915925243,
+          "maximum_reference_width": 0.227734175381757,
+          "maximum_width_difference": 0.00444088878334159,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 0.00012470796150367632,
+        "k2_and_sine_maximum_error": 1.077211002521272e-06,
+        "k2_and_sine_substitution_fraction": 0.9913621312582396,
+        "k2_maximum_error": 0.0001247078310696476,
+        "k2_substitution_fraction": 1.045915811070941e-06
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 1.077104258878076e-06,
+        "output_remainder_maximum_width_difference": 1.0771042588779761e-06,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.0005600793871299772,
+        "composition_overflow_maximum_width_difference": 0.012711610248836987,
+        "point_enclosure_maximum_error": 4.107825191113079e-15,
+        "retained_polynomial_maximum_error": 2.220446049250313e-16,
+        "same_input_integration_maximum_error": 1.0771042588781862e-06,
+        "sine_output_remainder_maximum_width_difference": 0.012251745479717668
+      },
+      "segment": 44,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 1.077104258872738e-06,
+        "xiangru_k2_then_torch": 0.00012519224715828135
+      }
+    },
+    "45": {
+      "baseline_torch": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.419474524334606e-07,
+          "maximum_absolute_upper_difference": 0.00014238921597132452,
+          "maximum_candidate_width": 0.0001460817382278648,
+          "maximum_center_difference": 7.164399927071539e-05,
+          "maximum_reference_width": 0.0002796567598564487,
+          "maximum_width_difference": 0.0001414904334012183,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.4195347821735e-07,
+          "maximum_absolute_upper_difference": 0.00014238910409436478,
+          "maximum_candidate_width": 0.22773417538212826,
+          "maximum_center_difference": 7.109411653349884e-05,
+          "maximum_reference_width": 0.22773417537977103,
+          "maximum_width_difference": 0.00014258997512162086,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 88
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.419476257408604e-07,
+          "maximum_absolute_upper_difference": 0.00014238922007977182,
+          "maximum_candidate_width": 0.1453760981208552,
+          "maximum_center_difference": 7.164399912889911e-05,
+          "maximum_reference_width": 0.14537609811914312,
+          "maximum_width_difference": 0.00014149044190175236,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.004440888783240227,
+          "maximum_absolute_upper_difference": 0.0014915542305130591,
+          "maximum_candidate_width": 0.23802614184222715,
+          "maximum_center_difference": 0.0022204443915730954,
+          "maximum_reference_width": 0.23436533797613357,
+          "maximum_width_difference": 0.0044408887833341515,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 200,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_same_polynomial_torch_range": {
+        "disjoint_count": 0,
+        "maximum_absolute_lower_difference": 4.8382521947165635e-18,
+        "maximum_absolute_upper_difference": 4.514955913818229e-18,
+        "maximum_candidate_width": 0.0001203168862193299,
+        "maximum_center_difference": 1.6940658945086007e-19,
+        "maximum_reference_width": 0.00012031688621932055,
+        "maximum_width_difference": 9.351243737687476e-18,
+        "overlap_count": 240,
+        "scalar_count": 240,
+        "torch_contains_xiangru_count": 240,
+        "xiangru_contains_torch_count": 0
+      },
+      "diagnostic_xiangru_k2_and_sine_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0281306436896371e-06,
+          "maximum_absolute_upper_difference": 1.0268995266518414e-07,
+          "maximum_candidate_width": 0.00027956102857418176,
+          "maximum_center_difference": 5.089308030808683e-07,
+          "maximum_reference_width": 0.0002796567598564487,
+          "maximum_width_difference": 1.0383996812175376e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 144
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.3038569568468716e-06,
+          "maximum_absolute_upper_difference": 1.0257878690911326e-07,
+          "maximum_candidate_width": 0.22773417538212826,
+          "maximum_center_difference": 6.04588856756294e-07,
+          "maximum_reference_width": 0.22773417537977103,
+          "maximum_width_difference": 1.3985362001811552e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.0281308169979991e-06,
+          "maximum_absolute_upper_difference": 1.0269431695991704e-07,
+          "maximum_candidate_width": 0.1453760981208552,
+          "maximum_center_difference": 5.089308098109313e-07,
+          "maximum_reference_width": 0.14537609811914312,
+          "maximum_width_difference": 1.0384000143741356e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.004440888783240227,
+          "maximum_absolute_upper_difference": 0.0016020314776900024,
+          "maximum_candidate_width": 0.23802614184222715,
+          "maximum_center_difference": 0.0022204443915730954,
+          "maximum_reference_width": 0.23436533797613357,
+          "maximum_width_difference": 0.0044408887833341515,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_k2_then_torch_remainder": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.419464220357154e-07,
+          "maximum_absolute_upper_difference": 0.00014238908973430889,
+          "maximum_candidate_width": 0.00014608175181650282,
+          "maximum_center_difference": 7.164394172633791e-05,
+          "maximum_reference_width": 0.0002796567598564487,
+          "maximum_width_difference": 0.00014149029601594196,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 96
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.419524478193608e-07,
+          "maximum_absolute_upper_difference": 0.00014238897785745497,
+          "maximum_candidate_width": 0.22773417538212826,
+          "maximum_center_difference": 7.109405898919618e-05,
+          "maximum_reference_width": 0.22773417537977103,
+          "maximum_width_difference": 0.00014258983773640654,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 88
+        },
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 9.419465953428713e-07,
+          "maximum_absolute_upper_difference": 0.0001423890938427562,
+          "maximum_candidate_width": 0.1453760981208552,
+          "maximum_center_difference": 7.164394158452186e-05,
+          "maximum_reference_width": 0.14537609811914312,
+          "maximum_width_difference": 0.0001414903045164756,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 144,
+          "xiangru_contains_torch_count": 48
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.004440888783240227,
+          "maximum_absolute_upper_difference": 0.0014915543577812551,
+          "maximum_candidate_width": 0.23802614184222715,
+          "maximum_center_difference": 0.0022204443915730954,
+          "maximum_reference_width": 0.23436533797613357,
+          "maximum_width_difference": 0.0044408887833341515,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 200,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "diagnostic_xiangru_local_then_torch_composition": {
+        "local_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.0,
+          "maximum_absolute_upper_difference": 0.0,
+          "maximum_candidate_width": 0.0002796567598564487,
+          "maximum_center_difference": 0.0,
+          "maximum_reference_width": 0.0002796567598564487,
+          "maximum_width_difference": 0.0,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 240
+        },
+        "physical_endpoint": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 1.3027976324408996e-06,
+          "maximum_absolute_upper_difference": 1.184830011879967e-12,
+          "maximum_candidate_width": 0.22773417538212826,
+          "maximum_center_difference": 6.513988538570104e-07,
+          "maximum_reference_width": 0.22773417537977103,
+          "maximum_width_difference": 1.3027975572788009e-06,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_polynomial_maximum_error": 0.0,
+        "physical_remainder": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 8.620465452580106e-13,
+          "maximum_absolute_upper_difference": 8.620465452580106e-13,
+          "maximum_candidate_width": 0.1453760981208552,
+          "maximum_center_difference": 2.0816681711721685e-17,
+          "maximum_reference_width": 0.14537609811914312,
+          "maximum_width_difference": 1.7240653349404056e-12,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 240,
+          "xiangru_contains_torch_count": 0
+        },
+        "physical_tube": {
+          "disjoint_count": 0,
+          "maximum_absolute_lower_difference": 0.004440888783240227,
+          "maximum_absolute_upper_difference": 0.0016021036271901545,
+          "maximum_candidate_width": 0.23802614184222715,
+          "maximum_center_difference": 0.0022204443915730954,
+          "maximum_reference_width": 0.23436533797613357,
+          "maximum_width_difference": 0.0044408887833341515,
+          "overlap_count": 240,
+          "scalar_count": 240,
+          "torch_contains_xiangru_count": 192,
+          "xiangru_contains_torch_count": 0
+        }
+      },
+      "local_remainder_error_reduction": {
+        "baseline_maximum_error": 0.00014238921597132452,
+        "k2_and_sine_maximum_error": 1.0281306436896371e-06,
+        "k2_and_sine_substitution_fraction": 0.9927794346174594,
+        "k2_maximum_error": 0.00014238908973430889,
+        "k2_substitution_fraction": 8.865630362064891e-07
+      },
+      "same_input_integration_boundary": {
+        "degree_overflow_maximum_width_difference": 1.0280289213434214e-06,
+        "output_remainder_maximum_width_difference": 1.0280289213432977e-06,
+        "propagated_remainder_maximum_width_difference": 8.673617379884035e-19
+      },
+      "same_input_sine_boundary": {
+        "analytic_remainder_maximum_width_difference": 0.0007223897569779011,
+        "composition_overflow_maximum_width_difference": 0.014597255105314594,
+        "point_enclosure_maximum_error": 3.9968028886505635e-15,
+        "retained_polynomial_maximum_error": 2.220446049250313e-16,
+        "same_input_integration_maximum_error": 1.0280289213435281e-06,
+        "sine_output_remainder_maximum_width_difference": 0.013997369077913924
+      },
+      "segment": 45,
+      "subset_margin_maximum_error": {
+        "xiangru_k2_and_sine_then_torch": 1.028028921337687e-06,
+        "xiangru_k2_then_torch": 0.00014303308047988045
+      }
+    }
+  },
+  "raw_arrays_private": true,
+  "raw_paths_in_public_record": false,
+  "schema": "tora_q3_stage_counterfactual_summary_v1",
+  "selected_segments": [
+    1,
+    2,
+    10,
+    40,
+    43,
+    44,
+    45
+  ],
+  "source_hashes": {
+    "private_counterfactual": "582c4b78181d70529dd74061ed0174501e7c96fe5142d867be508842a2e38bec",
+    "torch_stage_trace": "dcb0a2b3c23b4594e236681a30d590b5d9d7abb72c0f7ddc648f564835ad61eb",
+    "xiangru_stage_trace": "ccb44ee539047722a5022920e2dfc75fb8d1fbca824c782113d77dbfb4112df1"
+  },
+  "status": "PASS_DIAGNOSTIC_COMPLETE",
+  "substitutions": {
+    "same_controller_input": "recorded by the stage observation contract at R1 and R2",
+    "same_local_tm_torch_carry_vs_xiangru_physical_output": true,
+    "same_polynomial_torch_range_vs_xiangru_range": true,
+    "torch_sine_to_xiangru_downstream_proxy": "Torch integration of the exact Xiangru RHS is separately compared, so the integration boundary is observed rather than assumed",
+    "xiangru_k2_to_torch_remainder": true,
+    "xiangru_sine_aggregate_to_torch_downstream": true
+  }
+}
