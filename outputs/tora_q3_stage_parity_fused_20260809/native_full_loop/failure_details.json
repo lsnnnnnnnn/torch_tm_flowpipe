@@ -1,0 +1,713 @@
+{
+  "common_certified_segment": 43,
+  "lanes": {
+    "algorithm_aligned_h005_refresh1": {
+      "available": true,
+      "controller_input": [
+        {
+          "center_maximum_absolute": 0.11292039518671954,
+          "radius_maximum": 0.05348253403379544,
+          "state": "x1"
+        },
+        {
+          "center_maximum_absolute": 0.8320229998448484,
+          "radius_maximum": 0.07356479237613323,
+          "state": "x2"
+        },
+        {
+          "center_maximum_absolute": 1.0921506340023066,
+          "radius_maximum": 0.5899727309341456,
+          "state": "x3"
+        },
+        {
+          "center_maximum_absolute": 0.09189552695781289,
+          "radius_maximum": 0.5812387124515752,
+          "state": "x4"
+        }
+      ],
+      "controller_output": {
+        "after_outward_center_maximum_absolute": 11.128858127278821,
+        "after_outward_radius_maximum": 1.8252008588523072,
+        "before_outward_center_maximum_absolute": 11.128858127278821,
+        "before_outward_radius_maximum": 1.8252008588523019
+      },
+      "failed_leaf_ids": [
+        0,
+        1,
+        6
+      ],
+      "failure_type": "property",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "one or both validated h=0.05 substeps failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "formal_lane": "algorithm_aligned_h005_refresh1",
+      "ledger_widths": {
+        "composition_overflow": {
+          "maximum": 3.591417602546678,
+          "median": 1.6499036797477136,
+          "sum": 326.3395476578339
+        }
+      },
+      "numerical_certificate_passed": true,
+      "physical_time": 4.5,
+      "polynomial_remainder_decomposition": {
+        "candidate_compose_then_project": {
+          "maximum": 3.6504017177929633,
+          "median": 1.6928212963169889,
+          "sum": 335.36117737636647
+        },
+        "composed_exact_endpoint_direct": {
+          "maximum": 3.6504017177915564,
+          "median": 1.692821296315038,
+          "sum": 335.36117737592195
+        },
+        "current_affine_decomposition": {
+          "box_width": {
+            "maximum": 3.65040171779302,
+            "median": 1.6928212963187124,
+            "sum": 335.20954977807503
+          },
+          "linear_radius": {
+            "maximum": 0.030166274694575546,
+            "median": 0.018040389100009553,
+            "sum": 4.412209173978198
+          },
+          "maximum_absolute_center": 11.212731338835832,
+          "remainder_radius": {
+            "maximum": 1.7957088012791838,
+            "median": 0.82495183987881,
+            "sum": 163.19256571505912
+          }
+        },
+        "current_project_local_then_compose": {
+          "maximum": 3.65040171779302,
+          "median": 1.6928212963187124,
+          "sum": 335.20954977807503
+        },
+        "current_projection_inflation_maximum": 3.7700953470221066e-12,
+        "physical_affine_decomposition": {
+          "box_width": {
+            "maximum": 3.6504017177929633,
+            "median": 1.6928212963169889,
+            "sum": 335.36117737636647
+          },
+          "linear_radius": {
+            "maximum": 0.030166274694575546,
+            "median": 0.01804038910000955,
+            "sum": 4.412209173978198
+          },
+          "maximum_absolute_center": 11.212731338835832,
+          "remainder_radius": {
+            "maximum": 1.795708801279154,
+            "median": 0.8249518398779493,
+            "sum": 163.2683795142048
+          }
+        },
+        "physical_projection_inflation_maximum": 1.9788060079406478e-12,
+        "pre_projection_interval_remainder": {
+          "maximum": 3.591417602556307,
+          "median": 1.6499036797538982,
+          "sum": 326.5366784682993
+        },
+        "pre_projection_polynomial_range": {
+          "maximum": 0.060332549389753964,
+          "median": 0.036080778200068164,
+          "sum": 8.82449890762237
+        }
+      },
+      "segment_index": 45,
+      "states": [
+        {
+          "endpoint_center_maximum_absolute": 0.4844287478394317,
+          "endpoint_radius_maximum": 0.09484999065398886,
+          "interval_remainder_center_maximum_absolute": 0.00254654338918725,
+          "interval_remainder_radius_maximum": 0.08084751925896855,
+          "property_margin_minimum": 1.419457495006737,
+          "state": "x1",
+          "tube_center_maximum_absolute": 0.4544142938359225,
+          "tube_radius_maximum": 0.12612821115734046
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.6432618533577761,
+          "endpoint_radius_maximum": 0.13041540503346094,
+          "interval_remainder_center_maximum_absolute": 0.007551317952505465,
+          "interval_remainder_radius_maximum": 0.11958621114776471,
+          "property_margin_minimum": 1.1888065556550447,
+          "state": "x2",
+          "tube_center_maximum_absolute": 0.665299389332106,
+          "tube_radius_maximum": 0.1534660193287225
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.9088103056897967,
+          "endpoint_radius_maximum": 1.1000081663980354,
+          "interval_remainder_center_maximum_absolute": 4.440892098500626e-15,
+          "interval_remainder_radius_maximum": 1.0710634192381019,
+          "property_margin_minimum": -0.040573286157297606,
+          "state": "x3",
+          "tube_center_maximum_absolute": 0.9241599875229343,
+          "tube_radius_maximum": 1.1164132986343633
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.6459432218897222,
+          "endpoint_radius_maximum": 1.4858777854610112,
+          "interval_remainder_center_maximum_absolute": 1.5543122344752192e-15,
+          "interval_remainder_radius_maximum": 1.4700128204285046,
+          "property_margin_minimum": -0.1275300941893942,
+          "state": "x4",
+          "tube_center_maximum_absolute": 0.6177217687077519,
+          "tube_radius_maximum": 1.5135428208638855
+        },
+        {
+          "endpoint_center_maximum_absolute": 11.128858127278829,
+          "endpoint_radius_maximum": 1.8252008588957782,
+          "interval_remainder_center_maximum_absolute": 1.1102230246251565e-15,
+          "interval_remainder_radius_maximum": 1.7957088012781444,
+          "property_margin_minimum": null,
+          "state": "u1",
+          "tube_center_maximum_absolute": 11.128858127278829,
+          "tube_radius_maximum": 1.8252008588959114
+        }
+      ]
+    },
+    "algorithm_aligned_q3": {
+      "available": true,
+      "controller_input": [
+        {
+          "center_maximum_absolute": 0.11069125242387862,
+          "radius_maximum": 0.0745041928914131,
+          "state": "x1"
+        },
+        {
+          "center_maximum_absolute": 0.8241278713220248,
+          "radius_maximum": 0.09548037544875632,
+          "state": "x2"
+        },
+        {
+          "center_maximum_absolute": 1.092664078722701,
+          "radius_maximum": 0.6169505644588997,
+          "state": "x3"
+        },
+        {
+          "center_maximum_absolute": 0.08931461049555567,
+          "radius_maximum": 0.6180159056729932,
+          "state": "x4"
+        }
+      ],
+      "controller_output": {
+        "after_outward_center_maximum_absolute": 11.050821685934068,
+        "after_outward_radius_maximum": 2.038840367595542,
+        "before_outward_center_maximum_absolute": 11.050821685934068,
+        "before_outward_radius_maximum": 2.0388403675955384
+      },
+      "failed_leaf_ids": [
+        0
+      ],
+      "failure_type": "property",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "formal_lane": "algorithm_aligned_q3",
+      "ledger_widths": {
+        "composition_overflow": {
+          "maximum": 4.021706012690796,
+          "median": 1.570659415098505,
+          "sum": 344.8160574099128
+        },
+        "picard_residual": {
+          "maximum": 0.005450457709982334,
+          "median": 9.790324977431693e-308,
+          "sum": 0.17480225538417887
+        }
+      },
+      "numerical_certificate_passed": true,
+      "physical_time": 4.4,
+      "polynomial_remainder_decomposition": {
+        "candidate_compose_then_project": {
+          "maximum": 4.0776807352254565,
+          "median": 1.614135707387682,
+          "sum": 353.5660126986785
+        },
+        "composed_exact_endpoint_direct": {
+          "maximum": 4.077680735224046,
+          "median": 1.6141357073857334,
+          "sum": 353.5660126982335
+        },
+        "current_affine_decomposition": {
+          "box_width": {
+            "maximum": 4.07768073522549,
+            "median": 1.6141357073893965,
+            "sum": 353.2972781696314
+          },
+          "linear_radius": {
+            "maximum": 0.0292388782158423,
+            "median": 0.01543087979740165,
+            "sum": 4.28748692541903
+          },
+          "maximum_absolute_center": 11.167796151695754,
+          "remainder_radius": {
+            "maximum": 2.0108530063464256,
+            "median": 0.7853297075511094,
+            "sum": 172.36115215939645
+          }
+        },
+        "current_project_local_then_compose": {
+          "maximum": 4.07768073522549,
+          "median": 1.6141357073893965,
+          "sum": 353.2972781696314
+        },
+        "current_projection_inflation_maximum": 3.791633673699835e-12,
+        "physical_affine_decomposition": {
+          "box_width": {
+            "maximum": 4.0776807352254565,
+            "median": 1.614135707387682,
+            "sum": 353.5660126986785
+          },
+          "linear_radius": {
+            "maximum": 0.029238878215842295,
+            "median": 0.01543087979740165,
+            "sum": 4.28748692541903
+          },
+          "maximum_absolute_center": 11.167796151695754,
+          "remainder_radius": {
+            "maximum": 2.0108530063464087,
+            "median": 0.7853297075502537,
+            "sum": 172.49551942392
+          }
+        },
+        "physical_projection_inflation_maximum": 1.9825807662243733e-12,
+        "pre_projection_interval_remainder": {
+          "maximum": 4.0217060126908155,
+          "median": 1.5706594150985072,
+          "sum": 344.9908596652981
+        },
+        "pre_projection_polynomial_range": {
+          "maximum": 0.05847775643173847,
+          "median": 0.030861759594831895,
+          "sum": 8.575153032935258
+        }
+      },
+      "segment_index": 44,
+      "states": [
+        {
+          "endpoint_center_maximum_absolute": 0.4165825771033793,
+          "endpoint_radius_maximum": 0.11647835388000904,
+          "interval_remainder_center_maximum_absolute": 6.18709978421339e-06,
+          "interval_remainder_radius_maximum": 0.1024850861829663,
+          "property_margin_minimum": 1.463466346396791,
+          "state": "x1",
+          "tube_center_maximum_absolute": 0.38148437940605373,
+          "tube_radius_maximum": 0.1550492741971553
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.685542754445938,
+          "endpoint_radius_maximum": 0.14999221083958658,
+          "interval_remainder_center_maximum_absolute": 0.007415468275014353,
+          "interval_remainder_radius_maximum": 0.13804706551085136,
+          "property_margin_minimum": 1.1153117653407238,
+          "state": "x2",
+          "tube_center_maximum_absolute": 0.7088355919105129,
+          "tube_radius_maximum": 0.17585264274876322
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.9728724996497533,
+          "endpoint_radius_maximum": 1.0214435040716106,
+          "interval_remainder_center_maximum_absolute": 5.88418203051333e-15,
+          "interval_remainder_radius_maximum": 0.9922046258557402,
+          "property_margin_minimum": -0.0414055205191195,
+          "state": "x3",
+          "tube_center_maximum_absolute": 0.9957276096783774,
+          "tube_radius_maximum": 1.0456779108407421
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.5096432848691838,
+          "endpoint_radius_maximum": 1.4262737574156281,
+          "interval_remainder_center_maximum_absolute": 1.7763568394002505e-15,
+          "interval_remainder_radius_maximum": 1.4133463403405901,
+          "property_margin_minimum": 0.06368885476520325,
+          "state": "x4",
+          "tube_center_maximum_absolute": 0.4571022005724803,
+          "tube_radius_maximum": 1.4792089446623164
+        },
+        {
+          "endpoint_center_maximum_absolute": 11.050821685934075,
+          "endpoint_radius_maximum": 2.038840367612023,
+          "interval_remainder_center_maximum_absolute": 8.881784197001252e-16,
+          "interval_remainder_radius_maximum": 2.0108530063453984,
+          "property_margin_minimum": null,
+          "state": "u1",
+          "tube_center_maximum_absolute": 11.050821685934077,
+          "tube_radius_maximum": 2.0388403676121563
+        }
+      ]
+    },
+    "baseline_native_k2": {
+      "available": true,
+      "controller_input": [
+        {
+          "center_maximum_absolute": 0.11061282313836765,
+          "radius_maximum": 0.07479918457098017,
+          "state": "x1"
+        },
+        {
+          "center_maximum_absolute": 0.8240644601492007,
+          "radius_maximum": 0.09598602379800258,
+          "state": "x2"
+        },
+        {
+          "center_maximum_absolute": 1.0926737854509039,
+          "radius_maximum": 0.6171738570083969,
+          "state": "x3"
+        },
+        {
+          "center_maximum_absolute": 0.08928614164477011,
+          "radius_maximum": 0.6183199665770479,
+          "state": "x4"
+        }
+      ],
+      "controller_output": {
+        "after_outward_center_maximum_absolute": 11.050107511049053,
+        "after_outward_radius_maximum": 2.04145616412735,
+        "before_outward_center_maximum_absolute": 11.050107511049053,
+        "before_outward_radius_maximum": 2.0414561641273448
+      },
+      "failed_leaf_ids": [
+        0
+      ],
+      "failure_type": "property",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "formal_lane": "baseline_native_k2",
+      "ledger_widths": {
+        "composition_overflow": {
+          "maximum": 4.026966005045787,
+          "median": 1.5717655912479702,
+          "sum": 345.2937497079173
+        },
+        "picard_residual": {
+          "maximum": 0.005546459735932076,
+          "median": 9.790324977431693e-308,
+          "sum": 0.17910133763655048
+        }
+      },
+      "numerical_certificate_passed": true,
+      "physical_time": 4.4,
+      "polynomial_remainder_decomposition": {
+        "candidate_compose_then_project": {
+          "maximum": 4.082912328289094,
+          "median": 1.6152502051614182,
+          "sum": 354.04603098273554
+        },
+        "composed_exact_endpoint_direct": {
+          "maximum": 4.082912328287689,
+          "median": 1.6152502051594697,
+          "sum": 354.0460309822907
+        },
+        "current_affine_decomposition": {
+          "box_width": {
+            "maximum": 4.0829123282891295,
+            "median": 1.6152502051631328,
+            "sum": 353.7762109210622
+          },
+          "linear_radius": {
+            "maximum": 0.02923921100474157,
+            "median": 0.015425745386343214,
+            "sum": 4.286500377242909
+          },
+          "maximum_absolute_center": 11.167529780445523,
+          "remainder_radius": {
+            "maximum": 2.0134830025239214,
+            "median": 0.7858827956258421,
+            "sum": 172.601605083288
+          }
+        },
+        "current_project_local_then_compose": {
+          "maximum": 4.0829123282891295,
+          "median": 1.6152502051631328,
+          "sum": 353.7762109210622
+        },
+        "current_projection_inflation_maximum": 3.791633673699835e-12,
+        "physical_affine_decomposition": {
+          "box_width": {
+            "maximum": 4.082912328289094,
+            "median": 1.6152502051614182,
+            "sum": 354.04603098273554
+          },
+          "linear_radius": {
+            "maximum": 0.02923921100474157,
+            "median": 0.015425745386343214,
+            "sum": 4.286500377242909
+          },
+          "maximum_absolute_center": 11.167529780445523,
+          "remainder_radius": {
+            "maximum": 2.013483002523904,
+            "median": 0.7858827956249863,
+            "sum": 172.73651511412464
+          }
+        },
+        "physical_projection_inflation_maximum": 1.982691788526836e-12,
+        "pre_projection_interval_remainder": {
+          "maximum": 4.026966005045806,
+          "median": 1.5717655912479722,
+          "sum": 345.4728510455551
+        },
+        "pre_projection_polynomial_range": {
+          "maximum": 0.05847842200953701,
+          "median": 0.03085149077271504,
+          "sum": 8.573179936735407
+        }
+      },
+      "segment_index": 44,
+      "states": [
+        {
+          "endpoint_center_maximum_absolute": 0.41650132415921426,
+          "endpoint_radius_maximum": 0.11703996029623664,
+          "interval_remainder_center_maximum_absolute": 7.434904154197952e-05,
+          "interval_remainder_radius_maximum": 0.10304684256400269,
+          "property_margin_minimum": 1.4629859869247053,
+          "state": "x1",
+          "tube_center_maximum_absolute": 0.3814031429406556,
+          "tube_radius_maximum": 0.15561087013463915
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.6856014280029751,
+          "endpoint_radius_maximum": 0.15084271203428967,
+          "interval_remainder_center_maximum_absolute": 0.007474626268169915,
+          "interval_remainder_radius_maximum": 0.13889751308203122,
+          "property_margin_minimum": 1.1144023590499605,
+          "state": "x2",
+          "tube_center_maximum_absolute": 0.7088944037622789,
+          "tube_radius_maximum": 0.1767032371877606
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.9729507279090723,
+          "endpoint_radius_maximum": 1.022000422955379,
+          "interval_remainder_center_maximum_absolute": 1.1102230246251565e-16,
+          "interval_remainder_radius_maximum": 0.9927612119506093,
+          "property_margin_minimum": -0.04201202862990572,
+          "state": "x3",
+          "tube_center_maximum_absolute": 0.9957919164346696,
+          "tube_radius_maximum": 1.0462201121952364
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.5093291460643915,
+          "endpoint_radius_maximum": 1.4276245865500654,
+          "interval_remainder_center_maximum_absolute": 2.220446049250313e-16,
+          "interval_remainder_radius_maximum": 1.4147024951195435,
+          "property_margin_minimum": 0.06265188348659367,
+          "state": "x4",
+          "tube_center_maximum_absolute": 0.4568237705119389,
+          "tube_radius_maximum": 1.4805243460014674
+        },
+        {
+          "endpoint_center_maximum_absolute": 11.05010751104906,
+          "endpoint_radius_maximum": 2.0414561641438453,
+          "interval_remainder_center_maximum_absolute": 0.0,
+          "interval_remainder_radius_maximum": 2.013483002522894,
+          "property_margin_minimum": null,
+          "state": "u1",
+          "tube_center_maximum_absolute": 11.050107511049061,
+          "tube_radius_maximum": 2.041456164143977
+        }
+      ]
+    },
+    "k3_picard": {
+      "available": true,
+      "controller_input": [
+        {
+          "center_maximum_absolute": 0.11364435911810858,
+          "radius_maximum": 0.050846095575607125,
+          "state": "x1"
+        },
+        {
+          "center_maximum_absolute": 0.8317170416358595,
+          "radius_maximum": 0.07118806874380079,
+          "state": "x2"
+        },
+        {
+          "center_maximum_absolute": 1.0919857266898894,
+          "radius_maximum": 0.5857370173689034,
+          "state": "x3"
+        },
+        {
+          "center_maximum_absolute": 0.09256218480796757,
+          "radius_maximum": 0.5755351753868305,
+          "state": "x4"
+        }
+      ],
+      "controller_output": {
+        "after_outward_center_maximum_absolute": 11.135593763615613,
+        "after_outward_radius_maximum": 1.7957042632812854,
+        "before_outward_center_maximum_absolute": 11.135593763615613,
+        "before_outward_radius_maximum": 1.79570426328128
+      },
+      "failed_leaf_ids": [
+        0,
+        1,
+        6
+      ],
+      "failure_type": "property",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "formal_lane": "k3_picard",
+      "ledger_widths": {
+        "composition_overflow": {
+          "maximum": 3.5318827369865753,
+          "median": 1.6276557502763955,
+          "sum": 319.826131586672
+        },
+        "picard_residual": {
+          "maximum": 0.00653586710772776,
+          "median": 9.790324977431693e-308,
+          "sum": 0.1901756602668534
+        }
+      },
+      "numerical_certificate_passed": true,
+      "physical_time": 4.5,
+      "polynomial_remainder_decomposition": {
+        "candidate_compose_then_project": {
+          "maximum": 3.591408526602569,
+          "median": 1.6698840435554492,
+          "sum": 328.8719980352216
+        },
+        "composed_exact_endpoint_direct": {
+          "maximum": 3.591408526601164,
+          "median": 1.6698840435534974,
+          "sum": 328.8719980347771
+        },
+        "current_affine_decomposition": {
+          "box_width": {
+            "maximum": 3.591408526602633,
+            "median": 1.6698840435571647,
+            "sum": 328.64337734029357
+          },
+          "linear_radius": {
+            "maximum": 0.030489775867313464,
+            "median": 0.01818491526662985,
+            "sum": 4.427761206805014
+          },
+          "maximum_absolute_center": 11.21965613041087,
+          "remainder_radius": {
+            "maximum": 1.765941368494329,
+            "median": 0.8138278751400565,
+            "sum": 159.89392746334153
+          }
+        },
+        "current_project_local_then_compose": {
+          "maximum": 3.591408526602633,
+          "median": 1.6698840435571647,
+          "sum": 328.64337734029357
+        },
+        "current_projection_inflation_maximum": 3.7689851239974814e-12,
+        "physical_affine_decomposition": {
+          "box_width": {
+            "maximum": 3.591408526602569,
+            "median": 1.6698840435554492,
+            "sum": 328.8719980352216
+          },
+          "linear_radius": {
+            "maximum": 0.030489775867313464,
+            "median": 0.01818491526662985,
+            "sum": 4.427761206805014
+          },
+          "maximum_absolute_center": 11.21965613041087,
+          "remainder_radius": {
+            "maximum": 1.7659413684942975,
+            "median": 0.8138278751391987,
+            "sum": 160.0082378108056
+          }
+        },
+        "physical_projection_inflation_maximum": 1.9789170302431103e-12,
+        "pre_projection_interval_remainder": {
+          "maximum": 3.531882736986594,
+          "median": 1.6276557502763973,
+          "sum": 320.01630724694
+        },
+        "pre_projection_polynomial_range": {
+          "maximum": 0.060979551735231396,
+          "median": 0.036369830533293346,
+          "sum": 8.85569078783688
+        }
+      },
+      "segment_index": 45,
+      "states": [
+        {
+          "endpoint_center_maximum_absolute": 0.48497124320195595,
+          "endpoint_radius_maximum": 0.09149160513583515,
+          "interval_remainder_center_maximum_absolute": 0.0031846815746250645,
+          "interval_remainder_radius_maximum": 0.07746016677986739,
+          "property_margin_minimum": 1.4197012048725468,
+          "state": "x1",
+          "tube_center_maximum_absolute": 0.4523638397744849,
+          "tube_radius_maximum": 0.1279349553529684
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.6417922042361726,
+          "endpoint_radius_maximum": 0.12875375954774548,
+          "interval_remainder_center_maximum_absolute": 0.006089958406459414,
+          "interval_remainder_radius_maximum": 0.11797828061499252,
+          "property_margin_minimum": 1.182391104599771,
+          "state": "x2",
+          "tube_center_maximum_absolute": 0.6681804086693172,
+          "tube_radius_maximum": 0.1579838022631319
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.907501082182262,
+          "endpoint_radius_maximum": 1.0891771034683926,
+          "interval_remainder_center_maximum_absolute": 6.5503158452884236e-15,
+          "interval_remainder_radius_maximum": 1.0602211796124112,
+          "property_margin_minimum": -0.057691428886088136,
+          "state": "x3",
+          "tube_center_maximum_absolute": 0.9370058308013165,
+          "tube_radius_maximum": 1.1206855980847716
+        },
+        {
+          "endpoint_center_maximum_absolute": 0.6499743856387445,
+          "endpoint_radius_maximum": 1.4653732406832305,
+          "interval_remainder_center_maximum_absolute": 2.4424906541753444e-15,
+          "interval_remainder_radius_maximum": 1.4494045116747833,
+          "property_margin_minimum": -0.11112567092671854,
+          "state": "x4",
+          "tube_center_maximum_absolute": 0.5931946974579643,
+          "tube_radius_maximum": 1.521030698545631
+        },
+        {
+          "endpoint_center_maximum_absolute": 11.135593763615619,
+          "endpoint_radius_maximum": 1.795704263300582,
+          "interval_remainder_center_maximum_absolute": 8.881784197001252e-16,
+          "interval_remainder_radius_maximum": 1.7659413684932879,
+          "property_margin_minimum": null,
+          "state": "u1",
+          "tube_center_maximum_absolute": 11.13559376361562,
+          "tube_radius_maximum": 1.7957042633007152
+        }
+      ]
+    }
+  },
+  "schema": "tora_q3_native_failure_aggregates_v1"
+}

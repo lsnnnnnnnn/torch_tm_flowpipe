@@ -1,0 +1,1025 @@
+{
+  "common_certified_comparison": {
+    "interpolation_used": false,
+    "physical_time": 4.3,
+    "segment_index": 43
+  },
+  "common_control_substitution_forbidden": true,
+  "diagnostic_continuation_is_not_formal": true,
+  "fallback_decision": {
+    "candidate_count": 1,
+    "contract_change": "two validated h=0.05 plant substeps per h=0.1 reporting step; controller refresh remains 1.0 second",
+    "evidence": {
+      "algorithm_aligned_segment44_interval_remainder_share_of_sum": 0.985667862101144,
+      "algorithm_aligned_segment44_pre_projection_interval_remainder_maximum_width": 4.0217060126908155,
+      "algorithm_aligned_segment44_pre_projection_polynomial_range_maximum_width": 0.05847775643173847,
+      "prior_horner_range_candidate_certified_horizon": 4.3
+    },
+    "result": {
+      "certified_horizon": 4.4,
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "one or both validated h=0.05 substeps failed",
+        "reason": "property",
+        "segment": 45
+      }
+    },
+    "selected": "algorithm_aligned_h005_refresh1"
+  },
+  "implementations": {
+    "algorithm_aligned_h005_refresh1": {
+      "certified_horizon": 4.4,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "controller_refresh_period": 1.0,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "algorithm_aligned_h005_refresh1",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 20,
+        "plant_substeps_per_controller_refresh": 20,
+        "plant_substeps_per_reporting_step": 2,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 2,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "reporting_step_size": 0.1,
+        "step_size": 0.05
+      },
+      "config_sha256": "64493cbe10e88adf1b282fcd64253e688823eba6ef472287543078e18c66292e",
+      "failure_detail_sha256": "0cbfb81e9b216ccd3a74dc9b0c6e759d571fe5a2e74cebba0a39d32d74842113",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "one or both validated h=0.05 substeps failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "observed_segments": 10,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            }
+          },
+          "required_segments": 10,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.4,
+          "completed_segments": 44,
+          "expected_leaf_count": 48,
+          "failure": {
+            "failed_leaf_ids": [
+              0,
+              1,
+              6
+            ],
+            "message": "one or both validated h=0.05 substeps failed",
+            "reason": "property",
+            "segment": 45
+          },
+          "gate": "b48_t5",
+          "observed_segments": 50,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 2400,
+              "true": 2400
+            },
+            "composed_property_ok": {
+              "all": false,
+              "total": 2400,
+              "true": 2188
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 2400,
+              "true": 2400
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 2400,
+              "true": 2400
+            },
+            "local_property_ok": {
+              "all": false,
+              "total": 2400,
+              "true": 2188
+            },
+            "overall_accepted": {
+              "all": false,
+              "total": 2400,
+              "true": 2188
+            }
+          },
+          "required_segments": 50,
+          "status": "FAIL"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 100,
+          "status": "NOT_RUN"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 200,
+          "status": "NOT_RUN"
+        }
+      ],
+      "numerical_certificate_passed_at_failure": true,
+      "private_trace_sha256": {
+        "controller_updates": "d17e2993f63b95a23a791a7a6223be3cd8a7a1eea7ef09ff3301dfc206b7e2b6",
+        "replay_points": "67d4ef53bcfd4f9bd3305265d7dc7126246d92b0f5ce8683ba680610491e8155",
+        "segments": "ceb44134a278a282de46de36aab44086f3ea4caa2b85d03bec514cbddaa26d9b"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "experiments/run_tora_q3_h005_fallback.py": "9f59fccf5ffafb116ec85c66693c1e57d0452f98b2fb21a8e58f1df117fb8647",
+        "experiments/run_tora_q3_native_hierarchical.py": "f45259568449994f4b1db36cd6ddeea4e8a221fb05029a228185cd2fac24a28c",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_algorithm_aligned.py": "298a3aab6b8df6a0e0daedc490b0f35eb7a48bc5b3aee32a351a6a96cdc70d58",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    },
+    "algorithm_aligned_q3": {
+      "certified_horizon": 4.3,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "algorithm_aligned_q3",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 20,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 2,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "5900103396231d761ad177a4568896d01ef007259d448748cbfb3abc363b37cc",
+      "failure_detail_sha256": "01c0099ff3274e44a6dd2f386da69e435ddda4c51853d4fd45f23d9f14537b12",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "observed_segments": 10,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            }
+          },
+          "required_segments": 10,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.3,
+          "completed_segments": 43,
+          "expected_leaf_count": 48,
+          "failure": {
+            "failed_leaf_ids": [
+              0
+            ],
+            "message": "local validation or composed physical-coordinate property check failed",
+            "reason": "property",
+            "segment": 44
+          },
+          "gate": "b48_t5",
+          "observed_segments": 48,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2300
+            },
+            "composed_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2160
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 2304,
+              "true": 2304
+            },
+            "initial_subset_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2300
+            },
+            "local_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2160
+            },
+            "overall_accepted": {
+              "all": false,
+              "total": 2304,
+              "true": 2160
+            }
+          },
+          "required_segments": 50,
+          "status": "FAIL"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 100,
+          "status": "NOT_RUN"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 200,
+          "status": "NOT_RUN"
+        }
+      ],
+      "numerical_certificate_passed_at_failure": true,
+      "private_trace_sha256": {
+        "controller_updates": "8d1965b530f9df8b5f9c83144fbaa93c134a2c44217e30d733701b1faa91c0f4",
+        "replay_points": "fa3fba398cda8df5a7dc8d748c0e216e0a4802afac97896b2f406e1b500da416",
+        "segments": "9b7419697a35aba69e69d4982d5d677a2d4e710232077db2b56b07416ab7f86a"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "experiments/run_tora_q3_native_hierarchical.py": "f45259568449994f4b1db36cd6ddeea4e8a221fb05029a228185cd2fac24a28c",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_algorithm_aligned.py": "298a3aab6b8df6a0e0daedc490b0f35eb7a48bc5b3aee32a351a6a96cdc70d58",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    },
+    "baseline_native_k2": {
+      "certified_horizon": 4.3,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "baseline_native",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 20,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 2,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "b6618693b52cd2ae055ae80da701cafbb6b0a2b4c820d7647f10e452d8a89c56",
+      "failure_detail_sha256": "e8a95f958d30fb21d4801686489c00c94dbf284dd91bdadf8ec5f5aaa2e15d4d",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "observed_segments": 10,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            }
+          },
+          "required_segments": 10,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.3,
+          "completed_segments": 43,
+          "expected_leaf_count": 48,
+          "failure": {
+            "failed_leaf_ids": [
+              0
+            ],
+            "message": "local validation or composed physical-coordinate property check failed",
+            "reason": "property",
+            "segment": 44
+          },
+          "gate": "b48_t5",
+          "observed_segments": 48,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2297
+            },
+            "composed_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2159
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 2304,
+              "true": 2304
+            },
+            "initial_subset_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2298
+            },
+            "local_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2159
+            },
+            "overall_accepted": {
+              "all": false,
+              "total": 2304,
+              "true": 2159
+            }
+          },
+          "required_segments": 50,
+          "status": "FAIL"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 100,
+          "status": "NOT_RUN"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 200,
+          "status": "NOT_RUN"
+        }
+      ],
+      "numerical_certificate_passed_at_failure": true,
+      "private_trace_sha256": {
+        "controller_updates": "5d0256edbca696851b047caa164c37830473b5065754e7da955b8fd731c049e2",
+        "replay_points": "bcb3bf6b2cd8bc103f98ea11f91050496b4b2aadd3bd5c8c708c09c76adf406f",
+        "segments": "1cd4a18ce9b7253d881bcdd8792c3737ea841b7d9f979a35c5f4a670ccb5324f"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "experiments/run_tora_q3_native_hierarchical.py": "f45259568449994f4b1db36cd6ddeea4e8a221fb05029a228185cd2fac24a28c",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_algorithm_aligned.py": "298a3aab6b8df6a0e0daedc490b0f35eb7a48bc5b3aee32a351a6a96cdc70d58",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    },
+    "k3_picard": {
+      "certified_horizon": 4.4,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "k3_picard",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 20,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 3,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "6ddeec8c3ee8ba49a304d112cbd1d14c0547ae57fe9dc0bb164ebc01ccb5dfaf",
+      "failure_detail_sha256": "f1c06a7354db9de232c2ccff4f12a9b09756a70b9c6af1efb3921e0944b985a6",
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 1,
+              "true": 1
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "observed_segments": 1,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 48,
+              "true": 48
+            }
+          },
+          "required_segments": 1,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "observed_segments": 10,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "composed_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "initial_subset_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "local_property_ok": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            },
+            "overall_accepted": {
+              "all": true,
+              "total": 480,
+              "true": 480
+            }
+          },
+          "required_segments": 10,
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.4,
+          "completed_segments": 44,
+          "expected_leaf_count": 48,
+          "failure": {
+            "failed_leaf_ids": [
+              0,
+              1,
+              6
+            ],
+            "message": "local validation or composed physical-coordinate property check failed",
+            "reason": "property",
+            "segment": 45
+          },
+          "gate": "b48_t5",
+          "observed_segments": 48,
+          "predicate_counts": {
+            "all_remainder_rounds_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2303
+            },
+            "composed_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2192
+            },
+            "finite_ok": {
+              "all": true,
+              "total": 2304,
+              "true": 2304
+            },
+            "initial_subset_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2303
+            },
+            "local_property_ok": {
+              "all": false,
+              "total": 2304,
+              "true": 2192
+            },
+            "overall_accepted": {
+              "all": false,
+              "total": 2304,
+              "true": 2192
+            }
+          },
+          "required_segments": 50,
+          "status": "FAIL"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 100,
+          "status": "NOT_RUN"
+        },
+        {
+          "certified_horizon": null,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "predicate_counts": null,
+          "reason": "previous hierarchical gate did not pass",
+          "required_segments": 200,
+          "status": "NOT_RUN"
+        }
+      ],
+      "numerical_certificate_passed_at_failure": true,
+      "private_trace_sha256": {
+        "controller_updates": "aef132311ecf9ace5259d4df9beb32f6568df6e1d4f30efbd26cc28b0cb148e1",
+        "replay_points": "c239b95b16c7cb8c0078a742a0deda537484179827e17878697505084224deac",
+        "segments": "5f41c2b16c647c786b39ec7bb296bae2fe3a2617508b1f746c2407bc218d84e9"
+      },
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "experiments/run_tora_q3_native_hierarchical.py": "f45259568449994f4b1db36cd6ddeea4e8a221fb05029a228185cd2fac24a28c",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_algorithm_aligned.py": "298a3aab6b8df6a0e0daedc490b0f35eb7a48bc5b3aee32a351a6a96cdc70d58",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    }
+  },
+  "publisher_source_sha256": "c4e839e9378f03363ef5378e965c54736cbd5833850e2e62e0239dea7b4e225f",
+  "schema": "tora_q3_native_hierarchical_closure_v1",
+  "status": "CASE_C_PERFORMANCE_PASS_NATIVE_T5_GATE_FAIL",
+  "strict_previous_pass_only": true,
+  "torch_target_width_availability": {
+    "algorithm_aligned_h005_refresh1": {
+      "T10": null,
+      "T20": null,
+      "T5": null
+    },
+    "algorithm_aligned_q3": {
+      "T10": null,
+      "T20": null,
+      "T5": null
+    },
+    "baseline_native_k2": {
+      "T10": null,
+      "T20": null,
+      "T5": null
+    },
+    "k3_picard": {
+      "T10": null,
+      "T20": null,
+      "T5": null
+    }
+  },
+  "xiangru_native_reference": {
+    "certified_horizon": 20.0,
+    "segments": 200,
+    "solver_wall_seconds_excluding_validation": 15.637992763891816,
+    "source_sha256": {
+      "plant": "cdf0ead9538b061b3115802bc6a6e5d8dc07868076db678bdeb9db2bae27f114",
+      "result": "9d1e05ce71a1076e36aaddad14fffff0629382724146298244c830ff4cae9290"
+    },
+    "status": "VERIFIED",
+    "total_wall_seconds_including_validation": 17.568746495060623
+  }
+}

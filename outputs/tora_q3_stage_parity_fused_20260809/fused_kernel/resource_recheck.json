@@ -1,0 +1,25 @@
+{
+  "schema": "tora_q3_fused_resource_recheck_v1",
+  "status": "PASS",
+  "purpose": "supplement peak process RSS missing from the original formal timing record",
+  "protocol": {
+    "b48_one_step_measured_repeats": 10,
+    "t20_excluded_warmups": 1,
+    "t20_measured_repeats": 5,
+    "controller_and_serialization_inside_t20": false,
+    "matched_source_and_inductor_cache": true
+  },
+  "maximum_process_rss_kib": 6763424,
+  "maximum_process_rss_bytes": 6925746176,
+  "peak_cuda_memory_bytes": 1031874048,
+  "timing_use": "resource-only; the original formal 26.18573095370084 second T20 median remains authoritative",
+  "recheck_t20_median_seconds_not_used_for_performance": 36.68157841078937,
+  "private_evidence_sha256": {
+    "resource_log": "95f71df8784ab60f4fc7ec54bca6c700bb87f4f51f34531a647ae1fc30eeb02d",
+    "recheck_summary": "cd36ba567d8baf0d74480746f934d9473cd08cc492b3a012c25f26d000ea02b8"
+  },
+  "source_sha256": {
+    "experiments/benchmark_tora_q3_fused_kernel.py": "4a1a4f1e00263f53d1a2d1f06163b607f6dc56dd5172bfebf33118a3ac4dafa4"
+  },
+  "raw_paths_in_public_record": false
+}

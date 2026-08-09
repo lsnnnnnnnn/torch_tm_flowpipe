@@ -1,0 +1,65 @@
+{
+  "schema": "tora_q3_checkpoint6_validation_v1",
+  "status": "PASS",
+  "compileall": "PASS",
+  "portable": {
+    "passed": 124,
+    "skipped": 15,
+    "status": "PASS"
+  },
+  "focused_native_hierarchy": {
+    "passed": 7,
+    "skipped": 0,
+    "status": "PASS"
+  },
+  "external_integration": {
+    "passed": 3,
+    "skipped": 2,
+    "deselected": 136,
+    "skip_reason": "legacy raw Xiangru audit tree intentionally excluded from clean review branch",
+    "explicit_controller_and_stage_assets": true,
+    "status": "PASS"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "pytorch": "2.8.0+cu128",
+    "cuda_runtime": "12.8",
+    "driver": "580.159.03",
+    "device": "Tesla V100-SXM2-16GB",
+    "dtype": "float64"
+  },
+  "native_hierarchy": {
+    "baseline_native_k2": {
+      "certified_horizon": 4.3,
+      "first_failure_segment": 44,
+      "failure_type": "property",
+      "numerical_certificate_passed": true
+    },
+    "k3_picard": {
+      "certified_horizon": 4.4,
+      "first_failure_segment": 45,
+      "failure_type": "property",
+      "numerical_certificate_passed": true
+    },
+    "algorithm_aligned_q3": {
+      "certified_horizon": 4.3,
+      "first_failure_segment": 44,
+      "failure_type": "property",
+      "numerical_certificate_passed": true
+    },
+    "algorithm_aligned_h005_refresh1": {
+      "certified_horizon": 4.4,
+      "first_failure_segment": 45,
+      "failure_type": "property",
+      "numerical_certificate_passed": true
+    },
+    "strict_t10_t20_status_after_t5_failure": "NOT_RUN",
+    "status": "CASE_C_PERFORMANCE_PASS_NATIVE_T5_GATE_FAIL"
+  },
+  "publication_scan": {
+    "governance_status": "PASS_CLEAN_LINEAGE",
+    "unallowlisted_path_or_credential_match_count": 0,
+    "current_tree_sensitive_suffix_candidate_count": 0,
+    "status": "PASS"
+  }
+}
