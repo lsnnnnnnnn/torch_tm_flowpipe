@@ -1,0 +1,35 @@
+{
+  "commands": [
+    {
+      "command": "python -m compileall -q src tests experiments scripts examples",
+      "status": "PASS"
+    },
+    {
+      "command": "python scripts/check_readme_surface.py",
+      "status": "PASS"
+    },
+    {
+      "command": "pytest -q",
+      "passed": 84,
+      "skipped": 14,
+      "status": "PASS"
+    },
+    {
+      "command": "pytest -q -m external_integration",
+      "deselected": 93,
+      "passed": 2,
+      "skipped": 2,
+      "status": "PASS"
+    }
+  ],
+  "clean_start_portable": {
+    "passed": 83,
+    "skipped": 14,
+    "status": "PASS"
+  },
+  "environment_fingerprint_sha256": "93e051fced2f68197b048309980200595f37ba296cd48a4fe5bd25936c9296e5",
+  "external_assets_supplied_by_environment": true,
+  "raw_command_output_private": true,
+  "schema": "tora_q3_stage_parity_phase0_validation_v1",
+  "status": "PASS"
+}

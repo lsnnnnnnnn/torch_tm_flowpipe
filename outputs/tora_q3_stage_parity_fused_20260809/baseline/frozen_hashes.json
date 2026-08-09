@@ -1,0 +1,350 @@
+{
+  "common_control": {
+    "accepted_status_sha256": "c43283b0c11e1815ad575cbd998a5f6c90ed03f5e363d1a4f3d0dba03cfba54c",
+    "semantic_status": {
+      "gates": [
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 1,
+          "gate": "one_leaf_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 0.1,
+          "completed_segments": 1,
+          "expected_leaf_count": 48,
+          "gate": "b48_one_step",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 1.0,
+          "completed_segments": 10,
+          "expected_leaf_count": 48,
+          "gate": "b48_t1",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 5.0,
+          "completed_segments": 50,
+          "expected_leaf_count": 48,
+          "gate": "b48_t5",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 10.0,
+          "completed_segments": 100,
+          "expected_leaf_count": 48,
+          "gate": "b48_t10",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 20.0,
+          "completed_segments": 200,
+          "expected_leaf_count": 48,
+          "gate": "b48_t20",
+          "status": "PASS"
+        }
+      ],
+      "lane": "common_control_plant_replay",
+      "not_independent_closed_loop": true,
+      "period_local_observation_restart": true
+    },
+    "source_file_sha256": "0915330fd8f5e55faefb9558b91e2deac70fc6f15b0c5da34fe5e6f2193f4c35"
+  },
+  "endpoint_tube_aggregate": {
+    "combined_sha256": "c1d8bc660c0e0f6a9f140a31a5a729aa7db9f22cf04be1e51c10ad4f46a4f5cd",
+    "file_sha256": {
+      "endpoint_width_over_time.csv": "eafa902413fee7b9a1f7bac0dbc64d88954798da3aabe3ff046cb007c3ce67be",
+      "failure_horizons.csv": "c49d0758b5bea50b87d45d33a63b06bf4f8de8c049421442b3c90df17c3878c7",
+      "property_margin_over_time.csv": "cf40bc45c65ad523ce56480b3a738d4608fb9bb1314bd79edc15fc0defe20352",
+      "tube_width_over_time.csv": "bf06157e32cb78184a436aa63c8f52d0aca0e62c01f2cf9a153521df2dbcba03"
+    }
+  },
+  "full_loop_t4_4_failure": {
+    "semantic_summary": {
+      "certified_horizon": 4.3,
+      "closed_loop_gates": [
+        {
+          "certified_horizon": 1.0,
+          "gate": "b48_t1",
+          "status": "PASS"
+        },
+        {
+          "certified_horizon": 4.3,
+          "first_failed_segment": 44,
+          "gate": "b48_t5",
+          "status": "FAIL"
+        },
+        {
+          "gate": "b48_t10",
+          "reason": "earlier failure",
+          "status": "N/A"
+        },
+        {
+          "gate": "b48_t20",
+          "reason": "earlier failure",
+          "status": "N/A"
+        }
+      ],
+      "completed_segments": 43,
+      "first_failure": {
+        "acceptance_was_not_relaxed": true,
+        "classification": "method-native plant/state-projection enclosure growth feeds a different sound controller input box; x3 tube crosses the frozen property at the fifth controller period",
+        "failed_leaf_ids": [
+          0
+        ],
+        "first_failed_leaf": 0,
+        "physical_time": 4.4,
+        "property_margin": [
+          1.462985986924705,
+          1.1144023590499603,
+          -0.042012028629907494,
+          0.06265188348659256
+        ],
+        "segment_index": 44
+      },
+      "status": "FAILED_AT_T4_4"
+    },
+    "semantic_summary_sha256": "5cc519cd90cda5accc26989d88791ce25351bce34e24dea0497f9236ab224869",
+    "source_file_sha256": "c3f3e0133de77126998c6ba0453c654b383ffd25748861cf47cc790068e3791c"
+  },
+  "one_step": {
+    "coefficient_remainder_payload_sha256": "a750b2f2174b31be1a29f51a3ab93887ef58d8a68f306035471594deaeb3f838",
+    "private_detail_file_sha256": "fdf35f29b67263f749a9c076ab056f0ef776db7cc14772107baa7ab660aaa396",
+    "public_summary_file_sha256": "604352b1391f02f32b3c19ae0938b6cb7069f1e159514a5dd747d14299719ca6",
+    "semantic_status": {
+      "basis": {
+        "fingerprint": "fa135259d41a68a73a6fc609880c4fd466bf2d53b2dddeba30298a484fa5e44d",
+        "identity_slot_permutation": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83
+        ],
+        "slot_count": 84
+      },
+      "one_step_tensor_payload_sha256": "a750b2f2174b31be1a29f51a3ab93887ef58d8a68f306035471594deaeb3f838",
+      "status": "PASS",
+      "validation": {
+        "accepted": true,
+        "minimum_initial_margin": 0.0,
+        "remainder_round_count": 10
+      }
+    },
+    "semantic_status_sha256": "6c1825bcebf712a8893770893b72ee81ffa5c7170b79ebf2a4d0efe93c4df886"
+  },
+  "runtime_input": {
+    "batch": 48,
+    "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+    "dtype": "float64",
+    "expected_periods": 20,
+    "segments_per_period": 10,
+    "step_size": 0.1,
+    "total_segments": 200
+  },
+  "schema": "tora_q3_baseline_freeze_v1",
+  "server_rerun": {
+    "b48_one_step": {
+      "accepted": true,
+      "batch": 48,
+      "output_status_sha256": "b8fbeb5cde34f59cc1cdd197a31492e85723bca935712c1b2333271392359e4e",
+      "remainder_rounds": 10,
+      "source_file_sha256": "c281c90804350798ae624cbe1c70119c5bab82e58f266c73a1f80171820715bb",
+      "status": "PASS",
+      "step_size": 0.1
+    },
+    "baseline_native_k2_t5": {
+      "certified_horizon": 4.3,
+      "completed_segments": 43,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "baseline_native",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 5,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 2,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "999e5e4d35b0268c024278e2112c47f38ec809b2590b8dc67cdda2ba26c577b7",
+      "controller_updates_sha256": "7e61e858c52926a7b78fdcd54402bae4ec26cc0a8385789ff4832807e0074fe6",
+      "diagnostic_completed_segments": 48,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          2,
+          6,
+          7,
+          12,
+          18
+        ],
+        "reason": "numerical_certificate",
+        "segment": 48
+      },
+      "first_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 44
+      },
+      "replay_points_sha256": "b5e86466bc31c12bf07b0a467029720c6b79da34cee85a3e4f8dfc811012a79a",
+      "segments_sha256": "ecfabbae76d6ed14c33fee5a962d9cef0ac496b8a830181fa2efe78c6dc02270",
+      "source_file_sha256": "e81b89240f0d48617b5a19a366014ab97a1837678fa29d0cca17025aec8f7afc",
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    },
+    "common_control_t20": {
+      "certified_horizon": 20.0,
+      "completed_segments": 200,
+      "first_failure": null,
+      "peak_cuda_memory_bytes": 1004729344,
+      "segments_sha256": "51471618675b21a790de0eb141dc91f119a95029ea0ac94ab4547b9d4486975c",
+      "source_file_sha256": "d67b9fd09e0ce2f90af9f94a1929689eabd439607de4a902dd7022ae2e9e7417",
+      "status": "VERIFIED",
+      "timing_scope": "single diagnostic replay; not a formal steady timing"
+    },
+    "prior_k3_picard_t5": {
+      "certified_horizon": 4.4,
+      "completed_segments": 44,
+      "config": {
+        "batch": 48,
+        "continue_after_property_failure": true,
+        "device": "cuda",
+        "dtype": "float64",
+        "lane": "k3_picard",
+        "optimized_math": true,
+        "order": 3,
+        "periods": 5,
+        "point_enclosure_backend": "compiled",
+        "polynomial_picard_rounds": 3,
+        "property": "abs(x1..x4) <= 2",
+        "range_policy": "natural",
+        "remainder_picard_rounds": 10,
+        "step_size": 0.1
+      },
+      "config_sha256": "9c47871cc87828cc28dfda1fdda0785502429cecb5873c28877910b1ea099a6b",
+      "controller_updates_sha256": "f1100b316cd6b6beea27f279d0f86cea7000d7863f56dc1bc4031977985ba131",
+      "diagnostic_completed_segments": 48,
+      "diagnostic_failure": {
+        "failed_leaf_ids": [
+          0
+        ],
+        "reason": "numerical_certificate",
+        "segment": 48
+      },
+      "first_failure": {
+        "failed_leaf_ids": [
+          0,
+          1,
+          6
+        ],
+        "message": "local validation or composed physical-coordinate property check failed",
+        "reason": "property",
+        "segment": 45
+      },
+      "replay_points_sha256": "e3cd28dc70d057894cbfb3499afa0a483f64ac9ab7ac592e5f4f44e369ca8086",
+      "segments_sha256": "521f0f5bb7d80746d22a3be7de48138c42f3b4cc5ad12d2d450ab68c35272e8c",
+      "source_file_sha256": "b71c816e7f8f2bc3f779df7357d8052e566944aef18c7ae7870ded3575a06107",
+      "source_sha256": {
+        "experiments/run_tora_q3_full_closed_loop.py": "935534cd0101840a1c2a3b7b9706b7b72c08981a6d839c3c43b40f8540272666",
+        "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+        "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+      },
+      "status": "FAILED"
+    }
+  }
+}

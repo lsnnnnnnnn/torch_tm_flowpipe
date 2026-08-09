@@ -1,0 +1,90 @@
+{
+  "accepted": true,
+  "base_commit": "63efe66cfe7bdda907f8255ba23cebaa9b878233",
+  "batch": 48,
+  "dense_samples_seconds": [
+    0.6850387193262577,
+    0.6698565194383264,
+    0.6648990996181965,
+    0.677295595407486,
+    0.663768039084971,
+    0.6650891378521919,
+    0.6727056363597512,
+    0.6644911263138056,
+    0.6631439281627536,
+    0.6689213970676064
+  ],
+  "dense_validated_step": {
+    "iqr_seconds": 0.007400237489491701,
+    "max_seconds": 0.6850387193262577,
+    "mean_seconds": 0.6695209198631347,
+    "median_seconds": 0.6670052674598992,
+    "min_seconds": 0.6631439281627536,
+    "repeats": 10
+  },
+  "device": "cuda",
+  "dtype": "float64",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "gpu": "Tesla V100-SXM2-16GB",
+    "python": "3.11.15",
+    "seed": 0,
+    "torch": "2.8.0+cu128",
+    "torch_num_threads": 1
+  },
+  "excluded_full_one_step_warmup_seconds": 0.8325424734503031,
+  "instrumented_worktree": true,
+  "logical_samples_seconds": [
+    0.742115480825305,
+    0.7394304051995277,
+    0.7515046149492264,
+    0.73515266738832,
+    0.7361854938790202,
+    0.7447941703721881,
+    0.7360735721886158,
+    0.7436413364484906,
+    0.7490092758089304,
+    0.7953638145700097
+  ],
+  "logical_step_dense_compose_projection": {
+    "iqr_seconds": 0.010958777740597725,
+    "max_seconds": 0.7953638145700097,
+    "mean_seconds": 0.7473270831629634,
+    "median_seconds": 0.7428784086368978,
+    "min_seconds": 0.73515266738832,
+    "repeats": 10
+  },
+  "measured_repeats": 10,
+  "monomial_interval_cache_status": {
+    "capacity": 512,
+    "entries": 46,
+    "hits": 2027,
+    "misses": 46
+  },
+  "output_status_sha256": "b8fbeb5cde34f59cc1cdd197a31492e85723bca935712c1b2333271392359e4e",
+  "phase_label": "phase0_frozen_eager",
+  "point_enclosure_backend_requested": "eager",
+  "point_enclosure_backend_status": {
+    "compile_and_first_call_seconds": {},
+    "compiled_calls": 0,
+    "disabled_signatures": {},
+    "eager_fallback_calls": 0,
+    "verification_count": 0,
+    "verified_signatures": 0
+  },
+  "remainder_rounds": 10,
+  "schema": "tora_q3_one_step_optimization_benchmark_v1",
+  "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_sha256": {
+    "experiments/benchmark_tora_q3_one_step_iterations.py": "c6770b31eeb95b37c7de5472abf90ee02b3ca31c5264ae3a83f14742ae88435d",
+    "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+    "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+  },
+  "status": "PASS",
+  "step_size": 0.1,
+  "timing_scope_notes": {
+    "cuda_synchronized_at_scope_boundaries": true,
+    "profiler_enabled": false,
+    "serialization_excluded": true
+  }
+}

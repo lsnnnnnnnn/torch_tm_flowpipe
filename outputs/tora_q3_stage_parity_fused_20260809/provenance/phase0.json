@@ -1,0 +1,115 @@
+{
+  "assets": {
+    "controller": {
+      "observed_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+      "status": "PASS"
+    },
+    "controller_trace": {
+      "observed_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+      "status": "PASS"
+    },
+    "external_asset_paths_in_public_record": false,
+    "xiangru": {
+      "observed_commit": "27d29050a5f214b56f211ca9cb411e734ed80230",
+      "status": "PASS"
+    }
+  },
+  "baseline_freeze": {
+    "artifact": "baseline/frozen_hashes.json",
+    "artifact_sha256": "0a4d77cebecc149836495ef82562abe6b4789203c962922634228cac69db0407",
+    "old_k2_semantics_unchanged": true,
+    "server_reruns": {
+      "b48_one_step": "PASS",
+      "baseline_native_k2_t5": "FAILED_PROPERTY_AT_SEGMENT_44",
+      "common_control_t20": "VERIFIED_200_SEGMENTS",
+      "prior_k3_picard_t5": "FAILED_PROPERTY_AT_SEGMENT_45"
+    }
+  },
+  "environment": {
+    "environment_fingerprint_sha256": "93e051fced2f68197b048309980200595f37ba296cd48a4fe5bd25936c9296e5",
+    "formal": {
+      "batch": 48,
+      "cpu_threads": 1,
+      "cuda_runtime": "12.8",
+      "device": "Tesla V100-SXM2-16GB",
+      "driver": "580.159.03",
+      "dtype": "float64",
+      "gpu_index": 0,
+      "label": "matched_crown",
+      "python": "3.11.15",
+      "pytorch": "2.8.0+cu128",
+      "segments": 200,
+      "step_size": 0.1
+    },
+    "historical_py11": {
+      "cuda_runtime": "12.1",
+      "label": "historical_only",
+      "python": "3.11.15",
+      "pytorch": "2.5.1+cu121"
+    }
+  },
+  "function_contracts": {
+    "run_s0_tora_static_partition_sweep.py::_run_lane": {
+      "observed_sha256": "a1facded8dd0ff46d713c89e0ba50dab25e8e9e7573caae3782c184a0d480747",
+      "status": "PASS"
+    },
+    "generic_fixed_basis.py::run_tora_remainder_picard": {
+      "observed_sha256": "56a65d39a9c0e66bd64b6e0b650d1ef42de888dc6de2e1d3108fbc5ec1ce7669",
+      "status": "PASS"
+    },
+    "generic_fixed_basis.py::tm_sin": {
+      "observed_sha256": "370a19169f350f194e5a3609575df8d19aec63dc76388ca1ffd98407766aae08",
+      "status": "PASS"
+    },
+    "generic_fixed_basis.py::tm_tora_rhs": {
+      "observed_sha256": "630a2b04e6fcff6a290d73a5abbb554a4b521a25f1079ab6aa1c0d680521829d",
+      "status": "PASS"
+    }
+  },
+  "lineage": {
+    "active_branch": "codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809",
+    "blocked_history_merge_base": null,
+    "blocked_history_tip": "c49d74bbf48d1004f7f3818174e7f40b6200b142",
+    "clean_lineage_root": "9fc45344c4379422244b75af705dffd17304f824",
+    "remote_start_ref": "63efe66cfe7bdda907f8255ba23cebaa9b878233",
+    "start_commit": "63efe66cfe7bdda907f8255ba23cebaa9b878233",
+    "start_tree": "51b5e535297bbf01753607d0321ed0cb55b1e463",
+    "status": "PASS",
+    "user_dirty_worktree_preserved": true
+  },
+  "manifest_baseline": {
+    "byte_identical": true,
+    "entry_count_each": 248,
+    "manifest_sha256": "e772a3a8ab675da7b8cb40dc64bbddd8b164b2fc3b65e18f5eacdc943a7458fe",
+    "sha256sum_check": "PASS"
+  },
+  "private_evidence": {
+    "common_control_t20_summary_sha256": "d67b9fd09e0ce2f90af9f94a1929689eabd439607de4a902dd7022ae2e9e7417",
+    "native_k2_t5_summary_sha256": "e81b89240f0d48617b5a19a366014ab97a1837678fa29d0cca17025aec8f7afc",
+    "native_k3_t5_summary_sha256": "b71c816e7f8f2bc3f779df7357d8052e566944aef18c7ae7870ded3575a06107",
+    "one_leaf_one_step_detail_sha256": "fdf35f29b67263f749a9c076ab056f0ef776db7cc14772107baa7ab660aaa396",
+    "raw_paths_in_public_record": false
+  },
+  "schema": "tora_q3_stage_parity_phase0_v1",
+  "status": "PASS",
+  "validation": {
+    "clean_start_portable": {
+      "passed": 83,
+      "skipped": 14,
+      "status": "PASS"
+    },
+    "compileall": "PASS",
+    "external_integration": {
+      "deselected": 93,
+      "passed": 2,
+      "skipped": 2,
+      "status": "PASS"
+    },
+    "portable": {
+      "passed": 84,
+      "skipped": 14,
+      "status": "PASS"
+    },
+    "readme_surface": "PASS"
+  }
+}
