@@ -1,0 +1,41 @@
+{
+  "algorithm_aligned_q3": {
+    "aten_item_count": 80,
+    "aten_local_scalar_dense_count": 80,
+    "aten_to_count": 81,
+    "compiled_graph_count": 0,
+    "cuda_activity_event_count": 139869,
+    "cuda_launch_api_count": 139417,
+    "graph_break_count_inside_compiled_stages": 0,
+    "host_scalar_sync_estimate": 80,
+    "lane_execution": "eager",
+    "peak_cuda_memory_bytes": 1030419968,
+    "positive_self_cuda_allocation_bytes": 12156239360
+  },
+  "baseline_native_k2": {
+    "aten_item_count": 80,
+    "aten_local_scalar_dense_count": 80,
+    "aten_to_count": 81,
+    "compiled_graph_count": 0,
+    "cuda_activity_event_count": 75892,
+    "cuda_launch_api_count": 75440,
+    "graph_break_count_inside_compiled_stages": 0,
+    "host_scalar_sync_estimate": 80,
+    "lane_execution": "eager",
+    "peak_cuda_memory_bytes": 1031002112,
+    "positive_self_cuda_allocation_bytes": 12119956480
+  },
+  "fused_segmented": {
+    "aten_item_count": 7,
+    "aten_local_scalar_dense_count": 7,
+    "aten_to_count": 25,
+    "compiled_graph_count": 4,
+    "cuda_activity_event_count": 11174,
+    "cuda_launch_api_count": 7941,
+    "graph_break_count_inside_compiled_stages": 0,
+    "host_scalar_sync_estimate": 7,
+    "lane_execution": "four fullgraph stages",
+    "peak_cuda_memory_bytes": 1030036480,
+    "positive_self_cuda_allocation_bytes": 6161790976
+  }
+}

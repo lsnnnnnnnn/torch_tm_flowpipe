@@ -1,0 +1,312 @@
+{
+  "baseline_t20_seconds": 512.0244269836694,
+  "common_control_t20": {
+    "checksum_max_delta": 0.0,
+    "checksum_stability_tolerance": 1e-09,
+    "checksum_stable": true,
+    "completed_segments_each": [
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "excluded_warmup": {
+      "certified_horizon": 20.0,
+      "checksum": 190979.0503860716,
+      "completed_segments": 200,
+      "controller_bound_update_seconds": 0.0,
+      "serialization_io_seconds": 0.0,
+      "status": "PASS",
+      "wall_seconds": 26.060500827617943
+    },
+    "peak_cuda_memory_bytes": 1031874048,
+    "runtime": {
+      "iqr_seconds": 0.044699410907924175,
+      "maximum_seconds": 26.207485772669315,
+      "mean_seconds": 26.175485424511134,
+      "median_seconds": 26.18573095370084,
+      "minimum_seconds": 26.121589402668178,
+      "repeat_count": 5
+    },
+    "status": "PASS"
+  },
+  "compilation": {
+    "F1": {
+      "fullgraph": true,
+      "observed_cold_seconds": 5.1815224243327975,
+      "observed_steady_median_seconds": 0.00011441251263022423,
+      "status": "PASS"
+    },
+    "F2": {
+      "fullgraph": true,
+      "observed_cold_seconds": 63.15617358498275,
+      "observed_steady_median_seconds": 0.004054696299135685,
+      "status": "PASS"
+    },
+    "F3": {
+      "attempted_fullgraph": true,
+      "fallback": "verified initialize and single-round fullgraphs called with a fixed ten-round Python schedule",
+      "monolithic_timeout_seconds": 300.0,
+      "status": "FALLBACK_GRAPH_SCALE"
+    },
+    "F4": {
+      "fullgraph": true,
+      "observed_cold_seconds": 10.539166155271232,
+      "observed_steady_median_seconds": 0.00026183249428868294,
+      "status": "PASS"
+    },
+    "F5": {
+      "attempted_fullgraph": true,
+      "fallback": "four verified fullgraph stages and thirteen fixed invocations",
+      "monolithic_timeout_seconds": 600.0,
+      "status": "FALLBACK_GRAPH_SCALE"
+    },
+    "deployed": {
+      "cached_metadata_signatures": 1,
+      "compiled_disabled_signatures": {},
+      "compiled_verified_signatures": {},
+      "segmented_disabled_signatures": {},
+      "segmented_verified_signatures": {
+        "('segmented', (((1, 5, 84), (420, 84, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 6), (6, 1), 0, False), ((1, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+          "bitwise": false,
+          "fullgraph_stage_count": 4,
+          "logical_stage_invocations": 13,
+          "maximum_initial_margin_difference": 2.7755575615628914e-17,
+          "outward_contains_eager": true,
+          "per_round_host_decisions": 0
+        },
+        "('segmented', (((192, 5, 84), (420, 84, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 6), (6, 1), 0, False), ((192, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+          "bitwise": false,
+          "fullgraph_stage_count": 4,
+          "logical_stage_invocations": 13,
+          "maximum_initial_margin_difference": 2.7755575615628914e-17,
+          "outward_contains_eager": true,
+          "per_round_host_decisions": 0
+        },
+        "('segmented', (((48, 5, 84), (420, 84, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 6), (6, 1), 0, False), ((48, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+          "bitwise": false,
+          "fullgraph_stage_count": 4,
+          "logical_stage_invocations": 13,
+          "maximum_initial_margin_difference": 2.7755575615628914e-17,
+          "outward_contains_eager": true,
+          "per_round_host_decisions": 0
+        }
+      }
+    }
+  },
+  "controller_trace_sha256": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+  "device": "Tesla V100-SXM2-16GB",
+  "dispatch_sync": {
+    "lanes": {
+      "algorithm_aligned_q3": {
+        "program_issued_host_scalar_sync_count": 4,
+        "source_call_sites": [
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_q3.py:144:tora_q3_boundary_from_model"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_algorithm_aligned.py:445:algorithm_aligned_q3_step"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_q3.py:428:compose_tora_q3_step"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+          }
+        ]
+      },
+      "baseline_native_k2": {
+        "program_issued_host_scalar_sync_count": 4,
+        "source_call_sites": [
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_q3.py:144:tora_q3_boundary_from_model"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_q3.py:1091:dense_tora_q3_dr_step"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/tora_q3.py:428:compose_tora_q3_step"
+          },
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+          }
+        ]
+      },
+      "fused_segmented": {
+        "program_issued_host_scalar_sync_count": 1,
+        "source_call_sites": [
+          {
+            "count": 1,
+            "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+          }
+        ]
+      }
+    },
+    "method": "steady full logical B48 step under ScalarDispatchAudit; exact-mode warm-up excluded",
+    "schema": "tora_q3_fused_program_dispatch_all_lanes_v1",
+    "status": "PASS"
+  },
+  "dtype": "float64",
+  "gates": {
+    "P0_correctness_soundness": "PASS",
+    "P1_graph_breaks": {
+      "deployed_fullgraph_stage_count": 4,
+      "graph_breaks_inside_each_stage": 0,
+      "status": "PASS_DOCUMENTED_STAGE_BOUNDARIES"
+    },
+    "P2_program_sync": {
+      "limit": 2,
+      "observed": 1,
+      "status": "PASS"
+    },
+    "P3_aten_to": {
+      "limit": 80,
+      "observed": 25,
+      "status": "PASS"
+    },
+    "P4_b48_one_step": {
+      "limit_seconds": 0.254,
+      "observed_median_seconds": 0.1296528154052794,
+      "status": "PASS"
+    },
+    "P5_common_control_t20": {
+      "limit_seconds": 51.202443,
+      "observed_median_seconds": 26.18573095370084,
+      "status": "PASS",
+      "stretch_limit_seconds": 12.067596,
+      "stretch_status": "MISS"
+    }
+  },
+  "grad_enabled": false,
+  "one_step": {
+    "cold_compile_and_signature_verification_seconds": 209.21813482325524,
+    "output_checksum": "eb66769867da00b190c24a2693553d4130379aae8f4b36e7514117b62e96fc59",
+    "runtime": {
+      "iqr_seconds": 0.0008762679062783718,
+      "maximum_seconds": 0.13241647649556398,
+      "mean_seconds": 0.13004944622516632,
+      "median_seconds": 0.1296528154052794,
+      "minimum_seconds": 0.12905556615442038,
+      "repeat_count": 10
+    },
+    "status": "PASS"
+  },
+  "profiler": {
+    "algorithm_aligned_q3": {
+      "aten_item_count": 80,
+      "aten_local_scalar_dense_count": 80,
+      "aten_to_count": 81,
+      "compiled_graph_count": 0,
+      "cuda_activity_event_count": 139869,
+      "cuda_launch_api_count": 139417,
+      "graph_break_count_inside_compiled_stages": 0,
+      "host_scalar_sync_estimate": 80,
+      "lane_execution": "eager",
+      "peak_cuda_memory_bytes": 1030419968,
+      "positive_self_cuda_allocation_bytes": 12156239360
+    },
+    "baseline_native_k2": {
+      "aten_item_count": 80,
+      "aten_local_scalar_dense_count": 80,
+      "aten_to_count": 81,
+      "compiled_graph_count": 0,
+      "cuda_activity_event_count": 75892,
+      "cuda_launch_api_count": 75440,
+      "graph_break_count_inside_compiled_stages": 0,
+      "host_scalar_sync_estimate": 80,
+      "lane_execution": "eager",
+      "peak_cuda_memory_bytes": 1031002112,
+      "positive_self_cuda_allocation_bytes": 12119956480
+    },
+    "fused_segmented": {
+      "aten_item_count": 7,
+      "aten_local_scalar_dense_count": 7,
+      "aten_to_count": 25,
+      "compiled_graph_count": 4,
+      "cuda_activity_event_count": 11174,
+      "cuda_launch_api_count": 7941,
+      "graph_break_count_inside_compiled_stages": 0,
+      "host_scalar_sync_estimate": 7,
+      "lane_execution": "four fullgraph stages",
+      "peak_cuda_memory_bytes": 1030036480,
+      "positive_self_cuda_allocation_bytes": 6161790976
+    }
+  },
+  "raw_paths_in_public_record": false,
+  "scaling": {
+    "B1": {
+      "batch": 1,
+      "compile_or_cache_warm_seconds": 186.4597845096141,
+      "output_checksum": "05f245fd80b9aab1b12a5be56538a506c143d31983b5685589d2934f0fa64df6",
+      "runtime": {
+        "iqr_seconds": 0.00047367392107844353,
+        "maximum_seconds": 0.04325605183839798,
+        "mean_seconds": 0.04118955424055457,
+        "median_seconds": 0.04102664906531572,
+        "minimum_seconds": 0.040504331700503826,
+        "repeat_count": 10
+      },
+      "status": "PASS"
+    },
+    "B192": {
+      "batch": 192,
+      "compile_or_cache_warm_seconds": 219.58188796788454,
+      "output_checksum": "c8b4a060764022188c6a7d45de42afc4dfa175f4b1a93fb2cc9a130726798700",
+      "runtime": {
+        "iqr_seconds": 0.0008701283950358629,
+        "maximum_seconds": 0.04553421400487423,
+        "mean_seconds": 0.04371645795181393,
+        "median_seconds": 0.04337908374145627,
+        "minimum_seconds": 0.042972358874976635,
+        "repeat_count": 10
+      },
+      "status": "PASS"
+    },
+    "B48": {
+      "batch": 48,
+      "compile_or_cache_warm_seconds": 0.040534899570047855,
+      "output_checksum": "424e9e2dfbddac758ec0f2649a6921e962f186dacc1b2435dc71d76f926a564b",
+      "runtime": {
+        "iqr_seconds": 0.0003008618950843811,
+        "maximum_seconds": 0.04153512045741081,
+        "mean_seconds": 0.04034001687541604,
+        "median_seconds": 0.04016224667429924,
+        "minimum_seconds": 0.03995103668421507,
+        "repeat_count": 10
+      },
+      "status": "PASS"
+    }
+  },
+  "schema": "tora_q3_fused_kernel_benchmark_v1",
+  "soundness": {
+    "compiled_accepted": true,
+    "eager_reference_accepted": true,
+    "enclosure_checks": {
+      "endpoint": true,
+      "remainder": true,
+      "tube": true
+    },
+    "exact_coefficients": true,
+    "reference": "algorithm_aligned_q3 eager B48",
+    "status": "PASS"
+  },
+  "source_sha256": {
+    "experiments/benchmark_tora_q3_fused_kernel.py": "4a1a4f1e00263f53d1a2d1f06163b607f6dc56dd5172bfebf33118a3ac4dafa4",
+    "src/torch_tm_flowpipe/batched_dense_tm.py": "7198489a4adcce07ad741a021da96e7e3ca4a033ba7d947d02edb88e141f1980",
+    "src/torch_tm_flowpipe/tora_algorithm_aligned.py": "298a3aab6b8df6a0e0daedc490b0f35eb7a48bc5b3aee32a351a6a96cdc70d58",
+    "src/torch_tm_flowpipe/tora_fused_kernel.py": "3710d7bdbe2960d3a6d5ba11a8e34c65c6ffe0b25449e12cdeda34462f76c4c8",
+    "src/torch_tm_flowpipe/tora_q3.py": "e343b2a60c7bc3861f655f952b4333744e6ecd9929543a469a2f4a542f59b63b"
+  },
+  "speedup_over_frozen_baseline_t20": 19.553566325453474,
+  "status": "PASS",
+  "torch_dynamo_cache_size_limit": 64
+}

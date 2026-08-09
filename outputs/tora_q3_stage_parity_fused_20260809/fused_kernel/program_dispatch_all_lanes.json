@@ -1,0 +1,58 @@
+{
+  "lanes": {
+    "algorithm_aligned_q3": {
+      "program_issued_host_scalar_sync_count": 4,
+      "source_call_sites": [
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_q3.py:144:tora_q3_boundary_from_model"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_algorithm_aligned.py:445:algorithm_aligned_q3_step"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_q3.py:428:compose_tora_q3_step"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+        }
+      ]
+    },
+    "baseline_native_k2": {
+      "program_issued_host_scalar_sync_count": 4,
+      "source_call_sites": [
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_q3.py:144:tora_q3_boundary_from_model"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_q3.py:1091:dense_tora_q3_dr_step"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/tora_q3.py:428:compose_tora_q3_step"
+        },
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+        }
+      ]
+    },
+    "fused_segmented": {
+      "program_issued_host_scalar_sync_count": 1,
+      "source_call_sites": [
+        {
+          "count": 1,
+          "source": "src/torch_tm_flowpipe/batched_dense_tm.py:142:dense_validation_batch"
+        }
+      ]
+    }
+  },
+  "method": "steady full logical B48 step under ScalarDispatchAudit; exact-mode warm-up excluded",
+  "schema": "tora_q3_fused_program_dispatch_all_lanes_v1",
+  "status": "PASS"
+}

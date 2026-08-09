@@ -1,0 +1,55 @@
+{
+  "compileall": "PASS",
+  "environment": {
+    "cuda_runtime": "12.8",
+    "device": "Tesla V100-SXM2-16GB",
+    "driver": "580.159.03",
+    "dtype": "float64",
+    "python": "3.11.15",
+    "pytorch": "2.8.0+cu128"
+  },
+  "external_integration": {
+    "deselected": 129,
+    "passed": 3,
+    "skipped": 2,
+    "skip_reason": "legacy raw Xiangru audit tree intentionally excluded from clean review branch",
+    "status": "PASS"
+  },
+  "focused_fused_kernel": {
+    "passed": 11,
+    "skipped": 0,
+    "status": "PASS"
+  },
+  "formal_gates": {
+    "P0": "PASS",
+    "P1": "PASS_DOCUMENTED_STAGE_BOUNDARIES",
+    "P2": "PASS",
+    "P3": "PASS",
+    "P4": "PASS",
+    "P5": "PASS",
+    "aten_to_stretch": "MISS",
+    "common_control_t20_stretch": "MISS",
+    "status": "PASS"
+  },
+  "formal_runtime": {
+    "b48_logical_one_step_median_seconds": 0.1296528154052794,
+    "cold_compile_and_verify_seconds": 209.21813482325524,
+    "common_control_t20_median_seconds": 26.18573095370084,
+    "common_control_t20_repeats": 5,
+    "completed_segments_each": [
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "status": "PASS"
+  },
+  "portable": {
+    "passed": 119,
+    "skipped": 15,
+    "status": "PASS"
+  },
+  "schema": "tora_q3_checkpoint5_validation_v1",
+  "status": "PASS"
+}

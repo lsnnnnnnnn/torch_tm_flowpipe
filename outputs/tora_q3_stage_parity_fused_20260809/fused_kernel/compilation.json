@@ -1,0 +1,64 @@
+{
+  "F1": {
+    "fullgraph": true,
+    "observed_cold_seconds": 5.1815224243327975,
+    "observed_steady_median_seconds": 0.00011441251263022423,
+    "status": "PASS"
+  },
+  "F2": {
+    "fullgraph": true,
+    "observed_cold_seconds": 63.15617358498275,
+    "observed_steady_median_seconds": 0.004054696299135685,
+    "status": "PASS"
+  },
+  "F3": {
+    "attempted_fullgraph": true,
+    "fallback": "verified initialize and single-round fullgraphs called with a fixed ten-round Python schedule",
+    "monolithic_timeout_seconds": 300.0,
+    "status": "FALLBACK_GRAPH_SCALE"
+  },
+  "F4": {
+    "fullgraph": true,
+    "observed_cold_seconds": 10.539166155271232,
+    "observed_steady_median_seconds": 0.00026183249428868294,
+    "status": "PASS"
+  },
+  "F5": {
+    "attempted_fullgraph": true,
+    "fallback": "four verified fullgraph stages and thirteen fixed invocations",
+    "monolithic_timeout_seconds": 600.0,
+    "status": "FALLBACK_GRAPH_SCALE"
+  },
+  "deployed": {
+    "cached_metadata_signatures": 1,
+    "compiled_disabled_signatures": {},
+    "compiled_verified_signatures": {},
+    "segmented_disabled_signatures": {},
+    "segmented_verified_signatures": {
+      "('segmented', (((1, 5, 84), (420, 84, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 6), (6, 1), 0, False), ((1, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+        "bitwise": false,
+        "fullgraph_stage_count": 4,
+        "logical_stage_invocations": 13,
+        "maximum_initial_margin_difference": 2.7755575615628914e-17,
+        "outward_contains_eager": true,
+        "per_round_host_decisions": 0
+      },
+      "('segmented', (((192, 5, 84), (420, 84, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 6), (6, 1), 0, False), ((192, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+        "bitwise": false,
+        "fullgraph_stage_count": 4,
+        "logical_stage_invocations": 13,
+        "maximum_initial_margin_difference": 2.7755575615628914e-17,
+        "outward_contains_eager": true,
+        "per_round_host_decisions": 0
+      },
+      "('segmented', (((48, 5, 84), (420, 84, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 6), (6, 1), 0, False), ((48, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+        "bitwise": false,
+        "fullgraph_stage_count": 4,
+        "logical_stage_invocations": 13,
+        "maximum_initial_margin_difference": 2.7755575615628914e-17,
+        "outward_contains_eager": true,
+        "per_round_host_decisions": 0
+      }
+    }
+  }
+}
