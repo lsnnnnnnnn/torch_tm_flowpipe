@@ -1,0 +1,85 @@
+{
+  "bitwise_equal_numeric_fields": 2142,
+  "core_array_bitwise_gate": "UNAVAILABLE_UNINSTRUMENTED_BASELINE_DID_NOT_EXPORT_PER_LEAF_ARRAYS",
+  "correctness_numeric_fields_compared": 2850,
+  "excluded_runtime_or_memory_fields": 161,
+  "exporter_overhead": {
+    "difference_seconds": 19.996462473645806,
+    "instrumented_solver_wall_excluding_validation_seconds": 22.76493149716407,
+    "performance_use": "excluded_from_formal_runtime_comparison",
+    "reference_solver_wall_excluding_validation_seconds": 2.7684690235182643
+  },
+  "fields_within_absolute_tolerance_1e_6": 2850,
+  "instrumented_exporter_regression": {
+    "categories": {
+      "accepted_leaves": {
+        "bitwise_equal_elements": 9600,
+        "element_count": 9600,
+        "maximum_absolute_difference": 0.0
+      },
+      "controller_output": {
+        "bitwise_equal_elements": 878,
+        "element_count": 3840,
+        "maximum_absolute_difference": 5.861977570020827e-14
+      },
+      "endpoint": {
+        "bitwise_equal_elements": 12809,
+        "element_count": 96000,
+        "maximum_absolute_difference": 4.796163466380676e-14
+      },
+      "remainder": {
+        "bitwise_equal_elements": 8930,
+        "element_count": 96000,
+        "maximum_absolute_difference": 3.9745984281580604e-14
+      },
+      "tube": {
+        "bitwise_equal_elements": 12986,
+        "element_count": 96000,
+        "maximum_absolute_difference": 4.796163466380676e-14
+      }
+    },
+    "controller_period_count": 20,
+    "maximum_absolute_difference": 5.861977570020827e-14,
+    "scope": "prior validated exporter versus stage-contract exporter; this does not replace the unavailable uninstrumented raw-array gate",
+    "segment_count": 200,
+    "source_hashes": {
+      "instrumented_controller": "a0ce2966afe6d4b0b2f146d0b63e2f1d5b9c932b62621f932787dcac7ad22cfb",
+      "instrumented_plant": "ccb44ee539047722a5022920e2dfc75fb8d1fbca824c782113d77dbfb4112df1",
+      "reference_controller": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+      "reference_plant": "cdf0ead9538b061b3115802bc6a6e5d8dc07868076db678bdeb9db2bae27f114"
+    },
+    "status": "PASS_WITH_DECLARED_TOLERANCE"
+  },
+  "interpretation": "Aggregate correctness fields are equivalent within the frozen 1e-6 gate; timing is excluded. Per-leaf exporter arrays have no uninstrumented counterpart, so bitwise identity is not claimed.",
+  "maximum_absolute_difference": 2.4868995751603507e-14,
+  "maximum_ulp_distance": 18014398509481984,
+  "maximum_ulp_distance_when_both_abs_ge_1e_12": 1024,
+  "non_bitwise_numeric_fields": 708,
+  "nonnumeric_mismatch_count": 0,
+  "private_ulp_detail_sha256": "28d1c74b7ebc6754fa48e604c8080c118d77e3e68153989822f82a917d66cd9a",
+  "raw_instrumented_sha256": "b293a146e87f9f603febfbf1a9b78ff6eaddd339f89f86c6b25073639205d955",
+  "raw_reference_sha256": "c6eab51e884ce4033735082d71445286508941129277317898194e7ad3f23472",
+  "schema": "xiangru_observation_equivalence_summary_v1",
+  "source_identity": {
+    "commit_equal": true,
+    "expected_instrumented_patch": true,
+    "instrumented_dirty": true,
+    "reference_dirty": false
+  },
+  "status": "PASS_WITH_DECLARED_TOLERANCE",
+  "ulp_caveat": "The all-field maximum compares exact zero with a tiny nonzero diagnostic; ordered-bit ULP distance across zero is not a useful relative-error measure.",
+  "uninstrumented_behavior_equivalence": {
+    "accepted_leaf_counts_equal": true,
+    "aggregate_endpoint_tube_and_controller_fields_within_1e_6": true,
+    "certified_horizon": 20.0,
+    "certified_horizon_equal": true,
+    "controller_period_count_equal": true,
+    "failed_leaf_indices_equal": true,
+    "first_failure_equal": true,
+    "segment_count": 200,
+    "segment_count_equal": true,
+    "segments_attempted_equal": true,
+    "status": "VERIFIED",
+    "status_equal": true
+  }
+}

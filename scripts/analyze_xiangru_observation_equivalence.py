@@ -11,6 +11,8 @@ from pathlib import Path
 import struct
 from typing import Any, Iterator
 
+import numpy as np
+
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -36,12 +38,135 @@ def ordered_bits(value: float) -> int:
     return (~raw & ((1 << 64) - 1)) if (raw >> 63) else (raw | (1 << 63))
 
 
+def array_comparison(left: Any, right: Any) -> dict[str, Any]:
+    a = np.asarray(left)
+    b = np.asarray(right)
+    if a.shape != b.shape:
+        raise ValueError(f"exporter array shape mismatch: {a.shape} != {b.shape}")
+    if a.dtype == np.bool_ or b.dtype == np.bool_:
+        difference = a != b
+        return {
+            "element_count": int(a.size),
+            "bitwise_equal_elements": int(np.count_nonzero(~difference)),
+            "maximum_absolute_difference": 0.0 if not np.any(difference) else 1.0,
+        }
+    a = np.asarray(a, dtype=np.float64)
+    b = np.asarray(b, dtype=np.float64)
+    return {
+        "element_count": int(a.size),
+        "bitwise_equal_elements": int(np.count_nonzero(a == b)),
+        "maximum_absolute_difference": float(np.max(np.abs(a - b), initial=0.0)),
+    }
+
+
+def merge_array_metrics(target: dict[str, Any], value: dict[str, Any]) -> None:
+    target["element_count"] += value["element_count"]
+    target["bitwise_equal_elements"] += value["bitwise_equal_elements"]
+    target["maximum_absolute_difference"] = max(
+        target["maximum_absolute_difference"],
+        value["maximum_absolute_difference"],
+    )
+
+
+def empty_array_metrics() -> dict[str, Any]:
+    return {
+        "element_count": 0,
+        "bitwise_equal_elements": 0,
+        "maximum_absolute_difference": 0.0,
+    }
+
+
+def jsonl_rows(path: Path) -> list[dict[str, Any]]:
+    with path.open(encoding="utf-8") as handle:
+        first = json.loads(next(handle))
+        rows = [json.loads(line) for line in handle]
+    if first.get("schema", "").endswith("header_v1"):
+        return rows
+    return [first, *rows]
+
+
+def exporter_regression(
+    reference_plant: Path,
+    instrumented_plant: Path,
+    reference_controller: Path,
+    instrumented_controller: Path,
+) -> dict[str, Any]:
+    left_rows = jsonl_rows(reference_plant)
+    right_rows = jsonl_rows(instrumented_plant)
+    if len(left_rows) != 200 or len(right_rows) != 200:
+        raise ValueError("exporter regression requires two complete 200-segment traces")
+    categories = {
+        name: empty_array_metrics()
+        for name in ("accepted_leaves", "endpoint", "tube", "remainder")
+    }
+    for expected_segment, (left_row, right_row) in enumerate(
+        zip(left_rows, right_rows, strict=True), start=1
+    ):
+        if left_row["segment_index"] != expected_segment or right_row["segment_index"] != expected_segment:
+            raise ValueError("exporter segment order mismatch")
+        merge_array_metrics(
+            categories["accepted_leaves"],
+            array_comparison(left_row["accepted"], right_row["accepted"]),
+        )
+        for category, field in (
+            ("endpoint", "endpoint"),
+            ("tube", "tube"),
+            ("remainder", "interval_remainder"),
+        ):
+            for side in ("lower", "upper"):
+                merge_array_metrics(
+                    categories[category],
+                    array_comparison(
+                        left_row[field][side], right_row[field][side]
+                    ),
+                )
+    left_controller = json.loads(reference_controller.read_text(encoding="utf-8"))
+    right_controller = json.loads(instrumented_controller.read_text(encoding="utf-8"))
+    left_control_rows = left_controller["rows"]
+    right_control_rows = right_controller["rows"]
+    if len(left_control_rows) != 20 or len(right_control_rows) != 20:
+        raise ValueError("exporter regression requires two 20-period controller traces")
+    controller_metrics = empty_array_metrics()
+    for left_row, right_row in zip(left_control_rows, right_control_rows, strict=True):
+        for field in (
+            "controller_output_interval_before_outward_composition",
+            "controller_output_interval_after_outward_composition",
+        ):
+            for side in ("lower", "upper"):
+                merge_array_metrics(
+                    controller_metrics,
+                    array_comparison(left_row[field][side], right_row[field][side]),
+                )
+    categories["controller_output"] = controller_metrics
+    maximum = max(
+        value["maximum_absolute_difference"] for value in categories.values()
+    )
+    return {
+        "status": "PASS_WITH_DECLARED_TOLERANCE" if maximum <= 1e-12 else "FAIL",
+        "scope": "prior validated exporter versus stage-contract exporter; this does not replace the unavailable uninstrumented raw-array gate",
+        "segment_count": 200,
+        "controller_period_count": 20,
+        "categories": categories,
+        "maximum_absolute_difference": maximum,
+        "source_hashes": {
+            "reference_plant": sha256(reference_plant),
+            "instrumented_plant": sha256(instrumented_plant),
+            "reference_controller": sha256(reference_controller),
+            "instrumented_controller": sha256(instrumented_controller),
+        },
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--instrumented", type=Path, required=True)
     parser.add_argument("--private-detail", type=Path, required=True)
     parser.add_argument("--public-summary", type=Path, required=True)
+    parser.add_argument("--reference-plant", type=Path)
+    parser.add_argument("--instrumented-plant", type=Path)
+    parser.add_argument("--reference-controller", type=Path)
+    parser.add_argument("--instrumented-controller", type=Path)
     args = parser.parse_args()
     left_document = json.loads(args.reference.read_text(encoding="utf-8"))
     right_document = json.loads(args.instrumented.read_text(encoding="utf-8"))
@@ -133,6 +258,39 @@ def main() -> int:
         "core_array_bitwise_gate": "UNAVAILABLE_UNINSTRUMENTED_BASELINE_DID_NOT_EXPORT_PER_LEAF_ARRAYS",
         "interpretation": "Aggregate correctness fields are equivalent within the frozen 1e-6 gate; timing is excluded. Per-leaf exporter arrays have no uninstrumented counterpart, so bitwise identity is not claimed.",
     }
+    lane_left = left_document["cells"]["b48_static"]["complete_q3"]
+    lane_right = right_document["cells"]["b48_static"]["complete_q3"]
+    public["uninstrumented_behavior_equivalence"] = {
+        "status_equal": lane_left["status"] == lane_right["status"],
+        "status": lane_right["status"],
+        "certified_horizon_equal": lane_left["certified_horizon"] == lane_right["certified_horizon"],
+        "certified_horizon": lane_right["certified_horizon"],
+        "segment_count_equal": len(lane_left["segments"]) == len(lane_right["segments"]),
+        "segment_count": len(lane_right["segments"]),
+        "segments_attempted_equal": lane_left["segments_attempted"] == lane_right["segments_attempted"],
+        "accepted_leaf_counts_equal": [row["accepted_leaves"] for row in lane_left["segments"]] == [row["accepted_leaves"] for row in lane_right["segments"]],
+        "failed_leaf_indices_equal": [row["failed_leaf_indices"] for row in lane_left["segments"]] == [row["failed_leaf_indices"] for row in lane_right["segments"]],
+        "first_failure_equal": lane_left["first_failure"] == lane_right["first_failure"],
+        "controller_period_count_equal": len(lane_left["controller_periods"]) == len(lane_right["controller_periods"]),
+        "aggregate_endpoint_tube_and_controller_fields_within_1e_6": within_tolerance == compared,
+    }
+    raw_arguments = (
+        args.reference_plant,
+        args.instrumented_plant,
+        args.reference_controller,
+        args.instrumented_controller,
+    )
+    if any(value is not None for value in raw_arguments):
+        if not all(value is not None for value in raw_arguments):
+            raise ValueError("all four exporter-regression paths must be supplied together")
+        public["instrumented_exporter_regression"] = exporter_regression(
+            args.reference_plant,
+            args.instrumented_plant,
+            args.reference_controller,
+            args.instrumented_controller,
+        )
+        if public["instrumented_exporter_regression"]["status"] == "FAIL":
+            public["status"] = "FAIL"
     args.public_summary.parent.mkdir(parents=True, exist_ok=True)
     args.public_summary.write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(public, sort_keys=True))

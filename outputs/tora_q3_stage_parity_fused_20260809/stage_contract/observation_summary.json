@@ -1,0 +1,519 @@
+{
+  "coordinate_contract": {
+    "basis_permutation_bijective": true,
+    "basis_slot_permutation": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83
+    ],
+    "held_control_variable": "slot 5, derivative exactly zero",
+    "local_time_variable": "slot 0, domain [0,0.1]",
+    "normalized_generator_order": [
+      "x1_parameter",
+      "x2_parameter",
+      "x3_parameter",
+      "x4_parameter",
+      "u1_parameter"
+    ],
+    "physical_state_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "u1"
+    ],
+    "remainder_semantics": "additive componentwise interval outside retained Q3 polynomial"
+  },
+  "formal_runner_uses_xiangru_outputs": false,
+  "instrumentation_replay": {
+    "all_observed_xiangru_sine_and_integration_replays_bitwise": true,
+    "maximum_same_input_controller_error": 1.1102230246251565e-16,
+    "maximum_torch_reference_error": 4.440892098500626e-16,
+    "maximum_xiangru_primary_vs_stage_replay_error": 5.551115123125783e-17
+  },
+  "observation_only": true,
+  "raw_arrays_private": true,
+  "raw_paths_in_public_record": false,
+  "schema": "tora_q3_stage_observation_contract_summary_v1",
+  "selected_controller_contract": {
+    "R1": {
+      "controller_period": 2,
+      "input": {
+        "maximum_absolute_center": 0.9608975588312848,
+        "maximum_radius": 0.10561842198862303,
+        "maximum_upper": 0.750487370941784,
+        "maximum_width": 0.21123684397724607,
+        "minimum_lower": -0.9779512968229167
+      },
+      "output_after_outward": {
+        "maximum_absolute_center": 9.142672763990523,
+        "maximum_radius": 0.3506329473346046,
+        "maximum_upper": 9.493305711325128,
+        "maximum_width": 0.7012658946692092,
+        "minimum_lower": 8.521065616462232
+      },
+      "output_before_outward": {
+        "maximum_absolute_center": 9.142672763990523,
+        "maximum_radius": 0.35063294733459927,
+        "maximum_upper": 9.493305711325123,
+        "maximum_width": 0.7012658946691985,
+        "minimum_lower": 8.521065616462238
+      },
+      "selected_raw_payload_sha256": "09be9a2f722fdd127bb5a50a0e0f3b528c33fad87990671cf4f250203ac2dc5a",
+      "torch_same_input_comparison": {
+        "a11_physical_input_lower": 1.1102230246251565e-16,
+        "a11_physical_input_upper": 1.1102230246251565e-16,
+        "a12_after_lower": 0.0,
+        "a12_after_upper": 0.0,
+        "a12_before_lower": 0.0,
+        "a12_before_upper": 0.0
+      }
+    },
+    "R2": {
+      "controller_period": 5,
+      "input": {
+        "maximum_absolute_center": 1.0872589634534595,
+        "maximum_radius": 0.07057574304572489,
+        "maximum_upper": 0.9082149269622644,
+        "maximum_width": 0.14115148609144967,
+        "minimum_lower": -1.1529956797117011
+      },
+      "output_after_outward": {
+        "maximum_absolute_center": 11.378843925780746,
+        "maximum_radius": 0.19344829531441476,
+        "maximum_upper": 11.55440556537728,
+        "maximum_width": 0.38689659062882775,
+        "minimum_lower": 11.025438351208743
+      },
+      "output_before_outward": {
+        "maximum_absolute_center": 11.378843925780746,
+        "maximum_radius": 0.19344829531440944,
+        "maximum_upper": 11.554405565377275,
+        "maximum_width": 0.3868965906288171,
+        "minimum_lower": 11.025438351208749
+      },
+      "selected_raw_payload_sha256": "5a7d2a3d5affa4cb19a15295e508ddd90ccded5bff2cd319e9245f0aae528816",
+      "torch_same_input_comparison": {
+        "a11_physical_input_lower": 1.1102230246251565e-16,
+        "a11_physical_input_upper": 1.1102230246251565e-16,
+        "a12_after_lower": 0.0,
+        "a12_after_upper": 0.0,
+        "a12_before_lower": 0.0,
+        "a12_before_upper": 0.0
+      }
+    }
+  },
+  "selected_replay_points": {
+    "1": {
+      "basis_permutation_bijective": true,
+      "controller_period": 1,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 10.096420892331498,
+        "affine_center_maximum_absolute": 10.096420892331498,
+        "affine_center_minimum": -0.6916666666666667,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.15561842199610812,
+        "diagonal_scale_minimum": 0.006249999999999978,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "leaf_0",
+        "B48"
+      ],
+      "physical_time": 0.1,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "0b90b2ef40d3904081a114100cd9281054f428a6bebc96b53505982d1206fff2",
+      "replay_labels": [
+        "S0"
+      ],
+      "segment_index": 1,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 2.220446049250313e-16,
+        "reference_output_sha256": "91861ae5c87dd6959b510358855ba65e5b3e80cec1f15661cc81c92de1a476e8"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 2.710505431213761e-20
+      }
+    },
+    "10": {
+      "basis_permutation_bijective": true,
+      "controller_period": 1,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 10.096420892331498,
+        "affine_center_maximum_absolute": 10.096420892331498,
+        "affine_center_minimum": -0.9793636155007176,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.15561842198710807,
+        "diagonal_scale_minimum": 0.014134175633443675,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 1.0,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "0032995b0c9c9cd4b5dc1eaf2477e3fa256bca05cf01912f5716964796ee5a80",
+      "replay_labels": [
+        "R1"
+      ],
+      "segment_index": 10,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 2.220446049250313e-16,
+        "reference_output_sha256": "a8b35afb3a55c9614d72d39f6aea2d2d55d41f72d97be3358f46b724c419f1e6"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 5.551115123125783e-17
+      }
+    },
+    "2": {
+      "basis_permutation_bijective": true,
+      "controller_period": 1,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 10.096420892331498,
+        "affine_center_maximum_absolute": 10.096420892331498,
+        "affine_center_minimum": -0.7606302352597676,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.15561842199510814,
+        "diagonal_scale_minimum": 0.007206112560801001,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 0.2,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "79361dd24a3712cdf7a05805fe8969a4676ae7f2db2be78f9d359ad0404b8caa",
+      "replay_labels": [
+        "S1"
+      ],
+      "segment_index": 2,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 2.220446049250313e-16,
+        "reference_output_sha256": "7445768a3257beecab8bb01ec78ff04b7cea7660669eed3858433e59b2b96281"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 5.551115123125783e-17
+      }
+    },
+    "40": {
+      "basis_permutation_bijective": true,
+      "controller_period": 4,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 11.326102109959493,
+        "affine_center_maximum_absolute": 11.326102109959493,
+        "affine_center_minimum": -1.0905557536814672,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.1836948811650982,
+        "diagonal_scale_minimum": 0.021078518857386683,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 4.0,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "f18089745818b45a283bb7e89fc72dace1025387b27c8f67f87148a816777cf3",
+      "replay_labels": [
+        "R2"
+      ],
+      "segment_index": 40,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 3.3306690738754696e-16,
+        "reference_output_sha256": "529345d117d5d04dba19187e8e0a386a22a28545784ab772dcb9cb69d79515af"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 1.3877787807814457e-17
+      }
+    },
+    "43": {
+      "basis_permutation_bijective": true,
+      "controller_period": 5,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 11.378843925780746,
+        "affine_center_maximum_absolute": 11.378843925780746,
+        "affine_center_minimum": -1.0420009943696187,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.11471221761647887,
+        "diagonal_scale_minimum": 0.021488188241004468,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 4.3,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "4a3bf48dfcdb9fe90ad62d348ff51d40674dfa07454407ce34295c44f69c9781",
+      "replay_labels": [
+        "F0"
+      ],
+      "segment_index": 43,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 4.440892098500626e-16,
+        "reference_output_sha256": "980acc3437d11ec0ca2d442d1fad4c77253f041abce297f00058d59cbbeca578"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 5.551115123125783e-17
+      }
+    },
+    "44": {
+      "basis_permutation_bijective": true,
+      "controller_period": 5,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 11.378843925780746,
+        "affine_center_maximum_absolute": 11.378843925780746,
+        "affine_center_minimum": -1.004106594019313,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.11471221761547887,
+        "diagonal_scale_minimum": 0.02162942493699158,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 4.4,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "db52dc47c3a994e5a207a8177024f4de27390cde0df584a1a326398522afcdfd",
+      "replay_labels": [
+        "F0"
+      ],
+      "segment_index": 44,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 2.220446049250313e-16,
+        "reference_output_sha256": "c8323d9af7cb233f2fc1cf0ea76a5cecd26d10955908e729aa1e006679bdf0c1"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 5.551115123125783e-17
+      }
+    },
+    "45": {
+      "basis_permutation_bijective": true,
+      "controller_period": 5,
+      "coordinate_aggregate": {
+        "affine_center_maximum": 11.378843925780746,
+        "affine_center_maximum_absolute": 11.378843925780746,
+        "affine_center_minimum": -0.9539887366163409,
+        "basis_exponents_sha256": "82c58513220681806e3f23e11c375f1686fac236132a1597994fed23eca6775b",
+        "diagonal_scale_maximum": 0.11471221761447886,
+        "diagonal_scale_minimum": 0.02148961584951823,
+        "non_affine_input_maximum_absolute": 0.0,
+        "off_diagonal_maximum_absolute": 0.0
+      },
+      "coordinate_map_status": "IDENTICAL_NORMALIZED_INPUT_TENSORS",
+      "leaf_subsets": [
+        "B48"
+      ],
+      "physical_time": 4.5,
+      "predicate_true_counts": {
+        "accepted_by_leaf": 48,
+        "all_remainder_rounds_ok_by_leaf": 48,
+        "composed_property_ok_by_leaf": 48,
+        "finite_ok_by_leaf": 48,
+        "initial_subset_ok_by_leaf": 48,
+        "local_property_ok_by_leaf": 48
+      },
+      "private_row_sha256": "c11eab6a1b5b9bfaae588e9e58a9be6b93feef928511d1fa1265639875c611c4",
+      "replay_labels": [
+        "F0"
+      ],
+      "segment_index": 45,
+      "torch_physical_status": "validated",
+      "torch_reference_status": "validated",
+      "torch_replay_equivalence": {
+        "bitwise": false,
+        "maximum_absolute_error": 1.1102230246251565e-16,
+        "reference_output_sha256": "757413c6f7218972618489ee2b4f130764af5114b1740f07e3eec88e5e7a578b"
+      },
+      "xiangru_replay_equivalence": {
+        "final_bitwise": false,
+        "maximum_absolute_error": 5.551115123125783e-17
+      }
+    }
+  },
+  "source_hashes": {
+    "controller_model": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+    "controller_observation": "a0ce2966afe6d4b0b2f146d0b63e2f1d5b9c932b62621f932787dcac7ad22cfb",
+    "external_functions": {
+      "generic_fixed_basis.py::run_tora_remainder_picard": "56a65d39a9c0e66bd64b6e0b650d1ef42de888dc6de2e1d3108fbc5ec1ce7669",
+      "generic_fixed_basis.py::tm_sin": "370a19169f350f194e5a3609575df8d19aec63dc76388ca1ffd98407766aae08",
+      "generic_fixed_basis.py::tm_tora_rhs": "630a2b04e6fcff6a290d73a5abbb554a4b521a25f1079ab6aa1c0d680521829d",
+      "run_s0_tora_static_partition_sweep.py::_run_lane": "a1facded8dd0ff46d713c89e0ba50dab25e8e9e7573caae3782c184a0d480747"
+    },
+    "private_torch_stage_trace": "dcb0a2b3c23b4594e236681a30d590b5d9d7abb72c0f7ddc648f564835ad61eb",
+    "xiangru_plant_observation": "ccb44ee539047722a5022920e2dfc75fb8d1fbca824c782113d77dbfb4112df1"
+  },
+  "stage_coverage": {
+    "A0": "basis/domain/normalization",
+    "A1": "base polynomial and remainder",
+    "A10": "affine carry/normalization",
+    "A11": "controller input affine box at R1/R2",
+    "A12": "controller output before/after outward inflation at R1/R2",
+    "A2": "sine point enclosure",
+    "A3": "sine retained polynomial/composition overflow/analytic remainder",
+    "A4": "K1 polynomial Picard",
+    "A5": "K2 polynomial Picard",
+    "A6": "polynomial difference and natural range",
+    "A7": "initial remainder image and subset margin",
+    "A8": "ten remainder images/candidates/accepted boxes/margins",
+    "A9": "local and physical endpoint/tube"
+  },
+  "status": "PASS"
+}
