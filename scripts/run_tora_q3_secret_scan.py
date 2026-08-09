@@ -102,6 +102,16 @@ HERMETIC_MOUNT_ALLOWLIST: tuple[dict[str, str], ...] = (
         "literal": "/tmp/observation",
         "reason": "checkpoint-3 sanitized policy summary repeats the exact reviewed output-mount allowlist",
     },
+    {
+        "path": "outputs/tora_q3_stage_parity_fused_20260809/provenance/checkpoint4_publication_scan.json",
+        "literal": "/tmp/inputs",
+        "reason": "checkpoint-4 sanitized policy summary repeats the exact reviewed input-mount allowlist",
+    },
+    {
+        "path": "outputs/tora_q3_stage_parity_fused_20260809/provenance/checkpoint4_publication_scan.json",
+        "literal": "/tmp/observation",
+        "reason": "checkpoint-4 sanitized policy summary repeats the exact reviewed output-mount allowlist",
+    },
 )
 
 
