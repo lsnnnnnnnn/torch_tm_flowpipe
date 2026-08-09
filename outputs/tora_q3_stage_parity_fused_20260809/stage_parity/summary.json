@@ -1,0 +1,37 @@
+{
+  "first_material_stage": {
+    "leaf": 0,
+    "reason": "same-input sine remainder width difference exceeds 1e-3 while point and retained-polynomial errors remain roundoff-scale",
+    "segment": 1,
+    "stage": "A3"
+  },
+  "first_numerical_stage": "A2",
+  "formal_runner_uses_xiangru_outputs": false,
+  "observation_only": true,
+  "raw_arrays_private": true,
+  "raw_paths_in_public_record": false,
+  "schema": "tora_q3_stage_parity_public_summary_v1",
+  "segment_40_attribution": {
+    "composition_overflow_maximum": 1.2186185882008727,
+    "composition_overflow_to_picard_residual_ratio": 959.7060389652094,
+    "dominant_accumulated_ledger_category": "composition_overflow",
+    "earliest_material_generator": "A3",
+    "picard_residual_maximum": 0.001269783182269888,
+    "pre_projection_interval_remainder_maximum": 1.2186185882008733,
+    "pre_projection_polynomial_range_maximum": 0.15640676411155674,
+    "projection_inflation_maximum": 3.915534563248002e-12,
+    "same_input_sine_reduction_fraction": 0.9817436186971831,
+    "secondary_generator": "A7/A8 integration degree overflow"
+  },
+  "stage_count": 13,
+  "status": "PASS",
+  "t1_attribution": {
+    "direct_exact_endpoint_vs_xiangru_max_abs": 0.014211021942602042,
+    "dominant_stage": "ten-segment plant propagation before projection",
+    "first_material_stage": "A3",
+    "first_numerical_stage": "A2",
+    "fraction_already_present_before_projection": 0.9992420957089847,
+    "projection_materialization_change_max_abs": 1.07787637813328e-05,
+    "r1_local_remainder_error_reduction_fraction": 0.9971633266178722
+  }
+}

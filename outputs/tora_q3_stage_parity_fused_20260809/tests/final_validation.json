@@ -1,0 +1,105 @@
+{
+  "commands": [
+    {
+      "exit_code": 0,
+      "label": "editable_test_install",
+      "result_counts": {},
+      "stderr_sha256": "09ac377c5f8b662f287e8ccfb091d4b487974c31f2f93ed1e43326a1db745b2f",
+      "stdout_sha256": "8dfbe0b23500bf3962530a49045a5398dde8c0705bfc38e390f4e71253cea59e",
+      "wall_seconds": 3.3423247318714857
+    },
+    {
+      "exit_code": 0,
+      "label": "compileall",
+      "result_counts": {},
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.03467899281531572
+    },
+    {
+      "exit_code": 0,
+      "label": "portable_full_pytest",
+      "result_counts": {
+        "passed": 135,
+        "skipped": 15
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c2efc63d9f4e7eab8377b82ceca5f0227c06880848237ba50590001de54490a4",
+      "wall_seconds": 107.25215771142393
+    },
+    {
+      "exit_code": 0,
+      "label": "external_integration",
+      "result_counts": {
+        "deselected": 145,
+        "passed": 3,
+        "skipped": 2
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "c5432561afed0bfe5da12897894f399e498c630abf35335c25e5d512a03df65f",
+      "wall_seconds": 3.813137517310679
+    },
+    {
+      "exit_code": 0,
+      "label": "gpu_focused",
+      "result_counts": {
+        "deselected": 20,
+        "passed": 4
+      },
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a662a3e0e47b09e8a60f7456c9ca48cb384559a8d2ebb4b9d73830a3192c5f50",
+      "wall_seconds": 54.76034617051482
+    },
+    {
+      "exit_code": 0,
+      "label": "readme_surface",
+      "result_counts": {},
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "592cacbb1808fcbc4ea2fc5cc5f9c5c50d29a0dbea3deea4d0165d7751051fee",
+      "wall_seconds": 0.03109706938266754
+    },
+    {
+      "exit_code": 0,
+      "label": "git_diff_check",
+      "result_counts": {},
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.003093780018389225
+    }
+  ],
+  "compileall": "PASS",
+  "external_integration": {
+    "deselected": 145,
+    "explicit_controller_and_stage_assets": true,
+    "passed": 3,
+    "skipped": 2,
+    "status": "PASS"
+  },
+  "external_source_hashes": {
+    "controller": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+    "controller_trace": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+    "torch_stage_trace": "dcb0a2b3c23b4594e236681a30d590b5d9d7abb72c0f7ddc648f564835ad61eb",
+    "xiangru_stage_trace": "ccb44ee539047722a5022920e2dfc75fb8d1fbca824c782113d77dbfb4112df1"
+  },
+  "gpu_focused": {
+    "deselected": 20,
+    "environment": {
+      "cuda_available": true,
+      "cuda_runtime": "12.8",
+      "device": "Tesla V100-SXM2-16GB",
+      "python": "3.11.15",
+      "pytorch": "2.8.0+cu128"
+    },
+    "passed": 4,
+    "status": "PASS"
+  },
+  "portable": {
+    "passed": 135,
+    "skipped": 15,
+    "status": "PASS"
+  },
+  "private_raw_log_sha256": "baf3003e47ea681ea0d11f1f48a54a280fc5c95257ec3cbb4c3f3a3e461e1aba",
+  "raw_paths_in_public_record": false,
+  "schema": "tora_q3_stage_parity_final_quality_gates_v2",
+  "status": "PASS"
+}

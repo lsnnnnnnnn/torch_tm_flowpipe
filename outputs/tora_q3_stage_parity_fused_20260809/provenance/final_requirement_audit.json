@@ -1,0 +1,459 @@
+{
+  "acceptance_requirement_count": 22,
+  "classification": "CASE_C_PERFORMANCE_PASS_NATIVE_T5_GATE_FAIL",
+  "requirements": [
+    {
+      "evidence": {
+        "missing": []
+      },
+      "requirement": "required_delivery_files",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "missing": []
+      },
+      "requirement": "required_output_directories",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "active_branch": "codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809",
+        "blocked_history_merge_base": null,
+        "blocked_history_tip": "c49d74bbf48d1004f7f3818174e7f40b6200b142",
+        "clean_lineage_root": "9fc45344c4379422244b75af705dffd17304f824",
+        "remote_start_ref": "63efe66cfe7bdda907f8255ba23cebaa9b878233",
+        "start_commit": "63efe66cfe7bdda907f8255ba23cebaa9b878233",
+        "start_tree": "51b5e535297bbf01753607d0321ed0cb55b1e463",
+        "status": "PASS",
+        "user_dirty_worktree_preserved": true
+      },
+      "requirement": "clean_lineage_from_63efe66",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "artifact": "baseline/frozen_hashes.json",
+        "artifact_sha256": "0a4d77cebecc149836495ef82562abe6b4789203c962922634228cac69db0407",
+        "old_k2_semantics_unchanged": true,
+        "server_reruns": {
+          "b48_one_step": "PASS",
+          "baseline_native_k2_t5": "FAILED_PROPERTY_AT_SEGMENT_44",
+          "common_control_t20": "VERIFIED_200_SEGMENTS",
+          "prior_k3_picard_t5": "FAILED_PROPERTY_AT_SEGMENT_45"
+        }
+      },
+      "requirement": "frozen_baseline_unchanged",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "maximum_absolute_difference": 2.4868995751603507e-14,
+        "status": "PASS_WITH_DECLARED_TOLERANCE"
+      },
+      "requirement": "non_invasive_observation",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "stage_count": 13
+      },
+      "requirement": "complete_stage_contract_s0_s1_r1_r2_f0",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "segment40": {
+          "composition_overflow_maximum": 1.2186185882008727,
+          "composition_overflow_to_picard_residual_ratio": 959.7060389652094,
+          "dominant_accumulated_ledger_category": "composition_overflow",
+          "earliest_material_generator": "A3",
+          "picard_residual_maximum": 0.001269783182269888,
+          "pre_projection_interval_remainder_maximum": 1.2186185882008733,
+          "pre_projection_polynomial_range_maximum": 0.15640676411155674,
+          "projection_inflation_maximum": 3.915534563248002e-12,
+          "same_input_sine_reduction_fraction": 0.9817436186971831,
+          "secondary_generator": "A7/A8 integration degree overflow"
+        },
+        "t1": {
+          "direct_exact_endpoint_vs_xiangru_max_abs": 0.014211021942602042,
+          "dominant_stage": "ten-segment plant propagation before projection",
+          "first_material_stage": "A3",
+          "first_numerical_stage": "A2",
+          "fraction_already_present_before_projection": 0.9992420957089847,
+          "projection_materialization_change_max_abs": 1.07787637813328e-05,
+          "r1_local_remainder_error_reduction_fraction": 0.9971633266178722
+        }
+      },
+      "requirement": "stage_level_t1_and_segment40_root_cause",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "device": "cuda",
+        "lane": "algorithm_aligned_q3"
+      },
+      "requirement": "new_sound_algorithm_aligned_lane",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "F1": {
+          "fullgraph": true,
+          "observed_cold_seconds": 5.1815224243327975,
+          "observed_steady_median_seconds": 0.00011441251263022423,
+          "status": "PASS"
+        },
+        "F2": {
+          "fullgraph": true,
+          "observed_cold_seconds": 63.15617358498275,
+          "observed_steady_median_seconds": 0.004054696299135685,
+          "status": "PASS"
+        },
+        "F3": {
+          "attempted_fullgraph": true,
+          "fallback": "verified initialize and single-round fullgraphs called with a fixed ten-round Python schedule",
+          "monolithic_timeout_seconds": 300.0,
+          "status": "FALLBACK_GRAPH_SCALE"
+        },
+        "F4": {
+          "fullgraph": true,
+          "observed_cold_seconds": 10.539166155271232,
+          "observed_steady_median_seconds": 0.00026183249428868294,
+          "status": "PASS"
+        },
+        "F5": {
+          "attempted_fullgraph": true,
+          "fallback": "four verified fullgraph stages and thirteen fixed invocations",
+          "monolithic_timeout_seconds": 600.0,
+          "status": "FALLBACK_GRAPH_SCALE"
+        },
+        "deployed": {
+          "cached_metadata_signatures": 1,
+          "compiled_disabled_signatures": {},
+          "compiled_verified_signatures": {},
+          "segmented_disabled_signatures": {},
+          "segmented_verified_signatures": {
+            "('segmented', (((1, 5, 84), (420, 84, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 5), (5, 1), 0, False), ((1, 6), (6, 1), 0, False), ((1, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+              "bitwise": false,
+              "fullgraph_stage_count": 4,
+              "logical_stage_invocations": 13,
+              "maximum_initial_margin_difference": 2.7755575615628914e-17,
+              "outward_contains_eager": true,
+              "per_round_host_decisions": 0
+            },
+            "('segmented', (((192, 5, 84), (420, 84, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 5), (5, 1), 0, False), ((192, 6), (6, 1), 0, False), ((192, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+              "bitwise": false,
+              "fullgraph_stage_count": 4,
+              "logical_stage_invocations": 13,
+              "maximum_initial_margin_difference": 2.7755575615628914e-17,
+              "outward_contains_eager": true,
+              "per_round_host_decisions": 0
+            },
+            "('segmented', (((48, 5, 84), (420, 84, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 5), (5, 1), 0, False), ((48, 6), (6, 1), 0, False), ((48, 6), (6, 1), 0, False)), 'cuda:0', torch.float64, False, 0.1, 32)": {
+              "bitwise": false,
+              "fullgraph_stage_count": 4,
+              "logical_stage_invocations": 13,
+              "maximum_initial_margin_difference": 2.7755575615628914e-17,
+              "outward_contains_eager": true,
+              "per_round_host_decisions": 0
+            }
+          }
+        }
+      },
+      "requirement": "larger_fixed_shape_tensor_boundary",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "one_step": {
+          "iqr_seconds": 0.0008762679062783718,
+          "maximum_seconds": 0.13241647649556398,
+          "mean_seconds": 0.13004944622516632,
+          "median_seconds": 0.1296528154052794,
+          "minimum_seconds": 0.12905556615442038,
+          "repeat_count": 10
+        },
+        "t20": {
+          "iqr_seconds": 0.044699410907924175,
+          "maximum_seconds": 26.207485772669315,
+          "mean_seconds": 26.175485424511134,
+          "median_seconds": 26.18573095370084,
+          "minimum_seconds": 26.121589402668178,
+          "repeat_count": 5
+        }
+      },
+      "requirement": "formal_fused_runtime_protocol",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "P0_correctness_soundness": "PASS",
+        "P1_graph_breaks": {
+          "deployed_fullgraph_stage_count": 4,
+          "graph_breaks_inside_each_stage": 0,
+          "status": "PASS_DOCUMENTED_STAGE_BOUNDARIES"
+        },
+        "P2_program_sync": {
+          "limit": 2,
+          "observed": 1,
+          "status": "PASS"
+        },
+        "P3_aten_to": {
+          "limit": 80,
+          "observed": 25,
+          "status": "PASS"
+        },
+        "P4_b48_one_step": {
+          "limit_seconds": 0.254,
+          "observed_median_seconds": 0.1296528154052794,
+          "status": "PASS"
+        },
+        "P5_common_control_t20": {
+          "limit_seconds": 51.202443,
+          "observed_median_seconds": 26.18573095370084,
+          "status": "PASS",
+          "stretch_limit_seconds": 12.067596,
+          "stretch_status": "MISS"
+        }
+      },
+      "requirement": "performance_gates_p0_p5",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "algorithm_aligned_h005_refresh1": 4.4,
+        "algorithm_aligned_q3": 4.3,
+        "baseline_native_k2": 4.3,
+        "k3_picard": 4.4
+      },
+      "requirement": "strict_native_hierarchical_gates",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "algorithm_aligned_h005_refresh1": {
+          "failed_leaf_ids": [
+            0,
+            1,
+            6
+          ],
+          "message": "one or both validated h=0.05 substeps failed",
+          "reason": "property",
+          "segment": 45
+        },
+        "algorithm_aligned_q3": {
+          "failed_leaf_ids": [
+            0
+          ],
+          "message": "local validation or composed physical-coordinate property check failed",
+          "reason": "property",
+          "segment": 44
+        },
+        "baseline_native_k2": {
+          "failed_leaf_ids": [
+            0
+          ],
+          "message": "local validation or composed physical-coordinate property check failed",
+          "reason": "property",
+          "segment": 44
+        },
+        "k3_picard": {
+          "failed_leaf_ids": [
+            0,
+            1,
+            6
+          ],
+          "message": "local validation or composed physical-coordinate property check failed",
+          "reason": "property",
+          "segment": 45
+        }
+      },
+      "requirement": "property_failure_not_numerical_failure",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "algorithm_aligned_h005_refresh1": {
+          "T10": null,
+          "T20": null,
+          "T5": null
+        },
+        "algorithm_aligned_q3": {
+          "T10": null,
+          "T20": null,
+          "T5": null
+        },
+        "baseline_native_k2": {
+          "T10": null,
+          "T20": null,
+          "T5": null
+        },
+        "k3_picard": {
+          "T10": null,
+          "T20": null,
+          "T5": null
+        }
+      },
+      "requirement": "no_fabricated_t5_t10_t20_widths",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "status": "CASE_C_PERFORMANCE_PASS_NATIVE_T5_GATE_FAIL"
+      },
+      "requirement": "runtime_and_tightness_scopes_separated",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "commands": [
+          {
+            "exit_code": 0,
+            "label": "editable_test_install",
+            "result_counts": {},
+            "stderr_sha256": "09ac377c5f8b662f287e8ccfb091d4b487974c31f2f93ed1e43326a1db745b2f",
+            "stdout_sha256": "8dfbe0b23500bf3962530a49045a5398dde8c0705bfc38e390f4e71253cea59e",
+            "wall_seconds": 3.3423247318714857
+          },
+          {
+            "exit_code": 0,
+            "label": "compileall",
+            "result_counts": {},
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "wall_seconds": 0.03467899281531572
+          },
+          {
+            "exit_code": 0,
+            "label": "portable_full_pytest",
+            "result_counts": {
+              "passed": 135,
+              "skipped": 15
+            },
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "c2efc63d9f4e7eab8377b82ceca5f0227c06880848237ba50590001de54490a4",
+            "wall_seconds": 107.25215771142393
+          },
+          {
+            "exit_code": 0,
+            "label": "external_integration",
+            "result_counts": {
+              "deselected": 145,
+              "passed": 3,
+              "skipped": 2
+            },
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "c5432561afed0bfe5da12897894f399e498c630abf35335c25e5d512a03df65f",
+            "wall_seconds": 3.813137517310679
+          },
+          {
+            "exit_code": 0,
+            "label": "gpu_focused",
+            "result_counts": {
+              "deselected": 20,
+              "passed": 4
+            },
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "a662a3e0e47b09e8a60f7456c9ca48cb384559a8d2ebb4b9d73830a3192c5f50",
+            "wall_seconds": 54.76034617051482
+          },
+          {
+            "exit_code": 0,
+            "label": "readme_surface",
+            "result_counts": {},
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "592cacbb1808fcbc4ea2fc5cc5f9c5c50d29a0dbea3deea4d0165d7751051fee",
+            "wall_seconds": 0.03109706938266754
+          },
+          {
+            "exit_code": 0,
+            "label": "git_diff_check",
+            "result_counts": {},
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "wall_seconds": 0.003093780018389225
+          }
+        ],
+        "compileall": "PASS",
+        "external_integration": {
+          "deselected": 145,
+          "explicit_controller_and_stage_assets": true,
+          "passed": 3,
+          "skipped": 2,
+          "status": "PASS"
+        },
+        "external_source_hashes": {
+          "controller": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+          "controller_trace": "89a225add6e2c02ecb3e84b2182b2f7ea872b064dd9e5e534444552485a091d9",
+          "torch_stage_trace": "dcb0a2b3c23b4594e236681a30d590b5d9d7abb72c0f7ddc648f564835ad61eb",
+          "xiangru_stage_trace": "ccb44ee539047722a5022920e2dfc75fb8d1fbca824c782113d77dbfb4112df1"
+        },
+        "gpu_focused": {
+          "deselected": 20,
+          "environment": {
+            "cuda_available": true,
+            "cuda_runtime": "12.8",
+            "device": "Tesla V100-SXM2-16GB",
+            "python": "3.11.15",
+            "pytorch": "2.8.0+cu128"
+          },
+          "passed": 4,
+          "status": "PASS"
+        },
+        "portable": {
+          "passed": 135,
+          "skipped": 15,
+          "status": "PASS"
+        },
+        "private_raw_log_sha256": "baf3003e47ea681ea0d11f1f48a54a280fc5c95257ec3cbb4c3f3a3e461e1aba",
+        "raw_paths_in_public_record": false,
+        "schema": "tora_q3_stage_parity_final_quality_gates_v2",
+        "status": "PASS"
+      },
+      "requirement": "portable_external_gpu_quality_gates",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "status": "PASS_CLEAN_LINEAGE",
+        "unallowlisted": 0
+      },
+      "requirement": "public_private_scan",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "entry_count": 331,
+        "expected_count": 331
+      },
+      "requirement": "complete_identical_manifests",
+      "status": "PASS"
+    },
+    {
+      "evidence": "scripts/check_readme_surface.py",
+      "requirement": "readme_surface",
+      "status": "PASS"
+    },
+    {
+      "evidence": "handoff.md",
+      "requirement": "vdp_issue_explicitly_unresolved",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "required_answer_count": 22
+      },
+      "requirement": "handoff_answers_22_questions",
+      "status": "PASS"
+    },
+    {
+      "evidence": "CASE_C_PERFORMANCE_PASS_NATIVE_T5_GATE_FAIL",
+      "requirement": "case_c_classification",
+      "status": "PASS"
+    }
+  ],
+  "schema": "tora_q3_stage_parity_final_requirement_audit_v2",
+  "status": "PASS",
+  "vdp_t_6_397_issue": "UNRESOLVED_AND_INDEPENDENT"
+}
