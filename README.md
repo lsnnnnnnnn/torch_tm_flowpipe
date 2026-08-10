@@ -19,11 +19,17 @@ comparisons remain historical or rejected.
 
 ## Current result
 
-The fixed seven-slot Torch lane reproduces pinned DiffReach float64 operator,
-Picard, every DR-RP round, endpoint/tube, and symbolic-carry semantics with no
-external runtime dependency. Its B64 fixed-step T10 run completes. Ordinary
-CPU/CUDA float64 remains `empirically sampled only`; the exact-workload 2-ULP
-companion envelope is independently replay-qualified.
+The fixed seven-slot Torch lane now has a cached immutable kernel plan and a
+26-tensor functional state. Object and functional eager are bit-exact on the
+full preregistered CPU/CUDA matrix. B64 T10 completes in the compiled lane with
+zero graph breaks and no solver-core synchronization, but Inductor changes
+floating-point arithmetic. Its 5.038 s CPU and 6.927 s V100 stable warm times
+are performance-only empirical observations, not same-semantics speedups.
+
+The separate CPU outward reference passes an independent 11-family exact
+oracle and one-step containment, but fails closed before T1 (B1 step 33; B64
+first failure step 90). Its result is
+`FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED`.
 
 The complete-O4 Torch baseline is formally outward by its declared interval
 path but stops at `t=6.397083942944808`, while stock Flow* completes its native
@@ -45,10 +51,15 @@ roundoff scale, but the raw candidate Picard remainder already makes Flow*'s y
 subset fail while Torch passes. Polynomial, endpoint, and right-map swaps
 preserve the receiving validator's decision.
 
-One generic experimental improvement was implemented: exact complete
-polynomial endpoint carry. It is sound and batch-generic as a carry primitive,
-but is **rejected**: every independent T=.1/.5/1/4/6/6.5/7.5/10 request stops at
-`t=0.04345468750000001`. It is not the default.
+The new bounded structured-remainder primitive S1 has K=16, outward interval
+J/Phi propagation, explicit nonlinear residuals, deterministic oldest-column
+materialization, and additive typed dense sources. At the frozen terminal, an
+empty-history split closes the local ordinary check while conserving the full
+image, but the checkpoint has no S1 prefix state. The required same-pre-state
+A/B is therefore incomplete, the result is
+`STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`, and no fresh horizon was run. The
+harmonic and scalar Riccati fixed-support fallback generality gate passes on
+CPU/V100 B1/B64 for 100 steps.
 
 Start with:
 
@@ -58,6 +69,10 @@ Start with:
 - [fixed-support equivalence](docs/TORCH_DIFFREACH_FIXED_BASIS_EQUIVALENCE_20260810.md);
 - [causal divergence](docs/VDP_FLOWSTAR_TORCH_CAUSAL_DIVERGENCE_20260810.md);
 - [candidate result](docs/GENERIC_TORCH_TM_IMPROVEMENT_RESULT_20260810.md);
+- [compiled fixed core](docs/FIXED_SUPPORT_COMPILED_CORE_20260810.md);
+- [fixed soundness](docs/FIXED_SUPPORT_SOUNDNESS_20260810.md);
+- [structured S1 result](docs/STRUCTURED_REMAINDER_RESULT_20260810.md);
+- [second-system generality](docs/SECOND_SYSTEM_GENERALITY_20260810.md);
 - [handoff](handoff.md).
 
 ## Quick start
@@ -93,3 +108,9 @@ The previous-round evidence is committed under the
 Raw output is kept separate from derived summaries, large text traces use
 deterministic gzip storage, and the repository-root-prefixed `SHA256SUMS`
 covers the complete stored tree.
+
+The current closure package is the
+[structured/compiled run](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/).
+It keeps sanitized public raw evidence separate from derived tables and
+figures; ignored compiler caches and source-mixed exploratory timings are not
+part of the manifest.

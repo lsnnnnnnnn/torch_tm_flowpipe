@@ -42,11 +42,15 @@ more remainder rounds, higher order, smaller step alone, and range-midpoint
 centering as the primary contribution.  Evidence selection must first compare
 rejected candidates and right-map parents in a common coordinate basis.
 
-The preferred candidate is complete polynomial normalized carry if endpoint
-substitution/normalization is the earliest loss.  Structured overflow carry is
-eligible only if retained polynomial carry is already intact and immediate
-intervalization is causal.  QR/affine preconditioning is eligible only if the
-common-basis evidence identifies conditioning as causal.
+Complete polynomial normalized carry was tested and rejected. The delivered
+next candidate is bounded structured overflow carry S1, but only its primitive
+and local attribution gates pass. Its next eligible operation is integration
+through the complete accepted prefix and a frozen same-pre-state terminal
+replay. Fresh horizon work remains prohibited until that gate passes.
+
+The fixed-support performance line must first preserve eager reduction order
+or add a qualified outward eager shadow around Inductor reductions. Raw runtime
+ratios from arithmetic-changed compiled execution remain diagnostic.
 
 Promotion requires all containment/equivalence gates and at least one declared
 benefit threshold from the round specification.  A sound negative result is

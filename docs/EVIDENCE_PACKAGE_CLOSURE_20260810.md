@@ -58,3 +58,14 @@ all canonical artifact references in the active reports resolve and are known
 to Git, and explicitly fails if required groups 03–08 disappear.
 
 The portable test does not execute any numerical reachability job.
+
+## Current-round package
+
+The follow-on closure package is at
+[20260810T070908Z](../outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/).
+Its builder reads frozen object summaries plus current functional, compiled,
+outward, structured-terminal, and generality raw artifacts; it excludes
+compiler caches and the source-mixed exploratory matrix. `raw_public/` is a
+deterministically sanitized copy with regenerated nested manifests, while the
+root tables and ten figures are derived. The root-prefixed `SHA256SUMS` covers
+the committed package surface.

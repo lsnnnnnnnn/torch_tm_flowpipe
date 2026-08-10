@@ -13,6 +13,14 @@
 - Ordinary Torch/JAX/CUDA float64 is not universally directed-rounded. The
   fixed-support 2-ULP companion qualification applies only to the exactly
   replayed workload.
+- Inductor fullgraph execution changes reduction arithmetic. It completes B64
+  T10 but is performance-only and cannot support a same-ordinary-semantics
+  speedup claim. Its first warm call performs additional lazy compilation.
+- The fixed outward reference is CPU float64 and safeguarded only under the
+  declared IEEE/PyTorch backend assumptions. It fails closed before T1; it is
+  not a T10 formal certificate.
+- The outward profiler records 369 CUDA kernel events per compiled logical
+  step, but the prerefactor object CUDA kernel-launch count was not captured.
 - Sampling is a regression sanity check, never a proof.
 - The complete Torch baseline is hybrid: dense Picard/range/validation with
   sparse CPU normalized insertion and outer scheduling. It stops at
@@ -25,6 +33,12 @@
   kernel boundary and are not multi-step certificates.
 - Host inclusion gates and audit extraction synchronize CUDA. The measured V100
   is slower at every tested batch; no GPU advantage is claimed.
+- S1 is a generic bounded primitive, not an integrated complete-O4 carry. The
+  frozen checkpoint predates S1 and has no prefix state, so a local empty-state
+  split cannot establish full-history conservation or no-double-count.
+- NAV/DR15 is absent from the pinned DiffReach tree. The generality result uses
+  the specified harmonic/Riccati fallback and has no navigation property or
+  controller claim.
 - Flow* observer replays are diagnostic counterfactuals, not production
   dependencies or modified native results.
 - Endpoint, last-segment tube, and full-horizon/prefix tube are kept separate.

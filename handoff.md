@@ -1,66 +1,68 @@
-# Handoff: Flow*/DiffReach/Torch mainline realignment
+# Handoff: compiled fixed support and structured remainder S1
 
 Date: 2026-08-10
-Branch: `codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810`
-Run ID: `20260810T025910Z`
 
-## Delivered
+Branch: `codex/structured-remainder-compiled-fixed-support-closure-20260810`
 
-- audited Xiangru `2026_experiment` and froze TORA complete-Q3;
-- reproduced stock Flow* `b85a3211748cb77b736fe4ad42ee02d8d2b81148`,
-  upstream DiffReach `dd628eb443b517d6415de93e7035b4baef73963e`, and
-  the Torch complete-O4 lineage;
-- added configurable fixed support, precomputed signed routes, exact two-Picard
-  construction, every DR-RP mask, endpoint/tube separation, and symbolic carry;
-- added a read-only dense Picard observer, an optional stock Flow* causal hook,
-  common affine coordinate transforms, and six stage counterfactuals;
-- implemented exactly one generic candidate: complete retained endpoint
-  polynomial carry, including dense batch-generic exact cloning;
-- ran independent one-step, short/medium/full horizon, CPU/V100 B1…512, and
-  cold/warm evidence.
+Run ID: `20260810T070908Z`
 
-## Decisions
+## Outcome
 
-The fixed-support lane is qualified against explicit-f64 DiffReach operations.
-The first Flow*/Torch decision split is the raw candidate Picard remainder,
-before roundoff. The complete carry is `CANDIDATE_REJECTED`: all requested
-horizons stop at `0.04345468750000001`; it remains opt-in and non-default.
+The previous evidence-package gap is closed and claim/soundness eligibility is
+separated. The fixed-support object path now has a cached immutable kernel plan
+and bit-exact functional tensor core. Fullgraph Inductor completes B64 T10 but
+changes arithmetic, so it is an empirical performance-only lane with outcome
+`FIXED_SUPPORT_COMPILE_SEMANTICS_CHANGED`.
 
-The native baseline table is not ranked. Stock Flow* is formal-comparison
-ineligible after the scalar-affine gap; stock DiffReach and ordinary Torch CUDA
-remain empirically sampled; the Torch complete baseline is outward by its
-declared interval construction but does not complete T10.
+The separate fixed-support outward CPU reference passes its independent exact
+oracle but fails before T1, yielding
+`FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED`. The K16 structured-remainder S1
+primitive and typed source decomposition pass analytic/conservation tests; a
+local frozen-terminal attribution closes ordinary y while containing the full
+image, but no S1 prefix state exists. The exact terminal result is
+`STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`, and no fresh horizon was started.
+
+NAV/DR15 is absent in the pinned DiffReach tree. The required harmonic and
+scalar Riccati fallback completes 100 steps on CPU/V100 B1/B64 and contains the
+analytic endpoint hull: `GENERALITY_GATE_PASSED`, plant-only scope.
+
+## Key measurements
+
+| lane | CPU | V100 | qualification |
+|---|---:|---:|---|
+| frozen object B64 T10 warm median | 75.592882 s | 127.233569 s | ordinary empirical |
+| functional eager B64 T10 | 46.335458 s | 118.174358 s | object-bit-exact |
+| compiled B64 T10 stable warm | 5.038308 s | 6.926640 s | arithmetic changed; raw ratios only |
+
+Compiled core synchronization is 0 plus one final decision sync, versus 1000
+object inclusion gates. V100 profiling observes 369 kernel events per logical
+step and no boundary `item`/scalar/`to`/`stack`/`index` calls. The compiled CPU
+is faster than V100. B1 ordinary and compiled both first fail at step 536;
+B64 partitions complete.
 
 ## Evidence map
 
-- provenance: `outputs/mainline_realignment_20260810/20260810T025910Z/00_provenance/`
-- native: `.../01_native_baselines/`
-- fixed support: `.../02_fixed_support/`
-- causal: `.../03_flowstar_causal_divergence/`
-- candidate: `.../04_generic_carry_candidate/`
-- scaling: `.../05_batch_scaling/`
-- final baseline: `.../06_final_baseline_ladder/`
-- root machine tables, figures, manifest, and `SHA256SUMS`: run root
+- [manifest](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/manifest.json)
+- [checksums](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/SHA256SUMS)
+- [claim registry](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/claim_registry.csv)
+- [compiled results](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/fixed_support_compiled_results.csv)
+- [outward results](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/fixed_support_outward_results.csv)
+- [terminal A/B](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/structured_terminal_ab.json)
+- [stopped horizon ladder](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/structured_horizon_ladder.csv)
+- [second systems](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/second_system_results.csv)
 
-## One next step
+## One next action
 
-Implement a bounded, fixed-shape structured-symbol overflow carry for the
-terminal `integration_overflow` and `polynomial_truncation` terms. Use
-deterministic capacity/eviction with sound interval collapse, then first replay
-the immutable `t=6.397083942944808`, `h=0.003623635847674574` pre-state. Promote
-it to a horizon sweep only if that unchanged checkpoint closes or the critical
-y remainder improves by at least 20% without x regression. Do not retry full
-polynomial carry, range ordering, smaller h, or a benchmark-specific formula.
+Thread the delivered S1 state and exact eligible-source removal through every
+accepted complete-O4 boundary from t=0, include all active columns in endpoint
+and tube publication, serialize the prefix state, and repeat the immutable
+terminal A/B. Do not start a horizon ladder until that gate passes. For the
+fixed compiler line, the bounded alternative is to preserve eager reduction
+order or qualify an outward eager shadow; do not call the current raw timing
+ratio a same-semantics speedup.
 
-## Final verification
+## Verification
 
-- pre-change baseline: `441 passed, 2 skipped in 60.12 s`;
-- final full suite: `469 passed, 2 skipped in 60.87 s` (an immediately prior
-  identical pass took `72.85 s`);
-- focused package/carry/common-basis gate: `21 passed`, plus package prefix
-  regression `3 passed`;
-- `python -m compileall -q src experiments tests`: pass;
-- `git diff --check`: pass;
-- all required machine files and figures: present;
-- recursive checksum and remote/clean identities: verified by the final
-  delivery commands and reported with exact SHAs in the final response.
+The final verification section is generated from the last full pytest,
+compileall, link, checksum, fresh-clone, diff, and remote-push gates. See
+[status](docs/STATUS.md) and the run manifest for their exact artifacts.

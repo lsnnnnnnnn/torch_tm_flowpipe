@@ -3,6 +3,31 @@
 Date: 2026-08-10
 Canonical run: `outputs/mainline_realignment_20260810/20260810T025910Z`
 
+Current closure run:
+`outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z`
+
+## Current closure outcomes
+
+| lane | completed result | qualification / decision |
+|---|---|---|
+| object ↔ functional fixed | all 15 preregistered CPU/CUDA signatures bit-exact | ordinary, empirically sampled |
+| compiled fixed B64 T10 | CPU 5.038 s, V100 6.927 s stable warm; zero graph breaks | arithmetic changed; performance-only; no same-semantics speedup |
+| fixed outward | exact oracle and 1/10-step rows pass; B1 failure 33, B64 first failure 90 | `FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED` |
+| complete-O4 S1 | generic K16 primitive; local empty-history terminal attribution closes | prefix A/B unavailable; `STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`; no horizons |
+| second system | harmonic + Riccati, CPU/V100, B1/B64, 100 steps | `GENERALITY_GATE_PASSED`, plant-only fallback scope |
+
+The compiled B64 raw timing ratios against isolated frozen object medians are
+about 15.0x CPU and 18.4x V100. They are retained as raw ratios only because
+Inductor changes arithmetic. The compiled CPU is faster than V100. B1 object
+and compiled lanes agree on first failure step 536 despite non-bit-exact
+arithmetic.
+
+At the frozen complete-O4 terminal, baseline y margin is
+`-1.99995911680722e-5`. Empty-history local S1 ordinary y margin is
+`+9.090310982602511e-5` and full materialization contains the original image,
+but the missing 307-step S1 state prevents promotion. Every fresh ladder row
+is machine-recorded as not run after STOP.
+
 ## Native design points
 
 | lane | native result | exact output semantics | soundness / eligibility |

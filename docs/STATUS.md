@@ -2,7 +2,7 @@
 
 Date: 2026-08-10
 Round: structured remainder and compiled fixed-support closure
-Decision: active; prior evidence package closed, new algorithm gates pending
+Decision: closure delivered with three explicit implemented-negative outcomes
 
 ## Gates
 
@@ -11,12 +11,12 @@ Decision: active; prior evidence package closed, new algorithm gates pending
 | repository anchors | pass | remote start `05ae30b4`; isolated worktree; pinned Flow*/DiffReach SHAs |
 | previous evidence closure | pass | 851-source-file recovery inventory; groups 03–08 tracked; clean-copy rebuild passes |
 | claim taxonomy | pass | completion, certificate, soundness, formal/performance/ranking eligibility split |
-| functional fixed core | pending | cached plan and tensor-only loop not yet implemented |
-| compiled fixed core | pending | no performance result claimed yet |
-| outward fixed reference | pending | one-step 2-ULP claim remains frozen |
-| structured S1 | pending | exact semantics must precede implementation |
-| terminal/horizon/generalization | pending | no new horizon run is eligible yet |
-| delivery | pending | final tests, artifacts, commits, push, and handoff remain |
+| functional fixed core | pass | cached immutable plan; 26-tensor state; CPU/CUDA object equality matrix bit-exact |
+| compiled fixed core | implemented negative | fullgraph, zero breaks, B64 T10 complete; `FIXED_SUPPORT_COMPILE_SEMANTICS_CHANGED` |
+| outward fixed reference | implemented negative | exact oracle passes; multi-step fails before T1; `FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED` |
+| structured S1 | primitive pass / integration fail | K16 primitive and additive source split pass; no qualified prefix state |
+| terminal/horizon/generalization | STOP / pass | `STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`; no horizons; fallback generality passes |
+| delivery | in progress | package built/checksummed; final suite, push, and fresh-clone audit remain |
 
 ## Scientific status
 
@@ -29,13 +29,20 @@ Decision: active; prior evidence package closed, new algorithm gates pending
   divergent h, not transformed polynomial coefficients or roundoff.
 - F1 complete carry: sound, exact, generic primitive; fails at
   `0.04345468750000001`; rejected and non-default.
-- GPU: no measured end-to-end or kernel speedup after synchronization and
-  validation accounting; no speed or Pareto claim.
+- Compiled B64 T10: stable warm CPU 5.038 s and V100 6.927 s, but arithmetic
+  changes; raw timing ratios are not identical-semantics speedups and CPU is
+  faster than V100.
+- Outward fixed reference: safeguarded primitive/reference scope only; B1
+  first failure 33 and B64 first failure 90.
+- Structured S1: local terminal attribution closes ordinary y but full-prefix
+  conservation cannot be established from a pre-S1 checkpoint; no fresh
+  horizon was authorized.
+- Generality: harmonic and scalar Riccati fixed-support fallback rows complete
+  100 steps on CPU/V100 B1/B64 and contain analytic endpoint hulls.
 
-The next research operation is a bounded structured-symbol carry for the
-terminal integration-overflow and polynomial-truncation terms, with
-deterministic sound collapse and a frozen-prestate paired replay before any
-horizon sweep.
+The next research operation is to integrate the delivered bounded S1 state
+through every accepted complete-O4 boundary from t=0, save it in the terminal
+checkpoint, and repeat the same-pre-state gate. No horizon sweep precedes that.
 
 The verified starting baseline in the current worktree is `469 passed, 2
 skipped in 72.48 s`; the two skips are the declared optional external

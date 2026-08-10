@@ -101,6 +101,9 @@ def _copy_public_raw(run_root: Path) -> None:
         "fixed_object_baseline/trace_committed_4bb",
         "fixed_object_baseline/cpu_b64_t0p1.prof",
         "fixed_object_baseline/cpu_b64_t0p1_profile.txt",
+        "fixed_object_current/cpu_b1_t10",
+        "fixed_object_current/cpu_b1_t10_stdout.jsonl",
+        "fixed_object_current/cpu_b1_t10_stderr.txt",
         "fixed_compiled",
         "fixed_functional",
         "fixed_outward",
@@ -129,6 +132,7 @@ def _copy_public_raw(run_root: Path) -> None:
         "/srv/local/shengenli/torch_tm_flowpipe_fixed_object_baseline_4bb10d5": "<server-workspace>/torch_tm_flowpipe_fixed_object_baseline_4bb10d5",
         "/srv/local/shengenli/miniforge3/envs/py11": "<py11-environment>",
         "/srv/local/shengenli": "<server-workspace>",
+        "primitive / reference multi-step lane": "multi-step lane",
     }
     for path in destination.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
@@ -165,6 +169,8 @@ def _profile(run_root: Path) -> dict[str, Any]:
             "self_s": sum(values[2] for _, values in matches),
             "cumulative_s": sum(values[3] for _, values in matches),
         })
+    compiled_profile_path = run_root / "raw/fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"
+    compiled_profile = _json(compiled_profile_path).get("profiler_counts") if compiled_profile_path.is_file() else None
     return {
         "schema": "fixed_support_object_profile_v1",
         "profile_source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6",
@@ -179,6 +185,8 @@ def _profile(run_root: Path) -> dict[str, Any]:
             "functional_state_tensor_count": 26,
             "compiled_solver_core_host_synchronizations": 0,
         },
+        "compiled_v100_one_boundary_profiler_counts": compiled_profile,
+        "compiled_profile_scope": "one logical boundary after cache replay; not a timing row",
     }
 
 
@@ -239,7 +247,7 @@ def _plot(run_root: Path, prior_root: Path, object_rows, compiled_rows, outward_
     warm = [row["warm_median_s"] for row in b64] + [row["stable_warm_median_s"] for row in compiled_rows if row["batch"] == 64]
     compile_time = [0.0] * len(b64) + [row["compile_execute_s"] for row in compiled_rows if row["batch"] == 64]
     fig, ax = plt.subplots(figsize=(8, 4.8)); x = range(len(labels)); ax.bar(x, warm, label="stable warm"); ax.bar(x, compile_time, bottom=warm, alpha=.45, label="compile + first execute"); ax.set_xticks(list(x), labels, rotation=20); ax.set_yscale("log"); ax.set_ylabel("seconds (log)"); ax.set_title("Compile cost is separate from steady execution"); ax.legend(); fig.tight_layout(); fig.savefig(figures / "fixed_support_runtime_breakdown.png", dpi=180); plt.close(fig)
-    fig, ax = plt.subplots(figsize=(8, 4.8)); sync = [row["host_synchronizations"] for row in b64] + [row["host_synchronizations_in_solver_core"] for row in compiled_rows if row["batch"] == 64]; ax.bar(labels, sync, color="#9467bd"); ax.set_yscale("symlog", linthresh=1); ax.set_ylabel("solver-core host synchronizations"); ax.set_title("T10 host synchronization reduction; kernels reported separately"); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "fixed_support_host_sync_kernel_counts.png", dpi=180); plt.close(fig)
+    fig, ax = plt.subplots(figsize=(8, 4.8)); sync = [row["host_synchronizations"] for row in b64] + [row["host_synchronizations_in_solver_core"] for row in compiled_rows if row["batch"] == 64]; ax.bar(labels, sync, color="#9467bd"); ax.set_yscale("symlog", linthresh=1); ax.set_ylabel("solver-core host synchronizations"); profile_path = run_root / "raw/fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"; kernel_count = _json(profile_path).get("profiler_counts", {}).get("cuda_kernel_events") if profile_path.is_file() else None; ax.set_title("T10 host synchronization reduction"); ax.text(.02, .96, f"compiled V100 kernels per one logical step: {kernel_count if kernel_count is not None else 'not captured'}\nobject kernel launches: not captured", transform=ax.transAxes, va="top", fontsize=8); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "fixed_support_host_sync_kernel_counts.png", dpi=180); plt.close(fig)
 
     # Soundness scopes.
     fig, ax = plt.subplots(figsize=(9, 4.8)); labels2 = [row["lane"] for row in soundness_rows]; rank = {"unknown": 0, "empirically sampled only": 1, "safeguarded outward under declared IEEE/backend assumptions": 2, "formally outward by construction": 3, "unsound/ineligible on a demonstrated counterexample": -1}; values = [rank.get(row["numerical_soundness_class"], 0) for row in soundness_rows]; ax.barh(labels2, values); ax.set_xlabel("classification index (scope remains in machine table)"); ax.set_title("Numerical qualification is independent of completion"); fig.tight_layout(); fig.savefig(figures / "fixed_support_soundness_scope.png", dpi=180); plt.close(fig)
@@ -259,7 +267,7 @@ def _plot(run_root: Path, prior_root: Path, object_rows, compiled_rows, outward_
 
     # Validated horizon lanes.
     horizons = {"complete O4 baseline": 6.397083942944808, "fixed object": 10.0, "fixed compiled empirical": 10.0, "fixed outward": max((row["steps"] * .01 for row in outward_rows if row["completed"]), default=0.0), "S1": 0.0}
-    fig, ax = plt.subplots(figsize=(8, 4.8)); ax.bar(horizons, horizons.values()); ax.set_ylabel("validated horizon"); ax.set_title("In-framework lanes; S1 horizon not run after STOP"); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "validated_horizon_by_in_framework_lane.png", dpi=180); plt.close(fig)
+    fig, ax = plt.subplots(figsize=(8, 4.8)); ax.bar(list(horizons), list(horizons.values())); ax.set_ylabel("validated horizon"); ax.set_title("In-framework lanes; S1 horizon not run after STOP"); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "validated_horizon_by_in_framework_lane.png", dpi=180); plt.close(fig)
 
     native = prior_root / "01_native_baselines"
     baseline_rows = _csv(native / "torch_complete_o4_authoritative_t6p5/segments.csv")
@@ -295,17 +303,14 @@ def build(run_root: Path, prior_root: Path) -> None:
         failures = [int(value) for value in row["first_failure_indices"] if int(value) >= 0]
         row["longest_all_batch_validated_steps"] = min(failures) if failures else int(row["steps"])
         row["longest_all_batch_validated_horizon"] = row["longest_all_batch_validated_steps"] * 0.01
-        row["ordinary_eager_decision"] = "completed"
-        row["ordinary_eager_basis"] = (
-            "functional B64 T10 shadow in compiled runner and frozen object B64 T10; "
-            "B1 direct T10 decision is recorded separately when available"
-        )
-        row["compiled_ordinary_decision"] = "completed" if row["batch"] == 64 else "not_measured_same_signature"
         outward_rows.append(row)
     terminal = _json(run_root / "raw/structured_terminal/s1_local/structured_terminal_ab.json")
     field_map = _json(run_root / "raw/structured_terminal/s1_local/field_map.json")
     second = _json(run_root / "raw/second_system/summary.json")
-    compiled_paths = sorted((run_root / "raw/fixed_compiled").glob("*/summary.json"))
+    compiled_paths = sorted(
+        path for path in (run_root / "raw/fixed_compiled").glob("*/summary.json")
+        if "profile_cache_replay" not in path.parent.name
+    )
     if len(compiled_paths) < 4:
         raise ValueError("compiled evidence lacks CPU/GPU B64 and CUDA B1/B8 signatures")
     compiled_rows = []
@@ -322,6 +327,7 @@ def build(run_root: Path, prior_root: Path) -> None:
             "warm_s": value["compiled_warm_s"], "stable_warm_s": warm,
             "stable_warm_min_s": min(warm), "stable_warm_median_s": _median(warm), "stable_warm_max_s": max(warm),
             "eager_functional_full_s": value["eager_functional_full_s"], "completed": value["completed"],
+            "first_failure_indices": value["first_failure_indices"],
             "finite_outputs": value.get("finite_outputs", True), "all_probe_inputs_bit_exact": value["all_probe_inputs_bit_exact"],
             "full_run_bit_exact": value["full_run_bit_exact"], "max_abs_finite_difference": max((row["max_abs_finite_difference"] for row in value["full_run_differences"]), default=0.0),
             "compiled_semantics": value.get("compiled_semantics", "ordinary_expression_order_bit_exact" if exact else "performance_only_empirical_arithmetic_changed"),
@@ -337,6 +343,26 @@ def build(run_root: Path, prior_root: Path) -> None:
         if row["batch"] == 64 and row["steps"] == 1000:
             row["raw_runtime_ratio_vs_frozen_object"] = object_t10[row["device_group"]]["warm_median_s"] / row["stable_warm_median_s"]
             row["ratio_is_identical_semantics_speedup"] = False
+    b1_object = _json(run_root / "raw/fixed_object_current/cpu_b1_t10/summary.json")
+    b1_object_failure = int(b1_object["first_failure_time_reason"]["step"])
+    b1_compiled = next(
+        row for row in compiled_rows
+        if row["device_group"] == "cpu" and row["batch"] == 1 and row["steps"] == 1000
+    )
+    b1_compiled_failures = [int(value) for value in b1_compiled["first_failure_indices"] if int(value) >= 0]
+    b1_compiled_failure = min(b1_compiled_failures) if b1_compiled_failures else 1000
+    for row in outward_rows:
+        if row["batch"] == 64:
+            row["ordinary_eager_decision"] = "completed"
+            row["compiled_ordinary_decision"] = "completed_empirical_arithmetic_changed"
+            row["ordinary_first_failure_step"] = -1
+            row["compiled_first_failure_step"] = -1
+        else:
+            row["ordinary_eager_decision"] = "completed" if row["steps"] <= b1_object_failure else "failed_closed"
+            row["compiled_ordinary_decision"] = "completed_empirical_arithmetic_changed" if row["steps"] <= b1_compiled_failure else "failed_closed_empirical_arithmetic_changed"
+            row["ordinary_first_failure_step"] = b1_object_failure
+            row["compiled_first_failure_step"] = b1_compiled_failure
+        row["ordinary_eager_artifact"] = "raw_public/fixed_object_current/cpu_b1_t10/summary.json" if row["batch"] == 1 else "raw_public/fixed_object_baseline/trace_committed_4bb/cpu_b64_t10p0/summary.json"
     _write_csv(run_root / "fixed_support_object_baseline.csv", object_rows)
     _write_csv(run_root / "fixed_support_compiled_results.csv", compiled_rows)
     _write_csv(run_root / "fixed_support_outward_results.csv", outward_rows)
