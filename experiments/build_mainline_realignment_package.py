@@ -585,6 +585,11 @@ def _horizon_row(
 
 
 def build(run_root: Path) -> None:
+    # Provenance identifies the evidence-capture event, not whichever later
+    # commit happens to regenerate the derived tables.  Preserve it on rebuild
+    # so a clean copy remains byte reproducible after the branch advances.
+    manifest_path = run_root / "manifest.json"
+    frozen_manifest = _json(manifest_path) if manifest_path.is_file() else {}
     validate_raw_evidence(run_root)
     recovery_valid, recovery_errors = verify_recovery_inventory(run_root)
     if not recovery_valid:
@@ -1337,9 +1342,11 @@ def build(run_root: Path) -> None:
     manifest = {
         "schema": "torch_tm_mainline_realignment_manifest_v1",
         "run_id": RUN_ID,
-        "branch": _git("branch", "--show-current"),
-        "source_sha": _git("rev-parse", "HEAD"),
-        "source_worktree_status_excluding_package": _source_worktree_status(),
+        "branch": frozen_manifest.get("branch", _git("branch", "--show-current")),
+        "source_sha": frozen_manifest.get("source_sha", _git("rev-parse", "HEAD")),
+        "source_worktree_status_excluding_package": frozen_manifest.get(
+            "source_worktree_status_excluding_package", _source_worktree_status()
+        ),
         "package_tracking_status": _package_tracking_status(run_root),
         "external_sources": {
             "flowstar": external["flowstar"]["sha"],

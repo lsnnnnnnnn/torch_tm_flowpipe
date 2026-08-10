@@ -92,9 +92,13 @@ def _eligibility(
     }
 
 
-def _copy_public_raw(run_root: Path) -> None:
-    source = run_root / "raw"
+def _copy_public_raw(run_root: Path, evidence_root: Path) -> None:
+    source = evidence_root
     destination = run_root / "raw_public"
+    if source.resolve() == destination.resolve():
+        # A clean checkout has only the already-sanitized public evidence.  It is
+        # a valid in-place input and must not be deleted before it is consumed.
+        return
     if destination.exists():
         shutil.rmtree(destination)
     selections = (
@@ -151,8 +155,8 @@ def _copy_public_raw(run_root: Path) -> None:
         _write_json(manifest_path, {"schema": "torch_tm_flowpipe_artifact_manifest_v1", "files": files})
 
 
-def _profile(run_root: Path) -> dict[str, Any]:
-    path = run_root / "raw/fixed_object_baseline/cpu_b64_t0p1.prof"
+def _profile(evidence_root: Path) -> dict[str, Any]:
+    path = evidence_root / "fixed_object_baseline/cpu_b64_t0p1.prof"
     stats = pstats.Stats(str(path)).stats
     wanted = (
         "fixed_support_dr_remainder_picard", "diffreach_vdp_tm_rhs", "mul_ctrunc",
@@ -171,7 +175,7 @@ def _profile(run_root: Path) -> dict[str, Any]:
             "self_s": sum(values[2] for _, values in matches),
             "cumulative_s": sum(values[3] for _, values in matches),
         })
-    compiled_profile_path = run_root / "raw/fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"
+    compiled_profile_path = evidence_root / "fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"
     compiled_profile = _json(compiled_profile_path).get("profiler_counts") if compiled_profile_path.is_file() else None
     return {
         "schema": "fixed_support_object_profile_v1",
@@ -228,7 +232,10 @@ def _torch_rectangles(rows: Iterable[Mapping[str, str]], state: str) -> list[tup
     return result
 
 
-def _plot(run_root: Path, prior_root: Path, object_rows, compiled_rows, outward_rows, terminal, soundness_rows) -> None:
+def _plot(
+    run_root: Path, prior_root: Path, evidence_root: Path,
+    object_rows, compiled_rows, outward_rows, terminal, soundness_rows,
+) -> None:
     figures = run_root / "figures"
     figures.mkdir(exist_ok=True)
     # Runtime versus batch.
@@ -249,7 +256,7 @@ def _plot(run_root: Path, prior_root: Path, object_rows, compiled_rows, outward_
     warm = [row["warm_median_s"] for row in b64] + [row["stable_warm_median_s"] for row in compiled_rows if row["batch"] == 64]
     compile_time = [0.0] * len(b64) + [row["compile_execute_s"] for row in compiled_rows if row["batch"] == 64]
     fig, ax = plt.subplots(figsize=(8, 4.8)); x = range(len(labels)); ax.bar(x, warm, label="stable warm"); ax.bar(x, compile_time, bottom=warm, alpha=.45, label="compile + first execute"); ax.set_xticks(list(x), labels, rotation=20); ax.set_yscale("log"); ax.set_ylabel("seconds (log)"); ax.set_title("Compile cost is separate from steady execution"); ax.legend(); fig.tight_layout(); fig.savefig(figures / "fixed_support_runtime_breakdown.png", dpi=180); plt.close(fig)
-    fig, ax = plt.subplots(figsize=(8, 4.8)); sync = [row["host_synchronizations"] for row in b64] + [row["host_synchronizations_in_solver_core"] for row in compiled_rows if row["batch"] == 64]; ax.bar(labels, sync, color="#9467bd"); ax.set_yscale("symlog", linthresh=1); ax.set_ylabel("solver-core host synchronizations"); profile_path = run_root / "raw/fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"; kernel_count = _json(profile_path).get("profiler_counts", {}).get("cuda_kernel_events") if profile_path.is_file() else None; ax.set_title("T10 host synchronization reduction"); ax.text(.02, .96, f"compiled V100 kernels per one logical step: {kernel_count if kernel_count is not None else 'not captured'}\nobject kernel launches: not captured", transform=ax.transAxes, va="top", fontsize=8); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "fixed_support_host_sync_kernel_counts.png", dpi=180); plt.close(fig)
+    fig, ax = plt.subplots(figsize=(8, 4.8)); sync = [row["host_synchronizations"] for row in b64] + [row["host_synchronizations_in_solver_core"] for row in compiled_rows if row["batch"] == 64]; ax.bar(labels, sync, color="#9467bd"); ax.set_yscale("symlog", linthresh=1); ax.set_ylabel("solver-core host synchronizations"); profile_path = evidence_root / "fixed_compiled/cuda_v100_b64_t10_b1_profile_cache_replay/summary.json"; kernel_count = _json(profile_path).get("profiler_counts", {}).get("cuda_kernel_events") if profile_path.is_file() else None; ax.set_title("T10 host synchronization reduction"); ax.text(.02, .96, f"compiled V100 kernels per one logical step: {kernel_count if kernel_count is not None else 'not captured'}\nobject kernel launches: not captured", transform=ax.transAxes, va="top", fontsize=8); ax.tick_params(axis="x", rotation=20); fig.tight_layout(); fig.savefig(figures / "fixed_support_host_sync_kernel_counts.png", dpi=180); plt.close(fig)
 
     # Soundness scopes.
     fig, ax = plt.subplots(figsize=(9, 4.8)); labels2 = [row["lane"] for row in soundness_rows]; rank = {"unknown": 0, "empirically sampled only": 1, "safeguarded outward under declared IEEE/backend assumptions": 2, "formally outward by construction": 3, "unsound/ineligible on a demonstrated counterexample": -1}; values = [rank.get(row["numerical_soundness_class"], 0) for row in soundness_rows]; ax.barh(labels2, values); ax.set_xlabel("classification index (scope remains in machine table)"); ax.set_title("Numerical qualification is independent of completion"); fig.tight_layout(); fig.savefig(figures / "fixed_support_soundness_scope.png", dpi=180); plt.close(fig)
@@ -291,14 +298,20 @@ def _plot(run_root: Path, prior_root: Path, object_rows, compiled_rows, outward_
     ax.plot([],[],color="#1f77b4",linewidth=6,alpha=.25,label="stock Flow* tube"); ax.plot([],[],color="#ff7f0e",linewidth=6,alpha=.3,label="Torch complete-O4 prefix"); ax.set(xlabel="x",ylabel="y",title="Phase tube overlay (native contracts not ranked)"); ax.legend(fontsize=8); ax.grid(alpha=.2); fig.tight_layout(); fig.savefig(figures / "phase_tube_overlay.png",dpi=180); plt.close(fig)
 
 
-def build(run_root: Path, prior_root: Path) -> None:
-    object_matrix = _json(run_root / "raw/fixed_object_baseline/trace_committed_4bb/object_trace_matrix.json")
+def build(run_root: Path, prior_root: Path, evidence_root: Path | None = None) -> None:
+    run_root.mkdir(parents=True, exist_ok=True)
+    evidence_root = evidence_root or (
+        run_root / "raw" if (run_root / "raw").is_dir() else run_root / "raw_public"
+    )
+    if not evidence_root.is_dir():
+        raise FileNotFoundError(f"evidence root does not exist: {evidence_root}")
+    object_matrix = _json(evidence_root / "fixed_object_baseline/trace_committed_4bb/object_trace_matrix.json")
     object_rows = object_matrix["rows"]
     if len(object_rows) != 22 or {row["source_sha"] for row in object_rows} != {"4bb10d54b29dad2b47c5f91ddedafe854a52fac6"}:
         raise ValueError("frozen object matrix is incomplete or source-mixed")
-    functional = _json(run_root / "raw/fixed_functional/equivalence.json")
-    oracle = _json(run_root / "raw/fixed_outward/oracle.json")
-    outward = _json(run_root / "raw/fixed_outward/matrix/summary.json")
+    functional = _json(evidence_root / "fixed_functional/equivalence.json")
+    oracle = _json(evidence_root / "fixed_outward/oracle.json")
+    outward = _json(evidence_root / "fixed_outward/matrix/summary.json")
     outward_rows = []
     for source_row in outward["rows"]:
         row = dict(source_row)
@@ -306,11 +319,11 @@ def build(run_root: Path, prior_root: Path) -> None:
         row["longest_all_batch_validated_steps"] = min(failures) if failures else int(row["steps"])
         row["longest_all_batch_validated_horizon"] = row["longest_all_batch_validated_steps"] * 0.01
         outward_rows.append(row)
-    terminal = _json(run_root / "raw/structured_terminal/s1_local/structured_terminal_ab.json")
-    field_map = _json(run_root / "raw/structured_terminal/s1_local/field_map.json")
-    second = _json(run_root / "raw/second_system/summary.json")
+    terminal = _json(evidence_root / "structured_terminal/s1_local/structured_terminal_ab.json")
+    field_map = _json(evidence_root / "structured_terminal/s1_local/field_map.json")
+    second = _json(evidence_root / "second_system/summary.json")
     compiled_paths = sorted(
-        path for path in (run_root / "raw/fixed_compiled").glob("*/summary.json")
+        path for path in (evidence_root / "fixed_compiled").glob("*/summary.json")
         if "profile_cache_replay" not in path.parent.name
     )
     if len(compiled_paths) < 4:
@@ -345,7 +358,7 @@ def build(run_root: Path, prior_root: Path) -> None:
         if row["batch"] == 64 and row["steps"] == 1000:
             row["raw_runtime_ratio_vs_frozen_object"] = object_t10[row["device_group"]]["warm_median_s"] / row["stable_warm_median_s"]
             row["ratio_is_identical_semantics_speedup"] = False
-    b1_object = _json(run_root / "raw/fixed_object_current/cpu_b1_t10/summary.json")
+    b1_object = _json(evidence_root / "fixed_object_current/cpu_b1_t10/summary.json")
     b1_object_failure = int(b1_object["first_failure_time_reason"]["step"])
     b1_compiled = next(
         row for row in compiled_rows
@@ -369,7 +382,7 @@ def build(run_root: Path, prior_root: Path) -> None:
     _write_csv(run_root / "fixed_support_compiled_results.csv", compiled_rows)
     _write_csv(run_root / "fixed_support_outward_results.csv", outward_rows)
     _write_json(run_root / "fixed_support_equivalence.json", {"schema": "fixed_support_equivalence_closure_v1", "functional": functional, "compiled": {"all_signatures_bit_exact": all(row["full_run_bit_exact"] and row["all_probe_inputs_bit_exact"] for row in compiled_rows), "stop_outcome": "FIXED_SUPPORT_COMPILE_SEMANTICS_CHANGED", "rows": compiled_rows}, "outward_one_step_containment": True})
-    _write_json(run_root / "fixed_support_profile.json", _profile(run_root))
+    _write_json(run_root / "fixed_support_profile.json", _profile(evidence_root))
     _write_json(run_root / "structured_semantics.json", {"schema": "structured_semantics_closure_v1", "field_map": field_map, "capacity": 16, "eligible_sources": ["polynomial_truncation", "integration_overflow"], "source_audit": {"flowstar_revision": "b85a3211748cb77b736fe4ad42ee02d8d2b81148", "diffreach_revision": "dd628eb443b517d6415de93e7035b4baef73963e"}, "typed_terminal_decomposition": terminal["terminal"]["validated_decomposition_contains_image"]})
     _write_json(run_root / "structured_terminal_ab.json", terminal)
     horizon_rows = [{"requested_horizon": value, "status": "not_run_after_stop", "stop_outcome": terminal["stop_outcome"], "validated_horizon": 6.397083942944808, "fresh_request_started": False, "paired_baseline_started": False} for value in (.1,.5,1,4,6,6.5,7.5,10)]
@@ -401,11 +414,18 @@ def build(run_root: Path, prior_root: Path) -> None:
         {"lane": "structured S1", "numerical_soundness_class": "safeguarded outward under declared IEEE/backend assumptions", "numerical_soundness_scope": "primitive", "note": "not integrated through prefix"},
     ]
     _write_csv(run_root / "soundness_matrix.csv", soundness_rows)
-    _copy_public_raw(run_root)
-    _plot(run_root, prior_root, object_rows, compiled_rows, outward_rows, terminal, soundness_rows)
+    _copy_public_raw(run_root, evidence_root)
+    _plot(run_root, prior_root, evidence_root, object_rows, compiled_rows, outward_rows, terminal, soundness_rows)
+    try:
+        run_relative = run_root.relative_to(ROOT)
+    except ValueError:
+        run_relative = Path(run_root.name)
+    status_args = ["status", "--short", "--", "."]
+    if run_root.is_relative_to(ROOT):
+        status_args.append(f":(exclude){run_relative.as_posix()}")
     provenance = {
         "schema": "structured_remainder_compiled_provenance_v1", "branch": _git("branch", "--show-current"),
-        "build_source_sha": _git("rev-parse", "HEAD"), "worktree_status_excluding_run_root": _git("status", "--short", "--", ".", f":(exclude){run_root.relative_to(ROOT).as_posix()}"),
+        "build_source_sha": _git("rev-parse", "HEAD"), "worktree_status_excluding_run_root": _git(*status_args),
         "python": platform.python_version(), "platform": platform.platform(), "prior_package_sha256sums": _sha(prior_root / "SHA256SUMS"),
         "object_baseline_source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6", "flowstar_revision": "b85a3211748cb77b736fe4ad42ee02d8d2b81148", "diffreach_revision": "dd628eb443b517d6415de93e7035b4baef73963e",
     }
@@ -418,7 +438,7 @@ def build(run_root: Path, prior_root: Path) -> None:
     manifest = {"schema": "structured_remainder_compiled_manifest_v1", "run_id": run_root.name, "outcomes": failures, "files": [{"path": path.relative_to(run_root).as_posix(), "bytes": path.stat().st_size, "sha256": _sha(path)} for path in package_files]}
     _write_json(run_root / "manifest.json", manifest)
     checksum_files = package_files + [run_root / "manifest.json"]
-    prefix = run_root.relative_to(ROOT)
+    prefix = run_relative
     (run_root / "SHA256SUMS").write_text("".join(f"{_sha(path)}  {(prefix / path.relative_to(run_root)).as_posix()}\n" for path in checksum_files), encoding="utf-8")
 
 
@@ -426,8 +446,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--prior-root", type=Path, required=True)
+    parser.add_argument(
+        "--evidence-root", type=Path,
+        help="raw or committed raw_public evidence root; defaults to RUN_ROOT/raw then RUN_ROOT/raw_public",
+    )
     args = parser.parse_args()
-    build(args.run_root.resolve(), args.prior_root.resolve())
+    build(
+        args.run_root.resolve(), args.prior_root.resolve(),
+        args.evidence_root.resolve() if args.evidence_root else None,
+    )
     return 0
 
 
