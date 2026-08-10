@@ -600,8 +600,9 @@ def build(run_root: Path) -> None:
     }
     _write_json(run_root / "manifest.json", manifest)
     validate_required_package(run_root)
-    count = write_sha256sums(run_root)
-    valid, errors = verify_sha256sums(run_root)
+    path_prefix = run_root.relative_to(ROOT).as_posix()
+    count = write_sha256sums(run_root, path_prefix=path_prefix)
+    valid, errors = verify_sha256sums(run_root, path_prefix=path_prefix)
     if not valid:
         raise RuntimeError(errors)
     print(json.dumps({"run_root": str(run_root), "hashed_files": count, "checksums_valid": valid}, sort_keys=True))

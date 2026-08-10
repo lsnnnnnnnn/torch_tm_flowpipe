@@ -38,3 +38,12 @@ def test_result_package_validation_fails_closed_on_missing_artifact(tmp_path):
     with pytest.raises(ValueError, match="timing.csv"):
         validate_required_package(tmp_path)
 
+
+def test_checksum_paths_can_be_root_prefixed_for_sha256sum_from_repository_root(tmp_path):
+    run_root = tmp_path / "outputs" / "run"
+    _complete_package(run_root)
+    prefix = "outputs/run"
+    write_sha256sums(run_root, path_prefix=prefix)
+    assert verify_sha256sums(run_root, path_prefix=prefix) == (True, [])
+    first = (run_root / "SHA256SUMS").read_text(encoding="utf-8").splitlines()[0]
+    assert f"  {prefix}/" in first

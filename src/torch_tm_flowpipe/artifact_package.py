@@ -48,19 +48,33 @@ def validate_required_package(root: Path) -> None:
         raise ValueError(f"required result artifacts missing: {missing}")
 
 
-def write_sha256sums(root: Path, destination: Path | None = None) -> int:
+def write_sha256sums(
+    root: Path,
+    destination: Path | None = None,
+    *,
+    path_prefix: str | None = None,
+) -> int:
     destination = destination or root / "SHA256SUMS"
     files = sorted(
         path
         for path in root.rglob("*")
         if path.is_file() and path.resolve() != destination.resolve()
     )
-    lines = [f"{sha256_file(path)}  {path.relative_to(root).as_posix()}" for path in files]
+    prefix = path_prefix.strip("/") + "/" if path_prefix else ""
+    lines = [
+        f"{sha256_file(path)}  {prefix}{path.relative_to(root).as_posix()}"
+        for path in files
+    ]
     destination.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return len(files)
 
 
-def verify_sha256sums(root: Path, sums_path: Path | None = None) -> tuple[bool, list[str]]:
+def verify_sha256sums(
+    root: Path,
+    sums_path: Path | None = None,
+    *,
+    path_prefix: str | None = None,
+) -> tuple[bool, list[str]]:
     sums_path = sums_path or root / "SHA256SUMS"
     errors: list[str] = []
     for line_number, line in enumerate(sums_path.read_text(encoding="utf-8").splitlines(), 1):
@@ -71,10 +85,15 @@ def verify_sha256sums(root: Path, sums_path: Path | None = None) -> tuple[bool, 
         except ValueError:
             errors.append(f"line {line_number}: malformed")
             continue
+        prefix = path_prefix.strip("/") + "/" if path_prefix else ""
+        if prefix:
+            if not relative.startswith(prefix):
+                errors.append(f"{relative}: expected prefix {prefix}")
+                continue
+            relative = relative[len(prefix) :]
         target = root / relative
         if not target.is_file():
             errors.append(f"{relative}: missing")
         elif sha256_file(target) != expected:
             errors.append(f"{relative}: digest mismatch")
     return not errors, errors
-
