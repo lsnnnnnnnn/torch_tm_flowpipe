@@ -1,0 +1,96 @@
+schema: torch_tm_flowpipe_vdp_three_lane_contract_v1
+date: 2026-08-10
+system:
+  name: van_der_pol_flowstar_official
+  state_order: [x, y]
+  rhs:
+    - y
+    - y - x - x^2*y
+  initial_set:
+    - [1.1, 1.4]
+    - [2.35, 2.45]
+  requested_horizon: 10.0
+  diagnostic_horizons: [0.1, 0.5, 1.0, 4.0, 6.0, 6.5, 7.5, 10.0]
+  rhs_sha256: pending_manifest_generation
+output_semantics:
+  required:
+    - raw_endpoint
+    - last_full_segment_tube
+    - full_horizon_tube
+    - validation_status
+    - certificate_status
+    - first_failure_time
+    - first_failure_reason
+  prohibit_endpoint_tube_mixing: true
+tracks:
+  N:
+    description: unmodified official entry points and configs
+    lanes:
+      flowstar_stock:
+        source_sha: b85a3211748cb77b736fe4ad42ee02d8d2b81148
+        entrypoint: benchmarks/continuous/vanderpol/vanderpol
+        representation: complete_total_degree_O4
+        validator: native_flowstar_picard
+        carry: native_normalization_plus_symbolic_remainder
+      diffreach_stock:
+        source_sha: dd628eb443b517d6415de93e7035b4baef73963e
+        entrypoint: run_dyn.py config/ct_dyn/van_der_pol.yaml --sim --ver
+        representation: diffreach_fixed_support_from_manifest
+        validator: DR-RP
+        carry: upstream_normalization_plus_symbolic_remainder
+      torch_authoritative:
+        source_sha: 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+        entrypoint: experiments/run_vdp_dense_backend.py
+        representation: complete_total_degree_O4
+        validator: flowstar_raw_remainder_compat
+        carry: normalized_insertion
+  M:
+    description: common Flowstar official VDP plant and physical output contract
+    adapters_allowed: false
+    unavailable_field_value: UNAVAILABLE
+  F:
+    description: Torch-only representation-validator-carry factorial
+    lanes:
+      - complete_O4__flowstar_raw__normalized_insertion
+      - diffreach_fixed__DR_RP__upstream_equivalent_carry
+      - complete_O4__flowstar_raw__generic_carry_candidate
+common_row_fields:
+  - tool
+  - source_sha
+  - execution_kind
+  - rhs_sha256
+  - initial_set
+  - state_and_generator_order
+  - representation_name
+  - support_sha256
+  - polynomial_picard_semantics
+  - validator_name
+  - candidate_remainder
+  - remainder_rounds_and_acceptance
+  - step_policy
+  - partition_policy
+  - carry_reset_policy
+  - symbolic_remainder_policy
+  - range_policy
+  - dtype_device
+  - requested_horizon
+  - validated_horizon
+  - completion_status
+  - certificate_status
+  - property_status
+  - first_failure_time_reason
+  - endpoint_tube_polynomial_remainder_widths
+  - accepted_rejected_steps
+  - algorithmic_work
+  - cold_warm_core_process_runtime
+  - peak_memory
+  - soundness_classification
+  - artifact_paths_and_hashes
+eligibility:
+  require_known_contract: true
+  require_full_validated_horizon: true
+  require_all_mandatory_inclusions: true
+  require_finite_outputs: true
+  forbid_undeclared_repair_or_fallback: true
+  require_output_semantic_identity: true
+  require_explicit_soundness: true
