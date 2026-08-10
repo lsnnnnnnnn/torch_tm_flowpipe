@@ -100,6 +100,7 @@ def main() -> int:
     parser.add_argument("--boundary", type=int, choices=(1, 10, 100, 1000), default=1)
     parser.add_argument("--warm-runs", type=int, default=5)
     parser.add_argument("--later-inputs", type=int, default=5)
+    parser.add_argument("--profile-kernels", action="store_true")
     args = parser.parse_args()
     if args.steps <= 0 or args.steps % args.boundary:
         raise ValueError("steps must be positive and divisible by boundary")
@@ -193,6 +194,37 @@ def main() -> int:
     finite_outputs = all(bool(torch.all(torch.isfinite(value)).detach().cpu()) for value in floating_final)
     all_probe_inputs_bit_exact = all(row["bit_exact"] for row in checks)
     full_run_bit_exact = not final_differences
+    profiler_counts: dict[str, Any] | None = None
+    if args.profile_kernels:
+        activities = [torch.profiler.ProfilerActivity.CPU]
+        if device.type == "cuda":
+            activities.append(torch.profiler.ProfilerActivity.CUDA)
+        with torch.profiler.profile(activities=activities) as profile:
+            _ = compiled_boundary(initial_state.tensors())
+            _synchronize(device)
+        events = profile.events()
+        profiler_counts = {
+            "profiled_boundary_steps": args.boundary,
+            "cuda_kernel_events": sum(
+                event.device_type == torch.autograd.DeviceType.CUDA for event in events
+            ),
+            "cpu_event_count": sum(
+                event.device_type == torch.autograd.DeviceType.CPU for event in events
+            ),
+            "selected_operator_calls": {
+                name: sum(event.name == name for event in events)
+                for name in (
+                    "aten::item",
+                    "aten::_local_scalar_dense",
+                    "aten::to",
+                    "aten::stack",
+                    "aten::min",
+                    "aten::max",
+                    "aten::index",
+                    "aten::nextafter",
+                )
+            },
+        }
     result = {
         "schema": "torch_tm_flowpipe_fixed_support_compiled_v1",
         "source_sha": source_sha,
@@ -241,6 +273,7 @@ def main() -> int:
         ),
         "torchinductor_cache_isolated": "TORCHINDUCTOR_CACHE_DIR" in __import__("os").environ,
         "dynamo_counters": dynamo_counters,
+        "profiler_counts": profiler_counts,
         "trace_mode": False,
         "numerical_soundness_class": "empirically sampled only",
         "numerical_soundness_scope": "multi-step lane",
