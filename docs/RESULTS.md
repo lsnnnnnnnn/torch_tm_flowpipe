@@ -21,6 +21,13 @@ These rows reproduce native behavior; they do not form a ranked comparison.
 | complete O4 + raw-remainder-compatible validator + normalized insertion | partial through `6.397083942944808` | authoritative complete baseline |
 | complete O4 + same validator + exact complete endpoint carry | partial through `0.04345468750000001` | candidate rejected |
 
+The fixed DR7 B64 lane independently completes every requested
+T=.1/.5/1/4/6/6.5/7.5 run and the fresh T10 run. The adaptive complete-O4
+baseline independently requests T=7.5 and T=10 and stops at the same
+`6.397083942944808` boundary. The complete-carry candidate independently
+requests all eight horizons and stops at the same `0.04345468750000001`
+boundary.
+
 The validators cannot be blindly crossed: DR-RP is defined on the restricted
 slot contract with component-retain semantics, while the complete raw-remainder
 validator consumes a complete-basis truncation ledger. A forced cross would

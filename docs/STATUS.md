@@ -14,7 +14,7 @@ Decision: complete, with `CANDIDATE_REJECTED` and explicit soundness blockers
 | causal audit | pass | observation-only Flow* hook, common-basis transform, six counterfactuals |
 | generic improvement | pass as negative result | complete polynomial carry implemented; formal ladder and fresh T10; rejected |
 | performance/soundness | pass | actual-partition B1…512 CPU/V100, 1 cold + 5 warm, explicit classes |
-| delivery | pending final audit | final pytest/checksums/push recorded in handoff after execution |
+| delivery | pass locally; remote audit follows final push | baseline 441/2; final 469/2; compile/checksum gates pass |
 
 ## Scientific status
 
@@ -34,3 +34,9 @@ The next research operation is a bounded structured-symbol carry for the
 terminal integration-overflow and polynomial-truncation terms, with
 deterministic sound collapse and a frozen-prestate paired replay before any
 horizon sweep.
+
+Final local validation is `469 passed, 2 skipped in 72.85 s`; the two skips are
+the declared optional external-integration tests. `compileall` and
+`git diff --check` pass. The generated result package contains all 11 required
+machine files and eight figures; its repository-root checksum command is the
+last delivery gate before push.
