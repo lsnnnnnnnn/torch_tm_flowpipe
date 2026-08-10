@@ -189,6 +189,10 @@ def main() -> int:
     ).stdout.strip()
     final_failure = compiled_final[12].detach().cpu()
     completed = bool(torch.all(final_failure < 0))
+    floating_final = [value for value in compiled_final if value.is_floating_point()]
+    finite_outputs = all(bool(torch.all(torch.isfinite(value)).detach().cpu()) for value in floating_final)
+    all_probe_inputs_bit_exact = all(row["bit_exact"] for row in checks)
+    full_run_bit_exact = not final_differences
     result = {
         "schema": "torch_tm_flowpipe_fixed_support_compiled_v1",
         "source_sha": source_sha,
@@ -214,10 +218,11 @@ def main() -> int:
         "compiled_warm_median_s": sorted(compiled_warm_s)[len(compiled_warm_s) // 2],
         "compiled_warm_max_s": max(compiled_warm_s),
         "first_and_later_input_checks": checks,
-        "all_probe_inputs_bit_exact": all(row["bit_exact"] for row in checks),
-        "full_run_bit_exact": not final_differences,
+        "all_probe_inputs_bit_exact": all_probe_inputs_bit_exact,
+        "full_run_bit_exact": full_run_bit_exact,
         "full_run_differences": final_differences,
         "completed": completed,
+        "finite_outputs": finite_outputs,
         "first_failure_indices": [int(value) for value in final_failure.tolist()],
         "host_synchronizations_in_solver_core": 0,
         "final_decision_host_synchronizations": 1,
@@ -240,12 +245,22 @@ def main() -> int:
         "numerical_soundness_class": "empirically sampled only",
         "numerical_soundness_scope": "multi-step lane",
         "formal_claim_eligible": False,
-        "performance_measurement_eligible": completed and not final_differences,
+        "performance_measurement_eligible": completed and finite_outputs,
         "cross_tool_ranking_eligible": False,
+        "compiled_semantics": (
+            "ordinary_expression_order_bit_exact"
+            if all_probe_inputs_bit_exact and full_run_bit_exact
+            else "performance_only_empirical_arithmetic_changed"
+        ),
+        "implemented_negative_outcome": (
+            None
+            if all_probe_inputs_bit_exact and full_run_bit_exact
+            else "FIXED_SUPPORT_COMPILE_SEMANTICS_CHANGED"
+        ),
     }
     _write_json(args.output_dir / "summary.json", result)
     print(json.dumps(result, sort_keys=True, allow_nan=False))
-    return 0 if completed and not final_differences else 2
+    return 0 if completed and finite_outputs else 2
 
 
 if __name__ == "__main__":
