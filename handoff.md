@@ -17,6 +17,9 @@ margin is `-3.773875528686747e-6`. The returned half-step state is discarded.
 
 - Branch: `codex/s1-prefix-integrated-complete-o4-closure-20260810`
 - Start SHA: `3b7b6ef97d9a33dea8498b7595131ffc6095bc1f`
+- Verified package commit: `b4675700a78727573ebc941ae2be1b75483eb553`.
+- Remote status at package verification: local and origin synchronized; the
+  final handoff-only commit is reported in the terminal response.
 - Run: `outputs/s1_prefix_integrated_complete_o4_20260810/20260810T095423Z`
 - L0: 307 accepted historical boundaries, exact schedule replay.
 - L1/L2: 164 accepted common-prefix boundaries.
@@ -35,8 +38,13 @@ margin is `-3.773875528686747e-6`. The returned half-step state is discarded.
 The implementation commits remain separated into baseline, contract, typed
 ledger, complete-O4 oracle, boundary integration, checkpoint v2, frozen
 runner, outward coordinate correction, causal replay, tests, packaging, and
-reports. Final HEAD, remote status, test counts, and checksum counts are filled
-by the last verification commit and `verification.json`.
+reports. The final verification is `545 passed, 2 skipped in 225.46s`;
+compileall and start-to-HEAD diff checks pass; all 164 checksum entries pass.
+A clean remote fresh clone at package commit `7851abe8adb1893f49278bd96920002dfc257ca3`
+verified remote/local SHA equality, tracked manifest paths, no private absolute
+paths, checkpoint v2 loading, claim links, and deterministic table/figure
+rebuild (`3 passed in 2.57s`). The follow-up package-verification commit changes
+only `verification.json` and `SHA256SUMS`.
 
 ## One next action
 
