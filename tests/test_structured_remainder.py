@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 import torch
 
@@ -188,7 +190,7 @@ def test_k1_oldest_eviction_materializes_before_overwrite():
         torch.tensor([[-1.0]], dtype=DTYPE),
         torch.tensor([[1.0]], dtype=DTYPE),
     )
-    first = _update(state, {"polynomial_truncation": first_source}, boundary=4)
+    first = _update(state, {"polynomial_truncation": first_source}, boundary=0)
     second_source = (
         torch.tensor([[-2.0]], dtype=DTYPE),
         torch.tensor([[2.0]], dtype=DTYPE),
@@ -196,11 +198,11 @@ def test_k1_oldest_eviction_materializes_before_overwrite():
     second = _update(
         first.state,
         {"integration_overflow": second_source},
-        boundary=5,
+        boundary=1,
     )
     assert second.accepted.item()
     assert second.evicted_source_id.item() == 1
-    assert second.evicted_age.item() == 4
+    assert second.evicted_age.item() == 0
     assert second.state.source_id[0, 0].item() == 2
     assert second.materialized_lo.item() <= -3.0
     assert second.materialized_hi.item() >= 3.0
@@ -223,7 +225,9 @@ def test_k16_order_repetition_and_batch_permutation_are_deterministic():
     first = _update(state, sources)
     repeated = _update(state, sources)
     for field in first.state.__dataclass_fields__:
-        assert torch.equal(getattr(first.state, field), getattr(repeated.state, field))
+        left = getattr(first.state, field)
+        right = getattr(repeated.state, field)
+        assert torch.equal(left, right) if isinstance(left, torch.Tensor) else left == right
     assert first.state.capacity == STRUCTURED_REMAINDER_CAPACITY
     assert first.state.source_id[0, :2].tolist() == [1, 2]
 
@@ -304,3 +308,98 @@ def test_nonfinite_domain_and_dimension_fail_closed_without_state_mutation():
     assert not nonfinite.accepted.any()
     assert nonfinite.failure_reason in {"nonfinite_input", "nonfinite_source:polynomial_truncation"}
     assert nonfinite.state is state
+
+
+@pytest.mark.unit
+def test_unique_source_identity_boundary_commit_and_rejected_retry_immutability():
+    state = initialize_structured_remainder_state(1, 1)
+    source = (
+        torch.tensor([[-0.1]], dtype=DTYPE),
+        torch.tensor([[0.1]], dtype=DTYPE),
+    )
+    first = _update(state, {"polynomial_truncation": source}, boundary=0)
+    assert first.accepted.item()
+    assert first.state.accepted_boundary_index == 1
+    second = _update(first.state, {"polynomial_truncation": source}, boundary=1)
+    assert second.accepted.item()
+    identities = {
+        (
+            int(second.state.source_boundary_index[0, slot]),
+            int(second.state.source_id[0, slot]),
+            int(second.state.source_occurrence_index[0, slot]),
+        )
+        for slot in range(2)
+    }
+    assert identities == {(0, 1, 0), (1, 1, 0)}
+
+    # An inconsistent certified image fails after building the attempted state,
+    # but returns the exact prestate and does not advance event/boundary counts.
+    rejected = _update(
+        second.state,
+        {"polynomial_truncation": source},
+        boundary=2,
+        validated=(torch.tensor([[-1.0]], dtype=DTYPE), torch.tensor([[1.0]], dtype=DTYPE)),
+    )
+    assert not rejected.accepted.item()
+    assert rejected.state is second.state
+    assert rejected.state.accepted_boundary_index == 2
+    assert torch.equal(rejected.state.event_count, second.state.event_count)
+
+
+@pytest.mark.unit
+def test_two_evictions_in_one_boundary_are_both_logged_with_unique_ownership():
+    state = initialize_structured_remainder_state(1, 1)
+    for boundary in range(8):
+        radius = torch.tensor([[0.01 * (boundary + 1)]], dtype=DTYPE)
+        state = _update(
+            state,
+            {
+                "polynomial_truncation": (-radius, radius),
+                "integration_overflow": (-0.5 * radius, 0.5 * radius),
+            },
+            boundary=boundary,
+        ).state
+    result = _update(
+        state,
+        {
+            "polynomial_truncation": (
+                torch.tensor([[-0.2]], dtype=DTYPE),
+                torch.tensor([[0.2]], dtype=DTYPE),
+            ),
+            "integration_overflow": (
+                torch.tensor([[-0.1]], dtype=DTYPE),
+                torch.tensor([[0.1]], dtype=DTYPE),
+            ),
+        },
+        boundary=8,
+    )
+    active_events = [
+        event
+        for event in result.source_events
+        if bool(torch.any(event.active_mask))
+    ]
+    assert [event.reason for event in active_events] == [
+        "capacity_eviction",
+        "insertion",
+        "capacity_eviction",
+        "insertion",
+    ]
+    assert result.state.event_count.item() == state.event_count.item() + 4
+    assert result.state.active.sum().item() == 16
+
+    duplicate_boundary = result.state.source_boundary_index.clone()
+    duplicate_category = result.state.source_id.clone()
+    duplicate_occurrence = result.state.source_occurrence_index.clone()
+    duplicate_boundary[0, 1] = duplicate_boundary[0, 0]
+    duplicate_category[0, 1] = duplicate_category[0, 0]
+    duplicate_occurrence[0, 1] = duplicate_occurrence[0, 0]
+    corrupt = replace(
+        result.state,
+        source_boundary_index=duplicate_boundary,
+        source_id=duplicate_category,
+        source_occurrence_index=duplicate_occurrence,
+    )
+    failed = _update(corrupt, {}, boundary=9)
+    assert not failed.accepted.item()
+    assert failed.failure_reason == "duplicate_unique_source_identity"
+    assert failed.state is corrupt

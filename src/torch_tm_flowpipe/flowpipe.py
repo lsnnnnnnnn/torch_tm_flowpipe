@@ -11,6 +11,19 @@ import torch
 from .interval import Interval, ensure_interval
 from .polynomial import Polynomial, evaluate_interval_normal
 from .safety import intervals_are_finite
+from .fixed_support_outward import OutwardIntervalTensor, outward_matmul, outward_sum
+from .structured_remainder import (
+    ELIGIBLE_STRUCTURED_SOURCES,
+    StructuredRemainderState,
+    complete_polynomial_structured_image,
+    initialize_structured_remainder_state,
+    materialize_structured_remainder,
+    normal_interval_to_physical,
+    physical_interval_to_normal,
+    split_structured_source_center,
+    structured_column_contributions,
+    structured_remainder_boundary_update,
+)
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
     SymbolicRemainderState,
@@ -79,6 +92,12 @@ class FlowpipeSegment:
     structured_state_after: Any | None = None
     endpoint_total_structured_remainder: Any | None = None
     tube_total_structured_remainder: Any | None = None
+    endpoint_ordinary_remainder: Any | None = None
+    tube_ordinary_remainder: Any | None = None
+    endpoint_total_remainder: Any | None = None
+    tube_total_remainder: Any | None = None
+    endpoint_publication_mask: Any | None = None
+    tube_publication_mask: Any | None = None
 
     def __post_init__(self) -> None:
         # Older experiment helpers construct FlowpipeSegment directly.  Treat
@@ -122,6 +141,7 @@ class FlowstarNormalFlowpipeState:
     symbolic_queue_max_size: int = 100
     initial_remainders: tuple[Interval, ...] | None = None
     complete_initial_tm: TMVector | None = None
+    structured_remainder_state: Any | None = None
 
     @staticmethod
     def from_initial_box(
@@ -1644,6 +1664,426 @@ def _flowstar_normalized_insertion_transition(
     diagnostics["tmv_pre_degree"] = _tm_max_degree(seg.tm)
     diagnostics["tmv_right_term_count"] = sum(len(model.polynomial.terms) for model in tmv_right)
     diagnostics["tmv_pre_term_count"] = sum(len(model.polynomial.terms) for model in seg.tm)
+    return reset_tm, state, diagnostics
+
+
+def _tmvector_remainder_tensor(tmv: TMVector) -> tuple[torch.Tensor, torch.Tensor]:
+    return (
+        torch.stack([model.remainder.lo for model in tmv]).to(torch.float64)[None, :],
+        torch.stack([model.remainder.hi for model in tmv]).to(torch.float64)[None, :],
+    )
+
+
+def _tmvector_with_remainder_tensor(
+    tmv: TMVector,
+    lo: torch.Tensor,
+    hi: torch.Tensor,
+) -> TMVector:
+    if lo.shape != (1, len(tmv)) or hi.shape != lo.shape:
+        raise ValueError("flowpipe S1 bridge currently requires a batch-one remainder tensor")
+    return TMVector(
+        TaylorModel(
+            model.polynomial,
+            Interval(lo[0, index], hi[0, index]),
+            model.domain,
+            order=model.order,
+            truncation_range_split=model.truncation_range_split,
+        )
+        for index, model in enumerate(tmv)
+    )
+
+
+def _tmvector_without_remainder(tmv: TMVector) -> TMVector:
+    zero = torch.zeros((1, len(tmv)), dtype=torch.float64)
+    return _tmvector_with_remainder_tensor(tmv, zero, zero)
+
+
+def _box_tensor(box: Sequence[Interval]) -> tuple[torch.Tensor, torch.Tensor]:
+    return (
+        torch.stack([interval.lo for interval in box]).to(torch.float64)[None, :],
+        torch.stack([interval.hi for interval in box]).to(torch.float64)[None, :],
+    )
+
+
+def _interval_matrix_vector(
+    matrix: OutwardIntervalTensor,
+    vector: OutwardIntervalTensor,
+) -> OutwardIntervalTensor:
+    product = outward_matmul(
+        matrix,
+        OutwardIntervalTensor(vector.lo[..., None], vector.hi[..., None]),
+    )
+    return OutwardIntervalTensor(product.lo[..., 0], product.hi[..., 0])
+
+
+def verify_structured_publication(
+    ordinary_lo: torch.Tensor,
+    ordinary_hi: torch.Tensor,
+    structured_lo: torch.Tensor,
+    structured_hi: torch.Tensor,
+    published_lo: torch.Tensor,
+    published_hi: torch.Tensor,
+) -> torch.Tensor:
+    """Certify that a published interval includes ordinary plus all S1 columns."""
+    total = OutwardIntervalTensor(ordinary_lo, ordinary_hi).add(
+        OutwardIntervalTensor(structured_lo, structured_hi)
+    )
+    return ((published_lo <= total.lo) & (published_hi >= total.hi)).all(dim=1)
+
+
+def _flowstar_structured_insertion_transition(
+    seg: FlowpipeSegment,
+    previous_state: FlowstarNormalFlowpipeState,
+    order: int,
+    *,
+    cutoff_threshold: float | None,
+    target_remainder_radius: float | None,
+    scalar_recenter_remainder_midpoint: bool,
+    right_map_range_mode: str,
+    right_map_center_mode: str,
+    horner_diagnostic: bool,
+) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
+    """Carry K16 S1 through one already accepted complete-O4 boundary."""
+    from .batched_dense_tm import (
+        REMAINDER_LEDGER_CATEGORIES,
+        sparse_tmvector_to_dense,
+    )
+
+    structured = previous_state.structured_remainder_state
+    if not isinstance(structured, StructuredRemainderState):
+        raise ValueError("S1 transition requires an initialized structured prestate")
+    if seg.status != "validated" or seg.validated_remainder_ledger is None:
+        raise ValueError("S1 transition requires an accepted tensor-native validated ledger")
+    if structured.batch != 1 or structured.state_dim != len(seg.final_tm):
+        raise ValueError("S1 flowpipe bridge requires a compatible batch-one state")
+
+    # Reconstruct the full right map only for the unchanged baseline scale and
+    # center calculation. The canonical poststate below stores the polynomial
+    # and structured decomposition separately.
+    pre_total = materialize_structured_remainder(structured)
+    full_previous_right = _tmvector_with_remainder_tensor(
+        previous_state.tmv_right,
+        pre_total.lo,
+        pre_total.hi,
+    )
+    full_previous = replace(
+        previous_state,
+        tmv_right=full_previous_right,
+        structured_remainder_state=None,
+    )
+    reset_tm, baseline_state, diagnostics = _flowstar_normalized_insertion_transition(
+        seg,
+        full_previous,
+        order,
+        cutoff_threshold=cutoff_threshold,
+        target_remainder_radius=target_remainder_radius,
+        scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
+        right_map_range_mode=right_map_range_mode,
+        right_map_center_mode=right_map_center_mode,
+        horner_diagnostic=horner_diagnostic,
+    )
+
+    ordinary_right = _tmvector_with_remainder_tensor(
+        previous_state.tmv_right,
+        structured.ordinary_rem_lo,
+        structured.ordinary_rem_hi,
+    )
+    base_lo, base_hi = _box_tensor(ordinary_right.range_box())
+    old_columns = structured_column_contributions(structured).sum(dim=1)
+    endpoint_dense = sparse_tmvector_to_dense(
+        _tmvector_without_remainder(seg.final_tm),
+        order=int(order),
+        dtype=torch.float64,
+    )
+    identity = torch.eye(
+        structured.state_dim, dtype=torch.float64
+    ).unsqueeze(0)
+    endpoint_image = complete_polynomial_structured_image(
+        endpoint_dense.poly,
+        (base_lo, base_hi),
+        (old_columns.lo, old_columns.hi),
+        identity,
+    )
+    tube_dense = sparse_tmvector_to_dense(
+        _tmvector_without_remainder(seg.tm),
+        order=int(order),
+        dtype=torch.float64,
+    )
+    tube_base_lo = torch.cat(
+        [base_lo, torch.zeros((1, 1), dtype=torch.float64)], dim=1
+    )
+    tube_base_hi = torch.cat(
+        [base_hi, torch.full((1, 1), float(seg.h), dtype=torch.float64)], dim=1
+    )
+    tube_coordinate = torch.zeros(
+        (1, structured.state_dim + 1, structured.state_dim), dtype=torch.float64
+    )
+    tube_coordinate[:, : structured.state_dim, :] = identity
+    tube_image = complete_polynomial_structured_image(
+        tube_dense.poly,
+        (tube_base_lo, tube_base_hi),
+        (old_columns.lo, old_columns.hi),
+        tube_coordinate,
+        (
+            torch.zeros(1, dtype=torch.float64),
+            torch.full((1,), float(seg.h), dtype=torch.float64),
+        ),
+        tau_index=structured.state_dim,
+    )
+    new_scale = torch.tensor([baseline_state.scales], dtype=torch.float64)
+    new_inverse = torch.where(
+        new_scale == 0,
+        torch.ones_like(new_scale),
+        1.0 / new_scale,
+    )
+    scale_rows = OutwardIntervalTensor.point(new_inverse[:, :, None])
+    A_old_normal_to_new_normal = OutwardIntervalTensor(
+        endpoint_image.affine_map_lo,
+        endpoint_image.affine_map_hi,
+    ).mul(scale_rows)
+    nonlinear_normal = physical_interval_to_normal(
+        endpoint_image.nonlinear_residual_lo,
+        endpoint_image.nonlinear_residual_hi,
+        forward_scale=new_scale,
+        inverse_scale=new_inverse,
+    )
+
+    typed_sources = {
+        category: tuple(value.clone() for value in seg.validated_remainder_ledger.entries[category])
+        for category in REMAINDER_LEDGER_CATEGORIES
+    }
+    eligible_centers: list[OutwardIntervalTensor] = []
+    eligible_symmetric: list[OutwardIntervalTensor] = []
+    for category in ELIGIBLE_STRUCTURED_SOURCES:
+        center_source, symmetric_source = split_structured_source_center(
+            *typed_sources[category]
+        )
+        eligible_centers.append(center_source)
+        eligible_symmetric.append(symmetric_source)
+    zero_physical = OutwardIntervalTensor.zeros_like(
+        structured.ordinary_rem_lo
+    )
+    eligible_center_total = outward_sum(eligible_centers) if eligible_centers else zero_physical
+    eligible_symmetric_total = outward_sum(eligible_symmetric) if eligible_symmetric else zero_physical
+    endpoint_structured_image = OutwardIntervalTensor(
+        endpoint_image.total_difference_lo,
+        endpoint_image.total_difference_hi,
+    ).add(eligible_symmetric_total)
+    tube_structured_image = OutwardIntervalTensor(
+        tube_image.total_difference_lo,
+        tube_image.total_difference_hi,
+    ).add(eligible_symmetric_total)
+    endpoint_in_tube = (
+        (tube_structured_image.lo <= endpoint_structured_image.lo)
+        & (tube_structured_image.hi >= endpoint_structured_image.hi)
+    ).all(dim=1)
+    if not bool(torch.all(endpoint_in_tube)):
+        raise FloatingPointError("S1 endpoint structured image is not contained in tube image")
+    target_normal_lo, target_normal_hi = _tmvector_remainder_tensor(
+        baseline_state.tmv_right
+    )
+    target_physical = normal_interval_to_physical(
+        target_normal_lo,
+        target_normal_hi,
+        forward_scale=new_scale,
+    )
+    target_normal_effective = physical_interval_to_normal(
+        target_physical.lo,
+        target_physical.hi,
+        forward_scale=new_scale,
+        inverse_scale=new_inverse,
+    )
+
+    propagated_known = _interval_matrix_vector(
+        A_old_normal_to_new_normal,
+        pre_total,
+    )
+    normalized_source_terms = [
+        physical_interval_to_normal(
+            *typed_sources[category],
+            forward_scale=new_scale,
+            inverse_scale=new_inverse,
+        )
+        for category in REMAINDER_LEDGER_CATEGORIES
+    ]
+    known = outward_sum(
+        [propagated_known, *normalized_source_terms, nonlinear_normal]
+    )
+    zero = torch.zeros_like(target_normal_lo)
+    padding_safeguard = (
+        64.0
+        * torch.finfo(torch.float64).eps
+        * torch.maximum(
+            torch.maximum(torch.abs(known.lo), torch.abs(known.hi)),
+            torch.maximum(
+                torch.abs(target_normal_effective.lo),
+                torch.abs(target_normal_effective.hi),
+            ),
+        ).clamp_min(torch.finfo(torch.float64).tiny)
+    )
+    padding_normal = OutwardIntervalTensor(
+        torch.nextafter(
+            torch.minimum(target_normal_effective.lo - known.lo, zero)
+            - padding_safeguard,
+            torch.full_like(zero, -torch.inf),
+        ),
+        torch.nextafter(
+            torch.maximum(target_normal_effective.hi - known.hi, zero)
+            + padding_safeguard,
+            torch.full_like(zero, torch.inf),
+        ),
+    ).sanitized()
+    padding_physical = normal_interval_to_physical(
+        padding_normal.lo,
+        padding_normal.hi,
+        forward_scale=new_scale,
+    )
+    padding_physical_lo = padding_physical.lo
+    padding_physical_hi = padding_physical.hi
+    for _ in range(4):
+        padding_physical_lo = torch.nextafter(
+            padding_physical_lo, torch.full_like(padding_physical_lo, -torch.inf)
+        )
+        padding_physical_hi = torch.nextafter(
+            padding_physical_hi, torch.full_like(padding_physical_hi, torch.inf)
+        )
+    padding_physical = OutwardIntervalTensor(
+        padding_physical_lo, padding_physical_hi
+    )
+    reset_existing = OutwardIntervalTensor(*typed_sources["reset_or_reconditioning"])
+    reset_with_padding = reset_existing.add(padding_physical)
+    typed_sources["reset_or_reconditioning"] = (
+        reset_with_padding.lo,
+        reset_with_padding.hi,
+    )
+
+    boundary = structured_remainder_boundary_update(
+        structured,
+        typed_sources=typed_sources,
+        validated_remainder_lo=target_physical.lo,
+        validated_remainder_hi=target_physical.hi,
+        A_old_normal_to_new_normal_lo=A_old_normal_to_new_normal.lo,
+        A_old_normal_to_new_normal_hi=A_old_normal_to_new_normal.hi,
+        nonlinear_residual_lo=nonlinear_normal.lo,
+        nonlinear_residual_hi=nonlinear_normal.hi,
+        new_forward_scale=new_scale,
+        boundary_index=structured.accepted_boundary_index,
+        map_is_affine=False,
+    )
+    if not bool(torch.all(boundary.accepted)):
+        raise FloatingPointError(
+            "S1 accepted-boundary conservation failed: "
+            f"{boundary.failure_reason}; "
+            f"source={boundary.source_decomposition_mask.detach().cpu().tolist()}; "
+            f"conservation={boundary.conservation_mask.detach().cpu().tolist()}; "
+            f"pre=({boundary.pre_split_lo.detach().cpu().tolist()},"
+            f"{boundary.pre_split_hi.detach().cpu().tolist()}); "
+            f"validated=({target_normal_effective.lo.detach().cpu().tolist()},"
+            f"{target_normal_effective.hi.detach().cpu().tolist()})"
+        )
+
+    next_right = _tmvector_without_remainder(baseline_state.tmv_right)
+    next_total = materialize_structured_remainder(boundary.state)
+    right_poly_lo, right_poly_hi = _box_tensor(next_right.range_box())
+    right_total = OutwardIntervalTensor(right_poly_lo, right_poly_hi).add(next_total)
+    domain_gate = ((right_total.lo >= -1.0) & (right_total.hi <= 1.0)).all(dim=1)
+    if not bool(torch.all(domain_gate)):
+        raise FloatingPointError("S1 normalized right-map total leaves [-1,1]")
+
+    active_endpoint = structured_column_contributions(boundary.state).sum(dim=1)
+    active_endpoint_physical = normal_interval_to_physical(
+        active_endpoint.lo,
+        active_endpoint.hi,
+        forward_scale=new_scale,
+    )
+    ordinary_endpoint_physical = normal_interval_to_physical(
+        boundary.state.ordinary_rem_lo,
+        boundary.state.ordinary_rem_hi,
+        forward_scale=new_scale,
+    )
+    endpoint_split_total = ordinary_endpoint_physical.add(active_endpoint_physical)
+    endpoint_materialized_total = normal_interval_to_physical(
+        next_total.lo,
+        next_total.hi,
+        forward_scale=new_scale,
+    )
+    # The two routes differ only by outward addition grouping.  Publish their
+    # hull so the first-class total certifies both the split and direct
+    # materialization semantics.
+    endpoint_total = OutwardIntervalTensor(
+        torch.minimum(endpoint_split_total.lo, endpoint_materialized_total.lo),
+        torch.maximum(endpoint_split_total.hi, endpoint_materialized_total.hi),
+    )
+    ineligible_tube_terms = [
+        OutwardIntervalTensor(*typed_sources[category])
+        for category in REMAINDER_LEDGER_CATEGORIES
+        if category not in ELIGIBLE_STRUCTURED_SOURCES
+    ]
+    tube_ordinary = outward_sum(
+        [*ineligible_tube_terms, eligible_center_total]
+    )
+    tube_total = tube_ordinary.add(tube_structured_image)
+    endpoint_publication = verify_structured_publication(
+        ordinary_endpoint_physical.lo,
+        ordinary_endpoint_physical.hi,
+        active_endpoint_physical.lo,
+        active_endpoint_physical.hi,
+        endpoint_total.lo,
+        endpoint_total.hi,
+    )
+    tube_publication = verify_structured_publication(
+        tube_ordinary.lo,
+        tube_ordinary.hi,
+        tube_structured_image.lo,
+        tube_structured_image.hi,
+        tube_total.lo,
+        tube_total.hi,
+    )
+    if not bool(torch.all(endpoint_publication & tube_publication)):
+        raise FloatingPointError("S1 endpoint/tube publication omitted a represented contribution")
+    seg.structured_boundary_result = boundary
+    seg.structured_state_before = structured
+    seg.structured_state_after = boundary.state
+    seg.endpoint_total_structured_remainder = active_endpoint_physical
+    seg.tube_total_structured_remainder = tube_structured_image
+    seg.endpoint_ordinary_remainder = ordinary_endpoint_physical
+    seg.tube_ordinary_remainder = tube_ordinary
+    seg.endpoint_total_remainder = endpoint_total
+    seg.tube_total_remainder = tube_total
+    seg.endpoint_publication_mask = endpoint_publication
+    seg.tube_publication_mask = tube_publication
+
+    diagnostics.update(
+        {
+            "structured_candidate": "normalized_insertion_structured_remainder_k16",
+            "structured_boundary_index_before": structured.accepted_boundary_index,
+            "structured_boundary_index_after": boundary.state.accepted_boundary_index,
+            "structured_active_columns": int(boundary.state.active.sum().item()),
+            "structured_event_count": int(boundary.state.event_count.sum().item()),
+            "structured_conservation": bool(torch.all(boundary.conservation_mask)),
+            "structured_source_decomposition": bool(torch.all(boundary.source_decomposition_mask)),
+            "structured_total_self_map_containment": bool(torch.all(domain_gate)),
+            "structured_endpoint_in_tube": bool(torch.all(endpoint_in_tube)),
+            "structured_endpoint_publication": bool(torch.all(endpoint_publication)),
+            "structured_tube_publication": bool(torch.all(tube_publication)),
+            "structured_raw_picard_target_changed": False,
+            "structured_ordinary_target_margin": seg.subset_margin,
+            "structured_endpoint_total_remainder_lo": active_endpoint_physical.lo.detach().cpu().tolist(),
+            "structured_endpoint_total_remainder_hi": active_endpoint_physical.hi.detach().cpu().tolist(),
+            "structured_published_endpoint_total_lo": endpoint_total.lo.detach().cpu().tolist(),
+            "structured_published_endpoint_total_hi": endpoint_total.hi.detach().cpu().tolist(),
+            "structured_published_tube_total_lo": tube_total.lo.detach().cpu().tolist(),
+            "structured_published_tube_total_hi": tube_total.hi.detach().cpu().tolist(),
+            "structured_nonlinear_residual_lo": endpoint_image.nonlinear_residual_lo.detach().cpu().tolist(),
+            "structured_nonlinear_residual_hi": endpoint_image.nonlinear_residual_hi.detach().cpu().tolist(),
+        }
+    )
+    state = replace(
+        baseline_state,
+        tmv_right=next_right,
+        diagnostics=diagnostics,
+        structured_remainder_state=boundary.state,
+    )
     return reset_tm, state, diagnostics
 
 
@@ -4266,6 +4706,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion_symqueue_split",
         "normalized_insertion_symqueue_v2",
         "normalized_insertion_horner",
+        "normalized_insertion_structured_remainder_k16",
     }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
@@ -4273,7 +4714,8 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion', 'normalized_insertion_complete_polynomial', "
             "'normalized_insertion_symqueue', "
             "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
-            "or 'normalized_insertion_horner'"
+            "'normalized_insertion_horner', or "
+            "'normalized_insertion_structured_remainder_k16'"
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
@@ -4290,6 +4732,31 @@ def flowpipe_step_flowstar_style_adaptive(
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
+        if reset_mode == "normalized_insertion_structured_remainder_k16":
+            structured = initialize_structured_remainder_state(
+                1,
+                len(normal_state.center),
+                dtype=torch.float64,
+                device=dense_device,
+            )
+            initial_scale = torch.tensor(
+                [normal_state.scales], dtype=torch.float64, device=dense_device
+            )
+            initial_inverse = torch.where(
+                initial_scale == 0,
+                torch.ones_like(initial_scale),
+                1.0 / initial_scale,
+            )
+            structured = replace(structured, inverse_scale=initial_inverse)
+            normal_state = replace(
+                normal_state,
+                structured_remainder_state=structured,
+                diagnostics={
+                    **dict(normal_state.diagnostics or {}),
+                    "reset_mode": reset_mode,
+                    "structured_initial_state": True,
+                },
+            )
     current_tm = (
         normal_state.normalized_initial_tm(order)
         if reset_mode in normal_insertion_modes and normal_state is not None
@@ -4309,6 +4776,36 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
         elif reset_mode in normal_insertion_modes:
+            if reset_mode == "normalized_insertion_structured_remainder_k16":
+                assert normal_state is not None
+                try:
+                    reset_tm, normal_state, normal_stats = _flowstar_structured_insertion_transition(
+                        seg,
+                        normal_state,
+                        order,
+                        cutoff_threshold=cutoff_threshold,
+                        target_remainder_radius=target_remainder_radius,
+                        scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
+                        right_map_range_mode=right_map_range_mode,
+                        right_map_center_mode=right_map_center_mode,
+                        horner_diagnostic=horner_diagnostic,
+                    )
+                except (FloatingPointError, RuntimeError, ValueError) as exc:
+                    seg.status = "failed"
+                    seg.message = f"S1 accepted-boundary gate failed closed: {type(exc).__name__}: {exc}"
+                    seg.reset_tm = None
+                    seg.flowstar_normal_state = normal_state
+                    seg.structured_state_before = normal_state.structured_remainder_state
+                    seg.structured_state_after = normal_state.structured_remainder_state
+                    seg.next_h = accepted_h
+                    return seg
+                seg.reset_tm = reset_tm
+                seg.flowstar_normal_state = normal_state
+                seg.flowstar_normal_stats = {**normal_stats, "reset_mode": reset_mode}
+                seg.flowstar_symbolic_queue_state = None
+                seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
+                seg.next_h = min(accepted_h * effective_grow_factor, h_max)
+                return seg
             use_v2 = reset_mode == "normalized_insertion_symqueue_v2" or symbolic_queue_mode == "flowstar_linear_v2"
             use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} or use_v2
             use_split = reset_mode == "normalized_insertion_symqueue_split"

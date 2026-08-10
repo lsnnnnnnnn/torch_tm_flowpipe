@@ -7,7 +7,7 @@ without losing its set contribution.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from itertools import product
 import math
 from typing import Mapping
@@ -50,6 +50,52 @@ class StructuredRemainderState:
     age: torch.Tensor
     source_id: torch.Tensor
     inverse_scale: torch.Tensor
+    source_boundary_index: torch.Tensor | None = None
+    source_occurrence_index: torch.Tensor | None = None
+    accepted_boundary_index: int = 0
+    event_count: torch.Tensor | None = None
+
+    def __post_init__(self) -> None:
+        batch, state_dim = self.ordinary_rem_lo.shape
+        capacity = self.j_lo.shape[1]
+        if self.ordinary_rem_hi.shape != (batch, state_dim):
+            raise ValueError("ordinary structured remainder shape mismatch")
+        if self.j_lo.shape != (batch, capacity, state_dim) or self.j_hi.shape != self.j_lo.shape:
+            raise ValueError("structured J tensor shape mismatch")
+        if self.phi_lo.shape != (batch, capacity, state_dim, state_dim) or self.phi_hi.shape != self.phi_lo.shape:
+            raise ValueError("structured Phi tensor shape mismatch")
+        if self.active.shape != (batch, capacity):
+            raise ValueError("structured active mask shape mismatch")
+        for value in (self.age, self.source_id):
+            if value.shape != self.active.shape or value.dtype != torch.long:
+                raise ValueError("structured integer slot metadata shape/dtype mismatch")
+        if self.inverse_scale.shape != (batch, state_dim):
+            raise ValueError("structured inverse scale shape mismatch")
+        minus_one = torch.full_like(self.age, -1)
+        if self.source_boundary_index is None:
+            object.__setattr__(self, "source_boundary_index", minus_one.clone())
+        if self.source_occurrence_index is None:
+            object.__setattr__(self, "source_occurrence_index", minus_one.clone())
+        assert self.source_boundary_index is not None
+        assert self.source_occurrence_index is not None
+        if (
+            self.source_boundary_index.shape != self.active.shape
+            or self.source_occurrence_index.shape != self.active.shape
+            or self.source_boundary_index.dtype != torch.long
+            or self.source_occurrence_index.dtype != torch.long
+        ):
+            raise ValueError("structured unique source identity metadata mismatch")
+        if int(self.accepted_boundary_index) < 0:
+            raise ValueError("accepted structured boundary index must be nonnegative")
+        if self.event_count is None:
+            object.__setattr__(
+                self,
+                "event_count",
+                torch.zeros(batch, dtype=torch.long, device=self.active.device),
+            )
+        assert self.event_count is not None
+        if self.event_count.shape != (batch,) or self.event_count.dtype != torch.long:
+            raise ValueError("structured event count must be a long tensor with shape [batch]")
 
     @property
     def batch(self) -> int:
@@ -87,6 +133,32 @@ class StructuredRemainderBoundaryResult:
     failure_reason: str
     evicted_source_id: torch.Tensor
     evicted_age: torch.Tensor
+    source_events: tuple["StructuredSourceEvent", ...] = ()
+
+
+@dataclass(frozen=True)
+class StructuredSourceEvent:
+    reason: str
+    active_mask: torch.Tensor
+    accepted_boundary_index: int
+    slot: torch.Tensor
+    source_category_id: torch.Tensor
+    source_category: tuple[str, ...]
+    source_boundary_index: torch.Tensor
+    source_occurrence_index: torch.Tensor
+    age: torch.Tensor
+    pre_propagation_lo: torch.Tensor
+    pre_propagation_hi: torch.Tensor
+    post_propagation_lo: torch.Tensor
+    post_propagation_hi: torch.Tensor
+    materialized_lo: torch.Tensor
+    materialized_hi: torch.Tensor
+
+    def __post_init__(self) -> None:
+        if self.reason not in {"insertion", "capacity_eviction"}:
+            raise ValueError("unknown structured source event reason")
+        if len(self.source_category) != int(self.active_mask.shape[0]):
+            raise ValueError("structured source event category batch mismatch")
 
 
 @dataclass(frozen=True)
@@ -139,6 +211,14 @@ def initialize_structured_remainder_state(
         age=torch.full((batch, capacity), -1, dtype=torch.long, device=device_t),
         source_id=torch.zeros((batch, capacity), dtype=torch.long, device=device_t),
         inverse_scale=torch.ones((batch, state_dim), dtype=dtype, device=device_t),
+        source_boundary_index=torch.full(
+            (batch, capacity), -1, dtype=torch.long, device=device_t
+        ),
+        source_occurrence_index=torch.full(
+            (batch, capacity), -1, dtype=torch.long, device=device_t
+        ),
+        accepted_boundary_index=0,
+        event_count=torch.zeros(batch, dtype=torch.long, device=device_t),
     )
 
 
@@ -319,6 +399,33 @@ def _center_source(
     return center, symmetric
 
 
+def split_structured_source_center(
+    source_lo: torch.Tensor,
+    source_hi: torch.Tensor,
+) -> tuple[OutwardIntervalTensor, OutwardIntervalTensor]:
+    """Split one source into its point center and outward symmetric radius."""
+    if source_lo.shape != source_hi.shape or source_lo.dtype != torch.float64:
+        raise ValueError("structured source center split requires matching float64 tensors")
+    if not bool(
+        torch.all(torch.isfinite(source_lo))
+        and torch.all(torch.isfinite(source_hi))
+        and torch.all(source_lo <= source_hi)
+    ):
+        raise ValueError("structured source center split received an invalid interval")
+    return _center_source(OutwardIntervalTensor(source_lo, source_hi))
+
+
+def _event_source_categories(
+    source_ids: torch.Tensor,
+    active_mask: torch.Tensor,
+) -> tuple[str, ...]:
+    by_id = {value: name for name, value in STRUCTURED_SOURCE_IDS.items()}
+    return tuple(
+        by_id.get(int(source_id), "") if bool(active) else ""
+        for source_id, active in zip(source_ids.detach().cpu(), active_mask.detach().cpu())
+    )
+
+
 def _failure_result(
     state: StructuredRemainderState,
     reason: str,
@@ -384,6 +491,30 @@ def structured_remainder_boundary_update(
         return _failure_result(state, "dimension_mismatch")
     if state.capacity != STRUCTURED_REMAINDER_CAPACITY and state.capacity != 1:
         return _failure_result(state, "capacity_not_frozen_k16_or_unit_test_k1")
+    if int(boundary_index) != int(state.accepted_boundary_index):
+        return _failure_result(state, "accepted_boundary_index_mismatch")
+    assert state.source_boundary_index is not None
+    assert state.source_occurrence_index is not None
+    duplicate_identity = torch.zeros(
+        state.batch, dtype=torch.bool, device=state.active.device
+    )
+    for left in range(state.capacity):
+        for right in range(left + 1, state.capacity):
+            duplicate_identity |= (
+                state.active[:, left]
+                & state.active[:, right]
+                & (state.source_id[:, left] == state.source_id[:, right])
+                & (
+                    state.source_boundary_index[:, left]
+                    == state.source_boundary_index[:, right]
+                )
+                & (
+                    state.source_occurrence_index[:, left]
+                    == state.source_occurrence_index[:, right]
+                )
+            )
+    if bool(torch.any(duplicate_identity)):
+        return _failure_result(state, "duplicate_unique_source_identity")
     if source_schema != VALIDATED_REMAINDER_SOURCE_SCHEMA:
         return _failure_result(state, "source_schema_mismatch")
     if int(source_schema_version) != VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION:
@@ -444,6 +575,11 @@ def structured_remainder_boundary_update(
         A_old_normal_to_new_normal_lo,
         A_old_normal_to_new_normal_hi,
     )
+    pre_propagation_columns = structured_column_contributions(state)
+    source_events: list[StructuredSourceEvent] = []
+    event_count_increment = torch.zeros(
+        state.batch, dtype=torch.long, device=state.active.device
+    )
     old_materialized = materialize_structured_remainder(state)
     propagated_pre_split = _affine_map_interval(linear_map, old_materialized)
     normalized_sources: dict[str, tuple[torch.Tensor, torch.Tensor]] = {}
@@ -500,6 +636,10 @@ def structured_remainder_boundary_update(
         age=state.age,
         source_id=state.source_id,
         inverse_scale=inverse_scale,
+        source_boundary_index=state.source_boundary_index,
+        source_occurrence_index=state.source_occurrence_index,
+        accepted_boundary_index=state.accepted_boundary_index,
+        event_count=state.event_count,
     )
     propagated_columns = structured_column_contributions(next_state).sum(dim=1)
     new_symbolic = _zero(state)
@@ -509,10 +649,10 @@ def structured_remainder_boundary_update(
     )
     evicted_age = torch.full_like(evicted_source_id, -1)
     for name in ELIGIBLE_STRUCTURED_SOURCES:
-        if bool(
-            torch.all(typed_sources[name][0] == 0)
-            and torch.all(typed_sources[name][1] == 0)
-        ):
+        source_present = (
+            (typed_sources[name][0] != 0) | (typed_sources[name][1] != 0)
+        ).any(dim=1)
+        if not bool(torch.any(source_present)):
             continue
         center, symmetric = _center_source(
             OutwardIntervalTensor(*typed_sources[name])
@@ -549,8 +689,12 @@ def structured_remainder_boundary_update(
             next_state.age,
             next_state.source_id,
             next_state.inverse_scale,
+            next_state.source_boundary_index,
+            next_state.source_occurrence_index,
+            next_state.accepted_boundary_index,
+            next_state.event_count,
         )
-        full = next_state.active.all(dim=1)
+        full = next_state.active.all(dim=1) & source_present
         first_inactive = torch.argmax((~next_state.active).to(torch.int64), dim=1)
         largest_age = torch.iinfo(torch.long).max
         oldest = torch.argmin(
@@ -564,7 +708,7 @@ def structured_remainder_boundary_update(
         slot = torch.where(full, oldest, first_inactive)
         one_hot = torch.nn.functional.one_hot(
             slot, num_classes=state.capacity
-        ).to(torch.bool)
+        ).to(torch.bool) & source_present[:, None]
         columns = structured_column_contributions(next_state)
         selected = OutwardIntervalTensor(
             (columns.lo * one_hot[..., None]).sum(dim=1),
@@ -586,6 +730,40 @@ def structured_remainder_boundary_update(
         )
         evicted_source_id = torch.where(full, selected_source, evicted_source_id)
         evicted_age = torch.where(full, selected_age, evicted_age)
+        selected_boundary = torch.sum(
+            next_state.source_boundary_index
+            * one_hot.to(next_state.source_boundary_index.dtype),
+            dim=1,
+        )
+        selected_occurrence = torch.sum(
+            next_state.source_occurrence_index
+            * one_hot.to(next_state.source_occurrence_index.dtype),
+            dim=1,
+        )
+        pre_selected = OutwardIntervalTensor(
+            (pre_propagation_columns.lo * one_hot[..., None]).sum(dim=1),
+            (pre_propagation_columns.hi * one_hot[..., None]).sum(dim=1),
+        )
+        source_events.append(
+            StructuredSourceEvent(
+                reason="capacity_eviction",
+                active_mask=full,
+                accepted_boundary_index=int(boundary_index),
+                slot=slot,
+                source_category_id=selected_source,
+                source_category=_event_source_categories(selected_source, full),
+                source_boundary_index=selected_boundary,
+                source_occurrence_index=selected_occurrence,
+                age=selected_age,
+                pre_propagation_lo=pre_selected.lo,
+                pre_propagation_hi=pre_selected.hi,
+                post_propagation_lo=selected.lo,
+                post_propagation_hi=selected.hi,
+                materialized_lo=evicted.lo,
+                materialized_hi=evicted.hi,
+            )
+        )
+        event_count_increment += full.to(torch.long)
         mask_vector = one_hot[..., None]
         mask_matrix = one_hot[..., None, None]
         next_state = StructuredRemainderState(
@@ -615,8 +793,45 @@ def structured_remainder_boundary_update(
                 next_state.source_id,
             ),
             next_state.inverse_scale,
+            torch.where(
+                one_hot,
+                torch.full_like(next_state.source_boundary_index, int(boundary_index)),
+                next_state.source_boundary_index,
+            ),
+            torch.where(
+                one_hot,
+                torch.zeros_like(next_state.source_occurrence_index),
+                next_state.source_occurrence_index,
+            ),
+            next_state.accepted_boundary_index,
+            next_state.event_count,
         )
         new_symbolic = new_symbolic.add(source_normal)
+        source_events.append(
+            StructuredSourceEvent(
+                reason="insertion",
+                active_mask=source_present,
+                accepted_boundary_index=int(boundary_index),
+                slot=slot,
+                source_category_id=torch.full_like(
+                    slot, STRUCTURED_SOURCE_IDS[name]
+                ),
+                source_category=tuple(
+                    name if bool(present) else ""
+                    for present in source_present.detach().cpu()
+                ),
+                source_boundary_index=torch.full_like(slot, int(boundary_index)),
+                source_occurrence_index=torch.zeros_like(slot),
+                age=torch.full_like(slot, int(boundary_index)),
+                pre_propagation_lo=symmetric.lo,
+                pre_propagation_hi=symmetric.hi,
+                post_propagation_lo=source_normal.lo,
+                post_propagation_hi=source_normal.hi,
+                materialized_lo=torch.zeros_like(source_normal.lo),
+                materialized_hi=torch.zeros_like(source_normal.hi),
+            )
+        )
+        event_count_increment += source_present.to(torch.long)
 
     materialized = materialize_structured_remainder(next_state)
     padding_lo = torch.minimum(
@@ -643,6 +858,10 @@ def structured_remainder_boundary_update(
         next_state.age,
         next_state.source_id,
         next_state.inverse_scale,
+        next_state.source_boundary_index,
+        next_state.source_occurrence_index,
+        next_state.accepted_boundary_index,
+        next_state.event_count,
     )
     materialized = materialize_structured_remainder(next_state)
     conservation_mask = (
@@ -655,8 +874,17 @@ def structured_remainder_boundary_update(
     ).all(dim=1)
     accepted = source_decomposition_mask & conservation_mask & finite
     failure_reason = "" if bool(torch.all(accepted)) else "conservation_or_source_decomposition_failed"
+    committed_state = (
+        replace(
+            next_state,
+            accepted_boundary_index=int(state.accepted_boundary_index) + 1,
+            event_count=state.event_count + event_count_increment,
+        )
+        if bool(torch.all(accepted))
+        else state
+    )
     return StructuredRemainderBoundaryResult(
-        state=next_state,
+        state=committed_state,
         materialized_lo=materialized.lo,
         materialized_hi=materialized.hi,
         propagated_symbolic_lo=propagated_columns.lo,
@@ -677,6 +905,7 @@ def structured_remainder_boundary_update(
         failure_reason=failure_reason,
         evicted_source_id=evicted_source_id,
         evicted_age=evicted_age,
+        source_events=tuple(source_events),
     )
 
 
@@ -923,6 +1152,30 @@ def complete_polynomial_structured_image(
         ).sanitized()
         nonlinear = nonlinear.add(padding)
     reconstruction = affine_image.add(nonlinear)
+    zero_structured = ((structured_lo == 0) & (structured_hi == 0)).all(dim=1)
+    if bool(torch.any(zero_structured)):
+        mask = zero_structured[:, None]
+        exact_zero = torch.zeros_like(output_zero)
+        affine_image = OutwardIntervalTensor(
+            torch.where(mask, exact_zero, affine_image.lo),
+            torch.where(mask, exact_zero, affine_image.hi),
+        )
+        nonlinear = OutwardIntervalTensor(
+            torch.where(mask, exact_zero, nonlinear.lo),
+            torch.where(mask, exact_zero, nonlinear.hi),
+        )
+        total_difference = OutwardIntervalTensor(
+            torch.where(mask, exact_zero, total_difference.lo),
+            torch.where(mask, exact_zero, total_difference.hi),
+        )
+        reconstruction = OutwardIntervalTensor(
+            torch.where(mask, exact_zero, reconstruction.lo),
+            torch.where(mask, exact_zero, reconstruction.hi),
+        )
+        padding = OutwardIntervalTensor(
+            torch.where(mask, exact_zero, padding.lo),
+            torch.where(mask, exact_zero, padding.hi),
+        )
     containment = (
         (reconstruction.lo <= total_difference.lo)
         & (reconstruction.hi >= total_difference.hi)
@@ -994,9 +1247,14 @@ __all__ = [
     "STRUCTURED_SOURCE_IDS",
     "StructuredRemainderBoundaryResult",
     "StructuredRemainderState",
+    "StructuredSourceEvent",
     "complete_polynomial_structured_image",
     "initialize_structured_remainder_state",
     "materialize_structured_remainder",
+    "normal_interval_to_physical",
+    "physical_interval_to_normal",
+    "physical_source_to_new_normal_phi",
+    "split_structured_source_center",
     "structured_column_contributions",
     "structured_quadratic_nonlinear_residual",
     "structured_remainder_boundary_update",

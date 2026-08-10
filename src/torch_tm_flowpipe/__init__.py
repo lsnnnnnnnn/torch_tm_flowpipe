@@ -93,6 +93,7 @@ _PUBLIC_MODULES = {
     "structured_column_contributions": ".structured_remainder",
     "structured_quadratic_nonlinear_residual": ".structured_remainder",
     "structured_remainder_boundary_update": ".structured_remainder",
+    "split_structured_source_center": ".structured_remainder",
     "FlowpipeResult": ".flowpipe",
     "FlowpipeSegment": ".flowpipe",
     "FlowstarNormalFlowpipeState": ".flowpipe",
@@ -123,6 +124,7 @@ _PUBLIC_MODULES = {
     "TerminalCheckpoint": ".terminal_checkpoint",
     "load_terminal_checkpoint": ".terminal_checkpoint",
     "save_terminal_checkpoint": ".terminal_checkpoint",
+    "verify_structured_publication": ".flowpipe",
     "tmvector_hashes": ".terminal_checkpoint",
     "TMVector": ".tm_vector",
 }
