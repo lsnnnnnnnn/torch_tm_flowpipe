@@ -140,6 +140,8 @@ def _copy_public_raw(run_root: Path) -> None:
         text = path.read_text(encoding="utf-8", errors="replace")
         for old, new in replacements.items():
             text = text.replace(old, new)
+        if path.name.endswith("_profile.txt"):
+            text = text.rstrip() + "\n"
         path.write_text(text, encoding="utf-8")
     for manifest_path in destination.rglob("artifact_manifest.json"):
         files = []
