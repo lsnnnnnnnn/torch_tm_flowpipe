@@ -424,7 +424,11 @@ def package(run_root: Path) -> dict[str, Any]:
         ],
     }
     _json(run_root / "manifest.json", manifest)
-    return {"run_root": str(run_root.relative_to(ROOT)), **verification}
+    try:
+        displayed_root = str(run_root.relative_to(ROOT))
+    except ValueError:
+        displayed_root = str(run_root)
+    return {"run_root": displayed_root, **verification}
 
 
 def _empty_figure(path: Path, title: str, status: str) -> None:
