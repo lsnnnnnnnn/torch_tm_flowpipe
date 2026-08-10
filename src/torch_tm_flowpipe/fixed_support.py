@@ -331,6 +331,7 @@ class FixedSupportKernelPlan:
     multiply_right: torch.Tensor
     multiply_sign: torch.Tensor
     multiply_valid: torch.Tensor
+    multiply_route_indices: tuple[tuple[int, int, int, int], ...]
     integration_input: torch.Tensor
     integration_output: torch.Tensor
     integration_factor: torch.Tensor
@@ -347,6 +348,7 @@ class FixedSupportKernelPlan:
     time_evaluate_power_integers: tuple[int, ...]
     spatial_off_diagonal_mask: torch.Tensor
     exponents: torch.Tensor
+    exponent_tuples: tuple[tuple[int, ...], ...]
 
 
 _KERNEL_PLAN_CACHE: dict[tuple[str, torch.dtype, str, int | None, str], FixedSupportKernelPlan] = {}
@@ -434,6 +436,15 @@ def _build_kernel_plan(
         multiply_right=right,
         multiply_sign=sign,
         multiply_valid=valid,
+        multiply_route_indices=tuple(
+            (
+                route.left_slot,
+                route.right_slot,
+                route.output_slot,
+                route.sign,
+            )
+            for route in descriptor.multiply_routes
+        ),
         integration_input=integration_input,
         integration_output=integration_output,
         integration_factor=integration_factor,
@@ -458,6 +469,7 @@ def _build_kernel_plan(
             1.0 - torch.eye(spatial_count, dtype=dtype, device=device)
         ),
         exponents=torch.as_tensor(descriptor.exponents, dtype=torch.long, device=device),
+        exponent_tuples=descriptor.exponents,
     )
 
 
