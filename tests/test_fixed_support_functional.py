@@ -15,6 +15,8 @@ from torch_tm_flowpipe.fixed_support import (
 from torch_tm_flowpipe.fixed_support_functional import (
     fixed_support_functional_verify,
     initialize_fixed_support_functional_state,
+    make_fixed_support_functional_chunk,
+    prepare_fixed_support_vdp_functional_step,
 )
 
 
@@ -171,6 +173,46 @@ def test_functional_fail_closed_freezes_failed_batches_without_host_gate():
     object_failure = _object_solver().verify(initial_lo, initial_hi, steps=2)
     assert object_failure.first_failure_step == result.first_failure_step
     assert object_failure.validated_steps == result.validated_steps
+
+
+@pytest.mark.integration
+def test_fullgraph_step_matches_eager_on_first_and_later_same_signature_inputs():
+    initial_lo, initial_hi = _partition(8)
+    support = FixedSupportDescriptor.diffreach_restricted_quadratic(2)
+    plan = fixed_support_kernel_plan(support, device="cpu", dtype=torch.float64)
+    initial_state, eager_step = prepare_fixed_support_vdp_functional_step(
+        initial_lo, initial_hi, plan, step_size=0.01, steps=10
+    )
+    compiled_step = torch.compile(
+        eager_step, backend="eager", fullgraph=True, dynamic=False
+    )
+    state = initial_state.tensors()
+    for _ in range(8):
+        expected = eager_step(state)
+        actual = compiled_step(state)
+        for expected_tensor, actual_tensor in zip(expected, actual):
+            assert torch.equal(expected_tensor, actual_tensor)
+        state = expected
+
+
+@pytest.mark.integration
+def test_fullgraph_chunk10_matches_ten_eager_steps():
+    initial_lo, initial_hi = _partition(1)
+    support = FixedSupportDescriptor.diffreach_restricted_quadratic(2)
+    plan = fixed_support_kernel_plan(support, device="cpu", dtype=torch.float64)
+    initial_state, eager_step = prepare_fixed_support_vdp_functional_step(
+        initial_lo, initial_hi, plan, step_size=0.01, steps=10
+    )
+    expected = initial_state.tensors()
+    for _ in range(10):
+        expected = eager_step(expected)
+    chunk10 = make_fixed_support_functional_chunk(eager_step, chunk_size=10)
+    compiled_chunk10 = torch.compile(
+        chunk10, backend="eager", fullgraph=True, dynamic=False
+    )
+    actual = compiled_chunk10(initial_state.tensors())
+    for expected_tensor, actual_tensor in zip(expected, actual):
+        assert torch.equal(expected_tensor, actual_tensor)
 
 
 @pytest.mark.cuda
