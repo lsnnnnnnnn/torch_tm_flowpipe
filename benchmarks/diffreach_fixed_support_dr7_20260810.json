@@ -1,0 +1,49 @@
+{
+  "coefficient_layout": ["batch", "state_output", "monomial_slot"],
+  "expression_order": "diffreach_c_then_L_then_Lt_four_terms_then_t2_correction",
+  "integration_routes": [
+    {"factor_denominator": 1, "factor_numerator": 1, "input_slot": 0, "output_slot": 1},
+    {"factor_denominator": 2, "factor_numerator": 1, "input_slot": 1, "output_slot": 4},
+    {"factor_denominator": 1, "factor_numerator": 1, "input_slot": 2, "output_slot": 5},
+    {"factor_denominator": 1, "factor_numerator": 1, "input_slot": 3, "output_slot": 6}
+  ],
+  "local_time_index": 0,
+  "multiply_routes": [
+    {"left_slot": 0, "output_slot": 0, "right_slot": 0, "sign": 1},
+    {"left_slot": 0, "output_slot": 1, "right_slot": 1, "sign": 1},
+    {"left_slot": 1, "output_slot": 1, "right_slot": 0, "sign": 1},
+    {"left_slot": 0, "output_slot": 2, "right_slot": 2, "sign": 1},
+    {"left_slot": 2, "output_slot": 2, "right_slot": 0, "sign": 1},
+    {"left_slot": 0, "output_slot": 3, "right_slot": 3, "sign": 1},
+    {"left_slot": 3, "output_slot": 3, "right_slot": 0, "sign": 1},
+    {"left_slot": 0, "output_slot": 4, "right_slot": 4, "sign": 1},
+    {"left_slot": 4, "output_slot": 4, "right_slot": 0, "sign": 1},
+    {"left_slot": 1, "output_slot": 4, "right_slot": 1, "sign": 1},
+    {"left_slot": 1, "output_slot": 4, "right_slot": 1, "sign": 1},
+    {"left_slot": 1, "output_slot": 4, "right_slot": 1, "sign": -1},
+    {"left_slot": 0, "output_slot": 5, "right_slot": 5, "sign": 1},
+    {"left_slot": 5, "output_slot": 5, "right_slot": 0, "sign": 1},
+    {"left_slot": 1, "output_slot": 5, "right_slot": 2, "sign": 1},
+    {"left_slot": 2, "output_slot": 5, "right_slot": 1, "sign": 1},
+    {"left_slot": 0, "output_slot": 6, "right_slot": 6, "sign": 1},
+    {"left_slot": 6, "output_slot": 6, "right_slot": 0, "sign": 1},
+    {"left_slot": 1, "output_slot": 6, "right_slot": 3, "sign": 1},
+    {"left_slot": 3, "output_slot": 6, "right_slot": 1, "sign": 1}
+  ],
+  "name": "diffreach_restricted_quadratic_DR7",
+  "overflow_policy": "diffreach_restricted_quadratic_grouped",
+  "range_policy": "diffreach_restricted_quadratic_horner",
+  "schema": "torch_tm_flowpipe_fixed_support_v1",
+  "slots": [
+    {"exponent": [0, 0, 0], "slot": 0},
+    {"exponent": [1, 0, 0], "slot": 1},
+    {"exponent": [0, 1, 0], "slot": 2},
+    {"exponent": [0, 0, 1], "slot": 3},
+    {"exponent": [2, 0, 0], "slot": 4},
+    {"exponent": [1, 1, 0], "slot": 5},
+    {"exponent": [1, 0, 1], "slot": 6}
+  ],
+  "source_contract": "DiffReach:dd628eb443b517d6415de93e7035b4baef73963e:src/polynomial.py",
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "variable_names": ["t", "xi0", "xi1"]
+}
