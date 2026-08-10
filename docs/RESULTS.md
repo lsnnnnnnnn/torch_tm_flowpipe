@@ -7,7 +7,7 @@ Canonical run: `outputs/mainline_realignment_20260810/20260810T025910Z`
 
 | lane | native result | exact output semantics | soundness / eligibility |
 |---|---|---|---|
-| stock Flow* `b85a321...` | T10, 290 segments, core `0.441634 s` | full-segment tubes | `unsound/ineligible` for primary formal comparison after scalar-affine MPFR defect |
+| stock Flow* `b85a321...` | T10, 290 segments, core `0.441634 s` | full-segment tubes | `unsound/ineligible on a demonstrated counterexample` for this pinned native build after the scalar-affine MPFR defect |
 | stock DiffReach `dd628eb...` | B64 h=.01 T10; all 128,000 returned initial masks pass | endpoint at local time h; no stock tube | `empirically sampled only`; mixed builder dtype |
 | Torch complete O4 | partial; highest validated `6.397083942944808` | raw endpoint, last tube, prefix tube separate | `formally outward by construction`; ineligible as T10 completion |
 
@@ -52,6 +52,13 @@ outer adaptive scheduler remains batch-one.
 
 No eligible cross-tool deployment speedup, GPU speedup, or precision-throughput
 Pareto frontier is claimed.
+
+Completion, certificate semantics, finiteness, numerical class/scope, formal
+claim eligibility, performance eligibility, and cross-tool ranking eligibility
+are independent columns in the machine tables. Track N contains native
+reproductions without ranking, Track M contains matched-contract facts only
+where natively expressible, and Track F contains the Torch representation /
+validator / carry / backend factorial.
 
 ## Claim status
 

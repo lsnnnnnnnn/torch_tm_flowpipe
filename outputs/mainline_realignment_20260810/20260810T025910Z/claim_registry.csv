@@ -1,9 +1,9 @@
-claim,scope,status
-native entrypoints reproduced,own contracts,valid
-Torch fixed explicit-f64 operators reproduce DiffReach,frozen fixture and declared full lane,valid
-first native split is raw candidate remainder,candidate raw Picard remainder before roundoff,valid
-complete polynomial carry improves horizon,candidate validated horizon 0.04345468750000001,invalid
-Torch globally faster or tighter than Flow*,contracts and eligibility differ,invalid
-ordinary CUDA is universally outward,one exact rational VDP segment; not universal GPU directed rounding,invalid
-stock Flow* is primary formal comparator,scalar_affine_closed_form_mpfr,blocked
-multi-step complete lane scales to B512,The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.,blocked
+certificate_semantics_passed,claim,cross_tool_ranking_eligible,finite_outputs,formal_claim_eligible,mathematical_contract_known,numerical_soundness_class,numerical_soundness_scope,performance_measurement_eligible,requested_horizon_completed,scope,status,track
+False,native entrypoints reproduced,False,True,False,True,unknown,fixed workload,True,True,own contracts,valid,N
+True,Torch fixed explicit-f64 operators reproduce DiffReach,False,True,False,True,empirically sampled only,fixed workload,False,True,frozen fixture and declared full lane,valid,M
+True,first native split is raw candidate remainder,False,True,False,True,empirically sampled only,one step,False,True,candidate raw Picard remainder before roundoff,valid,M
+False,complete polynomial carry improves horizon,False,True,False,True,formally outward by construction,multi-step lane,True,False,candidate validated horizon 0.04345468750000001,invalid,F
+False,Torch globally faster or tighter than Flow*,False,True,False,False,unknown,fixed workload,False,False,contracts and eligibility differ,invalid,N
+True,ordinary CUDA is universally outward,False,True,False,True,empirically sampled only,fixed workload,True,True,one exact rational VDP segment; not universal GPU directed rounding,invalid,F
+True,stock Flow* is primary formal comparator,False,True,False,True,unsound/ineligible on a demonstrated counterexample,native build,True,True,scalar_affine_closed_form_mpfr,blocked,N
+True,multi-step complete lane scales to B512,False,True,False,True,empirically sampled only,primitive,True,False,The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.,blocked,F

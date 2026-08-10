@@ -1,7 +1,7 @@
-basis,classification,formal_completion_claim,lane
-scalar_affine_closed_form_mpfr,unsound/ineligible,False,stock_flowstar_native
-jax_enable_x64=true; pinned model/identity/symbolic builders default to float32; CUDA V100 GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae,empirically sampled only,False,stock_diffreach_native
-ordinary_binary64_directly_qualified=False,empirically sampled only,False,torch_fixed_ordinary_cpu_cuda
-fractions.Fraction exact rational interval endpoints,independently outward replayed for exact benchmark workload,one exact rational VDP segment; not universal GPU directed rounding,torch_fixed_2ulp_companion_one_step
-proactive_depth1_on_named_contexts:polynomial_truncation; max_leaves=4,formally outward by construction,validated prefix 6.397083942944808 only,torch_complete_o4_baseline
-endpoint coefficient preservation from one-step grid,formally outward by construction,primitive only; surrounding dense arithmetic separate,complete_polynomial_carry_primitive
+basis,certificate_semantics_passed,cross_tool_ranking_eligible,finite_outputs,formal_claim_eligible,formal_claim_scope,lane,mathematical_contract_known,numerical_soundness_class,numerical_soundness_scope,performance_measurement_eligible,requested_horizon_completed
+scalar_affine_closed_form_mpfr,True,False,True,False,none,stock_flowstar_native,True,unsound/ineligible on a demonstrated counterexample,native build,True,True
+jax_enable_x64=true; pinned model/identity/symbolic builders default to float32; CUDA V100 GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae,False,False,True,False,none,stock_diffreach_native,True,empirically sampled only,native build,True,True
+ordinary_binary64_directly_qualified=False,True,False,True,False,none,torch_fixed_ordinary_cpu_cuda,True,empirically sampled only,multi-step lane,True,True
+fractions.Fraction exact rational interval endpoints,True,False,True,True,one exact rational VDP segment; not universal GPU directed rounding,torch_fixed_2ulp_companion_one_step,True,independently outward replayed for exact benchmark workload,one step,False,True
+proactive_depth1_on_named_contexts:polynomial_truncation; max_leaves=4,True,False,True,True,validated prefix 6.397083942944808 only,torch_complete_o4_baseline,True,formally outward by construction,multi-step lane,True,False
+endpoint coefficient preservation from one-step grid,True,False,True,True,primitive only; surrounding dense arithmetic separate,complete_polynomial_carry_primitive,True,formally outward by construction,primitive,False,True

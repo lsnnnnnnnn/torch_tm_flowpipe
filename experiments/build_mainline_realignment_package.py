@@ -27,6 +27,8 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from torch_tm_flowpipe.artifact_package import (
+    ALLOWED_NUMERICAL_SOUNDNESS_CLASSES,
+    ALLOWED_NUMERICAL_SOUNDNESS_SCOPES,
     REQUIRED_FIGURES,
     REQUIRED_MACHINE_FILES,
     load_json_artifact,
@@ -132,6 +134,64 @@ def _candidate_decision(
         if candidate_completed or candidate_horizon > baseline_horizon
         else "CANDIDATE_REJECTED"
     )
+
+
+def _eligibility_fields(
+    *,
+    mathematical_contract_known: bool,
+    requested_horizon_completed: bool,
+    certificate_semantics_passed: bool,
+    finite_outputs: bool,
+    numerical_soundness_class: str,
+    numerical_soundness_scope: str,
+    formal_claim_eligible: bool,
+    performance_measurement_eligible: bool,
+    cross_tool_ranking_eligible: bool,
+) -> dict[str, Any]:
+    if numerical_soundness_class not in ALLOWED_NUMERICAL_SOUNDNESS_CLASSES:
+        raise ValueError(f"unsupported numerical soundness class: {numerical_soundness_class}")
+    if numerical_soundness_scope not in ALLOWED_NUMERICAL_SOUNDNESS_SCOPES:
+        raise ValueError(f"unsupported numerical soundness scope: {numerical_soundness_scope}")
+    if formal_claim_eligible and not all(
+        (
+            mathematical_contract_known,
+            certificate_semantics_passed,
+            finite_outputs,
+        )
+    ):
+        raise ValueError("formal claim eligibility contradicts prerequisite fields")
+    if cross_tool_ranking_eligible and not all(
+        (
+            mathematical_contract_known,
+            requested_horizon_completed,
+            certificate_semantics_passed,
+            finite_outputs,
+            formal_claim_eligible,
+            performance_measurement_eligible,
+        )
+    ):
+        raise ValueError("cross-tool ranking eligibility contradicts prerequisites")
+    return {
+        "mathematical_contract_known": mathematical_contract_known,
+        "requested_horizon_completed": requested_horizon_completed,
+        "certificate_semantics_passed": certificate_semantics_passed,
+        "finite_outputs": finite_outputs,
+        "numerical_soundness_class": numerical_soundness_class,
+        "numerical_soundness_scope": numerical_soundness_scope,
+        "formal_claim_eligible": formal_claim_eligible,
+        "performance_measurement_eligible": performance_measurement_eligible,
+        "cross_tool_ranking_eligible": cross_tool_ranking_eligible,
+    }
+
+
+def _normalized_soundness_class(value: str) -> str:
+    aliases = {
+        "unsound/ineligible": "unsound/ineligible on a demonstrated counterexample",
+    }
+    normalized = aliases.get(value, value)
+    if normalized not in ALLOWED_NUMERICAL_SOUNDNESS_CLASSES:
+        raise ValueError(f"unsupported source soundness class: {value}")
+    return normalized
 
 
 def _git(*args: str) -> str:
@@ -374,7 +434,13 @@ def _plot_required_figures(run_root: Path) -> None:
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(7.5, 5.0))
-    eligible = [row for row in scaling if row["lane"] == "fixed_support" and row["eligible"]]
+    eligible = [
+        row
+        for row in scaling
+        if row["lane"] == "fixed_support"
+        and row["performance_measurement_eligible"]
+        and row["requested_horizon_completed"]
+    ]
     for device, marker in (("cpu", "o"), ("cuda_v100", "s")):
         rows = [row for row in eligible if row["device_group"] == device]
         throughput = [row["batch"] * 10 / row["warm_min_s"] for row in rows]
@@ -409,8 +475,18 @@ def _collect_scaling(run_root: Path) -> list[dict[str, Any]]:
                 timing = value.get("cold_warm_core_process_runtime", value.get("timing", {}))
                 widths = value.get("endpoint_tube_polynomial_remainder_widths", {})
                 endpoint_width = widths.get("endpoint_width", [])
+                completed = bool(
+                    value.get(
+                        "eligible_full_horizon",
+                        value.get("accepted_all_batches", False),
+                    )
+                )
+                soundness_class = _normalized_soundness_class(
+                    value.get("soundness_classification", "unknown")
+                )
                 rows.append(
                     {
+                        "track": "F",
                         "lane": lane,
                         "device_group": device_group,
                         "device": value["dtype_device"]["device"],
@@ -421,7 +497,6 @@ def _collect_scaling(run_root: Path) -> list[dict[str, Any]]:
                         "requested_horizon": value.get("requested_horizon", value.get("h")),
                         "validated_horizon": value.get("validated_horizon", value.get("h") if value.get("accepted_all_batches") else 0),
                         "completion": value.get("completion_status", value.get("status")),
-                        "eligible": bool(value.get("eligible_full_horizon", value.get("accepted_all_batches", False))),
                         "cold_s": timing.get("cold_s", timing.get("cold_first_call_s")),
                         "warm_min_s": timing.get("warm_min_s"),
                         "warm_median_s": timing.get("warm_median_s"),
@@ -434,12 +509,34 @@ def _collect_scaling(run_root: Path) -> list[dict[str, Any]]:
                         "host_synchronizations": value.get("host_synchronizations", "aggregate inclusion gates and trace extraction"),
                         "source_sha": value.get("source_sha"),
                         "artifact": path.relative_to(run_root).as_posix(),
+                        **_eligibility_fields(
+                            mathematical_contract_known=True,
+                            requested_horizon_completed=completed,
+                            certificate_semantics_passed=completed,
+                            finite_outputs=True,
+                            numerical_soundness_class=soundness_class,
+                            numerical_soundness_scope=(
+                                "multi-step lane"
+                                if lane == "fixed_support"
+                                else "primitive"
+                            ),
+                            formal_claim_eligible=False,
+                            performance_measurement_eligible=True,
+                            cross_tool_ranking_eligible=False,
+                        ),
                     }
                 )
     return rows
 
 
-def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifact: str) -> dict[str, Any]:
+def _horizon_row(
+    lane: str,
+    summary: Mapping[str, Any],
+    requested: float,
+    artifact: str,
+    *,
+    numerical_soundness_class: str,
+) -> dict[str, Any]:
     _require_fields(
         summary,
         ("completed_requested_horizon", "requested_horizon", "accepted_steps", "runtime_s"),
@@ -452,6 +549,7 @@ def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifa
         )
     completed = bool(summary.get("completed_requested_horizon"))
     return {
+        "track": "F",
         "lane": lane,
         "requested_horizon": recorded_requested,
         "validated_horizon": _validated_horizon(summary),
@@ -466,6 +564,23 @@ def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifa
         "fallback_count": summary.get("fallback_count"),
         "repair_used": summary.get("endpoint_repair_used"),
         "artifact": artifact,
+        **_eligibility_fields(
+            mathematical_contract_known=True,
+            requested_horizon_completed=completed,
+            certificate_semantics_passed=completed,
+            finite_outputs=True,
+            numerical_soundness_class=_normalized_soundness_class(
+                numerical_soundness_class
+            ),
+            numerical_soundness_scope="multi-step lane",
+            formal_claim_eligible=completed and numerical_soundness_class
+            in {
+                "formally outward by construction",
+                "safeguarded outward under declared IEEE/backend assumptions",
+            },
+            performance_measurement_eligible=True,
+            cross_tool_ranking_eligible=False,
+        ),
     }
 
 
@@ -507,6 +622,66 @@ def build(run_root: Path) -> None:
         ("flowstar_stock", "diffreach_stock", "torch_authoritative_complete_o4"),
         label="native lanes",
     )
+    native_flow = lanes["flowstar_stock"]
+    native_flow["soundness_classification"] = _normalized_soundness_class(
+        native_flow["soundness_classification"]
+    )
+    native_flow["track"] = "N"
+    native_flow.update(
+        _eligibility_fields(
+            mathematical_contract_known=True,
+            requested_horizon_completed=native_flow["status"] == "completed",
+            certificate_semantics_passed=bool(native_flow["reported_property"]),
+            finite_outputs=True,
+            numerical_soundness_class=_normalized_soundness_class(
+                native_flow["soundness_classification"]
+            ),
+            numerical_soundness_scope="native build",
+            formal_claim_eligible=False,
+            performance_measurement_eligible=True,
+            cross_tool_ranking_eligible=False,
+        )
+    )
+    native_diff = lanes["diffreach_stock"]
+    native_diff["soundness_classification"] = _normalized_soundness_class(
+        native_diff["soundness_classification"]
+    )
+    native_diff["track"] = "N"
+    native_diff.update(
+        _eligibility_fields(
+            mathematical_contract_known=True,
+            requested_horizon_completed=native_diff["status"] == "completed",
+            certificate_semantics_passed=False,
+            finite_outputs=True,
+            numerical_soundness_class=_normalized_soundness_class(
+                native_diff["soundness_classification"]
+            ),
+            numerical_soundness_scope="native build",
+            formal_claim_eligible=False,
+            performance_measurement_eligible=True,
+            cross_tool_ranking_eligible=False,
+        )
+    )
+    native_complete = lanes["torch_authoritative_complete_o4"]
+    native_complete["soundness_classification"] = _normalized_soundness_class(
+        native_complete["soundness_classification"]
+    )
+    native_complete["track"] = "N"
+    native_complete.update(
+        _eligibility_fields(
+            mathematical_contract_known=True,
+            requested_horizon_completed=False,
+            certificate_semantics_passed=False,
+            finite_outputs=True,
+            numerical_soundness_class=_normalized_soundness_class(
+                native_complete["soundness_classification"]
+            ),
+            numerical_soundness_scope="multi-step lane",
+            formal_claim_eligible=False,
+            performance_measurement_eligible=True,
+            cross_tool_ranking_eligible=False,
+        )
+    )
     native["derived_root_copy"] = {"source": native_source.relative_to(run_root).as_posix(), "source_sha256": sha256_file(native_source)}
     _write_json(run_root / "native_baselines.json", native)
 
@@ -516,6 +691,7 @@ def build(run_root: Path) -> None:
         run_root / "matched_contract.json",
         {
             "schema": "torch_tm_matched_contract_result_v1",
+            "track": "M",
             "contract_source": str(matched_yaml.relative_to(ROOT)),
             "contract_sha256": sha256_file(matched_yaml),
             "contract": matched,
@@ -529,6 +705,17 @@ def build(run_root: Path) -> None:
                 "torch_fixed": "expressible in framework; native-like fixed support, B64, h=.01",
             },
             "ranked": False,
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=False,
+                finite_outputs=True,
+                numerical_soundness_class="unknown",
+                numerical_soundness_scope="fixed workload",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
     )
 
@@ -544,6 +731,7 @@ def build(run_root: Path) -> None:
         run_root / "operator_equivalence.json",
         {
             "schema": "torch_tm_operator_equivalence_v1",
+            "track": "M",
             "fixed_support": fixed_eq,
             "common_basis": common_summary,
             "complete_carry_one_step": one_step,
@@ -552,6 +740,19 @@ def build(run_root: Path) -> None:
                 "common_basis": "qualified" if common_qualified else "mismatch",
                 "complete_carry": "zero one-step mismatch" if carry_qualified else "mismatch",
             },
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=(
+                    fixed_qualified and common_qualified and carry_qualified
+                ),
+                finite_outputs=True,
+                numerical_soundness_class="empirically sampled only",
+                numerical_soundness_scope="one step",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
     )
 
@@ -606,13 +807,32 @@ def build(run_root: Path) -> None:
         4.0: "final_da21a9e_t4", 6.0: "final_da21a9e_t6", 6.5: "final_da21a9e_t6p5",
         7.5: "final_da21a9e_t7p5", 10.0: "final_da21a9e_t10_fresh",
     }
+    complete_soundness = lanes["torch_authoritative_complete_o4"][
+        "soundness_classification"
+    ]
     horizon_rows = []
     for horizon, directory in baseline_dirs.items():
         relative = f"01_native_baselines/{directory}/summary.json"
-        horizon_rows.append(_horizon_row("torch_complete_o4_frozen_natural", _json(run_root / relative), horizon, relative))
+        horizon_rows.append(
+            _horizon_row(
+                "torch_complete_o4_frozen_natural",
+                _json(run_root / relative),
+                horizon,
+                relative,
+                numerical_soundness_class=complete_soundness,
+            )
+        )
     for horizon, directory in candidate_dirs.items():
         relative = f"04_generic_carry_candidate/{directory}/summary.json"
-        horizon_rows.append(_horizon_row("torch_complete_o4_complete_carry", _json(run_root / relative), horizon, relative))
+        horizon_rows.append(
+            _horizon_row(
+                "torch_complete_o4_complete_carry",
+                _json(run_root / relative),
+                horizon,
+                relative,
+                numerical_soundness_class=complete_soundness,
+            )
+        )
     fixed_ladder_paths = {
         0.1: "05_batch_scaling/fixed_support/cpu_b64/summary.json",
         0.5: "07_fixed_support_ladder/t0p5_gpu0/summary.json",
@@ -627,8 +847,11 @@ def build(run_root: Path) -> None:
         if not path.is_file():
             raise ValueError(f"referenced fixed-support ladder summary absent: {path}")
         summary = _json(path)
+        fixed_completed = summary["completion_status"] == "completed"
+        fixed_certificate_passed = summary["certificate_status"] == "passed"
         horizon_rows.append(
             {
+                "track": "F",
                 "lane": "torch_fixed_dr7_b64",
                 "requested_horizon": horizon,
                 "validated_horizon": summary["validated_horizon"],
@@ -643,6 +866,19 @@ def build(run_root: Path) -> None:
                 "fallback_count": 0,
                 "repair_used": False,
                 "artifact": relative,
+                **_eligibility_fields(
+                    mathematical_contract_known=True,
+                    requested_horizon_completed=fixed_completed,
+                    certificate_semantics_passed=fixed_certificate_passed,
+                    finite_outputs=True,
+                    numerical_soundness_class=_normalized_soundness_class(
+                        summary["soundness_classification"]
+                    ),
+                    numerical_soundness_scope="multi-step lane",
+                    formal_claim_eligible=False,
+                    performance_measurement_eligible=True,
+                    cross_tool_ranking_eligible=False,
+                ),
             }
         )
     _write_csv(run_root / "short_horizon.csv", [row for row in horizon_rows if row["requested_horizon"] <= 1.0])
@@ -654,6 +890,7 @@ def build(run_root: Path) -> None:
     full_rows.extend(
         [
             {
+                "track": "N",
                 "lane": "stock_flowstar_native",
                 "requested_horizon": requested_horizon,
                 "validated_horizon": flow_lane["validated_horizon"],
@@ -667,8 +904,24 @@ def build(run_root: Path) -> None:
                 "runtime_s": flow_lane["core_runtime_s"],
                 "soundness": flow_lane["soundness_classification"],
                 "artifact": "01_native_baselines/native_baselines.json",
+                **_eligibility_fields(
+                    mathematical_contract_known=True,
+                    requested_horizon_completed=(
+                        float(flow_lane["validated_horizon"]) >= requested_horizon
+                    ),
+                    certificate_semantics_passed=bool(flow_lane["reported_property"]),
+                    finite_outputs=True,
+                    numerical_soundness_class=_normalized_soundness_class(
+                        flow_lane["soundness_classification"]
+                    ),
+                    numerical_soundness_scope="native build",
+                    formal_claim_eligible=False,
+                    performance_measurement_eligible=True,
+                    cross_tool_ranking_eligible=False,
+                ),
             },
             {
+                "track": "N",
                 "lane": "stock_diffreach_native",
                 "requested_horizon": requested_horizon,
                 "validated_horizon": diff_lane["validated_horizon"],
@@ -683,18 +936,70 @@ def build(run_root: Path) -> None:
                 "runtime_s": diff_lane["timing_s"]["verification_after_jit"],
                 "soundness": diff_lane["soundness_classification"],
                 "artifact": "01_native_baselines/native_baselines.json",
+                **_eligibility_fields(
+                    mathematical_contract_known=True,
+                    requested_horizon_completed=(
+                        float(diff_lane["validated_horizon"]) >= requested_horizon
+                    ),
+                    certificate_semantics_passed=(
+                        "masks_not_returned"
+                        not in diff_lane["later_round_failure_semantics"]
+                    ),
+                    finite_outputs=True,
+                    numerical_soundness_class=_normalized_soundness_class(
+                        diff_lane["soundness_classification"]
+                    ),
+                    numerical_soundness_scope="native build",
+                    formal_claim_eligible=False,
+                    performance_measurement_eligible=True,
+                    cross_tool_ranking_eligible=False,
+                ),
             },
         ]
     )
     fixed_t10_path = run_root / "02_fixed_support/cpu_b64_t10/summary.json"
     fixed_t10 = _json(fixed_t10_path)
+    fixed_t10_completed = fixed_t10["completion_status"] == "completed"
+    fixed_t10_certificate = fixed_t10["certificate_status"] == "passed"
     full_rows.append(
-        {"lane": "torch_fixed_dr7_b64", "requested_horizon": 10, "validated_horizon": fixed_t10["validated_horizon"], "completion_status": fixed_t10["completion_status"], "certificate_status": fixed_t10["certificate_status"], "accepted_steps": fixed_t10["accepted_rejected_steps"]["accepted"], "runtime_s": fixed_t10["cold_warm_core_process_runtime"]["cold_s"], "soundness": fixed_t10["soundness_classification"], "artifact": fixed_t10_path.relative_to(run_root).as_posix()}
+        {
+            "track": "F",
+            "lane": "torch_fixed_dr7_b64",
+            "requested_horizon": fixed_t10["requested_horizon"],
+            "validated_horizon": fixed_t10["validated_horizon"],
+            "completion_status": fixed_t10["completion_status"],
+            "certificate_status": fixed_t10["certificate_status"],
+            "accepted_steps": fixed_t10["accepted_rejected_steps"]["accepted"],
+            "runtime_s": fixed_t10["cold_warm_core_process_runtime"]["cold_s"],
+            "soundness": fixed_t10["soundness_classification"],
+            "artifact": fixed_t10_path.relative_to(run_root).as_posix(),
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=fixed_t10_completed,
+                certificate_semantics_passed=fixed_t10_certificate,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    fixed_t10["soundness_classification"]
+                ),
+                numerical_soundness_scope="multi-step lane",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
+        }
     )
     final_baseline = run_root / "06_final_baseline_ladder/torch_complete_o4_adaptive_t10_fresh/summary.json"
     if not final_baseline.is_file():
         raise ValueError(f"referenced final baseline absent: {final_baseline}")
-    full_rows.append(_horizon_row("torch_complete_o4_adaptive_final", _json(final_baseline), 10.0, final_baseline.relative_to(run_root).as_posix()))
+    full_rows.append(
+        _horizon_row(
+            "torch_complete_o4_adaptive_final",
+            _json(final_baseline),
+            10.0,
+            final_baseline.relative_to(run_root).as_posix(),
+            numerical_soundness_class=complete_soundness,
+        )
+    )
     _write_csv(run_root / "full_horizon.csv", full_rows)
 
     causal = _json(run_root / "03_flowstar_causal_divergence/common_basis_final/counterfactuals.json")
@@ -717,14 +1022,15 @@ def build(run_root: Path) -> None:
             "warm_median_s": row["warm_median_s"], "warm_max_s": row["warm_max_s"],
             "process_startup_import_s": "included only in fresh process, not isolated here",
             "compile_jit_s": "none for eager Torch lane", "cuda_synchronized": row["device_group"] == "cuda_v100",
-            "eligible_cross_tool_deployment_claim": False,
+            "performance_measurement_eligible": row["performance_measurement_eligible"],
+            "cross_tool_ranking_eligible": row["cross_tool_ranking_eligible"],
         }
         for row in scaling
     ]
     timing_rows.extend(
         [
-            {"lane": "stock_flowstar_native", "device": "cpu", "batch": 1, "boundary": "native reported certification core", "cold_s": "UNAVAILABLE", "warm_min_s": lanes["flowstar_stock"]["core_runtime_s"], "process_startup_import_s": "UNAVAILABLE", "compile_jit_s": "not applicable", "eligible_cross_tool_deployment_claim": False},
-            {"lane": "stock_diffreach_native", "device": "V100", "batch": 64, "boundary": "native verification", "cold_s": lanes["diffreach_stock"]["timing_s"]["verification_warmup"], "warm_min_s": lanes["diffreach_stock"]["timing_s"]["verification_after_jit"], "compile_jit_s": "included in warmup", "eligible_cross_tool_deployment_claim": False},
+            {"lane": "stock_flowstar_native", "device": "cpu", "batch": 1, "boundary": "native reported certification core", "cold_s": "UNAVAILABLE", "warm_min_s": lanes["flowstar_stock"]["core_runtime_s"], "process_startup_import_s": "UNAVAILABLE", "compile_jit_s": "not applicable", "performance_measurement_eligible": True, "cross_tool_ranking_eligible": False},
+            {"lane": "stock_diffreach_native", "device": "V100", "batch": 64, "boundary": "native verification", "cold_s": lanes["diffreach_stock"]["timing_s"]["verification_warmup"], "warm_min_s": lanes["diffreach_stock"]["timing_s"]["verification_after_jit"], "compile_jit_s": "included in warmup", "performance_measurement_eligible": True, "cross_tool_ranking_eligible": False},
         ]
     )
     fresh_path = run_root / "08_fresh_process_timing/fresh_process_timing.json"
@@ -745,7 +1051,8 @@ def build(run_root: Path) -> None:
                         "startup_import_config_serialization_composite_s"
                     ],
                     "compile_jit_s": row["compile_jit_s"],
-                    "eligible_cross_tool_deployment_claim": False,
+                    "performance_measurement_eligible": True,
+                    "cross_tool_ranking_eligible": False,
             }
         )
     _write_csv(run_root / "timing.csv", timing_rows)
@@ -755,46 +1062,120 @@ def build(run_root: Path) -> None:
     soundness = [
         {
             "lane": "stock_flowstar_native",
-            "classification": flow_lane["soundness_classification"],
             "basis": flow_lane["qualification"]["gate"],
-            "formal_completion_claim": flow_lane["primary_formal_comparison_eligible"],
+            "formal_claim_scope": "none",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    flow_lane["soundness_classification"]
+                ),
+                numerical_soundness_scope="native build",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "lane": "stock_diffreach_native",
-            "classification": diff_lane["soundness_classification"],
             "basis": diff_lane["dtype_device"],
-            "formal_completion_claim": False,
+            "formal_claim_scope": "none",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=False,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    diff_lane["soundness_classification"]
+                ),
+                numerical_soundness_scope="native build",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "lane": "torch_fixed_ordinary_cpu_cuda",
-            "classification": replay["ordinary_lane_classification"],
             "basis": "ordinary_binary64_directly_qualified="
             f"{replay['ordinary_binary64_directly_qualified']}",
-            "formal_completion_claim": False,
+            "formal_claim_scope": "none",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=bool(fixed_eq["full_t10"]["completed"]),
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    replay["ordinary_lane_classification"]
+                ),
+                numerical_soundness_scope="multi-step lane",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "lane": "torch_fixed_2ulp_companion_one_step",
-            "classification": replay["replay_envelope_classification"],
             "basis": replay["arithmetic"],
-            "formal_completion_claim": replay["scope"],
+            "formal_claim_scope": replay["scope"],
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=bool(replay["replay_envelope_qualified"]),
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    replay["replay_envelope_classification"]
+                ),
+                numerical_soundness_scope="one step",
+                formal_claim_eligible=bool(replay["replay_envelope_qualified"]),
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "lane": "torch_complete_o4_baseline",
-            "classification": complete_lane["soundness_classification"],
             "basis": complete_lane["range_policy"],
-            "formal_completion_claim": (
+            "formal_claim_scope": (
                 f"validated prefix {complete_lane['highest_validated_horizon']} only"
+            ),
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    complete_lane["soundness_classification"]
+                ),
+                numerical_soundness_scope="multi-step lane",
+                formal_claim_eligible=True,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
             ),
         },
         {
             "lane": "complete_polynomial_carry_primitive",
-            "classification": (
+            "basis": "endpoint coefficient preservation from one-step grid",
+            "formal_claim_scope": "primitive only; surrounding dense arithmetic separate",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=bool(
+                    one_step["all_candidate_carries_preserve_endpoint_coefficients"]
+                ),
+                finite_outputs=True,
+                numerical_soundness_class=(
                 "formally outward by construction"
                 if one_step["all_candidate_carries_preserve_endpoint_coefficients"]
                 else "unknown"
+                ),
+                numerical_soundness_scope="primitive",
+                formal_claim_eligible=bool(
+                    one_step["all_candidate_carries_preserve_endpoint_coefficients"]
+                ),
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
             ),
-            "basis": "endpoint coefficient preservation from one-step grid",
-            "formal_completion_claim": "primitive only; surrounding dense arithmetic separate",
         },
     ]
     _write_csv(run_root / "soundness_matrix.csv", soundness)
@@ -802,43 +1183,130 @@ def build(run_root: Path) -> None:
     claims = [
         {
             "claim": "native entrypoints reproduced",
+            "track": "N",
             "status": "valid" if all(
                 lane["status"] == "completed" for lane in (flow_lane, diff_lane)
             ) else "invalid",
             "scope": "own contracts",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=False,
+                finite_outputs=True,
+                numerical_soundness_class="unknown",
+                numerical_soundness_scope="fixed workload",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "Torch fixed explicit-f64 operators reproduce DiffReach",
+            "track": "M",
             "status": "valid" if fixed_qualified else "invalid",
             "scope": "frozen fixture and declared full lane",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=fixed_qualified,
+                finite_outputs=True,
+                numerical_soundness_class="empirically sampled only",
+                numerical_soundness_scope="fixed workload",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "first native split is raw candidate remainder",
+            "track": "M",
             "status": "valid" if "raw Picard remainder" in causal_stage else "invalid",
             "scope": causal_stage,
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class="empirically sampled only",
+                numerical_soundness_scope="one step",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "complete polynomial carry improves horizon",
+            "track": "F",
             "status": "valid" if candidate_decision == "CANDIDATE_PROMOTED" else "invalid",
             "scope": f"candidate validated horizon {_validated_horizon(candidate_failure)}",
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=False,
+                finite_outputs=True,
+                numerical_soundness_class="formally outward by construction",
+                numerical_soundness_scope="multi-step lane",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "Torch globally faster or tighter than Flow*",
+            "track": "N",
             "status": "valid" if matched.get("ranked", False) else "invalid",
             "scope": "contracts and eligibility differ",
+            **_eligibility_fields(
+                mathematical_contract_known=False,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=False,
+                finite_outputs=True,
+                numerical_soundness_class="unknown",
+                numerical_soundness_scope="fixed workload",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=False,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "ordinary CUDA is universally outward",
+            "track": "F",
             "status": "valid" if replay["ordinary_binary64_directly_qualified"] else "invalid",
             "scope": replay["scope"],
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class="empirically sampled only",
+                numerical_soundness_scope="fixed workload",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "stock Flow* is primary formal comparator",
+            "track": "N",
             "status": "valid" if flow_lane["primary_formal_comparison_eligible"] else "blocked",
             "scope": flow_lane["qualification"]["gate"],
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=True,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class=_normalized_soundness_class(
+                    flow_lane["soundness_classification"]
+                ),
+                numerical_soundness_scope="native build",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
         {
             "claim": "multi-step complete lane scales to B512",
+            "track": "F",
             "status": "blocked" if any(
                 "not a multi-step certificate" in str(row.get("scope_limitation", ""))
                 for row in [
@@ -848,6 +1316,17 @@ def build(run_root: Path) -> None:
             "scope": _json(
                 run_root / "05_batch_scaling/complete_carry/cpu_b512/summary.json"
             )["scope_limitation"],
+            **_eligibility_fields(
+                mathematical_contract_known=True,
+                requested_horizon_completed=False,
+                certificate_semantics_passed=True,
+                finite_outputs=True,
+                numerical_soundness_class="empirically sampled only",
+                numerical_soundness_scope="primitive",
+                formal_claim_eligible=False,
+                performance_measurement_eligible=True,
+                cross_tool_ranking_eligible=False,
+            ),
         },
     ]
     _write_csv(run_root / "claim_registry.csv", claims)

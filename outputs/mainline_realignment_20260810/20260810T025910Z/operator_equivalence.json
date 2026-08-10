@@ -1,4 +1,5 @@
 {
+  "certificate_semantics_passed": true,
   "common_basis": {
     "common_basis_comparison": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/common_basis_comparison.json",
     "common_basis_sha256": "9279e7c5ef8b9f78a0cedcbc8ff402d5b5fea2f250abb5ea9921c9d7d7e0ddd2",
@@ -24,11 +25,13 @@
     "artifact": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/04_generic_carry_candidate/one_step_grid_final/one_step_grid.json",
     "sha256": "661d26d5d21e39feb009a4aa83733466179949a9d1ac57af5e73571ef16b4c11"
   },
+  "cross_tool_ranking_eligible": false,
   "decisions": {
     "common_basis": "qualified",
     "complete_carry": "zero one-step mismatch",
     "fixed_support": "qualified"
   },
+  "finite_outputs": true,
   "fixed_support": {
     "cuda_short": {
       "batch": 64,
@@ -175,5 +178,12 @@
     },
     "torch_source_sha": "ac970b771a43c24587a70ab97eb08a71036c613b"
   },
-  "schema": "torch_tm_operator_equivalence_v1"
+  "formal_claim_eligible": false,
+  "mathematical_contract_known": true,
+  "numerical_soundness_class": "empirically sampled only",
+  "numerical_soundness_scope": "one step",
+  "performance_measurement_eligible": false,
+  "requested_horizon_completed": false,
+  "schema": "torch_tm_operator_equivalence_v1",
+  "track": "M"
 }

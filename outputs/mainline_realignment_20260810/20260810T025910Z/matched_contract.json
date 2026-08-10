@@ -1,4 +1,5 @@
 {
+  "certificate_semantics_passed": false,
   "contract": {
     "common_row_fields": [
       "tool",
@@ -133,12 +134,21 @@
   },
   "contract_sha256": "7fc0a4ae2982cb4787480333882949a02d0e8bc1b152e04c6969f0a50e162c40",
   "contract_source": "benchmarks/vdp_three_lane_contract_20260810.yaml",
+  "cross_tool_ranking_eligible": false,
   "expressibility": {
     "diffreach_stock": "native official VDP expressible with B64/fixed h; stock tube and later masks unavailable",
     "flowstar_stock": "native official VDP expressible; tubes only; formal stock numerical gate fails",
     "torch_complete": "expressible; partial at 6.397083942944808",
     "torch_fixed": "expressible in framework; native-like fixed support, B64, h=.01"
   },
+  "finite_outputs": true,
+  "formal_claim_eligible": false,
+  "mathematical_contract_known": true,
+  "numerical_soundness_class": "unknown",
+  "numerical_soundness_scope": "fixed workload",
+  "performance_measurement_eligible": false,
   "ranked": false,
-  "schema": "torch_tm_matched_contract_result_v1"
+  "requested_horizon_completed": false,
+  "schema": "torch_tm_matched_contract_result_v1",
+  "track": "M"
 }

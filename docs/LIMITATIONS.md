@@ -5,7 +5,9 @@
   table.
 - The pinned stock Flow* VDP completes, but a clean scalar-affine MPFR oracle
   finds under-enclosure up to `3.4938679727147814e-10`; that build is
-  `unsound/ineligible` for the primary formal comparison.
+  `unsound/ineligible on a demonstrated counterexample` for the pinned native
+  build and demonstrated workload. This is not a claim that the Flow* abstract
+  algorithm is unsound.
 - Stock DiffReach exposes initial DR-RP masks but not every later retain mask in
   its public result. It also mixes default float32 builders with JAX x64.
 - Ordinary Torch/JAX/CUDA float64 is not universally directed-rounded. The

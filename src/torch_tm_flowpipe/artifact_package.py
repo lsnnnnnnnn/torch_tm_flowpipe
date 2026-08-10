@@ -62,6 +62,19 @@ REQUIRED_RAW_FILES = (
 CANONICAL_RUN_RELATIVE = Path(
     "outputs/mainline_realignment_20260810/20260810T025910Z"
 )
+ALLOWED_NUMERICAL_SOUNDNESS_CLASSES = frozenset(
+    {
+        "formally outward by construction",
+        "safeguarded outward under declared IEEE/backend assumptions",
+        "independently outward replayed for exact benchmark workload",
+        "empirically sampled only",
+        "unsound/ineligible on a demonstrated counterexample",
+        "unknown",
+    }
+)
+ALLOWED_NUMERICAL_SOUNDNESS_SCOPES = frozenset(
+    {"primitive", "one step", "fixed workload", "multi-step lane", "native build"}
+)
 _MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 _BACKTICK_CANONICAL_PATH = re.compile(
     r"`(outputs/mainline_realignment_20260810/20260810T025910Z/[^`]+)`"

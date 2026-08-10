@@ -1,4 +1,5 @@
 import ast
+import csv
 import shutil
 import subprocess
 import sys
@@ -7,6 +8,8 @@ from pathlib import Path
 import pytest
 
 from torch_tm_flowpipe.artifact_package import (
+    ALLOWED_NUMERICAL_SOUNDNESS_CLASSES,
+    ALLOWED_NUMERICAL_SOUNDNESS_SCOPES,
     CANONICAL_RUN_RELATIVE,
     REQUIRED_FIGURES,
     REQUIRED_MACHINE_FILES,
@@ -139,3 +142,43 @@ def test_committed_mainline_package_validates_in_clean_temporary_copy(tmp_path):
     } == {
         name: (run_root / name).read_bytes() for name in derived
     }
+
+
+def test_canonical_claim_and_soundness_rows_use_split_eligibility_schema():
+    repository_root = Path(__file__).resolve().parents[1]
+    run_root = repository_root / CANONICAL_RUN_RELATIVE
+    required = {
+        "mathematical_contract_known",
+        "requested_horizon_completed",
+        "certificate_semantics_passed",
+        "finite_outputs",
+        "numerical_soundness_class",
+        "numerical_soundness_scope",
+        "formal_claim_eligible",
+        "performance_measurement_eligible",
+        "cross_tool_ranking_eligible",
+    }
+    for filename in (
+        "soundness_matrix.csv",
+        "claim_registry.csv",
+        "full_horizon.csv",
+        "batch_scaling.csv",
+    ):
+        with (run_root / filename).open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+        assert rows, filename
+        assert required <= rows[0].keys(), filename
+        assert "eligible" not in rows[0].keys(), filename
+        for row in rows:
+            assert row["numerical_soundness_class"] in ALLOWED_NUMERICAL_SOUNDNESS_CLASSES
+            assert row["numerical_soundness_scope"] in ALLOWED_NUMERICAL_SOUNDNESS_SCOPES
+
+    native = load_json_artifact(run_root / "native_baselines.json")
+    for lane in native["lanes"].values():
+        assert required <= lane.keys()
+        assert lane["numerical_soundness_class"] in ALLOWED_NUMERICAL_SOUNDNESS_CLASSES
+        assert lane["numerical_soundness_scope"] in ALLOWED_NUMERICAL_SOUNDNESS_SCOPES
+        assert lane["cross_tool_ranking_eligible"] is False
+    assert native["lanes"]["flowstar_stock"]["numerical_soundness_class"] == (
+        "unsound/ineligible on a demonstrated counterexample"
+    )

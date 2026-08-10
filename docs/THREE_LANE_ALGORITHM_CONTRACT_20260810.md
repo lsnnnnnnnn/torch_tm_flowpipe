@@ -54,18 +54,25 @@ soundness class, and artifact hashes.
 
 ## Eligibility
 
-A full-horizon row is eligible only when its mathematical contract is known,
-validated horizon equals requested horizon, every required inclusion passes,
-outputs are finite, no undeclared fallback/repair occurred, endpoint and tube
-semantics are not mixed, applicable properties were checked, and numerical
-soundness is explicit.  One-step ratios are never headline results.
+Eligibility is not one overloaded flag. Every machine row separately records
+`mathematical_contract_known`, `requested_horizon_completed`,
+`certificate_semantics_passed`, `finite_outputs`,
+`numerical_soundness_class`, `formal_claim_eligible`,
+`performance_measurement_eligible`, and `cross_tool_ranking_eligible`.
+Consequently an empirical fixed-support T10 row can complete and support an
+in-framework timing while remaining ineligible for a formal claim or a
+cross-tool ranking. One-step ratios are never headline results.
 
 The allowed soundness labels are exactly:
 
 ```text
 formally outward by construction
+safeguarded outward under declared IEEE/backend assumptions
 independently outward replayed for exact benchmark workload
 empirically sampled only
-unsound/ineligible
+unsound/ineligible on a demonstrated counterexample
 unknown
 ```
+
+Each classification also has exactly one scope: `primitive`, `one step`,
+`fixed workload`, `multi-step lane`, or `native build`.

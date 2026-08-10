@@ -111,7 +111,7 @@ and `c721ccf4c02099afd7064a79dd3235759f453df6c8315d2a4e8745ecd7ed3bb3`.
 | validator | stock interval Picard | DR-RP | raw-remainder-compatible inclusion |
 | carry | native normalization + symbolic queue | upstream normalization + symbolic queue | normalized insertion; no symbolic queue |
 | saved geometric object | tubes | endpoints | endpoint plus explicit tubes |
-| numerical qualification | `unsound/ineligible` for primary formal use after analytic counterexample | `empirically sampled only`; JAX x64 does not override the default float32 model builders | `formally outward by construction` for its Torch interval operations; lane still fails before T10 |
+| numerical qualification | `unsound/ineligible on a demonstrated counterexample` for this pinned native build after the analytic workload | `empirically sampled only`; JAX x64 does not override the default float32 model builders | `formally outward by construction` for its Torch interval operations; lane still fails before T10 |
 
 Consequently, completion and width values above answer whether each native
 entry point ran and what it emitted.  They do not establish a speed or

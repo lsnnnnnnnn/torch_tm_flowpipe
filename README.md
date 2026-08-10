@@ -12,7 +12,7 @@ points rather than treating one ambiguous `order` as a common algorithm:
   lane and a Flow*-like complete-total-degree lane.
 
 The active branch is
-`codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810`. The frozen
+`codex/structured-remainder-compiled-fixed-support-closure-20260810`. The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
 Adaptive DEF-CERT, obsolete winner/Pareto tables, and prior TORA-specific
 comparisons remain historical or rejected.
@@ -32,6 +32,12 @@ request. These native rows are not ranked: representations, validators, carry,
 partitions, output objects, timing, and numerical qualification differ. The
 stock Flow* build is itself ineligible for a primary formal claim after a
 scalar-affine MPFR counterexample.
+
+Machine reports separate mathematical-contract knowledge, requested-horizon
+completion, certificate semantics, finite output, numerical class/scope,
+formal-claim eligibility, performance eligibility, and cross-tool-ranking
+eligibility. Native (N), matched-contract (M), and in-framework factorial (F)
+rows remain separate.
 
 The first Flow*/Torch schedule split is now causally observed at
 `t=0.18187433604506256`: their transformed polynomial coefficients agree at

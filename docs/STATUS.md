@@ -1,20 +1,22 @@
 # Status
 
 Date: 2026-08-10
-Round: Flow*/DiffReach/Torch mainline realignment
-Decision: complete, with `CANDIDATE_REJECTED` and explicit soundness blockers
+Round: structured remainder and compiled fixed-support closure
+Decision: active; prior evidence package closed, new algorithm gates pending
 
 ## Gates
 
 | gate | status | evidence |
 |---|---|---|
-| direction correction | pass | Xiangru audit, TORA frozen reference, three-lane research contract |
-| native baselines | pass | stock Flow* T10, stock DiffReach T10, Torch complete-O4 failure boundary |
-| fixed-support Torch code | pass | configurable seven-slot descriptor, routes, Picard/DR-RP/carry, CPU/CUDA |
-| causal audit | pass | observation-only Flow* hook, common-basis transform, six counterfactuals |
-| generic improvement | pass as negative result | complete polynomial carry implemented; formal ladder and fresh T10; rejected |
-| performance/soundness | pass | actual-partition B1…512 CPU/V100, 1 cold + 5 warm, explicit classes |
-| delivery | pass locally; remote audit follows final push | baseline 441/2; final 469/2; compile/checksum gates pass |
+| repository anchors | pass | remote start `05ae30b4`; isolated worktree; pinned Flow*/DiffReach SHAs |
+| previous evidence closure | pass | 851-source-file recovery inventory; groups 03–08 tracked; clean-copy rebuild passes |
+| claim taxonomy | pass | completion, certificate, soundness, formal/performance/ranking eligibility split |
+| functional fixed core | pending | cached plan and tensor-only loop not yet implemented |
+| compiled fixed core | pending | no performance result claimed yet |
+| outward fixed reference | pending | one-step 2-ULP claim remains frozen |
+| structured S1 | pending | exact semantics must precede implementation |
+| terminal/horizon/generalization | pending | no new horizon run is eligible yet |
+| delivery | pending | final tests, artifacts, commits, push, and handoff remain |
 
 ## Scientific status
 
@@ -35,8 +37,8 @@ terminal integration-overflow and polynomial-truncation terms, with
 deterministic sound collapse and a frozen-prestate paired replay before any
 horizon sweep.
 
-Final local validation is `469 passed, 2 skipped in 60.87 s`; the two skips are
-the declared optional external-integration tests. `compileall` and
-`git diff --check` pass. The generated result package contains all 11 required
-machine files and eight figures; its repository-root checksum command is the
-last delivery gate before push.
+The verified starting baseline in the current worktree is `469 passed, 2
+skipped in 72.48 s`; the two skips are the declared optional external
+integration tests. The Phase-A package regression adds a clean temporary copy,
+checksum/manifest validation, and deterministic figure/table rebuild without
+running numerical reachability jobs.
