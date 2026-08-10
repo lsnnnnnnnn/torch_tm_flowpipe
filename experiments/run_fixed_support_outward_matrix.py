@@ -147,7 +147,7 @@ def main() -> int:
         "rows": rows,
         "process_max_rss_kib": int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss),
         "numerical_soundness_class": "safeguarded outward under declared IEEE/backend assumptions",
-        "numerical_soundness_scope": "primitive / reference multi-step lane",
+        "numerical_soundness_scope": "multi-step lane",
         "formal_claim_eligible": False,
         "performance_measurement_eligible": True,
         "cross_tool_ranking_eligible": False,
