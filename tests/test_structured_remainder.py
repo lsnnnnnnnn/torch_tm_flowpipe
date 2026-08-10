@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 import torch
 
+from torch_tm_flowpipe.batched_dense_tm import REMAINDER_LEDGER_CATEGORIES
 from torch_tm_flowpipe.structured_remainder import (
     STRUCTURED_REMAINDER_CAPACITY,
     initialize_structured_remainder_state,
@@ -43,16 +44,20 @@ def _update(
             lo = lo + source_lo
             hi = hi + source_hi
         validated = (lo, hi)
+    complete_sources = {
+        category: sources.get(category, (_zero(batch, dim), _zero(batch, dim)))
+        for category in REMAINDER_LEDGER_CATEGORIES
+    }
     return structured_remainder_boundary_update(
         state,
-        typed_sources=sources,
+        typed_sources=complete_sources,
         validated_remainder_lo=validated[0],
         validated_remainder_hi=validated[1],
-        linear_map_lo=linear,
-        linear_map_hi=linear,
+        A_old_normal_to_new_normal_lo=linear,
+        A_old_normal_to_new_normal_hi=linear,
         nonlinear_residual_lo=nonlinear[0],
         nonlinear_residual_hi=nonlinear[1],
-        normalization_scale=torch.ones((batch, dim), dtype=DTYPE),
+        new_forward_scale=torch.ones((batch, dim), dtype=DTYPE),
         boundary_index=boundary,
         map_is_affine=affine,
     )
@@ -147,16 +152,20 @@ def test_scalar_quadratic_and_cross_residual_bounds_analytic_corners():
 @pytest.mark.unit
 def test_nonlinear_map_requires_residual_and_materializes_it_once():
     state = initialize_structured_remainder_state(1, 1)
+    empty_sources = {
+        category: (_zero(1, 1), _zero(1, 1))
+        for category in REMAINDER_LEDGER_CATEGORIES
+    }
     missing = structured_remainder_boundary_update(
         state,
-        typed_sources={},
+        typed_sources=empty_sources,
         validated_remainder_lo=_zero(1, 1),
         validated_remainder_hi=_zero(1, 1),
-        linear_map_lo=_identity(1, 1),
-        linear_map_hi=_identity(1, 1),
+        A_old_normal_to_new_normal_lo=_identity(1, 1),
+        A_old_normal_to_new_normal_hi=_identity(1, 1),
         nonlinear_residual_lo=None,
         nonlinear_residual_hi=None,
-        normalization_scale=torch.ones((1, 1), dtype=DTYPE),
+        new_forward_scale=torch.ones((1, 1), dtype=DTYPE),
         boundary_index=0,
         map_is_affine=False,
     )
@@ -270,16 +279,20 @@ def test_k16_eviction_order_is_oldest_then_slot_and_conservative():
 @pytest.mark.unit
 def test_nonfinite_domain_and_dimension_fail_closed_without_state_mutation():
     state = initialize_structured_remainder_state(1, 2)
+    empty_sources = {
+        category: (_zero(1, 2), _zero(1, 2))
+        for category in REMAINDER_LEDGER_CATEGORIES
+    }
     bad_dimension = structured_remainder_boundary_update(
         state,
-        typed_sources={},
+        typed_sources=empty_sources,
         validated_remainder_lo=torch.zeros((1, 1), dtype=DTYPE),
         validated_remainder_hi=torch.zeros((1, 1), dtype=DTYPE),
-        linear_map_lo=_identity(1, 2),
-        linear_map_hi=_identity(1, 2),
+        A_old_normal_to_new_normal_lo=_identity(1, 2),
+        A_old_normal_to_new_normal_hi=_identity(1, 2),
         nonlinear_residual_lo=_zero(1, 2),
         nonlinear_residual_hi=_zero(1, 2),
-        normalization_scale=torch.ones((1, 2), dtype=DTYPE),
+        new_forward_scale=torch.ones((1, 2), dtype=DTYPE),
         boundary_index=0,
         map_is_affine=True,
     )

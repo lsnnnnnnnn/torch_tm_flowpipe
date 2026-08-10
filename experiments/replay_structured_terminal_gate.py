@@ -13,6 +13,7 @@ from typing import Any, Mapping
 
 import torch
 
+from torch_tm_flowpipe.batched_dense_tm import REMAINDER_LEDGER_CATEGORIES
 from torch_tm_flowpipe.structured_remainder import (
     ELIGIBLE_STRUCTURED_SOURCES,
     STRUCTURED_REMAINDER_CANDIDATE,
@@ -70,16 +71,20 @@ def _local_update(
     state = initialize_structured_remainder_state(batch, state_dim)
     identity = torch.eye(state_dim, dtype=torch.float64).expand(batch, -1, -1).clone()
     zero = torch.zeros_like(validated[0])
+    complete_sources = {
+        category: sources.get(category, (zero, zero))
+        for category in REMAINDER_LEDGER_CATEGORIES
+    }
     return structured_remainder_boundary_update(
         state,
-        typed_sources=sources,
+        typed_sources=complete_sources,
         validated_remainder_lo=validated[0],
         validated_remainder_hi=validated[1],
-        linear_map_lo=identity,
-        linear_map_hi=identity,
+        A_old_normal_to_new_normal_lo=identity,
+        A_old_normal_to_new_normal_hi=identity,
         nonlinear_residual_lo=zero,
         nonlinear_residual_hi=zero,
-        normalization_scale=torch.ones_like(zero),
+        new_forward_scale=torch.ones_like(zero),
         boundary_index=307,
         map_is_affine=True,
     )

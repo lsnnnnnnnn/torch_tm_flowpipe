@@ -1,0 +1,29 @@
+{
+  "schema": "torch_tm_flowpipe_validated_remainder_sources",
+  "version": 1,
+  "category_order": [
+    "initial_remainder",
+    "polynomial_truncation",
+    "cutoff",
+    "integration_overflow",
+    "composition_overflow",
+    "poly_times_remainder",
+    "remainder_times_poly",
+    "remainder_times_remainder",
+    "picard_residual",
+    "roundoff_safeguard",
+    "reset_or_reconditioning"
+  ],
+  "eligible_structured_categories": [
+    "polynomial_truncation",
+    "integration_overflow"
+  ],
+  "required_source_identity": [
+    "accepted_boundary_index",
+    "source_category",
+    "occurrence_index"
+  ],
+  "unknown_category_policy": "fail_closed",
+  "missing_category_policy": "fail_closed",
+  "category_order_policy": "canonical_deterministic"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "s1_complete_o4_oracle_results_v1",
+  "production_primitive": "complete_polynomial_structured_image",
+  "independent_oracle": "fraction_complete_polynomial_difference_oracle",
+  "independent_oracle_calls_production": false,
+  "outward_scope": "CPU IEEE-754 binary64 eager",
+  "focused_test_command": "conda run -n py11 pytest -q tests/test_complete_o4_structured_image.py",
+  "focused_test_result": "9 passed in 1.31s",
+  "cases": [
+    "constant_and_affine",
+    "harmonic_rotation",
+    "scalar_quadratic",
+    "bilinear_cross_state",
+    "scalar_cubic",
+    "vdp_style_x2_y",
+    "mixed_base_structured",
+    "degree_four_endpoint",
+    "asymmetric_structured_intervals",
+    "cancellation",
+    "subnormal_scale",
+    "duplicate_monomial_routes",
+    "endpoint_tau_point",
+    "tube_tau_interval",
+    "batch_permutation",
+    "nonfinite_failure"
+  ],
+  "assertions": {
+    "affine_map_plus_nonlinear_contains_total_difference": true,
+    "total_difference_contains_fraction_oracle": true,
+    "affine_nonlinear_residual_exact_zero": true,
+    "harmonic_nonlinear_residual_exact_zero": true,
+    "endpoint_contained_in_tube": true,
+    "all_structured_routes_covered": true
+  },
+  "gate_passed": true
+}

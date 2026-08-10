@@ -1,0 +1,13 @@
+{
+  "schema": "s1_typed_ledger_fixture_results_v1",
+  "command": "conda run -n py11 pytest -q tests/test_s1_typed_ledger_coordinates.py tests/test_structured_remainder.py tests/test_complete_o4_structured_image.py",
+  "result": "23 passed in 1.85s",
+  "accepted_dense_step_tensor_ledger": true,
+  "failed_dense_step_tensor_ledger": true,
+  "canonical_category_order": true,
+  "unknown_category_fails_closed": true,
+  "missing_category_fails_closed": true,
+  "physical_normal_roundtrip": true,
+  "inverse_scale_consumed": true,
+  "zero_scale_fails_closed_for_nonzero_source": true
+}
