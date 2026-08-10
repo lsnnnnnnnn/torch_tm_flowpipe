@@ -34,6 +34,9 @@ REMAINDER_LEDGER_CATEGORIES = (
     "reset_or_reconditioning",
 )
 
+VALIDATED_REMAINDER_SOURCE_SCHEMA = "torch_tm_flowpipe_validated_remainder_sources"
+VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION = 1
+
 _INTEGRATION_PLAN_CACHE: dict[
     tuple[int, int, str, int, torch.dtype],
     tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor],
@@ -135,11 +138,17 @@ class DenseRemainderLedger:
         unknown = set(self.entries) - set(REMAINDER_LEDGER_CATEGORIES)
         if unknown:
             raise ValueError(f"unknown remainder ledger categories: {sorted(unknown)}")
-        for name, (lo, hi) in self.entries.items():
+        canonical: dict[str, tuple[torch.Tensor, torch.Tensor]] = {}
+        for name in REMAINDER_LEDGER_CATEGORIES:
+            if name not in self.entries:
+                continue
+            lo, hi = self.entries[name]
             if lo.shape != hi.shape:
                 raise ValueError(f"ledger shape mismatch for {name}")
             if not bool(torch.all(lo <= hi)):
                 raise ValueError(f"invalid interval contribution for {name}")
+            canonical[name] = (lo.clone(), hi.clone())
+        object.__setattr__(self, "entries", canonical)
 
     @staticmethod
     def empty() -> "DenseRemainderLedger":
@@ -183,6 +192,21 @@ class DenseRemainderLedger:
         for entry_lo, entry_hi in self.entries.values():
             lo, hi = _interval_add(lo, hi, entry_lo, entry_hi)
         return lo, hi
+
+    def complete(self, like: torch.Tensor) -> "DenseRemainderLedger":
+        """Return the canonical schema with explicit zero rows for all categories."""
+        out = DenseRemainderLedger.empty()
+        for category in REMAINDER_LEDGER_CATEGORIES:
+            lo, hi = self.entries.get(
+                category,
+                (torch.zeros_like(like), torch.zeros_like(like)),
+            )
+            out = out.add(category, lo, hi)
+        return out
+
+    @property
+    def category_order(self) -> tuple[str, ...]:
+        return tuple(self.entries)
 
     def widths(self) -> dict[str, list[list[float]]]:
         return {
@@ -2474,6 +2498,38 @@ DenseRHS = Callable[[BatchedTaylorModel], Any]
 
 
 @dataclass(frozen=True)
+class DenseValidatedRemainderDecomposition:
+    """Tensor-native additive certificate for one final validation image."""
+
+    ledger: DenseRemainderLedger
+    decomposition_lo: torch.Tensor
+    decomposition_hi: torch.Tensor
+    padding_lo: torch.Tensor
+    padding_hi: torch.Tensor
+    contains_image: torch.Tensor
+    source_schema: str = VALIDATED_REMAINDER_SOURCE_SCHEMA
+    source_schema_version: int = VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION
+
+    def __post_init__(self) -> None:
+        if self.ledger.category_order != REMAINDER_LEDGER_CATEGORIES:
+            raise ValueError("validated remainder ledger must contain the complete canonical schema")
+        expected = self.decomposition_lo.shape
+        tensor_fields = (
+            self.decomposition_hi,
+            self.padding_lo,
+            self.padding_hi,
+        )
+        if any(value.shape != expected for value in tensor_fields):
+            raise ValueError("validated remainder decomposition tensor shapes disagree")
+        if self.contains_image.shape != expected[:1] or self.contains_image.dtype != torch.bool:
+            raise ValueError("validated remainder containment mask must have shape [batch]")
+        if self.source_schema != VALIDATED_REMAINDER_SOURCE_SCHEMA:
+            raise ValueError("validated remainder source schema mismatch")
+        if int(self.source_schema_version) != VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION:
+            raise ValueError("validated remainder source schema version mismatch")
+
+
+@dataclass(frozen=True)
 class DenseValidatedStep:
     """Fail-closed result of one dense local-time Picard/self-map solve."""
 
@@ -2490,6 +2546,9 @@ class DenseValidatedStep:
     picard_image_remainder_lo: torch.Tensor
     picard_image_remainder_hi: torch.Tensor
     subset_margin: torch.Tensor
+    validated_remainder_lo: torch.Tensor
+    validated_remainder_hi: torch.Tensor
+    validated_remainder_decomposition: DenseValidatedRemainderDecomposition
 
     @property
     def accepted(self) -> bool:
@@ -2753,7 +2812,12 @@ def _dense_flowstar_raw_compat_image(
     order: int,
     cutoff_threshold: float | None,
     validation_eps: float,
-) -> tuple[torch.Tensor, torch.Tensor, Mapping[str, Any]]:
+) -> tuple[
+    torch.Tensor,
+    torch.Tensor,
+    Mapping[str, Any],
+    DenseValidatedRemainderDecomposition,
+]:
     raw_rhs = _call_dense_raw_trace_rhs(
         rhs_fn,
         candidate_with_target,
@@ -2786,17 +2850,12 @@ def _dense_flowstar_raw_compat_image(
         scaled_lo, scaled_hi = _interval_mul(tau_lo, tau_hi, entry_lo, entry_hi)
         validated_ledger = validated_ledger.add(category, scaled_lo, scaled_hi)
     validated_ledger = validated_ledger.add("picard_residual", diff_lo, diff_hi)
-    decomposed_lo, decomposed_hi = validated_ledger.total(check_lo)
-    padding_lo = _down(torch.minimum(check_lo - decomposed_lo, torch.zeros_like(check_lo)))
-    padding_hi = _up(torch.maximum(check_hi - decomposed_hi, torch.zeros_like(check_hi)))
-    validated_ledger = validated_ledger.add(
-        "roundoff_safeguard", padding_lo, padding_hi
+    decomposition = _validated_remainder_decomposition(
+        validated_ledger,
+        check_lo,
+        check_hi,
     )
-    decomposed_lo, decomposed_hi = validated_ledger.total(check_lo)
-    decomposition_contains_image = bool(
-        torch.all(decomposed_lo <= check_lo) and torch.all(decomposed_hi >= check_hi)
-    )
-    if not decomposition_contains_image:
+    if not bool(torch.all(decomposition.contains_image)):
         raise FloatingPointError("raw compatibility source decomposition lost image containment")
     return check_lo, check_hi, {
         "raw_rhs_remainder_lo": raw_rhs.rem_lo.detach().cpu().tolist(),
@@ -2809,15 +2868,15 @@ def _dense_flowstar_raw_compat_image(
         "raw_remainder_ledger_intervals": raw_rhs.ledger.intervals(),
         "tmp_remainder_ledger_widths": tmp.ledger.widths(),
         "tmp_remainder_ledger_intervals": tmp.ledger.intervals(),
-        "validated_remainder_ledger_intervals": validated_ledger.intervals(),
-        "validated_remainder_decomposition_lo": decomposed_lo.detach().cpu().tolist(),
-        "validated_remainder_decomposition_hi": decomposed_hi.detach().cpu().tolist(),
-        "validated_remainder_decomposition_contains_image": decomposition_contains_image,
+        "validated_remainder_ledger_intervals": decomposition.ledger.intervals(),
+        "validated_remainder_decomposition_lo": decomposition.decomposition_lo.detach().cpu().tolist(),
+        "validated_remainder_decomposition_hi": decomposition.decomposition_hi.detach().cpu().tolist(),
+        "validated_remainder_decomposition_contains_image": bool(torch.all(decomposition.contains_image)),
         "validated_remainder_decomposition_semantics": (
             "additive outward split of the unchanged raw-compat image: base ledger + "
             "time-scaled raw RHS ledger + polynomial difference + rounding padding"
         ),
-    }
+    }, decomposition
 
 
 def dense_polynomial_picard(
@@ -2897,6 +2956,47 @@ def _inflate_tensor_interval(
     return _down(lo - eps), _up(hi + eps)
 
 
+def _validated_remainder_decomposition(
+    ledger: DenseRemainderLedger,
+    image_lo: torch.Tensor,
+    image_hi: torch.Tensor,
+) -> DenseValidatedRemainderDecomposition:
+    """Complete and outward-pad a tensor ledger around an unchanged image."""
+    complete = ledger.complete(image_lo)
+    zero = torch.zeros_like(image_lo)
+    finite_image = (
+        torch.isfinite(image_lo)
+        & torch.isfinite(image_hi)
+        & (image_lo <= image_hi)
+    ).all(dim=1)
+    if not bool(torch.all(finite_image)):
+        false = torch.zeros(image_lo.shape[0], dtype=torch.bool, device=image_lo.device)
+        return DenseValidatedRemainderDecomposition(
+            complete,
+            zero,
+            zero,
+            zero,
+            zero,
+            false,
+        )
+    decomposed_lo, decomposed_hi = complete.total(image_lo)
+    padding_lo = _down(torch.minimum(image_lo - decomposed_lo, zero))
+    padding_hi = _up(torch.maximum(image_hi - decomposed_hi, zero))
+    complete = complete.add("roundoff_safeguard", padding_lo, padding_hi)
+    decomposed_lo, decomposed_hi = complete.total(image_lo)
+    contains = (
+        (decomposed_lo <= image_lo) & (decomposed_hi >= image_hi)
+    ).all(dim=1)
+    return DenseValidatedRemainderDecomposition(
+        complete,
+        decomposed_lo,
+        decomposed_hi,
+        padding_lo,
+        padding_hi,
+        contains,
+    )
+
+
 def _subset_margin(
     outer_lo: torch.Tensor,
     outer_hi: torch.Tensor,
@@ -2973,6 +3073,11 @@ def dense_picard_validate_step(
     seed_lo, seed_hi = _inflate_tensor_interval(seed_lo, seed_hi, validation_eps)
     seed_margin = _subset_margin(target_lo, target_hi, seed_lo, seed_hi)
     empty_margin = torch.full_like(seed_margin, -torch.inf)
+    seed_decomposition = _validated_remainder_decomposition(
+        base_ext.ledger.merge(candidate.ledger),
+        seed_lo,
+        seed_hi,
+    )
     if not candidate.is_finite() or not bool(torch.all(torch.isfinite(seed_lo)) and torch.all(torch.isfinite(seed_hi))):
         return DenseValidatedStep(
             candidate,
@@ -2988,6 +3093,9 @@ def dense_picard_validate_step(
             seed_lo,
             seed_hi,
             empty_margin,
+            seed_lo,
+            seed_hi,
+            seed_decomposition,
         )
     if not bool(torch.all(seed_margin >= 0)):
         trace.append(
@@ -3013,6 +3121,9 @@ def dense_picard_validate_step(
             seed_lo,
             seed_hi,
             seed_margin,
+            seed_lo,
+            seed_hi,
+            seed_decomposition,
         )
 
     refined = validation_mode == "target_remainder_refined"
@@ -3020,6 +3131,7 @@ def dense_picard_validate_step(
     last_image_lo = seed_lo
     last_image_hi = seed_hi
     last_margin = seed_margin
+    last_decomposition = seed_decomposition
     last_segment_model = candidate.with_remainder(current_lo, current_hi, category="initial_remainder")
     last_rejection_reason = "Picard residual not subset of target remainder"
     for attempt in range(1, max_validation_attempts + 1):
@@ -3035,7 +3147,7 @@ def dense_picard_validate_step(
         ordinary_lo, ordinary_hi = _inflate_tensor_interval(ordinary_lo, ordinary_hi, validation_eps)
         compat_extra: Mapping[str, Any] = {}
         if validation_mode == "flowstar_raw_remainder_compat":
-            image_lo, image_hi, compat_extra = _dense_flowstar_raw_compat_image(
+            image_lo, image_hi, compat_extra, decomposition = _dense_flowstar_raw_compat_image(
                 rhs_fn,
                 base_ext,
                 candidate_with_remainder,
@@ -3047,6 +3159,11 @@ def dense_picard_validate_step(
             )
         else:
             image_lo, image_hi = ordinary_lo, ordinary_hi
+            decomposition = _validated_remainder_decomposition(
+                residual.ledger,
+                image_lo,
+                image_hi,
+            )
         finite = bool(
             torch.all(torch.isfinite(image_lo))
             and torch.all(torch.isfinite(image_hi))
@@ -3059,6 +3176,7 @@ def dense_picard_validate_step(
         target_subset = finite and bool(torch.all(target_margin >= 0))
         last_image_lo, last_image_hi = image_lo, image_hi
         last_margin = self_margin if refined else target_margin
+        last_decomposition = decomposition
         last_segment_model = candidate.with_remainder(image_lo, image_hi, category="picard_residual")
         rejection_reason = "" if self_subset else (
             "Flowstar raw remainder compat residual not subset of target remainder"
@@ -3126,6 +3244,9 @@ def dense_picard_validate_step(
                 image_lo,
                 image_hi,
                 last_margin,
+                image_lo,
+                image_hi,
+                decomposition,
             )
         if self_subset:
             endpoint = last_segment_model.endpoint(tau_index, float(h))
@@ -3143,6 +3264,9 @@ def dense_picard_validate_step(
                 image_lo,
                 image_hi,
                 last_margin,
+                image_lo,
+                image_hi,
+                decomposition,
             )
         if not refined or not target_subset:
             break
@@ -3166,6 +3290,9 @@ def dense_picard_validate_step(
         last_image_lo,
         last_image_hi,
         last_margin,
+        last_image_lo,
+        last_image_hi,
+        last_decomposition,
     )
 
 
@@ -3182,8 +3309,11 @@ __all__ = [
     "DenseExecutionCounters",
     "DenseRemainderLedger",
     "DenseTMContract",
+    "DenseValidatedRemainderDecomposition",
     "DenseValidatedStep",
     "REMAINDER_LEDGER_CATEGORIES",
+    "VALIDATED_REMAINDER_SOURCE_SCHEMA",
+    "VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION",
     "call_dense_rhs",
     "dense_picard_validate_step",
     "dense_polynomial_picard",

@@ -72,6 +72,13 @@ class FlowpipeSegment:
     candidate_remainder: Sequence[Sequence[float]] | None = None
     picard_image_remainder: Sequence[Sequence[float]] | None = None
     subset_margin: Sequence[Sequence[float]] | None = None
+    validated_remainder_ledger: Any | None = None
+    validated_remainder_decomposition: Any | None = None
+    structured_boundary_result: Any | None = None
+    structured_state_before: Any | None = None
+    structured_state_after: Any | None = None
+    endpoint_total_structured_remainder: Any | None = None
+    tube_total_structured_remainder: Any | None = None
 
     def __post_init__(self) -> None:
         # Older experiment helpers construct FlowpipeSegment directly.  Treat
@@ -3787,6 +3794,8 @@ def _flowpipe_step_from_tm_hybrid_dense(
         candidate_remainder=candidate_pair,
         picard_image_remainder=image_pair,
         subset_margin=dense_result.subset_margin.detach().cpu().tolist(),
+        validated_remainder_ledger=dense_result.validated_remainder_decomposition.ledger,
+        validated_remainder_decomposition=dense_result.validated_remainder_decomposition,
     )
 
 
