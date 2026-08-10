@@ -43,7 +43,10 @@ def _json(path: Path) -> Any:
 
 
 def _write_json(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(value, indent=2, sort_keys=True, default=str) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _write_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
@@ -339,6 +342,27 @@ def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifa
 
 
 def build(run_root: Path) -> None:
+    required_fixed_dir = run_root / "02_torch_diffreach_equivalence"
+    required_fixed_dir.mkdir(exist_ok=True)
+    fixed_sources = [
+        "02_fixed_support/fixed_support_equivalence.json",
+        "02_fixed_support/fraction_replay_cpu.json",
+        "02_fixed_support/fraction_replay_cuda.json",
+        "02_fixed_support/cpu_b64_t10/summary.json",
+        "02_fixed_support/cuda_b64_t0p1/summary.json",
+    ]
+    _write_json(
+        required_fixed_dir / "evidence_index.json",
+        {
+            "schema": "torch_tm_fixed_support_required_path_index_v1",
+            "canonical_raw_directory": "02_fixed_support",
+            "files": [
+                {"path": relative, "sha256": sha256_file(run_root / relative)}
+                for relative in fixed_sources
+            ],
+            "note": "This required-name directory is an index; raw files remain unmodified in their canonical directory.",
+        },
+    )
     native_source = run_root / "01_native_baselines/native_baselines.json"
     native = _json(native_source)
     native["derived_root_copy"] = {"source": native_source.relative_to(run_root).as_posix(), "source_sha256": sha256_file(native_source)}

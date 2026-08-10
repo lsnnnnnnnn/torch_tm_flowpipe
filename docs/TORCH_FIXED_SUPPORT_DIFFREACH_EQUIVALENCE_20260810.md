@@ -96,9 +96,13 @@ Torch also records geometric data absent from the stock DiffReach artifact:
 | full-horizon tube | `[-2.0115852688308564, 2.0574214109557194]` | `[-2.6891205817023787, 2.6857282956487234]` |
 
 The measured T10 CPU solver time was `97.92799484729767 s`, but that run
-overlapped other verification work and is not the isolated timing result used
-for a performance claim.  Isolated timing and batch scaling are deferred to
-the required performance matrix.
+overlapped other verification work and is not used for a performance claim.
+The isolated T=.1 matrix uses actual independent grid partitions, one cold and
+five warm repetitions at B=1/8/64/256/512. CPU warm minima are respectively
+`0.4772511`, `0.5004000`, `0.5164393`, `0.6014622`, and `0.6959472 s`;
+synchronized V100 minima are `1.2503044`, `1.2601698`, `1.2641291`,
+`1.2769445`, and `1.2596511 s`. All rows complete ten steps and pass every
+initial mask. No GPU speedup is claimed.
 
 ## Numerical soundness
 
@@ -123,4 +127,5 @@ Machine-readable closure is in
 `outputs/mainline_realignment_20260810/20260810T025910Z/02_fixed_support/fixed_support_equivalence.json`.
 The full CPU run is under `cpu_b64_t10/`, the CUDA short run under
 `cuda_b64_t0p1/`, and exact-rational reports are
-`fraction_replay_cpu.json` and `fraction_replay_cuda.json`.
+`fraction_replay_cpu.json` and `fraction_replay_cuda.json`. The isolated batch
+matrix is under `05_batch_scaling/fixed_support/`.

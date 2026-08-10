@@ -37,7 +37,7 @@ Replay-only term injection is guarded by separate environment variables and is
 not used on the logged/unlogged equivalence path.
 
 The final observer build used image SHA
-`6549fefc...` and binary SHA
+`6549fefc0ae934982bf902f6a1f6ee9a2baf0def2ee763b278f914e4bbd096bf` and binary SHA
 `6e4d4af60154239d7f281c367337f6ff52958ed146fb3ac1956b104b31e7f2ba`.
 Logged and unlogged official output is identical:
 
@@ -104,4 +104,3 @@ first native-validator split.
 Raw observers, exact replay inputs, common-basis coefficients, and all
 counterfactual outputs are under
 `outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/`.
-
