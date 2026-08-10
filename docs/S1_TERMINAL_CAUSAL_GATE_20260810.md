@@ -2,7 +2,7 @@
 
 Date: 2026-08-10
 
-Status: `not_run_after_stop`  
+Status: `not_run_after_stop`
 Primary outcome: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`
 
 The historical terminal prestate is at `t=6.397083942944808`, after 307

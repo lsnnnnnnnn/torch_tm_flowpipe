@@ -1,6 +1,6 @@
 # S1 complete-O4 prefix integration result
 
-Date: 2026-08-10  
+Date: 2026-08-10
 Primary outcome: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`
 
 ## Result
