@@ -1,0 +1,11 @@
+previous_sha256_manifest=outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/SHA256SUMS
+sha256_successful_entries=221
+sha256_command_exit=0
+
+focused_command=conda run -n py11 pytest -q tests/test_artifact_package.py::test_committed_mainline_package_validates_in_clean_temporary_copy tests/test_structured_closure_package.py
+focused_result=3 passed in 15.06s
+focused_exit=0
+
+full_command=conda run -n py11 pytest -q
+full_result=515 passed, 2 skipped in 251.30s (0:04:11)
+full_exit=0
