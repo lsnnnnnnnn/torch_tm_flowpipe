@@ -1987,8 +1987,91 @@ def _flowstar_structured_insertion_transition(
     right_poly_lo, right_poly_hi = _box_tensor(next_right.range_box())
     right_total = OutwardIntervalTensor(right_poly_lo, right_poly_hi).add(next_total)
     domain_gate = ((right_total.lo >= -1.0) & (right_total.hi <= 1.0)).all(dim=1)
+    renormalization_count = 0
+    # The baseline scale is formed from a binary64 interval magnitude.  A
+    # subsequent outward sum can therefore exceed one by a few ulps even when
+    # the represented physical set is unchanged.  Enlarge only the affected
+    # forward scales and transform every normalized owner together; this is a
+    # coordinate change, not a tolerance on the [-1,1] obligation.
+    while not bool(torch.all(domain_gate)) and renormalization_count < 4:
+        magnitude = torch.maximum(torch.abs(right_total.lo), torch.abs(right_total.hi))
+        needs_scale = magnitude > 1.0
+        if not bool(torch.any(needs_scale)):
+            break
+        safe_scale = new_scale.clone()
+        requested = torch.where(needs_scale, new_scale * magnitude, new_scale)
+        for _ in range(8):
+            requested = torch.where(
+                needs_scale,
+                torch.nextafter(requested, torch.full_like(requested, torch.inf)),
+                requested,
+            )
+        safe_scale = torch.where(needs_scale, requested, safe_scale)
+        ratio = torch.where(
+            safe_scale == 0,
+            torch.ones_like(safe_scale),
+            new_scale / safe_scale,
+        )
+        ordinary_rescaled = OutwardIntervalTensor(
+            boundary.state.ordinary_rem_lo,
+            boundary.state.ordinary_rem_hi,
+        ).mul(OutwardIntervalTensor.point(ratio))
+        phi_rescaled = OutwardIntervalTensor(
+            boundary.state.phi_lo,
+            boundary.state.phi_hi,
+        ).mul(OutwardIntervalTensor.point(ratio[:, None, :, None]))
+        safe_inverse = torch.where(
+            safe_scale == 0,
+            torch.ones_like(safe_scale),
+            1.0 / safe_scale,
+        )
+        rescaled_structured = replace(
+            boundary.state,
+            ordinary_rem_lo=ordinary_rescaled.lo,
+            ordinary_rem_hi=ordinary_rescaled.hi,
+            phi_lo=phi_rescaled.lo,
+            phi_hi=phi_rescaled.hi,
+            inverse_scale=safe_inverse,
+        )
+        next_right = _scale_tmvector_components(
+            next_right,
+            [float(value) for value in ratio[0].detach().cpu()],
+        )
+        next_total = materialize_structured_remainder(rescaled_structured)
+        boundary = replace(
+            boundary,
+            state=rescaled_structured,
+            materialized_lo=next_total.lo,
+            materialized_hi=next_total.hi,
+        )
+        new_scale = safe_scale
+        new_inverse = safe_inverse
+        safe_scales = [float(value) for value in safe_scale[0].detach().cpu()]
+        reset_tm = _normalized_tm_from_center_scale(
+            baseline_state.center,
+            safe_scales,
+            int(order),
+            template_domain=baseline_state.domain,
+        )
+        baseline_state = replace(
+            baseline_state,
+            tmv_right=next_right,
+            scales=safe_scales,
+        )
+        right_poly_lo, right_poly_hi = _box_tensor(next_right.range_box())
+        right_total = OutwardIntervalTensor(right_poly_lo, right_poly_hi).add(next_total)
+        domain_gate = ((right_total.lo >= -1.0) & (right_total.hi <= 1.0)).all(dim=1)
+        renormalization_count += 1
     if not bool(torch.all(domain_gate)):
-        raise FloatingPointError("S1 normalized right-map total leaves [-1,1]")
+        raise FloatingPointError(
+            "S1 normalized right-map total leaves [-1,1]: "
+            f"lo={right_total.lo.detach().cpu().tolist()}; "
+            f"hi={right_total.hi.detach().cpu().tolist()}; "
+            f"poly_lo={right_poly_lo.detach().cpu().tolist()}; "
+            f"poly_hi={right_poly_hi.detach().cpu().tolist()}; "
+            f"remainder_lo={next_total.lo.detach().cpu().tolist()}; "
+            f"remainder_hi={next_total.hi.detach().cpu().tolist()}"
+        )
 
     active_endpoint = structured_column_contributions(boundary.state).sum(dim=1)
     active_endpoint_physical = normal_interval_to_physical(
@@ -2063,6 +2146,7 @@ def _flowstar_structured_insertion_transition(
             "structured_conservation": bool(torch.all(boundary.conservation_mask)),
             "structured_source_decomposition": bool(torch.all(boundary.source_decomposition_mask)),
             "structured_total_self_map_containment": bool(torch.all(domain_gate)),
+            "structured_outward_renormalization_count": renormalization_count,
             "structured_endpoint_in_tube": bool(torch.all(endpoint_in_tube)),
             "structured_endpoint_publication": bool(torch.all(endpoint_publication)),
             "structured_tube_publication": bool(torch.all(tube_publication)),
