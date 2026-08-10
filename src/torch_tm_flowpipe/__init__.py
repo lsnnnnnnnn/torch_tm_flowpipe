@@ -33,6 +33,11 @@ _PUBLIC_MODULES = {
     "registered_dense_horner_orders": ".batched_dense_tm",
     "sparse_tmvector_to_dense": ".batched_dense_tm",
     "validate_dense_subdivision_cover": ".batched_dense_tm",
+    "AffineCoordinateBasis": ".common_basis",
+    "CommonBasisTransformResult": ".common_basis",
+    "IntervalPolynomialBatch": ".common_basis",
+    "affine_common_basis_transform": ".common_basis",
+    "evaluate_common_basis_point": ".common_basis",
     "FixedSupportDescriptor": ".fixed_support",
     "FixedSupportDRPicardResult": ".fixed_support",
     "FixedSupportIntegrationRoute": ".fixed_support",
@@ -94,7 +99,8 @@ def __getattr__(name: str) -> Any:
     module_name = _PUBLIC_MODULES.get(name)
     if module_name is None:
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
-    value = getattr(import_module(module_name, __name__), name)
+    attribute_name = "evaluate_point" if name == "evaluate_common_basis_point" else name
+    value = getattr(import_module(module_name, __name__), attribute_name)
     globals()[name] = value
     return value
 

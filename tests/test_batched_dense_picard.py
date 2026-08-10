@@ -4,6 +4,7 @@ import torch
 from torch_tm_flowpipe import Interval, Polynomial, TaylorModel, TMVector
 from torch_tm_flowpipe.batched_dense_tm import (
     BatchedTaylorModel,
+    dense_polynomial_picard,
     dense_picard_validate_step,
     sparse_tmvector_to_dense,
 )
@@ -72,6 +73,46 @@ def test_quadratic_picard_contains_higher_local_time_terms_and_is_not_euler():
     tau2 = result.segment_tm.poly.basis.term_index((0, 2))
     assert abs(float(result.segment_tm.poly.coeffs[0, 0, tau2])) > 0.0
     assert len([row for row in result.trace if row["phase"] == "polynomial_picard"]) == 4
+
+
+def test_polynomial_picard_observer_is_read_only_and_sees_every_iterate():
+    base = _base_ext(center=0.1, radius=0.02, h=0.01, order=4)
+
+    def quadratic_rhs(state):
+        x = state.component(0)
+        return x.mul_trunc(x).add(1.0)
+
+    observed = []
+
+    def observer(iteration, pre_cutoff, retained):
+        observed.append(
+            (
+                iteration,
+                pre_cutoff.poly.coeffs.detach().clone(),
+                retained.poly.coeffs.detach().clone(),
+            )
+        )
+
+    plain, plain_trace = dense_polynomial_picard(
+        quadratic_rhs,
+        base.without_remainder(),
+        tau_index=1,
+        order=4,
+        cutoff_threshold=1e-12,
+    )
+    watched, watched_trace = dense_polynomial_picard(
+        quadratic_rhs,
+        base.without_remainder(),
+        tau_index=1,
+        order=4,
+        cutoff_threshold=1e-12,
+        observer=observer,
+    )
+
+    assert [item[0] for item in observed] == [1, 2, 3, 4]
+    assert torch.equal(plain.poly.coeffs, watched.poly.coeffs)
+    assert plain_trace == watched_trace
+    assert torch.equal(observed[-1][2], watched.poly.coeffs)
 
 
 def test_affine_ode_picard_endpoint_contains_high_accuracy_solution():

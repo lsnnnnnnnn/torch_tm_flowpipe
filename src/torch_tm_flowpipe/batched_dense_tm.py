@@ -2801,8 +2801,14 @@ def dense_polynomial_picard(
     order: int,
     iterations: int | None = None,
     cutoff_threshold: float | None = None,
+    observer: Callable[[int, BatchedTaylorModel, BatchedTaylorModel], None] | None = None,
 ) -> tuple[BatchedTaylorModel, tuple[Mapping[str, Any], ...]]:
-    """Construct the dense polynomial Picard candidate in physical local time."""
+    """Construct the dense polynomial Picard candidate in physical local time.
+
+    ``observer`` is an optional read-only diagnostic hook. It receives the
+    pre-cutoff Picard image and retained post-cutoff iterate and is never used
+    by the solver decision path.
+    """
     if base_poly.poly.basis.order != int(order):
         raise ValueError("dense Picard order must match its complete basis")
     g = base_poly.without_remainder()
@@ -2824,6 +2830,8 @@ def dense_polynomial_picard(
             picard.range_policy,
             picard.range_trace,
         ).apply_cutoff(cutoff_threshold)
+        if observer is not None:
+            observer(iteration, picard, g)
         rows.append(
             {
                 "phase": "polynomial_picard",
