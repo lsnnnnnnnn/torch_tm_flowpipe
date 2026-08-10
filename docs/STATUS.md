@@ -16,7 +16,7 @@ Decision: closure delivered with three explicit implemented-negative outcomes
 | outward fixed reference | implemented negative | exact oracle passes; multi-step fails before T1; `FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED` |
 | structured S1 | primitive pass / integration fail | K16 primitive and additive source split pass; no qualified prefix state |
 | terminal/horizon/generalization | STOP / pass | `STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`; no horizons; fallback generality passes |
-| delivery | in progress | package built/checksummed; final suite, push, and fresh-clone audit remain |
+| delivery | pass | final suite/static/package gates pass; package commit pushed; remote fresh clone verifies 221 checksums and rebuild tests |
 
 ## Scientific status
 
@@ -44,8 +44,10 @@ The next research operation is to integrate the delivered bounded S1 state
 through every accepted complete-O4 boundary from t=0, save it in the terminal
 checkpoint, and repeat the same-pre-state gate. No horizon sweep precedes that.
 
-The verified starting baseline in the current worktree is `469 passed, 2
-skipped in 72.48 s`; the two skips are the declared optional external
-integration tests. The Phase-A package regression adds a clean temporary copy,
-checksum/manifest validation, and deterministic figure/table rebuild without
-running numerical reachability jobs.
+The verified starting baseline is `469 passed, 2 skipped in 72.48 s`. The
+final suite is `515 passed, 2 skipped in 203.54 s`; both skips are the declared
+optional external integration tests. `compileall` and the start-to-HEAD diff
+check pass. A remote fresh clone at package commit `3f7d77a` verifies all 221
+checksum entries and runs the previous/current package link, tracking, clean
+copy, and deterministic table/figure/public-evidence rebuild tests (`3 passed
+in 16.29 s`) without rerunning numerical reachability jobs.

@@ -50,6 +50,8 @@ B64 partitions complete.
 - [terminal A/B](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/structured_terminal_ab.json)
 - [stopped horizon ladder](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/structured_horizon_ladder.csv)
 - [second systems](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/second_system_results.csv)
+- [verification environment and commands](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/verification.json)
+- [final pytest log](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/final_pytest.log)
 
 ## One next action
 
@@ -63,6 +65,16 @@ ratio a same-semantics speedup.
 
 ## Verification
 
-The final verification section is generated from the last full pytest,
-compileall, link, checksum, fresh-clone, diff, and remote-push gates. See
-[status](docs/STATUS.md) and the run manifest for their exact artifacts.
+- Full CUDA-enabled suite: `515 passed, 2 skipped in 203.54 s`.
+- Focused local previous/current package regression: `3 passed in 14.92 s`.
+- `python -m compileall -q src experiments tests`: exit 0.
+- `git diff --check 05ae30b4..HEAD` and staged diff check: exit 0.
+- Closure package: 221 repository-root checksum entries, all valid; every
+  manifest path tracked and no absolute server path in the public surface.
+- Remote package commit: `3f7d77aef446133a5fa51ba5f427bae905f17806`.
+- Independent remote fresh clone: 221 checksums valid and the combined package
+  link/tracking/clean-copy/rebuild suite is `3 passed in 16.29 s`.
+
+The final handoff-only commit changes documentation, not code or package
+bytes. See [status](docs/STATUS.md), [verification](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/verification.json),
+and the run manifest for the auditable records.
