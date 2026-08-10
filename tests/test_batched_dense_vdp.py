@@ -46,4 +46,18 @@ def test_vdp_order4_dense_sparse_one_step_parity(h):
         assert float(dense_model.remainder.lo) == pytest.approx(float(sparse_model.remainder.lo), abs=5e-14, rel=5e-14)
         assert float(dense_model.remainder.hi) == pytest.approx(float(sparse_model.remainder.hi), abs=5e-14, rel=5e-14)
     assert dense_diagnostics[-1]["validation_status"] == sparse_diagnostics[-1]["validation_status"] == "validated"
-
+    dense_row = dense_diagnostics[-1]
+    assert dense_row["validated_remainder_decomposition_contains_image"] is True
+    validated_ledger = dense_row["validated_remainder_ledger_intervals"]
+    assert "polynomial_truncation" in validated_ledger
+    assert "picard_residual" in validated_ledger
+    assert "roundoff_safeguard" in validated_ledger
+    for state in range(2):
+        assert (
+            dense_row["validated_remainder_decomposition_lo"][0][state]
+            <= dense_row["picard_image_remainder_lo"][0][state]
+        )
+        assert (
+            dense_row["validated_remainder_decomposition_hi"][0][state]
+            >= dense_row["picard_image_remainder_hi"][0][state]
+        )

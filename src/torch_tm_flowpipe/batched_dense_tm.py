@@ -2779,6 +2779,25 @@ def _dense_flowstar_raw_compat_image(
     check_lo, check_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, before_lo, before_hi)
     check_lo, check_hi = _interval_add(check_lo, check_hi, diff_lo, diff_hi)
     check_lo, check_hi = _inflate_tensor_interval(check_lo, check_hi, validation_eps)
+    validated_ledger = DenseRemainderLedger.empty()
+    for category, (entry_lo, entry_hi) in base_ext.ledger.entries.items():
+        validated_ledger = validated_ledger.add(category, entry_lo, entry_hi)
+    for category, (entry_lo, entry_hi) in raw_rhs.ledger.entries.items():
+        scaled_lo, scaled_hi = _interval_mul(tau_lo, tau_hi, entry_lo, entry_hi)
+        validated_ledger = validated_ledger.add(category, scaled_lo, scaled_hi)
+    validated_ledger = validated_ledger.add("picard_residual", diff_lo, diff_hi)
+    decomposed_lo, decomposed_hi = validated_ledger.total(check_lo)
+    padding_lo = _down(torch.minimum(check_lo - decomposed_lo, torch.zeros_like(check_lo)))
+    padding_hi = _up(torch.maximum(check_hi - decomposed_hi, torch.zeros_like(check_hi)))
+    validated_ledger = validated_ledger.add(
+        "roundoff_safeguard", padding_lo, padding_hi
+    )
+    decomposed_lo, decomposed_hi = validated_ledger.total(check_lo)
+    decomposition_contains_image = bool(
+        torch.all(decomposed_lo <= check_lo) and torch.all(decomposed_hi >= check_hi)
+    )
+    if not decomposition_contains_image:
+        raise FloatingPointError("raw compatibility source decomposition lost image containment")
     return check_lo, check_hi, {
         "raw_rhs_remainder_lo": raw_rhs.rem_lo.detach().cpu().tolist(),
         "raw_rhs_remainder_hi": raw_rhs.rem_hi.detach().cpu().tolist(),
@@ -2790,6 +2809,14 @@ def _dense_flowstar_raw_compat_image(
         "raw_remainder_ledger_intervals": raw_rhs.ledger.intervals(),
         "tmp_remainder_ledger_widths": tmp.ledger.widths(),
         "tmp_remainder_ledger_intervals": tmp.ledger.intervals(),
+        "validated_remainder_ledger_intervals": validated_ledger.intervals(),
+        "validated_remainder_decomposition_lo": decomposed_lo.detach().cpu().tolist(),
+        "validated_remainder_decomposition_hi": decomposed_hi.detach().cpu().tolist(),
+        "validated_remainder_decomposition_contains_image": decomposition_contains_image,
+        "validated_remainder_decomposition_semantics": (
+            "additive outward split of the unchanged raw-compat image: base ledger + "
+            "time-scaled raw RHS ledger + polynomial difference + rounding padding"
+        ),
     }
 
 
