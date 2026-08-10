@@ -15,6 +15,8 @@ from torch_tm_flowpipe.fixed_support import (
     diffreach_vdp_polynomial_rhs,
     diffreach_vdp_tm_rhs,
     fixed_support_dr_remainder_picard,
+    fixed_support_kernel_plan,
+    fixed_support_kernel_plan_cache_info,
     fixed_support_polynomial_picard,
 )
 
@@ -66,6 +68,28 @@ def test_diffreach_descriptor_slot_order_routes_and_hash_are_frozen():
         (1, 1, 1),
         (1, 1, -1),
     ]
+
+
+@pytest.mark.unit
+def test_kernel_plan_is_cached_by_support_dtype_device_and_expression_order():
+    support = FixedSupportDescriptor.from_exponents(
+        name="cache_test_support",
+        variable_names=("t", "xi"),
+        exponents=((0, 0), (1, 0), (0, 1), (2, 0), (1, 1)),
+        local_time_index=0,
+    )
+    before = fixed_support_kernel_plan_cache_info()
+    first = fixed_support_kernel_plan(support, dtype=torch.float64, device="cpu")
+    second = fixed_support_kernel_plan(
+        support, dtype=torch.float64, device=torch.device("cpu")
+    )
+    after = fixed_support_kernel_plan_cache_info()
+    assert first is second
+    assert after["build_count"] == before["build_count"] + 1
+    assert after["size"] == before["size"] + 1
+    assert first.support_sha256 == support.support_sha256
+    assert first.expression_order == support.expression_order
+    assert first.integration_input.device.type == "cpu"
 
 
 @pytest.mark.unit

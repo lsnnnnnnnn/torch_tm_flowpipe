@@ -314,19 +314,60 @@ class FixedSupportDescriptor:
 
 
 @dataclass(frozen=True)
-class _FixedSupportRoutePlan:
-    left: torch.Tensor
-    right: torch.Tensor
-    sign: torch.Tensor
-    valid: torch.Tensor
+class FixedSupportKernelPlan:
+    """Immutable device plan shared by object, functional, and compiled lanes."""
+
+    support_sha256: str
+    dtype: torch.dtype
+    device: torch.device
+    expression_order: str
+    overflow_policy: str
+    range_policy: str
+    constant_slot: int
+    local_time_index: int
+    support_dim: int
+    num_slots: int
+    multiply_left: torch.Tensor
+    multiply_right: torch.Tensor
+    multiply_sign: torch.Tensor
+    multiply_valid: torch.Tensor
+    integration_input: torch.Tensor
+    integration_output: torch.Tensor
+    integration_factor: torch.Tensor
+    integration_input_indices: tuple[int, ...]
+    integration_output_indices: tuple[int, ...]
+    linear_slots: torch.Tensor
+    time_cross_slots: torch.Tensor
+    spatial_indices: torch.Tensor
+    state_indices: torch.Tensor
+    spatial_linear_slots: torch.Tensor
+    time_evaluate_output: torch.Tensor
+    time_evaluate_power: torch.Tensor
+    time_evaluate_output_indices: tuple[int, ...]
+    time_evaluate_power_integers: tuple[int, ...]
+    spatial_off_diagonal_mask: torch.Tensor
+    exponents: torch.Tensor
 
 
-def _make_route_plan(
+_KERNEL_PLAN_CACHE: dict[tuple[str, torch.dtype, str, int | None, str], FixedSupportKernelPlan] = {}
+_KERNEL_PLAN_BUILD_COUNT = 0
+
+
+def _normalized_device(device: torch.device | str) -> torch.device:
+    normalized = torch.device(device)
+    if normalized.type == "cuda" and normalized.index is None:
+        normalized = torch.device("cuda", torch.cuda.current_device())
+    return normalized
+
+
+def _build_kernel_plan(
     descriptor: FixedSupportDescriptor,
     *,
     device: torch.device,
     dtype: torch.dtype,
-) -> _FixedSupportRoutePlan:
+) -> FixedSupportKernelPlan:
+    global _KERNEL_PLAN_BUILD_COUNT
+    _KERNEL_PLAN_BUILD_COUNT += 1
     per_output: list[list[FixedSupportRoute]] = [[] for _ in range(descriptor.num_slots)]
     for route in descriptor.multiply_routes:
         per_output[route.output_slot].append(route)
@@ -341,7 +382,110 @@ def _make_route_plan(
             right[stage, output_slot] = route.right_slot
             sign[stage, output_slot] = float(route.sign)
             valid[stage, output_slot] = True
-    return _FixedSupportRoutePlan(left, right, sign, valid)
+    integration_input = torch.as_tensor(
+        [route.input_slot for route in descriptor.integration_routes],
+        dtype=torch.long,
+        device=device,
+    )
+    integration_output = torch.as_tensor(
+        [route.output_slot for route in descriptor.integration_routes],
+        dtype=torch.long,
+        device=device,
+    )
+    integration_factor = torch.as_tensor(
+        [route.factor for route in descriptor.integration_routes],
+        dtype=dtype,
+        device=device,
+    )
+    linear_slots = torch.as_tensor(
+        descriptor.linear_slots, dtype=torch.long, device=device
+    )
+    time_cross_slots = torch.as_tensor(
+        descriptor.time_cross_slots, dtype=torch.long, device=device
+    )
+    spatial = tuple(
+        index for index in range(descriptor.dim) if index != descriptor.local_time_index
+    )
+    spatial_indices = torch.as_tensor(spatial, dtype=torch.long, device=device)
+    spatial_linear_slots = linear_slots.index_select(0, spatial_indices)
+    time_outputs: list[int] = []
+    time_powers: list[int] = []
+    for exponent in descriptor.exponents:
+        reduced = list(exponent)
+        time_powers.append(reduced[descriptor.local_time_index])
+        reduced[descriptor.local_time_index] = 0
+        output_slot = descriptor._exponent_to_slot.get(tuple(reduced))
+        if output_slot is None:
+            raise ValueError("support is not closed under local-time evaluation")
+        time_outputs.append(output_slot)
+    spatial_count = len(spatial)
+    return FixedSupportKernelPlan(
+        support_sha256=descriptor.support_sha256,
+        dtype=dtype,
+        device=device,
+        expression_order=descriptor.expression_order,
+        overflow_policy=descriptor.overflow_policy,
+        range_policy=descriptor.range_policy,
+        constant_slot=descriptor.constant_slot,
+        local_time_index=descriptor.local_time_index,
+        support_dim=descriptor.dim,
+        num_slots=descriptor.num_slots,
+        multiply_left=left,
+        multiply_right=right,
+        multiply_sign=sign,
+        multiply_valid=valid,
+        integration_input=integration_input,
+        integration_output=integration_output,
+        integration_factor=integration_factor,
+        integration_input_indices=tuple(
+            route.input_slot for route in descriptor.integration_routes
+        ),
+        integration_output_indices=tuple(
+            route.output_slot for route in descriptor.integration_routes
+        ),
+        linear_slots=linear_slots,
+        time_cross_slots=time_cross_slots,
+        spatial_indices=spatial_indices,
+        state_indices=torch.arange(spatial_count, dtype=torch.long, device=device),
+        spatial_linear_slots=spatial_linear_slots,
+        time_evaluate_output=torch.as_tensor(
+            time_outputs, dtype=torch.long, device=device
+        ),
+        time_evaluate_power=torch.as_tensor(time_powers, dtype=dtype, device=device),
+        time_evaluate_output_indices=tuple(time_outputs),
+        time_evaluate_power_integers=tuple(time_powers),
+        spatial_off_diagonal_mask=(
+            1.0 - torch.eye(spatial_count, dtype=dtype, device=device)
+        ),
+        exponents=torch.as_tensor(descriptor.exponents, dtype=torch.long, device=device),
+    )
+
+
+def fixed_support_kernel_plan(
+    descriptor: FixedSupportDescriptor,
+    *,
+    device: torch.device | str,
+    dtype: torch.dtype,
+) -> FixedSupportKernelPlan:
+    """Return the one cached plan for a support/dtype/device/expression order."""
+
+    normalized = _normalized_device(device)
+    key = (
+        descriptor.support_sha256,
+        dtype,
+        normalized.type,
+        normalized.index,
+        descriptor.expression_order,
+    )
+    plan = _KERNEL_PLAN_CACHE.get(key)
+    if plan is None:
+        plan = _build_kernel_plan(descriptor, device=normalized, dtype=dtype)
+        _KERNEL_PLAN_CACHE[key] = plan
+    return plan
+
+
+def fixed_support_kernel_plan_cache_info() -> dict[str, int]:
+    return {"size": len(_KERNEL_PLAN_CACHE), "build_count": _KERNEL_PLAN_BUILD_COUNT}
 
 
 @dataclass(frozen=True)
@@ -581,18 +725,25 @@ class FixedSupportPolynomial:
 
     def mul_trunc(self, other: "FixedSupportPolynomial") -> "FixedSupportPolynomial":
         self._check(other)
-        plan = _make_route_plan(self.support, device=self.coeffs.device, dtype=self.coeffs.dtype)
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         result = torch.zeros_like(self.coeffs)
-        for stage in range(plan.left.shape[0]):
-            left = self.coeffs.index_select(-1, plan.left[stage])
-            right = other.coeffs.index_select(-1, plan.right[stage])
-            contribution = left * right * plan.sign[stage]
-            result = result + torch.where(plan.valid[stage], contribution, torch.zeros_like(contribution))
+        for stage in range(plan.multiply_left.shape[0]):
+            left = self.coeffs.index_select(-1, plan.multiply_left[stage])
+            right = other.coeffs.index_select(-1, plan.multiply_right[stage])
+            contribution = left * right * plan.multiply_sign[stage]
+            result = result + torch.where(
+                plan.multiply_valid[stage], contribution, torch.zeros_like(contribution)
+            )
         return FixedSupportPolynomial(result, self.support)
 
     def _diffreach_groups(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        linear = self.coeffs.index_select(-1, torch.as_tensor(self.support.linear_slots, device=self.coeffs.device))
-        time_cross = self.coeffs.index_select(-1, torch.as_tensor(self.support.time_cross_slots, device=self.coeffs.device))
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
+        linear = self.coeffs.index_select(-1, plan.linear_slots)
+        time_cross = self.coeffs.index_select(-1, plan.time_cross_slots)
         constant = self.coeffs[..., self.support.constant_slot]
         return constant, linear, time_cross
 
@@ -600,10 +751,12 @@ class FixedSupportPolynomial:
         if box_lo.shape != box_hi.shape or box_lo.shape != (self.batch, self.support.dim):
             raise ValueError("range box must have shape [batch, support.dim]")
         if self.support.range_policy == "diffreach_restricted_quadratic_horner":
+            plan = fixed_support_kernel_plan(
+                self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+            )
             constant, linear, cross = self._diffreach_groups()
             time_index = self.support.local_time_index
-            spatial = tuple(index for index in range(self.support.dim) if index != time_index)
-            spatial_index = torch.as_tensor(spatial, dtype=torch.long, device=self.coeffs.device)
+            spatial_index = plan.spatial_indices
             time_lo = box_lo[:, time_index]
             time_hi = box_hi[:, time_index]
             time_interval = FixedSupportInterval(
@@ -662,9 +815,11 @@ class FixedSupportPolynomial:
 
         _, left_linear, left_cross = self._diffreach_groups()
         _, right_linear, right_cross = other._diffreach_groups()
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         time_index = self.support.local_time_index
-        spatial = tuple(index for index in range(self.support.dim) if index != time_index)
-        spatial_index = torch.as_tensor(spatial, dtype=torch.long, device=self.coeffs.device)
+        spatial_index = plan.spatial_indices
         spatial_lo = box_lo.index_select(-1, spatial_index)
         spatial_hi = box_hi.index_select(-1, spatial_index)
 
@@ -692,7 +847,7 @@ class FixedSupportPolynomial:
         corners = torch.stack((lo_i * lo_j, lo_i * hi_j, hi_i * lo_j, hi_i * hi_j), dim=0)
         products_lo = corners.amin(dim=0)
         products_hi = corners.amax(dim=0)
-        mask = 1.0 - torch.eye(len(spatial), dtype=self.coeffs.dtype, device=self.coeffs.device)
+        mask = plan.spatial_off_diagonal_mask
         products_lo = products_lo * mask
         products_hi = products_hi * mask
         pair_coefficient = left_x[:, :, :, None] * right_x[:, :, None, :]
@@ -728,10 +883,15 @@ class FixedSupportPolynomial:
         return kept, ledger
 
     def integrate_time_trunc(self) -> "FixedSupportPolynomial":
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         result = torch.zeros_like(self.coeffs)
-        for route in self.support.integration_routes:
-            contribution = self.coeffs[..., route.input_slot] * route.factor
-            result[..., route.output_slot] = result[..., route.output_slot] + contribution
+        for route_index, (input_slot, output_slot) in enumerate(
+            zip(plan.integration_input_indices, plan.integration_output_indices)
+        ):
+            contribution = self.coeffs[..., input_slot] * plan.integration_factor[route_index]
+            result[..., output_slot] = result[..., output_slot] + contribution
         return FixedSupportPolynomial(result, self.support)
 
     def integrate_time_ctrunc(
@@ -759,9 +919,11 @@ class FixedSupportPolynomial:
             return kept, FixedSupportLedger.from_mapping({"integration_discarded_monomials": overflow})
 
         _, _, cross = self._diffreach_groups()
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         time_index = self.support.local_time_index
-        spatial = tuple(index for index in range(self.support.dim) if index != time_index)
-        spatial_index = torch.as_tensor(spatial, dtype=torch.long, device=self.coeffs.device)
+        spatial_index = plan.spatial_indices
         time_lo = box_lo[:, time_index]
         time_hi = box_hi[:, time_index]
         time_cube_lo = (time_lo**3)[:, None]
@@ -799,16 +961,16 @@ class FixedSupportPolynomial:
 
     def evaluate_time(self, time_value: float | torch.Tensor) -> "FixedSupportPolynomial":
         time = torch.as_tensor(time_value, dtype=self.coeffs.dtype, device=self.coeffs.device)
+        plan = fixed_support_kernel_plan(
+            self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+        )
         result = torch.zeros_like(self.coeffs)
-        time_index = self.support.local_time_index
-        for input_slot, exponent in enumerate(self.support.exponents):
-            reduced = list(exponent)
-            power = reduced[time_index]
-            reduced[time_index] = 0
-            output_slot = self.support._exponent_to_slot.get(tuple(reduced))
-            if output_slot is None:
-                raise ValueError("support is not closed under local-time evaluation")
-            result[..., output_slot] = result[..., output_slot] + self.coeffs[..., input_slot] * (time**power)
+        for input_slot in range(self.support.num_slots):
+            output_slot = plan.time_evaluate_output_indices[input_slot]
+            power = plan.time_evaluate_power_integers[input_slot]
+            result[..., output_slot] = (
+                result[..., output_slot] + self.coeffs[..., input_slot] * (time**power)
+            )
         return FixedSupportPolynomial(result, self.support)
 
 
@@ -953,6 +1115,9 @@ class FixedSupportTaylorModel:
         time_index = support.local_time_index
         if time_index != 0:
             raise NotImplementedError("DiffReach-compatible affine composition currently requires local time at index 0")
+        plan = fixed_support_kernel_plan(
+            support, device=self.polynomial.coeffs.device, dtype=self.polynomial.coeffs.dtype
+        )
 
         self_constant, self_linear, self_cross = self.polynomial._diffreach_groups()
         other_constant, other_linear, _ = other.polynomial._diffreach_groups()
@@ -982,12 +1147,11 @@ class FixedSupportTaylorModel:
         ).sum(dim=-1)
         coefficients = torch.zeros_like(self.polynomial.coeffs)
         coefficients[..., support.constant_slot] = constant_new
-        coefficients[..., list(support.linear_slots)] = linear_new
-        coefficients[..., list(support.time_cross_slots)] = cross_new
+        coefficients[..., plan.linear_slots] = linear_new
+        coefficients[..., plan.time_cross_slots] = cross_new
         polynomial = FixedSupportPolynomial(coefficients, support)
 
-        spatial = tuple(index for index in range(support.dim) if index != time_index)
-        spatial_index = torch.as_tensor(spatial, dtype=torch.long, device=self.polynomial.coeffs.device)
+        spatial_index = plan.spatial_indices
         linear_remainder = other.remainder.affine(self_linear.index_select(-1, spatial_index))
         cross_remainder = other.remainder.affine(self_cross.index_select(-1, spatial_index)).scale(time_value)
         remainder = self.remainder.add(linear_remainder).add(cross_remainder)
@@ -1161,6 +1325,7 @@ class FixedSupportSymbolicRemainderState:
     count: torch.Tensor
     capacity: int
     inverse_scale: torch.Tensor
+    slot_indices: torch.Tensor
 
     @classmethod
     def initialize(
@@ -1180,7 +1345,15 @@ class FixedSupportSymbolicRemainderState:
         j_hi = torch.zeros_like(j_lo)
         count = torch.zeros((), dtype=torch.long, device=device)
         inverse_scale = torch.ones((batch, state_dim), dtype=dtype, device=device)
-        return cls(phi, FixedSupportInterval(j_lo, j_hi), count, capacity, inverse_scale)
+        slot_indices = torch.arange(capacity, dtype=torch.long, device=device)
+        return cls(
+            phi,
+            FixedSupportInterval(j_lo, j_hi),
+            count,
+            capacity,
+            inverse_scale,
+            slot_indices,
+        )
 
 
 @dataclass(frozen=True)
@@ -1206,13 +1379,18 @@ def fixed_support_symbolic_step_linear(
         raise ValueError("symbolic carry requires identical supports")
     if support.local_time_index != 0:
         raise NotImplementedError("DiffReach symbolic carry requires local time at index 0")
-    spatial_slots = torch.as_tensor(support.linear_slots[1:], dtype=torch.long, device=parameterization.polynomial.coeffs.device)
+    plan = fixed_support_kernel_plan(
+        support,
+        device=parameterization.polynomial.coeffs.device,
+        dtype=parameterization.polynomial.coeffs.dtype,
+    )
+    spatial_slots = plan.spatial_linear_slots
     parameter_linear = parameterization.polynomial.coeffs.index_select(-1, spatial_slots)
     endpoint_linear = endpoint.polynomial.coeffs.index_select(-1, spatial_slots)
     composed_linear = torch.einsum("bij,bjk->bik", endpoint_linear, parameter_linear)
     phi_new = endpoint_linear * state.inverse_scale[:, None, :]
 
-    indices = torch.arange(state.capacity, dtype=torch.long, device=state.count.device)
+    indices = state.slot_indices
     active = indices < state.count
     phi_updated = torch.einsum("bij,bmjk->bmik", phi_new, state.phi_buffer)
     phi_roll = torch.roll(phi_updated, shifts=-1, dims=1)
@@ -1269,7 +1447,12 @@ def fixed_support_symbolic_step_linear(
     )
     count_next = torch.where(just_full, torch.zeros_like(count_next), count_next)
     next_state = FixedSupportSymbolicRemainderState(
-        phi_buffer, j_buffer, count_next, state.capacity, inverse_scale
+        phi_buffer,
+        j_buffer,
+        count_next,
+        state.capacity,
+        inverse_scale,
+        state.slot_indices,
     )
     return FixedSupportSymbolicStepResult(scale, next_parameterization, next_state)
 
@@ -1301,6 +1484,7 @@ class FixedSupportReachResult:
     first_failure_reason: str | None
     final_model: FixedSupportTaylorModel
     final_parameterization: FixedSupportTaylorModel
+    final_symbolic_state: FixedSupportSymbolicRemainderState
     host_synchronizations: int
     device_transfers: int
 
@@ -1520,6 +1704,7 @@ class FixedSupportReachability:
             first_failure_reason=failure_reason,
             final_model=model,
             final_parameterization=parameterization,
+            final_symbolic_state=symbolic_state,
             host_synchronizations=host_synchronizations,
             device_transfers=0,
         )
@@ -1560,6 +1745,7 @@ __all__ = [
     "FixedSupportDRPicardResult",
     "FixedSupportIntegrationRoute",
     "FixedSupportInterval",
+    "FixedSupportKernelPlan",
     "FixedSupportLedger",
     "FixedSupportPolynomial",
     "FixedSupportReachResult",
@@ -1574,6 +1760,8 @@ __all__ = [
     "fixed_support_dr_remainder_picard",
     "fixed_support_build_linear_tm",
     "fixed_support_identity_parameterization",
+    "fixed_support_kernel_plan",
+    "fixed_support_kernel_plan_cache_info",
     "fixed_support_polynomial_picard",
     "fixed_support_step_boxes",
     "fixed_support_symbolic_step_linear",
