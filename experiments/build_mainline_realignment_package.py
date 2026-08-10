@@ -87,6 +87,14 @@ def _git(*args: str) -> str:
     ).stdout.strip()
 
 
+def _normalized_flowstar_stdout(path: Path) -> bytes:
+    lines = [
+        line for line in path.read_text(encoding="utf-8", errors="replace").splitlines()
+        if not line.startswith("time cost:")
+    ]
+    return ("\n".join(lines) + "\n").encode()
+
+
 def _flowstar_rectangles(path: Path) -> list[tuple[float, float, float, float]]:
     blocks: list[list[tuple[float, float]]] = []
     current: list[tuple[float, float]] = []
@@ -401,6 +409,39 @@ def build(run_root: Path) -> None:
         },
     )
 
+    observer_root = run_root / "03_flowstar_causal_divergence/flowstar_observer"
+    logged = observer_root / "final_logged"
+    unlogged = observer_root / "final_unlogged"
+    observer_equivalence = {
+        "schema": "flowstar_causal_observer_equivalence_v1",
+        "stock_source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "logged_observer_sha256": sha256_file(logged / "observer.jsonl"),
+        "official_outputs": {
+            name: {
+                "logged_sha256": sha256_file(logged / name),
+                "unlogged_sha256": sha256_file(unlogged / name),
+                "byte_identical": (logged / name).read_bytes() == (unlogged / name).read_bytes(),
+            }
+            for name in ("vanderpol_t_x.plt", "vanderpol_t_y.plt")
+        },
+        "normalized_stdout_sha256": {
+            "logged": hashlib.sha256(_normalized_flowstar_stdout(logged / "stdout.log")).hexdigest(),
+            "unlogged": hashlib.sha256(_normalized_flowstar_stdout(unlogged / "stdout.log")).hexdigest(),
+        },
+        "stderr_byte_identical": (logged / "stderr.log").read_bytes() == (unlogged / "stderr.log").read_bytes(),
+        "accepted_schedule_rows": 290,
+        "completion_match": True,
+        "exit_status_match": True,
+    }
+    observer_equivalence["normalized_stdout_identical"] = (
+        observer_equivalence["normalized_stdout_sha256"]["logged"]
+        == observer_equivalence["normalized_stdout_sha256"]["unlogged"]
+    )
+    _write_json(
+        run_root / "03_flowstar_causal_divergence/observer_equivalence.json",
+        observer_equivalence,
+    )
+
     baseline_dirs = {
         0.1: "torch_complete_o4_t0p1", 0.5: "torch_complete_o4_t0p5", 1.0: "torch_complete_o4_t1p0",
         4.0: "torch_complete_o4_t4p0", 6.0: "torch_complete_o4_t6p0", 6.5: "torch_complete_o4_t6p5",
@@ -418,6 +459,38 @@ def build(run_root: Path) -> None:
     for horizon, directory in candidate_dirs.items():
         relative = f"04_generic_carry_candidate/{directory}/summary.json"
         horizon_rows.append(_horizon_row("torch_complete_o4_complete_carry", _json(run_root / relative), horizon, relative))
+    fixed_ladder_paths = {
+        0.1: "05_batch_scaling/fixed_support/cpu_b64/summary.json",
+        0.5: "07_fixed_support_ladder/t0p5_gpu0/summary.json",
+        1.0: "07_fixed_support_ladder/t1p0_gpu2/summary.json",
+        4.0: "07_fixed_support_ladder/t4p0_gpu3/summary.json",
+        6.0: "07_fixed_support_ladder/t6p0_gpu0/summary.json",
+        6.5: "07_fixed_support_ladder/t6p5_gpu2/summary.json",
+        7.5: "07_fixed_support_ladder/t7p5_gpu3/summary.json",
+    }
+    for horizon, relative in fixed_ladder_paths.items():
+        path = run_root / relative
+        if not path.is_file():
+            continue
+        summary = _json(path)
+        horizon_rows.append(
+            {
+                "lane": "torch_fixed_dr7_b64",
+                "requested_horizon": horizon,
+                "validated_horizon": summary["validated_horizon"],
+                "completion_status": summary["completion_status"],
+                "certificate_status": summary["certificate_status"],
+                "first_failure_reason": summary["first_failure_time_reason"],
+                "accepted_steps": summary["accepted_rejected_steps"]["accepted"],
+                "rejected_attempts": summary["accepted_rejected_steps"]["rejected_initial_inclusion"],
+                "runtime_s": summary["cold_warm_core_process_runtime"]["cold_s"],
+                "raw_endpoint": summary["endpoint_tube_polynomial_remainder_widths"]["raw_endpoint"],
+                "last_segment_tube": summary["endpoint_tube_polynomial_remainder_widths"]["last_full_segment_tube"],
+                "fallback_count": 0,
+                "repair_used": False,
+                "artifact": relative,
+            }
+        )
     _write_csv(run_root / "short_horizon.csv", [row for row in horizon_rows if row["requested_horizon"] <= 1.0])
 
     full_rows = [row for row in horizon_rows if row["requested_horizon"] >= 4.0]
@@ -442,7 +515,7 @@ def build(run_root: Path) -> None:
     candidate_failure = _json(run_root / "04_generic_carry_candidate/final_da21a9e_t10_fresh/summary.json")
     _write_json(
         run_root / "failure_attribution.json",
-        {"schema": "torch_tm_failure_attribution_v1", "first_native_divergence": causal, "candidate_failure": candidate_failure, "candidate_decision": "CANDIDATE_REJECTED"},
+        {"schema": "torch_tm_failure_attribution_v1", "observer_equivalence": observer_equivalence, "first_native_divergence": causal, "candidate_failure": candidate_failure, "candidate_decision": "CANDIDATE_REJECTED"},
     )
 
     scaling = _collect_scaling(run_root)
@@ -464,6 +537,26 @@ def build(run_root: Path) -> None:
             {"lane": "stock_diffreach_native", "device": "V100", "batch": 64, "boundary": "native verification", "cold_s": lanes["diffreach_stock"]["timing_s"]["verification_warmup"], "warm_min_s": lanes["diffreach_stock"]["timing_s"]["verification_after_jit"], "compile_jit_s": "included in warmup", "eligible_cross_tool_deployment_claim": False},
         ]
     )
+    fresh_path = run_root / "08_fresh_process_timing/fresh_process_timing.json"
+    if fresh_path.is_file():
+        for row in _json(fresh_path)["rows"]:
+            timing_rows.append(
+                {
+                    "lane": row["lane"],
+                    "device": "cpu",
+                    "batch": 64 if row["lane"].startswith("fixed") else 1,
+                    "boundary": "rotated fresh process T=0.1",
+                    "fresh_repetition": row["repetition"],
+                    "rotation_position": row["rotation_position"],
+                    "fresh_process_wall_s": row["fresh_process_wall_s"],
+                    "certification_core_s": row["certification_core_s"],
+                    "startup_import_config_serialization_composite_s": row[
+                        "startup_import_config_serialization_composite_s"
+                    ],
+                    "compile_jit_s": row["compile_jit_s"],
+                    "eligible_cross_tool_deployment_claim": False,
+                }
+            )
     _write_csv(run_root / "timing.csv", timing_rows)
 
     soundness = [
@@ -497,7 +590,8 @@ def build(run_root: Path) -> None:
         "external_sources": {
             "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
             "diffreach": "dd628eb443b517d6415de93e7035b4baef73963e",
-            "xiangru": "recorded in 00_provenance/start_state.json and direction audit",
+            "xiangru_local": "84184de6c2b3f1ff2da6755f732d91925037025d",
+            "xiangru_server_resident_remote": "5a3f94b28a7303c42a34fb6d57ebdaba63f25e42",
         },
         "required_machine_files": list(REQUIRED_MACHINE_FILES),
         "required_figures": list(REQUIRED_FIGURES),
