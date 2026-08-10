@@ -395,6 +395,7 @@ def package(run_root: Path) -> dict[str, Any]:
         "terminal_ab.json", "terminal_gate.json", "capacity_attribution.csv", "horizon_ladder.csv",
         "common_time_tightness.csv", "second_system.csv", "claim_registry.csv",
         "failure_attribution.json", "verification.json",
+        "SHA256SUMS",
     ]
     figures = [
         "ordinary_vs_structured_width_over_prefix.png",
