@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -18,9 +19,20 @@ from .interval import Interval
 from .polynomial import Polynomial
 from .taylor_model import TaylorModel
 from .tm_vector import TMVector
+from .structured_remainder import (
+    STRUCTURED_REMAINDER_CANDIDATE,
+    STRUCTURED_REMAINDER_CAPACITY,
+    StructuredRemainderState,
+)
+from .batched_dense_tm import (
+    VALIDATED_REMAINDER_SOURCE_SCHEMA,
+    VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION,
+)
 
 
-SCHEMA = "torch_tm_flowpipe_terminal_checkpoint_v1"
+SCHEMA_V1 = "torch_tm_flowpipe_terminal_checkpoint_v1"
+SCHEMA_V2 = "torch_tm_flowpipe_terminal_checkpoint_v2"
+SCHEMA = SCHEMA_V1
 PAYLOAD_NAME = "terminal_state.json"
 MANIFEST_NAME = "terminal_state_manifest.json"
 
@@ -186,6 +198,179 @@ def tmvector_hashes(tmv: TMVector) -> dict[str, str]:
     return _tmvector_hashes(_encode_tmvector(tmv))
 
 
+def _encode_tensor(value: torch.Tensor) -> dict[str, Any]:
+    tensor = value.detach().cpu().contiguous()
+    dtype = _dtype_name(tensor.dtype)
+    payload: dict[str, Any] = {
+        "dtype": dtype,
+        "shape": list(tensor.shape),
+    }
+    if tensor.dtype == torch.float64:
+        if not bool(torch.all(torch.isfinite(tensor))):
+            raise ValueError("checkpoint structured tensor contains a non-finite value")
+        payload["values_hex"] = [float(item).hex() for item in tensor.reshape(-1).tolist()]
+    elif tensor.dtype == torch.long:
+        payload["values"] = [int(item) for item in tensor.reshape(-1).tolist()]
+    elif tensor.dtype == torch.bool:
+        payload["values"] = [bool(item) for item in tensor.reshape(-1).tolist()]
+    else:
+        raise ValueError(f"unsupported structured checkpoint tensor dtype: {dtype}")
+    return payload
+
+
+def _decode_tensor(
+    value: Mapping[str, Any],
+    *,
+    expected_dtype: torch.dtype,
+    expected_shape: tuple[int, ...],
+) -> torch.Tensor:
+    if str(value.get("dtype", "")) != _dtype_name(expected_dtype):
+        raise ValueError("structured checkpoint tensor dtype mismatch")
+    try:
+        shape = tuple(int(item) for item in value["shape"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("structured checkpoint tensor shape is invalid") from exc
+    if shape != expected_shape:
+        raise ValueError("structured checkpoint tensor shape mismatch")
+    count = math.prod(shape)
+    if expected_dtype == torch.float64:
+        encoded = value.get("values_hex")
+        if not isinstance(encoded, list) or len(encoded) != count:
+            raise ValueError("structured checkpoint float payload length mismatch")
+        try:
+            values = [float.fromhex(str(item)) for item in encoded]
+        except ValueError as exc:
+            raise ValueError("structured checkpoint float encoding is invalid") from exc
+    else:
+        encoded = value.get("values")
+        if not isinstance(encoded, list) or len(encoded) != count:
+            raise ValueError("structured checkpoint scalar payload length mismatch")
+        values = encoded
+    tensor = torch.tensor(values, dtype=expected_dtype).reshape(shape)
+    if expected_dtype == torch.float64 and not bool(torch.all(torch.isfinite(tensor))):
+        raise ValueError("structured checkpoint tensor contains a non-finite value")
+    return tensor
+
+
+def _encode_structured_state(state: StructuredRemainderState) -> dict[str, Any]:
+    if state.capacity != STRUCTURED_REMAINDER_CAPACITY:
+        raise ValueError("active S1 checkpoint must use the frozen K16 capacity")
+    assert state.source_boundary_index is not None
+    assert state.source_occurrence_index is not None
+    assert state.event_count is not None
+    fields = {
+        name: _encode_tensor(getattr(state, name))
+        for name in (
+            "ordinary_rem_lo",
+            "ordinary_rem_hi",
+            "j_lo",
+            "j_hi",
+            "phi_lo",
+            "phi_hi",
+            "active",
+            "age",
+            "source_id",
+            "inverse_scale",
+            "source_boundary_index",
+            "source_occurrence_index",
+            "event_count",
+        )
+    }
+    return {
+        "candidate": STRUCTURED_REMAINDER_CANDIDATE,
+        "capacity": STRUCTURED_REMAINDER_CAPACITY,
+        "source_schema": VALIDATED_REMAINDER_SOURCE_SCHEMA,
+        "source_schema_version": VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION,
+        "accepted_boundary_index": int(state.accepted_boundary_index),
+        "batch": state.batch,
+        "state_dim": state.state_dim,
+        "fields": fields,
+    }
+
+
+def _decode_structured_state(value: Mapping[str, Any]) -> StructuredRemainderState:
+    if value.get("candidate") != STRUCTURED_REMAINDER_CANDIDATE:
+        raise ValueError("structured checkpoint candidate mismatch")
+    if int(value.get("capacity", -1)) != STRUCTURED_REMAINDER_CAPACITY:
+        raise ValueError("structured checkpoint K mismatch")
+    if value.get("source_schema") != VALIDATED_REMAINDER_SOURCE_SCHEMA:
+        raise ValueError("structured checkpoint source schema mismatch")
+    if int(value.get("source_schema_version", -1)) != VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION:
+        raise ValueError("structured checkpoint source schema version mismatch")
+    batch = int(value.get("batch", -1))
+    state_dim = int(value.get("state_dim", -1))
+    if batch <= 0 or state_dim <= 0:
+        raise ValueError("structured checkpoint dimensions are invalid")
+    fields = value.get("fields")
+    if not isinstance(fields, Mapping):
+        raise ValueError("structured checkpoint fields are missing")
+    capacity = STRUCTURED_REMAINDER_CAPACITY
+    shapes = {
+        "ordinary_rem_lo": (batch, state_dim),
+        "ordinary_rem_hi": (batch, state_dim),
+        "j_lo": (batch, capacity, state_dim),
+        "j_hi": (batch, capacity, state_dim),
+        "phi_lo": (batch, capacity, state_dim, state_dim),
+        "phi_hi": (batch, capacity, state_dim, state_dim),
+        "active": (batch, capacity),
+        "age": (batch, capacity),
+        "source_id": (batch, capacity),
+        "inverse_scale": (batch, state_dim),
+        "source_boundary_index": (batch, capacity),
+        "source_occurrence_index": (batch, capacity),
+        "event_count": (batch,),
+    }
+    dtypes = {
+        "active": torch.bool,
+        "age": torch.long,
+        "source_id": torch.long,
+        "source_boundary_index": torch.long,
+        "source_occurrence_index": torch.long,
+        "event_count": torch.long,
+    }
+    decoded: dict[str, torch.Tensor] = {}
+    for name, shape in shapes.items():
+        encoded = fields.get(name)
+        if not isinstance(encoded, Mapping):
+            raise ValueError(f"structured checkpoint field is missing: {name}")
+        decoded[name] = _decode_tensor(
+            encoded,
+            expected_dtype=dtypes.get(name, torch.float64),
+            expected_shape=shape,
+        )
+    state = StructuredRemainderState(
+        ordinary_rem_lo=decoded["ordinary_rem_lo"],
+        ordinary_rem_hi=decoded["ordinary_rem_hi"],
+        j_lo=decoded["j_lo"],
+        j_hi=decoded["j_hi"],
+        phi_lo=decoded["phi_lo"],
+        phi_hi=decoded["phi_hi"],
+        active=decoded["active"],
+        age=decoded["age"],
+        source_id=decoded["source_id"],
+        inverse_scale=decoded["inverse_scale"],
+        source_boundary_index=decoded["source_boundary_index"],
+        source_occurrence_index=decoded["source_occurrence_index"],
+        accepted_boundary_index=int(value.get("accepted_boundary_index", -1)),
+        event_count=decoded["event_count"],
+    )
+    finite = all(
+        bool(torch.all(torch.isfinite(getattr(state, name))))
+        for name in (
+            "ordinary_rem_lo",
+            "ordinary_rem_hi",
+            "j_lo",
+            "j_hi",
+            "phi_lo",
+            "phi_hi",
+            "inverse_scale",
+        )
+    )
+    if not finite:
+        raise ValueError("structured checkpoint reconstructed nonfinite state")
+    return state
+
+
 def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
     if state.symbolic_queue is not None:
         raise ValueError("non-empty symbolic queue checkpointing is not supported by this canonical lane")
@@ -204,10 +389,19 @@ def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
             if state.initial_remainders is not None
             else None
         ),
+        "structured_remainder": (
+            _encode_structured_state(state.structured_remainder_state)
+            if isinstance(state.structured_remainder_state, StructuredRemainderState)
+            else None
+        ),
     }
 
 
-def _decode_normal_state(value: Mapping[str, Any]) -> FlowstarNormalFlowpipeState:
+def _decode_normal_state(
+    value: Mapping[str, Any],
+    *,
+    require_structured: bool = False,
+) -> FlowstarNormalFlowpipeState:
     if bool(value.get("symbolic_queue_present")):
         raise ValueError("symbolic queue payload is unsupported and cannot be silently dropped")
     tmv_pre_value = value.get("tmv_pre")
@@ -231,6 +425,16 @@ def _decode_normal_state(value: Mapping[str, Any]) -> FlowstarNormalFlowpipeStat
         scales = [float.fromhex(str(item)) for item in value.get("scales_hex", [])]
     except ValueError as exc:
         raise ValueError("invalid checkpoint center/scale encoding") from exc
+    structured_value = value.get("structured_remainder")
+    if require_structured and not isinstance(structured_value, Mapping):
+        raise ValueError("v2 checkpoint is missing its required S1 state")
+    if not require_structured and structured_value is not None:
+        raise ValueError("v1 checkpoint cannot contain an S1 state")
+    structured_state = (
+        _decode_structured_state(structured_value)
+        if isinstance(structured_value, Mapping)
+        else None
+    )
     return FlowstarNormalFlowpipeState(
         tmv_pre=tmv_pre,
         tmv_right=tmv_right,
@@ -242,6 +446,7 @@ def _decode_normal_state(value: Mapping[str, Any]) -> FlowstarNormalFlowpipeStat
         symbolic_queue=None,
         symbolic_queue_max_size=int(value.get("symbolic_queue_max_size", 100)),
         initial_remainders=initial,
+        structured_remainder_state=structured_state,
     )
 
 
@@ -269,10 +474,17 @@ def save_terminal_checkpoint(
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"refusing non-empty checkpoint directory: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
+    active_structured = isinstance(
+        normal_state.structured_remainder_state,
+        StructuredRemainderState,
+    )
+    schema = SCHEMA_V2 if active_structured else SCHEMA_V1
     current_encoded = _encode_tmvector(current)
     normal_encoded = _encode_normal_state(normal_state)
+    if not active_structured:
+        normal_encoded.pop("structured_remainder", None)
     payload = {
-        "schema": SCHEMA,
+        "schema": schema,
         "current": current_encoded,
         "normal_state": normal_encoded,
         "scheduler": _json_safe(scheduler),
@@ -285,8 +497,16 @@ def save_terminal_checkpoint(
         "normal_tmv_pre": _tmvector_hashes(normal_encoded["tmv_pre"]),
         "normal_tmv_right": _tmvector_hashes(normal_encoded["tmv_right"]),
     }
+    if active_structured:
+        hashes["structured_remainder"] = {
+            "component_sha256": _sha256_json(normal_encoded["structured_remainder"]),
+            "fields_sha256": {
+                name: _sha256_json(encoded)
+                for name, encoded in normal_encoded["structured_remainder"]["fields"].items()
+            },
+        }
     manifest = {
-        "schema": SCHEMA,
+        "schema": schema,
         "payload_file": PAYLOAD_NAME,
         "payload_sha256": _sha256_bytes(payload_bytes),
         "full_checkpoint_sha256": _sha256_json({"payload_sha256": _sha256_bytes(payload_bytes), "hashes": hashes}),
@@ -319,7 +539,8 @@ def load_terminal_checkpoint(
         payload_bytes = payload_path.read_bytes()
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"invalid terminal checkpoint files: {exc}") from exc
-    if manifest.get("schema") != SCHEMA:
+    schema = manifest.get("schema")
+    if schema not in {SCHEMA_V1, SCHEMA_V2}:
         raise ValueError("terminal checkpoint schema mismatch")
     actual_payload_sha = _sha256_bytes(payload_bytes)
     if actual_payload_sha != manifest.get("payload_sha256"):
@@ -328,7 +549,7 @@ def load_terminal_checkpoint(
         payload = json.loads(payload_bytes)
     except json.JSONDecodeError as exc:
         raise ValueError("terminal checkpoint payload is not valid JSON") from exc
-    if payload.get("schema") != SCHEMA:
+    if payload.get("schema") != schema:
         raise ValueError("terminal checkpoint payload schema mismatch")
     contract_value = payload.get("contract")
     if not isinstance(contract_value, Mapping):
@@ -348,7 +569,10 @@ def load_terminal_checkpoint(
     if expected_dtype is not None and str(current_value.get("dtype")) != str(expected_dtype):
         raise ValueError("terminal checkpoint dtype mismatch")
     current = _decode_tmvector(current_value)
-    normal_state = _decode_normal_state(normal_value)
+    normal_state = _decode_normal_state(
+        normal_value,
+        require_structured=schema == SCHEMA_V2,
+    )
     if expected_order is not None:
         models = [*current.models, *normal_state.tmv_pre.models, *normal_state.tmv_right.models]
         if any(model.order != int(expected_order) for model in models):
@@ -358,6 +582,17 @@ def load_terminal_checkpoint(
         "normal_tmv_pre": tmvector_hashes(normal_state.tmv_pre),
         "normal_tmv_right": tmvector_hashes(normal_state.tmv_right),
     }
+    if schema == SCHEMA_V2:
+        structured_encoded = normal_value.get("structured_remainder")
+        if not isinstance(structured_encoded, Mapping):
+            raise ValueError("v2 checkpoint is missing its required S1 state")
+        actual_hashes["structured_remainder"] = {
+            "component_sha256": _sha256_json(structured_encoded),
+            "fields_sha256": {
+                name: _sha256_json(encoded)
+                for name, encoded in structured_encoded["fields"].items()
+            },
+        }
     if actual_hashes != manifest.get("hashes"):
         raise ValueError("terminal checkpoint reconstructed state hash mismatch")
     scheduler = payload.get("scheduler")
@@ -372,6 +607,8 @@ __all__ = [
     "MANIFEST_NAME",
     "PAYLOAD_NAME",
     "SCHEMA",
+    "SCHEMA_V1",
+    "SCHEMA_V2",
     "TerminalCheckpoint",
     "load_terminal_checkpoint",
     "save_terminal_checkpoint",
