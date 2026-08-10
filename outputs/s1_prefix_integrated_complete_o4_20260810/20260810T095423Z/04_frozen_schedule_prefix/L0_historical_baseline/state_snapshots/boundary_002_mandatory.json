@@ -1,0 +1,728 @@
+{
+  "boundary": 2,
+  "current": {
+    "dtype": "float64",
+    "models": [
+      {
+        "domain": [
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          },
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          }
+        ],
+        "n_vars": 2,
+        "order": 4,
+        "remainder": {
+          "hi_hex": "0x0.0p+0",
+          "lo_hex": "0x0.0p+0"
+        },
+        "terms": [
+          {
+            "coefficient_hex": "0x1.4fe3130bec10cp+0",
+            "exponent": [
+              0,
+              0
+            ]
+          },
+          {
+            "coefficient_hex": "0x1.352de12b70777p-3",
+            "exponent": [
+              1,
+              0
+            ]
+          }
+        ],
+        "truncation_range_split": null
+      },
+      {
+        "domain": [
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          },
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          }
+        ],
+        "n_vars": 2,
+        "order": 4,
+        "remainder": {
+          "hi_hex": "0x0.0p+0",
+          "lo_hex": "0x0.0p+0"
+        },
+        "terms": [
+          {
+            "coefficient_hex": "0x1.29ccf2cc4e1eep+1",
+            "exponent": [
+              0,
+              0
+            ]
+          },
+          {
+            "coefficient_hex": "0x1.4127863617ab9p-4",
+            "exponent": [
+              0,
+              1
+            ]
+          }
+        ],
+        "truncation_range_split": null
+      }
+    ],
+    "source_device": "cpu"
+  },
+  "normal_state": {
+    "center_hex": [
+      "0x1.4fe3130bec10cp+0",
+      "0x1.29ccf2cc4e1eep+1"
+    ],
+    "diagnostics": {
+      "actual_centered_scale_sum": 0.2293732484827503,
+      "actual_centered_scale_x": 0.15096641458336155,
+      "actual_centered_scale_y": 0.07840683389938875,
+      "baseline_reset_width_sum": 0.4587464969655006,
+      "baseline_reset_width_x": 0.3019328291667231,
+      "baseline_reset_width_y": 0.1568136677987775,
+      "baseline_scale_sum": 0.2293732484827503,
+      "baseline_scale_x": 0.15096641458336155,
+      "baseline_scale_y": 0.07840683389938875,
+      "center_x": 1.3120586303812756,
+      "center_y": 2.3265670297225745,
+      "centered_inserted_range_hi_x": 0.15094896890723566,
+      "centered_inserted_range_hi_y": 0.07717076909250788,
+      "centered_inserted_range_lo_x": -0.15096641458336155,
+      "centered_inserted_range_lo_y": -0.07840683389938875,
+      "centered_inserted_range_width_sum": 0.4574929864824939,
+      "centered_inserted_range_width_x": 0.30191538349059727,
+      "centered_inserted_range_width_y": 0.15557760299189666,
+      "centered_reset_width_sum": 0.4587464969655006,
+      "centered_reset_width_x": 0.3019328291667231,
+      "centered_reset_width_y": 0.1568136677987775,
+      "centered_scale_sum": 0.2293732484827503,
+      "centered_scale_x": 0.15096641458336155,
+      "centered_scale_y": 0.07840683389938875,
+      "composed_poly_range_width": 0.4573757011382822,
+      "composed_poly_range_width_sum": 0.4573757011382822,
+      "composed_poly_range_width_x": 0.3019094470047671,
+      "composed_poly_range_width_y": 0.1554662541335151,
+      "constant_scale_sum": 0.2293732484827503,
+      "constant_scale_x": 0.15096641458336155,
+      "constant_scale_y": 0.07840683389938875,
+      "endpoint_box_width_sum": 0.45931068924034324,
+      "endpoint_box_width_x": 0.3026482623426479,
+      "endpoint_box_width_y": 0.1566624268976953,
+      "endpoint_tm_width_sum": 0.45931068924034324,
+      "endpoint_tm_width_x": 0.3026482623426479,
+      "endpoint_tm_width_y": 0.1566624268976953,
+      "hypothetical_centered_inserted_range_hi_x": 0.1509576917452986,
+      "hypothetical_centered_inserted_range_hi_y": 0.07778880149594831,
+      "hypothetical_centered_inserted_range_lo_x": -0.1509576917452986,
+      "hypothetical_centered_inserted_range_lo_y": -0.07778880149594831,
+      "hypothetical_centered_inserted_range_width_sum": 0.4574929864824939,
+      "hypothetical_centered_inserted_range_width_x": 0.30191538349059727,
+      "hypothetical_centered_inserted_range_width_y": 0.15557760299189666,
+      "hypothetical_centered_reset_width_sum": 0.4574929864824938,
+      "hypothetical_centered_reset_width_x": 0.3019153834905972,
+      "hypothetical_centered_reset_width_y": 0.15557760299189663,
+      "hypothetical_centered_scale_sum": 0.2287464932412469,
+      "hypothetical_centered_scale_x": 0.1509576917452986,
+      "hypothetical_centered_scale_y": 0.07778880149594831,
+      "immediate_reset_reduction_absolute_sum": 0.001253510483006759,
+      "immediate_reset_reduction_absolute_x": 1.7445676125882326e-05,
+      "immediate_reset_reduction_absolute_y": 0.0012360648068808766,
+      "immediate_reset_reduction_relative_sum": 0.0027324687846085665,
+      "immediate_reset_reduction_relative_x": 5.7779990913969365e-05,
+      "immediate_reset_reduction_relative_y": 0.00788237928639606,
+      "immediate_saving_source": "same_inserted_tm_shadow_diagnostic",
+      "inserted_endpoint_width_sum": 0.4574929864824939,
+      "inserted_endpoint_width_x": 0.30191538349059727,
+      "inserted_endpoint_width_y": 0.15557760299189666,
+      "inserted_range_asymmetry_sum": 0.001253510483006759,
+      "inserted_range_asymmetry_x": 1.7445676125882326e-05,
+      "inserted_range_asymmetry_y": 0.0012360648068808766,
+      "inserted_range_hi_x": 0.15094896890723566,
+      "inserted_range_hi_y": 0.07717076909250788,
+      "inserted_range_lo_x": -0.15096641458336155,
+      "inserted_range_lo_y": -0.07840683389938875,
+      "inserted_range_midpoint_shift_abs_sum": 0.0,
+      "inserted_range_midpoint_shift_x": 0.0,
+      "inserted_range_midpoint_shift_y": 0.0,
+      "inserted_range_width_sum": 0.4574929864824939,
+      "inserted_range_width_x": 0.30191538349059727,
+      "inserted_range_width_y": 0.15557760299189666,
+      "insertion_components": 2,
+      "insertion_cutoff_width": 1.5342073916060468e-10,
+      "insertion_cutoff_width_sum": 1.5342073916060468e-10,
+      "insertion_cutoff_width_x": 1.4604670826847275e-10,
+      "insertion_cutoff_width_y": 7.374030892131926e-12,
+      "insertion_truncation_width": 8.750073358698765e-09,
+      "insertion_truncation_width_sum": 8.750073358698765e-09,
+      "insertion_truncation_width_x": 3.8677671195024574e-14,
+      "insertion_truncation_width_y": 8.75003468102757e-09,
+      "normal_right_map_range_width_sum": 0.4574929864824939,
+      "normal_right_map_range_width_x": 0.30191538349059727,
+      "normal_right_map_range_width_y": 0.15557760299189666,
+      "normal_state_right_width_sum": 3.984119681445377,
+      "normal_state_right_width_x": 1.9998844400181708,
+      "normal_state_right_width_y": 1.9842352414272064,
+      "normal_state_scale_sum": 0.2293732484827503,
+      "normal_state_width_sum": 0.4574929864825109,
+      "normalized_reset_width_sum": 0.45874649696550496,
+      "normalized_reset_width_x": 0.30193282916672454,
+      "normalized_reset_width_y": 0.1568136677987804,
+      "old_right_map_range_width_sum": 0.4574929864824939,
+      "old_right_map_range_width_x": 0.30191538349059727,
+      "old_right_map_range_width_y": 0.15557760299189666,
+      "output_remainder_width": 0.00011728534421163669,
+      "output_remainder_width_sum": 0.00011728534421163669,
+      "output_remainder_width_x": 5.936485830132892e-06,
+      "output_remainder_width_y": 0.0001113488583815038,
+      "reconstruction_polynomial_max_abs_diff": 0.0,
+      "reconstruction_polynomial_max_abs_diff_x": 0.0,
+      "reconstruction_polynomial_max_abs_diff_y": 0.0,
+      "reconstruction_remainder_hi_diff": 0.0,
+      "reconstruction_remainder_hi_diff_x": 0.0,
+      "reconstruction_remainder_hi_diff_y": 0.0,
+      "reconstruction_remainder_lo_diff": 0.0,
+      "reconstruction_remainder_lo_diff_x": 0.0,
+      "reconstruction_remainder_lo_diff_y": 0.0,
+      "reset_box_width_sum": 0.45931068924034324,
+      "reset_mode": "normalized_insertion",
+      "right_map_center_mode": "constant",
+      "right_map_range_mode": "standard",
+      "scale_reduction_absolute_sum": 0.0,
+      "scale_reduction_absolute_x": 0.0,
+      "scale_reduction_absolute_y": 0.0,
+      "scale_reduction_relative_sum": 0.0,
+      "scale_reduction_relative_x": 0.0,
+      "scale_reduction_relative_y": 0.0,
+      "scale_x": 0.15096641458336155,
+      "scale_y": 0.07840683389938875,
+      "step_index": 2,
+      "terms_after_insertion": 20,
+      "terms_before_insertion_truncation": 42,
+      "tmv_pre_degree": 4,
+      "tmv_pre_term_count": 31,
+      "tmv_right_degree": 4,
+      "tmv_right_term_count": 20
+    },
+    "domain": [
+      {
+        "hi_hex": "0x1.0000000000000p+0",
+        "lo_hex": "-0x1.0000000000000p+0"
+      },
+      {
+        "hi_hex": "0x1.0000000000000p+0",
+        "lo_hex": "-0x1.0000000000000p+0"
+      }
+    ],
+    "initial_remainders": null,
+    "scales_hex": [
+      "0x1.352de12b70777p-3",
+      "0x1.4127863617ab9p-4"
+    ],
+    "step_index": 2,
+    "structured_remainder": null,
+    "symbolic_queue_max_size": 100,
+    "symbolic_queue_present": false,
+    "tmv_pre": {
+      "dtype": "float64",
+      "models": [
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.c28f5c28f5c2ap-7",
+              "lo_hex": "0x0.0p+0"
+            }
+          ],
+          "n_vars": 3,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x1.71197c966eee1p-20",
+            "lo_hex": "-0x1.71197c966eee1p-20"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.47a0715cff889p+0",
+              "exponent": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.2ee35109f8293p+1",
+              "exponent": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.650404e3d317ap+0",
+              "exponent": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.3e47d1fa8e46ap+1",
+              "exponent": [
+                0,
+                0,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.852f8de9c03f0p+0",
+              "exponent": [
+                0,
+                0,
+                4
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.04aaf06990354p-4",
+              "exponent": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.4c8af93140bacp-6",
+              "exponent": [
+                0,
+                1,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.1404b0a725f94p-3",
+              "exponent": [
+                0,
+                1,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.345238212d4a7p-3",
+              "exponent": [
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.0ff817cabe9d0p-1",
+              "exponent": [
+                1,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.6b0e79fb1cbd5p-7",
+              "exponent": [
+                1,
+                0,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.91c814fb5ee04p-7",
+              "exponent": [
+                1,
+                1,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.b7591d9d23be4p-6",
+              "exponent": [
+                2,
+                0,
+                2
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        },
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.c28f5c28f5c2ap-7",
+              "lo_hex": "0x0.0p+0"
+            }
+          ],
+          "n_vars": 3,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x1.18979bf107dafp-15",
+            "lo_hex": "-0x1.d099d9c5eee7fp-16"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.2ee35109f8293p+1",
+              "exponent": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.650404e3d317ap+1",
+              "exponent": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.dd6bbaf7d569fp+2",
+              "exponent": [
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.852f8de9c03f0p+2",
+              "exponent": [
+                0,
+                0,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.40849511b0aa4p+4",
+              "exponent": [
+                0,
+                0,
+                4
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.04aaf06990354p-4",
+              "exponent": [
+                0,
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.4c8af93140bacp-5",
+              "exponent": [
+                0,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.9e0708fab8f5fp-2",
+              "exponent": [
+                0,
+                1,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.624113cafbf8ap-4",
+              "exponent": [
+                0,
+                1,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.53aedf961a5d8p-8",
+              "exponent": [
+                0,
+                2,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.0ff817cabe9d0p+0",
+              "exponent": [
+                1,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.104adb7c558e0p-5",
+              "exponent": [
+                1,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.55b39ec6e9269p+2",
+              "exponent": [
+                1,
+                0,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.91c814fb5ee04p-6",
+              "exponent": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.e69a80f5f0b56p-6",
+              "exponent": [
+                1,
+                1,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.b7591d9d23be4p-5",
+              "exponent": [
+                2,
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.037b7491885c4p-2",
+              "exponent": [
+                2,
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.7a1b3d09c1475p-10",
+              "exponent": [
+                2,
+                1,
+                1
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        }
+      ],
+      "source_device": "cpu"
+    },
+    "tmv_right": {
+      "dtype": "float64",
+      "models": [
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x1.4d04a779f94b8p-16",
+            "lo_hex": "-0x1.46b74c5134cb2p-16"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.1a5e0765e04cfp-7",
+              "exponent": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.9521b2162f33cp-24",
+              "exponent": [
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.fb7ee7252bce6p-1",
+              "exponent": [
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.6cc2f368d902bp-15",
+              "exponent": [
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.e5dfa44c17a87p-14",
+              "exponent": [
+                2,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.465dde34cbf76p-20",
+              "exponent": [
+                2,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.4cad57f72e1d3p-23",
+              "exponent": [
+                3,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.cff7e467482cdp-29",
+              "exponent": [
+                3,
+                1
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        },
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x1.953ddcb13537bp-11",
+            "lo_hex": "-0x1.535267d869d8dp-11"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.4042bc057f1b9p-1",
+              "exponent": [
+                0,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.d5c088021aa42p-16",
+              "exponent": [
+                0,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.a7c6ea506703fp-29",
+              "exponent": [
+                0,
+                3
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.67746c6bb3d8dp-2",
+              "exponent": [
+                1,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.a7bd9611a1330p-8",
+              "exponent": [
+                1,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.7bd0314b1befcp-20",
+              "exponent": [
+                1,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.03eeb6a0ac5e1p-6",
+              "exponent": [
+                2,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "-0x1.74fbae8825d3bp-12",
+              "exponent": [
+                2,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.72fd62b48f1a2p-26",
+              "exponent": [
+                2,
+                2
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.91a0178998ebap-14",
+              "exponent": [
+                3,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.02f5a124a75cbp-19",
+              "exponent": [
+                3,
+                1
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.5069831da41ecp-19",
+              "exponent": [
+                4,
+                0
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        }
+      ],
+      "source_device": "cpu"
+    }
+  },
+  "reason": "mandatory",
+  "state_sha256": "805d745c76a89c8e747afd3304a82ff2dfdd2282dc2e7f11bcb13b07c3110d8a"
+}

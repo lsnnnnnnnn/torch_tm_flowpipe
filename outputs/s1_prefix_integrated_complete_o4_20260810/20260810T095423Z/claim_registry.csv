@@ -1,0 +1,11 @@
+certificate_semantics_passed,claim,completed,cross_tool_ranking_eligible,evidence_path,finite_outputs,formal_claim_eligible,mathematical_contract_known,numerical_soundness_class,numerical_soundness_scope,outcome,performance_measurement_eligible,requested_horizon_completed
+True,previous evidence package,True,False,01_previous_package_validation/baseline_results.txt,True,True,True,mixed_historical,checksum-verified previous package,historical,False,True
+True,typed additive ledger,True,False,03_typed_ledger_fixtures/focused_results.json,True,True,True,outward_binary64,canonical tensor-native additive source schema,passed,False,True
+True,complete-O4 sensitivity oracle,True,False,02_coupling_contract_oracles/oracle_results.json,True,True,True,independent_fraction_oracle,degree<=4 endpoint and tube,passed,False,True
+True,S1 prefix conservation,False,False,prefix_conservation.csv,True,True,True,outward_binary64,sound frozen common prefix through boundary 164,S1_PREFIX_REJECTS_BEFORE_TERMINAL,False,False
+True,S1 checkpoint v2,True,False,05_prefix_checkpoints/checkpoint_roundtrip.json,True,True,True,exact_binary64_hex,boundary 164 complete prefix state,passed,False,True
+False,terminal same-pre-state A/B,False,False,terminal_ab.json,False,False,True,not_run_after_stop,historical terminal,S1_PREFIX_REJECTS_BEFORE_TERMINAL,False,False
+False,fresh S1 horizon,False,False,horizon_ladder.csv,False,False,True,not_run_after_stop,fresh adaptive horizon,S1_PREFIX_REJECTS_BEFORE_TERMINAL,False,False
+False,integrated S1 second system,False,False,second_system.csv,False,False,True,not_run_after_stop,integrated second system,S1_PREFIX_REJECTS_BEFORE_TERMINAL,False,False
+False,fixed compiled historical,True,False,00_provenance/previous_claim_registry.csv,True,False,False,semantics_changed_historical,fixed-support compiled observation,FIXED_SUPPORT_COMPILE_SEMANTICS_CHANGED_UNCHANGED,False,True
+False,fixed outward historical,False,False,00_provenance/previous_claim_registry.csv,True,False,True,fail_closed_historical,fixed-support outward multi-step,FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED_UNCHANGED,False,False

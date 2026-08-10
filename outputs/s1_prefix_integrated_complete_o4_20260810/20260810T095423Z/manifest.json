@@ -1,0 +1,51 @@
+{
+  "primary_outcome": "S1_PREFIX_REJECTS_BEFORE_TERMINAL",
+  "report_paths": [
+    "docs/S1_COMPLETE_O4_COUPLING_CONTRACT_20260810.md",
+    "docs/S1_PREFIX_INTEGRATION_RESULT_20260810.md",
+    "docs/S1_TERMINAL_CAUSAL_GATE_20260810.md",
+    "docs/S1_FRESH_HORIZON_RESULT_20260810.md",
+    "handoff.md"
+  ],
+  "required_directories": [
+    "00_provenance",
+    "01_previous_package_validation",
+    "02_coupling_contract_oracles",
+    "03_typed_ledger_fixtures",
+    "04_frozen_schedule_prefix",
+    "05_prefix_checkpoints",
+    "06_terminal_same_pre_state_ab",
+    "07_capacity_attribution",
+    "08_fresh_horizon_ladder",
+    "09_second_system",
+    "10_regression_tests"
+  ],
+  "required_figures": [
+    "figures/ordinary_vs_structured_width_over_prefix.png",
+    "figures/active_columns_and_evictions_over_prefix.png",
+    "figures/nonlinear_residual_over_prefix.png",
+    "figures/terminal_same_pre_state_margins.png",
+    "figures/common_time_endpoint_widths.png",
+    "figures/common_time_tube_widths.png",
+    "figures/validated_horizon_ladder.png"
+  ],
+  "required_files": [
+    "provenance.json",
+    "coupling_contract.json",
+    "source_schema.json",
+    "prefix_conservation.csv",
+    "prefix_source_events.jsonl",
+    "prefix_state_hashes.csv",
+    "terminal_ab.json",
+    "terminal_gate.json",
+    "capacity_attribution.csv",
+    "horizon_ladder.csv",
+    "common_time_tightness.csv",
+    "second_system.csv",
+    "claim_registry.csv",
+    "failure_attribution.json",
+    "verification.json",
+    "SHA256SUMS"
+  ],
+  "schema": "s1_prefix_integrated_complete_o4_evidence_v1"
+}

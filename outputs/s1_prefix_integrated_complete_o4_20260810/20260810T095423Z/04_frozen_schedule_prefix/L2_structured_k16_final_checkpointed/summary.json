@@ -1,0 +1,41 @@
+{
+  "accepted_boundaries": 164,
+  "attempt_rows": 165,
+  "checkpoint_full_sha256": "9162f267fcdcf44ca7bb9acfa73975eb8f4f4b80c03ca217aac2f07450cd585b",
+  "final_common_prefix_boundary": 164,
+  "first_eviction_boundary": 17,
+  "first_full_k16_boundary": 16,
+  "first_schedule_or_decision_divergence": {
+    "actual_h_hex": "0x1.2bf70286849cfp-6",
+    "actual_rejections": 1,
+    "actual_status": "accepted",
+    "attempt_index": 164,
+    "expected_h_accepted_hex": "0x1.2bf70286849cfp-5",
+    "expected_rejections": 0,
+    "expected_status": "accepted",
+    "message": "",
+    "off_schedule_poststate_discarded": true,
+    "prestate_sha256": "995a96adf0ecbf58db0ee57af6e63a2795f9059de3d8acc6b76fc2aca4380934"
+  },
+  "lane": "L2",
+  "largest_eviction": {
+    "boundary": 70,
+    "width": 0.001549673642858923
+  },
+  "outcome": "S1_PREFIX_REJECTS_BEFORE_TERMINAL",
+  "provenance": {
+    "branch": "codex/s1-prefix-integrated-complete-o4-closure-20260810",
+    "commit": "fe0fac1b74af801ef2c5a288741ad866c102e1b9",
+    "contract_sha256": "344e0baa75439634e7a2108e04261a159bd37c1f6563da8af6fe966275024c4e",
+    "device": "cpu",
+    "dtype": "float64",
+    "lane": "L2",
+    "schedule_sha256": "e63731a6cf253b30927d7238d8551efb11ba36c2c2299ba83b7fb924e82f22aa",
+    "source_artifact_sha256": "28a92e6bb84e2d8b81cb31e57453eb46e28ef03c434d284ec92b9a50f6ac5dc4",
+    "torch_version": "2.5.1+cu121",
+    "worktree_status": ""
+  },
+  "runtime_s": 118.45334801916033,
+  "schema": "torch_tm_flowpipe_s1_prefix_ledger_v1",
+  "terminal_prestate_reached": false
+}
