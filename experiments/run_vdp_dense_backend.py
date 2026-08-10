@@ -637,7 +637,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--transition-trace-dir", type=Path)
     parser.add_argument(
         "--reset-mode",
-        choices=("normalized_insertion", "normalized_insertion_symqueue_v2"),
+        choices=(
+            "normalized_insertion",
+            "normalized_insertion_complete_polynomial",
+            "normalized_insertion_symqueue_v2",
+        ),
         default="normalized_insertion",
     )
     parser.add_argument("--right-map-center-mode", choices=("constant", "range_midpoint"), default="constant")

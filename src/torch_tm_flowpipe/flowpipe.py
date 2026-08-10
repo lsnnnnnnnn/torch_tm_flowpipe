@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, replace
 from typing import Any, Callable, Iterable, List, Mapping, Sequence
 
@@ -113,6 +114,7 @@ class FlowstarNormalFlowpipeState:
     symbolic_queue: FlowstarSymbolicRemainderQueue | None = None
     symbolic_queue_max_size: int = 100
     initial_remainders: tuple[Interval, ...] | None = None
+    complete_initial_tm: TMVector | None = None
 
     @staticmethod
     def from_initial_box(
@@ -142,6 +144,20 @@ class FlowstarNormalFlowpipeState:
         return self.endpoint_tm().range_box()
 
     def normalized_initial_tm(self, order: int | None = None) -> TMVector:
+        if self.complete_initial_tm is not None:
+            selected_order = int(order) if order is not None else _tm_max_degree(self.complete_initial_tm)
+            if len(self.complete_initial_tm) != len(self.center):
+                raise ValueError("complete polynomial carry state dimension disagrees with center/scale")
+            if self.complete_initial_tm.n_vars != len(self.domain):
+                raise ValueError("complete polynomial carry variable/domain dimension disagrees")
+            if _tm_max_degree(self.complete_initial_tm) > selected_order:
+                raise ValueError("complete polynomial carry exceeds requested order")
+            if any(
+                not torch.equal(left.lo, right.lo) or not torch.equal(left.hi, right.hi)
+                for left, right in zip(self.complete_initial_tm.domain, self.domain)
+            ):
+                raise ValueError("complete polynomial carry domain disagrees with normal state")
+            return TMVector(model.clone() for model in self.complete_initial_tm)
         tmv = _normalized_tm_from_center_scale(
             self.center,
             self.scales,
@@ -156,11 +172,26 @@ class FlowstarNormalFlowpipeState:
         return tmv
 
     def diagnostic_widths(self) -> dict[str, Any]:
-        return {
+        diagnostics = {
             "normal_state_width_sum": _sum_interval_widths(self.range_box()),
             "normal_state_right_width_sum": _sum_interval_widths(self.tmv_right.range_box()),
             "normal_state_scale_sum": sum(abs(float(s)) for s in self.scales),
         }
+        if self.complete_initial_tm is not None:
+            diagnostics.update(
+                {
+                    "complete_polynomial_carry": True,
+                    "complete_carry_retained_terms": sum(
+                        len(model.polynomial.terms) for model in self.complete_initial_tm
+                    ),
+                    "complete_carry_max_degree": _tm_max_degree(self.complete_initial_tm),
+                    "complete_carry_intervalized_term_count": 0,
+                    "complete_carry_remainder_width_sum": sum(
+                        _interval_width_float(model.remainder) for model in self.complete_initial_tm
+                    ),
+                }
+            )
+        return diagnostics
 
 
 @dataclass(frozen=True)
@@ -1324,6 +1355,7 @@ def _flowstar_normalized_insertion_transition(
     right_map_center_mode: str = "constant",
     horner_diagnostic: bool = False,
     horner_insertion: bool = False,
+    complete_polynomial_carry: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
     if prev is None:
@@ -1343,7 +1375,9 @@ def _flowstar_normalized_insertion_transition(
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
-    if horner_insertion:
+    if complete_polynomial_carry:
+        mode_name = "normalized_insertion_complete_polynomial"
+    elif horner_insertion:
         mode_name = "normalized_insertion_horner"
     elif symbolic_queue_v2:
         mode_name = "normalized_insertion_symqueue_v2"
@@ -1516,6 +1550,36 @@ def _flowstar_normalized_insertion_transition(
         if not symbolic_queue_split:
             initial_remainders = tuple(model.remainder for model in reset_tm)
         diagnostics.update(queue_stats)
+    complete_initial_tm = (
+        TMVector(model.clone() for model in seg.final_tm)
+        if complete_polynomial_carry
+        else None
+    )
+    if complete_initial_tm is not None:
+        reset_tm = TMVector(model.clone() for model in complete_initial_tm)
+        reset_box = reset_tm.range_box()
+        _add_width_metrics(diagnostics, "normalized_reset", reset_box)
+        diagnostics["complete_polynomial_carry"] = True
+        diagnostics["complete_carry_retained_terms"] = sum(
+            len(model.polynomial.terms) for model in complete_initial_tm
+        )
+        diagnostics["complete_carry_max_degree"] = _tm_max_degree(complete_initial_tm)
+        diagnostics["complete_carry_intervalized_term_count"] = 0
+        diagnostics["complete_carry_remainder_width_sum"] = sum(
+            _interval_width_float(model.remainder) for model in complete_initial_tm
+        )
+        diagnostics["complete_carry_coefficient_sha256"] = hashlib.sha256(
+            json.dumps(
+                [
+                    [
+                        [list(exponent), float(coefficient.detach().cpu())]
+                        for exponent, coefficient in sorted(model.polynomial.terms.items())
+                    ]
+                    for model in complete_initial_tm
+                ],
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
     state = FlowstarNormalFlowpipeState(
         tmv_pre=seg.tm,
         tmv_right=tmv_right,
@@ -1527,6 +1591,7 @@ def _flowstar_normalized_insertion_transition(
         symbolic_queue=next_queue if (symbolic_queue or symbolic_queue_v2) else None,
         symbolic_queue_max_size=int(symbolic_queue_max_size),
         initial_remainders=initial_remainders,
+        complete_initial_tm=complete_initial_tm,
     )
     diagnostics.update(state.diagnostic_widths())
     diagnostics["inserted_endpoint_width_sum"] = _sum_interval_widths(inserted_box)
@@ -4160,6 +4225,7 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     normal_insertion_modes = {
         "normalized_insertion",
+        "normalized_insertion_complete_polynomial",
         "normalized_insertion_symqueue",
         "normalized_insertion_symqueue_split",
         "normalized_insertion_symqueue_v2",
@@ -4168,7 +4234,8 @@ def flowpipe_step_flowstar_style_adaptive(
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
             "reset_mode must be 'normalized_endpoint_box', 'flowstar_symbolic_remainder_queue', "
-            "'normalized_insertion', 'normalized_insertion_symqueue', "
+            "'normalized_insertion', 'normalized_insertion_complete_polynomial', "
+            "'normalized_insertion_symqueue', "
             "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
             "or 'normalized_insertion_horner'"
         )
@@ -4210,6 +4277,7 @@ def flowpipe_step_flowstar_style_adaptive(
             use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} or use_v2
             use_split = reset_mode == "normalized_insertion_symqueue_split"
             use_horner = reset_mode == "normalized_insertion_horner"
+            use_complete_polynomial = reset_mode == "normalized_insertion_complete_polynomial"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
                 normal_state,
@@ -4226,6 +4294,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 right_map_center_mode=right_map_center_mode,
                 horner_diagnostic=horner_diagnostic,
                 horner_insertion=use_horner,
+                complete_polynomial_carry=use_complete_polynomial,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
             if (use_split or use_v2) and symbolic_output_remainders:

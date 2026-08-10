@@ -1,6 +1,7 @@
 import itertools
 
 from torch_tm_flowpipe import (
+    FlowstarNormalFlowpipeState,
     Interval,
     TaylorModel,
     TMVector,
@@ -116,6 +117,83 @@ def test_normalized_insertion_state_contains_sampled_endpoint_values():
         endpoint = [model.evaluate_point(point) for model in seg.final_tm]
         for value, box in zip(endpoint, reset_box):
             assert box.contains(value, tol=1e-8)
+
+
+def test_complete_polynomial_normalized_carry_retains_validated_endpoint_terms_and_remainder():
+    x0 = [Interval(1.1, 1.4), Interval(2.35, 2.45)]
+    first = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        x0,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_complete_polynomial",
+    )
+
+    assert first.status == "validated"
+    assert first.reset_tm is not None
+    assert first.flowstar_normal_state is not None
+    assert first.flowstar_normal_state.complete_initial_tm is not None
+    for endpoint, carried in zip(first.final_tm, first.reset_tm):
+        assert endpoint.polynomial.terms.keys() == carried.polynomial.terms.keys()
+        for exponent in endpoint.polynomial.terms:
+            assert endpoint.polynomial.terms[exponent].item() == carried.polynomial.terms[exponent].item()
+        assert endpoint.remainder.to_tuple() == carried.remainder.to_tuple()
+    stats = first.flowstar_normal_stats
+    assert stats is not None
+    assert stats["complete_polynomial_carry"] is True
+    assert stats["complete_carry_retained_terms"] == sum(
+        len(model.polynomial.terms) for model in first.final_tm
+    )
+    assert stats["complete_carry_intervalized_term_count"] == 0
+
+    second = flowpipe_step_flowstar_style_adaptive(
+        van_der_pol_ode,
+        first.reset_tm,
+        h=0.002,
+        h_min=0.002,
+        h_max=0.002,
+        order=4,
+        target_remainder_radius=1e-4,
+        cutoff_threshold=1e-10,
+        reset_mode="normalized_insertion_complete_polynomial",
+        flowstar_normal_state=first.flowstar_normal_state,
+    )
+    assert second.status == "validated"
+
+
+def test_complete_polynomial_carry_preserves_generic_correlated_model_and_clones_it():
+    domain = [Interval(-1.0, 1.0), Interval(-1.0, 1.0)]
+    u = TaylorModel.variable(0, domain, order=4)
+    v = TaylorModel.variable(1, domain, order=4)
+    complete = TMVector(
+        [
+            1.0 + u + 0.25 * u * v + Interval(-1e-8, 2e-8),
+            2.0 - u * u + 0.5 * v + Interval(-3e-8, 4e-8),
+        ]
+    )
+    state = FlowstarNormalFlowpipeState(
+        tmv_pre=complete,
+        tmv_right=TMVector.identity(domain, order=4),
+        domain=domain,
+        center=[1.0, 2.0],
+        scales=[1.25, 1.5],
+        complete_initial_tm=complete,
+    )
+
+    carried = state.normalized_initial_tm(4)
+    assert carried is not complete
+    for point in itertools.product([-1.0, -0.5, 0.0, 0.5, 1.0], repeat=2):
+        for original, copied in zip(complete, carried):
+            assert original.evaluate_point(point) == copied.evaluate_point(point)
+            assert original.remainder.to_tuple() == copied.remainder.to_tuple()
+    diagnostics = state.diagnostic_widths()
+    assert diagnostics["complete_polynomial_carry"] is True
+    assert diagnostics["complete_carry_max_degree"] == 2
+    assert diagnostics["complete_carry_retained_terms"] == 6
 
 
 def test_default_flowstar_style_adaptive_reset_is_unchanged():
