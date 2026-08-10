@@ -468,7 +468,31 @@ def replay_lane(
                 "runtime_s": step_runtime,
                 "message": segment.message,
                 "subset_margin": segment.subset_margin,
+                "committed_to_frozen_prefix": False,
             }
+            if not schedule_match:
+                row["poststate_sha256"] = pre_hash
+                row["frozen_proposed_step_decision"] = "rejected"
+                rows.append(row)
+                _append_jsonl(ledger_handle, row)
+                divergence = {
+                    "attempt_index": attempt_index,
+                    "expected_status": expected_status,
+                    "actual_status": actual_status,
+                    "expected_h_accepted_hex": frozen["h_accepted"]["hex"] if frozen["h_accepted"] else None,
+                    "actual_h_hex": actual_h.hex(),
+                    "expected_rejections": frozen["rejection_count_before_acceptance"],
+                    "actual_rejections": int(segment.step_rejections),
+                    "message": segment.message,
+                    "prestate_sha256": pre_hash,
+                    "off_schedule_poststate_discarded": actual_status == "accepted",
+                }
+                outcome = (
+                    "S1_PREFIX_REJECTS_BEFORE_TERMINAL"
+                    if structured_lane and expected_status == "accepted"
+                    else "SCHEDULE_DECISION_DIVERGENCE"
+                )
+                break
             if actual_status == "accepted":
                 assert segment.reset_tm is not None and segment.flowstar_normal_state is not None
                 next_current = segment.reset_tm
@@ -583,20 +607,26 @@ def replay_lane(
                         outcome = "S1_PREFIX_CONSERVATION_FAILED"
                         schedule_match = False
                         row["schedule_match"] = False
-                current = next_current
-                normal_state = next_normal
-                row["poststate_sha256"] = _state_hash(current, normal_state)
-                row["accepted_boundary_index_after"] = (
-                    normal_state.structured_remainder_state.accepted_boundary_index
-                    if structured_lane
-                    else frozen["accepted_boundary_index_after"]
-                )
+                commit_boundary = outcome != "S1_PREFIX_CONSERVATION_FAILED"
+                if commit_boundary:
+                    current = next_current
+                    normal_state = next_normal
+                    row["committed_to_frozen_prefix"] = True
+                    row["poststate_sha256"] = _state_hash(current, normal_state)
+                    row["accepted_boundary_index_after"] = (
+                        normal_state.structured_remainder_state.accepted_boundary_index
+                        if structured_lane
+                        else frozen["accepted_boundary_index_after"]
+                    )
+                else:
+                    row["poststate_sha256"] = pre_hash
+                    row["accepted_boundary_index_after"] = frozen["accepted_boundary_index_before"]
                 boundary_after = int(row["accepted_boundary_index_after"])
-                if boundary_after in OBSERVATION_BOUNDARIES:
+                if commit_boundary and boundary_after in OBSERVATION_BOUNDARIES:
                     _write_snapshot(snapshots, boundary_after, current, normal_state, reason="mandatory")
-                if first_full == boundary_after:
+                if commit_boundary and first_full == boundary_after:
                     _write_snapshot(snapshots, boundary_after, current, normal_state, reason="first_full_k16")
-                if first_eviction == boundary_after:
+                if commit_boundary and first_eviction == boundary_after:
                     _write_snapshot(snapshots, boundary_after, current, normal_state, reason="first_eviction")
             else:
                 row["poststate_sha256"] = pre_hash
@@ -605,19 +635,12 @@ def replay_lane(
 
             rows.append(row)
             _append_jsonl(ledger_handle, row)
-            if not schedule_match:
+            if outcome == "S1_PREFIX_CONSERVATION_FAILED":
                 divergence = {
                     "attempt_index": attempt_index,
-                    "expected_status": expected_status,
-                    "actual_status": actual_status,
-                    "expected_h_accepted_hex": frozen["h_accepted"]["hex"] if frozen["h_accepted"] else None,
-                    "actual_h_hex": actual_h.hex(),
-                    "expected_rejections": frozen["rejection_count_before_acceptance"],
-                    "actual_rejections": int(segment.step_rejections),
-                    "message": segment.message,
+                    "reason": row.get("integration_gate_failure", "structured_conservation_or_publication_gate"),
+                    "prestate_sha256": pre_hash,
                 }
-                if outcome not in {"S1_PREFIX_CONSERVATION_FAILED", "S1_PREFIX_REJECTS_BEFORE_TERMINAL"}:
-                    outcome = "SCHEDULE_DECISION_DIVERGENCE"
                 break
             if expected_status == "rejected":
                 break
@@ -626,10 +649,10 @@ def replay_lane(
         "schema": PREFIX_SCHEMA,
         "lane": lane,
         "outcome": outcome,
-        "accepted_boundaries": sum(row["actual_status"] == "accepted" for row in rows),
+        "accepted_boundaries": sum(bool(row.get("committed_to_frozen_prefix")) for row in rows),
         "attempt_rows": len(rows),
-        "terminal_prestate_reached": sum(row["actual_status"] == "accepted" for row in rows) == FROZEN_ACCEPTED,
-        "final_common_prefix_boundary": sum(row["actual_status"] == "accepted" for row in rows),
+        "terminal_prestate_reached": sum(bool(row.get("committed_to_frozen_prefix")) for row in rows) == FROZEN_ACCEPTED,
+        "final_common_prefix_boundary": sum(bool(row.get("committed_to_frozen_prefix")) for row in rows),
         "first_full_k16_boundary": first_full,
         "first_eviction_boundary": first_eviction,
         "largest_eviction": largest_eviction if largest_eviction["boundary"] is not None else None,
