@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "experiments/replay_vdp_terminal_range.py",
+    "--checkpoint",
+    "evidence/vdp_terminal_range_closure/20260805T055556Z/05_fresh_horizons/t6p5_proactive_d1_truncation/terminal_checkpoint",
+    "--output-dir",
+    "outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/raw/structured_terminal/baseline",
+    "--range-method",
+    "subdivision",
+    "--subdivision-depth",
+    "1",
+    "--max-leaves",
+    "4",
+    "--split-vars",
+    "0,1",
+    "--named-contexts",
+    "polynomial_truncation",
+    "--variable-orders",
+    "0,1,2;1,0,2;2,0,1",
+    "--device",
+    "cpu"
+  ],
+  "branch": "codex/structured-remainder-compiled-fixed-support-closure-20260810",
+  "commit": "94fd7233a5956fb55e02aa95d066aee3cd63e090",
+  "config_sha256": "389618ae27d8255de1f10df98f71cfeaf91d043a9fb8c628442e6832dc4244a3",
+  "cwd": "<server-workspace>/torch_tm_flowpipe_structured_remainder",
+  "worktree_status": "?? experiments/replay_structured_terminal_gate.py"
+}

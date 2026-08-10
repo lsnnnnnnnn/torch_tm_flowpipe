@@ -1,0 +1,156 @@
+{
+  "accepted_rejected_steps": {
+    "accepted": 100,
+    "rejected_initial_inclusion": 0
+  },
+  "algorithmic_work": {
+    "batch_steps": 6400,
+    "later_component_retain_count": 0,
+    "polynomial_picard_evaluations": 12800,
+    "remainder_picard_evaluations": 70400
+  },
+  "candidate_remainder": {
+    "kind": "absolute_symmetric",
+    "radius": [
+      0.01,
+      0.01
+    ]
+  },
+  "carry_reset_policy": "DiffReach-equivalent normalized affine carry",
+  "certificate_status": "all_initial_DR_RP_inclusions_pass",
+  "cold_warm_core_process_runtime": {
+    "cold_s": 5.364287663251162,
+    "core_definition": "solver.verify including required per-step inclusion host gate",
+    "process_s": 32.37795817293227,
+    "warm_min_s": 5.381710045970976,
+    "warm_s": [
+      5.395140205509961,
+      5.381710045970976,
+      5.410449896007776,
+      5.390595602802932,
+      5.3967208145186305
+    ]
+  },
+  "completion_status": "completed",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "eligible_full_horizon": true,
+  "endpoint_tube_polynomial_remainder_widths": {
+    "endpoint_width": [
+      0.07120904623702984,
+      0.09964577260570995
+    ],
+    "full_horizon_tube": [
+      [
+        1.099991065551525,
+        2.0574214109557194
+      ],
+      [
+        -0.4708649996212075,
+        2.450027351272374
+      ]
+    ],
+    "full_tube_width": [
+      0.9574303454041944,
+      2.920892350893581
+    ],
+    "last_full_segment_tube": [
+      [
+        1.8756566781652289,
+        1.9514118980356483
+      ],
+      [
+        -0.4708649996212075,
+        -0.36207998559270266
+      ]
+    ],
+    "last_tube_width": [
+      0.07575521987041944,
+      0.10878501402850482
+    ],
+    "raw_endpoint": [
+      [
+        1.8756566781652289,
+        1.9468657244022587
+      ],
+      [
+        -0.47078982177661916,
+        -0.3711440491709092
+      ]
+    ]
+  },
+  "execution_kind": "canonical_torch_fixed_support",
+  "explicit_reporting_device_transfers": 0,
+  "finite_outputs": true,
+  "first_failure_time_reason": null,
+  "host_synchronizations": 100,
+  "initial_set": [
+    [
+      1.1,
+      1.4
+    ],
+    [
+      2.35,
+      2.45
+    ]
+  ],
+  "output_semantics": {
+    "endpoint": "tau=h",
+    "stored_separately": true,
+    "tube": "tau in [0,h]"
+  },
+  "partition_policy": {
+    "batch": 64,
+    "splits": [
+      8,
+      8
+    ]
+  },
+  "peak_memory_bytes": 409997312,
+  "polynomial_picard_semantics": "two fixed restricted-support Picard iterates",
+  "property_status": "not_applicable_no_property_in_open_loop_contract",
+  "range_policy": "diffreach_restricted_quadratic_horner",
+  "remainder_rounds_and_acceptance": {
+    "initial_inclusion_required": true,
+    "initial_pass": true,
+    "later_pass_count": 128000,
+    "later_rule": "accept_component_if_subset_else_retain_previous_component",
+    "later_total_count": 128000,
+    "rounds": 10
+  },
+  "representation_name": "diffreach_restricted_quadratic_DR7",
+  "requested_horizon": 1.0,
+  "rhs_sha256": "2aaa4041dec76d7ca8649323eba4bc1a378b545135e833855d987c744e9f6bcd",
+  "schema": "torch_tm_flowpipe_fixed_support_run_v1",
+  "solver_device_transfers": 0,
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64 semantics; independent outward replay required for promotion",
+  "source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6",
+  "state_and_generator_order": [
+    "x",
+    "y",
+    "t",
+    "xi_x",
+    "xi_y"
+  ],
+  "step_policy": {
+    "kind": "fixed",
+    "step_size": 0.01,
+    "steps": 100
+  },
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "symbolic_remainder_policy": {
+    "capacity": 100,
+    "kind": "J/Phi window with clear-on-cap"
+  },
+  "system": "official_flowstar_vanderpol",
+  "tool": "Torch TM",
+  "undeclared_fallback_or_repair": false,
+  "upstream_semantic_source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "validated_horizon": 1.0,
+  "validator_name": "DR-RP",
+  "worktree_dirty": false
+}

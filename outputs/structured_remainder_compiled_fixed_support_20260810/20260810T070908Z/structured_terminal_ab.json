@@ -1,0 +1,891 @@
+{
+  "analytic_gates": {
+    "basis": "focused affine, harmonic, scalar quadratic, cross-correlated, zero, conservation, eviction, determinism tests",
+    "passed": true
+  },
+  "bounded_failure_diagnostics": {
+    "eviction": {
+      "hi": [
+        [
+          5e-324,
+          5e-324
+        ]
+      ],
+      "lo": [
+        [
+          -5e-324,
+          -5e-324
+        ]
+      ]
+    },
+    "identity_phi": true,
+    "materialize_all_columns_before_terminal_picard": {
+      "hi": [
+        [
+          3.6236658476745773e-07,
+          0.00011599079695982712
+        ]
+      ],
+      "lo": [
+        [
+          -3.6236658476745773e-07,
+          -0.0001199995911680724
+        ]
+      ]
+    },
+    "nonlinear_residual": {
+      "hi": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "lo": [
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "source_isolation": {
+      "integration_overflow": {
+        "available": false
+      },
+      "polynomial_truncation": {
+        "accepted": [
+          true
+        ],
+        "available": true,
+        "materialized_hi": [
+          [
+            1.5e-322,
+            0.00010882986219390125
+          ]
+        ],
+        "materialized_lo": [
+          [
+            -1.5e-322,
+            -0.00011297553979429377
+          ]
+        ],
+        "ordinary_rem_hi": [
+          [
+            4e-323,
+            -2.0728388001962614e-06
+          ]
+        ],
+        "ordinary_rem_lo": [
+          [
+            -4e-323,
+            -2.072838800196264e-06
+          ]
+        ]
+      }
+    }
+  },
+  "candidate": "normalized_insertion_structured_remainder_k16",
+  "complete_same_pre_state_ab": false,
+  "early_native_split": {
+    "artifact": "outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/torch_causal_checkpoint_final/torch_causal_checkpoint.json",
+    "baseline_production_accepted": true,
+    "exact_typed_validated_ledger_available": false,
+    "h": 0.019615177354506262,
+    "prefix_structured_state_available": false,
+    "reason": "the immutable pre-S1 observation artifact has no additive validated source ledger or S1 prefix state",
+    "retained_polynomial_sha256": "8a1d15f2301052f1f6a70a69a56cfbb51e8fded2ca1aa6bd960000474f4c811f",
+    "s1_same_pre_state_executed": false,
+    "sha256": "dda8c07f6e9999542ae8bbc2fb6a38ab858a18e5f214be6a5e4b3781c22d093d",
+    "t_pre": 0.18187433604506256
+  },
+  "fresh_horizon_ladder_authorized": false,
+  "go": false,
+  "interpretation": "The local empty-state split is conservative attribution only. It cannot be promoted because the immutable checkpoint lacks the structured history needed to prove prefix conservation/no-double-count.",
+  "prefix_structured_state_available": false,
+  "schema": "structured_terminal_ab_v1",
+  "source_sha": "94fd7233a5956fb55e02aa95d066aee3cd63e090",
+  "stop_outcome": "STRUCTURED_REMAINDER_LOCAL_GATE_FAILED",
+  "terminal": {
+    "baseline_accepted": false,
+    "baseline_margin": [
+      [
+        9.963763341523255e-05,
+        -1.99995911680722e-05
+      ]
+    ],
+    "baseline_ordinary_hi": [
+      [
+        3.6236658476745757e-07,
+        0.00011599079695982693
+      ]
+    ],
+    "baseline_ordinary_lo": [
+      [
+        -3.6236658476745757e-07,
+        -0.0001199995911680722
+      ]
+    ],
+    "baseline_status": "failed",
+    "baseline_y_margin_magnitude_contract": 1.99995911680722e-05,
+    "candidate_hashes": {
+      "basis_hash": "8835901234c525e7d67983af797266b78cb12999d9290c10ad7878765f386634",
+      "coefficient_sha256": "bc1433d0d3c89339fca6091e41c0a6667d70c92d2dd4e35ae8b14236d131863c",
+      "effective_degree": 4,
+      "exponent_support_sha256": "d0aa354b9057267556d5bb3bc09a36ed4162b36fb44588b0b930dd9e935041e9",
+      "picard_iterations": 4
+    },
+    "checkpoint_full_sha256": "dcb8f646d45c9742e0cff23fea596c12e53d8ccd00d1544f70564a44a7463420",
+    "checkpoint_hashes": {
+      "terminal_reference.json": "1febfed80b3f0144790e4d1538b47a522433b434b8cc5a8ad2045459fc520462",
+      "terminal_state.json": "8304000f298eee9c3a3d5b1f3ce0f61548639de63e9a51485ab5c01cb2d42c9c",
+      "terminal_state_manifest.json": "ab011534814b40e0d3e046e1cc1828de7afeeb7c84a0d0438b39e6d009938ce3"
+    },
+    "contract_sha256": "8c29a59ac574dc463e3cb73909ba489a911fdeabb3d2b9a4d48507184d909547",
+    "h": 0.003623635847674574,
+    "local_empty_state_s1": {
+      "accepted": [
+        true
+      ],
+      "active": [
+        [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "age": [
+        [
+          307,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      ],
+      "conservation_mask": [
+        true
+      ],
+      "decomposition_padding_hi": [
+        [
+          5e-324,
+          5e-324
+        ]
+      ],
+      "decomposition_padding_lo": [
+        [
+          -5e-324,
+          -5e-324
+        ]
+      ],
+      "evicted_materialized_hi": [
+        [
+          5e-324,
+          5e-324
+        ]
+      ],
+      "evicted_materialized_lo": [
+        [
+          -5e-324,
+          -5e-324
+        ]
+      ],
+      "j_hi": [
+        [
+          [
+            1e-323,
+            0.00011090270099409724
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "j_lo": [
+        [
+          [
+            -1e-323,
+            -0.00011090270099409724
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "local_decision_closes": true,
+      "materialized_hi": [
+        [
+          3.6236658476745773e-07,
+          0.00011599079695982712
+        ]
+      ],
+      "materialized_lo": [
+        [
+          -3.6236658476745773e-07,
+          -0.0001199995911680724
+        ]
+      ],
+      "new_symbolic_hi": [
+        [
+          1.5e-323,
+          0.00011090270099409726
+        ]
+      ],
+      "new_symbolic_lo": [
+        [
+          -1.5e-323,
+          -0.00011090270099409726
+        ]
+      ],
+      "nonlinear_residual_hi": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "nonlinear_residual_lo": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "ordinary_rem_hi": [
+        [
+          3.623665847674577e-07,
+          5.088095965729619e-06
+        ]
+      ],
+      "ordinary_rem_lo": [
+        [
+          -3.623665847674577e-07,
+          -9.096890173974898e-06
+        ]
+      ],
+      "ordinary_target_margin": [
+        [
+          9.963763341523255e-05,
+          9.090310982602511e-05
+        ]
+      ],
+      "phi_hi": [
+        [
+          [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ],
+          [
+            [
+              1.5e-323,
+              1.5e-323
+            ],
+            [
+              1.5e-323,
+              1.5e-323
+            ]
+          ]
+        ]
+      ],
+      "phi_lo": [
+        [
+          [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ],
+          [
+            [
+              -1.5e-323,
+              -1.5e-323
+            ],
+            [
+              -1.5e-323,
+              -1.5e-323
+            ]
+          ]
+        ]
+      ],
+      "process_max_rss_kib": 392492,
+      "propagated_symbolic_hi": [
+        [
+          8e-323,
+          8e-323
+        ]
+      ],
+      "propagated_symbolic_lo": [
+        [
+          -8e-323,
+          -8e-323
+        ]
+      ],
+      "runtime_s": 0.010135243646800518,
+      "source_decomposition_mask": [
+        true
+      ],
+      "source_id": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "x_margin_regression_within_5_percent": true,
+      "y_margin_at_least_go_threshold": true
+    },
+    "t": 6.397083942944808,
+    "typed_sources": {
+      "cutoff": {
+        "hi": [
+          [
+            5e-324,
+            8.062857397411e-311
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -8.062857397411e-311
+          ]
+        ]
+      },
+      "initial_remainder": {
+        "hi": [
+          [
+            3.623635847674575e-07,
+            7.247271695349152e-07
+          ]
+        ],
+        "lo": [
+          [
+            -3.623635847674575e-07,
+            -7.247271695349152e-07
+          ]
+        ]
+      },
+      "picard_residual": {
+        "hi": [
+          [
+            1.0000000000000002e-12,
+            1.0000000000000002e-12
+          ]
+        ],
+        "lo": [
+          [
+            -1.0000000000000002e-12,
+            -1.0000000000000002e-12
+          ]
+        ]
+      },
+      "poly_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            7.044996920821407e-07
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -7.044996920821407e-07
+          ]
+        ]
+      },
+      "polynomial_truncation": {
+        "hi": [
+          [
+            5e-324,
+            0.00010882986219390098
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -0.0001129755397942935
+          ]
+        ]
+      },
+      "remainder_times_poly": {
+        "hi": [
+          [
+            5e-324,
+            5.731574721851241e-06
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -5.594691329703965e-06
+          ]
+        ]
+      },
+      "remainder_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.3018245751848836e-10
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.3018245751848836e-10
+          ]
+        ]
+      },
+      "roundoff_safeguard": {
+        "hi": [
+          [
+            1.9999999997375704e-12,
+            2.0000000597710306e-12
+          ]
+        ],
+        "lo": [
+          [
+            -1.9999999997375704e-12,
+            -2.000000086876085e-12
+          ]
+        ]
+      }
+    },
+    "validated_decomposition_contains_image": true
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "all_passed": true,
+  "case_count": 11,
+  "cases": [
+    {
+      "case": "constant",
+      "passed": true,
+      "scope": "interval multiplication"
+    },
+    {
+      "case": "asymmetric",
+      "passed": true,
+      "scope": "interval multiplication"
+    },
+    {
+      "case": "subnormal",
+      "passed": true,
+      "scope": "interval multiplication"
+    },
+    {
+      "case": "large_finite",
+      "passed": true,
+      "scope": "interval multiplication"
+    },
+    {
+      "case": "cancellation_sequential_sum",
+      "passed": true,
+      "scope": "matrix reduction"
+    },
+    {
+      "case": "duplicate_routes",
+      "passed": true,
+      "scope": "projected polynomial product"
+    },
+    {
+      "case": "vdp_rational_box_0",
+      "passed": true,
+      "scope": "VDP polynomial corner oracle"
+    },
+    {
+      "case": "vdp_rational_box_1",
+      "passed": true,
+      "scope": "VDP polynomial corner oracle"
+    },
+    {
+      "case": "vdp_rational_box_2",
+      "passed": true,
+      "scope": "VDP polynomial corner oracle"
+    },
+    {
+      "case": "scalar_quadratic_riccati",
+      "passed": true,
+      "scope": "quadratic polynomial"
+    },
+    {
+      "case": "harmonic_oscillator_affine",
+      "passed": true,
+      "scope": "affine matrix map"
+    }
+  ],
+  "numerical_soundness_class": "safeguarded outward under declared IEEE/backend assumptions",
+  "numerical_soundness_scope": "primitive",
+  "oracle_independence": "expected values are computed with fractions.Fraction and explicit formulas; expected paths do not call Torch operators under test",
+  "schema": "fixed_support_outward_fraction_oracle_v1"
+}

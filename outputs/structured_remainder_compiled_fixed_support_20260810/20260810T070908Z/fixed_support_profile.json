@@ -1,0 +1,86 @@
+{
+  "attribution": [
+    {
+      "cumulative_s": 0.5883729010000001,
+      "operator": "fixed_support_dr_remainder_picard",
+      "primitive_calls": 10,
+      "self_s": 0.002544764,
+      "total_calls": 10
+    },
+    {
+      "cumulative_s": 0.5248746510000001,
+      "operator": "diffreach_vdp_tm_rhs",
+      "primitive_calls": 110,
+      "self_s": 0.001845702,
+      "total_calls": 110
+    },
+    {
+      "cumulative_s": 0.323610422,
+      "operator": "mul_ctrunc",
+      "primitive_calls": 220,
+      "self_s": 0.050137558000000006,
+      "total_calls": 220
+    },
+    {
+      "cumulative_s": 0.17102334000000002,
+      "operator": "mul_trunc",
+      "primitive_calls": 260,
+      "self_s": 0.027693125000000002,
+      "total_calls": 260
+    },
+    {
+      "cumulative_s": 0.16496241,
+      "operator": "range",
+      "primitive_calls": 521,
+      "self_s": 0.021771884000000002,
+      "total_calls": 521
+    },
+    {
+      "cumulative_s": 0.6489134710000001,
+      "operator": "step_once",
+      "primitive_calls": 10,
+      "self_s": 0.000821354,
+      "total_calls": 10
+    },
+    {
+      "cumulative_s": 0.6528375820000001,
+      "operator": "verify",
+      "primitive_calls": 230,
+      "self_s": 0.0010516450000000001,
+      "total_calls": 230
+    }
+  ],
+  "audit": {
+    "compiled_solver_core_host_synchronizations": 0,
+    "functional_plan_cached": true,
+    "functional_state_tensor_count": 26,
+    "pre_refactor_dataclass_construction_per_operator": true,
+    "pre_refactor_host_item_gate_per_step": true,
+    "pre_refactor_python_route_loops": true,
+    "pre_refactor_route_plan_rebuilt_in_multiplication": true
+  },
+  "compiled_profile_scope": "one logical boundary after cache replay; not a timing row",
+  "compiled_v100_one_boundary_profiler_counts": {
+    "cpu_event_count": 754,
+    "cuda_kernel_events": 369,
+    "profiled_boundary_steps": 1,
+    "selected_operator_calls": {
+      "aten::_local_scalar_dense": 0,
+      "aten::index": 0,
+      "aten::item": 0,
+      "aten::max": 0,
+      "aten::min": 0,
+      "aten::nextafter": 0,
+      "aten::stack": 0,
+      "aten::to": 0
+    }
+  },
+  "profile_source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6",
+  "schema": "fixed_support_object_profile_v1",
+  "signature": {
+    "batch": 64,
+    "device": "cpu",
+    "steps": 10,
+    "trace": true
+  }
+}

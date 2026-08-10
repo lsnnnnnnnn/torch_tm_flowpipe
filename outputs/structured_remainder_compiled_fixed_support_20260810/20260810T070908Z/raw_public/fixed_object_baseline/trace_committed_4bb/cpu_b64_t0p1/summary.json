@@ -1,0 +1,156 @@
+{
+  "accepted_rejected_steps": {
+    "accepted": 10,
+    "rejected_initial_inclusion": 0
+  },
+  "algorithmic_work": {
+    "batch_steps": 640,
+    "later_component_retain_count": 0,
+    "polynomial_picard_evaluations": 1280,
+    "remainder_picard_evaluations": 7040
+  },
+  "candidate_remainder": {
+    "kind": "absolute_symmetric",
+    "radius": [
+      0.01,
+      0.01
+    ]
+  },
+  "carry_reset_policy": "DiffReach-equivalent normalized affine carry",
+  "certificate_status": "all_initial_DR_RP_inclusions_pass",
+  "cold_warm_core_process_runtime": {
+    "cold_s": 0.5282398331910372,
+    "core_definition": "solver.verify including required per-step inclusion host gate",
+    "process_s": 3.171437157317996,
+    "warm_min_s": 0.5167201664298773,
+    "warm_s": [
+      0.5265648672357202,
+      0.5365881128236651,
+      0.5223437072709203,
+      0.5221734596416354,
+      0.5167201664298773
+    ]
+  },
+  "completion_status": "completed",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "eligible_full_horizon": true,
+  "endpoint_tube_polynomial_remainder_widths": {
+    "endpoint_width": [
+      0.30001159944753564,
+      0.29046251203312123
+    ],
+    "full_horizon_tube": [
+      [
+        1.099991065551525,
+        1.6246155558868567
+      ],
+      [
+        1.9241278359695888,
+        2.450027351272374
+      ]
+    ],
+    "full_tube_width": [
+      0.5246244903353317,
+      0.525899515302785
+    ],
+    "last_full_segment_tube": [
+      [
+        1.3032205714338776,
+        1.6246155558868567
+      ],
+      [
+        1.9241278359695888,
+        2.24439410861675
+      ]
+    ],
+    "last_tube_width": [
+      0.3213949844529791,
+      0.32026627264716123
+    ],
+    "raw_endpoint": [
+      [
+        1.3243686091254327,
+        1.6243802085729684
+      ],
+      [
+        1.9241278359695888,
+        2.21459034800271
+      ]
+    ]
+  },
+  "execution_kind": "canonical_torch_fixed_support",
+  "explicit_reporting_device_transfers": 0,
+  "finite_outputs": true,
+  "first_failure_time_reason": null,
+  "host_synchronizations": 10,
+  "initial_set": [
+    [
+      1.1,
+      1.4
+    ],
+    [
+      2.35,
+      2.45
+    ]
+  ],
+  "output_semantics": {
+    "endpoint": "tau=h",
+    "stored_separately": true,
+    "tube": "tau in [0,h]"
+  },
+  "partition_policy": {
+    "batch": 64,
+    "splits": [
+      8,
+      8
+    ]
+  },
+  "peak_memory_bytes": 404398080,
+  "polynomial_picard_semantics": "two fixed restricted-support Picard iterates",
+  "property_status": "not_applicable_no_property_in_open_loop_contract",
+  "range_policy": "diffreach_restricted_quadratic_horner",
+  "remainder_rounds_and_acceptance": {
+    "initial_inclusion_required": true,
+    "initial_pass": true,
+    "later_pass_count": 12800,
+    "later_rule": "accept_component_if_subset_else_retain_previous_component",
+    "later_total_count": 12800,
+    "rounds": 10
+  },
+  "representation_name": "diffreach_restricted_quadratic_DR7",
+  "requested_horizon": 0.1,
+  "rhs_sha256": "2aaa4041dec76d7ca8649323eba4bc1a378b545135e833855d987c744e9f6bcd",
+  "schema": "torch_tm_flowpipe_fixed_support_run_v1",
+  "solver_device_transfers": 0,
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64 semantics; independent outward replay required for promotion",
+  "source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6",
+  "state_and_generator_order": [
+    "x",
+    "y",
+    "t",
+    "xi_x",
+    "xi_y"
+  ],
+  "step_policy": {
+    "kind": "fixed",
+    "step_size": 0.01,
+    "steps": 10
+  },
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "symbolic_remainder_policy": {
+    "capacity": 10,
+    "kind": "J/Phi window with clear-on-cap"
+  },
+  "system": "official_flowstar_vanderpol",
+  "tool": "Torch TM",
+  "undeclared_fallback_or_repair": false,
+  "upstream_semantic_source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "validated_horizon": 0.1,
+  "validator_name": "DR-RP",
+  "worktree_dirty": false
+}

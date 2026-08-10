@@ -1,0 +1,43 @@
+Mon Aug 10 07:10:03 2026    outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/raw/fixed_object_baseline/cpu_b64_t0p1.prof
+
+         1430319 function calls (1411540 primitive calls) in 2.296 seconds
+
+   Ordered by: cumulative time
+   List reduced from 4969 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   1714/1    0.064    0.000    2.313    2.313 {built-in method builtins.exec}
+        1    0.000    0.000    2.313    2.313 experiments/run_vdp_fixed_support.py:1(<module>)
+   941/11    0.005    0.000    1.636    0.149 <frozen importlib._bootstrap>:1165(_find_and_load)
+   941/11    0.004    0.000    1.636    0.149 <frozen importlib._bootstrap>:1120(_find_and_load_unlocked)
+   910/12    0.003    0.000    1.634    0.136 <frozen importlib._bootstrap>:666(_load_unlocked)
+   870/10    0.002    0.000    1.634    0.163 <frozen importlib._bootstrap_external>:934(exec_module)
+  2113/25    0.001    0.000    1.632    0.065 <frozen importlib._bootstrap>:233(_call_with_frames_removed)
+        1    0.002    0.002    1.526    1.526 <py11-environment>/lib/python3.11/site-packages/torch/__init__.py:1(<module>)
+   596/58    0.001    0.000    1.082    0.019 {built-in method builtins.__import__}
+  755/116    0.002    0.000    1.069    0.009 <frozen importlib._bootstrap>:1207(_handle_fromlist)
+        1    0.000    0.000    0.677    0.677 experiments/run_vdp_fixed_support.py:136(main)
+        1    0.000    0.000    0.650    0.650 experiments/run_vdp_fixed_support.py:82(_run_once)
+        1    0.000    0.000    0.650    0.650 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:1408(verify)
+       10    0.001    0.000    0.649    0.065 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:1348(step_once)
+       10    0.003    0.000    0.588    0.059 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:1043(fixed_support_dr_remainder_picard)
+      110    0.002    0.000    0.525    0.005 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:1543(diffreach_vdp_tm_rhs)
+        1    0.001    0.001    0.509    0.509 <py11-environment>/lib/python3.11/site-packages/torch/_meta_registrations.py:1(<module>)
+      220    0.007    0.000    0.500    0.002 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:885(mul)
+  910/907    0.002    0.000    0.479    0.001 <frozen importlib._bootstrap>:566(module_from_spec)
+       36    0.000    0.000    0.456    0.013 <frozen importlib._bootstrap_external>:1231(create_module)
+       36    0.455    0.013    0.456    0.013 {built-in method _imp.create_dynamic}
+        1    0.000    0.000    0.410    0.410 <py11-environment>/lib/python3.11/site-packages/torch/_decomp/__init__.py:1(<module>)
+        1    0.002    0.002    0.327    0.327 <py11-environment>/lib/python3.11/site-packages/torch/_decomp/decompositions.py:1(<module>)
+      220    0.050    0.000    0.324    0.001 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:637(mul_ctrunc)
+        1    0.001    0.001    0.255    0.255 <py11-environment>/lib/python3.11/site-packages/torch/_prims/__init__.py:1(<module>)
+      128    0.004    0.000    0.247    0.002 <py11-environment>/lib/python3.11/site-packages/torch/_prims/__init__.py:266(_make_prim)
+      113    0.000    0.000    0.219    0.002 <py11-environment>/lib/python3.11/site-packages/torch/_library/custom_ops.py:32(custom_op)
+      113    0.001    0.000    0.219    0.002 <py11-environment>/lib/python3.11/site-packages/torch/_library/custom_ops.py:129(inner)
+      113    0.001    0.000    0.212    0.002 <py11-environment>/lib/python3.11/site-packages/torch/_library/custom_ops.py:170(__init__)
+      113    0.001    0.000    0.203    0.002 <py11-environment>/lib/python3.11/site-packages/torch/_library/custom_ops.py:585(_register_to_dispatcher)
+        1    0.000    0.000    0.190    0.190 <py11-environment>/lib/python3.11/site-packages/torch/functional.py:1(<module>)
+        1    0.000    0.000    0.185    0.185 <py11-environment>/lib/python3.11/site-packages/torch/nn/__init__.py:1(<module>)
+      260    0.028    0.000    0.171    0.001 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:582(mul_trunc)
+        1    0.000    0.000    0.168    0.168 <py11-environment>/lib/python3.11/site-packages/torch/nn/modules/__init__.py:1(<module>)
+      480    0.021    0.000    0.154    0.000 <server-workspace>/torch_tm_flowpipe_structured_remainder/src/torch_tm_flowpipe/fixed_support.py:599(range)

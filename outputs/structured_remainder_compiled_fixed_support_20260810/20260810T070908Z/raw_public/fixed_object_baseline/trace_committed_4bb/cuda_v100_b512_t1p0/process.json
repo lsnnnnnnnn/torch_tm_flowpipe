@@ -1,0 +1,26 @@
+{
+  "command": [
+    "<py11-environment>/bin/python",
+    "experiments/run_vdp_fixed_support.py",
+    "--output-dir",
+    "<server-workspace>/torch_tm_flowpipe_structured_remainder/outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/raw/fixed_object_baseline/trace_committed_4bb/cuda_v100_b512_t1p0",
+    "--horizon",
+    "1.0",
+    "--step-size",
+    "0.01",
+    "--batch",
+    "512",
+    "--device",
+    "cuda:0",
+    "--warm-runs",
+    "5",
+    "--symbolic-window-size",
+    "1000"
+  ],
+  "cwd_role": "source_root",
+  "exit_status": 0,
+  "matrix_position": 19,
+  "stderr": "",
+  "stdout": "{\"accepted_rejected_steps\": {\"accepted\": 100, \"rejected_initial_inclusion\": 0}, \"algorithmic_work\": {\"batch_steps\": 51200, \"later_component_retain_count\": 0, \"polynomial_picard_evaluations\": 102400, \"remainder_picard_evaluations\": 563200}, \"candidate_remainder\": {\"kind\": \"absolute_symmetric\", \"radius\": [0.01, 0.01]}, \"carry_reset_policy\": \"DiffReach-equivalent normalized affine carry\", \"certificate_status\": \"all_initial_DR_RP_inclusions_pass\", \"cold_warm_core_process_runtime\": {\"cold_s\": 13.231927383691072, \"core_definition\": \"solver.verify including required per-step inclusion host gate\", \"process_s\": 78.82045394740999, \"warm_min_s\": 12.962479012086987, \"warm_s\": [12.962479012086987, 12.969561408273876, 12.98098534438759, 13.020731153897941, 13.028798240236938]}, \"completion_status\": \"completed\", \"dtype_device\": {\"device\": \"cuda:0\", \"device_name\": \"Tesla V100-SXM2-16GB\", \"dtype\": \"float64\"}, \"eligible_full_horizon\": true, \"endpoint_tube_polynomial_remainder_widths\": {\"endpoint_width\": [0.0697352750231901, 0.0979617885682853], \"full_horizon_tube\": [[1.0999958645561103, 2.056718512218616], [-0.4699877519850124, 2.4500166539523365]], \"full_tube_width\": [0.9567226476625057, 2.920004405937349], \"last_full_segment_tube\": [[1.8765163085441923, 1.950864850042699], [-0.4699877519850124, -0.3625770883045461]], \"last_tube_width\": [0.07434854149850678, 0.10741066368046631], \"raw_endpoint\": [[1.8765163085441923, 1.9462515835673824], [-0.4699143040781001, -0.3719525155098148]]}, \"execution_kind\": \"canonical_torch_fixed_support\", \"explicit_reporting_device_transfers\": 7, \"finite_outputs\": true, \"first_failure_time_reason\": null, \"host_synchronizations\": 100, \"initial_set\": [[1.1, 1.4], [2.35, 2.45]], \"output_semantics\": {\"endpoint\": \"tau=h\", \"stored_separately\": true, \"tube\": \"tau in [0,h]\"}, \"partition_policy\": {\"batch\": 512, \"splits\": [32, 16]}, \"peak_memory_bytes\": 48234496, \"polynomial_picard_semantics\": \"two fixed restricted-support Picard iterates\", \"property_status\": \"not_applicable_no_property_in_open_loop_contract\", \"range_policy\": \"diffreach_restricted_quadratic_horner\", \"remainder_rounds_and_acceptance\": {\"initial_inclusion_required\": true, \"initial_pass\": true, \"later_pass_count\": 1024000, \"later_rule\": \"accept_component_if_subset_else_retain_previous_component\", \"later_total_count\": 1024000, \"rounds\": 10}, \"representation_name\": \"diffreach_restricted_quadratic_DR7\", \"requested_horizon\": 1.0, \"rhs_sha256\": \"2aaa4041dec76d7ca8649323eba4bc1a378b545135e833855d987c744e9f6bcd\", \"schema\": \"torch_tm_flowpipe_fixed_support_run_v1\", \"solver_device_transfers\": 0, \"soundness_classification\": \"empirically sampled only\", \"soundness_note\": \"ordinary Torch float64 semantics; independent outward replay required for promotion\", \"source_sha\": \"4bb10d54b29dad2b47c5f91ddedafe854a52fac6\", \"state_and_generator_order\": [\"x\", \"y\", \"t\", \"xi_x\", \"xi_y\"], \"step_policy\": {\"kind\": \"fixed\", \"step_size\": 0.01, \"steps\": 100}, \"support_sha256\": \"0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e\", \"symbolic_remainder_policy\": {\"capacity\": 100, \"kind\": \"J/Phi window with clear-on-cap\"}, \"system\": \"official_flowstar_vanderpol\", \"tool\": \"Torch TM\", \"undeclared_fallback_or_repair\": false, \"upstream_semantic_source_sha\": \"dd628eb443b517d6415de93e7035b4baef73963e\", \"validated_horizon\": 1.0, \"validator_name\": \"DR-RP\", \"worktree_dirty\": false}\n",
+  "wall_s": 80.49113112688065
+}

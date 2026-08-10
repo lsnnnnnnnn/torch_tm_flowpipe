@@ -1,0 +1,32 @@
+{
+  "batch": 1,
+  "boundary": 10,
+  "command": [
+    "<py11-environment>/bin/python",
+    "experiments/run_vdp_fixed_support_compiled.py",
+    "--output-dir",
+    "outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/raw/compiled_boundaries/boundary_10",
+    "--batch",
+    "1",
+    "--device",
+    "cpu",
+    "--steps",
+    "10",
+    "--boundary",
+    "10",
+    "--warm-runs",
+    "1",
+    "--later-inputs",
+    "5"
+  ],
+  "device": "cpu",
+  "exit_status": 124,
+  "logical_steps": 10,
+  "status": "compile_timeout",
+  "stderr": "",
+  "stdout": "",
+  "summary_available": false,
+  "timed_out": true,
+  "timeout_s": 180.0,
+  "wall_s": 180.21474872995168
+}

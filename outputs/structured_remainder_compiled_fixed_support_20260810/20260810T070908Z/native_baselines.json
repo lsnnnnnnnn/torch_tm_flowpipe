@@ -1,0 +1,263 @@
+{
+  "rows": {
+    "comparability": {
+      "endpoint_tube_mixing_forbidden": true,
+      "ranked": false,
+      "reasons": [
+        "representation",
+        "partition_count",
+        "step_policy",
+        "validator",
+        "carry",
+        "endpoint_vs_tube",
+        "soundness_classification"
+      ]
+    },
+    "contract": {
+      "initial_box": [
+        [
+          1.1,
+          1.4
+        ],
+        [
+          2.35,
+          2.45
+        ]
+      ],
+      "requested_horizon": 10.0,
+      "rhs": [
+        "y",
+        "y - x - x^2*y"
+      ],
+      "state_order": [
+        "x",
+        "y"
+      ]
+    },
+    "derived_root_copy": {
+      "source": "01_native_baselines/native_baselines.json",
+      "source_sha256": "27c9728e0c775038674a64dd9fe6cd18760aa0b08971fd07b3c655c3dd26b281"
+    },
+    "generated_at_utc": "2026-08-10T03:30:00Z",
+    "lanes": {
+      "diffreach_stock": {
+        "artifacts": {
+          "flowpipe_npz_sha256": "f02d2220848576bbd38873eca38b7cac7d6a3c9b08e10608e9ad32de8071b379",
+          "raw_log_sha256": "dd97d529353dd9f0d63c466caee03c4ed79f60d0d42c3e4ef6c13ea7fc7f286a",
+          "trajectory_npz_sha256": "3dc12b9db421bb68164a894cd66c2fba444c4f3147c6379c784b1f131d15477f"
+        },
+        "certificate_semantics_passed": false,
+        "cross_tool_ranking_eligible": false,
+        "dtype_device": "jax_enable_x64=true; pinned model/identity/symbolic builders default to float32; CUDA V100 GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae",
+        "endpoint": {
+          "x": [
+            -1.3964494166017873,
+            -1.2195860990449185
+          ],
+          "y": [
+            -2.502208485945201,
+            -2.2803973198181486
+          ]
+        },
+        "execution_kind": "unmodified_official_entrypoint",
+        "finite_outputs": true,
+        "formal_claim_eligible": false,
+        "full_horizon_tube": "UNAVAILABLE",
+        "last_full_segment_tube": "UNAVAILABLE",
+        "later_round_failure_semantics": "retain_previous_component; masks_not_returned_by_stock_API",
+        "mathematical_contract_known": true,
+        "numerical_soundness_class": "empirically sampled only",
+        "numerical_soundness_scope": "native build",
+        "output_semantics": "endpoint_at_tau_equals_h",
+        "partition_count": 64,
+        "performance_measurement_eligible": true,
+        "polynomial_picard_iterations": 2,
+        "remainder_rounds": 10,
+        "remainder_seed": 0.01,
+        "representation": "restricted_fixed_support_DR7",
+        "requested_horizon_completed": true,
+        "returned_initial_inclusion": {
+          "passed": 128000,
+          "total": 128000
+        },
+        "slots": [
+          "1",
+          "t",
+          "x1",
+          "x2",
+          "t^2",
+          "t*x1",
+          "t*x2"
+        ],
+        "soundness_classification": "empirically sampled only",
+        "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+        "status": "completed",
+        "step_policy": {
+          "h": 0.01,
+          "kind": "fixed",
+          "steps": 1000
+        },
+        "timing_s": {
+          "simulation_after_jit": 0.007,
+          "simulation_warmup": 0.342,
+          "verification_after_jit": 0.36,
+          "verification_warmup": 4.307
+        },
+        "track": "N",
+        "validated_horizon": 10.0,
+        "validator": "DR-RP"
+      },
+      "flowstar_stock": {
+        "accepted_segments": 290,
+        "artifacts": {
+          "binary_sha256": "5012ec0d144fd3ad4aa23873cdb21d1910cce755433934061d70b345ad2a34ae",
+          "raw_log_sha256": "c71f3f6c87f86d3649f097f69b96604f9a88e9a9fdd94921d5e81624fe6eeed8",
+          "x_plt_sha256": "63facf7f12f58c0e034942e7d568bba2bea62cf37f2027332b9a1fd61f6c4bd4",
+          "y_plt_sha256": "c734e3427ccea50d4c373ce69df7e887046d01732a839519ae0f6550522d6533"
+        },
+        "certificate_semantics_passed": true,
+        "core_runtime_s": 0.441634,
+        "cross_tool_ranking_eligible": false,
+        "execution_kind": "unmodified_official_entrypoint",
+        "finite_outputs": true,
+        "formal_claim_eligible": false,
+        "full_horizon_tube": {
+          "x": [
+            -2.022605,
+            2.067539
+          ],
+          "y": [
+            -2.754938,
+            2.72123
+          ]
+        },
+        "last_segment": {
+          "time": [
+            9.995128,
+            10.0
+          ],
+          "x": [
+            -1.469806,
+            -1.175589
+          ],
+          "y": [
+            -2.588135,
+            -2.177639
+          ]
+        },
+        "mathematical_contract_known": true,
+        "numerical_soundness_class": "unsound/ineligible on a demonstrated counterexample",
+        "numerical_soundness_scope": "native build",
+        "output_semantics": "full_segment_tubes",
+        "partition_count": 1,
+        "performance_measurement_eligible": true,
+        "primary_formal_comparison_eligible": false,
+        "qualification": {
+          "first_loss_max_defect": 3.3337554938839276e-10,
+          "first_loss_stage": "refinement_2_accepted_tmv",
+          "gate": "scalar_affine_closed_form_mpfr",
+          "gate_artifact_sha256": "20e29f8ceea48b3f3924d05f94c59dda1288b0eebb67d88c128c8eda7c62169f",
+          "official_path_max_defect": 3.4938679727147814e-10,
+          "selected_outcome": "F_clean_stock_flowstar_core_behavior"
+        },
+        "raw_endpoint": "UNAVAILABLE",
+        "reported_property": "All flowpipes are safe",
+        "representation": "complete_total_degree_O4",
+        "requested_horizon_completed": true,
+        "soundness_classification": "unsound/ineligible on a demonstrated counterexample",
+        "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "status": "completed",
+        "step_policy": "native_adaptive",
+        "track": "N",
+        "validated_horizon": 10.0
+      },
+      "torch_authoritative_complete_o4": {
+        "accepted_steps": 307,
+        "algorithmic_work": {
+          "leaf_evaluations": 17248,
+          "subdivisions": 4312
+        },
+        "artifacts": {
+          "attempts_sha256": "9814f547de83fa8e0c5d9e1706533f815f7d9694b0c5152a7a01d16fa54180a0",
+          "decision_sha256": "82346276857940b2b61381b112e938e37000777e27eb8dcf07c4c645076c20ae",
+          "raw_log_sha256": "16d7c0ec62441a426937e632ba2f2a69dc701eef6272951b57c2ae1351dbcdf3",
+          "segments_sha256": "28a92e6bb84e2d8b81cb31e57453eb46e28ef03c434d284ec92b9a50f6ac5dc4",
+          "summary_sha256": "1c617020888c21fc1efd9d2c21bab57320bfe39b8aad0a883fde3cdc28af42eb"
+        },
+        "carry": "normalized_insertion",
+        "certificate_semantics_passed": false,
+        "cross_tool_ranking_eligible": false,
+        "eligible_t10_completion": false,
+        "execution_kind": "frozen_authoritative_torch_entrypoint_fresh_request",
+        "failure_type": "minimum_step_reached_after_validator_rejection",
+        "fallback_count": 0,
+        "finite_outputs": true,
+        "formal_claim_eligible": false,
+        "fresh_run_source_sha": "dc26187660609c7a313bcc27e1c684d5262359b8",
+        "frozen_state_hashes": {
+          "current": "17de6d46dae3f3c1123627d507756741d02ebcb0f2dbda7754b4a6134563bc5e",
+          "tmv_pre": "efe776ac16eedc29b5582e7de979f5442efa79ed3ef7092f28484089a49b04ad",
+          "tmv_right": "c721ccf4c02099afd7064a79dd3235759f453df6c8315d2a4e8745ecd7ed3bb3"
+        },
+        "full_prefix_tube": {
+          "x": [
+            -2.0780738215906385,
+            2.0665085126029323
+          ],
+          "y": [
+            -2.745978471086789,
+            4.3716243376349295
+          ]
+        },
+        "highest_validated_horizon": 6.397083942944808,
+        "last_segment_tube": {
+          "x": [
+            -0.14240676015757564,
+            1.3785467069753718
+          ],
+          "y": [
+            0.8952941706289553,
+            4.3716243376349295
+          ]
+        },
+        "lineage_source_sha": "4707abed5e8d28ec56c2b5e76b800bd284f0008b",
+        "mathematical_contract_known": true,
+        "numerical_soundness_class": "formally outward by construction",
+        "numerical_soundness_scope": "multi-step lane",
+        "performance_measurement_eligible": true,
+        "process_runtime_s": 516.796263850294,
+        "range_policy": "proactive_depth1_on_named_contexts:polynomial_truncation; max_leaves=4",
+        "raw_endpoint": {
+          "x": [
+            -0.1336886316181628,
+            1.3785118640319567
+          ],
+          "y": [
+            0.8988221407067473,
+            4.371426383921656
+          ]
+        },
+        "rejected_attempts": 48,
+        "repair_used": false,
+        "representation": "complete_total_degree_O4",
+        "requested_horizon": 6.5,
+        "requested_horizon_completed": false,
+        "sample_sanity_max_violation": 0.0,
+        "soundness_classification": "formally outward by construction",
+        "status": "failed",
+        "terminal_attempt_h": 0.003623635847674574,
+        "terminal_inclusion_margin": {
+          "x": 9.963763341523255e-05,
+          "y": -1.99995911680722e-05
+        },
+        "track": "N",
+        "validator": "flowstar_raw_remainder_compat"
+      }
+    },
+    "run_id": "20260810T025910Z",
+    "schema": "torch_tm_flowpipe_native_vdp_baselines_v1"
+  },
+  "schema": "native_baselines_inherited_v1",
+  "source_package": "outputs/mainline_realignment_20260810/20260810T025910Z/native_baselines.json",
+  "source_sha256": "63d3b0aa0839baefd5e1daf21d55f3e090f42d8a013931a97618547b8f632039"
+}

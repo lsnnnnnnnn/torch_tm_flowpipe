@@ -1,0 +1,156 @@
+{
+  "accepted_rejected_steps": {
+    "accepted": 100,
+    "rejected_initial_inclusion": 0
+  },
+  "algorithmic_work": {
+    "batch_steps": 800,
+    "later_component_retain_count": 0,
+    "polynomial_picard_evaluations": 1600,
+    "remainder_picard_evaluations": 8800
+  },
+  "candidate_remainder": {
+    "kind": "absolute_symmetric",
+    "radius": [
+      0.01,
+      0.01
+    ]
+  },
+  "carry_reset_policy": "DiffReach-equivalent normalized affine carry",
+  "certificate_status": "all_initial_DR_RP_inclusions_pass",
+  "cold_warm_core_process_runtime": {
+    "cold_s": 13.194699082523584,
+    "core_definition": "solver.verify including required per-step inclusion host gate",
+    "process_s": 78.985705900006,
+    "warm_min_s": 12.808932717889547,
+    "warm_s": [
+      12.888936586678028,
+      13.034047780558467,
+      13.225077262148261,
+      13.595109322108328,
+      12.808932717889547
+    ]
+  },
+  "completion_status": "completed",
+  "dtype_device": {
+    "device": "cuda:0",
+    "device_name": "Tesla V100-SXM2-16GB",
+    "dtype": "float64"
+  },
+  "eligible_full_horizon": true,
+  "endpoint_tube_polynomial_remainder_widths": {
+    "endpoint_width": [
+      0.07538791010297508,
+      0.10328299191644641
+    ],
+    "full_horizon_tube": [
+      [
+        1.0999839917067882,
+        2.059061049732529
+      ],
+      [
+        -0.4728326799463863,
+        2.4500714085562962
+      ]
+    ],
+    "full_tube_width": [
+      0.9590770580257408,
+      2.9229040885026825
+    ],
+    "last_full_segment_tube": [
+      [
+        1.873165775769815,
+        1.9530045420319424
+      ],
+      [
+        -0.4728326799463863,
+        -0.3608634810208189
+      ]
+    ],
+    "last_tube_width": [
+      0.07983876626212738,
+      0.11196919892556739
+    ],
+    "raw_endpoint": [
+      [
+        1.873165775769815,
+        1.94855368587279
+      ],
+      [
+        -0.47275491268144265,
+        -0.36947192076499624
+      ]
+    ]
+  },
+  "execution_kind": "canonical_torch_fixed_support",
+  "explicit_reporting_device_transfers": 7,
+  "finite_outputs": true,
+  "first_failure_time_reason": null,
+  "host_synchronizations": 100,
+  "initial_set": [
+    [
+      1.1,
+      1.4
+    ],
+    [
+      2.35,
+      2.45
+    ]
+  ],
+  "output_semantics": {
+    "endpoint": "tau=h",
+    "stored_separately": true,
+    "tube": "tau in [0,h]"
+  },
+  "partition_policy": {
+    "batch": 8,
+    "splits": [
+      4,
+      2
+    ]
+  },
+  "peak_memory_bytes": 23068672,
+  "polynomial_picard_semantics": "two fixed restricted-support Picard iterates",
+  "property_status": "not_applicable_no_property_in_open_loop_contract",
+  "range_policy": "diffreach_restricted_quadratic_horner",
+  "remainder_rounds_and_acceptance": {
+    "initial_inclusion_required": true,
+    "initial_pass": true,
+    "later_pass_count": 16000,
+    "later_rule": "accept_component_if_subset_else_retain_previous_component",
+    "later_total_count": 16000,
+    "rounds": 10
+  },
+  "representation_name": "diffreach_restricted_quadratic_DR7",
+  "requested_horizon": 1.0,
+  "rhs_sha256": "2aaa4041dec76d7ca8649323eba4bc1a378b545135e833855d987c744e9f6bcd",
+  "schema": "torch_tm_flowpipe_fixed_support_run_v1",
+  "solver_device_transfers": 0,
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64 semantics; independent outward replay required for promotion",
+  "source_sha": "4bb10d54b29dad2b47c5f91ddedafe854a52fac6",
+  "state_and_generator_order": [
+    "x",
+    "y",
+    "t",
+    "xi_x",
+    "xi_y"
+  ],
+  "step_policy": {
+    "kind": "fixed",
+    "step_size": 0.01,
+    "steps": 100
+  },
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "symbolic_remainder_policy": {
+    "capacity": 100,
+    "kind": "J/Phi window with clear-on-cap"
+  },
+  "system": "official_flowstar_vanderpol",
+  "tool": "Torch TM",
+  "undeclared_fallback_or_repair": false,
+  "upstream_semantic_source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "validated_horizon": 1.0,
+  "validator_name": "DR-RP",
+  "worktree_dirty": false
+}
