@@ -1,0 +1,90 @@
+{
+  "accepted_steps": 7,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810",
+  "commit": "4707abed5e8d28ec56c2b5e76b800bd284f0008b",
+  "completed_horizon": 0.1,
+  "completed_requested_horizon": true,
+  "config_sha256": "805d699457d146c78ed5bd2e4c30c3488739e4d71b0487400f5ebb43e4d925f0",
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_range_contexts": [],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 64,
+  "dense_range_method": "natural",
+  "dense_range_trigger": "always",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_transfer_count": 0,
+  "diagnostic_factors": [],
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 1.625259472513246,
+    "x_lo": 1.0990754609166948,
+    "y_hi": 2.4638770963735945,
+    "y_lo": 1.9186742217575514
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 6,
+    "width_sum": 0.6256186025612858,
+    "x_hi": 1.625259472513246,
+    "x_lo": 1.316575076181858,
+    "x_width": 0.3086843963313881,
+    "y_hi": 2.235608427987449,
+    "y_lo": 1.9186742217575514,
+    "y_width": 0.31693420622989765
+  },
+  "message": "",
+  "range_leaf_evaluations": 0,
+  "range_subdivision_invocations": 0,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.601831167412948,
+    "x_hi": 1.6252192821249323,
+    "x_lo": 1.323999573138233,
+    "x_width": 0.30121970898669925,
+    "y_hi": 2.2205363838378047,
+    "y_lo": 1.919924925411556,
+    "y_width": 0.3006114584262487
+  },
+  "rejected_attempts": 3,
+  "rejected_step_records": 0,
+  "requested_horizon": 0.1,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 2.741188745945692,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "segment_boundary_conversion_count": 14,
+  "single_factor_diagnostic": false,
+  "status": "completed",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "worktree_dirty": false
+}

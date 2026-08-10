@@ -1,0 +1,64 @@
+{
+  "accepted_all_batches": true,
+  "actual_independent_inputs": true,
+  "bit_exact_endpoint_carry": true,
+  "coefficient_sha256": "f9466e1ecd9bafbd6893d0534c4f597697c95c7862b8cd56e80869b9084c78d8",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "endpoint_hull": [
+    [
+      1.1046965941041327,
+      1.4048926781761502
+    ],
+    [
+      2.3426560497995808,
+      2.4467438663502454
+    ]
+  ],
+  "execution_kind": "complete_O4_one_step_plus_complete_endpoint_carry_kernel",
+  "h": 0.002,
+  "partition_policy": {
+    "batch": 64,
+    "splits": [
+      8,
+      8
+    ]
+  },
+  "peak_memory_bytes": 419012608,
+  "schema": "torch_tm_complete_carry_batch_v1",
+  "scope_limitation": "The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.",
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64; the exact carry is bit-preserving, but the dense arithmetic is not universally outward rounded",
+  "source_sha": "412f59b3154b97f73086f71bc8b0b4fa154471af",
+  "status": "validated",
+  "timing": {
+    "boundary": "dense Picard construction, validation, endpoint substitution, and carry clone",
+    "cold_first_call_s": 1.267107910476625,
+    "cuda_synchronized": false,
+    "warm_max_s": 1.2761116791516542,
+    "warm_median_s": 1.2506081899628043,
+    "warm_min_s": 1.2420703927055001,
+    "warm_s": [
+      1.2506081899628043,
+      1.2761116791516542,
+      1.253860428929329,
+      1.2420703927055001,
+      1.2476180596277118
+    ]
+  },
+  "work": {
+    "batch_steps": 64,
+    "carried_coefficient_values": 4480,
+    "host_decision_scope": "per-step aggregate inclusion gate",
+    "intervalized_retained_terms": 0,
+    "overflow_product_routes": 1015,
+    "picard_depth": 4,
+    "remainder_rounds": 1,
+    "retained_product_routes": 210,
+    "slots": 35
+  },
+  "worktree_dirty": false
+}

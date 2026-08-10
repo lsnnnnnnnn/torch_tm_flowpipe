@@ -29,8 +29,14 @@ if str(SRC) not in sys.path:
 from torch_tm_flowpipe.artifact_package import (
     REQUIRED_FIGURES,
     REQUIRED_MACHINE_FILES,
+    load_json_artifact,
+    reject_nonfinite,
+    reject_public_absolute_paths,
     sha256_file,
+    validate_raw_evidence,
     validate_required_package,
+    verify_artifact_manifests,
+    verify_recovery_inventory,
     verify_sha256sums,
     write_sha256sums,
 )
@@ -39,17 +45,35 @@ RUN_ID = "20260810T025910Z"
 
 
 def _json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return load_json_artifact(path)
+
+
+def _public_value(value: Any) -> Any:
+    if isinstance(value, str):
+        return value.replace("/srv/local/shengenli/", "<server-workspace>/")
+    if isinstance(value, dict):
+        return {key: _public_value(child) for key, child in value.items()}
+    if isinstance(value, list):
+        return [_public_value(child) for child in value]
+    if isinstance(value, tuple):
+        return tuple(_public_value(child) for child in value)
+    return value
 
 
 def _write_json(path: Path, value: Any) -> None:
+    value = _public_value(value)
+    reject_nonfinite(value, label=path.name)
     path.write_text(
-        json.dumps(value, indent=2, sort_keys=True, default=str) + "\n",
+        json.dumps(value, indent=2, sort_keys=True, allow_nan=False, default=str) + "\n",
         encoding="utf-8",
     )
 
 
 def _write_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
+    if not rows:
+        raise ValueError(f"refusing to write empty machine table: {path}")
+    rows = _public_value(list(rows))
+    reject_nonfinite(rows, label=path.name)
     fields = sorted({str(key) for row in rows for key in row})
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
@@ -81,10 +105,69 @@ def _float(row: Mapping[str, Any], key: str) -> float | None:
     return number if math.isfinite(number) else None
 
 
+def _require_fields(value: Mapping[str, Any], fields: Sequence[str], *, label: str) -> None:
+    missing = [field for field in fields if field not in value or value[field] is None]
+    if missing:
+        raise ValueError(f"{label}: incomplete required fields {missing}")
+
+
+def _validated_horizon(summary: Mapping[str, Any]) -> float:
+    completed = bool(summary.get("completed_requested_horizon"))
+    value = summary.get("completed_horizon")
+    if value is None and completed:
+        value = summary.get("requested_horizon")
+    if value is None or not math.isfinite(float(value)):
+        raise ValueError("summary lacks a finite validated/completed horizon")
+    return float(value)
+
+
+def _candidate_decision(
+    baseline_summary: Mapping[str, Any], candidate_summary: Mapping[str, Any]
+) -> str:
+    baseline_horizon = _validated_horizon(baseline_summary)
+    candidate_horizon = _validated_horizon(candidate_summary)
+    candidate_completed = bool(candidate_summary.get("completed_requested_horizon"))
+    return (
+        "CANDIDATE_PROMOTED"
+        if candidate_completed or candidate_horizon > baseline_horizon
+        else "CANDIDATE_REJECTED"
+    )
+
+
 def _git(*args: str) -> str:
     return subprocess.run(
         ["git", *args], cwd=ROOT, check=True, capture_output=True, text=True
     ).stdout.strip()
+
+
+def _source_worktree_status() -> str:
+    canonical = f"outputs/mainline_realignment_20260810/{RUN_ID}"
+    return _git(
+        "status",
+        "--short",
+        "--untracked-files=all",
+        "--",
+        ".",
+        f":(exclude){canonical}",
+    )
+
+
+def _package_tracking_status(run_root: Path) -> dict[str, Any]:
+    canonical = ROOT / "outputs/mainline_realignment_20260810" / RUN_ID
+    inspected = canonical if run_root.resolve() != canonical.resolve() else run_root
+    tracked = set(_git("ls-files", "--", canonical.relative_to(ROOT).as_posix()).splitlines())
+    files = sorted(path for path in inspected.rglob("*") if path.is_file())
+    relative_files = {
+        (canonical.relative_to(ROOT) / path.relative_to(inspected)).as_posix()
+        for path in files
+    }
+    untracked = sorted(relative_files - tracked)
+    return {
+        "stored_file_count": len(relative_files),
+        "tracked_file_count": len(relative_files & tracked),
+        "all_stored_files_tracked": not untracked,
+        "untracked_files": untracked,
+    }
 
 
 def _normalized_flowstar_stdout(path: Path) -> bytes:
@@ -243,12 +326,32 @@ def _plot_required_figures(run_root: Path) -> None:
     fig.savefig(figures / "polynomial_range_vs_remainder.png", dpi=180)
     plt.close(fig)
 
-    horizons = {"stock Flow*": 10.0, "stock DiffReach": 10.0, "Torch fixed B64": 10.0,
-                "Torch complete O4": 6.397083942944808, "complete carry": 0.04345468750000001}
+    horizon_rows = _csv_rows(run_root / "full_horizon.csv")
+    lane_labels = {
+        "stock_flowstar_native": "stock Flow*",
+        "stock_diffreach_native": "stock DiffReach",
+        "torch_fixed_dr7_b64": "Torch fixed B64",
+        "torch_complete_o4_frozen_natural": "Torch complete O4",
+        "torch_complete_o4_complete_carry": "complete carry",
+    }
+    horizons: dict[str, float] = {}
+    for row in horizon_rows:
+        lane = row.get("lane", "")
+        validated = _float(row, "validated_horizon")
+        if lane in lane_labels and validated is not None:
+            label = lane_labels[lane]
+            horizons[label] = max(validated, horizons.get(label, -math.inf))
+    if set(horizons) != set(lane_labels.values()):
+        raise ValueError(f"validated-horizon figure lacks lanes: {horizons}")
     fig, ax = plt.subplots(figsize=(8, 4.8))
     colors = ["#999999", "#9467bd", "#2ca02c", "#ff7f0e", "#d62728"]
     ax.bar(list(horizons), list(horizons.values()), color=colors)
-    ax.axhline(10, color="black", linewidth=0.8, linestyle="--")
+    requested = [
+        value
+        for row in horizon_rows
+        if (value := _float(row, "requested_horizon")) is not None
+    ]
+    ax.axhline(max(requested), color="black", linewidth=0.8, linestyle="--")
     ax.set(ylabel="highest validated horizon", title="Completion is not cross-contract ranking")
     ax.tick_params(axis="x", rotation=20)
     fig.tight_layout()
@@ -294,8 +397,15 @@ def _collect_scaling(run_root: Path) -> list[dict[str, Any]]:
             for batch in (1, 8, 64, 256, 512):
                 path = run_root / f"05_batch_scaling/{lane}/{device_group}_b{batch}/summary.json"
                 if not path.is_file():
-                    continue
+                    raise ValueError(f"referenced scaling summary absent: {path}")
                 value = _json(path)
+                _require_fields(
+                    value,
+                    ("dtype_device", "execution_kind"),
+                    label=path.relative_to(run_root).as_posix(),
+                )
+                if value.get("status") is None and value.get("completion_status") is None:
+                    raise ValueError(f"{path}: missing status/completion_status")
                 timing = value.get("cold_warm_core_process_runtime", value.get("timing", {}))
                 widths = value.get("endpoint_tube_polynomial_remainder_widths", {})
                 endpoint_width = widths.get("endpoint_width", [])
@@ -330,11 +440,21 @@ def _collect_scaling(run_root: Path) -> list[dict[str, Any]]:
 
 
 def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifact: str) -> dict[str, Any]:
+    _require_fields(
+        summary,
+        ("completed_requested_horizon", "requested_horizon", "accepted_steps", "runtime_s"),
+        label=artifact,
+    )
+    recorded_requested = float(summary["requested_horizon"])
+    if recorded_requested != float(requested):
+        raise ValueError(
+            f"{artifact}: requested horizon {recorded_requested} != indexed {requested}"
+        )
     completed = bool(summary.get("completed_requested_horizon"))
     return {
         "lane": lane,
-        "requested_horizon": requested,
-        "validated_horizon": summary.get("completed_horizon", requested if completed else 0.0),
+        "requested_horizon": recorded_requested,
+        "validated_horizon": _validated_horizon(summary),
         "completion_status": "completed" if completed else "PARTIAL_HORIZON",
         "certificate_status": "passed" if completed else "failed_validation",
         "first_failure_reason": summary.get("failure_type", "") if not completed else "",
@@ -350,6 +470,13 @@ def _horizon_row(lane: str, summary: Mapping[str, Any], requested: float, artifa
 
 
 def build(run_root: Path) -> None:
+    validate_raw_evidence(run_root)
+    recovery_valid, recovery_errors = verify_recovery_inventory(run_root)
+    if not recovery_valid:
+        raise ValueError(f"recovered evidence failures: {recovery_errors[:20]}")
+    manifests_valid, manifest_errors = verify_artifact_manifests(run_root)
+    if not manifests_valid:
+        raise ValueError(f"raw artifact manifest failures: {manifest_errors[:20]}")
     required_fixed_dir = run_root / "02_torch_diffreach_equivalence"
     required_fixed_dir.mkdir(exist_ok=True)
     fixed_sources = [
@@ -373,6 +500,13 @@ def build(run_root: Path) -> None:
     )
     native_source = run_root / "01_native_baselines/native_baselines.json"
     native = _json(native_source)
+    _require_fields(native, ("lanes",), label=native_source.as_posix())
+    lanes = native["lanes"]
+    _require_fields(
+        lanes,
+        ("flowstar_stock", "diffreach_stock", "torch_authoritative_complete_o4"),
+        label="native lanes",
+    )
     native["derived_root_copy"] = {"source": native_source.relative_to(run_root).as_posix(), "source_sha256": sha256_file(native_source)}
     _write_json(run_root / "native_baselines.json", native)
 
@@ -388,7 +522,10 @@ def build(run_root: Path) -> None:
             "expressibility": {
                 "flowstar_stock": "native official VDP expressible; tubes only; formal stock numerical gate fails",
                 "diffreach_stock": "native official VDP expressible with B64/fixed h; stock tube and later masks unavailable",
-                "torch_complete": "expressible; partial at 6.397083942944808",
+                "torch_complete": (
+                    "expressible; partial at "
+                    f"{lanes['torch_authoritative_complete_o4']['highest_validated_horizon']}"
+                ),
                 "torch_fixed": "expressible in framework; native-like fixed support, B64, h=.01",
             },
             "ranked": False,
@@ -398,6 +535,11 @@ def build(run_root: Path) -> None:
     fixed_eq = _json(run_root / "02_fixed_support/fixed_support_equivalence.json")
     common_summary = _json(run_root / "03_flowstar_causal_divergence/common_basis_final/summary.json")
     one_step = _json(run_root / "04_generic_carry_candidate/one_step_grid_final/summary.json")
+    fixed_qualified = not bool(fixed_eq.get("implementation_mismatch", True))
+    common_qualified = bool(common_summary.get("native_torch_replay_bit_exact"))
+    carry_qualified = bool(one_step.get("all_decisions_match")) and bool(
+        one_step.get("all_endpoint_coefficients_match")
+    )
     _write_json(
         run_root / "operator_equivalence.json",
         {
@@ -405,7 +547,11 @@ def build(run_root: Path) -> None:
             "fixed_support": fixed_eq,
             "common_basis": common_summary,
             "complete_carry_one_step": one_step,
-            "decisions": {"fixed_support": "qualified", "common_basis": "qualified", "complete_carry": "zero one-step mismatch"},
+            "decisions": {
+                "fixed_support": "qualified" if fixed_qualified else "mismatch",
+                "common_basis": "qualified" if common_qualified else "mismatch",
+                "complete_carry": "zero one-step mismatch" if carry_qualified else "mismatch",
+            },
         },
     )
 
@@ -414,7 +560,7 @@ def build(run_root: Path) -> None:
     unlogged = observer_root / "final_unlogged"
     observer_equivalence = {
         "schema": "flowstar_causal_observer_equivalence_v1",
-        "stock_source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "stock_source_sha": lanes["flowstar_stock"]["source_sha"],
         "logged_observer_sha256": sha256_file(logged / "observer.jsonl"),
         "official_outputs": {
             name: {
@@ -429,9 +575,17 @@ def build(run_root: Path) -> None:
             "unlogged": hashlib.sha256(_normalized_flowstar_stdout(unlogged / "stdout.log")).hexdigest(),
         },
         "stderr_byte_identical": (logged / "stderr.log").read_bytes() == (unlogged / "stderr.log").read_bytes(),
-        "accepted_schedule_rows": 290,
-        "completion_match": True,
-        "exit_status_match": True,
+        "accepted_schedule_rows": len(
+            _flowstar_rectangles(logged / "vanderpol_t_x.plt")
+        ),
+        "completion_match": (
+            (logged / "vanderpol_t_x.plt").read_bytes()
+            == (unlogged / "vanderpol_t_x.plt").read_bytes()
+        ),
+        "exit_status_match": (
+            _json(logged / "command.json").get("exit_status")
+            == _json(unlogged / "command.json").get("exit_status")
+        ) if (logged / "command.json").is_file() and (unlogged / "command.json").is_file() else "UNAVAILABLE",
     }
     observer_equivalence["normalized_stdout_identical"] = (
         observer_equivalence["normalized_stdout_sha256"]["logged"]
@@ -471,7 +625,7 @@ def build(run_root: Path) -> None:
     for horizon, relative in fixed_ladder_paths.items():
         path = run_root / relative
         if not path.is_file():
-            continue
+            raise ValueError(f"referenced fixed-support ladder summary absent: {path}")
         summary = _json(path)
         horizon_rows.append(
             {
@@ -494,11 +648,42 @@ def build(run_root: Path) -> None:
     _write_csv(run_root / "short_horizon.csv", [row for row in horizon_rows if row["requested_horizon"] <= 1.0])
 
     full_rows = [row for row in horizon_rows if row["requested_horizon"] >= 4.0]
-    lanes = native["lanes"]
+    requested_horizon = float(matched["system"]["requested_horizon"])
+    flow_lane = lanes["flowstar_stock"]
+    diff_lane = lanes["diffreach_stock"]
     full_rows.extend(
         [
-            {"lane": "stock_flowstar_native", "requested_horizon": 10, "validated_horizon": 10, "completion_status": "completed", "certificate_status": "reported_safe_but_formal_gate_failed", "accepted_steps": 290, "runtime_s": lanes["flowstar_stock"]["core_runtime_s"], "soundness": "unsound/ineligible", "artifact": "01_native_baselines/native_baselines.json"},
-            {"lane": "stock_diffreach_native", "requested_horizon": 10, "validated_horizon": 10, "completion_status": "completed", "certificate_status": "all_returned_initial_masks_pass", "accepted_steps": 1000, "runtime_s": lanes["diffreach_stock"]["timing_s"]["verification_after_jit"], "soundness": "empirically sampled only", "artifact": "01_native_baselines/native_baselines.json"},
+            {
+                "lane": "stock_flowstar_native",
+                "requested_horizon": requested_horizon,
+                "validated_horizon": flow_lane["validated_horizon"],
+                "completion_status": flow_lane["status"],
+                "certificate_status": (
+                    "reported_safe_but_formal_gate_failed"
+                    if not flow_lane["primary_formal_comparison_eligible"]
+                    else "reported_safe"
+                ),
+                "accepted_steps": flow_lane["accepted_segments"],
+                "runtime_s": flow_lane["core_runtime_s"],
+                "soundness": flow_lane["soundness_classification"],
+                "artifact": "01_native_baselines/native_baselines.json",
+            },
+            {
+                "lane": "stock_diffreach_native",
+                "requested_horizon": requested_horizon,
+                "validated_horizon": diff_lane["validated_horizon"],
+                "completion_status": diff_lane["status"],
+                "certificate_status": (
+                    "all_returned_initial_masks_pass"
+                    if diff_lane["returned_initial_inclusion"]["passed"]
+                    == diff_lane["returned_initial_inclusion"]["total"]
+                    else "initial_mask_failure"
+                ),
+                "accepted_steps": diff_lane["step_policy"]["steps"],
+                "runtime_s": diff_lane["timing_s"]["verification_after_jit"],
+                "soundness": diff_lane["soundness_classification"],
+                "artifact": "01_native_baselines/native_baselines.json",
+            },
         ]
     )
     fixed_t10_path = run_root / "02_fixed_support/cpu_b64_t10/summary.json"
@@ -507,15 +692,20 @@ def build(run_root: Path) -> None:
         {"lane": "torch_fixed_dr7_b64", "requested_horizon": 10, "validated_horizon": fixed_t10["validated_horizon"], "completion_status": fixed_t10["completion_status"], "certificate_status": fixed_t10["certificate_status"], "accepted_steps": fixed_t10["accepted_rejected_steps"]["accepted"], "runtime_s": fixed_t10["cold_warm_core_process_runtime"]["cold_s"], "soundness": fixed_t10["soundness_classification"], "artifact": fixed_t10_path.relative_to(run_root).as_posix()}
     )
     final_baseline = run_root / "06_final_baseline_ladder/torch_complete_o4_adaptive_t10_fresh/summary.json"
-    if final_baseline.is_file():
-        full_rows.append(_horizon_row("torch_complete_o4_adaptive_final", _json(final_baseline), 10.0, final_baseline.relative_to(run_root).as_posix()))
+    if not final_baseline.is_file():
+        raise ValueError(f"referenced final baseline absent: {final_baseline}")
+    full_rows.append(_horizon_row("torch_complete_o4_adaptive_final", _json(final_baseline), 10.0, final_baseline.relative_to(run_root).as_posix()))
     _write_csv(run_root / "full_horizon.csv", full_rows)
 
     causal = _json(run_root / "03_flowstar_causal_divergence/common_basis_final/counterfactuals.json")
     candidate_failure = _json(run_root / "04_generic_carry_candidate/final_da21a9e_t10_fresh/summary.json")
+    baseline_failure = _json(
+        run_root / "06_final_baseline_ladder/torch_complete_o4_adaptive_t10_fresh/summary.json"
+    )
+    candidate_decision = _candidate_decision(baseline_failure, candidate_failure)
     _write_json(
         run_root / "failure_attribution.json",
-        {"schema": "torch_tm_failure_attribution_v1", "observer_equivalence": observer_equivalence, "first_native_divergence": causal, "candidate_failure": candidate_failure, "candidate_decision": "CANDIDATE_REJECTED"},
+        {"schema": "torch_tm_failure_attribution_v1", "observer_equivalence": observer_equivalence, "first_native_divergence": causal, "candidate_failure": candidate_failure, "candidate_decision": candidate_decision},
     )
 
     scaling = _collect_scaling(run_root)
@@ -538,10 +728,11 @@ def build(run_root: Path) -> None:
         ]
     )
     fresh_path = run_root / "08_fresh_process_timing/fresh_process_timing.json"
-    if fresh_path.is_file():
-        for row in _json(fresh_path)["rows"]:
-            timing_rows.append(
-                {
+    if not fresh_path.is_file():
+        raise ValueError(f"referenced fresh-process timing absent: {fresh_path}")
+    for row in _json(fresh_path)["rows"]:
+        timing_rows.append(
+            {
                     "lane": row["lane"],
                     "device": "cpu",
                     "batch": 64 if row["lane"].startswith("fixed") else 1,
@@ -555,52 +746,144 @@ def build(run_root: Path) -> None:
                     ],
                     "compile_jit_s": row["compile_jit_s"],
                     "eligible_cross_tool_deployment_claim": False,
-                }
-            )
+            }
+        )
     _write_csv(run_root / "timing.csv", timing_rows)
 
+    replay = fixed_eq["exact_rational_replay"]
+    complete_lane = lanes["torch_authoritative_complete_o4"]
     soundness = [
-        {"lane": "stock_flowstar_native", "classification": "unsound/ineligible", "basis": "scalar-affine MPFR gap", "formal_completion_claim": False},
-        {"lane": "stock_diffreach_native", "classification": "empirically sampled only", "basis": "ordinary mixed-builder dtype", "formal_completion_claim": False},
-        {"lane": "torch_fixed_ordinary_cpu_cuda", "classification": "empirically sampled only", "basis": "binary64 not universally outward", "formal_completion_claim": False},
-        {"lane": "torch_fixed_2ulp_companion_one_step", "classification": "independently outward replayed for exact benchmark workload", "basis": "exact-rational decisive replay", "formal_completion_claim": "one-step companion only"},
-        {"lane": "torch_complete_o4_baseline", "classification": "formally outward by construction", "basis": "declared interval path", "formal_completion_claim": "validated prefix only"},
-        {"lane": "complete_polynomial_carry_primitive", "classification": "formally outward by construction", "basis": "exact clone of validated endpoint set", "formal_completion_claim": "primitive only; surrounding dense arithmetic separate"},
+        {
+            "lane": "stock_flowstar_native",
+            "classification": flow_lane["soundness_classification"],
+            "basis": flow_lane["qualification"]["gate"],
+            "formal_completion_claim": flow_lane["primary_formal_comparison_eligible"],
+        },
+        {
+            "lane": "stock_diffreach_native",
+            "classification": diff_lane["soundness_classification"],
+            "basis": diff_lane["dtype_device"],
+            "formal_completion_claim": False,
+        },
+        {
+            "lane": "torch_fixed_ordinary_cpu_cuda",
+            "classification": replay["ordinary_lane_classification"],
+            "basis": "ordinary_binary64_directly_qualified="
+            f"{replay['ordinary_binary64_directly_qualified']}",
+            "formal_completion_claim": False,
+        },
+        {
+            "lane": "torch_fixed_2ulp_companion_one_step",
+            "classification": replay["replay_envelope_classification"],
+            "basis": replay["arithmetic"],
+            "formal_completion_claim": replay["scope"],
+        },
+        {
+            "lane": "torch_complete_o4_baseline",
+            "classification": complete_lane["soundness_classification"],
+            "basis": complete_lane["range_policy"],
+            "formal_completion_claim": (
+                f"validated prefix {complete_lane['highest_validated_horizon']} only"
+            ),
+        },
+        {
+            "lane": "complete_polynomial_carry_primitive",
+            "classification": (
+                "formally outward by construction"
+                if one_step["all_candidate_carries_preserve_endpoint_coefficients"]
+                else "unknown"
+            ),
+            "basis": "endpoint coefficient preservation from one-step grid",
+            "formal_completion_claim": "primitive only; surrounding dense arithmetic separate",
+        },
     ]
     _write_csv(run_root / "soundness_matrix.csv", soundness)
+    causal_stage = causal["causal_attribution"]["earliest_decision-changing_stage"]
     claims = [
-        {"claim": "native entrypoints reproduced", "status": "valid", "scope": "own contracts"},
-        {"claim": "Torch fixed explicit-f64 operators reproduce DiffReach", "status": "valid", "scope": "frozen fixture and declared full lane"},
-        {"claim": "first native split is raw candidate remainder", "status": "valid", "scope": "last common state and h"},
-        {"claim": "complete polynomial carry improves horizon", "status": "invalid", "scope": "rejected at 0.04345468750000001"},
-        {"claim": "Torch globally faster or tighter than Flow*", "status": "invalid", "scope": "contracts and eligibility differ"},
-        {"claim": "ordinary CUDA is universally outward", "status": "invalid", "scope": "no analytic universal bound"},
-        {"claim": "stock Flow* is primary formal comparator", "status": "blocked", "scope": "scalar-affine MPFR gap"},
-        {"claim": "multi-step complete lane scales to B512", "status": "blocked", "scope": "outer adaptive scheduler B1; kernel only"},
+        {
+            "claim": "native entrypoints reproduced",
+            "status": "valid" if all(
+                lane["status"] == "completed" for lane in (flow_lane, diff_lane)
+            ) else "invalid",
+            "scope": "own contracts",
+        },
+        {
+            "claim": "Torch fixed explicit-f64 operators reproduce DiffReach",
+            "status": "valid" if fixed_qualified else "invalid",
+            "scope": "frozen fixture and declared full lane",
+        },
+        {
+            "claim": "first native split is raw candidate remainder",
+            "status": "valid" if "raw Picard remainder" in causal_stage else "invalid",
+            "scope": causal_stage,
+        },
+        {
+            "claim": "complete polynomial carry improves horizon",
+            "status": "valid" if candidate_decision == "CANDIDATE_PROMOTED" else "invalid",
+            "scope": f"candidate validated horizon {_validated_horizon(candidate_failure)}",
+        },
+        {
+            "claim": "Torch globally faster or tighter than Flow*",
+            "status": "valid" if matched.get("ranked", False) else "invalid",
+            "scope": "contracts and eligibility differ",
+        },
+        {
+            "claim": "ordinary CUDA is universally outward",
+            "status": "valid" if replay["ordinary_binary64_directly_qualified"] else "invalid",
+            "scope": replay["scope"],
+        },
+        {
+            "claim": "stock Flow* is primary formal comparator",
+            "status": "valid" if flow_lane["primary_formal_comparison_eligible"] else "blocked",
+            "scope": flow_lane["qualification"]["gate"],
+        },
+        {
+            "claim": "multi-step complete lane scales to B512",
+            "status": "blocked" if any(
+                "not a multi-step certificate" in str(row.get("scope_limitation", ""))
+                for row in [
+                    _json(run_root / "05_batch_scaling/complete_carry/cpu_b512/summary.json")
+                ]
+            ) else "valid",
+            "scope": _json(
+                run_root / "05_batch_scaling/complete_carry/cpu_b512/summary.json"
+            )["scope_limitation"],
+        },
     ]
     _write_csv(run_root / "claim_registry.csv", claims)
 
     _plot_required_figures(run_root)
+    start_state = _json(run_root / "00_provenance/start_state.json")
+    external = start_state["external_repositories"]
     manifest = {
         "schema": "torch_tm_mainline_realignment_manifest_v1",
         "run_id": RUN_ID,
         "branch": _git("branch", "--show-current"),
         "source_sha": _git("rev-parse", "HEAD"),
-        "worktree_status_at_generation": _git("status", "--short"),
+        "source_worktree_status_excluding_package": _source_worktree_status(),
+        "package_tracking_status": _package_tracking_status(run_root),
         "external_sources": {
-            "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
-            "diffreach": "dd628eb443b517d6415de93e7035b4baef73963e",
-            "xiangru_local": "84184de6c2b3f1ff2da6755f732d91925037025d",
-            "xiangru_server_resident_remote": "5a3f94b28a7303c42a34fb6d57ebdaba63f25e42",
+            "flowstar": external["flowstar"]["sha"],
+            "diffreach": external["diffreach"]["sha"],
+            "xiangru_local": external["xiangru"]["local_sha"],
+            "xiangru_server_resident_remote": external["xiangru"]["server_resident_remote_sha"],
         },
         "required_machine_files": list(REQUIRED_MACHINE_FILES),
         "required_figures": list(REQUIRED_FIGURES),
         "formal_evidence_scope": "all recursive files listed by SHA256SUMS; debug directories retained but not promoted",
-        "candidate_decision": "CANDIDATE_REJECTED",
+        "candidate_decision": candidate_decision,
     }
     _write_json(run_root / "manifest.json", manifest)
     validate_required_package(run_root)
-    path_prefix = run_root.relative_to(ROOT).as_posix()
+    reject_public_absolute_paths(run_root)
+    try:
+        path_prefix = run_root.relative_to(ROOT).as_posix()
+    except ValueError:
+        if run_root.name != RUN_ID:
+            raise ValueError(
+                "external clean-copy run root must retain the canonical run id"
+            )
+        path_prefix = f"outputs/mainline_realignment_20260810/{RUN_ID}"
     count = write_sha256sums(run_root, path_prefix=path_prefix)
     valid, errors = verify_sha256sums(run_root, path_prefix=path_prefix)
     if not valid:

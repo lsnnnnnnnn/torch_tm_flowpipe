@@ -1,0 +1,64 @@
+{
+  "accepted_all_batches": true,
+  "actual_independent_inputs": true,
+  "bit_exact_endpoint_carry": true,
+  "coefficient_sha256": "4ee47db6ef9050ee08c35e9b6d716bd57f8fca6aff8d41e25435ed3b0042ab80",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "endpoint_hull": [
+    [
+      1.1046965941116258,
+      1.4048926759258151
+    ],
+    [
+      2.342657032232791,
+      2.4467425517575268
+    ]
+  ],
+  "execution_kind": "complete_O4_one_step_plus_complete_endpoint_carry_kernel",
+  "h": 0.002,
+  "partition_policy": {
+    "batch": 256,
+    "splits": [
+      16,
+      16
+    ]
+  },
+  "peak_memory_bytes": 454971392,
+  "schema": "torch_tm_complete_carry_batch_v1",
+  "scope_limitation": "The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.",
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64; the exact carry is bit-preserving, but the dense arithmetic is not universally outward rounded",
+  "source_sha": "412f59b3154b97f73086f71bc8b0b4fa154471af",
+  "status": "validated",
+  "timing": {
+    "boundary": "dense Picard construction, validation, endpoint substitution, and carry clone",
+    "cold_first_call_s": 4.62941409740597,
+    "cuda_synchronized": false,
+    "warm_max_s": 4.685553003102541,
+    "warm_median_s": 4.629615402780473,
+    "warm_min_s": 4.599129137583077,
+    "warm_s": [
+      4.606573768891394,
+      4.629615402780473,
+      4.599129137583077,
+      4.656192564405501,
+      4.685553003102541
+    ]
+  },
+  "work": {
+    "batch_steps": 256,
+    "carried_coefficient_values": 17920,
+    "host_decision_scope": "per-step aggregate inclusion gate",
+    "intervalized_retained_terms": 0,
+    "overflow_product_routes": 1015,
+    "picard_depth": 4,
+    "remainder_rounds": 1,
+    "retained_product_routes": 210,
+    "slots": 35
+  },
+  "worktree_dirty": false
+}

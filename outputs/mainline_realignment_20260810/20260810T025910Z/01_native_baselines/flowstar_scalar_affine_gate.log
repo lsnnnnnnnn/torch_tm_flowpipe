@@ -1,0 +1,13 @@
+Script started on 2026-08-10 03:16:59+00:00 [COMMAND="conda run -n py11 python experiments/flowstar_scalar_affine_closure/run_closure.py --flowstar-root /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810 --run-root outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/flowstar_scalar_affine_gate" TERM="dumb" TTY="/dev/pts/29" COLUMNS="80" LINES="24"]
+Traceback (most recent call last):
+  File "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/experiments/flowstar_scalar_affine_closure/run_closure.py", line 956, in <module>
+    main()
+  File "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/experiments/flowstar_scalar_affine_closure/run_closure.py", line 659, in main
+    identity = backend_identity(flowstar_root, binaries, build_records)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/experiments/flowstar_scalar_affine_closure/run_closure.py", line 382, in backend_identity
+    raise RuntimeError(f"unexpected clean library hash: {library_hash}")
+RuntimeError: unexpected clean library hash: 94add5bfffb5173a4b4ee6a625af91c2f5ee653266a0acc00605492d4e7f7774
+ERROR conda.cli.main_run:execute(148): `conda run python experiments/flowstar_scalar_affine_closure/run_closure.py --flowstar-root /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810 --run-root outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/flowstar_scalar_affine_gate` failed. (See above for error)
+
+Script done on 2026-08-10 03:17:18+00:00 [COMMAND_EXIT_CODE="1"]

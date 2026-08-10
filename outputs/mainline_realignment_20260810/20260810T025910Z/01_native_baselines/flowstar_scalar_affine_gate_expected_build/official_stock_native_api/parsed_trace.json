@@ -1,0 +1,63 @@
+{
+  "checks": {},
+  "config": {
+    "candidate": 0.0001,
+    "cutoff": 1e-15,
+    "effective_rhs_order": 4,
+    "h": 0.01,
+    "order": 4,
+    "precision_bits": 53,
+    "preconditioning": "diagonal_scaling",
+    "route": "official-stock-native-api",
+    "symbolic_remainder": "disabled",
+    "x0_lower": 0,
+    "x0_upper": 0.1
+  },
+  "domains": {
+    "official_accepted": {
+      "0": {
+        "lower": 0,
+        "upper": 0.009999999999
+      },
+      "1": {
+        "lower": -1,
+        "upper": 1
+      }
+    }
+  },
+  "intervals": [],
+  "official": {
+    "completed": 1,
+    "safe": 1,
+    "segments": 1,
+    "status": 2
+  },
+  "stages": {
+    "official_accepted_right_endpoint": {
+      "boxes": {
+        "full_initial_interval": {
+          "0": {
+            "lower": 0.010100670332313124,
+            "upper": 0.11212080366544246
+          }
+        }
+      },
+      "remainders": {},
+      "terms": []
+    },
+    "official_full_tube": {
+      "boxes": {
+        "full_initial_interval": {
+          "0": {
+            "lower": -2.265795929406518e-18,
+            "upper": 0.11212080366544246
+          }
+        }
+      },
+      "remainders": {},
+      "terms": []
+    }
+  },
+  "status": {},
+  "unavailable": {}
+}

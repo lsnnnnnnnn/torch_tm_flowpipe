@@ -1,0 +1,1805 @@
+{
+  "checks": {
+    "candidate_contains_picard_image": 1,
+    "refinement_0_state_0_subset": 1,
+    "refinement_1_state_0_subset": 1,
+    "refinement_2_state_0_subset": 1,
+    "refinement_3_state_0_subset": 1,
+    "refinement_4_state_0_subset": 1,
+    "refinement_5_state_0_subset": 1,
+    "refinement_6_state_0_subset": 1,
+    "refinement_7_state_0_subset": 1,
+    "refinement_8_state_0_subset": 1,
+    "refinement_9_state_0_subset": 1
+  },
+  "config": {
+    "candidate": 0.0001,
+    "cutoff": 1e-15,
+    "effective_rhs_order": 4,
+    "h": 0.01,
+    "order": 4,
+    "precision_bits": 53,
+    "preconditioning": "diagonal_scaling",
+    "route": "generated-stock",
+    "symbolic_remainder": "disabled",
+    "x0_lower": 0.1,
+    "x0_upper": 0.1
+  },
+  "domains": {
+    "accepted": {
+      "0": {
+        "lower": 0,
+        "upper": 0.01
+      },
+      "1": {
+        "lower": -1,
+        "upper": 1
+      }
+    }
+  },
+  "intervals": [
+    {
+      "lower": 0,
+      "stage": "roundoff_polynomial_difference",
+      "state": 0,
+      "upper": 2.2205570715527758e-18
+    },
+    {
+      "lower": -4.0000000000000014e-08,
+      "stage": "refinement_0_raw",
+      "state": 0,
+      "upper": 4.000160000004443e-08
+    },
+    {
+      "lower": -4.0000000000000014e-08,
+      "stage": "refinement_0_with_roundoff",
+      "state": 0,
+      "upper": 4.0001600002264994e-08
+    },
+    {
+      "lower": -8.000000000000003e-10,
+      "stage": "refinement_1_raw",
+      "state": 0,
+      "upper": 8.000320000452999e-10
+    },
+    {
+      "lower": -8.000000000000003e-10,
+      "stage": "refinement_1_with_roundoff",
+      "state": 0,
+      "upper": 8.000320022658571e-10
+    },
+    {
+      "lower": -1.600000000000001e-11,
+      "stage": "refinement_2_raw",
+      "state": 0,
+      "upper": 1.6000640045317142e-11
+    },
+    {
+      "lower": -1.600000000000001e-11,
+      "stage": "refinement_2_with_roundoff",
+      "state": 0,
+      "upper": 1.6000642265874217e-11
+    },
+    {
+      "lower": -3.200000000000002e-13,
+      "stage": "refinement_3_raw",
+      "state": 0,
+      "upper": 3.200128453174844e-13
+    },
+    {
+      "lower": -3.200000000000002e-13,
+      "stage": "refinement_3_with_roundoff",
+      "state": 0,
+      "upper": 3.2001506587455597e-13
+    },
+    {
+      "lower": -6.4000000000000046e-15,
+      "stage": "refinement_4_raw",
+      "state": 0,
+      "upper": 6.40030131749112e-15
+    },
+    {
+      "lower": -6.4000000000000046e-15,
+      "stage": "refinement_4_with_roundoff",
+      "state": 0,
+      "upper": 6.402521874562673e-15
+    },
+    {
+      "lower": -1.280000000000001e-16,
+      "stage": "refinement_5_raw",
+      "state": 0,
+      "upper": 1.2805043749125348e-16
+    },
+    {
+      "lower": -1.280000000000001e-16,
+      "stage": "refinement_5_with_roundoff",
+      "state": 0,
+      "upper": 1.3027099456280627e-16
+    },
+    {
+      "lower": -2.5600000000000026e-18,
+      "stage": "refinement_6_raw",
+      "state": 0,
+      "upper": 2.6054198912561258e-18
+    },
+    {
+      "lower": -2.5600000000000026e-18,
+      "stage": "refinement_6_with_roundoff",
+      "state": 0,
+      "upper": 4.8259769628089015e-18
+    },
+    {
+      "lower": -5.1200000000000057e-20,
+      "stage": "refinement_7_raw",
+      "state": 0,
+      "upper": 9.651953925617804e-20
+    },
+    {
+      "lower": -5.1200000000000057e-20,
+      "stage": "refinement_7_with_roundoff",
+      "state": 0,
+      "upper": 2.317076610808954e-18
+    },
+    {
+      "lower": -1.0240000000000012e-21,
+      "stage": "refinement_8_raw",
+      "state": 0,
+      "upper": 4.634153221617909e-20
+    },
+    {
+      "lower": -1.0240000000000012e-21,
+      "stage": "refinement_8_with_roundoff",
+      "state": 0,
+      "upper": 2.266898603768955e-18
+    },
+    {
+      "lower": -2.0480000000000027e-23,
+      "stage": "refinement_9_raw",
+      "state": 0,
+      "upper": 4.5337972075379103e-20
+    },
+    {
+      "lower": -2.0480000000000027e-23,
+      "stage": "refinement_9_with_roundoff",
+      "state": 0,
+      "upper": 2.265895043628155e-18
+    }
+  ],
+  "official": {},
+  "stages": {
+    "accepted_mirror_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 2.265895043628155e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "accepted_native_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 2.265895043628155e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "accepted_native_tmv_right": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "candidate_remainder_seed": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.0999,
+            "upper": 0.11222080400000002
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11202080399999999,
+            "upper": 0.11222080400000002
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11202080399999999,
+            "upper": 0.11222080400000002
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -0.0001,
+          "upper": 0.0001
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "composed_flowpipe": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 2.265895043628155e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "endpoint_collapsed": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.112120804
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 2.265895043628155e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.11212080399999999,
+          "coefficient_upper": 0.11212080399999999,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "endpoint_raw": {
+      "boxes": {
+        "full_initial_interval": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {},
+      "terms": []
+    },
+    "initial_time_evaluated": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.1
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "initial_tmv_pre": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.1
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "initial_tmv_right": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": -1,
+            "upper": 1
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 1,
+          "coefficient_upper": 1,
+          "exponents": [
+            0,
+            1
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "normalization_map": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0,
+            "upper": 0
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": []
+    },
+    "normalized_initial": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.1
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "picard_ctrunc_raw": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.099998,
+            "upper": 0.11212280408000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11211880399999999,
+            "upper": 0.11212280408000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11211880399999999,
+            "upper": 0.11212280408000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0000000000000003e-06,
+          "upper": 2.0000800000000004e-06
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2000000000000002,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.8,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_1": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.11200000000000002
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.112,
+            "upper": 0.11200000000000002
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.112,
+            "upper": 0.11200000000000002
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_2": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.11212000000000001
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212,
+            "upper": 0.11212000000000001
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212,
+            "upper": 0.11212000000000001
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_3": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.1121208
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212079999999999,
+            "upper": 0.1121208
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212079999999999,
+            "upper": 0.1121208
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "polynomial_picard_order_4": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.1,
+            "upper": 0.11212080400000002
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999999,
+            "upper": 0.11212080400000002
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999999,
+            "upper": 0.11212080400000002
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": 0,
+          "upper": 0
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_0_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999996,
+            "upper": 0.11212084400160002
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212076399999998,
+            "upper": 0.11212084400160002
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212076399999998,
+            "upper": 0.11212084400160002
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -4.0000000000000014e-08,
+          "upper": 4.0001600002264994e-08
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_1_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.0999999992,
+            "upper": 0.11212080480003203
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080319999998,
+            "upper": 0.11212080480003203
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080319999998,
+            "upper": 0.11212080480003203
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -8.000000000000003e-10,
+          "upper": 8.000320022658571e-10
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_2_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.099999999984,
+            "upper": 0.11212080401600066
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080398399998,
+            "upper": 0.11212080401600066
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080398399998,
+            "upper": 0.11212080401600066
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.600000000000001e-11,
+          "upper": 1.6000642265874217e-11
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_3_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999968,
+            "upper": 0.11212080400032004
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399967998,
+            "upper": 0.11212080400032004
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399967998,
+            "upper": 0.11212080400032004
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -3.200000000000002e-13,
+          "upper": 3.2001506587455597e-13
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_4_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.0999999999999936,
+            "upper": 0.11212080400000643
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999358,
+            "upper": 0.11212080400000643
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999358,
+            "upper": 0.11212080400000643
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -6.4000000000000046e-15,
+          "upper": 6.402521874562673e-15
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_5_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999987,
+            "upper": 0.11212080400000016
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999985,
+            "upper": 0.11212080400000016
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999985,
+            "upper": 0.11212080400000016
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.280000000000001e-16,
+          "upper": 1.3027099456280627e-16
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_6_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.5600000000000026e-18,
+          "upper": 4.8259769628089015e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_7_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -5.1200000000000057e-20,
+          "upper": 2.317076610808954e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_8_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -1.0240000000000012e-21,
+          "upper": 2.266898603768955e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "refinement_9_accepted_tmv": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.09999999999999999,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11212080399999998,
+            "upper": 0.11212080400000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0480000000000027e-23,
+          "upper": 2.265895043628155e-18
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.7999999999999999,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    },
+    "validated_picard_image": {
+      "boxes": {
+        "domain": {
+          "0": {
+            "lower": 0.099998,
+            "upper": 0.11212280408000003
+          }
+        },
+        "endpoint_lower_corner": {
+          "0": {
+            "lower": 0.11211880399999999,
+            "upper": 0.11212280408000003
+          }
+        },
+        "endpoint_upper_corner": {
+          "0": {
+            "lower": 0.11211880399999999,
+            "upper": 0.11212280408000003
+          }
+        }
+      },
+      "remainders": {
+        "0": {
+          "lower": -2.0000000000000003e-06,
+          "upper": 2.0000800000022213e-06
+        }
+      },
+      "terms": [
+        {
+          "coefficient_lower": 0.1,
+          "coefficient_upper": 0.1,
+          "exponents": [
+            0,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2000000000000002,
+          "exponents": [
+            1,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 1.2,
+          "coefficient_upper": 1.2,
+          "exponents": [
+            2,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.7999999999999999,
+          "coefficient_upper": 0.8,
+          "exponents": [
+            3,
+            0
+          ],
+          "state": 0
+        },
+        {
+          "coefficient_lower": 0.39999999999999997,
+          "coefficient_upper": 0.39999999999999997,
+          "exponents": [
+            4,
+            0
+          ],
+          "state": 0
+        }
+      ]
+    }
+  },
+  "status": {
+    "advanced": 1
+  },
+  "unavailable": {
+    "endpoint_tightened": "no_distinct_stock_field",
+    "repaired_hull": "prohibited_not_computed"
+  }
+}

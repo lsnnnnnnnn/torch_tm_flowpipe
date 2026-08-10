@@ -1,0 +1,64 @@
+{
+  "accepted_all_batches": true,
+  "actual_independent_inputs": true,
+  "bit_exact_endpoint_carry": true,
+  "coefficient_sha256": "ea2112547320dbdeee17fbe423f725a7e066b7a4301621201218079a51f9a092",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "endpoint_hull": [
+    [
+      1.1046965941127758,
+      1.4048926754435664
+    ],
+    [
+      2.342657195829687,
+      2.4467422170217246
+    ]
+  ],
+  "execution_kind": "complete_O4_one_step_plus_complete_endpoint_carry_kernel",
+  "h": 0.002,
+  "partition_policy": {
+    "batch": 512,
+    "splits": [
+      32,
+      16
+    ]
+  },
+  "peak_memory_bytes": 501600256,
+  "schema": "torch_tm_complete_carry_batch_v1",
+  "scope_limitation": "The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.",
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64; the exact carry is bit-preserving, but the dense arithmetic is not universally outward rounded",
+  "source_sha": "412f59b3154b97f73086f71bc8b0b4fa154471af",
+  "status": "validated",
+  "timing": {
+    "boundary": "dense Picard construction, validation, endpoint substitution, and carry clone",
+    "cold_first_call_s": 9.364687580615282,
+    "cuda_synchronized": false,
+    "warm_max_s": 9.349154345691204,
+    "warm_median_s": 9.332807992585003,
+    "warm_min_s": 9.319203468970954,
+    "warm_s": [
+      9.349154345691204,
+      9.338047839701176,
+      9.332807992585003,
+      9.331259804777801,
+      9.319203468970954
+    ]
+  },
+  "work": {
+    "batch_steps": 512,
+    "carried_coefficient_values": 35840,
+    "host_decision_scope": "per-step aggregate inclusion gate",
+    "intervalized_retained_terms": 0,
+    "overflow_product_routes": 1015,
+    "picard_depth": 4,
+    "remainder_rounds": 1,
+    "retained_product_routes": 210,
+    "slots": 35
+  },
+  "worktree_dirty": false
+}

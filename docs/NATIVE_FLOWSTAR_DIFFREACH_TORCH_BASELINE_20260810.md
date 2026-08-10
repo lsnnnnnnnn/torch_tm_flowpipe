@@ -99,7 +99,7 @@ not T10 completion.  The previous causal audit's numerical state hashes remain
 the frozen identities for `current`, `tmv_pre`, and `tmv_right`:
 `17de6d46dae3f3c1123627d507756741d02ebcb0f2dbda7754b4a6134563bc5e`,
 `efe776ac16eedc29b5582e7de979f5442efa79ed3ef7092f28484089a49b04ad`,
-and `c721ccf4c02099afd7064a79dd3235759f453df6c8315d2a4e8745ecd7ed3bb`.
+and `c721ccf4c02099afd7064a79dd3235759f453df6c8315d2a4e8745ecd7ed3bb3`.
 
 ## Comparability boundary
 

@@ -1,0 +1,94 @@
+{
+  "accepted_steps": 4,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810",
+  "commit": "da21a9e54649847936787649cfd67044418a00f5",
+  "completed_horizon": 0.04345468750000001,
+  "completed_requested_horizon": false,
+  "config_sha256": "ff8c4e2ea1be039c669ef576c3e0ddc7136ed87731f33163d76991aceb5e5908",
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_range_contexts": [
+    "polynomial_truncation"
+  ],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 4,
+  "dense_range_method": "adaptive_subdivision",
+  "dense_range_trigger": "proactive_depth1_on_named_contexts",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_transfer_count": 0,
+  "diagnostic_factors": [
+    "reset_mode=normalized_insertion_complete_polynomial"
+  ],
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "minimum_step_reached",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 1.502995131280772,
+    "x_lo": 1.0990754609166948,
+    "y_hi": 2.4638767057176887,
+    "y_lo": 2.1763980788788215
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 3,
+    "width_sum": 0.5056042869595918,
+    "x_hi": 1.502995131280772,
+    "x_lo": 1.195489597378759,
+    "x_width": 0.30750553390201296,
+    "y_hi": 2.3744968319364004,
+    "y_lo": 2.1763980788788215,
+    "y_width": 0.19809875305757885
+  },
+  "message": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.002",
+  "range_leaf_evaluations": 280,
+  "range_subdivision_invocations": 70,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.4933307567415752,
+    "x_hi": 1.502803775116484,
+    "x_lo": 1.2004151011978565,
+    "x_width": 0.30238867391862745,
+    "y_hi": 2.3675732461975776,
+    "y_lo": 2.17663116337463,
+    "y_width": 0.19094208282294778
+  },
+  "rejected_attempts": 7,
+  "rejected_step_records": 1,
+  "requested_horizon": 6.0,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion_complete_polynomial",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 3.085928037762642,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "segment_boundary_conversion_count": 10,
+  "single_factor_diagnostic": true,
+  "status": "failed",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "worktree_dirty": false
+}

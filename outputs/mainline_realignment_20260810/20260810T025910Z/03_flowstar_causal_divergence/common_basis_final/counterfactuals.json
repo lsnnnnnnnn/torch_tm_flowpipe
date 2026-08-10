@@ -1,0 +1,2367 @@
+{
+  "causal_attribution": {
+    "earliest_decision-changing_stage": "candidate raw Picard remainder before roundoff",
+    "finding": "common-basis polynomials agree at roundoff scale, both polynomial swaps preserve the receiving validator's decision, and Flow* is already outside the y target before its negligible polynomial-roundoff interval is added",
+    "flowstar_raw_picard_remainder": [
+      [
+        -5.3757103669508146e-06,
+        7.073210412034566e-06
+      ],
+      [
+        -0.00010366239882151062,
+        0.00010359846643018429
+      ]
+    ],
+    "flowstar_roundoff_interval": [
+      [
+        -8.378898847772202e-22,
+        0.0
+      ],
+      [
+        -1.1074878945164581e-17,
+        4.480863180864205e-17
+      ]
+    ],
+    "normalization_scale_is_representational_not_causal": true,
+    "torch_raw_compat_remainder": {
+      "hi": [
+        1.961520735450628e-06,
+        9.358938647674799e-05
+      ],
+      "lo": [
+        -1.961520735450628e-06,
+        -9.14291532216261e-05
+      ]
+    }
+  },
+  "native_controls": {
+    "flowstar_candidate_to_flowstar_validator": {
+      "accepted": false,
+      "image_hi": [
+        7.073210412034566e-06,
+        0.00010359846643022911
+      ],
+      "image_lo": [
+        -5.375710366950815e-06,
+        -0.0001036623988215217
+      ],
+      "minimum_margin": [
+        9.292678958796544e-05,
+        -3.662398821521699e-06
+      ],
+      "target_hi": [
+        0.0001,
+        0.0001
+      ],
+      "target_lo": [
+        -0.0001,
+        -0.0001
+      ]
+    },
+    "torch_candidate_to_torch_validator": {
+      "accepted": true,
+      "bit_exact_with_production": true,
+      "details": {
+        "accumulated_before_x0_add_hi": [
+          [
+            1.961518735450627e-06,
+            9.358938447674795e-05
+          ]
+        ],
+        "accumulated_before_x0_add_lo": [
+          [
+            -1.961518735450627e-06,
+            -9.142915122162606e-05
+          ]
+        ],
+        "poly_diff_range_hi": [
+          [
+            1.0000000000000002e-12,
+            1.0000000000000002e-12
+          ]
+        ],
+        "poly_diff_range_lo": [
+          [
+            -1.0000000000000002e-12,
+            -1.0000000000000002e-12
+          ]
+        ],
+        "raw_remainder_ledger_intervals": {
+          "cutoff": {
+            "hi": [
+              [
+                0.0,
+                2.2250738585072024e-308
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -2.2250738585072024e-308
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                4.450147717014405e-308
+              ]
+            ]
+          },
+          "initial_remainder": {
+            "hi": [
+              [
+                0.0001,
+                0.00020000000000000006
+              ]
+            ],
+            "lo": [
+              [
+                -0.0001,
+                -0.00020000000000000006
+              ]
+            ],
+            "width": [
+              [
+                0.0002,
+                0.00040000000000000013
+              ]
+            ]
+          },
+          "poly_times_remainder": {
+            "hi": [
+              [
+                0.0,
+                0.0003278048159234358
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.0003278048159234358
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.0006556096318468716
+              ]
+            ]
+          },
+          "polynomial_truncation": {
+            "hi": [
+              [
+                0.0,
+                0.003173630287427947
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.003179489446375175
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.0063531197338031215
+              ]
+            ]
+          },
+          "remainder_times_poly": {
+            "hi": [
+              [
+                0.0,
+                0.0010697840836688286
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.0009537942225576667
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.0020235783062264954
+              ]
+            ]
+          },
+          "remainder_times_remainder": {
+            "hi": [
+              [
+                0.0,
+                5.469877247820923e-08
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -5.469877247820923e-08
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                1.0939754495641846e-07
+              ]
+            ]
+          }
+        },
+        "raw_remainder_ledger_widths": {
+          "cutoff": [
+            [
+              0.0,
+              4.450147717014405e-308
+            ]
+          ],
+          "initial_remainder": [
+            [
+              0.0002,
+              0.00040000000000000013
+            ]
+          ],
+          "poly_times_remainder": [
+            [
+              0.0,
+              0.0006556096318468716
+            ]
+          ],
+          "polynomial_truncation": [
+            [
+              0.0,
+              0.0063531197338031215
+            ]
+          ],
+          "remainder_times_poly": [
+            [
+              0.0,
+              0.0020235783062264954
+            ]
+          ],
+          "remainder_times_remainder": [
+            [
+              0.0,
+              1.0939754495641846e-07
+            ]
+          ]
+        },
+        "raw_rhs_remainder_hi": [
+          [
+            0.0001,
+            0.004771273885792693
+          ]
+        ],
+        "raw_rhs_remainder_lo": [
+          [
+            -0.0001,
+            -0.0046611431836287584
+          ]
+        ],
+        "tmp_remainder_ledger_intervals": {
+          "cutoff": {
+            "hi": [
+              [
+                2.225073858507202e-308,
+                2.225073858507202e-308
+              ]
+            ],
+            "lo": [
+              [
+                -2.225073858507202e-308,
+                -2.225073858507202e-308
+              ]
+            ],
+            "width": [
+              [
+                4.450147717014404e-308,
+                4.450147717014404e-308
+              ]
+            ]
+          },
+          "initial_remainder": {
+            "hi": [
+              [
+                1.9615177354506273e-06,
+                3.9230354709012554e-06
+              ]
+            ],
+            "lo": [
+              [
+                -1.9615177354506273e-06,
+                -3.9230354709012554e-06
+              ]
+            ],
+            "width": [
+              [
+                3.923035470901255e-06,
+                7.846070941802511e-06
+              ]
+            ]
+          },
+          "integration_overflow": {
+            "hi": [
+              [
+                1.9005665823083191e-06,
+                2.939683007101173e-05
+              ]
+            ],
+            "lo": [
+              [
+                -1.3330455127120814e-06,
+                -2.9116886077419605e-05
+              ]
+            ],
+            "width": [
+              [
+                3.2336120950204006e-06,
+                5.8513716148431335e-05
+              ]
+            ]
+          },
+          "poly_times_remainder": {
+            "hi": [
+              [
+                5e-324,
+                6.4301802925254306e-06
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -6.4301802925254306e-06
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.2860360585050861e-05
+              ]
+            ]
+          },
+          "polynomial_truncation": {
+            "hi": [
+              [
+                5e-324,
+                4.733371967859925e-06
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -5.3376369307127565e-06
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.007100889857268e-05
+              ]
+            ]
+          },
+          "remainder_times_poly": {
+            "hi": [
+              [
+                5e-324,
+                1.433084372186037e-05
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -1.4281485603312511e-05
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                2.8612329325172882e-05
+              ]
+            ]
+          },
+          "remainder_times_remainder": {
+            "hi": [
+              [
+                5e-324,
+                7.327455812153194e-10
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -7.327455812153194e-10
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.4654911624306389e-09
+              ]
+            ]
+          }
+        },
+        "tmp_remainder_ledger_widths": {
+          "cutoff": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ],
+          "initial_remainder": [
+            [
+              3.923035470901255e-06,
+              7.846070941802511e-06
+            ]
+          ],
+          "integration_overflow": [
+            [
+              3.2336120950204006e-06,
+              5.8513716148431335e-05
+            ]
+          ],
+          "poly_times_remainder": [
+            [
+              1e-323,
+              1.2860360585050861e-05
+            ]
+          ],
+          "polynomial_truncation": [
+            [
+              1e-323,
+              1.007100889857268e-05
+            ]
+          ],
+          "remainder_times_poly": [
+            [
+              1e-323,
+              2.8612329325172882e-05
+            ]
+          ],
+          "remainder_times_remainder": [
+            [
+              1e-323,
+              1.4654911624306389e-09
+            ]
+          ]
+        }
+      },
+      "image_hi": [
+        [
+          1.961520735450628e-06,
+          9.358938647674799e-05
+        ]
+      ],
+      "image_lo": [
+        [
+          -1.961520735450628e-06,
+          -9.14291532216261e-05
+        ]
+      ],
+      "subset_margin": [
+        [
+          9.803847926454938e-05,
+          6.4106135232520195e-06
+        ]
+      ]
+    }
+  },
+  "schema": "vdp_flowstar_torch_one_stage_counterfactuals_v1",
+  "substitutions": {
+    "flowstar_polynomial_to_torch_validator": {
+      "accepted": true,
+      "candidate_basis": "Torch normalized coordinates, transformed from explicit Flow* basis",
+      "coefficient_intervalization_error_bound_hi": [
+        [
+          4.798899566606049e-15,
+          5.018560009379948e-15
+        ]
+      ],
+      "coefficient_intervalization_error_bound_lo": [
+        [
+          -4.798899566606049e-15,
+          -5.018560009379948e-15
+        ]
+      ],
+      "details": {
+        "accumulated_before_x0_add_hi": [
+          [
+            1.961518735450627e-06,
+            9.358938447674795e-05
+          ]
+        ],
+        "accumulated_before_x0_add_lo": [
+          [
+            -1.961518735450627e-06,
+            -9.142915122162609e-05
+          ]
+        ],
+        "poly_diff_range_hi": [
+          [
+            1.0000000004189451e-12,
+            1.0000025814382008e-12
+          ]
+        ],
+        "poly_diff_range_lo": [
+          [
+            -1.0000000004189451e-12,
+            -1.0000026215421929e-12
+          ]
+        ],
+        "raw_remainder_ledger_intervals": {
+          "cutoff": {
+            "hi": [
+              [
+                0.0,
+                2.2250738585072024e-308
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -2.2250738585072024e-308
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                4.450147717014405e-308
+              ]
+            ]
+          },
+          "initial_remainder": {
+            "hi": [
+              [
+                0.0001,
+                0.00020000000000000006
+              ]
+            ],
+            "lo": [
+              [
+                -0.0001,
+                -0.00020000000000000006
+              ]
+            ],
+            "width": [
+              [
+                0.0002,
+                0.00040000000000000013
+              ]
+            ]
+          },
+          "poly_times_remainder": {
+            "hi": [
+              [
+                0.0,
+                0.0003278048159234358
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.0003278048159234358
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.0006556096318468716
+              ]
+            ]
+          },
+          "polynomial_truncation": {
+            "hi": [
+              [
+                0.0,
+                0.0031736302874279475
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.0031794894463751753
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.006353119733803123
+              ]
+            ]
+          },
+          "remainder_times_poly": {
+            "hi": [
+              [
+                0.0,
+                0.0010697840836688286
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -0.0009537942225576667
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                0.0020235783062264954
+              ]
+            ]
+          },
+          "remainder_times_remainder": {
+            "hi": [
+              [
+                0.0,
+                5.469877247820923e-08
+              ]
+            ],
+            "lo": [
+              [
+                0.0,
+                -5.469877247820923e-08
+              ]
+            ],
+            "width": [
+              [
+                0.0,
+                1.0939754495641846e-07
+              ]
+            ]
+          }
+        },
+        "raw_remainder_ledger_widths": {
+          "cutoff": [
+            [
+              0.0,
+              4.450147717014405e-308
+            ]
+          ],
+          "initial_remainder": [
+            [
+              0.0002,
+              0.00040000000000000013
+            ]
+          ],
+          "poly_times_remainder": [
+            [
+              0.0,
+              0.0006556096318468716
+            ]
+          ],
+          "polynomial_truncation": [
+            [
+              0.0,
+              0.006353119733803123
+            ]
+          ],
+          "remainder_times_poly": [
+            [
+              0.0,
+              0.0020235783062264954
+            ]
+          ],
+          "remainder_times_remainder": [
+            [
+              0.0,
+              1.0939754495641846e-07
+            ]
+          ]
+        },
+        "raw_rhs_remainder_hi": [
+          [
+            0.0001,
+            0.004771273885792693
+          ]
+        ],
+        "raw_rhs_remainder_lo": [
+          [
+            -0.0001,
+            -0.004661143183628759
+          ]
+        ],
+        "tmp_remainder_ledger_intervals": {
+          "cutoff": {
+            "hi": [
+              [
+                2.225073858507202e-308,
+                2.225073858507202e-308
+              ]
+            ],
+            "lo": [
+              [
+                -2.225073858507202e-308,
+                -2.225073858507202e-308
+              ]
+            ],
+            "width": [
+              [
+                4.450147717014404e-308,
+                4.450147717014404e-308
+              ]
+            ]
+          },
+          "initial_remainder": {
+            "hi": [
+              [
+                1.9615177354506273e-06,
+                3.9230354709012554e-06
+              ]
+            ],
+            "lo": [
+              [
+                -1.9615177354506273e-06,
+                -3.9230354709012554e-06
+              ]
+            ],
+            "width": [
+              [
+                3.923035470901255e-06,
+                7.846070941802511e-06
+              ]
+            ]
+          },
+          "integration_overflow": {
+            "hi": [
+              [
+                1.9005665823083193e-06,
+                2.9396830071011734e-05
+              ]
+            ],
+            "lo": [
+              [
+                -1.3330455127120814e-06,
+                -2.911688607741961e-05
+              ]
+            ],
+            "width": [
+              [
+                3.233612095020401e-06,
+                5.851371614843134e-05
+              ]
+            ]
+          },
+          "poly_times_remainder": {
+            "hi": [
+              [
+                5e-324,
+                6.4301802925254306e-06
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -6.4301802925254306e-06
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.2860360585050861e-05
+              ]
+            ]
+          },
+          "polynomial_truncation": {
+            "hi": [
+              [
+                5e-324,
+                4.733371967859925e-06
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -5.337636930712757e-06
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.0071008898572682e-05
+              ]
+            ]
+          },
+          "remainder_times_poly": {
+            "hi": [
+              [
+                5e-324,
+                1.433084372186037e-05
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -1.4281485603312511e-05
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                2.8612329325172882e-05
+              ]
+            ]
+          },
+          "remainder_times_remainder": {
+            "hi": [
+              [
+                5e-324,
+                7.327455812153194e-10
+              ]
+            ],
+            "lo": [
+              [
+                -5e-324,
+                -7.327455812153194e-10
+              ]
+            ],
+            "width": [
+              [
+                1e-323,
+                1.4654911624306389e-09
+              ]
+            ]
+          }
+        },
+        "tmp_remainder_ledger_widths": {
+          "cutoff": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ],
+          "initial_remainder": [
+            [
+              3.923035470901255e-06,
+              7.846070941802511e-06
+            ]
+          ],
+          "integration_overflow": [
+            [
+              3.233612095020401e-06,
+              5.851371614843134e-05
+            ]
+          ],
+          "poly_times_remainder": [
+            [
+              1e-323,
+              1.2860360585050861e-05
+            ]
+          ],
+          "polynomial_truncation": [
+            [
+              1e-323,
+              1.0071008898572682e-05
+            ]
+          ],
+          "remainder_times_poly": [
+            [
+              1e-323,
+              2.8612329325172882e-05
+            ]
+          ],
+          "remainder_times_remainder": [
+            [
+              1e-323,
+              1.4654911624306389e-09
+            ]
+          ]
+        }
+      },
+      "image_hi": [
+        [
+          1.9615207354506284e-06,
+          9.358938647675057e-05
+        ]
+      ],
+      "image_lo": [
+        [
+          -1.9615207354506284e-06,
+          -9.142915322162875e-05
+        ]
+      ],
+      "subset_margin": [
+        [
+          9.803847926454938e-05,
+          6.410613523249431e-06
+        ]
+      ]
+    },
+    "flowstar_remainder_to_torch_subset_predicate": {
+      "accepted": false,
+      "image_hi": [
+        7.073210412034566e-06,
+        0.00010359846643022911
+      ],
+      "image_lo": [
+        -5.375710366950815e-06,
+        -0.0001036623988215217
+      ],
+      "minimum_margin": [
+        9.292678958796544e-05,
+        -3.662398821521699e-06
+      ],
+      "note": "both tools use the same componentwise fixed target at this checkpoint",
+      "target_hi": [
+        0.0001,
+        0.0001
+      ],
+      "target_lo": [
+        -0.0001,
+        -0.0001
+      ]
+    },
+    "flowstar_right_map_to_torch_next_step": {
+      "components": 2,
+      "input": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/flowstar_right_map_in_torch_semantics.json",
+      "input_semantics": "Torch current local variables -> Torch previous normalized frame",
+      "result": {
+        "counterfactual": {
+          "completed_through_step_13": true,
+          "rows": [
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.2500030000000012e-06,
+                  -2.2986522930317846e-05
+                ],
+                [
+                  1.2500030000000012e-06,
+                  2.7130531560022056e-05
+                ]
+              ],
+              "endpoint_sha256": "8facbe37df620d31241259bdb2bd4626fc2a76eea97f95ac3c692806f20106c1",
+              "h_accepted": 0.0125,
+              "h_attempt": 0.1,
+              "internal_rejections": 3,
+              "next_normalization_center": [
+                1.2797919132276852,
+                2.3663121508291822
+              ],
+              "next_normalization_scale": [
+                0.15054744578597942,
+                0.06363958273960907
+              ],
+              "next_right_map_sha256": "b42437a663bda5cd76e5e60b1ef61757d4d23d4e9eb41e2aeb33c4d335275d5e",
+              "picard_image_remainder": [
+                [
+                  -1.2500030000000012e-06,
+                  -2.2986522930317846e-05
+                ],
+                [
+                  1.2500030000000012e-06,
+                  2.7130531560022056e-05
+                ]
+              ],
+              "reset_sha256": "f89b1fed0705b51e7539117f9f59cb14e1bbe4e717d0e35a2c4fff620074ee78",
+              "right_map_substituted": false,
+              "step": 0,
+              "subset_margin": [
+                [
+                  9.8749997e-05,
+                  7.286946843997795e-05
+                ]
+              ],
+              "t_pre": 0.0
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.3750030000000013e-06,
+                  -2.769237632781066e-05
+                ],
+                [
+                  1.3750030000000013e-06,
+                  3.344919958458579e-05
+                ]
+              ],
+              "endpoint_sha256": "bd9d01b7c318dc4789c1091e2b87a850812d977ddb1104457ba0f4ee4e9a8453",
+              "h_accepted": 0.013750000000000002,
+              "h_attempt": 0.013750000000000002,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3120586303812756,
+                2.3265670297225745
+              ],
+              "next_normalization_scale": [
+                0.15096641458336155,
+                0.07840683389938875
+              ],
+              "next_right_map_sha256": "2c5b1a9726bd5edab7d04134c7af8279f68f0a0a19576e4394dcfe065c8436ec",
+              "picard_image_remainder": [
+                [
+                  -1.3750030000000013e-06,
+                  -2.769237632781066e-05
+                ],
+                [
+                  1.3750030000000013e-06,
+                  3.344919958458579e-05
+                ]
+              ],
+              "reset_sha256": "2e9efde491c042a812c037b0223acb188e2afae2a3d952ce24620225f112c1f4",
+              "right_map_substituted": false,
+              "step": 1,
+              "subset_margin": [
+                [
+                  9.8624997e-05,
+                  6.655080041541422e-05
+                ]
+              ],
+              "t_pre": 0.0125
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.5125030000000015e-06,
+                  -3.369891405443379e-05
+                ],
+                [
+                  1.5125030000000015e-06,
+                  4.167919716188203e-05
+                ]
+              ],
+              "endpoint_sha256": "66966ec596550372a1a994ae661243e470264b36b335fa5a852b4f0961b89fea",
+              "h_accepted": 0.015125000000000003,
+              "h_attempt": 0.015125000000000003,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3468976803367751,
+                2.2797148713775304
+              ],
+              "next_normalization_scale": [
+                0.1512037261106084,
+                0.0942590595366766
+              ],
+              "next_right_map_sha256": "036ea6cc60475551ed1f5722d7323c9fe5e3e0703cbc65f190ff819614618ba7",
+              "picard_image_remainder": [
+                [
+                  -1.5125030000000015e-06,
+                  -3.369891405443379e-05
+                ],
+                [
+                  1.5125030000000015e-06,
+                  4.167919716188203e-05
+                ]
+              ],
+              "reset_sha256": "380bccfcf4c39331c3246eac9077bfec22a3f54a16d8a52f2407e17e42282501",
+              "right_map_substituted": false,
+              "step": 2,
+              "subset_margin": [
+                [
+                  9.8487497e-05,
+                  5.832080283811798e-05
+                ]
+              ],
+              "t_pre": 0.026250000000000002
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.6637530000000015e-06,
+                  -4.142072081383323e-05
+                ],
+                [
+                  1.6637530000000015e-06,
+                  5.244044233500906e-05
+                ]
+              ],
+              "endpoint_sha256": "452f0e47a671b4b94479a09b01ce5cadc67aec15d82b2fc10fba2291ff1c0df4",
+              "h_accepted": 0.016637500000000003,
+              "h_attempt": 0.016637500000000003,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3843728106844229,
+                2.224574004587622
+              ],
+              "next_normalization_scale": [
+                0.1511934780050484,
+                0.1110867367423521
+              ],
+              "next_right_map_sha256": "d7f70195cf1b78d7bb8d246e357dc8286a533615a3794065b35e116e2213b1f5",
+              "picard_image_remainder": [
+                [
+                  -1.6637530000000015e-06,
+                  -4.142072081383323e-05
+                ],
+                [
+                  1.6637530000000015e-06,
+                  5.244044233500906e-05
+                ]
+              ],
+              "reset_sha256": "e14cbeedb0f1e736f2b9fac8fe84ef7d108c7f0f8700abca68c5c506b8aa385f",
+              "right_map_substituted": false,
+              "step": 3,
+              "subset_margin": [
+                [
+                  9.8336247e-05,
+                  4.7559557664990944e-05
+                ]
+              ],
+              "t_pre": 0.04137500000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.8301280000000017e-06,
+                  -5.1373719926856103e-05
+                ],
+                [
+                  1.8301280000000017e-06,
+                  6.649762204194472e-05
+                ]
+              ],
+              "endpoint_sha256": "e21deb16e4944f3045a447f3318c9a2571bcec2de7655b4a87dc192a67218dee",
+              "h_accepted": 0.018301250000000005,
+              "h_attempt": 0.018301250000000005,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.424499222879595,
+                2.1598433735136293
+              ],
+              "next_normalization_scale": [
+                0.1508553970773611,
+                0.12868956632039594
+              ],
+              "next_right_map_sha256": "b6214fbdfba3ac6432566a53f017c50718d13ba0eeb511ce8db591f27c58c69b",
+              "picard_image_remainder": [
+                [
+                  -1.8301280000000017e-06,
+                  -5.1373719926856103e-05
+                ],
+                [
+                  1.8301280000000017e-06,
+                  6.649762204194472e-05
+                ]
+              ],
+              "reset_sha256": "868e3b85a777a2d35a8cc2771e774fd9c8cacaa0a00b9aaa73771c7dcda0724b",
+              "right_map_substituted": false,
+              "step": 4,
+              "subset_margin": [
+                [
+                  9.8169872e-05,
+                  3.350237795805528e-05
+                ]
+              ],
+              "t_pre": 0.05801250000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -2.0131405000000023e-06,
+                  -6.684284199763905e-05
+                ],
+                [
+                  2.0131405000000023e-06,
+                  8.475871715555681e-05
+                ]
+              ],
+              "endpoint_sha256": "74b19e4b643247fda9ca619f0a2807be4b04f0ce280bc14b4b3ce14b4b7e341f",
+              "h_accepted": 0.020131375000000007,
+              "h_attempt": 0.020131375000000007,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.4672252693993606,
+                2.0841336975167346
+              ],
+              "next_normalization_scale": [
+                0.15009368277035665,
+                0.14675211399560334
+              ],
+              "next_right_map_sha256": "e4fa6bcc6a90f8f9ecf7879c7f82df165ce2205150d8ab549b33c6a29a138892",
+              "picard_image_remainder": [
+                [
+                  -2.0131405000000023e-06,
+                  -6.684284199763905e-05
+                ],
+                [
+                  2.0131405000000023e-06,
+                  8.475871715555681e-05
+                ]
+              ],
+              "reset_sha256": "4ef44da31c34b5773724b1879c72e2fb43ffed6b4155ddf6cb51fa410e8edfb3",
+              "right_map_substituted": false,
+              "step": 5,
+              "subset_margin": [
+                [
+                  9.79868595e-05,
+                  1.5241282844443191e-05
+                ]
+              ],
+              "t_pre": 0.07631375000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.1072286250000016e-06,
+                  -2.4778979280783525e-05
+                ],
+                [
+                  1.1072286250000016e-06,
+                  2.8590315183752438e-05
+                ]
+              ],
+              "endpoint_sha256": "f4ab8b40e1b199d315f8b125b5362a33e98a9d30a0ffa72185b95b7e159d0c09",
+              "h_accepted": 0.011072256250000004,
+              "h_attempt": 0.02214451250000001,
+              "internal_rejections": 1,
+              "next_normalization_center": [
+                1.490061825575671,
+                2.040667357988057
+              ],
+              "next_normalization_scale": [
+                0.14950441960385535,
+                0.15601685746369448
+              ],
+              "next_right_map_sha256": "0dfb741f8aae3f4c3c805fbb905c9619be1b8340356f11fc2a8c225d3f5dc452",
+              "picard_image_remainder": [
+                [
+                  -1.1072286250000016e-06,
+                  -2.4778979280783525e-05
+                ],
+                [
+                  1.1072286250000016e-06,
+                  2.8590315183752438e-05
+                ]
+              ],
+              "reset_sha256": "494ad5d2df3724e2a5449c97ae93fa15e46448107739c645343e07810dd189e0",
+              "right_map_substituted": false,
+              "step": 6,
+              "subset_margin": [
+                [
+                  9.889277137500001e-05,
+                  7.140968481624757e-05
+                ]
+              ],
+              "t_pre": 0.09644512500000002
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.2179511875000017e-06,
+                  -2.9400635158619506e-05
+                ],
+                [
+                  1.2179511875000017e-06,
+                  3.442312197578671e-05
+                ]
+              ],
+              "endpoint_sha256": "1aed008e217380ac0935ab796d2ac89278375dab15e8d578596b5758947c428c",
+              "h_accepted": 0.012179481875000005,
+              "h_attempt": 0.012179481875000005,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5146180580420914,
+                1.9914999965609848
+              ],
+              "next_normalization_scale": [
+                0.14871983228217964,
+                0.1656259358225553
+              ],
+              "next_right_map_sha256": "f6296ff748b2d05d8c2b4ee869b32f5efbb02781341f0879fcbe75785a889e5c",
+              "picard_image_remainder": [
+                [
+                  -1.2179511875000017e-06,
+                  -2.9400635158619506e-05
+                ],
+                [
+                  1.2179511875000017e-06,
+                  3.442312197578671e-05
+                ]
+              ],
+              "reset_sha256": "dfc5006ed989882db4ed32fd324e343eed816718972ec194f9ef6f8104249767",
+              "right_map_substituted": false,
+              "step": 7,
+              "subset_margin": [
+                [
+                  9.87820488125e-05,
+                  6.55768780242133e-05
+                ]
+              ],
+              "t_pre": 0.10751738125000003
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.3397460062500019e-06,
+                  -3.5799418516108895e-05
+                ],
+                [
+                  1.3397460062500019e-06,
+                  4.180612157349334e-05
+                ]
+              ],
+              "endpoint_sha256": "a994818c5a1bf1f9a974cb47720805bcaf99e7d2cecd6f4945c28aacd9cdad27",
+              "h_accepted": 0.013397430062500007,
+              "h_attempt": 0.013397430062500007,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.540928430877704,
+                1.935928991756498
+              ],
+              "next_normalization_scale": [
+                0.1476960996310554,
+                0.17545384295069483
+              ],
+              "next_right_map_sha256": "a6982c8bdb5427995a9c47051fb47b94d01d5e4edea1f96d0d939b10a7825238",
+              "picard_image_remainder": [
+                [
+                  -1.3397460062500019e-06,
+                  -3.5799418516108895e-05
+                ],
+                [
+                  1.3397460062500019e-06,
+                  4.180612157349334e-05
+                ]
+              ],
+              "reset_sha256": "2c5c0fc8f77500a5e71a1c1c20d8144d59b829537003b66731a55761248d1675",
+              "right_map_substituted": false,
+              "step": 8,
+              "subset_margin": [
+                [
+                  9.866025399375e-05,
+                  5.819387842650667e-05
+                ]
+              ],
+              "t_pre": 0.11969686312500004
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.4737203068750021e-06,
+                  -4.4936738969246286e-05
+                ],
+                [
+                  1.4737203068750021e-06,
+                  5.102322031280022e-05
+                ]
+              ],
+              "endpoint_sha256": "3eb4a7195c23d9e7bf886a5741e8b8107ac18b4f40cf82ec483e68bbb9889e04",
+              "h_accepted": 0.014737173068750008,
+              "h_attempt": 0.014737173068750008,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5689983055153303,
+                1.8732096849108246
+              ],
+              "next_normalization_scale": [
+                0.14638227190028355,
+                0.18532702323761474
+              ],
+              "next_right_map_sha256": "c525adbc485eaf07dede381d8ebf7b6b22690c5e6631d8d48abf589d6dae5d1f",
+              "picard_image_remainder": [
+                [
+                  -1.4737203068750021e-06,
+                  -4.4936738969246286e-05
+                ],
+                [
+                  1.4737203068750021e-06,
+                  5.102322031280022e-05
+                ]
+              ],
+              "reset_sha256": "57d3d62d330861cfb14ffc7913db2b3ecd52eb376578d9133a04268b984c4335",
+              "right_map_substituted": false,
+              "step": 9,
+              "subset_margin": [
+                [
+                  9.852627969312501e-05,
+                  4.8976779687199786e-05
+                ]
+              ],
+              "t_pre": 0.13309429318750005
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.6210920375625021e-06,
+                  -5.68175525578394e-05
+                ],
+                [
+                  1.6210920375625021e-06,
+                  6.247296643982225e-05
+                ]
+              ],
+              "endpoint_sha256": "fb964903f244d5e87bef9315ce3756d6e3782b7074e2e5aa02652409a80b6095",
+              "h_accepted": 0.01621089037562501,
+              "h_attempt": 0.01621089037562501,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5987942980963161,
+                1.8025755663876253
+              ],
+              "next_normalization_scale": [
+                0.14472008965169042,
+                0.1950129260477896
+              ],
+              "next_right_map_sha256": "b031e6418cb2c4029bcb5b120e9fac53c7a92ef02eb679f9c6ddac40243ee287",
+              "picard_image_remainder": [
+                [
+                  -1.6210920375625021e-06,
+                  -5.68175525578394e-05
+                ],
+                [
+                  1.6210920375625021e-06,
+                  6.247296643982225e-05
+                ]
+              ],
+              "reset_sha256": "86076aec7c2cff7c0d2afc19c4d76f7aad7c7d2abe0280a2be5cb4a579ec3e66",
+              "right_map_substituted": false,
+              "step": 10,
+              "subset_margin": [
+                [
+                  9.837890796243751e-05,
+                  3.752703356017776e-05
+                ]
+              ],
+              "t_pre": 0.14783146625625004
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.7832009413187521e-06,
+                  -7.210548421466422e-05
+                ],
+                [
+                  1.7832009413187521e-06,
+                  7.655473691092785e-05
+                ]
+              ],
+              "endpoint_sha256": "7d7f10713cbd487ceb22a0b3f7d62cced02536f4298e40eeac0554643571cd1c",
+              "h_accepted": 0.01783197941318751,
+              "h_attempt": 0.01783197941318751,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.6302328990200183,
+                1.723269999217199
+              ],
+              "next_normalization_scale": [
+                0.142644343197362,
+                0.2042119841652547
+              ],
+              "next_right_map_sha256": "31fc9bf41af2765d56cb6bbc162333f2e5a0f02de6ac3951f4287f2ea026b4b4",
+              "picard_image_remainder": [
+                [
+                  -1.7832009413187521e-06,
+                  -7.210548421466422e-05
+                ],
+                [
+                  1.7832009413187521e-06,
+                  7.655473691092785e-05
+                ]
+              ],
+              "reset_sha256": "c682c369218401c57454b7c57cc596866731548d319c54e0653dd5221f0a3af8",
+              "right_map_substituted": false,
+              "step": 11,
+              "subset_margin": [
+                [
+                  9.821679905868125e-05,
+                  2.344526308907215e-05
+                ]
+              ],
+              "t_pre": 0.16404235663187505
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.961520735450628e-06,
+                  -9.14291532216261e-05
+                ],
+                [
+                  1.961520735450628e-06,
+                  9.358938647674799e-05
+                ]
+              ],
+              "endpoint_sha256": "7d4481e99e64a895933d64adc26d92579a07bfe8b872e66677eb828998bc3c3a",
+              "h_accepted": 0.019615177354506262,
+              "h_attempt": 0.019615177354506262,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.6631674609929923,
+                1.6345924454570577
+              ],
+              "next_normalization_scale": [
+                0.1400945440434829,
+                0.21334320919365757
+              ],
+              "next_right_map_sha256": "c993e793480f15ade86666636852cdb2bd0115dd511cd82aea65a6f87472e70b",
+              "picard_image_remainder": [
+                [
+                  -1.961520735450628e-06,
+                  -9.14291532216261e-05
+                ],
+                [
+                  1.961520735450628e-06,
+                  9.358938647674799e-05
+                ]
+              ],
+              "reset_sha256": "19944ea44415216ba7d338cc064df6b7684e5ac0d2c1b44f00e8292a598477a0",
+              "right_map_substituted": true,
+              "step": 12,
+              "subset_margin": [
+                [
+                  9.803847926454938e-05,
+                  6.4106135232520195e-06
+                ]
+              ],
+              "t_pre": 0.18187433604506256
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.0788377544978456e-06,
+                  -2.8268290266114236e-05
+                ],
+                [
+                  1.0788377544978456e-06,
+                  2.988888683771649e-05
+                ]
+              ],
+              "endpoint_sha256": "583c70258c463aa1c711f92b146e0d9d122597cfd0bce918b00dafbdccf9b7c2",
+              "h_accepted": 0.010788347544978445,
+              "h_attempt": 0.02157669508995689,
+              "internal_rejections": 1,
+              "next_normalization_center": [
+                1.6805367466849699,
+                1.5853755923043413
+              ],
+              "next_normalization_scale": [
+                0.13856993936787995,
+                0.2182332107829925
+              ],
+              "next_right_map_sha256": "39899039ca1bf2289c6e90b5e60682cb409322e9a58913e1c639a26c7c58ca43",
+              "picard_image_remainder": [
+                [
+                  -1.0788377544978456e-06,
+                  -2.8268290266114236e-05
+                ],
+                [
+                  1.0788377544978456e-06,
+                  2.988888683771649e-05
+                ]
+              ],
+              "reset_sha256": "df65d37a34a79cdc8547eaadd79f3c53122c6e3d4be56226e8035f8547ede22a",
+              "right_map_substituted": false,
+              "step": 13,
+              "subset_margin": [
+                [
+                  9.892116224550216e-05,
+                  7.011111316228352e-05
+                ]
+              ],
+              "t_pre": 0.20148951339956883
+            }
+          ]
+        },
+        "current_step_validation_unchanged": true,
+        "native": {
+          "completed_through_step_13": true,
+          "rows": [
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.2500030000000012e-06,
+                  -2.2986522930317846e-05
+                ],
+                [
+                  1.2500030000000012e-06,
+                  2.7130531560022056e-05
+                ]
+              ],
+              "endpoint_sha256": "8facbe37df620d31241259bdb2bd4626fc2a76eea97f95ac3c692806f20106c1",
+              "h_accepted": 0.0125,
+              "h_attempt": 0.1,
+              "internal_rejections": 3,
+              "next_normalization_center": [
+                1.2797919132276852,
+                2.3663121508291822
+              ],
+              "next_normalization_scale": [
+                0.15054744578597942,
+                0.06363958273960907
+              ],
+              "next_right_map_sha256": "b42437a663bda5cd76e5e60b1ef61757d4d23d4e9eb41e2aeb33c4d335275d5e",
+              "picard_image_remainder": [
+                [
+                  -1.2500030000000012e-06,
+                  -2.2986522930317846e-05
+                ],
+                [
+                  1.2500030000000012e-06,
+                  2.7130531560022056e-05
+                ]
+              ],
+              "reset_sha256": "f89b1fed0705b51e7539117f9f59cb14e1bbe4e717d0e35a2c4fff620074ee78",
+              "right_map_substituted": false,
+              "step": 0,
+              "subset_margin": [
+                [
+                  9.8749997e-05,
+                  7.286946843997795e-05
+                ]
+              ],
+              "t_pre": 0.0
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.3750030000000013e-06,
+                  -2.769237632781066e-05
+                ],
+                [
+                  1.3750030000000013e-06,
+                  3.344919958458579e-05
+                ]
+              ],
+              "endpoint_sha256": "bd9d01b7c318dc4789c1091e2b87a850812d977ddb1104457ba0f4ee4e9a8453",
+              "h_accepted": 0.013750000000000002,
+              "h_attempt": 0.013750000000000002,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3120586303812756,
+                2.3265670297225745
+              ],
+              "next_normalization_scale": [
+                0.15096641458336155,
+                0.07840683389938875
+              ],
+              "next_right_map_sha256": "2c5b1a9726bd5edab7d04134c7af8279f68f0a0a19576e4394dcfe065c8436ec",
+              "picard_image_remainder": [
+                [
+                  -1.3750030000000013e-06,
+                  -2.769237632781066e-05
+                ],
+                [
+                  1.3750030000000013e-06,
+                  3.344919958458579e-05
+                ]
+              ],
+              "reset_sha256": "2e9efde491c042a812c037b0223acb188e2afae2a3d952ce24620225f112c1f4",
+              "right_map_substituted": false,
+              "step": 1,
+              "subset_margin": [
+                [
+                  9.8624997e-05,
+                  6.655080041541422e-05
+                ]
+              ],
+              "t_pre": 0.0125
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.5125030000000015e-06,
+                  -3.369891405443379e-05
+                ],
+                [
+                  1.5125030000000015e-06,
+                  4.167919716188203e-05
+                ]
+              ],
+              "endpoint_sha256": "66966ec596550372a1a994ae661243e470264b36b335fa5a852b4f0961b89fea",
+              "h_accepted": 0.015125000000000003,
+              "h_attempt": 0.015125000000000003,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3468976803367751,
+                2.2797148713775304
+              ],
+              "next_normalization_scale": [
+                0.1512037261106084,
+                0.0942590595366766
+              ],
+              "next_right_map_sha256": "036ea6cc60475551ed1f5722d7323c9fe5e3e0703cbc65f190ff819614618ba7",
+              "picard_image_remainder": [
+                [
+                  -1.5125030000000015e-06,
+                  -3.369891405443379e-05
+                ],
+                [
+                  1.5125030000000015e-06,
+                  4.167919716188203e-05
+                ]
+              ],
+              "reset_sha256": "380bccfcf4c39331c3246eac9077bfec22a3f54a16d8a52f2407e17e42282501",
+              "right_map_substituted": false,
+              "step": 2,
+              "subset_margin": [
+                [
+                  9.8487497e-05,
+                  5.832080283811798e-05
+                ]
+              ],
+              "t_pre": 0.026250000000000002
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.6637530000000015e-06,
+                  -4.142072081383323e-05
+                ],
+                [
+                  1.6637530000000015e-06,
+                  5.244044233500906e-05
+                ]
+              ],
+              "endpoint_sha256": "452f0e47a671b4b94479a09b01ce5cadc67aec15d82b2fc10fba2291ff1c0df4",
+              "h_accepted": 0.016637500000000003,
+              "h_attempt": 0.016637500000000003,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.3843728106844229,
+                2.224574004587622
+              ],
+              "next_normalization_scale": [
+                0.1511934780050484,
+                0.1110867367423521
+              ],
+              "next_right_map_sha256": "d7f70195cf1b78d7bb8d246e357dc8286a533615a3794065b35e116e2213b1f5",
+              "picard_image_remainder": [
+                [
+                  -1.6637530000000015e-06,
+                  -4.142072081383323e-05
+                ],
+                [
+                  1.6637530000000015e-06,
+                  5.244044233500906e-05
+                ]
+              ],
+              "reset_sha256": "e14cbeedb0f1e736f2b9fac8fe84ef7d108c7f0f8700abca68c5c506b8aa385f",
+              "right_map_substituted": false,
+              "step": 3,
+              "subset_margin": [
+                [
+                  9.8336247e-05,
+                  4.7559557664990944e-05
+                ]
+              ],
+              "t_pre": 0.04137500000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.8301280000000017e-06,
+                  -5.1373719926856103e-05
+                ],
+                [
+                  1.8301280000000017e-06,
+                  6.649762204194472e-05
+                ]
+              ],
+              "endpoint_sha256": "e21deb16e4944f3045a447f3318c9a2571bcec2de7655b4a87dc192a67218dee",
+              "h_accepted": 0.018301250000000005,
+              "h_attempt": 0.018301250000000005,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.424499222879595,
+                2.1598433735136293
+              ],
+              "next_normalization_scale": [
+                0.1508553970773611,
+                0.12868956632039594
+              ],
+              "next_right_map_sha256": "b6214fbdfba3ac6432566a53f017c50718d13ba0eeb511ce8db591f27c58c69b",
+              "picard_image_remainder": [
+                [
+                  -1.8301280000000017e-06,
+                  -5.1373719926856103e-05
+                ],
+                [
+                  1.8301280000000017e-06,
+                  6.649762204194472e-05
+                ]
+              ],
+              "reset_sha256": "868e3b85a777a2d35a8cc2771e774fd9c8cacaa0a00b9aaa73771c7dcda0724b",
+              "right_map_substituted": false,
+              "step": 4,
+              "subset_margin": [
+                [
+                  9.8169872e-05,
+                  3.350237795805528e-05
+                ]
+              ],
+              "t_pre": 0.05801250000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -2.0131405000000023e-06,
+                  -6.684284199763905e-05
+                ],
+                [
+                  2.0131405000000023e-06,
+                  8.475871715555681e-05
+                ]
+              ],
+              "endpoint_sha256": "74b19e4b643247fda9ca619f0a2807be4b04f0ce280bc14b4b3ce14b4b7e341f",
+              "h_accepted": 0.020131375000000007,
+              "h_attempt": 0.020131375000000007,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.4672252693993606,
+                2.0841336975167346
+              ],
+              "next_normalization_scale": [
+                0.15009368277035665,
+                0.14675211399560334
+              ],
+              "next_right_map_sha256": "e4fa6bcc6a90f8f9ecf7879c7f82df165ce2205150d8ab549b33c6a29a138892",
+              "picard_image_remainder": [
+                [
+                  -2.0131405000000023e-06,
+                  -6.684284199763905e-05
+                ],
+                [
+                  2.0131405000000023e-06,
+                  8.475871715555681e-05
+                ]
+              ],
+              "reset_sha256": "4ef44da31c34b5773724b1879c72e2fb43ffed6b4155ddf6cb51fa410e8edfb3",
+              "right_map_substituted": false,
+              "step": 5,
+              "subset_margin": [
+                [
+                  9.79868595e-05,
+                  1.5241282844443191e-05
+                ]
+              ],
+              "t_pre": 0.07631375000000001
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.1072286250000016e-06,
+                  -2.4778979280783525e-05
+                ],
+                [
+                  1.1072286250000016e-06,
+                  2.8590315183752438e-05
+                ]
+              ],
+              "endpoint_sha256": "f4ab8b40e1b199d315f8b125b5362a33e98a9d30a0ffa72185b95b7e159d0c09",
+              "h_accepted": 0.011072256250000004,
+              "h_attempt": 0.02214451250000001,
+              "internal_rejections": 1,
+              "next_normalization_center": [
+                1.490061825575671,
+                2.040667357988057
+              ],
+              "next_normalization_scale": [
+                0.14950441960385535,
+                0.15601685746369448
+              ],
+              "next_right_map_sha256": "0dfb741f8aae3f4c3c805fbb905c9619be1b8340356f11fc2a8c225d3f5dc452",
+              "picard_image_remainder": [
+                [
+                  -1.1072286250000016e-06,
+                  -2.4778979280783525e-05
+                ],
+                [
+                  1.1072286250000016e-06,
+                  2.8590315183752438e-05
+                ]
+              ],
+              "reset_sha256": "494ad5d2df3724e2a5449c97ae93fa15e46448107739c645343e07810dd189e0",
+              "right_map_substituted": false,
+              "step": 6,
+              "subset_margin": [
+                [
+                  9.889277137500001e-05,
+                  7.140968481624757e-05
+                ]
+              ],
+              "t_pre": 0.09644512500000002
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.2179511875000017e-06,
+                  -2.9400635158619506e-05
+                ],
+                [
+                  1.2179511875000017e-06,
+                  3.442312197578671e-05
+                ]
+              ],
+              "endpoint_sha256": "1aed008e217380ac0935ab796d2ac89278375dab15e8d578596b5758947c428c",
+              "h_accepted": 0.012179481875000005,
+              "h_attempt": 0.012179481875000005,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5146180580420914,
+                1.9914999965609848
+              ],
+              "next_normalization_scale": [
+                0.14871983228217964,
+                0.1656259358225553
+              ],
+              "next_right_map_sha256": "f6296ff748b2d05d8c2b4ee869b32f5efbb02781341f0879fcbe75785a889e5c",
+              "picard_image_remainder": [
+                [
+                  -1.2179511875000017e-06,
+                  -2.9400635158619506e-05
+                ],
+                [
+                  1.2179511875000017e-06,
+                  3.442312197578671e-05
+                ]
+              ],
+              "reset_sha256": "dfc5006ed989882db4ed32fd324e343eed816718972ec194f9ef6f8104249767",
+              "right_map_substituted": false,
+              "step": 7,
+              "subset_margin": [
+                [
+                  9.87820488125e-05,
+                  6.55768780242133e-05
+                ]
+              ],
+              "t_pre": 0.10751738125000003
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.3397460062500019e-06,
+                  -3.5799418516108895e-05
+                ],
+                [
+                  1.3397460062500019e-06,
+                  4.180612157349334e-05
+                ]
+              ],
+              "endpoint_sha256": "a994818c5a1bf1f9a974cb47720805bcaf99e7d2cecd6f4945c28aacd9cdad27",
+              "h_accepted": 0.013397430062500007,
+              "h_attempt": 0.013397430062500007,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.540928430877704,
+                1.935928991756498
+              ],
+              "next_normalization_scale": [
+                0.1476960996310554,
+                0.17545384295069483
+              ],
+              "next_right_map_sha256": "a6982c8bdb5427995a9c47051fb47b94d01d5e4edea1f96d0d939b10a7825238",
+              "picard_image_remainder": [
+                [
+                  -1.3397460062500019e-06,
+                  -3.5799418516108895e-05
+                ],
+                [
+                  1.3397460062500019e-06,
+                  4.180612157349334e-05
+                ]
+              ],
+              "reset_sha256": "2c5c0fc8f77500a5e71a1c1c20d8144d59b829537003b66731a55761248d1675",
+              "right_map_substituted": false,
+              "step": 8,
+              "subset_margin": [
+                [
+                  9.866025399375e-05,
+                  5.819387842650667e-05
+                ]
+              ],
+              "t_pre": 0.11969686312500004
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.4737203068750021e-06,
+                  -4.4936738969246286e-05
+                ],
+                [
+                  1.4737203068750021e-06,
+                  5.102322031280022e-05
+                ]
+              ],
+              "endpoint_sha256": "3eb4a7195c23d9e7bf886a5741e8b8107ac18b4f40cf82ec483e68bbb9889e04",
+              "h_accepted": 0.014737173068750008,
+              "h_attempt": 0.014737173068750008,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5689983055153303,
+                1.8732096849108246
+              ],
+              "next_normalization_scale": [
+                0.14638227190028355,
+                0.18532702323761474
+              ],
+              "next_right_map_sha256": "c525adbc485eaf07dede381d8ebf7b6b22690c5e6631d8d48abf589d6dae5d1f",
+              "picard_image_remainder": [
+                [
+                  -1.4737203068750021e-06,
+                  -4.4936738969246286e-05
+                ],
+                [
+                  1.4737203068750021e-06,
+                  5.102322031280022e-05
+                ]
+              ],
+              "reset_sha256": "57d3d62d330861cfb14ffc7913db2b3ecd52eb376578d9133a04268b984c4335",
+              "right_map_substituted": false,
+              "step": 9,
+              "subset_margin": [
+                [
+                  9.852627969312501e-05,
+                  4.8976779687199786e-05
+                ]
+              ],
+              "t_pre": 0.13309429318750005
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.6210920375625021e-06,
+                  -5.68175525578394e-05
+                ],
+                [
+                  1.6210920375625021e-06,
+                  6.247296643982225e-05
+                ]
+              ],
+              "endpoint_sha256": "fb964903f244d5e87bef9315ce3756d6e3782b7074e2e5aa02652409a80b6095",
+              "h_accepted": 0.01621089037562501,
+              "h_attempt": 0.01621089037562501,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.5987942980963161,
+                1.8025755663876253
+              ],
+              "next_normalization_scale": [
+                0.14472008965169042,
+                0.1950129260477896
+              ],
+              "next_right_map_sha256": "b031e6418cb2c4029bcb5b120e9fac53c7a92ef02eb679f9c6ddac40243ee287",
+              "picard_image_remainder": [
+                [
+                  -1.6210920375625021e-06,
+                  -5.68175525578394e-05
+                ],
+                [
+                  1.6210920375625021e-06,
+                  6.247296643982225e-05
+                ]
+              ],
+              "reset_sha256": "86076aec7c2cff7c0d2afc19c4d76f7aad7c7d2abe0280a2be5cb4a579ec3e66",
+              "right_map_substituted": false,
+              "step": 10,
+              "subset_margin": [
+                [
+                  9.837890796243751e-05,
+                  3.752703356017776e-05
+                ]
+              ],
+              "t_pre": 0.14783146625625004
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.7832009413187521e-06,
+                  -7.210548421466422e-05
+                ],
+                [
+                  1.7832009413187521e-06,
+                  7.655473691092785e-05
+                ]
+              ],
+              "endpoint_sha256": "7d7f10713cbd487ceb22a0b3f7d62cced02536f4298e40eeac0554643571cd1c",
+              "h_accepted": 0.01783197941318751,
+              "h_attempt": 0.01783197941318751,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.6302328990200183,
+                1.723269999217199
+              ],
+              "next_normalization_scale": [
+                0.142644343197362,
+                0.2042119841652547
+              ],
+              "next_right_map_sha256": "31fc9bf41af2765d56cb6bbc162333f2e5a0f02de6ac3951f4287f2ea026b4b4",
+              "picard_image_remainder": [
+                [
+                  -1.7832009413187521e-06,
+                  -7.210548421466422e-05
+                ],
+                [
+                  1.7832009413187521e-06,
+                  7.655473691092785e-05
+                ]
+              ],
+              "reset_sha256": "c682c369218401c57454b7c57cc596866731548d319c54e0653dd5221f0a3af8",
+              "right_map_substituted": false,
+              "step": 11,
+              "subset_margin": [
+                [
+                  9.821679905868125e-05,
+                  2.344526308907215e-05
+                ]
+              ],
+              "t_pre": 0.16404235663187505
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.961520735450628e-06,
+                  -9.14291532216261e-05
+                ],
+                [
+                  1.961520735450628e-06,
+                  9.358938647674799e-05
+                ]
+              ],
+              "endpoint_sha256": "7d4481e99e64a895933d64adc26d92579a07bfe8b872e66677eb828998bc3c3a",
+              "h_accepted": 0.019615177354506262,
+              "h_attempt": 0.019615177354506262,
+              "internal_rejections": 0,
+              "next_normalization_center": [
+                1.6631674609929923,
+                1.6345924454570577
+              ],
+              "next_normalization_scale": [
+                0.14008410876249197,
+                0.21336355478549518
+              ],
+              "next_right_map_sha256": "6d2c5c19724e94139cad63952bf17ad35bceb21043fd63fa014372bf5566a944",
+              "picard_image_remainder": [
+                [
+                  -1.961520735450628e-06,
+                  -9.14291532216261e-05
+                ],
+                [
+                  1.961520735450628e-06,
+                  9.358938647674799e-05
+                ]
+              ],
+              "reset_sha256": "49ecff5dda3197675ce6b8e280c4c479a5baac8f258cb8a9fba5d99ca7a08a6d",
+              "right_map_substituted": false,
+              "step": 12,
+              "subset_margin": [
+                [
+                  9.803847926454938e-05,
+                  6.4106135232520195e-06
+                ]
+              ],
+              "t_pre": 0.18187433604506256
+            },
+            {
+              "accepted": true,
+              "candidate_remainder": [
+                [
+                  -1.0788377544978456e-06,
+                  -2.826783412968322e-05
+                ],
+                [
+                  1.0788377544978456e-06,
+                  2.988769221995829e-05
+                ]
+              ],
+              "endpoint_sha256": "d000a4fcbf7d07b641959c1a227493b4987517af504332e8b1b97f51078b0504",
+              "h_accepted": 0.010788347544978445,
+              "h_attempt": 0.02157669508995689,
+              "internal_rejections": 1,
+              "next_normalization_center": [
+                1.6805367466849699,
+                1.5853755923043413
+              ],
+              "next_normalization_scale": [
+                0.138562160089485,
+                0.21824821856521712
+              ],
+              "next_right_map_sha256": "0c007bf3944c280dbbd68f09e23a63d3d2348a0819228e29a9d5a37a297b6868",
+              "picard_image_remainder": [
+                [
+                  -1.0788377544978456e-06,
+                  -2.826783412968322e-05
+                ],
+                [
+                  1.0788377544978456e-06,
+                  2.988769221995829e-05
+                ]
+              ],
+              "reset_sha256": "1424b0bf4ed1a6a6d14839c6add36ad506ed3127f266dfc50e201680c3194b64",
+              "right_map_substituted": false,
+              "step": 13,
+              "subset_margin": [
+                [
+                  9.892116224550216e-05,
+                  7.011230778004171e-05
+                ]
+              ],
+              "t_pre": 0.20148951339956883
+            }
+          ]
+        },
+        "right_map_input": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final_pre/flowstar_right_map_in_torch_semantics.json",
+        "right_map_input_sha256": "890aa2bad66704e6ae425c3e8664ecbffb47d0a923307ad08105bbc44d5bb666",
+        "schema": "vdp_flowstar_right_map_to_torch_next_step_v1"
+      },
+      "sha256": "890aa2bad66704e6ae425c3e8664ecbffb47d0a923307ad08105bbc44d5bb666",
+      "status": "executed_in_authoritative_Torch_replay"
+    },
+    "torch_endpoint_to_flowstar_normalization": {
+      "coefficient_intervalization_absorbed_into_remainder": true,
+      "input": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/torch_endpoint_in_flowstar_previous_basis.tsv",
+      "maximum_coefficient_interval_width": 3.1086244689504383e-15,
+      "observer": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/flowstar_endpoint_counterfactual_final/observer.jsonl",
+      "observer_sha256": "547476661906efcc903d346aa1498c752f530e877f7f1fd3d2b2dda39650ace1",
+      "polynomial_rows": 12,
+      "result_normalization_center": [
+        1.6302328990200183,
+        1.723269999217199
+      ],
+      "result_normalization_scale": [
+        0.1425552522996264,
+        0.20399979248372554
+      ],
+      "result_subset": {
+        "accepted": false,
+        "image_hi": [
+          7.0734613397942295e-06,
+          0.00010360520733076483
+        ],
+        "image_lo": [
+          -5.376023173055838e-06,
+          -0.00010366877186907382
+        ],
+        "minimum_margin": [
+          9.292653866020578e-05,
+          -3.668771869073817e-06
+        ],
+        "target_hi": [
+          0.0001,
+          0.0001
+        ],
+        "target_lo": [
+          -0.0001,
+          -0.0001
+        ]
+      },
+      "sha256": "61b3b67a42287acb9dd7db9ad6cc2eebe3378563ac07814680d64ef46568021f",
+      "source_previous_normalization_center": [
+        1.5987942980963161,
+        1.8025755663876253
+      ],
+      "source_previous_normalization_scale": [
+        0.14472008965169042,
+        0.1950129260477896
+      ],
+      "status": "executed_in_native_Flowstar_replay",
+      "stock_normalization_scale": [
+        0.1425544460888901,
+        0.2039824671893622
+      ],
+      "target_previous_normalization_center": [
+        1.5987942980963161,
+        1.8025755663876253
+      ],
+      "target_previous_normalization_scale": [
+        0.1446402746235929,
+        0.19481593849494303
+      ],
+      "torch_normalization_scale": [
+        0.142644343197362,
+        0.2042119841652547
+      ]
+    },
+    "torch_polynomial_to_flowstar_validator": {
+      "input": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/torch_candidate_in_flowstar_basis.tsv",
+      "maximum_coefficient_interval_width": 2.842170943040401e-14,
+      "observer": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/flowstar_counterfactual_final/observer.jsonl",
+      "observer_sha256": "2f9c662915a38c94b531cd705e99a83c6efc298eb0a57c8c2a1014dc50cd50fd",
+      "result": {
+        "accepted": false,
+        "image_hi": [
+          7.073210412034567e-06,
+          0.0001035984664302257
+        ],
+        "image_lo": [
+          -5.375710366950816e-06,
+          -0.000103662398821518
+        ],
+        "minimum_margin": [
+          9.292678958796544e-05,
+          -3.6623988215179993e-06
+        ],
+        "target_hi": [
+          0.0001,
+          0.0001
+        ],
+        "target_lo": [
+          -0.0001,
+          -0.0001
+        ]
+      },
+      "rows": 31,
+      "sha256": "482a3bc587666bee39c63e095bb9cd4f2e09ccffef7be342f0d6ef3b161b9d78",
+      "status": "executed_in_native_Flowstar_replay"
+    },
+    "torch_remainder_to_flowstar_subset_predicate": {
+      "accepted": true,
+      "image_hi": [
+        1.961520735450628e-06,
+        9.358938647674799e-05
+      ],
+      "image_lo": [
+        -1.961520735450628e-06,
+        -9.14291532216261e-05
+      ],
+      "minimum_margin": [
+        9.803847926454938e-05,
+        6.4106135232520195e-06
+      ],
+      "note": "the predicate is exactly the stock Flow* componentwise subset test",
+      "target_hi": [
+        0.0001,
+        0.0001
+      ],
+      "target_lo": [
+        -0.0001,
+        -0.0001
+      ]
+    },
+    "torch_right_map_to_high_precision_replay": {
+      "arithmetic": "Python decimal, 80 significant digits",
+      "common_physical_input_hi": [
+        1.7727873451089085,
+        1.9272524664065611
+      ],
+      "common_physical_input_lo": [
+        1.4876784529311282,
+        1.5192875320278367
+      ],
+      "grid": "5x5 tensor grid over common physical current-state box",
+      "maximum_native_torch_vs_flowstar_polynomial_difference": [
+        "0.0001227383017576807246071490523509083304149174764714622269209760342178740689443",
+        "0.0002731766252232486570515534654988744728928012144843943091909488058361996337396"
+      ],
+      "maximum_physical_conversion_roundtrip_error": [
+        "1.93128962257081452485052446641374990859998953931063802660949034E-17",
+        "1.62976445002793258351453557045745138757145463469162977642858244E-17"
+      ],
+      "samples": 25,
+      "status": "executed"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "branch": "codex/structured-remainder-compiled-fixed-support-closure-20260810",
+  "candidate_decision": "CANDIDATE_REJECTED",
+  "external_sources": {
+    "diffreach": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "xiangru_local": "84184de6c2b3f1ff2da6755f732d91925037025d",
+    "xiangru_server_resident_remote": "5a3f94b28a7303c42a34fb6d57ebdaba63f25e42"
+  },
+  "formal_evidence_scope": "all recursive files listed by SHA256SUMS; debug directories retained but not promoted",
+  "package_tracking_status": {
+    "all_stored_files_tracked": true,
+    "stored_file_count": 852,
+    "tracked_file_count": 852,
+    "untracked_files": []
+  },
+  "required_figures": [
+    "flowstar_style_t_x_overlay.png",
+    "flowstar_style_t_y_overlay.png",
+    "phase_tube_overlay.png",
+    "endpoint_tube_width_vs_time.png",
+    "polynomial_range_vs_remainder.png",
+    "validated_horizon.png",
+    "runtime_vs_batch.png",
+    "eligible_precision_throughput.png"
+  ],
+  "required_machine_files": [
+    "manifest.json",
+    "native_baselines.json",
+    "matched_contract.json",
+    "operator_equivalence.json",
+    "short_horizon.csv",
+    "full_horizon.csv",
+    "failure_attribution.json",
+    "batch_scaling.csv",
+    "timing.csv",
+    "soundness_matrix.csv",
+    "claim_registry.csv"
+  ],
+  "run_id": "20260810T025910Z",
+  "schema": "torch_tm_mainline_realignment_manifest_v1",
+  "source_sha": "05ae30b4e41c7b77e39778629ada084623b7270b",
+  "source_worktree_status_excluding_package": "M  .gitattributes\nM  README.md\nA  docs/EVIDENCE_PACKAGE_CLOSURE_20260810.md\nM  docs/NATIVE_FLOWSTAR_DIFFREACH_TORCH_BASELINE_20260810.md\nM  experiments/build_mainline_realignment_package.py\nA  experiments/recover_mainline_realignment_evidence.py\nM  src/torch_tm_flowpipe/artifact_package.py\nM  tests/test_artifact_package.py"
+}

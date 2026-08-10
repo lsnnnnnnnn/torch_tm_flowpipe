@@ -1,0 +1,36 @@
+{
+  "bounds": {
+    "endpoint_lower": {
+      "binary64": 0.005025083542084028,
+      "binary64_hex": "0x1.4952e9791133ep-8",
+      "decimal": "5.02508354208402877108272845143001690368110076214625758220201562718709536565472322e-03",
+      "direction": "down"
+    },
+    "endpoint_upper": {
+      "binary64": 0.10603010025050084,
+      "binary64_hex": "0x1.b24c9e4f7ae3fp-4",
+      "decimal": "1.06030100250500834525299274141716020284417320914575509098642418752624514438801213e-01",
+      "direction": "up"
+    },
+    "tube_lower": {
+      "binary64": -0.0,
+      "binary64_hex": "-0x0p+0",
+      "decimal": "-0.00000000000000000000000000000000000000000000000000000000000000000000000000000000e+00",
+      "direction": "down"
+    },
+    "tube_upper": {
+      "binary64": 0.10603010025050084,
+      "binary64_hex": "0x1.b24c9e4f7ae3fp-4",
+      "decimal": "1.06030100250500834525299274141716020284417320914575509098642418752624514438801213e-01",
+      "direction": "up"
+    }
+  },
+  "meta": {
+    "formula": "((x0+1/2)*exp(2*t))-1/2",
+    "monotone_reason": "exp(2*t)>0_and_(1+2*x0)*exp(2*t)>0",
+    "monotone_time": 1,
+    "monotone_x0": 1,
+    "precision_bits": 256,
+    "rounding": "explicit_directed"
+  }
+}

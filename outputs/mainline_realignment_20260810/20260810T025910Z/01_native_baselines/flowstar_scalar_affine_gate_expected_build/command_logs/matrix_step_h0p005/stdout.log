@@ -1,0 +1,296 @@
+TRACE_CONFIG route=generated-stock h=0.0050000000000000001 order=4 effective_rhs_order=4 x0_lower=0 x0_upper=0.10000000000000001 candidate=0.0001 cutoff=1.0000000000000001e-15 preconditioning=diagonal_scaling symbolic_remainder=disabled precision_bits=53
+TRACE_TERM stage=initial_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=initial_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_REMAINDER stage=initial_tmv_pre state=0 lower=0 upper=0
+TRACE_BOX stage=initial_tmv_pre scope=domain state=0 lower=-0 upper=0.10000000000000001
+TRACE_TERM stage=initial_tmv_right state=0 coefficient_lower=1 coefficient_upper=1 exponents=0,1
+TRACE_REMAINDER stage=initial_tmv_right state=0 lower=0 upper=0
+TRACE_BOX stage=initial_tmv_right scope=domain state=0 lower=-1 upper=1
+TRACE_STATUS advanced=1
+TRACE_DOMAIN stage=accepted index=0 lower=0 upper=0.0050000000000000001
+TRACE_DOMAIN stage=accepted index=1 lower=-1 upper=1
+TRACE_TERM stage=initial_time_evaluated state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=initial_time_evaluated state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_REMAINDER stage=initial_time_evaluated state=0 lower=0 upper=0
+TRACE_BOX stage=initial_time_evaluated scope=domain state=0 lower=-0 upper=0.10000000000000001
+TRACE_TERM stage=normalization_map state=0 coefficient_lower=1 coefficient_upper=1 exponents=0,1
+TRACE_REMAINDER stage=normalization_map state=0 lower=0 upper=0
+TRACE_BOX stage=normalization_map scope=domain state=0 lower=-1 upper=1
+TRACE_TERM stage=normalized_initial state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=normalized_initial state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_REMAINDER stage=normalized_initial state=0 lower=0 upper=0
+TRACE_BOX stage=normalized_initial scope=domain state=0 lower=-0 upper=0.10000000000000001
+TRACE_TERM stage=polynomial_picard_order_1 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=polynomial_picard_order_1 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=polynomial_picard_order_1 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_REMAINDER stage=polynomial_picard_order_1 state=0 lower=0 upper=0
+TRACE_BOX stage=polynomial_picard_order_1 scope=domain state=0 lower=-0 upper=0.10550000000000001
+TRACE_BOX stage=polynomial_picard_order_1 scope=endpoint_lower_corner state=0 lower=0.0054999999999999979 upper=0.0055000000000000049
+TRACE_BOX stage=polynomial_picard_order_1 scope=endpoint_upper_corner state=0 lower=0.1055 upper=0.10550000000000001
+TRACE_TERM stage=polynomial_picard_order_2 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=polynomial_picard_order_2 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=polynomial_picard_order_2 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=polynomial_picard_order_2 state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=polynomial_picard_order_2 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_REMAINDER stage=polynomial_picard_order_2 state=0 lower=0 upper=0
+TRACE_BOX stage=polynomial_picard_order_2 scope=domain state=0 lower=-0 upper=0.10602750000000001
+TRACE_BOX stage=polynomial_picard_order_2 scope=endpoint_lower_corner state=0 lower=0.0050274999999999972 upper=0.0050275000000000042
+TRACE_BOX stage=polynomial_picard_order_2 scope=endpoint_upper_corner state=0 lower=0.1060275 upper=0.10602750000000001
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=polynomial_picard_order_3 state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_REMAINDER stage=polynomial_picard_order_3 state=0 lower=0 upper=0
+TRACE_BOX stage=polynomial_picard_order_3 scope=domain state=0 lower=-0 upper=0.10603009166666669
+TRACE_BOX stage=polynomial_picard_order_3 scope=endpoint_lower_corner state=0 lower=0.0050250916666666617 upper=0.0050250916666666687
+TRACE_BOX stage=polynomial_picard_order_3 scope=endpoint_upper_corner state=0 lower=0.10603009166666666 upper=0.10603009166666669
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=polynomial_picard_order_4 state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=polynomial_picard_order_4 state=0 lower=0 upper=0
+TRACE_BOX stage=polynomial_picard_order_4 scope=domain state=0 lower=-0 upper=0.10603010022916669
+TRACE_BOX stage=polynomial_picard_order_4 scope=endpoint_lower_corner state=0 lower=0.0050250835624999976 upper=0.0050250835625000045
+TRACE_BOX stage=polynomial_picard_order_4 scope=endpoint_upper_corner state=0 lower=0.10603010022916666 upper=0.10603010022916669
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=candidate_remainder_seed state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=candidate_remainder_seed state=0 lower=-0.0001 upper=0.0001
+TRACE_BOX stage=candidate_remainder_seed scope=domain state=0 lower=-0.0001 upper=0.10613010022916669
+TRACE_BOX stage=candidate_remainder_seed scope=endpoint_lower_corner state=0 lower=0.0049250835624999973 upper=0.0051250835625000048
+TRACE_BOX stage=candidate_remainder_seed scope=endpoint_upper_corner state=0 lower=0.10593010022916666 upper=0.10613010022916669
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=1.0999999999999999 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.06666666666666668 exponents=3,1
+TRACE_TERM stage=picard_ctrunc_raw state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=picard_ctrunc_raw state=0 lower=-1.0000833333333335e-06 upper=1.0000856250000002e-06
+TRACE_BOX stage=picard_ctrunc_raw scope=domain state=0 lower=-1.0000833333333335e-06 upper=0.1060311003147917
+TRACE_BOX stage=picard_ctrunc_raw scope=endpoint_lower_corner state=0 lower=0.0050240834791666642 upper=0.0050260836481250048
+TRACE_BOX stage=picard_ctrunc_raw scope=endpoint_upper_corner state=0 lower=0.10602910014583332 upper=0.1060311003147917
+TRACE_INTERVAL stage=roundoff_polynomial_difference state=0 lower=-1.1102247593486326e-18 upper=1.7347234759768074e-24
+TRACE_CHECK name=candidate_contains_picard_image value=1
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=1.0999999999999999 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.06666666666666668 exponents=3,1
+TRACE_TERM stage=validated_picard_image state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=validated_picard_image state=0 lower=-1.0000833333344437e-06 upper=1.0000856250000004e-06
+TRACE_BOX stage=validated_picard_image scope=domain state=0 lower=-1.0000833333344437e-06 upper=0.1060311003147917
+TRACE_BOX stage=validated_picard_image scope=endpoint_lower_corner state=0 lower=0.0050240834791666624 upper=0.0050260836481250048
+TRACE_BOX stage=validated_picard_image scope=endpoint_upper_corner state=0 lower=0.10602910014583332 upper=0.1060311003147917
+TRACE_INTERVAL stage=refinement_0_raw state=0 lower=-1.0000833333344437e-08 upper=1.0000856250000006e-08
+TRACE_INTERVAL stage=refinement_0_with_roundoff state=0 lower=-1.0000833334454663e-08 upper=1.0000856250000009e-08
+TRACE_CHECK name=refinement_0_state_0_subset value=1
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_0_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_0_accepted_tmv state=0 lower=-1.0000833334454663e-08 upper=1.0000856250000009e-08
+TRACE_BOX stage=refinement_0_accepted_tmv scope=domain state=0 lower=-1.0000833334454663e-08 upper=0.10603011023002294
+TRACE_BOX stage=refinement_0_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250735616666625 upper=0.0050250935633562553
+TRACE_BOX stage=refinement_0_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603009022833332 upper=0.10603011023002294
+TRACE_INTERVAL stage=refinement_1_raw state=0 lower=-1.0000833334454664e-10 upper=1.000085625000001e-10
+TRACE_INTERVAL stage=refinement_1_with_roundoff state=0 lower=-1.0000833445477141e-10 upper=1.0000856250000184e-10
+TRACE_CHECK name=refinement_1_state_0_subset value=1
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_1_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_1_accepted_tmv state=0 lower=-1.0000833445477141e-10 upper=1.0000856250000184e-10
+TRACE_BOX stage=refinement_1_accepted_tmv scope=domain state=0 lower=-1.0000833445477141e-10 upper=0.10603010032917526
+TRACE_BOX stage=refinement_1_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250834624916627 upper=0.0050250836625085676
+TRACE_BOX stage=refinement_1_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010012915833 upper=0.10603010032917526
+TRACE_INTERVAL stage=refinement_2_raw state=0 lower=-1.0000833445477141e-12 upper=1.0000856250000185e-12
+TRACE_INTERVAL stage=refinement_2_with_roundoff state=0 lower=-1.0000844547724735e-12 upper=1.0000856250017532e-12
+TRACE_CHECK name=refinement_2_state_0_subset value=1
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_2_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_2_accepted_tmv state=0 lower=-1.0000844547724735e-12 upper=1.0000856250017532e-12
+TRACE_BOX stage=refinement_2_accepted_tmv scope=domain state=0 lower=-1.0000844547724735e-12 upper=0.10603010023016678
+TRACE_BOX stage=refinement_2_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.005025083561499913 upper=0.0050250835635000908
+TRACE_BOX stage=refinement_2_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022816657 upper=0.10603010023016678
+TRACE_INTERVAL stage=refinement_3_raw state=0 lower=-1.0000844547724737e-14 upper=1.0000856250017534e-14
+TRACE_INTERVAL stage=refinement_3_with_roundoff state=0 lower=-1.0001954772484087e-14 upper=1.0000856251752258e-14
+TRACE_CHECK name=refinement_3_state_0_subset value=1
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_3_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_3_accepted_tmv state=0 lower=-1.0001954772484087e-14 upper=1.0000856251752258e-14
+TRACE_BOX stage=refinement_3_accepted_tmv scope=domain state=0 lower=-1.0001954772484087e-14 upper=0.10603010022917669
+TRACE_BOX stage=refinement_3_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250835624899952 upper=0.0050250835625100061
+TRACE_BOX stage=refinement_3_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022915665 upper=0.10603010022917669
+TRACE_INTERVAL stage=refinement_4_raw state=0 lower=-1.0001954772484088e-16 upper=1.0000856251752258e-16
+TRACE_INTERVAL stage=refinement_4_with_roundoff state=0 lower=-1.0112977248418952e-16 upper=1.0000856425224607e-16
+TRACE_CHECK name=refinement_4_state_0_subset value=1
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_4_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_4_accepted_tmv state=0 lower=-1.0112977248418952e-16 upper=1.0000856425224607e-16
+TRACE_BOX stage=refinement_4_accepted_tmv scope=domain state=0 lower=-1.0112977248418952e-16 upper=0.1060301002291668
+TRACE_BOX stage=refinement_4_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250835624998961 upper=0.0050250835625001052
+TRACE_BOX stage=refinement_4_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022916655 upper=0.1060301002291668
+TRACE_INTERVAL stage=refinement_5_raw state=0 lower=-1.0112977248418954e-18 upper=1.0000856425224608e-18
+TRACE_INTERVAL stage=refinement_5_with_roundoff state=0 lower=-2.121522484190528e-18 upper=1.0000873772459369e-18
+TRACE_CHECK name=refinement_5_state_0_subset value=1
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_5_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_5_accepted_tmv state=0 lower=-2.121522484190528e-18 upper=1.0000873772459369e-18
+TRACE_BOX stage=refinement_5_accepted_tmv scope=domain state=0 lower=-2.121522484190528e-18 upper=0.1060301002291667
+TRACE_BOX stage=refinement_5_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.005025083562499995 upper=0.0050250835625000063
+TRACE_BOX stage=refinement_5_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_INTERVAL stage=refinement_6_raw state=0 lower=-2.1215224841905281e-20 upper=1.0000873772459369e-20
+TRACE_INTERVAL stage=refinement_6_with_roundoff state=0 lower=-1.1314399841905379e-18 upper=1.0002608495935346e-20
+TRACE_CHECK name=refinement_6_state_0_subset value=1
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_6_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_6_accepted_tmv state=0 lower=-1.1314399841905379e-18 upper=1.0002608495935346e-20
+TRACE_BOX stage=refinement_6_accepted_tmv scope=domain state=0 lower=-1.1314399841905379e-18 upper=0.1060301002291667
+TRACE_BOX stage=refinement_6_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=refinement_6_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_INTERVAL stage=refinement_7_raw state=0 lower=-1.1314399841905381e-20 upper=1.0002608495935347e-22
+TRACE_INTERVAL stage=refinement_7_with_roundoff state=0 lower=-1.1215391591905381e-18 upper=1.0176080843533028e-22
+TRACE_CHECK name=refinement_7_state_0_subset value=1
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_7_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_7_accepted_tmv state=0 lower=-1.1215391591905381e-18 upper=1.0176080843533028e-22
+TRACE_BOX stage=refinement_7_accepted_tmv scope=domain state=0 lower=-1.1215391591905381e-18 upper=0.1060301002291667
+TRACE_BOX stage=refinement_7_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=refinement_7_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_INTERVAL stage=refinement_8_raw state=0 lower=-1.1215391591905382e-20 upper=1.017608084353303e-24
+TRACE_INTERVAL stage=refinement_8_with_roundoff state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_CHECK name=refinement_8_state_0_subset value=1
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=refinement_8_accepted_tmv state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=refinement_8_accepted_tmv state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_BOX stage=refinement_8_accepted_tmv scope=domain state=0 lower=-1.1214401509405381e-18 upper=0.1060301002291667
+TRACE_BOX stage=refinement_8_accepted_tmv scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=refinement_8_accepted_tmv scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=accepted_mirror_tmv_pre state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=accepted_mirror_tmv_pre state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_BOX stage=accepted_mirror_tmv_pre scope=domain state=0 lower=-1.1214401509405381e-18 upper=0.1060301002291667
+TRACE_BOX stage=accepted_mirror_tmv_pre scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=accepted_mirror_tmv_pre scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=accepted_native_tmv_pre state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=accepted_native_tmv_pre state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_BOX stage=accepted_native_tmv_pre scope=domain state=0 lower=-1.1214401509405381e-18 upper=0.1060301002291667
+TRACE_BOX stage=accepted_native_tmv_pre scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=accepted_native_tmv_pre scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_TERM stage=accepted_native_tmv_right state=0 coefficient_lower=1 coefficient_upper=1 exponents=0,1
+TRACE_REMAINDER stage=accepted_native_tmv_right state=0 lower=0 upper=0
+TRACE_BOX stage=accepted_native_tmv_right scope=domain state=0 lower=-1 upper=1
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,0
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.050000000000000003 coefficient_upper=0.050000000000000003 exponents=0,1
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=1,0
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=1,1
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=1.1000000000000001 coefficient_upper=1.1000000000000001 exponents=2,0
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.10000000000000001 coefficient_upper=0.10000000000000001 exponents=2,1
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.73333333333333339 coefficient_upper=0.73333333333333339 exponents=3,0
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.066666666666666666 coefficient_upper=0.066666666666666666 exponents=3,1
+TRACE_TERM stage=composed_flowpipe state=0 coefficient_lower=0.3666666666666667 coefficient_upper=0.3666666666666667 exponents=4,0
+TRACE_REMAINDER stage=composed_flowpipe state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_BOX stage=composed_flowpipe scope=domain state=0 lower=-1.1214401509405381e-18 upper=0.1060301002291667
+TRACE_BOX stage=composed_flowpipe scope=endpoint_lower_corner state=0 lower=0.0050250835624999959 upper=0.0050250835625000054
+TRACE_BOX stage=composed_flowpipe scope=endpoint_upper_corner state=0 lower=0.10603010022916665 upper=0.1060301002291667
+TRACE_BOX stage=endpoint_raw scope=full_initial_interval state=0 lower=0.0050250835624999959 upper=0.1060301002291667
+TRACE_TERM stage=endpoint_collapsed state=0 coefficient_lower=0.055527591895833332 coefficient_upper=0.055527591895833332 exponents=0,0
+TRACE_TERM stage=endpoint_collapsed state=0 coefficient_lower=0.050502508333333342 coefficient_upper=0.050502508333333342 exponents=0,1
+TRACE_REMAINDER stage=endpoint_collapsed state=0 lower=-1.1214401509405381e-18 upper=2.7523315603301105e-24
+TRACE_BOX stage=endpoint_collapsed scope=domain state=0 lower=0.0050250835624999889 upper=0.10603010022916669
+TRACE_UNAVAILABLE stage=endpoint_tightened reason=no_distinct_stock_field
+TRACE_UNAVAILABLE stage=repaired_hull reason=prohibited_not_computed

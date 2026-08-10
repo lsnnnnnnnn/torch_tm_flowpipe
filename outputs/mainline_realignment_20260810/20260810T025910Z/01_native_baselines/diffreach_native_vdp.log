@@ -1,0 +1,19 @@
+Script started on 2026-08-10 03:05:30+00:00 [COMMAND="CUDA_VISIBLE_DEVICES=GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae /srv/local/shengenli/native_envs/diffreach083/bin/python run_dyn.py config/ct_dyn/van_der_pol.yaml --sim --ver" TERM="dumb" TTY="/dev/pts/28" COLUMNS="80" LINES="24"]
+[info] Building reach function with step_size=0.01, n_total_steps=1000, and B=64...
+[info] initial-set splitting -> B=64 partitions.
+[info] Simulating trajectories...
+[warmup] 0.342s
+[after-JIT] 0.007s
+[OK] Sampled 64 trajectories of length 1001.
+[info] Verifying reachability...
+[warmup] 4.307s
+[after-JIT] 0.360s
+Total steps:  1000
+x1(T) ∈ [-1.3964494166017873, -1.2195860990449185]
+x2(T) ∈ [-2.502208485945201, -2.2803973198181486]
+vag volume = 1.717855e+00
+Saved figure to output/ct_dyn/van_der_pol/x1_1000_64_agg.png
+Saved figure to output/ct_dyn/van_der_pol/x2_1000_64_agg.png
+Saved figure to output/ct_dyn/van_der_pol/x1_x2_1000_64_agg.png
+
+Script done on 2026-08-10 03:05:48+00:00 [COMMAND_EXIT_CODE="0"]

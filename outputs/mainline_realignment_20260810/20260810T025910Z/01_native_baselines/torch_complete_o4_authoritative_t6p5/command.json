@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "experiments/run_vdp_dense_backend.py",
+    "--output-dir",
+    "outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/torch_complete_o4_authoritative_t6p5",
+    "--tm-backend",
+    "dense",
+    "--device",
+    "cpu",
+    "--horizon",
+    "6.5",
+    "--wall-cap-s",
+    "1800",
+    "--dense-range-method",
+    "adaptive_subdivision",
+    "--dense-range-trigger",
+    "proactive_depth1_on_named_contexts",
+    "--dense-range-max-depth",
+    "1",
+    "--dense-range-max-leaves",
+    "4",
+    "--dense-range-split-vars",
+    "0,1",
+    "--dense-range-contexts",
+    "polynomial_truncation"
+  ],
+  "branch": "codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810",
+  "commit": "dc26187660609c7a313bcc27e1c684d5262359b8",
+  "config_sha256": "1dea08da3a58e2d9384d4a6de40a8c0fdbf32a99ca4b46d393f588b149dad078",
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_mainline_20260810",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "worktree_status": ""
+}

@@ -1,0 +1,64 @@
+{
+  "accepted_all_batches": true,
+  "actual_independent_inputs": true,
+  "bit_exact_endpoint_carry": true,
+  "coefficient_sha256": "5f45b4389f03b59fd35f643d39c59cb7493d8980627733e2db9cb030670e8f1f",
+  "dtype_device": {
+    "device": "cpu",
+    "device_name": "x86_64",
+    "dtype": "float64"
+  },
+  "endpoint_hull": [
+    [
+      1.104696591379315,
+      1.4048928597611914
+    ],
+    [
+      2.3425773142903714,
+      2.4468543943240952
+    ]
+  ],
+  "execution_kind": "complete_O4_one_step_plus_complete_endpoint_carry_kernel",
+  "h": 0.002,
+  "partition_policy": {
+    "batch": 1,
+    "splits": [
+      1,
+      1
+    ]
+  },
+  "peak_memory_bytes": 405925888,
+  "schema": "torch_tm_complete_carry_batch_v1",
+  "scope_limitation": "The adaptive cross-step scheduler is batch-one; this row establishes the generic dense step-and-carry primitive only and is not a multi-step certificate.",
+  "soundness_classification": "empirically sampled only",
+  "soundness_note": "ordinary Torch float64; the exact carry is bit-preserving, but the dense arithmetic is not universally outward rounded",
+  "source_sha": "412f59b3154b97f73086f71bc8b0b4fa154471af",
+  "status": "validated",
+  "timing": {
+    "boundary": "dense Picard construction, validation, endpoint substitution, and carry clone",
+    "cold_first_call_s": 0.12422440573573112,
+    "cuda_synchronized": false,
+    "warm_max_s": 0.11731703951954842,
+    "warm_median_s": 0.1170765245333314,
+    "warm_min_s": 0.11682052537798882,
+    "warm_s": [
+      0.1170765245333314,
+      0.11731703951954842,
+      0.11682052537798882,
+      0.11705758981406689,
+      0.11711332853883505
+    ]
+  },
+  "work": {
+    "batch_steps": 1,
+    "carried_coefficient_values": 70,
+    "host_decision_scope": "per-step aggregate inclusion gate",
+    "intervalized_retained_terms": 0,
+    "overflow_product_routes": 1015,
+    "picard_depth": 4,
+    "remainder_rounds": 1,
+    "retained_product_routes": 210,
+    "slots": 35
+  },
+  "worktree_dirty": false
+}

@@ -1,0 +1,402 @@
+{
+  "correctness_gate": "OPEN",
+  "first_loss": {
+    "contained": false,
+    "first_loss": true,
+    "flowstar_source": "Continuous.cpp:1013-1029",
+    "lower_corner_box": [
+      0.010100670317322662,
+      0.010100670349344594
+    ],
+    "lower_defect": 3.0394475825090694e-10,
+    "mathematical_object": "accepted refinement of stored interval remainder",
+    "max_defect": 3.3337554938839276e-10,
+    "oracle_object": "closed-form endpoint corners at requested h",
+    "path": "generated-stock diagnostic",
+    "stage": "refinement_2_accepted_tmv",
+    "tolerance": null,
+    "upper_corner_box": [
+      0.11212080365065598,
+      0.11212080368267795
+    ],
+    "upper_defect": 3.3337554938839276e-10
+  },
+  "mechanism": "The order-4 polynomial Picard result lacks the tau^4*xi initial-dependency term. Refinement 1 still covers the closed-form corners, but refinement 2 accepts a much smaller stored remainder using only the stock subset/width test; that remainder no longer covers the missing dependency term and analytic tail.",
+  "official_path_confirmation": {
+    "defect": {
+      "contained": false,
+      "lower_defect": 3.1995542153218093e-10,
+      "max_defect": 3.4938679727147814e-10,
+      "tolerance": null,
+      "upper_defect": 3.4938679727147814e-10
+    },
+    "internal_refinement_fields_available": false,
+    "under_enclosed_at_its_accepted_right_endpoint": true
+  },
+  "path": "generated-stock diagnostic linked to clean stock archive",
+  "prevalidation_polynomial_diagnostic": {
+    "enclosure_contract": false,
+    "expected_tau4_initial_generator_coefficient": 0.03333333333333333,
+    "observed_tau4_initial_generator_term": null,
+    "observed_terms": {
+      "0,0": [
+        0.05,
+        0.05
+      ],
+      "0,1": [
+        0.05,
+        0.05
+      ],
+      "1,0": [
+        1.1,
+        1.1
+      ],
+      "1,1": [
+        0.1,
+        0.1
+      ],
+      "2,0": [
+        1.1,
+        1.1
+      ],
+      "2,1": [
+        0.1,
+        0.1
+      ],
+      "3,0": [
+        0.7333333333333334,
+        0.7333333333333334
+      ],
+      "3,1": [
+        0.06666666666666667,
+        0.06666666666666667
+      ],
+      "4,0": [
+        0.3666666666666667,
+        0.3666666666666667
+      ]
+    },
+    "source": "TaylorModel.h:3698-3705 called by Continuous.cpp:954-956",
+    "stage": "polynomial_picard_order_4",
+    "term_missing": true
+  },
+  "primary_comparison_eligible": false,
+  "rows": [
+    {
+      "contained": true,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:961-969",
+      "lower_corner_box": [
+        0.010000670333333331,
+        0.01020067033333334
+      ],
+      "lower_defect": 0.0,
+      "mathematical_object": "order-limited Picard polynomial plus candidate remainder",
+      "max_defect": 0.0,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "candidate_remainder_seed",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11202080366666665,
+        0.11222080366666669
+      ],
+      "upper_defect": 0.0
+    },
+    {
+      "contained": true,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:966-982",
+      "lower_corner_box": [
+        0.01009866899999999,
+        0.010102671740000006
+      ],
+      "lower_defect": 0.0,
+      "mathematical_object": "Picard image with combined cutoff/truncation remainder before roundoff difference",
+      "max_defect": 0.0,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "picard_ctrunc_raw",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11211880233333332,
+        0.11212280507333336
+      ],
+      "upper_defect": 0.0
+    },
+    {
+      "contained": true,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:969-1005",
+      "lower_corner_box": [
+        0.010098668999999989,
+        0.010102671740000006
+      ],
+      "lower_defect": 0.0,
+      "mathematical_object": "candidate Picard image after cutoff/truncation and roundoff interval",
+      "max_defect": 0.0,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "validated_picard_image",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11211880233333331,
+        0.11212280507333336
+      ],
+      "upper_defect": 0.0
+    },
+    {
+      "contained": true,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100630306666662,
+        0.010100710361466673
+      ],
+      "lower_defect": 0.0,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 0.0,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_0_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212076363999998,
+        0.11212084369480002
+      ],
+      "upper_defect": 0.0
+    },
+    {
+      "contained": true,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100669532799996,
+        0.010100671133896007
+      ],
+      "lower_defect": 0.0,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 0.0,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_1_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080286613331,
+        0.11212080446722936
+      ],
+      "upper_defect": 0.0
+    },
+    {
+      "contained": false,
+      "first_loss": true,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670317322662,
+        0.010100670349344594
+      ],
+      "lower_defect": 3.0394475825090694e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.3337554938839276e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_2_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080365065598,
+        0.11212080368267795
+      ],
+      "upper_defect": 3.3337554938839276e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333013116,
+        0.010100670333653566
+      ],
+      "lower_defect": 3.196352123951973e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4906658119560063e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_3_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366634644,
+        0.11212080366698692
+      ],
+      "upper_defect": 3.4906658119560063e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333326924,
+        0.010100670333339744
+      ],
+      "lower_defect": 3.1994902040255457e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938039961129874e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_4_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666025,
+        0.1121208036666731
+      ],
+      "upper_defect": 3.4938039961129874e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.0101006703333332,
+        0.010100670333333468
+      ],
+      "lower_defect": 3.1995529663209066e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938667237138787e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_5_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666652,
+        0.11212080366666682
+      ],
+      "upper_defect": 3.4938667237138787e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333333327,
+        0.010100670333333343
+      ],
+      "lower_defect": 3.199554232669044e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_6_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333333329,
+        0.010100670333333341
+      ],
+      "lower_defect": 3.199554250016279e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_7_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333333329,
+        0.010100670333333341
+      ],
+      "lower_defect": 3.199554250016279e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_8_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1013-1029",
+      "lower_corner_box": [
+        0.010100670333333329,
+        0.010100670333333341
+      ],
+      "lower_defect": 3.199554250016279e-10,
+      "mathematical_object": "accepted refinement of stored interval remainder",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "refinement_9_accepted_tmv",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:1038-1040",
+      "lower_corner_box": [
+        0.010100670333333329,
+        0.010100670333333341
+      ],
+      "lower_defect": 3.199554250016279e-10,
+      "mathematical_object": "accepted preconditioned flowpipe before composition",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "accepted_native_tmv_pre",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    },
+    {
+      "contained": false,
+      "first_loss": false,
+      "flowstar_source": "Continuous.cpp:386-390",
+      "lower_corner_box": [
+        0.010100670333333329,
+        0.010100670333333341
+      ],
+      "lower_defect": 3.199554250016279e-10,
+      "mathematical_object": "composed accepted flowpipe",
+      "max_defect": 3.4938679727147814e-10,
+      "oracle_object": "closed-form endpoint corners at requested h",
+      "path": "generated-stock diagnostic",
+      "stage": "composed_flowpipe",
+      "tolerance": null,
+      "upper_corner_box": [
+        0.11212080366666664,
+        0.1121208036666667
+      ],
+      "upper_defect": 3.4938679727147814e-10
+    }
+  ],
+  "selected_outcome": "F_clean_stock_flowstar_core_behavior"
+}

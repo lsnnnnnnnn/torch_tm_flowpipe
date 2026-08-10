@@ -1,0 +1,179 @@
+{
+  "common_basis": {
+    "common_basis_comparison": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/common_basis_comparison.json",
+    "common_basis_sha256": "9279e7c5ef8b9f78a0cedcbc8ff402d5b5fea2f250abb5ea9921c9d7d7e0ddd2",
+    "counterfactuals": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/counterfactuals.json",
+    "counterfactuals_sha256": "fb31c1d48de1a216779100812c6977aafdb0d57a4499a0e29c3f04a6c8c812bd",
+    "flowstar_native_accepted": false,
+    "flowstar_polynomial_in_torch_validator_accepted": true,
+    "flowstar_right_map_torch_replay": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/flowstar_right_map_in_torch_semantics.json",
+    "flowstar_right_map_torch_replay_sha256": "890aa2bad66704e6ae425c3e8664ecbffb47d0a923307ad08105bbc44d5bb666",
+    "native_torch_replay_bit_exact": true,
+    "torch_candidate_flowstar_replay": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/torch_candidate_in_flowstar_basis.tsv",
+    "torch_candidate_flowstar_replay_sha256": "482a3bc587666bee39c63e095bb9cd4f2e09ccffef7be342f0d6ef3b161b9d78",
+    "torch_endpoint_flowstar_replay": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/common_basis_final/torch_endpoint_in_flowstar_previous_basis.tsv",
+    "torch_endpoint_flowstar_replay_sha256": "61b3b67a42287acb9dd7db9ad6cc2eebe3378563ac07814680d64ef46568021f",
+    "torch_native_accepted": true
+  },
+  "complete_carry_one_step": {
+    "all_candidate_carries_preserve_endpoint_coefficients": true,
+    "all_decisions_match": true,
+    "all_endpoint_coefficients_match": true,
+    "all_segment_coefficients_match": true,
+    "all_status_match": true,
+    "artifact": "<server-workspace>/torch_tm_flowpipe_mainline_20260810/outputs/mainline_realignment_20260810/20260810T025910Z/04_generic_carry_candidate/one_step_grid_final/one_step_grid.json",
+    "sha256": "661d26d5d21e39feb009a4aa83733466179949a9d1ac57af5e73571ef16b4c11"
+  },
+  "decisions": {
+    "common_basis": "qualified",
+    "complete_carry": "zero one-step mismatch",
+    "fixed_support": "qualified"
+  },
+  "fixed_support": {
+    "cuda_short": {
+      "batch": 64,
+      "cold_s": 1.5522828688845038,
+      "completed": true,
+      "cpu_cuda_outputs": "bit_exact",
+      "explicit_reporting_device_transfers": 7,
+      "horizon": 0.1,
+      "peak_memory_bytes": 23068672,
+      "summary_sha256": "20e44d02ca450ec3e9ed27a53bc6515a229d03d1838c80bc13594dd715ebc66a",
+      "warm_s": 1.291975948959589
+    },
+    "date": "2026-08-10",
+    "diffreach_source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+    "exact_rational_replay": {
+      "arithmetic": "fractions.Fraction exact rational interval endpoints",
+      "cpu_cuda_equal": true,
+      "cpu_report_sha256": "5d49725a7b9978ec74f4b3fde92967f7df5d822036680677aff79d17c3ffc474",
+      "cuda_report_sha256": "e76ad2a42c49086a0ade49d12d4fde69a5a04995a1b0fe769eb6fd2f14df793d",
+      "initial_and_all_round_masks_equal": true,
+      "max_outward_ulps_needed": 2,
+      "ordinary_binary64_directly_qualified": false,
+      "ordinary_lane_classification": "empirically sampled only",
+      "replay_envelope_classification": "independently outward replayed for exact benchmark workload",
+      "replay_envelope_qualified": true,
+      "scope": "one exact rational VDP segment; not universal GPU directed rounding"
+    },
+    "fixture": {
+      "accepted_remainder_equality": "bit_exact",
+      "coefficient_equality": "bit_exact",
+      "endpoint_tube_equality": "bit_exact",
+      "path": "tests/fixtures/diffreach_dr7_vdp_one_step_float64.json",
+      "round_mask_equality": "bit_exact",
+      "sha256": "4d6901b205eb606847848582727559652082efb61d32352e9e110ba694155390"
+    },
+    "full_t10": {
+      "artifacts": {
+        "artifact_manifest_sha256": "f0ac370016daa715bfeb15631ef1d0959a3cd61450c72afd81da09adc712c0f0",
+        "bounds_sha256": "f7be2bc290dd9e45718ce89cb2747867f4f4ac4c587972a0252ed6fbb26f11c9",
+        "summary_sha256": "f2a6a412787ec76c7ad9a9df7c397ae872c93c7264feb3ca263373b01cda3990"
+      },
+      "batch": 64,
+      "cold_solver_s": 97.92799484729767,
+      "completed": true,
+      "full_horizon_tube": {
+        "x": [
+          -2.0115852688308564,
+          2.0574214109557194
+        ],
+        "y": [
+          -2.6891205817023787,
+          2.6857282956487234
+        ]
+      },
+      "host_synchronizations": 1000,
+      "initial_component_inclusions": {
+        "passed": 128000,
+        "total": 128000
+      },
+      "last_full_segment_tube": {
+        "x": [
+          -1.3966090523772694,
+          -1.194992495173489
+        ],
+        "y": [
+          -2.5275335398097694,
+          -2.280400983159145
+        ]
+      },
+      "later_round_component_masks": {
+        "passed": 1280000,
+        "total": 1280000
+      },
+      "max_absolute_endpoint_delta": 3.6633409964e-06,
+      "native_diffreach_endpoint": {
+        "x": [
+          -1.3964494166017873,
+          -1.2195860990449185
+        ],
+        "y": [
+          -2.502208485945201,
+          -2.2803973198181486
+        ]
+      },
+      "ordinary_soundness_classification": "empirically sampled only",
+      "peak_memory_bytes": 448491520,
+      "process_context": "non_isolated_do_not_use_for_headline_timing",
+      "retain_on_failure_count": 0,
+      "solver_device_transfers": 0,
+      "splits": [
+        8,
+        8
+      ],
+      "step_size": 0.01,
+      "steps": 1000,
+      "torch_endpoint": {
+        "x": [
+          -1.3964471717050193,
+          -1.2195885421989074
+        ],
+        "y": [
+          -2.50220625366701,
+          -2.280400983159145
+        ]
+      },
+      "validated_horizon": 10.0
+    },
+    "implementation_mismatch": false,
+    "runtime_dependency_on_external_repositories": false,
+    "schema": "torch_tm_flowpipe_fixed_support_equivalence_v1",
+    "semantic_gates": {
+      "all_dr_rp_rounds": "pass_bit_exact",
+      "analytic_polynomial": "pass",
+      "full_horizon": "pass",
+      "multiply_integrate_project_routes": "pass",
+      "one_polynomial_picard": "pass_bit_exact",
+      "one_segment": "pass",
+      "range_and_discarded_terms": "pass",
+      "short_horizon": "pass"
+    },
+    "support": {
+      "manifest_file_sha256": "c753bee6dd6000565d4da67dc1812debdb55924cc121ccc857038734f3b4bd14",
+      "name": "diffreach_restricted_quadratic_DR7",
+      "sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+      "slots": [
+        "1",
+        "t",
+        "xi0",
+        "xi1",
+        "t^2",
+        "t*xi0",
+        "t*xi1"
+      ]
+    },
+    "tests": {
+      "fixed_support_and_fraction_replay": {
+        "failed": 0,
+        "passed": 15
+      },
+      "fixed_support_plus_related_dense": {
+        "failed": 0,
+        "passed": 43
+      }
+    },
+    "torch_source_sha": "ac970b771a43c24587a70ab97eb08a71036c613b"
+  },
+  "schema": "torch_tm_operator_equivalence_v1"
+}

@@ -1,11 +1,22 @@
+import ast
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from torch_tm_flowpipe.artifact_package import (
+    CANONICAL_RUN_RELATIVE,
     REQUIRED_FIGURES,
     REQUIRED_MACHINE_FILES,
+    load_json_artifact,
+    reject_nonfinite,
+    validate_raw_evidence,
+    validate_report_artifact_references,
     validate_required_package,
+    verify_artifact_manifests,
+    verify_recovery_inventory,
     verify_sha256sums,
     write_sha256sums,
 )
@@ -47,3 +58,84 @@ def test_checksum_paths_can_be_root_prefixed_for_sha256sum_from_repository_root(
     assert verify_sha256sums(run_root, path_prefix=prefix) == (True, [])
     first = (run_root / "SHA256SUMS").read_text(encoding="utf-8").splitlines()[0]
     assert f"  {prefix}/" in first
+
+
+def test_json_loader_accepts_deterministic_gzip_and_rejects_nonfinite(tmp_path):
+    import gzip
+
+    compressed = tmp_path / "summary.json.gz"
+    with compressed.open("wb") as raw:
+        with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as handle:
+            handle.write(b'{"finite": 1.25}\n')
+    assert load_json_artifact(tmp_path / "summary.json") == {"finite": 1.25}
+    with pytest.raises(ValueError, match="nonfinite"):
+        reject_nonfinite({"bad": [float("nan")]}, label="fixture")
+
+
+def test_mainline_builder_has_no_literal_duplicate_dictionary_keys():
+    repository_root = Path(__file__).resolve().parents[1]
+    source = repository_root / "experiments/build_mainline_realignment_package.py"
+    tree = ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
+    duplicates: list[tuple[int, str]] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Dict):
+            continue
+        constants = [
+            key.value
+            for key in node.keys
+            if isinstance(key, ast.Constant) and isinstance(key.value, (str, int, float))
+        ]
+        for key in set(constants):
+            if constants.count(key) > 1:
+                duplicates.append((node.lineno, str(key)))
+    assert duplicates == []
+
+
+def test_committed_mainline_package_validates_in_clean_temporary_copy(tmp_path):
+    repository_root = Path(__file__).resolve().parents[1]
+    run_root = repository_root / CANONICAL_RUN_RELATIVE
+    validate_raw_evidence(run_root)
+    validate_required_package(run_root)
+    assert verify_artifact_manifests(run_root) == (True, [])
+    assert verify_recovery_inventory(run_root) == (True, [])
+    assert verify_sha256sums(
+        run_root, path_prefix=CANONICAL_RUN_RELATIVE.as_posix()
+    ) == (True, [])
+
+    markdown_paths = [repository_root / "README.md", repository_root / "handoff.md"]
+    markdown_paths.extend(sorted((repository_root / "docs").glob("*.md")))
+    validate_report_artifact_references(
+        repository_root,
+        markdown_paths,
+        require_tracked=True,
+    )
+
+    clean_copy = tmp_path / CANONICAL_RUN_RELATIVE.name
+    shutil.copytree(run_root, clean_copy)
+    validate_raw_evidence(clean_copy)
+    validate_required_package(clean_copy)
+    assert verify_artifact_manifests(clean_copy) == (True, [])
+    assert verify_recovery_inventory(clean_copy) == (True, [])
+    assert verify_sha256sums(
+        clean_copy, path_prefix=CANONICAL_RUN_RELATIVE.as_posix()
+    ) == (True, [])
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(repository_root / "experiments/build_mainline_realignment_package.py"),
+            "--run-root",
+            str(clean_copy),
+        ],
+        cwd=repository_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    derived = [*REQUIRED_MACHINE_FILES, "SHA256SUMS"]
+    derived.extend(f"figures/{name}" for name in REQUIRED_FIGURES)
+    assert {
+        name: (clean_copy / name).read_bytes() for name in derived
+    } == {
+        name: (run_root / name).read_bytes() for name in derived
+    }

@@ -82,6 +82,8 @@ result = flowpipe_multi_step(
 print(result.status, result.final_tm.range_box())
 ```
 
-All formal round artifacts are under
-`outputs/mainline_realignment_20260810/20260810T025910Z/`. Raw output is kept
-separate from derived summaries and is covered by the final `SHA256SUMS`.
+The previous-round evidence is committed under the
+[canonical run](outputs/mainline_realignment_20260810/20260810T025910Z/).
+Raw output is kept separate from derived summaries, large text traces use
+deterministic gzip storage, and the repository-root-prefixed `SHA256SUMS`
+covers the complete stored tree.
