@@ -49,6 +49,11 @@ rounds, and symbolic-remainder window 1,000.  JAX x64 was enabled and GPU 0
 was the V100 with UUID
 `GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae`.
 
+Although the launcher enabled JAX x64, the pinned `build_linear_tm` and
+identity/symbolic-state builders default to float32 when the caller omits a
+dtype; the official driver does omit it.  The native row is therefore a
+mixed-builder-dtype observation, not a pure float64 run.
+
 The fixed support is the exact seven-slot restricted basis
 `[1, t, x1, x2, t^2, t*x1, t*x2]`, stored upstream as
 `c`, `L[..., t,x1,x2]`, and `Lt[..., t,x1,x2]`.  Each step uses two
@@ -106,7 +111,7 @@ and `c721ccf4c02099afd7064a79dd3235759f453df6c8315d2a4e8745ecd7ed3bb`.
 | validator | stock interval Picard | DR-RP | raw-remainder-compatible inclusion |
 | carry | native normalization + symbolic queue | upstream normalization + symbolic queue | normalized insertion; no symbolic queue |
 | saved geometric object | tubes | endpoints | endpoint plus explicit tubes |
-| numerical qualification | `unsound/ineligible` for primary formal use after analytic counterexample | `empirically sampled only` pending independent outward replay | `formally outward by construction` for its Torch interval operations; lane still fails before T10 |
+| numerical qualification | `unsound/ineligible` for primary formal use after analytic counterexample | `empirically sampled only`; JAX x64 does not override the default float32 model builders | `formally outward by construction` for its Torch interval operations; lane still fails before T10 |
 
 Consequently, completion and width values above answer whether each native
 entry point ran and what it emitted.  They do not establish a speed or

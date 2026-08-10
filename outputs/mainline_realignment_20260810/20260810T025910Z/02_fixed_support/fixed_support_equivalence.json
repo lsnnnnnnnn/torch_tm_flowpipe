@@ -1,0 +1,99 @@
+{
+  "schema": "torch_tm_flowpipe_fixed_support_equivalence_v1",
+  "date": "2026-08-10",
+  "torch_source_sha": "ac970b771a43c24587a70ab97eb08a71036c613b",
+  "diffreach_source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "support": {
+    "name": "diffreach_restricted_quadratic_DR7",
+    "slots": ["1", "t", "xi0", "xi1", "t^2", "t*xi0", "t*xi1"],
+    "sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+    "manifest_file_sha256": "c753bee6dd6000565d4da67dc1812debdb55924cc121ccc857038734f3b4bd14"
+  },
+  "semantic_gates": {
+    "analytic_polynomial": "pass",
+    "multiply_integrate_project_routes": "pass",
+    "range_and_discarded_terms": "pass",
+    "one_polynomial_picard": "pass_bit_exact",
+    "all_dr_rp_rounds": "pass_bit_exact",
+    "one_segment": "pass",
+    "short_horizon": "pass",
+    "full_horizon": "pass"
+  },
+  "fixture": {
+    "path": "tests/fixtures/diffreach_dr7_vdp_one_step_float64.json",
+    "sha256": "4d6901b205eb606847848582727559652082efb61d32352e9e110ba694155390",
+    "coefficient_equality": "bit_exact",
+    "round_mask_equality": "bit_exact",
+    "accepted_remainder_equality": "bit_exact",
+    "endpoint_tube_equality": "bit_exact"
+  },
+  "full_t10": {
+    "batch": 64,
+    "splits": [8, 8],
+    "step_size": 0.01,
+    "steps": 1000,
+    "validated_horizon": 10.0,
+    "completed": true,
+    "initial_component_inclusions": {"passed": 128000, "total": 128000},
+    "later_round_component_masks": {"passed": 1280000, "total": 1280000},
+    "retain_on_failure_count": 0,
+    "torch_endpoint": {
+      "x": [-1.3964471717050193, -1.2195885421989074],
+      "y": [-2.50220625366701, -2.280400983159145]
+    },
+    "native_diffreach_endpoint": {
+      "x": [-1.3964494166017873, -1.2195860990449185],
+      "y": [-2.502208485945201, -2.2803973198181486]
+    },
+    "max_absolute_endpoint_delta": 3.6633409964e-6,
+    "last_full_segment_tube": {
+      "x": [-1.3966090523772694, -1.194992495173489],
+      "y": [-2.5275335398097694, -2.280400983159145]
+    },
+    "full_horizon_tube": {
+      "x": [-2.0115852688308564, 2.0574214109557194],
+      "y": [-2.6891205817023787, 2.6857282956487234]
+    },
+    "ordinary_soundness_classification": "empirically sampled only",
+    "process_context": "non_isolated_do_not_use_for_headline_timing",
+    "cold_solver_s": 97.92799484729767,
+    "peak_memory_bytes": 448491520,
+    "host_synchronizations": 1000,
+    "solver_device_transfers": 0,
+    "artifacts": {
+      "summary_sha256": "f2a6a412787ec76c7ad9a9df7c397ae872c93c7264feb3ca263373b01cda3990",
+      "bounds_sha256": "f7be2bc290dd9e45718ce89cb2747867f4f4ac4c587972a0252ed6fbb26f11c9",
+      "artifact_manifest_sha256": "f0ac370016daa715bfeb15631ef1d0959a3cd61450c72afd81da09adc712c0f0"
+    }
+  },
+  "cuda_short": {
+    "batch": 64,
+    "horizon": 0.1,
+    "completed": true,
+    "cpu_cuda_outputs": "bit_exact",
+    "cold_s": 1.5522828688845038,
+    "warm_s": 1.291975948959589,
+    "peak_memory_bytes": 23068672,
+    "explicit_reporting_device_transfers": 7,
+    "summary_sha256": "20e44d02ca450ec3e9ed27a53bc6515a229d03d1838c80bc13594dd715ebc66a"
+  },
+  "exact_rational_replay": {
+    "arithmetic": "fractions.Fraction exact rational interval endpoints",
+    "cpu_cuda_equal": true,
+    "initial_and_all_round_masks_equal": true,
+    "ordinary_binary64_directly_qualified": false,
+    "max_outward_ulps_needed": 2,
+    "replay_envelope_qualified": true,
+    "ordinary_lane_classification": "empirically sampled only",
+    "replay_envelope_classification": "independently outward replayed for exact benchmark workload",
+    "scope": "one exact rational VDP segment; not universal GPU directed rounding",
+    "cpu_report_sha256": "5d49725a7b9978ec74f4b3fde92967f7df5d822036680677aff79d17c3ffc474",
+    "cuda_report_sha256": "e76ad2a42c49086a0ade49d12d4fde69a5a04995a1b0fe769eb6fd2f14df793d"
+  },
+  "tests": {
+    "fixed_support_and_fraction_replay": {"passed": 15, "failed": 0},
+    "fixed_support_plus_related_dense": {"passed": 43, "failed": 0}
+  },
+  "implementation_mismatch": false,
+  "runtime_dependency_on_external_repositories": false
+}
