@@ -1,5 +1,36 @@
 # Status
 
+## Latest S1 prefix-integration round
+
+Date: 2026-08-10
+Decision: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`
+
+The complete-O4 S1 contract, tensor-native additive ledger, independent
+degree-four Fraction oracle, K16 accepted-boundary integration, endpoint/tube
+publication, event ownership, and exact checkpoint v2 are implemented and
+tested. L0 reproduces all 307 historical accepted boundaries and the terminal
+rejection exactly. L1 and L2 pass every representation gate on the same first
+164 boundaries, through `t=4.738198114669049`. At proposed boundary 164,
+historical `h=0.03661680691961388` was accepted, while both new-plumbing lanes
+first reject and can only accept an off-schedule half step. That half-step
+poststate is discarded and its pre/post recorded hash is identical.
+
+| gate | status | evidence |
+|---|---|---|
+| complete-O4 coupling and oracle | pass | `02_coupling_contract_oracles/oracle_results.json` |
+| typed source schema | pass | `03_typed_ledger_fixtures/focused_results.json` |
+| L0 historical replay | pass, 307 boundaries | `04_frozen_schedule_prefix/L0_historical_baseline/summary.json` |
+| L2 conservation/publication | pass on common prefix, 164 boundaries | `prefix_conservation.csv` |
+| checkpoint v2 | pass, byte exact at boundary 164 | `05_prefix_checkpoints/checkpoint_roundtrip.json` |
+| terminal same-pre-state A/B | `not_run_after_stop` | `terminal_gate.json` |
+| fresh horizon and second system | `not_run_after_stop` | `horizon_ladder.csv`, `second_system.csv` |
+
+The fresh validated horizon is not defined because that experiment was not
+authorized. The measured frozen-schedule S1 common-prefix time is
+`4.738198114669049`; it is not a promoted fresh horizon. K32 is not authorized.
+
+The remainder of this file records the preceding closure round.
+
 Date: 2026-08-10
 Round: structured remainder and compiled fixed-support closure
 Decision: closure delivered with three explicit implemented-negative outcomes

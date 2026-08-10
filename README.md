@@ -12,7 +12,7 @@ points rather than treating one ambiguous `order` as a common algorithm:
   lane and a Flow*-like complete-total-degree lane.
 
 The active branch is
-`codex/structured-remainder-compiled-fixed-support-closure-20260810`. The frozen
+`codex/s1-prefix-integrated-complete-o4-closure-20260810`. The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
 Adaptive DEF-CERT, obsolete winner/Pareto tables, and prior TORA-specific
 comparisons remain historical or rejected.
@@ -51,15 +51,19 @@ roundoff scale, but the raw candidate Picard remainder already makes Flow*'s y
 subset fail while Torch passes. Polynomial, endpoint, and right-map swaps
 preserve the receiving validator's decision.
 
-The new bounded structured-remainder primitive S1 has K=16, outward interval
-J/Phi propagation, explicit nonlinear residuals, deterministic oldest-column
-materialization, and additive typed dense sources. At the frozen terminal, an
-empty-history split closes the local ordinary check while conserving the full
-image, but the checkpoint has no S1 prefix state. The required same-pre-state
-A/B is therefore incomplete, the result is
-`STRUCTURED_REMAINDER_LOCAL_GATE_FAILED`, and no fresh horizon was run. The
-harmonic and scalar Riccati fixed-support fallback generality gate passes on
-CPU/V100 B1/B64 for 100 steps.
+The bounded structured-remainder candidate S1 is now a real opt-in
+complete-O4 lane from `t=0`: K=16 state is owned by the normalized flowpipe,
+typed dense sources feed accepted boundaries directly, complete degree-four
+endpoint and tube sensitivities use safeguarded outward arithmetic, every
+insertion/eviction has a unique source ledger, and schema-v2 checkpoints store
+the full state exactly. On the frozen historical schedule, all conservation,
+ownership, finiteness, and publication gates pass through boundary 164 at
+`t=4.738198114669049`. The next historical step
+`h=0.03661680691961388` is rejected by S1 (raw-compatible y margin
+`-3.773875528686747e-6`) although the historical baseline accepted it. The
+primary outcome is therefore `S1_PREFIX_REJECTS_BEFORE_TERMINAL`. The
+historical terminal A/B, fresh horizon ladder, and integrated second-system
+gate were not authorized.
 
 Start with:
 
@@ -72,6 +76,8 @@ Start with:
 - [compiled fixed core](docs/FIXED_SUPPORT_COMPILED_CORE_20260810.md);
 - [fixed soundness](docs/FIXED_SUPPORT_SOUNDNESS_20260810.md);
 - [structured S1 result](docs/STRUCTURED_REMAINDER_RESULT_20260810.md);
+- [S1 complete-O4 prefix result](docs/S1_PREFIX_INTEGRATION_RESULT_20260810.md);
+- [S1 terminal causal gate](docs/S1_TERMINAL_CAUSAL_GATE_20260810.md);
 - [second-system generality](docs/SECOND_SYSTEM_GENERALITY_20260810.md);
 - [handoff](handoff.md).
 
@@ -114,3 +120,9 @@ The current closure package is the
 It keeps sanitized public raw evidence separate from derived tables and
 figures; ignored compiler caches and source-mixed exploratory timings are not
 part of the manifest.
+
+The current prefix-integration package is
+[S1 complete-O4 run](outputs/s1_prefix_integrated_complete_o4_20260810/20260810T095423Z/).
+Its tables distinguish the sound 164-boundary common prefix from the discarded
+off-schedule half-step and mark every prohibited later experiment explicitly
+as `not_run_after_stop`.

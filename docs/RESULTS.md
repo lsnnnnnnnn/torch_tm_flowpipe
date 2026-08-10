@@ -1,5 +1,38 @@
 # Results
 
+## S1 prefix-integrated complete-O4 result
+
+The primary result of the current round is
+`S1_PREFIX_REJECTS_BEFORE_TERMINAL`. The three observation-controlled lanes
+use the checksum-verified 307-step historical schedule:
+
+| lane | longest matching accepted prefix | time | first divergence |
+|---|---:|---:|---|
+| L0 historical baseline | 307 | 6.397083942944808 | none; terminal rejection also matches |
+| L1 materialize every boundary | 164 | 4.738198114669049 | frozen proposed step rejected, half-step accepted off schedule |
+| L2 structured K16 | 164 | 4.738198114669049 | same causal divergence as L1 |
+
+L2 first fills K16 at boundary 16 and first evicts at boundary 17. The largest
+single observed eviction contribution has maximum component width
+`0.001549673642858923` at boundary 70. Across all 164 committed boundaries,
+source decomposition, materialization conservation, unique ownership,
+finiteness, normalized-domain containment, and endpoint/tube publication pass.
+The boundary-164 checkpoint round-trips byte-for-byte with full checkpoint SHA
+`9162f267fcdcf44ca7bb9acfa73975eb8f4f4b80c03ca217aac2f07450cd585b`.
+
+From that exact prestate, the historical proposed
+`h=0.03661680691961388` produces an S1 raw-compatible y subset margin of
+`-3.773875528686747e-6`; it is rejected once and the adaptive helper returns
+the half step. The half-step state is explicitly not part of the frozen prefix.
+Because the historical terminal prestate was not reached, terminal A/B, the
+fresh horizon ladder, +0.5 promotion, T10, and integrated second-system gates
+are all `not_run_after_stop`, not negative numerical runs.
+
+Current machine evidence:
+`outputs/s1_prefix_integrated_complete_o4_20260810/20260810T095423Z`.
+
+The remainder of this file records the preceding closure results.
+
 Date: 2026-08-10
 Canonical run: `outputs/mainline_realignment_20260810/20260810T025910Z`
 

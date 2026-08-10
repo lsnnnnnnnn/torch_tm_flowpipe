@@ -42,11 +42,15 @@ more remainder rounds, higher order, smaller step alone, and range-midpoint
 centering as the primary contribution.  Evidence selection must first compare
 rejected candidates and right-map parents in a common coordinate basis.
 
-Complete polynomial normalized carry was tested and rejected. The delivered
-next candidate is bounded structured overflow carry S1, but only its primitive
-and local attribution gates pass. Its next eligible operation is integration
-through the complete accepted prefix and a frozen same-pre-state terminal
-replay. Fresh horizon work remains prohibited until that gate passes.
+Complete polynomial normalized carry was tested and rejected. Bounded
+structured overflow carry S1 has now been integrated through the production
+complete-O4 boundary with a full typed ledger, complete nonlinear endpoint/tube
+image, K16 ownership, and exact checkpointing. It remains a sound negative
+candidate: the observation-controlled prefix stops at boundary 164, before the
+historical terminal prestate. Fresh horizon work therefore remains prohibited.
+The next representation decision should address why both the structured and
+materialize-every-boundary plumbing reject the same frozen proposed step; do
+not tune h, target, K, or multiple factors around the stop gate.
 
 The fixed-support performance line must first preserve eager reduction order
 or add a qualified outward eager shadow around Inductor reductions. Raw runtime
