@@ -473,6 +473,62 @@ def replay_lane(
             if not schedule_match:
                 row["poststate_sha256"] = pre_hash
                 row["frozen_proposed_step_decision"] = "rejected"
+                if structured_lane:
+                    _write_snapshot(
+                        snapshots,
+                        int(frozen["accepted_boundary_index_before"]),
+                        current,
+                        normal_state,
+                        reason="first_divergence_prestate",
+                    )
+                if lane == "L2":
+                    checkpoint_dir = output_dir / "final_common_prefix_checkpoint_v2"
+                    terminal_checkpoint_manifest = save_terminal_checkpoint(
+                        checkpoint_dir,
+                        current=current,
+                        normal_state=normal_state,
+                        scheduler={
+                            "current_time": frozen["t_before"]["value"],
+                            "h_next": frozen["h_attempted"]["value"],
+                            "h_attempted": frozen["h_attempted"]["value"],
+                            "accepted_segment_count": int(frozen["accepted_boundary_index_before"]),
+                            "previous_rejection_count": sum(int(item["actual_rejections"]) for item in rows),
+                            "stop_reason": "first_frozen_proposed_step_rejection",
+                        },
+                        contract=CONTRACT,
+                        provenance=provenance,
+                    )
+                    loaded = load_terminal_checkpoint(
+                        checkpoint_dir,
+                        expected_contract=CONTRACT,
+                        expected_order=4,
+                        expected_dtype="float64",
+                    )
+                    roundtrip_dir = output_dir / "final_common_prefix_checkpoint_v2_roundtrip"
+                    roundtrip_manifest = save_terminal_checkpoint(
+                        roundtrip_dir,
+                        current=loaded.current,
+                        normal_state=loaded.normal_state,
+                        scheduler=loaded.scheduler,
+                        contract=loaded.contract,
+                        provenance=loaded.provenance,
+                    )
+                    byte_stable = all(
+                        (checkpoint_dir / name).read_bytes() == (roundtrip_dir / name).read_bytes()
+                        for name in ("terminal_state.json", "terminal_state_manifest.json")
+                    )
+                    _atomic_json(
+                        output_dir / "checkpoint_roundtrip.json",
+                        {
+                            "checkpoint_role": "final_common_frozen_prefix_prestate",
+                            "accepted_boundary_index": int(frozen["accepted_boundary_index_before"]),
+                            "byte_stable": byte_stable,
+                            "first_full_sha256": terminal_checkpoint_manifest["full_checkpoint_sha256"],
+                            "second_full_sha256": roundtrip_manifest["full_checkpoint_sha256"],
+                        },
+                    )
+                    if not byte_stable:
+                        raise RuntimeError("final common-prefix v2 checkpoint did not round-trip exactly")
                 rows.append(row)
                 _append_jsonl(ledger_handle, row)
                 divergence = {
