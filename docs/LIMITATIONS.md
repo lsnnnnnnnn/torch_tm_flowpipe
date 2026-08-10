@@ -1,34 +1,31 @@
 # Limitations
 
-- Float64 Torch and JAX computations are not formal real-arithmetic proofs.
-- Sampling-based nonlinear trajectory containment is a deterministic
-  regression sanity check, not proof-grade enclosure evidence.
-- Flowstar is the external interval/Taylor-model reference; the local patch
-  worktree is explicitly versioned and is not described as stock upstream.
-- Native order numbers do not imply matched basis, validation, reset, or
-  arithmetic across tools.
-- Tightened and raw endpoints are intentionally not mixed.
-- Configuration-level peak memory is unavailable; long-lived-process
-  `ru_maxrss` is not used.
-- The Apple Silicon formal environment has no NVIDIA CUDA device. CUDA checks
-  must carry an explicit skip reason and are not merged with historical Linux
-  timing.
-- The supported formal runner covers the versioned selected practical
-  configurations. Historical diagnostic matrices remain recoverable from
-  archive tags but are not headline results.
-- The dense flowpipe is hybrid: normalized insertion and cross-step right-map
-  composition remain sparse/CPU boundary work. It is S3, not full-dense S5.
-- Natural range still stops the authoritative VDP order-4 lane at
-  T=6.3172908799330765. The validated four-leaf terminal fix closes that step,
-  but the final proactive fresh lane stops at T=6.397083942944808 with y
-  self-map margin `-1.99995911680722e-5`; T=7.5 and T=10 remain unclosed.
-- Subdivision uses safeguarded float64 arithmetic and complete-cover tests, not
-  a machine-checked hardware-independent directed-rounding proof. Sampling is
-  only an independent sanity check.
-- The production policy is intentionally limited to four leaves on the
-  attributed `polynomial_truncation` context. Frozen depths through the 64-leaf
-  cap do not improve the later terminal, and no second policy adjustment or
-  reduced h_min was used.
-- CUDA correctness is exercised, but batch-1 CUDA is slower and only multiply
-  wins at batch 128 in the recorded V100 microbenchmark. No end-to-end GPU or
-  cross-tool speedup is claimed.
+- Native rows use different representations, partitions, validators, step and
+  carry policies, output objects, and numerical backends. They are not a winner
+  table.
+- The pinned stock Flow* VDP completes, but a clean scalar-affine MPFR oracle
+  finds under-enclosure up to `3.4938679727147814e-10`; that build is
+  `unsound/ineligible` for the primary formal comparison.
+- Stock DiffReach exposes initial DR-RP masks but not every later retain mask in
+  its public result. It also mixes default float32 builders with JAX x64.
+- Ordinary Torch/JAX/CUDA float64 is not universally directed-rounded. The
+  fixed-support 2-ULP companion qualification applies only to the exactly
+  replayed workload.
+- Sampling is a regression sanity check, never a proof.
+- The complete Torch baseline is hybrid: dense Picard/range/validation with
+  sparse CPU normalized insertion and outer scheduling. It stops at
+  `6.397083942944808`; T10 is partial.
+- The complete-carry candidate is an experimental non-default lane. It is sound
+  as an exact set-preserving clone but stops at `0.04345468750000001` and does
+  not preserve the previously passing T=.1 certificate.
+- The candidate's dense carry primitive is batch-generic through B512, but the
+  adaptive multi-step complete scheduler remains B1. Batch figures state this
+  kernel boundary and are not multi-step certificates.
+- Host inclusion gates and audit extraction synchronize CUDA. The measured V100
+  is slower at every tested batch; no GPU advantage is claimed.
+- Flow* observer replays are diagnostic counterfactuals, not production
+  dependencies or modified native results.
+- Endpoint, last-segment tube, and full-horizon/prefix tube are kept separate.
+  Missing stock objects are `UNAVAILABLE`, never fabricated.
+- TORA complete-Q3 is frozen historical stress-test evidence. No TORA-specific
+  controller, formula, or support enters the generic source modules.

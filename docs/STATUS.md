@@ -1,84 +1,36 @@
 # Status
 
-## VDP terminal polynomial-range closure (2026-08-05)
+Date: 2026-08-10
+Round: Flow*/DiffReach/Torch mainline realignment
+Decision: complete, with `CANDIDATE_REJECTED` and explicit soundness blockers
 
-Branch `codex/vdp-terminal-range-closure-20260805`, implementation commits
-`24bd652` and `0360842`, advances the prior S3 dense
-backend through R4. A canonical frozen terminal checkpoint replays the natural
-failure exactly, and a validated batched subdivision evaluator closes the
-original `t=6.3172908799330765` step at the unchanged h. The production
-`polynomial_truncation` depth-1 policy then reaches a fresh validated horizon
-of `6.397083942944808`, strictly beyond the historical
-`6.390931109681597` diagnostic boundary.
+## Gates
 
-T=6.5, T=7.5, and T=10 requests all independently stop at that same later
-state with y self-map margin `-1.99995911680722e-5`. The 64-leaf frozen replay
-does not improve it. Current status is therefore R4, not T=10 closure or R7.
-All authoritative runs retain order 4, the original ODE/remainder/cutoff/step
-and validation contracts, `hybrid_dense_core`, zero fallback, zero repair, and
-zero sample violations. Final tests are 400 passed and 2 skipped, including
-three CUDA subdivision tests. See
-[`VDP_TERMINAL_RANGE_CLOSURE.md`](VDP_TERMINAL_RANGE_CLOSURE.md).
+| gate | status | evidence |
+|---|---|---|
+| direction correction | pass | Xiangru audit, TORA frozen reference, three-lane research contract |
+| native baselines | pass | stock Flow* T10, stock DiffReach T10, Torch complete-O4 failure boundary |
+| fixed-support Torch code | pass | configurable seven-slot descriptor, routes, Picard/DR-RP/carry, CPU/CUDA |
+| causal audit | pass | observation-only Flow* hook, common-basis transform, six counterfactuals |
+| generic improvement | pass as negative result | complete polynomial carry implemented; formal ladder and fresh T10; rejected |
+| performance/soundness | pass | actual-partition B1…512 CPU/V100, 1 cold + 5 warm, explicit classes |
+| delivery | pending final audit | final pytest/checksums/push recorded in handoff after execution |
 
-## Generic batched dense TM backend (2026-08-04/05)
+## Scientific status
 
-Branch `codex/generic-batched-tm-backend-vdp-t10-20260805` reaches S3
-(`dense_multistep_integrated`). The canonical dense module now performs true
-local-time Picard and remainder self-map validation; final pytest is 343 passed,
-2 skipped, including CUDA true-Picard parity. Dense/sparse short-horizon
-schedules are exact through T=1 and shared ranges agree within `6.67e-16`. The
-authoritative VDP T=10 request naturally stops at
-T=6.3172908799330765 with `minimum_step_reached`; a single range-midpoint
-diagnostic reaches 6.390931109681597 but also fails. See
-[`VDP_T10_DENSE_BACKEND_CLOSURE.md`](VDP_T10_DENSE_BACKEND_CLOSURE.md).
+- Fixed-support RQ1: qualified at explicit float64 operator level; full stock
+  driver differs slightly because several upstream builders remain float32.
+- Complete-support baseline: validates through
+  `6.397083942944808`, then fails y inclusion with margin
+  `-1.99995911680722e-5`.
+- First native Flow*/Torch split: raw candidate Picard remainder at the first
+  divergent h, not transformed polynomial coefficients or roundoff.
+- F1 complete carry: sound, exact, generic primitive; fails at
+  `0.04345468750000001`; rejected and non-default.
+- GPU: no measured end-to-end or kernel speedup after synchronization and
+  validation accounting; no speed or Pareto claim.
 
-The status below is the earlier scalar-affine/native-reproduction closure and
-remains historical context.
-
-Current branch: `codex/flowstar-scalar-affine-correctness-closure-20260804`, based
-on the verified native-reproduction tip
-`438ee68fd71fa6182eb66cac17229e20dd3cb7d3`.  The launch document appended an
-extra `f` to this 40-character remote tip; the resolved ancestry is recorded in
-the closure start state.  The native evidence run is
-`outputs/native_reproduction_no_adapters/20260804T081205Z`; the scalar-affine
-closure run is
-`outputs/flowstar_scalar_affine_correctness_closure/20260804T131445Z`.
-
-The native reproduction phase is complete:
-
-- Xiangru CROWN-Reach/Flow* B12 TORA is `reproduced_exact` at T=20;
-- Xiangru complete-Q3 B48 is `reproduced_with_declared_tolerance` at T=20;
-- Xiangru DiffReach CPU failed behavior is byte-exact; its GPU path has an
-  `environment_failed` cuDNN float64 convolution backend error before step one on
-  the available V100, not a native algorithm rejection;
-- historical B12/B24 Q3 references remain `source_identity_unknown` because the
-  saved source was dirty without a patch;
-- clean stock Flow* official VDP and upstream DiffReach official VDP complete T=10,
-  with no upstream raw reference artifact;
-- our exact order-4 Torch command does not reach T=10 and does not reproduce the
-  prior natural failure boundary: the two adaptive lanes hit their 300-second wall
-  caps at T=5.904687 and T=6.049038, classified `runtime_timeout` rather than a
-  mathematical solver rejection.
-
-No adapter, rewritten ODE, generated harness or endpoint repair is counted as a
-native reproduction. The clean-stock scalar-affine diagnosis stays in the
-separate diagnostic registry. Its generated observer first loses strict analytic
-containment at accepted remainder refinement 2 in unmodified
-`Continuous.cpp:1013-1029`; the official public-API route also under-encloses at
-its accepted right time. Outcome F is complete, but the Flow* correctness gate is
-open and primary comparison eligibility remains false. See
-[`FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md`](FLOWSTAR_SCALAR_AFFINE_CORRECTNESS_CLOSURE.md).
-
-Xiangru's external PyTorch Taylor-model implementation is identified and audited
-as the complete-Q3 implementation at clean `27d29050...`.  Its surrounding
-NNCS/controller path remains outside this repository's plant-only numerical core.
-
-The pre-change baseline was `283 passed, 2 skipped`; final validation is
-`299 passed, 2 skipped`. The two skips are optional external backend tests whose
-`FLOWSTAR_ROOT` and `DIFFREACH_ROOT` variables are deliberately not configured;
-the clean GCC 11 scalar binaries were compiled and run separately. Xiangru
-exact-27d full pytest
-executes with 111 passed, 4 skipped and one missing-historical-artifact failure;
-the absent ignored `run.json` is not fabricated. Registry validation passes for
-11 native and two diagnostic rows, all 401 prior native-run checksums verify, and
-the scalar closure manifest verifies; see the run evidence for command records.
+The next research operation is a bounded structured-symbol carry for the
+terminal integration-overflow and polynomial-truncation terms, with
+deterministic sound collapse and a frozen-prestate paired replay before any
+horizon sweep.
