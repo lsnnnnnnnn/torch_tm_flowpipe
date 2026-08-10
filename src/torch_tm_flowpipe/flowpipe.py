@@ -388,6 +388,37 @@ def _tm_max_degree(tm: TMVector) -> int:
     return max((sum(exp) for model in tm for exp in model.polynomial.terms), default=0)
 
 
+def preserve_complete_polynomial_carry(endpoint: Any) -> Any:
+    """Clone a validated endpoint without intervalizing retained terms.
+
+    This is the single operation changed by the experimental complete-carry
+    lane.  Sparse ``TMVector`` inputs cover the current adaptive runner.  Dense
+    ``BatchedTaylorModel`` inputs preserve the full ``[B, state, slot]`` tensor,
+    including per-batch domains, remainders, and ledger entries, so the carry
+    primitive itself is independent of batch size and device.  Endpoint-time
+    substitution must already have happened; this function deliberately does
+    not reinterpret coordinates or perform a range reduction.
+    """
+    if isinstance(endpoint, TMVector):
+        if not endpoint:
+            raise ValueError("complete polynomial carry requires a non-empty endpoint")
+        if not intervals_are_finite(endpoint.range_box()):
+            raise ValueError("complete polynomial carry rejects a non-finite endpoint")
+        return TMVector(model.clone() for model in endpoint)
+
+    # Import lazily to keep the sparse reference path free of a dense-module
+    # import cycle and to preserve the package's protocol-only import behavior.
+    from .batched_dense_tm import BatchedTaylorModel
+
+    if isinstance(endpoint, BatchedTaylorModel):
+        if endpoint.poly.batch <= 0 or endpoint.poly.out_dim <= 0:
+            raise ValueError("complete polynomial carry requires non-empty batch and state axes")
+        if not endpoint.is_finite():
+            raise ValueError("complete polynomial carry rejects a non-finite endpoint")
+        return endpoint.clone()
+    raise TypeError("complete polynomial carry requires TMVector or BatchedTaylorModel")
+
+
 def _add_term_hash_metrics(row: dict[str, Any], prefix: str, tm: TMVector, output_order: int | None) -> None:
     row[f"{prefix}_terms_hash"] = _tm_terms_hash(tm)
     row[f"{prefix}_term_count"] = sum(len(model.polynomial.terms) for model in tm)
@@ -1550,11 +1581,7 @@ def _flowstar_normalized_insertion_transition(
         if not symbolic_queue_split:
             initial_remainders = tuple(model.remainder for model in reset_tm)
         diagnostics.update(queue_stats)
-    complete_initial_tm = (
-        TMVector(model.clone() for model in seg.final_tm)
-        if complete_polynomial_carry
-        else None
-    )
+    complete_initial_tm = preserve_complete_polynomial_carry(seg.final_tm) if complete_polynomial_carry else None
     if complete_initial_tm is not None:
         reset_tm = TMVector(model.clone() for model in complete_initial_tm)
         reset_box = reset_tm.range_box()

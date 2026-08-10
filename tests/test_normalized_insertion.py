@@ -1,10 +1,17 @@
 import itertools
 
+import pytest
+import torch
+
 from torch_tm_flowpipe import (
+    BatchedMonomialBasis,
+    BatchedPolynomial,
+    BatchedTaylorModel,
     FlowstarNormalFlowpipeState,
     Interval,
     TaylorModel,
     TMVector,
+    preserve_complete_polynomial_carry,
     flowpipe_step_flowstar_style_adaptive,
     insert_ctrunc_normal_horner_diagnostic,
     insert_ctrunc_normal_like,
@@ -194,6 +201,46 @@ def test_complete_polynomial_carry_preserves_generic_correlated_model_and_clones
     assert diagnostics["complete_polynomial_carry"] is True
     assert diagnostics["complete_carry_max_degree"] == 2
     assert diagnostics["complete_carry_retained_terms"] == 6
+
+
+@pytest.mark.parametrize("batch", [1, 8, 64])
+def test_complete_polynomial_carry_is_batch_generic_and_permutation_equivariant(batch):
+    basis = BatchedMonomialBasis.build(3, 4, "cpu")
+    coeffs = torch.zeros((batch, 2, basis.num_terms), dtype=torch.float64)
+    row = torch.arange(batch, dtype=torch.float64)
+    coeffs[:, 0, basis.constant_index] = 1.0 + row / 100.0
+    coeffs[:, 1, basis.constant_index] = 2.0 - row / 200.0
+    coeffs[:, 0, basis.term_index((1, 0, 0))] = 0.25 + row / 1000.0
+    coeffs[:, 1, basis.term_index((1, 1, 0))] = -0.125 - row / 2000.0
+    rem_lo = torch.stack((-1e-8 - row * 1e-11, -2e-8 - row * 2e-11), dim=1)
+    rem_hi = torch.stack((2e-8 + row * 1e-11, 3e-8 + row * 2e-11), dim=1)
+    domain_lo = torch.stack((-torch.ones_like(row), -0.9 * torch.ones_like(row), torch.zeros_like(row)), dim=1)
+    domain_hi = torch.stack((torch.ones_like(row), (0.9 + row / 10000.0), 0.01 + row / 100000.0), dim=1)
+    endpoint = BatchedTaylorModel(
+        BatchedPolynomial(coeffs, basis), rem_lo, rem_hi, domain_lo, domain_hi
+    )
+
+    carried = preserve_complete_polynomial_carry(endpoint)
+    assert carried is not endpoint
+    assert carried.poly.coeffs.data_ptr() != endpoint.poly.coeffs.data_ptr()
+    for actual, expected in zip(
+        (carried.poly.coeffs, carried.rem_lo, carried.rem_hi, carried.domain_lo, carried.domain_hi),
+        (endpoint.poly.coeffs, endpoint.rem_lo, endpoint.rem_hi, endpoint.domain_lo, endpoint.domain_hi),
+    ):
+        assert torch.equal(actual, expected)
+
+    permutation = torch.arange(batch - 1, -1, -1)
+    permuted_endpoint = BatchedTaylorModel(
+        BatchedPolynomial(endpoint.poly.coeffs[permutation], basis),
+        endpoint.rem_lo[permutation],
+        endpoint.rem_hi[permutation],
+        endpoint.domain_lo[permutation],
+        endpoint.domain_hi[permutation],
+    )
+    permuted_carry = preserve_complete_polynomial_carry(permuted_endpoint)
+    assert torch.equal(permuted_carry.poly.coeffs, carried.poly.coeffs[permutation])
+    assert torch.equal(permuted_carry.rem_lo, carried.rem_lo[permutation])
+    assert torch.equal(permuted_carry.rem_hi, carried.rem_hi[permutation])
 
 
 def test_default_flowstar_style_adaptive_reset_is_unchanged():

@@ -67,6 +67,7 @@ _PUBLIC_MODULES = {
     "flowpipe_step": ".flowpipe",
     "flowpipe_step_flowstar_style_adaptive": ".flowpipe",
     "flowpipe_step_from_tm": ".flowpipe",
+    "preserve_complete_polynomial_carry": ".flowpipe",
     "insert_ctrunc_normal_horner_diagnostic": ".flowpipe",
     "insert_ctrunc_normal_like": ".flowpipe",
     "Interval": ".interval",
