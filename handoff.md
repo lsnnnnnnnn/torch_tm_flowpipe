@@ -55,7 +55,8 @@ polynomial carry, range ordering, smaller h, or a benchmark-specific formula.
 ## Final verification
 
 - pre-change baseline: `441 passed, 2 skipped in 60.12 s`;
-- final full suite: `469 passed, 2 skipped in 72.85 s`;
+- final full suite: `469 passed, 2 skipped in 60.87 s` (an immediately prior
+  identical pass took `72.85 s`);
 - focused package/carry/common-basis gate: `21 passed`, plus package prefix
   regression `3 passed`;
 - `python -m compileall -q src experiments tests`: pass;

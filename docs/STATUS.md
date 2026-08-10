@@ -35,7 +35,7 @@ terminal integration-overflow and polynomial-truncation terms, with
 deterministic sound collapse and a frozen-prestate paired replay before any
 horizon sweep.
 
-Final local validation is `469 passed, 2 skipped in 72.85 s`; the two skips are
+Final local validation is `469 passed, 2 skipped in 60.87 s`; the two skips are
 the declared optional external-integration tests. `compileall` and
 `git diff --check` pass. The generated result package contains all 11 required
 machine files and eight figures; its repository-root checksum command is the
