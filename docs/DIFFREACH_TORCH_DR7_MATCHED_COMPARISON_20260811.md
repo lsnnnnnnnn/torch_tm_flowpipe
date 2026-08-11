@@ -4,22 +4,26 @@ Date: 2026-08-11
 
 ## Outcome
 
-Pairwise outcome: `VALID_PAIRWISE_COMPARISON_CLOSED`.
+Operator outcome: `DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`.
+
+Full-horizon outcome: `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
 
 ## Eligibility
 
-Explicit-f64 operator equivalence is eligible; stock mixed-builder-dtype and
-ordinary multi-step float64 soundness retain their qualifications.
+Explicit-f64 one-step operator equivalence is eligible. The stock
+mixed-builder-dtype row and Torch's separate multi-step row retain their
+qualifications and do not close a cross-tool 1,000-step comparison.
 
 ## What is comparable
 
 DR7 support, two Picard constructions, ten DR-RP rounds, masks, retained
-intervals, endpoint/tube, and J/Phi carry in the explicit-f64 fixture.
+intervals, and one-step endpoint/tube in the explicit-f64 fixture.
 
 ## What is unavailable
 
-Stock full-step tubes, stock later masks, bitwise stock/full-driver identity,
-and a matched cross-framework timing ratio.
+Cross-tool per-step retained state, later masks, normalized parameterization,
+J/Phi state, endpoint/tube sequence through 1,000 steps, and a matched
+cross-framework timing ratio.
 
 ## Negative results
 
@@ -47,10 +51,11 @@ The frozen fixture SHA256 is
 It compares both polynomial Picard constructions, the initial inclusion mask,
 all ten DR-RP masks and accepted lo/hi arrays, retained coefficients, endpoint,
 and full-step tube.  The package recreates these fields with the pinned JAX
-operators while forcing float64 at every builder.  Normalization and symbolic
-J/Phi carry are covered by the separate R7 object/functional regression, not
-claimed as fields of this JSON fixture.  The current R7 object regression is
-bit-exact after adding the generic R35 descriptor.
+operators while forcing float64 at every builder. Normalization and symbolic
+J/Phi carry are covered only by a Torch-object versus Torch-functional self
+regression, not by DiffReach-versus-Torch evidence. The current R7 self
+regression is bit-exact after adding the generic R35 descriptor, but it cannot
+satisfy a cross-tool gate.
 
 ## Full-driver boundary
 
@@ -82,4 +87,5 @@ ordinary run and is not a universal GPU rounding proof.
 Stock DiffReach reports JAX warmup/compile and after-JIT timings; Torch's
 historical CPU T10 timing included separate verification load.  They do not
 form a matched one-cold/ten-warm measurement, so no speed ratio is emitted.
-The semantic comparison is closed independently of performance eligibility.
+The one-step operator comparison is closed independently of performance
+eligibility. Full-horizon semantic comparison remains pending.

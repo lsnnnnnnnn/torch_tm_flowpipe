@@ -18,9 +18,12 @@ Claim status, source paths/hashes, command exit, scope, and limitations.
 
 ## What is unavailable
 
-The historical package has no final-HEAD clone pass.  This round's claim is
-eligible only when derived from the final remote SHA evidence under
-`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/14_fresh_clone/`.
+The historical package is absent from the Git tree at `2cb647cd...`. Its
+server-local `14_fresh_clone/` directory was produced with every command
+running at the packager's `ROOT`; the builder itself did not clone `origin`
+into a new `mktemp -d` directory. Those rows are source-worktree checks, not a
+true-clone claim. A new package is eligible only after separate H1/H2/H3
+remote-clone gates.
 
 ## Negative results
 
@@ -29,7 +32,8 @@ Missing sources produce `not_run`/`unknown`; SHA mismatch produces `fail`.
 ## Exact evidence paths
 
 `src/torch_tm_flowpipe/evidence_verification.py`, focused integrity tests, and
-`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/verification.json`.
+the tracked package produced by the full-horizon closure round. The ignored
+`20260811T100304Z` path is not currently a Git-tree evidence path.
 
 This document corrects claim provenance without rewriting the immutable S1
 evidence run at

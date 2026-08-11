@@ -1,5 +1,17 @@
 schema: torch_tm_flowpipe_vdp_three_lane_contract_v2
 date: 2026-08-11
+outcome_registry_before_full_horizon_closure:
+  evidence_package_status: EVIDENCE_PACKAGE_MISSING_STOP
+  raw_remainder_root_cause_status: RAW_REMAINDER_ROOT_CAUSE_CLOSED
+  flowstar_torch_fixed_schedule_status: FLOWSTAR_TORCH_NATIVE_FULL_HORIZON_PAIRWISE_PARTIAL
+  diffreach_torch_operator_status: DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED
+  diffreach_torch_full_horizon_status: DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING
+  carry_semantics_status: CARRY_ROOT_CAUSE_MIXED_OR_UNRESOLVED
+  single_fix_status: NO_FIX_AUTHORIZED
+  performance_status: MATCHED_WORKLOAD_TIMING_UNAVAILABLE
+  tightness_status: TIGHTNESS_COMPARISON_UNAVAILABLE
+  formal_scope: no_new_formal_cross_tool_claim
+  empirical_scope: one_step_operator_and_separate_native_capability_only
 identity_canonicalization:
   implementation: src/torch_tm_flowpipe/comparison_contract.py
   rule: UTF-8 JSON, sorted keys, compact separators, ensure_ascii, one trailing LF

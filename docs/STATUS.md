@@ -12,7 +12,10 @@ Decisions:
 - fixed-support bridge: `FIXED_SUPPORT_BRIDGE_BLOCKED`; G2/T1 passes in every
   A0--A4 B1/B64 cell, while G3 fails for A0/B1 and A4/B1/B64;
 - Flow*/Torch O4: `PAIRWISE_COMPARISON_PARTIAL`;
-- DiffReach/Torch DR7: `VALID_PAIRWISE_COMPARISON_CLOSED`;
+- DiffReach/Torch DR7 operator:
+  `DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`;
+- DiffReach/Torch DR7 full horizon:
+  `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`;
 - improvement: `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
 
 The R35 descriptor contains all 35 total-degree-four monomials and generated

@@ -3,7 +3,9 @@
 ## Current three-tool pairwise/causal result
 
 The current outcomes are `RAW_REMAINDER_ROOT_CAUSE_CLOSED`,
-`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_BLOCKED`. Every
+`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_BLOCKED`. The
+preserved S1 outcome remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
+Every
 A0--A4 B1/B64 cell completes G2/T1, but A0/B1 stops at T=5.36 and A4/B1 and
 A4/B64 stop at T=3.19 and T=3.33 in G3. The first decision-changing node is
 Picard iteration 4 `x*x`: Flow* direct interval-coefficient multiplication
@@ -15,8 +17,10 @@ frozen contribution changes the Flow* y margin from
 Both receiving subset predicates accept the Torch candidate and reject the
 Flow* candidate, so candidate construction causes the first split and the
 different accepted schedule then changes later producer states. Flow*/Torch
-O4 is `PAIRWISE_COMPARISON_PARTIAL`; DiffReach/Torch DR7 explicit-f64 is
-`VALID_PAIRWISE_COMPARISON_CLOSED`. No transitive ranking follows.
+O4 is `PAIRWISE_COMPARISON_PARTIAL`; DiffReach/Torch DR7 explicit-f64 has
+`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED` while the 1,000-step
+cross-tool comparison is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
+No transitive ranking follows.
 
 The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`: the
 proven extra uncertainty is on the Flow* side, Torch already contains the

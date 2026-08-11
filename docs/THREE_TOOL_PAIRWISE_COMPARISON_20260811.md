@@ -54,9 +54,12 @@ differ.
   first split, expression-tree root cause, same-prestate validator matrix, and
   T1 schedule diagnostics close.  Full-horizon same-object tightness and a
   matched timing ratio remain unavailable.
-- DiffReach / Torch DR7: `VALID_PAIRWISE_COMPARISON_CLOSED`.  Explicit-f64
+- DiffReach / Torch DR7:
+  `DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED` and
+  `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`. Explicit-f64 one-step
   operator semantics are bit-exact; the stock mixed-dtype full driver remains
-  a separate native row.
+  a separate native row, and Torch self-parity does not close cross-tool J/Phi
+  carry.
 
 Diagnostic factorial and bridge rows are marked
 `diagnostic_only=true` and `formal_ranking_eligible=false`.  Pairwise closure

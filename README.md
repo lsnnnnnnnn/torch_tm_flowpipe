@@ -15,9 +15,11 @@ The latest research round closes the first Flow*/Torch raw-remainder split at
 Picard-4 `x*x` and identifies a schedule/validator interaction. Every
 R7-to-R35 A0--A4 cell reaches T1 in B1 and B64, but the required T10 extension
 is `FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4 in both partition lanes stop
-before T10. Flow*/Torch comparison is partial, DiffReach/Torch explicit-f64
-comparison is closed, and no Torch production improvement is authorized by
-the evidence. The preceding S1
+before T10. Flow*/Torch same-prestate root cause is closed while its native
+full-horizon pairwise status is partial. DiffReach/Torch has only
+`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`; its B64, 1,000-step
+cross-tool status is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
+No Torch production improvement is authorized by the evidence. The preceding S1
 result remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. Evidence-integrity
 corrections are documented in
 [`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
@@ -158,8 +160,9 @@ the causal ladder, A0--B16 ledger, component substitutions, corrected
 307-step gate, terminal rejection, independent claim fields, and explicit
 stop rows for every unauthorized later stage.
 
-The three-tool pairwise/raw-root-cause/descriptor round uses
-[the 20260811T100304Z evidence run](outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/).
-Its verification and checksum files are authoritative only after the
-final-remote-HEAD fresh-clone build completes; merely naming this run path is
-not a verification claim.
+The three-tool pairwise/raw-root-cause/descriptor round refers to the
+`20260811T100304Z` evidence run, but that ignored package is absent from the
+Git tree at `2cb647cd37b530aef12e2b627f48b9b1dcf9aa23`. A server-local copy has
+been located and is being audited for compact tracked recovery. Until that
+recovery and a true remote-clone gate are committed, merely naming the old run
+path is not a verification claim.

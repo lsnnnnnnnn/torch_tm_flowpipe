@@ -6,8 +6,11 @@ The current branch closes the raw-remainder root cause at Flow* Picard-4
 `x*x` and records `SCHEDULE_VALIDATOR_INTERACTION`. All generic R7→R35 A0--A4
 cells pass through T1 for B1/B64, but the final bridge outcome is
 `FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4/B1/B64 stop before T10.
-Flow*/Torch pairwise status is partial; DiffReach/Torch explicit-f64 status is
-closed. No universal timing or tightness winner is available.
+Flow*/Torch same-prestate root cause is closed while native full-horizon
+pairwise status is partial. DiffReach/Torch currently has only
+`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`; its B64, 1,000-step
+cross-tool status is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
+No universal timing or tightness winner is available.
 
 The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`. The
 proven decision-changing uncertainty is extra on the Flow* side, while Torch
@@ -20,11 +23,11 @@ Primary documents are `docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md`,
 `docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md`, and
 `docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md`.
 
-The final package run ID is
+The old package run ID is
 `outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`.
-Its manifest, verification record, checksum file, and final-clone command
-bundle are authoritative only when that build completes at the exact remote
-HEAD; the path alone is not a verification claim.
+It is absent from the Git tree at the prior remote tip. A server-local copy is
+under compact-recovery audit; its manifest and command bundle do not prove a
+true clone performed by the old builder.
 
 The remainder of this file is the preserved preceding S1 handoff.
 

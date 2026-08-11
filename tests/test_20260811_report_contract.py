@@ -35,4 +35,6 @@ def test_pairwise_report_forbids_transitive_ranking() -> None:
     text = (ROOT / "docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md").read_text()
     assert "does not imply `Flow* > Torch > DiffReach`" in text
     assert "PAIRWISE_COMPARISON_PARTIAL" in text
-    assert "VALID_PAIRWISE_COMPARISON_CLOSED" in text
+    assert "DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED" in text
+    assert "DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING" in text
+    assert "VALID_PAIRWISE_COMPARISON_CLOSED" not in text
