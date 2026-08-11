@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Reproduce pinned stock DiffReach VDP from a disposable clean clone."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import tempfile
+import time
+from typing import Any, Sequence
+
+
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _write(path: Path, value: Any) -> None:
+    path.write_text(
+        json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def run(args: argparse.Namespace) -> dict[str, Any]:
+    output = args.output_dir.resolve()
+    if output.exists() and any(output.iterdir()):
+        raise FileExistsError(output)
+    output.mkdir(parents=True, exist_ok=True)
+    source = args.source.resolve()
+    python = args.python.resolve()
+    with tempfile.TemporaryDirectory(prefix="diffreach-stock-vdp-") as temporary:
+        clone = Path(temporary) / "repo"
+        subprocess.run(
+            ["git", "clone", "--quiet", "--no-hardlinks", str(source), str(clone)],
+            check=True,
+        )
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=clone,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        if commit != args.source_commit:
+            raise RuntimeError("DiffReach disposable clone commit mismatch")
+        env = dict(os.environ)
+        env.update(
+            {
+                "CUDA_VISIBLE_DEVICES": args.cuda_visible_devices,
+                "JAX_ENABLE_X64": "true",
+            }
+        )
+        command = [
+            str(python),
+            "run_dyn.py",
+            "config/ct_dyn/van_der_pol.yaml",
+            "--sim",
+            "--ver",
+        ]
+        started = time.perf_counter()
+        completed = subprocess.run(
+            command,
+            cwd=clone,
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        elapsed = time.perf_counter() - started
+        (output / "diffreach.stdout.log").write_text(completed.stdout)
+        (output / "diffreach.stderr.log").write_text(completed.stderr)
+        if completed.returncode != 0:
+            raise RuntimeError("stock DiffReach execution failed")
+        native = clone / "output" / "ct_dyn" / "van_der_pol"
+        copied = []
+        for name in (
+            "flowpipe_ver.npz",
+            "trajectories_sim.npz",
+            "x1_1000_64_agg.png",
+            "x2_1000_64_agg.png",
+            "x1_x2_1000_64_agg.png",
+        ):
+            source_path = native / name
+            if not source_path.is_file():
+                raise RuntimeError(f"stock DiffReach artifact missing: {name}")
+            destination = output / name
+            shutil.copy2(source_path, destination)
+            copied.append(destination)
+    endpoint_pattern = re.compile(r"x([12])\(T\)\s*∈\s*\[([^,]+),\s*([^\]]+)\]")
+    endpoints = {
+        f"x{component}": [float(lo), float(hi)]
+        for component, lo, hi in endpoint_pattern.findall(completed.stdout)
+    }
+    timings = {
+        label.lower().replace("-", "_"): float(value)
+        for label, value in re.findall(r"\[(warmup|after-JIT)\]\s*([0-9.]+)s", completed.stdout)
+    }
+    summary = {
+        "schema": "stock_diffreach_vdp_reproduction_v1",
+        "source_commit": args.source_commit,
+        "python_executable_sha256": _sha(python),
+        "environment": {
+            "JAX_ENABLE_X64": "true",
+            "CUDA_VISIBLE_DEVICES": args.cuda_visible_devices,
+        },
+        "builder_dtype_audit": (
+            "stock model/identity/symbolic builders omit explicit dtype and "
+            "therefore remain mixed-builder-dtype despite JAX x64"
+        ),
+        "model_sha256": args.model_sha256,
+        "initial_set": [[1.1, 1.4], [2.35, 2.45]],
+        "partition_count": 64,
+        "representation": "restricted_fixed_support_DR7",
+        "validator": "DR-RP",
+        "schedule": {"kind": "fixed", "h": 0.01, "steps": 1000},
+        "horizon_requested": 10.0,
+        "horizon_validated": 10.0,
+        "result_status": "completed",
+        "endpoint_available": True,
+        "segment_tube_available": False,
+        "prefix_tube_available": False,
+        "endpoint": endpoints,
+        "reported_last_timing_by_label": timings,
+        "process_wall_seconds": elapsed,
+        "soundness_scope": "empirically sampled native mixed-builder-dtype lane",
+        "eligibility_status": "native_capability_only",
+        "artifacts": {
+            path.name: {"bytes": path.stat().st_size, "sha256": _sha(path)}
+            for path in copied
+        },
+    }
+    _write(output / "summary.json", summary)
+    return summary
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", type=Path, required=True)
+    parser.add_argument("--python", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--model-sha256", required=True)
+    parser.add_argument("--cuda-visible-devices", required=True)
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    print(json.dumps(run(parse_args(argv)), sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
