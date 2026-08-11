@@ -105,6 +105,11 @@ def _jax(python: Path) -> dict[str, Any]:
     return value
 
 
+def _invoked_and_resolved(path: Path) -> tuple[Path, Path]:
+    invoked = path.absolute()
+    return invoked, invoked.resolve()
+
+
 def collect(args: argparse.Namespace) -> dict[str, Any]:
     output = args.output_dir.resolve()
     if output.exists() and any(output.iterdir()):
@@ -113,7 +118,12 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     repository = Path(__file__).resolve().parents[1]
     flowstar = args.flowstar_root.resolve()
     diffreach = args.diffreach_root.resolve()
-    diffreach_python = args.diffreach_python.resolve()
+    # Preserve the invoked path: CPython uses it to discover the conda prefix.
+    # Resolving the interpreter symlink first can silently select a different
+    # environment even though the executable bytes are identical.
+    diffreach_python, diffreach_python_resolved = _invoked_and_resolved(
+        args.diffreach_python
+    )
     flowstar_binary = args.flowstar_binary.resolve()
     compiler = Path(shutil.which(args.compiler) or args.compiler).resolve()
     python = Path(sys.executable).resolve()
@@ -176,8 +186,9 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                 "sha256": _sha(flowstar_binary),
             },
             "diffreach_python": {
-                "path": str(diffreach_python),
-                "sha256": _sha(diffreach_python),
+                "invoked_path": str(diffreach_python),
+                "resolved_path": str(diffreach_python_resolved),
+                "sha256": _sha(diffreach_python_resolved),
             },
         },
         "repositories": {

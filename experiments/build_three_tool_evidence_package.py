@@ -105,6 +105,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             str(args.diffreach_root.resolve()),
             "--diffreach-python",
             str(args.diffreach_python.resolve()),
+            "--compiler",
+            args.flowstar_cxx,
         ],
         config={"arithmetic_environment": True},
         eligibility="environment_provenance",
@@ -150,8 +152,16 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             FLOWSTAR_SHA,
             "--model-sha256",
             MODEL_SHA,
+            "--cxx",
+            args.flowstar_cxx,
+            "--cxx-compatibility-flag=-fpermissive",
         ],
-        config={"track": "N", "partition": "B1"},
+        config={
+            "track": "N",
+            "partition": "B1",
+            "source_modified": False,
+            "compiler_compatibility_flags": ["-fpermissive"],
+        },
         eligibility="native_capability_only",
         timing="native_process_and_reported_core_only",
     )
@@ -686,6 +696,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--flowstar-root", type=Path, required=True)
     parser.add_argument("--diffreach-root", type=Path, required=True)
     parser.add_argument("--diffreach-python", type=Path, required=True)
+    parser.add_argument("--flowstar-cxx", default="g++")
     parser.add_argument(
         "--cuda-uuid",
         default="GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae",

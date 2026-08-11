@@ -7,7 +7,8 @@ conda run -n py11 python experiments/build_three_tool_evidence_package.py \
   --run-root outputs/three_tool_matched_divergence_fixed_support_20260811/<RUN_ID> \
   --flowstar-root /path/to/flowstar-b85a321 \
   --diffreach-root /path/to/DiffReach-dd628eb \
-  --diffreach-python /path/to/pinned/diffreach/python
+  --diffreach-python /path/to/pinned/diffreach/python \
+  --flowstar-cxx g++
 ```
 
 The builder refuses an existing run root, runs every command through the
@@ -16,6 +17,17 @@ predecessors. A blocked G3 is an expected evidence outcome with a recorded
 nonzero exit, not a silently passing command. The builder derives verification
 claims from command files and hashes, rejects non-finite JSON and unclassified
 private paths, and writes root-relative `SHA256SUMS`.
+
+On the recorded GCC 15 environment, the unmodified pinned Flow* source needs
+the compiler-only compatibility flag `-fpermissive` for an old C++11 template
+body that newer GCC diagnoses eagerly. The clean-build runner records that
+flag, compiler path/version/SHA, build logs, and a post-build check that no
+tracked source changed. It does not patch the stock source.
+
+The environment probe preserves the supplied DiffReach Python invocation path
+instead of resolving its symlink before execution, because CPython uses that
+path to discover the conda prefix. It records both invoked and resolved paths
+and hashes the resolved executable.
 
 Focused causal commands are:
 

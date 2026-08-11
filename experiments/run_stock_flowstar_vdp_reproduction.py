@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import tempfile
 import time
@@ -57,11 +58,40 @@ def _plot_segment_count(path: Path) -> int:
     return count + int(active)
 
 
+def _reported_core_seconds(stdout: str) -> float | None:
+    for pattern in (
+        r"^[ \t]*time cost:[ \t]*([0-9]+(?:\.[0-9]+)?)",
+        r"(?:computation|Computation).*?([0-9]+(?:\.[0-9]+)?)\s*seconds",
+    ):
+        match = re.search(pattern, stdout, flags=re.MULTILINE)
+        if match is not None:
+            return float(match.group(1))
+    return None
+
+
 def _clean_build(
     source: Path,
     source_commit: str,
     output: Path,
+    *,
+    cxx: str,
+    compatibility_flags: tuple[str, ...],
 ) -> tuple[Path, dict[str, Any], tempfile.TemporaryDirectory[str]]:
+    compiler = shutil.which(cxx)
+    if compiler is None:
+        raise FileNotFoundError(f"Flow* compiler not found: {cxx}")
+    compiler = str(Path(compiler).resolve())
+    compiler_version = subprocess.run(
+        [compiler, "--version"],
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.splitlines()[0]
+    make_command = [
+        "make",
+        "-j1",
+        "CXX=" + " ".join((compiler, *compatibility_flags)),
+    ]
     temporary = tempfile.TemporaryDirectory(prefix="flowstar-stock-vdp-")
     clone = Path(temporary.name) / "repo"
     cloned = subprocess.run(
@@ -97,7 +127,11 @@ def _clean_build(
     ):
         started = time.perf_counter()
         built = subprocess.run(
-            ["make", "-j1"], cwd=directory, text=True, capture_output=True, check=False
+            make_command,
+            cwd=directory,
+            text=True,
+            capture_output=True,
+            check=False,
         )
         elapsed = time.perf_counter() - started
         stdout = output / f"build_{name}.stdout.log"
@@ -107,7 +141,7 @@ def _clean_build(
         build_rows.append(
             {
                 "target": name,
-                "command": ["make", "-j1"],
+                "command": make_command,
                 "exit_code": built.returncode,
                 "wall_seconds": elapsed,
                 "stdout_sha256": _sha(stdout),
@@ -121,7 +155,31 @@ def _clean_build(
     if not binary.is_file():
         temporary.cleanup()
         raise RuntimeError("stock Flow* clean build omitted official VDP binary")
-    return binary, {"kind": "disposable_clean_clone", "steps": build_rows}, temporary
+    tracked_status = subprocess.run(
+        ["git", "status", "--short", "--untracked-files=no"],
+        cwd=clone,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.splitlines()
+    if tracked_status:
+        temporary.cleanup()
+        raise RuntimeError("stock Flow* clean build modified tracked source")
+    return (
+        binary,
+        {
+            "kind": "disposable_clean_clone",
+            "compiler": {
+                "path": compiler,
+                "sha256": _sha(Path(compiler)),
+                "version": compiler_version,
+                "compatibility_flags": list(compatibility_flags),
+            },
+            "source_tree_tracked_changes_after_build": tracked_status,
+            "steps": build_rows,
+        },
+        temporary,
+    )
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
@@ -132,7 +190,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     temporary: tempfile.TemporaryDirectory[str] | None = None
     if args.source is not None:
         binary, build, temporary = _clean_build(
-            args.source.resolve(), args.source_commit, output
+            args.source.resolve(),
+            args.source_commit,
+            output,
+            cxx=args.cxx,
+            compatibility_flags=tuple(args.cxx_compatibility_flag),
         )
     elif args.binary is not None:
         binary = args.binary.resolve()
@@ -161,10 +223,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "y": _plot_segment_count(y_plot),
     }
     accepted_segments = min(segment_counts.values())
-    core_match = re.search(
-        r"(?:computation|Computation).*?([0-9]+(?:\.[0-9]+)?)\s*seconds",
-        completed.stdout,
-    )
+    reported_core_seconds = _reported_core_seconds(completed.stdout)
     summary = {
         "schema": "stock_flowstar_vdp_reproduction_v1",
         "source_commit": args.source_commit,
@@ -191,9 +250,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "soundness_scope": "native build; ineligible after scalar-affine counterexample",
         "runtime_scope": {
             "process_wall_seconds": elapsed,
-            "reported_core_seconds": None
-            if core_match is None
-            else float(core_match.group(1)),
+            "reported_core_seconds": reported_core_seconds,
         },
         "artifacts": {
             "x_plot_sha256": _sha(x_plot),
@@ -214,6 +271,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--model-sha256", required=True)
+    parser.add_argument("--cxx", default="g++")
+    parser.add_argument(
+        "--cxx-compatibility-flag",
+        action="append",
+        default=[],
+        help="compiler-only compatibility flag; repeat for multiple flags",
+    )
     return parser.parse_args(argv)
 
 
