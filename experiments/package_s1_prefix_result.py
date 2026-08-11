@@ -60,6 +60,27 @@ def _rows(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
 
 
+def _committed(row: Mapping[str, Any]) -> bool:
+    """Return the explicit row commitment decision or fail the evidence build.
+
+    Commitment is part of the frozen-prefix row semantics.  Treating a missing
+    field as false produced a contradictory historical package in which the L0
+    summary reported 307 commits while the derived CSV reported none.
+    """
+    if "committed_to_frozen_prefix" not in row:
+        raise ValueError(
+            "prefix evidence row is missing committed_to_frozen_prefix: "
+            f"lane={row.get('lane', '')} attempt={row.get('attempt_index', '')}"
+        )
+    value = row["committed_to_frozen_prefix"]
+    if not isinstance(value, bool):
+        raise TypeError(
+            "prefix evidence committed_to_frozen_prefix must be boolean: "
+            f"lane={row.get('lane', '')} attempt={row.get('attempt_index', '')}"
+        )
+    return value
+
+
 def _git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
@@ -144,6 +165,7 @@ def package(run_root: Path) -> dict[str, Any]:
         raw = _rows(lane_path / "prefix_conservation.jsonl")
         lane_raw[lane] = raw
         for row in raw:
+            committed = _committed(row)
             conservation_rows.append(
                 {
                     "lane": lane,
@@ -156,7 +178,7 @@ def package(run_root: Path) -> dict[str, Any]:
                     "expected_status": row["expected_status"],
                     "actual_status": row["actual_status"],
                     "actual_rejections": row["actual_rejections"],
-                    "committed_to_frozen_prefix": row.get("committed_to_frozen_prefix", False),
+                    "committed_to_frozen_prefix": committed,
                     "schedule_match": row["schedule_match"],
                     "ordinary_width": _width(row.get("ordinary_post")),
                     "materialized_total_width": _width(row.get("materialized_structured_post")),
@@ -184,7 +206,7 @@ def package(run_root: Path) -> dict[str, Any]:
                 {
                     "lane": lane,
                     "attempt_index": row["attempt_index"],
-                    "committed_to_frozen_prefix": row.get("committed_to_frozen_prefix", False),
+                    "committed_to_frozen_prefix": committed,
                     "prestate_sha256": row["prestate_sha256"],
                     "poststate_sha256": row["poststate_sha256"],
                 }
@@ -374,7 +396,7 @@ def package(run_root: Path) -> dict[str, Any]:
         "all_committed_L2_conservation_gates": all(
             all(bool(row.get(field)) for field in ("conservation_mask", "source_decomposition_mask", "no_double_count_mask", "finite_mask", "endpoint_publication_mask", "tube_publication_mask", "accepted_mask"))
             for row in lane_raw["L2"]
-            if row.get("committed_to_frozen_prefix")
+            if _committed(row)
         ),
         "checkpoint_v2_byte_stable": _read_json(lane_paths["L2"] / "checkpoint_roundtrip.json")["byte_stable"],
         "terminal_ab_status": "not_run_after_stop",

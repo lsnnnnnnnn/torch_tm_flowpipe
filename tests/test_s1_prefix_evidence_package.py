@@ -78,7 +78,7 @@ def test_s1_prefix_package_gates_and_checkpoint_v2_are_exact():
     assert roundtrip["byte_stable"] is True
 
 
-def test_s1_tables_and_figures_rebuild_deterministically(tmp_path):
+def test_historical_package_rebuild_fails_closed_on_missing_l0_commit_semantics(tmp_path):
     copied = tmp_path / "run"
     shutil.copytree(RUN, copied)
     tracked_outputs = [
@@ -104,12 +104,14 @@ def test_s1_tables_and_figures_rebuild_deterministically(tmp_path):
         )],
     ]
     before = {name: _sha(copied / name) for name in tracked_outputs}
-    subprocess.run(
+    completed = subprocess.run(
         ["python", str(PACKAGER), "--run-root", str(copied)],
         cwd=ROOT,
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
     )
+    assert completed.returncode != 0
+    assert "missing committed_to_frozen_prefix: lane=L0 attempt=0" in completed.stderr
     after = {name: _sha(copied / name) for name in tracked_outputs}
     assert before == after
