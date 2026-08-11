@@ -787,6 +787,11 @@ def compile_probe(flowstar_root: Path, out_dir: Path, compiler: str = "g++") -> 
         compiler,
         "-O3",
         "-w",
+        # GCC 15 diagnoses a pre-existing const-qualified template body in the
+        # pinned Flow* b85a321 headers even though this probe never instantiates
+        # that derivative.  Flow* itself was built with an older compiler;
+        # permissive mode preserves the pinned implementation for observation.
+        "-fpermissive",
         "-std=c++11",
         "-I",
         str(flowstar_root / "flowstar-toolbox"),

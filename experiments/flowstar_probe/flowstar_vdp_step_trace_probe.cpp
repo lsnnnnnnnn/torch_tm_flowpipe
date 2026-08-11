@@ -162,6 +162,46 @@ const vector<string> kHeaders = {
     "flowstar_internal_intermediate_ranges_entry_count",
     "flowstar_internal_intermediate_ranges_source_path",
     "flowstar_internal_intermediate_ranges_notes",
+    "flowstar_y_intermediate_0_lo",
+    "flowstar_y_intermediate_0_hi",
+    "flowstar_y_intermediate_1_lo",
+    "flowstar_y_intermediate_1_hi",
+    "flowstar_y_intermediate_2_lo",
+    "flowstar_y_intermediate_2_hi",
+    "flowstar_y_intermediate_3_lo",
+    "flowstar_y_intermediate_3_hi",
+    "flowstar_y_intermediate_4_lo",
+    "flowstar_y_intermediate_4_hi",
+    "flowstar_y_intermediate_5_lo",
+    "flowstar_y_intermediate_5_hi",
+    "flowstar_y_intermediate_6_lo",
+    "flowstar_y_intermediate_6_hi",
+    "flowstar_expression_input_x_remainder_lo",
+    "flowstar_expression_input_x_remainder_hi",
+    "flowstar_expression_input_y_remainder_lo",
+    "flowstar_expression_input_y_remainder_hi",
+    "flowstar_node_x_squared_remainder_lo",
+    "flowstar_node_x_squared_remainder_hi",
+    "flowstar_node_one_minus_x_squared_remainder_lo",
+    "flowstar_node_one_minus_x_squared_remainder_hi",
+    "flowstar_node_nonlinear_times_y_remainder_lo",
+    "flowstar_node_nonlinear_times_y_remainder_hi",
+    "flowstar_node_minus_x_remainder_lo",
+    "flowstar_node_minus_x_remainder_hi",
+    "flowstar_node_x_squared_polynomial_lo",
+    "flowstar_node_x_squared_polynomial_hi",
+    "flowstar_node_one_minus_x_squared_polynomial_lo",
+    "flowstar_node_one_minus_x_squared_polynomial_hi",
+    "flowstar_node_nonlinear_times_y_polynomial_lo",
+    "flowstar_node_nonlinear_times_y_polynomial_hi",
+    "flowstar_node_minus_x_polynomial_lo",
+    "flowstar_node_minus_x_polynomial_hi",
+    "flowstar_node_x_squared_intermediate_0_lo",
+    "flowstar_node_x_squared_intermediate_0_hi",
+    "flowstar_node_x_squared_intermediate_1_lo",
+    "flowstar_node_x_squared_intermediate_1_hi",
+    "flowstar_node_x_squared_intermediate_2_lo",
+    "flowstar_node_x_squared_intermediate_2_hi",
     "raw_ctrunc_residual_source_object",
     "raw_ctrunc_residual_domain_semantics",
     "raw_ctrunc_residual_includes_target_remainder",
@@ -680,6 +720,13 @@ struct FlowstarInternalRangesAudit
     Interval int_trunc_y;
     Interval int_trunc2_y;
     Interval mul_ctrunc_y;
+    vector<Interval> y_intermediate_ranges;
+    Interval input_x_remainder;
+    Interval input_y_remainder;
+    bool have_expression_inputs;
+    vector<Interval> semantic_node_remainders;
+    vector<Interval> semantic_node_polynomial_ranges;
+    vector<vector<Interval> > semantic_node_intermediate_ranges;
     size_t intermediate_entry_count;
     string notes;
 
@@ -687,10 +734,31 @@ struct FlowstarInternalRangesAudit
         : have_int_trunc_y(false),
           have_int_trunc2_y(false),
           have_mul_ctrunc_y(false),
+          have_expression_inputs(false),
           intermediate_entry_count(0)
     {
     }
 };
+
+void evaluate_semantic_subtree(
+    Interval &remainder,
+    Interval &polynomial_range,
+    vector<Interval> &intermediate_ranges,
+    const Expression<Real> &expression,
+    const TaylorModelVec<Real> &x,
+    const vector<Interval> &step_exp_table,
+    const unsigned int numVars,
+    const unsigned int order,
+    const Interval &cutoff_threshold,
+    const Global_Setting &setting)
+{
+    TaylorModel<Interval> value;
+    list<Interval> local_ranges;
+    expression.evaluate(value, x.tms, order, step_exp_table, cutoff_threshold, numVars, local_ranges, setting);
+    remainder = value.remainder;
+    value.polyRangeNormal(polynomial_range, step_exp_table);
+    intermediate_ranges.assign(local_ranges.begin(), local_ranges.end());
+}
 
 Interval scaled_by_step(Interval value, const Interval &step)
 {
@@ -726,6 +794,7 @@ FlowstarInternalRangesAudit audit_flowstar_internal_ranges(
     const TaylorModelVec<Real> &x,
     const TaylorModelVec<Real> &new_x0,
     const vector<Expression<Real> > &ode,
+    const vector<Expression<Real> > &semantic_expressions,
     const vector<Interval> &step_exp_table,
     const unsigned int numVars,
     const unsigned int order,
@@ -768,9 +837,13 @@ FlowstarInternalRangesAudit audit_flowstar_internal_ranges(
     if (entries_by_state.size() > 1 && entries_by_state[1].size() >= 7 && x.tms.size() > 1)
     {
         const vector<Interval> &y_entries = entries_by_state[1];
+        audit.y_intermediate_ranges.assign(y_entries.begin(), y_entries.begin() + 7);
         const Interval &step = step_exp_table[1];
         const Interval &x_remainder = x.tms[0].remainder;
         const Interval &y_remainder = x.tms[1].remainder;
+        audit.input_x_remainder = x_remainder;
+        audit.input_y_remainder = y_remainder;
+        audit.have_expression_inputs = true;
 
         audit.int_trunc_y = scaled_by_step(y_entries[3], step);
         audit.int_trunc2_y = scaled_by_step(y_entries[6], step);
@@ -792,6 +865,29 @@ FlowstarInternalRangesAudit audit_flowstar_internal_ranges(
 
         audit.mul_ctrunc_y = scaled_by_step(outer_mul_remainder, step);
         audit.have_mul_ctrunc_y = true;
+
+        // Evaluate frozen semantic subexpressions through the same Flow*
+        // template without mutating the production ODE tree or Taylor models.
+        for (size_t semantic_index = 0; semantic_index < semantic_expressions.size(); ++semantic_index)
+        {
+            Interval remainder;
+            Interval polynomial_range;
+            vector<Interval> semantic_intermediate_ranges;
+            evaluate_semantic_subtree(
+                remainder,
+                polynomial_range,
+                semantic_intermediate_ranges,
+                semantic_expressions[semantic_index],
+                x,
+                step_exp_table,
+                numVars,
+                k,
+                cutoff_threshold,
+                setting);
+            audit.semantic_node_remainders.push_back(remainder);
+            audit.semantic_node_polynomial_ranges.push_back(polynomial_range);
+            audit.semantic_node_intermediate_ranges.push_back(semantic_intermediate_ranges);
+        }
     }
     else
     {
@@ -815,6 +911,7 @@ int traced_advance_adaptive_symbolic(
     Flowpipe &result,
     const Flowpipe &current,
     const vector<Expression<Real> > &ode,
+    const vector<Expression<Real> > &semantic_expressions,
     const double new_stepsize,
     Taylor_Model_Setting &tm_setting,
     const Global_Setting &g_setting,
@@ -969,6 +1066,7 @@ int traced_advance_adaptive_symbolic(
             x,
             new_x0,
             ode,
+            semantic_expressions,
             tm_setting.step_exp_table,
             rangeDimExt,
             tm_setting.order,
@@ -1115,6 +1213,43 @@ int traced_advance_adaptive_symbolic(
         set_value(row, "flowstar_internal_intermediate_ranges_entry_count", format_size(internal_ranges_audit.intermediate_entry_count));
         set_value(row, "flowstar_internal_intermediate_ranges_source_path", "TaylorModelVec::Picard_ctrunc_normal(Expression) -> Expression::evaluate -> TaylorModel::mul_insert_ctrunc_normal -> TaylorModelVec::integral_time -> result = tmvTmp2 + x0");
         set_value(row, "flowstar_internal_intermediate_ranges_notes", internal_ranges_audit.notes);
+        for (size_t intermediate_index = 0;
+             intermediate_index < internal_ranges_audit.y_intermediate_ranges.size();
+             ++intermediate_index)
+        {
+            const string prefix = "flowstar_y_intermediate_" + format_size(intermediate_index);
+            set_value(row, prefix + "_lo", internal_ranges_audit.y_intermediate_ranges[intermediate_index].inf());
+            set_value(row, prefix + "_hi", internal_ranges_audit.y_intermediate_ranges[intermediate_index].sup());
+        }
+        if (internal_ranges_audit.have_expression_inputs)
+        {
+            set_value(row, "flowstar_expression_input_x_remainder_lo", internal_ranges_audit.input_x_remainder.inf());
+            set_value(row, "flowstar_expression_input_x_remainder_hi", internal_ranges_audit.input_x_remainder.sup());
+            set_value(row, "flowstar_expression_input_y_remainder_lo", internal_ranges_audit.input_y_remainder.inf());
+            set_value(row, "flowstar_expression_input_y_remainder_hi", internal_ranges_audit.input_y_remainder.sup());
+        }
+        const char *semantic_names[] = {
+            "x_squared", "one_minus_x_squared", "nonlinear_times_y", "minus_x"};
+        for (size_t semantic_index = 0;
+             semantic_index < internal_ranges_audit.semantic_node_remainders.size();
+             ++semantic_index)
+        {
+            const string prefix = "flowstar_node_" + string(semantic_names[semantic_index]);
+            set_value(row, prefix + "_remainder_lo", internal_ranges_audit.semantic_node_remainders[semantic_index].inf());
+            set_value(row, prefix + "_remainder_hi", internal_ranges_audit.semantic_node_remainders[semantic_index].sup());
+            set_value(row, prefix + "_polynomial_lo", internal_ranges_audit.semantic_node_polynomial_ranges[semantic_index].inf());
+            set_value(row, prefix + "_polynomial_hi", internal_ranges_audit.semantic_node_polynomial_ranges[semantic_index].sup());
+        }
+        if (!internal_ranges_audit.semantic_node_intermediate_ranges.empty())
+        {
+            const vector<Interval> &x_squared_ranges = internal_ranges_audit.semantic_node_intermediate_ranges[0];
+            for (size_t intermediate_index = 0; intermediate_index < x_squared_ranges.size(); ++intermediate_index)
+            {
+                const string prefix = "flowstar_node_x_squared_intermediate_" + format_size(intermediate_index);
+                set_value(row, prefix + "_lo", x_squared_ranges[intermediate_index].inf());
+                set_value(row, prefix + "_hi", x_squared_ranges[intermediate_index].sup());
+            }
+        }
         set_lifecycle_bounds(row, "picard_ctrunc_raw_residual", raw_ctrunc_remainder);
         set_value(row, "raw_ctrunc_residual_source_object", "tmvTmp.tms[i].remainder immediately after Picard_ctrunc_normal");
         set_value(row, "raw_ctrunc_residual_domain_semantics", "physical_remainder_interval_over_full_step_tau_domain_before_cutoff_polyDiff");
@@ -1248,6 +1383,16 @@ int main(int argc, char **argv)
         cerr << "Taylor-model order must be at least 2" << endl;
         return 2;
     }
+    double fixed_step = 0.0;
+    if (argc > 5)
+    {
+        fixed_step = atof(argv[5]);
+        if (fixed_step <= 0.0)
+        {
+            cerr << "fixed step must be positive" << endl;
+            return 2;
+        }
+    }
 
     Variables vars;
     int x_id = vars.declareVar("x");
@@ -1255,9 +1400,22 @@ int main(int argc, char **argv)
     vars.declareVar("t");
 
     ODE<Real> ode({"y", "(1 - x^2) * y - x", "1"}, vars);
+    Variables semantic_vars;
+    semantic_vars.declareVar("x");
+    semantic_vars.declareVar("y");
+    semantic_vars.declareVar("t");
+    vector<Expression<Real> > semantic_expressions;
+    semantic_expressions.push_back(Expression<Real>("x^2", semantic_vars));
+    semantic_expressions.push_back(Expression<Real>("1 - x^2", semantic_vars));
+    semantic_expressions.push_back(Expression<Real>("(1 - x^2) * y", semantic_vars));
+    semantic_expressions.push_back(Expression<Real>("(1 - x^2) * y - x", semantic_vars));
     Computational_Setting setting(vars);
     setting.printOff();
-    setting.tm_setting.initializeAdaptiveSettings(0.002, 0.1, order, order);
+    setting.tm_setting.initializeAdaptiveSettings(
+        fixed_step > 0.0 ? fixed_step : 0.002,
+        fixed_step > 0.0 ? fixed_step : 0.1,
+        order,
+        order);
     setting.tm_setting.setCutoff(Interval(-1e-10, 1e-10));
     vector<Interval> target_remainder_setting(ode.expressions.size(), Interval(-1e-4, 1e-4));
     setting.tm_setting.setRemainderEstimation(target_remainder_setting);
@@ -1288,6 +1446,7 @@ int main(int argc, char **argv)
             newFlowpipe,
             currentFlowpipe,
             ode.expressions,
+            semantic_expressions,
             new_stepsize,
             setting.tm_setting,
             setting.g_setting,

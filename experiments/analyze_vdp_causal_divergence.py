@@ -35,6 +35,7 @@ from torch_tm_flowpipe.batched_dense_tm import (
     BatchedTaylorModel,
     _dense_flowstar_raw_compat_image,
 )
+from torch_tm_flowpipe.raw_remainder_trace import RawRemainderTraceRecorder
 
 
 TIME_SEMANTICS = "physical_local_time_[0,h]"
@@ -396,11 +397,12 @@ def _torch_raw_replay(
     target_radius: float,
     validation_eps: float,
     ode: PolynomialODE,
+    raw_trace_recorder: RawRemainderTraceRecorder | None = None,
 ) -> dict[str, Any]:
     target_lo = torch.full_like(candidate.rem_lo, -abs(target_radius))
     target_hi = torch.full_like(candidate.rem_hi, abs(target_radius))
     with_target = candidate.with_remainder(target_lo, target_hi, category="initial_remainder")
-    image_lo, image_hi, details = _dense_flowstar_raw_compat_image(
+    image_lo, image_hi, details, _decomposition = _dense_flowstar_raw_compat_image(
         ode,
         base,
         with_target,
@@ -409,6 +411,7 @@ def _torch_raw_replay(
         order=order,
         cutoff_threshold=cutoff,
         validation_eps=validation_eps,
+        raw_trace_recorder=raw_trace_recorder,
     )
     margin = torch.minimum(image_lo - target_lo, target_hi - image_hi)
     return {

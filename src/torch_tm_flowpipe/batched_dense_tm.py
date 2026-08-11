@@ -19,6 +19,8 @@ from typing import Any, Callable, Mapping, Sequence
 
 import torch
 
+from .raw_remainder_trace import RawRemainderTraceRecorder, interval_record
+
 
 REMAINDER_LEDGER_CATEGORIES = (
     "initial_remainder",
@@ -2685,12 +2687,24 @@ def call_dense_rhs(rhs_fn: DenseRHS, state: BatchedTaylorModel) -> BatchedTaylor
 class _DenseRawTraceScalar:
     """Dense equivalent of the sparse Flow* raw-remainder expression tracer."""
 
-    def __init__(self, model: BatchedTaylorModel, *, effective_order: int, cutoff_threshold: float | None):
+    def __init__(
+        self,
+        model: BatchedTaylorModel,
+        *,
+        effective_order: int,
+        cutoff_threshold: float | None,
+        recorder: RawRemainderTraceRecorder | None = None,
+        node_id: str | None = None,
+        expression_component: int = 0,
+    ):
         if model.poly.out_dim != 1:
             raise ValueError("raw trace scalars require output dimension one")
         self.model = model
         self.effective_order = int(effective_order)
         self.cutoff_threshold = cutoff_threshold
+        self.recorder = recorder
+        self.node_id = node_id
+        self.expression_component = int(expression_component)
 
     @property
     def domain(self) -> list[Any]:
@@ -2704,11 +2718,22 @@ class _DenseRawTraceScalar:
     def remainder(self) -> tuple[torch.Tensor, torch.Tensor]:
         return self.model.rem_lo, self.model.rem_hi
 
-    def _wrap(self, model: BatchedTaylorModel) -> "_DenseRawTraceScalar":
+    def _wrap(
+        self,
+        model: BatchedTaylorModel,
+        *,
+        node_id: str | None = None,
+        expression_component: int | None = None,
+    ) -> "_DenseRawTraceScalar":
         return _DenseRawTraceScalar(
             model,
             effective_order=self.effective_order,
             cutoff_threshold=self.cutoff_threshold,
+            recorder=self.recorder,
+            node_id=node_id,
+            expression_component=(
+                self.expression_component if expression_component is None else int(expression_component)
+            ),
         )
 
     @staticmethod
@@ -2720,28 +2745,98 @@ class _DenseRawTraceScalar:
             return other
         if isinstance(other, BatchedTaylorModel):
             return self._wrap(other)
-        return self._wrap(BatchedTaylorModel.constants_like(other, self.model))
+        model = BatchedTaylorModel.constants_like(other, self.model)
+        if self.recorder is None:
+            return self._wrap(model)
+        node_id = self.recorder.add_model_node(
+            operation="constant",
+            component=1,
+            model=model,
+            order_before=self.effective_order,
+            order_after=self.effective_order,
+        )
+        return self._wrap(model, node_id=node_id, expression_component=1)
+
+    def _record_binary(
+        self,
+        operation: str,
+        other: "_DenseRawTraceScalar",
+        model: BatchedTaylorModel,
+    ) -> "_DenseRawTraceScalar":
+        if self.recorder is None:
+            return self._wrap(model)
+        parents = [node_id for node_id in (self.node_id, other.node_id) if node_id is not None]
+        node_id = self.recorder.add_model_node(
+            operation=operation,
+            component=1,
+            model=model,
+            parents=parents,
+            remainder_inputs=((self.model.rem_lo, self.model.rem_hi), (other.model.rem_lo, other.model.rem_hi)),
+            order_before=self.effective_order,
+            order_after=self.effective_order,
+        )
+        if operation == "multiply":
+            left_poly = self.model.poly.range_bound(
+                self.model.domain_lo,
+                self.model.domain_hi,
+                policy=self.model.range_policy,
+                context="raw_expression_observer_left_operand",
+                trace=[],
+            )
+            right_poly = other.model.poly.range_bound(
+                other.model.domain_lo,
+                other.model.domain_hi,
+                policy=other.model.range_policy,
+                context="raw_expression_observer_right_operand",
+                trace=[],
+            )
+            self.recorder.nodes[-1]["multiplication_operand_polynomial_intervals"] = [
+                interval_record(
+                    float(left_poly[0].detach().cpu().reshape(-1)[0]),
+                    float(left_poly[1].detach().cpu().reshape(-1)[0]),
+                ),
+                interval_record(
+                    float(right_poly[0].detach().cpu().reshape(-1)[0]),
+                    float(right_poly[1].detach().cpu().reshape(-1)[0]),
+                ),
+            ]
+        return self._wrap(model, node_id=node_id, expression_component=1)
 
     def __add__(self, other: Any) -> "_DenseRawTraceScalar":
-        return self._wrap(self.model.add(self._coerce(other).model))
+        other_trace = self._coerce(other)
+        return self._record_binary("add", other_trace, self.model.add(other_trace.model))
 
     __radd__ = __add__
 
     def __sub__(self, other: Any) -> "_DenseRawTraceScalar":
-        return self._wrap(self.model.sub(self._coerce(other).model))
+        other_trace = self._coerce(other)
+        return self._record_binary("subtract", other_trace, self.model.sub(other_trace.model))
 
     def __rsub__(self, other: Any) -> "_DenseRawTraceScalar":
         return self._coerce(other).__sub__(self)
 
     def __neg__(self) -> "_DenseRawTraceScalar":
-        return self._wrap(-self.model)
+        model = -self.model
+        if self.recorder is None:
+            return self._wrap(model)
+        node_id = self.recorder.add_model_node(
+            operation="negate",
+            component=1,
+            model=model,
+            parents=(() if self.node_id is None else (self.node_id,)),
+            remainder_inputs=((self.model.rem_lo, self.model.rem_hi),),
+            order_before=self.effective_order,
+            order_after=self.effective_order,
+        )
+        return self._wrap(model, node_id=node_id, expression_component=1)
 
     def __mul__(self, other: Any) -> "_DenseRawTraceScalar":
+        other_trace = self._coerce(other)
         product = self.model.mul_trunc(
-            self._coerce(other).model,
+            other_trace.model,
             max_degree=self.effective_order,
         ).apply_cutoff(self.cutoff_threshold)
-        return self._wrap(product)
+        return self._record_binary("multiply", other_trace, product)
 
     __rmul__ = __mul__
 
@@ -2778,17 +2873,32 @@ def _call_dense_raw_trace_rhs(
     *,
     effective_order: int,
     cutoff_threshold: float | None,
+    recorder: RawRemainderTraceRecorder | None = None,
 ) -> BatchedTaylorModel:
-    state = _DenseRawTraceVector(
-        [
+    state_models: list[_DenseRawTraceScalar] = []
+    for index in range(candidate.poly.out_dim):
+        component_model = candidate.component(index)
+        node_id = None
+        if recorder is not None:
+            node_id = recorder.add_model_node(
+                operation="state_input",
+                component=index,
+                model=component_model,
+                order_before=effective_order,
+                order_after=effective_order,
+                node_id=f"torch.i{recorder.picard_iteration}.c{index}.state_input",
+            )
+        state_models.append(
             _DenseRawTraceScalar(
-                candidate.component(index),
+                component_model,
                 effective_order=effective_order,
                 cutoff_threshold=cutoff_threshold,
+                recorder=recorder,
+                node_id=node_id,
+                expression_component=index,
             )
-            for index in range(candidate.poly.out_dim)
-        ]
-    )
+        )
+    state = _DenseRawTraceVector(state_models)
     try:
         output = rhs_fn(state)  # type: ignore[arg-type]
     except TypeError as one_argument_error:
@@ -2799,6 +2909,11 @@ def _call_dense_raw_trace_rhs(
     values = list(output.models) if hasattr(output, "models") else list(output)
     if len(values) != candidate.poly.out_dim or not all(isinstance(value, _DenseRawTraceScalar) for value in values):
         raise TypeError("raw trace RHS must return one traced scalar per state component")
+    if recorder is not None:
+        for index, value in enumerate(values):
+            if value.node_id is None:
+                raise RuntimeError(f"traced RHS component {index} has no expression root")
+            recorder.register_component_root(index, value.node_id)
     return BatchedTaylorModel.concat([value.model for value in values])
 
 
@@ -2812,6 +2927,7 @@ def _dense_flowstar_raw_compat_image(
     order: int,
     cutoff_threshold: float | None,
     validation_eps: float,
+    raw_trace_recorder: RawRemainderTraceRecorder | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -2823,6 +2939,7 @@ def _dense_flowstar_raw_compat_image(
         candidate_with_target,
         effective_order=max(int(order) - 1, 0),
         cutoff_threshold=cutoff_threshold,
+        recorder=raw_trace_recorder,
     )
     tau_lo = candidate_with_target.domain_lo[:, tau_index].view(-1, 1)
     tau_hi = candidate_with_target.domain_hi[:, tau_index].view(-1, 1)
@@ -2840,9 +2957,13 @@ def _dense_flowstar_raw_compat_image(
         trace=candidate_poly.range_trace,
     )
     diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
-    check_lo, check_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, before_lo, before_hi)
-    check_lo, check_hi = _interval_add(check_lo, check_hi, diff_lo, diff_hi)
-    check_lo, check_hi = _inflate_tensor_interval(check_lo, check_hi, validation_eps)
+    assembled_lo, assembled_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, before_lo, before_hi)
+    check_pre_rounding_lo, check_pre_rounding_hi = _interval_add(assembled_lo, assembled_hi, diff_lo, diff_hi)
+    check_lo, check_hi = _inflate_tensor_interval(
+        check_pre_rounding_lo,
+        check_pre_rounding_hi,
+        validation_eps,
+    )
     validated_ledger = DenseRemainderLedger.empty()
     for category, (entry_lo, entry_hi) in base_ext.ledger.entries.items():
         validated_ledger = validated_ledger.add(category, entry_lo, entry_hi)
@@ -2857,6 +2978,102 @@ def _dense_flowstar_raw_compat_image(
     )
     if not bool(torch.all(decomposition.contains_image)):
         raise FloatingPointError("raw compatibility source decomposition lost image containment")
+    if raw_trace_recorder is not None:
+        target_lo = candidate_with_target.rem_lo
+        target_hi = candidate_with_target.rem_hi
+        margins = torch.minimum(check_lo - target_lo, target_hi - check_hi)
+        for component in range(candidate_with_target.poly.out_dim):
+            raw_component = raw_rhs.component(component)
+            root = raw_trace_recorder.component_roots[component]
+            trunc_id = raw_trace_recorder.add_model_node(
+                operation="truncate_to_o4_after_time_integration",
+                component=component,
+                model=raw_component,
+                parents=(root,),
+                remainder_inputs=((raw_component.rem_lo, raw_component.rem_hi),),
+                order_before=max(int(order) - 1, 0),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.truncate_o4",
+            )
+            cutoff_id = raw_trace_recorder.add_model_node(
+                operation="cutoff_discard",
+                component=component,
+                model=raw_component,
+                parents=(trunc_id,),
+                remainder_inputs=((raw_component.rem_lo, raw_component.rem_hi),),
+                order_before=int(order),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.cutoff",
+            )
+            integrated_model = raw_component.integrate(tau_index).with_remainder(
+                before_lo[:, component : component + 1],
+                before_hi[:, component : component + 1],
+                category="roundoff_safeguard",
+            )
+            integration_id = raw_trace_recorder.add_model_node(
+                operation="time_integration",
+                component=component,
+                model=integrated_model,
+                parents=(cutoff_id,),
+                remainder_inputs=((raw_component.rem_lo, raw_component.rem_hi),),
+                order_before=max(int(order) - 1, 0),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.integrate",
+                roundoff=(-abs(float(validation_eps)), abs(float(validation_eps))),
+            )
+            assembly_model = candidate_poly.component(component).with_remainder(
+                assembled_lo[:, component : component + 1],
+                assembled_hi[:, component : component + 1],
+                category="picard_residual",
+            )
+            assembly_id = raw_trace_recorder.add_model_node(
+                operation="raw_candidate_assembly",
+                component=component,
+                model=assembly_model,
+                parents=(integration_id,),
+                remainder_inputs=(
+                    (base_ext.rem_lo[:, component : component + 1], base_ext.rem_hi[:, component : component + 1]),
+                    (before_lo[:, component : component + 1], before_hi[:, component : component + 1]),
+                ),
+                order_before=int(order),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.raw_assembly",
+            )
+            roundoff_model = candidate_poly.component(component).with_remainder(
+                check_lo[:, component : component + 1],
+                check_hi[:, component : component + 1],
+                category="roundoff_safeguard",
+            )
+            roundoff_id = raw_trace_recorder.add_model_node(
+                operation="polynomial_roundoff_addition",
+                component=component,
+                model=roundoff_model,
+                parents=(assembly_id,),
+                remainder_inputs=(
+                    (assembled_lo[:, component : component + 1], assembled_hi[:, component : component + 1]),
+                    (diff_lo[:, component : component + 1], diff_hi[:, component : component + 1]),
+                ),
+                order_before=int(order),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.poly_roundoff",
+                roundoff=(-abs(float(validation_eps)), abs(float(validation_eps))),
+            )
+            raw_trace_recorder.add_model_node(
+                operation="subset_test",
+                component=component,
+                model=roundoff_model,
+                parents=(roundoff_id,),
+                remainder_inputs=((roundoff_model.rem_lo, roundoff_model.rem_hi),),
+                order_before=int(order),
+                order_after=int(order),
+                node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.subset",
+                subset_margin=float(margins[:, component].detach().cpu().reshape(-1)[0]),
+                decision="accept" if bool(torch.all(margins >= 0)) else "reject",
+            )
+        raw_trace_recorder.finalize_decision(
+            margins.detach().cpu().reshape(-1).tolist(),
+            bool(torch.all(margins >= 0)),
+        )
     return check_lo, check_hi, {
         "raw_rhs_remainder_lo": raw_rhs.rem_lo.detach().cpu().tolist(),
         "raw_rhs_remainder_hi": raw_rhs.rem_hi.detach().cpu().tolist(),
