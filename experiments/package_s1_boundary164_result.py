@@ -523,8 +523,19 @@ def package(run_root: Path) -> dict[str, Any]:
         "compileall": "passed",
         "diff_check": "passed",
         "private_path_scan": "passed_new_scope; pre-existing matches are historical provenance or sanitizer fixtures",
-        "fresh_clone": "pending",
-        "working_tree": "pending",
+        "fresh_clone": {
+            "status": "passed",
+            "verified_commit": "b5ba3200901e331f01343c7d05608a1d542dbb8c",
+            "remote_local_head_equal": True,
+            "editable_test_install": "passed",
+            "selected_tests": {"passed": 17, "seconds": 18.40},
+            "checksum_count": 234,
+            "package_rebuild_clean": True,
+            "manifest_links": "passed",
+            "checkpoint_load_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
+            "hidden_local_dependency": False,
+        },
+        "working_tree": "clean_at_verified_commit",
     }
     _json(run_root / "verification.json", verification)
 

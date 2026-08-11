@@ -37,6 +37,9 @@ The unchanged historical terminal step still rejects with T0 y margin
 - Fresh/+0.5/second system: not authorized
 - Final regression: 572 passed, 2 skipped in 270.30 s
 - Evidence checksums: 234 repository-root-relative entries
+- Fresh clone at `b5ba3200901e331f01343c7d05608a1d542dbb8c`: remote/local
+  heads equal, editable install passed, 17 selected tests passed in 18.40 s,
+  package rebuild and all checksums passed, checkpoint loaded, tree clean
 - Primitive formal eligibility: true for the bounded CPU outward image
 - Prefix formal eligibility: false
 - Prefix class: `safeguarded_binary64_interval_shell`,
