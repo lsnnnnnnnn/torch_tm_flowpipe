@@ -174,7 +174,9 @@ def _bridge_changes(run_root: Path, output: Path) -> tuple[Path, Path]:
     for panel_index, (field, title) in enumerate(panels):
         panel_y = 82 + panel_index * 250
         left, right, zero = 330, 1040, 685
-        panel_values = [float(row[field]) for row in rows]
+        panel_values = [
+            float(row[field]) for row in rows if row.get(field) is not None
+        ]
         maximum = max((abs(value) for value in panel_values), default=1.0) or 1.0
         scale = (right - left) / (2 * maximum)
         body.append(_text(20, panel_y + 14, title, "label"))
@@ -192,7 +194,7 @@ def _bridge_changes(run_root: Path, output: Path) -> tuple[Path, Path]:
                     ),
                     None,
                 )
-                if record is None:
+                if record is None or record.get(field) is None:
                     continue
                 value = float(record[field])
                 shifted_y = y + batch_index * 15
