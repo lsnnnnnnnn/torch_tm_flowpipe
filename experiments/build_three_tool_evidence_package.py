@@ -288,6 +288,23 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         config={"upstream_commit": DIFFREACH_SHA, "every_builder_explicit_float64": True},
         eligibility="matched_operator_equivalence",
     )
+    for replay_device in ("cpu", "cuda"):
+        _protocol(
+            run_root,
+            f"06_native_torch_fixed_dr7/two_ulp_companion_{replay_device}",
+            name=f"fixed_dr7_fraction_replay_{replay_device}",
+            command=[
+                python,
+                "experiments/replay_fixed_support_fraction.py",
+                "--output",
+                "{ARTIFACT_DIR}/fraction_replay.json",
+                "--device",
+                replay_device,
+            ],
+            config={"device": replay_device, "companion_envelope_ulps": 2},
+            eligibility="bounded_exact_binary64_outward_replay",
+            timing="not_a_performance_benchmark",
+        )
 
     probe_compile = _protocol(
         run_root,
