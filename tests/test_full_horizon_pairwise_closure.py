@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from experiments.build_full_horizon_pairwise_figures import build
+from experiments.build_full_horizon_pairwise_tables import build as build_tables
 from experiments.finalize_complete_o4_carry_root_cause import derive
 
 
@@ -203,3 +204,64 @@ def test_full_horizon_figure_builder_emits_five_source_backed_figures(tmp_path: 
     for artifact in summary["artifacts"]:
         assert (output / artifact["figure"]).read_text(encoding="utf-8").startswith("<svg")
         assert "eligibility" in (output / artifact["source_csv"]).read_text(encoding="utf-8").splitlines()[0]
+
+
+def test_pairwise_tables_keep_native_flow_and_diff_comparisons_separate(tmp_path: Path) -> None:
+    def write_json(name: str, value: object) -> Path:
+        path = tmp_path / name
+        path.write_text(json.dumps(value) + "\n", encoding="utf-8")
+        return path
+
+    flow = write_json(
+        "flow.json",
+        {
+            "outcome": "FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY",
+            "flowstar": {"validated_horizon": 10.0, "process_wall_s": 1.0},
+            "torch": {"validated_horizon": 6.32, "process_wall_s": 2.0},
+        },
+    )
+    stock = write_json(
+        "stock.json",
+        {"horizon_requested": 10.0, "horizon_validated": 10.0, "process_wall_seconds": 3.0},
+    )
+    diff = write_json(
+        "diff.json",
+        {"source_sha": "d" * 40, "validated_horizon": 10.0, "completion_status": "completed", "runtime_with_hashing_and_capture_s": 4.0},
+    )
+    torch = write_json(
+        "torch.json",
+        {"source_sha": "e" * 40, "validated_horizon": 10.0, "completion_status": "completed", "runtime_with_hashing_and_capture_s": 5.0},
+    )
+    comparison = write_json(
+        "comparison.json",
+        {
+            "outcome": "DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED",
+            "scope": "full_horizon", "batch_size": 64, "step_size": 0.01, "steps": 1000,
+            "operator_equality": False, "mask_equality": True, "endpoint_tube_equality": False,
+            "j_phi_equality": False, "first_divergence_by_field": {"retained_R_lo": 1, "retained_R_hi": 1},
+            "soundness_scope": "empirical",
+        },
+    )
+    common = tmp_path / "common_table.csv"
+    common_fields = (
+        "time", "both_completed", "flowstar_endpoint_x_width", "flowstar_endpoint_y_width",
+        "torch_endpoint_x_width", "torch_endpoint_y_width", "flowstar_segment_tube_x_width",
+        "flowstar_segment_tube_y_width", "torch_segment_tube_x_width", "torch_segment_tube_y_width",
+        "flowstar_prefix_tube_x_width", "flowstar_prefix_tube_y_width", "torch_prefix_tube_x_width",
+        "torch_prefix_tube_y_width", "flowstar_margin_x", "flowstar_margin_y", "torch_margin_x",
+        "torch_margin_y", "flowstar_cumulative_runtime_s", "torch_cumulative_runtime_s", "qualification",
+    )
+    _csv(common, [{field: (True if field == "both_completed" else "fixture") for field in common_fields}])
+    summary = build_tables(
+        argparse.Namespace(
+            flow_summary=flow, flow_common_prefix=common, stock_diffreach_summary=stock,
+            diffreach_summary=diff, torch_dr7_summary=torch, diff_comparison=comparison,
+            torch_complete_source_sha="f" * 40, output_dir=tmp_path / "tables",
+        )
+    )
+    assert summary["universal_ranking_emitted"] is False
+    assert {row["path"] for row in summary["artifacts"]} == {
+        "table_n_native_capability.csv",
+        "table_mf_flowstar_torch_common_prefix.csv",
+        "table_md_diffreach_torch_explicit_f64.csv",
+    }
