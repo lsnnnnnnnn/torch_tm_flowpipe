@@ -37,6 +37,22 @@ def _unit_exponent(dim: int, index: int) -> tuple[int, ...]:
     return tuple(result)
 
 
+def _complete_total_degree_exponents(dim: int, order: int) -> tuple[tuple[int, ...], ...]:
+    exponents: list[tuple[int, ...]] = []
+
+    def visit(position: int, remaining: int, prefix: tuple[int, ...]) -> None:
+        if position == int(dim):
+            if remaining == 0:
+                exponents.append(prefix)
+            return
+        for value in range(remaining + 1):
+            visit(position + 1, remaining - value, (*prefix, value))
+
+    for degree in range(int(order) + 1):
+        visit(0, degree, ())
+    return tuple(exponents)
+
+
 @dataclass(frozen=True)
 class FixedSupportRoute:
     """One ordered signed product contribution to a retained slot."""
@@ -242,6 +258,31 @@ class FixedSupportDescriptor:
             source_contract=f"DiffReach:{DIFFREACH_SOURCE_SHA}:src/polynomial.py",
         )
 
+    @classmethod
+    def complete_total_degree(
+        cls,
+        *,
+        variable_names: Sequence[str],
+        order: int,
+        local_time_index: int = 0,
+    ) -> "FixedSupportDescriptor":
+        """Generate a complete total-degree descriptor and all algebra routes."""
+
+        variables = tuple(str(value) for value in variable_names)
+        if not variables:
+            raise ValueError("complete support requires variables")
+        if int(order) < 0:
+            raise ValueError("complete support order must be nonnegative")
+        return cls.from_exponents(
+            name=f"complete_total_degree_O{int(order)}_D{len(variables)}",
+            variable_names=variables,
+            exponents=_complete_total_degree_exponents(len(variables), int(order)),
+            local_time_index=int(local_time_index),
+            overflow_policy="monomial_natural_interval",
+            range_policy="monomial_natural_interval",
+            source_contract=f"complete_total_degree:order={int(order)}",
+        )
+
     @property
     def dim(self) -> int:
         return len(self.variable_names)
@@ -274,7 +315,7 @@ class FixedSupportDescriptor:
         return tuple(self.time_cross_slot(index) for index in range(self.dim))
 
     def manifest(self) -> dict[str, Any]:
-        return {
+        manifest: dict[str, Any] = {
             "schema": "torch_tm_flowpipe_fixed_support_v1",
             "name": self.name,
             "coefficient_layout": ["batch", "state_output", "monomial_slot"],
@@ -307,6 +348,71 @@ class FixedSupportDescriptor:
             "expression_order": self.expression_order,
             "source_contract": self.source_contract,
         }
+        if self.source_contract.startswith("complete_total_degree:"):
+            multiplication_table = []
+            for left_slot, left_exp in enumerate(self.exponents):
+                for right_slot, right_exp in enumerate(self.exponents):
+                    product_exp = tuple(a + b for a, b in zip(left_exp, right_exp))
+                    output_slot = self._exponent_to_slot.get(product_exp)
+                    multiplication_table.append(
+                        {
+                            "left_slot": left_slot,
+                            "right_slot": right_slot,
+                            "product_exponent": list(product_exp),
+                            "output_slot": output_slot,
+                            "overflow": output_slot is None,
+                        }
+                    )
+            differentiation_table = []
+            for input_slot, exponent in enumerate(self.exponents):
+                for variable_index, power in enumerate(exponent):
+                    if power == 0:
+                        continue
+                    output_exp = list(exponent)
+                    output_exp[variable_index] -= 1
+                    differentiation_table.append(
+                        {
+                            "input_slot": input_slot,
+                            "variable_index": variable_index,
+                            "output_slot": self._exponent_to_slot[tuple(output_exp)],
+                            "factor": power,
+                        }
+                    )
+            integration_table = []
+            endpoint_table = []
+            time_index = int(self.local_time_index)
+            for input_slot, exponent in enumerate(self.exponents):
+                integrated = list(exponent)
+                denominator = integrated[time_index] + 1
+                integrated[time_index] += 1
+                output_slot = self._exponent_to_slot.get(tuple(integrated))
+                integration_table.append(
+                    {
+                        "input_slot": input_slot,
+                        "output_exponent": integrated,
+                        "output_slot": output_slot,
+                        "factor_numerator": 1,
+                        "factor_denominator": denominator,
+                        "overflow": output_slot is None,
+                    }
+                )
+                reduced = list(exponent)
+                time_power = reduced[time_index]
+                reduced[time_index] = 0
+                endpoint_table.append(
+                    {
+                        "input_slot": input_slot,
+                        "output_slot": self._exponent_to_slot[tuple(reduced)],
+                        "time_power": time_power,
+                    }
+                )
+            manifest["complete_algebra_tables"] = {
+                "multiplication": multiplication_table,
+                "differentiation": differentiation_table,
+                "integration": integration_table,
+                "endpoint_substitution": endpoint_table,
+            }
+        return manifest
 
     @property
     def support_sha256(self) -> str:
@@ -332,6 +438,9 @@ class FixedSupportKernelPlan:
     multiply_sign: torch.Tensor
     multiply_valid: torch.Tensor
     multiply_route_indices: tuple[tuple[int, int, int, int], ...]
+    overflow_left: torch.Tensor
+    overflow_right: torch.Tensor
+    overflow_exponents: torch.Tensor
     integration_input: torch.Tensor
     integration_output: torch.Tensor
     integration_factor: torch.Tensor
@@ -384,6 +493,14 @@ def _build_kernel_plan(
             right[stage, output_slot] = route.right_slot
             sign[stage, output_slot] = float(route.sign)
             valid[stage, output_slot] = True
+    retained_exponents = set(descriptor.exponents)
+    overflow_pairs = [
+        (left_slot, right_slot, tuple(a + b for a, b in zip(left_exp, right_exp)))
+        for left_slot, left_exp in enumerate(descriptor.exponents)
+        for right_slot, right_exp in enumerate(descriptor.exponents)
+        if tuple(a + b for a, b in zip(left_exp, right_exp))
+        not in retained_exponents
+    ]
     integration_input = torch.as_tensor(
         [route.input_slot for route in descriptor.integration_routes],
         dtype=torch.long,
@@ -445,6 +562,17 @@ def _build_kernel_plan(
             )
             for route in descriptor.multiply_routes
         ),
+        overflow_left=torch.as_tensor(
+            [left for left, _, _ in overflow_pairs], dtype=torch.long, device=device
+        ),
+        overflow_right=torch.as_tensor(
+            [right for _, right, _ in overflow_pairs], dtype=torch.long, device=device
+        ),
+        overflow_exponents=torch.as_tensor(
+            [exponent for _, _, exponent in overflow_pairs],
+            dtype=torch.long,
+            device=device,
+        ).reshape(-1, descriptor.dim),
         integration_input=integration_input,
         integration_output=integration_output,
         integration_factor=integration_factor,
@@ -651,6 +779,41 @@ def _monomial_interval(
     return result
 
 
+def _monomial_interval_table(
+    exponents: torch.Tensor,
+    box_lo: torch.Tensor,
+    box_hi: torch.Tensor,
+) -> FixedSupportInterval:
+    """Evaluate many monomial natural intervals without per-route Python work."""
+
+    if exponents.ndim != 2 or exponents.shape[1] != box_lo.shape[1]:
+        raise ValueError("monomial exponent table and range box dimensions disagree")
+    count = int(exponents.shape[0])
+    lo = torch.ones(
+        (box_lo.shape[0], count), dtype=box_lo.dtype, device=box_lo.device
+    )
+    hi = torch.ones_like(lo)
+    if count == 0:
+        return FixedSupportInterval(lo, hi)
+    for variable_index in range(box_lo.shape[1]):
+        powers = exponents[:, variable_index]
+        factor_lo = torch.ones_like(lo)
+        factor_hi = torch.ones_like(hi)
+        variable = FixedSupportInterval(
+            box_lo[:, variable_index], box_hi[:, variable_index]
+        )
+        for power in range(1, int(powers.max().item()) + 1):
+            powered = variable.pow(power)
+            mask = powers == power
+            factor_lo = torch.where(mask[None, :], powered.lo[:, None], factor_lo)
+            factor_hi = torch.where(mask[None, :], powered.hi[:, None], factor_hi)
+        product = FixedSupportInterval(lo, hi).mul(
+            FixedSupportInterval(factor_lo, factor_hi)
+        )
+        lo, hi = product.lo, product.hi
+    return FixedSupportInterval(lo, hi)
+
+
 @dataclass(frozen=True)
 class FixedSupportPolynomial:
     """Polynomial coefficients shaped ``[batch, state_output, slot]``."""
@@ -808,22 +971,27 @@ class FixedSupportPolynomial:
         self._check(other)
         kept = self.mul_trunc(other)
         if self.support.overflow_policy != "diffreach_restricted_quadratic_grouped":
-            entries: dict[str, FixedSupportInterval] = {}
-            kept_exponents = set(self.support.exponents)
-            overflow = FixedSupportInterval.zeros_like(self.coeffs[..., 0])
-            for left_slot, left_exp in enumerate(self.support.exponents):
-                for right_slot, right_exp in enumerate(self.support.exponents):
-                    exponent = tuple(a + b for a, b in zip(left_exp, right_exp))
-                    if exponent in kept_exponents:
-                        continue
-                    monomial = _monomial_interval(exponent, box_lo, box_hi)
-                    coefficient = self.coeffs[..., left_slot] * other.coeffs[..., right_slot]
-                    term = FixedSupportInterval(coefficient, coefficient).mul(
-                        FixedSupportInterval(monomial.lo[:, None], monomial.hi[:, None])
-                    )
-                    overflow = overflow.add(term)
-            entries["discarded_product_monomials"] = overflow
-            return kept, FixedSupportLedger.from_mapping(entries)
+            plan = fixed_support_kernel_plan(
+                self.support, device=self.coeffs.device, dtype=self.coeffs.dtype
+            )
+            if plan.overflow_left.numel() == 0:
+                overflow = FixedSupportInterval.zeros_like(self.coeffs[..., 0])
+            else:
+                monomials = _monomial_interval_table(
+                    plan.overflow_exponents, box_lo, box_hi
+                )
+                coefficients = self.coeffs.index_select(
+                    -1, plan.overflow_left
+                ) * other.coeffs.index_select(-1, plan.overflow_right)
+                lower = coefficients * monomials.lo[:, None, :]
+                upper = coefficients * monomials.hi[:, None, :]
+                overflow = FixedSupportInterval(
+                    torch.minimum(lower, upper).sum(dim=-1),
+                    torch.maximum(lower, upper).sum(dim=-1),
+                )
+            return kept, FixedSupportLedger.from_mapping(
+                {"discarded_product_monomials": overflow}
+            )
 
         _, left_linear, left_cross = self._diffreach_groups()
         _, right_linear, right_cross = other._diffreach_groups()
@@ -904,6 +1072,26 @@ class FixedSupportPolynomial:
         ):
             contribution = self.coeffs[..., input_slot] * plan.integration_factor[route_index]
             result[..., output_slot] = result[..., output_slot] + contribution
+        return FixedSupportPolynomial(result, self.support)
+
+    def differentiate(self, variable_index: int) -> "FixedSupportPolynomial":
+        """Differentiate exactly within a downward-closed monomial support."""
+
+        variable = int(variable_index)
+        if not 0 <= variable < self.support.dim:
+            raise IndexError(variable)
+        result = torch.zeros_like(self.coeffs)
+        for input_slot, exponent in enumerate(self.support.exponents):
+            factor = int(exponent[variable])
+            if factor == 0:
+                continue
+            output_exp = list(exponent)
+            output_exp[variable] -= 1
+            try:
+                output_slot = self.support.slot(output_exp)
+            except KeyError as error:
+                raise ValueError("support is not closed under differentiation") from error
+            result[..., output_slot] = result[..., output_slot] + self.coeffs[..., input_slot] * factor
         return FixedSupportPolynomial(result, self.support)
 
     def integrate_time_ctrunc(
@@ -1127,6 +1315,77 @@ class FixedSupportTaylorModel:
         time_index = support.local_time_index
         if time_index != 0:
             raise NotImplementedError("DiffReach-compatible affine composition currently requires local time at index 0")
+        if support.range_policy != "diffreach_restricted_quadratic_horner":
+            batch = self.polynomial.batch
+            dtype = self.polynomial.coeffs.dtype
+            device = self.polynomial.coeffs.device
+            time_polynomial = FixedSupportPolynomial.zeros(
+                batch, 1, support, dtype=dtype, device=device
+            )
+            time_coefficients = time_polynomial.coeffs.clone()
+            time_coefficients[..., support.linear_slot(time_index)] = 1.0
+            variables = [
+                FixedSupportTaylorModel.from_polynomial(
+                    FixedSupportPolynomial(time_coefficients, support)
+                ),
+                *(other.component(index) for index in range(state_dim)),
+            ]
+            box_lo = torch.cat(
+                (
+                    torch.zeros((batch, 1), dtype=dtype, device=device),
+                    -torch.ones((batch, state_dim), dtype=dtype, device=device),
+                ),
+                dim=1,
+            )
+            time_hi = torch.as_tensor(time_value, dtype=dtype, device=device)
+            if time_hi.ndim == 0:
+                time_hi = time_hi.expand(batch)
+            box_hi = torch.cat(
+                (
+                    time_hi.reshape(batch, 1),
+                    torch.ones((batch, state_dim), dtype=dtype, device=device),
+                ),
+                dim=1,
+            )
+            monomial_reference = self.component(0)
+            monomials: list[FixedSupportTaylorModel] = []
+            for exponent in support.exponents:
+                if not any(exponent):
+                    monomials.append(
+                        FixedSupportTaylorModel.constant_like(
+                            monomial_reference, 1.0
+                        )
+                    )
+                    continue
+                variable_index = max(
+                    index for index, power in enumerate(exponent) if int(power) > 0
+                )
+                parent_exponent = list(exponent)
+                parent_exponent[variable_index] -= 1
+                parent_slot = support.slot(parent_exponent)
+                monomials.append(
+                    monomials[parent_slot].mul(
+                        variables[variable_index], box_lo, box_hi
+                    )
+                )
+            outputs: list[FixedSupportTaylorModel] = []
+            for output_index in range(self.polynomial.output_dim):
+                reference = self.component(output_index)
+                accumulated = FixedSupportTaylorModel.constant_like(reference, 0.0)
+                for slot, _exponent in enumerate(support.exponents):
+                    coefficient = reference.polynomial.coeffs[..., slot]
+                    if not bool(torch.any(coefficient != 0)):
+                        continue
+                    accumulated = accumulated.add(
+                        monomials[slot].scale(coefficient)
+                    )
+                accumulated = FixedSupportTaylorModel(
+                    accumulated.polynomial,
+                    accumulated.remainder.add(reference.remainder),
+                    accumulated.ledger.extend(reference.ledger),
+                )
+                outputs.append(accumulated)
+            return FixedSupportTaylorModel.stack(outputs)
         plan = fixed_support_kernel_plan(
             support, device=self.polynomial.coeffs.device, dtype=self.polynomial.coeffs.dtype
         )
