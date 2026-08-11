@@ -821,7 +821,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/full_pytest",
+        "14_tests_at_tested_source/full_pytest",
         name="final_head_full_pytest",
         command=[python, "-m", "pytest", "-q", "-rsxX"],
         config={"final_head": _head()},
@@ -830,7 +830,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/compileall",
+        "14_tests_at_tested_source/compileall",
         name="final_head_compileall",
         command=[python, "-m", "compileall", "-q", "src", "experiments", "tests"],
         config={"final_head": _head()},
@@ -839,7 +839,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/checkpoint_load",
+        "14_tests_at_tested_source/checkpoint_load",
         name="final_head_checkpoint_load",
         command=[
             python,
@@ -853,7 +853,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/focused_tests",
+        "14_tests_at_tested_source/focused_tests",
         name="final_head_focused_tests",
         command=[
             python,
@@ -875,7 +875,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/diff_check",
+        "14_tests_at_tested_source/diff_check",
         name="final_head_diff_check",
         command=["git", "diff", "--check", "7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a..HEAD"],
         config={"start_commit": "7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a"},
@@ -884,7 +884,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
-        "14_fresh_clone/worktree_clean",
+        "14_tests_at_tested_source/worktree_clean",
         name="final_head_worktree_clean",
         command=[
             python,

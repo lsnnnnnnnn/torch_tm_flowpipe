@@ -407,10 +407,34 @@ def _validate_scientific_semantics(
             raise RuntimeError("true-clone marker was produced from source worktree")
         if not bool(_field(scientific, "origin_clone")):
             raise RuntimeError("true-clone marker lacks origin clone evidence")
+        if _field(scientific, "temporary_root_method") != "tempfile.mkdtemp":
+            raise RuntimeError("true-clone marker lacks temporary-root evidence")
+        if _field(scientific, "origin") != _field(scientific, "cloned_origin"):
+            raise RuntimeError("true clone origin identity mismatch")
         if _field(scientific, "checked_out_sha") != _field(
             scientific, "expected_sha"
         ):
             raise RuntimeError("true clone checked out the wrong SHA")
+        if _field(scientific, "clean_tree") is not True:
+            raise RuntimeError("true clone is not clean")
+        commands = _field(scientific, "commands")
+        if not isinstance(commands, list):
+            raise RuntimeError("true clone command evidence must be a list")
+        by_name = {
+            str(row.get("name")): row
+            for row in commands
+            if isinstance(row, Mapping)
+        }
+        for name in ("clone_origin", "checkout_exact_sha", "install"):
+            if name not in by_name or by_name[name].get("exit_code") != 0:
+                raise RuntimeError(f"true clone command did not pass: {name}")
+        clone_command = by_name["clone_origin"].get("command")
+        if not isinstance(clone_command, list) or clone_command[:3] != [
+            "git",
+            "clone",
+            "--no-local",
+        ]:
+            raise RuntimeError("true clone command is not an origin clone")
 
 
 def _derive_scientific_contract(
