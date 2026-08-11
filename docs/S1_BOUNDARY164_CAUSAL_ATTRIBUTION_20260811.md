@@ -188,4 +188,3 @@ interactions and is no wider on every post-padding decisive comparison.
 Outcome D is unnecessary because the cause is resolved. The sole Phase-5
 choice is Outcome B, `S1_POSTHOC_IMAGE_INTRINSIC_INFLATION`, authorizing only
 `normalized_insertion_structured_total_delta_k16`.
-

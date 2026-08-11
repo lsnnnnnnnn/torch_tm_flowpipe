@@ -112,4 +112,3 @@ End S1 promotion under this frozen contract. Any return to fixed-support
 representation research must be a separately authorized goal; do not extend
 this run with K32, smaller `h_min`, a wider target, fresh-horizon probing, or a
 second-system experiment.
-
