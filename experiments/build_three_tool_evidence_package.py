@@ -528,6 +528,20 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
+        "14_fresh_clone/checkpoint_load",
+        name="final_head_checkpoint_load",
+        command=[
+            python,
+            "experiments/validate_tracked_checkpoints.py",
+            "--output-dir",
+            "{ARTIFACT_DIR}/run",
+        ],
+        config={"final_head": _head(), "scope": "all_tracked_json_checkpoint_paths"},
+        eligibility="final_head_gate",
+        timing="not_a_benchmark",
+    )
+    _protocol(
+        run_root,
         "14_fresh_clone/focused_tests",
         name="final_head_focused_tests",
         command=[
