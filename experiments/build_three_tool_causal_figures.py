@@ -212,7 +212,10 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
     ladder = _json(source)
     rows = []
     stages = ("polynomial_picard", "validation", "carry", "output_object")
-    for cell in ladder["cells"]:
+    eligible_cells = [
+        cell for cell in ladder["cells"] if cell["completed_requested_gate"]
+    ]
+    for cell in eligible_cells:
         for stage in stages:
             rows.append(
                 {
@@ -229,8 +232,20 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
                 }
             )
     csv_path = output / "horizon_gated_runtime_breakdown.csv"
-    _write_csv(csv_path, tuple(rows[0]), rows)
-    keys = [(cell["cell"], int(cell["batch"])) for cell in ladder["cells"]]
+    runtime_fields = (
+        "cell",
+        "batch",
+        "completed_steps",
+        "validated_horizon",
+        "completed_requested_gate",
+        "stage",
+        "seconds",
+        "units",
+        "eligibility",
+        "sample_count",
+    )
+    _write_csv(csv_path, runtime_fields, rows)
+    keys = [(cell["cell"], int(cell["batch"])) for cell in eligible_cells]
     totals = {key: sum(float(row["seconds"]) for row in rows if (row["cell"], int(row["batch"])) == key) for key in keys}
     maximum = max(totals.values(), default=1.0) or 1.0
     colors = {
@@ -243,6 +258,15 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
         _text(20, 30, "Horizon-gated bridge runtime breakdown", "title"),
         _text(20, 50, "process-wall seconds by stage; diagnostic only; one run per row", "axis"),
     ]
+    if not rows:
+        body.append(
+            _text(
+                20,
+                92,
+                "No cell completed the requested horizon gate; timing comparison excluded.",
+                "label",
+            )
+        )
     left, right, top, row_h = 165, 1040, 82, 34
     for index, key in enumerate(keys):
         y = top + index * row_h
