@@ -783,6 +783,8 @@ def _monomial_interval_table(
     exponents: torch.Tensor,
     box_lo: torch.Tensor,
     box_hi: torch.Tensor,
+    *,
+    maximum_power: int,
 ) -> FixedSupportInterval:
     """Evaluate many monomial natural intervals without per-route Python work."""
 
@@ -802,7 +804,7 @@ def _monomial_interval_table(
         variable = FixedSupportInterval(
             box_lo[:, variable_index], box_hi[:, variable_index]
         )
-        for power in range(1, int(powers.max().item()) + 1):
+        for power in range(1, int(maximum_power) + 1):
             powered = variable.pow(power)
             mask = powers == power
             factor_lo = torch.where(mask[None, :], powered.lo[:, None], factor_lo)
@@ -978,7 +980,11 @@ class FixedSupportPolynomial:
                 overflow = FixedSupportInterval.zeros_like(self.coeffs[..., 0])
             else:
                 monomials = _monomial_interval_table(
-                    plan.overflow_exponents, box_lo, box_hi
+                    plan.overflow_exponents,
+                    box_lo,
+                    box_hi,
+                    maximum_power=2
+                    * max(max(exponent) for exponent in self.support.exponents),
                 )
                 coefficients = self.coeffs.index_select(
                     -1, plan.overflow_left
