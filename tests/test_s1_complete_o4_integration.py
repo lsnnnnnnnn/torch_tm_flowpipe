@@ -16,6 +16,7 @@ from torch_tm_flowpipe.structured_remainder import (
     normal_interval_to_physical,
     structured_column_contributions,
 )
+from torch_tm_flowpipe.s1_boundary_attribution import BOUNDARY_STAGE_NAMES
 
 
 def _step(current, state, h=0.005):
@@ -66,6 +67,11 @@ def test_vdp_boundaries_1_2_and_9_publish_complete_structured_totals():
         assert segment.flowstar_normal_stats["structured_total_self_map_containment"]
         assert segment.flowstar_normal_stats["structured_endpoint_in_tube"]
         assert segment.flowstar_normal_stats["structured_raw_picard_target_changed"] is False
+        assert segment.boundary_attribution_record is not None
+        assert tuple(
+            stage.stage for stage in segment.boundary_attribution_record.stages
+        ) == BOUNDARY_STAGE_NAMES
+        assert all(stage.units for stage in segment.boundary_attribution_record.stages)
 
         identities = [
             (

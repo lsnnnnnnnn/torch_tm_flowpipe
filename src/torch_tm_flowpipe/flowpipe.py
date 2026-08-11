@@ -24,6 +24,10 @@ from .structured_remainder import (
     structured_column_contributions,
     structured_remainder_boundary_update,
 )
+from .s1_boundary_attribution import (
+    S1BoundaryAttributionRecord,
+    S1BoundaryStage,
+)
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
     SymbolicRemainderState,
@@ -98,6 +102,7 @@ class FlowpipeSegment:
     tube_total_remainder: Any | None = None
     endpoint_publication_mask: Any | None = None
     tube_publication_mask: Any | None = None
+    boundary_attribution_record: S1BoundaryAttributionRecord | None = None
 
     def __post_init__(self) -> None:
         # Older experiment helpers construct FlowpipeSegment directly.  Treat
@@ -1742,6 +1747,7 @@ def _flowstar_structured_insertion_transition(
     right_map_range_mode: str,
     right_map_center_mode: str,
     horner_diagnostic: bool,
+    allow_outward_renormalization: bool = True,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     """Carry K16 S1 through one already accepted complete-O4 boundary."""
     from .batched_dense_tm import (
@@ -1761,6 +1767,9 @@ def _flowstar_structured_insertion_transition(
     # center calculation. The canonical poststate below stores the polynomial
     # and structured decomposition separately.
     pre_total = materialize_structured_remainder(structured)
+    pre_q_lo, pre_q_hi = _box_tensor(
+        _tmvector_without_remainder(previous_state.tmv_right).range_box()
+    )
     full_previous_right = _tmvector_with_remainder_tensor(
         previous_state.tmv_right,
         pre_total.lo,
@@ -1803,6 +1812,11 @@ def _flowstar_structured_insertion_transition(
         (base_lo, base_hi),
         (old_columns.lo, old_columns.hi),
         identity,
+    )
+    endpoint_polynomial_lo, endpoint_polynomial_hi = endpoint_dense.poly.range_bound(
+        base_lo,
+        base_hi,
+        context="s1_boundary_attribution_endpoint_polynomial",
     )
     tube_dense = sparse_tmvector_to_dense(
         _tmvector_without_remainder(seg.tm),
@@ -1865,6 +1879,13 @@ def _flowstar_structured_insertion_transition(
     )
     eligible_center_total = outward_sum(eligible_centers) if eligible_centers else zero_physical
     eligible_symmetric_total = outward_sum(eligible_symmetric) if eligible_symmetric else zero_physical
+    ineligible_physical = outward_sum(
+        [
+            OutwardIntervalTensor(*typed_sources[category])
+            for category in REMAINDER_LEDGER_CATEGORIES
+            if category not in ELIGIBLE_STRUCTURED_SOURCES
+        ]
+    )
     endpoint_structured_image = OutwardIntervalTensor(
         endpoint_image.total_difference_lo,
         endpoint_image.total_difference_hi,
@@ -1970,6 +1991,10 @@ def _flowstar_structured_insertion_transition(
         boundary_index=structured.accepted_boundary_index,
         map_is_affine=False,
     )
+    reconstructed_before_renormalization = OutwardIntervalTensor(
+        boundary.materialized_lo,
+        boundary.materialized_hi,
+    )
     if not bool(torch.all(boundary.accepted)):
         raise FloatingPointError(
             "S1 accepted-boundary conservation failed: "
@@ -1993,7 +2018,11 @@ def _flowstar_structured_insertion_transition(
     # the represented physical set is unchanged.  Enlarge only the affected
     # forward scales and transform every normalized owner together; this is a
     # coordinate change, not a tolerance on the [-1,1] obligation.
-    while not bool(torch.all(domain_gate)) and renormalization_count < 4:
+    while (
+        allow_outward_renormalization
+        and not bool(torch.all(domain_gate))
+        and renormalization_count < 4
+    ):
         magnitude = torch.maximum(torch.abs(right_total.lo), torch.abs(right_total.hi))
         needs_scale = magnitude > 1.0
         if not bool(torch.any(needs_scale)):
@@ -2124,6 +2153,129 @@ def _flowstar_structured_insertion_transition(
     )
     if not bool(torch.all(endpoint_publication & tube_publication)):
         raise FloatingPointError("S1 endpoint/tube publication omitted a represented contribution")
+    endpoint_affine = OutwardIntervalTensor(
+        endpoint_image.affine_map_lo,
+        endpoint_image.affine_map_hi,
+    )
+    endpoint_affine_ordinary = _interval_matrix_vector(
+        endpoint_affine,
+        OutwardIntervalTensor(
+            structured.ordinary_rem_lo,
+            structured.ordinary_rem_hi,
+        ),
+    )
+    endpoint_affine_structured = _interval_matrix_vector(
+        endpoint_affine,
+        old_columns,
+    )
+    seg.boundary_attribution_record = S1BoundaryAttributionRecord(
+        accepted_boundary_index_before=int(structured.accepted_boundary_index),
+        contract="C_current",
+        stages=(
+            S1BoundaryStage("A0", "prestate polynomial Q range", "old normalized", pre_q_lo, pre_q_hi),
+            S1BoundaryStage(
+                "A1",
+                "prestate ordinary remainder R_o",
+                "old normalized",
+                structured.ordinary_rem_lo,
+                structured.ordinary_rem_hi,
+            ),
+            S1BoundaryStage("A2", "prestate structured total Z", "old normalized", old_columns.lo, old_columns.hi),
+            S1BoundaryStage("A3", "materialized total R_o + Z", "old normalized", pre_total.lo, pre_total.hi),
+            S1BoundaryStage(
+                "B0",
+                "canonical baseline insertion target R_base",
+                "new normalized",
+                target_normal_effective.lo,
+                target_normal_effective.hi,
+            ),
+            S1BoundaryStage(
+                "B1",
+                "endpoint complete polynomial P over current base",
+                "endpoint physical",
+                endpoint_polynomial_lo,
+                endpoint_polynomial_hi,
+            ),
+            S1BoundaryStage("B2", "current base box", "old normalized", base_lo, base_hi),
+            S1BoundaryStage("B3", "current structured perturbation box", "old normalized", old_columns.lo, old_columns.hi),
+            S1BoundaryStage(
+                "B4",
+                "affine map A",
+                "endpoint physical",
+                endpoint_image.affine_map_lo,
+                endpoint_image.affine_map_hi,
+            ),
+            S1BoundaryStage(
+                "B5",
+                "A times ordinary remainder",
+                "endpoint physical",
+                endpoint_affine_ordinary.lo,
+                endpoint_affine_ordinary.hi,
+            ),
+            S1BoundaryStage(
+                "B6",
+                "A times structured total",
+                "endpoint physical",
+                endpoint_affine_structured.lo,
+                endpoint_affine_structured.hi,
+            ),
+            S1BoundaryStage(
+                "B7",
+                "structured nonlinear residual N",
+                "endpoint physical",
+                endpoint_image.nonlinear_residual_lo,
+                endpoint_image.nonlinear_residual_hi,
+            ),
+            S1BoundaryStage(
+                "B8",
+                "typed eligible centers",
+                "physical source",
+                eligible_center_total.lo,
+                eligible_center_total.hi,
+            ),
+            S1BoundaryStage(
+                "B9",
+                "typed eligible symmetric sources",
+                "physical source",
+                eligible_symmetric_total.lo,
+                eligible_symmetric_total.hi,
+            ),
+            S1BoundaryStage(
+                "B10",
+                "ineligible typed sources",
+                "physical source",
+                ineligible_physical.lo,
+                ineligible_physical.hi,
+            ),
+            S1BoundaryStage("B11", "known before padding", "new normalized", known.lo, known.hi),
+            S1BoundaryStage("B12", "padding", "new normalized", padding_normal.lo, padding_normal.hi),
+            S1BoundaryStage(
+                "B13",
+                "reconstructed total before renormalization",
+                "new normalized",
+                reconstructed_before_renormalization.lo,
+                reconstructed_before_renormalization.hi,
+            ),
+            S1BoundaryStage(
+                "B14",
+                "reconstructed total after renormalization",
+                "new normalized",
+                next_total.lo,
+                next_total.hi,
+            ),
+            S1BoundaryStage("B15", "published endpoint total", "endpoint physical", endpoint_total.lo, endpoint_total.hi),
+            S1BoundaryStage("B16", "published tube total", "tube physical", tube_total.lo, tube_total.hi),
+        ),
+        diagnostics={
+            "complete_polynomial_contract": "base=range(Q+R_o), perturbation=Z",
+            "structured_image_decomposition_padding_lo": endpoint_image.decomposition_padding_lo.detach().cpu().tolist(),
+            "structured_image_decomposition_padding_hi": endpoint_image.decomposition_padding_hi.detach().cpu().tolist(),
+            "structured_image_containment": bool(torch.all(endpoint_image.containment_mask)),
+            "source_decomposition": bool(torch.all(boundary.source_decomposition_mask)),
+            "conservation": bool(torch.all(boundary.conservation_mask)),
+            "outward_renormalization_count": int(renormalization_count),
+        },
+    )
     seg.structured_boundary_result = boundary
     seg.structured_state_before = structured
     seg.structured_state_after = boundary.state
@@ -4769,6 +4921,7 @@ def flowpipe_step_flowstar_style_adaptive(
     dense_device: torch.device | str = "cpu",
     dense_dtype: torch.dtype = torch.float64,
     dense_range_policy: Any | None = None,
+    structured_allow_outward_renormalization: bool = True,
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -4873,6 +5026,7 @@ def flowpipe_step_flowstar_style_adaptive(
                         right_map_range_mode=right_map_range_mode,
                         right_map_center_mode=right_map_center_mode,
                         horner_diagnostic=horner_diagnostic,
+                        allow_outward_renormalization=structured_allow_outward_renormalization,
                     )
                 except (FloatingPointError, RuntimeError, ValueError) as exc:
                     seg.status = "failed"
