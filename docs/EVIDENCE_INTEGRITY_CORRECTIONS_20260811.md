@@ -16,7 +16,9 @@ numerical solver claims retain their own scope.
 
 Claim status, source paths/hashes, command exit, scope, and limitations.
 
-## Historical package recovery and remaining unavailable gates
+## What is unavailable
+
+### Historical package recovery and remaining unavailable gates
 
 The historical package was absent from the Git tree at `2cb647cd...`. Its
 server-local original has now been recovered: all 534 original checksum rows

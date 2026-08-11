@@ -378,6 +378,65 @@ def _validate_scientific_semantics(
             ):
                 raise RuntimeError("full-horizon ULP bound exceeded")
 
+    if profile == "flowstar_torch_fixed_schedule":
+        fixed_contract = {
+            "scope": "full_horizon_or_first_failure",
+            "contract.partition_count": 1,
+            "contract.support": "complete_total_degree_O4",
+            "contract.h_decimal": "0.01",
+            "contract.h_hex": float(0.01).hex(),
+            "contract.requested_steps": 1000,
+            "contract.requested_horizon": 10.0,
+            "contract.target_remainder": [-0.0001, 0.0001],
+            "contract.cutoff": [-1e-10, 1e-10],
+            "contract.adaptive_fallback": False,
+            "contract.endpoint_repair": False,
+            "flowstar.build_qualification": "scalar_affine_under_enclosure_open",
+            "torch.fallback_count": 0,
+            "torch.endpoint_repair_used": False,
+            "shared.tightness_eligibility": "empirical_or_build_qualified_common_prefix",
+            "shared.same_prestate_scope": "initial_state_only",
+            "shared.later_scope": "schedule_controlled_comparative_trace",
+        }
+        for field, expected in fixed_contract.items():
+            if _field(scientific, field) != expected:
+                raise RuntimeError(f"fixed-schedule prerequisite failed: {field}")
+        flow_steps = int(_field(scientific, "flowstar.accepted_steps"))
+        torch_steps = int(_field(scientific, "torch.accepted_steps"))
+        shared_steps = int(_field(scientific, "shared.accepted_steps"))
+        if not (0 <= shared_steps == min(flow_steps, torch_steps) <= 1000):
+            raise RuntimeError("fixed-schedule accepted-step relationship failed")
+        horizons = {
+            "flowstar.validated_horizon": flow_steps * 0.01,
+            "torch.validated_horizon": torch_steps * 0.01,
+            "shared.validated_horizon": shared_steps * 0.01,
+        }
+        for field, expected in horizons.items():
+            if float(_field(scientific, field)) != expected:
+                raise RuntimeError(f"fixed-schedule horizon relationship failed: {field}")
+        both_complete = (
+            bool(_field(scientific, "flowstar.completed_t10"))
+            and bool(_field(scientific, "torch.completed_t10"))
+            and flow_steps == 1000
+            and torch_steps == 1000
+            and shared_steps == 1000
+        )
+        failures = _field(scientific, "shared.first_failure")
+        if not isinstance(failures, list):
+            raise RuntimeError("fixed-schedule first-failure field must be a list")
+        if outcome == "FLOWSTAR_TORCH_FIXED_SCHEDULE_T10_BOTH_COMPLETE":
+            if not both_complete or failures:
+                raise RuntimeError("fixed-schedule T10 closure prerequisite failed")
+        elif outcome == "FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY":
+            if both_complete or not failures:
+                raise RuntimeError("fixed-schedule common-prefix prerequisite failed")
+        elif outcome == "FLOWSTAR_TORCH_FIXED_SCHEDULE_ENVIRONMENT_BLOCKED":
+            blocked = _field(scientific, "environment_blocked")
+            if not isinstance(blocked, Mapping) or not blocked.get("reason"):
+                raise RuntimeError("fixed-schedule environment blocker is missing")
+        else:
+            raise RuntimeError("fixed-schedule semantic profile used for another outcome")
+
     if profile == "bridge_g3":
         if _field(scientific, "max_gate") != "G3":
             raise RuntimeError("G3 semantic profile used for another gate")

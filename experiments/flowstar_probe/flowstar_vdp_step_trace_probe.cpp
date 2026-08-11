@@ -1,6 +1,7 @@
 #include "Continuous.h"
 
 #include <cmath>
+#include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -27,9 +28,12 @@ const vector<string> kHeaders = {
     "attempt_index_within_step",
     "adaptive_attempt_index",
     "t_before",
+    "t_before_hex",
     "h_try",
     "h",
+    "h_hex",
     "t_after",
+    "t_after_hex",
     "h_after_if_rejected_or_next",
     "accepted",
     "rejected",
@@ -375,7 +379,11 @@ const vector<string> kHeaders = {
     "residual_hi_y",
     "residual_over_target_x",
     "residual_over_target_y",
-    "residual_over_target_sum"};
+    "residual_over_target_sum",
+    "prestate_state_canonical",
+    "prestate_coefficients_canonical",
+    "retained_coefficients_canonical",
+    "stage_runtime_seconds"};
 
 typedef map<string, string> Row;
 
@@ -400,11 +408,144 @@ string format_double(double value)
     return out.str();
 }
 
+string format_hex_double(double value)
+{
+    if (!std::isfinite(value))
+    {
+        return "";
+    }
+    if (value == 0.0)
+    {
+        return std::signbit(value) ? "-0x0.0p+0" : "0x0.0p+0";
+    }
+    char buffer[64];
+    // CPython float.hex() uses thirteen hexadecimal fractional digits for a
+    // binary64 value.  Matching it makes cross-language schedule checks exact.
+    snprintf(buffer, sizeof(buffer), "%.13a", value);
+    return string(buffer);
+}
+
 string format_size(size_t value)
 {
     ostringstream out;
     out << value;
     return out.str();
+}
+
+template <class DATA_TYPE>
+string polynomial_vector_canonical(const TaylorModelVec<DATA_TYPE> &tmv)
+{
+    Variables names;
+    names.declareVar("tau");
+    names.declareVar("u0");
+    names.declareVar("u1");
+    names.declareVar("u2");
+    ostringstream out;
+    for (size_t i = 0; i < tmv.tms.size(); ++i)
+    {
+        string expansion;
+        typename list<Term<DATA_TYPE> >::const_iterator term =
+            tmv.tms[i].expansion.terms.begin();
+        for (; term != tmv.tms[i].expansion.terms.end(); ++term)
+        {
+            string encoded_term;
+            term->toString(encoded_term, names);
+            if (!expansion.empty())
+            {
+                expansion += " + ";
+            }
+            expansion += encoded_term;
+        }
+        if (expansion.empty())
+        {
+            expansion = "0";
+        }
+        out << "component=" << i << ";" << expansion << ";remainder="
+            << tmv.tms[i].remainder.toString() << "\n";
+    }
+    return out.str();
+}
+
+template <class DATA_TYPE>
+string polynomial_vector_coefficients_canonical(const TaylorModelVec<DATA_TYPE> &tmv)
+{
+    Variables names;
+    names.declareVar("tau");
+    names.declareVar("u0");
+    names.declareVar("u1");
+    names.declareVar("u2");
+    ostringstream out;
+    for (size_t i = 0; i < tmv.tms.size(); ++i)
+    {
+        string expansion;
+        typename list<Term<DATA_TYPE> >::const_iterator term =
+            tmv.tms[i].expansion.terms.begin();
+        for (; term != tmv.tms[i].expansion.terms.end(); ++term)
+        {
+            string encoded_term;
+            term->toString(encoded_term, names);
+            if (!expansion.empty())
+            {
+                expansion += " + ";
+            }
+            expansion += encoded_term;
+        }
+        out << "component=" << i << ";" << (expansion.empty() ? "0" : expansion) << "\n";
+    }
+    return out.str();
+}
+
+template <class DATA_TYPE>
+string matrix_canonical(const Matrix<DATA_TYPE> &matrix)
+{
+    ostringstream out;
+    out << "rows=" << matrix.rows() << ";cols=" << matrix.cols() << "\n";
+    for (unsigned int row = 0; row < matrix.rows(); ++row)
+    {
+        for (unsigned int column = 0; column < matrix.cols(); ++column)
+        {
+            out << "entry=" << row << "," << column << ";"
+                << matrix.data[row * matrix.cols() + column].toString() << "\n";
+        }
+    }
+    return out.str();
+}
+
+string flowpipe_state_canonical(
+    const Flowpipe &flowpipe,
+    const Symbolic_Remainder &symbolic_remainder)
+{
+    ostringstream out;
+    out << "tmv_pre\n" << polynomial_vector_canonical(flowpipe.tmvPre);
+    out << "tmv_right\n" << polynomial_vector_canonical(flowpipe.tmv);
+    for (size_t index = 0; index < flowpipe.domain.size(); ++index)
+    {
+        out << "domain=" << index << ";" << flowpipe.domain[index].toString() << "\n";
+    }
+    for (size_t index = 0; index < symbolic_remainder.scalars.size(); ++index)
+    {
+        out << "symbolic_scalar=" << index << ";"
+            << symbolic_remainder.scalars[index].toString() << "\n";
+    }
+    for (size_t index = 0; index < symbolic_remainder.J.size(); ++index)
+    {
+        out << "symbolic_J=" << index << "\n"
+            << matrix_canonical(symbolic_remainder.J[index]);
+    }
+    for (size_t index = 0; index < symbolic_remainder.Phi_L.size(); ++index)
+    {
+        out << "symbolic_Phi_L=" << index << "\n"
+            << matrix_canonical(symbolic_remainder.Phi_L[index]);
+    }
+    return out.str();
+}
+
+string flowpipe_coefficients_canonical(const Flowpipe &flowpipe)
+{
+    return string("tmv_pre\n")
+        + polynomial_vector_coefficients_canonical(flowpipe.tmvPre)
+        + "tmv_right\n"
+        + polynomial_vector_coefficients_canonical(flowpipe.tmv);
 }
 
 void set_value(Row &row, const string &key, const string &value)
@@ -638,6 +779,9 @@ void write_metadata_csv(const string &trace_path, double horizon, const Taylor_M
     out << "step_min," << format_double(tm_setting.step_min) << "\n";
     out << "step_max," << format_double(tm_setting.step_max) << "\n";
     out << "starting_attempted_h," << format_double(tm_setting.step_max) << "\n";
+    out << "fixed_h_hex," << csv_escape(format_hex_double(tm_setting.step_max)) << "\n";
+    out << "schedule_kind," << (tm_setting.step_min == tm_setting.step_max ? "fixed" : "adaptive") << "\n";
+    out << "adaptive_fallback_allowed," << (tm_setting.step_min == tm_setting.step_max ? "false" : "true") << "\n";
     out << "order," << format_size(tm_setting.order) << "\n";
     out << "cutoff," << csv_escape("[-1e-10,1e-10]") << "\n";
     out << "remainder_estimation," << csv_escape("[-1e-4,1e-4]") << "\n";
@@ -658,6 +802,7 @@ Row base_row(int step_index, int attempt_index, double t_before)
     set_value(row, "attempt_index_within_step", format_size(static_cast<size_t>(attempt_index)));
     set_value(row, "adaptive_attempt_index", format_size(static_cast<size_t>(attempt_index)));
     set_value(row, "t_before", t_before);
+    set_value(row, "t_before_hex", format_hex_double(t_before));
     return row;
 }
 
@@ -922,6 +1067,8 @@ int traced_advance_adaptive_symbolic(
 {
     const unsigned int rangeDim = ode.size();
     const unsigned int rangeDimExt = rangeDim + 1;
+    const string prestate_state = flowpipe_state_canonical(current, symbolic_remainder);
+    const string prestate_coefficients = flowpipe_coefficients_canonical(current);
     result.clear();
 
     TaylorModelVec<Real> tmv_of_x0;
@@ -1120,9 +1267,19 @@ int traced_advance_adaptive_symbolic(
         new_x0.intEvalNormal(new_x0_range, tm_setting.step_end_exp_table);
 
         Row row = base_row(step_index, attempt_index, t_before);
+        set_value(
+            row,
+            "prestate_state_canonical",
+            prestate_state);
+        set_value(
+            row,
+            "prestate_coefficients_canonical",
+            prestate_coefficients);
         set_value(row, "h_try", h_try);
         set_value(row, "h", h_try);
+        set_value(row, "h_hex", format_hex_double(h_try));
         set_value(row, "t_after", t_before + h_try);
+        set_value(row, "t_after_hex", format_hex_double(t_before + h_try));
         set_value(row, "accepted", bfound);
         set_value(row, "rejected", !bfound);
         set_value(row, "status", bfound ? "accepted" : "rejected");
@@ -1334,6 +1491,23 @@ int traced_advance_adaptive_symbolic(
 
         vector<Interval> final_box;
         result.intEvalNormal(final_box, tm_setting.step_exp_table, tm_setting.order, tm_setting.cutoff_threshold);
+        vector<Interval> step_end_interval_exp_table;
+        for (size_t power = 0; power < tm_setting.step_end_exp_table.size(); ++power)
+        {
+            step_end_interval_exp_table.push_back(Interval(tm_setting.step_end_exp_table[power]));
+        }
+        vector<Interval> final_endpoint_box;
+        result.intEvalNormal(final_endpoint_box, step_end_interval_exp_table, tm_setting.order, tm_setting.cutoff_threshold);
+        set_lifecycle_bounds(row, "flowstar_full_step_tube", final_box);
+        set_lifecycle_bounds(row, "flowstar_tau_h_endpoint", final_endpoint_box);
+        set_value(row, "flowstar_full_step_tube_source_object", "accepted_result_Flowpipe_composition_after_remainder_refinement");
+        set_value(row, "flowstar_full_step_tube_domain_semantics", "physical_tube_over_full_fixed_step_after_composition");
+        set_value(row, "flowstar_full_step_tube_includes_ordinary_remainder", true);
+        set_value(row, "flowstar_full_step_tube_includes_symbolic_output_width", true);
+        set_value(row, "flowstar_tau_h_endpoint_source_object", "accepted_result_Flowpipe_composition_at_tau_h_after_remainder_refinement");
+        set_value(row, "flowstar_tau_h_endpoint_domain_semantics", "physical_endpoint_at_exact_fixed_step_after_composition");
+        set_value(row, "flowstar_tau_h_endpoint_includes_ordinary_remainder", true);
+        set_value(row, "flowstar_tau_h_endpoint_includes_symbolic_output_width", true);
         set_widths(row, "final_flowpipe", final_box);
         set_widths(row, "final_segment", final_box);
         set_widths(row, "output_range", final_box);
@@ -1349,6 +1523,10 @@ int traced_advance_adaptive_symbolic(
         set_widths(row, "residual", final_remainders);
         set_bounds(row, "residual", final_remainders);
         set_residual_ratios(row, final_remainders, target);
+        set_value(
+            row,
+            "retained_coefficients_canonical",
+            flowpipe_coefficients_canonical(result));
         push_row(rows, row);
         return 1;
     }
@@ -1384,12 +1562,21 @@ int main(int argc, char **argv)
         return 2;
     }
     double fixed_step = 0.0;
+    int fixed_step_count = 0;
     if (argc > 5)
     {
         fixed_step = atof(argv[5]);
         if (fixed_step <= 0.0)
         {
             cerr << "fixed step must be positive" << endl;
+            return 2;
+        }
+        fixed_step_count = static_cast<int>(llround(horizon / fixed_step));
+        if (
+            fixed_step_count <= 0 ||
+            static_cast<double>(fixed_step_count) * fixed_step != horizon)
+        {
+            cerr << "horizon must be an exact integer fixed-step multiple" << endl;
             return 2;
         }
     }
@@ -1433,15 +1620,21 @@ int main(int argc, char **argv)
 
     setting.tm_setting.setStepsize(setting.tm_setting.step_max, order);
     double new_stepsize = -1;
-    double t = THRESHOLD_HIGH;
+    double t = fixed_step > 0.0 ? 0.0 : THRESHOLD_HIGH;
     int step_index = 0;
 
-    while (t < horizon)
+    while (
+        fixed_step > 0.0
+            ? step_index < fixed_step_count
+            : t < horizon)
     {
         if (max_segments > 0 && step_index >= max_segments)
         {
             break;
         }
+        const size_t first_attempt_row = rows.size();
+        const chrono::steady_clock::time_point step_started =
+            chrono::steady_clock::now();
         const int res = traced_advance_adaptive_symbolic(
             newFlowpipe,
             currentFlowpipe,
@@ -1454,6 +1647,15 @@ int main(int argc, char **argv)
             rows,
             step_index,
             t);
+        const double stage_runtime_seconds = chrono::duration<double>(
+            chrono::steady_clock::now() - step_started).count();
+        for (size_t row_index = first_attempt_row; row_index < rows.size(); ++row_index)
+        {
+            set_value(
+                rows[row_index],
+                "stage_runtime_seconds",
+                stage_runtime_seconds);
+        }
         if (res != 1)
         {
             Row row = base_row(step_index, 0, t);
@@ -1461,13 +1663,14 @@ int main(int argc, char **argv)
             set_value(row, "rejected", true);
             set_value(row, "status", "failed");
             set_value(row, "message", "Flow* traced advance failed below minimum step");
+            set_value(row, "stage_runtime_seconds", stage_runtime_seconds);
             push_row(rows, row);
             break;
         }
 
         double current_stepsize = setting.tm_setting.step_exp_table[1].sup();
         const double remaining_time = horizon - t;
-        if (remaining_time < current_stepsize)
+        if (fixed_step <= 0.0 && remaining_time < current_stepsize)
         {
             current_stepsize = remaining_time;
             newFlowpipe.domain[0].setSup(remaining_time);
@@ -1475,7 +1678,9 @@ int main(int argc, char **argv)
             {
                 set_value(rows.back(), "h_try", current_stepsize);
                 set_value(rows.back(), "h", current_stepsize);
+                set_value(rows.back(), "h_hex", format_hex_double(current_stepsize));
                 set_value(rows.back(), "t_after", t + current_stepsize);
+                set_value(rows.back(), "t_after_hex", format_hex_double(t + current_stepsize));
             }
         }
 
@@ -1485,7 +1690,9 @@ int main(int argc, char **argv)
             sr.reset(currentFlowpipe.tmvPre.tms.size());
         }
 
-        t += current_stepsize;
+        t = fixed_step > 0.0
+            ? static_cast<double>(step_index + 1) * fixed_step
+            : t + current_stepsize;
         new_stepsize = current_stepsize * LAMBDA_UP;
         if (new_stepsize > setting.tm_setting.step_max - THRESHOLD_HIGH)
         {

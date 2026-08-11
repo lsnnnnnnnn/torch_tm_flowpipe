@@ -75,6 +75,57 @@ def test_dense_runner_writes_fail_closed_parseable_outputs(tmp_path):
         assert (output / name).exists()
 
 
+def test_dense_runner_fixed_schedule_has_exact_binary64_trace(tmp_path):
+    runner = _runner_module()
+    output = tmp_path / "fixed"
+    args = runner.parse_args(
+        [
+            "--output-dir",
+            str(output),
+            "--tm-backend",
+            "dense",
+            "--device",
+            "cpu",
+            "--horizon",
+            "0.01",
+            "--fixed-step",
+            "0.01",
+            "--wall-cap-s",
+            "60",
+        ]
+    )
+
+    summary = runner.run(args)
+
+    assert summary["completed_requested_horizon"] is True
+    assert summary["schedule"] == {
+        "kind": "fixed",
+        "h_decimal": "0.01",
+        "h_hex": float(0.01).hex(),
+        "requested_steps": 1,
+        "adaptive_fallback_allowed": False,
+    }
+    assert summary["support"] == "complete_total_degree_O4"
+    assert summary["partition"] == "B1"
+    assert summary["fallback_count"] == 0
+    assert summary["endpoint_repair_used"] is False
+    assert summary["peak_rss_bytes"] > 0
+
+    import csv
+
+    with (output / "segments.csv").open(newline="", encoding="utf-8") as handle:
+        row = next(csv.DictReader(handle))
+    assert row["t_lo_hex"] == float(0.0).hex()
+    assert row["t_hi_hex"] == float(0.01).hex()
+    assert row["h_attempted_hex"] == float(0.01).hex()
+    assert row["h_accepted_hex"] == float(0.01).hex()
+    assert row["schedule_kind"] == "fixed"
+    assert len(row["prestate_sha256"]) == 64
+    assert len(row["retained_coefficient_sha256"]) == 64
+    assert row["raw_endpoint_published"] == "True"
+    assert row["endpoint_tightening_applied"] == "False"
+
+
 def test_runner_refuses_nonempty_output_directory(tmp_path):
     runner = _runner_module()
     output = tmp_path / "occupied"

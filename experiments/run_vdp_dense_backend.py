@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import random
+import resource
 import subprocess
 import sys
 import time
@@ -32,6 +33,7 @@ from torch_tm_flowpipe import (
 )
 from torch_tm_flowpipe.safety import intervals_are_finite
 from torch_tm_flowpipe.audit_trace import TransitionTraceWriter
+from torch_tm_flowpipe.comparison_contract import vdp_identity_hashes
 
 CANONICAL_CONFIG = ROOT / "benchmarks" / "canonical.yaml"
 MATCHED_CONTRACT = ROOT / "benchmarks" / "three_tool_matched_contract.yaml"
@@ -144,6 +146,93 @@ def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _float_hex(value: Any) -> str:
+    if hasattr(value, "detach"):
+        value = value.detach().cpu().item()
+    return float(value).hex()
+
+
+def _peak_rss_bytes() -> int:
+    """Return the process high-water RSS in bytes on the supported Unix hosts."""
+    value = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    # Linux reports KiB; macOS reports bytes.  The evidence hosts are Linux,
+    # but retaining the platform distinction keeps local reruns meaningful.
+    return value if sys.platform == "darwin" else value * 1024
+
+
+def _interval_payload(value: Interval) -> dict[str, str]:
+    return {"lo_hex": _float_hex(value.lo), "hi_hex": _float_hex(value.hi)}
+
+
+def _tmvector_payload(value: TMVector | Sequence[Interval]) -> dict[str, Any]:
+    if isinstance(value, TMVector):
+        return {
+            "kind": "tmvector",
+            "models": [
+                {
+                    "terms": [
+                        {"exponent": list(exponent), "coefficient_hex": _float_hex(coefficient)}
+                        for exponent, coefficient in sorted(model.polynomial.terms.items())
+                    ],
+                    "remainder": _interval_payload(model.remainder),
+                    "domain": [_interval_payload(interval) for interval in model.domain],
+                }
+                for model in value
+            ],
+        }
+    return {
+        "kind": "interval_box",
+        "box": [_interval_payload(interval) for interval in value],
+    }
+
+
+def _normal_state_payload(value: FlowstarNormalFlowpipeState | None) -> Any:
+    if value is None:
+        return None
+    return {
+        "tmv_pre": _tmvector_payload(value.tmv_pre),
+        "tmv_right": _tmvector_payload(value.tmv_right),
+        "domain": [_interval_payload(interval) for interval in value.domain],
+        "center_hex": [_float_hex(item) for item in value.center],
+        "scales_hex": [_float_hex(item) for item in value.scales],
+        "step_index": int(value.step_index),
+        "initial_remainders": (
+            None
+            if value.initial_remainders is None
+            else [_interval_payload(interval) for interval in value.initial_remainders]
+        ),
+        "complete_initial_tm": (
+            None
+            if value.complete_initial_tm is None
+            else _tmvector_payload(value.complete_initial_tm)
+        ),
+    }
+
+
+def _state_sha256(
+    value: TMVector | Sequence[Interval],
+    normal_state: FlowstarNormalFlowpipeState | None = None,
+) -> str:
+    payload = {
+        "current": _tmvector_payload(value),
+        "normal_state": _normal_state_payload(normal_state),
+    }
+    return hashlib.sha256(_canonical_json_bytes(payload)).hexdigest()
+
+
+def _coefficient_sha256(value: TMVector | None) -> str | None:
+    if value is None:
+        return None
+    payload = [
+        [
+            {"exponent": list(exponent), "coefficient_hex": _float_hex(coefficient)}
+            for exponent, coefficient in sorted(model.polynomial.terms.items())
+        ]
+        for model in value
+    ]
+    return hashlib.sha256(_canonical_json_bytes(payload)).hexdigest()
+
+
 def _candidate_trace_hashes(trace: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     rows = [row for row in trace if row.get("phase") == "polynomial_picard"]
     if not rows:
@@ -251,6 +340,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     config_snapshot = {
         "contract": contract,
         "requested_horizon": requested_horizon,
+        "fixed_step": args.fixed_step,
         "tm_backend": args.tm_backend,
         "device": args.device,
         "reset_mode": args.reset_mode,
@@ -305,7 +395,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     current: TMVector | list[Interval] = initial_box
     normal_state: FlowstarNormalFlowpipeState | None = None
     samples = _samples(contract["initial_box"])
-    h_next = contract["h_max"]
+    fixed_step = None if args.fixed_step is None else float(args.fixed_step)
+    if fixed_step is not None:
+        if fixed_step <= 0.0:
+            raise ValueError("fixed step must be positive")
+        requested_steps = round(requested_horizon / fixed_step)
+        if requested_steps <= 0 or requested_steps * fixed_step != requested_horizon:
+            raise ValueError("requested horizon must be an exact integer fixed-step multiple")
+    else:
+        requested_steps = None
+    h_next = fixed_step if fixed_step is not None else contract["h_max"]
     current_time = 0.0
     start = time.perf_counter()
     segment_rows: list[dict[str, Any]] = []
@@ -334,13 +433,34 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             message = "wall-time cap reached before requested horizon"
             break
         remaining = requested_horizon - current_time
-        if remaining < contract["h_min"] - 1e-15:
+        local_h_min = fixed_step if fixed_step is not None else contract["h_min"]
+        local_h_max = fixed_step if fixed_step is not None else contract["h_max"]
+        if remaining < local_h_min - 1e-15:
             status = "failed"
             message = "remaining horizon is below authoritative h_min; no clipped sub-minimum endpoint was published"
             break
-        h_try = min(float(h_next), contract["h_max"], remaining)
-        if 0.0 < remaining - h_try < contract["h_min"]:
+        h_try = min(float(h_next), local_h_max, remaining)
+        if fixed_step is not None:
+            h_try = fixed_step
+        elif 0.0 < remaining - h_try < local_h_min:
             h_try = remaining
+        prestate_sha256 = _state_sha256(current, normal_state)
+        prestate_center = (
+            list(normal_state.center)
+            if normal_state is not None
+            else [
+                (float(bounds[0]) + float(bounds[1])) / 2.0
+                for bounds in contract["initial_box"]
+            ]
+        )
+        prestate_scale = (
+            list(normal_state.scales)
+            if normal_state is not None
+            else [
+                (float(bounds[1]) - float(bounds[0])) / 2.0
+                for bounds in contract["initial_box"]
+            ]
+        )
         diagnostics: list[dict[str, Any]] = []
         previous_rejection_count = sum(
             str(row.get("validation_status", "")).lower() == "failed" for row in attempt_rows
@@ -350,8 +470,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             ode,
             current,
             h=h_try,
-            h_min=contract["h_min"],
-            h_max=contract["h_max"],
+            h_min=local_h_min,
+            h_max=local_h_max,
             order=contract["requested_order"],
             target_remainder_radius=contract["target_remainder_radius"],
             cutoff_threshold=contract["cutoff"],
@@ -394,7 +514,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 attempted_h=h_try,
                 order=contract["requested_order"],
             )
-        t_hi = current_time + float(segment.h) if accepted else current_time
+        t_hi = (
+            (len([item for item in segment_rows if item.get("status") == "accepted"]) + 1)
+            * fixed_step
+            if accepted and fixed_step is not None
+            else current_time + float(segment.h)
+            if accepted
+            else current_time
+        )
         counters = dict(segment.backend_counters or {})
         fallback_count += int(counters.get("sparse_fallback_count", 0))
         conversion_count += int(counters.get("segment_boundary_conversions", 0))
@@ -404,8 +531,28 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "status": "accepted" if accepted else "rejected",
             "t_lo": current_time,
             "t_hi": t_hi,
+            "t_lo_hex": float(current_time).hex(),
+            "t_hi_hex": float(t_hi).hex(),
             "h_attempted": h_try,
             "h_accepted": float(segment.h) if accepted else "",
+            "h_attempted_hex": float(h_try).hex(),
+            "h_accepted_hex": float(segment.h).hex() if accepted else "",
+            "schedule_kind": "fixed" if fixed_step is not None else "adaptive",
+            "prestate_sha256": prestate_sha256,
+            "prestate_center": prestate_center,
+            "prestate_scale": prestate_scale,
+            "retained_coefficient_sha256": _coefficient_sha256(
+                segment.reset_tm if accepted else None
+            ),
+            "candidate_coefficient_sha256": _coefficient_sha256(segment.tm),
+            "raw_remainder": segment.candidate_remainder,
+            "post_poly_diff_remainder": segment.picard_image_remainder,
+            "target_margins": segment.subset_margin,
+            "ordinary_symbolic_remainder_summary": {
+                str(key): value
+                for key, value in (segment.flowstar_normal_stats or {}).items()
+                if "ordinary" in str(key) or "symbolic" in str(key)
+            },
             "requested_order": contract["requested_order"],
             "effective_degree": max((model.polynomial.degree() for model in segment.tm), default=0),
             "tau_index": segment.tau_index,
@@ -420,7 +567,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             **counters,
         }
         if segment_box:
-            row.update({f"segment_{key}": value for key, value in _box_values(segment_box).items()})
+            segment_prefix = "segment" if accepted else "rejected_candidate_segment"
+            row.update({f"{segment_prefix}_{key}": value for key, value in _box_values(segment_box).items()})
         if endpoint_box is not None:
             row.update({f"endpoint_{key}": value for key, value in _box_values(endpoint_box).items()})
         for key, value in (segment.flowstar_normal_stats or {}).items():
@@ -452,6 +600,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                     )
                     range_call_count += 1
                 range_trace_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(compact_trace)})
+        row["stage_runtime_s"] = step_wall
         profile_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, "h_attempted": h_try, "total_wall_s": step_wall, "backend_lane": segment.backend_lane})
 
         if not accepted:
@@ -520,10 +669,53 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for index, interval in enumerate(segment_box[:2]):
             tube_lo[index] = min(tube_lo[index], float(interval.lo.detach().cpu()))
             tube_hi[index] = max(tube_hi[index], float(interval.hi.detach().cpu()))
-        current_time = t_hi
+        row.update(
+            {
+                "prefix_x_lo": tube_lo[0],
+                "prefix_x_hi": tube_hi[0],
+                "prefix_x_width": tube_hi[0] - tube_lo[0],
+                "prefix_y_lo": tube_lo[1],
+                "prefix_y_hi": tube_hi[1],
+                "prefix_y_width": tube_hi[1] - tube_lo[1],
+                "center": (
+                    None
+                    if segment.flowstar_normal_state is None
+                    else segment.flowstar_normal_state.center
+                ),
+                "scale": (
+                    None
+                    if segment.flowstar_normal_state is None
+                    else segment.flowstar_normal_state.scales
+                ),
+                "retained_center": (
+                    None
+                    if segment.flowstar_normal_state is None
+                    else segment.flowstar_normal_state.center
+                ),
+                "retained_scale": (
+                    None
+                    if segment.flowstar_normal_state is None
+                    else segment.flowstar_normal_state.scales
+                ),
+            }
+        )
+        current_time = (
+            len([item for item in segment_rows if item.get("status") == "accepted"])
+            * fixed_step
+            if fixed_step is not None
+            else t_hi
+        )
         current = segment.reset_tm
         normal_state = segment.flowstar_normal_state
-        h_next = float(segment.next_h if segment.next_h is not None else min(float(segment.h) * 1.1, contract["h_max"]))
+        h_next = (
+            fixed_step
+            if fixed_step is not None
+            else float(
+                segment.next_h
+                if segment.next_h is not None
+                else min(float(segment.h) * 1.1, contract["h_max"])
+            )
+        )
         for checkpoint in CHECKPOINTS:
             if checkpoint <= requested_horizon + 1e-12 and checkpoint not in crossed and current_time >= checkpoint - 1e-12:
                 crossed.add(checkpoint)
@@ -558,8 +750,21 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "completed_horizon": current_time,
         "completed_requested_horizon": completed,
         "requested_order": contract["requested_order"],
+        "support": "complete_total_degree_O4",
+        "partition": "B1",
+        "partition_count": 1,
+        "contract_identity": vdp_identity_hashes(),
         "h_min": contract["h_min"],
         "h_max": contract["h_max"],
+        "effective_h_min": fixed_step if fixed_step is not None else contract["h_min"],
+        "effective_h_max": fixed_step if fixed_step is not None else contract["h_max"],
+        "schedule": {
+            "kind": "fixed" if fixed_step is not None else "adaptive",
+            "h_decimal": None if fixed_step is None else format(fixed_step, ".17g"),
+            "h_hex": None if fixed_step is None else fixed_step.hex(),
+            "requested_steps": requested_steps,
+            "adaptive_fallback_allowed": fixed_step is None,
+        },
         "cutoff": contract["cutoff"],
         "target_remainder_radius": contract["target_remainder_radius"],
         "tm_backend": args.tm_backend,
@@ -593,6 +798,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "last_segment": {key.removeprefix("segment_"): value for key, value in last.items() if key.startswith("segment_")},
         "full_tube": {"x_lo": tube_lo[0], "x_hi": tube_hi[0], "y_lo": tube_lo[1], "y_hi": tube_hi[1]} if segment_rows and math.isfinite(tube_lo[0]) else None,
         "runtime_s": runtime,
+        "peak_rss_bytes": _peak_rss_bytes(),
+        "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
         "branch": command["branch"],
         "commit": command["commit"],
         "worktree_dirty": bool(command["worktree_status"]),
@@ -633,6 +840,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--tm-backend", choices=("sparse", "dense"), required=True)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--horizon", type=float, default=10.0)
+    parser.add_argument("--fixed-step", type=float)
     parser.add_argument("--wall-cap-s", type=float, default=1800.0)
     parser.add_argument("--transition-trace-dir", type=Path)
     parser.add_argument(

@@ -257,6 +257,62 @@ def test_torch_self_parity_cannot_satisfy_cross_tool_operator_gate(
         finalize(argparse.Namespace(run_root=root))
 
 
+def test_fixed_schedule_t10_outcome_requires_both_complete_traces(
+    tmp_path: Path,
+) -> None:
+    summary = {
+        "schema": "flowstar_torch_fixed_schedule_common_prefix_v1",
+        "outcome": "FLOWSTAR_TORCH_FIXED_SCHEDULE_T10_BOTH_COMPLETE",
+        "scope": "full_horizon_or_first_failure",
+        "contract": {
+            "partition_count": 1,
+            "support": "complete_total_degree_O4",
+            "h_decimal": "0.01",
+            "h_hex": float(0.01).hex(),
+            "requested_steps": 1000,
+            "requested_horizon": 10.0,
+            "target_remainder": [-0.0001, 0.0001],
+            "cutoff": [-1e-10, 1e-10],
+            "adaptive_fallback": False,
+            "endpoint_repair": False,
+        },
+        "flowstar": {
+            "accepted_steps": 999,
+            "validated_horizon": 9.99,
+            "completed_t10": False,
+            "build_qualification": "scalar_affine_under_enclosure_open",
+        },
+        "torch": {
+            "accepted_steps": 1000,
+            "validated_horizon": 10.0,
+            "completed_t10": True,
+            "fallback_count": 0,
+            "endpoint_repair_used": False,
+        },
+        "shared": {
+            "accepted_steps": 999,
+            "validated_horizon": 9.99,
+            "first_failure": [{"tool": "flowstar", "step": 1000}],
+            "tightness_eligibility": "empirical_or_build_qualified_common_prefix",
+            "same_prestate_scope": "initial_state_only",
+            "later_scope": "schedule_controlled_comparative_trace",
+        },
+    }
+    root = _make_runner(
+        tmp_path,
+        summary,
+        _contract(
+            allowed=("FLOWSTAR_TORCH_FIXED_SCHEDULE_T10_BOTH_COMPLETE",),
+            schema="flowstar_torch_fixed_schedule_common_prefix_v1",
+            outcome_dimension="flowstar_torch_fixed_schedule_status",
+            semantic_profile="flowstar_torch_fixed_schedule",
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="T10 closure prerequisite"):
+        finalize(argparse.Namespace(run_root=root))
+
+
 def test_true_clone_marker_cannot_be_produced_from_source_root(tmp_path: Path) -> None:
     summary = {
         "schema": "torch_tm_flowpipe_true_clone_gate_v1",
