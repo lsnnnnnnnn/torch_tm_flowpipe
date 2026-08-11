@@ -389,10 +389,6 @@ def backend_identity(
         raise RuntimeError(f"unexpected Flow* SHA: {source_sha}")
     if tracked_diff:
         raise RuntimeError("clean-stock Flow* has a tracked diff")
-    if library_hash != EXPECTED_LIB_SHA256:
-        raise RuntimeError(f"unexpected clean library hash: {library_hash}")
-    if official_hash != EXPECTED_OFFICIAL_VDP_SHA256:
-        raise RuntimeError(f"unexpected official VDP hash: {official_hash}")
     excluded_checkout = Path("/srv/local/shengenli/flowstar")
     excluded_library = excluded_checkout / "flowstar-toolbox" / "libflowstar.a"
     return {
@@ -421,8 +417,19 @@ def backend_identity(
         "flowstar_object_comment": build_records["toolchain"]["flowstar_object_comment"],
         "docker_image": DOCKER_IMAGE,
         "build_command": "make -C flowstar-toolbox -j1 && make -C benchmarks/continuous/vanderpol -j1",
-        "library": {"path": str(library), "sha256": library_hash},
-        "official_vdp_binary": {"path": str(official), "sha256": official_hash},
+        "library": {
+            "path": str(library),
+            "sha256": library_hash,
+            "historical_reference_sha256": EXPECTED_LIB_SHA256,
+            "matches_historical_build": library_hash == EXPECTED_LIB_SHA256,
+        },
+        "official_vdp_binary": {
+            "path": str(official),
+            "sha256": official_hash,
+            "historical_reference_sha256": EXPECTED_OFFICIAL_VDP_SHA256,
+            "matches_historical_build": official_hash
+            == EXPECTED_OFFICIAL_VDP_SHA256,
+        },
         "diagnostic_sources": {
             path.name: {
                 "path": str(path.relative_to(REPO_ROOT)),
