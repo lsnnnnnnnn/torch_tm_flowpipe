@@ -27,9 +27,10 @@ Flow*/Torch remains partial and no Torch improvement is evidence-authorized.
 
 ## Exact evidence paths
 
-New-package directories `07_flowstar_torch_raw_remainder/`,
-`08_schedule_validator_matrix/`, `10_bridge_ladder/`, and the detailed
-pairwise reports.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`
+directories `07_flowstar_torch_raw_remainder/`,
+`08_schedule_validator_matrix/`, `10_bridge_ladder/`, and
+`11_pairwise_tables/`.
 
 This study freezes separate native-capability, matched-pair, and diagnostic
 tracks.  It does not construct a transitive three-tool ranking.

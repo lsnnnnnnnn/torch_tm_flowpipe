@@ -28,8 +28,9 @@ cause the decision.
 
 ## Exact evidence paths
 
-New-package directory `07_flowstar_torch_raw_remainder/`, including the common
-tree, node CSV, first divergence, counterfactuals, and MPFR/Fraction replay.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/`,
+including the common tree, node CSV, first divergence, counterfactuals, and
+MPFR/Fraction replay.
 
 At the frozen last-common prestate (`t=0.18187433604506256`) and full
 proposal (`h=0.019615177354506262`), the first decision-changing expression

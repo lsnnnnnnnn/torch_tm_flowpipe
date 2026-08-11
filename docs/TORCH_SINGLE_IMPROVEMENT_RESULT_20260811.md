@@ -28,8 +28,9 @@ generally sound narrower Flow* operation.
 
 ## Exact evidence paths
 
-New-package directories `07_flowstar_torch_raw_remainder/`,
-`10_bridge_ladder/`, and `12_single_improvement/`.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`
+directories `07_flowstar_torch_raw_remainder/`, `10_bridge_ladder/`, and
+`12_single_improvement/`.
 
 The raw-root-cause and schedule studies closed, but the descriptor bridge is
 `FIXED_SUPPORT_BRIDGE_BLOCKED` and identifies no universal dominant factor.

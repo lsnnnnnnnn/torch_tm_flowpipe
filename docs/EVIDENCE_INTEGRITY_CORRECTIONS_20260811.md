@@ -18,8 +18,9 @@ Claim status, source paths/hashes, command exit, scope, and limitations.
 
 ## What is unavailable
 
-A final-HEAD clone pass remains unavailable until produced at the final remote
-SHA.
+The historical package has no final-HEAD clone pass.  This round's claim is
+eligible only when derived from the final remote SHA evidence under
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/14_fresh_clone/`.
 
 ## Negative results
 
@@ -28,7 +29,7 @@ Missing sources produce `not_run`/`unknown`; SHA mismatch produces `fail`.
 ## Exact evidence paths
 
 `src/torch_tm_flowpipe/evidence_verification.py`, focused integrity tests, and
-the new run's `verification.json`.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/verification.json`.
 
 This document corrects claim provenance without rewriting the immutable S1
 evidence run at

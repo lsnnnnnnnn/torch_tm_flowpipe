@@ -27,8 +27,8 @@ The receiving validator identity alone is not causal at the first split.
 
 ## Exact evidence paths
 
-New-package directory `08_schedule_validator_matrix/`, produced by
-`experiments/run_vdp_schedule_validator_matrix.py`.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/08_schedule_validator_matrix/`,
+produced by `experiments/run_vdp_schedule_validator_matrix.py`.
 
 At the last-common prestate and the same proposed
 `h=0.019615177354506262`, the 2x2 receiving-validator matrix is lossless:

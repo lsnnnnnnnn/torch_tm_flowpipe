@@ -28,8 +28,8 @@ binary64 is not universally outward-qualified.
 
 ## Exact evidence paths
 
-New-package directories `04_native_diffreach/` and
-`06_native_torch_fixed_dr7/`; fixture
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`
+directories `04_native_diffreach/` and `06_native_torch_fixed_dr7/`; fixture
 `tests/fixtures/diffreach_dr7_vdp_one_step_float64.json`.
 
 ## Three required rows

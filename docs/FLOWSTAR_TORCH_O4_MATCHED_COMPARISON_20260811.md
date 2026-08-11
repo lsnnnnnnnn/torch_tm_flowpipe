@@ -28,7 +28,8 @@ not explain the split.
 
 ## Exact evidence paths
 
-New-package directories `07_flowstar_torch_raw_remainder/` and
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`
+directories `07_flowstar_torch_raw_remainder/` and
 `08_schedule_validator_matrix/`; frozen common-basis evidence remains under
 `outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/`.
 

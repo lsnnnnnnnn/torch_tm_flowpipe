@@ -157,3 +157,9 @@ Its 234-entry `SHA256SUMS` is repository-root-relative. Machine tables retain
 the causal ladder, A0--B16 ledger, component substitutions, corrected
 307-step gate, terminal rejection, independent claim fields, and explicit
 stop rows for every unauthorized later stage.
+
+The three-tool pairwise/raw-root-cause/descriptor round uses
+[the 20260811T100304Z evidence run](outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/).
+Its verification and checksum files are authoritative only after the
+final-remote-HEAD fresh-clone build completes; merely naming this run path is
+not a verification claim.

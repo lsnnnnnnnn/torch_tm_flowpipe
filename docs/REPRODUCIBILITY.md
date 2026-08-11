@@ -11,6 +11,9 @@ conda run -n py11 python experiments/build_three_tool_evidence_package.py \
   --flowstar-cxx g++
 ```
 
+The canonical final run ID for this round is `20260811T100304Z`; the
+`<RUN_ID>` form above remains the reusable command template.
+
 The builder refuses an existing run root, runs every command through the
 eight-file runner protocol, and executes G0→G3 only through closed
 predecessors. A blocked G3 is an expected evidence outcome with a recorded

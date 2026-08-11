@@ -20,6 +20,12 @@ Primary documents are `docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md`,
 `docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md`, and
 `docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md`.
 
+The final package run ID is
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`.
+Its manifest, verification record, checksum file, and final-clone command
+bundle are authoritative only when that build completes at the exact remote
+HEAD; the path alone is not a verification claim.
+
 The remainder of this file is the preserved preceding S1 handoff.
 
 > Evidence-integrity qualification (2026-08-11): the fresh-clone and test

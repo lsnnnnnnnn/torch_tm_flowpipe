@@ -34,8 +34,8 @@ promoted complete-O4 production lane.
 
 ## Exact evidence paths
 
-New-package directories `09_fixed_support_descriptor/` and
-`10_bridge_ladder/`.
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`
+directories `09_fixed_support_descriptor/` and `10_bridge_ladder/`.
 
 The generic descriptor core preserves the frozen DR7 manifest and expression
 order while adding complete total-degree O4 support
