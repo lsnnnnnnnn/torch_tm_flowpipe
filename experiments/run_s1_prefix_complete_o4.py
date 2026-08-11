@@ -296,6 +296,191 @@ def _git_value(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
 
+def _run_lane_step(
+    ode: PolynomialODE,
+    current: TMVector | list[Interval],
+    normal_state: FlowstarNormalFlowpipeState | None,
+    *,
+    lane: str,
+    h: float,
+    policy: DenseRangePolicy,
+    diagnostics: list[dict[str, Any]],
+    diagnostics_context: Mapping[str, Any],
+    h_min: float | None = None,
+    h_max: float | None = None,
+    max_validation_attempts: int = 2,
+):
+    structured_lane = lane in {"L1", "L2"}
+    return flowpipe_step_flowstar_style_adaptive(
+        ode,
+        current,
+        h=float(h),
+        h_min=CONTRACT["h_min"] if h_min is None else float(h_min),
+        h_max=CONTRACT["h_max"] if h_max is None else float(h_max),
+        order=CONTRACT["requested_order"],
+        target_remainder_radius=CONTRACT["target_remainder_radius"],
+        cutoff_threshold=CONTRACT["cutoff"],
+        max_validation_attempts=int(max_validation_attempts),
+        validation_eps=1e-12,
+        validation_mode=CONTRACT["validation_mode"],
+        reset_mode=(
+            "normalized_insertion_structured_remainder_k16"
+            if structured_lane
+            else "normalized_insertion"
+        ),
+        step_policy_mode=CONTRACT["step_policy_mode"],
+        flowstar_normal_state=normal_state,
+        right_map_center_mode="constant",
+        right_map_range_mode="standard",
+        tm_backend="dense",
+        dense_device="cpu",
+        dense_range_policy=policy,
+        diagnostics=diagnostics,
+        diagnostics_context=diagnostics_context,
+    )
+
+
+def _save_boundary_checkpoint(
+    output_dir: Path,
+    *,
+    boundary: int,
+    current: TMVector,
+    normal_state: FlowstarNormalFlowpipeState,
+    frozen: Mapping[str, Any],
+    rows: Sequence[Mapping[str, Any]],
+    provenance: Mapping[str, Any],
+) -> dict[str, Any]:
+    checkpoint_dir = output_dir / f"boundary_{boundary:03d}_checkpoint"
+    manifest = save_terminal_checkpoint(
+        checkpoint_dir,
+        current=current,
+        normal_state=normal_state,
+        scheduler={
+            "current_time": frozen["t_before"]["value"],
+            "h_next": frozen["h_attempted"]["value"],
+            "h_attempted": frozen["h_attempted"]["value"],
+            "accepted_segment_count": int(boundary),
+            "previous_rejection_count": sum(int(row["actual_rejections"]) for row in rows),
+            "checkpoint_role": "frozen_proposed_step_prestate",
+        },
+        contract=CONTRACT,
+        provenance=provenance,
+    )
+    loaded = load_terminal_checkpoint(
+        checkpoint_dir,
+        expected_contract=CONTRACT,
+        expected_order=4,
+        expected_dtype="float64",
+    )
+    roundtrip_dir = output_dir / f"boundary_{boundary:03d}_checkpoint_roundtrip"
+    roundtrip_manifest = save_terminal_checkpoint(
+        roundtrip_dir,
+        current=loaded.current,
+        normal_state=loaded.normal_state,
+        scheduler=loaded.scheduler,
+        contract=loaded.contract,
+        provenance=loaded.provenance,
+    )
+    byte_stable = all(
+        (checkpoint_dir / name).read_bytes() == (roundtrip_dir / name).read_bytes()
+        for name in ("terminal_state.json", "terminal_state_manifest.json")
+    )
+    record = {
+        "checkpoint_role": "frozen_proposed_step_prestate",
+        "accepted_boundary_index": int(boundary),
+        "schema": manifest["schema"],
+        "byte_stable": byte_stable,
+        "first_full_sha256": manifest["full_checkpoint_sha256"],
+        "second_full_sha256": roundtrip_manifest["full_checkpoint_sha256"],
+    }
+    _atomic_json(output_dir / f"boundary_{boundary:03d}_checkpoint_roundtrip.json", record)
+    if not byte_stable:
+        raise RuntimeError(f"boundary {boundary} checkpoint did not round-trip exactly")
+    return record
+
+
+def _frozen_full_h_diagnostic(
+    output_dir: Path,
+    *,
+    lane: str,
+    attempt_index: int,
+    current: TMVector,
+    normal_state: FlowstarNormalFlowpipeState,
+    frozen: Mapping[str, Any],
+    ode: PolynomialODE,
+    policy: DenseRangePolicy,
+) -> dict[str, Any]:
+    """Run exactly the first validator call at the frozen proposed h.
+
+    This diagnostic never commits its returned state.  Setting h_min=h_max=h
+    prevents the adaptive helper from publishing a half-step in this record.
+    """
+    pre_hash = _state_hash(current, normal_state)
+    diagnostics: list[dict[str, Any]] = []
+    proposed_h = float(frozen["h_attempted"]["value"])
+    segment = _run_lane_step(
+        ode,
+        current,
+        normal_state,
+        lane=lane,
+        h=proposed_h,
+        h_min=proposed_h,
+        h_max=proposed_h,
+        max_validation_attempts=1,
+        policy=policy,
+        diagnostics=diagnostics,
+        diagnostics_context={
+            "segment_index": attempt_index,
+            "t_before": frozen["t_before"]["value"],
+            "lane": lane,
+            "diagnostic_role": "frozen_full_h_first_validator",
+        },
+    )
+    post_hash = _state_hash(current, normal_state)
+    first_validator = next(
+        (
+            row
+            for row in diagnostics
+            if row.get("phase") == "remainder_validation"
+            and int(row.get("attempt", -1)) == 1
+        ),
+        None,
+    )
+    if first_validator is None:
+        raise RuntimeError(f"{lane} frozen full-h diagnostic did not expose validator attempt 1")
+    if pre_hash != post_hash:
+        raise RuntimeError(f"{lane} frozen full-h diagnostic mutated its prestate")
+    decision = (
+        "accepted"
+        if segment.status == "validated" and segment.reset_tm is not None
+        else "rejected"
+    )
+    result = {
+        "schema": "torch_tm_flowpipe_s1_frozen_full_h_diagnostic_v1",
+        "lane": lane,
+        "attempt_index": int(attempt_index),
+        "accepted_boundary_index": int(frozen["accepted_boundary_index_before"]),
+        "t_before": frozen["t_before"],
+        "h": frozen["h_attempted"],
+        "max_validation_attempts": 1,
+        "adaptive_shrink_allowed": False,
+        "decision": decision,
+        "segment_status": segment.status,
+        "subset_margin": segment.subset_margin,
+        "first_validator_diagnostic": _jsonable(first_validator),
+        "all_diagnostics": _jsonable(diagnostics),
+        "prestate_sha256": pre_hash,
+        "poststate_sha256": post_hash,
+        "prestate_byte_identity_preserved": True,
+        "returned_state_committed": False,
+    }
+    _atomic_json(
+        output_dir / f"boundary_{int(frozen['accepted_boundary_index_before']):03d}_full_h_diagnostic.json",
+        result,
+    )
+    return result
+
+
 def replay_lane(
     schedule: Mapping[str, Any],
     output_dir: Path,
@@ -314,11 +499,6 @@ def replay_lane(
     else:
         current = [Interval(*bounds) for bounds in CONTRACT["canonical_system_spec"]["initial_box"]]
         normal_state = None
-    reset_mode = (
-        "normalized_insertion_structured_remainder_k16"
-        if structured_lane
-        else "normalized_insertion"
-    )
     policy_spec = CONTRACT["dense_range_policy"]
     policy = DenseRangePolicy(
         method=policy_spec["method"],
@@ -353,6 +533,7 @@ def replay_lane(
     outcome = "S1_PREFIX_COMPLETE" if structured_lane else "HISTORICAL_BASELINE_REPLAY_COMPLETE"
     divergence: dict[str, Any] | None = None
     terminal_checkpoint_manifest: Mapping[str, Any] | None = None
+    boundary_checkpoint_record: Mapping[str, Any] | None = None
     start = time.perf_counter()
     ledger_path = output_dir / "prefix_conservation.jsonl"
     event_path = output_dir / "prefix_source_events.jsonl"
@@ -363,6 +544,25 @@ def replay_lane(
                 outcome = "TEST_BOUNDARY_LIMIT_REACHED"
                 break
             expected_status = frozen["expected_status"]
+            if attempt_index == 164:
+                if not isinstance(current, TMVector) or normal_state is None:
+                    raise RuntimeError(f"{lane} boundary-164 prestate is incomplete")
+                _write_snapshot(
+                    snapshots,
+                    164,
+                    current,
+                    normal_state,
+                    reason="checkpoint_prestate",
+                )
+                boundary_checkpoint_record = _save_boundary_checkpoint(
+                    output_dir,
+                    boundary=164,
+                    current=current,
+                    normal_state=normal_state,
+                    frozen=frozen,
+                    rows=rows,
+                    provenance=provenance,
+                )
             if attempt_index == FROZEN_ACCEPTED and lane == "L2" and terminal_checkpoint_manifest is None:
                 checkpoint_dir = output_dir / "terminal_checkpoint_v2"
                 terminal_checkpoint_manifest = save_terminal_checkpoint(
@@ -418,28 +618,28 @@ def replay_lane(
                 else None
             )
             pre_materialized = materialize_structured_remainder(pre_structured) if pre_structured is not None else None
+            full_h_diagnostic = None
+            if attempt_index == 164:
+                assert isinstance(current, TMVector) and normal_state is not None
+                full_h_diagnostic = _frozen_full_h_diagnostic(
+                    output_dir,
+                    lane=lane,
+                    attempt_index=attempt_index,
+                    current=current,
+                    normal_state=normal_state,
+                    frozen=frozen,
+                    ode=ode,
+                    policy=policy,
+                )
             diagnostics: list[dict[str, Any]] = []
             step_start = time.perf_counter()
-            segment = flowpipe_step_flowstar_style_adaptive(
+            segment = _run_lane_step(
                 ode,
                 current,
+                normal_state,
+                lane=lane,
                 h=frozen["h_attempted"]["value"],
-                h_min=CONTRACT["h_min"],
-                h_max=CONTRACT["h_max"],
-                order=CONTRACT["requested_order"],
-                target_remainder_radius=CONTRACT["target_remainder_radius"],
-                cutoff_threshold=CONTRACT["cutoff"],
-                max_validation_attempts=2,
-                validation_eps=1e-12,
-                validation_mode=CONTRACT["validation_mode"],
-                reset_mode=reset_mode,
-                step_policy_mode=CONTRACT["step_policy_mode"],
-                flowstar_normal_state=normal_state,
-                right_map_center_mode="constant",
-                right_map_range_mode="standard",
-                tm_backend="dense",
-                dense_device="cpu",
-                dense_range_policy=policy,
+                policy=policy,
                 diagnostics=diagnostics,
                 diagnostics_context={"segment_index": attempt_index, "t_before": frozen["t_before"]["value"], "lane": lane},
             )
@@ -469,6 +669,7 @@ def replay_lane(
                 "message": segment.message,
                 "subset_margin": segment.subset_margin,
                 "committed_to_frozen_prefix": False,
+                "frozen_full_h_diagnostic": full_h_diagnostic,
             }
             if not schedule_match:
                 row["poststate_sha256"] = pre_hash
@@ -715,10 +916,13 @@ def replay_lane(
         "first_schedule_or_decision_divergence": divergence,
         "runtime_s": time.perf_counter() - start,
         "checkpoint_full_sha256": (
-            terminal_checkpoint_manifest["full_checkpoint_sha256"]
+            boundary_checkpoint_record["first_full_sha256"]
+            if boundary_checkpoint_record is not None
+            else terminal_checkpoint_manifest["full_checkpoint_sha256"]
             if terminal_checkpoint_manifest is not None
             else None
         ),
+        "boundary_164_checkpoint": boundary_checkpoint_record,
         "provenance": provenance,
     }
     _atomic_json(output_dir / "summary.json", summary)
