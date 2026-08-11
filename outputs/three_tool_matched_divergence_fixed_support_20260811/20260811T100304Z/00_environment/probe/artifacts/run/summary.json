@@ -1,0 +1,178 @@
+{
+  "arithmetic_environment_variables": {
+    "CUBLAS_WORKSPACE_CONFIG": null,
+    "CUDA_VISIBLE_DEVICES": null,
+    "JAX_DEFAULT_MATMUL_PRECISION": null,
+    "JAX_ENABLE_X64": null,
+    "MKL_NUM_THREADS": null,
+    "NVIDIA_TF32_OVERRIDE": null,
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": null,
+    "PYTORCH_CUDA_ALLOC_CONF": null,
+    "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null
+  },
+  "compiler": {
+    "full_version": {
+      "command": [
+        "/usr/bin/x86_64-linux-gnu-g++-15",
+        "-dumpfullversion",
+        "-dumpversion"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "15.2.0"
+    },
+    "path": "/usr/bin/x86_64-linux-gnu-g++-15",
+    "sha256": "e6718f7e0c7d057c3ff77b550c603da9bc4030e3ede3c053705acce1293dbe4d",
+    "version": {
+      "command": [
+        "/usr/bin/x86_64-linux-gnu-g++-15",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "x86_64-linux-gnu-g++-15 (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    }
+  },
+  "executables": {
+    "diffreach_python": {
+      "invoked_path": "/srv/local/shengenli/native_envs/diffreach083/bin/python",
+      "resolved_path": "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python3.12",
+      "sha256": "4774f8c275f273b340beae6d970f5c1b6b35539cc379839bcf205b32b9e2832d"
+    },
+    "flowstar_vanderpol": {
+      "path": "/tmp/three-tool-final-clone.QGb0Ew/repo/outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/flowstar_stock_artifacts/vanderpol",
+      "sha256": "5012ec0d144fd3ad4aa23873cdb21d1910cce755433934061d70b345ad2a34ae"
+    }
+  },
+  "jax": {
+    "available": true,
+    "devices": [
+      "cuda:0",
+      "cuda:1",
+      "cuda:2",
+      "cuda:3"
+    ],
+    "jax": "0.8.3",
+    "jaxlib": "0.8.3",
+    "probe_environment": {
+      "JAX_ENABLE_X64": "true"
+    },
+    "probe_exit_code": 0,
+    "x64": true
+  },
+  "native_libraries": {
+    "gmp": {
+      "command": [
+        "pkg-config",
+        "--modversion",
+        "gmp"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "6.3.0"
+    },
+    "mpfr": {
+      "command": [
+        "pkg-config",
+        "--modversion",
+        "mpfr"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "4.2.2"
+    }
+  },
+  "python": {
+    "executable": "/srv/local/shengenli/miniforge3/envs/py11/bin/python3.11",
+    "executable_sha256": "e6d1665c496ba6d1d246b36786f8617207d67e8bf9019ead0920b5fea3df0534",
+    "implementation": "CPython",
+    "version": "3.11.15"
+  },
+  "repositories": {
+    "diffreach": {
+      "head": "dd628eb443b517d6415de93e7035b4baef73963e",
+      "path": "/srv/local/shengenli/DiffReach_native_dd628eb",
+      "submodules": [],
+      "worktree_status": ""
+    },
+    "flowstar": {
+      "head": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "path": "/srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810",
+      "submodules": [],
+      "worktree_status": "?? benchmarks/continuous/vanderpol/vanderpol\n?? benchmarks/continuous/vanderpol/vanderpol.o\n?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n?? flowstar-toolbox/Constraints.o\n?? flowstar-toolbox/Continuous.o\n?? flowstar-toolbox/Discrete.o\n?? flowstar-toolbox/Geometry.o\n?? flowstar-toolbox/Hybrid.o\n?? flowstar-toolbox/Interval.o\n?? flowstar-toolbox/Matrix.o\n?? flowstar-toolbox/Variables.o\n?? flowstar-toolbox/lex.yy.c\n?? flowstar-toolbox/lex.yy.o\n?? flowstar-toolbox/libflowstar.a\n?? flowstar-toolbox/modelParser.output\n?? flowstar-toolbox/modelParser.tab.c\n?? flowstar-toolbox/modelParser.tab.h\n?? flowstar-toolbox/modelParser.tab.o\n?? flowstar-toolbox/settings.o"
+    },
+    "torch_tm_flowpipe": {
+      "head": "2cb647cd37b530aef12e2b627f48b9b1dcf9aa23",
+      "path": "/tmp/three-tool-final-clone.QGb0Ew/repo",
+      "submodules": [],
+      "worktree_status": ""
+    }
+  },
+  "schema": "three_tool_arithmetic_environment_v1",
+  "system": {
+    "cpu_count": 80,
+    "cpu_model": "Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz",
+    "gpu": [
+      {
+        "capability": [
+          7,
+          0
+        ],
+        "index": 0,
+        "name": "Tesla V100-SXM2-16GB",
+        "total_memory_bytes": 16928342016
+      },
+      {
+        "capability": [
+          7,
+          0
+        ],
+        "index": 1,
+        "name": "NVIDIA Graphics Device",
+        "total_memory_bytes": 16928342016
+      },
+      {
+        "capability": [
+          7,
+          0
+        ],
+        "index": 2,
+        "name": "Tesla V100-SXM2-16GB",
+        "total_memory_bytes": 16928342016
+      },
+      {
+        "capability": [
+          7,
+          0
+        ],
+        "index": 3,
+        "name": "Tesla V100-SXM2-16GB",
+        "total_memory_bytes": 16928342016
+      }
+    ],
+    "ldd": {
+      "command": [
+        "ldd",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "ldd (Ubuntu GLIBC 2.43-2ubuntu2.3) 2.43\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper."
+    },
+    "libc": [
+      "glibc",
+      "2.43"
+    ],
+    "machine": "x86_64",
+    "platform": "Linux-7.0.0-22-generic-x86_64-with-glibc2.43"
+  },
+  "torch": {
+    "cuda_available": true,
+    "cuda_build": "12.1",
+    "cudnn_version": 90100,
+    "default_dtype": "torch.float32",
+    "float32_matmul_precision": "highest",
+    "version": "2.5.1+cu121"
+  }
+}

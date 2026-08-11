@@ -1,0 +1,1 @@
+/srv/local/shengenli/miniforge3/envs/py11/bin/python -c 'import subprocess,sys;p=subprocess.run(['"'"'git'"'"','"'"'status'"'"','"'"'--porcelain=v1'"'"'],text=True,capture_output=True,check=True);print(p.stdout,end='"'"''"'"');sys.exit(1 if p.stdout else 0)'

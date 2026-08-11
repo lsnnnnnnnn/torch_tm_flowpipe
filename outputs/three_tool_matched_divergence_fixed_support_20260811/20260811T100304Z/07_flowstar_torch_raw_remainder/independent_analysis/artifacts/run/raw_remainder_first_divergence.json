@@ -1,0 +1,145 @@
+{
+  "common_exact_input_status": {
+    "polynomial_input_difference_zeroed_by": "component-by-component frozen-input replay and within-Flow* cached formula counterfactual",
+    "polynomial_range_inputs_differ": true,
+    "target_remainders_bit_exact": true
+  },
+  "counterfactuals_sha256": "b4de06f1f3a87221709a410be6d32a6f5d6a6d6def923087c485b333fc7b54d0",
+  "decision_changing_contribution": {
+    "baseline_final_margin": {
+      "decimal": "-3.662398821521699e-06",
+      "hex": "-0x1.eb8f10b7f1920p-19"
+    },
+    "flowstar_coefficient_interval_uncertainty": {
+      "hi": {
+        "decimal": "8.935810062010431e-05",
+        "hex": "0x1.76cb87aabcf2cp-14"
+      },
+      "lo": {
+        "decimal": "-0.00011204861774257546",
+        "hex": "-0x1.d5f74985635e3p-14"
+      },
+      "width": {
+        "decimal": "0.00020140671836267978",
+        "hex": "0x1.a661689810288p-13"
+      }
+    },
+    "flowstar_x_squared_cached_formula": {
+      "hi": {
+        "decimal": "0.00042404956697238806",
+        "hex": "0x1.bca5f05a3b779p-12"
+      },
+      "lo": {
+        "decimal": "-0.00045985815473848396",
+        "hex": "-0x1.e2323bc433853p-12"
+      },
+      "width": {
+        "decimal": "0.000883907721710872",
+        "hex": "0x1.cf6c160f377e6p-11"
+      }
+    },
+    "flowstar_x_squared_production": {
+      "hi": {
+        "decimal": "0.0005134076675924922",
+        "hex": "0x1.0d2c6922755a0p-11"
+      },
+      "lo": {
+        "decimal": "-0.0005719067724810592",
+        "hex": "-0x1.2bd80712c62e4p-11"
+      },
+      "width": {
+        "decimal": "0.0010853144400735514",
+        "hex": "0x1.1c82381a9dc42p-10"
+      }
+    },
+    "replacement_changes_decision": true,
+    "replacement_final_margin": {
+      "decimal": "2.4888083156873676e-07",
+      "hex": "0x1.0b3bd79140200p-22"
+    },
+    "torch_coefficient_interval_uncertainty": {
+      "hi": {
+        "decimal": "0.0",
+        "hex": "0x0.0p+0"
+      },
+      "lo": {
+        "decimal": "0.0",
+        "hex": "0x0.0p+0"
+      },
+      "width": {
+        "decimal": "0.0",
+        "hex": "0x0.0p+0"
+      }
+    }
+  },
+  "earlier_unequal_but_insufficient_components": [
+    {
+      "flowstar_hi": "0.00018108373054109543",
+      "flowstar_lo": "-0.00018108373054109543",
+      "flowstar_width": "0.00036216746108219086",
+      "input_status": "same target remainder; polynomial-range input delta recorded separately",
+      "operation": "polynomial_times_remainder",
+      "semantic_node": "x_squared",
+      "suboperation_order": 1,
+      "torch_hi": "0.0001810956600364132",
+      "torch_lo": "-0.0001810956600364132",
+      "torch_width": "0.0003621913200728264",
+      "width_delta_flowstar_minus_torch": "-2.3858990635548718e-08"
+    },
+    {
+      "flowstar_hi": "0.00018108373054109543",
+      "flowstar_lo": "-0.00018108373054109543",
+      "flowstar_width": "0.00036216746108219086",
+      "input_status": "same target remainder; polynomial-range input delta recorded separately",
+      "operation": "remainder_times_polynomial",
+      "semantic_node": "x_squared",
+      "suboperation_order": 2,
+      "torch_hi": "0.0001810956600364132",
+      "torch_lo": "-0.0001810956600364132",
+      "torch_width": "0.0003621913200728264",
+      "width_delta_flowstar_minus_torch": "-2.3858990635548718e-08"
+    },
+    {
+      "flowstar_hi": "1e-08",
+      "flowstar_lo": "-1e-08",
+      "flowstar_width": "2e-08",
+      "input_status": "same target remainder; polynomial-range input delta recorded separately",
+      "operation": "remainder_times_remainder",
+      "semantic_node": "x_squared",
+      "suboperation_order": 3,
+      "torch_hi": "1.0000000000000002e-08",
+      "torch_lo": "-1.0000000000000002e-08",
+      "torch_width": "2.0000000000000004e-08",
+      "width_delta_flowstar_minus_torch": "-3.308722450212111e-24"
+    },
+    {
+      "flowstar_hi": "6.187210589019698e-05",
+      "flowstar_lo": "-9.76806936562929e-05",
+      "flowstar_width": "0.00015955279954648987",
+      "input_status": "same target remainder; polynomial-range input delta recorded separately",
+      "operation": "polynomial_times_polynomial_dropped",
+      "semantic_node": "x_squared",
+      "suboperation_order": 4,
+      "torch_hi": "0.00012548001644313968",
+      "torch_lo": "-0.00018478640470926536",
+      "torch_width": "0.00031026642115240506",
+      "width_delta_flowstar_minus_torch": "-0.0001507136216059152"
+    }
+  ],
+  "flowstar_node": "flowstar.i4.c1.y_rhs.x_squared",
+  "independent_replay_sha256": "8df5efca7d330cfa24dd92e62f97c96c0bd6cf957056e8fee31c04eaccc43573",
+  "limitations": [
+    "This identifies the decision-changing representation/operation; it does not prove the narrower replacement sound for arbitrary Flow* MPFR coefficients.",
+    "Fraction scope is frozen finite binary64 component endpoints only."
+  ],
+  "node_comparison_sha256": "00d2286c80e0b46e855905b6c91a3288de99b7e1d2c7b17a8682abe040bd5c8e",
+  "operation": "TaylorModel multiplication coefficient-interval uncertainty addition",
+  "outcome": "RAW_REMAINDER_ROOT_CAUSE_CLOSED",
+  "picard_iteration": 4,
+  "root_cause_statement": "At Picard iteration 4, Flow*'s first x*x TaylorModel<Interval> multiplication adds retained-coefficient interval uncertainty absent from Torch's point-binary64 retained coefficient path. Holding every frozen input and the later outer-multiplication uncertainty fixed, replacing only that x*x contribution changes Flow* y from reject to accept.",
+  "schema": "vdp_raw_remainder_first_divergence_v1",
+  "semantic_node": "x_squared",
+  "source_expression_tree": "raw_remainder_expression_tree.json",
+  "source_expression_tree_sha256": "e4ef64330ed8a0797eb7abfccb0714679c521fcc1646d712f1cc00e1ee2a705c",
+  "torch_node": "torch.i4.c1.y_rhs.x_squared"
+}

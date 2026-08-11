@@ -1,0 +1,52 @@
+# operation node operands-or-bounds
+literal flow_p_left 0x1.7b8938b0323f5p+0 0x1.cf93089d1de77p+0
+literal flow_p_right 0x1.7b8938b0323f5p+0 0x1.cf93089d1de77p+0
+literal flow_r_left -0x1.a36e2eb1c432dp-14 0x1.a36e2eb1c432dp-14
+literal flow_r_right -0x1.a36e2eb1c432dp-14 0x1.a36e2eb1c432dp-14
+literal flow_drop -0x1.99b3d89eff16dp-14 0x1.0382aaf71ee04p-14
+literal flow_coefficient_uncertainty -0x1.d5f74985635e3p-14 0x1.76cb87aabcf2cp-14
+mul flow_pxr flow_p_left flow_r_right
+mul flow_rxp flow_p_right flow_r_left
+mul flow_rxr flow_r_left flow_r_right
+add flow_sum_1 flow_pxr flow_rxp
+add flow_sum_2 flow_sum_1 flow_rxr
+add flow_x2_formula flow_sum_2 flow_drop
+add flow_x2_with_coefficient_uncertainty flow_x2_formula flow_coefficient_uncertainty
+emit flow_x2_formula
+emit flow_x2_with_coefficient_uncertainty
+literal torch_p_left 0x1.7b80fdfdf6e88p+0 0x1.cf9ada0d0a0ecp+0
+literal torch_p_right 0x1.7b80fdfdf6e88p+0 0x1.cf9ada0d0a0ecp+0
+literal torch_r_left -0x1.a36e2eb1c432dp-14 0x1.a36e2eb1c432dp-14
+literal torch_r_right -0x1.a36e2eb1c432dp-14 0x1.a36e2eb1c432dp-14
+literal torch_drop -0x1.838672143f8ffp-13 0x1.072692243f890p-13
+literal torch_coefficient_uncertainty 0x0.0p+0 0x0.0p+0
+mul torch_pxr torch_p_left torch_r_right
+mul torch_rxp torch_p_right torch_r_left
+mul torch_rxr torch_r_left torch_r_right
+add torch_sum_1 torch_pxr torch_rxp
+add torch_sum_2 torch_sum_1 torch_rxr
+add torch_x2_formula torch_sum_2 torch_drop
+add torch_x2_with_coefficient_uncertainty torch_x2_formula torch_coefficient_uncertainty
+emit torch_x2_formula
+emit torch_x2_with_coefficient_uncertainty
+literal flow_outer_p_left -0x1.238bdf4755740p+1 -0x1.2a9920859e8dep+0
+literal flow_outer_p_right 0x1.66e3fa68a314ap+0 0x1.f48be7cd2f520p+0
+literal flow_y_remainder -0x1.a36e2eb1c432dp-14 0x1.a36e2eb1c432dp-14
+literal flow_outer_drop -0x1.b5182b7166a19p-9 0x1.beafe3f5ec50dp-9
+literal flow_outer_uncertainty -0x1.374476eb26bbcp-11 0x1.9fde7a5622e75p-12
+literal flow_h 0x0.0p+0 0x1.4160044f8ac26p-6
+neg flow_left_formula flow_x2_formula
+mul flow_outer_pxr flow_outer_p_left flow_y_remainder
+mul flow_outer_rxp flow_outer_p_right flow_left_formula
+mul flow_outer_rxr flow_left_formula flow_y_remainder
+add flow_outer_sum_1 flow_outer_pxr flow_outer_rxp
+add flow_outer_sum_2 flow_outer_sum_1 flow_outer_rxr
+add flow_outer_cached flow_outer_sum_2 flow_outer_drop
+add flow_outer_hold_uncertainty flow_outer_cached flow_outer_uncertainty
+neg flow_neg_x_remainder flow_r_left
+add flow_rhs_cached flow_outer_cached flow_neg_x_remainder
+add flow_rhs_x2_replaced_hold_outer flow_outer_hold_uncertainty flow_neg_x_remainder
+mul flow_raw_cached flow_h flow_rhs_cached
+mul flow_raw_x2_replaced_hold_outer flow_h flow_rhs_x2_replaced_hold_outer
+emit flow_raw_cached
+emit flow_raw_x2_replaced_hold_outer

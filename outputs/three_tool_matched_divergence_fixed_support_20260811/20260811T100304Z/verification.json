@@ -1,0 +1,1017 @@
+{
+  "claims": [
+    {
+      "claim_id": "00_environment.probe",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/collect_three_tool_environment.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/00_environment/probe/artifacts/run --flowstar-root /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810 --flowstar-binary /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/flowstar_stock_artifacts/vanderpol --diffreach-root /srv/local/shengenli/DiffReach_native_dd628eb --diffreach-python /srv/local/shengenli/native_envs/diffreach083/bin/python --compiler g++",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:26:29.931085+00:00",
+      "limitations": [],
+      "scope": "runner protocol 00_environment/probe",
+      "source_paths": [
+        "00_environment/probe/command.txt",
+        "00_environment/probe/stdout.log",
+        "00_environment/probe/stderr.log",
+        "00_environment/probe/exit_code.txt",
+        "00_environment/probe/started_at.txt",
+        "00_environment/probe/finished_at.txt"
+      ],
+      "source_sha256": [
+        "aa683d3821ec0af2679283ce0b7457759dfda0c558a6dc59962e2087a52ef681",
+        "c0e1fe767a665cd764a53af60bb4e9f4bb47535f0566290c433ac11ab0a1921f",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "7107c8517fd51964695b673c217b804cda54e358413af124822df572f7a37bfb",
+        "4903212728f54ac8279b85148aba5835643568d5a7c4ca54b63a3232edfcd849"
+      ],
+      "started_at": "2026-08-11T10:26:26.143924+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "01_integrity_corrections.focused_tests",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_evidence_verification.py tests/test_state_equality.py tests/test_canonical_status_consistency.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:26:32.361380+00:00",
+      "limitations": [],
+      "scope": "runner protocol 01_integrity_corrections/focused_tests",
+      "source_paths": [
+        "01_integrity_corrections/focused_tests/command.txt",
+        "01_integrity_corrections/focused_tests/stdout.log",
+        "01_integrity_corrections/focused_tests/stderr.log",
+        "01_integrity_corrections/focused_tests/exit_code.txt",
+        "01_integrity_corrections/focused_tests/started_at.txt",
+        "01_integrity_corrections/focused_tests/finished_at.txt"
+      ],
+      "source_sha256": [
+        "3844e6e298b1451e024e84bdd595e4c0c996d746d7a700582873b17fad5934da",
+        "18dde29fd76a4ce9ad1e22e194bfe42fb7734814bb75bacf4337e73437c23798",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "c3df9d54e62e9fc97003835e754076f7c9b00a066eef231c2bcaa800f999bfc5",
+        "e4f45789401f94ecf0859e266c3c933a6f7e0b13155c064ac1136133ad6997f1"
+      ],
+      "started_at": "2026-08-11T10:26:29.935064+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "02_contract.focused_tests",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_comparison_contract.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:26:34.799178+00:00",
+      "limitations": [],
+      "scope": "runner protocol 02_contract/focused_tests",
+      "source_paths": [
+        "02_contract/focused_tests/command.txt",
+        "02_contract/focused_tests/stdout.log",
+        "02_contract/focused_tests/stderr.log",
+        "02_contract/focused_tests/exit_code.txt",
+        "02_contract/focused_tests/started_at.txt",
+        "02_contract/focused_tests/finished_at.txt"
+      ],
+      "source_sha256": [
+        "5d769a1c3db489854cc7c82516a44d3d0720e21bf855b167627f3b804e662252",
+        "3c4249aedc936fa6025167411ab9a831106f3c8ea2573466fa709a2fe46887a0",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "e7f7eebdec208937bcd3d256876d5155384f9656b202af13723b69729a9607e9",
+        "6f36ea2d837518837504fcd629e76b6d7d7bc11a164a58a2f0fc5fa76ebb48ed"
+      ],
+      "started_at": "2026-08-11T10:26:32.364867+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "03_native_flowstar.official_vdp",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_stock_flowstar_vdp_reproduction.py --source /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810 --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/03_native_flowstar/official_vdp/artifacts/run --source-commit b85a3211748cb77b736fe4ad42ee02d8d2b81148 --model-sha256 022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558 --cxx g++ --cxx-compatibility-flag=-fpermissive",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:27:17.953571+00:00",
+      "limitations": [],
+      "scope": "runner protocol 03_native_flowstar/official_vdp",
+      "source_paths": [
+        "03_native_flowstar/official_vdp/command.txt",
+        "03_native_flowstar/official_vdp/stdout.log",
+        "03_native_flowstar/official_vdp/stderr.log",
+        "03_native_flowstar/official_vdp/exit_code.txt",
+        "03_native_flowstar/official_vdp/started_at.txt",
+        "03_native_flowstar/official_vdp/finished_at.txt"
+      ],
+      "source_sha256": [
+        "a200956353f76259aa88f34f24573405eea4c9f0af8c076270b15c016e5228d9",
+        "82f4c4fe0ef7c3e539f7e77ad16f9821c20345edc80b2da4af870b27f3ff52fa",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "6214bff4603065da73475eb11edcaf0c2f9e18871ade9dedfecb108f16bbe006",
+        "5738686cefd09d8292615920b4d014c4e9bab415f132ee92815153998e8f4f90"
+      ],
+      "started_at": "2026-08-11T10:26:34.802403+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "03_native_flowstar.scalar_affine_gate",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/flowstar_scalar_affine_closure/run_closure.py --flowstar-root /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810 --run-root /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/03_native_flowstar/scalar_affine_gate/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:27:46.045852+00:00",
+      "limitations": [],
+      "scope": "runner protocol 03_native_flowstar/scalar_affine_gate",
+      "source_paths": [
+        "03_native_flowstar/scalar_affine_gate/command.txt",
+        "03_native_flowstar/scalar_affine_gate/stdout.log",
+        "03_native_flowstar/scalar_affine_gate/stderr.log",
+        "03_native_flowstar/scalar_affine_gate/exit_code.txt",
+        "03_native_flowstar/scalar_affine_gate/started_at.txt",
+        "03_native_flowstar/scalar_affine_gate/finished_at.txt"
+      ],
+      "source_sha256": [
+        "5e7b70db3cc66e8c48567b64287801c6a84a38f7b846de6730aa2e49bb849872",
+        "4cf362d157ea50eddab8bbde07db14aa7b20ac6aff116297dec29a17f3accabf",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "ae7c69f1b2e20a62226132199262632b563e4c2de93149fcd74fc46aa86962a0",
+        "b39ba728b2d52f7bb77d2be8c33122b980a67356079729667125bb4ea74073cc"
+      ],
+      "started_at": "2026-08-11T10:27:17.957117+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "04_native_diffreach.official_vdp",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_stock_diffreach_vdp_reproduction.py --source /srv/local/shengenli/DiffReach_native_dd628eb --python /srv/local/shengenli/native_envs/diffreach083/bin/python --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/04_native_diffreach/official_vdp/artifacts/run --source-commit dd628eb443b517d6415de93e7035b4baef73963e --model-sha256 022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558 --cuda-visible-devices GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:28:04.647807+00:00",
+      "limitations": [],
+      "scope": "runner protocol 04_native_diffreach/official_vdp",
+      "source_paths": [
+        "04_native_diffreach/official_vdp/command.txt",
+        "04_native_diffreach/official_vdp/stdout.log",
+        "04_native_diffreach/official_vdp/stderr.log",
+        "04_native_diffreach/official_vdp/exit_code.txt",
+        "04_native_diffreach/official_vdp/started_at.txt",
+        "04_native_diffreach/official_vdp/finished_at.txt"
+      ],
+      "source_sha256": [
+        "e8ec351286dc3ce0d02459b1c384d697cd4d5b7e778c321f63bd4717116767b9",
+        "61fa0a0f0acab64ac18360dd435e848cdff073efbba9e2ae06cdc81cd1e9bc3e",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "29403f27f5f8cf8c5bb06791e20ef272878930461976870af768f5b0d266ea03",
+        "a853a001a72a33adf61f5127d9fe12dceb7a3f662b854c512a238892789cbbef"
+      ],
+      "started_at": "2026-08-11T10:27:46.057242+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "05_native_torch_complete_o4.authoritative",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_vdp_dense_backend.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/05_native_torch_complete_o4/authoritative/artifacts/run --tm-backend dense --device cpu --horizon 6.5 --wall-cap-s 1800 --dense-range-method adaptive_subdivision --dense-range-trigger proactive_depth1_on_named_contexts --dense-range-max-depth 1 --dense-range-max-leaves 4 --dense-range-split-vars 0,1 --dense-range-contexts polynomial_truncation",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 1,
+      "finished_at": "2026-08-11T10:36:40.319517+00:00",
+      "limitations": [
+        "expected fail-closed/noncompletion exit code 1"
+      ],
+      "scope": "runner protocol 05_native_torch_complete_o4/authoritative",
+      "source_paths": [
+        "05_native_torch_complete_o4/authoritative/command.txt",
+        "05_native_torch_complete_o4/authoritative/stdout.log",
+        "05_native_torch_complete_o4/authoritative/stderr.log",
+        "05_native_torch_complete_o4/authoritative/exit_code.txt",
+        "05_native_torch_complete_o4/authoritative/started_at.txt",
+        "05_native_torch_complete_o4/authoritative/finished_at.txt"
+      ],
+      "source_sha256": [
+        "4be9e16826e5622a2b735950731084b3c574952a60d3445da26ac3a13aac834c",
+        "3e1d9e53c346eb769d711e314c028c8570779681672e8495e809fa4c0299f2ac",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "3e1486675b3d2c0eb2add0880636d0ed0df1684f17fbfff8fa969e561ed54fb8",
+        "4975b1af1452b8cf38814dfa1192d40419dd9560ecc389b04d2ca4537a52b546"
+      ],
+      "started_at": "2026-08-11T10:28:04.661108+00:00",
+      "status": "qualified"
+    },
+    {
+      "claim_id": "06_native_torch_fixed_dr7.diffreach_explicit_f64_replay",
+      "command": "/srv/local/shengenli/native_envs/diffreach083/bin/python experiments/replay_diffreach_explicit_f64_fixture.py --diffreach-root /srv/local/shengenli/DiffReach_native_dd628eb --fixture tests/fixtures/diffreach_dr7_vdp_one_step_float64.json --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/artifacts/run --source-commit dd628eb443b517d6415de93e7035b4baef73963e",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:39.161489+00:00",
+      "limitations": [],
+      "scope": "runner protocol 06_native_torch_fixed_dr7/diffreach_explicit_f64_replay",
+      "source_paths": [
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/command.txt",
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/stdout.log",
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/stderr.log",
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/exit_code.txt",
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/started_at.txt",
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/finished_at.txt"
+      ],
+      "source_sha256": [
+        "490f95ec1c56e81e3428b182e34f64bdb681791e186d770326f438c4d43004d7",
+        "739ed8d146d30cd1d69111d9195fc75cfc1c635df569f2d673cf0d90cddad87b",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "f933dad1dd7885f2780b8a5273edeeac0563946f86e94b647624c56d2bbbd853",
+        "f90b745127ec430153dd915ecc06250d1002d8f1ff2428b732ceac19075bd2e8"
+      ],
+      "started_at": "2026-08-11T10:40:31.454911+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "06_native_torch_fixed_dr7.operator_fixture",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_fixed_support.py tests/test_fixed_support_functional.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:31.451689+00:00",
+      "limitations": [],
+      "scope": "runner protocol 06_native_torch_fixed_dr7/operator_fixture",
+      "source_paths": [
+        "06_native_torch_fixed_dr7/operator_fixture/command.txt",
+        "06_native_torch_fixed_dr7/operator_fixture/stdout.log",
+        "06_native_torch_fixed_dr7/operator_fixture/stderr.log",
+        "06_native_torch_fixed_dr7/operator_fixture/exit_code.txt",
+        "06_native_torch_fixed_dr7/operator_fixture/started_at.txt",
+        "06_native_torch_fixed_dr7/operator_fixture/finished_at.txt"
+      ],
+      "source_sha256": [
+        "d1aad6d161117ad39268e66fe08df964e06d3c88e3771ae07638658c5e44f497",
+        "8d091ea18041167761f7a524188141614ecf334e2a74bbbde992ba8b3a1b8db5",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "0fe7d55fd283a456548dad67a8731b4370998ec88a931281d154b9125e6d7d6e",
+        "31255fbbe75de5ffa4940fe9ea103c2388c2720b3033140d6294b774064578ba"
+      ],
+      "started_at": "2026-08-11T10:38:10.368916+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "06_native_torch_fixed_dr7.t10_cpu",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_vdp_fixed_support.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/06_native_torch_fixed_dr7/t10_cpu/artifacts/run --horizon 10 --step-size 0.01 --batch 64 --device cpu --warm-runs 0",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:38:10.355517+00:00",
+      "limitations": [],
+      "scope": "runner protocol 06_native_torch_fixed_dr7/t10_cpu",
+      "source_paths": [
+        "06_native_torch_fixed_dr7/t10_cpu/command.txt",
+        "06_native_torch_fixed_dr7/t10_cpu/stdout.log",
+        "06_native_torch_fixed_dr7/t10_cpu/stderr.log",
+        "06_native_torch_fixed_dr7/t10_cpu/exit_code.txt",
+        "06_native_torch_fixed_dr7/t10_cpu/started_at.txt",
+        "06_native_torch_fixed_dr7/t10_cpu/finished_at.txt"
+      ],
+      "source_sha256": [
+        "d874145915a39ff77b702862a8d4c5501da87af4ed6e3e98686c03cb6ba907c8",
+        "c910f3e60324b38d5bb9ec39bc4fcfdd7214c62bfbdb32ae8379b20be213c3cd",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "36d9aa07c72935d1d2b3df4b48ee16baacd5859327e7ede68616724746b67c06",
+        "8614df3088336ac7b7dd995d3ff4a1812b517a227429a8f142cfc4ec42867181"
+      ],
+      "started_at": "2026-08-11T10:36:40.424038+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "06_native_torch_fixed_dr7.two_ulp_companion_cpu",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/replay_fixed_support_fraction.py --output /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/06_native_torch_fixed_dr7/two_ulp_companion_cpu/artifacts/fraction_replay.json --device cpu",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:40.934491+00:00",
+      "limitations": [],
+      "scope": "runner protocol 06_native_torch_fixed_dr7/two_ulp_companion_cpu",
+      "source_paths": [
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/command.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/stdout.log",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/stderr.log",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/exit_code.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/started_at.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cpu/finished_at.txt"
+      ],
+      "source_sha256": [
+        "be960046f50b1ec5861ef9ab671bb10cb0de4861c0754388e496d9eea981396c",
+        "1a6afb2685f633af945f69cd6c4d5b2c36410b1eafa6adc115213b93050b6eea",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "9d1826aa1feb6e976552fc0ae41784d3b0bb7370c482a04af8fa7f33006804d3",
+        "98becb8dbd5a20c0cf5c7e7af8b35d9e3276fa7117380933cb456032a72be96d"
+      ],
+      "started_at": "2026-08-11T10:40:39.165046+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "06_native_torch_fixed_dr7.two_ulp_companion_cuda",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/replay_fixed_support_fraction.py --output /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/06_native_torch_fixed_dr7/two_ulp_companion_cuda/artifacts/fraction_replay.json --device cuda",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:43.511281+00:00",
+      "limitations": [],
+      "scope": "runner protocol 06_native_torch_fixed_dr7/two_ulp_companion_cuda",
+      "source_paths": [
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/command.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/stdout.log",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/stderr.log",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/exit_code.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/started_at.txt",
+        "06_native_torch_fixed_dr7/two_ulp_companion_cuda/finished_at.txt"
+      ],
+      "source_sha256": [
+        "ff946f1831a7f1c3dda1ff6546820b048497dcbafb252b6760c316201f170418",
+        "c4611f1a6567ce1a06134d19dc04f7020ccb9b13e0d0288b83ced11d103ce212",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "8c655e38daf01baecb32efcd3c81603089b7154e4c50bbea80ca1bda8df76abd",
+        "34e39d817e85efa3d98b9420cbab9a86d5874aadd8013336f649e5921e166978"
+      ],
+      "started_at": "2026-08-11T10:40:40.937710+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "07_flowstar_torch_raw_remainder.expression_tree",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/trace_vdp_raw_remainder.py --torch-checkpoint /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/torch_causal_checkpoint_final/torch_causal_checkpoint.json --flowstar-trace /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_t1/artifacts/flowstar_trace.csv --flowstar-binary /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_compile/artifacts/flowstar_probe --flowstar-source-commit b85a3211748cb77b736fe4ad42ee02d8d2b81148 --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/expression_tree/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:53.238038+00:00",
+      "limitations": [],
+      "scope": "runner protocol 07_flowstar_torch_raw_remainder/expression_tree",
+      "source_paths": [
+        "07_flowstar_torch_raw_remainder/expression_tree/command.txt",
+        "07_flowstar_torch_raw_remainder/expression_tree/stdout.log",
+        "07_flowstar_torch_raw_remainder/expression_tree/stderr.log",
+        "07_flowstar_torch_raw_remainder/expression_tree/exit_code.txt",
+        "07_flowstar_torch_raw_remainder/expression_tree/started_at.txt",
+        "07_flowstar_torch_raw_remainder/expression_tree/finished_at.txt"
+      ],
+      "source_sha256": [
+        "7da33704aae19b76dbec442a73211a82391bf7f156e5845daa7e736d9b30bed1",
+        "c34060ee817d4337f481912b08b767d4f2efdceb506136c2ca6dfcf88a1ac876",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "1bd23e5b80e9d6782c2467f847fff3c8c6d6dce6a6cf4147de041307b69df206",
+        "1b410805e7a2c814c0ef07883730e7e1a80d94091a1db293f3a6e639a7283edc"
+      ],
+      "started_at": "2026-08-11T10:40:51.320047+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "07_flowstar_torch_raw_remainder.independent_analysis",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/analyze_vdp_raw_remainder_trace.py --expression-tree /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/expression_tree/artifacts/run/raw_remainder_expression_tree.json --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/independent_analysis/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:54.017504+00:00",
+      "limitations": [],
+      "scope": "runner protocol 07_flowstar_torch_raw_remainder/independent_analysis",
+      "source_paths": [
+        "07_flowstar_torch_raw_remainder/independent_analysis/command.txt",
+        "07_flowstar_torch_raw_remainder/independent_analysis/stdout.log",
+        "07_flowstar_torch_raw_remainder/independent_analysis/stderr.log",
+        "07_flowstar_torch_raw_remainder/independent_analysis/exit_code.txt",
+        "07_flowstar_torch_raw_remainder/independent_analysis/started_at.txt",
+        "07_flowstar_torch_raw_remainder/independent_analysis/finished_at.txt"
+      ],
+      "source_sha256": [
+        "20b4a9067161140004b96f3f1b257b0dadfe51ad040fb62686de2edb5e1445b6",
+        "92be0525b67668a6713d82572ea627ba826834c80f87873c75de8b554ac6934b",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "ae1e49ffb1a636093777dc3735b1bb3c6ea4c7d3f96c4012da1a2e87ef566247",
+        "c8860efd73876167d18e27d3766b6c67c4c1a21b388a42240ec1da2e5b1497ad"
+      ],
+      "started_at": "2026-08-11T10:40:53.242689+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "07_flowstar_torch_raw_remainder.probe_compile",
+      "command": "g++ -O3 -w -fpermissive -std=c++11 -I /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810/flowstar-toolbox -I /usr/local/include experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp -L /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810/flowstar-toolbox -L /usr/local/lib -o /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_compile/artifacts/flowstar_probe -lflowstar -lmpfr -lgmp -lgsl -lgslcblas -lm -lglpk",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:51.018858+00:00",
+      "limitations": [],
+      "scope": "runner protocol 07_flowstar_torch_raw_remainder/probe_compile",
+      "source_paths": [
+        "07_flowstar_torch_raw_remainder/probe_compile/command.txt",
+        "07_flowstar_torch_raw_remainder/probe_compile/stdout.log",
+        "07_flowstar_torch_raw_remainder/probe_compile/stderr.log",
+        "07_flowstar_torch_raw_remainder/probe_compile/exit_code.txt",
+        "07_flowstar_torch_raw_remainder/probe_compile/started_at.txt",
+        "07_flowstar_torch_raw_remainder/probe_compile/finished_at.txt"
+      ],
+      "source_sha256": [
+        "7cd838bf592c84d692a0eaf717c7208e80b14f103827847bbe00cc1d8dbf3ffe",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "b37bc39f348a0491b7fa9114b2afe4fdc99e712ff12070a4b10b50eca2d8c553",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "3aba212f3098d340420b8e5fad9a861adbcba08e1b2ae26105abdbb5dfb0aa8e",
+        "25dcbd837e8a30238509f4b09ecb8e2ee7fdb83ad363de4a59f5b3a9d3165593"
+      ],
+      "started_at": "2026-08-11T10:40:43.514406+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "07_flowstar_torch_raw_remainder.probe_t1",
+      "command": "/tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_compile/artifacts/flowstar_probe /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_t1/artifacts/flowstar_trace.csv 1.0 0 4",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:40:51.315850+00:00",
+      "limitations": [],
+      "scope": "runner protocol 07_flowstar_torch_raw_remainder/probe_t1",
+      "source_paths": [
+        "07_flowstar_torch_raw_remainder/probe_t1/command.txt",
+        "07_flowstar_torch_raw_remainder/probe_t1/stdout.log",
+        "07_flowstar_torch_raw_remainder/probe_t1/stderr.log",
+        "07_flowstar_torch_raw_remainder/probe_t1/exit_code.txt",
+        "07_flowstar_torch_raw_remainder/probe_t1/started_at.txt",
+        "07_flowstar_torch_raw_remainder/probe_t1/finished_at.txt"
+      ],
+      "source_sha256": [
+        "40c2f0b092e0c66c922b42878950eee6b26597dc92c93359a5012d6a77766dc7",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "e85eae55df95103b640e3e7ab3ca1cc44ac7f0135a1fff2a43f0bd9c7654ca4e",
+        "7800e2bbe769a9f0aec0737fbe6032c2af6104de26089a41c975c0295f8e7fc3"
+      ],
+      "started_at": "2026-08-11T10:40:51.053067+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "08_schedule_validator_matrix.adaptive_schedule",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_vdp_schedule_validator_matrix.py --flowstar-trace /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_t1/artifacts/flowstar_trace.csv --torch-checkpoint /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/torch_causal_checkpoint_final/torch_causal_checkpoint.json --horizon 1.0 --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/08_schedule_validator_matrix/adaptive_schedule/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:41:16.898505+00:00",
+      "limitations": [],
+      "scope": "runner protocol 08_schedule_validator_matrix/adaptive_schedule",
+      "source_paths": [
+        "08_schedule_validator_matrix/adaptive_schedule/command.txt",
+        "08_schedule_validator_matrix/adaptive_schedule/stdout.log",
+        "08_schedule_validator_matrix/adaptive_schedule/stderr.log",
+        "08_schedule_validator_matrix/adaptive_schedule/exit_code.txt",
+        "08_schedule_validator_matrix/adaptive_schedule/started_at.txt",
+        "08_schedule_validator_matrix/adaptive_schedule/finished_at.txt"
+      ],
+      "source_sha256": [
+        "554ddfe97805ffb8537aca85c6d70c50176d6f09df86e35e830c2b4a10ac5573",
+        "2815850a2d5bba6c15b7ff27bd5d91a77eab508b17af82569dc7644cea6b1007",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "aa521f5d150166f41c0af27faacfc1cc7b2f13fed09b1be205d23abdadefa1f6",
+        "8012ee2698b285e08f1eb237036a4bc58094b9a5f96f79359d1e75f0bbb1f875"
+      ],
+      "started_at": "2026-08-11T10:40:54.020924+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "08_schedule_validator_matrix.fixed_h001_matrix",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_vdp_schedule_validator_matrix.py --flowstar-trace /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/08_schedule_validator_matrix/flowstar_fixed_h001/artifacts/flowstar_trace.csv --torch-checkpoint /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/mainline_realignment_20260810/20260810T025910Z/03_flowstar_causal_divergence/torch_causal_checkpoint_final/torch_causal_checkpoint.json --horizon 1.0 --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/08_schedule_validator_matrix/fixed_h001_matrix/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:41:59.140342+00:00",
+      "limitations": [],
+      "scope": "runner protocol 08_schedule_validator_matrix/fixed_h001_matrix",
+      "source_paths": [
+        "08_schedule_validator_matrix/fixed_h001_matrix/command.txt",
+        "08_schedule_validator_matrix/fixed_h001_matrix/stdout.log",
+        "08_schedule_validator_matrix/fixed_h001_matrix/stderr.log",
+        "08_schedule_validator_matrix/fixed_h001_matrix/exit_code.txt",
+        "08_schedule_validator_matrix/fixed_h001_matrix/started_at.txt",
+        "08_schedule_validator_matrix/fixed_h001_matrix/finished_at.txt"
+      ],
+      "source_sha256": [
+        "477ea509aa17b680e81523ff691e073785751a61d667c4e3c42f44e9c4f9af4c",
+        "346ec0c08c434db0a1ed7f812ecaa197893bd164468c2a3c4d8d87f164907992",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "3ed3b54e085093e040497b94a3ed94b1784bcde35a3d6ada398c072de9062d02",
+        "9512d2a86e50834e7976ac9c0bcbe769d745c7d205b421c00d5e7a5b1668c163"
+      ],
+      "started_at": "2026-08-11T10:41:17.378323+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "08_schedule_validator_matrix.flowstar_fixed_h001",
+      "command": "/tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/07_flowstar_torch_raw_remainder/probe_compile/artifacts/flowstar_probe /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/08_schedule_validator_matrix/flowstar_fixed_h001/artifacts/flowstar_trace.csv 1.0 0 4 0.01",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:41:17.373370+00:00",
+      "limitations": [],
+      "scope": "runner protocol 08_schedule_validator_matrix/flowstar_fixed_h001",
+      "source_paths": [
+        "08_schedule_validator_matrix/flowstar_fixed_h001/command.txt",
+        "08_schedule_validator_matrix/flowstar_fixed_h001/stdout.log",
+        "08_schedule_validator_matrix/flowstar_fixed_h001/stderr.log",
+        "08_schedule_validator_matrix/flowstar_fixed_h001/exit_code.txt",
+        "08_schedule_validator_matrix/flowstar_fixed_h001/started_at.txt",
+        "08_schedule_validator_matrix/flowstar_fixed_h001/finished_at.txt"
+      ],
+      "source_sha256": [
+        "2a637e397b69a42bb6ea1f54b65d3f39c60a56f164fb257c1a99026ad09a2843",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "91c81b30aec8a3d193b0fd80b288c8b25cd35df4f3831f66c20607e0bb3a14fd",
+        "a73cab8c02fab611d9100dcb17e1788790b1b0a58fa267fa02243879e55373c9"
+      ],
+      "started_at": "2026-08-11T10:41:16.901872+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "09_fixed_support_descriptor.algebra_tests",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_fixed_support.py tests/test_fixed_support_r35.py tests/test_r35_mpfr_remainder_replay.py tests/test_fixed_support_bridge_runner.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:42:13.142582+00:00",
+      "limitations": [],
+      "scope": "runner protocol 09_fixed_support_descriptor/algebra_tests",
+      "source_paths": [
+        "09_fixed_support_descriptor/algebra_tests/command.txt",
+        "09_fixed_support_descriptor/algebra_tests/stdout.log",
+        "09_fixed_support_descriptor/algebra_tests/stderr.log",
+        "09_fixed_support_descriptor/algebra_tests/exit_code.txt",
+        "09_fixed_support_descriptor/algebra_tests/started_at.txt",
+        "09_fixed_support_descriptor/algebra_tests/finished_at.txt"
+      ],
+      "source_sha256": [
+        "b8c9b2f39f9c6a48da41fa738ce9ae5827143895970714721313a74adf73bff4",
+        "25926aecc1e2172128037be0beabb9fb4da68690a3ca4b5c3a2927af439971b8",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "d47659a8b6317700a915620646b052601a203403b4a3567b589656fb4295d6e3",
+        "107091969e05d4e0e73091b14efe3df477c8b9ee7613fc600537403ad1bd24c3"
+      ],
+      "started_at": "2026-08-11T10:41:59.143838+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "09_fixed_support_descriptor.r35_mpfr_remainder_replay",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/replay_r35_mpfr_remainder.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/09_fixed_support_descriptor/r35_mpfr_remainder_replay/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:42:15.474353+00:00",
+      "limitations": [],
+      "scope": "runner protocol 09_fixed_support_descriptor/r35_mpfr_remainder_replay",
+      "source_paths": [
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/command.txt",
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/stdout.log",
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/stderr.log",
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/exit_code.txt",
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/started_at.txt",
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay/finished_at.txt"
+      ],
+      "source_sha256": [
+        "c0ba1d50bdf4b1dfca2b1c01e8a32263286e3fa0fcc807ea23e3301babd87d4d",
+        "14ffac85a5b480ccc5c61c60ac880e0df093e5be8bac305673440e22bede19bc",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "eeee3bbd3d595ff0651c303cb4a5d3a5861f5cc31fdcefb304c374a30ac9bc2c",
+        "5f7211526d6596065a74cde1da7af8519e9a5e996f9faa45a838b1df30949198"
+      ],
+      "started_at": "2026-08-11T10:42:13.145761+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "10_bridge_ladder.G0",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_fixed_support_descriptor_bridge.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G0/artifacts/run --max-gate G0",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:42:30.315896+00:00",
+      "limitations": [],
+      "scope": "runner protocol 10_bridge_ladder/G0",
+      "source_paths": [
+        "10_bridge_ladder/G0/command.txt",
+        "10_bridge_ladder/G0/stdout.log",
+        "10_bridge_ladder/G0/stderr.log",
+        "10_bridge_ladder/G0/exit_code.txt",
+        "10_bridge_ladder/G0/started_at.txt",
+        "10_bridge_ladder/G0/finished_at.txt"
+      ],
+      "source_sha256": [
+        "b684b763e9915a9facc3be1c2fa94108f2e445f9115c12a72d541b0045e60409",
+        "473ad540f1ac7541c2e4c4e4d32abc59e9e7284260e039e337d6d5dd33e582e8",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "4ba83f55f53758e8fcc145f774a80205ed2250368d573cbe5843092a741f7425",
+        "74fe1d96d6b05eba9f5ddc4fd48f07360d611ce09d494f284bc6b15c33749166"
+      ],
+      "started_at": "2026-08-11T10:42:15.477801+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "10_bridge_ladder.G1",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_fixed_support_descriptor_bridge.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G1/artifacts/run --max-gate G1 --prior-gate-summary /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G0/artifacts/run/summary.json",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:43:45.940232+00:00",
+      "limitations": [],
+      "scope": "runner protocol 10_bridge_ladder/G1",
+      "source_paths": [
+        "10_bridge_ladder/G1/command.txt",
+        "10_bridge_ladder/G1/stdout.log",
+        "10_bridge_ladder/G1/stderr.log",
+        "10_bridge_ladder/G1/exit_code.txt",
+        "10_bridge_ladder/G1/started_at.txt",
+        "10_bridge_ladder/G1/finished_at.txt"
+      ],
+      "source_sha256": [
+        "3d5d383c72c95dfacf7bfb0b7df1070732452403d93b6efe44deaf47b2131783",
+        "12bb3b3c7c723bb6b34d8621548f71b32fc9c75ae9056d969586dedf3571db61",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "70803fe2c5cf1cdd10399dab401dd178aa2d5181380e62063444f8deff58f109",
+        "9c30653871da6fac303723c478dad546a2a7d51e44970a4a0855f1f4706c5fd8"
+      ],
+      "started_at": "2026-08-11T10:42:30.324156+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "10_bridge_ladder.G2",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_fixed_support_descriptor_bridge.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G2/artifacts/run --max-gate G2 --prior-gate-summary /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G1/artifacts/run/summary.json",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T10:54:28.894863+00:00",
+      "limitations": [],
+      "scope": "runner protocol 10_bridge_ladder/G2",
+      "source_paths": [
+        "10_bridge_ladder/G2/command.txt",
+        "10_bridge_ladder/G2/stdout.log",
+        "10_bridge_ladder/G2/stderr.log",
+        "10_bridge_ladder/G2/exit_code.txt",
+        "10_bridge_ladder/G2/started_at.txt",
+        "10_bridge_ladder/G2/finished_at.txt"
+      ],
+      "source_sha256": [
+        "80e9ee53e50f20b43d6476cca33f9dee2d09a70742d93017feee4e3af6decced",
+        "b202d3cabdab8ab633af1de6cb59a75a761f8bb01388c5ef8c726ea5edfc9e43",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "d9c318888122281c54d93e637b72f8ddc43576741d08b409b79a94e8f0cd004f",
+        "c69d44dcb287897e9cd699080d150ee8126c16d0ee24ec50d9cb8a3a6964fd43"
+      ],
+      "started_at": "2026-08-11T10:43:45.961922+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "10_bridge_ladder.G3",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/run_fixed_support_descriptor_bridge.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G3/artifacts/run --max-gate G3 --prior-gate-summary /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/10_bridge_ladder/G2/artifacts/run/summary.json",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 1,
+      "finished_at": "2026-08-11T11:59:57.130693+00:00",
+      "limitations": [
+        "expected fail-closed/noncompletion exit code 1"
+      ],
+      "scope": "runner protocol 10_bridge_ladder/G3",
+      "source_paths": [
+        "10_bridge_ladder/G3/command.txt",
+        "10_bridge_ladder/G3/stdout.log",
+        "10_bridge_ladder/G3/stderr.log",
+        "10_bridge_ladder/G3/exit_code.txt",
+        "10_bridge_ladder/G3/started_at.txt",
+        "10_bridge_ladder/G3/finished_at.txt"
+      ],
+      "source_sha256": [
+        "86aaa779472f403844573437ab301cf321d654ba369dcb85c0bfbbdd0a653309",
+        "01900d54dda7f0d8c6bfdfe21b11a0dcff3a4aeae53ffbbaebccdef063754e45",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "2d4b0d74c9f0fe13ee3eb8bc1e13d44573889fdc7a158b3d6d67030ba50f02f0",
+        "dc19727d37507b051626e10519fa048c162e7f599f0fabd603223aaeb947b7a9"
+      ],
+      "started_at": "2026-08-11T10:54:28.911894+00:00",
+      "status": "qualified"
+    },
+    {
+      "claim_id": "11_pairwise_tables.report_tests",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_comparison_contract.py tests/test_canonical_status_consistency.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T11:59:59.063392+00:00",
+      "limitations": [],
+      "scope": "runner protocol 11_pairwise_tables/report_tests",
+      "source_paths": [
+        "11_pairwise_tables/report_tests/command.txt",
+        "11_pairwise_tables/report_tests/stdout.log",
+        "11_pairwise_tables/report_tests/stderr.log",
+        "11_pairwise_tables/report_tests/exit_code.txt",
+        "11_pairwise_tables/report_tests/started_at.txt",
+        "11_pairwise_tables/report_tests/finished_at.txt"
+      ],
+      "source_sha256": [
+        "7420a76b6ad2b5d26faa2e2451b4ed08086e9d7367e78f5b9b4bd6320ec5b176",
+        "cb5663735f637ffd0b8d4f4562d5b9fc32ef88a21a4dd11d9badf96e169d62f5",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "d8b170f936632130f954dad885f7f23397155778e59b1fd4b106d25ddfd40882",
+        "c7791cf625444044eae89a0a69df1a6d59c39a627c0efd8200aabd88cce20445"
+      ],
+      "started_at": "2026-08-11T11:59:57.151935+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "12_single_improvement.not_authorized",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -c 'print('\"'\"'IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE'\"'\"')'",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T11:59:59.089733+00:00",
+      "limitations": [],
+      "scope": "runner protocol 12_single_improvement/not_authorized",
+      "source_paths": [
+        "12_single_improvement/not_authorized/command.txt",
+        "12_single_improvement/not_authorized/stdout.log",
+        "12_single_improvement/not_authorized/stderr.log",
+        "12_single_improvement/not_authorized/exit_code.txt",
+        "12_single_improvement/not_authorized/started_at.txt",
+        "12_single_improvement/not_authorized/finished_at.txt"
+      ],
+      "source_sha256": [
+        "634ea89dde2e5d248b79597057f53bfda28f435cd57c89e9f39a4b3eaa5f29f3",
+        "971f0fa116a11a441bec584c78911e252593bfc6ede95559a07e0d12ec22f852",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "b5b942089029fa2d0e77bb559fa74e94e136a512711655c3418b71b56482070b",
+        "c29fc44267c77d9160b1730d599048e0337ba7d332c4d62d2beaa5ddf87d2190"
+      ],
+      "started_at": "2026-08-11T11:59:59.066567+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "13_second_system_if_authorized.not_authorized",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -c 'print('\"'\"'not_run: improvement not promoted'\"'\"')'",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T11:59:59.114170+00:00",
+      "limitations": [],
+      "scope": "runner protocol 13_second_system_if_authorized/not_authorized",
+      "source_paths": [
+        "13_second_system_if_authorized/not_authorized/command.txt",
+        "13_second_system_if_authorized/not_authorized/stdout.log",
+        "13_second_system_if_authorized/not_authorized/stderr.log",
+        "13_second_system_if_authorized/not_authorized/exit_code.txt",
+        "13_second_system_if_authorized/not_authorized/started_at.txt",
+        "13_second_system_if_authorized/not_authorized/finished_at.txt"
+      ],
+      "source_sha256": [
+        "d1f9fa2e51a998e55a8d4fa01b860bf2b74f2b9eb862a4f0ec52915dacaf4488",
+        "4f3d7bc41cfc7692cf863cc9ec2f3b78d73b964b2d6ff6a6537e64faddf852c4",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "f0f2e1e98a73e51e6161baf447ba8fe441d364579e0dcb940e306b3aa5db1335",
+        "8486f3abbc0abfaddbd1ab1529a766bd9b71c0f9c3838ac133f0066f980ad820"
+      ],
+      "started_at": "2026-08-11T11:59:59.092016+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.checkpoint_load",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/validate_tracked_checkpoints.py --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/14_fresh_clone/checkpoint_load/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:18.867294+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/checkpoint_load",
+      "source_paths": [
+        "14_fresh_clone/checkpoint_load/command.txt",
+        "14_fresh_clone/checkpoint_load/stdout.log",
+        "14_fresh_clone/checkpoint_load/stderr.log",
+        "14_fresh_clone/checkpoint_load/exit_code.txt",
+        "14_fresh_clone/checkpoint_load/started_at.txt",
+        "14_fresh_clone/checkpoint_load/finished_at.txt"
+      ],
+      "source_sha256": [
+        "8eb57ee6545686bf6de5ba03cc6eb4c1c57903e89e07f163b17e8ed5ec0a2cdb",
+        "52b0803798c413da6b31972b4602d82523f856c64fadfbd916432f6e02c64bbc",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "f26206bba529087e889b21e085425935815588253e52cad53906a5a2e5521401",
+        "8dc9f93407190b21225b2c0067e738010a12b589c23d21a97cfba72b082b41a4"
+      ],
+      "started_at": "2026-08-11T12:05:18.756015+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.compileall",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m compileall -q src experiments tests",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:18.751681+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/compileall",
+      "source_paths": [
+        "14_fresh_clone/compileall/command.txt",
+        "14_fresh_clone/compileall/stdout.log",
+        "14_fresh_clone/compileall/stderr.log",
+        "14_fresh_clone/compileall/exit_code.txt",
+        "14_fresh_clone/compileall/started_at.txt",
+        "14_fresh_clone/compileall/finished_at.txt"
+      ],
+      "source_sha256": [
+        "ade696905ad6f09d7f0f4ba1d2047b44ae2a7c9b10b8fbfb437ba524af362984",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "f95583255bc5699cc3b1c089a17faec1912d9ae4797108d2bb4b516528fdcecd",
+        "c7a2cb9eae14b3ff8239eb4dd677aa7328e398aef2b3bc36af88b6e33b55cea9"
+      ],
+      "started_at": "2026-08-11T12:05:18.355132+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.diff_check",
+      "command": "git diff --check 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a..HEAD",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:29.993836+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/diff_check",
+      "source_paths": [
+        "14_fresh_clone/diff_check/command.txt",
+        "14_fresh_clone/diff_check/stdout.log",
+        "14_fresh_clone/diff_check/stderr.log",
+        "14_fresh_clone/diff_check/exit_code.txt",
+        "14_fresh_clone/diff_check/started_at.txt",
+        "14_fresh_clone/diff_check/finished_at.txt"
+      ],
+      "source_sha256": [
+        "efce0f24ed8ec40e6604688873b97d0ba7f943f5461c9b12652c13e75080b794",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "cb64ab8a65b4af7d3aa72e3c17574748912aa704beeb81041d79aa8f6ffdb0ca",
+        "1cf92162beab4121fc655524100f7edc54a302d17e05182e14b8e2b83521f2d2"
+      ],
+      "started_at": "2026-08-11T12:05:29.981514+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.focused_tests",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_evidence_verification.py tests/test_comparison_contract.py tests/test_raw_remainder_trace.py tests/test_fixed_support_r35.py tests/test_r35_mpfr_remainder_replay.py tests/test_fixed_support_bridge_runner.py tests/test_20260811_report_contract.py tests/test_vdp_terminal_state_replay.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:29.978408+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/focused_tests",
+      "source_paths": [
+        "14_fresh_clone/focused_tests/command.txt",
+        "14_fresh_clone/focused_tests/stdout.log",
+        "14_fresh_clone/focused_tests/stderr.log",
+        "14_fresh_clone/focused_tests/exit_code.txt",
+        "14_fresh_clone/focused_tests/started_at.txt",
+        "14_fresh_clone/focused_tests/finished_at.txt"
+      ],
+      "source_sha256": [
+        "c12d30ddaf43cd878da9e5d17aab92c5fed510ef5cbb736629d9607b4f9e61be",
+        "4ab0bb84506d2e605a0739a5ff28108a62399e0ab5866d73a212958c4a10284b",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "eb8e8c0af81fce272b5ed24c4eda21e28a3a83d219532c73152d8ce972ae3255",
+        "cc0fbf726cb31c58a26c8676a045b2957a914e67ef09642a7321830baf55538c"
+      ],
+      "started_at": "2026-08-11T12:05:18.871953+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.full_pytest",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q -rsxX",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:18.350534+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/full_pytest",
+      "source_paths": [
+        "14_fresh_clone/full_pytest/command.txt",
+        "14_fresh_clone/full_pytest/stdout.log",
+        "14_fresh_clone/full_pytest/stderr.log",
+        "14_fresh_clone/full_pytest/exit_code.txt",
+        "14_fresh_clone/full_pytest/started_at.txt",
+        "14_fresh_clone/full_pytest/finished_at.txt"
+      ],
+      "source_sha256": [
+        "3815f5addab4e39d1ec185fb4ba5cd87739ccac9034245e4ef2b7fcb5dcbdcbb",
+        "94611c8c113d6bf3856608fda32b799971677cee4b598c5daff87a89e4a8ff18",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "28f210f9b256606cdcf8fea249653caa8ff8582c1baa538ea88c2cd92d310b72",
+        "3bc8107d53fe39d5bb998509178b093b1e1a00c51347d886bcb3b875cde77a76"
+      ],
+      "started_at": "2026-08-11T11:59:59.117444+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "14_fresh_clone.worktree_clean",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -c 'import subprocess,sys;p=subprocess.run(['\"'\"'git'\"'\"','\"'\"'status'\"'\"','\"'\"'--porcelain=v1'\"'\"'],text=True,capture_output=True,check=True);print(p.stdout,end='\"'\"''\"'\"');sys.exit(1 if p.stdout else 0)'",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:30.031509+00:00",
+      "limitations": [],
+      "scope": "runner protocol 14_fresh_clone/worktree_clean",
+      "source_paths": [
+        "14_fresh_clone/worktree_clean/command.txt",
+        "14_fresh_clone/worktree_clean/stdout.log",
+        "14_fresh_clone/worktree_clean/stderr.log",
+        "14_fresh_clone/worktree_clean/exit_code.txt",
+        "14_fresh_clone/worktree_clean/started_at.txt",
+        "14_fresh_clone/worktree_clean/finished_at.txt"
+      ],
+      "source_sha256": [
+        "112fc6fe1a4fc1a5c305fc93f97fce103058631e42227b0eaa56a670b6be437b",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "f4d9be9ac817f53aa3e3f60520f140accda7243ac05bdfd1f82e5e04b7cfe465",
+        "352ccb8d3ac8e04959e80cca80dced87610cd6b84dbb345bee839198332b89db"
+      ],
+      "started_at": "2026-08-11T12:05:29.997148+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "15_reports.canonical_docs",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_canonical_status_consistency.py tests/test_three_tool_package_finalizer.py",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:32.102187+00:00",
+      "limitations": [],
+      "scope": "runner protocol 15_reports/canonical_docs",
+      "source_paths": [
+        "15_reports/canonical_docs/command.txt",
+        "15_reports/canonical_docs/stdout.log",
+        "15_reports/canonical_docs/stderr.log",
+        "15_reports/canonical_docs/exit_code.txt",
+        "15_reports/canonical_docs/started_at.txt",
+        "15_reports/canonical_docs/finished_at.txt"
+      ],
+      "source_sha256": [
+        "e1f605934d4867e40b7b39101a771af8fcc36b6d178ba3156907b57293a10871",
+        "e90895c0667bba158a8be0a358be30a3895af4fe97432507d2fe1afa0eab5a43",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "11b4e534ddf6349fc554014a9ed7f1a7e94611074e82f4bc4aee5ecaea8c56db",
+        "a61c306b57dc9b437b1eff1b56ff27214c99280302530d3b11e47308c70ca588"
+      ],
+      "started_at": "2026-08-11T12:05:30.186992+00:00",
+      "status": "pass"
+    },
+    {
+      "claim_id": "15_reports.causal_figures",
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/build_three_tool_causal_figures.py --run-root /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z --output-dir /tmp/three-tool-final-clone.QGb0Ew/repo/outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/15_reports/causal_figures/artifacts/run",
+      "derivation_version": 1,
+      "derived_by": "torch_tm_flowpipe.evidence_verification.derive_command_claim",
+      "exit_code": 0,
+      "finished_at": "2026-08-11T12:05:30.183554+00:00",
+      "limitations": [],
+      "scope": "runner protocol 15_reports/causal_figures",
+      "source_paths": [
+        "15_reports/causal_figures/command.txt",
+        "15_reports/causal_figures/stdout.log",
+        "15_reports/causal_figures/stderr.log",
+        "15_reports/causal_figures/exit_code.txt",
+        "15_reports/causal_figures/started_at.txt",
+        "15_reports/causal_figures/finished_at.txt"
+      ],
+      "source_sha256": [
+        "7d5e1bb83b756d1cdde39d8375fea63c6e4cd17d1d6491b9b5d7e38223e019b2",
+        "c2e892d644fa0432b3b0914e598bddc8c0167cc7d838ae6e39f16b2d485cc730",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "823c22be2d67de21c5d12283b3540692cbdfa5033f730f32d0de9938d7d4de41",
+        "be5e0b36c63d0a91af31421663df2dccb1081d9536710d0c2a13d34e4bcb260f"
+      ],
+      "started_at": "2026-08-11T12:05:30.033710+00:00",
+      "status": "pass"
+    }
+  ],
+  "schema": "torch_tm_flowpipe_source_derived_verification_v1"
+}

@@ -1,0 +1,558 @@
+{
+  "outcomes": {
+    "bridge": "FIXED_SUPPORT_BRIDGE_BLOCKED",
+    "diffreach_torch_pairwise": "VALID_PAIRWISE_COMPARISON_CLOSED",
+    "evidence": "EVIDENCE_INTEGRITY_PASS",
+    "flowstar_torch_pairwise": "PAIRWISE_COMPARISON_PARTIAL",
+    "improvement": "IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE",
+    "raw_remainder": "RAW_REMAINDER_ROOT_CAUSE_CLOSED",
+    "schedule_validator": "SCHEDULE_VALIDATOR_INTERACTION"
+  },
+  "package_root": ".",
+  "private_path_audit": {
+    "ignored_categories": [
+      "provenance_only",
+      "sanitizer_fixture"
+    ],
+    "matches": [
+      {
+        "category": "provenance_only",
+        "line": 39,
+        "path": "00_environment/probe/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 40,
+        "path": "00_environment/probe/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 87,
+        "path": "00_environment/probe/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 95,
+        "path": "00_environment/probe/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 101,
+        "path": "00_environment/probe/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "00_environment/probe/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "00_environment/probe/stdout.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "01_integrity_corrections/focused_tests/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "02_contract/focused_tests/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "03_native_flowstar/official_vdp/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 5,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/backend_identity.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 125,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/backend_identity.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 132,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/backend_identity.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 138,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/backend_identity.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 143,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/backend_identity.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 3,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/environment.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 10,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/start_state.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 12,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/start_state.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 15,
+        "path": "03_native_flowstar/scalar_affine_gate/artifacts/run/start_state.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "03_native_flowstar/scalar_affine_gate/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 222,
+        "path": "04_native_diffreach/official_vdp/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 223,
+        "path": "04_native_diffreach/official_vdp/artifacts/run/summary.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "04_native_diffreach/official_vdp/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "04_native_diffreach/official_vdp/stdout.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "05_native_torch_complete_o4/authoritative/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "06_native_torch_fixed_dr7/operator_fixture/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "06_native_torch_fixed_dr7/t10_cpu/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "06_native_torch_fixed_dr7/two_ulp_companion_cpu/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "06_native_torch_fixed_dr7/two_ulp_companion_cuda/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "07_flowstar_torch_raw_remainder/expression_tree/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "07_flowstar_torch_raw_remainder/independent_analysis/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 2,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 3,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 5,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 6,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 9,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 10,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 11,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 12,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 15,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 16,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 19,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 20,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 23,
+        "path": "07_flowstar_torch_raw_remainder/probe_compile/stderr.log"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "08_schedule_validator_matrix/adaptive_schedule/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "08_schedule_validator_matrix/fixed_h001_matrix/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "09_fixed_support_descriptor/algebra_tests/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "09_fixed_support_descriptor/r35_mpfr_remainder_replay/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "10_bridge_ladder/G0/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "10_bridge_ladder/G1/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "10_bridge_ladder/G2/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "10_bridge_ladder/G3/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "11_pairwise_tables/report_tests/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "12_single_improvement/not_authorized/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "13_second_system_if_authorized/not_authorized/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "14_fresh_clone/checkpoint_load/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "14_fresh_clone/compileall/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "14_fresh_clone/focused_tests/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "14_fresh_clone/full_pytest/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "14_fresh_clone/worktree_clean/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "15_reports/canonical_docs/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 1,
+        "path": "15_reports/causal_figures/command.txt"
+      },
+      {
+        "category": "provenance_only",
+        "line": 5,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 33,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 61,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 89,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 117,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 145,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 173,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 203,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 231,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 259,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 287,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 315,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 343,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 371,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 399,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 455,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 483,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 539,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 567,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 595,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 623,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 651,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 679,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 709,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 737,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 765,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 793,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 821,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 877,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 905,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 933,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 961,
+        "path": "verification.json"
+      },
+      {
+        "category": "provenance_only",
+        "line": 989,
+        "path": "verification.json"
+      }
+    ],
+    "private_path_present": true,
+    "public_replay_dependency": false,
+    "remaining_matches": [],
+    "runtime_hidden_dependency": false,
+    "status": "qualified"
+  },
+  "run_id": "20260811T100304Z",
+  "runner_count": 36,
+  "runners": [
+    "00_environment/probe",
+    "01_integrity_corrections/focused_tests",
+    "02_contract/focused_tests",
+    "03_native_flowstar/official_vdp",
+    "03_native_flowstar/scalar_affine_gate",
+    "04_native_diffreach/official_vdp",
+    "05_native_torch_complete_o4/authoritative",
+    "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay",
+    "06_native_torch_fixed_dr7/operator_fixture",
+    "06_native_torch_fixed_dr7/t10_cpu",
+    "06_native_torch_fixed_dr7/two_ulp_companion_cpu",
+    "06_native_torch_fixed_dr7/two_ulp_companion_cuda",
+    "07_flowstar_torch_raw_remainder/expression_tree",
+    "07_flowstar_torch_raw_remainder/independent_analysis",
+    "07_flowstar_torch_raw_remainder/probe_compile",
+    "07_flowstar_torch_raw_remainder/probe_t1",
+    "08_schedule_validator_matrix/adaptive_schedule",
+    "08_schedule_validator_matrix/fixed_h001_matrix",
+    "08_schedule_validator_matrix/flowstar_fixed_h001",
+    "09_fixed_support_descriptor/algebra_tests",
+    "09_fixed_support_descriptor/r35_mpfr_remainder_replay",
+    "10_bridge_ladder/G0",
+    "10_bridge_ladder/G1",
+    "10_bridge_ladder/G2",
+    "10_bridge_ladder/G3",
+    "11_pairwise_tables/report_tests",
+    "12_single_improvement/not_authorized",
+    "13_second_system_if_authorized/not_authorized",
+    "14_fresh_clone/checkpoint_load",
+    "14_fresh_clone/compileall",
+    "14_fresh_clone/diff_check",
+    "14_fresh_clone/focused_tests",
+    "14_fresh_clone/full_pytest",
+    "14_fresh_clone/worktree_clean",
+    "15_reports/canonical_docs",
+    "15_reports/causal_figures"
+  ],
+  "schema": "three_tool_matched_divergence_fixed_support_package_v1",
+  "source_commit": "2cb647cd37b530aef12e2b627f48b9b1dcf9aa23",
+  "verification_sha256": "c6ba8523b0edb74f1bffdc0a5a72bb0b0b28d0e799df2427dc3f95b2b0ef6aa7"
+}

@@ -161,8 +161,13 @@ the causal ladder, A0--B16 ledger, component substitutions, corrected
 stop rows for every unauthorized later stage.
 
 The three-tool pairwise/raw-root-cause/descriptor round refers to the
-`20260811T100304Z` evidence run, but that ignored package is absent from the
-Git tree at `2cb647cd37b530aef12e2b627f48b9b1dcf9aa23`. A server-local copy has
-been located and is being audited for compact tracked recovery. Until that
-recovery and a true remote-clone gate are committed, merely naming the old run
-path is not a verification claim.
+`20260811T100304Z` evidence run. Its server-local 71,770,882-byte original was
+located and all 534 entries in its original `SHA256SUMS` were verified. A
+compact audited recovery is now tracked at
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`:
+it preserves all 36 command envelopes, the original verification, scientific
+summaries, and small raw tables while excluding binaries, NPZ, and large
+JSONL/bridge arrays. The archived original manifest's broad full-horizon and
+`14_fresh_clone` labels remain quarantined as historical overclaims; the
+current DiffReach/Torch claim is one-step operator closure only, and execution
+of the new real-origin H1/H2/H3 clone gates remains pending.

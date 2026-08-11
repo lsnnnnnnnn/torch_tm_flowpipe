@@ -1,0 +1,5 @@
+schema,tool,lane,representation,partition,schedule,requested_horizon,requested_horizon_hex,validated_horizon,validated_horizon_hex,result_status,endpoint_available,segment_tube_available,prefix_tube_available,eligibility,sample_count
+native_capability_eligibility_row_v1,Flow*,complete-O4 native,complete_total_degree_O4,1,native_adaptive,10.0,0x1.4000000000000p+3,10.0,0x1.4000000000000p+3,completed,unavailable,available,available,native_capability_only,1
+native_capability_eligibility_row_v1,DiffReach,fixed-DR7 native,restricted_fixed_support_DR7,64,fixed h=0.01,10.0,0x1.4000000000000p+3,10.0,0x1.4000000000000p+3,completed,available,unavailable,unavailable,native_capability_only_mixed_builder_dtype,1
+native_capability_eligibility_row_v1,Torch,complete-O4 native,dense,,,6.5,0x1.a000000000000p+2,6.397083942944808,0x1.9969d2c52dbd5p+2,failed,available,available,available,expected_fail_closed_partial_horizon,1
+native_capability_eligibility_row_v1,Torch,fixed-DR7 matched,diffreach_restricted_quadratic_DR7,64,fixed h=0.01,10.0,0x1.4000000000000p+3,10.0,0x1.4000000000000p+3,completed,available,available,available,matched_semantics_empirical,1

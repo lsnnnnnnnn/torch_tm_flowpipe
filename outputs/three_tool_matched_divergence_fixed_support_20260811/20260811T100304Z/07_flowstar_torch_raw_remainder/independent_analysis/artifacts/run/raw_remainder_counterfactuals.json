@@ -1,0 +1,122 @@
+{
+  "baseline": {
+    "decision": "reject",
+    "flowstar_after_roundoff": {
+      "hi": {
+        "decimal": "0.00010359846643022911",
+        "hex": "0x1.b286019d6d56bp-14"
+      },
+      "lo": {
+        "decimal": "-0.0001036623988215217",
+        "hex": "-0x1.b2caa73783bf6p-14"
+      },
+      "width": {
+        "decimal": "0.0002072608652517508",
+        "hex": "0x1.b2a8546a788b0p-13"
+      }
+    },
+    "flowstar_raw": {
+      "hi": {
+        "decimal": "0.00010359846643018429",
+        "hex": "0x1.b286019d6c880p-14"
+      },
+      "lo": {
+        "decimal": "-0.00010366239882151062",
+        "hex": "-0x1.b2caa737838c4p-14"
+      },
+      "width": {
+        "decimal": "0.0002072608652516949",
+        "hex": "0x1.b2a8546a780a2p-13"
+      }
+    },
+    "margin": {
+      "decimal": "-3.662398821521699e-06",
+      "hex": "-0x1.eb8f10b7f1920p-19"
+    }
+  },
+  "frozen_inputs": {
+    "h_decimal": "0.019615177354506262",
+    "h_hex": "0x1.4160044f8ac26p-6",
+    "t_pre_decimal": "0.18187433604506256",
+    "t_pre_hex": "0x1.747a882a5cb01p-3",
+    "target": {
+      "hi": {
+        "decimal": "0.0001",
+        "hex": "0x1.a36e2eb1c432dp-14"
+      },
+      "lo": {
+        "decimal": "-0.0001",
+        "hex": "-0x1.a36e2eb1c432dp-14"
+      },
+      "width": {
+        "decimal": "0.0002",
+        "hex": "0x1.a36e2eb1c432dp-13"
+      }
+    }
+  },
+  "polynomial_roundoff_only": {
+    "decision_changed": false,
+    "margin_after": "-3.662398821521699e-06",
+    "margin_before": "-3.662398821510613e-06"
+  },
+  "replace_all_flowstar_direct_coefficient_interval_uncertainty_with_cached_evaluate_remainder": {
+    "decision": "accept",
+    "margin": {
+      "decimal": "9.085405469908868e-06",
+      "hex": "0x1.30db09ea19538p-17"
+    },
+    "raw_y": {
+      "hi": {
+        "decimal": "9.091459453009114e-05",
+        "hex": "0x1.7d52cd7481086p-14"
+      },
+      "lo": {
+        "decimal": "-8.810567614566619e-05",
+        "hex": "-0x1.718abfd94b643p-14"
+      },
+      "width": {
+        "decimal": "0.0001790202706757573",
+        "hex": "0x1.776ec6a6e6364p-13"
+      }
+    },
+    "same_frozen_inputs": true
+  },
+  "replace_flowstar_x_squared_direct_interval_output_with_cached_formula_hold_outer_uncertainty": {
+    "changed_stage_only": "x_squared coefficient-interval uncertainty contribution",
+    "decision": "accept",
+    "margin": {
+      "decimal": "2.4888083156873676e-07",
+      "hex": "0x1.0b3bd79140200p-22"
+    },
+    "raw_y": {
+      "hi": {
+        "decimal": "9.869404518937493e-05",
+        "hex": "0x1.9df3ec91ca393p-14"
+      },
+      "lo": {
+        "decimal": "-9.975111916843127e-05",
+        "hex": "-0x1.a262f2da32f2bp-14"
+      },
+      "width": {
+        "decimal": "0.0001984451643578062",
+        "hex": "0x1.a02b6fb5fe95fp-13"
+      }
+    },
+    "same_frozen_inputs": true,
+    "x_squared_replacement": {
+      "hi": {
+        "decimal": "0.00042404956697238806",
+        "hex": "0x1.bca5f05a3b779p-12"
+      },
+      "lo": {
+        "decimal": "-0.00045985815473848396",
+        "hex": "-0x1.e2323bc433853p-12"
+      },
+      "width": {
+        "decimal": "0.000883907721710872",
+        "hex": "0x1.cf6c160f377e6p-11"
+      }
+    }
+  },
+  "schema": "vdp_raw_remainder_counterfactuals_v1"
+}

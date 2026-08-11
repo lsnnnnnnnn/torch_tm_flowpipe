@@ -1,0 +1,76 @@
+{
+  "configuration_parity": {
+    "candidate_remainder": true,
+    "initial_set_representation": true,
+    "model_text_and_constants": true,
+    "order_and_cutoff": true,
+    "preconditioning": true,
+    "symbolic_remainder": true
+  },
+  "diagnostic_replay_matches_accepted_object": {
+    "passed": true,
+    "remainder_exact": true,
+    "terms_exact": true
+  },
+  "field_parity": {
+    "candidate_and_picard_fields": "unavailable_on_official_public_API_route",
+    "endpoint_raw": "different accepted times",
+    "full_tube": "both available, different accepted time domains",
+    "last_segment": "both available, different accepted time domains",
+    "raw_polynomial_coefficients": "unavailable_on_official_public_API_route",
+    "stored_remainder": "unavailable_on_official_public_API_route"
+  },
+  "generated_stock_result": {
+    "advanced": true,
+    "endpoint_defect_at_requested_h": {
+      "contained": false,
+      "lower_defect": 3.199554250016279e-10,
+      "max_defect": 3.4938679727147814e-10,
+      "tolerance": null,
+      "upper_defect": 3.4938679727147814e-10
+    },
+    "tube_defect": {
+      "contained": false,
+      "lower_defect": 0.0,
+      "max_defect": 3.4938679727147814e-10,
+      "tolerance": null,
+      "upper_defect": 3.4938679727147814e-10
+    }
+  },
+  "numerical_range_parity": {
+    "generated_requested_h_endpoint_raw": [
+      0.010100670333333329,
+      0.1121208036666667
+    ],
+    "official_accepted_right_endpoint": [
+      0.010100670332313124,
+      0.11212080366544246
+    ],
+    "passed": false,
+    "reason": "accepted right endpoints differ; comparison at one nominal h would conflate schedule and range semantics"
+  },
+  "official_stock_result": {
+    "completed": true,
+    "endpoint_defect_at_accepted_right": {
+      "contained": false,
+      "lower_defect": 3.1995542153218093e-10,
+      "max_defect": 3.4938679727147814e-10,
+      "tolerance": null,
+      "upper_defect": 3.4938679727147814e-10
+    },
+    "segments": 1,
+    "tube_defect": {
+      "contained": false,
+      "lower_defect": 0.0,
+      "max_defect": 3.4938679727147814e-10,
+      "tolerance": null,
+      "upper_defect": 3.4938679727147814e-10
+    }
+  },
+  "schedule_parity": {
+    "generated_accepted_h": 0.01,
+    "official_accepted_h": 0.009999999999,
+    "passed": false,
+    "reason": "ODE::reach starts its loop at THRESHOLD_HIGH and shortens the sole segment by 1e-12"
+  }
+}

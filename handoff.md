@@ -25,9 +25,13 @@ Primary documents are `docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md`,
 
 The old package run ID is
 `outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`.
-It is absent from the Git tree at the prior remote tip. A server-local copy is
-under compact-recovery audit; its manifest and command bundle do not prove a
-true clone performed by the old builder.
+It was absent from the prior remote tip, but its server-local original was
+found, all 534 original checksums passed, and a compact audited recovery is now
+tracked at that path. The recovery keeps every runner command envelope and the
+original verification; `manifest.json` explicitly quarantines the archived
+manifest's full-horizon DiffReach/Torch and false `14_fresh_clone` labels. A
+real `origin`/exact-SHA clone protocol now exists, but H1/H2/H3 execution is
+still pending and must not be inferred from the historical bundle.
 
 The remainder of this file is the preserved preceding S1 handoff.
 

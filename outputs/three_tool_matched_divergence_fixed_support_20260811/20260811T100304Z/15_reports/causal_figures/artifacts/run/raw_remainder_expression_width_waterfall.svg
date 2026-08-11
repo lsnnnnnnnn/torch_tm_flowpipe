@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="411" viewBox="0 0 1080 411">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:DejaVu Sans,Arial,sans-serif;fill:#202124}.title{font-size:18px;font-weight:600}.axis{font-size:11px}.label{font-size:12px}.small{font-size:10px}.grid{stroke:#d8dce2;stroke-width:1}.zero{stroke:#30343b;stroke-width:1.4}</style>
+<text x="20.00" y="30.00" class="title" text-anchor="start">First-split raw-remainder expression width waterfall</text>
+<text x="20.00" y="50.00" class="axis" text-anchor="start">Flow* width minus Torch width; interval-width units; n=1 frozen prestate</text>
+<line x1="677.50" y1="48" x2="677.50" y2="376" class="zero"/>
+<text x="318.00" y="81.00" class="small" text-anchor="end">1. x_squared/polynomial_times_remainder</text>
+<rect x="677.46" y="66.00" width="1.00" height="20" fill="#1b9e77"/>
+<text x="671.46" y="81.00" class="small" text-anchor="end">-2.3859e-08</text>
+<text x="318.00" y="116.00" class="small" text-anchor="end">2. x_squared/remainder_times_polynomial</text>
+<rect x="677.46" y="101.00" width="1.00" height="20" fill="#1b9e77"/>
+<text x="671.46" y="116.00" class="small" text-anchor="end">-2.3859e-08</text>
+<text x="318.00" y="151.00" class="small" text-anchor="end">3. x_squared/remainder_times_remainder</text>
+<rect x="677.50" y="136.00" width="1.00" height="20" fill="#1b9e77"/>
+<text x="671.50" y="151.00" class="small" text-anchor="end">-3.30872e-24</text>
+<text x="318.00" y="186.00" class="small" text-anchor="end">4. x_squared/polynomial_times_polynomial_dropped</text>
+<rect x="417.46" y="171.00" width="260.04" height="20" fill="#1b9e77"/>
+<text x="411.46" y="186.00" class="small" text-anchor="end">-0.000150714</text>
+<text x="318.00" y="221.00" class="small" text-anchor="end">5. x_squared/coefficient_interval_uncertainty</text>
+<rect x="677.50" y="206.00" width="347.50" height="20" fill="#d95f02"/>
+<text x="1031.00" y="221.00" class="small" text-anchor="start">0.000201407</text>
+<text x="318.00" y="256.00" class="small" text-anchor="end">6. x_squared_output/node_output</text>
+<rect x="677.50" y="241.00" width="87.38" height="20" fill="#d95f02"/>
+<text x="770.88" y="256.00" class="small" text-anchor="start">5.06454e-05</text>
+<text x="318.00" y="291.00" class="small" text-anchor="end">7. raw_candidate/node_output</text>
+<rect x="677.50" y="276.00" width="38.38" height="20" fill="#d95f02"/>
+<text x="721.88" y="291.00" class="small" text-anchor="start">2.22423e-05</text>
+<text x="318.00" y="326.00" class="small" text-anchor="end">8. after_polynomial_roundoff/node_output</text>
+<rect x="677.50" y="311.00" width="38.38" height="20" fill="#d95f02"/>
+<text x="721.88" y="326.00" class="small" text-anchor="start">2.22423e-05</text>
+</svg>

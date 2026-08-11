@@ -1,0 +1,69 @@
+{
+  "does_not_prove": "universal outward soundness of ordinary fixed-support arithmetic",
+  "fixture": {
+    "box_hi_hex": [
+      "0x1.47ae147ae147bp-7",
+      "0x1.0000000000000p+0",
+      "0x1.0000000000000p-1"
+    ],
+    "box_lo_hex": [
+      "0x0.0p+0",
+      "-0x1.0000000000000p+0",
+      "-0x1.0000000000000p-2"
+    ],
+    "left_coefficient_hex": "0x1.999999999999ap-4",
+    "left_exponent": [
+      0,
+      3,
+      0
+    ],
+    "product_exponent": [
+      0,
+      5,
+      0
+    ],
+    "product_is_overflow": true,
+    "right_coefficient_hex": "0x1.3333333333333p-2",
+    "right_exponent": [
+      0,
+      2,
+      0
+    ]
+  },
+  "mpfr_oracle": {
+    "executable_sha256": "84f7764a990e07388da6ec536bbed48df230f7a973fd4021d49d878db2d3b424",
+    "hi_decimal": "0.030000000000000002",
+    "hi_hex": "0x1.eb851eb851eb9p-6",
+    "input_semantics": "exact_binary64",
+    "input_sha256": "eabfbb1c03f6f74da3522797ac8b075f9e3d179bb6617fec779a7e3cb9db7754",
+    "lo_decimal": "-0.030000000000000002",
+    "lo_hex": "-0x1.eb851eb851eb9p-6",
+    "node": "discarded_monomial",
+    "precision_bits": 256,
+    "rounding": "mpfr_directed",
+    "source": "experiments/raw_remainder_mpfr_oracle.cpp",
+    "source_sha256": "faceffdb1a6cddbaf6c267925374b0703b9f04082636dce660ac8f38275219a9"
+  },
+  "ordinary_binary64_remainder": {
+    "directly_contains_mpfr": false,
+    "hi_decimal": 0.03,
+    "hi_hex": "0x1.eb851eb851eb8p-6",
+    "lo_decimal": -0.03,
+    "lo_hex": "-0x1.eb851eb851eb8p-6"
+  },
+  "outcome": "R35_BOUNDED_MPFR_REPLAY_PASS",
+  "schema": "r35_mpfr_outward_remainder_replay_v1",
+  "scope": "one deterministic R35 discarded-product monomial with exact binary64 inputs",
+  "support": {
+    "name": "complete_total_degree_O4_D3",
+    "sha256": "f0f312274fcc1457a7b08fbbf1c484fa1ba00cf5e9c20247bc8be0bfe91fdbcb",
+    "slot_count": 35
+  },
+  "two_ulp_companion_envelope": {
+    "contains_mpfr": true,
+    "hi_decimal": 0.030000000000000006,
+    "hi_hex": "0x1.eb851eb851ebap-6",
+    "lo_decimal": -0.030000000000000006,
+    "lo_hex": "-0x1.eb851eb851ebap-6"
+  }
+}

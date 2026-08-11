@@ -1,0 +1,275 @@
+{
+  "all_replay_nodes_contained": true,
+  "containment_checks": {
+    "counterfactual_binary64_outward_contains_mpfr_replay": {
+      "contains": true,
+      "lower_gap": "8.131516293641283e-20",
+      "mpfr_outward": {
+        "hi": {
+          "decimal": "9.869404518937485e-05",
+          "hex": "0x1.9df3ec91ca38dp-14"
+        },
+        "lo": {
+          "decimal": "-9.975111916843119e-05",
+          "hex": "-0x1.a262f2da32f25p-14"
+        },
+        "width": {
+          "decimal": "0.00019844516435780604",
+          "hex": "0x1.a02b6fb5fe959p-13"
+        }
+      },
+      "production_or_binary64_outward": {
+        "hi": {
+          "decimal": "9.869404518937493e-05",
+          "hex": "0x1.9df3ec91ca393p-14"
+        },
+        "lo": {
+          "decimal": "-9.975111916843127e-05",
+          "hex": "-0x1.a262f2da32f2bp-14"
+        },
+        "width": {
+          "decimal": "0.0001984451643578062",
+          "hex": "0x1.a02b6fb5fe95fp-13"
+        }
+      },
+      "upper_gap": "8.131516293641283e-20"
+    },
+    "flow_cached_evaluate_remainder_contains_mpfr_replay": {
+      "contains": true,
+      "lower_gap": "1.3552527156068805e-20",
+      "mpfr_outward": {
+        "hi": {
+          "decimal": "9.091459453009107e-05",
+          "hex": "0x1.7d52cd7481081p-14"
+        },
+        "lo": {
+          "decimal": "-8.810567614566612e-05",
+          "hex": "-0x1.718abfd94b63ep-14"
+        },
+        "width": {
+          "decimal": "0.0001790202706757572",
+          "hex": "0x1.776ec6a6e6360p-13"
+        }
+      },
+      "production_or_binary64_outward": {
+        "hi": {
+          "decimal": "9.09145945300911e-05",
+          "hex": "0x1.7d52cd7481083p-14"
+        },
+        "lo": {
+          "decimal": "-8.810567614566613e-05",
+          "hex": "-0x1.718abfd94b63fp-14"
+        },
+        "width": {
+          "decimal": "0.00017902027067575723",
+          "hex": "0x1.776ec6a6e6361p-13"
+        }
+      },
+      "upper_gap": "2.710505431213761e-20"
+    },
+    "flow_x_squared_production_contains_mpfr_formula": {
+      "contains": true,
+      "lower_gap": "0.00011204861774257542",
+      "mpfr_outward": {
+        "hi": {
+          "decimal": "0.0004240495669723879",
+          "hex": "0x1.bca5f05a3b776p-12"
+        },
+        "lo": {
+          "decimal": "-0.0004598581547384838",
+          "hex": "-0x1.e2323bc433850p-12"
+        },
+        "width": {
+          "decimal": "0.0008839077217108717",
+          "hex": "0x1.cf6c160f377e3p-11"
+        }
+      },
+      "production_or_binary64_outward": {
+        "hi": {
+          "decimal": "0.0005134076675924922",
+          "hex": "0x1.0d2c6922755a0p-11"
+        },
+        "lo": {
+          "decimal": "-0.0005719067724810592",
+          "hex": "-0x1.2bd80712c62e4p-11"
+        },
+        "width": {
+          "decimal": "0.0010853144400735514",
+          "hex": "0x1.1c82381a9dc42p-10"
+        }
+      },
+      "upper_gap": "8.935810062010426e-05"
+    },
+    "torch_x_squared_production_contains_mpfr_formula": {
+      "contains": true,
+      "lower_gap": "4.336808689942018e-19",
+      "mpfr_outward": {
+        "hi": {
+          "decimal": "0.0004876813365159661",
+          "hex": "0x1.ff5ef64260d9bp-12"
+        },
+        "lo": {
+          "decimal": "-0.0005469877247820917",
+          "hex": "-0x1.1ec7731d306e9p-11"
+        },
+        "width": {
+          "decimal": "0.0010346690612980578",
+          "hex": "0x1.0f3b771f306dbp-10"
+        }
+      },
+      "production_or_binary64_outward": {
+        "hi": {
+          "decimal": "0.0004876813365159663",
+          "hex": "0x1.ff5ef64260d9fp-12"
+        },
+        "lo": {
+          "decimal": "-0.0005469877247820922",
+          "hex": "-0x1.1ec7731d306edp-11"
+        },
+        "width": {
+          "decimal": "0.0010346690612980584",
+          "hex": "0x1.0f3b771f306dep-10"
+        }
+      },
+      "upper_gap": "2.168404344971009e-19"
+    }
+  },
+  "fraction": {
+    "does_not_prove": [
+      "underlying MPFR Real coefficient generation",
+      "retained coefficient arithmetic",
+      "complete solver formal correctness"
+    ],
+    "schema": "vdp_raw_remainder_fraction_replay_v1",
+    "scope": "exact rational sum of frozen finite binary64 interval-component endpoints",
+    "x_squared_components": {
+      "polynomial_times_polynomial_dropped": {
+        "hi_fraction": "1141338902657921/18446744073709551616",
+        "lo_fraction": "-7207563027280237/73786976294838206464"
+      },
+      "polynomial_times_remainder": {
+        "hi_fraction": "6680810466408339/36893488147419103232",
+        "lo_fraction": "-6680810466408339/36893488147419103232"
+      },
+      "remainder_times_polynomial": {
+        "hi_fraction": "6680810466408339/36893488147419103232",
+        "lo_fraction": "-6680810466408339/36893488147419103232"
+      },
+      "remainder_times_remainder": {
+        "hi_fraction": "3022314549036573/302231454903657293676544",
+        "lo_fraction": "-3022314549036573/302231454903657293676544"
+      }
+    },
+    "x_squared_formula": {
+      "hi_fraction": "128161117577330640413/302231454903657293676544",
+      "lo_fraction": "-138983599155923113501/302231454903657293676544",
+      "production_contains_exact_component_sum": true
+    }
+  },
+  "mpfr": {
+    "production_operators_reused": false,
+    "provenance": {
+      "command": [
+        "raw_remainder_mpfr_oracle",
+        "raw_remainder_mpfr_input.tsv"
+      ],
+      "compile_command": [
+        "g++",
+        "-O2",
+        "-std=c++11",
+        "experiments/raw_remainder_mpfr_oracle.cpp",
+        "-lmpfr",
+        "-lgmp",
+        "-o",
+        "raw_remainder_mpfr_oracle"
+      ],
+      "compile_exit_code": 0,
+      "executable_sha256": "84f7764a990e07388da6ec536bbed48df230f7a973fd4021d49d878db2d3b424",
+      "exit_code": 0,
+      "input_sha256": "0ed36420d277b0553c30f54120abebc5f46ff69c2d6a4fd0c834254d84c7697c",
+      "source": "experiments/raw_remainder_mpfr_oracle.cpp",
+      "source_sha256": "faceffdb1a6cddbaf6c267925374b0703b9f04082636dce660ac8f38275219a9"
+    },
+    "results": {
+      "flow_raw_cached": {
+        "hi": {
+          "decimal": "9.0914594530091069e-05",
+          "hex": "0x1.7d52cd7481081p-14"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-8.810567614566612e-05",
+          "hex": "-0x1.718abfd94b63ep-14"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      },
+      "flow_raw_x2_replaced_hold_outer": {
+        "hi": {
+          "decimal": "9.8694045189374853e-05",
+          "hex": "0x1.9df3ec91ca38dp-14"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-9.9751119168431187e-05",
+          "hex": "-0x1.a262f2da32f25p-14"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      },
+      "flow_x2_formula": {
+        "hi": {
+          "decimal": "0.00042404956697238789",
+          "hex": "0x1.bca5f05a3b776p-12"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-0.0004598581547384838",
+          "hex": "-0x1.e2323bc43385p-12"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      },
+      "flow_x2_with_coefficient_uncertainty": {
+        "hi": {
+          "decimal": "0.00051340766759249226",
+          "hex": "0x1.0d2c6922755a1p-11"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-0.00057190677248105933",
+          "hex": "-0x1.2bd80712c62e5p-11"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      },
+      "torch_x2_formula": {
+        "hi": {
+          "decimal": "0.00048768133651596609",
+          "hex": "0x1.ff5ef64260d9bp-12"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-0.00054698772478209174",
+          "hex": "-0x1.1ec7731d306e9p-11"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      },
+      "torch_x2_with_coefficient_uncertainty": {
+        "hi": {
+          "decimal": "0.00048768133651596609",
+          "hex": "0x1.ff5ef64260d9bp-12"
+        },
+        "input_semantics": "exact_binary64",
+        "lo": {
+          "decimal": "-0.00054698772478209174",
+          "hex": "-0x1.1ec7731d306e9p-11"
+        },
+        "precision_bits": 256,
+        "rounding": "mpfr_directed"
+      }
+    }
+  },
+  "schema": "vdp_raw_remainder_independent_replay_v1"
+}

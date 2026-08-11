@@ -16,14 +16,23 @@ numerical solver claims retain their own scope.
 
 Claim status, source paths/hashes, command exit, scope, and limitations.
 
-## What is unavailable
+## Historical package recovery and remaining unavailable gates
 
-The historical package is absent from the Git tree at `2cb647cd...`. Its
-server-local `14_fresh_clone/` directory was produced with every command
-running at the packager's `ROOT`; the builder itself did not clone `origin`
-into a new `mktemp -d` directory. Those rows are source-worktree checks, not a
-true-clone claim. A new package is eligible only after separate H1/H2/H3
-remote-clone gates.
+The historical package was absent from the Git tree at `2cb647cd...`. Its
+server-local original has now been recovered: all 534 original checksum rows
+passed before a compact copy was produced at
+`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`.
+The tracked recovery preserves all 36 runner command envelopes, the original
+verification, key scientific summaries, and small raw tables. Its
+`historical_original/` directory preserves the old manifest and checksum
+inventory without promoting their conclusions.
+
+The old `14_fresh_clone/` directory was produced with every command running at
+the packager's `ROOT`; the builder itself did not clone `origin` into a new
+`mktemp -d` directory. Those rows remain source-worktree checks, not a
+true-clone claim. `experiments/run_true_clone_gate.py` implements a real
+origin/exact-SHA temporary clone, but the H1/H2/H3 gates are not closed until
+that protocol is actually run at each required commit.
 
 ## Negative results
 
@@ -31,9 +40,11 @@ Missing sources produce `not_run`/`unknown`; SHA mismatch produces `fail`.
 
 ## Exact evidence paths
 
-`src/torch_tm_flowpipe/evidence_verification.py`, focused integrity tests, and
-the tracked package produced by the full-horizon closure round. The ignored
-`20260811T100304Z` path is not currently a Git-tree evidence path.
+`src/torch_tm_flowpipe/evidence_verification.py`, focused fail-closed tests, the
+compact historical recovery, and the tracked package produced by the
+full-horizon closure round. Large products omitted from the compact historical
+copy remain available only in the checksum-verified server-local original and
+are not required portable replay inputs.
 
 This document corrects claim provenance without rewriting the immutable S1
 evidence run at

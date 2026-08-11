@@ -1,0 +1,84 @@
+{
+  "causal_outcome": "SCHEDULE_VALIDATOR_INTERACTION",
+  "causal_reason": "At the same last-common prestate and h, both receiving subset predicates follow the candidate producer (Torch candidate accepts; Flow* candidate rejects). Thereafter schedule changes the producer state, so later schedule effects cannot be losslessly separated from candidate construction.",
+  "checkpoints": [
+    {
+      "checkpoint": "t0",
+      "cross_validator_status": "same componentwise subset predicate; decision equals candidate containment",
+      "status": "SAME_PRESTATE_SCHEDULE_REPLAY_RECORDED",
+      "torch_on_flowstar_schedule_row": {
+        "accepted": true,
+        "flowstar_t_label": 1e-12,
+        "h": 0.01,
+        "margin": [
+          [
+            9.899999713525176e-05,
+            8.11016871011816e-05
+          ]
+        ],
+        "raw_hi": [
+          [
+            1.0000029533330235e-06,
+            1.8898308553616516e-05
+          ]
+        ],
+        "raw_lo": [
+          [
+            -1.0000029533330235e-06,
+            -1.672505277383607e-05
+          ]
+        ],
+        "status": "validated",
+        "step": 0,
+        "t_pre": 0.0
+      }
+    },
+    {
+      "checkpoint": "last_common_prestate_before_first_split",
+      "reason": "the supplied Flow* trace does not contain the native adaptive full-h first-split attempt",
+      "status": "NOT_PRESENT_IN_SOURCE_TRACE"
+    },
+    {
+      "checkpoint": "first_post_split_common_time",
+      "reason": "after Flow* accepts h/2 and Torch accepts h, there is no lossless shared Taylor-model prestate at the same physical time",
+      "status": "NOT_MATHEMATICALLY_EXPRESSIBLE"
+    },
+    {
+      "checkpoint": "near_t1",
+      "reason": "native producer states have different adaptive histories; a box hull would change the candidate object",
+      "status": "NOT_MATHEMATICALLY_EXPRESSIBLE"
+    },
+    {
+      "checkpoint": "historical_terminal_prestate",
+      "reason": "Torch complete-O4 native lane stops before T10 and has no terminal prestate corresponding losslessly to Flow*",
+      "status": "NOT_MATHEMATICALLY_EXPRESSIBLE"
+    }
+  ],
+  "schedule_replay_A": {
+    "producer_state": "Torch normalized-insertion state from t=0",
+    "proposed_schedule": "Flow* accepted h sequence",
+    "raw_candidate_construction": "Torch complete-O4",
+    "receiving_validator": "Torch raw-remainder-compatible validator",
+    "result": {
+      "accepted_steps": 100,
+      "completed_schedule": true,
+      "first_failure": null,
+      "requested_schedule_steps": 100,
+      "validated_horizon": 0.9999999999989999
+    }
+  },
+  "schedule_replay_B": {
+    "producer_state": "Flow* native state",
+    "proposed_schedule": "Torch first differing full proposal",
+    "raw_candidate_construction": "Flow* complete-O4",
+    "receiving_validator": "Flow* native validator",
+    "result": {
+      "decision": "reject",
+      "evidence": "Flow* first-split rejected attempt in source trace",
+      "h": 0.019615177354506262,
+      "t_pre": 0.18187433604506256
+    }
+  },
+  "schema": "vdp_schedule_validator_matrix_v1",
+  "target_radius": 0.0001
+}
