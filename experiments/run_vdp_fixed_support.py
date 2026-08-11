@@ -240,7 +240,11 @@ def main() -> int:
         "upstream_semantic_source_sha": DIFFREACH_SOURCE_SHA,
         "polynomial_picard_semantics": "two fixed restricted-support Picard iterates",
         "validator_name": "DR-RP",
-        "candidate_remainder": {"kind": "absolute_symmetric", "radius": [0.01, 0.01]},
+        "candidate_remainder": {
+            "kind": "absolute_symmetric",
+            "radius": [0.01, 0.01],
+            "radius_hex": [float(0.01).hex(), float(0.01).hex()],
+        },
         "remainder_rounds_and_acceptance": {
             "rounds": 10,
             "initial_inclusion_required": True,
@@ -249,7 +253,12 @@ def main() -> int:
             "later_pass_count": later_pass_count,
             "later_total_count": later_total_count,
         },
-        "step_policy": {"kind": "fixed", "step_size": args.step_size, "steps": steps},
+        "step_policy": {
+            "kind": "fixed",
+            "step_size": args.step_size,
+            "step_size_hex": float(args.step_size).hex(),
+            "steps": steps,
+        },
         "partition_policy": {"batch": args.batch, "splits": list(splits)},
         "carry_reset_policy": "DiffReach-equivalent normalized affine carry",
         "symbolic_remainder_policy": {
@@ -259,7 +268,11 @@ def main() -> int:
         "range_policy": support.range_policy,
         "dtype_device": {"dtype": "float64", "device": str(device), "device_name": device_name},
         "requested_horizon": args.horizon,
+        "requested_horizon_hex": float(args.horizon).hex(),
         "validated_horizon": cold_result.validated_steps * args.step_size,
+        "validated_horizon_hex": float(
+            cold_result.validated_steps * args.step_size
+        ).hex(),
         "completion_status": "completed" if cold_result.completed else "failed",
         "certificate_status": "all_initial_DR_RP_inclusions_pass" if initial_pass else "failed_initial_DR_RP_inclusion",
         "property_status": "not_applicable_no_property_in_open_loop_contract",
