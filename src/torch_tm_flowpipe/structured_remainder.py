@@ -182,6 +182,44 @@ class CompletePolynomialStructuredImage:
     proof_diagnostics: Mapping[str, object]
 
 
+@dataclass(frozen=True)
+class CompletePolynomialContractComparison:
+    """Shadow comparison of the current and total-delta image contracts.
+
+    ``current_reconstruction`` is the implementation's post-hoc expression
+    ``A_current R_o + A_current Z + N_current``.  ``total_delta_reconstruction``
+    is ``A_total (R_o + Z) + N_total`` for a base of ``range(Q)``.  The latter
+    includes ordinary, structured, and mixed nonlinear routes in one complete
+    polynomial difference.  This type is diagnostic only; constructing it
+    does not authorize a production state transition.
+    """
+
+    current_image: CompletePolynomialStructuredImage
+    total_delta_image: CompletePolynomialStructuredImage
+    current_affine_ordinary_lo: torch.Tensor
+    current_affine_ordinary_hi: torch.Tensor
+    current_affine_structured_lo: torch.Tensor
+    current_affine_structured_hi: torch.Tensor
+    current_reconstruction_lo: torch.Tensor
+    current_reconstruction_hi: torch.Tensor
+    total_delta_reconstruction_lo: torch.Tensor
+    total_delta_reconstruction_hi: torch.Tensor
+    current_contains_total_delta_mask: torch.Tensor
+
+
+def _interval_image(
+    matrix_lo: torch.Tensor,
+    matrix_hi: torch.Tensor,
+    vector_lo: torch.Tensor,
+    vector_hi: torch.Tensor,
+) -> OutwardIntervalTensor:
+    product = outward_matmul(
+        OutwardIntervalTensor(matrix_lo, matrix_hi),
+        OutwardIntervalTensor(vector_lo[..., None], vector_hi[..., None]),
+    )
+    return OutwardIntervalTensor(product.lo[..., 0], product.hi[..., 0])
+
+
 def initialize_structured_remainder_state(
     batch: int,
     state_dim: int,
@@ -1136,6 +1174,7 @@ def complete_polynomial_structured_image(
         total_difference = affine_image
         nonlinear = OutwardIntervalTensor.zeros_like(output_zero)
         padding = OutwardIntervalTensor.zeros_like(output_zero)
+        reconstruction = affine_image
     else:
         reconstruction_before_padding = affine_image.add(nonlinear)
         padding_lo = torch.minimum(
@@ -1151,7 +1190,7 @@ def complete_polynomial_structured_image(
             torch.nextafter(padding_hi, torch.full_like(padding_hi, torch.inf)),
         ).sanitized()
         nonlinear = nonlinear.add(padding)
-    reconstruction = affine_image.add(nonlinear)
+        reconstruction = affine_image.add(nonlinear)
     zero_structured = ((structured_lo == 0) & (structured_hi == 0)).all(dim=1)
     if bool(torch.any(zero_structured)):
         mask = zero_structured[:, None]
@@ -1210,6 +1249,84 @@ def complete_polynomial_structured_image(
     )
 
 
+def compare_complete_polynomial_contracts(
+    polynomial: object,
+    *,
+    polynomial_base_domain: tuple[torch.Tensor, torch.Tensor],
+    current_base_domain: tuple[torch.Tensor, torch.Tensor],
+    ordinary_box: tuple[torch.Tensor, torch.Tensor],
+    structured_box: tuple[torch.Tensor, torch.Tensor],
+    coordinate_map: torch.Tensor | tuple[torch.Tensor, torch.Tensor],
+) -> CompletePolynomialContractComparison:
+    """Build the two Phase-2 image contracts from the same tensor prestate.
+
+    ``current_base_domain`` must be the actual box supplied by the current
+    implementation (normally ``range(Q + R_o)``); it is deliberately not
+    reconstructed here so this shadow cannot perturb production arithmetic.
+    ``polynomial_base_domain`` is ``range(Q)``.  Ordinary and structured boxes
+    share the old normalized coordinate system.
+    """
+
+    ordinary = OutwardIntervalTensor(*ordinary_box)
+    structured = OutwardIntervalTensor(*structured_box)
+    if ordinary.lo.shape != structured.lo.shape:
+        raise ValueError("ordinary and structured perturbation boxes must agree")
+    total_delta = ordinary.add(structured)
+    current_image = complete_polynomial_structured_image(
+        polynomial,
+        current_base_domain,
+        structured_box,
+        coordinate_map,
+    )
+    total_delta_image = complete_polynomial_structured_image(
+        polynomial,
+        polynomial_base_domain,
+        (total_delta.lo, total_delta.hi),
+        coordinate_map,
+    )
+    current_affine_ordinary = _interval_image(
+        current_image.affine_map_lo,
+        current_image.affine_map_hi,
+        ordinary.lo,
+        ordinary.hi,
+    )
+    current_affine_structured = _interval_image(
+        current_image.affine_map_lo,
+        current_image.affine_map_hi,
+        structured.lo,
+        structured.hi,
+    )
+    current_reconstruction = current_affine_ordinary.add(
+        current_affine_structured
+    ).add(
+        OutwardIntervalTensor(
+            current_image.nonlinear_residual_lo,
+            current_image.nonlinear_residual_hi,
+        )
+    )
+    total_reconstruction = OutwardIntervalTensor(
+        total_delta_image.reconstruction_lo,
+        total_delta_image.reconstruction_hi,
+    )
+    contains_total = (
+        (current_reconstruction.lo <= total_delta_image.total_difference_lo)
+        & (current_reconstruction.hi >= total_delta_image.total_difference_hi)
+    ).all(dim=1)
+    return CompletePolynomialContractComparison(
+        current_image=current_image,
+        total_delta_image=total_delta_image,
+        current_affine_ordinary_lo=current_affine_ordinary.lo,
+        current_affine_ordinary_hi=current_affine_ordinary.hi,
+        current_affine_structured_lo=current_affine_structured.lo,
+        current_affine_structured_hi=current_affine_structured.hi,
+        current_reconstruction_lo=current_reconstruction.lo,
+        current_reconstruction_hi=current_reconstruction.hi,
+        total_delta_reconstruction_lo=total_reconstruction.lo,
+        total_delta_reconstruction_hi=total_reconstruction.hi,
+        current_contains_total_delta_mask=contains_total,
+    )
+
+
 def structured_quadratic_nonlinear_residual(
     quadratic_coefficients: torch.Tensor,
     perturbation_lo: torch.Tensor,
@@ -1240,6 +1357,7 @@ def structured_quadratic_nonlinear_residual(
 
 
 __all__ = [
+    "CompletePolynomialContractComparison",
     "CompletePolynomialStructuredImage",
     "ELIGIBLE_STRUCTURED_SOURCES",
     "STRUCTURED_REMAINDER_CANDIDATE",
@@ -1249,6 +1367,7 @@ __all__ = [
     "StructuredRemainderState",
     "StructuredSourceEvent",
     "complete_polynomial_structured_image",
+    "compare_complete_polynomial_contracts",
     "initialize_structured_remainder_state",
     "materialize_structured_remainder",
     "normal_interval_to_physical",

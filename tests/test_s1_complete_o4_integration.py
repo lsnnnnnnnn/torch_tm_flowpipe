@@ -72,6 +72,12 @@ def test_vdp_boundaries_1_2_and_9_publish_complete_structured_totals():
             stage.stage for stage in segment.boundary_attribution_record.stages
         ) == BOUNDARY_STAGE_NAMES
         assert all(stage.units for stage in segment.boundary_attribution_record.stages)
+        shadow = segment.boundary_attribution_record.diagnostics["C_total_delta_shadow"]
+        assert shadow["status"] == "diagnostic_only_not_production"
+        assert shadow["canonical_target_contained_after_padding"]
+        assert shadow["current_target_contained_after_padding"]
+        assert shadow["base_Q"]["units"] == "old normalized"
+        assert shadow["N_total"]["units"] == "endpoint physical"
 
         identities = [
             (

@@ -16,6 +16,7 @@ from .structured_remainder import (
     ELIGIBLE_STRUCTURED_SOURCES,
     StructuredRemainderState,
     complete_polynomial_structured_image,
+    compare_complete_polynomial_contracts,
     initialize_structured_remainder_state,
     materialize_structured_remainder,
     normal_interval_to_physical,
@@ -27,6 +28,8 @@ from .structured_remainder import (
 from .s1_boundary_attribution import (
     S1BoundaryAttributionRecord,
     S1BoundaryStage,
+    tensor_hex,
+    tensor_sha256,
 )
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
@@ -1721,6 +1724,51 @@ def _interval_matrix_vector(
     return OutwardIntervalTensor(product.lo[..., 0], product.hi[..., 0])
 
 
+def _s1_padding_to_target(
+    known: OutwardIntervalTensor,
+    target: OutwardIntervalTensor,
+) -> OutwardIntervalTensor:
+    """Return the canonical exact-containment padding used by S1."""
+    zero = torch.zeros_like(target.lo)
+    safeguard = (
+        64.0
+        * torch.finfo(torch.float64).eps
+        * torch.maximum(
+            torch.maximum(torch.abs(known.lo), torch.abs(known.hi)),
+            torch.maximum(torch.abs(target.lo), torch.abs(target.hi)),
+        ).clamp_min(torch.finfo(torch.float64).tiny)
+    )
+    return OutwardIntervalTensor(
+        torch.nextafter(
+            torch.minimum(target.lo - known.lo, zero) - safeguard,
+            torch.full_like(zero, -torch.inf),
+        ),
+        torch.nextafter(
+            torch.maximum(target.hi - known.hi, zero) + safeguard,
+            torch.full_like(zero, torch.inf),
+        ),
+    ).sanitized()
+
+
+def _s1_interval_diagnostic(
+    interval: OutwardIntervalTensor,
+    *,
+    units: str,
+) -> dict[str, Any]:
+    """Serialize a diagnostic interval with units and binary64 identity."""
+    return {
+        "units": units,
+        "shape": list(interval.lo.shape),
+        "lo": interval.lo.detach().cpu().tolist(),
+        "hi": interval.hi.detach().cpu().tolist(),
+        "lo_hex": tensor_hex(interval.lo),
+        "hi_hex": tensor_hex(interval.hi),
+        "lo_sha256": tensor_sha256(interval.lo),
+        "hi_sha256": tensor_sha256(interval.hi),
+        "width": (interval.hi - interval.lo).detach().cpu().tolist(),
+    }
+
+
 def verify_structured_publication(
     ordinary_lo: torch.Tensor,
     ordinary_hi: torch.Tensor,
@@ -1807,12 +1855,15 @@ def _flowstar_structured_insertion_transition(
     identity = torch.eye(
         structured.state_dim, dtype=torch.float64
     ).unsqueeze(0)
-    endpoint_image = complete_polynomial_structured_image(
+    contract_shadow = compare_complete_polynomial_contracts(
         endpoint_dense.poly,
-        (base_lo, base_hi),
-        (old_columns.lo, old_columns.hi),
-        identity,
+        polynomial_base_domain=(pre_q_lo, pre_q_hi),
+        current_base_domain=(base_lo, base_hi),
+        ordinary_box=(structured.ordinary_rem_lo, structured.ordinary_rem_hi),
+        structured_box=(old_columns.lo, old_columns.hi),
+        coordinate_map=identity,
     )
+    endpoint_image = contract_shadow.current_image
     endpoint_polynomial_lo, endpoint_polynomial_hi = endpoint_dense.poly.range_bound(
         base_lo,
         base_hi,
@@ -1930,30 +1981,45 @@ def _flowstar_structured_insertion_transition(
     known = outward_sum(
         [propagated_known, *normalized_source_terms, nonlinear_normal]
     )
-    zero = torch.zeros_like(target_normal_lo)
-    padding_safeguard = (
-        64.0
-        * torch.finfo(torch.float64).eps
-        * torch.maximum(
-            torch.maximum(torch.abs(known.lo), torch.abs(known.hi)),
-            torch.maximum(
-                torch.abs(target_normal_effective.lo),
-                torch.abs(target_normal_effective.hi),
-            ),
-        ).clamp_min(torch.finfo(torch.float64).tiny)
+    padding_normal = _s1_padding_to_target(known, target_normal_effective)
+
+    # Phase-2 shadow only: evaluate the complete retained polynomial over
+    # Q + Delta with Delta = R_o + Z.  This path is recorded for causal and
+    # oracle comparison but does not feed the committed boundary update.
+    total_delta_image = contract_shadow.total_delta_image
+    total_A_old_normal_to_new_normal = OutwardIntervalTensor(
+        total_delta_image.affine_map_lo,
+        total_delta_image.affine_map_hi,
+    ).mul(scale_rows)
+    total_delta_propagated = _interval_matrix_vector(
+        total_A_old_normal_to_new_normal,
+        pre_total,
     )
-    padding_normal = OutwardIntervalTensor(
-        torch.nextafter(
-            torch.minimum(target_normal_effective.lo - known.lo, zero)
-            - padding_safeguard,
-            torch.full_like(zero, -torch.inf),
-        ),
-        torch.nextafter(
-            torch.maximum(target_normal_effective.hi - known.hi, zero)
-            + padding_safeguard,
-            torch.full_like(zero, torch.inf),
-        ),
-    ).sanitized()
+    total_delta_nonlinear_normal = physical_interval_to_normal(
+        total_delta_image.nonlinear_residual_lo,
+        total_delta_image.nonlinear_residual_hi,
+        forward_scale=new_scale,
+        inverse_scale=new_inverse,
+    )
+    total_delta_known = outward_sum(
+        [total_delta_propagated, *normalized_source_terms, total_delta_nonlinear_normal]
+    )
+    total_delta_padding = _s1_padding_to_target(
+        total_delta_known,
+        target_normal_effective,
+    )
+    current_reconstruction_with_padding = known.add(padding_normal)
+    total_delta_reconstruction_with_padding = total_delta_known.add(
+        total_delta_padding
+    )
+    total_delta_contains_target = (
+        (total_delta_reconstruction_with_padding.lo <= target_normal_effective.lo)
+        & (total_delta_reconstruction_with_padding.hi >= target_normal_effective.hi)
+    ).all(dim=1)
+    current_contains_target = (
+        (current_reconstruction_with_padding.lo <= target_normal_effective.lo)
+        & (current_reconstruction_with_padding.hi >= target_normal_effective.hi)
+    ).all(dim=1)
     padding_physical = normal_interval_to_physical(
         padding_normal.lo,
         padding_normal.hi,
@@ -2168,6 +2234,21 @@ def _flowstar_structured_insertion_transition(
         endpoint_affine,
         old_columns,
     )
+    total_endpoint_affine = OutwardIntervalTensor(
+        total_delta_image.affine_map_lo,
+        total_delta_image.affine_map_hi,
+    )
+    total_endpoint_affine_ordinary = _interval_matrix_vector(
+        total_endpoint_affine,
+        OutwardIntervalTensor(
+            structured.ordinary_rem_lo,
+            structured.ordinary_rem_hi,
+        ),
+    )
+    total_endpoint_affine_structured = _interval_matrix_vector(
+        total_endpoint_affine,
+        old_columns,
+    )
     seg.boundary_attribution_record = S1BoundaryAttributionRecord(
         accepted_boundary_index_before=int(structured.accepted_boundary_index),
         contract="C_current",
@@ -2274,6 +2355,76 @@ def _flowstar_structured_insertion_transition(
             "source_decomposition": bool(torch.all(boundary.source_decomposition_mask)),
             "conservation": bool(torch.all(boundary.conservation_mask)),
             "outward_renormalization_count": int(renormalization_count),
+            "C_total_delta_shadow": {
+                "status": "diagnostic_only_not_production",
+                "contract": "base=range(Q), perturbation=R_o+Z",
+                "base_Q": _s1_interval_diagnostic(
+                    OutwardIntervalTensor(pre_q_lo, pre_q_hi),
+                    units="old normalized",
+                ),
+                "delta_R_o_plus_Z": _s1_interval_diagnostic(
+                    pre_total,
+                    units="old normalized",
+                ),
+                "affine_map_A_total": _s1_interval_diagnostic(
+                    total_endpoint_affine,
+                    units="endpoint physical",
+                ),
+                "A_total_times_R_o": _s1_interval_diagnostic(
+                    total_endpoint_affine_ordinary,
+                    units="endpoint physical",
+                ),
+                "A_total_times_Z": _s1_interval_diagnostic(
+                    total_endpoint_affine_structured,
+                    units="endpoint physical",
+                ),
+                "N_total": _s1_interval_diagnostic(
+                    OutwardIntervalTensor(
+                        total_delta_image.nonlinear_residual_lo,
+                        total_delta_image.nonlinear_residual_hi,
+                    ),
+                    units="endpoint physical",
+                ),
+                "known_before_padding": _s1_interval_diagnostic(
+                    total_delta_known,
+                    units="new normalized",
+                ),
+                "padding": _s1_interval_diagnostic(
+                    total_delta_padding,
+                    units="new normalized",
+                ),
+                "reconstructed_after_padding": _s1_interval_diagnostic(
+                    total_delta_reconstruction_with_padding,
+                    units="new normalized",
+                ),
+                "canonical_target_contained_after_padding": bool(
+                    torch.all(total_delta_contains_target)
+                ),
+                "current_target_contained_after_padding": bool(
+                    torch.all(current_contains_target)
+                ),
+                "current_unpadded_contains_total_delta_direct": bool(
+                    torch.all(contract_shadow.current_contains_total_delta_mask)
+                ),
+                "total_not_wider_before_padding_mask": (
+                    (total_delta_known.hi - total_delta_known.lo)
+                    <= (known.hi - known.lo)
+                ).detach().cpu().tolist(),
+                "total_not_wider_after_padding_mask": (
+                    (
+                        total_delta_reconstruction_with_padding.hi
+                        - total_delta_reconstruction_with_padding.lo
+                    )
+                    <= (
+                        current_reconstruction_with_padding.hi
+                        - current_reconstruction_with_padding.lo
+                    )
+                ).detach().cpu().tolist(),
+                "nonlinear_route_count": int(
+                    total_delta_image.proof_diagnostics["nonlinear_route_count"]
+                ),
+                "ordinary_structured_mixed_routes": "included_in_materialized_Delta_degree_ge_2",
+            },
         },
     )
     seg.structured_boundary_result = boundary
