@@ -11,8 +11,8 @@ points rather than treating one ambiguous `order` as a common algorithm:
 - Torch TM: one architecture with a configurable DiffReach-like fixed-support
   lane and a Flow*-like complete-total-degree lane.
 
-The active branch is
-`codex/s1-prefix-integrated-complete-o4-closure-20260810`. The frozen
+The active research result is on
+`codex/s1-boundary164-causal-guarded-carry-20260811`. The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
 Adaptive DEF-CERT, obsolete winner/Pareto tables, and prior TORA-specific
 comparisons remain historical or rejected.
@@ -51,19 +51,25 @@ roundoff scale, but the raw candidate Picard remainder already makes Flow*'s y
 subset fail while Torch passes. Polynomial, endpoint, and right-map swaps
 preserve the receiving validator's decision.
 
-The bounded structured-remainder candidate S1 is now a real opt-in
-complete-O4 lane from `t=0`: K=16 state is owned by the normalized flowpipe,
-typed dense sources feed accepted boundaries directly, complete degree-four
-endpoint and tube sensitivities use safeguarded outward arithmetic, every
-insertion/eviction has a unique source ledger, and schema-v2 checkpoints store
-the full state exactly. On the frozen historical schedule, all conservation,
-ownership, finiteness, and publication gates pass through boundary 164 at
-`t=4.738198114669049`. The next historical step
-`h=0.03661680691961388` is rejected by S1 (raw-compatible y margin
-`-3.773875528686747e-6`) although the historical baseline accepted it. The
-primary outcome is therefore `S1_PREFIX_REJECTS_BEFORE_TERMINAL`. The
-historical terminal A/B, fresh horizon ladder, and integrated second-system
-gate were not authorized.
+The boundary-164 audit now explains that negative result. Diagnostic-only
+typed ledgers and exact carrier split/remerge are bit-exact to the baseline;
+the first causal inflation is the post-hoc `base=range(Q+R_o), perturbation=Z`
+image decomposition. Coefficient/scale drift first appears at boundary 5,
+physical-hull and margin drift at boundary/attempt 8, and outward
+renormalization at boundary 12. K16 fill/eviction is not the primary cause.
+
+Exactly one corrected carry was implemented:
+`normalized_insertion_structured_total_delta_k16`. It evaluates
+`P(Q + (R_o+Z)) - P(Q)` so all ordinary, structured, and mixed nonlinear
+routes enter `N_total` once. It accepts all 307 historical accepted steps in
+the corrected fixed-step replay and its boundary-307 checkpoint round-trips
+exactly. It still rejects the frozen historical terminal step at
+`t=6.397083942944808`, with y margin `-1.9999591170254726e-5`. The primary
+outcome is `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`; fresh horizons and a
+second system are `not_run_after_stop`. The primitive image is outward for
+given binary64 coefficients, while the full prefix remains a
+`safeguarded_binary64_interval_shell` conditional on retained coefficient
+arithmetic and is not end-to-end formal.
 
 Start with:
 
@@ -78,6 +84,8 @@ Start with:
 - [structured S1 result](docs/STRUCTURED_REMAINDER_RESULT_20260810.md);
 - [S1 complete-O4 prefix result](docs/S1_PREFIX_INTEGRATION_RESULT_20260810.md);
 - [S1 terminal causal gate](docs/S1_TERMINAL_CAUSAL_GATE_20260810.md);
+- [S1 boundary-164 causal attribution](docs/S1_BOUNDARY164_CAUSAL_ATTRIBUTION_20260811.md);
+- [S1 corrected carry result](docs/S1_CORRECTED_CARRY_RESULT_20260811.md);
 - [second-system generality](docs/SECOND_SYSTEM_GENERALITY_20260810.md);
 - [handoff](handoff.md).
 
@@ -126,3 +134,10 @@ The current prefix-integration package is
 Its tables distinguish the sound 164-boundary common prefix from the discarded
 off-schedule half-step and mark every prohibited later experiment explicitly
 as `not_run_after_stop`.
+
+The current boundary-attribution and corrected-carry package is
+[S1 boundary-164 run](outputs/s1_boundary164_causal_guarded_carry_20260811/20260811T033447Z/).
+Its 234-entry `SHA256SUMS` is repository-root-relative. Machine tables retain
+the causal ladder, A0--B16 ledger, component substitutions, corrected
+307-step gate, terminal rejection, independent claim fields, and explicit
+stop rows for every unauthorized later stage.

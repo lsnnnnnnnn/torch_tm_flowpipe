@@ -1,56 +1,51 @@
-# Handoff: S1 prefix-integrated complete-O4 lane
+# Handoff: S1 boundary-164 causal guarded carry
 
-Date: 2026-08-10
+Date: 2026-08-11
 
 ## Outcome
 
-Primary S1 outcome: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`.
+Primary outcome: `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
 
-The new S1 lane is soundly coupled, published, and checkpointable from `t=0`,
-but it matches only the first 164 accepted boundaries of the 307-boundary
-historical schedule. Its final common-prefix time is
-`4.738198114669049`. The next historical proposed step
-`h=0.03661680691961388` is rejected by both L1 and L2; L2's raw-compatible y
-margin is `-3.773875528686747e-6`. The returned half-step state is discarded.
+The causal ladder isolates the current post-hoc polynomial image decomposition
+as the first inflation source. C1/C2 are bit-exact to L0; consequential
+coefficient/scale drift begins at boundary 5, physical-hull and margin drift at
+boundary/attempt 8, and outward renormalization at boundary 12. K16 eviction
+is not the primary cause. At boundary 164, the L0→L1 y-margin loss is
+`-1.1930523868969271e-5` and is entirely a scale contribution under the fixed
+same-input validator projection.
+
+Outcome B authorized the only new carry,
+`normalized_insertion_structured_total_delta_k16`. It passes the corrected
+307/307 fixed accepted-step prefix and saves a byte-stable boundary-307
+checkpoint with SHA
+`f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1`.
+The unchanged historical terminal step still rejects with T0 y margin
+`-1.9999591170254726e-5`. Fresh horizons and the second system are therefore
+`not_run_after_stop`.
 
 ## Delivery
 
-- Branch: `codex/s1-prefix-integrated-complete-o4-closure-20260810`
-- Start SHA: `3b7b6ef97d9a33dea8498b7595131ffc6095bc1f`
-- Verified package commit: `b4675700a78727573ebc941ae2be1b75483eb553`.
-- Remote status at package verification: local and origin synchronized; the
-  final handoff-only commit is reported in the terminal response.
-- Run: `outputs/s1_prefix_integrated_complete_o4_20260810/20260810T095423Z`
-- L0: 307 accepted historical boundaries, exact schedule replay.
-- L1/L2: 164 accepted common-prefix boundaries.
-- First full K16 / eviction: boundaries 16 / 17.
-- Boundary-164 checkpoint v2 full SHA:
-  `9162f267fcdcf44ca7bb9acfa73975eb8f4f4b80c03ca217aac2f07450cd585b`.
-- Terminal same-pre-state gate: `not_run_after_stop`.
-- Fresh horizon authorization: false.
-- Fresh validated horizon: not run.
-- +0.5 promotion / T10: not evaluated.
-- Integrated second system: `not_run_after_stop`.
-- Formal eligibility: yes for the analytic oracle, typed contract, exact
-  checkpoint, and 164-boundary common-prefix enclosure only.
-- Performance/ranking eligibility: false.
+- Branch: `codex/s1-boundary164-causal-guarded-carry-20260811`
+- Start SHA: `8683183e48b7795d13edbdc9a5910fba9d21d16c`
+- Evidence run:
+  `outputs/s1_boundary164_causal_guarded_carry_20260811/20260811T033447Z`
+- Phase-5 choice: Outcome B, `S1_POSTHOC_IMAGE_INTRINSIC_INFLATION`
+- Full-h boundary-164 y margins: L0 `+8.058292550874906e-6`,
+  L1 `-3.872231318094365e-6`, L2 `-3.773875528686747e-6`
+- Corrected frozen accepted prefix: 307/307
+- Terminal gate: rejected
+- Fresh/+0.5/second system: not authorized
+- Final regression before packaging: 569 passed, 2 skipped in 263.48 s
+- Evidence checksums: 234 repository-root-relative entries
+- Primitive formal eligibility: true for the bounded CPU outward image
+- Prefix formal eligibility: false
+- Prefix class: `safeguarded_binary64_interval_shell`,
+  `conditional_on_retained_coefficient_arithmetic`
+- Performance and cross-tool ranking eligibility: false
 
-The implementation commits remain separated into baseline, contract, typed
-ledger, complete-O4 oracle, boundary integration, checkpoint v2, frozen
-runner, outward coordinate correction, causal replay, tests, packaging, and
-reports. The final verification is `545 passed, 2 skipped in 225.46s`;
-compileall and start-to-HEAD diff checks pass; all 164 checksum entries pass.
-A clean remote fresh clone at package commit `7851abe8adb1893f49278bd96920002dfc257ca3`
-verified remote/local SHA equality, tracked manifest paths, no private absolute
-paths, checkpoint v2 loading, claim links, and deterministic table/figure
-rebuild (`3 passed in 2.57s`). The follow-up package-verification commit changes
-only `verification.json` and `SHA256SUMS`.
+## Unique next action
 
-## One next action
-
-Retain this negative result and return to the representation decision at the
-first divergence. Because L1 and L2 reject the same frozen proposed step, do
-not authorize K32, target changes, smaller `h_min`, horizon sweeps, or
-multi-factor tuning. Isolate why the new typed/complete boundary plumbing
-changes the prestate enough to lose that accepted step while preserving the
-proved conservation obligations.
+End S1 promotion under this frozen contract. Return to fixed-support
+representation research only under a separately authorized goal; do not tune
+K, target, cutoff, validator, or `h_min`, and do not append fresh-horizon or
+second-system runs to this evidence package.
