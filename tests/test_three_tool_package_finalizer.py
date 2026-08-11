@@ -50,18 +50,9 @@ def test_finalizer_derives_claims_and_root_relative_hashes(tmp_path) -> None:
         )
         == 0
     )
-    manifest = finalize(
-        argparse.Namespace(
-            run_root=root,
-            outcomes_json=json.dumps(
-                {
-                    "evidence": "pass",
-                    "raw_remainder": "RAW_REMAINDER_ROOT_CAUSE_CLOSED",
-                }
-            ),
-        )
-    )
+    manifest = finalize(argparse.Namespace(run_root=root))
     assert manifest["runner_count"] == 1
+    assert manifest["outcome_registry"] == {}
     verification = json.loads((root / "verification.json").read_text())
     claims = validate_verification_document(verification, source_root=root)
     assert claims[0].status == "pass"
@@ -91,9 +82,8 @@ def test_finalizer_is_byte_deterministic_for_frozen_runner_inputs(tmp_path: Path
     )
     second = tmp_path / "second" / "frozen-run"
     shutil.copytree(first, second)
-    arguments = json.dumps({"evidence": "EVIDENCE_INTEGRITY_PASS"})
-    finalize(argparse.Namespace(run_root=first, outcomes_json=arguments))
-    finalize(argparse.Namespace(run_root=second, outcomes_json=arguments))
+    finalize(argparse.Namespace(run_root=first))
+    finalize(argparse.Namespace(run_root=second))
     assert (first / "manifest.json").read_bytes() == (second / "manifest.json").read_bytes()
     assert (first / "verification.json").read_bytes() == (second / "verification.json").read_bytes()
     assert (first / "SHA256SUMS").read_bytes() == (second / "SHA256SUMS").read_bytes()
@@ -115,26 +105,22 @@ def test_finalizer_classifies_diffreach_interpreter_path_as_provenance(
                 eligibility_status="native_capability_only",
                 timing_eligibility="not_a_benchmark",
                 expected_exit_codes=(0,),
-                command=[sys.executable, "-c", "print('ok')"],
+                command=[
+                    sys.executable,
+                    "-c",
+                    (
+                        "import json,sys;from pathlib import Path;"
+                        "p=Path(sys.argv[1]);p.parent.mkdir(parents=True);"
+                        "p.write_text(json.dumps({'python_executable':"
+                        "{'invoked_path':'/srv/local/shengenli/pinned/bin/python'}}))"
+                    ),
+                    "{ARTIFACT_DIR}/run/summary.json",
+                ],
             )
         )
         == 0
     )
-    summary = runner / "artifacts" / "run" / "summary.json"
-    summary.parent.mkdir(parents=True)
-    summary.write_text(
-        json.dumps(
-            {
-                "python_executable": {
-                    "invoked_path": "/srv/local/shengenli/pinned/bin/python"
-                }
-            }
-        ),
-        encoding="utf-8",
-    )
-    manifest = finalize(
-        argparse.Namespace(run_root=root, outcomes_json=json.dumps({"evidence": "pass"}))
-    )
+    manifest = finalize(argparse.Namespace(run_root=root))
     audit = manifest["private_path_audit"]
     assert audit["status"] == "qualified"
     assert all(row["category"] == "provenance_only" for row in audit["matches"])

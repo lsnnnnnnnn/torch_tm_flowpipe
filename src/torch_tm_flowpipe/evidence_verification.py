@@ -20,6 +20,128 @@ DERIVATION_VERSION = 1
 VALID_STATUSES = frozenset({"pass", "fail", "not_run", "unknown", "qualified"})
 
 
+@dataclass(frozen=True)
+class ScientificSummaryResult:
+    """One scientific decision derived from a hashed JSON source artifact."""
+
+    claim: "VerificationClaim"
+    outcome: str | None
+    summary_schema: str | None
+
+
+def _strict_json(path: Path) -> Any:
+    return json.loads(
+        Path(path).read_text(encoding="utf-8"),
+        parse_constant=lambda value: (_ for _ in ()).throw(
+            ValueError(f"non-finite JSON token {value} in {path}")
+        ),
+    )
+
+
+def _field(value: Mapping[str, Any], dotted_path: str) -> Any:
+    current: Any = value
+    for part in str(dotted_path).split("."):
+        if not isinstance(current, Mapping) or part not in current:
+            raise KeyError(dotted_path)
+        current = current[part]
+    return current
+
+
+def derive_scientific_summary_claim(
+    claim_id: str,
+    summary_path: Path,
+    *,
+    expected_schema: str | None,
+    outcome_field: str,
+    allowed_outcomes: Sequence[str],
+    required_fields: Mapping[str, Any],
+    scope: str,
+    repository_root: Path | None = None,
+    limitations: Sequence[str] = (),
+    derived_by: str = (
+        "torch_tm_flowpipe.evidence_verification."
+        "derive_scientific_summary_claim"
+    ),
+) -> ScientificSummaryResult:
+    """Validate one machine summary and derive its declared outcome.
+
+    The command exit status is intentionally absent from this API.  A caller
+    must validate the runner envelope separately; an exit code can never
+    substitute for the summary schema, source identity, critical fields, or
+    scientific outcome checked here.
+    """
+
+    path = Path(summary_path)
+    relative = _relative(path, repository_root)
+    if not path.is_file():
+        return ScientificSummaryResult(
+            unavailable_claim(
+                claim_id,
+                status="fail",
+                scope=scope,
+                limitation=f"scientific summary is missing: {relative}",
+                derived_by=derived_by,
+            ),
+            None,
+            None,
+        )
+    digest = sha256_file(path)
+    errors: list[str] = []
+    summary: Mapping[str, Any] | None = None
+    try:
+        parsed = _strict_json(path)
+        if not isinstance(parsed, Mapping):
+            raise ValueError("scientific summary must be a JSON object")
+        summary = parsed
+    except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError) as exc:
+        errors.append(f"invalid scientific JSON: {type(exc).__name__}: {exc}")
+
+    outcome: str | None = None
+    schema: str | None = None
+    if summary is not None:
+        raw_schema = summary.get("schema")
+        schema = None if raw_schema is None else str(raw_schema)
+        if expected_schema is not None and schema != expected_schema:
+            errors.append(
+                f"scientific summary schema mismatch: expected {expected_schema!r}, "
+                f"got {schema!r}"
+            )
+        for field_path, expected in required_fields.items():
+            try:
+                actual = _field(summary, str(field_path))
+            except KeyError:
+                errors.append(f"required scientific field is missing: {field_path}")
+                continue
+            if actual != expected:
+                errors.append(
+                    f"scientific field mismatch for {field_path}: "
+                    f"expected {expected!r}, got {actual!r}"
+                )
+        try:
+            raw_outcome = _field(summary, outcome_field)
+            outcome = str(raw_outcome)
+        except KeyError:
+            errors.append(f"scientific outcome field is missing: {outcome_field}")
+        if outcome is not None and outcome not in set(str(v) for v in allowed_outcomes):
+            errors.append(f"scientific outcome is not allowed: {outcome}")
+
+    claim = VerificationClaim(
+        claim_id=claim_id,
+        status="fail" if errors else "pass",
+        source_paths=(relative,),
+        source_sha256=(digest,),
+        command=None,
+        exit_code=None,
+        started_at=None,
+        finished_at=None,
+        derived_by=derived_by,
+        derivation_version=DERIVATION_VERSION,
+        scope=scope,
+        limitations=tuple(errors) if errors else tuple(str(v) for v in limitations),
+    )
+    return ScientificSummaryResult(claim, outcome if not errors else None, schema)
+
+
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -368,9 +490,11 @@ __all__ = [
     "DERIVATION_VERSION",
     "VALID_STATUSES",
     "VERIFICATION_SCHEMA",
+    "ScientificSummaryResult",
     "VerificationClaim",
     "classify_private_path_matches",
     "derive_command_claim",
+    "derive_scientific_summary_claim",
     "load_verification_document",
     "sha256_file",
     "unavailable_claim",

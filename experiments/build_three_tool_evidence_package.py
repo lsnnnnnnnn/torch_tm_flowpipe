@@ -31,6 +31,35 @@ TARGET = {
 }
 
 
+def _scientific(
+    path: str,
+    *,
+    schema: str | None,
+    outcome_field: str,
+    allowed_outcomes: Sequence[str],
+    required_fields: dict[str, Any],
+    outcome_dimension: str | None = None,
+    source_sha256_fields: dict[str, str] | None = None,
+    semantic_profile: str | None = None,
+) -> dict[str, Any]:
+    """Build a serializable parser contract; it does not select an outcome."""
+
+    contract: dict[str, Any] = {
+        "path": path,
+        "schema": schema,
+        "outcome_field": outcome_field,
+        "allowed_outcomes": list(allowed_outcomes),
+        "required_fields": required_fields,
+    }
+    if outcome_dimension is not None:
+        contract["outcome_dimension"] = outcome_dimension
+    if source_sha256_fields:
+        contract["source_sha256_fields"] = source_sha256_fields
+    if semantic_profile is not None:
+        contract["semantic_profile"] = semantic_profile
+    return contract
+
+
 def _head() -> str:
     return subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -163,6 +192,20 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "partition": "B1",
             "source_modified": False,
             "compiler_compatibility_flags": ["-fpermissive"],
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="stock_flowstar_vdp_reproduction_v1",
+                outcome_field="result_status",
+                allowed_outcomes=("completed",),
+                required_fields={
+                    "source_commit": FLOWSTAR_SHA,
+                    "model_sha256": MODEL_SHA,
+                    "partition_count": 1,
+                    "horizon_requested": 10.0,
+                    "horizon_validated": 10.0,
+                    "binary_observer_status": "unmodified_stock",
+                },
+            ),
         },
         eligibility="native_capability_only",
         timing="native_process_and_reported_core_only",
@@ -179,7 +222,21 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--run-root",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"scope": "scalar_affine_closed_form_mpfr"},
+        config={
+            "scope": "scalar_affine_closed_form_mpfr",
+            "scientific_summary": _scientific(
+                "artifacts/run/first_containment_loss.json",
+                schema=None,
+                outcome_field="selected_outcome",
+                allowed_outcomes=("F_clean_stock_flowstar_core_behavior",),
+                required_fields={
+                    "correctness_gate": "OPEN",
+                    "first_loss.contained": False,
+                    "official_path_confirmation.under_enclosed_at_its_accepted_right_endpoint": True,
+                    "primary_comparison_eligible": False,
+                },
+            ),
+        },
         eligibility="native_build_soundness_qualification",
         timing="not_a_performance_benchmark",
     )
@@ -203,7 +260,26 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--cuda-visible-devices",
             args.cuda_uuid,
         ],
-        config={"track": "N", "partition": "B64", "jax_enable_x64": True},
+        config={
+            "track": "N",
+            "partition": "B64",
+            "jax_enable_x64": True,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="stock_diffreach_vdp_reproduction_v1",
+                outcome_field="result_status",
+                allowed_outcomes=("completed",),
+                required_fields={
+                    "source_commit": DIFFREACH_SHA,
+                    "model_sha256": MODEL_SHA,
+                    "partition_count": 64,
+                    "schedule.steps": 1000,
+                    "schedule.h_hex": float(0.01).hex(),
+                    "horizon_validated": 10.0,
+                    "builder_dtype_audit.classification": "mixed_builder_dtype",
+                },
+            ),
+        },
         eligibility="native_capability_only_mixed_builder_dtype",
         timing="native_jax_compile_and_after_jit_separate",
     )
@@ -237,7 +313,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--dense-range-contexts",
             "polynomial_truncation",
         ],
-        config={"track": "N", "partition": "B1", "target": TARGET},
+        config={
+            "track": "N",
+            "partition": "B1",
+            "target": TARGET,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema=None,
+                outcome_field="status",
+                allowed_outcomes=("failed", "completed"),
+                required_fields={
+                    "commit": _head(),
+                    "tm_backend": "dense",
+                    "device": "cpu",
+                    "target_remainder_radius": 0.0001,
+                    "fallback_count": 0,
+                    "worktree_dirty": False,
+                },
+            ),
+        },
         eligibility="expected_fail_closed_partial_horizon",
         timing="native_process_only_not_cross_tool",
         expected=(1,),
@@ -262,7 +356,23 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--warm-runs",
             "0",
         ],
-        config={"track": "M-D", "partition": "B64"},
+        config={
+            "track": "M-D",
+            "partition": "B64",
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="torch_tm_flowpipe_fixed_support_run_v1",
+                outcome_field="completion_status",
+                allowed_outcomes=("completed", "failed"),
+                required_fields={
+                    "partition_policy.batch": 64,
+                    "step_policy.steps": 1000,
+                    "step_policy.step_size_hex": float(0.01).hex(),
+                    "dtype_device.dtype": "float64",
+                    "undeclared_fallback_or_repair": False,
+                },
+            ),
+        },
         eligibility="matched_semantics_empirical",
         timing="cold_only_not_cross_tool_ratio",
     )
@@ -297,7 +407,28 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--source-commit",
             DIFFREACH_SHA,
         ],
-        config={"upstream_commit": DIFFREACH_SHA, "every_builder_explicit_float64": True},
+        config={
+            "upstream_commit": DIFFREACH_SHA,
+            "every_builder_explicit_float64": True,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="diffreach_dr7_explicit_f64_fixture_replay_v1",
+                outcome_field="outcome",
+                allowed_outcomes=(
+                    "DIFFREACH_EXPLICIT_F64_FIXTURE_REPRODUCED",
+                    "DIFFREACH_EXPLICIT_F64_FIXTURE_MISMATCH",
+                ),
+                required_fields={
+                    "source_commit": DIFFREACH_SHA,
+                    "jax_x64_enabled": True,
+                    "mismatched_fields": [],
+                    "compared_fields": 10,
+                },
+                source_sha256_fields={
+                    "artifacts/run/replayed_fixture.json": "replay_sha256"
+                },
+            ),
+        },
         eligibility="matched_operator_equivalence",
     )
     for replay_device in ("cpu", "cuda"):
@@ -313,7 +444,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                 "--device",
                 replay_device,
             ],
-            config={"device": replay_device, "companion_envelope_ulps": 2},
+            config={
+                "device": replay_device,
+                "companion_envelope_ulps": 2,
+                "scientific_summary": _scientific(
+                    "artifacts/fraction_replay.json",
+                    schema="torch_tm_flowpipe_fixed_support_fraction_replay_v1",
+                    outcome_field="replay_envelope_classification",
+                    allowed_outcomes=(
+                        "independently outward replayed for exact benchmark workload",
+                    ),
+                    required_fields={
+                        "device": replay_device,
+                        "initial_inclusion_mask_equal": True,
+                        "all_round_masks_equal": True,
+                        "replay_envelope_qualified": True,
+                        "max_outward_ulps_needed": 2,
+                    },
+                ),
+            },
             eligibility="bounded_exact_binary64_outward_replay",
             timing="not_a_performance_benchmark",
         )
@@ -378,7 +527,20 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--output-dir",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"checkpoint_role": "last_common_prestate", "target": TARGET},
+        config={
+            "checkpoint_role": "last_common_prestate",
+            "target": TARGET,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="vdp_raw_remainder_trace_run_v1",
+                outcome_field="outcome",
+                allowed_outcomes=("TRACE_EXPORTED_ROOT_CAUSE_ANALYSIS_PENDING",),
+                required_fields={"torch_observer_inert": True},
+                source_sha256_fields={
+                    "artifacts/run/raw_remainder_expression_tree.json": "expression_tree_sha256"
+                },
+            ),
+        },
         eligibility="diagnostic_root_cause",
     )
     _protocol(
@@ -393,7 +555,28 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--output-dir",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"mpfr_precision_bits": 256},
+        config={
+            "mpfr_precision_bits": 256,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="vdp_raw_remainder_analysis_run_v1",
+                outcome_field="outcome",
+                allowed_outcomes=(
+                    "RAW_REMAINDER_ROOT_CAUSE_CLOSED",
+                    "RAW_REMAINDER_ROOT_CAUSE_PENDING",
+                ),
+                outcome_dimension="raw_remainder_root_cause_status",
+                required_fields={
+                    "first_divergence": "TaylorModel multiplication coefficient-interval uncertainty addition",
+                },
+                source_sha256_fields={
+                    "artifacts/run/raw_remainder_counterfactuals.json": "artifacts.raw_remainder_counterfactuals.json",
+                    "artifacts/run/raw_remainder_first_divergence.json": "artifacts.raw_remainder_first_divergence.json",
+                    "artifacts/run/raw_remainder_independent_replay.json": "artifacts.raw_remainder_independent_replay.json",
+                    "artifacts/run/raw_remainder_node_comparison.csv": "artifacts.raw_remainder_node_comparison.csv",
+                },
+            ),
+        },
         eligibility="frozen_workload_independent_replay",
     )
 
@@ -413,7 +596,21 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--output-dir",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"schedule": "flowstar_native_accepted", "target": TARGET},
+        config={
+            "schedule": "flowstar_native_accepted",
+            "target": TARGET,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="vdp_schedule_validator_run_v1",
+                outcome_field="outcome",
+                allowed_outcomes=("SCHEDULE_VALIDATOR_INTERACTION",),
+                required_fields={},
+                source_sha256_fields={
+                    "artifacts/run/schedule_validator_matrix.json": "matrix_sha256",
+                    "artifacts/run/torch_on_flowstar_schedule.json": "schedule_replay_sha256",
+                },
+            ),
+        },
         eligibility="diagnostic_only",
     )
     fixed_probe = _protocol(
@@ -447,7 +644,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--output-dir",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"schedule": "common_fixed_h001", "target": TARGET},
+        config={
+            "schedule": "common_fixed_h001",
+            "target": TARGET,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="vdp_schedule_validator_run_v1",
+                outcome_field="outcome",
+                allowed_outcomes=("SCHEDULE_VALIDATOR_INTERACTION",),
+                required_fields={
+                    "completed_schedule": True,
+                    "flowstar_schedule_steps": 100,
+                    "torch_accepted_steps": 100,
+                },
+                source_sha256_fields={
+                    "artifacts/run/schedule_validator_matrix.json": "matrix_sha256",
+                    "artifacts/run/torch_on_flowstar_schedule.json": "schedule_replay_sha256",
+                },
+            ),
+        },
         eligibility="diagnostic_only",
     )
 
@@ -478,7 +693,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--output-dir",
             "{ARTIFACT_DIR}/run",
         ],
-        config={"R35_slots": 35, "mpfr_precision_bits": 256},
+        config={
+            "R35_slots": 35,
+            "mpfr_precision_bits": 256,
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="r35_mpfr_outward_remainder_replay_v1",
+                outcome_field="outcome",
+                allowed_outcomes=("R35_BOUNDED_MPFR_REPLAY_PASS",),
+                required_fields={
+                    "support.slot_count": 35,
+                    "mpfr_oracle.precision_bits": 256,
+                    "ordinary_binary64_remainder.directly_contains_mpfr": False,
+                    "two_ulp_companion_envelope.contains_mpfr": True,
+                },
+            ),
+        },
         eligibility="bounded_exact_binary64_outward_replay",
         timing="not_a_performance_benchmark",
     )
@@ -494,7 +724,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "--max-gate",
             "G0",
         ],
-        config={"h": {"decimal": "0.01", "hex": float(0.01).hex()}},
+        config={
+            "h": {"decimal": "0.01", "hex": float(0.01).hex()},
+            "scientific_summary": _scientific(
+                "artifacts/run/summary.json",
+                schema="torch_fixed_support_descriptor_bridge_run_v1",
+                outcome_field="outcome",
+                allowed_outcomes=("FIXED_SUPPORT_BRIDGE_CLOSED",),
+                required_fields={
+                    "max_gate": "G0",
+                    "all_cells_completed_gate": True,
+                },
+                source_sha256_fields={
+                    "artifacts/run/bridge_ladder.json": "artifact_sha256"
+                },
+            ),
+        },
         eligibility="diagnostic_only",
     )
     prior = g0
@@ -513,7 +758,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                 "--prior-gate-summary",
                 str(prior / "artifacts/run/summary.json"),
             ],
-            config={"prior_gate": prior.name, "no_hidden_constant_drift": True},
+            config={
+                "prior_gate": prior.name,
+                "no_hidden_constant_drift": True,
+                "scientific_summary": _scientific(
+                    "artifacts/run/summary.json",
+                    schema="torch_fixed_support_descriptor_bridge_run_v1",
+                    outcome_field="outcome",
+                    allowed_outcomes=(
+                        ("FIXED_SUPPORT_BRIDGE_CLOSED", "FIXED_SUPPORT_BRIDGE_BLOCKED")
+                        if gate == "G3"
+                        else ("FIXED_SUPPORT_BRIDGE_CLOSED",)
+                    ),
+                    required_fields={"max_gate": gate},
+                    source_sha256_fields={
+                        "artifacts/run/bridge_ladder.json": "artifact_sha256"
+                    },
+                    semantic_profile="bridge_g3" if gate == "G3" else None,
+                ),
+            },
             eligibility="diagnostic_only",
             expected=(0, 1) if gate == "G3" else (0,),
         )
@@ -669,26 +932,11 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         eligibility="reporting_gate",
     )
 
-    g3_summary = json.loads(
-        (prior / "artifacts/run/summary.json").read_text(encoding="utf-8")
-    )
-    bridge_outcome = g3_summary["outcome"]
-    if bridge_outcome not in {
-        "FIXED_SUPPORT_BRIDGE_CLOSED",
-        "FIXED_SUPPORT_BRIDGE_BLOCKED",
-    }:
-        raise RuntimeError("unexpected G3 bridge outcome")
-    outcomes = {
-        "evidence": "EVIDENCE_INTEGRITY_PASS",
-        "raw_remainder": "RAW_REMAINDER_ROOT_CAUSE_CLOSED",
-        "schedule_validator": "SCHEDULE_VALIDATOR_INTERACTION",
-        "bridge": bridge_outcome,
-        "flowstar_torch_pairwise": "PAIRWISE_COMPARISON_PARTIAL",
-        "diffreach_torch_pairwise": "VALID_PAIRWISE_COMPARISON_CLOSED",
-        "improvement": "IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE",
-    }
+    # Scientific outcomes are parsed by the finalizer from runner-owned,
+    # hash-indexed artifacts.  The orchestrator is intentionally not allowed
+    # to inject an outcome mapping.
     return finalize(
-        argparse.Namespace(run_root=run_root, outcomes_json=json.dumps(outcomes))
+        argparse.Namespace(run_root=run_root, require_complete_outcomes=False)
     )
 
 

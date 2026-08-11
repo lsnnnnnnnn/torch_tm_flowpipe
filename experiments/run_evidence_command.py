@@ -54,6 +54,7 @@ def run(args: argparse.Namespace) -> int:
     config.update(
         {
             "schema": "torch_tm_flowpipe_evidence_runner_config_v1",
+            "runner_name": args.name,
             "source_commit": args.source_commit,
             "eligibility_status": args.eligibility_status,
             "expected_exit_codes": list(args.expected_exit_codes),
