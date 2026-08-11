@@ -41,6 +41,12 @@ substitution, and support SHA are generated from exponents rather than VDP
 cases.  R7 object output remains bit-exact with the existing solver at the
 one-step regression gate.
 
+The R35 gate also includes an independent 256-bit MPFR directed-rounding
+replay of a deterministic degree-five discarded product.  Ordinary binary64
+does not directly contain that exact-input result; a separately labelled
+two-ULP companion envelope does.  This is bounded fixture evidence, not a
+universal outward-soundness claim for the ordinary lane.
+
 ## Causal ladder
 
 Every adjacent cell changes exactly one factor:

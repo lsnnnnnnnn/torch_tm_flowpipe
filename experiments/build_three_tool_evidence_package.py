@@ -410,10 +410,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "-q",
             "tests/test_fixed_support.py",
             "tests/test_fixed_support_r35.py",
+            "tests/test_r35_mpfr_remainder_replay.py",
             "tests/test_fixed_support_bridge_runner.py",
         ],
         config={"R7_slots": 7, "R35_slots": 35},
         eligibility="descriptor_semantics_gate",
+    )
+    _protocol(
+        run_root,
+        "09_fixed_support_descriptor/r35_mpfr_remainder_replay",
+        name="r35_mpfr_outward_remainder_replay",
+        command=[
+            python,
+            "experiments/replay_r35_mpfr_remainder.py",
+            "--output-dir",
+            "{ARTIFACT_DIR}/run",
+        ],
+        config={"R35_slots": 35, "mpfr_precision_bits": 256},
+        eligibility="bounded_exact_binary64_outward_replay",
+        timing="not_a_performance_benchmark",
     )
     g0 = _protocol(
         run_root,
@@ -520,6 +535,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             "tests/test_comparison_contract.py",
             "tests/test_raw_remainder_trace.py",
             "tests/test_fixed_support_r35.py",
+            "tests/test_r35_mpfr_remainder_replay.py",
             "tests/test_fixed_support_bridge_runner.py",
             "tests/test_20260811_report_contract.py",
             "tests/test_vdp_terminal_state_replay.py",
