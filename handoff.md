@@ -3,10 +3,11 @@
 ## Superseding three-tool round (2026-08-11)
 
 The current branch closes the raw-remainder root cause at Flow* Picard-4
-`x*x`, records `SCHEDULE_VALIDATOR_INTERACTION`, and closes the generic
-R7→R35 A0--A4 bridge through T1 for B1/B64. Flow*/Torch pairwise status is
-partial; DiffReach/Torch explicit-f64 status is closed. No universal timing or
-tightness winner is available.
+`x*x` and records `SCHEDULE_VALIDATOR_INTERACTION`. All generic R7→R35 A0--A4
+cells pass through T1 for B1/B64, but the final bridge outcome is
+`FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4/B1/B64 stop before T10.
+Flow*/Torch pairwise status is partial; DiffReach/Torch explicit-f64 status is
+closed. No universal timing or tightness winner is available.
 
 The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`. The
 proven decision-changing uncertainty is extra on the Flow* side, while Torch

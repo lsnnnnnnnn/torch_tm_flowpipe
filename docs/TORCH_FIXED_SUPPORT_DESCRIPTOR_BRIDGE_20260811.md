@@ -4,14 +4,16 @@ Date: 2026-08-11
 
 ## Outcome
 
-`FIXED_SUPPORT_BRIDGE_CLOSED` through G2/T1 for every A0–A4 cell in both B1
-and B64.  G3/T10 is a separately gated extension and is not needed to relabel
-the completed T1 bridge.
+`FIXED_SUPPORT_BRIDGE_BLOCKED`.  Every A0–A4 cell in B1 and B64 completed
+G2/T1, but the required G3/T10 gate did not: A0/B1, A4/B1, and A4/B64 failed
+closed before T10.  The completed T1 diagnostic remains valid, but it is not
+the final bridge outcome.
 
 ## Eligibility
 
 Empirical ordinary-float64 fixed-workload causal diagnostics only; R7 frozen
-regression is separately bit-exact.
+regression is separately bit-exact.  Failed G3 cells are not eligible for
+post-failure factor deltas or runtime comparisons.
 
 ## What is comparable
 
@@ -20,12 +22,14 @@ soundness scope.
 
 ## What is unavailable
 
-B1/B64 cross-partition deltas, post-failure deltas, and a universal dominant
-factor.
+B1/B64 cross-partition deltas, post-failure deltas, a closed T10 bridge, and a
+universal dominant factor.
 
 ## Negative results
 
-Preregistered metrics disagree on a single dominant factor; R35 is not a
+Preregistered metrics disagree on a single dominant factor.  Normalized
+insertion A4 fails in both partition lanes, and the R7 baseline A0 also fails
+in B1, so no single adjacent factor explains all G3 outcomes.  R35 is not a
 promoted complete-O4 production lane.
 
 ## Exact evidence paths
@@ -60,8 +64,35 @@ Every adjacent cell changes exactly one factor:
 | A4 | R35 | 4 | raw-compatible | complete normalized insertion |
 
 All cells use fixed `h=0.01`, target remainder radius `0.01`, no cutoff, and
-`h_min=0.01`.  G0, G1, and G2 were run in order; each later runner verifies
-the immediately preceding closed summary before executing.
+`h_min=0.01`.  G0, G1, G2, and G3 were run in order; each later runner verifies
+the immediately preceding closed summary before executing.  G3 records its
+negative result and exits nonzero by design.
+
+## G3/T10 gate
+
+The three failed cells stop at their first initial-remainder inclusion
+failure.  A dash means that the cell completed all 1,000 steps and validated
+T10.
+
+| cell | B | completed steps | validated horizon | first failure step | failure time | result |
+|---|---:|---:|---:|---:|---:|---|
+| A0 | 1 | 536 | 5.36 | 537 | 5.36 | initial-remainder inclusion failed |
+| A0 | 64 | 1,000 | 10.00 | — | — | completed |
+| A1 | 1 | 1,000 | 10.00 | — | — | completed |
+| A1 | 64 | 1,000 | 10.00 | — | — | completed |
+| A2 | 1 | 1,000 | 10.00 | — | — | completed |
+| A2 | 64 | 1,000 | 10.00 | — | — | completed |
+| A3 | 1 | 1,000 | 10.00 | — | — | completed |
+| A3 | 64 | 1,000 | 10.00 | — | — | completed |
+| A4 | 1 | 319 | 3.19 | 320 | 3.19 | initial-remainder inclusion failed |
+| A4 | 64 | 333 | 3.33 | 334 | 3.33 | initial-remainder inclusion failed |
+
+At first failure, the y raw-remainder lower/upper extrema are
+`[-0.010240042738984743, 0.006980690088570829]` for A0/B1,
+`[-0.01049782884262176, 0.009957993570519734]` for A4/B1, and
+`[-0.010534136638301814, 0.010176010049560882]` for A4/B64, against the
+unchanged radius-0.01 target.  These failures are capability facts, not
+evidence that failing sooner is faster.
 
 ## T1 factor evidence
 

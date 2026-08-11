@@ -2,12 +2,13 @@
 
 ## Current status (2026-08-11)
 
-The three-tool follow-up is closed through its required T1 causal bridge:
-raw-remainder root cause closed at Picard-4 `x*x`; schedule/validator outcome
-is interaction; every A0--A4 B1/B64 cell completes G0, G1, and G2. There is no
-single dominant bridge factor across the preregistered metrics and partition
-lanes. Flow*/Torch remains a partial pairwise comparison because formal and
-full-horizon same-object tightness are unavailable. DiffReach/Torch
+The three-tool follow-up closes the raw-remainder root cause at Picard-4
+`x*x`, and its schedule/validator outcome is interaction. Every A0--A4 B1/B64
+cell completes G0, G1, and G2, but the final bridge outcome is
+`FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4/B1/B64 fail in G3 before T10.
+There is no single dominant bridge factor across the preregistered metrics and
+partition lanes. Flow*/Torch remains a partial pairwise comparison because
+formal and full-horizon same-object tightness are unavailable. DiffReach/Torch
 explicit-f64 operator comparison is closed. The only allowed improvement
 decision is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
 

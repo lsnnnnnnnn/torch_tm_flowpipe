@@ -60,4 +60,6 @@ differ.
 Diagnostic factorial and bridge rows are marked
 `diagnostic_only=true` and `formal_ranking_eligible=false`.  Pairwise closure
 does not imply `Flow* > Torch > DiffReach`, a universal fastest tool, or a
-universal tightest tool.
+universal tightest tool.  The required G3 bridge outcome is
+`FIXED_SUPPORT_BRIDGE_BLOCKED`; its failed cells do not invalidate the matched
+pair facts above, but they prevent a complete descriptor-bridge claim.

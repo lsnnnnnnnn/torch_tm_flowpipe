@@ -10,6 +10,7 @@ from torch_tm_flowpipe.comparison_contract import vdp_identity_hashes
 
 ROOT = Path(__file__).parents[1]
 CURRENT = "S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT"
+CURRENT_BRIDGE = "FIXED_SUPPORT_BRIDGE_BLOCKED"
 
 
 def test_canonical_results_status_and_limitations_share_current_s1_outcome():
@@ -25,6 +26,19 @@ def test_canonical_results_status_and_limitations_share_current_s1_outcome():
         text = (ROOT / relative).read_text(encoding="utf-8")
         stale_index = text.index("S1_PREFIX_REJECTS_BEFORE_TERMINAL")
         assert "supersed" in text[:stale_index].lower()
+
+
+def test_canonical_documents_share_final_bridge_outcome():
+    for relative in (
+        "README.md",
+        "docs/RESULTS.md",
+        "docs/RESULTS_STATUS.md",
+        "docs/STATUS.md",
+        "docs/LIMITATIONS.md",
+        "handoff.md",
+    ):
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert CURRENT_BRIDGE in "\n".join(text.splitlines()[:35]), relative
 
 
 def test_historical_s1_documents_have_superseded_or_qualification_banners():

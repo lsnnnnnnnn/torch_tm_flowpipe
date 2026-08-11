@@ -31,8 +31,10 @@ generally sound narrower Flow* operation.
 New-package directories `07_flowstar_torch_raw_remainder/`,
 `10_bridge_ladder/`, and `12_single_improvement/`.
 
-The prerequisite studies closed, but they do not authorize a production
-Torch semantic change at the earliest proven divergence.  That divergence is
+The raw-root-cause and schedule studies closed, but the descriptor bridge is
+`FIXED_SUPPORT_BRIDGE_BLOCKED` and identifies no universal dominant factor.
+The evidence therefore does not authorize a production Torch semantic change
+at the earliest proven divergence.  That divergence is
 extra retained-coefficient interval uncertainty in Flow*'s direct
 `TaylorModel<Interval>` `x*x` multiplication.  Torch's point-binary64 path
 does not contain that extra contribution, already has the narrower accepted
@@ -47,8 +49,8 @@ without lowering soundness eligibility.
 
 The fixed-support A0–A4 bridge is an experimental representation/validator/
 carry ladder, not a promoted change to the authoritative complete-O4 lane.
-Its preregistered T1 metrics also show B-dependent multi-factor effects rather
-than one universally dominant Torch factor.
+Its preregistered T1 metrics show B-dependent multi-factor effects, and its G3
+failures do not isolate one universally dominant Torch factor.
 
 Accordingly no target, cutoff, Picard depth, minimum step, validator, carry,
 or complete-O4 production operation was changed for promotion.  P0–P7 and the

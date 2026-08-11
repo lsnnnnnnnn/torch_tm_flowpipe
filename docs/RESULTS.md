@@ -3,8 +3,9 @@
 ## Current three-tool pairwise/causal result
 
 The current outcomes are `RAW_REMAINDER_ROOT_CAUSE_CLOSED`,
-`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_CLOSED` through
-G2/T1 for A0--A4 in both B1 and B64. The first decision-changing node is
+`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_BLOCKED`. Every
+A0--A4 B1/B64 cell completes G2/T1, but A0/B1 stops at T=5.36 and A4/B1 and
+A4/B64 stop at T=3.19 and T=3.33 in G3. The first decision-changing node is
 Picard iteration 4 `x*x`: Flow* direct interval-coefficient multiplication
 adds uncertainty `[-0.00011204861774257546,0.00008935810062010431]` absent
 from Torch's point-binary64 retained-coefficient path. Replacing only that

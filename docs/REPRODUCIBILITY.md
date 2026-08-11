@@ -11,9 +11,11 @@ conda run -n py11 python experiments/build_three_tool_evidence_package.py \
 ```
 
 The builder refuses an existing run root, runs every command through the
-eight-file runner protocol, executes G0→G3 only through closed predecessors,
-derives verification claims from command files and hashes, rejects non-finite
-JSON and unclassified private paths, and writes root-relative `SHA256SUMS`.
+eight-file runner protocol, and executes G0→G3 only through closed
+predecessors. A blocked G3 is an expected evidence outcome with a recorded
+nonzero exit, not a silently passing command. The builder derives verification
+claims from command files and hashes, rejects non-finite JSON and unclassified
+private paths, and writes root-relative `SHA256SUMS`.
 
 Focused causal commands are:
 

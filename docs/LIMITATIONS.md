@@ -10,6 +10,10 @@ Current pairwise/bridge qualification:
   used.
 - The R35 bridge is an empirical ordinary-float64 fixed-workload diagnostic.
   B1 and B64 are separate objects and factor magnitudes are not interchangeable.
+- The bridge outcome is `FIXED_SUPPORT_BRIDGE_BLOCKED` at G3: A0/B1 validates
+  only through 5.36, and A4/B1 and A4/B64 only through 3.19 and 3.33. No
+  post-failure width, runtime, or factor delta is reported, and earlier
+  failure is not a speed advantage.
 - The inherited operation ledger is lineage, not an additive decomposition
   after scaling/composition; checkpoint coverage is validated separately.
 - No matched one-cold/ten-warm cross-tool timing study was run, so no speed

@@ -12,10 +12,12 @@ points rather than treating one ambiguous `order` as a common algorithm:
   lane and a Flow*-like complete-total-degree lane.
 
 The latest research round closes the first Flow*/Torch raw-remainder split at
-Picard-4 `x*x`, identifies a schedule/validator interaction, and closes the
-R7-to-R35 A0--A4 bridge through T1 in B1 and B64. Flow*/Torch comparison is
-partial, DiffReach/Torch explicit-f64 comparison is closed, and no Torch
-production improvement is authorized by the evidence. The preceding S1
+Picard-4 `x*x` and identifies a schedule/validator interaction. Every
+R7-to-R35 A0--A4 cell reaches T1 in B1 and B64, but the required T10 extension
+is `FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4 in both partition lanes stop
+before T10. Flow*/Torch comparison is partial, DiffReach/Torch explicit-f64
+comparison is closed, and no Torch production improvement is authorized by
+the evidence. The preceding S1
 result remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. Evidence-integrity
 corrections are documented in
 [`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
