@@ -523,7 +523,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         ):
             raise RuntimeError("PRIOR_BRIDGE_GATE_NOT_CLOSED")
         prior_gate = {
-            "path": str(prior_path),
+            "path": "summary.json",
+            "path_scope": "immediately_preceding_gate_runner",
             "sha256": _sha(prior_path),
             "max_gate": prior_gate["max_gate"],
             "outcome": prior_gate["outcome"],
@@ -679,8 +680,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    print(json.dumps(run(parse_args(argv)), sort_keys=True))
-    return 0
+    summary = run(parse_args(argv))
+    print(json.dumps(summary, sort_keys=True))
+    return 0 if summary["outcome"] == "FIXED_SUPPORT_BRIDGE_CLOSED" else 1
 
 
 if __name__ == "__main__":
