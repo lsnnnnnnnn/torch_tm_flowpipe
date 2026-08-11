@@ -14,6 +14,8 @@ import tempfile
 import time
 from typing import Any, Sequence
 
+import numpy as np
+
 
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -24,6 +26,63 @@ def _write(path: Path, value: Any) -> None:
         json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n",
         encoding="utf-8",
     )
+
+
+def _builder_dtype_audit(source: Path) -> dict[str, Any]:
+    """Inventory stock builder dtype sites without modifying the checkout."""
+
+    files = (
+        "run_dyn.py",
+        "src/reachability.py",
+        "src/symbolic_remainder.py",
+        "src/interval.py",
+        "src/polynomial.py",
+        "src/taylor_model.py",
+        "src/rhs_eval.py",
+    )
+    rows = []
+    for relative in files:
+        path = source / relative
+        text = path.read_text(encoding="utf-8")
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            stripped = line.strip()
+            if not (
+                "dtype=jnp.float32" in stripped
+                or "dtype = jnp.float32" in stripped
+                or "jnp.float32)" in stripped
+                or (
+                    relative == "run_dyn.py"
+                    and "jnp.array(" in stripped
+                    and "dtype=" not in stripped
+                )
+            ):
+                continue
+            rows.append(
+                {
+                    "path": relative,
+                    "line": line_number,
+                    "source": stripped,
+                    "declared_dtype": (
+                        "implicit_default_under_jax_x64"
+                        if "dtype=" not in stripped
+                        and "dtype =" not in stripped
+                        and "jnp.float32" not in stripped
+                        else "jnp.float32_default_or_literal"
+                    ),
+                }
+            )
+    if not rows:
+        raise RuntimeError("DiffReach builder dtype inventory unexpectedly empty")
+    return {
+        "scope": "all stock core builder default/literal dtype sites used by the VDP driver",
+        "method": "source-derived inventory plus saved-output dtype inspection",
+        "files": [
+            {"path": relative, "sha256": _sha(source / relative)}
+            for relative in files
+        ],
+        "sites": rows,
+        "classification": "mixed_builder_dtype",
+    }
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
@@ -76,6 +135,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         (output / "diffreach.stderr.log").write_text(completed.stderr)
         if completed.returncode != 0:
             raise RuntimeError("stock DiffReach execution failed")
+        builder_dtype_audit = _builder_dtype_audit(clone)
         native = clone / "output" / "ct_dyn" / "van_der_pol"
         copied = []
         for name in (
@@ -91,6 +151,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             destination = output / name
             shutil.copy2(source_path, destination)
             copied.append(destination)
+    saved_array_dtypes: dict[str, Any] = {}
+    for path in copied:
+        if path.suffix != ".npz":
+            continue
+        with np.load(path) as archive:
+            saved_array_dtypes[path.name] = {
+                name: {
+                    "dtype": str(archive[name].dtype),
+                    "shape": list(archive[name].shape),
+                }
+                for name in archive.files
+            }
     endpoint_pattern = re.compile(r"x([12])\(T\)\s*∈\s*\[([^,]+),\s*([^\]]+)\]")
     endpoints = {
         f"x{component}": [float(lo), float(hi)]
@@ -118,10 +190,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "JAX_ENABLE_X64": "true",
             "CUDA_VISIBLE_DEVICES": args.cuda_visible_devices,
         },
-        "builder_dtype_audit": (
-            "stock model/identity/symbolic builders omit explicit dtype and "
-            "therefore remain mixed-builder-dtype despite JAX x64"
-        ),
+        "builder_dtype_audit": builder_dtype_audit,
+        "saved_array_dtypes": saved_array_dtypes,
         "model_sha256": args.model_sha256,
         "initial_set": [[1.1, 1.4], [2.35, 2.45]],
         "partition_count": 64,
