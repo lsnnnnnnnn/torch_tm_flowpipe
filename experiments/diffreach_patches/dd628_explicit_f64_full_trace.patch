@@ -1,0 +1,188 @@
+diff --git a/src/picard.py b/src/picard.py
+index 97952d8..0eb9950 100644
+--- a/src/picard.py
++++ b/src/picard.py
+@@ -18,7 +18,8 @@ def remainder_picard(rhs_tm_fn: Callable,
+                         step_hi,
+                         *,
+                         rounds: int,
+-                        stop_ratio: float = 0.95) -> QuadTM:
++                        stop_ratio: float = 0.95,
++                        return_trace: bool = False):
+     # x_tm_cur = x_tm_seed.truncate_to_affine(step_lo, step_hi)
+     x_tm_cur = x_tm_seed
+     rhs_tm: QuadTM = rhs_tm_fn(x_tm_cur, step_lo, step_hi)
+@@ -49,12 +50,21 @@ def remainder_picard(rhs_tm_fn: Callable,
+         x_tm_next.R.lo = jnp.where(shrinked, next_R.lo, x_tm_cur.R.lo)
+         x_tm_next.R.hi = jnp.where(shrinked, next_R.hi, x_tm_cur.R.hi)
+ 
+-        return x_tm_next, None
+-        x_tm_cur.R = x_tm_next.R
++        return x_tm_next, (shrinked, x_tm_next.R.lo, x_tm_next.R.hi)
+ 
+-        return x_tm_cur, None
+-
+-    x_tm_final, _ = jax.lax.scan(body, x_tm_cur, xs=None, length=rounds, unroll=False)
++    x_tm_final, (round_masks, round_accepted_lo, round_accepted_hi) = jax.lax.scan(
++        body, x_tm_cur, xs=None, length=rounds, unroll=False
++    )
++    if return_trace:
++        return x_tm_final, init_shrinked, {
++            "initial_candidate_lo": x_tm_next.R.lo,
++            "initial_candidate_hi": x_tm_next.R.hi,
++            "roundoff_lo": roundoff_r.lo,
++            "roundoff_hi": roundoff_r.hi,
++            "round_masks": round_masks,
++            "round_accepted_lo": round_accepted_lo,
++            "round_accepted_hi": round_accepted_hi,
++        }
+     return x_tm_final, init_shrinked
+ 
+     #     return x_tm_cur, shrinked
+diff --git a/src/reachability.py b/src/reachability.py
+index 12f66d3..19330e0 100644
+--- a/src/reachability.py
++++ b/src/reachability.py
+@@ -150,7 +150,7 @@ class CT_Dyn_Reach(CT_Dyn_Sys):
+             result_norm.log(prefix="result.tmv (final)", dim=settings.CONFIG["CHECK_DIM"])
+             jax.debug.print("=== after ===")
+         # 3) affine seed for next finals: x = c + S*y
+-        new_x0 = build_linear_tm(c, S)
++        new_x0 = build_linear_tm(c, S, dtype=c.dtype)
+ 
+         # 4-5) Two Picard trunc-2 (poly-only)
+         baseP = new_x0.P
+@@ -168,7 +168,7 @@ class CT_Dyn_Reach(CT_Dyn_Sys):
+         # 6) seed remainder (absolute)
+         # prev_remainder = jnp.maximum(jnp.abs(x_tm.R.hi), jnp.abs(x_tm.R.lo))
+         # init_remainder = jnp.minimum(self.init_remainder, prev_remainder)
+-        init_remainder = self.init_remainder
++        init_remainder = self.init_remainder.astype(baseP.c.dtype)
+         x_tm_seed = init_remainder_abs(x_tm_poly, init_remainder)
+         if settings.CONFIG["DEBUG_LOG"]:
+             new_x0.log(prefix="new_x0", dim=settings.CONFIG["CHECK_DIM"])
+@@ -194,6 +194,106 @@ class CT_Dyn_Reach(CT_Dyn_Sys):
+             x_tm.log(prefix="final x", dim=settings.CONFIG["CHECK_DIM"])
+         return (x_tm, result_norm, sr_next), (iv.lo, iv.hi, init_shrinked)
+ 
++    def step_once_observed(self, carry, _=None):
++        """Numerically inert step observer for explicit-f64 cross-tool audit."""
++        x_tm_pre, tmv_pre, sr_pre = carry
++        step_lo, step_hi, eval_lo, eval_hi = self.step_boxes
++        endpoint_previous = x_tm_pre.evaluate_time(self.step_size)
++        center = endpoint_previous.P.c
++        scale, normalized, sr_next = symbolic_step_linear(
++            tmv_pre, endpoint_previous, sr_pre, eval_lo, eval_hi
++        )
++        new_x0 = build_linear_tm(center, scale, dtype=center.dtype)
++
++        base_poly = new_x0.P
++        poly1 = base_poly.add(
++            self.rhs_poly_fn(base_poly, step_lo, step_hi).integrate_time_trunc()
++        )
++        poly2 = base_poly.add(
++            self.rhs_poly_fn(poly1, step_lo, step_hi).integrate_time_trunc()
++        )
++        initial_remainder = self.init_remainder.astype(base_poly.c.dtype)
++        seed = init_remainder_abs(QuadTM.from_poly(poly2), initial_remainder)
++        retained, initial_mask, dr_trace = remainder_picard(
++            self.rhs_tm_fn,
++            new_x0,
++            seed,
++            self.step_size,
++            step_lo,
++            step_hi,
++            rounds=self.frr_rounds,
++            stop_ratio=self.frr_stop_ratio,
++            return_trace=True,
++        )
++        composed = retained.compose_affine(normalized, self.step_size)
++        endpoint_lo = jnp.concatenate([step_hi[:, :1], step_lo[:, 1:]], axis=1)
++        endpoint = composed.eval_interval(endpoint_lo, step_hi)
++        tube = composed.eval_interval(step_lo, step_hi)
++        trace = {
++            "pre_model_c": x_tm_pre.P.c,
++            "pre_model_L": x_tm_pre.P.L,
++            "pre_model_Lt": x_tm_pre.P.Lt,
++            "pre_model_R_lo": x_tm_pre.R.lo,
++            "pre_model_R_hi": x_tm_pre.R.hi,
++            "pre_parameterization_c": tmv_pre.P.c,
++            "pre_parameterization_L": tmv_pre.P.L,
++            "pre_parameterization_Lt": tmv_pre.P.Lt,
++            "pre_parameterization_R_lo": tmv_pre.R.lo,
++            "pre_parameterization_R_hi": tmv_pre.R.hi,
++            "pre_J_lo": sr_pre.J_buf.lo,
++            "pre_J_hi": sr_pre.J_buf.hi,
++            "pre_Phi": sr_pre.Phi_buf,
++            "pre_queue_count": sr_pre.count,
++            "pre_inverse_scale": sr_pre.invS,
++            "endpoint_previous_c": endpoint_previous.P.c,
++            "endpoint_previous_L": endpoint_previous.P.L,
++            "endpoint_previous_Lt": endpoint_previous.P.Lt,
++            "endpoint_previous_R_lo": endpoint_previous.R.lo,
++            "endpoint_previous_R_hi": endpoint_previous.R.hi,
++            "center": center,
++            "scale": scale,
++            "inverse_scale": sr_next.invS,
++            "normalized_c": normalized.P.c,
++            "normalized_L": normalized.P.L,
++            "normalized_Lt": normalized.P.Lt,
++            "normalized_R_lo": normalized.R.lo,
++            "normalized_R_hi": normalized.R.hi,
++            "poly1_c": poly1.c,
++            "poly1_L": poly1.L,
++            "poly1_Lt": poly1.Lt,
++            "poly2_c": poly2.c,
++            "poly2_L": poly2.L,
++            "poly2_Lt": poly2.Lt,
++            "initial_inclusion_mask": initial_mask,
++            **dr_trace,
++            "retained_c": retained.P.c,
++            "retained_L": retained.P.L,
++            "retained_Lt": retained.P.Lt,
++            "retained_R_lo": retained.R.lo,
++            "retained_R_hi": retained.R.hi,
++            "composed_c": composed.P.c,
++            "composed_L": composed.P.L,
++            "composed_Lt": composed.P.Lt,
++            "composed_R_lo": composed.R.lo,
++            "composed_R_hi": composed.R.hi,
++            "endpoint_lo": endpoint.lo,
++            "endpoint_hi": endpoint.hi,
++            "tube_lo": tube.lo,
++            "tube_hi": tube.hi,
++            "post_J_lo": sr_next.J_buf.lo,
++            "post_J_hi": sr_next.J_buf.hi,
++            "post_Phi": sr_next.Phi_buf,
++            "post_queue_count": sr_next.count,
++            "queue_clear_event": (sr_pre.count > 0) & (sr_next.count == 0),
++            "active_mask": initial_mask,
++            "failure_mask": ~initial_mask,
++        }
++        return (retained, normalized, sr_next), (
++            endpoint.lo,
++            endpoint.hi,
++            initial_mask,
++        ), trace
++
+     # ---- public entrypoints ----
+     def verify(self, X0_lo: Array, X0_hi: Array, n_total_steps: int) -> Tuple[Array, Array, Array, Array]:
+         """Over-approximate reachable sets for a continuous-time autonomous system.
+@@ -211,13 +311,13 @@ class CT_Dyn_Reach(CT_Dyn_Sys):
+         """
+         # Normalize, build boxes & initial models
+         B = X0_lo.shape[0]
+-        self.step_boxes = _make_step_boxes(B=B, D=self.D, h=self.step_size)
+-        result_0 = identity_parameterization(B, self.D, self.V)  # x = I*y (normalized)
++        self.step_boxes = _make_step_boxes(B=B, D=self.D, h=self.step_size, dtype=X0_lo.dtype)
++        result_0 = identity_parameterization(B, self.D, self.V, dtype=X0_lo.dtype)  # x = I*y (normalized)
+         c_0 = 0.5 * (X0_lo + X0_hi)
+         S_0 = 0.5 * (X0_hi - X0_lo)
+-        x_tm0 = build_linear_tm(c_0, S_0)
++        x_tm0 = build_linear_tm(c_0, S_0, dtype=X0_lo.dtype)
+ 
+-        sr0 = init_symbolic_state(B, self.D, M=min(self.sr_window_size, n_total_steps))
++        sr0 = init_symbolic_state(B, self.D, M=min(self.sr_window_size, n_total_steps), dtype=X0_lo.dtype)
+ 
+         # Initial interval (matches reference driver semantics: evaluate at step box 0)
+         step_lo, step_hi, *_ = self.step_boxes

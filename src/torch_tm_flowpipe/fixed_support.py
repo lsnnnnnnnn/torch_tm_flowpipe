@@ -1743,6 +1743,8 @@ class FixedSupportValidatedStep:
     endpoint: FixedSupportInterval
     full_step_tube: FixedSupportInterval
     normalization_scale: torch.Tensor
+    polynomial_picard_trace: tuple[FixedSupportPolynomial, ...] = ()
+    composed_model: FixedSupportTaylorModel | None = None
 
 
 @dataclass(frozen=True)
@@ -1827,7 +1829,7 @@ class FixedSupportReachability:
         )
         center = endpoint_previous.polynomial.coeffs[..., self.support.constant_slot]
         new_x0 = fixed_support_build_linear_tm(center, symbolic.scale, self.support)
-        polynomial, _ = fixed_support_polynomial_picard(
+        polynomial, polynomial_picard_trace = fixed_support_polynomial_picard(
             new_x0.polynomial,
             self.polynomial_rhs,
             step_lo,
@@ -1864,6 +1866,8 @@ class FixedSupportReachability:
             endpoint,
             tube,
             symbolic.scale,
+            polynomial_picard_trace,
+            composed,
         )
 
     def verify(

@@ -14,10 +14,14 @@ from torch_tm_flowpipe.fixed_support import (
     FixedSupportTaylorModel,
     diffreach_vdp_polynomial_rhs,
     diffreach_vdp_tm_rhs,
+    fixed_support_build_linear_tm,
     fixed_support_dr_remainder_picard,
+    fixed_support_identity_parameterization,
     fixed_support_kernel_plan,
     fixed_support_kernel_plan_cache_info,
     fixed_support_polynomial_picard,
+    fixed_support_step_boxes,
+    FixedSupportSymbolicRemainderState,
 )
 
 
@@ -340,6 +344,39 @@ def test_one_complete_segment_returns_distinct_endpoint_and_tube():
     )
     assert result.tube_lo[0, 0, 0] < result.endpoint_lo[0, 1, 0]
     assert result.tube_hi[0, 0, 1] > result.endpoint_hi[0, 1, 1]
+
+
+@pytest.mark.integration
+def test_step_observer_fields_are_read_only_views_of_native_step():
+    solver = _vdp_solver()
+    support = solver.support
+    initial_lo = torch.tensor([[1.1, 2.35]], dtype=torch.float64)
+    initial_hi = torch.tensor([[1.4, 2.45]], dtype=torch.float64)
+    model = fixed_support_build_linear_tm(
+        0.5 * (initial_lo + initial_hi), 0.5 * (initial_hi - initial_lo), support
+    )
+    parameterization = fixed_support_identity_parameterization(
+        1, 2, support, dtype=torch.float64, device="cpu"
+    )
+    symbolic = FixedSupportSymbolicRemainderState.initialize(
+        1, 2, 1, dtype=torch.float64, device="cpu"
+    )
+    boxes = fixed_support_step_boxes(1, 2, 0.01, dtype=torch.float64, device="cpu")
+
+    observed = solver.step_once(model, parameterization, symbolic, *boxes)
+    verified = solver.verify(initial_lo, initial_hi, steps=1)
+
+    assert len(observed.polynomial_picard_trace) == 2
+    assert observed.composed_model is not None
+    assert torch.equal(observed.endpoint.lo, verified.endpoint_lo[:, 1])
+    assert torch.equal(observed.endpoint.hi, verified.endpoint_hi[:, 1])
+    assert torch.equal(observed.full_step_tube.lo, verified.tube_lo[:, 0])
+    assert torch.equal(observed.full_step_tube.hi, verified.tube_hi[:, 0])
+    endpoint_lo = boxes[0].clone()
+    endpoint_lo[:, support.local_time_index] = 0.01
+    recomputed_endpoint = observed.composed_model.range(endpoint_lo, boxes[1])
+    assert torch.equal(recomputed_endpoint.lo, observed.endpoint.lo)
+    assert torch.equal(recomputed_endpoint.hi, observed.endpoint.hi)
 
 
 @pytest.mark.integration
