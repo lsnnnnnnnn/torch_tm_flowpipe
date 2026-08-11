@@ -555,6 +555,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
+        "15_reports/causal_figures",
+        name="causal_figure_builder",
+        command=[
+            python,
+            "experiments/build_three_tool_causal_figures.py",
+            "--run-root",
+            str(run_root),
+            "--output-dir",
+            "{ARTIFACT_DIR}/run",
+        ],
+        config={"figure_count": 5, "source_csv_required": True},
+        eligibility="causal_visualization_only",
+        timing="not_a_benchmark",
+    )
+    _protocol(
+        run_root,
         "15_reports/canonical_docs",
         name="canonical_report_consistency",
         command=[
