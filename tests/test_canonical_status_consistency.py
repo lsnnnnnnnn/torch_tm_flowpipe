@@ -9,26 +9,13 @@ from torch_tm_flowpipe.comparison_contract import vdp_identity_hashes
 
 
 ROOT = Path(__file__).parents[1]
-CURRENT = "S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT"
-CURRENT_BRIDGE = "FIXED_SUPPORT_BRIDGE_BLOCKED"
+CURRENT_FLOW = "FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY"
+CURRENT_DIFF = "DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED"
+CURRENT_CARRY = "CARRY_MISSING_SYMBOLIC_SEMANTICS"
+CURRENT_FIX = "NO_FIX_AUTHORIZED"
 
 
-def test_canonical_results_status_and_limitations_share_current_s1_outcome():
-    for relative in (
-        "docs/RESULTS.md",
-        "docs/RESULTS_STATUS.md",
-        "docs/STATUS.md",
-        "docs/LIMITATIONS.md",
-    ):
-        text = (ROOT / relative).read_text(encoding="utf-8")
-        assert CURRENT in "\n".join(text.splitlines()[:30]), relative
-    for relative in ("docs/RESULTS.md", "docs/STATUS.md"):
-        text = (ROOT / relative).read_text(encoding="utf-8")
-        stale_index = text.index("S1_PREFIX_REJECTS_BEFORE_TERMINAL")
-        assert "supersed" in text[:stale_index].lower()
-
-
-def test_canonical_documents_share_final_bridge_outcome():
+def test_canonical_documents_share_current_full_horizon_outcomes():
     for relative in (
         "README.md",
         "docs/RESULTS.md",
@@ -38,7 +25,15 @@ def test_canonical_documents_share_final_bridge_outcome():
         "handoff.md",
     ):
         text = (ROOT / relative).read_text(encoding="utf-8")
-        assert CURRENT_BRIDGE in "\n".join(text.splitlines()[:35]), relative
+        headline = "\n".join(text.splitlines()[:45])
+        for outcome in (CURRENT_FLOW, CURRENT_DIFF, CURRENT_CARRY, CURRENT_FIX):
+            assert outcome in headline, (relative, outcome)
+
+
+def test_previous_bridge_and_s1_claims_are_historical_or_superseded():
+    for relative in ("README.md", "docs/RESULTS.md", "docs/STATUS.md", "handoff.md"):
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert "histor" in text.lower() or "supersed" in text.lower(), relative
 
 
 def test_historical_s1_documents_have_superseded_or_qualification_banners():
@@ -46,7 +41,6 @@ def test_historical_s1_documents_have_superseded_or_qualification_banners():
         "docs/S1_PREFIX_INTEGRATION_RESULT_20260810.md",
         "docs/S1_BOUNDARY164_CAUSAL_ATTRIBUTION_20260811.md",
         "docs/S1_CORRECTED_CARRY_RESULT_20260811.md",
-        "handoff.md",
     )
     for relative in documents:
         first_lines = "\n".join(

@@ -2,19 +2,19 @@
 
 ## Current status (2026-08-11)
 
-The three-tool follow-up closes the raw-remainder root cause at Picard-4
-`x*x`, and its schedule/validator outcome is interaction. Every A0--A4 B1/B64
-cell completes G0, G1, and G2, but the final bridge outcome is
-`FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4/B1/B64 fail in G3 before T10.
-There is no single dominant bridge factor across the preregistered metrics and
-partition lanes. Flow*/Torch remains a partial pairwise comparison because
-formal and full-horizon same-object tightness are unavailable. DiffReach/Torch
-explicit-f64 operator comparison is closed. The only allowed improvement
-decision is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
+The current Flow*/Torch result is
+`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`: Flow* reaches T10, Torch
+accepts 632 fixed steps and rejects candidate 633. The current explicit-f64
+DiffReach/Torch result is `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`: both
+reach T10 with equal masks, but operator state diverges at step 1 and J/Phi
+plus endpoint/tube equality fail. Complete-O4 carry accounting selects C4
+`CARRY_MISSING_SYMBOLIC_SEMANTICS`; dense CNI parity is not expressible and
+the only allowed implementation decision is `NO_FIX_AUTHORIZED`. There is no
+universal timing, tightness, or three-tool ranking.
 
 The S1 statement below is the immediately preceding research result.
 
-The latest closed S1 result is
+The latest preserved S1 result is
 `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`: corrected carry passes the 307-step
 frozen accepted prefix and the unchanged historical terminal step rejects.
 This supersedes `S1_PREFIX_REJECTS_BEFORE_TERMINAL` as the current headline.

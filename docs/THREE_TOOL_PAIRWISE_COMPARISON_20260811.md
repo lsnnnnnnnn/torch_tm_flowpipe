@@ -1,5 +1,10 @@
 # Three-tool pairwise comparison
 
+> Superseded historical bridge report. The current full-horizon outcomes are
+> `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY` and
+> `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`; see
+> `THREE_TOOL_PAIRWISE_STATUS_20260811.md`.
+
 Date: 2026-08-11
 
 ## Outcome

@@ -11,17 +11,18 @@ points rather than treating one ambiguous `order` as a common algorithm:
 - Torch TM: one architecture with a configurable DiffReach-like fixed-support
   lane and a Flow*-like complete-total-degree lane.
 
-The latest research round closes the first Flow*/Torch raw-remainder split at
-Picard-4 `x*x` and identifies a schedule/validator interaction. Every
-R7-to-R35 A0--A4 cell reaches T1 in B1 and B64, but the required T10 extension
-is `FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4 in both partition lanes stop
-before T10. Flow*/Torch same-prestate root cause is closed while its native
-full-horizon pairwise status is partial. DiffReach/Torch has only
-`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`; its B64, 1,000-step
-cross-tool status is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
-No Torch production improvement is authorized by the evidence. The preceding S1
-result remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. Evidence-integrity
-corrections are documented in
+The latest full-horizon round produces two pairwise outcomes, not a three-tool
+ranking. Flow*/Torch complete-O4 at fixed `h=0.01` is
+`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`: Flow* completes 1,000
+steps/T10, while Torch accepts 632 steps and rejects candidate 633. The
+explicit-float64 B64 DiffReach/Torch DR7 comparison is
+`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`: all masks agree through 1,000
+steps, but operator state diverges by one ULP at step 1 and J/Phi plus
+endpoint/tube equality do not close. The complete-O4 carry diagnosis selects
+C4 `CARRY_MISSING_SYMBOLIC_SEMANTICS`; dense cross-step CNI parity is
+`DENSE_CNI_PARITY_NOT_EXPRESSIBLE`, so the implementation decision is
+`NO_FIX_AUTHORIZED`. The preceding bridge and S1 results remain historical,
+not current full-horizon claims. Evidence-integrity corrections are documented in
 [`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
 The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
@@ -98,6 +99,11 @@ Start with:
 - [S1 boundary-164 causal attribution](docs/S1_BOUNDARY164_CAUSAL_ATTRIBUTION_20260811.md);
 - [S1 corrected carry result](docs/S1_CORRECTED_CARRY_RESULT_20260811.md);
 - [three-tool pairwise result](docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md);
+- [full-horizon pairwise status](docs/THREE_TOOL_PAIRWISE_STATUS_20260811.md);
+- [Flow*/Torch fixed-schedule common prefix](docs/FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_20260811.md);
+- [DiffReach/Torch DR7 full horizon](docs/DIFFREACH_TORCH_DR7_FULL_HORIZON_CLOSURE_20260811.md);
+- [complete-O4 carry root cause](docs/COMPLETE_O4_CARRY_SEMANTICS_ROOT_CAUSE_20260811.md);
+- [tracked evidence closure](docs/EVIDENCE_PACKAGE_TRACKED_CLOSURE_20260811.md);
 - [Flow*/Torch O4 matched result](docs/FLOWSTAR_TORCH_O4_MATCHED_COMPARISON_20260811.md);
 - [DiffReach/Torch DR7 matched result](docs/DIFFREACH_TORCH_DR7_MATCHED_COMPARISON_20260811.md);
 - [raw-remainder root cause](docs/VDP_RAW_REMAINDER_ROOT_CAUSE_20260811.md);
@@ -168,6 +174,11 @@ compact audited recovery is now tracked at
 it preserves all 36 command envelopes, the original verification, scientific
 summaries, and small raw tables while excluding binaries, NPZ, and large
 JSONL/bridge arrays. The archived original manifest's broad full-horizon and
-`14_fresh_clone` labels remain quarantined as historical overclaims; the
-current DiffReach/Torch claim is one-step operator closure only, and execution
-of the new real-origin H1/H2/H3 clone gates remains pending.
+`14_fresh_clone` labels remain quarantined as historical overclaims. At
+recovery time the defensible claim was one-step operator closure only; that
+status is now superseded by the explicit-f64 full-horizon divergence above.
+
+The superseding full-horizon package target is
+`outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z/`.
+It is intentionally not called tracked until H2 and the subsequent H2/H3 true
+remote-clone audits complete.

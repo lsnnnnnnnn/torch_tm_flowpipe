@@ -1,27 +1,27 @@
 # Status
 
-## Current pairwise/descriptor round
+## Current full-horizon pairwise/carry round
 
 Date: 2026-08-11
 
 Decisions:
 
-- evidence integrity: pass with source-derived claims;
-- raw remainder: `RAW_REMAINDER_ROOT_CAUSE_CLOSED`;
-- schedule/validator: `SCHEDULE_VALIDATOR_INTERACTION`;
-- fixed-support bridge: `FIXED_SUPPORT_BRIDGE_BLOCKED`; G2/T1 passes in every
-  A0--A4 B1/B64 cell, while G3 fails for A0/B1 and A4/B1/B64;
-- Flow*/Torch O4: `PAIRWISE_COMPARISON_PARTIAL`;
+- evidence integrity: source-derived package builder passes; H1/H2/H3 pending;
+- Flow*/Torch O4:
+  `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY` (632 accepted common rows);
 - DiffReach/Torch DR7 operator:
   `DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`;
 - DiffReach/Torch DR7 full horizon:
-  `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`;
-- improvement: `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
+  `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`;
+- carry root cause: C4 `CARRY_MISSING_SYMBOLIC_SEMANTICS`;
+- dense CNI parity: `DENSE_CNI_PARITY_NOT_EXPRESSIBLE`;
+- implementation fix: `NO_FIX_AUTHORIZED`.
 
-The R35 descriptor contains all 35 total-degree-four monomials and generated
-algebra tables. R7 regression is bit-exact. No complete-O4 production
-semantic, target, cutoff, minimum step, or validator is promoted. The valid T1
-factor measurements do not override the required negative G3/T10 bridge gate.
+Flow* completes the fixed T10 schedule; Torch stops after step 632. Both
+explicit-f64 DR7 lanes complete T10 with equal discrete masks but fail the
+preregistered numeric/J-Phi gate. R35/dense basis roundtrip is bit-exact, but
+the dense API has no authoritative cross-step nonlinear carry state. No
+complete-O4 semantic, target, cutoff, minimum step, or validator is changed.
 
 ## Current S1 closure status
 

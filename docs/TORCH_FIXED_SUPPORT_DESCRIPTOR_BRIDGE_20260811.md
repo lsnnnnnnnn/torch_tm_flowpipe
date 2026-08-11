@@ -1,5 +1,9 @@
 # Torch fixed-support descriptor bridge
 
+> Superseded bridge report. The current carry diagnosis is C4
+> `CARRY_MISSING_SYMBOLIC_SEMANTICS`; see
+> `COMPLETE_O4_CARRY_SEMANTICS_ROOT_CAUSE_20260811.md`.
+
 Date: 2026-08-11
 
 ## Outcome

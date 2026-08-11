@@ -1,5 +1,9 @@
 # DiffReach / Torch DR7 matched comparison
 
+> Superseded one-step/pending-horizon report. The current 1,000-step result is
+> `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`; see
+> `DIFFREACH_TORCH_DR7_FULL_HORIZON_CLOSURE_20260811.md`.
+
 Date: 2026-08-11
 
 ## Outcome

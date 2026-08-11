@@ -1,33 +1,26 @@
 # Results
 
-## Current three-tool pairwise/causal result
+## Current full-horizon pairwise/carry result
 
-The current outcomes are `RAW_REMAINDER_ROOT_CAUSE_CLOSED`,
-`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_BLOCKED`. The
-preserved S1 outcome remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
-Every
-A0--A4 B1/B64 cell completes G2/T1, but A0/B1 stops at T=5.36 and A4/B1 and
-A4/B64 stop at T=3.19 and T=3.33 in G3. The first decision-changing node is
-Picard iteration 4 `x*x`: Flow* direct interval-coefficient multiplication
-adds uncertainty `[-0.00011204861774257546,0.00008935810062010431]` absent
-from Torch's point-binary64 retained-coefficient path. Replacing only that
-frozen contribution changes the Flow* y margin from
-`-3.662398821521699e-6` to `+2.4888083156873676e-7`.
+Flow*/Torch is `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`: Flow*
+accepts all 1,000 fixed `h=0.01` steps, Torch accepts 632 and rejects candidate
+633. The 632-row schedule-controlled common prefix has separate endpoint,
+segment-tube, and prefix-tube fields; the pinned Flow* build's scalar-affine
+qualification remains open, and no matched timing ratio is available.
 
-Both receiving subset predicates accept the Torch candidate and reject the
-Flow* candidate, so candidate construction causes the first split and the
-different accepted schedule then changes later producer states. Flow*/Torch
-O4 is `PAIRWISE_COMPARISON_PARTIAL`; DiffReach/Torch DR7 explicit-f64 has
-`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED` while the 1,000-step
-cross-tool comparison is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
-No transitive ranking follows.
+DiffReach/Torch explicit-f64 DR7 is
+`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`. Both B64 lanes reach T10 with all
+initial/later masks equal. The first operator difference is one ULP at step 1;
+endpoint and tube first differ at step 2, J/Phi differs, and the maximum tube
+delta reaches 1,325,056 ULP. The preregistered two-ULP gate therefore fails.
 
-The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`: the
-proven extra uncertainty is on the Flow* side, Torch already contains the
-independent MPFR replay, and the narrower Flow* counterfactual is not proved
-sound for arbitrary MPFR coefficients.
+A3/A4 reproduction selects C4 `CARRY_MISSING_SYMBOLIC_SEMANTICS`. A4 fails at
+steps 320/334 while A3 reaches T10, but A3 remains empirical and is not a
+soundness oracle. Dense basis transport is bit-exact while native cross-step
+dense CNI is `DENSE_CNI_PARITY_NOT_EXPRESSIBLE`. The decision is
+`NO_FIX_AUTHORIZED`. No three-tool ranking follows.
 
-## Current authoritative S1 result
+## Preserved historical S1 result
 
 The current S1 outcome is
 `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. The corrected

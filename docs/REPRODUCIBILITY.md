@@ -1,5 +1,39 @@
 # Reproducibility
 
+## Current full-horizon closure
+
+The final compact package target is
+`outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z/`.
+Build and verify it from a completed raw run at the exact tested source:
+
+```bash
+python experiments/build_full_horizon_pairwise_package.py \
+  --source-run-root /path/to/raw-run \
+  --h1-tests-dir /path/to/h1-test-logs \
+  --repo-root "$(git rev-parse --show-toplevel)" \
+  --tested-source-sha "$(git rev-parse HEAD)" \
+  --output-root outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z
+
+python experiments/verify_full_horizon_pairwise_package.py \
+  --package-root outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z \
+  --expected-source-sha <H1> --require-tracked \
+  --repo-root "$(git rev-parse --show-toplevel)"
+```
+
+Focused numerical entry points are
+`compare_flowstar_torch_fixed_schedule.py`,
+`run_diffreach_explicit_f64_full_trace.py`,
+`run_torch_fixed_dr7_full_trace.py`, `trace_a3_a4_carry_state.py`,
+`run_a3_a4_same_prestate_substitutions.py`,
+`audit_r35_dense_cni_parity.py`, and
+`audit_cni_composition_accounting.py`. Every output directory must be new.
+
+The required delivery order is H1 tested source, a true remote clone numerical
+rebuild at H1, H2 with only the compact tracked package added, a second true
+remote clone verifying H2, and H3 containing only delivery evidence/docs.
+
+## Superseded three-tool bridge builder
+
 Build the current evidence package into a new ignored output directory:
 
 ```bash

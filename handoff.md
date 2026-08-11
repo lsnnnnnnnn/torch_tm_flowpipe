@@ -1,6 +1,36 @@
-# Handoff: S1 boundary-164 causal guarded carry
+# Handoff: three-tool full-horizon pairwise/carry closure
 
-## Superseding three-tool round (2026-08-11)
+## Current closure round (2026-08-11)
+
+The current outcomes are
+`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
+`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`, and C4
+`CARRY_MISSING_SYMBOLIC_SEMANTICS`. Flow* completes the frozen 1,000-step
+complete-O4 schedule; Torch accepts 632 steps and rejects candidate 633. Both
+explicit-f64 DR7 tools complete 1,000 steps with identical masks, but their
+first operator coefficient differs at step 1 and J/Phi plus endpoint/tube
+equality fail. A3 reaches T10 in B1/B64; A4 reproduces failures at steps
+320/334. Same-prestate accounting excludes epsilon, coordinate mismatch, and
+double count; the dominant failure source is intervalized materialized
+parameterization remainder. Dense cross-step parity is not expressible.
+
+The implementation decision is `NO_FIX_AUTHORIZED`. The unique scientific
+next action is to specify and independently validate an authoritative
+complete-O4 cross-step symbolic-remainder contract. Do not tune target,
+cutoff, validator, Picard depth, `h_min`, K, or invent a narrower carry.
+
+Primary documents are
+`docs/THREE_TOOL_PAIRWISE_STATUS_20260811.md`,
+`docs/FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_20260811.md`,
+`docs/DIFFREACH_TORCH_DR7_FULL_HORIZON_CLOSURE_20260811.md`,
+`docs/COMPLETE_O4_CARRY_SEMANTICS_ROOT_CAUSE_20260811.md`, and
+`docs/EVIDENCE_PACKAGE_TRACKED_CLOSURE_20260811.md`.
+
+The final package target is
+`outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z/`.
+H1/H2/H3 remain pending until the true-remote-clone delivery gates execute.
+
+## Superseded bridge round (2026-08-11)
 
 The current branch closes the raw-remainder root cause at Flow* Picard-4
 `x*x` and records `SCHEDULE_VALIDATOR_INTERACTION`. All generic R7→R35 A0--A4

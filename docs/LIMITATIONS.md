@@ -1,6 +1,23 @@
 # Limitations
 
-Current pairwise/bridge qualification:
+Current full-horizon pairwise/carry qualification:
+
+- Flow*/Torch is `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`. Torch has
+  no values after its rejected candidate 633; later values are neither zero
+  filled nor connected. Only the initial state is same-prestate.
+- DiffReach/Torch is `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`. Equal masks
+  do not imply equal operator state, J/Phi, endpoint, or tube. The observed
+  result exceeds the preregistered two-ULP envelope, so CPU/GPU timing ratios
+  are ineligible.
+- Carry class C4 is `CARRY_MISSING_SYMBOLIC_SEMANTICS`. The dominant CNI source
+  is materialized parameterization-remainder intervalization; no coordinate
+  bug or double count is detected. `NO_FIX_AUTHORIZED` means no new carry was
+  implemented.
+- `DENSE_CNI_PARITY_NOT_EXPRESSIBLE` is a contract result, not a failed
+  box-hull comparison. The dense API has no native cross-step nonlinear
+  compose/insert state to compare.
+- A3 reaching T10 is ordinary-float64 empirical evidence, not proof that CDR
+  is sounder or a replacement for authoritative complete-O4 semantics.
 
 - The root-cause counterfactual is independently replayed for frozen inputs;
   it is not a proof that a narrower Flow* coefficient formula is sound for

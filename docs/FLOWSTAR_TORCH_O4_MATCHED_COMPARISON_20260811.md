@@ -1,5 +1,9 @@
 # Flow* / Torch complete-O4 matched comparison
 
+> Superseded adaptive/bridge report. The current fixed-schedule result is
+> `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`; see
+> `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_20260811.md`.
+
 Date: 2026-08-11
 
 ## Outcome

@@ -1,5 +1,8 @@
 # Torch single-improvement result
 
+> Superseded bridge decision. The current full-horizon carry result is
+> `NO_FIX_AUTHORIZED`; no new carry implementation was made.
+
 Date: 2026-08-11
 
 ## Outcome

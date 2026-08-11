@@ -1,5 +1,22 @@
 schema: torch_tm_flowpipe_vdp_three_lane_contract_v2
 date: 2026-08-11
+outcome_registry_after_full_horizon_closure:
+  evidence_package_status: EVIDENCE_PACKAGE_REBUILT_PENDING_TRACKING
+  flowstar_torch_fixed_schedule_status: FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY
+  flowstar_validated_horizon: 10.0
+  torch_complete_o4_validated_horizon: 6.32
+  shared_complete_o4_fixed_schedule_horizon: 6.32
+  diffreach_torch_operator_status: DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED
+  diffreach_torch_full_horizon_status: DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED
+  diffreach_torch_mask_equality: true
+  diffreach_torch_j_phi_equality: false
+  carry_semantics_status: CARRY_MISSING_SYMBOLIC_SEMANTICS
+  dense_cni_parity_status: DENSE_CNI_PARITY_NOT_EXPRESSIBLE
+  single_fix_status: NO_FIX_AUTHORIZED
+  performance_status: MATCHED_WORKLOAD_TIMING_UNAVAILABLE
+  tightness_status: COMMON_PREFIX_TIGHTNESS_AVAILABLE
+  formal_scope: no_new_formal_cross_tool_claim
+  empirical_scope: fixed_schedule_common_prefix_and_full_horizon_dr7_divergence
 outcome_registry_before_full_horizon_closure:
   evidence_package_status: EVIDENCE_PACKAGE_REBUILT_AND_TRACKED
   raw_remainder_root_cause_status: RAW_REMAINDER_ROOT_CAUSE_CLOSED
