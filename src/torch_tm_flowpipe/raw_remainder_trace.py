@@ -85,17 +85,63 @@ def _sha_tensor(value: torch.Tensor) -> str:
     return hashlib.sha256(descriptor + b"\0" + tensor.numpy().tobytes()).hexdigest()
 
 
-def _support_sha(model: Any, *, retained: bool) -> str:
+def _support_sha(model: Any) -> str:
     coeffs = model.poly.coeffs.detach()
     active = torch.any(coeffs != 0, dim=(0, 1))
     exponents = model.poly.basis.exponents[active].detach().cpu().contiguous()
     payload = {
-        "kind": "retained" if retained else "dropped-not-materialized",
-        "exponents": exponents.tolist() if retained else [],
-        "coefficient_sha256": _sha_tensor(coeffs) if retained else None,
+        "kind": "retained",
+        "exponents": exponents.tolist(),
+        "coefficient_sha256": _sha_tensor(coeffs),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def dropped_product_support_sha(
+    left_model: Any,
+    right_model: Any,
+    *,
+    max_degree: int,
+) -> str:
+    """Hash the actually active product exponents discarded by truncation."""
+
+    left_basis = left_model.poly.basis
+    right_basis = right_model.poly.basis
+    if left_basis.fingerprint != right_basis.fingerprint:
+        raise ValueError("dropped-support operands use different bases")
+    left_active = torch.any(left_model.poly.coeffs.detach() != 0, dim=(0, 1))
+    right_active = torch.any(right_model.poly.coeffs.detach() != 0, dim=(0, 1))
+    left_exponents = left_basis.exponents[left_active].detach().cpu().tolist()
+    right_exponents = right_basis.exponents[right_active].detach().cpu().tolist()
+    discarded = sorted(
+        {
+            tuple(int(a) + int(b) for a, b in zip(left, right))
+            for left in left_exponents
+            for right in right_exponents
+            if sum(int(a) + int(b) for a, b in zip(left, right))
+            > int(max_degree)
+        }
+    )
+    payload = {
+        "kind": "active_polynomial_product_support_discarded_by_total_degree",
+        "basis_fingerprint": left_basis.fingerprint,
+        "max_degree": int(max_degree),
+        "exponents": [list(exponent) for exponent in discarded],
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _not_applicable_dropped_support_sha(operation: str) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            {"kind": "not_applicable", "operation": str(operation)},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
     ).hexdigest()
 
 
@@ -156,6 +202,7 @@ class RawRemainderTraceRecorder:
         roundoff: tuple[float, float] = (0.0, 0.0),
         subset_margin: float | None = None,
         decision: str = "not_applicable",
+        dropped_support_sha256: str | None = None,
     ) -> str:
         identifier = node_id or self._next_id(operation, int(component))
         if any(row["expression_node_id"] == identifier for row in self.nodes):
@@ -188,8 +235,12 @@ class RawRemainderTraceRecorder:
             "operation": operation,
             "polynomial_order_before": order_before,
             "polynomial_order_after": order_after,
-            "retained_support_sha256": _support_sha(model, retained=True),
-            "dropped_support_sha256": _support_sha(model, retained=False),
+            "retained_support_sha256": _support_sha(model),
+            "dropped_support_sha256": (
+                dropped_support_sha256
+                if dropped_support_sha256 is not None
+                else _not_applicable_dropped_support_sha(operation)
+            ),
             "polynomial_interval": polynomial,
             "remainder_input_intervals": [tensor_interval_record(lo, hi) for lo, hi in remainder_inputs],
             "remainder_output_interval": tensor_interval_record(model.rem_lo, model.rem_hi),
@@ -255,6 +306,7 @@ __all__ = [
     "NODE_FIELDS",
     "RawRemainderTraceRecorder",
     "SCHEMA",
+    "dropped_product_support_sha",
     "float_record",
     "interval_record",
     "validate_expression_dag",

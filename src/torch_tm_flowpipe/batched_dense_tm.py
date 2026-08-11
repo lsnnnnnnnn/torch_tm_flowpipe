@@ -19,7 +19,11 @@ from typing import Any, Callable, Mapping, Sequence
 
 import torch
 
-from .raw_remainder_trace import RawRemainderTraceRecorder, interval_record
+from .raw_remainder_trace import (
+    RawRemainderTraceRecorder,
+    dropped_product_support_sha,
+    interval_record,
+)
 
 
 REMAINDER_LEDGER_CATEGORIES = (
@@ -2766,6 +2770,15 @@ class _DenseRawTraceScalar:
         if self.recorder is None:
             return self._wrap(model)
         parents = [node_id for node_id in (self.node_id, other.node_id) if node_id is not None]
+        dropped_support = (
+            dropped_product_support_sha(
+                self.model,
+                other.model,
+                max_degree=self.effective_order,
+            )
+            if operation == "multiply"
+            else None
+        )
         node_id = self.recorder.add_model_node(
             operation=operation,
             component=1,
@@ -2774,6 +2787,7 @@ class _DenseRawTraceScalar:
             remainder_inputs=((self.model.rem_lo, self.model.rem_hi), (other.model.rem_lo, other.model.rem_hi)),
             order_before=self.effective_order,
             order_after=self.effective_order,
+            dropped_support_sha256=dropped_support,
         )
         if operation == "multiply":
             left_poly = self.model.poly.range_bound(
