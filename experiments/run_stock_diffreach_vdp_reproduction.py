@@ -85,13 +85,20 @@ def _builder_dtype_audit(source: Path) -> dict[str, Any]:
     }
 
 
+def _python_paths(path: Path) -> tuple[Path, Path]:
+    invoked = path.absolute()
+    return invoked, invoked.resolve()
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     output = args.output_dir.resolve()
     if output.exists() and any(output.iterdir()):
         raise FileExistsError(output)
     output.mkdir(parents=True, exist_ok=True)
     source = args.source.resolve()
-    python = args.python.resolve()
+    # Keep the invocation symlink so CPython discovers the intended conda
+    # prefix; record the resolved binary separately for hashing.
+    python, python_resolved = _python_paths(args.python)
     with tempfile.TemporaryDirectory(prefix="diffreach-stock-vdp-") as temporary:
         clone = Path(temporary) / "repo"
         subprocess.run(
@@ -185,7 +192,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     summary = {
         "schema": "stock_diffreach_vdp_reproduction_v1",
         "source_commit": args.source_commit,
-        "python_executable_sha256": _sha(python),
+        "python_executable": {
+            "invoked_path": str(python),
+            "resolved_path": str(python_resolved),
+            "sha256": _sha(python_resolved),
+        },
         "environment": {
             "JAX_ENABLE_X64": "true",
             "CUDA_VISIBLE_DEVICES": args.cuda_visible_devices,

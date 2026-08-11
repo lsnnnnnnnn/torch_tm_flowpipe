@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 
 from experiments.collect_three_tool_environment import _invoked_and_resolved
+from experiments.run_stock_diffreach_vdp_reproduction import _python_paths
 from experiments.run_stock_flowstar_vdp_reproduction import (
     _plot_horizon,
     _plot_segment_count,
@@ -61,6 +62,15 @@ def test_environment_probe_preserves_interpreter_invocation_symlink(tmp_path) ->
     invoked = tmp_path / "pinned-python"
     invoked.symlink_to(sys.executable)
     kept, resolved = _invoked_and_resolved(invoked)
+    assert kept == invoked.absolute()
+    assert kept != resolved
+    assert resolved == invoked.resolve()
+
+
+def test_diffreach_runner_preserves_interpreter_invocation_symlink(tmp_path) -> None:
+    invoked = tmp_path / "diffreach-python"
+    invoked.symlink_to(sys.executable)
+    kept, resolved = _python_paths(invoked)
     assert kept == invoked.absolute()
     assert kept != resolved
     assert resolved == invoked.resolve()
