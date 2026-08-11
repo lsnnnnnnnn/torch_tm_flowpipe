@@ -269,6 +269,25 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         config={"upstream_commit": DIFFREACH_SHA, "explicit_float64": True},
         eligibility="matched_operator_equivalence",
     )
+    _protocol(
+        run_root,
+        "06_native_torch_fixed_dr7/diffreach_explicit_f64_replay",
+        name="diffreach_explicit_f64_fixture_replay",
+        command=[
+            str(args.diffreach_python.resolve()),
+            "experiments/replay_diffreach_explicit_f64_fixture.py",
+            "--diffreach-root",
+            str(args.diffreach_root.resolve()),
+            "--fixture",
+            "tests/fixtures/diffreach_dr7_vdp_one_step_float64.json",
+            "--output-dir",
+            "{ARTIFACT_DIR}/run",
+            "--source-commit",
+            DIFFREACH_SHA,
+        ],
+        config={"upstream_commit": DIFFREACH_SHA, "every_builder_explicit_float64": True},
+        eligibility="matched_operator_equivalence",
+    )
 
     probe_compile = _protocol(
         run_root,

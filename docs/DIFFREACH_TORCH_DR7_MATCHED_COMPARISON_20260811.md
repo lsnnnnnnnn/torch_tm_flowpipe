@@ -46,8 +46,11 @@ The frozen fixture SHA256 is
 `4d6901b205eb606847848582727559652082efb61d32352e9e110ba694155390`.
 It compares both polynomial Picard constructions, the initial inclusion mask,
 all ten DR-RP masks and accepted lo/hi arrays, retained coefficients, endpoint,
-full-step tube, normalization, and symbolic J/Phi carry.  The current R7
-object regression is bit-exact after adding the generic R35 descriptor.
+and full-step tube.  The package recreates these fields with the pinned JAX
+operators while forcing float64 at every builder.  Normalization and symbolic
+J/Phi carry are covered by the separate R7 object/functional regression, not
+claimed as fields of this JSON fixture.  The current R7 object regression is
+bit-exact after adding the generic R35 descriptor.
 
 ## Full-driver boundary
 
