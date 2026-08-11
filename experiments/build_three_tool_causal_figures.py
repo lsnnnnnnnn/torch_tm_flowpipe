@@ -60,6 +60,7 @@ def _raw_waterfall(run_root: Path, output: Path) -> tuple[Path, Path]:
     for row in selected:
         row.update(
             {
+                "schema": "raw_remainder_width_waterfall_row_v1",
                 "flowstar_width_hex": _hex(row["flowstar_width"]),
                 "torch_width_hex": _hex(row["torch_width"]),
                 "width_delta_flowstar_minus_torch_hex": _hex(
@@ -117,6 +118,7 @@ def _validator_matrix(run_root: Path, output: Path) -> tuple[Path, Path]:
             result = candidate[validator]
             rows.append(
                 {
+                    "schema": "same_prestate_validator_margin_matrix_row_v1",
                     "candidate_producer": candidate["candidate_producer"],
                     "receiving_validator": validator.removesuffix("_validator"),
                     "minimum_margin": min(float(value) for value in result["margins"]),
@@ -166,6 +168,7 @@ def _bridge_changes(run_root: Path, output: Path) -> tuple[Path, Path]:
         row = dict(item)
         row.update(
             {
+                "schema": "bridge_per_factor_change_row_v1",
                 "margin_delta_hex": _hex(item.get("margin_delta")),
                 "first_decision_margin_delta_hex": _hex(
                     item.get("first_decision_margin_delta")
@@ -250,6 +253,7 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
         for stage in stages:
             rows.append(
                 {
+                    "schema": "horizon_gated_runtime_breakdown_row_v1",
                     "cell": cell["cell"],
                     "batch": cell["batch"],
                     "completed_steps": cell["completed_steps"],
@@ -266,6 +270,7 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
             )
     csv_path = output / "horizon_gated_runtime_breakdown.csv"
     runtime_fields = (
+        "schema",
         "cell",
         "batch",
         "completed_steps",
@@ -372,6 +377,7 @@ def _native_capability_table(run_root: Path, output: Path) -> tuple[Path, Path]:
         )
         rows.append(
             {
+                "schema": "native_capability_eligibility_row_v1",
                 "tool": tool,
                 "lane": lane,
                 "representation": _first(
