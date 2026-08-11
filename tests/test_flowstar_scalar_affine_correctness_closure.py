@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -21,10 +23,48 @@ SPEC = importlib.util.spec_from_file_location(
 assert SPEC is not None and SPEC.loader is not None
 ANALYSIS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ANALYSIS)
+RUNNER_SPEC = importlib.util.spec_from_file_location(
+    "flowstar_scalar_affine_runner", EXPERIMENT / "run_closure.py"
+)
+assert RUNNER_SPEC is not None and RUNNER_SPEC.loader is not None
+RUNNER = importlib.util.module_from_spec(RUNNER_SPEC)
+sys.path.insert(0, str(EXPERIMENT))
+try:
+    RUNNER_SPEC.loader.exec_module(RUNNER)
+finally:
+    sys.path.pop(0)
 
 
 def _json(name: str) -> dict:
     return json.loads((RUN / name).read_text(encoding="utf-8"))
+
+
+def test_optional_remote_revision_is_absent_in_single_branch_style_clone(
+    tmp_path: Path,
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+    subprocess.run(
+        ["git", "config", "user.email", "test@example.invalid"],
+        cwd=repository,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Test"], cwd=repository, check=True
+    )
+    (repository / "tracked").write_text("value\n", encoding="utf-8")
+    subprocess.run(["git", "add", "tracked"], cwd=repository, check=True)
+    subprocess.run(["git", "commit", "-qm", "initial"], cwd=repository, check=True)
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=repository,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.strip()
+    assert RUNNER.optional_git_revision("HEAD", cwd=repository) == head
+    assert RUNNER.optional_git_revision("origin/main", cwd=repository) is None
 
 
 @pytest.mark.unit

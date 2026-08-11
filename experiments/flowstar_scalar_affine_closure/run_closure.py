@@ -73,6 +73,17 @@ def git(*args: str, cwd: Path = REPO_ROOT) -> str:
     return subprocess.check_output(["git", *args], cwd=cwd, text=True).strip()
 
 
+def optional_git_revision(revision: str, *, cwd: Path = REPO_ROOT) -> str | None:
+    completed = subprocess.run(
+        ["git", "rev-parse", "--verify", revision],
+        cwd=cwd,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return completed.stdout.strip() if completed.returncode == 0 else None
+
+
 class CommandRecorder:
     def __init__(self, run_root: Path) -> None:
         self.run_root = run_root
@@ -463,9 +474,9 @@ def start_state(run_root: Path, flowstar_root: Path) -> dict[str, Any]:
         ),
         "starting_sha": STARTING_SHA,
         "head_at_run_start": git("rev-parse", "HEAD"),
-        "origin_main_sha": git("rev-parse", "origin/main"),
-        "origin_native_reproduction_sha": git(
-            "rev-parse", "origin/codex/native-reproduction-no-adapters-20260804"
+        "origin_main_sha": optional_git_revision("origin/main"),
+        "origin_native_reproduction_sha": optional_git_revision(
+            "origin/codex/native-reproduction-no-adapters-20260804"
         ),
         "ancestry_verified": subprocess.run(
             ["git", "merge-base", "--is-ancestor", STARTING_SHA, "HEAD"],
