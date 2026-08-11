@@ -35,7 +35,7 @@ The unchanged historical terminal step still rejects with T0 y margin
 - Corrected frozen accepted prefix: 307/307
 - Terminal gate: rejected
 - Fresh/+0.5/second system: not authorized
-- Final regression before packaging: 569 passed, 2 skipped in 263.48 s
+- Final regression: 572 passed, 2 skipped in 270.30 s
 - Evidence checksums: 234 repository-root-relative entries
 - Primitive formal eligibility: true for the bounded CPU outward image
 - Prefix formal eligibility: false

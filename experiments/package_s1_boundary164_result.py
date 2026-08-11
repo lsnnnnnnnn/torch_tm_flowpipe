@@ -519,9 +519,10 @@ def package(run_root: Path) -> dict[str, Any]:
     _json(run_root / "decision.json", decision)
     verification = {
         "baseline_tests": {"passed": 545, "skipped": 2, "seconds": 218.44},
-        "final_tests": {"passed": 569, "skipped": 2, "seconds": 263.48},
-        "compileall": "pending_final_acceptance_command",
-        "diff_check": "pending_final_acceptance_command",
+        "final_tests": {"passed": 572, "skipped": 2, "seconds": 270.30},
+        "compileall": "passed",
+        "diff_check": "passed",
+        "private_path_scan": "passed_new_scope; pre-existing matches are historical provenance or sanitizer fixtures",
         "fresh_clone": "pending",
         "working_tree": "pending",
     }
@@ -570,7 +571,7 @@ def package(run_root: Path) -> dict[str, Any]:
     _json(run_root / "14_second_system/stop.json", second_rows)
     _json(
         run_root / "15_tests/summary.json",
-        {"passed": 569, "skipped": 2, "seconds": 263.48},
+        {"passed": 572, "skipped": 2, "seconds": 270.30},
     )
 
     # Figures are derived only from the machine records above.
