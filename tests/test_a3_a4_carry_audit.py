@@ -113,6 +113,7 @@ def test_cni_composition_observer_is_bit_exact_and_outer_remainder_is_added_once
         "remainder_times_remainder",
         "outer_endpoint_remainder",
     }
+    assert all(source.lo.data_ptr() != source.hi.data_ptr() for source in sources.values())
 
 
 def test_dense_complete_o4_has_no_native_cross_step_cni_operator():
@@ -122,4 +123,3 @@ def test_dense_complete_o4_has_no_native_cross_step_cni_operator():
         name in BatchedTaylorModel.__dict__
         for name in ("compose", "compose_affine", "insert", "normalized_insertion")
     )
-

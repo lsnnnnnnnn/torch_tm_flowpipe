@@ -41,7 +41,11 @@ def _git(*args: str) -> str:
 
 
 def _zero(reference: torch.Tensor) -> FixedSupportInterval:
-    return FixedSupportInterval.zeros_like(reference)
+    zero = torch.zeros_like(reference)
+    # This observer writes output slices while aggregating categories.  Keep
+    # independent endpoint storage even though the immutable library zero
+    # interval may safely share its initial all-zero tensor.
+    return FixedSupportInterval(zero, zero.clone())
 
 
 def _category(name: str) -> str:
