@@ -4,11 +4,31 @@ import argparse
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 
 from experiments.finalize_three_tool_evidence_package import finalize
 from experiments.run_evidence_command import run
 from torch_tm_flowpipe.evidence_verification import validate_verification_document
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_top_level_package_builder_is_directly_executable() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "experiments/build_three_tool_evidence_package.py"),
+            "--help",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert "--run-root" in completed.stdout
 
 
 def test_finalizer_derives_claims_and_root_relative_hashes(tmp_path) -> None:
