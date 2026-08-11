@@ -1278,8 +1278,12 @@ int traced_advance_adaptive_symbolic(
         set_value(row, "h_try", h_try);
         set_value(row, "h", h_try);
         set_value(row, "h_hex", format_hex_double(h_try));
-        set_value(row, "t_after", t_before + h_try);
-        set_value(row, "t_after_hex", format_hex_double(t_before + h_try));
+        const double logical_t_after =
+            tm_setting.step_min == tm_setting.step_max
+                ? static_cast<double>(step_index + 1) * h_try
+                : t_before + h_try;
+        set_value(row, "t_after", logical_t_after);
+        set_value(row, "t_after_hex", format_hex_double(logical_t_after));
         set_value(row, "accepted", bfound);
         set_value(row, "rejected", !bfound);
         set_value(row, "status", bfound ? "accepted" : "rejected");
