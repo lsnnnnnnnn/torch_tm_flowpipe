@@ -1,65 +1,142 @@
-schema: torch_tm_flowpipe_vdp_three_lane_contract_v1
-date: 2026-08-10
+schema: torch_tm_flowpipe_vdp_three_lane_contract_v2
+date: 2026-08-11
+identity_canonicalization:
+  implementation: src/torch_tm_flowpipe/comparison_contract.py
+  rule: UTF-8 JSON, sorted keys, compact separators, ensure_ascii, one trailing LF
+  float_rule: every binary64 constant stores Python round-trip decimal and float.hex
+  rhs_sha256: 022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558
+  initial_set_sha256: 6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461
+  partitions:
+    B1:
+      count: 1
+      splits: [1, 1]
+      enumeration: x_major_then_y
+      list_sha256: a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42
+    B64:
+      count: 64
+      splits: [8, 8]
+      enumeration: x_major_then_y
+      list_sha256: e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa
 system:
   name: van_der_pol_flowstar_official
   state_order: [x, y]
+  local_time:
+    symbol: tau
+    autonomous_rhs: true
+    complete_o4_variable_order: [tau, r0, r1]
+    fixed_support_variable_order: [tau, xi0, xi1]
+    position: 0
   rhs:
     - y
     - y - x - x^2*y
+  rhs_polynomial_terms_in_state_order:
+    - [{coefficient_decimal: '1.0', coefficient_hex: '0x1.0000000000000p+0', powers: [0, 1]}]
+    - [{coefficient_decimal: '1.0', coefficient_hex: '0x1.0000000000000p+0', powers: [0, 1]},
+       {coefficient_decimal: '-1.0', coefficient_hex: '-0x1.0000000000000p+0', powers: [1, 0]},
+       {coefficient_decimal: '-1.0', coefficient_hex: '-0x1.0000000000000p+0', powers: [2, 1]}]
   initial_set:
-    - [1.1, 1.4]
-    - [2.35, 2.45]
-  requested_horizon: 10.0
-  diagnostic_horizons: [0.1, 0.5, 1.0, 4.0, 6.0, 6.5, 7.5, 10.0]
-  rhs_sha256: pending_manifest_generation
+    x: {lo_decimal: '1.1', lo_hex: '0x1.199999999999ap+0', hi_decimal: '1.4', hi_hex: '0x1.6666666666666p+0'}
+    y: {lo_decimal: '2.35', lo_hex: '0x1.2cccccccccccdp+1', hi_decimal: '2.45', hi_hex: '0x1.399999999999ap+1'}
+  requested_horizon: {decimal: '10.0', hex: '0x1.4000000000000p+3'}
+  diagnostic_horizons:
+    - {decimal: '0.1', hex: '0x1.999999999999ap-4'}
+    - {decimal: '0.5', hex: '0x1.0000000000000p-1'}
+    - {decimal: '1.0', hex: '0x1.0000000000000p+0'}
+    - {decimal: '4.0', hex: '0x1.0000000000000p+2'}
+    - {decimal: '6.0', hex: '0x1.8000000000000p+2'}
+    - {decimal: '6.5', hex: '0x1.a000000000000p+2'}
+    - {decimal: '7.5', hex: '0x1.e000000000000p+2'}
+    - {decimal: '10.0', hex: '0x1.4000000000000p+3'}
+  candidate_target:
+    lo: {decimal: '-0.0001', hex: '-0x1.a36e2eb1c432dp-14'}
+    hi: {decimal: '0.0001', hex: '0x1.a36e2eb1c432dp-14'}
+  cutoff: {decimal: '1e-10', hex: '0x1.b7cdfd9d7bdbbp-34'}
 output_semantics:
-  required:
-    - raw_endpoint
-    - last_full_segment_tube
-    - full_horizon_tube
-    - validation_status
-    - certificate_status
-    - first_failure_time
-    - first_failure_reason
+  raw_endpoint: range of the validated TM after substituting tau=h; never a tube
+  last_full_segment_tube: range over the complete local-time domain of the last validated segment
+  full_horizon_tube: hull of every validated full-segment tube over the reported prefix
+  property_status: unavailable unless a separately frozen property predicate is evaluated
+  validation_status: validator acceptance/rejection for the declared candidate object
+  certificate_status: formal, qualified, empirical, ineligible, or unavailable with scope
   prohibit_endpoint_tube_mixing: true
+  prohibit_incomplete_horizon_ranking: true
+  prohibit_partition_mismatch_ranking: true
+checkpoint_registry:
+  torch_terminal_call44:
+    role: later-terminal diagnostic only
+    full_checkpoint_sha256: dcb8f646d45c9742e0cff23fea596c12e53d8ccd00d1544f70564a44a7463420
 tracks:
   N:
-    description: unmodified official entry points and configs
+    description: native capability only; no universal winner or ranking
+    execution_kind: native
+    required_fields: [tool, commit, unmodified_or_observer, model_sha256, initial_set,
+      partition_count, representation, polynomial_order_semantics, validator, schedule,
+      horizon_requested, horizon_validated, success_definition, endpoint_available,
+      segment_tube_available, prefix_tube_available, soundness_scope, runtime_scope,
+      result_status]
     lanes:
       flowstar_stock:
-        source_sha: b85a3211748cb77b736fe4ad42ee02d8d2b81148
+        commit: b85a3211748cb77b736fe4ad42ee02d8d2b81148
         entrypoint: benchmarks/continuous/vanderpol/vanderpol
         representation: complete_total_degree_O4
         validator: native_flowstar_picard
-        carry: native_normalization_plus_symbolic_remainder
+        schedule: native_adaptive
       diffreach_stock:
-        source_sha: dd628eb443b517d6415de93e7035b4baef73963e
+        commit: dd628eb443b517d6415de93e7035b4baef73963e
         entrypoint: run_dyn.py config/ct_dyn/van_der_pol.yaml --sim --ver
-        representation: diffreach_fixed_support_from_manifest
+        representation: fixed_seven_slot_restricted_quadratic
         validator: DR-RP
-        carry: upstream_normalization_plus_symbolic_remainder
-      torch_authoritative:
-        source_sha: 4707abed5e8d28ec56c2b5e76b800bd284f0008b
+        schedule: fixed_h_0p01
+      torch_complete_o4:
+        commit: 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a
         entrypoint: experiments/run_vdp_dense_backend.py
         representation: complete_total_degree_O4
         validator: flowstar_raw_remainder_compat
-        carry: normalized_insertion
-  M:
-    description: common Flowstar official VDP plant and physical output contract
-    adapters_allowed: false
-    unavailable_field_value: UNAVAILABLE
-  F:
-    description: Torch-only representation-validator-carry factorial
-    lanes:
-      - complete_O4__flowstar_raw__normalized_insertion
-      - diffreach_fixed__DR_RP__upstream_equivalent_carry
-      - complete_O4__flowstar_raw__generic_carry_candidate
+        schedule: flowstar_compat_adaptive
+      torch_fixed_dr7:
+        commit: 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a
+        entrypoint: experiments/run_vdp_fixed_support.py
+        representation: fixed_seven_slot_restricted_quadratic
+        validator: DR-RP
+        schedule: fixed_h_0p01
+  M-F:
+    description: pairwise Flowstar O4 versus Torch complete-O4
+    execution_kind: matched
+    tools: [flowstar_stock_observer, torch_complete_o4]
+    partition: B1
+    representation: common total-degree-4 basis mapping
+    same_candidate_target: true
+    required_objects: [same_prestate_identity, proposed_h, raw_candidate_before_polynomial_roundoff,
+      candidate_after_polynomial_roundoff, subset_margin, raw_endpoint, last_full_segment_tube]
+    schedule_rows: [native_schedule, common_fixed_step_diagnostic]
+    forbidden_claims: [stock_T10_vs_partial_tightness_ratio, flowstar_tube_vs_torch_endpoint,
+      segment_count_efficiency_ranking, under_enclosing_build_as_formal_oracle]
+  M-D:
+    description: pairwise DiffReach DR7 versus Torch fixed DR7
+    execution_kind: matched
+    tools: [diffreach_explicit_f64, torch_fixed_dr7]
+    partition: B64
+    step_size: {decimal: '0.01', hex: '0x1.47ae147ae147bp-7'}
+    horizon: {decimal: '10.0', hex: '0x1.4000000000000p+3'}
+    polynomial_picard_constructions: 2
+    dr_rp_rounds: 10
+    support_sha256: 0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e
+    required_objects: [masks, retained_intervals, endpoint, segment_tube, symbolic_JPhi]
+    stock_mixed_dtype_driver_is_separate: true
+  D:
+    description: causal diagnostics only
+    execution_kind: diagnostic
+    diagnostic_only: true
+    formal_ranking_eligible: false
 common_row_fields:
   - tool
-  - source_sha
+  - commit
   - execution_kind
+  - track
   - rhs_sha256
-  - initial_set
+  - initial_set_sha256
+  - partition_count
+  - partition_sha256
   - state_and_generator_order
   - representation_name
   - support_sha256
@@ -68,7 +145,6 @@ common_row_fields:
   - candidate_remainder
   - remainder_rounds_and_acceptance
   - step_policy
-  - partition_policy
   - carry_reset_policy
   - symbolic_remainder_policy
   - range_policy
@@ -79,12 +155,14 @@ common_row_fields:
   - certificate_status
   - property_status
   - first_failure_time_reason
-  - endpoint_tube_polynomial_remainder_widths
+  - output_object
   - accepted_rejected_steps
   - algorithmic_work
-  - cold_warm_core_process_runtime
+  - runtime_scope
   - peak_memory
   - soundness_classification
+  - diagnostic_only
+  - formal_ranking_eligible
   - artifact_paths_and_hashes
 eligibility:
   require_known_contract: true
@@ -93,4 +171,5 @@ eligibility:
   require_finite_outputs: true
   forbid_undeclared_repair_or_fallback: true
   require_output_semantic_identity: true
+  require_partition_identity: true
   require_explicit_soundness: true
