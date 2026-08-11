@@ -20,6 +20,12 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _hex(value: Any) -> str:
+    if value in (None, ""):
+        return ""
+    return float(value).hex()
+
+
 def _write_csv(path: Path, fields: Sequence[str], rows: Iterable[Mapping[str, Any]]) -> None:
     with path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(fields), extrasaction="ignore")
@@ -54,6 +60,11 @@ def _raw_waterfall(run_root: Path, output: Path) -> tuple[Path, Path]:
     for row in selected:
         row.update(
             {
+                "flowstar_width_hex": _hex(row["flowstar_width"]),
+                "torch_width_hex": _hex(row["torch_width"]),
+                "width_delta_flowstar_minus_torch_hex": _hex(
+                    row["width_delta_flowstar_minus_torch"]
+                ),
                 "units": "interval_width",
                 "eligibility": "same_frozen_prestate_diagnostic",
                 "sample_count": 1,
@@ -109,12 +120,17 @@ def _validator_matrix(run_root: Path, output: Path) -> tuple[Path, Path]:
                     "candidate_producer": candidate["candidate_producer"],
                     "receiving_validator": validator.removesuffix("_validator"),
                     "minimum_margin": min(float(value) for value in result["margins"]),
+                    "minimum_margin_hex": _hex(
+                        min(float(value) for value in result["margins"])
+                    ),
                     "decision": result["decision"],
                     "units": "target_radius_margin",
                     "eligibility": "same_prestate_same_candidate_componentwise_subset",
                     "sample_count": 1,
                     "t_pre": checkpoint["t_pre"],
+                    "t_pre_hex": _hex(checkpoint["t_pre"]),
                     "h": checkpoint["h"],
+                    "h_hex": _hex(checkpoint["h"]),
                 }
             )
     csv_path = output / "same_prestate_validator_margin_matrix.csv"
@@ -150,6 +166,19 @@ def _bridge_changes(run_root: Path, output: Path) -> tuple[Path, Path]:
         row = dict(item)
         row.update(
             {
+                "margin_delta_hex": _hex(item.get("margin_delta")),
+                "first_decision_margin_delta_hex": _hex(
+                    item.get("first_decision_margin_delta")
+                ),
+                "t1_max_raw_remainder_width_delta_hex": _hex(
+                    item.get("t1_max_raw_remainder_width_delta")
+                ),
+                "t1_max_endpoint_width_delta_hex": _hex(
+                    item.get("t1_max_endpoint_width_delta")
+                ),
+                "t1_max_tube_width_delta_hex": _hex(
+                    item.get("t1_max_tube_width_delta")
+                ),
                 "units": "margin_or_interval_width_delta",
                 "eligibility": item["comparison_eligibility"],
                 "sample_count": 1,
@@ -225,9 +254,11 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
                     "batch": cell["batch"],
                     "completed_steps": cell["completed_steps"],
                     "validated_horizon": cell["validated_horizon"],
+                    "validated_horizon_hex": _hex(cell["validated_horizon"]),
                     "completed_requested_gate": cell["completed_requested_gate"],
                     "stage": stage,
                     "seconds": cell["runtime_by_stage_seconds"][stage],
+                    "seconds_hex": _hex(cell["runtime_by_stage_seconds"][stage]),
                     "units": "process_wall_seconds",
                     "eligibility": "same_runner_horizon_gated_diagnostic_no_cross_tool_ratio",
                     "sample_count": 1,
@@ -239,9 +270,11 @@ def _runtime_breakdown(run_root: Path, output: Path) -> tuple[Path, Path]:
         "batch",
         "completed_steps",
         "validated_horizon",
+        "validated_horizon_hex",
         "completed_requested_gate",
         "stage",
         "seconds",
+        "seconds_hex",
         "units",
         "eligibility",
         "sample_count",
@@ -331,6 +364,12 @@ def _native_capability_table(run_root: Path, output: Path) -> tuple[Path, Path]:
                 value = inferred
             return "available" if bool(value) else "unavailable"
 
+        requested_horizon = _first(
+            artifact, "horizon_requested", "requested_horizon", "horizon"
+        )
+        validated_horizon = _first(
+            artifact, "horizon_validated", "validated_horizon", "completed_horizon"
+        )
         rows.append(
             {
                 "tool": tool,
@@ -340,8 +379,10 @@ def _native_capability_table(run_root: Path, output: Path) -> tuple[Path, Path]:
                 ),
                 "partition": partition,
                 "schedule": schedule_label,
-                "requested_horizon": _first(artifact, "horizon_requested", "requested_horizon", "horizon"),
-                "validated_horizon": _first(artifact, "horizon_validated", "validated_horizon", "completed_horizon"),
+                "requested_horizon": requested_horizon,
+                "requested_horizon_hex": _hex(requested_horizon),
+                "validated_horizon": validated_horizon,
+                "validated_horizon_hex": _hex(validated_horizon),
                 "result_status": _first(
                     artifact,
                     "result_status",
