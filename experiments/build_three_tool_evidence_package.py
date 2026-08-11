@@ -94,13 +94,17 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         name="environment_probe",
         command=[
             python,
-            "-c",
-            (
-                "import json,platform,torch; print(json.dumps({"
-                "'python':platform.python_version(),'torch':torch.__version__,"
-                "'cuda':torch.cuda.is_available(),"
-                "'cuda_name':torch.cuda.get_device_name(0) if torch.cuda.is_available() else None}))"
-            ),
+            "experiments/collect_three_tool_environment.py",
+            "--output-dir",
+            "{ARTIFACT_DIR}/run",
+            "--flowstar-root",
+            str(args.flowstar_root.resolve()),
+            "--flowstar-binary",
+            str(flowstar_binary),
+            "--diffreach-root",
+            str(args.diffreach_root.resolve()),
+            "--diffreach-python",
+            str(args.diffreach_python.resolve()),
         ],
         config={"arithmetic_environment": True},
         eligibility="environment_provenance",

@@ -141,6 +141,8 @@ def finalize(args: argparse.Namespace) -> dict[str, Any]:
                 }
                 or "03_native_flowstar/scalar_affine_gate/"
                 in path.relative_to(run_root).as_posix()
+                or path.relative_to(run_root).as_posix()
+                == "00_environment/probe/artifacts/run/summary.json"
             )
         ],
     )
