@@ -1,0 +1,428 @@
+{
+  "accounting_conclusion": "no omission and no duplicate outer remainder; nonlinear composition repeatedly box-intervalizes lost dependency across monomial paths",
+  "all_coverage_contains_native_remainder": true,
+  "all_native_observer_parity_bit_exact": true,
+  "any_double_count_detected": false,
+  "checkpoints": [
+    {
+      "checkpoint": "before_step_0002.npz",
+      "checkpoint_sha256": "9ae143a233cd6e0ee4d89f2ec4841aca8b173488d5cd7e0a2fcaeb11867317bd",
+      "classification": "strict_extra_intervalization_without_detected_omission_or_double_count",
+      "coverage_contains_native_remainder": true,
+      "coverage_sum": {
+        "hi": [
+          [
+            0.0001001587292590625,
+            0.000913338570342987
+          ]
+        ],
+        "hi_record": {
+          "dtype": "<f8",
+          "sha256": "3b3d323633585d8524b6ad75790bb241b0513772b74b65ad38f0a22f6f198ab6",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "lo": [
+          [
+            -0.00010007892062479656,
+            -0.0009127092528436337
+          ]
+        ],
+        "lo_record": {
+          "dtype": "<f8",
+          "sha256": "317f9342789704d90d2d18b86e7722dacea8628f0bb27c6afc2214a9a96779b7",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "max_width": 0.0018260478231866208,
+        "width": [
+          [
+            0.00020023764988385905,
+            0.0018260478231866208
+          ]
+        ]
+      },
+      "dependency_loss": "the same parameterization remainder is independently intervalized in distinct nonlinear monomial paths; this is correlation loss, not duplicate addition",
+      "dominant_source_by_max_width": "outer_endpoint_remainder",
+      "double_count_detector": {
+        "classification": "no_source_double_count_detected",
+        "same_outer_endpoint_remainder_added_more_than_once_per_output": false
+      },
+      "inverse_scale": [
+        [
+          6.642325757142712,
+          16.17595981813843
+        ]
+      ],
+      "native_observer_parity": {
+        "maximum_category_reorder_delta": 0.0,
+        "multiplication_node_count": 34,
+        "outer_remainder_add_count": 2,
+        "polynomial_bit_exact": true,
+        "remainder_hi_bit_exact": true,
+        "remainder_lo_bit_exact": true
+      },
+      "ordinary_endpoint_remainder_add_count_per_output": 1,
+      "physical_hull_after_roundtrip": {
+        "hi": [
+          [
+            1.4244145136282045,
+            2.434542976473333
+          ]
+        ],
+        "hi_record": {
+          "dtype": "<f8",
+          "sha256": "35dc8119571c4ffb18ac6a156a3b68d749c9d5011698099ccd790b1f18bd25b4",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "lo": [
+          [
+            1.12331777899655,
+            2.311418260843017
+          ]
+        ],
+        "lo_record": {
+          "dtype": "<f8",
+          "sha256": "ee66650ad4639134cc97159a34c4d39567bd9b5ee6a9af0c92446c2247f8aaad",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "max_width": 0.30109673463165443,
+        "width": [
+          [
+            0.30109673463165443,
+            0.12312471563031568
+          ]
+        ]
+      },
+      "physical_hull_before_roundtrip": {
+        "hi": [
+          [
+            1.4244145136282045,
+            2.434542976473333
+          ]
+        ],
+        "hi_record": {
+          "dtype": "<f8",
+          "sha256": "35dc8119571c4ffb18ac6a156a3b68d749c9d5011698099ccd790b1f18bd25b4",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "lo": [
+          [
+            1.12331777899655,
+            2.311418260843017
+          ]
+        ],
+        "lo_record": {
+          "dtype": "<f8",
+          "sha256": "ee66650ad4639134cc97159a34c4d39567bd9b5ee6a9af0c92446c2247f8aaad",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "max_width": 0.30109673463165443,
+        "width": [
+          [
+            0.30109673463165443,
+            0.12312471563031568
+          ]
+        ]
+      },
+      "post_renormalization_remainder": {
+        "hi": [
+          [
+            0.0006652869071601542,
+            0.014774128014224158
+          ]
+        ],
+        "hi_record": {
+          "dtype": "<f8",
+          "sha256": "e10cfebe6c54b1dce740bdb8bc85f217cae569c12fcb75f9adfd888f450c4744",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "lo": [
+          [
+            -0.0006647567922131271,
+            -0.014763948199641767
+          ]
+        ],
+        "lo_record": {
+          "dtype": "<f8",
+          "sha256": "51709fd5a3c3f3ff8fed3473bad88ad1581c036d19332a7b9e70ab22577eb0c9",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "max_width": 0.029538076213865925,
+        "width": [
+          [
+            0.0013300436993732814,
+            0.029538076213865925
+          ]
+        ]
+      },
+      "pre_renormalization_remainder": {
+        "hi": [
+          [
+            0.0001001587292590625,
+            0.000913338570342987
+          ]
+        ],
+        "hi_record": {
+          "dtype": "<f8",
+          "sha256": "3b3d323633585d8524b6ad75790bb241b0513772b74b65ad38f0a22f6f198ab6",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "lo": [
+          [
+            -0.00010007892062479656,
+            -0.0009127092528436337
+          ]
+        ],
+        "lo_record": {
+          "dtype": "<f8",
+          "sha256": "317f9342789704d90d2d18b86e7722dacea8628f0bb27c6afc2214a9a96779b7",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "max_width": 0.0018260478231866208,
+        "width": [
+          [
+            0.00020023764988385905,
+            0.0018260478231866208
+          ]
+        ]
+      },
+      "retained_polynomial_record": {
+        "dtype": "<f8",
+        "sha256": "a241d1f0fb2dff0522c49e5c8d56b8102d6616e47ba26e20bf21475b8086eab3",
+        "shape": [
+          1,
+          2,
+          35
+        ]
+      },
+      "roundtrip_contains_before": true,
+      "scale": [
+        [
+          0.15054967741151012,
+          0.06182013378140812
+        ]
+      ],
+      "source_intervals": {
+        "degree_gt4_dropped_polynomial": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "hi_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "max_width": 0.0,
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "endpoint_remainder_times_parameterization_polynomial": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "hi_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "max_width": 0.0,
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "outer_endpoint_remainder": {
+          "hi": [
+            [
+              0.0001001587292590625,
+              0.000913338570342987
+            ]
+          ],
+          "hi_record": {
+            "dtype": "<f8",
+            "sha256": "3b3d323633585d8524b6ad75790bb241b0513772b74b65ad38f0a22f6f198ab6",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "lo": [
+            [
+              -0.00010007892062479656,
+              -0.0009127092528436337
+            ]
+          ],
+          "lo_record": {
+            "dtype": "<f8",
+            "sha256": "317f9342789704d90d2d18b86e7722dacea8628f0bb27c6afc2214a9a96779b7",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "max_width": 0.0018260478231866208,
+          "width": [
+            [
+              0.00020023764988385905,
+              0.0018260478231866208
+            ]
+          ]
+        },
+        "polynomial_times_parameterization_remainder": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "hi_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "max_width": 0.0,
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "hi_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo_record": {
+            "dtype": "<f8",
+            "sha256": "df6eb0d664d6ea449d01627656f540322d2bde3683b90c41b4d5b4ce9bfa8165",
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "max_width": 0.0,
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        }
+      },
+      "structurally_absent_sources": {
+        "endpoint_remainder_times_parameterization_polynomial": "compose_affine substitutes only the outer polynomial; the outer ordinary endpoint remainder is added once after substitution and is never multiplied by the parameterization polynomial"
+      }
+    }
+  ],
+  "schema": "torch_r35_cni_composition_accounting_v1",
+  "source_sha": "2f234f44c505924c41ed1bab03ceb3a0c05c5e85"
+}

@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "experiments/run_diffreach_explicit_f64_full_trace.py",
+    "--diffreach-root",
+    "/srv/local/shengenli/DiffReach_worktrees/full_horizon_explicit_f64_trace_20260811",
+    "--observer-patch",
+    "experiments/diffreach_patches/dd628_explicit_f64_full_trace.patch",
+    "--output-dir",
+    "/srv/local/shengenli/three-tool-h1-wS5vap/repo/outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/h1_rebuild_2f234f4/04_diffreach_torch_full_horizon/lab_h1/full_trace_v1/diffreach",
+    "--steps",
+    "1000",
+    "--symbolic-window",
+    "1000",
+    "--capture-steps",
+    "1,2,62,63,999,1000"
+  ],
+  "cwd": "/srv/local/shengenli/three-tool-h1-wS5vap/repo",
+  "devices": [
+    "TFRT_CPU_0"
+  ],
+  "environment": {
+    "JAX_ENABLE_X64": "true",
+    "JAX_PLATFORM_NAME": "cpu"
+  },
+  "jax": "0.8.3",
+  "observer_patch_sha256": "bb23a66332bbc55171447cec5f45ff8ac625b10680cf2b491a8e39a9c0131a9e",
+  "partition_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+  "python": "3.12.13",
+  "schema": "diffreach_torch_dr7_full_horizon_trace_v1",
+  "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "tool": "pinned_diffreach_explicit_f64"
+}

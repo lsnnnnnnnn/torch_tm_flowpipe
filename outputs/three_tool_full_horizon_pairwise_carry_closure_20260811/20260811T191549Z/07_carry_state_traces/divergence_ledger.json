@@ -1,0 +1,427 @@
+{
+  "cells": {
+    "A3_B1": {
+      "completed_steps": 1000,
+      "failure_step": null,
+      "validated_horizon": 10.0
+    },
+    "A3_B64": {
+      "completed_steps": 1000,
+      "failure_step": null,
+      "validated_horizon": 10.0
+    },
+    "A4_B1": {
+      "completed_steps": 319,
+      "failure_step": 320,
+      "validated_horizon": 3.19
+    },
+    "A4_B64": {
+      "completed_steps": 333,
+      "failure_step": 334,
+      "validated_horizon": 3.33
+    }
+  },
+  "contract": {
+    "cutoff": null,
+    "h": 0.01,
+    "picard": 4,
+    "support": "R35",
+    "target": 0.01,
+    "validator": "VRAW"
+  },
+  "divergence": [
+    {
+      "a4_failure_step": 320,
+      "a4_failure_time": 3.19,
+      "batch": 1,
+      "common_attempted_steps": 320,
+      "failure_window": [
+        {
+          "a3_composition_ledger_width_max": 1.775077390122509,
+          "a3_endpoint_width_max": 0.6555342869528329,
+          "a3_margin": 0.009179453961395518,
+          "a3_scale_max": 0.3260106857434079,
+          "a4_composition_ledger_width_max": 1.9686308225918716,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 4.5517610964610515,
+          "a4_margin": 0.00662460551561092,
+          "a4_scale_max": 2.165369866885221,
+          "step": 310,
+          "time": 3.09
+        },
+        {
+          "a3_composition_ledger_width_max": 1.7883352466836127,
+          "a3_endpoint_width_max": 0.658223763532218,
+          "a3_margin": 0.009165878012703296,
+          "a3_scale_max": 0.32747853471416516,
+          "a4_composition_ledger_width_max": 1.9735399163227973,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 4.782765597234835,
+          "a4_margin": 0.006297208698665057,
+          "a4_scale_max": 2.2717834755972843,
+          "step": 311,
+          "time": 3.1
+        },
+        {
+          "a3_composition_ledger_width_max": 1.8049760603628604,
+          "a3_endpoint_width_max": 0.660618348409241,
+          "a3_margin": 0.009153065655539331,
+          "a3_scale_max": 0.3288039087796551,
+          "a4_composition_ledger_width_max": 1.9782418282098977,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.030747240778049,
+          "a4_margin": 0.005923618552662106,
+          "a4_scale_max": 2.38590525058744,
+          "step": 312,
+          "time": 3.11
+        },
+        {
+          "a3_composition_ledger_width_max": 1.826416320095127,
+          "a3_endpoint_width_max": 0.6627064151209512,
+          "a3_margin": 0.009141063283224976,
+          "a3_scale_max": 0.3299802138968575,
+          "a4_composition_ledger_width_max": 1.9827250072639113,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.297346005806857,
+          "a4_margin": 0.005490223532038611,
+          "a4_scale_max": 2.5084566826338586,
+          "step": 313,
+          "time": 3.12
+        },
+        {
+          "a3_composition_ledger_width_max": 1.854970419587279,
+          "a3_endpoint_width_max": 0.6644784201107077,
+          "a3_margin": 0.009129889897370451,
+          "a3_scale_max": 0.33100099453812676,
+          "a4_composition_ledger_width_max": 1.986979018608174,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.584423447544743,
+          "a4_margin": 0.00498432851534096,
+          "a4_scale_max": 2.6402568717579427,
+          "step": 314,
+          "time": 3.13
+        },
+        {
+          "a3_composition_ledger_width_max": 1.8800077124886796,
+          "a3_endpoint_width_max": 0.6659657144642586,
+          "a3_margin": 0.009118976322367644,
+          "a3_scale_max": 0.33185997141396373,
+          "a4_composition_ledger_width_max": 1.9904504373545886,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.895642143127805,
+          "a4_margin": 0.0043995752226448,
+          "a4_scale_max": 2.782996051344839,
+          "step": 315,
+          "time": 3.14
+        },
+        {
+          "a3_composition_ledger_width_max": 1.8260452644769185,
+          "a3_endpoint_width_max": 0.6674109860259549,
+          "a3_margin": 0.0091043617014844,
+          "a3_scale_max": 0.33255109252436454,
+          "a4_composition_ledger_width_max": 1.9894091434763879,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 6.244598449626825,
+          "a4_margin": 0.0037102260845853583,
+          "a4_scale_max": 2.9433623934605118,
+          "step": 316,
+          "time": 3.15
+        },
+        {
+          "a3_composition_ledger_width_max": 1.7828128299709953,
+          "a3_endpoint_width_max": 0.6685902847839886,
+          "a3_margin": 0.009089012501536224,
+          "a3_scale_max": 0.3330686439543683,
+          "a4_composition_ledger_width_max": 1.9868232940051005,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 6.623571068823708,
+          "a4_margin": 0.0029008361029151473,
+          "a4_scale_max": 3.119193017858725,
+          "step": 317,
+          "time": 3.16
+        },
+        {
+          "a3_composition_ledger_width_max": 1.749721105686122,
+          "a3_endpoint_width_max": 0.6694620430944107,
+          "a3_margin": 0.009073508763870156,
+          "a3_scale_max": 0.33340718425294547,
+          "a4_composition_ledger_width_max": 1.9844554197203514,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 7.034734223710898,
+          "a4_margin": 0.0019511563896052655,
+          "a4_scale_max": 3.3094631981520393,
+          "step": 318,
+          "time": 3.17
+        },
+        {
+          "a3_composition_ledger_width_max": 1.7252769740806853,
+          "a3_endpoint_width_max": 0.6700042611738128,
+          "a3_margin": 0.00905803089074672,
+          "a3_scale_max": 0.33356161049639266,
+          "a4_composition_ledger_width_max": 1.9823604077238932,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 7.481760008870613,
+          "a4_margin": 0.0008309960810175925,
+          "a4_scale_max": 3.515753168483416,
+          "step": 319,
+          "time": 3.18
+        },
+        {
+          "a3_composition_ledger_width_max": 1.7076875817312644,
+          "a3_endpoint_width_max": 0.670200248620023,
+          "a3_margin": 0.009042702789435189,
+          "a3_scale_max": 0.33352831130716787,
+          "a4_composition_ledger_width_max": 1.9804792698464926,
+          "a4_decision": "reject",
+          "a4_endpoint_width_max": 7.969304739647042,
+          "a4_margin": -0.0004978288426217593,
+          "a4_scale_max": 3.740086535218674,
+          "step": 320,
+          "time": 3.19
+        }
+      ],
+      "first_carry_after_step_divergence": {
+        "fields": [
+          "normalized_parameterization_polynomial"
+        ],
+        "step": 1
+      },
+      "first_coefficient_bit_divergence": {
+        "fields": [
+          "normalized_parameterization_polynomial"
+        ],
+        "step": 1
+      },
+      "first_margin_ordering_change_step": null,
+      "first_physical_endpoint_divergence": {
+        "fields": [
+          "endpoint_lo",
+          "endpoint_hi"
+        ],
+        "step": 1
+      },
+      "first_remainder_divergence": {
+        "fields": [
+          "normalized_parameterization_remainder_hi",
+          "normalized_parameterization_remainder_lo",
+          "raw_candidate_remainder_hi",
+          "raw_candidate_remainder_lo",
+          "validated_model_remainder_hi",
+          "validated_model_remainder_lo"
+        ],
+        "step": 2
+      },
+      "first_scale_divergence": {
+        "fields": [
+          "inverse_scale"
+        ],
+        "step": 1
+      },
+      "first_tube_divergence": {
+        "fields": [
+          "tube_lo",
+          "tube_hi"
+        ],
+        "step": 1
+      }
+    },
+    {
+      "a4_failure_step": 334,
+      "a4_failure_time": 3.33,
+      "batch": 64,
+      "common_attempted_steps": 334,
+      "failure_window": [
+        {
+          "a3_composition_ledger_width_max": 1.9577306097033647,
+          "a3_endpoint_width_max": 0.58422810990493,
+          "a3_margin": 0.008993171681314286,
+          "a3_scale_max": 0.29059546521278906,
+          "a4_composition_ledger_width_max": 1.9964355921839765,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 4.545371994708339,
+          "a4_margin": 0.006264322375619561,
+          "a4_scale_max": 2.155687893603581,
+          "step": 324,
+          "time": 3.23
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9570823798226389,
+          "a3_endpoint_width_max": 0.5837303736551,
+          "a3_margin": 0.00897136532233783,
+          "a3_scale_max": 0.29021135677521237,
+          "a4_composition_ledger_width_max": 1.9962135185605328,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 4.777744072710158,
+          "a4_margin": 0.005922755102479606,
+          "a4_scale_max": 2.2626196811528705,
+          "step": 325,
+          "time": 3.24
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9554329954715683,
+          "a3_endpoint_width_max": 0.5829000282300068,
+          "a3_margin": 0.00895014112037367,
+          "a3_scale_max": 0.2896521480443204,
+          "a4_composition_ledger_width_max": 1.9959160721088771,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.025858963804092,
+          "a4_margin": 0.005536314905294816,
+          "a4_scale_max": 2.376180319700879,
+          "step": 326,
+          "time": 3.25
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9536354641418021,
+          "a3_endpoint_width_max": 0.5817289522563593,
+          "a3_margin": 0.008929574199699017,
+          "a3_scale_max": 0.2889155585443201,
+          "a4_composition_ledger_width_max": 1.9956079635928128,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.290549686946051,
+          "a4_margin": 0.005097379984689255,
+          "a4_scale_max": 2.496930552028949,
+          "step": 327,
+          "time": 3.2600000000000002
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9522033066486535,
+          "a3_endpoint_width_max": 0.580210881986234,
+          "a3_margin": 0.008909735453898122,
+          "a3_scale_max": 0.28799979804826353,
+          "a4_composition_ledger_width_max": 1.9953352342559323,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.57311000815789,
+          "a4_margin": 0.004596799430862226,
+          "a4_scale_max": 2.625503190878741,
+          "step": 328,
+          "time": 3.27
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9510572381979108,
+          "a3_endpoint_width_max": 0.5783408809350148,
+          "a3_margin": 0.008890694577556275,
+          "a3_scale_max": 0.28690358978948716,
+          "a4_composition_ledger_width_max": 1.9950970404732327,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 5.875245529911236,
+          "a4_margin": 0.004023546076854817,
+          "a4_scale_max": 2.7626153223045007,
+          "step": 329,
+          "time": 3.2800000000000002
+        },
+        {
+          "a3_composition_ledger_width_max": 1.950139950369056,
+          "a3_endpoint_width_max": 0.6002551130590663,
+          "a3_margin": 0.008872461692469859,
+          "a3_scale_max": 0.28562619092316155,
+          "a4_composition_ledger_width_max": 1.994892390956353,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 6.198903578554312,
+          "a4_margin": 0.003364269997924254,
+          "a4_scale_max": 2.9090830032602306,
+          "step": 330,
+          "time": 3.29
+        },
+        {
+          "a3_composition_ledger_width_max": 1.949406562183182,
+          "a3_endpoint_width_max": 0.6328540890008849,
+          "a3_margin": 0.008854560357595478,
+          "a3_scale_max": 0.2905004369532967,
+          "a4_composition_ledger_width_max": 1.9947202025900705,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 6.546322348475918,
+          "a4_margin": 0.0026025856768074566,
+          "a4_scale_max": 3.06583895550254,
+          "step": 331,
+          "time": 3.3000000000000003
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9496443057084396,
+          "a3_endpoint_width_max": 0.6651836429726039,
+          "a3_margin": 0.00883763219107438,
+          "a3_scale_max": 0.3063246382568757,
+          "a4_composition_ledger_width_max": 1.994579253509456,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 6.920078163544398,
+          "a4_margin": 0.0017182176501808963,
+          "a4_scale_max": 3.23395411305272,
+          "step": 332,
+          "time": 3.31
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9498888495849598,
+          "a3_endpoint_width_max": 0.697107110618596,
+          "a3_margin": 0.008821700476918104,
+          "a3_scale_max": 0.32195264606984453,
+          "a4_composition_ledger_width_max": 1.9944682015484454,
+          "a4_decision": "accept",
+          "a4_endpoint_width_max": 7.3233637770086935,
+          "a4_margin": 0.0006815401428394621,
+          "a4_scale_max": 3.4146638328723955,
+          "step": 333,
+          "time": 3.3200000000000003
+        },
+        {
+          "a3_composition_ledger_width_max": 1.9501386918772243,
+          "a3_endpoint_width_max": 0.7284330661863498,
+          "a3_margin": 0.00880686449343586,
+          "a3_scale_max": 0.33730746584421917,
+          "a4_composition_ledger_width_max": 1.9943855851234527,
+          "a4_decision": "reject",
+          "a4_endpoint_width_max": 7.759487989358438,
+          "a4_margin": -0.0005341366383018135,
+          "a4_scale_max": 3.609401265687366,
+          "step": 334,
+          "time": 3.33
+        }
+      ],
+      "first_carry_after_step_divergence": {
+        "fields": [
+          "normalized_parameterization_polynomial"
+        ],
+        "step": 1
+      },
+      "first_coefficient_bit_divergence": {
+        "fields": [
+          "normalized_parameterization_polynomial"
+        ],
+        "step": 1
+      },
+      "first_margin_ordering_change_step": null,
+      "first_physical_endpoint_divergence": {
+        "fields": [
+          "endpoint_lo",
+          "endpoint_hi"
+        ],
+        "step": 1
+      },
+      "first_remainder_divergence": {
+        "fields": [
+          "normalized_parameterization_remainder_hi",
+          "normalized_parameterization_remainder_lo",
+          "raw_candidate_remainder_hi",
+          "raw_candidate_remainder_lo",
+          "validated_model_remainder_hi",
+          "validated_model_remainder_lo"
+        ],
+        "step": 2
+      },
+      "first_scale_divergence": {
+        "fields": [
+          "inverse_scale"
+        ],
+        "step": 1
+      },
+      "first_tube_divergence": {
+        "fields": [
+          "tube_lo",
+          "tube_hi"
+        ],
+        "step": 1
+      }
+    }
+  ],
+  "qualification": "ordinary-float64 empirical ablation; A3 completion is not evidence that CDR is sounder",
+  "reproduction_status": "A3_A4_FROZEN_RESULTS_REPRODUCED",
+  "schema": "torch_r35_a3_a4_divergence_ledger_v1"
+}

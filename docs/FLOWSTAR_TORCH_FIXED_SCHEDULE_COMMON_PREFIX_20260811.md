@@ -29,7 +29,7 @@ the requested T10 capability endpoint.
 
 ## Exact results
 
-- Flow*: 1,000 accepted steps, validated horizon 10.0, cold process wall 6.29
+- Flow*: 1,000 accepted steps (machine value: `1000`), validated horizon 10.0, cold process wall 6.29
   seconds, peak RSS 97,280,000 bytes.
 - Torch: 632 accepted steps, rejected candidate 633 at pre-time 6.32,
   validated horizon 6.32, core wall 407.56588636524975 seconds, peak RSS

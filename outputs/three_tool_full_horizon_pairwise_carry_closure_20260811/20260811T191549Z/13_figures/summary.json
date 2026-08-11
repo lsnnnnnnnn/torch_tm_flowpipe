@@ -1,0 +1,43 @@
+{
+  "artifacts": [
+    {
+      "figure": "flowstar_torch_endpoint_tube_widths.svg",
+      "figure_sha256": "22179fbb8f5ff0ebfc25398b793fcc9383dc6e50b9faa1fcbc1ccbdd3036e694",
+      "source_csv": "flowstar_torch_endpoint_tube_widths.csv",
+      "source_csv_sha256": "b7f8e6b00fdecf3eb11ea51933a910ce9efa744eedc1fc2138c5f022b575ab13"
+    },
+    {
+      "figure": "flowstar_torch_y_margin.svg",
+      "figure_sha256": "59df4dac23ade82eae8a51a99b2f5781314f97c72358b5fde684ca14baa56a58",
+      "source_csv": "flowstar_torch_y_margin.csv",
+      "source_csv_sha256": "f4a6d59a2a4a5bc923fd89f846cba74fd41d16d13c78a39ec6b19ed9d18fb474"
+    },
+    {
+      "figure": "diffreach_torch_full_horizon_deltas.svg",
+      "figure_sha256": "3f26e2ca4092c8591bc0415f4a0649f4329c897da0fb0e7b22e7ee96599d56fa",
+      "source_csv": "diffreach_torch_full_horizon_deltas.csv",
+      "source_csv_sha256": "36db931c1bec509458a4a4f3a759e0f4bf390bc75be98e889ae9595ca8e83981"
+    },
+    {
+      "figure": "a3_a4_scale_composition_remainder.svg",
+      "figure_sha256": "89212aa05e38e3979060d4b339c65c0f0334f46c807c9069761cc499b9bad8f0",
+      "source_csv": "a3_a4_scale_composition_remainder.csv",
+      "source_csv_sha256": "423a6891d5ffb4cb85198b58d443519493d6cf36413c69856b243da518b113b2"
+    },
+    {
+      "figure": "a4_remainder_sources.svg",
+      "figure_sha256": "dc4f22f41497fd0d88a8dcd94e28d929187a3249fc27d1d6af031691086ba4f7",
+      "source_csv": "a4_remainder_sources.csv",
+      "source_csv_sha256": "984c3a78489fff4a6b3adea46bdb35ecb2948a13b527d48791b60411ee521e5b"
+    }
+  ],
+  "constraints": {
+    "every_figure_has_source_csv": true,
+    "fix_horizon_chart": "not_generated_no_fix_authorized",
+    "post_failure_zero_fill": false,
+    "universal_winner_chart": false
+  },
+  "figure_count": 5,
+  "outcome": "CAUSAL_FIGURES_BUILT",
+  "schema": "full_horizon_pairwise_causal_figures_v1"
+}

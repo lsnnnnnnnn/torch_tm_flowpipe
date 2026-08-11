@@ -1,0 +1,111 @@
+{
+  "classification_ledger": {
+    "C1": "excluded: physical hull survives center/scale normalization roundtrip",
+    "C2": "excluded: the outer ordinary remainder is added once per output",
+    "C3": "not selected: degree>4 overflow is orders of magnitude below the dominant materialized-parameterization-remainder term",
+    "C4": "selected: R35 CNI materializes cross-step dependency into ordinary intervals and has no authoritative dense symbolic carry state",
+    "C5": "excluded: widening reaches order-one scale and changes the horizon decision",
+    "C6": "excluded: one mechanism dominates the failure checkpoint"
+  },
+  "composition": {
+    "coordinate_roundtrip_contains": true,
+    "dependency_loss_mechanism": "the same parameterization remainder is independently intervalized in distinct nonlinear monomial paths; this is correlation loss, not duplicate addition",
+    "double_count_detected": false,
+    "first_material_pre_renormalization_remainder_width": 0.0018260478231866208,
+    "native_observer_bit_exact": true,
+    "omission_detected": false,
+    "pre_failure_degree_gt4_width": 2.1828042802002517e-05,
+    "pre_failure_dominant_source": "polynomial_times_parameterization_remainder",
+    "pre_failure_dominant_source_width": 7.119613927492569,
+    "pre_failure_outer_endpoint_remainder_width": 0.01786912525433395,
+    "pre_failure_post_renormalization_remainder_width": 1.9804792698464926,
+    "pre_failure_pre_renormalization_remainder_width": 7.407163850432577
+  },
+  "dense_parity": {
+    "basis_roundtrip": "bit_exact",
+    "cross_step_parity": "DENSE_CNI_PARITY_NOT_EXPRESSIBLE",
+    "reason": "BatchedTaylorModel has no cross-step nonlinear compose/insert operator. hybrid_dense_core converts the accepted dense segment to the sparse semantic reference at the segment boundary, and the outer sparse normalized-insertion state owns the carry. A fixed-R35 CNI hull cannot be labeled dense state parity."
+  },
+  "input_artifacts": [
+    {
+      "name": "summary.json",
+      "sha256": "7c1338b5999abcde41f1e5e2cec62d592930e11d72309afe5308596cfdd25646"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "5471083eda9692d87283ff5baa77d443e94d29f39474b3b92d4c0aea93ea3692"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "bc3f96e4ee512612be449c8002493786269a586fa9f63f08cc43afb969a51f05"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "a7edfe67c8c6be7110030a80a4be04862584b1349fdc803dabfd6e62d007855e"
+    },
+    {
+      "name": "divergence_ledger.json",
+      "sha256": "cdb40481777dc4c822ca6cdd9ca8df29bace6c6c647ac05a439172276a94f1b3"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "7f7b237ffc455301aecf9837a8391989babaef64789038aa227029041a80b61a"
+    },
+    {
+      "name": "substitutions.csv",
+      "sha256": "ff312714febcc32302fcb6c0196f02eac61a1ff538c2e0df5e4c25c83881801c"
+    },
+    {
+      "name": "parity.json",
+      "sha256": "30c6ebf4f052848b8724b1b9e7351463f6060a116656110a80c868a51bc029f3"
+    },
+    {
+      "name": "composition_accounting.json",
+      "sha256": "33f7e41e37feb6b549b7d9b65324562ecf5942ca6df781247d612eb9af5077c5"
+    },
+    {
+      "name": "composition_accounting.json",
+      "sha256": "b07e17d0b17cb438c0bd8fa2cfb61629ebdf308418f4fed403dbad7abc96833b"
+    }
+  ],
+  "next_authorized_action": "Specify and independently validate an authoritative complete-O4 cross-step symbolic-remainder contract before proposing any new carry implementation.",
+  "outcome": "CARRY_MISSING_SYMBOLIC_SEMANTICS",
+  "qualification": {
+    "A3": "ordinary-float64 empirical comparator only; T10 is not a soundness proof",
+    "A4": "sound interval accounting within the implemented R35 contract, but not an authoritative complete-O4 dense/Flow* mirror"
+  },
+  "reproduction": {
+    "A3_B1": {
+      "completed_steps": 1000,
+      "failure_step": null,
+      "validated_horizon": 10.0
+    },
+    "A3_B64": {
+      "completed_steps": 1000,
+      "failure_step": null,
+      "validated_horizon": 10.0
+    },
+    "A4_B1": {
+      "completed_steps": 319,
+      "failure_step": 320,
+      "validated_horizon": 3.19
+    },
+    "A4_B64": {
+      "completed_steps": 333,
+      "failure_step": 334,
+      "validated_horizon": 3.33
+    }
+  },
+  "root_cause_class": "C4",
+  "same_prestate": {
+    "all_inputs_byte_identical": true,
+    "carry_family_decision_relevant": true,
+    "cdr_margin": 0.0005439375476625798,
+    "cni_margin": -0.0004978288426217593,
+    "epsilon_decision_relevant": false,
+    "pre_failure_checkpoint": "before_step_0320.npz"
+  },
+  "schema": "complete_o4_carry_root_cause_v1",
+  "single_fix_authorization": "NO_FIX_AUTHORIZED",
+  "source_sha": "2f234f44c505924c41ed1bab03ceb3a0c05c5e85"
+}

@@ -1,0 +1,76 @@
+{
+  "common_prefix_sha256": "25eac524bfe63adb28aff6ff7e9e250306bcf66baba89e51600a42ebc6d1d930",
+  "contract": {
+    "adaptive_fallback": false,
+    "cutoff": [
+      -1e-10,
+      1e-10
+    ],
+    "endpoint_repair": false,
+    "h_decimal": "0.01",
+    "h_hex": "0x1.47ae147ae147bp-7",
+    "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+    "partition_count": 1,
+    "partition_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+    "requested_horizon": 10.0,
+    "requested_steps": 1000,
+    "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558",
+    "support": "complete_total_degree_O4",
+    "target_remainder": [
+      -0.0001,
+      0.0001
+    ]
+  },
+  "environment_blocked": null,
+  "flowstar": {
+    "accepted_steps": 1000,
+    "build_qualification": "scalar_affine_under_enclosure_open",
+    "coefficient_type": "Flowstar Real/Interval",
+    "completed_t10": true,
+    "failure_reason": null,
+    "first_failure_step": null,
+    "peak_rss_bytes": 97988608,
+    "process_wall_s": 6.37,
+    "validated_horizon": 10.0
+  },
+  "outcome": "FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY",
+  "schema": "flowstar_torch_fixed_schedule_common_prefix_v1",
+  "scope": "full_horizon_or_first_failure",
+  "shared": {
+    "accepted_steps": 632,
+    "first_failure": [
+      {
+        "step": 633,
+        "time": 6.32,
+        "tool": "torch"
+      }
+    ],
+    "first_flowstar_wider_step": 1,
+    "first_margin_ordering_change_step": 23,
+    "first_torch_wider_step": 1,
+    "first_width_divergence_step": 1,
+    "later_scope": "schedule_controlled_comparative_trace",
+    "same_prestate_scope": "initial_state_only",
+    "tightness_eligibility": "empirical_or_build_qualified_common_prefix",
+    "validated_horizon": 6.32
+  },
+  "source_sha256": {
+    "flowstar_resource.txt": "358cddeea85155859912be9019f88bb5c93614d8cc238255010111e4df52e9e9",
+    "flowstar_trace.csv": "3c2ef2009c9c8808147927c35f04a60d395354990c8b85717c77a785012aa0fa",
+    "flowstar_trace_metadata.csv": "b8df84ceea0ec27a0d026c3f181e8c1394e8330ba42415b6ed180e69a7dae36d",
+    "torch_segments.csv": "f34e5187226909478293dd77fff329bd2b154235fb92306201169fc0160ab431",
+    "torch_summary.json": "afea025f51f93d2f9428b066a093b7c860ea15bb30a2272ffeafc7b154076a2f"
+  },
+  "torch": {
+    "accepted_steps": 632,
+    "coefficient_type": "torch.float64",
+    "completed_t10": false,
+    "endpoint_repair_used": false,
+    "failure_reason": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.01",
+    "fallback_count": 0,
+    "first_failure_step": 633,
+    "peak_rss_bytes": 642621440,
+    "process_wall_s": 394.9992324123159,
+    "validated_horizon": 6.32
+  }
+}

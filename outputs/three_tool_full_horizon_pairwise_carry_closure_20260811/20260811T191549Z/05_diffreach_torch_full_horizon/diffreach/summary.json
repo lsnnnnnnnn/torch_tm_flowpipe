@@ -1,0 +1,67 @@
+{
+  "all_initial_masks_true": true,
+  "completion_status": "completed",
+  "device": "cpu",
+  "dtype": "float64",
+  "final_endpoint_hull_hi": [
+    -1.219588542198909,
+    -2.2804009831591348
+  ],
+  "final_endpoint_hull_lo": [
+    -1.396447171705025,
+    -2.50220625366701
+  ],
+  "final_prefix_tube_hull_hi": [
+    2.0574214109557194,
+    2.685728295648723
+  ],
+  "final_prefix_tube_hull_lo": [
+    -2.011585268830857,
+    -2.6891205817023778
+  ],
+  "initial_partition_array_records": {
+    "hi": {
+      "dtype": "<f8",
+      "sha256": "5be3f1263154533d5652a1bb3256344e6dd20bad7ab9fea31fae890c32f91541",
+      "shape": [
+        64,
+        2
+      ]
+    },
+    "lo": {
+      "dtype": "<f8",
+      "sha256": "75857dbbcbdddc9d1a70943c271bbd9f4a4a1a3651e1a61a02685eb53d18839c",
+      "shape": [
+        64,
+        2
+      ]
+    }
+  },
+  "jax_platform_name": "cpu",
+  "jax_x64_enabled": true,
+  "later_mask_pass_count": 1280000,
+  "later_mask_total_count": 1280000,
+  "observer_inertness_bit_exact": true,
+  "observer_kind": "minimal_patch_on_native_CT_Dyn_Reach.step_once_operators",
+  "observer_patch_sha256": "bb23a66332bbc55171447cec5f45ff8ac625b10680cf2b491a8e39a9c0131a9e",
+  "optional_jax_verify_import_shim_used": false,
+  "partition_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+  "peak_rss_bytes": 1005166592,
+  "queue_count_final": 0,
+  "runtime_with_hashing_and_capture_s": 24.687008779495955,
+  "schema": "diffreach_torch_dr7_full_horizon_trace_v1",
+  "source_sha": "dd628eb443b517d6415de93e7035b4baef73963e",
+  "step_size": 0.01,
+  "step_size_hex": "0x1.47ae147ae147bp-7",
+  "steps": 1000,
+  "support_sha256": "0ae11ee9d911d45e42294df74ef2896ecb9aeb9f3d7851c09ea90e2bb2631f5e",
+  "tool": "pinned_diffreach_explicit_f64",
+  "trace_sha256": "9afdb933428be3f0a10b90bc31bd186ae8141edbc7143f89d18420c4f652b9ea",
+  "undeclared_fallback_or_repair": false,
+  "validated_horizon": 10.0,
+  "validated_horizon_hex": "0x1.4000000000000p+3",
+  "worktree_changes": [
+    " M src/picard.py",
+    " M src/reachability.py"
+  ]
+}
