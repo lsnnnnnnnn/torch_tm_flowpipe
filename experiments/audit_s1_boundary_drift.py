@@ -43,7 +43,7 @@ RUNNER_SPEC.loader.exec_module(runner)
 
 
 CONTROL_NAMES = ("C0", "C1", "C2", "C3", "C4", "L2")
-MILESTONES = (100, 150, 163, 164)
+MILESTONES = (1, 5, 7, 8, 10, 11, 12, 14, 16, 17, 70, 100, 150, 163, 164)
 
 
 def _jsonable(value: Any) -> Any:
@@ -482,6 +482,101 @@ def _comparison_rows(results: Mapping[str, Mapping[str, Any]]) -> list[dict[str,
     return rows
 
 
+def _total_delta_contract_rows(
+    results: Mapping[str, Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for control in ("C4", "L2"):
+        for state in results[control]["states"]:
+            ledger = state.get("stage_ledger")
+            if ledger is None:
+                continue
+            shadow = ledger["diagnostics"]["C_total_delta_shadow"]
+            for current_name, total_name, phase in (
+                ("current_known_before_padding", "known_before_padding", "before_padding"),
+                (
+                    "current_reconstructed_after_padding",
+                    "reconstructed_after_padding",
+                    "after_padding",
+                ),
+            ):
+                for component in range(2):
+                    current_lo, current_hi = _component_values(
+                        shadow[current_name], component
+                    )
+                    total_lo, total_hi = _component_values(
+                        shadow[total_name], component
+                    )
+                    rows.append(
+                        {
+                            "control": control,
+                            "boundary": int(state["boundary"]),
+                            "phase": phase,
+                            "component": component,
+                            "current_contract": "C_current",
+                            "shadow_contract": "C_total_delta",
+                            **compare_interval(
+                                current_lo,
+                                current_hi,
+                                total_lo,
+                                total_hi,
+                            ),
+                            "canonical_target_contained_by_current": shadow[
+                                "current_target_contained_after_padding"
+                            ],
+                            "canonical_target_contained_by_total_delta": shadow[
+                                "canonical_target_contained_after_padding"
+                            ],
+                            "current_unpadded_contains_total_delta_direct": shadow[
+                                "current_unpadded_contains_total_delta_direct"
+                            ],
+                        }
+                    )
+    return rows
+
+
+def _total_delta_summary(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    after = [row for row in rows if row["phase"] == "after_padding"]
+    before = [row for row in rows if row["phase"] == "before_padding"]
+    return {
+        "recorded_comparisons": len(rows),
+        "all_canonical_targets_contained": all(
+            row["canonical_target_contained_by_current"]
+            and row["canonical_target_contained_by_total_delta"]
+            for row in after
+        ),
+        "total_delta_not_wider_before_padding": all(
+            row["right_width"] <= row["left_width"] for row in before
+        ),
+        "total_delta_not_wider_after_padding": all(
+            row["right_width"] <= row["left_width"] for row in after
+        ),
+        "strictly_narrower_after_padding_count": sum(
+            row["right_width"] < row["left_width"] for row in after
+        ),
+        "first_current_unpadded_noncontainment_boundary": min(
+            (
+                int(row["boundary"])
+                for row in before
+                if not row["current_unpadded_contains_total_delta_direct"]
+            ),
+            default=None,
+        ),
+        "decisive_boundaries": {
+            control: {
+                str(boundary): [
+                    row
+                    for row in after
+                    if row["control"] == control
+                    and int(row["boundary"]) == boundary
+                ]
+                for boundary in MILESTONES
+            }
+            for control in ("C4", "L2")
+        },
+    }
+
+
 def _assert_known_margins(results: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
     attempts = {
         name: {int(row["attempt_index"]): row for row in results[name]["attempts"]}
@@ -609,7 +704,10 @@ def audit(schedule_path: Path, output_dir: Path) -> dict[str, Any]:
                 }
             )
     comparisons = _comparison_rows(results)
+    total_delta_rows = _total_delta_contract_rows(results)
+    total_delta = _total_delta_summary(total_delta_rows)
     _jsonl(output_dir / "prestate_comparisons.jsonl", comparisons)
+    _jsonl(output_dir / "total_delta_contract_comparisons.jsonl", total_delta_rows)
     _jsonl(output_dir / "causal_ladder.jsonl", causal_rows)
     _json(output_dir / "first_divergence.json", first)
     summary = {
@@ -627,6 +725,7 @@ def audit(schedule_path: Path, output_dir: Path) -> dict[str, Any]:
         "C2_same_set_relation": "equal" if c2_bit_exact else "incomparable",
         "known_margins": known_margins,
         "first_divergence": first,
+        "total_delta_shadow": total_delta,
     }
     _json(output_dir / "summary.json", summary)
     return summary

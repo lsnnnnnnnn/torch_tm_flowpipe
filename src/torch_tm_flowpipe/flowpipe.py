@@ -2389,12 +2389,24 @@ def _flowstar_structured_insertion_transition(
                     total_delta_known,
                     units="new normalized",
                 ),
+                "current_known_before_padding": _s1_interval_diagnostic(
+                    known,
+                    units="new normalized",
+                ),
                 "padding": _s1_interval_diagnostic(
                     total_delta_padding,
                     units="new normalized",
                 ),
+                "current_padding": _s1_interval_diagnostic(
+                    padding_normal,
+                    units="new normalized",
+                ),
                 "reconstructed_after_padding": _s1_interval_diagnostic(
                     total_delta_reconstruction_with_padding,
+                    units="new normalized",
+                ),
+                "current_reconstructed_after_padding": _s1_interval_diagnostic(
+                    current_reconstruction_with_padding,
                     units="new normalized",
                 ),
                 "canonical_target_contained_after_padding": bool(
