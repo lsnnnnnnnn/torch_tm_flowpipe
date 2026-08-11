@@ -130,6 +130,26 @@ def _write_jsonl(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
     temporary.replace(path)
 
 
+def _write_trace_outputs(
+    output_dir: Path,
+    *,
+    segment_rows: Sequence[Mapping[str, Any]],
+    attempt_rows: Sequence[Mapping[str, Any]],
+    checkpoint_rows: Sequence[Mapping[str, Any]],
+    ledger_rows: Sequence[Mapping[str, Any]],
+    profile_rows: Sequence[Mapping[str, Any]],
+    range_trace_rows: Sequence[Mapping[str, Any]],
+    horner_stage_rows: Sequence[Mapping[str, Any]],
+) -> None:
+    _write_csv(output_dir / "segments.csv", segment_rows)
+    _write_csv(output_dir / "attempts.csv", attempt_rows)
+    _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
+    _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
+    _write_csv(output_dir / "profile.csv", profile_rows)
+    _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
+    _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
+
+
 def _git(args: Sequence[str]) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
@@ -325,6 +345,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     requested_horizon = float(args.horizon)
     if requested_horizon <= 0 or requested_horizon > contract["target_horizon"] + 1e-12:
         raise ValueError("horizon must be positive and no larger than the authoritative target")
+    if int(args.trace_flush_every) < 0:
+        raise ValueError("trace flush interval must be nonnegative")
     output_dir = args.output_dir.resolve()
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"refusing non-empty output directory: {output_dir}")
@@ -349,6 +371,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "save_terminal_checkpoint": bool(args.save_terminal_checkpoint),
+        "trace_flush_every": int(args.trace_flush_every),
         "dense_range_method": args.dense_range_method,
         "dense_range_trigger": args.dense_range_trigger,
         "dense_range_max_depth": int(args.dense_range_max_depth),
@@ -425,6 +448,24 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     status = "completed"
     message = ""
     crossed: set[float] = set()
+    trace_io_s = 0.0
+    trace_write_count = 0
+
+    def flush_trace_outputs() -> None:
+        nonlocal trace_io_s, trace_write_count
+        io_started = time.perf_counter()
+        _write_trace_outputs(
+            output_dir,
+            segment_rows=segment_rows,
+            attempt_rows=attempt_rows,
+            checkpoint_rows=checkpoint_rows,
+            ledger_rows=ledger_rows,
+            profile_rows=profile_rows,
+            range_trace_rows=range_trace_rows,
+            horner_stage_rows=horner_stage_rows,
+        )
+        trace_io_s += time.perf_counter() - io_started
+        trace_write_count += 1
 
     while current_time < requested_horizon - 1e-12:
         elapsed = time.perf_counter() - start
@@ -721,13 +762,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 crossed.add(checkpoint)
                 checkpoint_rows.append({"checkpoint": checkpoint, "last_validated_time": current_time, "segment_index": len(segment_rows) - 1, "status": "passed", "endpoint_width_sum": row.get("endpoint_width_sum", ""), "segment_width_sum": row.get("segment_width_sum", "")})
 
-        _write_csv(output_dir / "segments.csv", segment_rows)
-        _write_csv(output_dir / "attempts.csv", attempt_rows)
-        _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
-        _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
-        _write_csv(output_dir / "profile.csv", profile_rows)
-        _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
-        _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
+        if (
+            int(args.trace_flush_every) > 0
+            and len(segment_rows) % int(args.trace_flush_every) == 0
+        ):
+            flush_trace_outputs()
 
     runtime = time.perf_counter() - start
     completed = status == "completed" and current_time >= requested_horizon - 1e-12
@@ -741,6 +780,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     failure_type = "" if completed else _failure_type(status, message, requested_horizon - current_time, contract["h_min"])
     accepted_rows = [row for row in segment_rows if row.get("status") == "accepted"]
     last = accepted_rows[-1] if accepted_rows else {}
+    flush_trace_outputs()
     summary = {
         "status": "completed" if completed else status,
         "failure_type": failure_type,
@@ -798,6 +838,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "last_segment": {key.removeprefix("segment_"): value for key, value in last.items() if key.startswith("segment_")},
         "full_tube": {"x_lo": tube_lo[0], "x_hi": tube_hi[0], "y_lo": tube_lo[1], "y_hi": tube_hi[1]} if segment_rows and math.isfinite(tube_lo[0]) else None,
         "runtime_s": runtime,
+        "trace_io_s": trace_io_s,
+        "trace_write_count": trace_write_count,
+        "trace_flush_every": int(args.trace_flush_every),
         "peak_rss_bytes": _peak_rss_bytes(),
         "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
         "branch": command["branch"],
@@ -806,13 +849,6 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "tracked_diff_sha256": command["tracked_diff_sha256"],
         "config_sha256": command["config_sha256"],
     }
-    _write_csv(output_dir / "segments.csv", segment_rows)
-    _write_csv(output_dir / "attempts.csv", attempt_rows)
-    _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
-    _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
-    _write_csv(output_dir / "profile.csv", profile_rows)
-    _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
-    _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
     _atomic_json(output_dir / "summary.json", summary)
     _atomic_json(
         output_dir / "decision.json",
@@ -841,6 +877,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     parser.add_argument("--horizon", type=float, default=10.0)
     parser.add_argument("--fixed-step", type=float)
+    parser.add_argument(
+        "--trace-flush-every",
+        type=int,
+        default=1,
+        help="rewrite cumulative traces every N steps; zero writes once at termination",
+    )
     parser.add_argument("--wall-cap-s", type=float, default=1800.0)
     parser.add_argument("--transition-trace-dir", type=Path)
     parser.add_argument(

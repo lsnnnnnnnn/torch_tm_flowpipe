@@ -49,6 +49,8 @@ def test_dense_runner_writes_fail_closed_parseable_outputs(tmp_path):
             "0.02",
             "--wall-cap-s",
             "60",
+            "--trace-flush-every",
+            "0",
         ]
     )
     summary = runner.run(args)
@@ -92,6 +94,8 @@ def test_dense_runner_fixed_schedule_has_exact_binary64_trace(tmp_path):
             "0.01",
             "--wall-cap-s",
             "60",
+            "--trace-flush-every",
+            "0",
         ]
     )
 
@@ -110,6 +114,8 @@ def test_dense_runner_fixed_schedule_has_exact_binary64_trace(tmp_path):
     assert summary["fallback_count"] == 0
     assert summary["endpoint_repair_used"] is False
     assert summary["peak_rss_bytes"] > 0
+    assert summary["trace_flush_every"] == 0
+    assert summary["trace_write_count"] == 1
 
     import csv
 
