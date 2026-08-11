@@ -243,7 +243,14 @@ def _materialize_every_boundary(state: StructuredRemainderState) -> tuple[Struct
     ), count
 
 
-def _initialize_structured_lane() -> tuple[TMVector, FlowstarNormalFlowpipeState]:
+def _initialize_structured_lane(
+    reset_mode: str = "normalized_insertion_structured_remainder_k16",
+) -> tuple[TMVector, FlowstarNormalFlowpipeState]:
+    if reset_mode not in {
+        "normalized_insertion_structured_remainder_k16",
+        "normalized_insertion_structured_total_delta_k16",
+    }:
+        raise ValueError("unknown structured reset mode")
     initial = [Interval(*bounds) for bounds in CONTRACT["canonical_system_spec"]["initial_box"]]
     normal = FlowstarNormalFlowpipeState.from_initial_box(initial, CONTRACT["requested_order"])
     structured = initialize_structured_remainder_state(1, len(normal.center))
@@ -255,7 +262,7 @@ def _initialize_structured_lane() -> tuple[TMVector, FlowstarNormalFlowpipeState
         structured_remainder_state=structured,
         diagnostics={
             **dict(normal.diagnostics or {}),
-            "reset_mode": "normalized_insertion_structured_remainder_k16",
+            "reset_mode": reset_mode,
             "structured_initial_state": True,
         },
     )
@@ -311,7 +318,8 @@ def _run_lane_step(
     max_validation_attempts: int = 2,
     structured_allow_outward_renormalization: bool = True,
 ):
-    structured_lane = lane in {"L1", "L2"}
+    structured_lane = lane in {"L1", "L2", "B"}
+    total_delta_lane = lane == "B"
     return flowpipe_step_flowstar_style_adaptive(
         ode,
         current,
@@ -325,7 +333,9 @@ def _run_lane_step(
         validation_eps=1e-12,
         validation_mode=CONTRACT["validation_mode"],
         reset_mode=(
-            "normalized_insertion_structured_remainder_k16"
+            "normalized_insertion_structured_total_delta_k16"
+            if total_delta_lane
+            else "normalized_insertion_structured_remainder_k16"
             if structured_lane
             else "normalized_insertion"
         ),
@@ -490,14 +500,18 @@ def replay_lane(
     *,
     max_boundaries: int | None = None,
 ) -> dict[str, Any]:
-    if lane not in {"L0", "L1", "L2"}:
-        raise ValueError("lane must be L0, L1, or L2")
+    if lane not in {"L0", "L1", "L2", "B"}:
+        raise ValueError("lane must be L0, L1, L2, or B")
     output_dir.mkdir(parents=True, exist_ok=True)
     if any(output_dir.iterdir()):
         raise FileExistsError(f"refusing non-empty lane output: {output_dir}")
-    structured_lane = lane in {"L1", "L2"}
+    structured_lane = lane in {"L1", "L2", "B"}
     if structured_lane:
-        current, normal_state = _initialize_structured_lane()
+        current, normal_state = _initialize_structured_lane(
+            "normalized_insertion_structured_total_delta_k16"
+            if lane == "B"
+            else "normalized_insertion_structured_remainder_k16"
+        )
     else:
         current = [Interval(*bounds) for bounds in CONTRACT["canonical_system_spec"]["initial_box"]]
         normal_state = None
@@ -937,7 +951,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--source-segments", type=Path)
     parser.add_argument("--schedule", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--lane", choices=("L0", "L1", "L2"))
+    parser.add_argument("--lane", choices=("L0", "L1", "L2", "B"))
     parser.add_argument("--freeze-only", action="store_true")
     parser.add_argument("--max-boundaries", type=int)
     return parser.parse_args(argv)

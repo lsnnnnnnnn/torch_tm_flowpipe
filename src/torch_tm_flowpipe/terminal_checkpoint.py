@@ -22,6 +22,7 @@ from .tm_vector import TMVector
 from .structured_remainder import (
     STRUCTURED_REMAINDER_CANDIDATE,
     STRUCTURED_REMAINDER_CAPACITY,
+    STRUCTURED_TOTAL_DELTA_CANDIDATE,
     StructuredRemainderState,
 )
 from .batched_dense_tm import (
@@ -252,7 +253,11 @@ def _decode_tensor(
     return tensor
 
 
-def _encode_structured_state(state: StructuredRemainderState) -> dict[str, Any]:
+def _encode_structured_state(
+    state: StructuredRemainderState,
+    *,
+    candidate: str = STRUCTURED_REMAINDER_CANDIDATE,
+) -> dict[str, Any]:
     if state.capacity != STRUCTURED_REMAINDER_CAPACITY:
         raise ValueError("active S1 checkpoint must use the frozen K16 capacity")
     assert state.source_boundary_index is not None
@@ -276,8 +281,13 @@ def _encode_structured_state(state: StructuredRemainderState) -> dict[str, Any]:
             "event_count",
         )
     }
+    if candidate not in {
+        STRUCTURED_REMAINDER_CANDIDATE,
+        STRUCTURED_TOTAL_DELTA_CANDIDATE,
+    }:
+        raise ValueError("structured checkpoint candidate mismatch")
     return {
-        "candidate": STRUCTURED_REMAINDER_CANDIDATE,
+        "candidate": candidate,
         "capacity": STRUCTURED_REMAINDER_CAPACITY,
         "source_schema": VALIDATED_REMAINDER_SOURCE_SCHEMA,
         "source_schema_version": VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION,
@@ -289,7 +299,10 @@ def _encode_structured_state(state: StructuredRemainderState) -> dict[str, Any]:
 
 
 def _decode_structured_state(value: Mapping[str, Any]) -> StructuredRemainderState:
-    if value.get("candidate") != STRUCTURED_REMAINDER_CANDIDATE:
+    if value.get("candidate") not in {
+        STRUCTURED_REMAINDER_CANDIDATE,
+        STRUCTURED_TOTAL_DELTA_CANDIDATE,
+    }:
         raise ValueError("structured checkpoint candidate mismatch")
     if int(value.get("capacity", -1)) != STRUCTURED_REMAINDER_CAPACITY:
         raise ValueError("structured checkpoint K mismatch")
@@ -374,6 +387,13 @@ def _decode_structured_state(value: Mapping[str, Any]) -> StructuredRemainderSta
 def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
     if state.symbolic_queue is not None:
         raise ValueError("non-empty symbolic queue checkpointing is not supported by this canonical lane")
+    diagnostics = state.diagnostics if isinstance(state.diagnostics, Mapping) else {}
+    structured_candidate = diagnostics.get(
+        "structured_candidate",
+        diagnostics.get("reset_mode", STRUCTURED_REMAINDER_CANDIDATE),
+    )
+    if structured_candidate != STRUCTURED_TOTAL_DELTA_CANDIDATE:
+        structured_candidate = STRUCTURED_REMAINDER_CANDIDATE
     return {
         "tmv_pre": _encode_tmvector(state.tmv_pre),
         "tmv_right": _encode_tmvector(state.tmv_right),
@@ -390,7 +410,10 @@ def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
             else None
         ),
         "structured_remainder": (
-            _encode_structured_state(state.structured_remainder_state)
+            _encode_structured_state(
+                state.structured_remainder_state,
+                candidate=str(structured_candidate),
+            )
             if isinstance(state.structured_remainder_state, StructuredRemainderState)
             else None
         ),

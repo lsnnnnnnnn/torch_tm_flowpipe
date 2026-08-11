@@ -82,6 +82,7 @@ _PUBLIC_MODULES = {
     "outward_where": ".fixed_support_outward",
     "ELIGIBLE_STRUCTURED_SOURCES": ".structured_remainder",
     "STRUCTURED_REMAINDER_CANDIDATE": ".structured_remainder",
+    "STRUCTURED_TOTAL_DELTA_CANDIDATE": ".structured_remainder",
     "STRUCTURED_REMAINDER_CAPACITY": ".structured_remainder",
     "STRUCTURED_SOURCE_IDS": ".structured_remainder",
     "CompletePolynomialStructuredImage": ".structured_remainder",

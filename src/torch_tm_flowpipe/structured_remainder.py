@@ -28,6 +28,7 @@ from .fixed_support_outward import (
 
 STRUCTURED_REMAINDER_CAPACITY = 16
 STRUCTURED_REMAINDER_CANDIDATE = "normalized_insertion_structured_remainder_k16"
+STRUCTURED_TOTAL_DELTA_CANDIDATE = "normalized_insertion_structured_total_delta_k16"
 ELIGIBLE_STRUCTURED_SOURCES = (
     "polynomial_truncation",
     "integration_overflow",
@@ -1362,6 +1363,7 @@ __all__ = [
     "ELIGIBLE_STRUCTURED_SOURCES",
     "STRUCTURED_REMAINDER_CANDIDATE",
     "STRUCTURED_REMAINDER_CAPACITY",
+    "STRUCTURED_TOTAL_DELTA_CANDIDATE",
     "STRUCTURED_SOURCE_IDS",
     "StructuredRemainderBoundaryResult",
     "StructuredRemainderState",

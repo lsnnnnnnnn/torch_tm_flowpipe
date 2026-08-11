@@ -14,6 +14,8 @@ from .safety import intervals_are_finite
 from .fixed_support_outward import OutwardIntervalTensor, outward_matmul, outward_sum
 from .structured_remainder import (
     ELIGIBLE_STRUCTURED_SOURCES,
+    STRUCTURED_REMAINDER_CANDIDATE,
+    STRUCTURED_TOTAL_DELTA_CANDIDATE,
     StructuredRemainderState,
     complete_polynomial_structured_image,
     compare_complete_polynomial_contracts,
@@ -1796,6 +1798,7 @@ def _flowstar_structured_insertion_transition(
     right_map_center_mode: str,
     horner_diagnostic: bool,
     allow_outward_renormalization: bool = True,
+    image_contract: str = "current",
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     """Carry K16 S1 through one already accepted complete-O4 boundary."""
     from .batched_dense_tm import (
@@ -1804,6 +1807,8 @@ def _flowstar_structured_insertion_transition(
     )
 
     structured = previous_state.structured_remainder_state
+    if image_contract not in {"current", "total_delta"}:
+        raise ValueError("unknown structured complete-polynomial image contract")
     if not isinstance(structured, StructuredRemainderState):
         raise ValueError("S1 transition requires an initialized structured prestate")
     if seg.status != "validated" or seg.validated_remainder_ledger is None:
@@ -1863,10 +1868,24 @@ def _flowstar_structured_insertion_transition(
         structured_box=(old_columns.lo, old_columns.hi),
         coordinate_map=identity,
     )
-    endpoint_image = contract_shadow.current_image
+    endpoint_image = (
+        contract_shadow.total_delta_image
+        if image_contract == "total_delta"
+        else contract_shadow.current_image
+    )
+    selected_base_lo, selected_base_hi = (
+        (pre_q_lo, pre_q_hi)
+        if image_contract == "total_delta"
+        else (base_lo, base_hi)
+    )
+    selected_perturbation = (
+        pre_total
+        if image_contract == "total_delta"
+        else old_columns
+    )
     endpoint_polynomial_lo, endpoint_polynomial_hi = endpoint_dense.poly.range_bound(
-        base_lo,
-        base_hi,
+        selected_base_lo,
+        selected_base_hi,
         context="s1_boundary_attribution_endpoint_polynomial",
     )
     tube_dense = sparse_tmvector_to_dense(
@@ -1875,10 +1894,10 @@ def _flowstar_structured_insertion_transition(
         dtype=torch.float64,
     )
     tube_base_lo = torch.cat(
-        [base_lo, torch.zeros((1, 1), dtype=torch.float64)], dim=1
+        [selected_base_lo, torch.zeros((1, 1), dtype=torch.float64)], dim=1
     )
     tube_base_hi = torch.cat(
-        [base_hi, torch.full((1, 1), float(seg.h), dtype=torch.float64)], dim=1
+        [selected_base_hi, torch.full((1, 1), float(seg.h), dtype=torch.float64)], dim=1
     )
     tube_coordinate = torch.zeros(
         (1, structured.state_dim + 1, structured.state_dim), dtype=torch.float64
@@ -1887,7 +1906,7 @@ def _flowstar_structured_insertion_transition(
     tube_image = complete_polynomial_structured_image(
         tube_dense.poly,
         (tube_base_lo, tube_base_hi),
-        (old_columns.lo, old_columns.hi),
+        (selected_perturbation.lo, selected_perturbation.hi),
         tube_coordinate,
         (
             torch.zeros(1, dtype=torch.float64),
@@ -1937,17 +1956,25 @@ def _flowstar_structured_insertion_transition(
             if category not in ELIGIBLE_STRUCTURED_SOURCES
         ]
     )
-    endpoint_structured_image = OutwardIntervalTensor(
-        endpoint_image.total_difference_lo,
-        endpoint_image.total_difference_hi,
+    endpoint_carry_image = OutwardIntervalTensor(
+        endpoint_image.reconstruction_lo
+        if image_contract == "total_delta"
+        else endpoint_image.total_difference_lo,
+        endpoint_image.reconstruction_hi
+        if image_contract == "total_delta"
+        else endpoint_image.total_difference_hi,
     ).add(eligible_symmetric_total)
-    tube_structured_image = OutwardIntervalTensor(
-        tube_image.total_difference_lo,
-        tube_image.total_difference_hi,
+    tube_carry_image = OutwardIntervalTensor(
+        tube_image.reconstruction_lo
+        if image_contract == "total_delta"
+        else tube_image.total_difference_lo,
+        tube_image.reconstruction_hi
+        if image_contract == "total_delta"
+        else tube_image.total_difference_hi,
     ).add(eligible_symmetric_total)
     endpoint_in_tube = (
-        (tube_structured_image.lo <= endpoint_structured_image.lo)
-        & (tube_structured_image.hi >= endpoint_structured_image.hi)
+        (tube_carry_image.lo <= endpoint_carry_image.lo)
+        & (tube_carry_image.hi >= endpoint_carry_image.hi)
     ).all(dim=1)
     if not bool(torch.all(endpoint_in_tube)):
         raise FloatingPointError("S1 endpoint structured image is not contained in tube image")
@@ -2197,10 +2224,55 @@ def _flowstar_structured_insertion_transition(
         for category in REMAINDER_LEDGER_CATEGORIES
         if category not in ELIGIBLE_STRUCTURED_SOURCES
     ]
-    tube_ordinary = outward_sum(
-        [*ineligible_tube_terms, eligible_center_total]
-    )
+    if image_contract == "total_delta":
+        tube_affine = OutwardIntervalTensor(
+            tube_image.affine_map_lo,
+            tube_image.affine_map_hi,
+        )
+        tube_affine_ordinary = _interval_matrix_vector(
+            tube_affine,
+            OutwardIntervalTensor(
+                structured.ordinary_rem_lo,
+                structured.ordinary_rem_hi,
+            ),
+        )
+        tube_affine_structured = _interval_matrix_vector(
+            tube_affine,
+            old_columns,
+        )
+        tube_nonlinear = OutwardIntervalTensor(
+            tube_image.nonlinear_residual_lo,
+            tube_image.nonlinear_residual_hi,
+        )
+        tube_ordinary = outward_sum(
+            [
+                tube_affine_ordinary,
+                tube_nonlinear,
+                *ineligible_tube_terms,
+                eligible_center_total,
+            ]
+        )
+        tube_structured_image = tube_affine_structured.add(
+            eligible_symmetric_total
+        )
+    else:
+        tube_ordinary = outward_sum(
+            [*ineligible_tube_terms, eligible_center_total]
+        )
+        tube_structured_image = tube_carry_image
     tube_total = tube_ordinary.add(tube_structured_image)
+    tube_publication_padding = OutwardIntervalTensor.zeros_like(tube_total.lo)
+    if image_contract == "total_delta":
+        tube_publication_padding = _s1_padding_to_target(
+            tube_total,
+            endpoint_total,
+        )
+        tube_ordinary = tube_ordinary.add(tube_publication_padding)
+        tube_total = tube_ordinary.add(tube_structured_image)
+    published_endpoint_in_tube = (
+        (tube_total.lo <= endpoint_total.lo)
+        & (tube_total.hi >= endpoint_total.hi)
+    ).all(dim=1)
     endpoint_publication = verify_structured_publication(
         ordinary_endpoint_physical.lo,
         ordinary_endpoint_physical.hi,
@@ -2217,8 +2289,20 @@ def _flowstar_structured_insertion_transition(
         tube_total.lo,
         tube_total.hi,
     )
-    if not bool(torch.all(endpoint_publication & tube_publication)):
-        raise FloatingPointError("S1 endpoint/tube publication omitted a represented contribution")
+    required_publication = endpoint_publication & tube_publication
+    if image_contract == "total_delta":
+        required_publication = required_publication & published_endpoint_in_tube
+    if not bool(torch.all(required_publication)):
+        raise FloatingPointError(
+            "S1 endpoint/tube publication omitted a represented contribution: "
+            f"endpoint_publication={endpoint_publication.detach().cpu().tolist()}; "
+            f"tube_publication={tube_publication.detach().cpu().tolist()}; "
+            f"published_endpoint_in_tube={published_endpoint_in_tube.detach().cpu().tolist()}; "
+            f"endpoint_total=({endpoint_total.lo.detach().cpu().tolist()},"
+            f"{endpoint_total.hi.detach().cpu().tolist()}); "
+            f"tube_total=({tube_total.lo.detach().cpu().tolist()},"
+            f"{tube_total.hi.detach().cpu().tolist()})"
+        )
     endpoint_affine = OutwardIntervalTensor(
         endpoint_image.affine_map_lo,
         endpoint_image.affine_map_hi,
@@ -2251,7 +2335,9 @@ def _flowstar_structured_insertion_transition(
     )
     seg.boundary_attribution_record = S1BoundaryAttributionRecord(
         accepted_boundary_index_before=int(structured.accepted_boundary_index),
-        contract="C_current",
+        contract=(
+            "C_total_delta" if image_contract == "total_delta" else "C_current"
+        ),
         stages=(
             S1BoundaryStage("A0", "prestate polynomial Q range", "old normalized", pre_q_lo, pre_q_hi),
             S1BoundaryStage(
@@ -2277,8 +2363,20 @@ def _flowstar_structured_insertion_transition(
                 endpoint_polynomial_lo,
                 endpoint_polynomial_hi,
             ),
-            S1BoundaryStage("B2", "current base box", "old normalized", base_lo, base_hi),
-            S1BoundaryStage("B3", "current structured perturbation box", "old normalized", old_columns.lo, old_columns.hi),
+            S1BoundaryStage(
+                "B2",
+                "selected complete-polynomial base box",
+                "old normalized",
+                selected_base_lo,
+                selected_base_hi,
+            ),
+            S1BoundaryStage(
+                "B3",
+                "selected complete-polynomial perturbation box",
+                "old normalized",
+                selected_perturbation.lo,
+                selected_perturbation.hi,
+            ),
             S1BoundaryStage(
                 "B4",
                 "affine map A",
@@ -2348,15 +2446,30 @@ def _flowstar_structured_insertion_transition(
             S1BoundaryStage("B16", "published tube total", "tube physical", tube_total.lo, tube_total.hi),
         ),
         diagnostics={
-            "complete_polynomial_contract": "base=range(Q+R_o), perturbation=Z",
+            "complete_polynomial_contract": (
+                "base=range(Q), perturbation=R_o+Z"
+                if image_contract == "total_delta"
+                else "base=range(Q+R_o), perturbation=Z"
+            ),
             "structured_image_decomposition_padding_lo": endpoint_image.decomposition_padding_lo.detach().cpu().tolist(),
             "structured_image_decomposition_padding_hi": endpoint_image.decomposition_padding_hi.detach().cpu().tolist(),
             "structured_image_containment": bool(torch.all(endpoint_image.containment_mask)),
             "source_decomposition": bool(torch.all(boundary.source_decomposition_mask)),
             "conservation": bool(torch.all(boundary.conservation_mask)),
             "outward_renormalization_count": int(renormalization_count),
+            "published_endpoint_in_tube": bool(
+                torch.all(published_endpoint_in_tube)
+            ),
+            "tube_publication_padding": _s1_interval_diagnostic(
+                tube_publication_padding,
+                units="tube physical",
+            ),
             "C_total_delta_shadow": {
-                "status": "diagnostic_only_not_production",
+                "status": (
+                    "selected_production_contract_outcome_B"
+                    if image_contract == "total_delta"
+                    else "diagnostic_only_not_production"
+                ),
                 "contract": "base=range(Q), perturbation=R_o+Z",
                 "base_Q": _s1_interval_diagnostic(
                     OutwardIntervalTensor(pre_q_lo, pre_q_hi),
@@ -2453,7 +2566,12 @@ def _flowstar_structured_insertion_transition(
 
     diagnostics.update(
         {
-            "structured_candidate": "normalized_insertion_structured_remainder_k16",
+            "structured_candidate": (
+                STRUCTURED_TOTAL_DELTA_CANDIDATE
+                if image_contract == "total_delta"
+                else STRUCTURED_REMAINDER_CANDIDATE
+            ),
+            "structured_image_contract": image_contract,
             "structured_boundary_index_before": structured.accepted_boundary_index,
             "structured_boundary_index_after": boundary.state.accepted_boundary_index,
             "structured_active_columns": int(boundary.state.active.sum().item()),
@@ -2463,6 +2581,11 @@ def _flowstar_structured_insertion_transition(
             "structured_total_self_map_containment": bool(torch.all(domain_gate)),
             "structured_outward_renormalization_count": renormalization_count,
             "structured_endpoint_in_tube": bool(torch.all(endpoint_in_tube)),
+            "structured_published_endpoint_in_tube": bool(
+                torch.all(published_endpoint_in_tube)
+            ),
+            "structured_tube_publication_padding_lo": tube_publication_padding.lo.detach().cpu().tolist(),
+            "structured_tube_publication_padding_hi": tube_publication_padding.hi.detach().cpu().tolist(),
             "structured_endpoint_publication": bool(torch.all(endpoint_publication)),
             "structured_tube_publication": bool(torch.all(tube_publication)),
             "structured_raw_picard_target_changed": False,
@@ -5107,6 +5230,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion_symqueue_v2",
         "normalized_insertion_horner",
         "normalized_insertion_structured_remainder_k16",
+        "normalized_insertion_structured_total_delta_k16",
     }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
@@ -5115,7 +5239,8 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion_symqueue', "
             "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
             "'normalized_insertion_horner', or "
-            "'normalized_insertion_structured_remainder_k16'"
+            "'normalized_insertion_structured_remainder_k16', or "
+            "'normalized_insertion_structured_total_delta_k16'"
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
@@ -5132,7 +5257,10 @@ def flowpipe_step_flowstar_style_adaptive(
     normal_state = flowstar_normal_state
     if reset_mode in normal_insertion_modes and normal_state is None and not isinstance(x0, TMVector):
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
-        if reset_mode == "normalized_insertion_structured_remainder_k16":
+        if reset_mode in {
+            "normalized_insertion_structured_remainder_k16",
+            "normalized_insertion_structured_total_delta_k16",
+        }:
             structured = initialize_structured_remainder_state(
                 1,
                 len(normal_state.center),
@@ -5176,7 +5304,10 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
         elif reset_mode in normal_insertion_modes:
-            if reset_mode == "normalized_insertion_structured_remainder_k16":
+            if reset_mode in {
+                "normalized_insertion_structured_remainder_k16",
+                "normalized_insertion_structured_total_delta_k16",
+            }:
                 assert normal_state is not None
                 try:
                     reset_tm, normal_state, normal_stats = _flowstar_structured_insertion_transition(
@@ -5190,6 +5321,12 @@ def flowpipe_step_flowstar_style_adaptive(
                         right_map_center_mode=right_map_center_mode,
                         horner_diagnostic=horner_diagnostic,
                         allow_outward_renormalization=structured_allow_outward_renormalization,
+                        image_contract=(
+                            "total_delta"
+                            if reset_mode
+                            == "normalized_insertion_structured_total_delta_k16"
+                            else "current"
+                        ),
                     )
                 except (FloatingPointError, RuntimeError, ValueError) as exc:
                     seg.status = "failed"
