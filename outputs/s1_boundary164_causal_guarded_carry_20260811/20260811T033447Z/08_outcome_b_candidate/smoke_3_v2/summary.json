@@ -1,0 +1,28 @@
+{
+  "accepted_boundaries": 3,
+  "attempt_rows": 3,
+  "boundary_164_checkpoint": null,
+  "checkpoint_full_sha256": null,
+  "final_common_prefix_boundary": 3,
+  "first_eviction_boundary": null,
+  "first_full_k16_boundary": null,
+  "first_schedule_or_decision_divergence": null,
+  "lane": "B",
+  "largest_eviction": null,
+  "outcome": "TEST_BOUNDARY_LIMIT_REACHED",
+  "provenance": {
+    "branch": "codex/s1-boundary164-causal-guarded-carry-20260811",
+    "commit": "ffb4a409e98a37b5ca069d93d2c9ef65516fdc94",
+    "contract_sha256": "344e0baa75439634e7a2108e04261a159bd37c1f6563da8af6fe966275024c4e",
+    "device": "cpu",
+    "dtype": "float64",
+    "lane": "B",
+    "schedule_sha256": "e63731a6cf253b30927d7238d8551efb11ba36c2c2299ba83b7fb924e82f22aa",
+    "source_artifact_sha256": "28a92e6bb84e2d8b81cb31e57453eb46e28ef03c434d284ec92b9a50f6ac5dc4",
+    "torch_version": "2.5.1+cu121",
+    "worktree_status": "M experiments/run_s1_prefix_complete_o4.py\n M src/torch_tm_flowpipe/__init__.py\n M src/torch_tm_flowpipe/flowpipe.py\n M src/torch_tm_flowpipe/structured_remainder.py\n M src/torch_tm_flowpipe/terminal_checkpoint.py"
+  },
+  "runtime_s": 1.7638176586478949,
+  "schema": "torch_tm_flowpipe_s1_prefix_ledger_v1",
+  "terminal_prestate_reached": false
+}

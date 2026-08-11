@@ -1,0 +1,660 @@
+{
+  "boundary": 0,
+  "current": {
+    "dtype": "float64",
+    "models": [
+      {
+        "domain": [
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          },
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          }
+        ],
+        "n_vars": 2,
+        "order": 4,
+        "remainder": {
+          "hi_hex": "0x0.0p+0",
+          "lo_hex": "0x0.0p+0"
+        },
+        "terms": [
+          {
+            "coefficient_hex": "0x1.4000000000000p+0",
+            "exponent": [
+              0,
+              0
+            ]
+          },
+          {
+            "coefficient_hex": "0x1.3333333333331p-3",
+            "exponent": [
+              1,
+              0
+            ]
+          }
+        ],
+        "truncation_range_split": null
+      },
+      {
+        "domain": [
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          },
+          {
+            "hi_hex": "0x1.0000000000000p+0",
+            "lo_hex": "-0x1.0000000000000p+0"
+          }
+        ],
+        "n_vars": 2,
+        "order": 4,
+        "remainder": {
+          "hi_hex": "0x0.0p+0",
+          "lo_hex": "0x0.0p+0"
+        },
+        "terms": [
+          {
+            "coefficient_hex": "0x1.3333333333334p+1",
+            "exponent": [
+              0,
+              0
+            ]
+          },
+          {
+            "coefficient_hex": "0x1.99999999999a1p-5",
+            "exponent": [
+              0,
+              1
+            ]
+          }
+        ],
+        "truncation_range_split": null
+      }
+    ],
+    "source_device": "cpu"
+  },
+  "normal_state": {
+    "center_hex": [
+      "0x1.4000000000000p+0",
+      "0x1.3333333333334p+1"
+    ],
+    "diagnostics": {
+      "initial_state": true,
+      "reset_mode": "normalized_insertion_structured_total_delta_k16",
+      "structured_initial_state": true
+    },
+    "domain": [
+      {
+        "hi_hex": "0x1.0000000000000p+0",
+        "lo_hex": "-0x1.0000000000000p+0"
+      },
+      {
+        "hi_hex": "0x1.0000000000000p+0",
+        "lo_hex": "-0x1.0000000000000p+0"
+      }
+    ],
+    "initial_remainders": null,
+    "scales_hex": [
+      "0x1.3333333333331p-3",
+      "0x1.99999999999a1p-5"
+    ],
+    "step_index": 0,
+    "structured_remainder": {
+      "accepted_boundary_index": 0,
+      "batch": 1,
+      "candidate": "normalized_insertion_structured_total_delta_k16",
+      "capacity": 16,
+      "fields": {
+        "active": {
+          "dtype": "bool",
+          "shape": [
+            1,
+            16
+          ],
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "age": {
+          "dtype": "int64",
+          "shape": [
+            1,
+            16
+          ],
+          "values": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        },
+        "event_count": {
+          "dtype": "int64",
+          "shape": [
+            1
+          ],
+          "values": [
+            0
+          ]
+        },
+        "inverse_scale": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            2
+          ],
+          "values_hex": [
+            "0x1.aaaaaaaaaaaaep+2",
+            "0x1.3fffffffffffap+4"
+          ]
+        },
+        "j_hi": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            16,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "j_lo": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            16,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "ordinary_rem_hi": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "ordinary_rem_lo": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "phi_hi": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            16,
+            2,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "phi_lo": {
+          "dtype": "float64",
+          "shape": [
+            1,
+            16,
+            2,
+            2
+          ],
+          "values_hex": [
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ]
+        },
+        "source_boundary_index": {
+          "dtype": "int64",
+          "shape": [
+            1,
+            16
+          ],
+          "values": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        },
+        "source_id": {
+          "dtype": "int64",
+          "shape": [
+            1,
+            16
+          ],
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "source_occurrence_index": {
+          "dtype": "int64",
+          "shape": [
+            1,
+            16
+          ],
+          "values": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      },
+      "source_schema": "torch_tm_flowpipe_validated_remainder_sources",
+      "source_schema_version": 1,
+      "state_dim": 2
+    },
+    "symbolic_queue_max_size": 100,
+    "symbolic_queue_present": false,
+    "tmv_pre": {
+      "dtype": "float64",
+      "models": [
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x0.0p+0",
+            "lo_hex": "0x0.0p+0"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.4000000000000p+0",
+              "exponent": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.3333333333331p-3",
+              "exponent": [
+                1,
+                0
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        },
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x0.0p+0",
+            "lo_hex": "0x0.0p+0"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.3333333333334p+1",
+              "exponent": [
+                0,
+                0
+              ]
+            },
+            {
+              "coefficient_hex": "0x1.99999999999a1p-5",
+              "exponent": [
+                0,
+                1
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        }
+      ],
+      "source_device": "cpu"
+    },
+    "tmv_right": {
+      "dtype": "float64",
+      "models": [
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x0.0p+0",
+            "lo_hex": "0x0.0p+0"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.0000000000000p+0",
+              "exponent": [
+                1,
+                0
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        },
+        {
+          "domain": [
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            },
+            {
+              "hi_hex": "0x1.0000000000000p+0",
+              "lo_hex": "-0x1.0000000000000p+0"
+            }
+          ],
+          "n_vars": 2,
+          "order": 4,
+          "remainder": {
+            "hi_hex": "0x0.0p+0",
+            "lo_hex": "0x0.0p+0"
+          },
+          "terms": [
+            {
+              "coefficient_hex": "0x1.0000000000000p+0",
+              "exponent": [
+                0,
+                1
+              ]
+            }
+          ],
+          "truncation_range_split": null
+        }
+      ],
+      "source_device": "cpu"
+    }
+  },
+  "reason": "mandatory",
+  "state_sha256": "4e581056380439ce9feb0cf4eb29694532a9c837ccd254dffeb06f173d9e1243"
+}

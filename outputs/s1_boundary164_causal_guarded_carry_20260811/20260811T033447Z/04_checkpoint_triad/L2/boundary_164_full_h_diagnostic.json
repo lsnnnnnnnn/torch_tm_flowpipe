@@ -1,0 +1,1734 @@
+{
+  "accepted_boundary_index": 164,
+  "adaptive_shrink_allowed": false,
+  "all_diagnostics": [
+    {
+      "accumulated_before_x0_add_hi": [
+        [
+          3.661681691961389e-06,
+          8.009028970526782e-05
+        ]
+      ],
+      "accumulated_before_x0_add_lo": [
+        [
+          -3.661681691961389e-06,
+          -0.00010377387352868672
+        ]
+      ],
+      "adaptive_attempt_index": 1,
+      "attempt": 1,
+      "candidate_remainder_hi": [
+        [
+          0.0001,
+          0.0001
+        ]
+      ],
+      "candidate_remainder_lo": [
+        [
+          -0.0001,
+          -0.0001
+        ]
+      ],
+      "diagnostic_role": "frozen_full_h_first_validator",
+      "finite": true,
+      "finite_residual": true,
+      "h": 0.03661680691961388,
+      "h_max": 0.03661680691961388,
+      "h_min": 0.03661680691961388,
+      "h_try": 0.03661680691961388,
+      "lane": "L2",
+      "mode": "flowstar_style",
+      "order": 4,
+      "ordinary_residual_hi": [
+        [
+          6.375585287103057e-06,
+          5.8949504247332075e-05
+        ]
+      ],
+      "ordinary_residual_lo": [
+        [
+          -5.634093016110416e-06,
+          -6.0551877327697914e-05
+        ]
+      ],
+      "ordinary_residual_width_sum": 0.00013151105987824346,
+      "phase": "remainder_validation",
+      "picard_image_remainder_hi": [
+        [
+          3.66168369196139e-06,
+          8.009029170526785e-05
+        ]
+      ],
+      "picard_image_remainder_lo": [
+        [
+          -3.66168369196139e-06,
+          -0.00010377387552868675
+        ]
+      ],
+      "poly_diff_range_hi": [
+        [
+          1.0000000000000002e-12,
+          1.0000000000000002e-12
+        ]
+      ],
+      "poly_diff_range_lo": [
+        [
+          -1.0000000000000002e-12,
+          -1.0000000000000002e-12
+        ]
+      ],
+      "polynomial_range_width_sum": 0.4586179150532188,
+      "range_method": "adaptive_subdivision",
+      "raw_ctrunc_residual_width_sum": 0.0001911875346178774,
+      "raw_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              0.0,
+              2.2250738585072024e-308
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -2.2250738585072024e-308
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              4.450147717014405e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              0.0001,
+              0.00020000000000000006
+            ]
+          ],
+          "lo": [
+            [
+              -0.0001,
+              -0.00020000000000000006
+            ]
+          ],
+          "width": [
+            [
+              0.0002,
+              0.00040000000000000013
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              0.0003275490626485896
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.0003275490626485896
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0006550981252971792
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              0.0,
+              0.0013002415651395445
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.0018999416271290545
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.003200183192268599
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              0.0,
+              0.00035941122096679626
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -0.0004065066011744241
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0007659178221412204
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              0.0,
+              5.300612885785257e-08
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              -5.300612885785257e-08
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              1.0601225771570514e-07
+            ]
+          ]
+        }
+      },
+      "raw_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            0.0,
+            4.450147717014405e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            0.0002,
+            0.00040000000000000013
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            0.0,
+            0.0006550981252971792
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            0.0,
+            0.003200183192268599
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            0.0,
+            0.0007659178221412204
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            0.0,
+            1.0601225771570514e-07
+          ]
+        ]
+      },
+      "raw_rhs_remainder_hi": [
+        [
+          0.0001,
+          0.0021872548548837896
+        ]
+      ],
+      "raw_rhs_remainder_lo": [
+        [
+          -0.0001,
+          -0.002834050297080928
+        ]
+      ],
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "remainder_ledger_intervals": {
+        "initial_remainder": {
+          "hi": [
+            [
+              3.661680691961389e-06,
+              7.32336138392278e-06
+            ]
+          ],
+          "lo": [
+            [
+              -3.661680691961389e-06,
+              -7.32336138392278e-06
+            ]
+          ],
+          "width": [
+            [
+              7.323361383922778e-06,
+              1.464672276784556e-05
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              2.7139035951416633e-06,
+              2.2570725312392502e-05
+            ]
+          ],
+          "lo": [
+            [
+              -1.972411324149023e-06,
+              -2.6593403494879745e-05
+            ]
+          ],
+          "width": [
+            [
+              4.686314919290686e-06,
+              4.916412880727225e-05
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.1994416647163335e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.1994416647163335e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.398883329432667e-05
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              6.616639943248634e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.27055658510036e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.0887196528348993e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              1.0442998253539036e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.036877650956592e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.0811774763104957e-05
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.3617070657406247e-09
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.3617070657406247e-09
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.7234141314812495e-09
+            ]
+          ]
+        }
+      },
+      "remainder_ledger_widths": {
+        "initial_remainder": [
+          [
+            7.323361383922778e-06,
+            1.464672276784556e-05
+          ]
+        ],
+        "integration_overflow": [
+          [
+            4.686314919290686e-06,
+            4.916412880727225e-05
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            2.398883329432667e-05
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            1.0887196528348993e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            2.0811774763104957e-05
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.7234141314812495e-09
+          ]
+        ]
+      },
+      "segment_index": 164,
+      "step_grow_factor": 1.1,
+      "step_policy_mode": "flowstar_compat",
+      "step_shrink_factor": 0.5,
+      "subdivision_depth": 1,
+      "subset_margin": [
+        [
+          9.633831630803861e-05,
+          -3.773875528686747e-06
+        ]
+      ],
+      "subset_result": false,
+      "t_before": 4.738198114669049,
+      "target_subset_result": false,
+      "tmp_remainder_ledger_intervals": {
+        "cutoff": {
+          "hi": [
+            [
+              2.225073858507202e-308,
+              2.225073858507202e-308
+            ]
+          ],
+          "lo": [
+            [
+              -2.225073858507202e-308,
+              -2.225073858507202e-308
+            ]
+          ],
+          "width": [
+            [
+              4.450147717014404e-308,
+              4.450147717014404e-308
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              3.661680691961389e-06,
+              7.32336138392278e-06
+            ]
+          ],
+          "lo": [
+            [
+              -3.661680691961389e-06,
+              -7.32336138392278e-06
+            ]
+          ],
+          "width": [
+            [
+              7.323361383922778e-06,
+              1.464672276784556e-05
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              2.7139035951416633e-06,
+              2.2570725312392502e-05
+            ]
+          ],
+          "lo": [
+            [
+              -1.972411324149023e-06,
+              -2.6593403494879745e-05
+            ]
+          ],
+          "width": [
+            [
+              4.686314919290686e-06,
+              4.916412880727225e-05
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.1994416647163335e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.1994416647163335e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.398883329432667e-05
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              6.616639943248634e-06
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -4.27055658510036e-06
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.0887196528348993e-05
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              1.0442998253539036e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.036877650956592e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.0811774763104957e-05
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.3617070657406247e-09
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.3617070657406247e-09
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.7234141314812495e-09
+            ]
+          ]
+        }
+      },
+      "tmp_remainder_ledger_widths": {
+        "cutoff": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ],
+        "initial_remainder": [
+          [
+            7.323361383922778e-06,
+            1.464672276784556e-05
+          ]
+        ],
+        "integration_overflow": [
+          [
+            4.686314919290686e-06,
+            4.916412880727225e-05
+          ]
+        ],
+        "poly_times_remainder": [
+          [
+            1e-323,
+            2.398883329432667e-05
+          ]
+        ],
+        "polynomial_truncation": [
+          [
+            1e-323,
+            1.0887196528348993e-05
+          ]
+        ],
+        "remainder_times_poly": [
+          [
+            1e-323,
+            2.0811774763104957e-05
+          ]
+        ],
+        "remainder_times_remainder": [
+          [
+            1e-323,
+            2.7234141314812495e-09
+          ]
+        ]
+      },
+      "validated_remainder_decomposition_contains_image": true,
+      "validated_remainder_decomposition_hi": [
+        [
+          3.66168369196139e-06,
+          8.009029170526785e-05
+        ]
+      ],
+      "validated_remainder_decomposition_lo": [
+        [
+          -3.66168369196139e-06,
+          -0.00010377387552868675
+        ]
+      ],
+      "validated_remainder_decomposition_semantics": "additive outward split of the unchanged raw-compat image: base ledger + time-scaled raw RHS ledger + polynomial difference + rounding padding",
+      "validated_remainder_ledger_intervals": {
+        "composition_overflow": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "cutoff": {
+          "hi": [
+            [
+              5e-324,
+              8.1475099858839e-310
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -8.1475099858839e-310
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              1.629501997176784e-309
+            ]
+          ]
+        },
+        "initial_remainder": {
+          "hi": [
+            [
+              3.661680691961389e-06,
+              7.32336138392278e-06
+            ]
+          ],
+          "lo": [
+            [
+              -3.661680691961389e-06,
+              -7.32336138392278e-06
+            ]
+          ],
+          "width": [
+            [
+              7.323361383922778e-06,
+              1.464672276784556e-05
+            ]
+          ]
+        },
+        "integration_overflow": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "picard_residual": {
+          "hi": [
+            [
+              1.0000000000000002e-12,
+              1.0000000000000002e-12
+            ]
+          ],
+          "lo": [
+            [
+              -1.0000000000000002e-12,
+              -1.0000000000000002e-12
+            ]
+          ],
+          "width": [
+            [
+              2.0000000000000004e-12,
+              2.0000000000000004e-12
+            ]
+          ]
+        },
+        "poly_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.1993800783703918e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.1993800783703918e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.3987601567407835e-05
+            ]
+          ]
+        },
+        "polynomial_truncation": {
+          "hi": [
+            [
+              5e-324,
+              4.761069433957126e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -6.956979571912163e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              0.00011718049005869288
+            ]
+          ]
+        },
+        "remainder_times_poly": {
+          "hi": [
+            [
+              5e-324,
+              1.316049128288386e-05
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.4884973726752373e-05
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              2.8045465009636232e-05
+            ]
+          ]
+        },
+        "remainder_times_remainder": {
+          "hi": [
+            [
+              5e-324,
+              1.9409151859441612e-09
+            ]
+          ],
+          "lo": [
+            [
+              -5e-324,
+              -1.9409151859441612e-09
+            ]
+          ],
+          "width": [
+            [
+              1e-323,
+              3.8818303718883225e-09
+            ]
+          ]
+        },
+        "reset_or_reconditioning": {
+          "hi": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "lo": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "width": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "roundoff_safeguard": {
+          "hi": [
+            [
+              1.99999999624356e-12,
+              1.999999978455868e-12
+            ]
+          ],
+          "lo": [
+            [
+              -1.99999999624356e-12,
+              -1.999999964903341e-12
+            ]
+          ],
+          "width": [
+            [
+              3.99999999248712e-12,
+              3.999999943359209e-12
+            ]
+          ]
+        }
+      },
+      "validation_message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "validation_mode": "flowstar_raw_remainder_compat",
+      "validation_status": "failed"
+    }
+  ],
+  "attempt_index": 164,
+  "decision": "rejected",
+  "first_validator_diagnostic": {
+    "accumulated_before_x0_add_hi": [
+      [
+        3.661681691961389e-06,
+        8.009028970526782e-05
+      ]
+    ],
+    "accumulated_before_x0_add_lo": [
+      [
+        -3.661681691961389e-06,
+        -0.00010377387352868672
+      ]
+    ],
+    "adaptive_attempt_index": 1,
+    "attempt": 1,
+    "candidate_remainder_hi": [
+      [
+        0.0001,
+        0.0001
+      ]
+    ],
+    "candidate_remainder_lo": [
+      [
+        -0.0001,
+        -0.0001
+      ]
+    ],
+    "diagnostic_role": "frozen_full_h_first_validator",
+    "finite": true,
+    "finite_residual": true,
+    "h": 0.03661680691961388,
+    "h_max": 0.03661680691961388,
+    "h_min": 0.03661680691961388,
+    "h_try": 0.03661680691961388,
+    "lane": "L2",
+    "mode": "flowstar_style",
+    "order": 4,
+    "ordinary_residual_hi": [
+      [
+        6.375585287103057e-06,
+        5.8949504247332075e-05
+      ]
+    ],
+    "ordinary_residual_lo": [
+      [
+        -5.634093016110416e-06,
+        -6.0551877327697914e-05
+      ]
+    ],
+    "ordinary_residual_width_sum": 0.00013151105987824346,
+    "phase": "remainder_validation",
+    "picard_image_remainder_hi": [
+      [
+        3.66168369196139e-06,
+        8.009029170526785e-05
+      ]
+    ],
+    "picard_image_remainder_lo": [
+      [
+        -3.66168369196139e-06,
+        -0.00010377387552868675
+      ]
+    ],
+    "poly_diff_range_hi": [
+      [
+        1.0000000000000002e-12,
+        1.0000000000000002e-12
+      ]
+    ],
+    "poly_diff_range_lo": [
+      [
+        -1.0000000000000002e-12,
+        -1.0000000000000002e-12
+      ]
+    ],
+    "polynomial_range_width_sum": 0.4586179150532188,
+    "range_method": "adaptive_subdivision",
+    "raw_ctrunc_residual_width_sum": 0.0001911875346178774,
+    "raw_remainder_ledger_intervals": {
+      "cutoff": {
+        "hi": [
+          [
+            0.0,
+            2.2250738585072024e-308
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            -2.2250738585072024e-308
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            4.450147717014405e-308
+          ]
+        ]
+      },
+      "initial_remainder": {
+        "hi": [
+          [
+            0.0001,
+            0.00020000000000000006
+          ]
+        ],
+        "lo": [
+          [
+            -0.0001,
+            -0.00020000000000000006
+          ]
+        ],
+        "width": [
+          [
+            0.0002,
+            0.00040000000000000013
+          ]
+        ]
+      },
+      "poly_times_remainder": {
+        "hi": [
+          [
+            0.0,
+            0.0003275490626485896
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            -0.0003275490626485896
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.0006550981252971792
+          ]
+        ]
+      },
+      "polynomial_truncation": {
+        "hi": [
+          [
+            0.0,
+            0.0013002415651395445
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            -0.0018999416271290545
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.003200183192268599
+          ]
+        ]
+      },
+      "remainder_times_poly": {
+        "hi": [
+          [
+            0.0,
+            0.00035941122096679626
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            -0.0004065066011744241
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.0007659178221412204
+          ]
+        ]
+      },
+      "remainder_times_remainder": {
+        "hi": [
+          [
+            0.0,
+            5.300612885785257e-08
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            -5.300612885785257e-08
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            1.0601225771570514e-07
+          ]
+        ]
+      }
+    },
+    "raw_remainder_ledger_widths": {
+      "cutoff": [
+        [
+          0.0,
+          4.450147717014405e-308
+        ]
+      ],
+      "initial_remainder": [
+        [
+          0.0002,
+          0.00040000000000000013
+        ]
+      ],
+      "poly_times_remainder": [
+        [
+          0.0,
+          0.0006550981252971792
+        ]
+      ],
+      "polynomial_truncation": [
+        [
+          0.0,
+          0.003200183192268599
+        ]
+      ],
+      "remainder_times_poly": [
+        [
+          0.0,
+          0.0007659178221412204
+        ]
+      ],
+      "remainder_times_remainder": [
+        [
+          0.0,
+          1.0601225771570514e-07
+        ]
+      ]
+    },
+    "raw_rhs_remainder_hi": [
+      [
+        0.0001,
+        0.0021872548548837896
+      ]
+    ],
+    "raw_rhs_remainder_lo": [
+      [
+        -0.0001,
+        -0.002834050297080928
+      ]
+    ],
+    "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+    "remainder_ledger_intervals": {
+      "initial_remainder": {
+        "hi": [
+          [
+            3.661680691961389e-06,
+            7.32336138392278e-06
+          ]
+        ],
+        "lo": [
+          [
+            -3.661680691961389e-06,
+            -7.32336138392278e-06
+          ]
+        ],
+        "width": [
+          [
+            7.323361383922778e-06,
+            1.464672276784556e-05
+          ]
+        ]
+      },
+      "integration_overflow": {
+        "hi": [
+          [
+            2.7139035951416633e-06,
+            2.2570725312392502e-05
+          ]
+        ],
+        "lo": [
+          [
+            -1.972411324149023e-06,
+            -2.6593403494879745e-05
+          ]
+        ],
+        "width": [
+          [
+            4.686314919290686e-06,
+            4.916412880727225e-05
+          ]
+        ]
+      },
+      "poly_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.1994416647163335e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.1994416647163335e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.398883329432667e-05
+          ]
+        ]
+      },
+      "polynomial_truncation": {
+        "hi": [
+          [
+            5e-324,
+            6.616639943248634e-06
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -4.27055658510036e-06
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            1.0887196528348993e-05
+          ]
+        ]
+      },
+      "remainder_times_poly": {
+        "hi": [
+          [
+            5e-324,
+            1.0442998253539036e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.036877650956592e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.0811774763104957e-05
+          ]
+        ]
+      },
+      "remainder_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.3617070657406247e-09
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.3617070657406247e-09
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.7234141314812495e-09
+          ]
+        ]
+      }
+    },
+    "remainder_ledger_widths": {
+      "initial_remainder": [
+        [
+          7.323361383922778e-06,
+          1.464672276784556e-05
+        ]
+      ],
+      "integration_overflow": [
+        [
+          4.686314919290686e-06,
+          4.916412880727225e-05
+        ]
+      ],
+      "poly_times_remainder": [
+        [
+          1e-323,
+          2.398883329432667e-05
+        ]
+      ],
+      "polynomial_truncation": [
+        [
+          1e-323,
+          1.0887196528348993e-05
+        ]
+      ],
+      "remainder_times_poly": [
+        [
+          1e-323,
+          2.0811774763104957e-05
+        ]
+      ],
+      "remainder_times_remainder": [
+        [
+          1e-323,
+          2.7234141314812495e-09
+        ]
+      ]
+    },
+    "segment_index": 164,
+    "step_grow_factor": 1.1,
+    "step_policy_mode": "flowstar_compat",
+    "step_shrink_factor": 0.5,
+    "subdivision_depth": 1,
+    "subset_margin": [
+      [
+        9.633831630803861e-05,
+        -3.773875528686747e-06
+      ]
+    ],
+    "subset_result": false,
+    "t_before": 4.738198114669049,
+    "target_subset_result": false,
+    "tmp_remainder_ledger_intervals": {
+      "cutoff": {
+        "hi": [
+          [
+            2.225073858507202e-308,
+            2.225073858507202e-308
+          ]
+        ],
+        "lo": [
+          [
+            -2.225073858507202e-308,
+            -2.225073858507202e-308
+          ]
+        ],
+        "width": [
+          [
+            4.450147717014404e-308,
+            4.450147717014404e-308
+          ]
+        ]
+      },
+      "initial_remainder": {
+        "hi": [
+          [
+            3.661680691961389e-06,
+            7.32336138392278e-06
+          ]
+        ],
+        "lo": [
+          [
+            -3.661680691961389e-06,
+            -7.32336138392278e-06
+          ]
+        ],
+        "width": [
+          [
+            7.323361383922778e-06,
+            1.464672276784556e-05
+          ]
+        ]
+      },
+      "integration_overflow": {
+        "hi": [
+          [
+            2.7139035951416633e-06,
+            2.2570725312392502e-05
+          ]
+        ],
+        "lo": [
+          [
+            -1.972411324149023e-06,
+            -2.6593403494879745e-05
+          ]
+        ],
+        "width": [
+          [
+            4.686314919290686e-06,
+            4.916412880727225e-05
+          ]
+        ]
+      },
+      "poly_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.1994416647163335e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.1994416647163335e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.398883329432667e-05
+          ]
+        ]
+      },
+      "polynomial_truncation": {
+        "hi": [
+          [
+            5e-324,
+            6.616639943248634e-06
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -4.27055658510036e-06
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            1.0887196528348993e-05
+          ]
+        ]
+      },
+      "remainder_times_poly": {
+        "hi": [
+          [
+            5e-324,
+            1.0442998253539036e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.036877650956592e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.0811774763104957e-05
+          ]
+        ]
+      },
+      "remainder_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.3617070657406247e-09
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.3617070657406247e-09
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.7234141314812495e-09
+          ]
+        ]
+      }
+    },
+    "tmp_remainder_ledger_widths": {
+      "cutoff": [
+        [
+          4.450147717014404e-308,
+          4.450147717014404e-308
+        ]
+      ],
+      "initial_remainder": [
+        [
+          7.323361383922778e-06,
+          1.464672276784556e-05
+        ]
+      ],
+      "integration_overflow": [
+        [
+          4.686314919290686e-06,
+          4.916412880727225e-05
+        ]
+      ],
+      "poly_times_remainder": [
+        [
+          1e-323,
+          2.398883329432667e-05
+        ]
+      ],
+      "polynomial_truncation": [
+        [
+          1e-323,
+          1.0887196528348993e-05
+        ]
+      ],
+      "remainder_times_poly": [
+        [
+          1e-323,
+          2.0811774763104957e-05
+        ]
+      ],
+      "remainder_times_remainder": [
+        [
+          1e-323,
+          2.7234141314812495e-09
+        ]
+      ]
+    },
+    "validated_remainder_decomposition_contains_image": true,
+    "validated_remainder_decomposition_hi": [
+      [
+        3.66168369196139e-06,
+        8.009029170526785e-05
+      ]
+    ],
+    "validated_remainder_decomposition_lo": [
+      [
+        -3.66168369196139e-06,
+        -0.00010377387552868675
+      ]
+    ],
+    "validated_remainder_decomposition_semantics": "additive outward split of the unchanged raw-compat image: base ledger + time-scaled raw RHS ledger + polynomial difference + rounding padding",
+    "validated_remainder_ledger_intervals": {
+      "composition_overflow": {
+        "hi": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "cutoff": {
+        "hi": [
+          [
+            5e-324,
+            8.1475099858839e-310
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -8.1475099858839e-310
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            1.629501997176784e-309
+          ]
+        ]
+      },
+      "initial_remainder": {
+        "hi": [
+          [
+            3.661680691961389e-06,
+            7.32336138392278e-06
+          ]
+        ],
+        "lo": [
+          [
+            -3.661680691961389e-06,
+            -7.32336138392278e-06
+          ]
+        ],
+        "width": [
+          [
+            7.323361383922778e-06,
+            1.464672276784556e-05
+          ]
+        ]
+      },
+      "integration_overflow": {
+        "hi": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "picard_residual": {
+        "hi": [
+          [
+            1.0000000000000002e-12,
+            1.0000000000000002e-12
+          ]
+        ],
+        "lo": [
+          [
+            -1.0000000000000002e-12,
+            -1.0000000000000002e-12
+          ]
+        ],
+        "width": [
+          [
+            2.0000000000000004e-12,
+            2.0000000000000004e-12
+          ]
+        ]
+      },
+      "poly_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.1993800783703918e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.1993800783703918e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.3987601567407835e-05
+          ]
+        ]
+      },
+      "polynomial_truncation": {
+        "hi": [
+          [
+            5e-324,
+            4.761069433957126e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -6.956979571912163e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            0.00011718049005869288
+          ]
+        ]
+      },
+      "remainder_times_poly": {
+        "hi": [
+          [
+            5e-324,
+            1.316049128288386e-05
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.4884973726752373e-05
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            2.8045465009636232e-05
+          ]
+        ]
+      },
+      "remainder_times_remainder": {
+        "hi": [
+          [
+            5e-324,
+            1.9409151859441612e-09
+          ]
+        ],
+        "lo": [
+          [
+            -5e-324,
+            -1.9409151859441612e-09
+          ]
+        ],
+        "width": [
+          [
+            1e-323,
+            3.8818303718883225e-09
+          ]
+        ]
+      },
+      "reset_or_reconditioning": {
+        "hi": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "lo": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "width": [
+          [
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "roundoff_safeguard": {
+        "hi": [
+          [
+            1.99999999624356e-12,
+            1.999999978455868e-12
+          ]
+        ],
+        "lo": [
+          [
+            -1.99999999624356e-12,
+            -1.999999964903341e-12
+          ]
+        ],
+        "width": [
+          [
+            3.99999999248712e-12,
+            3.999999943359209e-12
+          ]
+        ]
+      }
+    },
+    "validation_message": "Flowstar raw remainder compat residual not subset of target remainder",
+    "validation_mode": "flowstar_raw_remainder_compat",
+    "validation_status": "failed"
+  },
+  "h": {
+    "decimal": "0.03661680691961388",
+    "hex": "0x1.2bf70286849cfp-5",
+    "value": 0.03661680691961388
+  },
+  "lane": "L2",
+  "max_validation_attempts": 1,
+  "poststate_sha256": "995a96adf0ecbf58db0ee57af6e63a2795f9059de3d8acc6b76fc2aca4380934",
+  "prestate_byte_identity_preserved": true,
+  "prestate_sha256": "995a96adf0ecbf58db0ee57af6e63a2795f9059de3d8acc6b76fc2aca4380934",
+  "returned_state_committed": false,
+  "schema": "torch_tm_flowpipe_s1_frozen_full_h_diagnostic_v1",
+  "segment_status": "failed",
+  "subset_margin": [
+    [
+      9.633831630803861e-05,
+      -3.773875528686747e-06
+    ]
+  ],
+  "t_before": {
+    "decimal": "4.738198114669049",
+    "hex": "0x1.2f3ea34e1e3c3p+2",
+    "value": 4.738198114669049
+  }
+}

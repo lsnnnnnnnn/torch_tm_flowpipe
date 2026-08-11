@@ -1,0 +1,51 @@
+{
+  "T0_T1_same_set_checks": {
+    "center_hex_equal": true,
+    "materialized_total_hex_equal": true,
+    "right_polynomial_equal": true,
+    "scale_hex_equal": true
+  },
+  "T0_T1_set_relation": "equal",
+  "candidate_checkpoint_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
+  "decisions": {
+    "T0": {
+      "decision": "rejected",
+      "prestate_unchanged": true,
+      "returned_h_hex": "0x1.daf50aeab032ap-9",
+      "step_rejections": 1,
+      "x_margin": 9.963763341523255e-05,
+      "y_margin": -1.9999591170254726e-05
+    },
+    "T1": {
+      "decision": "rejected",
+      "prestate_unchanged": true,
+      "returned_h_hex": "0x1.daf50aeab032ap-9",
+      "step_rejections": 1,
+      "x_margin": 9.963763341523255e-05,
+      "y_margin": -1.9999591170254726e-05
+    },
+    "T2": {
+      "decision": "rejected",
+      "prestate_unchanged": true,
+      "returned_h_hex": "0x1.daf50aeab032ap-9",
+      "step_rejections": 1,
+      "x_margin": 9.963763341523255e-05,
+      "y_margin": -1.99995911680722e-05
+    }
+  },
+  "frozen_contract": {
+    "cutoff": 1e-10,
+    "h": 0.003623635847674574,
+    "h_min": 0.002,
+    "order": 4,
+    "target": 0.0001,
+    "time": 6.397083942944808,
+    "validator": "flowstar_raw_remainder_compat"
+  },
+  "frozen_contract_exact": true,
+  "historical_l0_snapshot_sha256": "a869e083b70194c7168ffd50eecc2800514e4bda895f4370905543f8b9cf93e5",
+  "historical_l0_snapshot_state_sha256": "9230e6f799dfdfb2244af33542a7fac06ec6dede6ff0d1826b29db9a98a71e13",
+  "outcome": "CORRECTED_S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT",
+  "passed": false,
+  "schema": "torch_tm_flowpipe_s1_terminal_gate_v1"
+}

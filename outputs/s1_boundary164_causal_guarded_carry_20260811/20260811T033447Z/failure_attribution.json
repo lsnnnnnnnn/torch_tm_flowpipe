@@ -1,0 +1,99 @@
+{
+  "boundary164_attribution": {
+    "L0_to_L1_total_difference": -1.1930523868969271e-05,
+    "center_contribution": 0.0,
+    "interaction_remainder": 0.0,
+    "method": "exact equal centers plus exact validator-input hashes: normalized_initial_tm projects only center/scale; H1/H2/H3/H4 prove right-polynomial and remainder carrier invariance for the first validator",
+    "right_polynomial_contribution": 0.0,
+    "scale_contribution": -1.1930523868969271e-05,
+    "total_remainder_contribution": 0.0,
+    "units": "validator y subset margin",
+    "validator_reduction_residual": 0.0
+  },
+  "candidate": "normalized_insertion_structured_total_delta_k16",
+  "causal_result": {
+    "C1_bit_exact_C0": true,
+    "C2_bit_exact_C0": true,
+    "C3_domain_gate_failure_boundary": 11,
+    "first_margin_difference_attempt": 8,
+    "first_physical_hull_difference_boundary": 8,
+    "first_renormalization_difference_boundary": 12,
+    "first_scale_difference_boundary": 5
+  },
+  "chosen_outcome": "B",
+  "corrected_prefix": {
+    "accepted_steps": 307,
+    "checkpoint": {
+      "byte_stable": true,
+      "full_checkpoint_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
+      "roundtrip_full_checkpoint_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
+      "schema": "torch_tm_flowpipe_terminal_checkpoint_v2"
+    },
+    "outcome": "CORRECTED_S1_FROZEN_PREFIX_GO"
+  },
+  "first_exact_divergence": {
+    "first_L1_L2_numeric_difference_boundary": 1,
+    "first_center_difference_boundary": null,
+    "first_coefficient_hash_difference_boundary": 5,
+    "first_materialized_total_difference_boundary": 0,
+    "first_outward_renormalization_difference_boundary": 12,
+    "first_physical_hull_difference_boundary": 8,
+    "first_scale_hex_difference_boundary": 5,
+    "first_subset_margin_difference_attempt": 8
+  },
+  "fresh_horizon_authorized": false,
+  "primary_outcome": "S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT",
+  "second_system_authorized": false,
+  "terminal_gate": {
+    "T0_T1_same_set_checks": {
+      "center_hex_equal": true,
+      "materialized_total_hex_equal": true,
+      "right_polynomial_equal": true,
+      "scale_hex_equal": true
+    },
+    "T0_T1_set_relation": "equal",
+    "candidate_checkpoint_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
+    "decisions": {
+      "T0": {
+        "decision": "rejected",
+        "prestate_unchanged": true,
+        "returned_h_hex": "0x1.daf50aeab032ap-9",
+        "step_rejections": 1,
+        "x_margin": 9.963763341523255e-05,
+        "y_margin": -1.9999591170254726e-05
+      },
+      "T1": {
+        "decision": "rejected",
+        "prestate_unchanged": true,
+        "returned_h_hex": "0x1.daf50aeab032ap-9",
+        "step_rejections": 1,
+        "x_margin": 9.963763341523255e-05,
+        "y_margin": -1.9999591170254726e-05
+      },
+      "T2": {
+        "decision": "rejected",
+        "prestate_unchanged": true,
+        "returned_h_hex": "0x1.daf50aeab032ap-9",
+        "step_rejections": 1,
+        "x_margin": 9.963763341523255e-05,
+        "y_margin": -1.99995911680722e-05
+      }
+    },
+    "frozen_contract": {
+      "cutoff": 1e-10,
+      "h": 0.003623635847674574,
+      "h_min": 0.002,
+      "order": 4,
+      "target": 0.0001,
+      "time": 6.397083942944808,
+      "validator": "flowstar_raw_remainder_compat"
+    },
+    "frozen_contract_exact": true,
+    "historical_l0_snapshot_sha256": "a869e083b70194c7168ffd50eecc2800514e4bda895f4370905543f8b9cf93e5",
+    "historical_l0_snapshot_state_sha256": "9230e6f799dfdfb2244af33542a7fac06ec6dede6ff0d1826b29db9a98a71e13",
+    "outcome": "CORRECTED_S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT",
+    "passed": false,
+    "schema": "torch_tm_flowpipe_s1_terminal_gate_v1"
+  },
+  "unique_next_step": "end S1 promotion under this frozen contract; return to fixed-support representation research only in a separately authorized goal"
+}

@@ -1,0 +1,39 @@
+{
+  "accepted_boundaries": 0,
+  "attempt_rows": 1,
+  "boundary_164_checkpoint": null,
+  "checkpoint_full_sha256": null,
+  "final_common_prefix_boundary": 0,
+  "first_eviction_boundary": null,
+  "first_full_k16_boundary": null,
+  "first_schedule_or_decision_divergence": {
+    "actual_h_hex": "0x1.999999999999ap-7",
+    "actual_rejections": 3,
+    "actual_status": "rejected",
+    "attempt_index": 0,
+    "expected_h_accepted_hex": "0x1.999999999999ap-7",
+    "expected_rejections": 3,
+    "expected_status": "accepted",
+    "message": "S1 accepted-boundary gate failed closed: FloatingPointError: S1 endpoint/tube publication omitted a represented contribution: endpoint_publication=[True]; tube_publication=[True]; published_endpoint_in_tube=[False]; endpoint_total=([[-1.2500030000000222e-06, -2.29865229303183e-05]],[[1.2500030000000222e-06, 2.7130531560022506e-05]]); tube_total=([[-1.2500030000000207e-06, -2.298652293031826e-05]],[[1.2500030000000207e-06, 2.713053156002247e-05]])",
+    "off_schedule_poststate_discarded": false,
+    "prestate_sha256": "4e581056380439ce9feb0cf4eb29694532a9c837ccd254dffeb06f173d9e1243"
+  },
+  "lane": "B",
+  "largest_eviction": null,
+  "outcome": "S1_PREFIX_REJECTS_BEFORE_TERMINAL",
+  "provenance": {
+    "branch": "codex/s1-boundary164-causal-guarded-carry-20260811",
+    "commit": "ffb4a409e98a37b5ca069d93d2c9ef65516fdc94",
+    "contract_sha256": "344e0baa75439634e7a2108e04261a159bd37c1f6563da8af6fe966275024c4e",
+    "device": "cpu",
+    "dtype": "float64",
+    "lane": "B",
+    "schedule_sha256": "e63731a6cf253b30927d7238d8551efb11ba36c2c2299ba83b7fb924e82f22aa",
+    "source_artifact_sha256": "28a92e6bb84e2d8b81cb31e57453eb46e28ef03c434d284ec92b9a50f6ac5dc4",
+    "torch_version": "2.5.1+cu121",
+    "worktree_status": "M experiments/run_s1_prefix_complete_o4.py\n M src/torch_tm_flowpipe/__init__.py\n M src/torch_tm_flowpipe/flowpipe.py\n M src/torch_tm_flowpipe/structured_remainder.py\n M src/torch_tm_flowpipe/terminal_checkpoint.py"
+  },
+  "runtime_s": 0.7831194614991546,
+  "schema": "torch_tm_flowpipe_s1_prefix_ledger_v1",
+  "terminal_prestate_reached": false
+}

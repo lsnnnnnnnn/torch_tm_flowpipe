@@ -1,0 +1,1990 @@
+{
+  "C1_bit_exact_C0": true,
+  "C2_bit_exact_C0": true,
+  "C2_same_set_relation": "equal",
+  "controls": {
+    "C0": {
+      "failure_boundary": null,
+      "recorded_boundaries": 165,
+      "status": "completed_boundary_164_full_h"
+    },
+    "C1": {
+      "failure_boundary": null,
+      "recorded_boundaries": 165,
+      "status": "completed_boundary_164_full_h"
+    },
+    "C2": {
+      "failure_boundary": null,
+      "recorded_boundaries": 165,
+      "status": "completed_boundary_164_full_h"
+    },
+    "C3": {
+      "failure_boundary": 11,
+      "recorded_boundaries": 12,
+      "status": "domain_gate_failure"
+    },
+    "C4": {
+      "failure_boundary": null,
+      "recorded_boundaries": 165,
+      "status": "completed_boundary_164_full_h"
+    },
+    "L2": {
+      "failure_boundary": null,
+      "recorded_boundaries": 165,
+      "status": "completed_boundary_164_full_h"
+    }
+  },
+  "first_divergence": {
+    "first_L1_L2_numeric_difference_boundary": 1,
+    "first_center_difference_boundary": null,
+    "first_coefficient_hash_difference_boundary": 5,
+    "first_materialized_total_difference_boundary": 0,
+    "first_outward_renormalization_difference_boundary": 12,
+    "first_physical_hull_difference_boundary": 8,
+    "first_scale_hex_difference_boundary": 5,
+    "first_subset_margin_difference_attempt": 8
+  },
+  "known_margins": {
+    "C0_step_163_y_margin": 2.60697659917348e-05,
+    "C0_step_164_y_margin": 8.058292550874906e-06,
+    "C4_step_163_y_margin": 1.7291650118437743e-05,
+    "C4_step_164_y_margin": -3.872231318094365e-06,
+    "L2_step_163_y_margin": 1.7363995494671766e-05,
+    "L2_step_164_y_margin": -3.773875528686747e-06
+  },
+  "schema": "torch_tm_flowpipe_s1_boundary_drift_audit_v1",
+  "total_delta_shadow": {
+    "all_canonical_targets_contained": true,
+    "decisive_boundaries": {
+      "C4": {
+        "1": [
+          {
+            "boundary": 1,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.169aa87beecf7p-17",
+              "right_hex": "-0x1.169aa87beecf7p-17",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 1.660610040208913e-05,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.169aa87beecf7p-17",
+              "right_hex": "0x1.169aa87beecf7p-17",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 1.660610040208913e-05,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 1,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.7abe7d1c30271p-12",
+              "right_hex": "-0x1.7abe7d1c30271p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0007875138763150321,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.bf06286481524p-12",
+              "right_hex": "0x1.bf06286481524p-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0007875138763150321,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "10": [
+          {
+            "boundary": 10,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0f96a699e6795p-12",
+              "right_hex": "-0x1.0f96a699e6795p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.00055343467568346,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.34bad6b82777dp-12",
+              "right_hex": "0x1.34bad6b82777dp-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.00055343467568346,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 10,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0cd0b68114875p-9",
+              "right_hex": "-0x1.0cd0b68114875p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.004506335997817095,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.41d6d4f773630p-9",
+              "right_hex": "0x1.41d6d4f773630p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.004506335997817095,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "100": [
+          {
+            "boundary": 100,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 4.910935066382294e-07,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.108456d9f529bp-3",
+              "right_hex": "-0x1.108414f01cfefp-3",
+              "ulp_distance": 17693508268
+            },
+            "left_endpoint_difference": 4.910935066382294e-07,
+            "left_width": 0.2708121363043728,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 5.251263370809056e-07,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.1a1b36cc56f8fp-3",
+              "right_hex": "0x1.1a1af05122dcfp-3",
+              "ulp_distance": 18919670208
+            },
+            "right_endpoint_difference": -5.251263370809056e-07,
+            "right_width": 0.27081112008452907,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999962475099617
+          },
+          {
+            "boundary": 100,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.9dd059e14a4acp-2",
+              "right_hex": "-0x1.9dd059e14a4acp-2",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.8071604809687423,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.9cb7ed103f4fdp-2",
+              "right_hex": "0x1.9cb7ed103f4fdp-2",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.8071604809687423,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "11": [
+          {
+            "boundary": 11,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.4a8cf48eb6095p-12",
+              "right_hex": "-0x1.4a8cf48eb6095p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0006745661564702664,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.78c884bd2e340p-12",
+              "right_hex": "0x1.78c884bd2e340p-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0006745661564702664,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 11,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.257056765162ep-9",
+              "right_hex": "-0x1.257056765162ep-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.004878365463920337,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.59fa71c9ecb45p-9",
+              "right_hex": "0x1.59fa71c9ecb45p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.004878365463920337,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "12": [
+          {
+            "boundary": 12,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.94def03174165p-12",
+              "right_hex": "-0x1.94def03174165p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0008265471140382263,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.cdd39cfb2ea0bp-12",
+              "right_hex": "0x1.cdd39cfb2ea0bp-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0008265471140382263,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 12,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.45dd211837494p-9",
+              "right_hex": "-0x1.45dd211837494p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.005361906634526885,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.78ee9a2f350c2p-9",
+              "right_hex": "0x1.78ee9a2f350c2p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.005361906634526885,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "14": [
+          {
+            "boundary": 14,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.1911792ad0dbcp-11",
+              "right_hex": "-0x1.1911792ad0dbcp-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0011451030452340285,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.3f4ba7df13897p-11",
+              "right_hex": "0x1.3f4ba7df13897p-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0011451030452340285,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 14,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.764ac6807c2eap-9",
+              "right_hex": "-0x1.764ac6807c2eap-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006066187550877974,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.a4d0b3c86f841p-9",
+              "right_hex": "0x1.a4d0b3c86f841p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006066187550877974,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "150": [
+          {
+            "boundary": 150,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 6.945324020923849e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.a79d0eaf9d330p-1",
+              "right_hex": "-0x1.a793f438d2ce4p-1",
+              "ulp_distance": 625579173452
+            },
+            "left_endpoint_difference": 6.945324020923849e-05,
+            "left_width": 1.6530496958269247,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 6.827940646425557e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.a6bf78ecdd5e4p-1",
+              "right_hex": "0x1.a6b685d93aad9p-1",
+              "ulp_distance": 615006219019
+            },
+            "right_endpoint_difference": -6.827940646425557e-05,
+            "right_width": 1.6529119631802511,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999166796696909
+          },
+          {
+            "boundary": 150,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.005665476585776874,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.3eb3594533ab0p-1",
+              "right_hex": "-0x1.3bccc36be5c26p-1",
+              "ulp_distance": 51030076481162
+            },
+            "left_endpoint_difference": 0.005665476585776874,
+            "left_width": 1.2410798279109652,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.005571158194015546,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.3cbb776c0104cp-1",
+              "right_hex": "0x1.39e13e5f8404fp-1",
+              "ulp_distance": 50180531933181
+            },
+            "right_endpoint_difference": -0.005571158194015546,
+            "right_width": 1.2298431931311726,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.990946082172082
+          }
+        ],
+        "16": [
+          {
+            "boundary": 16,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.67f09ed7244c3p-11",
+              "right_hex": "-0x1.67f09ed7244c3p-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0014620122123752467,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.9693564483d72p-11",
+              "right_hex": "0x1.9693564483d72p-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0014620122123752467,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 16,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.8ea747804745dp-9",
+              "right_hex": "-0x1.8ea747804745dp-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006411532463219866,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.b9b80cfe1194cp-9",
+              "right_hex": "0x1.b9b80cfe1194cp-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006411532463219866,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "163": [
+          {
+            "boundary": 163,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 7.244571010589507e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.9cafc19036683p-1",
+              "right_hex": "-0x1.9ca642b04d1e8p-1",
+              "ulp_distance": 652532946075
+            },
+            "left_endpoint_difference": 7.244571010589507e-05,
+            "left_width": 1.6099307217218737,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 7.149564770125849e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.9b99155d079bdp-1",
+              "right_hex": "0x1.9b8fb65e17a49p-1",
+              "ulp_distance": 643975544692
+            },
+            "right_endpoint_difference": -7.149564770125849e-05,
+            "right_width": 1.6097867803640664,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999105915826904
+          },
+          {
+            "boundary": 163,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.0082292708642282,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.8fc1bc6200cb4p-1",
+              "right_hex": "-0x1.8b8b1bdf8a1eap-1",
+              "ulp_distance": 74122682395338
+            },
+            "left_endpoint_difference": 0.0082292708642282,
+            "left_width": 1.557331326062287,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.008121574170874224,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.8d98cbb2f1cf4p-1",
+              "right_hex": "0x1.897048e4085dep-1",
+              "ulp_distance": 73152636819222
+            },
+            "right_endpoint_difference": -0.008121574170874224,
+            "right_width": 1.5409804810271845,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.989500728097183
+          }
+        ],
+        "164": [
+          {
+            "boundary": 164,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 9.067345229840651e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.9c6d979f13214p-1",
+              "right_hex": "-0x1.9c61b5200cdd5p-1",
+              "ulp_distance": 816713851967
+            },
+            "left_endpoint_difference": 9.067345229840651e-05,
+            "left_width": 1.6088833103842952,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 8.948643019102143e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.9b51f603496c1p-1",
+              "right_hex": "0x1.9b463b58b4603p-1",
+              "ulp_distance": 806022107326
+            },
+            "right_endpoint_difference": -8.948643019102143e-05,
+            "right_width": 1.608703150501806,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9998880217842235
+          },
+          {
+            "boundary": 164,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.009170895551793401,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.943260243a5bcp-1",
+              "right_hex": "-0x1.8f8053f349b9fp-1",
+              "ulp_distance": 82604083579421
+            },
+            "left_endpoint_difference": 0.009170895551793401,
+            "left_width": 1.5745807737254158,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.00905088977627655,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.91fd135be4e48p-1",
+              "right_hex": "0x1.8d5ac1e4b76c3p-1",
+              "ulp_distance": 81523167647621
+            },
+            "right_endpoint_difference": -0.00905088977627655,
+            "right_width": 1.5563589883973459,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9884275321837205
+          }
+        ],
+        "17": [
+          {
+            "boundary": 17,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.9ac40870c0576p-11",
+              "right_hex": "-0x1.9ac40870c0576p-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0016654102694717088,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.ce638cb1a98d3p-11",
+              "right_hex": "0x1.ce638cb1a98d3p-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0016654102694717088,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 17,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.a0d2bf765128cp-9",
+              "right_hex": "-0x1.a0d2bf765128cp-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006671644363548285,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.c9a47d3de5e82p-9",
+              "right_hex": "0x1.c9a47d3de5e82p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006671644363548285,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "5": [
+          {
+            "boundary": 5,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.58c08dab3fc64p-14",
+              "right_hex": "-0x1.58c08dab3fc64p-14",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0001710997459618239,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.74e4666133a71p-14",
+              "right_hex": "0x1.74e4666133a71p-14",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0001710997459618239,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 5,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.6a360bb19ed18p-10",
+              "right_hex": "-0x1.6a360bb19ed18p-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0030971221411800233,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.c1ae4d89dbff8p-10",
+              "right_hex": "0x1.c1ae4d89dbff8p-10",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0030971221411800233,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "7": [
+          {
+            "boundary": 7,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.31377e2fb6cfep-13",
+              "right_hex": "-0x1.31377e2fb6cfep-13",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.00030794191544074713,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.54959066e6997p-13",
+              "right_hex": "0x1.54959066e6997p-13",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.00030794191544074713,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 7,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.c52c2789891c9p-10",
+              "right_hex": "-0x1.c52c2789891c9p-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.00385835715996092,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.1722e7de363aep-9",
+              "right_hex": "0x1.1722e7de363aep-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.00385835715996092,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "70": [
+          {
+            "boundary": 70,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0a133cf9b3a2dp-4",
+              "right_hex": "-0x1.0a133cf9b3a2dp-4",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.13277057172118065,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.15c0cbfceada1p-4",
+              "right_hex": "0x1.15c0cbfceada1p-4",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.13277057172118065,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 70,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.4af5ddb223f5fp-4",
+              "right_hex": "-0x1.4af5ddb223f5fp-4",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.1658900270592572,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.5c866f5d17b25p-4",
+              "right_hex": "0x1.5c866f5d17b25p-4",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.1658900270592572,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "8": [
+          {
+            "boundary": 8,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.71fd9e84b08fbp-13",
+              "right_hex": "-0x1.71fd9e84b08fbp-13",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0003748785898540808,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.a02fca8cdf783p-13",
+              "right_hex": "0x1.a02fca8cdf783p-13",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0003748785898540808,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 8,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "C4",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.d99edaaa9495ap-10",
+              "right_hex": "-0x1.d99edaaa9495ap-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0040141214912188085,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.215423b882d2dp-9",
+              "right_hex": "0x1.215423b882d2dp-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0040141214912188085,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ]
+      },
+      "L2": {
+        "1": [
+          {
+            "boundary": 1,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.169aa87beecf7p-17",
+              "right_hex": "-0x1.169aa87beecf7p-17",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 1.660610040208913e-05,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.169aa87beecf7p-17",
+              "right_hex": "0x1.169aa87beecf7p-17",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 1.660610040208913e-05,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 1,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.7abe7d1c30271p-12",
+              "right_hex": "-0x1.7abe7d1c30271p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0007875138763150321,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.bf06286481524p-12",
+              "right_hex": "0x1.bf06286481524p-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0007875138763150321,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "10": [
+          {
+            "boundary": 10,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0f96a699e677fp-12",
+              "right_hex": "-0x1.0f96a699e677fp-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0005534346756834575,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.34bad6b827766p-12",
+              "right_hex": "0x1.34bad6b827766p-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0005534346756834575,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 10,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0cd0b68114856p-9",
+              "right_hex": "-0x1.0cd0b68114856p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0045063359978170636,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.41d6d4f773605p-9",
+              "right_hex": "0x1.41d6d4f773605p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0045063359978170636,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "100": [
+          {
+            "boundary": 100,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 4.7147963969096374e-07,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.108441d9addebp-3",
+              "right_hex": "-0x1.10840291c319ep-3",
+              "ulp_distance": 16986844237
+            },
+            "left_endpoint_difference": 4.7147963969096374e-07,
+            "left_width": 0.2708118179959995,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 5.049220059838433e-07,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.1a1b2113a0346p-3",
+              "right_hex": "0x1.1a1add4ea3456p-3",
+              "ulp_distance": 18191732464
+            },
+            "right_endpoint_difference": -5.049220059838433e-07,
+            "right_width": 0.27081084159435387,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999963945382706
+          },
+          {
+            "boundary": 100,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.9dd0559dcb816p-2",
+              "right_hex": "-0x1.9dd0559dcb816p-2",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.8071603570785801,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.9cb7e90353671p-2",
+              "right_hex": "0x1.9cb7e90353671p-2",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.8071603570785801,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "11": [
+          {
+            "boundary": 11,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.4a8cf48eb6071p-12",
+              "right_hex": "-0x1.4a8cf48eb6071p-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0006745661564702625,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.78c884bd2e31ap-12",
+              "right_hex": "0x1.78c884bd2e31ap-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0006745661564702625,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 11,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.257056765160ap-9",
+              "right_hex": "-0x1.257056765160ap-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.004878365463920298,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.59fa71c9ecb10p-9",
+              "right_hex": "0x1.59fa71c9ecb10p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.004878365463920298,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "12": [
+          {
+            "boundary": 12,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.94def0317412ep-12",
+              "right_hex": "-0x1.94def0317412ep-12",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0008265471140382204,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.cdd39cfb2e9d5p-12",
+              "right_hex": "0x1.cdd39cfb2e9d5p-12",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0008265471140382204,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 12,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.45dd211837465p-9",
+              "right_hex": "-0x1.45dd211837465p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.005361906634526837,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.78ee9a2f35082p-9",
+              "right_hex": "0x1.78ee9a2f35082p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.005361906634526837,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "14": [
+          {
+            "boundary": 14,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.1911792ad0d8ep-11",
+              "right_hex": "-0x1.1911792ad0d8ep-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0011451030452340179,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.3f4ba7df13864p-11",
+              "right_hex": "0x1.3f4ba7df13864p-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0011451030452340179,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 14,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.764ac6807c2a2p-9",
+              "right_hex": "-0x1.764ac6807c2a2p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006066187550877903,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.a4d0b3c86f7e6p-9",
+              "right_hex": "0x1.a4d0b3c86f7e6p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006066187550877903,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "150": [
+          {
+            "boundary": 150,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 6.878669566412476e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.a798a1bb84081p-1",
+              "right_hex": "-0x1.a78f9da24c97fp-1",
+              "ulp_distance": 619575473922
+            },
+            "left_endpoint_difference": 6.878669566412476e-05,
+            "left_width": 1.6529839943776317,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 6.76156151442342e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.a6bb494dcf9dfp-1",
+              "right_hex": "0x1.a6b26c801979fp-1",
+              "ulp_distance": 609027318336
+            },
+            "right_endpoint_difference": -6.76156151442342e-05,
+            "right_width": 1.6528475920668233,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999174811666222
+          },
+          {
+            "boundary": 150,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.005612888194197141,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.3e923e5436213p-1",
+              "right_hex": "-0x1.3bb28d0dc046ep-1",
+              "ulp_distance": 50556402359717
+            },
+            "left_endpoint_difference": 0.005612888194197141,
+            "left_width": 1.2405748683263407,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.005518765606264964,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.3c9a62bb30daap-1",
+              "right_hex": "0x1.39c707af9abcap-1",
+              "ulp_distance": 49708621455840
+            },
+            "right_endpoint_difference": -0.005518765606264964,
+            "right_width": 1.2294432145258787,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9910270197432907
+          }
+        ],
+        "16": [
+          {
+            "boundary": 16,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.67f09ed724473p-11",
+              "right_hex": "-0x1.67f09ed724473p-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.001462012212375229,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.9693564483d1cp-11",
+              "right_hex": "0x1.9693564483d1cp-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.001462012212375229,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 16,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.8ea7478047404p-9",
+              "right_hex": "-0x1.8ea7478047404p-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006411532463219781,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.b9b80cfe118e1p-9",
+              "right_hex": "0x1.b9b80cfe118e1p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006411532463219781,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "163": [
+          {
+            "boundary": 163,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 7.191566576902897e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.9ca7e5d604be6p-1",
+              "right_hex": "-0x1.9c9e78bf27477p-1",
+              "ulp_distance": 647758731119
+            },
+            "left_endpoint_difference": 7.191566576902897e-05,
+            "left_width": 1.609812602171241,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 7.096836894049385e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.9b9175a8027ecp-1",
+              "right_hex": "0x1.9b88285a5cc95p-1",
+              "ulp_distance": 639226239831
+            },
+            "right_endpoint_difference": -7.096836894049385e-05,
+            "right_width": 1.6096697181365314,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9999112418212426
+          },
+          {
+            "boundary": 163,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.00817212031057235,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.8f9faba4d2ed5p-1",
+              "right_hex": "-0x1.8b7088c9e0cf4p-1",
+              "ulp_distance": 73607915971041
+            },
+            "left_endpoint_difference": 0.00817212031057235,
+            "left_width": 1.5568128650786641,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.008064682656069744,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.8d76e7c62f980p-1",
+              "right_hex": "0x1.8955d9edaa3fep-1",
+              "ulp_distance": 72640203609474
+            },
+            "right_endpoint_difference": -0.008064682656069744,
+            "right_width": 1.5405760621120221,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9895704851039874
+          }
+        ],
+        "164": [
+          {
+            "boundary": 164,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 9.001206662440087e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.9c6561a654a64p-1",
+              "right_hex": "-0x1.9c59955890dcbp-1",
+              "ulp_distance": 810756619417
+            },
+            "left_endpoint_difference": 9.001206662440087e-05,
+            "left_width": 1.6087598238718197,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 8.882854977232402e-05,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.9b49fc76f738cp-1",
+              "right_hex": "0x1.9b3e57df8883fp-1",
+              "ulp_distance": 800096447309
+            },
+            "right_endpoint_difference": -8.882854977232402e-05,
+            "right_width": 1.608580983255423,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9998888332405229
+          },
+          {
+            "boundary": 164,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "left_contains_right",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": true,
+            "left_endpoint": {
+              "absolute_difference": 0.009107262122877047,
+              "exact_binary64_equal": false,
+              "left_hex": "-0x1.940fe18f49674p-1",
+              "right_hex": "-0x1.8f662c8d56c9fp-1",
+              "ulp_distance": 82030924605909
+            },
+            "left_endpoint_difference": 0.009107262122877047,
+            "left_width": 1.5740558966138742,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.008987550231829733,
+              "exact_binary64_equal": false,
+              "left_hex": "0x1.91dac5fcc742cp-1",
+              "right_hex": "0x1.8d40c1d825068p-1",
+              "ulp_distance": 80952655750084
+            },
+            "right_endpoint_difference": -0.008987550231829733,
+            "right_width": 1.5559610842591676,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 0.9885043393988534
+          }
+        ],
+        "17": [
+          {
+            "boundary": 17,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.9ac40870c0514p-11",
+              "right_hex": "-0x1.9ac40870c0514p-11",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0016654102694716876,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.ce638cb1a9870p-11",
+              "right_hex": "0x1.ce638cb1a9870p-11",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0016654102694716876,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 17,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.a0d2bf765122bp-9",
+              "right_hex": "-0x1.a0d2bf765122bp-9",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.006671644363548194,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.c9a47d3de5e10p-9",
+              "right_hex": "0x1.c9a47d3de5e10p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.006671644363548194,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "5": [
+          {
+            "boundary": 5,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.58c08dab3fc5ep-14",
+              "right_hex": "-0x1.58c08dab3fc5ep-14",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.00017109974596182375,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.74e4666133a6bp-14",
+              "right_hex": "0x1.74e4666133a6bp-14",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.00017109974596182375,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 5,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.6a360bb19ed0ap-10",
+              "right_hex": "-0x1.6a360bb19ed0ap-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0030971221411800177,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.c1ae4d89dbfecp-10",
+              "right_hex": "0x1.c1ae4d89dbfecp-10",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0030971221411800177,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "7": [
+          {
+            "boundary": 7,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.31377e2fb6cf2p-13",
+              "right_hex": "-0x1.31377e2fb6cf2p-13",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.00030794191544074637,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.54959066e6985p-13",
+              "right_hex": "0x1.54959066e6985p-13",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.00030794191544074637,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 7,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.c52c2789891a7p-10",
+              "right_hex": "-0x1.c52c2789891a7p-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.003858357159960907,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.1722e7de363a0p-9",
+              "right_hex": "0x1.1722e7de363a0p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.003858357159960907,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "70": [
+          {
+            "boundary": 70,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.0a133cf9b399dp-4",
+              "right_hex": "-0x1.0a133cf9b399dp-4",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.1327705717211766,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.15c0cbfcead0dp-4",
+              "right_hex": "0x1.15c0cbfcead0dp-4",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.1327705717211766,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 70,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.4af5ddb223ed3p-4",
+              "right_hex": "-0x1.4af5ddb223ed3p-4",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.16589002705925332,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.5c866f5d17a99p-4",
+              "right_hex": "0x1.5c866f5d17a99p-4",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.16589002705925332,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ],
+        "8": [
+          {
+            "boundary": 8,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 0,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.71fd9e84b08e5p-13",
+              "right_hex": "-0x1.71fd9e84b08e5p-13",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.0003748785898540796,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.a02fca8cdf76dp-13",
+              "right_hex": "0x1.a02fca8cdf76dp-13",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.0003748785898540796,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          },
+          {
+            "boundary": 8,
+            "canonical_target_contained_by_current": true,
+            "canonical_target_contained_by_total_delta": true,
+            "component": 1,
+            "componentwise_containment_direction": "equal",
+            "control": "L2",
+            "current_contract": "C_current",
+            "current_unpadded_contains_total_delta_direct": false,
+            "left_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "-0x1.d99edaaa9492cp-10",
+              "right_hex": "-0x1.d99edaaa9492cp-10",
+              "ulp_distance": 0
+            },
+            "left_endpoint_difference": 0.0,
+            "left_width": 0.004014121491218789,
+            "phase": "after_padding",
+            "right_endpoint": {
+              "absolute_difference": 0.0,
+              "exact_binary64_equal": true,
+              "left_hex": "0x1.215423b882d15p-9",
+              "right_hex": "0x1.215423b882d15p-9",
+              "ulp_distance": 0
+            },
+            "right_endpoint_difference": 0.0,
+            "right_width": 0.004014121491218789,
+            "shadow_contract": "C_total_delta",
+            "width_ratio_right_over_left": 1.0
+          }
+        ]
+      }
+    },
+    "first_current_unpadded_noncontainment_boundary": 2,
+    "recorded_comparisons": 1312,
+    "strictly_narrower_after_padding_count": 256,
+    "total_delta_not_wider_after_padding": true,
+    "total_delta_not_wider_before_padding": false
+  }
+}
