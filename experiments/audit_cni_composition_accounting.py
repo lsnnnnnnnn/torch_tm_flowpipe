@@ -30,6 +30,7 @@ SCHEMA = "torch_r35_cni_composition_accounting_v1"
 CATEGORIES = (
     "degree_gt4_dropped_polynomial",
     "polynomial_times_parameterization_remainder",
+    "endpoint_remainder_times_parameterization_polynomial",
     "remainder_times_remainder",
 )
 
@@ -228,6 +229,13 @@ def _checkpoint(path: Path) -> dict[str, Any]:
         "checkpoint_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "native_observer_parity": parity,
         "source_intervals": {name: _interval_record(value) for name, value in sources.items()},
+        "structurally_absent_sources": {
+            "endpoint_remainder_times_parameterization_polynomial": (
+                "compose_affine substitutes only the outer polynomial; the outer ordinary "
+                "endpoint remainder is added once after substitution and is never multiplied "
+                "by the parameterization polynomial"
+            )
+        },
         "coverage_sum": _interval_record(coverage),
         "coverage_contains_native_remainder": contains,
         "ordinary_endpoint_remainder_add_count_per_output": 1,

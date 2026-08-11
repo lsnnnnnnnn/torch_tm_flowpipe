@@ -110,10 +110,15 @@ def test_cni_composition_observer_is_bit_exact_and_outer_remainder_is_added_once
     assert set(sources) == {
         "degree_gt4_dropped_polynomial",
         "polynomial_times_parameterization_remainder",
+        "endpoint_remainder_times_parameterization_polynomial",
         "remainder_times_remainder",
         "outer_endpoint_remainder",
     }
     assert all(source.lo.data_ptr() != source.hi.data_ptr() for source in sources.values())
+    assert torch.equal(
+        sources["endpoint_remainder_times_parameterization_polynomial"].width,
+        torch.zeros_like(sources["endpoint_remainder_times_parameterization_polynomial"].width),
+    )
 
 
 def test_dense_complete_o4_has_no_native_cross_step_cni_operator():
