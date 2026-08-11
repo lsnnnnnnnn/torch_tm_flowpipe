@@ -13,6 +13,7 @@ from typing import Any, Mapping, Sequence
 import torch
 
 from torch_tm_flowpipe.structured_remainder import StructuredRemainderState
+from torch_tm_flowpipe.state_equality import compare_accepted_segment_states
 from torch_tm_flowpipe.terminal_checkpoint import (
     load_terminal_checkpoint,
     save_terminal_checkpoint,
@@ -285,6 +286,37 @@ def run(
                 },
             )
             fixed_decision = _decision(segment)
+            equality_path = Path("state_equality") / f"boundary_{boundary:03d}.json"
+            if (
+                attempted_decision == "accepted"
+                and fixed_decision == "accepted"
+                and float(attempted.h).hex() == float(segment.h).hex()
+            ):
+                state_equality = compare_accepted_segment_states(attempted, segment)
+            else:
+                state_equality = {
+                    "schema": "torch_tm_flowpipe_adaptive_fixed_state_equality_v1",
+                    "status": "not_run",
+                    "reason": (
+                        "natural and fixed executions did not both accept the same "
+                        "binary64 step size"
+                    ),
+                    "natural_decision": attempted_decision,
+                    "fixed_decision": fixed_decision,
+                    "natural_h_hex": float(attempted.h).hex(),
+                    "fixed_h_hex": float(segment.h).hex(),
+                }
+            _write_json(output_dir / equality_path, state_equality)
+            equality_summary = {
+                "status": state_equality["status"],
+                "artifact": equality_path.as_posix(),
+                "natural_state_sha256": state_equality.get(
+                    "natural_state_sha256"
+                ),
+                "fixed_state_sha256": state_equality.get("fixed_state_sha256"),
+                "field_count": state_equality.get("field_count"),
+                "first_mismatch": state_equality.get("first_mismatch"),
+            }
             gates = (
                 _candidate_gates(segment, boundary)
                 if fixed_decision == "accepted"
@@ -324,16 +356,22 @@ def run(
                     "diagnostics": fixed_diagnostics,
                 },
                 "candidate_gates": gates,
+                "adaptive_fixed_state_equality": equality_summary,
             }
             rows.append(record)
             handle.write(json.dumps(_jsonable(record), sort_keys=True) + "\n")
             handle.flush()
+            if state_equality["status"] == "fail":
+                outcome = "S1_ADAPTIVE_FIXED_STATE_MISMATCH_STOP"
+                failure = record
+                break
             if (
                 attempted_prestate_after != prestate_sha
                 or fixed_decision != "accepted"
                 or float(segment.h).hex() != frozen["h_accepted"]["hex"]
                 or int(segment.step_rejections) != 0
                 or not gates["passed"]
+                or state_equality["status"] != "pass"
             ):
                 outcome = "CORRECTED_S1_REJECTS_BEFORE_TERMINAL"
                 failure = record
@@ -370,6 +408,10 @@ def run(
         ),
         "all_candidate_gates_pass": all(
             row["candidate_gates"]["passed"] for row in rows
+        ),
+        "all_adaptive_fixed_states_equal": all(
+            row["adaptive_fixed_state_equality"]["status"] == "pass"
+            for row in rows
         ),
         "checkpoint": checkpoint,
         "failure": failure,

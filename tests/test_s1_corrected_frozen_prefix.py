@@ -27,6 +27,7 @@ def test_corrected_mode_uses_fixed_historical_accepted_steps_and_separate_diagno
     assert summary["processed_row_count"] == 3
     assert summary["all_attempted_diagnostics_immutable"]
     assert summary["all_candidate_gates_pass"]
+    assert summary["all_adaptive_fixed_states_equal"]
     rows = [
         json.loads(line)
         for line in (output / "accepted_step_records.jsonl")
@@ -42,3 +43,10 @@ def test_corrected_mode_uses_fixed_historical_accepted_steps_and_separate_diagno
         assert fixed["step_rejections"] == 0
         assert row["historical_attempted_step"]["prestate_unchanged"]
         assert row["candidate_gates"]["passed"]
+        equality = row["adaptive_fixed_state_equality"]
+        assert equality["status"] == "pass"
+        artifact = output / equality["artifact"]
+        detail = json.loads(artifact.read_text(encoding="utf-8"))
+        assert detail["status"] == "pass"
+        assert detail["natural_state_sha256"] == detail["fixed_state_sha256"]
+        assert all(item["equal"] for item in detail["comparisons"])

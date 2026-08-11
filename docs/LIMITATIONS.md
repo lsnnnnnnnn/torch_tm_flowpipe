@@ -1,22 +1,25 @@
 # Limitations
 
-- S1 is now integrated from `t=0`, but it does not reproduce the entire frozen
-  historical prefix. Its sound common prefix ends after boundary 164 at
-  `t=4.738198114669049`; the next proposed historical step is rejected. No
-  terminal causal-improvement claim follows from the earlier empty-history
-  local split.
+Current S1 outcome: `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
+
+- The corrected S1 total-delta carry reproduces all 307 fixed historical
+  accepted step sizes, but the unchanged terminal proposal still rejects. This
+  is a frozen-schedule representation result, not a longer fresh adaptive
+  horizon.
+- The earlier L1/L2 result ending at boundary 164 is superseded as the current
+  headline but remains valid causal history for the pre-correction carrier.
 - The endpoint and tube structured images are outward enclosures, not claimed
   exact Jacobian images. Complete degree-two through degree-four cross terms
   are placed in the nonlinear residual.
-- The L1/L2 off-schedule half-step at the first divergence is diagnostic only.
+- The historical L1/L2 off-schedule half-step at the first divergence is diagnostic only.
   It is not committed, not counted as boundary 165, and not a fresh adaptive
   horizon result.
-- Terminal A/B, fresh horizon, +0.5 promotion, T10, K32, and the integrated S1
-  second-system run were prohibited by the prefix stop gate. Their table rows
-  say `not_run_after_stop`; absence of a run is not interpreted as failure or
-  success on those later gates.
-- The schema-v2 checkpoint qualifies the complete boundary-164 prefix state,
-  not the unavailable historical terminal prestate.
+- Fresh horizon, +0.5 promotion, T10, K32, and the integrated S1 second-system
+  run remain unauthorized after the corrected terminal rejection. Their
+  `not_run_after_stop` rows are neither successes nor numerical failures.
+- Old verification/fresh-clone statements are qualified by
+  `EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`; the historical package lacks the
+  raw command bundle needed to derive those claims independently.
 
 - Native rows use different representations, partitions, validators, step and
   carry policies, output objects, and numerical backends. They are not a winner

@@ -1,5 +1,9 @@
 # S1 corrected carry result
 
+> This remains the authoritative S1 numerical result. Claims about old
+> packager verification and the historical b5ba fresh clone are qualified by
+> [the evidence-integrity corrections](EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+
 Date: 2026-08-11
 
 ## Implemented candidate

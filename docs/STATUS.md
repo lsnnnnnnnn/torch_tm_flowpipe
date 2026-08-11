@@ -1,6 +1,20 @@
 # Status
 
-## Latest S1 prefix-integration round
+## Current S1 closure status
+
+Date: 2026-08-11
+
+Decision: `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
+
+The corrected total-delta K16 carry passes all 307 fixed accepted-step gates,
+but the same historical terminal proposal remains rejected. No fresh horizon,
++0.5 promotion, T10 promotion or second-system run follows. The source-derived
+verification and adaptive/fixed accepted-state gates are defined in
+[the evidence-integrity corrections](EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+
+The prefix-integration section below is retained as superseded causal history.
+
+## Superseded: S1 prefix-integration round
 
 Date: 2026-08-10
 Decision: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`

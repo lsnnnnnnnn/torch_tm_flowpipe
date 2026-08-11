@@ -1,5 +1,10 @@
 # S1 complete-O4 prefix integration result
 
+> Superseded as the current headline by
+> [`S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`](S1_CORRECTED_CARRY_RESULT_20260811.md).
+> This document is retained as historical causal evidence for the original
+> carrier and is not rewritten.
+
 Date: 2026-08-10
 Primary outcome: `S1_PREFIX_REJECTS_BEFORE_TERMINAL`
 

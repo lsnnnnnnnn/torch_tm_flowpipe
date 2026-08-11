@@ -1,5 +1,10 @@
 # S1 boundary-164 causal attribution
 
+> Historical causal stage. The current S1 outcome is the
+> [corrected-carry result](S1_CORRECTED_CARRY_RESULT_20260811.md); verification
+> provenance is qualified by
+> [the evidence-integrity corrections](EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+
 Date: 2026-08-11
 
 Evidence package:

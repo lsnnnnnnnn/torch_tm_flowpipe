@@ -15,6 +15,13 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+from torch_tm_flowpipe.evidence_verification import (
+    VerificationClaim,
+    load_verification_document,
+    unavailable_claim,
+    verification_document,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 START_SHA = "8683183e48b7795d13edbdc9a5910fba9d21d16c"
@@ -137,7 +144,54 @@ def _write_checksums(run_root: Path) -> int:
     return len(lines)
 
 
-def package(run_root: Path) -> dict[str, Any]:
+def _verification_claims(path: Path | None, run_root: Path) -> tuple[VerificationClaim, ...]:
+    required = (
+        "baseline_tests",
+        "final_tests",
+        "compileall",
+        "diff_check",
+        "private_path_scan",
+        "fresh_clone",
+        "working_tree",
+        "fraction_oracle_supported",
+        "ordinary_structured_nonlinear_interactions_included",
+    )
+    if path is None:
+        return tuple(
+            unavailable_claim(
+                claim_id,
+                status="not_run",
+                scope="historical S1 package rebuild",
+                limitation="no source-derived verification document was supplied",
+                derived_by="experiments.package_s1_boundary164_result",
+            )
+            for claim_id in required
+        )
+    claims = load_verification_document(path, source_root=run_root)
+    by_id = {claim.claim_id: claim for claim in claims}
+    missing = [claim_id for claim_id in required if claim_id not in by_id]
+    return claims + tuple(
+        unavailable_claim(
+            claim_id,
+            status="unknown",
+            scope="historical S1 package rebuild",
+            limitation="required claim is absent from the supplied verification document",
+            derived_by="experiments.package_s1_boundary164_result",
+        )
+        for claim_id in missing
+    )
+
+
+def package(
+    run_root: Path,
+    verification_claims_path: Path | None = None,
+) -> dict[str, Any]:
+    claims = _verification_claims(verification_claims_path, run_root)
+    claims_by_id = {claim.claim_id: claim for claim in claims}
+
+    def claim_passes(claim_id: str) -> bool:
+        return claims_by_id[claim_id].status in {"pass", "qualified"}
+
     triad_root = run_root / "04_checkpoint_triad"
     audit_root = run_root / "06_total_delta_shadow/raw_audit"
     substitution_root = run_root / "07_boundary164_substitutions/raw"
@@ -184,7 +238,7 @@ def package(run_root: Path) -> dict[str, Any]:
                 "torch": "2.5.1+cu121",
                 "cuda_available": True,
             },
-            "baseline": "545 passed, 2 skipped in 218.44s",
+            "baseline_verification_claim": claims_by_id["baseline_tests"].as_dict(),
         },
     )
     _json(
@@ -326,11 +380,13 @@ def package(run_root: Path) -> dict[str, Any]:
             "failure_boundary"
         ]
         == 11,
-        "fraction_oracle_supported": True,
+        "fraction_oracle_supported": claim_passes("fraction_oracle_supported"),
         "total_delta_not_wider_after_padding": audit["total_delta_shadow"][
             "total_delta_not_wider_after_padding"
         ],
-        "ordinary_structured_nonlinear_interactions_included": True,
+        "ordinary_structured_nonlinear_interactions_included": claim_passes(
+            "ordinary_structured_nonlinear_interactions_included"
+        ),
     }
     candidate_row = {
         "chosen_outcome": "B",
@@ -517,27 +573,7 @@ def package(run_root: Path) -> dict[str, Any]:
         "conditions": candidate_conditions,
     }
     _json(run_root / "decision.json", decision)
-    verification = {
-        "baseline_tests": {"passed": 545, "skipped": 2, "seconds": 218.44},
-        "final_tests": {"passed": 572, "skipped": 2, "seconds": 270.30},
-        "compileall": "passed",
-        "diff_check": "passed",
-        "private_path_scan": "passed_new_scope; pre-existing matches are historical provenance or sanitizer fixtures",
-        "fresh_clone": {
-            "status": "passed",
-            "verified_commit": "b5ba3200901e331f01343c7d05608a1d542dbb8c",
-            "remote_local_head_equal": True,
-            "editable_test_install": "passed",
-            "selected_tests": {"passed": 17, "seconds": 18.40},
-            "checksum_count": 234,
-            "package_rebuild_clean": True,
-            "manifest_links": "passed",
-            "checkpoint_load_sha256": "f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1",
-            "hidden_local_dependency": False,
-        },
-        "working_tree": "clean_at_verified_commit",
-    }
-    _json(run_root / "verification.json", verification)
+    _json(run_root / "verification.json", verification_document(claims))
 
     _copy_summary(
         audit_root / "first_divergence.json",
@@ -582,7 +618,10 @@ def package(run_root: Path) -> dict[str, Any]:
     _json(run_root / "14_second_system/stop.json", second_rows)
     _json(
         run_root / "15_tests/summary.json",
-        {"passed": 572, "skipped": 2, "seconds": 270.30},
+        {
+            "schema": "torch_tm_flowpipe_source_derived_test_summary_v1",
+            "claim": claims_by_id["final_tests"].as_dict(),
+        },
     )
 
     # Figures are derived only from the machine records above.
@@ -723,12 +762,20 @@ def package(run_root: Path) -> dict[str, Any]:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-root", type=Path, required=True)
+    parser.add_argument("--verification-claims", type=Path)
     return parser.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
-    result = package(args.run_root.resolve())
+    result = package(
+        args.run_root.resolve(),
+        (
+            args.verification_claims.resolve()
+            if args.verification_claims is not None
+            else None
+        ),
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

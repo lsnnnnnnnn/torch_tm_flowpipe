@@ -11,8 +11,11 @@ points rather than treating one ambiguous `order` as a common algorithm:
 - Torch TM: one architecture with a configurable DiffReach-like fixed-support
   lane and a Flow*-like complete-total-degree lane.
 
-The active research result is on
-`codex/s1-boundary164-causal-guarded-carry-20260811`. The frozen
+The latest closed S1 result is `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`;
+the active follow-up is the pairwise matched-divergence and fixed-support
+bridge round. Its evidence-integrity corrections are documented in
+[`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
 Adaptive DEF-CERT, obsolete winner/Pareto tables, and prior TORA-specific
 comparisons remain historical or rejected.

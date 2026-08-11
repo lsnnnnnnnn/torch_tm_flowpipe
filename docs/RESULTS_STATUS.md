@@ -1,6 +1,20 @@
 # Results status
 
-## Current terminal-range result
+## Current status (2026-08-11)
+
+The latest closed S1 result is
+`S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`: corrected carry passes the 307-step
+frozen accepted prefix and the unchanged historical terminal step rejects.
+This supersedes `S1_PREFIX_REJECTS_BEFORE_TERMINAL` as the current headline.
+Fresh-horizon and second-system results remain `not_run_after_stop`. Native
+Flow*, DiffReach and Torch rows remain capability facts and are not a universal
+speed or tightness ranking. See
+[the corrected-carry result](S1_CORRECTED_CARRY_RESULT_20260811.md) and
+[the evidence-integrity corrections](EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+
+The sections below are earlier closure history.
+
+## Historical terminal-range result
 
 The dense backend now has a safe canonical terminal checkpoint/replay path and
 a fully tested batched subdivision polynomial-range evaluator. On the exact

@@ -1,5 +1,11 @@
 # Handoff: S1 boundary-164 causal guarded carry
 
+> Evidence-integrity qualification (2026-08-11): the fresh-clone and test
+> statements below were written by a packager that did not retain the raw
+> command bundle needed to derive them independently. The b5ba clone is
+> historical, not verification of the later 7b880d0 branch tip. See
+> [the correction register](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+
 Date: 2026-08-11
 
 ## Outcome
@@ -37,9 +43,10 @@ The unchanged historical terminal step still rejects with T0 y margin
 - Fresh/+0.5/second system: not authorized
 - Final regression: 572 passed, 2 skipped in 270.30 s
 - Evidence checksums: 234 repository-root-relative entries
-- Fresh clone at `b5ba3200901e331f01343c7d05608a1d542dbb8c`: remote/local
-  heads equal, editable install passed, 17 selected tests passed in 18.40 s,
-  package rebuild and all checksums passed, checkpoint loaded, tree clean
+- Historical selected-test clone at
+  `b5ba3200901e331f01343c7d05608a1d542dbb8c`; this is not a final-HEAD
+  verification claim, and the old package does not retain the raw command
+  bundle required for independent derivation
 - Primitive formal eligibility: true for the bounded CPU outward image
 - Prefix formal eligibility: false
 - Prefix class: `safeguarded_binary64_interval_shell`,

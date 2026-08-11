@@ -1,6 +1,23 @@
 # Results
 
-## S1 prefix-integrated complete-O4 result
+## Current authoritative S1 result
+
+The current S1 outcome is
+`S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. The corrected
+`normalized_insertion_structured_total_delta_k16` carry replays all 307 frozen
+historical accepted step sizes and produces a byte-stable boundary-307
+checkpoint. The unchanged historical terminal proposal still rejects, with T0
+y margin `-1.9999591170254726e-5`; fresh horizons and a second system were not
+authorized. Primitive formal eligibility remains limited to the CPU outward
+image for given binary64 coefficients; the full prefix is not formally
+eligible.
+
+Verification provenance is qualified by
+[the evidence-integrity correction register](EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+The following prefix-rejection section is preserved as a superseded historical
+result, not the current headline.
+
+## Superseded: S1 prefix-integrated complete-O4 result
 
 The primary result of the current round is
 `S1_PREFIX_REJECTS_BEFORE_TERMINAL`. The three observation-controlled lanes
