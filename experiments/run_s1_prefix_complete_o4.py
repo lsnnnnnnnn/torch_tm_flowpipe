@@ -309,6 +309,7 @@ def _run_lane_step(
     h_min: float | None = None,
     h_max: float | None = None,
     max_validation_attempts: int = 2,
+    structured_allow_outward_renormalization: bool = True,
 ):
     structured_lane = lane in {"L1", "L2"}
     return flowpipe_step_flowstar_style_adaptive(
@@ -337,6 +338,7 @@ def _run_lane_step(
         dense_range_policy=policy,
         diagnostics=diagnostics,
         diagnostics_context=diagnostics_context,
+        structured_allow_outward_renormalization=structured_allow_outward_renormalization,
     )
 
 
