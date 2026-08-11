@@ -1,5 +1,29 @@
 # Reproducibility
 
+Build the current evidence package into a new ignored output directory:
+
+```bash
+conda run -n py11 python experiments/build_three_tool_evidence_package.py \
+  --run-root outputs/three_tool_matched_divergence_fixed_support_20260811/<RUN_ID> \
+  --flowstar-root /path/to/flowstar-b85a321 \
+  --diffreach-root /path/to/DiffReach-dd628eb \
+  --diffreach-python /path/to/pinned/diffreach/python
+```
+
+The builder refuses an existing run root, runs every command through the
+eight-file runner protocol, executes G0→G3 only through closed predecessors,
+derives verification claims from command files and hashes, rejects non-finite
+JSON and unclassified private paths, and writes root-relative `SHA256SUMS`.
+
+Focused causal commands are:
+
+```bash
+python experiments/trace_vdp_raw_remainder.py --help
+python experiments/analyze_vdp_raw_remainder_trace.py --help
+python experiments/run_vdp_schedule_validator_matrix.py --help
+python experiments/run_fixed_support_descriptor_bridge.py --help
+```
+
 From the repository root, install and test:
 
 ```bash

@@ -2,6 +2,34 @@
 
 Date: 2026-08-11
 
+## Outcome
+
+Source-derived verification replaces hardcoded package passes; historical
+fresh-clone claims are qualified rather than repeated.
+
+## Eligibility
+
+Eligible for integrity claims when every named source and SHA validates;
+numerical solver claims retain their own scope.
+
+## What is comparable
+
+Claim status, source paths/hashes, command exit, scope, and limitations.
+
+## What is unavailable
+
+A final-HEAD clone pass remains unavailable until produced at the final remote
+SHA.
+
+## Negative results
+
+Missing sources produce `not_run`/`unknown`; SHA mismatch produces `fail`.
+
+## Exact evidence paths
+
+`src/torch_tm_flowpipe/evidence_verification.py`, focused integrity tests, and
+the new run's `verification.json`.
+
 This document corrects claim provenance without rewriting the immutable S1
 evidence run at
 `outputs/s1_boundary164_causal_guarded_carry_20260811/20260811T033447Z`.

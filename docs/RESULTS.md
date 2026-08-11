@@ -1,5 +1,27 @@
 # Results
 
+## Current three-tool pairwise/causal result
+
+The current outcomes are `RAW_REMAINDER_ROOT_CAUSE_CLOSED`,
+`SCHEDULE_VALIDATOR_INTERACTION`, and `FIXED_SUPPORT_BRIDGE_CLOSED` through
+G2/T1 for A0--A4 in both B1 and B64. The first decision-changing node is
+Picard iteration 4 `x*x`: Flow* direct interval-coefficient multiplication
+adds uncertainty `[-0.00011204861774257546,0.00008935810062010431]` absent
+from Torch's point-binary64 retained-coefficient path. Replacing only that
+frozen contribution changes the Flow* y margin from
+`-3.662398821521699e-6` to `+2.4888083156873676e-7`.
+
+Both receiving subset predicates accept the Torch candidate and reject the
+Flow* candidate, so candidate construction causes the first split and the
+different accepted schedule then changes later producer states. Flow*/Torch
+O4 is `PAIRWISE_COMPARISON_PARTIAL`; DiffReach/Torch DR7 explicit-f64 is
+`VALID_PAIRWISE_COMPARISON_CLOSED`. No transitive ranking follows.
+
+The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`: the
+proven extra uncertainty is on the Flow* side, Torch already contains the
+independent MPFR replay, and the narrower Flow* counterfactual is not proved
+sound for arbitrary MPFR coefficients.
+
 ## Current authoritative S1 result
 
 The current S1 outcome is

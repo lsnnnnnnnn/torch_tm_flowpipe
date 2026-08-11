@@ -11,9 +11,13 @@ points rather than treating one ambiguous `order` as a common algorithm:
 - Torch TM: one architecture with a configurable DiffReach-like fixed-support
   lane and a Flow*-like complete-total-degree lane.
 
-The latest closed S1 result is `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`;
-the active follow-up is the pairwise matched-divergence and fixed-support
-bridge round. Its evidence-integrity corrections are documented in
+The latest research round closes the first Flow*/Torch raw-remainder split at
+Picard-4 `x*x`, identifies a schedule/validator interaction, and closes the
+R7-to-R35 A0--A4 bridge through T1 in B1 and B64. Flow*/Torch comparison is
+partial, DiffReach/Torch explicit-f64 comparison is closed, and no Torch
+production improvement is authorized by the evidence. The preceding S1
+result remains `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`. Evidence-integrity
+corrections are documented in
 [`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
 The frozen
 TORA complete-Q3 work is a stress-test reference, not the project objective.
@@ -89,6 +93,13 @@ Start with:
 - [S1 terminal causal gate](docs/S1_TERMINAL_CAUSAL_GATE_20260810.md);
 - [S1 boundary-164 causal attribution](docs/S1_BOUNDARY164_CAUSAL_ATTRIBUTION_20260811.md);
 - [S1 corrected carry result](docs/S1_CORRECTED_CARRY_RESULT_20260811.md);
+- [three-tool pairwise result](docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md);
+- [Flow*/Torch O4 matched result](docs/FLOWSTAR_TORCH_O4_MATCHED_COMPARISON_20260811.md);
+- [DiffReach/Torch DR7 matched result](docs/DIFFREACH_TORCH_DR7_MATCHED_COMPARISON_20260811.md);
+- [raw-remainder root cause](docs/VDP_RAW_REMAINDER_ROOT_CAUSE_20260811.md);
+- [schedule/validator causality](docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md);
+- [fixed-support bridge](docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md);
+- [single-improvement decision](docs/TORCH_SINGLE_IMPROVEMENT_RESULT_20260811.md);
 - [second-system generality](docs/SECOND_SYSTEM_GENERALITY_20260810.md);
 - [handoff](handoff.md).
 

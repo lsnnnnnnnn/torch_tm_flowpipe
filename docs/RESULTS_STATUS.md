@@ -2,6 +2,17 @@
 
 ## Current status (2026-08-11)
 
+The three-tool follow-up is closed through its required T1 causal bridge:
+raw-remainder root cause closed at Picard-4 `x*x`; schedule/validator outcome
+is interaction; every A0--A4 B1/B64 cell completes G0, G1, and G2. There is no
+single dominant bridge factor across the preregistered metrics and partition
+lanes. Flow*/Torch remains a partial pairwise comparison because formal and
+full-horizon same-object tightness are unavailable. DiffReach/Torch
+explicit-f64 operator comparison is closed. The only allowed improvement
+decision is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
+
+The S1 statement below is the immediately preceding research result.
+
 The latest closed S1 result is
 `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`: corrected carry passes the 307-step
 frozen accepted prefix and the unchanged historical terminal step rejects.

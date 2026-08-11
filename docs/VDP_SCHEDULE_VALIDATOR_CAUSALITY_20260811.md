@@ -6,6 +6,30 @@ Date: 2026-08-11
 
 `SCHEDULE_VALIDATOR_INTERACTION`
 
+## Eligibility
+
+Eligible as a frozen same-prestate/schedule diagnostic, not as a formal
+ranking row.
+
+## What is comparable
+
+The two candidate producers under both identical componentwise subset
+predicates, plus separate T1 schedule replays.
+
+## What is unavailable
+
+Lossless post-split common producer states and terminal cross-schedule
+counterfactuals.
+
+## Negative results
+
+The receiving validator identity alone is not causal at the first split.
+
+## Exact evidence paths
+
+New-package directory `08_schedule_validator_matrix/`, produced by
+`experiments/run_vdp_schedule_validator_matrix.py`.
+
 At the last-common prestate and the same proposed
 `h=0.019615177354506262`, the 2x2 receiving-validator matrix is lossless:
 both validators apply the same componentwise closed-interval subset predicate

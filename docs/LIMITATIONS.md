@@ -1,5 +1,22 @@
 # Limitations
 
+Current pairwise/bridge qualification:
+
+- The root-cause counterfactual is independently replayed for frozen inputs;
+  it is not a proof that a narrower Flow* coefficient formula is sound for
+  arbitrary MPFR coefficients.
+- Flow* and Torch have no lossless common producer state after their first
+  different accepted step. Later box-hull substitutions are intentionally not
+  used.
+- The R35 bridge is an empirical ordinary-float64 fixed-workload diagnostic.
+  B1 and B64 are separate objects and factor magnitudes are not interchangeable.
+- The inherited operation ledger is lineage, not an additive decomposition
+  after scaling/composition; checkpoint coverage is validated separately.
+- No matched one-cold/ten-warm cross-tool timing study was run, so no speed
+  ratio is eligible.
+- No Torch improvement or second-system promotion was run because the earliest
+  proven divergence does not identify a Torch defect.
+
 Current S1 outcome: `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
 
 - The corrected S1 total-delta carry reproduces all 307 fixed historical

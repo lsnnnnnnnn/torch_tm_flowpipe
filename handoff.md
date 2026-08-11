@@ -1,5 +1,26 @@
 # Handoff: S1 boundary-164 causal guarded carry
 
+## Superseding three-tool round (2026-08-11)
+
+The current branch closes the raw-remainder root cause at Flow* Picard-4
+`x*x`, records `SCHEDULE_VALIDATOR_INTERACTION`, and closes the generic
+R7→R35 A0--A4 bridge through T1 for B1/B64. Flow*/Torch pairwise status is
+partial; DiffReach/Torch explicit-f64 status is closed. No universal timing or
+tightness winner is available.
+
+The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`. The
+proven decision-changing uncertainty is extra on the Flow* side, while Torch
+already contains the frozen MPFR replay. Do not tune target, cutoff, K,
+validator, Picard depth, or `h_min`, and do not describe the diagnostic R35
+bridge as a promoted authoritative complete-O4 lane.
+
+Primary documents are `docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md`,
+`docs/VDP_RAW_REMAINDER_ROOT_CAUSE_20260811.md`,
+`docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md`, and
+`docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md`.
+
+The remainder of this file is the preserved preceding S1 handoff.
+
 > Evidence-integrity qualification (2026-08-11): the fresh-clone and test
 > statements below were written by a packager that did not retain the raw
 > command bundle needed to derive them independently. The b5ba clone is

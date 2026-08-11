@@ -8,6 +8,31 @@ Date: 2026-08-11
 and B64.  G3/T10 is a separately gated extension and is not needed to relabel
 the completed T1 bridge.
 
+## Eligibility
+
+Empirical ordinary-float64 fixed-workload causal diagnostics only; R7 frozen
+regression is separately bit-exact.
+
+## What is comparable
+
+Adjacent rows at the same B, h, time, output object, success status, and
+soundness scope.
+
+## What is unavailable
+
+B1/B64 cross-partition deltas, post-failure deltas, and a universal dominant
+factor.
+
+## Negative results
+
+Preregistered metrics disagree on a single dominant factor; R35 is not a
+promoted complete-O4 production lane.
+
+## Exact evidence paths
+
+New-package directories `09_fixed_support_descriptor/` and
+`10_bridge_ladder/`.
+
 The generic descriptor core preserves the frozen DR7 manifest and expression
 order while adding complete total-degree O4 support
 `R35 = {t^a xi0^b xi1^c : a+b+c <= 4}`.  Its 35-slot order, multiplication

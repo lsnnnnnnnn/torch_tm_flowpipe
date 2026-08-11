@@ -1,5 +1,24 @@
 # Status
 
+## Current pairwise/descriptor round
+
+Date: 2026-08-11
+
+Decisions:
+
+- evidence integrity: pass with source-derived claims;
+- raw remainder: `RAW_REMAINDER_ROOT_CAUSE_CLOSED`;
+- schedule/validator: `SCHEDULE_VALIDATOR_INTERACTION`;
+- fixed-support bridge: `FIXED_SUPPORT_BRIDGE_CLOSED` through G2/T1, B1/B64;
+- Flow*/Torch O4: `PAIRWISE_COMPARISON_PARTIAL`;
+- DiffReach/Torch DR7: `VALID_PAIRWISE_COMPARISON_CLOSED`;
+- improvement: `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`.
+
+The R35 descriptor contains all 35 total-degree-four monomials and generated
+algebra tables. R7 regression is bit-exact. No complete-O4 production
+semantic, target, cutoff, minimum step, or validator is promoted. G3/T10 is a
+separately gated bridge extension and does not alter the T1 causal result.
+
 ## Current S1 closure status
 
 Date: 2026-08-11

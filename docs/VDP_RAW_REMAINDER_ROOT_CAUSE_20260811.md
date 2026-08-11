@@ -6,6 +6,31 @@ Date: 2026-08-11
 
 `RAW_REMAINDER_ROOT_CAUSE_CLOSED`
 
+## Eligibility
+
+Eligible for the frozen B1 checkpoint and expression node; not a universal
+Flow* coefficient-soundness claim.
+
+## What is comparable
+
+Same-checkpoint Picard-4 `x*x` multiplication sources, raw y image, target,
+and counterfactual margin.
+
+## What is unavailable
+
+Soundness of the narrower replacement for arbitrary MPFR coefficients and
+end-to-end formal solver equivalence.
+
+## Negative results
+
+Polynomial roundoff and earlier dropped/product-remainder differences do not
+cause the decision.
+
+## Exact evidence paths
+
+New-package directory `07_flowstar_torch_raw_remainder/`, including the common
+tree, node CSV, first divergence, counterfactuals, and MPFR/Fraction replay.
+
 At the frozen last-common prestate (`t=0.18187433604506256`) and full
 proposal (`h=0.019615177354506262`), the first decision-changing expression
 divergence is Picard iteration 4, component `y`, semantic node `x*x`.
