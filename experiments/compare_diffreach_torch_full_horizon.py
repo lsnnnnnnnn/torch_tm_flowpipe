@@ -243,6 +243,14 @@ def main() -> int:
     with np.load(args.diffreach_dir / "bounds.npz") as left_bounds, np.load(
         args.torch_dir / "bounds.npz"
     ) as right_bounds:
+        left_endpoint_lo = left_bounds["endpoint_lo"]
+        left_endpoint_hi = left_bounds["endpoint_hi"]
+        left_tube_lo = left_bounds["tube_lo"]
+        left_tube_hi = left_bounds["tube_hi"]
+        right_endpoint_lo = right_bounds["endpoint_lo"]
+        right_endpoint_hi = right_bounds["endpoint_hi"]
+        right_tube_lo = right_bounds["tube_lo"]
+        right_tube_hi = right_bounds["tube_hi"]
         delta_csv = args.output_dir / "endpoint_tube_delta_by_step.csv"
         endpoint_max_ulp = 0
         tube_max_ulp = 0
@@ -261,16 +269,16 @@ def main() -> int:
             writer.writeheader()
             for zero_index in range(1000):
                 endpoint_left = np.stack(
-                    (left_bounds["endpoint_lo"][zero_index], left_bounds["endpoint_hi"][zero_index])
+                    (left_endpoint_lo[zero_index], left_endpoint_hi[zero_index])
                 )
                 endpoint_right = np.stack(
-                    (right_bounds["endpoint_lo"][zero_index], right_bounds["endpoint_hi"][zero_index])
+                    (right_endpoint_lo[zero_index], right_endpoint_hi[zero_index])
                 )
                 tube_left = np.stack(
-                    (left_bounds["tube_lo"][zero_index], left_bounds["tube_hi"][zero_index])
+                    (left_tube_lo[zero_index], left_tube_hi[zero_index])
                 )
                 tube_right = np.stack(
-                    (right_bounds["tube_lo"][zero_index], right_bounds["tube_hi"][zero_index])
+                    (right_tube_lo[zero_index], right_tube_hi[zero_index])
                 )
                 endpoint_metrics = _metrics(endpoint_left, endpoint_right)
                 tube_metrics = _metrics(tube_left, tube_right)
@@ -345,6 +353,11 @@ def main() -> int:
         "first_divergence_step": first_step,
         "first_divergence_fields": first_fields,
         "first_divergence_detail": first_detail,
+        "numerical_divergence_classification": (
+            "JAX/XLA-versus-Torch floating expression evaluation order; "
+            "the first discrepancy is one ULP inside polynomial Picard-1, "
+            "before any mask decision, while every initial/later mask remains equal"
+        ),
         "first_divergence_by_field": first_by_field,
         "common_field_count": len(common_fields),
         "diffreach_only_fields": sorted(diff_fields - torch_fields),
@@ -366,4 +379,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -181,6 +181,10 @@ def main() -> int:
             "python": platform.python_version(),
             "jax": jax.__version__,
             "devices": [str(device) for device in jax.devices()],
+            "environment": {
+                "JAX_ENABLE_X64": os.environ.get("JAX_ENABLE_X64"),
+                "JAX_PLATFORM_NAME": os.environ.get("JAX_PLATFORM_NAME"),
+            },
             "source_sha": commit,
             "observer_patch_sha256": expected_patch_sha,
             "partition_sha256": PARTITION_SHA256,
@@ -256,6 +260,7 @@ def main() -> int:
         "dtype": "float64",
         "device": "cpu",
         "jax_x64_enabled": bool(jax.config.x64_enabled),
+        "jax_platform_name": os.environ.get("JAX_PLATFORM_NAME"),
         "steps": args.steps,
         "step_size": args.step_size,
         "step_size_hex": args.step_size.hex(),
