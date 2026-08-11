@@ -77,3 +77,49 @@ def test_finalizer_is_byte_deterministic_for_frozen_runner_inputs(tmp_path: Path
     assert (first / "manifest.json").read_bytes() == (second / "manifest.json").read_bytes()
     assert (first / "verification.json").read_bytes() == (second / "verification.json").read_bytes()
     assert (first / "SHA256SUMS").read_bytes() == (second / "SHA256SUMS").read_bytes()
+
+
+def test_finalizer_classifies_diffreach_interpreter_path_as_provenance(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "20260811T000000Z"
+    runner = root / "04_native_diffreach" / "official_vdp"
+    assert (
+        run(
+            argparse.Namespace(
+                output_dir=runner,
+                name="stock_diffreach",
+                source_commit="c" * 40,
+                config_json="{}",
+                cwd=tmp_path,
+                eligibility_status="native_capability_only",
+                timing_eligibility="not_a_benchmark",
+                expected_exit_codes=(0,),
+                command=[sys.executable, "-c", "print('ok')"],
+            )
+        )
+        == 0
+    )
+    summary = runner / "artifacts" / "run" / "summary.json"
+    summary.parent.mkdir(parents=True)
+    summary.write_text(
+        json.dumps(
+            {
+                "python_executable": {
+                    "invoked_path": "/srv/local/shengenli/pinned/bin/python"
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest = finalize(
+        argparse.Namespace(run_root=root, outcomes_json=json.dumps({"evidence": "pass"}))
+    )
+    audit = manifest["private_path_audit"]
+    assert audit["status"] == "qualified"
+    assert all(row["category"] == "provenance_only" for row in audit["matches"])
+    assert any(
+        row["path"]
+        == "04_native_diffreach/official_vdp/artifacts/run/summary.json"
+        for row in audit["matches"]
+    )

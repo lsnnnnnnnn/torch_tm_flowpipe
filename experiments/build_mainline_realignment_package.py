@@ -691,14 +691,26 @@ def build(run_root: Path) -> None:
     _write_json(run_root / "native_baselines.json", native)
 
     matched_yaml = ROOT / "benchmarks/vdp_three_lane_contract_20260810.yaml"
-    matched = yaml.safe_load(matched_yaml.read_text(encoding="utf-8"))
+    frozen_matched_path = run_root / "matched_contract.json"
+    if frozen_matched_path.is_file():
+        # A historical package rebuild must consume its frozen contract rather
+        # than a later repository contract revision.  Otherwise deterministic
+        # rebuild would silently rewrite immutable evidence.
+        frozen_matched = _json(frozen_matched_path)
+        matched = frozen_matched["contract"]
+        matched_source = frozen_matched["contract_source"]
+        matched_sha256 = frozen_matched["contract_sha256"]
+    else:
+        matched = yaml.safe_load(matched_yaml.read_text(encoding="utf-8"))
+        matched_source = str(matched_yaml.relative_to(ROOT))
+        matched_sha256 = sha256_file(matched_yaml)
     _write_json(
         run_root / "matched_contract.json",
         {
             "schema": "torch_tm_matched_contract_result_v1",
             "track": "M",
-            "contract_source": str(matched_yaml.relative_to(ROOT)),
-            "contract_sha256": sha256_file(matched_yaml),
+            "contract_source": matched_source,
+            "contract_sha256": matched_sha256,
             "contract": matched,
             "expressibility": {
                 "flowstar_stock": "native official VDP expressible; tubes only; formal stock numerical gate fails",
@@ -889,7 +901,10 @@ def build(run_root: Path) -> None:
     _write_csv(run_root / "short_horizon.csv", [row for row in horizon_rows if row["requested_horizon"] <= 1.0])
 
     full_rows = [row for row in horizon_rows if row["requested_horizon"] >= 4.0]
-    requested_horizon = float(matched["system"]["requested_horizon"])
+    requested_horizon_value = matched["system"]["requested_horizon"]
+    if isinstance(requested_horizon_value, Mapping):
+        requested_horizon_value = requested_horizon_value["decimal"]
+    requested_horizon = float(requested_horizon_value)
     flow_lane = lanes["flowstar_stock"]
     diff_lane = lanes["diffreach_stock"]
     full_rows.extend(

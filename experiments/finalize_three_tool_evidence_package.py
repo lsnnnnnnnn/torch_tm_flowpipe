@@ -143,6 +143,8 @@ def finalize(args: argparse.Namespace) -> dict[str, Any]:
                 in path.relative_to(run_root).as_posix()
                 or path.relative_to(run_root).as_posix()
                 == "00_environment/probe/artifacts/run/summary.json"
+                or path.relative_to(run_root).as_posix()
+                == "04_native_diffreach/official_vdp/artifacts/run/summary.json"
             )
         ],
     )
