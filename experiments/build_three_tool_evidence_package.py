@@ -142,8 +142,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         command=[
             python,
             "experiments/run_stock_flowstar_vdp_reproduction.py",
-            "--binary",
-            str(flowstar_binary),
+            "--source",
+            str(args.flowstar_root.resolve()),
             "--output-dir",
             "{ARTIFACT_DIR}/run",
             "--source-commit",
