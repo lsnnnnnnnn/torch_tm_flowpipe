@@ -609,6 +609,24 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     _protocol(
         run_root,
+        "14_fresh_clone/worktree_clean",
+        name="final_head_worktree_clean",
+        command=[
+            python,
+            "-c",
+            (
+                "import subprocess,sys;"
+                "p=subprocess.run(['git','status','--porcelain=v1'],"
+                "text=True,capture_output=True,check=True);"
+                "print(p.stdout,end='');sys.exit(1 if p.stdout else 0)"
+            ),
+        ],
+        config={"final_head": _head(), "ignored_package_output_allowed": True},
+        eligibility="final_head_gate",
+        timing="not_a_benchmark",
+    )
+    _protocol(
+        run_root,
         "15_reports/causal_figures",
         name="causal_figure_builder",
         command=[
