@@ -61,7 +61,7 @@ def _accounting(*, failure: bool) -> dict[str, object]:
 
 def _derive_fixture() -> dict[str, object]:
     divergence = {
-        "reproduction_status": "reproduced",
+        "reproduction_status": "A3_A4_FROZEN_RESULTS_REPRODUCED",
         "divergence": [
             {
                 "first_coefficient_bit_divergence": {"step": 1},
@@ -132,7 +132,7 @@ def test_root_cause_finalizer_derives_c4_and_rejects_double_count() -> None:
         derive(
             reproductions=_reproductions(),
             divergence={
-                "reproduction_status": "reproduced",
+                "reproduction_status": "A3_A4_FROZEN_RESULTS_REPRODUCED",
                 "divergence": [
                     {
                         "first_coefficient_bit_divergence": {"step": 1},

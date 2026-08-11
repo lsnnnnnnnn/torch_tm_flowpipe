@@ -77,7 +77,10 @@ def derive(
         _require(actual_failure == failure_step, f"{key} failure mismatch")
         _require(summary.get("no_hidden_fallback") is True, f"{key} used fallback")
 
-    _require(divergence.get("reproduction_status") == "reproduced", "divergence ledger is not closed")
+    _require(
+        divergence.get("reproduction_status") == "A3_A4_FROZEN_RESULTS_REPRODUCED",
+        "divergence ledger is not closed",
+    )
     for cell in divergence["divergence"]:
         _require(cell["first_coefficient_bit_divergence"]["step"] == 1, "first coefficient divergence changed")
         _require(cell["first_remainder_divergence"]["step"] == 2, "first remainder divergence changed")
