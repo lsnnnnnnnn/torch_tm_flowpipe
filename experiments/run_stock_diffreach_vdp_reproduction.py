@@ -96,9 +96,19 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         f"x{component}": [float(lo), float(hi)]
         for component, lo, hi in endpoint_pattern.findall(completed.stdout)
     }
+    timing_events = [
+        {
+            "sequence": sequence,
+            "label": label,
+            "seconds": float(value),
+        }
+        for sequence, (label, value) in enumerate(
+            re.findall(r"\[(warmup|after-JIT)\]\s*([0-9.]+)s", completed.stdout)
+        )
+    ]
     timings = {
-        label.lower().replace("-", "_"): float(value)
-        for label, value in re.findall(r"\[(warmup|after-JIT)\]\s*([0-9.]+)s", completed.stdout)
+        label: [event["seconds"] for event in timing_events if event["label"] == label]
+        for label in ("warmup", "after-JIT")
     }
     summary = {
         "schema": "stock_diffreach_vdp_reproduction_v1",
@@ -125,7 +135,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "segment_tube_available": False,
         "prefix_tube_available": False,
         "endpoint": endpoints,
-        "reported_last_timing_by_label": timings,
+        "reported_timing_events_in_output_order": timing_events,
+        "reported_timings_by_label": timings,
         "process_wall_seconds": elapsed,
         "soundness_scope": "empirically sampled native mixed-builder-dtype lane",
         "eligibility_status": "native_capability_only",
