@@ -311,26 +311,71 @@ def _native_capability_table(run_root: Path, output: Path) -> tuple[Path, Path]:
         wrapper = _json(runner / "summary.json")
         artifact_path = runner / "artifacts/run/summary.json"
         artifact = _json(artifact_path) if artifact_path.is_file() else {}
-        schedule = artifact.get("schedule", {})
+        schedule = artifact.get("schedule", artifact.get("step_policy", {}))
         if isinstance(schedule, Mapping):
             schedule_label = schedule.get("kind", "")
-            if schedule.get("h") is not None:
-                schedule_label += f' h={schedule["h"]}'
+            step = _first(schedule, "h", "step_size")
+            if step != "":
+                schedule_label += f" h={step}"
         else:
             schedule_label = str(schedule)
+        partition = _first(artifact, "partition_count", "batch")
+        if partition == "" and isinstance(artifact.get("partition_policy"), Mapping):
+            partition = artifact["partition_policy"].get("batch", "")
+        output_semantics = artifact.get("output_semantics", {})
+        fixed_objects = artifact.get("endpoint_tube_polynomial_remainder_widths", {})
+
+        def availability(field: str, inferred: bool) -> str:
+            value = artifact.get(field)
+            if value is None:
+                value = inferred
+            return "available" if bool(value) else "unavailable"
+
         rows.append(
             {
                 "tool": tool,
                 "lane": lane,
-                "representation": _first(artifact, "representation", "tm_backend"),
-                "partition": _first(artifact, "partition_count", "batch"),
+                "representation": _first(
+                    artifact, "representation", "representation_name", "tm_backend"
+                ),
+                "partition": partition,
                 "schedule": schedule_label,
                 "requested_horizon": _first(artifact, "horizon_requested", "requested_horizon", "horizon"),
                 "validated_horizon": _first(artifact, "horizon_validated", "validated_horizon", "completed_horizon"),
-                "result_status": _first(artifact, "result_status", "status", "outcome", default=wrapper["status"]),
-                "endpoint_available": _first(artifact, "endpoint_available"),
-                "segment_tube_available": _first(artifact, "segment_tube_available"),
-                "prefix_tube_available": _first(artifact, "prefix_tube_available"),
+                "result_status": _first(
+                    artifact,
+                    "result_status",
+                    "completion_status",
+                    "status",
+                    "outcome",
+                    default=wrapper["status"],
+                ),
+                "endpoint_available": availability(
+                    "endpoint_available",
+                    bool(artifact.get("raw_endpoint"))
+                    or (
+                        isinstance(fixed_objects, Mapping)
+                        and bool(fixed_objects.get("raw_endpoint"))
+                    )
+                    or (isinstance(output_semantics, Mapping) and "endpoint" in output_semantics),
+                ),
+                "segment_tube_available": availability(
+                    "segment_tube_available",
+                    bool(artifact.get("last_segment"))
+                    or (
+                        isinstance(fixed_objects, Mapping)
+                        and bool(fixed_objects.get("last_full_segment_tube"))
+                    )
+                    or (isinstance(output_semantics, Mapping) and "tube" in output_semantics),
+                ),
+                "prefix_tube_available": availability(
+                    "prefix_tube_available",
+                    bool(artifact.get("full_tube"))
+                    or (
+                        isinstance(fixed_objects, Mapping)
+                        and bool(fixed_objects.get("full_horizon_tube"))
+                    ),
+                ),
                 "eligibility": config["eligibility_status"],
                 "sample_count": 1,
             }
