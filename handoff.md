@@ -1,126 +1,62 @@
-# Handoff: three-tool full-horizon pairwise/carry closure
+# Flow*–Torch source/carry audit handoff
 
-## Current closure round (2026-08-11)
+Final scientific status:
 
-The current outcomes are
-`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
-`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`, and C4
-`CARRY_MISSING_SYMBOLIC_SEMANTICS`. Flow* completes the frozen 1,000-step
-complete-O4 schedule; Torch accepts 632 steps and rejects candidate 633. Both
-explicit-f64 DR7 tools complete 1,000 steps with identical masks, but their
-first operator coefficient differs at step 1 and J/Phi plus endpoint/tube
-equality fail. A3 reaches T10 in B1/B64; A4 reproduces failures at steps
-320/334. Same-prestate accounting excludes epsilon, coordinate mismatch, and
-double count; the dominant failure source is intervalized materialized
-parameterization remainder. Dense cross-step parity is not expressible.
+- `BASELINE_CONCLUSIONS_REPRODUCED`
+- `FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO`
+- `SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED`
+- `NO_FIX_AUTHORIZED`
 
-The implementation decision is `NO_FIX_AUTHORIZED`. The unique scientific
-next action is to specify and independently validate an authoritative
-complete-O4 cross-step symbolic-remainder contract. Do not tune target,
-cutoff, validator, Picard depth, `h_min`, K, or invent a narrower carry.
+## Publication identity
 
-Primary documents are
-`docs/THREE_TOOL_PAIRWISE_STATUS_20260811.md`,
-`docs/FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_20260811.md`,
-`docs/DIFFREACH_TORCH_DR7_FULL_HORIZON_CLOSURE_20260811.md`,
-`docs/COMPLETE_O4_CARRY_SEMANTICS_ROOT_CAUSE_20260811.md`, and
-`docs/EVIDENCE_PACKAGE_TRACKED_CLOSURE_20260811.md`.
+- remote ref: `origin/codex/flowstar-torch-source-carry-root-cause-20260813`
+- final tested source-and-evidence SHA:
+  `adb985e703b61a384703bfa724021472caa3f870`
+- Flow* source SHA: `b85a3211748cb77b736fe4ad42ee02d8d2b81148`
+- baseline Torch source SHA: `8e7dbfbd305042adbd1bede47381c33ba73d7d7b`
+- portable evidence:
+  `outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/`
 
-The final package target is
-`outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z/`.
-H1/H2/H3 remain pending until the true-remote-clone delivery gates execute.
+The publication branch has one child attestation commit containing this handoff
+and the recorded fresh-clone result. A Git commit cannot literally contain its
+own object ID without changing that ID; resolve the exact publication tip with
+`git rev-parse origin/codex/flowstar-torch-source-carry-root-cause-20260813`.
+The final user handoff records that resolved value explicitly.
 
-## Superseded bridge round (2026-08-11)
+## Verification
 
-The current branch closes the raw-remainder root cause at Flow* Picard-4
-`x*x` and records `SCHEDULE_VALIDATOR_INTERACTION`. All generic R7→R35 A0--A4
-cells pass through T1 for B1/B64, but the final bridge outcome is
-`FIXED_SUPPORT_BRIDGE_BLOCKED`: A0/B1 and A4/B1/B64 stop before T10.
-Flow*/Torch same-prestate root cause is closed while native full-horizon
-pairwise status is partial. DiffReach/Torch currently has only
-`DIFFREACH_TORCH_DR7_OPERATOR_EQUIVALENCE_CLOSED`; its B64, 1,000-step
-cross-tool status is `DIFFREACH_TORCH_DR7_FULL_HORIZON_PAIRWISE_PENDING`.
-No universal timing or tightness winner is available.
+The tested SHA was fetched into a new clone and checked out detached from
+origin. The following passed there:
 
-The improvement outcome is `IMPROVEMENT_NOT_AUTHORIZED_BY_EVIDENCE`. The
-proven decision-changing uncertainty is extra on the Flow* side, while Torch
-already contains the frozen MPFR replay. Do not tune target, cutoff, K,
-validator, Picard depth, or `h_min`, and do not describe the diagnostic R35
-bridge as a promoted authoritative complete-O4 lane.
+- editable test install: exit 0;
+- focused audit suite: 18 passed;
+- full repository suite: 687 passed, 2 skipped (689 collected);
+- `python -m compileall -q src experiments tests`: exit 0;
+- package checksum/load/rederivation: 55 files hashed, 27 JSON files loaded,
+  Flow* 1000 accepted rows, Torch 632 accepted plus one rejected candidate,
+  four minima and 16 checkpoint ratios rederived;
+- final fresh-clone worktree: clean.
 
-Primary documents are `docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md`,
-`docs/VDP_RAW_REMAINDER_ROOT_CAUSE_20260811.md`,
-`docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md`, and
-`docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md`.
+The committed `12_final_clone/` attestation includes the exact tested SHA,
+JUnit files, and rederivation summary. After the attestation commit is pushed,
+the publication tip is checked once more from a second fresh clone; that final
+check is reported with the resolved publication SHA and does not mutate tracked
+scientific content.
 
-The old package run ID is
-`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`.
-It was absent from the prior remote tip, but its server-local original was
-found, all 534 original checksums passed, and a compact audited recovery is now
-tracked at that path. The recovery keeps every runner command envelope and the
-original verification; `manifest.json` explicitly quarantines the archived
-manifest's full-horizon DiffReach/Torch and false `14_fresh_clone` labels. A
-real `origin`/exact-SHA clone protocol now exists, but H1/H2/H3 execution is
-still pending and must not be inferred from the historical bundle.
+## Result and remaining question
 
-The remainder of this file is the preserved preceding S1 handoff.
+The Flow* minima are positive (`0.00861`, `0.02627`, `0.00889`, `0.03089`),
+not zeros or serialization artifacts. Flow* carries linear old sources once
+through `Continuous.cpp:2151-2177`'s `Phi_L/J` queue and uses Horner insertion;
+legacy Torch independently composes monomials in `flowpipe.py:698-739`, after
+the whole constant-removed state is sent through `flowpipe.py:1470-1511`.
+The first published difference is step 1 and it changes step-2 scales.
 
-> Evidence-integrity qualification (2026-08-11): the fresh-clone and test
-> statements below were written by a packager that did not retain the raw
-> command bundle needed to derive them independently. The b5ba clone is
-> historical, not verification of the later 7b880d0 branch tip. See
-> [the correction register](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
+No candidate is authorized because the post-step Flow* state/queue lacks a
+lossless bridge, the pinned Flow* correctness gate is independently open, and
+no complete outward source-ledger primitive proves nonlinear O4 carry.
 
-Date: 2026-08-11
-
-## Outcome
-
-Primary outcome: `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`.
-
-The causal ladder isolates the current post-hoc polynomial image decomposition
-as the first inflation source. C1/C2 are bit-exact to L0; consequential
-coefficient/scale drift begins at boundary 5, physical-hull and margin drift at
-boundary/attempt 8, and outward renormalization at boundary 12. K16 eviction
-is not the primary cause. At boundary 164, the L0→L1 y-margin loss is
-`-1.1930523868969271e-5` and is entirely a scale contribution under the fixed
-same-input validator projection.
-
-Outcome B authorized the only new carry,
-`normalized_insertion_structured_total_delta_k16`. It passes the corrected
-307/307 fixed accepted-step prefix and saves a byte-stable boundary-307
-checkpoint with SHA
-`f4a75682f00e38fa9916b3c9dd6e727e5cb9e1257b598587772e1094b0518cd1`.
-The unchanged historical terminal step still rejects with T0 y margin
-`-1.9999591170254726e-5`. Fresh horizons and the second system are therefore
-`not_run_after_stop`.
-
-## Delivery
-
-- Branch: `codex/s1-boundary164-causal-guarded-carry-20260811`
-- Start SHA: `8683183e48b7795d13edbdc9a5910fba9d21d16c`
-- Evidence run:
-  `outputs/s1_boundary164_causal_guarded_carry_20260811/20260811T033447Z`
-- Phase-5 choice: Outcome B, `S1_POSTHOC_IMAGE_INTRINSIC_INFLATION`
-- Full-h boundary-164 y margins: L0 `+8.058292550874906e-6`,
-  L1 `-3.872231318094365e-6`, L2 `-3.773875528686747e-6`
-- Corrected frozen accepted prefix: 307/307
-- Terminal gate: rejected
-- Fresh/+0.5/second system: not authorized
-- Final regression: 572 passed, 2 skipped in 270.30 s
-- Evidence checksums: 234 repository-root-relative entries
-- Historical selected-test clone at
-  `b5ba3200901e331f01343c7d05608a1d542dbb8c`; this is not a final-HEAD
-  verification claim, and the old package does not retain the raw command
-  bundle required for independent derivation
-- Primitive formal eligibility: true for the bounded CPU outward image
-- Prefix formal eligibility: false
-- Prefix class: `safeguarded_binary64_interval_shell`,
-  `conditional_on_retained_coefficient_arithmetic`
-- Performance and cross-tool ranking eligibility: false
-
-## Unique next action
-
-End S1 promotion under this frozen contract. Return to fixed-support
-representation research only under a separately authorized goal; do not tune
-K, target, cutoff, validator, or `h_min`, and do not append fresh-horizon or
-second-system runs to this evidence package.
+The single remaining question is: can a lossless binary state-and-queue fixture
+and independently outward-rounded source-ledger carry primitive prove the full
+one-step O4 containment contract, including nonlinear multiplication,
+truncation, cutoff, and renormalization?

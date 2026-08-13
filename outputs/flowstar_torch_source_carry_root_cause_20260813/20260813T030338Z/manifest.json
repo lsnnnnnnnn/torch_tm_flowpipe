@@ -31,8 +31,10 @@
         "/tmp/source_carry_focused_tests_20260813_v2.xml",
         "--full-test-log",
         "/tmp/source_carry_full_tests_final_20260813.xml",
+        "--final-clone-dir",
+        "/tmp/source_carry_final_clone_a_20260813",
         "--output-dir",
-        "outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T025448Z"
+        "outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z"
       ],
       "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
       "environment": "00_provenance/provenance.json#environment",
@@ -388,16 +390,40 @@
       "sha256": "ba42be742bf390a2192612ad4f18262818dd84ba7d5f39542b22dc5e7cbc1882"
     },
     {
-      "bytes": 138,
-      "path": "12_final_clone/status.json",
+      "bytes": 1138,
+      "path": "12_final_clone/artifact_verification.json",
       "qualification": "software verification",
-      "sha256": "12eef3a9704c8906e81272154f6d5da8f762c92fa156974cfd8a8e2d825fbc54"
+      "sha256": "ef1d529faf2fcc43e19c1bf7843e6ac6e778341e54167004033d06901318e9a5"
     },
     {
-      "bytes": 824,
+      "bytes": 2830,
+      "path": "12_final_clone/focused_tests.xml",
+      "qualification": "software verification",
+      "sha256": "2825e424c8de180640576872537881547eda5b16c4714a7e10c195d2abbdd603"
+    },
+    {
+      "bytes": 99188,
+      "path": "12_final_clone/full_pytest.xml",
+      "qualification": "software verification",
+      "sha256": "db95c0ccc88a49bad79e6bd87544cce4860cd9e482cd3d23e860de1030da2a86"
+    },
+    {
+      "bytes": 1586,
+      "path": "12_final_clone/status.json",
+      "qualification": "software verification",
+      "sha256": "1dfe4d930f04c69d59d26ef6be07eed392f0c383c597f778225145e42a4a13a5"
+    },
+    {
+      "bytes": 1586,
+      "path": "12_final_clone/verification.json",
+      "qualification": "software verification",
+      "sha256": "bcebbfd89b56f317ee5a651f2efa379786d4e0792e24f99391e4e46685370d9a"
+    },
+    {
+      "bytes": 2348,
       "path": "verification.json",
       "qualification": "derived empirical audit",
-      "sha256": "3b5bbcd1f3f2d17683892d74b8df64bf24661350bd989956a61be11649389f1d"
+      "sha256": "5428d9bb0b9eba5af1e532767e93c0750cf30939c91cb638c669b3820e78f4aa"
     }
   ],
   "schema": "flowstar_torch_source_carry_manifest_v1",

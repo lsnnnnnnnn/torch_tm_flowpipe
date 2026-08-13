@@ -1,0 +1,58 @@
+{
+  "candidate": "NO_FIX_AUTHORIZED",
+  "final_clone": {
+    "artifact_verification": {
+      "checkpoint_rows_rederived": 16,
+      "checksum_files": 55,
+      "command": "conda run --no-capture-output -n py11 python experiments/verify_flowstar_torch_source_carry_package.py outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T025448Z",
+      "exit_code": 0,
+      "flowstar_accepted_steps": 1000,
+      "json_files_loaded": 27,
+      "status": "PASS",
+      "torch_accepted_steps": 632,
+      "torch_rejected_candidates": 1
+    },
+    "checkout_mode": "detached exact SHA from fresh origin clone",
+    "clone_path": "/tmp/flowstar-torch-source-carry-fresh-a-9QoSo4/repo",
+    "compileall": {
+      "command": "conda run --no-capture-output -n py11 python -m compileall -q src experiments tests",
+      "exit_code": 0
+    },
+    "focused_tests": {
+      "command": "conda run --no-capture-output -n py11 pytest -q tests/test_flowstar_torch_source_carry_audit.py",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 18
+    },
+    "full_pytest": {
+      "command": "conda run --no-capture-output -n py11 pytest -q",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 687,
+      "runtime_seconds": 377.05,
+      "skipped": 2
+    },
+    "install": {
+      "command": "conda run --no-capture-output -n py11 python -m pip install -e '.[test]'",
+      "exit_code": 0
+    },
+    "remote_ref": "origin/codex/flowstar-torch-source-carry-root-cause-20260813",
+    "schema": "flowstar_torch_source_carry_final_clone_attestation_v1",
+    "status": "SOURCE_AND_EVIDENCE_SHA_FRESH_CLONE_VERIFIED",
+    "verified_sha": "adb985e703b61a384703bfa724021472caa3f870",
+    "worktree_clean_after_verification": true
+  },
+  "numerical_falsification_result": "NO_NUMERICAL_CONTAINMENT_WITNESS_IN_TESTED_POINTS",
+  "numerical_proof_status": "NOT_AN_ENCLOSURE_PROOF",
+  "required_directories_present": true,
+  "same_prestate_gate": "SAME_PRESTATE_LOSSLESS_BRIDGE_NOT_AVAILABLE",
+  "schema": "flowstar_torch_source_carry_package_verification_v1",
+  "scientific_outcome_uses_process_exit_code": false,
+  "scientific_statuses": [
+    "BASELINE_CONCLUSIONS_REPRODUCED",
+    "FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO",
+    "SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED",
+    "NO_FIX_AUTHORIZED"
+  ],
+  "width_classification": "Z0_POSITIVE_WIDTH_ONLY_LOOKS_ZERO"
+}
