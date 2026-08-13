@@ -1,5 +1,16 @@
 # Flow*–Torch source/carry audit handoff
 
+Current full-horizon canonical outcomes:
+
+- `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`
+- `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`
+- `CARRY_MISSING_SYMBOLIC_SEMANTICS`
+- `NO_FIX_AUTHORIZED`
+
+The preceding bridge and S1 claims remain historical/superseded; this audit
+refines the complete-O4 carry cause without replacing those four repository
+headline outcomes.
+
 Final scientific status:
 
 - `BASELINE_CONCLUSIONS_REPRODUCED`
