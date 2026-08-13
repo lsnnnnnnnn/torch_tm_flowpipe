@@ -1,0 +1,136 @@
+{
+  "counts": {
+    "attempts": 633,
+    "discarded_terms": 633,
+    "polynomial_terms": 99134,
+    "remainders": 11380,
+    "transitions": 13286
+  },
+  "file_sha256": {
+    "acceptance_attempts.csv": "0462a391243c6f5c1a23fd7a8a1a100390fb112faab340e266cdb41778561b86",
+    "discarded_terms.jsonl": "309b161cbf712128f85f9090333ff9aec348eed14b116560a22facb5387cf0f0",
+    "polynomial_terms.jsonl": "735498225f19579ffcca449e9973bbc14f8312da58a76027375289e2388320d7",
+    "remainders.jsonl": "00d8700312cb25d162672cda949556ba092c45083d265511d62d310083e6a8a5",
+    "trace_schema.json": "813374fd8c2b0db9ad731239013eaecbd8d4754c3d730c788846d8e7b82781f2",
+    "transitions.jsonl": "b3152eaeddc5677ef852f4c2d3bf99a4ab047d60a996b4074528ee182c7f86ce"
+  },
+  "observation_only": true,
+  "result_summary": {
+    "accepted_steps": 632,
+    "backend_lane": "hybrid_dense_core",
+    "branch": "codex/flowstar-torch-causal-mechanism-closure-20260813",
+    "commit": "cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d",
+    "completed_horizon": 6.32,
+    "completed_requested_horizon": false,
+    "config_sha256": "febc821ad3391b9a76cf2f9e55bbfb19a2f2a28be089cb16b71c07572730353b",
+    "contract_identity": {
+      "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+      "partition_b1_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+      "partition_b64_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+      "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558"
+    },
+    "contract_target_horizon": 10.0,
+    "cutoff": 1e-10,
+    "dense_range_contexts": [
+      "polynomial_truncation"
+    ],
+    "dense_range_max_depth": 1,
+    "dense_range_max_leaves": 4,
+    "dense_range_method": "adaptive_subdivision",
+    "dense_range_trigger": "proactive_depth1_on_named_contexts",
+    "dense_range_variable_orders": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        1,
+        0,
+        2
+      ],
+      [
+        2,
+        0,
+        1
+      ]
+    ],
+    "device": "cpu",
+    "device_transfer_count": 0,
+    "diagnostic_factors": [],
+    "effective_h_max": 0.01,
+    "effective_h_min": 0.01,
+    "endpoint_repair_used": false,
+    "endpoint_tightening_used": false,
+    "failure_type": "minimum_step_reached",
+    "fallback_count": 0,
+    "full_tube": {
+      "x_hi": 2.0620953381006646,
+      "x_lo": -2.059618595414318,
+      "y_hi": 3.3263796107984054,
+      "y_lo": -2.723180638012331
+    },
+    "h_max": 0.1,
+    "h_min": 0.002,
+    "last_segment": {
+      "boundary_conversions": 2,
+      "index": 631,
+      "width_sum": 2.5501112449915206,
+      "x_hi": 0.881170388847418,
+      "x_lo": -0.060871053665350505,
+      "x_width": 0.9420414425127686,
+      "y_hi": 3.3263796107984054,
+      "y_lo": 1.7183098083196535,
+      "y_width": 1.6080698024787519
+    },
+    "message": "Flowstar raw remainder compat residual not subset of target remainder; minimum step reached before h_min=0.01",
+    "partition": "B1",
+    "partition_count": 1,
+    "peak_rss_bytes": 655265792,
+    "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
+    "range_leaf_evaluations": 35448,
+    "range_subdivision_invocations": 8862,
+    "raw_endpoint": {
+      "tightening_applied": false,
+      "width_sum": 2.5063708311344044,
+      "x_hi": 0.8810305537307842,
+      "x_lo": -0.035481549136891714,
+      "x_width": 0.9165121028676759,
+      "y_hi": 3.325723578679553,
+      "y_lo": 1.7358648504128245,
+      "y_width": 1.5898587282667287
+    },
+    "rejected_attempts": 1,
+    "rejected_step_records": 1,
+    "requested_horizon": 10.0,
+    "requested_order": 4,
+    "reset_mode": "normalized_insertion",
+    "right_map_center_mode": "constant",
+    "right_map_range_mode": "standard",
+    "sample_sanity_max_violation": 0.0,
+    "sample_sanity_status": "passed",
+    "sample_sanity_violations": 0,
+    "schedule": {
+      "adaptive_fallback_allowed": false,
+      "h_decimal": "0.01",
+      "h_hex": "0x1.47ae147ae147bp-7",
+      "kind": "fixed",
+      "requested_steps": 1000
+    },
+    "segment_boundary_conversion_count": 1266,
+    "single_factor_diagnostic": false,
+    "status": "failed",
+    "support": "complete_total_degree_O4",
+    "target_remainder_radius": 0.0001,
+    "tm_backend": "dense",
+    "trace_flush_every": 0,
+    "trace_io_s": 4.407831890996022,
+    "trace_write_count": 1,
+    "tracked_diff_sha256": "ed0b779fc7f25b67a42f2b83734799bf4709bf9682b8aad1d7ad2d2dbf623126",
+    "worktree_dirty": true
+  },
+  "run_id": "torch-authoritative-observation-20260806",
+  "schema": "vdp_torch_observation_run_v1",
+  "source_commit": "cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d",
+  "tool": "torch"
+}

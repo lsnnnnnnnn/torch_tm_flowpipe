@@ -1443,7 +1443,9 @@ def _flowstar_normalized_insertion_transition(
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
-    if complete_polynomial_carry:
+    if horner_insertion and symbolic_queue_v2:
+        mode_name = "normalized_insertion_horner_symqueue_v2"
+    elif complete_polynomial_carry:
         mode_name = "normalized_insertion_complete_polynomial"
     elif horner_insertion:
         mode_name = "normalized_insertion_horner"
@@ -5229,6 +5231,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion_symqueue_split",
         "normalized_insertion_symqueue_v2",
         "normalized_insertion_horner",
+        "normalized_insertion_horner_symqueue_v2",
         "normalized_insertion_structured_remainder_k16",
         "normalized_insertion_structured_total_delta_k16",
     }
@@ -5344,10 +5347,16 @@ def flowpipe_step_flowstar_style_adaptive(
                 seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
                 seg.next_h = min(accepted_h * effective_grow_factor, h_max)
                 return seg
-            use_v2 = reset_mode == "normalized_insertion_symqueue_v2" or symbolic_queue_mode == "flowstar_linear_v2"
+            use_v2 = reset_mode in {
+                "normalized_insertion_symqueue_v2",
+                "normalized_insertion_horner_symqueue_v2",
+            } or symbolic_queue_mode == "flowstar_linear_v2"
             use_symqueue = reset_mode in {"normalized_insertion_symqueue", "normalized_insertion_symqueue_split"} or use_v2
             use_split = reset_mode == "normalized_insertion_symqueue_split"
-            use_horner = reset_mode == "normalized_insertion_horner"
+            use_horner = reset_mode in {
+                "normalized_insertion_horner",
+                "normalized_insertion_horner_symqueue_v2",
+            }
             use_complete_polynomial = reset_mode == "normalized_insertion_complete_polynomial"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,

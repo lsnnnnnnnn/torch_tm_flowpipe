@@ -1,4 +1,10 @@
 {
+  "attestation_correction": {
+    "actual_checksum_count": 59,
+    "actual_json_count": 29,
+    "canonical_root": "20260813T030338Z",
+    "stale_root_superseded": "20260813T025448Z"
+  },
   "commands": {
     "flowstar_native": {
       "command": "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe /tmp/source_carry_flowstar_runner_20260813/artifacts/flowstar_trace.csv 10 0 4 0.01",
@@ -288,16 +294,16 @@
       "sha256": "0e6a159b908848c3523128ac2120f42aa12c4f7ac014a13a31b3ca50961230e1"
     },
     {
-      "bytes": 6673,
+      "bytes": 6978,
       "path": "05_flowstar_runtime_callgraph/flowstar_runtime_callgraph.json",
-      "qualification": "source inspection plus empirical feature trace",
-      "sha256": "58c5001106c77be8bf6b0e04749881a4632d50d262263309ae73b24c1036fe1c"
+      "qualification": "human-authored source candidate map; not causal proof",
+      "sha256": "a3ebdb80b0864cf7cbbc63b7dcf945a04e50e415c1cf461660085342a0e8b9d2"
     },
     {
-      "bytes": 659,
+      "bytes": 785,
       "path": "05_flowstar_runtime_callgraph/flowstar_runtime_features.json",
-      "qualification": "source inspection plus empirical feature trace",
-      "sha256": "010395a6dda47eaa9b774c0a73f57a08c881a1742331ada94ee1c0414af5c146"
+      "qualification": "human-authored source candidate map; not causal proof",
+      "sha256": "05d578273260178d3fe0bb95c5f9d85a32370eaacd1edb79941635659c7e1827"
     },
     {
       "bytes": 7234963,
@@ -354,10 +360,10 @@
       "sha256": "73b36b898e1b1765ea86fcc3e74f9b75a704c7da14ec6fb77d399f5bad6082f2"
     },
     {
-      "bytes": 6673,
+      "bytes": 6978,
       "path": "08_source_semantics_map/source_semantics_map.json",
-      "qualification": "source inspection plus empirical feature trace",
-      "sha256": "58c5001106c77be8bf6b0e04749881a4632d50d262263309ae73b24c1036fe1c"
+      "qualification": "human-authored source candidate map; not causal proof",
+      "sha256": "a3ebdb80b0864cf7cbbc63b7dcf945a04e50e415c1cf461660085342a0e8b9d2"
     },
     {
       "bytes": 719,
@@ -390,10 +396,10 @@
       "sha256": "ba42be742bf390a2192612ad4f18262818dd84ba7d5f39542b22dc5e7cbc1882"
     },
     {
-      "bytes": 1138,
+      "bytes": 608,
       "path": "12_final_clone/artifact_verification.json",
       "qualification": "software verification",
-      "sha256": "ef1d529faf2fcc43e19c1bf7843e6ac6e778341e54167004033d06901318e9a5"
+      "sha256": "aaf823d09fbfd2a9cf24dc5864126ed69e6fb64457afcad8fe70f29c9b7fa590"
     },
     {
       "bytes": 2830,
@@ -408,22 +414,22 @@
       "sha256": "db95c0ccc88a49bad79e6bd87544cce4860cd9e482cd3d23e860de1030da2a86"
     },
     {
-      "bytes": 1586,
+      "bytes": 1357,
       "path": "12_final_clone/status.json",
       "qualification": "software verification",
-      "sha256": "1dfe4d930f04c69d59d26ef6be07eed392f0c383c597f778225145e42a4a13a5"
+      "sha256": "9bb9e6424f59418267eb3f60c5a07643d7999f3d7bde23d23ee77ea580da233f"
     },
     {
-      "bytes": 1586,
+      "bytes": 1357,
       "path": "12_final_clone/verification.json",
       "qualification": "software verification",
-      "sha256": "bcebbfd89b56f317ee5a651f2efa379786d4e0792e24f99391e4e46685370d9a"
+      "sha256": "9bb9e6424f59418267eb3f60c5a07643d7999f3d7bde23d23ee77ea580da233f"
     },
     {
-      "bytes": 2348,
+      "bytes": 2290,
       "path": "verification.json",
       "qualification": "derived empirical audit",
-      "sha256": "5428d9bb0b9eba5af1e532767e93c0750cf30939c91cb638c669b3820e78f4aa"
+      "sha256": "4b45924e774ff098c26ca239be72f24d15b80ea0a5874be69f03611a51f8a068"
     }
   ],
   "schema": "flowstar_torch_source_carry_manifest_v1",

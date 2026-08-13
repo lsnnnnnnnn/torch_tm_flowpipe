@@ -422,19 +422,18 @@ def audit(args: argparse.Namespace) -> dict[str, Any]:
         output / "source_semantics_map.json",
         {
             "schema": "flowstar_torch_carry_source_map_v1",
+            "evidence_class": "HUMAN_AUTHORED_SOURCE_CANDIDATE_MAP",
+            "proves_runtime_path": False,
+            "proves_causal_effect": False,
             "rows": semantic_map,
             "first_bitwise_or_published_width_difference": "accepted step 1",
             "first_beyond_roundoff_difference": "accepted step 1 (width differences are 2.14e-4 to 1.30e-3)",
             "first_persistent_dependency_semantics_difference": "boundary after accepted step 1; Flow* queue is active for step 2",
             "first_decision_relevant_difference": "step 1 output changes step 2 normalization scales",
             "localized_conclusion": (
-                "Flow* Continuous.cpp:2151-2177 keeps the linear old-remainder sources in "
-                "Phi_L/J and TaylorModel.h:4213-4243 composes the nonlinear polynomial in "
-                "Horner form. Torch flowpipe.py:1470-1511 sends the whole constant-removed "
-                "polynomial to flowpipe.py:698-739, where each monomial independently reuses "
-                "the already intervalized right-map remainder. This changes the next scale "
-                "after accepted step 1 and accumulates polynomial-times-parameterization "
-                "remainder thereafter."
+                "These rows identify candidate implementation deltas.  This source map alone "
+                "does not show that any listed delta caused the long-horizon width gap.  In "
+                "particular, old Phi_L/J sources cannot cross a boundary at step 1."
             ),
         },
     )
@@ -471,6 +470,9 @@ def audit(args: argparse.Namespace) -> dict[str, Any]:
         lossless_full_prestate_bridge=bool(same_prestate["lossless_full_prestate_bridge"]),
         independent_candidate_oracle_closed=False,
         flowstar_soundness_gate_closed=False,
+        stock_copied_probe_equivalence_closed=False,
+        causal_factor_split_closed=False,
+        same_prestate_operator_attribution_closed=False,
     )
     no_fix = {
         "status": "NO_FIX_AUTHORIZED",

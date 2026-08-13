@@ -1,0 +1,39 @@
+{
+  "actual_copied": {
+    "actual_post_reset_to_next_copied_prestate_comparisons": 999,
+    "actual_post_reset_to_next_copied_prestate_mismatches": 0,
+    "actual_pre_reset_retained_state_mismatches": 0,
+    "compared_steps": 1000,
+    "full_prestate_includes": [
+      "tmvPre",
+      "tmv",
+      "domain",
+      "center/scale/scalars",
+      "queue J/Phi_L/max_size"
+    ],
+    "published_schedule_mismatches": 0,
+    "retained_state_includes": [
+      "term support",
+      "binary-exact coefficients",
+      "ordinary remainders",
+      "tmv right map"
+    ]
+  },
+  "actual_public_entry": "ODE::reach -> ODE::reach_symbolic_remainder -> Flowpipe::advance",
+  "clean_instrumented": {
+    "accepted_decisions_exact": true,
+    "byte_exact": true,
+    "clean_sha256": "e2b3898560c72d273d164f0056937208d547cc748fc821a2fd6a64cd442ce53d",
+    "instrumented_sha256": "e2b3898560c72d273d164f0056937208d547cc748fc821a2fd6a64cd442ce53d",
+    "published_endpoint_segment_prefix_exact": true
+  },
+  "copied_entry": "probe-local traced_advance_adaptive_symbolic",
+  "equivalence_scope": "pinned Flow* b85a321, frozen VDP B1 complete-O4 h=.01 T=10, symbolic-remainder max_size=100",
+  "first_bitwise_difference": null,
+  "first_decision_relevant_difference": null,
+  "first_semantic_difference": null,
+  "flowstar_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "schema": "flowstar_actual_copied_probe_equivalence_v1",
+  "status": "STOCK_COPIED_PROBE_EQUIVALENCE_CLOSED",
+  "stepwise_driver_warning": "Repeated one-step ode.reach calls are not an equivalent driver because Flow* shortens a call horizon near THRESHOLD_HIGH; only the one-shot actual path is eligible."
+}

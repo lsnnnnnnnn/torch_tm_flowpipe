@@ -382,7 +382,13 @@ const vector<string> kHeaders = {
     "residual_over_target_sum",
     "prestate_state_canonical",
     "prestate_coefficients_canonical",
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+    "prestate_state_binary_canonical",
+#endif
     "retained_coefficients_canonical",
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+    "retained_coefficients_binary_canonical",
+#endif
     "stage_runtime_seconds"};
 
 typedef map<string, string> Row;
@@ -547,6 +553,109 @@ string flowpipe_coefficients_canonical(const Flowpipe &flowpipe)
         + "tmv_right\n"
         + polynomial_vector_coefficients_canonical(flowpipe.tmv);
 }
+
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+string audit_real_binary(const Real &value)
+{
+    const string result = value.auditCanonicalBinary();
+    if (result.empty())
+    {
+        throw runtime_error("non-finite MPFR value in copied-probe audit export");
+    }
+    return result;
+}
+
+string audit_interval_binary(const Interval &value)
+{
+    Real lower;
+    Real upper;
+    value.inf(lower);
+    value.sup(upper);
+    return audit_real_binary(lower) + ".." + audit_real_binary(upper);
+}
+
+string audit_tmv_binary(const TaylorModelVec<Real> &tmv)
+{
+    ostringstream output;
+    output << "components=" << tmv.tms.size();
+    for (size_t component = 0; component < tmv.tms.size(); ++component)
+    {
+        const TaylorModel<Real> &model = tmv.tms[component];
+        output << "|c=" << component << ";terms=" << model.expansion.terms.size();
+        size_t term_index = 0;
+        for (list<Term<Real> >::const_iterator iterator = model.expansion.terms.begin();
+             iterator != model.expansion.terms.end(); ++iterator, ++term_index)
+        {
+            output << ";t=" << term_index << ";e=";
+            const vector<unsigned int> &degrees = iterator->auditDegrees();
+            for (size_t index = 0; index < degrees.size(); ++index)
+            {
+                if (index > 0)
+                {
+                    output << '.';
+                }
+                output << degrees[index];
+            }
+            output << ";a=" << audit_real_binary(iterator->auditCoefficient());
+        }
+        output << ";r=" << audit_interval_binary(model.remainder);
+    }
+    return output.str();
+}
+
+string audit_queue_binary(const Symbolic_Remainder &queue)
+{
+    ostringstream output;
+    output << "max=" << queue.max_size << "|scalars=" << queue.scalars.size();
+    for (size_t index = 0; index < queue.scalars.size(); ++index)
+    {
+        output << ";s=" << index << ':' << audit_real_binary(queue.scalars[index]);
+    }
+    output << "|J=" << queue.J.size();
+    for (size_t matrix_index = 0; matrix_index < queue.J.size(); ++matrix_index)
+    {
+        const Matrix<Interval> &matrix = queue.J[matrix_index];
+        output << ";jm=" << matrix_index << ':' << matrix.rows() << 'x' << matrix.cols();
+        for (unsigned int row = 0; row < matrix.rows(); ++row)
+        {
+            for (unsigned int column = 0; column < matrix.cols(); ++column)
+            {
+                output << ':' << audit_interval_binary(matrix[row][column]);
+            }
+        }
+    }
+    output << "|Phi=" << queue.Phi_L.size();
+    for (size_t matrix_index = 0; matrix_index < queue.Phi_L.size(); ++matrix_index)
+    {
+        const Matrix<Real> &matrix = queue.Phi_L[matrix_index];
+        output << ";pm=" << matrix_index << ':' << matrix.rows() << 'x' << matrix.cols();
+        for (unsigned int row = 0; row < matrix.rows(); ++row)
+        {
+            for (unsigned int column = 0; column < matrix.cols(); ++column)
+            {
+                output << ':' << audit_real_binary(matrix[row][column]);
+            }
+        }
+    }
+    return output.str();
+}
+
+string audit_flowpipe_state_binary(
+    const Flowpipe &flowpipe,
+    const Symbolic_Remainder &queue)
+{
+    ostringstream output;
+    output << "tmvPre{" << audit_tmv_binary(flowpipe.tmvPre) << "}"
+           << "|tmv{" << audit_tmv_binary(flowpipe.tmv) << "}"
+           << "|domain=" << flowpipe.domain.size();
+    for (size_t index = 0; index < flowpipe.domain.size(); ++index)
+    {
+        output << ';' << index << ':' << audit_interval_binary(flowpipe.domain[index]);
+    }
+    output << "|queue{" << audit_queue_binary(queue) << '}';
+    return output.str();
+}
+#endif
 
 void set_value(Row &row, const string &key, const string &value)
 {
@@ -1069,6 +1178,9 @@ int traced_advance_adaptive_symbolic(
     const unsigned int rangeDimExt = rangeDim + 1;
     const string prestate_state = flowpipe_state_canonical(current, symbolic_remainder);
     const string prestate_coefficients = flowpipe_coefficients_canonical(current);
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+    const string prestate_state_binary = audit_flowpipe_state_binary(current, symbolic_remainder);
+#endif
     result.clear();
 
     TaylorModelVec<Real> tmv_of_x0;
@@ -1275,6 +1387,12 @@ int traced_advance_adaptive_symbolic(
             row,
             "prestate_coefficients_canonical",
             prestate_coefficients);
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+        set_value(
+            row,
+            "prestate_state_binary_canonical",
+            prestate_state_binary);
+#endif
         set_value(row, "h_try", h_try);
         set_value(row, "h", h_try);
         set_value(row, "h_hex", format_hex_double(h_try));
@@ -1531,6 +1649,13 @@ int traced_advance_adaptive_symbolic(
             row,
             "retained_coefficients_canonical",
             flowpipe_coefficients_canonical(result));
+#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
+        set_value(
+            row,
+            "retained_coefficients_binary_canonical",
+            string("tmvPre{") + audit_tmv_binary(result.tmvPre)
+                + "}|tmv{" + audit_tmv_binary(result.tmv) + "}");
+#endif
         push_row(rows, row);
         return 1;
     }

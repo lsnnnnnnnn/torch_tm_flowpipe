@@ -1,42 +1,41 @@
 {
-  "schema": "flowstar_torch_source_carry_final_clone_attestation_v1",
-  "status": "SOURCE_AND_EVIDENCE_SHA_FRESH_CLONE_VERIFIED",
-  "remote_ref": "origin/codex/flowstar-torch-source-carry-root-cause-20260813",
-  "verified_sha": "adb985e703b61a384703bfa724021472caa3f870",
-  "checkout_mode": "detached exact SHA from fresh origin clone",
-  "clone_path": "/tmp/flowstar-torch-source-carry-fresh-a-9QoSo4/repo",
-  "install": {
-    "command": "conda run --no-capture-output -n py11 python -m pip install -e '.[test]'",
-    "exit_code": 0
+  "artifact_verification": {
+    "checksum_files": 59,
+    "command": "python experiments/verify_flowstar_torch_source_carry_package.py outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z",
+    "json_files_loaded": 29,
+    "package_root": "20260813T030338Z",
+    "status": "CORRECTED_CURRENT_PACKAGE_INVENTORY"
   },
+  "checkout_mode": "historical detached exact scientific SHA from fresh origin clone",
+  "compileall_exit_code": 0,
   "focused_tests": {
-    "command": "conda run --no-capture-output -n py11 pytest -q tests/test_flowstar_torch_source_carry_audit.py",
-    "passed": 18,
-    "failed": 0,
-    "exit_code": 0
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 18,
+    "time_seconds": 0.062
   },
   "full_pytest": {
-    "command": "conda run --no-capture-output -n py11 pytest -q",
-    "passed": 687,
+    "errors": 0,
+    "failures": 0,
     "skipped": 2,
-    "failed": 0,
-    "runtime_seconds": 377.05,
-    "exit_code": 0
+    "tests": 689,
+    "time_seconds": 377.05
   },
-  "compileall": {
-    "command": "conda run --no-capture-output -n py11 python -m compileall -q src experiments tests",
-    "exit_code": 0
-  },
-  "artifact_verification": {
-    "command": "conda run --no-capture-output -n py11 python experiments/verify_flowstar_torch_source_carry_package.py outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T025448Z",
-    "status": "PASS",
+  "historical_stale_attestation_superseded": {
     "checksum_files": 55,
     "json_files_loaded": 27,
-    "flowstar_accepted_steps": 1000,
-    "torch_accepted_steps": 632,
-    "torch_rejected_candidates": 1,
-    "checkpoint_rows_rederived": 16,
-    "exit_code": 0
+    "package_root": "20260813T025448Z"
   },
-  "worktree_clean_after_verification": true
+  "prior_publication_tip": "cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d",
+  "remote_ref": "origin/codex/flowstar-torch-source-carry-root-cause-20260813",
+  "schema": "flowstar_torch_source_carry_corrected_attestation_v2",
+  "scientific_tested_sha": "adb985e703b61a384703bfa724021472caa3f870",
+  "source_test_relevant_paths": [
+    "src",
+    "experiments",
+    "tests"
+  ],
+  "source_test_relevant_tree_equal": true,
+  "status": "SCIENTIFIC_PARENT_FRESH_CLONE_VERIFIED_PUBLICATION_TIP_RELEVANT_TREE_EQUIVALENT"
 }

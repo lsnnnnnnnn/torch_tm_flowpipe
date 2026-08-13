@@ -1,6 +1,10 @@
 # Flow* width minima audit — 2026-08-13
 
-Status: `BASELINE_CONCLUSIONS_REPRODUCED`, `FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO`
+Status: `BASELINE_CONCLUSIONS_REPRODUCED`,
+`FLOWSTAR_WIDTH_MINIMUM_POSITIVE_NOT_NUMERICALLY_NEAR_ZERO`.
+
+`FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO` is retained only as a historical alias;
+it is not eligible as the current numerical qualification.
 
 Precise classification: `Z0_POSITIVE_WIDTH_ONLY_LOOKS_ZERO`.
 

@@ -1,0 +1,15 @@
+{
+  "schema": "flowstar_mpfr_canonical_selftest_v1",
+  "cases": [
+    {"index": 0, "canonical": "53:1:0:-1073741823", "float_hex": "0x0p+0"},
+    {"index": 1, "canonical": "53:-1:0:-1073741823", "float_hex": "-0x0p+0"},
+    {"index": 2, "canonical": "53:1:10000000000000:-52", "float_hex": "0x1p+0"},
+    {"index": 3, "canonical": "53:-1:10000000000000:-52", "float_hex": "-0x1p+0"},
+    {"index": 4, "canonical": "53:1:1999999999999a:-56", "float_hex": "0x1.999999999999ap-4"},
+    {"index": 5, "canonical": "53:-1:1d6f3455000000:-26", "float_hex": "-0x1.d6f3455p+26"},
+    {"index": 6, "canonical": "53:1:10000000000000:-1126", "float_hex": "0x0.0000000000001p-1022"},
+    {"index": 7, "canonical": "53:1:10000000000000:-1074", "float_hex": "0x1p-1022"},
+    {"index": 8, "canonical": "53:1:1fffffffffffff:971", "float_hex": "0x1.fffffffffffffp+1023"}
+  ],
+  "all_exact": true
+}

@@ -344,11 +344,16 @@ def runtime_feature_summary(
             "Picard_ctrunc_normal" in row.get("flowstar_internal_intermediate_ranges_source_path", "")
             for row in flow_rows
         ),
-        "flowstar_horner_normal_insertion_source_enabled": True,
-        "flowstar_qr_preconditioning_observed": False,
-        "flowstar_shrink_wrapping_observed": False,
-        "flowstar_invariant_remainder_contraction_observed": False,
-        "flowstar_range_outward_rounding": "MPFR_RNDD lower / MPFR_RNDU upper",
+        # These facts were previously hard-coded as if the trace had observed
+        # them.  They are source declarations until an actual-path hook or a
+        # counterfactual records them.
+        "flowstar_horner_normal_insertion_source_enabled": None,
+        "flowstar_horner_evidence_class": "SOURCE_DECLARATION_NOT_RUNTIME_OBSERVED",
+        "flowstar_qr_preconditioning_observed": None,
+        "flowstar_shrink_wrapping_observed": None,
+        "flowstar_invariant_remainder_contraction_observed": None,
+        "flowstar_range_outward_rounding": None,
+        "flowstar_rounding_evidence_class": "SOURCE_DECLARATION_NOT_RUNTIME_OBSERVED",
         "torch_reset_mode": torch_summary.get("reset_mode"),
         "torch_legacy_symbolic_queue_enabled": False,
         "torch_direct_monomial_insertion_source_enabled": torch_summary.get("reset_mode") == "normalized_insertion",
@@ -427,7 +432,7 @@ def exact_semantics_micro_oracles() -> list[dict[str, Any]]:
 
 
 def source_semantics_map_is_closed(rows: Sequence[Mapping[str, Any]]) -> bool:
-    """Check that the minimum benchmark-to-output semantic path is present."""
+    """Check source-map completeness, not runtime equivalence or causality."""
 
     required = {
         "benchmark/model entry",
@@ -508,6 +513,9 @@ def derive_scientific_outcome(
     lossless_full_prestate_bridge: bool,
     independent_candidate_oracle_closed: bool,
     flowstar_soundness_gate_closed: bool,
+    stock_copied_probe_equivalence_closed: bool = False,
+    causal_factor_split_closed: bool = False,
+    same_prestate_operator_attribution_closed: bool = False,
 ) -> dict[str, Any]:
     minima_positive = all(
         int(row["exact_zero_count"]) == 0
@@ -515,30 +523,37 @@ def derive_scientific_outcome(
         and float(row["width"]) >= 1e-9
         for row in minima
     )
-    runtime_delta = all(
+    runtime_candidates_observed = all(
         bool(runtime_features.get(key))
         for key in (
             "flowstar_symbolic_queue_observed_active_after_first_step",
-            "flowstar_horner_normal_insertion_source_enabled",
             "torch_direct_monomial_insertion_source_enabled",
         )
     )
-    source_localized = bool(source_map_closed and runtime_delta)
+    source_candidates_localized = bool(source_map_closed and runtime_candidates_observed)
+    causal_source_delta_closed = bool(
+        source_candidates_localized
+        and stock_copied_probe_equivalence_closed
+        and causal_factor_split_closed
+        and same_prestate_operator_attribution_closed
+    )
     candidate_authorized = bool(
-        source_localized
+        causal_source_delta_closed
         and lossless_full_prestate_bridge
         and independent_candidate_oracle_closed
         and flowstar_soundness_gate_closed
     )
     statuses = [str(baseline_verdict["status"])]
     statuses.append(
-        "FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO"
+        "FLOWSTAR_WIDTH_MINIMUM_POSITIVE_NOT_NUMERICALLY_NEAR_ZERO"
         if minima_positive
         else "FLOWSTAR_OUTPUT_PIPELINE_ARTIFACT"
     )
     statuses.append(
-        "SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED"
-        if source_localized
+        "CAUSAL_SOURCE_DELTA_CLOSED"
+        if causal_source_delta_closed
+        else "SOURCE_MECHANISM_CANDIDATES_LOCALIZED_CAUSAL_SPLIT_OPEN"
+        if source_candidates_localized
         else "SOURCE_LEVEL_DELTA_UNRESOLVED"
     )
     statuses.append("SOUND_CARRY_CANDIDATE_L1" if candidate_authorized else "NO_FIX_AUTHORIZED")
@@ -547,12 +562,17 @@ def derive_scientific_outcome(
         "zero_width_classification": (
             "Z0_POSITIVE_WIDTH_ONLY_LOOKS_ZERO" if minima_positive else "Z5_UNRESOLVED"
         ),
-        "source_localized": source_localized,
+        "source_localized": causal_source_delta_closed,
+        "source_candidates_localized": source_candidates_localized,
+        "causal_source_delta_closed": causal_source_delta_closed,
         "candidate_authorized": candidate_authorized,
         "gates": {
             "lossless_full_prestate_bridge": lossless_full_prestate_bridge,
             "independent_candidate_oracle_closed": independent_candidate_oracle_closed,
             "flowstar_soundness_gate_closed": flowstar_soundness_gate_closed,
+            "stock_copied_probe_equivalence_closed": stock_copied_probe_equivalence_closed,
+            "causal_factor_split_closed": causal_factor_split_closed,
+            "same_prestate_operator_attribution_closed": same_prestate_operator_attribution_closed,
         },
     }
 

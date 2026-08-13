@@ -1,0 +1,207 @@
+diff --git a/flowstar-toolbox/Continuous.h b/flowstar-toolbox/Continuous.h
+index 74d120e..39fc4ab 100644
+--- a/flowstar-toolbox/Continuous.h
++++ b/flowstar-toolbox/Continuous.h
+@@ -35,6 +35,18 @@ public:
+ 	Symbolic_Remainder & operator = (const Symbolic_Remainder & symbolic_remainder);
+ };
+ 
++#ifdef FLOWSTAR_CAUSAL_OBSERVE
++// Implemented by an audit driver.  This hook receives const references only
++// and is compiled out completely in the observation-off build.
++void flowstar_causal_observe_reach_step(
++	const Flowpipe & flowpipe,
++	const Symbolic_Remainder & symbolic_remainder,
++	const unsigned long accepted_step,
++	const double t_before,
++	const double step,
++	const char * phase);
++#endif
++
+ 
+ 
+ class Computational_Setting
+@@ -839,6 +851,7 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder(std::list<Flowpipe> & flowpipes, co
+ 	int checking_result = COMPLETED_SAFE;
+ 
+ 	Flowpipe newFlowpipe, currentFlowpipe = initialSet;
++	unsigned long accepted_step = 0;
+ 
+ 	for(double t=THRESHOLD_HIGH; t < time;)
+ 	{
+@@ -877,6 +890,17 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder(std::list<Flowpipe> & flowpipes, co
+ 			}
+ 
+ 			currentFlowpipe = newFlowpipe;
++			++accepted_step;
++
++#ifdef FLOWSTAR_CAUSAL_OBSERVE
++			flowstar_causal_observe_reach_step(
++				newFlowpipe,
++				symbolic_remainder,
++				accepted_step,
++				t,
++				step,
++				"pre_reset");
++#endif
+ 
+ 
+ 			t += step;
+@@ -892,6 +916,16 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder(std::list<Flowpipe> & flowpipes, co
+ 			{
+ 				symbolic_remainder.reset(currentFlowpipe.tmvPre.tms.size());
+ 			}
++
++#ifdef FLOWSTAR_CAUSAL_OBSERVE
++			flowstar_causal_observe_reach_step(
++				newFlowpipe,
++				symbolic_remainder,
++				accepted_step,
++				t - step,
++				step,
++				"post_reset");
++#endif
+ 		}
+ 		else
+ 		{
+diff --git a/flowstar-toolbox/Interval.cpp b/flowstar-toolbox/Interval.cpp
+index ef6dbe4..f1e0825 100644
+--- a/flowstar-toolbox/Interval.cpp
++++ b/flowstar-toolbox/Interval.cpp
+@@ -376,6 +376,96 @@ std::string Real::toString() const
+ 	return str;
+ }
+ 
++#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
++std::string Real::auditCanonicalBinary() const
++{
++	if(!mpfr_number_p(value))
++	{
++		return "";
++	}
++	mpz_t mantissa;
++	mpz_init(mantissa);
++	mpfr_exp_t exponent = mpfr_get_z_2exp(mantissa, value);
++	const int sign = mpfr_signbit(value) ? -1 : 1;
++	if(mpz_sgn(mantissa) < 0)
++	{
++		mpz_neg(mantissa, mantissa);
++	}
++	char * digits = mpz_get_str(NULL, 16, mantissa);
++	std::ostringstream stream;
++	stream << mpfr_get_prec(value) << ':' << sign << ':' << digits << ':' << exponent;
++	void (*free_function)(void *, size_t);
++	mp_get_memory_functions(NULL, NULL, &free_function);
++	free_function(digits, std::strlen(digits) + 1);
++	mpz_clear(mantissa);
++	return stream.str();
++}
++
++bool Real::auditSetCanonicalBinary(const std::string & canonical)
++{
++	std::vector<std::string> fields;
++	std::string current;
++	for(size_t i=0; i<=canonical.size(); ++i)
++	{
++		if(i == canonical.size() || canonical[i] == ':')
++		{
++			fields.push_back(current);
++			current.clear();
++		}
++		else
++		{
++			current.push_back(canonical[i]);
++		}
++	}
++	if(fields.size() != 4 || fields[0].empty() || fields[1].empty() || fields[2].empty() || fields[3].empty())
++	{
++		return false;
++	}
++	char * end = NULL;
++	unsigned long precision = std::strtoul(fields[0].c_str(), &end, 10);
++	if(*end != '\0' || precision < MPFR_PREC_MIN || precision > MPFR_PREC_MAX)
++	{
++		return false;
++	}
++	long sign = std::strtol(fields[1].c_str(), &end, 10);
++	if(*end != '\0' || (sign != -1 && sign != 1))
++	{
++		return false;
++	}
++	long exponent = std::strtol(fields[3].c_str(), &end, 10);
++	if(*end != '\0')
++	{
++		return false;
++	}
++	mpz_t mantissa;
++	mpz_init(mantissa);
++	if(mpz_set_str(mantissa, fields[2].c_str(), 16) != 0 || mpz_sgn(mantissa) < 0)
++	{
++		mpz_clear(mantissa);
++		return false;
++	}
++	mpfr_set_prec(value, static_cast<mpfr_prec_t>(precision));
++	if(mpz_sgn(mantissa) == 0)
++	{
++		mpfr_set_zero(value, sign < 0 ? -1 : 1);
++	}
++	else
++	{
++		if(sign < 0)
++		{
++			mpz_neg(mantissa, mantissa);
++		}
++		if(mpfr_set_z_2exp(value, mantissa, static_cast<mpfr_exp_t>(exponent), MPFR_RNDN) != 0)
++		{
++			mpz_clear(mantissa);
++			return false;
++		}
++	}
++	mpz_clear(mantissa);
++	return auditCanonicalBinary() == canonical;
++}
++#endif
++
+ /*
+ Real::operator double() const
+ {
+@@ -3218,4 +3308,3 @@ Interval operator * (const Real & r, const Interval & I)
+ */
+ }
+ 
+-
+diff --git a/flowstar-toolbox/Interval.h b/flowstar-toolbox/Interval.h
+index 9053b52..8154417 100644
+--- a/flowstar-toolbox/Interval.h
++++ b/flowstar-toolbox/Interval.h
+@@ -100,6 +100,14 @@ public:
+ 	double toDouble() const;
+ 	std::string toString() const;
+ 
++#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
++	// Audit-only, exact MPFR interchange.  The canonical form is
++	// precision:sign:hex-mantissa:binary-exponent and is never used by
++	// Flow* arithmetic.
++	std::string auditCanonicalBinary() const;
++	bool auditSetCanonicalBinary(const std::string & canonical);
++#endif
++
+ 	Interval operator * (const Interval & I) const;
+ 
+ 	Real & operator += (const Real & r);
+diff --git a/flowstar-toolbox/Term.h b/flowstar-toolbox/Term.h
+index 62294ac..1a432aa 100644
+--- a/flowstar-toolbox/Term.h
++++ b/flowstar-toolbox/Term.h
+@@ -33,6 +33,11 @@ public:
+ 	unsigned int degree() const;		// degree of the term
+ 	unsigned int dimension() const;		// dimension of the term
+ 
++#ifdef FLOWSTAR_CAUSAL_AUDIT_ACCESS
++	const DATA_TYPE & auditCoefficient() const { return coefficient; }
++	const std::vector<unsigned int> & auditDegrees() const { return degrees; }
++#endif
++
+ 	void evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const;	// evaluation of the term
+ 
+ 	// interval evaluation of the term, we assume that the domain is normalized to [0,s] x [-1,1]^(d-1)

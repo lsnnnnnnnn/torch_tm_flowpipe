@@ -1,0 +1,1 @@
+bash -lc 'git status --short --branch && git rev-parse HEAD && git log -12 --oneline --decorate && git remote -v && git ls-remote --heads origin && git merge-base cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d HEAD'

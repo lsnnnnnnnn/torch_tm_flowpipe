@@ -153,6 +153,10 @@ def test_runtime_features_require_observed_queue_and_path() -> None:
     assert features["flowstar_symbolic_queue_observed_active_after_first_step"] is True
     assert features["flowstar_expression_picard_observed"] is True
     assert features["torch_direct_monomial_insertion_source_enabled"] is True
+    assert features["flowstar_horner_normal_insertion_source_enabled"] is None
+    assert features["flowstar_horner_evidence_class"] == (
+        "SOURCE_DECLARATION_NOT_RUNTIME_OBSERVED"
+    )
 
 
 @pytest.mark.unit
@@ -255,6 +259,12 @@ def test_scientific_outcome_requires_all_candidate_gates() -> None:
     )
     assert denied["candidate_authorized"] is False
     assert denied["statuses"][-1] == "NO_FIX_AUTHORIZED"
+    assert denied["statuses"][1] == (
+        "FLOWSTAR_WIDTH_MINIMUM_POSITIVE_NOT_NUMERICALLY_NEAR_ZERO"
+    )
+    assert denied["statuses"][2] == (
+        "SOURCE_MECHANISM_CANDIDATES_LOCALIZED_CAUSAL_SPLIT_OPEN"
+    )
     assert denied["zero_width_classification"] == "Z0_POSITIVE_WIDTH_ONLY_LOOKS_ZERO"
     allowed = derive_scientific_outcome(
         baseline_verdict=baseline,
@@ -264,8 +274,12 @@ def test_scientific_outcome_requires_all_candidate_gates() -> None:
         lossless_full_prestate_bridge=True,
         independent_candidate_oracle_closed=True,
         flowstar_soundness_gate_closed=True,
+        stock_copied_probe_equivalence_closed=True,
+        causal_factor_split_closed=True,
+        same_prestate_operator_attribution_closed=True,
     )
     assert allowed["candidate_authorized"] is True
+    assert allowed["statuses"][2] == "CAUSAL_SOURCE_DELTA_CLOSED"
     assert allowed["statuses"][-1] == "SOUND_CARRY_CANDIDATE_L1"
 
 

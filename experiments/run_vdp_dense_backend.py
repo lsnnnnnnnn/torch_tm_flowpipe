@@ -891,6 +891,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "normalized_insertion",
             "normalized_insertion_complete_polynomial",
             "normalized_insertion_symqueue_v2",
+            "normalized_insertion_horner",
+            "normalized_insertion_horner_symqueue_v2",
             "normalized_insertion_structured_remainder_k16",
         ),
         default="normalized_insertion",

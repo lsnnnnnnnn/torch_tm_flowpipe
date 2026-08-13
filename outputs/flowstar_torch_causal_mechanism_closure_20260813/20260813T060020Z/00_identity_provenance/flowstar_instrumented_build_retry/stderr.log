@@ -1,0 +1,75 @@
+In file included from Constraints.h:9,
+                 from Geometry.h:9,
+                 from Continuous.h:9,
+                 from Hybrid.h:10,
+                 from Hybrid.cpp:6:
+TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+TaylorModel.h:900:21: warning: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+TaylorModel.h:900:21: note: there are 3 candidates
+In file included from Matrix.h:10,
+                 from Polynomial.h:10,
+                 from TaylorModel.h:9:
+Interval.h:258:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  258 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+Interval.h:258:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:259:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  259 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+Interval.h:259:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:260:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  260 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+Interval.h:260:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+In file included from Constraints.h:9,
+                 from Geometry.h:9,
+                 from Continuous.h:9,
+                 from modelParser.h:9,
+                 from modelParser.y:8:
+TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+TaylorModel.h:900:21: warning: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+TaylorModel.h:900:21: note: there are 3 candidates
+In file included from Matrix.h:10,
+                 from Polynomial.h:10,
+                 from TaylorModel.h:9:
+Interval.h:258:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  258 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+Interval.h:258:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:259:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  259 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+Interval.h:259:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:260:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  260 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+Interval.h:260:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+In file included from Constraints.h:9,
+                 from Geometry.h:9,
+                 from Continuous.h:9,
+                 from modelParser.h:9,
+                 from modelLexer.l:7:
+TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+TaylorModel.h:900:21: warning: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+TaylorModel.h:900:21: note: there are 3 candidates
+In file included from Matrix.h:10,
+                 from Polynomial.h:10,
+                 from TaylorModel.h:9:
+Interval.h:258:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  258 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+Interval.h:258:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:259:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  259 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+Interval.h:259:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+Interval.h:260:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  260 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+Interval.h:260:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers

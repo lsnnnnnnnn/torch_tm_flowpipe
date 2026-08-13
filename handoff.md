@@ -1,73 +1,75 @@
-# Flow*–Torch source/carry audit handoff
+# Flow*–Torch causal mechanism closure handoff — 2026-08-13
 
-Current full-horizon canonical outcomes:
+Final scientific decision: `NO_FIX_AUTHORIZED`.
 
-- `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`
-- `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`
-- `CARRY_MISSING_SYMBOLIC_SEMANTICS`
-- `NO_FIX_AUTHORIZED`
+Repository-level compatibility context (historical suites remain superseded
+where their own banners say so): `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
+`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`, and
+`CARRY_MISSING_SYMBOLIC_SEMANTICS` remain the canonical broader outcomes; this
+closure adds evidence but does not rewrite those orthogonal contracts.
 
-The preceding bridge and S1 claims remain historical/superseded; this audit
-refines the complete-O4 carry cause without replacing those four repository
-headline outcomes.
+## Plain-language result
 
-Final scientific status:
+1. The copied probe is not the stock runtime entry, but it is now proven
+   equivalent to the actual `ode.reach` path for this pinned VDP contract:
+   1000 clean/instrumented/copied steps agree, including exact retained state
+   and queue transitions.
+2. The graph's apparent “zero” is a positive coordinate-projection minimum.
+   Every Flow* minimum is greater than `0.0086`, not numerically near zero.
+3. Step 1 already differs in 23 of 31 returned Picard coefficients.  No old
+   `J/Phi_L` source has crossed a boundary then, so queue-only attribution is
+   false.
+4. Flow* Q1/Q2/Q10/Q100 reach 620/640/685/1000 steps.  In Torch, Horner changes
+   widths from step 3 and moves 632→636; the diagnostic queue changes segment
+   widths from step 2 but not endpoints, scales, or horizon.
+5. The earliest source candidate is local Picard construction/grouping, then
+   remainder refinement and endpoint/tube extraction.  No unique
+   decision-relevant source line is causally closed because two full-state
+   cross-operator replay cells are unavailable.
+6. The lossless bridge is real: all 24 Flow* import/export and one-step
+   continuations are exact, and Torch→Flow*→schema is byte exact.  Flow* and
+   Torch still have incompatible full operator state dimensions/queues.
+7. The independent outward source-ledger oracle was not authorized and remains
+   `SOURCE_LEDGER_ORACLE_INCOMPLETE`.
+8. No production candidate was implemented.  L1/L2/L3 are all not run; the new
+   Horner/queue combinations are feature-gated diagnostics and the default is
+   unchanged.
+9. Canonical byte equality and exact-rational fixtures are formal/discrete;
+   MPFR direction and dyadic conversion are directed-numerical; widths and
+   horizons are deterministic empirical evidence; factorial modes are
+   diagnostic; unique source attribution is unresolved.
+10. The only next action is to define a shared full operator sub-contract that
+    preserves `t`, `Phi_L/J`, terms, and separate remainder ledgers, then run
+    the missing Torch-on-Flow* and Flow*-on-Torch same-prestate cells.
+
+## Selected outcomes
 
 - `BASELINE_CONCLUSIONS_REPRODUCED`
-- `FLOWSTAR_WIDTH_IS_POSITIVE_NEAR_ZERO`
-- `SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED`
+- `FLOWSTAR_WIDTH_MINIMUM_POSITIVE_NOT_NUMERICALLY_NEAR_ZERO`
+- `STOCK_COPIED_PROBE_EQUIVALENCE_CLOSED`
+- `CAUSAL_FACTOR_SPLIT_PARTIAL`
+- `SAME_PRESTATE_LOSSLESS_BRIDGE_AVAILABLE`
+- `SOURCE_MECHANISM_CANDIDATES_LOCALIZED_CAUSAL_SPLIT_OPEN`
+- `SOURCE_LEDGER_ORACLE_INCOMPLETE`
 - `NO_FIX_AUTHORIZED`
 
-## Publication identity
+## Publication metadata
 
-- remote ref: `origin/codex/flowstar-torch-source-carry-root-cause-20260813`
-- final tested source-and-evidence SHA:
-  `adb985e703b61a384703bfa724021472caa3f870`
-- Flow* source SHA: `b85a3211748cb77b736fe4ad42ee02d8d2b81148`
-- baseline Torch source SHA: `8e7dbfbd305042adbd1bede47381c33ba73d7d7b`
-- portable evidence:
-  `outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/`
+- branch: `codex/flowstar-torch-causal-mechanism-closure-20260813`
+- start SHA: `cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d`
+- scientific tested SHA: `PENDING_SCIENTIFIC_COMMIT`
+- publication tip: `PENDING_ATTESTATION_COMMIT`
+- Flow* SHA: `b85a3211748cb77b736fe4ad42ee02d8d2b81148`
+- evidence package:
+  `outputs/flowstar_torch_causal_mechanism_closure_20260813/20260813T060020Z`
+- test counts: `PENDING_FINAL_TEST_RUN`
+- fresh clone: `PENDING_REMOTE_SCIENTIFIC_SHA`
+- final worktree status: `PENDING_PUBLICATION`
 
-The publication branch has one child attestation commit containing this handoff
-and the recorded fresh-clone result. A Git commit cannot literally contain its
-own object ID without changing that ID; resolve the exact publication tip with
-`git rev-parse origin/codex/flowstar-torch-source-carry-root-cause-20260813`.
-The final user handoff records that resolved value explicitly.
+Detailed results are in:
 
-## Verification
-
-The tested SHA was fetched into a new clone and checked out detached from
-origin. The following passed there:
-
-- editable test install: exit 0;
-- focused audit suite: 18 passed;
-- full repository suite: 687 passed, 2 skipped (689 collected);
-- `python -m compileall -q src experiments tests`: exit 0;
-- package checksum/load/rederivation: 55 files hashed, 27 JSON files loaded,
-  Flow* 1000 accepted rows, Torch 632 accepted plus one rejected candidate,
-  four minima and 16 checkpoint ratios rederived;
-- final fresh-clone worktree: clean.
-
-The committed `12_final_clone/` attestation includes the exact tested SHA,
-JUnit files, and rederivation summary. After the attestation commit is pushed,
-the publication tip is checked once more from a second fresh clone; that final
-check is reported with the resolved publication SHA and does not mutate tracked
-scientific content.
-
-## Result and remaining question
-
-The Flow* minima are positive (`0.00861`, `0.02627`, `0.00889`, `0.03089`),
-not zeros or serialization artifacts. Flow* carries linear old sources once
-through `Continuous.cpp:2151-2177`'s `Phi_L/J` queue and uses Horner insertion;
-legacy Torch independently composes monomials in `flowpipe.py:698-739`, after
-the whole constant-removed state is sent through `flowpipe.py:1470-1511`.
-The first published difference is step 1 and it changes step-2 scales.
-
-No candidate is authorized because the post-step Flow* state/queue lacks a
-lossless bridge, the pinned Flow* correctness gate is independently open, and
-no complete outward source-ledger primitive proves nonlinear O4 carry.
-
-The single remaining question is: can a lossless binary state-and-queue fixture
-and independently outward-rounded source-ledger carry primitive prove the full
-one-step O4 containment contract, including nonlinear multiplication,
-truncation, cutoff, and renormalization?
+- `docs/FLOWSTAR_NATIVE_VS_COPIED_PROBE_EQUIVALENCE_20260813.md`
+- `docs/FLOWSTAR_TORCH_CAUSAL_FACTOR_SPLIT_20260813.md`
+- `docs/FLOWSTAR_TORCH_LOSSLESS_STATE_QUEUE_BRIDGE_20260813.md`
+- `docs/COMPLETE_O4_SOURCE_LEDGER_ORACLE_20260813.md`
+- `docs/COMPLETE_O4_CARRY_FINAL_DECISION_20260813.md`

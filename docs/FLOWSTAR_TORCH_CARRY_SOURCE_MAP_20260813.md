@@ -1,7 +1,12 @@
 # Flow*–Torch carry source map — 2026-08-13
 
-Status: `SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED` with
-`SAME_PRESTATE_LOSSLESS_BRIDGE_NOT_AVAILABLE`.
+Corrected status: `SOURCE_MECHANISM_CANDIDATES_LOCALIZED_CAUSAL_SPLIT_OPEN`.
+
+The previous `SOURCE_LEVEL_DEPENDENCY_LOSS_LOCALIZED` label is a historical,
+superseded overclaim.  The map below was human-authored from source inspection;
+it identifies candidates but does not prove runtime-path equivalence or that a
+candidate caused the long-horizon gap.  See the 2026-08-13 causal-factor and
+lossless-bridge reports for the actual-path counterfactual evidence.
 
 ## Stage map
 
@@ -31,7 +36,7 @@ queue is active, whereas the frozen legacy Torch path remains plain
 it alters subsequent normalization, polynomial-times-parameterization-remainder
 terms, and eventually validator margin.
 
-The source-level conclusion is:
+The historical source-level hypothesis was:
 
 > In Flow* `Continuous.cpp:2151-2177 Flowpipe::advance`, the linear portion of
 > each old remainder source remains associated with its `Phi_L/J` queue entry
@@ -42,8 +47,9 @@ The source-level conclusion is:
 > consumes the same intervalized right-map remainder. The resulting step-1
 > width difference changes step-2 scales and the excess accumulates thereafter.
 
-This does not claim that Flow* preserves complete shared nonlinear symbols. Its
-multiply primitive also intervalizes remainder interactions.
+This quoted hypothesis is not a causal conclusion.  Step 1 precedes old-source
+queue propagation and already contains local Picard coefficient differences.
+Flow*'s multiply primitive also intervalizes remainder interactions.
 
 ## Same-prestate gate
 

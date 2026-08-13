@@ -1,0 +1,37 @@
+In file included from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Constraints.h:9,
+                 from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Geometry.h:9,
+                 from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Continuous.h:9,
+                 from experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp:1:
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/TaylorModel.h:900:21: warning: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/TaylorModel.h:900:21: note: there are 3 candidates
+In file included from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Matrix.h:10,
+                 from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Polynomial.h:10,
+                 from /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/TaylorModel.h:9:
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:258:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  258 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:258:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:259:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  259 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:259:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:260:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  260 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Interval.h:260:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp: In function ‘std::string {anonymous}::audit_queue_binary(const flowstar::Symbolic_Remainder&)’:
+experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp:623:66: warning: passing ‘const flowstar::Matrix<flowstar::Interval>’ as ‘this’ argument discards qualifiers [-fpermissive]
+  623 |                 output << ':' << audit_interval_binary(matrix[row][column]);
+      |                                                                  ^
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Matrix.h:136:21: note:   in call to ‘DATA_TYPE* flowstar::Matrix<DATA_TYPE>::operator[](int) [with DATA_TYPE = flowstar::Interval]’
+  136 |         DATA_TYPE * operator [] (const int i);
+      |                     ^~~~~~~~
+experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp:636:62: warning: passing ‘const flowstar::Matrix<flowstar::Real>’ as ‘this’ argument discards qualifiers [-fpermissive]
+  636 |                 output << ':' << audit_real_binary(matrix[row][column]);
+      |                                                              ^
+/srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813/flowstar-toolbox/Matrix.h:136:21: note:   in call to ‘DATA_TYPE* flowstar::Matrix<DATA_TYPE>::operator[](int) [with DATA_TYPE = flowstar::Real]’
+  136 |         DATA_TYPE * operator [] (const int i);
+      |                     ^~~~~~~~

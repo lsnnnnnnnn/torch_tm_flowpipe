@@ -1,9 +1,14 @@
 {
+  "actual_path_equivalence_closed": false,
+  "corrected_source_headline": "SOURCE_MECHANISM_CANDIDATES_LOCALIZED_CAUSAL_SPLIT_OPEN",
+  "evidence_class": "HUMAN_AUTHORED_SOURCE_CANDIDATE_MAP",
   "first_beyond_roundoff_difference": "accepted step 1 (width differences are 2.14e-4 to 1.30e-3)",
   "first_bitwise_or_published_width_difference": "accepted step 1",
   "first_decision_relevant_difference": "step 1 output changes step 2 normalization scales",
   "first_persistent_dependency_semantics_difference": "boundary after accepted step 1; Flow* queue is active for step 2",
   "localized_conclusion": "Flow* Continuous.cpp:2151-2177 keeps the linear old-remainder sources in Phi_L/J and TaylorModel.h:4213-4243 composes the nonlinear polynomial in Horner form. Torch flowpipe.py:1470-1511 sends the whole constant-removed polynomial to flowpipe.py:698-739, where each monomial independently reuses the already intervalized right-map remainder. This changes the next scale after accepted step 1 and accumulates polynomial-times-parameterization remainder thereafter.",
+  "proves_causal_effect": false,
+  "proves_runtime_path": false,
   "rows": [
     {
       "dependency_consequence": "same ODE/box/order contract; different implementation stacks",
@@ -78,5 +83,6 @@
       "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/experiments/compare_flowstar_torch_fixed_schedule.py:180-360 compare"
     }
   ],
-  "schema": "flowstar_torch_carry_source_map_v1"
+  "schema": "flowstar_torch_carry_source_map_v1",
+  "single_factor_counterfactual_closed": false
 }

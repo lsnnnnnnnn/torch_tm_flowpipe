@@ -1,0 +1,7 @@
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -fpermissive -DFLOWSTAR_CAUSAL_OBSERVE -DFLOWSTAR_CAUSAL_AUDIT_ACCESS -o Interval.o Interval.cpp
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -fpermissive -DFLOWSTAR_CAUSAL_OBSERVE -DFLOWSTAR_CAUSAL_AUDIT_ACCESS -o Hybrid.o Hybrid.cpp
+bison -d -v modelParser.y
+flex modelLexer.l
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -fpermissive -DFLOWSTAR_CAUSAL_OBSERVE -DFLOWSTAR_CAUSAL_AUDIT_ACCESS -o modelParser.tab.o modelParser.tab.c
+g++ -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -fpermissive -DFLOWSTAR_CAUSAL_OBSERVE -DFLOWSTAR_CAUSAL_AUDIT_ACCESS -o lex.yy.o lex.yy.c
+ar rcs libflowstar.a Interval.o Variables.o settings.o Matrix.o Geometry.o Constraints.o Continuous.o Discrete.o Hybrid.o lex.yy.o modelParser.tab.o
