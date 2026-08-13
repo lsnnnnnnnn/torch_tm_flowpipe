@@ -57,14 +57,33 @@ closure adds evidence but does not rewrite those orthogonal contracts.
 
 - branch: `codex/flowstar-torch-causal-mechanism-closure-20260813`
 - start SHA: `cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d`
-- scientific tested SHA: `PENDING_SCIENTIFIC_COMMIT`
-- publication tip: `PENDING_ATTESTATION_COMMIT`
+- scientific tested SHA: `a8653a7d9ea6f54b1450da6bee9af0e2a5a19695`
+- publication tip: remote ref
+  `refs/heads/codex/flowstar-torch-causal-mechanism-closure-20260813`;
+  its exact self-referential commit SHA is resolved by the required post-push
+  `git ls-remote` check and reported in the terminal summary (a commit cannot
+  contain its own hash)
 - Flow* SHA: `b85a3211748cb77b736fe4ad42ee02d8d2b81148`
+- Flow* binary SHA256:
+  - clean `libflowstar.a`: `a23109e2b40bbcbe80a242c33f0a23f3473c5fbc8ccef2de5d0e28874535fc36`
+  - instrumented `libflowstar.a`: `accfdf9bcffaa73d83dbef76a04d7d1583fb18afba816d752e1d358f4af1675d`
+  - stock driver: `da512eda8035fd60ce2983e15835dc3cda08f170a829f44d24bb045453657820`
+  - instrumented driver: `ceaf5e9df402507ac4ffce88001c6b32f9759219cab4d5f75359b4508f2d0394`
+  - copied probe: `2d64456d6186f97519eb432fd168e2267e00a5e0ab787452ab2ddf4434b77ec2`
+  - lossless bridge: `4bd2fec16dbf752ee1b6b63993b4d9c72e0ba353c82339e5b43a6a618945d320`
 - evidence package:
   `outputs/flowstar_torch_causal_mechanism_closure_20260813/20260813T060020Z`
-- test counts: `PENDING_FINAL_TEST_RUN`
-- fresh clone: `PENDING_REMOTE_SCIENTIFIC_SHA`
-- final worktree status: `PENDING_PUBLICATION`
+- test counts: local and fresh-clone full suites both `710 passed, 2 skipped`;
+  focused suites `18 passed` and `23 passed`; compileall passed
+- fresh clone: `PASS` from HTTPS origin, detached exact scientific SHA;
+  package verifier passed and final porcelain status was empty
+- two-stage proof: scientific `src`, `tests`, and `experiments` tree hashes are
+  respectively `7be43ed900a99308af24d7dbb13a46d51e1e7280`,
+  `dca1cc7e3277098c88803c4da417ae72cc005741`, and
+  `79855f638ca9fbfefd568087458c1701166c1062`; the attestation commit changes
+  only this handoff and the evidence package, so these relevant trees remain exact
+- final worktree status: clean after the attestation commit; verified again
+  before publication
 
 Detailed results are in:
 
