@@ -14,7 +14,7 @@ dependencies = ["torch", "PyYAML", "matplotlib"]
 test = ["pytest", "pandas"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = [".", "src"]
 testpaths = ["tests"]
 markers = [
     "unit: fast isolated unit tests",

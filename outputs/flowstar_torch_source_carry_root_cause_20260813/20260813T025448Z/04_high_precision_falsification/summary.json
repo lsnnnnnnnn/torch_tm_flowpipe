@@ -1,0 +1,55 @@
+{
+  "falsification_result": "NO_NUMERICAL_CONTAINMENT_WITNESS_IN_TESTED_POINTS",
+  "flowstar_trace": {
+    "path": "/tmp/source_carry_flowstar_runner_20260813/artifacts/flowstar_trace.csv",
+    "sha256": "46bf3949310ef5f90c47a16683411b541269a89c3c0d9c6cddd1db368419f0fe"
+  },
+  "high_precision": {
+    "component_observations": 54,
+    "containment_violations": 0,
+    "degree": 40,
+    "library": "mpmath",
+    "method": "Taylor-series odefun",
+    "precision_decimal_digits": 70,
+    "representative_initial_points": 9,
+    "tolerance": "1e-45",
+    "version": "1.3.0"
+  },
+  "limitation": "Point samples and a center variational equation neither cover the continuum of initial states nor validate Flow* interval arithmetic.",
+  "proof_status": "NOT_AN_ENCLOSURE_PROOF",
+  "python": "3.11.15",
+  "schema": "flowstar_width_numerical_falsification_v1",
+  "scipy": {
+    "atol": 1e-14,
+    "component_observations": 486,
+    "containment_violations": 0,
+    "grid_size_per_axis": 9,
+    "initial_points": 81,
+    "method": "DOP853",
+    "rtol": 1e-12,
+    "version": "1.17.1"
+  },
+  "scope": {
+    "checkpoints": [
+      3.97,
+      4.74,
+      6.32
+    ],
+    "initial_box": {
+      "x": [
+        1.1,
+        1.4
+      ],
+      "y": [
+        2.35,
+        2.45
+      ]
+    },
+    "reason": "endpoint-x minimum, endpoint-y minimum, and Torch terminal accepted prefix"
+  },
+  "variational": {
+    "interpretation": "Projection contraction in a row of the flow-map Jacobian can make a positive coordinate width visually narrow while the full map remains nonsingular.",
+    "method": "DOP853 center trajectory plus 2x2 fundamental matrix",
+    "observations": 3
+  }
+}

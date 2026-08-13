@@ -1,0 +1,42 @@
+{
+  "contract_identity": {
+    "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+    "partition_b1_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+    "partition_b64_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+    "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558"
+  },
+  "cutoff": [
+    -1e-10,
+    1e-10
+  ],
+  "fixed_step": 0.01,
+  "fixed_step_hex": "0x1.47ae147ae147bp-7",
+  "initial_box": {
+    "x": [
+      1.1,
+      1.4
+    ],
+    "y": [
+      2.35,
+      2.45
+    ]
+  },
+  "metrics": [
+    "endpoint",
+    "one_segment_tube",
+    "prefix_tube"
+  ],
+  "ode": [
+    "x'=y",
+    "y'=y-x-x^2*y"
+  ],
+  "partition": "B1",
+  "remainder_target": [
+    -0.0001,
+    0.0001
+  ],
+  "representation": "complete_total_degree_O4",
+  "schema": "vdp_complete_o4_fixed_contract_v1",
+  "sha256": "c79fdf30753c63dcfd649a4efe07d9439a73640637fb193774d6b7e61a58ae19",
+  "target_horizon": 10.0
+}

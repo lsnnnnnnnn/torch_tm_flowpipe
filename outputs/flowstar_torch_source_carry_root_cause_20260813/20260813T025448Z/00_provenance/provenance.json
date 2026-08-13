@@ -1,0 +1,161 @@
+{
+  "environment": {
+    "conda_prefix": "/srv/local/shengenli/miniforge3/envs/py11",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.43",
+    "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+    "python_executable": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "torch": {
+      "command": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-c",
+        "import torch; print(torch.__version__)"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "2.5.1+cu121\n"
+    }
+  },
+  "flowstar": {
+    "build_contract": {
+      "baseline_gcc11_library_sha256": "b5ff500af66354b0518cf12e7d951f4525f435e8e2d695cf84b91821992c9d9a",
+      "flags": "-O3 -g -std=c++11; GCC 15 observation build adds -fpermissive for a pre-existing uninstantiated derivative template body",
+      "instrumentation_isolated_worktree": true,
+      "interval_backend": "MPFR, default 53-bit precision, directed interval endpoints"
+    },
+    "compiler": {
+      "command": [
+        "g++",
+        "--version"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    "library": {
+      "file": {
+        "command": [
+          "file",
+          "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/libflowstar.a"
+        ],
+        "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/libflowstar.a: current ar archive\n"
+      },
+      "path": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/libflowstar.a",
+      "sha256": "03cda3ac1a685a07098ca5ef53da8591676e7adf79e1e2d5261babd7bf05fc40"
+    },
+    "probe": {
+      "file": {
+        "command": [
+          "file",
+          "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe"
+        ],
+        "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=ed63ef3298547e44604279c657446fbbe157d746, for GNU/Linux 3.2.0, with debug_info, not stripped\n"
+      },
+      "ldd": {
+        "command": [
+          "ldd",
+          "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe"
+        ],
+        "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "\tlinux-vdso.so.1 (0x000079c3faa50000)\n\tlibmpfr.so.6 => /usr/lib/x86_64-linux-gnu/libmpfr.so.6 (0x000079c3fa874000)\n\tlibgsl.so.28 => /usr/lib/x86_64-linux-gnu/libgsl.so.28 (0x000079c3fa400000)\n\tlibglpk.so.40 => /usr/lib/x86_64-linux-gnu/libglpk.so.40 (0x000079c3fa79e000)\n\tlibstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x000079c3fa000000)\n\tlibm.so.6 => /usr/lib/x86_64-linux-gnu/libm.so.6 (0x000079c3fa2da000)\n\tlibgcc_s.so.1 => /usr/lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000079c3fa76e000)\n\tlibc.so.6 => /usr/lib/x86_64-linux-gnu/libc.so.6 (0x000079c3f9c00000)\n\tlibgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x000079c3fa6e8000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000079c3faa52000)\n\tlibgslcblas.so.0 => /usr/lib/x86_64-linux-gnu/libgslcblas.so.0 (0x000079c3f9fb6000)\n\tlibcolamd.so.3 => /usr/lib/x86_64-linux-gnu/libcolamd.so.3 (0x000079c3fa2d1000)\n\tlibamd.so.3 => /usr/lib/x86_64-linux-gnu/libamd.so.3 (0x000079c3fa2c4000)\n\tlibz.so.1 => /usr/lib/x86_64-linux-gnu/libz.so.1 (0x000079c3fa2a6000)\n\tlibltdl.so.7 => /usr/lib/x86_64-linux-gnu/libltdl.so.7 (0x000079c3f9fab000)\n\tlibsuitesparseconfig.so.7 => /usr/lib/x86_64-linux-gnu/libsuitesparseconfig.so.7 (0x000079c3fa2a1000)\n\tlibgomp.so.1 => /usr/lib/x86_64-linux-gnu/libgomp.so.1 (0x000079c3f9f4c000)\n"
+      },
+      "path": "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe",
+      "resolved_path": "/tmp/flowstar_source_carry_20260813_probe/flowstar_probe",
+      "sha256": "2c149080d941a2d175f37a7c9bb9d7cee99aa52556e618f8a70ed6b40591c24a"
+    },
+    "recent_log": {
+      "command": [
+        "git",
+        "log",
+        "-5",
+        "--oneline",
+        "--decorate"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "b85a321 (HEAD, origin/master, origin/HEAD, master) Merge branch 'master' of https://github.com/chenxin415/flowstar\ned08e67 New constructors in TM class is added\n6172bcd Update Matrix.h\na49d73f Update README.md\nf9855f0 Update README.md\n"
+    },
+    "remote": {
+      "command": [
+        "git",
+        "remote",
+        "-v"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "origin\thttps://github.com/chenxin415/flowstar (fetch)\norigin\thttps://github.com/chenxin415/flowstar (push)\n"
+    },
+    "root": "/srv/local/shengenli/flowstar_source_carry_20260813",
+    "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "status": {
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "## HEAD (no branch)\n?? flowstar-toolbox/Constraints.o\n?? flowstar-toolbox/Continuous.o\n?? flowstar-toolbox/Discrete.o\n?? flowstar-toolbox/Geometry.o\n?? flowstar-toolbox/Hybrid.o\n?? flowstar-toolbox/Interval.o\n?? flowstar-toolbox/Matrix.o\n?? flowstar-toolbox/Variables.o\n?? flowstar-toolbox/lex.yy.c\n?? flowstar-toolbox/lex.yy.o\n?? flowstar-toolbox/libflowstar.a\n?? flowstar-toolbox/modelParser.output\n?? flowstar-toolbox/modelParser.tab.c\n?? flowstar-toolbox/modelParser.tab.h\n?? flowstar-toolbox/modelParser.tab.o\n?? flowstar-toolbox/settings.o\n"
+    },
+    "submodules": {
+      "command": [
+        "git",
+        "submodule",
+        "status",
+        "--recursive"
+      ],
+      "cwd": "/srv/local/shengenli/flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  },
+  "inputs": {
+    "flowstar_metadata": {
+      "path": "/tmp/source_carry_flowstar_runner_20260813/artifacts/flowstar_trace_metadata.csv",
+      "sha256": "5a087a7a2ef6b167fcac3d9d68b54a2ed597e4cb223eee937e60cec3ec78d2cd"
+    },
+    "flowstar_trace": {
+      "path": "/tmp/source_carry_flowstar_runner_20260813/artifacts/flowstar_trace.csv",
+      "sha256": "46bf3949310ef5f90c47a16683411b541269a89c3c0d9c6cddd1db368419f0fe"
+    },
+    "torch_segments": {
+      "path": "/tmp/source_carry_torch_runner_20260813/artifacts/run/segments.csv",
+      "sha256": "d3c13f09f598bc2073b12c5c7bb6aa0639a00ac269ec0943c7858e2627312311"
+    },
+    "torch_summary": {
+      "path": "/tmp/source_carry_torch_runner_20260813/artifacts/run/summary.json",
+      "sha256": "11c9f50f6ab19a62513ab7cb7cc5e10ee5aa3c2c2252c1788a5ec7faec5ebdf5"
+    }
+  },
+  "schema": "flowstar_torch_source_carry_provenance_v1",
+  "torch": {
+    "root": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+    "source_sha": "8e7dbfbd305042adbd1bede47381c33ba73d7d7b",
+    "status": {
+      "command": [
+        "git",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "cwd": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "## codex/flowstar-torch-source-carry-root-cause-20260813\n M pyproject.toml\n?? docs/COMPLETE_O4_CARRY_CANDIDATE_RESULT_20260813.md\n?? docs/FLOWSTAR_COMPLETE_O4_RUNTIME_CALLGRAPH_20260813.md\n?? docs/FLOWSTAR_TORCH_CARRY_SOURCE_MAP_20260813.md\n?? docs/FLOWSTAR_WIDTH_MINIMA_AUDIT_20260813.md\n?? experiments/audit_flowstar_torch_source_carry.py\n?? experiments/flowstar_width_high_precision_falsification.py\n?? experiments/package_flowstar_torch_source_carry.py\n?? src/torch_tm_flowpipe/source_carry_audit.py\n?? tests/test_flowstar_torch_source_carry_audit.py\n"
+    }
+  }
+}

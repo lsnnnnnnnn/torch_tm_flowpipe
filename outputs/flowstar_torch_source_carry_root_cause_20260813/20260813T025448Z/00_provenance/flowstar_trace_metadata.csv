@@ -1,0 +1,19 @@
+key,value
+ode_dxdt,y
+ode_dydt,y - x - x^2*y
+initial_x,"[1.1,1.4]"
+initial_y,"[2.35,2.45]"
+horizon,10
+step_min,0.01
+step_max,0.01
+starting_attempted_h,0.01
+fixed_h_hex,0x1.47ae147ae147bp-7
+schedule_kind,fixed
+adaptive_fallback_allowed,false
+order,4
+cutoff,"[-1e-10,1e-10]"
+remainder_estimation,"[-1e-4,1e-4]"
+symbolic_remainder_enabled,true
+symbolic_remainder_max_size,100
+flowstar_root,../flowstar
+flowstar_git_head,b85a3211748cb77b736fe4ad42ee02d8d2b81148

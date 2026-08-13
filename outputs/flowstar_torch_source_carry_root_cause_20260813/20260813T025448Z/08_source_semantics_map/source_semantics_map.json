@@ -1,0 +1,82 @@
+{
+  "first_beyond_roundoff_difference": "accepted step 1 (width differences are 2.14e-4 to 1.30e-3)",
+  "first_bitwise_or_published_width_difference": "accepted step 1",
+  "first_decision_relevant_difference": "step 1 output changes step 2 normalization scales",
+  "first_persistent_dependency_semantics_difference": "boundary after accepted step 1; Flow* queue is active for step 2",
+  "localized_conclusion": "Flow* Continuous.cpp:2151-2177 keeps the linear old-remainder sources in Phi_L/J and TaylorModel.h:4213-4243 composes the nonlinear polynomial in Horner form. Torch flowpipe.py:1470-1511 sends the whole constant-removed polynomial to flowpipe.py:698-739, where each monomial independently reuses the already intervalized right-map remainder. This changes the next scale after accepted step 1 and accumulates polynomial-times-parameterization remainder thereafter.",
+  "rows": [
+    {
+      "dependency_consequence": "same ODE/box/order contract; different implementation stacks",
+      "first_unequal": false,
+      "flowstar_representation": "ODE<Real>, Flowpipe, Symbolic_Remainder(max_size=100)",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/benchmarks/continuous/vanderpol/vanderpol.cpp:7-89 main",
+      "mathematical_stage": "benchmark/model entry",
+      "torch_representation": "complete total-degree O4 BatchedTaylorModel",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/experiments/run_vdp_dense_backend.py:488-533 integration loop"
+    },
+    {
+      "dependency_consequence": "runtime feature selection becomes observable after the first boundary",
+      "first_unequal": false,
+      "flowstar_representation": "accepted Flowpipe chain plus persistent symbolic queue",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/Continuous.h:832-882 ODE::reach_symbolic_remainder",
+      "mathematical_stage": "fixed-step reach loop",
+      "torch_representation": "FlowstarNormalFlowpipeState without queue in legacy mode",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/flowpipe.py:5197-5386 integrate_adaptive"
+    },
+    {
+      "dependency_consequence": "Flow* propagates linear old sources once through matrices; Torch has no source queue",
+      "first_unequal": true,
+      "flowstar_representation": "linear x0 map plus nonlinear/other TM; Phi_L/J retain per-step source identity",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/Continuous.cpp:2151-2177 Flowpipe::advance",
+      "mathematical_stage": "cross-step carry decomposition",
+      "torch_representation": "constant removed, otherwise full outer TM sent to legacy insertion",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/flowpipe.py:1470-1511 _flowstar_normalized_insertion_transition"
+    },
+    {
+      "dependency_consequence": "one right-map remainder interval is independently materialized in distinct monomial paths",
+      "first_unequal": true,
+      "flowstar_representation": "recursive Horner grouping with truncation at multiplication stages",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/TaylorModel.h:4213-4243 HornerForm::insert_ctrunc_normal",
+      "mathematical_stage": "normal polynomial composition",
+      "torch_representation": "each monomial built independently by repeated TM multiplication, then summed",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/flowpipe.py:698-739 _insert_ctrunc_normal_like_scalar"
+    },
+    {
+      "dependency_consequence": "both intervalize locally; grouping and source reuse determine repeated cost",
+      "first_unequal": false,
+      "flowstar_representation": "P1*I2 + P2*I1 + I1*I2 plus truncation/cutoff interval",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/TaylorModel.h:797-866 TaylorModel::mul_insert_ctrunc_normal",
+      "mathematical_stage": "TM multiplication remainder",
+      "torch_representation": "polynomial-range times scalar Interval remainder components",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/taylor_model.py:276-285 TaylorModel.__mul__"
+    },
+    {
+      "dependency_consequence": "validators consume already different carry scales/remainders",
+      "first_unequal": false,
+      "flowstar_representation": "Picard_ctrunc_normal candidate and subset/refinement intervals",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/Continuous.cpp:2328-2410 Flowpipe::advance",
+      "mathematical_stage": "Picard/validator",
+      "torch_representation": "tensor-native polynomial plus interval remainder ledger",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/batched_dense_tm.py:2750-3030 dense_picard_validate_step"
+    },
+    {
+      "dependency_consequence": "published objects include retained ordinary and parameterization uncertainty",
+      "first_unequal": false,
+      "flowstar_representation": "accepted result composed and interval-evaluated over tau=[0,h] or tau=h",
+      "flowstar_source": "/srv/local/shengenli/flowstar_source_carry_20260813/flowstar-toolbox/Continuous.cpp:415-454 Flowpipe::compose_normal/intEvalNormal",
+      "mathematical_stage": "endpoint/tube range extraction",
+      "torch_representation": "raw accepted TM range fields",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/src/torch_tm_flowpipe/flowpipe.py:5040-5147 published segment/endpoint"
+    },
+    {
+      "dependency_consequence": "the positive minima are preserved exactly through the output pipeline",
+      "first_unequal": false,
+      "flowstar_representation": "directed binary64 bounds serialized with 17 significant digits",
+      "flowstar_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp:400-408,613-624,695-724",
+      "mathematical_stage": "serialization/parser/join",
+      "torch_representation": "strict CSV parse and accepted-index/time equality checks; no zero fill",
+      "torch_source": "/srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813/experiments/compare_flowstar_torch_fixed_schedule.py:180-360 compare"
+    }
+  ],
+  "schema": "flowstar_torch_carry_source_map_v1"
+}

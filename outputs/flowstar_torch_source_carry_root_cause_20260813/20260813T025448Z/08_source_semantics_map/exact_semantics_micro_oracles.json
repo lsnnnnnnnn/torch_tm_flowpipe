@@ -1,0 +1,53 @@
+{
+  "fixtures": [
+    {
+      "arithmetic": "exact_rational",
+      "fixture": "affine_exact_carry",
+      "independently_intervalized_range": {
+        "lower": "-1/10",
+        "upper": "1/10",
+        "width": "1/5"
+      },
+      "intervalized_contains_shared": true,
+      "shared_source_range": {
+        "lower": "-1/10",
+        "upper": "1/10",
+        "width": "1/5"
+      },
+      "width_excess": "0"
+    },
+    {
+      "arithmetic": "exact_rational",
+      "fixture": "quadratic_shared_error_cancellation",
+      "independently_intervalized_range": {
+        "lower": "-39/100",
+        "upper": "41/100",
+        "width": "4/5"
+      },
+      "intervalized_contains_shared": true,
+      "shared_source_range": {
+        "lower": "0",
+        "upper": "1/100",
+        "width": "1/100"
+      },
+      "width_excess": "79/100"
+    },
+    {
+      "arithmetic": "exact_rational",
+      "fixture": "cubic_x2y_shared_source_interaction",
+      "independently_intervalized_range": {
+        "lower": "729/1000",
+        "upper": "1331/1000",
+        "width": "301/500"
+      },
+      "intervalized_contains_shared": true,
+      "shared_source_range": {
+        "lower": "891/1000",
+        "upper": "1089/1000",
+        "width": "99/500"
+      },
+      "width_excess": "101/250"
+    }
+  ],
+  "schema": "exact_dependency_semantics_micro_oracles_v1"
+}
