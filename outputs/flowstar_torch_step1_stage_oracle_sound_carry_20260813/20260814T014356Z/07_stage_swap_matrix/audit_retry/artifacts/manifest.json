@@ -1,0 +1,42 @@
+{
+  "files": {
+    "actual_path_soundness.json": {
+      "bytes": 39178,
+      "sha256": "db3610f03d660f8ff27ee429fe7de96895e974f01a989fa7389c1bd198f3e321"
+    },
+    "candidate_decision.json": {
+      "bytes": 419,
+      "sha256": "f49673c05b883fb0342749b5ec545ba36ae8c7de81e46082d5c226131fa1bd90"
+    },
+    "first_difference_full_input_output.json": {
+      "bytes": 15241,
+      "sha256": "1d3c1a8209205303ecff90ad33706a53fcb0e606e586060ff234524dec5bf87a"
+    },
+    "stage_classifications.csv": {
+      "bytes": 1182,
+      "sha256": "c15b66028bc4fa99a8cf223914eb7a1ed18548a15f64354f12a44166a7efb483"
+    },
+    "stage_classifications.json": {
+      "bytes": 1763,
+      "sha256": "9a19420cc46c751504a55f468e0b3129970c13acbc0dcc971c3aa94e4d92ee1f"
+    },
+    "stage_swap_matrix.json": {
+      "bytes": 2140,
+      "sha256": "c629873d96105f401ac0e41a25beccff311823f24ceb5b9a1f68286160eba922"
+    },
+    "summary.json": {
+      "bytes": 381,
+      "sha256": "e8629f41536122bee33ebbda4d78271fc3c49f3e72adaca35bd8cbd40ad55c27"
+    }
+  },
+  "schema": "step1_soundness_and_swap_audit_manifest_v1",
+  "summary": {
+    "candidate_status": "NOT_AUTHORIZED",
+    "first_classification": "UNDER_ENCLOSURE_WITNESS",
+    "first_differing_stage": "normalized_initial_tm",
+    "gate_d_status": "INDEPENDENT_STEP1_SOUNDNESS_ORACLE_INCOMPLETE",
+    "gate_e_status": "LOCAL_OPERATOR_SOURCE_DELTA_OPEN",
+    "schema": "step1_soundness_and_swap_audit_summary_v1",
+    "torch_endpoint_narrower_is_formally_sound": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "cross_tool": "UNDER_ENCLOSURE_WITNESS",
+      "flowstar": "UNDER_ENCLOSURE_WITNESS",
+      "reason": "the frozen exact-rational initial set is not a subset of either point-coefficient runtime TM; Flow* and Torch also choose different binary radii",
+      "stage": "normalized_initial_tm",
+      "torch": "UNDER_ENCLOSURE_WITNESS"
+    },
+    {
+      "cross_tool": "FIRST_SEMANTIC_DELTA",
+      "flowstar": "FIRST_SEMANTIC_DELTA",
+      "reason": "Flow* staged RHS degree i-1 and Torch complete-O4 iteration schedules have different intermediate supports; the exact fourth images coincide",
+      "stage": "picard_polynomial_iterations_1_to_3",
+      "torch": "FIRST_SEMANTIC_DELTA"
+    },
+    {
+      "cross_tool": "ROUNDING_ONLY_BOTH_SOUND",
+      "flowstar": "ROUNDING_ONLY_BOTH_SOUND",
+      "reason": "independent Fraction oracle proves exact complete-O4 equality; runtime coefficients differ because of binary input/arithmetic",
+      "stage": "picard_polynomial_iteration_4_exact_mathematical",
+      "torch": "ROUNDING_ONLY_BOTH_SOUND"
+    },
+    {
+      "cross_tool": "ENCLOSURE_DIFFERENT_BOTH_SOUND",
+      "flowstar": "ENCLOSURE_DIFFERENT_BOTH_SOUND",
+      "reason": "both published segment boxes contain the formal true-solution tube",
+      "stage": "segment_polynomial_and_final_range",
+      "torch": "ENCLOSURE_DIFFERENT_BOTH_SOUND"
+    },
+    {
+      "cross_tool": "ENCLOSURE_DIFFERENT_BOTH_SOUND",
+      "flowstar": "ENCLOSURE_DIFFERENT_BOTH_SOUND",
+      "reason": "Torch is narrower but both endpoint boxes contain the formal four-corner/Cauchy enclosure",
+      "stage": "endpoint_polynomial_and_final_range",
+      "torch": "ENCLOSURE_DIFFERENT_BOTH_SOUND"
+    }
+  ],
+  "schema": "step1_stage_classifications_v1"
+}

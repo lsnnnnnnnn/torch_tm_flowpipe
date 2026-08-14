@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py", line 415, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py", line 409, in main
+    result = run(parse_args(argv))
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py", line 235, in run
+    torch_rows = _load_ledger(torch_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py", line 97, in _load_ledger
+    raise ValueError(f"wrong Torch canonical polynomial dimension at row {index}")
+ValueError: wrong Torch canonical polynomial dimension at row 15
+ERROR conda.cli.main_run:execute(148): `conda run python experiments/audit_step1_soundness_and_swaps.py --flowstar-ledger outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z/03_flowstar_actual_stage_ledger/03_process/artifacts/stage_ledger.json --torch-ledger outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z/04_torch_actual_stage_ledger/export/artifacts/stage_ledger.json --oracle-dir outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z/05_exact_polynomial_oracle/02_oracles/artifacts --output-dir /srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z/07_stage_swap_matrix/audit/artifacts` failed. (See above for error)

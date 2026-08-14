@@ -1,0 +1,32 @@
+{
+  "canonical_basis": [
+    "tau",
+    "ux",
+    "uy"
+  ],
+  "explicit_t_state": {
+    "derivative": "t'=1",
+    "elimination_proof": "The x/y RHS is autonomous and contains no t. By structural induction on Picard iterations, x and y contain no ut_zero_radius monomial; projecting away t and the zero-radius ut symbol preserves every x/y coefficient and enclosure.",
+    "exact_solution": "t=tau",
+    "initial": "t(0)=0"
+  },
+  "flowstar_basis": [
+    "tau",
+    "ux",
+    "uy",
+    "ut_zero_radius"
+  ],
+  "flowstar_to_canonical_exponent": "drop exponent 3 after proving it is zero; keep (0,1,2)",
+  "monomial_order": "total_degree_then_lexicographic_for_neutral_schema; tool-native order retained as metadata",
+  "schema": "common_step_basis_mapping_v1",
+  "torch_basis_recorded": [
+    "ux",
+    "uy",
+    "tau"
+  ],
+  "torch_to_canonical_permutation": [
+    2,
+    0,
+    1
+  ]
+}

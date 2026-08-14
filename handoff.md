@@ -1,4 +1,71 @@
-# Flow*–Torch causal mechanism closure handoff — 2026-08-13
+# Flow*–Torch step-1 oracle handoff — 2026-08-14
+
+Current decision: fail closed at Gate D; no candidate is authorized.
+
+The canonical broader outcomes remain
+`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
+`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`,
+`CARRY_MISSING_SYMBOLIC_SEMANTICS`, and `NO_FIX_AUTHORIZED`. This step-1
+negative result refines their mechanism evidence without superseding them.
+
+## Plain-language result
+
+1. The first decision-relevant failure is the normalized initial-TM encoding,
+   before Picard, remainder refinement, or range extraction. Both point-
+   coefficient runtimes omit endpoints of the exact-rational input required by
+   the launch contract.
+2. Torch's narrower step-1 endpoint is nevertheless formally sound. An
+   independent four-corner monotonicity proof with exact degree-100 Taylor
+   series and a Cauchy tail encloses the true endpoint inside both tools.
+3. The prior Horner `+4` steps remain diagnostic-only.
+4. L1 is `NOT_AUTHORIZED`; L2/L3 are `NOT_RUN`. Gate D's under-enclosure stop
+   rule prevents the P/R/X swap payloads from being propagated.
+5. No sound candidate was run, so no candidate horizon exists and T10 was not
+   reached by a sound candidate.
+6. This run advances the original objective by closing the common mathematical
+   contract, producing complete actual-path ledgers, proving the exact fourth
+   Picard images equal, and formally explaining the narrower Torch endpoint.
+7. The minimum blocker is an outward, exact-set-preserving normalized affine
+   input encoding on both engines. Gates C/D must then be rerun before any
+   operator candidate.
+
+## Current status table
+
+```text
+COMMON_STEP1_MATHEMATICAL_INPUT_CLOSED
+INDEPENDENT_STEP1_SOUNDNESS_ORACLE_INCOMPLETE
+LOCAL_OPERATOR_SOURCE_DELTA_OPEN
+NOT_AUTHORIZED
+NOT_RUN
+NOT_RUN
+LEGACY_DEFAULT_UNCHANGED
+NOT_REACHED
+```
+
+The first under-enclosure gaps are exact, not sampled:
+
+```text
+Flow* x: lower/upper each 1/11258999068426240
+Flow* y: lower 3/5629499534213120
+Torch x: lower/upper each 11/180143985094819840
+Torch y: lower 219/720575940379279360
+```
+
+Scientific and attestation SHAs for this run are filled only after commit,
+push, and detached fresh-clone verification. The prior publication semantics
+are corrected in `docs/EVIDENCE_LABEL_AND_PUBLICATION_SEMANTICS_20260813.md`.
+
+Detailed reports:
+
+- `docs/STEP1_COMMON_OPERATOR_CONTRACT_20260813.md`
+- `docs/FLOWSTAR_TORCH_STAGE_LEDGER_20260813.md`
+- `docs/INDEPENDENT_STEP1_SOUNDNESS_ORACLE_20260813.md`
+- `docs/LOCAL_OPERATOR_CAUSAL_CLOSURE_20260813.md`
+- `docs/SOUND_CANDIDATE_DECISION_20260813.md`
+
+---
+
+# Prior Flow*–Torch causal mechanism closure handoff — 2026-08-13
 
 Final scientific decision: `NO_FIX_AUTHORIZED`.
 

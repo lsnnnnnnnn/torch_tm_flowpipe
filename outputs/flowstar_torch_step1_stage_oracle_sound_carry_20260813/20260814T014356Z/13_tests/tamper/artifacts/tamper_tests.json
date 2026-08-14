@@ -1,0 +1,30 @@
+{
+  "cases": [
+    {
+      "case": "raw_number",
+      "rejected": true,
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 392, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 383, in main\n    result = verify(args.package, args.repo)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 272, in verify\n    torch_initial = audit_module._initial_witness(\"torch_complete_o4_legacy_production\", torch_terms, flowstar=False)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py\", line 150, in _initial_witness\n    actual = _affine_semantic_interval(terms[component], component=component, flowstar=flowstar)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py\", line 136, in _affine_semantic_interval\n    center = _coefficient(terms[(0, 0, 0)], flowstar=flowstar)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py\", line 129, in _coefficient\n    point = _encoded_fraction(value)\n            ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/audit_step1_soundness_and_swaps.py\", line 45, in _encoded_fraction\n    raise ValueError(\"binary number exact-rational/hex mismatch\")\nValueError: binary number exact-rational/hex mismatch\n",
+      "verifier_exit_code": 1
+    },
+    {
+      "case": "status",
+      "rejected": true,
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 392, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 383, in main\n    result = verify(args.package, args.repo)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 303, in verify\n    _assert(candidate[\"l1\"] == \"NOT_AUTHORIZED\" and candidate[\"l2\"] == candidate[\"l3\"] == \"NOT_RUN\", \"candidate status tampered\")\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 61, in _assert\n    raise VerificationError(message)\nVerificationError: candidate status tampered\n",
+      "verifier_exit_code": 1
+    },
+    {
+      "case": "file",
+      "rejected": true,
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 392, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 383, in main\n    result = verify(args.package, args.repo)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 225, in verify\n    _assert(path.is_file(), f\"missing selected raw artifact {name}: {path}\")\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 61, in _assert\n    raise VerificationError(message)\nVerificationError: missing selected raw artifact flow_ledger: /tmp/step1-package-tamper-fbyjkhu0/file/03_flowstar_actual_stage_ledger/03_process/artifacts/stage_ledger.json\n",
+      "verifier_exit_code": 1
+    },
+    {
+      "case": "checksum",
+      "rejected": true,
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 392, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 383, in main\n    result = verify(args.package, args.repo)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 221, in verify\n    checksums = _verify_checksums(package)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/experiments/verify_step1_stage_oracle_package.py\", line 80, in _verify_checksums\n    raise VerificationError(f\"checksum mismatch: {relative}\")\nVerificationError: checksum mismatch: 00_identity_provenance/01_git_identity/artifact_index.json\n",
+      "verifier_exit_code": 1
+    }
+  ],
+  "passed": true,
+  "schema": "step1_package_tamper_tests_v1"
+}

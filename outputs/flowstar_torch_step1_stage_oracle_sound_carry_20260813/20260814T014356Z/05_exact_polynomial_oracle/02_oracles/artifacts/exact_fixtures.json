@@ -1,0 +1,145 @@
+{
+  "fixtures": {
+    "affine": {
+      "degree": 1,
+      "support_size": 3,
+      "terms": [
+        {
+          "coefficient": "1/1",
+          "exponents": [
+            0,
+            0
+          ]
+        },
+        {
+          "coefficient": "-2/1",
+          "exponents": [
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient": "1/2",
+          "exponents": [
+            1,
+            0
+          ]
+        }
+      ],
+      "variable_order": [
+        "u",
+        "v"
+      ]
+    },
+    "cubic": {
+      "degree": 3,
+      "support_size": 3,
+      "terms": [
+        {
+          "coefficient": "7/1",
+          "exponents": [
+            0,
+            3
+          ]
+        },
+        {
+          "coefficient": "-4/1",
+          "exponents": [
+            2,
+            1
+          ]
+        },
+        {
+          "coefficient": "2/5",
+          "exponents": [
+            3,
+            0
+          ]
+        }
+      ],
+      "variable_order": [
+        "u",
+        "v"
+      ]
+    },
+    "quadratic": {
+      "degree": 2,
+      "support_size": 3,
+      "terms": [
+        {
+          "coefficient": "1/3",
+          "exponents": [
+            0,
+            2
+          ]
+        },
+        {
+          "coefficient": "-1/1",
+          "exponents": [
+            1,
+            1
+          ]
+        },
+        {
+          "coefficient": "3/1",
+          "exponents": [
+            2,
+            0
+          ]
+        }
+      ],
+      "variable_order": [
+        "u",
+        "v"
+      ]
+    },
+    "quartic": {
+      "degree": 4,
+      "support_size": 4,
+      "terms": [
+        {
+          "coefficient": "-4/1",
+          "exponents": [
+            0,
+            4
+          ]
+        },
+        {
+          "coefficient": "3/1",
+          "exponents": [
+            2,
+            2
+          ]
+        },
+        {
+          "coefficient": "-2/1",
+          "exponents": [
+            3,
+            1
+          ]
+        },
+        {
+          "coefficient": "1/1",
+          "exponents": [
+            4,
+            0
+          ]
+        }
+      ],
+      "variable_order": [
+        "u",
+        "v"
+      ]
+    }
+  },
+  "hand_checked": {
+    "affine_range_on_unit_box": {
+      "lower": "-3/2",
+      "upper": "7/2"
+    },
+    "cubic_u2v_coefficient": "-4/1",
+    "quadratic_uv_coefficient": "-1/1",
+    "quartic_degree": 4
+  },
+  "schema": "independent_exact_polynomial_fixture_v1"
+}

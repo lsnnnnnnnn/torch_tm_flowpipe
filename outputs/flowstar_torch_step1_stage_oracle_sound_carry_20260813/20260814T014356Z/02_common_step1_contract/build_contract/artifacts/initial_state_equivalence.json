@@ -1,0 +1,18 @@
+{
+  "comparison_scope": "exact mathematical contract, before finite-precision encoding audit",
+  "exact_equal_components": [
+    "x",
+    "y"
+  ],
+  "flowstar_projection": "project components x,y and substitute ut_zero_radius=0",
+  "ordinary_remainders_zero": true,
+  "proof_obligations": {
+    "complete_O4_support_same": true,
+    "deterministic_t_elimination": "proved algebraically in basis_mapping.json",
+    "finite_encoding_containment": "deferred to independent oracle; not assumed by Gate B"
+  },
+  "schema": "initial_state_equivalence_v1",
+  "source_ledger_empty": true,
+  "status": "COMMON_STEP1_MATHEMATICAL_INPUT_CLOSED",
+  "torch_reordering": "map recorded (ux,uy,tau) exponents to canonical (tau,ux,uy)"
+}

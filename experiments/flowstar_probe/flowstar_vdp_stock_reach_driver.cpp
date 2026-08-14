@@ -195,14 +195,26 @@ size_t term_count(const TaylorModelVec<Real> &tmv)
     return result;
 }
 
+void zero_remainders(TaylorModelVec<Real> &tmv)
+{
+    for (size_t component = 0; component < tmv.tms.size(); ++component)
+    {
+        tmv.tms[component].remainder = Interval(0);
+    }
+}
+
 void write_header(ofstream &output)
 {
     output
         << "schema,mode,step,t_after,t_after_hex,h,h_hex,status_code,"
         << "endpoint_x_lo,endpoint_x_hi,endpoint_x_lo_hex,endpoint_x_hi_hex,"
         << "endpoint_y_lo,endpoint_y_hi,endpoint_y_lo_hex,endpoint_y_hi_hex,"
+        << "endpoint_polynomial_x_lo,endpoint_polynomial_x_hi,endpoint_polynomial_x_lo_hex,endpoint_polynomial_x_hi_hex,"
+        << "endpoint_polynomial_y_lo,endpoint_polynomial_y_hi,endpoint_polynomial_y_lo_hex,endpoint_polynomial_y_hi_hex,"
         << "segment_x_lo,segment_x_hi,segment_x_lo_hex,segment_x_hi_hex,"
         << "segment_y_lo,segment_y_hi,segment_y_lo_hex,segment_y_hi_hex,"
+        << "segment_polynomial_x_lo,segment_polynomial_x_hi,segment_polynomial_x_lo_hex,segment_polynomial_x_hi_hex,"
+        << "segment_polynomial_y_lo,segment_polynomial_y_hi,segment_polynomial_y_lo_hex,segment_polynomial_y_hi_hex,"
         << "prefix_x_lo,prefix_x_hi,prefix_x_lo_hex,prefix_x_hi_hex,"
         << "prefix_y_lo,prefix_y_hi,prefix_y_lo_hex,prefix_y_hi_hex,"
         << "tmvpre_term_count,tmv_term_count,tmvpre_component_count,tmv_component_count,"
@@ -237,14 +249,34 @@ void write_flowpipe_row(
         endpoint_table,
         setting.order,
         setting.cutoff_threshold);
-    if (segment.size() < 2 || endpoint.size() < 2)
+    Flowpipe polynomial_only(flowpipe);
+    zero_remainders(polynomial_only.tmvPre);
+    zero_remainders(polynomial_only.tmv);
+    vector<Interval> segment_polynomial;
+    polynomial_only.intEvalNormal(
+        segment_polynomial,
+        setting.step_exp_table,
+        setting.order,
+        setting.cutoff_threshold);
+    vector<Interval> endpoint_polynomial;
+    polynomial_only.intEvalNormal(
+        endpoint_polynomial,
+        endpoint_table,
+        setting.order,
+        setting.cutoff_threshold);
+    if (segment.size() < 2 || endpoint.size() < 2 ||
+        segment_polynomial.size() < 2 || endpoint_polynomial.size() < 2)
     {
         throw runtime_error("stock Flow* returned fewer than two state dimensions");
     }
     const Bounds endpoint_x = outward_bounds(endpoint[0]);
     const Bounds endpoint_y = outward_bounds(endpoint[1]);
+    const Bounds endpoint_polynomial_x = outward_bounds(endpoint_polynomial[0]);
+    const Bounds endpoint_polynomial_y = outward_bounds(endpoint_polynomial[1]);
     const Bounds segment_x = outward_bounds(segment[0]);
     const Bounds segment_y = outward_bounds(segment[1]);
+    const Bounds segment_polynomial_x = outward_bounds(segment_polynomial[0]);
+    const Bounds segment_polynomial_y = outward_bounds(segment_polynomial[1]);
     hull_assign(prefix[0], segment_x, prefix_initialized);
     hull_assign(prefix[1], segment_y, prefix_initialized);
     prefix_initialized = true;
@@ -259,8 +291,12 @@ void write_flowpipe_row(
            << ',' << status;
     write_bound_fields(output, endpoint_x);
     write_bound_fields(output, endpoint_y);
+    write_bound_fields(output, endpoint_polynomial_x);
+    write_bound_fields(output, endpoint_polynomial_y);
     write_bound_fields(output, segment_x);
     write_bound_fields(output, segment_y);
+    write_bound_fields(output, segment_polynomial_x);
+    write_bound_fields(output, segment_polynomial_y);
     write_bound_fields(output, prefix[0]);
     write_bound_fields(output, prefix[1]);
     output << ',' << term_count(flowpipe.tmvPre)

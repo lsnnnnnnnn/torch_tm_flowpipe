@@ -1,0 +1,1132 @@
+# Flow* b85a321 fixed-step step-1 stage observer patch.
+# Apply from the pinned Flow* repository root with: git apply <this-file>
+diff --git a/flowstar-toolbox/Continuous.cpp b/flowstar-toolbox/Continuous.cpp
+index 9cba9bb..5c866bb 100644
+--- a/flowstar-toolbox/Continuous.cpp
++++ b/flowstar-toolbox/Continuous.cpp
+@@ -7,6 +7,13 @@
+ 
+ using namespace flowstar;
+ 
++void flowstar::flowstar_step1_stage_interval_hook(const char *stage, const Interval &value)
++{
++	if(!flowstar_causal::active()) return;
++	std::vector<Interval> values(1, value);
++	flowstar_causal::emit_interval_vector(stage, values);
++}
++
+ 
+ 
+ Symbolic_Remainder::Symbolic_Remainder()
+@@ -2126,14 +2133,22 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	unsigned int rangeDimExt = rangeDim + 1;
+ 	Interval intUnit(-1,1);
+ 	result.clear();
++	flowstar_causal::emit_event("advance_enter", false, "observation-only entry before fixed-step stock arithmetic");
++	flowstar_causal::emit_tmv("right_map_input", tmv);
++	flowstar_causal::emit_tmv("pre_map_input", tmvPre);
++	flowstar_causal::emit_interval_vector("domain_input", domain);
++	flowstar_causal::emit_interval_vector("configured_remainder_target", tm_setting.remainder_estimation);
++	flowstar_causal::emit_symbolic("symbolic_queue_input", symbolic_remainder);
+ 
+ 	// evaluate the the initial set x0
+ 	TaylorModelVec<Real> tmv_of_x0;
+ 	tmvPre.evaluate_time(tmv_of_x0, tm_setting.step_end_exp_table);
++	flowstar_causal::emit_tmv("endpoint_substitution", tmv_of_x0);
+ 
+ 	// the center point of x0's polynomial part
+ 	std::vector<Real> const_of_x0;
+ 	tmv_of_x0.constant(const_of_x0);
++	flowstar_causal::emit_real_vector("normalization_center", const_of_x0);
+ /*
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+@@ -2146,19 +2161,24 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 
+ 	// introduce a new variable r0 such that x0 = c0 + A*r0, then r0 is origin-centered
+ 	tmv_of_x0.rmConstant();
++	flowstar_causal::emit_tmv("centered_endpoint_pre_decomposition", tmv_of_x0);
+ 
+ 
+ 	// decompose the linear and nonlinear part
+ 	TaylorModelVec<Real> x0_linear, x0_other;
+ 	tmv_of_x0.decompose(x0_linear, x0_other);
++	flowstar_causal::emit_tmv("centered_endpoint_linear", x0_linear);
++	flowstar_causal::emit_tmv("centered_endpoint_nonlinear", x0_other);
+ 
+ 	Matrix<Real> Phi_L_i(rangeDim, rangeDim);
+ 
+ 	x0_linear.linearCoefficients(Phi_L_i);
++	flowstar_causal::emit_matrix("phi_linear_unscaled", -1, Phi_L_i);
+ 
+ 	Matrix<Real> linear_x0 = Phi_L_i;
+ 
+ 	Phi_L_i.right_scale_assign(symbolic_remainder.scalars);
++	flowstar_causal::emit_matrix("phi_linear_scaled", -1, Phi_L_i);
+ 
+ 
+ 	// compute the remainder part under the linear transformation
+@@ -2175,6 +2195,8 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	{
+ 		J_i += symbolic_remainder.Phi_L[i] * symbolic_remainder.J[i-1];
+ 	}
++	flowstar_causal::emit_matrix("propagated_symbolic_remainder", -1, J_i);
++	flowstar_causal::emit_symbolic("symbolic_queue_after_phi_push", symbolic_remainder);
+ 
+ 	Matrix<Interval> J_ip1(rangeDim, 1);
+ 
+@@ -2186,9 +2208,14 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		// compute the other part
+ 		std::vector<Interval> tmvPolyRange;
+ 		tmv.polyRangeNormal(tmvPolyRange, tm_setting.step_end_exp_table);
++		flowstar_causal::emit_interval_vector("right_map_polynomial_range", tmvPolyRange);
++		flowstar_causal::emit_tmv("insertion_left_input_nonlinear", x0_other);
++		flowstar_causal::emit_tmv("insertion_right_input", tmv);
+ 		x0_other.insert_ctrunc_normal(result.tmv, tmv, tmvPolyRange, tm_setting.step_end_exp_table, domain.size(), tm_setting.order, tm_setting.cutoff_threshold);
++		flowstar_causal::emit_tmv("insertion_nonlinear_output", result.tmv);
+ 
+ 		result.tmv.Remainder(J_ip1);
++		flowstar_causal::emit_matrix("insertion_extracted_remainder", -1, J_ip1);
+ 
+ 		std::vector<Polynomial<Real> > poly_tmv;
+ 		tmv.Expansion(poly_tmv);
+@@ -2198,6 +2225,7 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		{
+ 			result.tmv.tms[i].expansion += linear_part[i];
+ 		}
++		flowstar_causal::emit_tmv("insertion_after_linear_recomposition", result.tmv);
+ 
+ 		// contract J_ip1 and J_i
+ 		if(invariant.size() > 0)
+@@ -2248,7 +2276,11 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	{
+ 		std::vector<Interval> tmvPolyRange;
+ 		tmv.polyRangeNormal(tmvPolyRange, tm_setting.step_end_exp_table);
++		flowstar_causal::emit_interval_vector("right_map_polynomial_range", tmvPolyRange);
++		flowstar_causal::emit_tmv("insertion_left_input_full", tmv_of_x0);
++		flowstar_causal::emit_tmv("insertion_right_input", tmv);
+ 		tmv_of_x0.insert_ctrunc_normal(result.tmv, tmv, tmvPolyRange, tm_setting.step_end_exp_table, domain.size(), tm_setting.order, tm_setting.cutoff_threshold);
++		flowstar_causal::emit_tmv("insertion_full_output", result.tmv);
+ 
+ 		// contract J_ip1
+ 		if(invariant.size() > 0)
+@@ -2287,9 +2319,13 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		}
+ 
+ 		result.tmv.Remainder(J_ip1);
++		flowstar_causal::emit_matrix("insertion_extracted_remainder", -1, J_ip1);
+ 	}
+ 
+ 	symbolic_remainder.J.push_back(J_ip1);
++	flowstar_causal::emit_interval_vector("inserted_state_range", range_of_x0);
++	flowstar_causal::emit_tmv("insertion_output_with_symbolic_remainder", result.tmv);
++	flowstar_causal::emit_symbolic("symbolic_queue_after_j_push", symbolic_remainder);
+ 
+ 
+ 	// Compute the scaling matrix S.
+@@ -2315,20 +2351,30 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ //			range_of_x0[i] = intUnit;
+ 		}
+ 	}
++	flowstar_causal::emit_real_vector("normalization_scale", S);
++	flowstar_causal::emit_real_vector("normalization_inverse_scale", invS);
+ 
+ 	result.tmv.scale_assign(invS);
++	flowstar_causal::emit_tmv("right_map_scaled_before_cutoff", result.tmv);
+ 
+ 	Interval init_cft(-INITIAL_SIMP, INITIAL_SIMP);
+ 	result.tmv.cutoff_normal(tm_setting.step_end_exp_table, init_cft);
++	flowstar_causal::emit_tmv("right_map_output_after_cutoff", result.tmv);
+ 
+ 	TaylorModelVec<Real> new_x0(S);
+ 	new_x0 += tmv_c0;
+ 	TaylorModelVec<Real> x = new_x0;
++	flowstar_causal::emit_tmv("picard_initial_polynomial", x);
+ 
+ 	for(unsigned int i=1; i<=tm_setting.order; ++i)
+ 	{
+ 		x.Picard_no_remainder_assign(new_x0, ode, rangeDimExt, i, tm_setting.cutoff_threshold);
++		flowstar_causal::set_picard_iteration(static_cast<int>(i));
++		flowstar_causal::emit_tmv("picard_polynomial_iteration", x);
+ 	}
++	flowstar_causal::set_picard_iteration(-1);
++	flowstar_causal::begin_candidate(tm_setting.step_exp_table[1].sup());
++	flowstar_causal::emit_event("candidate_begin", false, "fixed-step stock initial candidate");
+ 
+ 	bool bfound = true;
+ 
+@@ -2336,11 +2382,14 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 	{
+ 		x.tms[i].remainder = tm_setting.remainder_estimation[i];
+ 	}
++	flowstar_causal::emit_tmv("candidate_target", x);
+ 
+ 	TaylorModelVec<Interval> tmvTmp;
+ 	std::list<Interval> intermediate_ranges;
+ 
+ 	x.Picard_ctrunc_normal(tmvTmp, new_x0, ode, tm_setting.step_exp_table, rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold, intermediate_ranges, g_setting);
++	flowstar_causal::emit_tmv("candidate_raw_picard", tmvTmp);
++	flowstar_causal::emit_interval_list("candidate_intermediate_ranges", intermediate_ranges);
+ 
+ 	// compute the interval evaluation of the polynomial difference due to the roundoff error
+ 	std::vector<Interval> intDifferences;
+@@ -2354,18 +2403,24 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 
+ 		intDifferences.push_back(I);
+ 	}
++	flowstar_causal::emit_interval_vector("candidate_roundoff_interval", intDifferences);
+ 
+ 	// add the uncertainties and the cutoff intervals onto the result
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+ 		tmvTmp.tms[i].remainder += intDifferences[i];
++		bool component_found = tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder);
++		flowstar_causal::emit_subset_component("candidate_subset", static_cast<int>(i),
++			tmvTmp.tms[i].remainder, x.tms[i].remainder, component_found);
+ 
+-		if( ! tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder) )
++		if( ! component_found )
+ 		{
+ 			bfound = false;
+ 			break;
+ 		}
+ 	}
++	flowstar_causal::emit_tmv("candidate_image_after_roundoff", tmvTmp);
++	flowstar_causal::emit_event("candidate_decision", bfound, bfound ? "subset accepted" : "subset rejected");
+ 
+ 	if(!bfound)
+ 	{
+@@ -2377,22 +2432,28 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 		{
+ 			x.tms[i].remainder = tmvTmp.tms[i].remainder;
+ 		}
++		flowstar_causal::emit_tmv("accepted_candidate_before_refinement", x);
+ 	}
+ 
+ 	bool bfinished = false;
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+ 		bfinished = true;
++		flowstar_causal::set_refinement_iteration(rSteps);
+ 
+ 		std::vector<Interval> newRemainders;
+ 		x.Picard_ctrunc_normal_remainder(newRemainders, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
++		flowstar_causal::emit_interval_vector("refinement_raw_image", newRemainders);
+ 
+ 		// add the uncertainties and the cutoff intervals onto the result
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			newRemainders[i] += intDifferences[i];
++			bool component_found = newRemainders[i].subseteq(x.tms[i].remainder);
++			flowstar_causal::emit_subset_component("refinement_subset", static_cast<int>(i),
++				newRemainders[i], x.tms[i].remainder, component_found);
+ 
+-			if(newRemainders[i].subseteq(x.tms[i].remainder))
++			if(component_found)
+ 			{
+ 				if(x.tms[i].remainder.widthRatio(newRemainders[i]) <= STOP_RATIO)
+ 				{
+@@ -2407,11 +2468,23 @@ int Flowpipe::advance(Flowpipe & result, const std::vector<Expression<Real> > &
+ 				break;
+ 			}
+ 		}
++		flowstar_causal::emit_interval_vector("refinement_image_after_roundoff", newRemainders);
++		flowstar_causal::emit_tmv("refinement_target_after_component_updates", x);
+ 	}
++	flowstar_causal::set_refinement_iteration(-1);
+ 
+ 	result.tmvPre = x;
+ 	result.domain = domain;
+ 	result.domain[0] = tm_setting.step_exp_table[1];
++	TaylorModelVec<Real> exact_time_endpoint;
++	x.evaluate_time(exact_time_endpoint, tm_setting.step_end_exp_table);
++	flowstar_causal::emit_tmv("accepted_remainder", x);
++	flowstar_causal::emit_tmv("exact_time_endpoint", exact_time_endpoint);
++	flowstar_causal::emit_tmv("next_step_pre_map", result.tmvPre);
++	flowstar_causal::emit_tmv("next_step_right_map", result.tmv);
++	flowstar_causal::emit_interval_vector("next_step_domain", result.domain);
++	flowstar_causal::emit_symbolic("symbolic_queue_output", symbolic_remainder);
++	flowstar_causal::emit_event("advance_accept", true, "fixed-step stock candidate and refinements completed");
+ 
+ 	return 1;
+ }
+@@ -2718,14 +2791,23 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 	unsigned int rangeDimExt = rangeDim + 1;
+ 	Interval intUnit(-1,1);
+ 	result.clear();
++	flowstar_causal::emit_event("advance_enter", false, "observation-only entry before stock arithmetic");
++	flowstar_causal::emit_tmv("right_map_input", tmv);
++	flowstar_causal::emit_tmv("pre_map_input", tmvPre);
++	flowstar_causal::emit_interval_vector("domain_input", domain);
++	flowstar_causal::emit_interval_vector("configured_remainder_target", tm_setting.remainder_estimation);
++	flowstar_causal::emit_symbolic("symbolic_queue_input", symbolic_remainder);
+ 
+ 	// evaluate the the initial set x0
+ 	TaylorModelVec<Real> tmv_of_x0;
+ 	tmvPre.evaluate_time(tmv_of_x0, tm_setting.step_end_exp_table);
++	flowstar_causal::replace_endpoint_for_replay(tmv_of_x0);
++	flowstar_causal::emit_tmv("endpoint_substitution", tmv_of_x0);
+ 
+ 	// the center point of x0's polynomial part
+ 	std::vector<Real> const_of_x0;
+ 	tmv_of_x0.constant(const_of_x0);
++	flowstar_causal::emit_real_vector("normalization_center", const_of_x0);
+ /*
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+@@ -2738,19 +2820,24 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 
+ 	// introduce a new variable r0 such that x0 = c0 + A*r0, then r0 is origin-centered
+ 	tmv_of_x0.rmConstant();
++	flowstar_causal::emit_tmv("centered_endpoint_pre_decomposition", tmv_of_x0);
+ 
+ 
+ 	// decompose the linear and nonlinear part
+ 	TaylorModelVec<Real> x0_linear, x0_other;
+ 	tmv_of_x0.decompose(x0_linear, x0_other);
++	flowstar_causal::emit_tmv("centered_endpoint_linear", x0_linear);
++	flowstar_causal::emit_tmv("centered_endpoint_nonlinear", x0_other);
+ 
+ 	Matrix<Real> Phi_L_i(rangeDim, rangeDim);
+ 
+ 	x0_linear.linearCoefficients(Phi_L_i);
++	flowstar_causal::emit_matrix("phi_linear_unscaled", -1, Phi_L_i);
+ 
+ 	Matrix<Real> linear_x0 = Phi_L_i;
+ 
+ 	Phi_L_i.right_scale_assign(symbolic_remainder.scalars);
++	flowstar_causal::emit_matrix("phi_linear_scaled", -1, Phi_L_i);
+ 
+ 
+ 	// compute the remainder part under the linear transformation
+@@ -2767,6 +2854,8 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 	{
+ 		J_i += symbolic_remainder.Phi_L[i] * symbolic_remainder.J[i-1];
+ 	}
++	flowstar_causal::emit_matrix("propagated_symbolic_remainder", -1, J_i);
++	flowstar_causal::emit_symbolic("symbolic_queue_after_phi_push", symbolic_remainder);
+ 
+ 	Matrix<Interval> J_ip1(rangeDim, 1);
+ 
+@@ -2778,9 +2867,15 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 		// compute the other part
+ 		std::vector<Interval> tmvPolyRange;
+ 		tmv.polyRangeNormal(tmvPolyRange, tm_setting.step_end_exp_table);
++		flowstar_causal::emit_interval_vector("right_map_polynomial_range", tmvPolyRange);
++		flowstar_causal::emit_tmv("insertion_left_input_nonlinear", x0_other);
++		flowstar_causal::emit_tmv("insertion_right_input", tmv);
+ 		x0_other.insert_ctrunc_normal(result.tmv, tmv, tmvPolyRange, tm_setting.step_end_exp_table, domain.size(), tm_setting.order, tm_setting.cutoff_threshold);
++		flowstar_causal::emit_tmv("insertion_nonlinear_output", result.tmv);
+ 
+ 		result.tmv.Remainder(J_ip1);
++		flowstar_causal::emit_matrix("insertion_extracted_remainder", -1, J_ip1);
++		flowstar_causal::emit_tmv("insertion_after_remainder_extraction", result.tmv);
+ 
+ 		std::vector<Polynomial<Real> > poly_tmv;
+ 		tmv.Expansion(poly_tmv);
+@@ -2790,6 +2885,7 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 		{
+ 			result.tmv.tms[i].expansion += linear_part[i];
+ 		}
++		flowstar_causal::emit_tmv("insertion_after_linear_recomposition", result.tmv);
+ 
+ 		// contract J_ip1 and J_i
+ 		if(invariant.size() > 0)
+@@ -2840,7 +2936,11 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 	{
+ 		std::vector<Interval> tmvPolyRange;
+ 		tmv.polyRangeNormal(tmvPolyRange, tm_setting.step_end_exp_table);
++		flowstar_causal::emit_interval_vector("right_map_polynomial_range", tmvPolyRange);
++		flowstar_causal::emit_tmv("insertion_left_input_full", tmv_of_x0);
++		flowstar_causal::emit_tmv("insertion_right_input", tmv);
+ 		tmv_of_x0.insert_ctrunc_normal(result.tmv, tmv, tmvPolyRange, tm_setting.step_end_exp_table, domain.size(), tm_setting.order, tm_setting.cutoff_threshold);
++		flowstar_causal::emit_tmv("insertion_full_output", result.tmv);
+ 
+ 		// contract J_ip1
+ 		if(invariant.size() > 0)
+@@ -2879,9 +2979,13 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 		}
+ 
+ 		result.tmv.Remainder(J_ip1);
++		flowstar_causal::emit_matrix("insertion_extracted_remainder", -1, J_ip1);
+ 	}
+ 
+ 	symbolic_remainder.J.push_back(J_ip1);
++	flowstar_causal::emit_interval_vector("inserted_state_range", range_of_x0);
++	flowstar_causal::emit_tmv("insertion_output_with_symbolic_remainder", result.tmv);
++	flowstar_causal::emit_symbolic("symbolic_queue_after_j_push", symbolic_remainder);
+ 
+ 
+ 	// Compute the scaling matrix S.
+@@ -2907,25 +3011,36 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ //			range_of_x0[i] = intUnit;
+ 		}
+ 	}
++	flowstar_causal::emit_real_vector("normalization_scale", S);
++	flowstar_causal::emit_real_vector("normalization_inverse_scale", invS);
+ 
+ 	result.tmv.scale_assign(invS);
++	flowstar_causal::emit_tmv("right_map_scaled_before_cutoff", result.tmv);
+ 
+ 	Interval init_cft(-INITIAL_SIMP, INITIAL_SIMP);
+ 	result.tmv.cutoff_normal(tm_setting.step_end_exp_table, init_cft);
++	flowstar_causal::emit_tmv("right_map_output_after_cutoff", result.tmv);
+ 
+ 	TaylorModelVec<Real> new_x0(S);
+ 	new_x0 += tmv_c0;
+ 	TaylorModelVec<Real> x = new_x0;
++	flowstar_causal::emit_tmv("picard_initial_polynomial", x);
+ 
+ 	for(unsigned int i=1; i<=tm_setting.order; ++i)
+ 	{
+ 		x.Picard_no_remainder_assign(new_x0, ode, rangeDimExt, i, tm_setting.cutoff_threshold);
++		flowstar_causal::set_picard_iteration(static_cast<int>(i));
++		flowstar_causal::emit_tmv("picard_polynomial_iteration", x);
+ 	}
++	flowstar_causal::set_picard_iteration(-1);
++	flowstar_causal::replace_candidate_for_replay(x);
+ 
+ 	if(new_stepsize > 0)
+ 	{
+ 		tm_setting.setStepsize(new_stepsize, tm_setting.order);
+ 	}
++	flowstar_causal::begin_candidate(tm_setting.step_exp_table[1].sup());
++	flowstar_causal::emit_event("candidate_begin", false, "stock initial candidate");
+ 
+ 	bool bfound = true;
+ 
+@@ -2933,11 +3048,14 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 	{
+ 		x.tms[i].remainder = tm_setting.remainder_estimation[i];
+ 	}
++	flowstar_causal::emit_tmv("candidate_target", x);
+ 
+ 	TaylorModelVec<Interval> tmvTmp;
+ 	std::list<Interval> intermediate_ranges;
+ 
+ 	x.Picard_ctrunc_normal(tmvTmp, new_x0, ode, tm_setting.step_exp_table, rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold, intermediate_ranges, g_setting);
++	flowstar_causal::emit_tmv("candidate_raw_picard", tmvTmp);
++	flowstar_causal::emit_interval_list("candidate_intermediate_ranges", intermediate_ranges);
+ 
+ 	// compute the interval evaluation of the polynomial difference due to the roundoff error
+ 	std::vector<Interval> intDifferences;
+@@ -2953,18 +3071,28 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 
+ 		intDifferences.push_back(I);
+ 	}
++	for(unsigned int i=0; i<polyDifferences.size(); ++i)
++	{
++		flowstar_causal::emit_polynomial("candidate_roundoff_polynomial", static_cast<int>(i), polyDifferences[i]);
++	}
++	flowstar_causal::emit_interval_vector("candidate_roundoff_interval", intDifferences);
+ 
+ 	// add the uncertainties and the cutoff intervals onto the result
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+ 		tmvTmp.tms[i].remainder += intDifferences[i];
++		bool component_found = tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder);
++		flowstar_causal::emit_subset_component("candidate_subset", static_cast<int>(i),
++			tmvTmp.tms[i].remainder, x.tms[i].remainder, component_found);
+ 
+-		if( ! tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder) )
++		if( ! component_found )
+ 		{
+ 			bfound = false;
+ 			break;
+ 		}
+ 	}
++	flowstar_causal::emit_tmv("candidate_image_after_roundoff", tmvTmp);
++	flowstar_causal::emit_event("candidate_decision", bfound, bfound ? "subset accepted" : "subset rejected");
+ 
+ 	for(; !bfound;)
+ 	{
+@@ -2973,13 +3101,18 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 
+ 		if(newStep < tm_setting.step_min)
+ 		{
++			flowstar_causal::emit_event("minimum_step_failure", false, "next half-step is below stock minimum");
+ 			return 0;
+ 		}
+ 
+ 		tm_setting.setStepsize(newStep, tm_setting.order);
++		flowstar_causal::begin_candidate(newStep);
++		flowstar_causal::emit_event("candidate_begin", false, "stock half-step retry");
+ 
+ 		intermediate_ranges.clear();
+ 		x.Picard_ctrunc_normal(tmvTmp, new_x0, ode, tm_setting.step_exp_table, rangeDimExt, tm_setting.order, tm_setting.cutoff_threshold, intermediate_ranges, g_setting);
++		flowstar_causal::emit_tmv("candidate_raw_picard", tmvTmp);
++		flowstar_causal::emit_interval_list("candidate_intermediate_ranges", intermediate_ranges);
+ 
+ 		// recompute the interval evaluation of the polynomial differences
+ 		for(int i=0; i<rangeDim; ++i)
+@@ -2987,34 +3120,46 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 			polyDifferences[i].intEvalNormal(intDifferences[i], tm_setting.step_exp_table);
+ 
+ 			tmvTmp.tms[i].remainder += intDifferences[i];
++			bool component_found = tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder);
++			flowstar_causal::emit_subset_component("candidate_subset", i,
++				tmvTmp.tms[i].remainder, x.tms[i].remainder, component_found);
+ 
+-			if( ! tmvTmp.tms[i].remainder.subseteq(x.tms[i].remainder) )
++			if( ! component_found )
+ 			{
+ 				bfound = false;
+ 				break;
+ 			}
+ 		}
++		flowstar_causal::emit_interval_vector("candidate_roundoff_interval", intDifferences);
++		flowstar_causal::emit_tmv("candidate_image_after_roundoff", tmvTmp);
++		flowstar_causal::emit_event("candidate_decision", bfound, bfound ? "subset accepted" : "subset rejected");
+ 	}
+ 
+ 	for(unsigned int i=0; i<rangeDim; ++i)
+ 	{
+ 		x.tms[i].remainder = tmvTmp.tms[i].remainder;
+ 	}
++	flowstar_causal::emit_tmv("accepted_candidate_before_refinement", x);
+ 
+ 	bool bfinished = false;
+ 	for(int rSteps = 0; !bfinished && (rSteps <= MAX_REFINEMENT_STEPS); ++rSteps)
+ 	{
+ 		bfinished = true;
++		flowstar_causal::set_refinement_iteration(rSteps);
+ 
+ 		std::vector<Interval> newRemainders;
+ 		x.Picard_ctrunc_normal_remainder(newRemainders, ode, tm_setting.step_exp_table[1], tm_setting.order, intermediate_ranges, g_setting);
++		flowstar_causal::emit_interval_vector("refinement_raw_image", newRemainders);
+ 
+ 		// add the uncertainties and the cutoff intervals onto the result
+ 		for(unsigned int i=0; i<rangeDim; ++i)
+ 		{
+ 			newRemainders[i] += intDifferences[i];
++			bool component_found = newRemainders[i].subseteq(x.tms[i].remainder);
++			flowstar_causal::emit_subset_component("refinement_subset", static_cast<int>(i),
++				newRemainders[i], x.tms[i].remainder, component_found);
+ 
+-			if(newRemainders[i].subseteq(x.tms[i].remainder))
++			if(component_found)
+ 			{
+ 				if(x.tms[i].remainder.widthRatio(newRemainders[i]) <= STOP_RATIO)
+ 				{
+@@ -3029,11 +3174,23 @@ int Flowpipe::advance_adaptive_stepsize(Flowpipe & result, const std::vector<Exp
+ 				break;
+ 			}
+ 		}
++		flowstar_causal::emit_interval_vector("refinement_image_after_roundoff", newRemainders);
++		flowstar_causal::emit_tmv("refinement_target_after_component_updates", x);
+ 	}
++	flowstar_causal::set_refinement_iteration(-1);
+ 
+ 	result.tmvPre = x;
+ 	result.domain = domain;
+ 	result.domain[0] = tm_setting.step_exp_table[1];
++	TaylorModelVec<Real> exact_time_endpoint;
++	x.evaluate_time(exact_time_endpoint, tm_setting.step_end_exp_table);
++	flowstar_causal::emit_tmv("accepted_remainder", x);
++	flowstar_causal::emit_tmv("exact_time_endpoint", exact_time_endpoint);
++	flowstar_causal::emit_tmv("next_step_pre_map", result.tmvPre);
++	flowstar_causal::emit_tmv("next_step_right_map", result.tmv);
++	flowstar_causal::emit_interval_vector("next_step_domain", result.domain);
++	flowstar_causal::emit_symbolic("symbolic_queue_output", symbolic_remainder);
++	flowstar_causal::emit_event("advance_accept", true, "stock candidate and refinements completed");
+ 
+ 	return 1;
+ }
+@@ -12368,17 +12525,3 @@ void test_domain_contraction(Result_of_Reachability & contraction_result, Result
+ }
+ 
+ 
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+diff --git a/flowstar-toolbox/Continuous.h b/flowstar-toolbox/Continuous.h
+index 74d120e..f86dd59 100644
+--- a/flowstar-toolbox/Continuous.h
++++ b/flowstar-toolbox/Continuous.h
+@@ -7,6 +7,7 @@
+ #define CONTINUOUS_H_
+ 
+ #include "Geometry.h"
++#include "CausalTrace.h"
+ 
+ 
+ namespace flowstar
+@@ -839,10 +840,13 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder(std::list<Flowpipe> & flowpipes, co
+ 	int checking_result = COMPLETED_SAFE;
+ 
+ 	Flowpipe newFlowpipe, currentFlowpipe = initialSet;
++	double causal_physical_t = 0;
+ 
+ 	for(double t=THRESHOLD_HIGH; t < time;)
+ 	{
++		flowstar_causal::set_step_context(static_cast<int>(flowpipes.size()), causal_physical_t, t);
+ 		int res = currentFlowpipe.advance(newFlowpipe, expressions, tm_setting, dummy_invariant, g_setting, symbolic_remainder);
++		flowstar_causal::emit_event("outer_advance_result", res == 1, res == 1 ? "stock fixed advance accepted" : "stock fixed advance did not accept");
+ 
+ 		if(res == 1)
+ 		{
+@@ -877,6 +881,7 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder(std::list<Flowpipe> & flowpipes, co
+ 			}
+ 
+ 			currentFlowpipe = newFlowpipe;
++			causal_physical_t += step;
+ 
+ 
+ 			t += step;
+@@ -922,10 +927,13 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder_adaptive_stepsize(std::list<Flowpip
+ 
+ 	tm_setting.setStepsize(tm_setting.step_max, tm_setting.order);
+ 	double new_stepsize = -1;
++	double causal_physical_t = 0;
+ 
+ 	for(double t=THRESHOLD_HIGH; t < time;)
+ 	{
++		flowstar_causal::set_step_context(static_cast<int>(flowpipes.size()), causal_physical_t, t);
+ 		int res = currentFlowpipe.advance_adaptive_stepsize(newFlowpipe, expressions, new_stepsize, tm_setting, dummy_invariant, g_setting, symbolic_remainder);
++		flowstar_causal::emit_event("outer_advance_result", res == 1, res == 1 ? "stock advance accepted" : "stock advance did not accept");
+ 
+ 		if(res == 1)
+ 		{
+@@ -962,6 +970,7 @@ int ODE<DATA_TYPE>::reach_symbolic_remainder_adaptive_stepsize(std::list<Flowpip
+ 			}
+ 
+ 			currentFlowpipe = newFlowpipe;
++			causal_physical_t += current_stepsize;
+ 
+ 			if(symbolic_remainder.J.size() >= symbolic_remainder.max_size)
+ 			{
+diff --git a/flowstar-toolbox/TaylorModel.h b/flowstar-toolbox/TaylorModel.h
+index 401c759..5e229b2 100644
+--- a/flowstar-toolbox/TaylorModel.h
++++ b/flowstar-toolbox/TaylorModel.h
+@@ -13,6 +13,10 @@
+ namespace flowstar
+ {
+ 
++// Observation-only hook implemented in Continuous.cpp.  It is a no-op unless
++// FLOWSTAR_CAUSAL_TRACE is set and never feeds values back into arithmetic.
++void flowstar_step1_stage_interval_hook(const char *stage, const Interval &value);
++
+ 
+ template <class DATA_TYPE>
+ class HornerForm;
+@@ -472,6 +476,7 @@ void TaylorModel<DATA_TYPE>::ctrunc_normal(const std::vector<DATA_TYPE2> & step_
+ {
+ 	Interval I;
+ 	expansion.ctrunc_normal(I, step_exp_table, order);
++	flowstar_step1_stage_interval_hook("operator_degree_truncation", I);
+ 	remainder += I;
+ }
+ 
+@@ -857,9 +862,11 @@ void TaylorModel<DATA_TYPE>::mul_insert_ctrunc_normal(TaylorModel<DATA_TYPE> & r
+ 	result.remainder += P1xI2;
+ 
+ 	result.expansion.ctrunc_normal(intTrunc, step_exp_table, order);
++	flowstar_step1_stage_interval_hook("operator_degree_truncation", intTrunc);
+ 
+ 	Interval intRound;
+ 	result.expansion.cutoff_normal(intRound, step_exp_table, cutoff_threshold);
++	flowstar_step1_stage_interval_hook("operator_cutoff", intRound);
+ 
+ 	intTrunc += intRound;
+ 
+@@ -1101,6 +1108,7 @@ void TaylorModel<DATA_TYPE>::cutoff_normal(const std::vector<DATA_TYPE2> & step_
+ {
+ 	Interval I;
+ 	expansion.cutoff_normal(I, step_exp_table, cutoff_threshold);
++	flowstar_step1_stage_interval_hook("operator_cutoff", I);
+ 	remainder += I;
+ }
+ 
+diff --git a/flowstar-toolbox/Term.h b/flowstar-toolbox/Term.h
+index 62294ac..5b56aea 100644
+--- a/flowstar-toolbox/Term.h
++++ b/flowstar-toolbox/Term.h
+@@ -32,6 +32,17 @@ public:
+ 
+ 	unsigned int degree() const;		// degree of the term
+ 	unsigned int dimension() const;		// dimension of the term
++	const DATA_TYPE & causalAuditCoefficient() const { return coefficient; }
++	const std::vector<unsigned int> & causalAuditDegrees() const { return degrees; }
++	static Term<DATA_TYPE> causalReplayTerm(const DATA_TYPE & c, const std::vector<unsigned int> & degs)
++	{
++		Term<DATA_TYPE> term;
++		term.coefficient = c;
++		term.degrees = degs;
++		term.d = 0;
++		for(unsigned int i=0; i<degs.size(); ++i) term.d += degs[i];
++		return term;
++	}
+ 
+ 	void evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const;	// evaluation of the term
+ 
+diff --git a/flowstar-toolbox/CausalTrace.h b/flowstar-toolbox/CausalTrace.h
+new file mode 100644
+index 0000000..3a2f724
+--- /dev/null
++++ b/flowstar-toolbox/CausalTrace.h
+@@ -0,0 +1,453 @@
++#ifndef FLOWSTAR_CAUSAL_TRACE_H_
++#define FLOWSTAR_CAUSAL_TRACE_H_
++
++#include <cstdlib>
++#include <fstream>
++#include <iomanip>
++#include <limits>
++#include <list>
++#include <sstream>
++#include <string>
++#include <vector>
++
++namespace flowstar_causal
++{
++
++struct Context
++{
++	int accepted_step_index;
++	int retry_index;
++	long attempt_index;
++	int picard_iteration;
++	int refinement_iteration;
++	double t_pre;
++	double scheduler_loop_t;
++	double h_attempt;
++	Context() : accepted_step_index(-1), retry_index(-1), attempt_index(-1),
++		picard_iteration(-1), refinement_iteration(-1), t_pre(0), scheduler_loop_t(0), h_attempt(0) {}
++};
++
++inline Context & context()
++{
++	static Context value;
++	return value;
++}
++
++inline const char * trace_path()
++{
++	return std::getenv("FLOWSTAR_CAUSAL_TRACE");
++}
++
++inline bool enabled()
++{
++	const char *path = trace_path();
++	return path != NULL && path[0] != '\0';
++}
++
++inline int target_step()
++{
++	const char *value = std::getenv("FLOWSTAR_CAUSAL_ACCEPTED_STEP");
++	return value == NULL ? -1 : static_cast<int>(std::strtol(value, NULL, 10));
++}
++
++inline bool active()
++{
++	return enabled() && (target_step() < 0 || context().accepted_step_index == target_step());
++}
++
++inline const char * replay_candidate_path()
++{
++	return std::getenv("FLOWSTAR_CAUSAL_REPLAY_CANDIDATE");
++}
++
++inline const char * replay_endpoint_path()
++{
++	return std::getenv("FLOWSTAR_CAUSAL_REPLAY_ENDPOINT");
++}
++
++inline std::string escaped(const std::string &value)
++{
++	std::ostringstream out;
++	for(std::string::const_iterator it = value.begin(); it != value.end(); ++it)
++	{
++		switch(*it)
++		{
++		case '\\': out << "\\\\"; break;
++		case '"': out << "\\\""; break;
++		case '\n': out << "\\n"; break;
++		case '\r': out << "\\r"; break;
++		case '\t': out << "\\t"; break;
++		default: out << *it;
++		}
++	}
++	return out.str();
++}
++
++inline std::string quoted(const std::string &value)
++{
++	return std::string("\"") + escaped(value) + "\"";
++}
++
++inline std::string number(const double value)
++{
++	std::ostringstream decimal, hex;
++	decimal << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
++	hex << std::hexfloat << value;
++	return std::string("{\"decimal\":") + quoted(decimal.str()) + ",\"hex\":" + quoted(hex.str()) + "}";
++}
++
++inline std::string interval(const flowstar::Interval &value)
++{
++	return std::string("{\"lower\":") + number(value.inf()) + ",\"upper\":" + number(value.sup()) + "}";
++}
++
++inline std::string base(const std::string &record_type, const std::string &stage, const int component)
++{
++	const char *run = std::getenv("FLOWSTAR_CAUSAL_RUN_ID");
++	const char *commit = std::getenv("FLOWSTAR_CAUSAL_SOURCE_COMMIT");
++	const Context &ctx = context();
++	std::ostringstream out;
++	out << "{\"schema\":\"flowstar_causal_observer_v1\""
++		<< ",\"record_type\":" << quoted(record_type)
++		<< ",\"tool\":\"flowstar\""
++		<< ",\"source_commit\":" << quoted(commit == NULL ? "unknown" : commit)
++		<< ",\"run_id\":" << quoted(run == NULL ? "flowstar-causal-observation" : run)
++		<< ",\"accepted_step_index\":" << ctx.accepted_step_index
++		<< ",\"attempt_index\":" << ctx.attempt_index
++		<< ",\"retry_index\":" << ctx.retry_index
++		<< ",\"picard_iteration\":" << ctx.picard_iteration
++		<< ",\"refinement_iteration\":" << ctx.refinement_iteration
++		<< ",\"t_pre\":" << number(ctx.t_pre)
++		<< ",\"scheduler_loop_t\":" << number(ctx.scheduler_loop_t)
++		<< ",\"h_attempt\":" << number(ctx.h_attempt)
++		<< ",\"component\":" << component
++		<< ",\"stage\":" << quoted(stage);
++	return out.str();
++}
++
++inline void write(const std::string &line)
++{
++	if(!active()) return;
++	std::ofstream out(trace_path(), std::ios::out | std::ios::app);
++	out << line << "\n";
++}
++
++inline void set_step_context(const int accepted_step_index, const double physical_t_pre, const double scheduler_loop_t)
++{
++	if(!enabled()) return;
++	Context &ctx = context();
++	ctx.accepted_step_index = accepted_step_index;
++	ctx.retry_index = -1;
++	ctx.picard_iteration = -1;
++	ctx.refinement_iteration = -1;
++	ctx.t_pre = physical_t_pre;
++	ctx.scheduler_loop_t = scheduler_loop_t;
++	ctx.h_attempt = 0;
++}
++
++inline void begin_candidate(const double h_attempt)
++{
++	if(!active()) return;
++	Context &ctx = context();
++	++ctx.retry_index;
++	++ctx.attempt_index;
++	ctx.h_attempt = h_attempt;
++	ctx.picard_iteration = -1;
++	ctx.refinement_iteration = -1;
++}
++
++inline void set_picard_iteration(const int value)
++{
++	if(active()) context().picard_iteration = value;
++}
++
++inline void set_refinement_iteration(const int value)
++{
++	if(active()) context().refinement_iteration = value;
++}
++
++inline void emit_event(const std::string &stage, const bool accepted, const std::string &note)
++{
++	if(!active()) return;
++	write(base("event", stage, -1) + ",\"accepted\":" + (accepted ? "true" : "false")
++		+ ",\"note\":" + quoted(note) + "}");
++}
++
++inline void coefficient_bounds(const flowstar::Real &value, double &lo, double &hi)
++{
++	lo = value.getValue_RNDD();
++	hi = value.getValue_RNDU();
++}
++
++inline void coefficient_bounds(const flowstar::Interval &value, double &lo, double &hi)
++{
++	lo = value.inf();
++	hi = value.sup();
++}
++
++template <class DATA_TYPE>
++inline void emit_polynomial(const std::string &stage, const int component,
++	const flowstar::Polynomial<DATA_TYPE> &polynomial)
++{
++	if(!active()) return;
++	write(base("polynomial_meta", stage, component) + ",\"support_size\":"
++		+ number(static_cast<double>(polynomial.terms.size())) + "}");
++	int term_index = 0;
++	for(typename std::list<flowstar::Term<DATA_TYPE> >::const_iterator term = polynomial.terms.begin();
++		term != polynomial.terms.end(); ++term, ++term_index)
++	{
++		double lo = 0, hi = 0;
++		coefficient_bounds(term->causalAuditCoefficient(), lo, hi);
++		std::ostringstream degrees;
++		degrees << "[";
++		const std::vector<unsigned int> &items = term->causalAuditDegrees();
++		for(unsigned int i=0; i<items.size(); ++i)
++		{
++			if(i > 0) degrees << ",";
++			degrees << items[i];
++		}
++		degrees << "]";
++		std::ostringstream out;
++		out << base("polynomial_term", stage, component)
++			<< ",\"term_index\":" << term_index
++			<< ",\"exponents\":" << degrees.str()
++			<< ",\"coefficient_lower\":" << number(lo)
++			<< ",\"coefficient_upper\":" << number(hi) << "}";
++		write(out.str());
++	}
++}
++
++template <class DATA_TYPE>
++inline void emit_tmv(const std::string &stage, const flowstar::TaylorModelVec<DATA_TYPE> &tmv)
++{
++	if(!active()) return;
++	for(unsigned int component=0; component<tmv.tms.size(); ++component)
++	{
++		write(base("taylor_model", stage, static_cast<int>(component))
++			+ ",\"remainder\":" + interval(tmv.tms[component].remainder) + "}");
++		emit_polynomial(stage, static_cast<int>(component), tmv.tms[component].expansion);
++	}
++}
++
++inline void emit_real_vector(const std::string &stage, const std::vector<flowstar::Real> &values)
++{
++	if(!active()) return;
++	for(unsigned int i=0; i<values.size(); ++i)
++	{
++		double lo = 0, hi = 0;
++		coefficient_bounds(values[i], lo, hi);
++		write(base("real_vector_entry", stage, static_cast<int>(i))
++			+ ",\"lower\":" + number(lo) + ",\"upper\":" + number(hi) + "}");
++	}
++}
++
++inline void emit_interval_vector(const std::string &stage, const std::vector<flowstar::Interval> &values)
++{
++	if(!active()) return;
++	for(unsigned int i=0; i<values.size(); ++i)
++	{
++		write(base("interval_vector_entry", stage, static_cast<int>(i))
++			+ ",\"interval\":" + interval(values[i]) + "}");
++	}
++}
++
++inline void emit_interval_list(const std::string &stage, const std::list<flowstar::Interval> &values)
++{
++	if(!active()) return;
++	int i = 0;
++	for(std::list<flowstar::Interval>::const_iterator it=values.begin(); it!=values.end(); ++it, ++i)
++	{
++		write(base("interval_list_entry", stage, i) + ",\"interval\":" + interval(*it) + "}");
++	}
++}
++
++template <class DATA_TYPE>
++inline void emit_matrix(const std::string &stage, const int queue_index,
++	const flowstar::Matrix<DATA_TYPE> &input)
++{
++	if(!active()) return;
++	flowstar::Matrix<DATA_TYPE> value(input);
++	for(unsigned int row=0; row<value.rows(); ++row)
++	{
++		for(unsigned int col=0; col<value.cols(); ++col)
++		{
++			double lo = 0, hi = 0;
++			coefficient_bounds(value[row][col], lo, hi);
++			std::ostringstream out;
++			out << base("matrix_entry", stage, static_cast<int>(row))
++				<< ",\"queue_index\":" << queue_index << ",\"row\":" << row << ",\"col\":" << col
++				<< ",\"lower\":" << number(lo) << ",\"upper\":" << number(hi) << "}";
++			write(out.str());
++		}
++	}
++}
++
++template <class SYMBOLIC_REMAINDER>
++inline void emit_symbolic(const std::string &stage, const SYMBOLIC_REMAINDER &symbolic)
++{
++	if(!active()) return;
++	std::ostringstream meta;
++	meta << base("symbolic_queue", stage, -1)
++		<< ",\"j_size\":" << symbolic.J.size()
++		<< ",\"phi_size\":" << symbolic.Phi_L.size()
++		<< ",\"max_size\":" << symbolic.max_size << "}";
++	write(meta.str());
++	emit_real_vector(stage + ":scalars", symbolic.scalars);
++	for(unsigned int i=0; i<symbolic.J.size(); ++i) emit_matrix(stage + ":J", static_cast<int>(i), symbolic.J[i]);
++	for(unsigned int i=0; i<symbolic.Phi_L.size(); ++i) emit_matrix(stage + ":Phi_L", static_cast<int>(i), symbolic.Phi_L[i]);
++}
++
++inline void emit_subset_component(const std::string &stage, const int component,
++	const flowstar::Interval &image, const flowstar::Interval &target, const bool accepted)
++{
++	if(!active()) return;
++	double lower_margin = image.inf() - target.inf();
++	double upper_margin = target.sup() - image.sup();
++	double margin = lower_margin < upper_margin ? lower_margin : upper_margin;
++	write(base("subset_test", stage, component)
++		+ ",\"image\":" + interval(image)
++		+ ",\"target\":" + interval(target)
++		+ ",\"lower_margin\":" + number(lower_margin)
++		+ ",\"upper_margin\":" + number(upper_margin)
++		+ ",\"minimum_margin\":" + number(margin)
++		+ ",\"accepted\":" + (accepted ? "true" : "false") + "}");
++}
++
++// Deliberately separate from the observation path: this is enabled only for a
++// named counterfactual replay and is never consulted by ordinary logged or
++// unlogged executions.  Input rows are:
++//   component coefficient degree_tau degree_r0 ... degree_rN
++inline bool replace_candidate_for_replay(flowstar::TaylorModelVec<flowstar::Real> &candidate)
++{
++	const char *path = replay_candidate_path();
++	if(path == NULL || path[0] == '\0') return false;
++	if(target_step() >= 0 && context().accepted_step_index != target_step()) return false;
++	std::ifstream input(path);
++	if(!input)
++	{
++		emit_event("counterfactual_candidate_load_failed", false, "could not open replay input");
++		return false;
++	}
++	std::vector<flowstar::Polynomial<flowstar::Real> > replacements(candidate.tms.size());
++	std::vector<bool> selected(candidate.tms.size(), false);
++	std::string line;
++	unsigned int rows = 0;
++	while(std::getline(input, line))
++	{
++		if(line.empty() || line[0] == '#') continue;
++		std::istringstream row(line);
++		int component = -1;
++		double coefficient = 0;
++		row >> component >> coefficient;
++		if(!row || component < 0 || static_cast<unsigned int>(component) >= candidate.tms.size())
++		{
++			emit_event("counterfactual_candidate_load_failed", false, "malformed replay row");
++			return false;
++		}
++		std::vector<unsigned int> degrees;
++		unsigned int degree = 0;
++		while(row >> degree) degrees.push_back(degree);
++		if(degrees.empty())
++		{
++			emit_event("counterfactual_candidate_load_failed", false, "replay row has no exponents");
++			return false;
++		}
++		replacements[component].terms.push_back(
++			flowstar::Term<flowstar::Real>::causalReplayTerm(flowstar::Real(coefficient), degrees));
++		selected[component] = true;
++		++rows;
++	}
++	for(unsigned int component=0; component<candidate.tms.size(); ++component)
++	{
++		if(!selected[component]) continue;
++		replacements[component].reorder();
++		candidate.tms[component].expansion = replacements[component];
++	}
++	std::ostringstream note;
++	note << "replaced candidate polynomial from external common-basis replay; rows=" << rows;
++	emit_event("counterfactual_candidate_replaced", true, note.str());
++	return true;
++}
++
++inline bool replace_endpoint_for_replay(flowstar::TaylorModelVec<flowstar::Real> &endpoint)
++{
++	const char *path = replay_endpoint_path();
++	if(path == NULL || path[0] == '\0') return false;
++	if(target_step() >= 0 && context().accepted_step_index != target_step()) return false;
++	std::ifstream input(path);
++	if(!input)
++	{
++		emit_event("counterfactual_endpoint_load_failed", false, "could not open replay input");
++		return false;
++	}
++	std::vector<flowstar::Polynomial<flowstar::Real> > replacements(endpoint.tms.size());
++	std::vector<flowstar::Interval> remainders(endpoint.tms.size());
++	std::vector<bool> selected(endpoint.tms.size(), false), has_remainder(endpoint.tms.size(), false);
++	std::string line;
++	unsigned int rows = 0;
++	while(std::getline(input, line))
++	{
++		if(line.empty() || line[0] == '#') continue;
++		std::istringstream row(line);
++		char kind = '\0';
++		int component = -1;
++		row >> kind >> component;
++		if(!row || component < 0 || static_cast<unsigned int>(component) >= endpoint.tms.size())
++		{
++			emit_event("counterfactual_endpoint_load_failed", false, "malformed replay row");
++			return false;
++		}
++		if(kind == 'R')
++		{
++			double lo = 0, hi = 0;
++			row >> lo >> hi;
++			if(!row || lo > hi)
++			{
++				emit_event("counterfactual_endpoint_load_failed", false, "malformed remainder row");
++				return false;
++			}
++			remainders[component] = flowstar::Interval(lo, hi);
++			has_remainder[component] = true;
++			continue;
++		}
++		if(kind != 'T')
++		{
++			emit_event("counterfactual_endpoint_load_failed", false, "unknown replay row kind");
++			return false;
++		}
++		double coefficient = 0;
++		row >> coefficient;
++		std::vector<unsigned int> degrees;
++		unsigned int degree = 0;
++		while(row >> degree) degrees.push_back(degree);
++		if(degrees.empty())
++		{
++			emit_event("counterfactual_endpoint_load_failed", false, "term row has no exponents");
++			return false;
++		}
++		replacements[component].terms.push_back(
++			flowstar::Term<flowstar::Real>::causalReplayTerm(flowstar::Real(coefficient), degrees));
++		selected[component] = true;
++		++rows;
++	}
++	for(unsigned int component=0; component<endpoint.tms.size(); ++component)
++	{
++		if(!selected[component]) continue;
++		if(!has_remainder[component])
++		{
++			emit_event("counterfactual_endpoint_load_failed", false, "selected component has no remainder");
++			return false;
++		}
++		replacements[component].reorder();
++		endpoint.tms[component].expansion = replacements[component];
++		endpoint.tms[component].remainder = remainders[component];
++	}
++	std::ostringstream note;
++	note << "replaced endpoint from external common-basis replay; polynomial_rows=" << rows;
++	emit_event("counterfactual_endpoint_replaced", true, note.str());
++	return true;
++}
++
++} // namespace flowstar_causal
++
++#endif

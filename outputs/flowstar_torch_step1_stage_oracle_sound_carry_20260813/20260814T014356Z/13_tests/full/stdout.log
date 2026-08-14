@@ -1,0 +1,34 @@
+........................................................................ [  9%]
+....F................................................................... [ 19%]
+........................................................................ [ 29%]
+..............ss........................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 59%]
+........................................................................ [ 69%]
+........................................................................ [ 79%]
+........................................................................ [ 89%]
+........................................................................ [ 99%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_________ test_canonical_documents_share_current_full_horizon_outcomes _________
+
+    def test_canonical_documents_share_current_full_horizon_outcomes():
+        for relative in (
+            "README.md",
+            "docs/RESULTS.md",
+            "docs/RESULTS_STATUS.md",
+            "docs/STATUS.md",
+            "docs/LIMITATIONS.md",
+            "handoff.md",
+        ):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            headline = "\n".join(text.splitlines()[:45])
+            for outcome in (CURRENT_FLOW, CURRENT_DIFF, CURRENT_CARRY, CURRENT_FIX):
+>               assert outcome in headline, (relative, outcome)
+E               AssertionError: ('handoff.md', 'FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY')
+E               assert 'FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY' in '# Flow*–Torch step-1 oracle handoff — 2026-08-14\n\nCurrent decision: fail closed at Gate D; no candidate is authoriz...w* y: lower 3/5629499534213120\nTorch x: lower/upper each 11/180143985094819840\nTorch y: lower 219/720575940379279360'
+
+tests/test_canonical_status_consistency.py:30: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_canonical_status_consistency.py::test_canonical_documents_share_current_full_horizon_outcomes
+1 failed, 723 passed, 2 skipped in 317.92s (0:05:17)

@@ -1,0 +1,81 @@
+{
+  "cutoff_radius": "1/10000000000",
+  "endpoint_contract": "substitute tau=1/100 before polynomial range evaluation",
+  "initial": {
+    "x": {
+      "center": "5/4",
+      "interval": [
+        "11/10",
+        "7/5"
+      ],
+      "radius": "3/20"
+    },
+    "y": {
+      "center": "12/5",
+      "interval": [
+        "47/20",
+        "49/20"
+      ],
+      "radius": "1/20"
+    }
+  },
+  "local_time": {
+    "domain": [
+      "0/1",
+      "1/100"
+    ],
+    "symbol": "tau"
+  },
+  "object_lifecycle": [
+    "normalized_initial",
+    "Picard_polynomial_and_source_ledgers",
+    "returned_tmvPre_pre_reset",
+    "endpoint_and_segment_evaluation",
+    "normalized_insertion_reset",
+    "step2_prestate"
+  ],
+  "ode": {
+    "x_prime": "y",
+    "y_prime": "y - x - x^2*y"
+  },
+  "order": 4,
+  "physical_states": [
+    "x",
+    "y"
+  ],
+  "remainder_owners": {
+    "cutoff": "terms discarded by exact threshold 1/10000000000",
+    "ordinary": "Picard self-map and refinement",
+    "source_ledger": "cross-step old sources; empty at the mathematical step-1 input",
+    "truncation": "terms discarded above complete total degree O4"
+  },
+  "schema": "common_step_operator_contract_v1",
+  "segment_contract": "evaluate tau in [0,1/100]",
+  "status": "COMMON_STEP1_MATHEMATICAL_INPUT_CLOSED",
+  "step": "1/100",
+  "support": "complete_total_degree_O4",
+  "target_remainder_radius": "1/10000",
+  "uncertainty_symbols": {
+    "ut_zero_radius": {
+      "domain": [
+        "0/1",
+        "0/1"
+      ],
+      "owner": "flowstar_explicit_t_state"
+    },
+    "ux": {
+      "domain": [
+        "-1/1",
+        "1/1"
+      ],
+      "owner": "initial_x"
+    },
+    "uy": {
+      "domain": [
+        "-1/1",
+        "1/1"
+      ],
+      "owner": "initial_y"
+    }
+  }
+}

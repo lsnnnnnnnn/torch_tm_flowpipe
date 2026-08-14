@@ -1,0 +1,285 @@
+{
+  "conclusion_stable": true,
+  "nested_interval_checks": {
+    "256_inside_128:cutoff_remainder/x": true,
+    "256_inside_128:cutoff_remainder/y": true,
+    "256_inside_128:endpoint_final/x": true,
+    "256_inside_128:endpoint_final/y": true,
+    "256_inside_128:endpoint_polynomial/x": true,
+    "256_inside_128:endpoint_polynomial/y": true,
+    "256_inside_128:final_remainder/x": true,
+    "256_inside_128:final_remainder/y": true,
+    "256_inside_128:refinement/0/image/x": true,
+    "256_inside_128:refinement/0/image/y": true,
+    "256_inside_128:refinement/1/image/x": true,
+    "256_inside_128:refinement/1/image/y": true,
+    "256_inside_128:refinement/2/image/x": true,
+    "256_inside_128:refinement/2/image/y": true,
+    "256_inside_128:refinement/3/image/x": true,
+    "256_inside_128:refinement/3/image/y": true,
+    "256_inside_128:refinement/4/image/x": true,
+    "256_inside_128:refinement/4/image/y": true,
+    "256_inside_128:segment_final/x": true,
+    "256_inside_128:segment_final/y": true,
+    "256_inside_128:segment_polynomial/x": true,
+    "256_inside_128:segment_polynomial/y": true,
+    "256_inside_128:truncation_remainder/x": true,
+    "256_inside_128:truncation_remainder/y": true,
+    "256_same_margin_sign_128:refinement/0/margin/x": true,
+    "256_same_margin_sign_128:refinement/0/margin/y": true,
+    "256_same_margin_sign_128:refinement/1/margin/x": true,
+    "256_same_margin_sign_128:refinement/1/margin/y": true,
+    "256_same_margin_sign_128:refinement/2/margin/x": true,
+    "256_same_margin_sign_128:refinement/2/margin/y": true,
+    "256_same_margin_sign_128:refinement/3/margin/x": true,
+    "256_same_margin_sign_128:refinement/3/margin/y": true,
+    "256_same_margin_sign_128:refinement/4/margin/x": true,
+    "256_same_margin_sign_128:refinement/4/margin/y": true,
+    "512_inside_256:cutoff_remainder/x": true,
+    "512_inside_256:cutoff_remainder/y": true,
+    "512_inside_256:endpoint_final/x": true,
+    "512_inside_256:endpoint_final/y": true,
+    "512_inside_256:endpoint_polynomial/x": true,
+    "512_inside_256:endpoint_polynomial/y": true,
+    "512_inside_256:final_remainder/x": true,
+    "512_inside_256:final_remainder/y": true,
+    "512_inside_256:refinement/0/image/x": true,
+    "512_inside_256:refinement/0/image/y": true,
+    "512_inside_256:refinement/1/image/x": true,
+    "512_inside_256:refinement/1/image/y": true,
+    "512_inside_256:refinement/2/image/x": true,
+    "512_inside_256:refinement/2/image/y": true,
+    "512_inside_256:refinement/3/image/x": true,
+    "512_inside_256:refinement/3/image/y": true,
+    "512_inside_256:refinement/4/image/x": true,
+    "512_inside_256:refinement/4/image/y": true,
+    "512_inside_256:segment_final/x": true,
+    "512_inside_256:segment_final/y": true,
+    "512_inside_256:segment_polynomial/x": true,
+    "512_inside_256:segment_polynomial/y": true,
+    "512_inside_256:truncation_remainder/x": true,
+    "512_inside_256:truncation_remainder/y": true,
+    "512_same_margin_sign_256:refinement/0/margin/x": true,
+    "512_same_margin_sign_256:refinement/0/margin/y": true,
+    "512_same_margin_sign_256:refinement/1/margin/x": true,
+    "512_same_margin_sign_256:refinement/1/margin/y": true,
+    "512_same_margin_sign_256:refinement/2/margin/x": true,
+    "512_same_margin_sign_256:refinement/2/margin/y": true,
+    "512_same_margin_sign_256:refinement/3/margin/x": true,
+    "512_same_margin_sign_256:refinement/3/margin/y": true,
+    "512_same_margin_sign_256:refinement/4/margin/x": true,
+    "512_same_margin_sign_256:refinement/4/margin/y": true
+  },
+  "precisions": [
+    128,
+    256,
+    512
+  ],
+  "refinement_subset_vectors": [
+    [
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      }
+    ],
+    [
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      }
+    ],
+    [
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      },
+      {
+        "x": true,
+        "y": true
+      }
+    ]
+  ],
+  "rounding_contract": "MPFR_RNDD lower and MPFR_RNDU upper at every elementary operation",
+  "schema": "independent_mpfr_precision_ladder_v1",
+  "validations": {
+    "128": {
+      "checks": {
+        "cutoff_x": true,
+        "cutoff_y": true,
+        "endpoint_final_x": true,
+        "endpoint_final_y": true,
+        "endpoint_polynomial_x": true,
+        "endpoint_polynomial_y": true,
+        "final_remainder_x": true,
+        "final_remainder_y": true,
+        "refinement_0_image_x": true,
+        "refinement_0_image_y": true,
+        "refinement_0_margin_x": true,
+        "refinement_0_margin_y": true,
+        "refinement_0_subset": true,
+        "refinement_1_image_x": true,
+        "refinement_1_image_y": true,
+        "refinement_1_margin_x": true,
+        "refinement_1_margin_y": true,
+        "refinement_1_subset": true,
+        "refinement_2_image_x": true,
+        "refinement_2_image_y": true,
+        "refinement_2_margin_x": true,
+        "refinement_2_margin_y": true,
+        "refinement_2_subset": true,
+        "refinement_3_image_x": true,
+        "refinement_3_image_y": true,
+        "refinement_3_margin_x": true,
+        "refinement_3_margin_y": true,
+        "refinement_3_subset": true,
+        "refinement_4_image_x": true,
+        "refinement_4_image_y": true,
+        "refinement_4_margin_x": true,
+        "refinement_4_margin_y": true,
+        "refinement_4_subset": true,
+        "refinement_count": true,
+        "segment_final_x": true,
+        "segment_final_y": true,
+        "segment_polynomial_x": true,
+        "segment_polynomial_y": true,
+        "truncation_x": true,
+        "truncation_y": true
+      },
+      "passed": true
+    },
+    "256": {
+      "checks": {
+        "cutoff_x": true,
+        "cutoff_y": true,
+        "endpoint_final_x": true,
+        "endpoint_final_y": true,
+        "endpoint_polynomial_x": true,
+        "endpoint_polynomial_y": true,
+        "final_remainder_x": true,
+        "final_remainder_y": true,
+        "refinement_0_image_x": true,
+        "refinement_0_image_y": true,
+        "refinement_0_margin_x": true,
+        "refinement_0_margin_y": true,
+        "refinement_0_subset": true,
+        "refinement_1_image_x": true,
+        "refinement_1_image_y": true,
+        "refinement_1_margin_x": true,
+        "refinement_1_margin_y": true,
+        "refinement_1_subset": true,
+        "refinement_2_image_x": true,
+        "refinement_2_image_y": true,
+        "refinement_2_margin_x": true,
+        "refinement_2_margin_y": true,
+        "refinement_2_subset": true,
+        "refinement_3_image_x": true,
+        "refinement_3_image_y": true,
+        "refinement_3_margin_x": true,
+        "refinement_3_margin_y": true,
+        "refinement_3_subset": true,
+        "refinement_4_image_x": true,
+        "refinement_4_image_y": true,
+        "refinement_4_margin_x": true,
+        "refinement_4_margin_y": true,
+        "refinement_4_subset": true,
+        "refinement_count": true,
+        "segment_final_x": true,
+        "segment_final_y": true,
+        "segment_polynomial_x": true,
+        "segment_polynomial_y": true,
+        "truncation_x": true,
+        "truncation_y": true
+      },
+      "passed": true
+    },
+    "512": {
+      "checks": {
+        "cutoff_x": true,
+        "cutoff_y": true,
+        "endpoint_final_x": true,
+        "endpoint_final_y": true,
+        "endpoint_polynomial_x": true,
+        "endpoint_polynomial_y": true,
+        "final_remainder_x": true,
+        "final_remainder_y": true,
+        "refinement_0_image_x": true,
+        "refinement_0_image_y": true,
+        "refinement_0_margin_x": true,
+        "refinement_0_margin_y": true,
+        "refinement_0_subset": true,
+        "refinement_1_image_x": true,
+        "refinement_1_image_y": true,
+        "refinement_1_margin_x": true,
+        "refinement_1_margin_y": true,
+        "refinement_1_subset": true,
+        "refinement_2_image_x": true,
+        "refinement_2_image_y": true,
+        "refinement_2_margin_x": true,
+        "refinement_2_margin_y": true,
+        "refinement_2_subset": true,
+        "refinement_3_image_x": true,
+        "refinement_3_image_y": true,
+        "refinement_3_margin_x": true,
+        "refinement_3_margin_y": true,
+        "refinement_3_subset": true,
+        "refinement_4_image_x": true,
+        "refinement_4_image_y": true,
+        "refinement_4_margin_x": true,
+        "refinement_4_margin_y": true,
+        "refinement_4_subset": true,
+        "refinement_count": true,
+        "segment_final_x": true,
+        "segment_final_y": true,
+        "segment_polynomial_x": true,
+        "segment_polynomial_y": true,
+        "truncation_x": true,
+        "truncation_y": true
+      },
+      "passed": true
+    }
+  }
+}

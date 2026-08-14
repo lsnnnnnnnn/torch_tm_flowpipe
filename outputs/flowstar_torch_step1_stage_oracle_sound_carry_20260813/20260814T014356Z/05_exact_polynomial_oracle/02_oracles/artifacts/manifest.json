@@ -1,0 +1,57 @@
+{
+  "files": {
+    "exact_fixtures.json": {
+      "bytes": 2448,
+      "sha256": "1e6de3995f1a3a4a0799a03b686d936ab50acedbb8607f35379e91e41bbe8d4e"
+    },
+    "exact_polynomial_oracle.json": {
+      "bytes": 155958,
+      "sha256": "7aa7f0da3a8e6cc98c890b25e831b744b7b95a79ce6566574ba0a541ab5b863e"
+    },
+    "exact_remainder_and_range_oracle.json": {
+      "bytes": 37539,
+      "sha256": "853048d8f4b98997fa80d1021d5b088e7fdd2a4a4b7ef593b4f2c1cfbb8a55da"
+    },
+    "formal_true_solution_enclosure.json": {
+      "bytes": 25716,
+      "sha256": "994cced58955ec25d79043cda40ad48c5f4f1baafc02e8675b556c7707fb1cc7"
+    },
+    "mpfr_128.json": {
+      "bytes": 12482,
+      "sha256": "661abded6c214b95247bc89915716b3f70a6622eb482c40254a544a80eec0a24"
+    },
+    "mpfr_256.json": {
+      "bytes": 17182,
+      "sha256": "6baa775dd8e22b698500a0f604d446664cdb4aed20f1170a0f671cd1395749ea"
+    },
+    "mpfr_512.json": {
+      "bytes": 26514,
+      "sha256": "dbdb765309c11d5bbd0480c3f318317fd6671693930075a967154658a7eba520"
+    },
+    "mpfr_input.tsv": {
+      "bytes": 9281,
+      "sha256": "912bb11fa557b0a12dc5445492a928aa38f8ad8fbf0f538a6a848ac0cf9938ca"
+    },
+    "precision_ladder.json": {
+      "bytes": 9251,
+      "sha256": "0803f3e185a48685126bfb67a6ed267cd40ed0af1cac0978fbf990b5796e0dc6"
+    },
+    "summary.json": {
+      "bytes": 346,
+      "sha256": "f2ab75811028a5cb4444d42261c4f91718dfa1671569c0eb881d29ddc3b8b19b"
+    }
+  },
+  "mpfr_binary": {
+    "path": "/tmp/step1_mpfr_oracle_evidence_20260814",
+    "sha256": "14c236baf286f0ee32b28edaeac6fff1b5544924d8190d11707d546ef4dc4c2f"
+  },
+  "schema": "independent_step1_oracle_manifest_v1",
+  "summary": {
+    "exact_final_polynomials_equal": true,
+    "formal_method": "exact Taylor coefficients at four monotone corners plus Cauchy tail",
+    "formal_true_solution_enclosure_closed": true,
+    "mpfr_precision_ladder_closed": true,
+    "schema": "independent_step1_oracle_summary_v1",
+    "status": "ORACLE_ARITHMETIC_CLOSED_PENDING_ACTUAL_PATH_CONTAINMENT"
+  }
+}

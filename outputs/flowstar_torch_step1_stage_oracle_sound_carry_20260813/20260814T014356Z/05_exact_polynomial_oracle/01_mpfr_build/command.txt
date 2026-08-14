@@ -1,0 +1,1 @@
+bash -lc 'set -euo pipefail; g++ -O2 -std=c++11 experiments/step1_mpfr_oracle.cpp -lmpfr -lgmp -o /tmp/step1_mpfr_oracle_evidence_20260814; sha256sum experiments/step1_mpfr_oracle.cpp /tmp/step1_mpfr_oracle_evidence_20260814; ldd /tmp/step1_mpfr_oracle_evidence_20260814'

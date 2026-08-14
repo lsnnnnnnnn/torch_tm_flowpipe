@@ -3250,8 +3250,16 @@ def dense_picard_validate_step(
     validation_eps: float = 1e-12,
     validation_mode: str = "target_remainder",
     counters: DenseExecutionCounters | None = None,
+    polynomial_observer: Callable[[int, BatchedTaylorModel, BatchedTaylorModel], None] | None = None,
+    raw_remainder_trace_recorder: RawRemainderTraceRecorder | None = None,
 ) -> DenseValidatedStep:
-    """Run true dense Picard and an unchanged interval subset self-map test."""
+    """Run true dense Picard and an unchanged interval subset self-map test.
+
+    The two optional observers are read-only audit hooks forwarded to the
+    production polynomial Picard loop and raw-remainder expression evaluator.
+    They are deliberately excluded from all validation decisions and default
+    to ``None`` so the legacy execution path is unchanged.
+    """
     supported_modes = {
         "target_remainder",
         "target_remainder_normal_eval",
@@ -3295,6 +3303,7 @@ def dense_picard_validate_step(
         order=order,
         iterations=order,
         cutoff_threshold=cutoff_threshold,
+        observer=polynomial_observer,
     )
     trace: list[Mapping[str, Any]] = list(picard_trace)
     target_radius = abs(float(target_remainder_radius))
@@ -3387,6 +3396,7 @@ def dense_picard_validate_step(
                 order=order,
                 cutoff_threshold=cutoff_threshold,
                 validation_eps=validation_eps,
+                raw_trace_recorder=raw_remainder_trace_recorder,
             )
         else:
             image_lo, image_hi = ordinary_lo, ordinary_hi
