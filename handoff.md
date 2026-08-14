@@ -51,9 +51,24 @@ Torch x: lower/upper each 11/180143985094819840
 Torch y: lower 219/720575940379279360
 ```
 
-Scientific and attestation SHAs for this run are filled only after commit,
-push, and detached fresh-clone verification. The prior publication semantics
-are corrected in `docs/EVIDENCE_LABEL_AND_PUBLICATION_SEMANTICS_20260813.md`.
+## Publication metadata
+
+- branch: `codex/step1-stage-oracle-sound-carry-candidate-20260813`
+- scientific SHA: `57a4763287b3e9a38866cb55b09fce27dd6798b7`
+- detached fresh clone: PASS from the GitHub origin; compileall, 23 focused
+  tests, 724 full tests with 2 skipped, package verification, and clean
+  porcelain status all passed
+- scientific tree hashes: `src`
+  `9f9b6d6832d27849cd5ba3ac96487d2a5a673a03`, `experiments`
+  `443815b2fd8c0e1fffe067b40d237ad2365362e1`, `tests`
+  `ed4d275f0303eced414302661d0364151c8c9c6d`
+- attestation commit: resolved by the following attestation-only commit; the
+  publication tip itself is the remote branch ref and is checked after push
+- evidence package:
+  `outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z`
+
+The prior publication semantics are corrected in
+`docs/EVIDENCE_LABEL_AND_PUBLICATION_SEMANTICS_20260813.md`.
 
 Detailed reports:
 

@@ -1,0 +1,85 @@
+{
+  "commands": [
+    {
+      "command": "git clone git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git /tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "cwd": null,
+      "exit_code": 0,
+      "name": "clone"
+    },
+    {
+      "command": "git checkout --detach 57a4763287b3e9a38866cb55b09fce27dd6798b7",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "checkout"
+    },
+    {
+      "command": "git rev-parse HEAD",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "head"
+    },
+    {
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m compileall -q src experiments tests",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "compileall"
+    },
+    {
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q tests/test_step1_oracle.py tests/test_step1_stage_oracle_audit.py tests/test_batched_dense_picard.py tests/test_batched_dense_remainder_validation.py",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "focused_tests"
+    },
+    {
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python -m pytest -q",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "full_pytest"
+    },
+    {
+      "command": "/srv/local/shengenli/miniforge3/envs/py11/bin/python experiments/verify_step1_stage_oracle_package.py --package /tmp/step1-scientific-fresh-clone-8eutl8ml/repo/outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z --repo /tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "package_verifier"
+    },
+    {
+      "command": "git status --porcelain=v1",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "porcelain"
+    },
+    {
+      "command": "git rev-parse 57a4763287b3e9a38866cb55b09fce27dd6798b7:src",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "tree_src"
+    },
+    {
+      "command": "git rev-parse 57a4763287b3e9a38866cb55b09fce27dd6798b7:experiments",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "tree_experiments"
+    },
+    {
+      "command": "git rev-parse 57a4763287b3e9a38866cb55b09fce27dd6798b7:tests",
+      "cwd": "/tmp/step1-scientific-fresh-clone-8eutl8ml/repo",
+      "exit_code": 0,
+      "name": "tree_tests"
+    }
+  ],
+  "compileall": "pass",
+  "detached_head": "57a4763287b3e9a38866cb55b09fce27dd6798b7",
+  "focused_tests": "pass",
+  "full_pytest": "pass",
+  "git_status_porcelain_empty": true,
+  "origin": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+  "package_verifier": "pass",
+  "schema": "step1_scientific_fresh_clone_acceptance_v1",
+  "scientific_sha": "57a4763287b3e9a38866cb55b09fce27dd6798b7",
+  "status": "pass",
+  "tree_hashes": {
+    "experiments": "443815b2fd8c0e1fffe067b40d237ad2365362e1",
+    "src": "9f9b6d6832d27849cd5ba3ac96487d2a5a673a03",
+    "tests": "ed4d275f0303eced414302661d0364151c8c9c6d"
+  }
+}
