@@ -1,0 +1,57 @@
+{
+  "inputs": {
+    "equivalence": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_causal_mechanism_closure_20260813/20260813T060020Z/05_copied_probe_equivalence/three_way_audit/artifacts/audit/summary.json",
+      "sha256": "b0366a06fb62c7b59ed3590a58d18754f28e19b63133abca266154befa30dc7d"
+    },
+    "flowstar": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/06_native_stage_traces/flowstar_trace.csv.gz",
+      "sha256": "be94e2441793ac777e7c848d66a6a9b87a1acdefbaad3acaffe58e8e45d8a94f"
+    },
+    "torch_attempts": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/06_native_stage_traces/torch_attempts.csv.gz",
+      "sha256": "079aa7c794c6415e23aae02a50ad88c782a6cb8b22586fc4e3f9c0f817c95ba7"
+    },
+    "torch_ledger": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/06_native_stage_traces/torch_remainder_ledger.jsonl.gz",
+      "sha256": "16d1ef7357c795e816a7e16e116a9082dd795ae067c74b63ecdd2cc2ca246445"
+    },
+    "torch_segments": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/flowstar_torch_source_carry_root_cause_20260813/20260813T030338Z/06_native_stage_traces/torch_segments.csv.gz",
+      "sha256": "4ce570b13f12b4004e3743f1b79df4e4856adf9ee2f1c0eb6138c3cd96d43bcf"
+    }
+  },
+  "native_inputs": {
+    "attempts.csv": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/torch_complete_o4_authoritative_t6p5/attempts.csv",
+      "sha256": "9814f547de83fa8e0c5d9e1706533f815f7d9694b0c5152a7a01d16fa54180a0"
+    },
+    "segments.csv": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/torch_complete_o4_authoritative_t6p5/segments.csv",
+      "sha256": "28a92e6bb84e2d8b81cb31e57453eb46e28ef03c434d284ec92b9a50f6ac5dc4"
+    },
+    "summary.json": {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle/outputs/mainline_realignment_20260810/20260810T025910Z/01_native_baselines/torch_complete_o4_authoritative_t6p5/summary.json",
+      "sha256": "1c617020888c21fc1efd9d2c21bab57320bfe39b8aad0a883fde3cdc28af42eb"
+    }
+  },
+  "schema": "vdp_width_source_ledger_provenance_v1",
+  "source_locations": {
+    "flowstar_boundary": {
+      "file": "flowstar-toolbox/Continuous.cpp",
+      "function": "Flowpipe::advance(..., Symbolic_Remainder&)",
+      "identity": "pinned Flow* b85a321",
+      "line": 2123
+    },
+    "torch_boundary": {
+      "file": "src/torch_tm_flowpipe/flowpipe.py",
+      "function": "_flowstar_normalized_insertion_transition",
+      "line": 1510
+    },
+    "torch_picard_consumer": {
+      "file": "src/torch_tm_flowpipe/batched_dense_tm.py",
+      "function": "dense_picard_validate_step",
+      "line": 3240
+    }
+  }
+}

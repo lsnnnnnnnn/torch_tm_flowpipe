@@ -1,0 +1,60 @@
+{
+  "commands": [
+    {
+      "command": "conda run -n py11 pytest -q tests/test_step1_stage_oracle_audit.py",
+      "gate": "A",
+      "purpose": "exact-decimal step-1 consumer and containment checks"
+    },
+    {
+      "command": "conda run -n py11 python experiments/build_vdp_t1_t3_width_ledger.py --help  # arguments and input hashes are recorded in 01_width_ledger/provenance.json",
+      "gate": "B",
+      "purpose": "rebuild the 632-boundary raw width ledger"
+    },
+    {
+      "command": "conda run -n py11 python experiments/audit_bounded_source_actual_consumers.py --help  # frozen artifact arguments are recorded in 03_consumer_audit/consumer_audit.json",
+      "gate": "C",
+      "purpose": "actual next-Picard consumer interventions"
+    },
+    {
+      "command": "conda run -n py11 python experiments/audit_bounded_source_terminal_prestate.py --help",
+      "gate": "C",
+      "purpose": "candidate terminal frozen-prestate intervention"
+    },
+    {
+      "command": "conda run -n py11 python experiments/verify_bounded_source_ledger_oracle.py --output outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z/02_contract_oracles/independent_oracle.json",
+      "gate": "E",
+      "purpose": "independent complete-O4 micro-oracles"
+    },
+    {
+      "command": "conda run -n py11 python experiments/run_vdp_dense_backend.py --help  # exact request matrix and outcomes are in 04_causal_runs/fresh_{fixed,native}_requests.csv",
+      "gate": "G",
+      "purpose": "fresh fixed/native candidate and legacy requests"
+    },
+    {
+      "command": "conda run -n py11 python experiments/summarize_bounded_source_causal_runs.py --help  # immutable inputs are summarized in 04_causal_runs/scientific_summary.json",
+      "gate": "G",
+      "purpose": "join candidate traces with the frozen Flow* ledger"
+    },
+    {
+      "command": "conda run -n py11 python experiments/benchmark_bounded_source_ledger.py --output-dir outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z/05_performance/kernel_and_b1",
+      "gate": "H",
+      "purpose": "CPU/CUDA B1/B8/B64/B256/B512 and actual B1 timing"
+    },
+    {
+      "command": "conda run -n py11 python -m compileall -q src experiments tests",
+      "gate": "I",
+      "purpose": "bytecode compilation"
+    },
+    {
+      "command": "conda run -n py11 pytest -q tests/test_bounded_source_ledger.py tests/test_step1_stage_oracle_audit.py tests/test_terminal_checkpoint_v2.py tests/test_canonical_status_consistency.py --junitxml=outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z/06_tests/focused_pytest.xml",
+      "gate": "I",
+      "purpose": "focused regression suite"
+    },
+    {
+      "command": "conda run -n py11 pytest -q --junitxml=outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z/06_tests/full_pytest.xml",
+      "gate": "I",
+      "purpose": "complete regression suite"
+    }
+  ],
+  "schema": "vdp_bounded_source_commands_v1"
+}

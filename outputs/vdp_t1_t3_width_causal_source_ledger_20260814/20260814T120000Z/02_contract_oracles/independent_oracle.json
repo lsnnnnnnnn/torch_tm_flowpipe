@@ -1,0 +1,99 @@
+{
+  "candidate": "normalized_insertion_bounded_source_ledger_o4_g1",
+  "oracle_count": 13,
+  "passed": true,
+  "rows": [
+    {
+      "coefficient": "-3",
+      "oracle": "affine_source_two_step_exact_coefficient",
+      "proof_class": "exact_rational",
+      "status": "PASS"
+    },
+    {
+      "legacy_width": 4.0,
+      "oracle": "shared_source_cancellation_actual_polynomial",
+      "proof_class": "exact_rational_plus_directed_interval",
+      "status": "PASS"
+    },
+    {
+      "coefficients": [
+        1,
+        3,
+        3,
+        1
+      ],
+      "oracle": "quadratic_cubic_x2y_shared_identity",
+      "proof_class": "exact_rational",
+      "status": "PASS"
+    },
+    {
+      "corners": 8,
+      "oracle": "ordinary_structured_nonlinear_asymmetric",
+      "proof_class": "exact_rational_corners_plus_directed_interval",
+      "status": "PASS"
+    },
+    {
+      "oracle": "degree4_truncation_integration_cutoff_ownership",
+      "owners": [
+        "polynomial_truncation",
+        "integration_overflow",
+        "cutoff"
+      ],
+      "proof_class": "deterministic_dense_ledger",
+      "status": "PASS"
+    },
+    {
+      "merged_coefficient": 5,
+      "oracle": "duplicate_exponent_merge_tau_endpoint",
+      "proof_class": "exact_rational",
+      "status": "PASS"
+    },
+    {
+      "oracle": "source_retire_collapse_containment",
+      "proof_class": "exact_rational_corners_plus_directed_interval",
+      "source_support_sha256": "6951a99a3520c7e30dc861ad9ba9126d78282b315a379b27d3aadfb43fdd00e6",
+      "status": "PASS"
+    },
+    {
+      "oracle": "retry_rejection_state_hash_unchanged",
+      "proof_class": "deterministic_atomicity",
+      "state_sha256": "d18e0cc56303592b5c9c316bf24200e7eb9f2338e86fe8bede17e2c5394de358",
+      "status": "PASS"
+    },
+    {
+      "batches": [
+        1,
+        8,
+        64
+      ],
+      "oracle": "B1_B8_B64_permutation_equivariance",
+      "proof_class": "deterministic_tensor_equivariance",
+      "status": "PASS"
+    },
+    {
+      "device": "Tesla V100-SXM2-16GB",
+      "oracle": "CPU_CUDA_same_containment_decision",
+      "proof_class": "implementation_consistency_not_formal_rounding",
+      "status": "PASS"
+    },
+    {
+      "initialization_contract": "exact_decimal_contract",
+      "oracle": "exact_decimal_compensation_actual_consumer",
+      "proof_class": "exact_rational_plus_actual_dense_conversion",
+      "status": "PASS"
+    },
+    {
+      "coefficient_sha256": "1452f58084ab34bdd4a07cb581651ce938c7f258140dd309281be10fc8e9292c",
+      "oracle": "observer_default_off_bitwise_parity",
+      "proof_class": "bitwise_actual_consumer_parity",
+      "status": "PASS"
+    },
+    {
+      "oracle": "tamper_actual_payload_vs_metadata",
+      "payload_sha256": "a71ae12827f9508282216f45b084953659e374ee2354d8463adc78d9b35cb125",
+      "proof_class": "deterministic_actual_payload_hash",
+      "status": "PASS"
+    }
+  ],
+  "schema": "bounded_source_ledger_independent_oracle_v1"
+}

@@ -1,0 +1,1235 @@
+{
+  "all_complete_ledgers_contain_image": true,
+  "all_metadata_tampers_preserved_consumer": true,
+  "all_payload_tampers_changed_consumer": true,
+  "candidate": "normalized_insertion_bounded_source_ledger_o4_g1",
+  "cutoff": 1e-10,
+  "first_causally_active_field": "affine_source_coefficient_in_next_dense_picard_input",
+  "fixed_h": 0.01,
+  "flowstar_operator_status": "UNAVAILABLE_LOSSLESS_FLOWSTAR_STATE_NOT_SERIALIZED",
+  "legacy_prefix_accepted_steps": 631,
+  "order": 4,
+  "rows": [
+    {
+      "accepted_boundary_index": 1,
+      "boundary_endpoint_sha256": "979e85661383bd98cefb1621a45678b1b09418109fb7410a0354be81a5996b03",
+      "boundary_h": 0.01,
+      "complete_ledger_categories": [
+        "initial_remainder",
+        "polynomial_truncation",
+        "cutoff",
+        "integration_overflow",
+        "composition_overflow",
+        "poly_times_remainder",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "picard_residual",
+        "roundoff_safeguard",
+        "reset_or_reconditioning"
+      ],
+      "complete_ledger_contains_image": true,
+      "consumers": {
+        "bounded_source_ledger": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -1.725042688419574e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.952139405774987e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.448466764916033,
+              "lo": 1.1464501005035335,
+              "width": 0.3020166644124996
+            },
+            {
+              "hi": 2.4163493058727097,
+              "lo": 2.2730951346067685,
+              "width": 0.14325417126594123
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "0e79ff10815282528eb44f7a219d6651fe4cb1cc08ad4c149cfb158920bf61bf",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -1.725042688419574e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.952139405774987e-05
+            ]
+          ],
+          "result_sha256": "9ff4107b0a45c9f5db8122afc411ec3ba32fd502e2e7d7303ca69f432f53d98f",
+          "segment_widths": [
+            0.3261092948756375,
+            0.1732764204937345
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              8.047860594225014e-05
+            ]
+          ]
+        },
+        "flowstar_operator": {
+          "reason": "the Torch accepted prestate does not serialize Flow* Phi_L/J and ordinary remainder as a lossless Flow* Symbolic_Remainder object; a lossy adapter is forbidden",
+          "status": "UNAVAILABLE"
+        },
+        "legacy_normalized_insertion": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -1.725005236159532e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.9521267215647628e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.448466743220258,
+              "lo": 1.1464501005045302,
+              "width": 0.30201664271572787
+            },
+            {
+              "hi": 2.416347131657433,
+              "lo": 2.2730951438938103,
+              "width": 0.14325198776362272
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 2,
+          "input_sha256": "09cfee5579ae38a7efdc9e5b52b1fd065d6d713871940a1b932182b05bb9ee62",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -1.725005236159532e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.9521267215647628e-05
+            ]
+          ],
+          "result_sha256": "b940c318c158546bb076b826ad9e1ddae511c2fc14d08fc5875a1b075153eb70",
+          "segment_widths": [
+            0.32610926204837437,
+            0.17327419913897127
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              8.047873278435237e-05
+            ]
+          ]
+        },
+        "metadata_tamper": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -1.725042688419574e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.952139405774987e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.448466764916033,
+              "lo": 1.1464501005035335,
+              "width": 0.3020166644124996
+            },
+            {
+              "hi": 2.4163493058727097,
+              "lo": 2.2730951346067685,
+              "width": 0.14325417126594123
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "0e79ff10815282528eb44f7a219d6651fe4cb1cc08ad4c149cfb158920bf61bf",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -1.725042688419574e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.952139405774987e-05
+            ]
+          ],
+          "result_sha256": "9ff4107b0a45c9f5db8122afc411ec3ba32fd502e2e7d7303ca69f432f53d98f",
+          "segment_widths": [
+            0.3261092948756375,
+            0.1732764204937345
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              8.047860594225014e-05
+            ]
+          ]
+        },
+        "ordinary_only_same_source_set": {
+          "candidate_remainder": [
+            [
+              -2.000006000000004e-06,
+              -3.5061171707793656e-05
+            ],
+            [
+              2.000006000000004e-06,
+              3.733213464384899e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.4484665873590055,
+              "lo": 1.146450278060561,
+              "width": 0.30201630929844453
+            },
+            {
+              "hi": 2.416349274734516,
+              "lo": 2.273095165740765,
+              "width": 0.1432541089937507
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "b5b1426cb76e0b15f73915ecf7cb65986c31d032a1d1a3075b29f26f4331ea60",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -2.000006000000004e-06,
+              -3.5061171707793656e-05
+            ],
+            [
+              2.000006000000004e-06,
+              3.733213464384899e-05
+            ]
+          ],
+          "result_sha256": "11993856293524145e5bda57b7469161667aba284359b79ad0e0cd558a4d52b7",
+          "segment_widths": [
+            0.32610893598303076,
+            0.1732758677782882
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.799999400000001e-05,
+              6.266786535615102e-05
+            ]
+          ]
+        },
+        "payload_tamper_plus_1_percent": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -1.7250436252820082e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.95214034685139e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.448466776691633,
+              "lo": 1.1464500887279334,
+              "width": 0.3020166879636997
+            },
+            {
+              "hi": 2.4163494843009077,
+              "lo": 2.273094956178612,
+              "width": 0.14325452812229592
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "a1932b3c56c1de6e4b82a7ea28f18b6a741040ea93fd7be93a94f6ebbd957ed8",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -1.7250436252820082e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              1.95214034685139e-05
+            ]
+          ],
+          "result_sha256": "7760d941ecbd9a9110a25ead964e35f20247f987f4e9cd838b3390fcc1981937",
+          "segment_widths": [
+            0.3261093184646234,
+            0.1732767822545225
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              8.047859653148611e-05
+            ]
+          ]
+        }
+      },
+      "label": "step_1_to_2",
+      "ordinary_materialization_contains_same_affine_source_set": true,
+      "ordinary_reset_sha256": "b5b1426cb76e0b15f73915ecf7cb65986c31d032a1d1a3075b29f26f4331ea60",
+      "source_fingerprint": "bb9c6c5cecf8153ee1264cc9908f5c2b729877975565416bb362ab31d93de63b",
+      "source_first_consumer_field": "affine_source_coefficient_in_next_dense_picard_input",
+      "source_live_count": 2,
+      "source_ordinary_width_mass": 1.196e-321,
+      "source_reset_sha256": "0e79ff10815282528eb44f7a219d6651fe4cb1cc08ad4c149cfb158920bf61bf",
+      "source_structured_width_mass": 3.762336825668424e-05,
+      "tamper_metadata_preserved_consumer": true,
+      "tamper_payload_changed_consumer": true
+    },
+    {
+      "accepted_boundary_index": 99,
+      "boundary_endpoint_sha256": "6fcb097aab2420770562568e6c88789ddf0dc95d280360f5cdf27b5d8a23d929",
+      "boundary_h": 0.01,
+      "complete_ledger_categories": [
+        "initial_remainder",
+        "polynomial_truncation",
+        "cutoff",
+        "integration_overflow",
+        "composition_overflow",
+        "poly_times_remainder",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "picard_residual",
+        "roundoff_safeguard",
+        "reset_or_reconditioning"
+      ],
+      "complete_ledger_contains_image": true,
+      "consumers": {
+        "bounded_source_ledger": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.153230728317892e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275058855674945e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.9492586303841881,
+              "lo": 1.8613027081084697,
+              "width": 0.08795592227571848
+            },
+            {
+              "hi": -0.37019924512888364,
+              "lo": -0.48449129664248913,
+              "width": 0.11429205151360551
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "5c6d22a9cc7cfd1ab2eb662ec992f2831a37eade4a8fada129bc6171f7f9dfbb",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.153230728317892e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275058855674945e-06
+            ]
+          ],
+          "result_sha256": "657f504c1ebb2e4ff28564013a4a203e9bd5c3da15cb65e32bfc86a5841fb3cd",
+          "segment_widths": [
+            0.09222151575547911,
+            0.12856511059721007
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.172494114432506e-05
+            ]
+          ]
+        },
+        "flowstar_operator": {
+          "reason": "the Torch accepted prestate does not serialize Flow* Phi_L/J and ordinary remainder as a lossless Flow* Symbolic_Remainder object; a lossy adapter is forbidden",
+          "status": "UNAVAILABLE"
+        },
+        "legacy_normalized_insertion": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.153196171782348e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275055909650957e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.9492586303852384,
+              "lo": 1.8613027068611498,
+              "width": 0.08795592352408856
+            },
+            {
+              "hi": -0.3701992451075204,
+              "lo": -0.4844914196377939,
+              "width": 0.11429217453027353
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 2,
+          "input_sha256": "c0116d2fc4295ee52d90b8bae73cc085cfbb166c3e9e427b09f88a7a70dba572",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.153196171782348e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275055909650957e-06
+            ]
+          ],
+          "result_sha256": "adf0c9c276f5baed8cdc9a84d59cefa23d1945cab9d945bdf346f7d93fdc69e1",
+          "segment_widths": [
+            0.09222151766116606,
+            0.1285652385951779
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.172494409034905e-05
+            ]
+          ]
+        },
+        "metadata_tamper": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.153230728317892e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275058855674945e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.9492586303841881,
+              "lo": 1.8613027081084697,
+              "width": 0.08795592227571848
+            },
+            {
+              "hi": -0.37019924512888364,
+              "lo": -0.48449129664248913,
+              "width": 0.11429205151360551
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "5c6d22a9cc7cfd1ab2eb662ec992f2831a37eade4a8fada129bc6171f7f9dfbb",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.153230728317892e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275058855674945e-06
+            ]
+          ],
+          "result_sha256": "657f504c1ebb2e4ff28564013a4a203e9bd5c3da15cb65e32bfc86a5841fb3cd",
+          "segment_widths": [
+            0.09222151575547911,
+            0.12856511059721007
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.172494114432506e-05
+            ]
+          ]
+        },
+        "ordinary_only_same_source_set": {
+          "candidate_remainder": [
+            [
+              -2.000006000000004e-06,
+              -1.638577428698894e-05
+            ],
+            [
+              2.000006000000004e-06,
+              1.650760236242618e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.9492585490224552,
+              "lo": 1.8613027894702026,
+              "width": 0.08795575955225267
+            },
+            {
+              "hi": -0.3701990534051342,
+              "lo": -0.4844914883662775,
+              "width": 0.11429243496114329
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "5f4f9f48b514c27e883d3ed73fdaf8b70b384ef21548c432acba3dde53ba7eb0",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -2.000006000000004e-06,
+              -1.638577428698894e-05
+            ],
+            [
+              2.000006000000004e-06,
+              1.650760236242618e-05
+            ]
+          ],
+          "result_sha256": "da007b28856c328859180c907ff3ad1b79acfa22e3b585d60598c368170fce78",
+          "segment_widths": [
+            0.0922213486748631,
+            0.1285646205995715
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.799999400000001e-05,
+              8.349239763757382e-05
+            ]
+          ]
+        },
+        "payload_tamper_plus_1_percent": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.153232229981167e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275060357925497e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 1.9492586411978354,
+              "lo": 1.8613026972948223,
+              "width": 0.0879559439030131
+            },
+            {
+              "hi": -0.3701991647191838,
+              "lo": -0.4844913770521886,
+              "width": 0.11429221233300481
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "37f723f62d2a870b92b2e1881c0f9f37db5264a9f0c24f10edf17cb18603ebe0",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.153232229981167e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              8.275060357925497e-06
+            ]
+          ],
+          "result_sha256": "730e303bee98234f17fdb6a09b046de03ea00e300387bfbb1ac98e92c1ff7a3d",
+          "segment_widths": [
+            0.09222153742634555,
+            0.12856528015106136
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.172493964207451e-05
+            ]
+          ]
+        }
+      },
+      "label": "before_T_1",
+      "ordinary_materialization_contains_same_affine_source_set": true,
+      "ordinary_reset_sha256": "5f4f9f48b514c27e883d3ed73fdaf8b70b384ef21548c432acba3dde53ba7eb0",
+      "source_fingerprint": "644b1685638a90ba49e0f3b2b892fd5fdb8d5e6022e67b7cab13f808754cbd84",
+      "source_first_consumer_field": "affine_source_coefficient_in_next_dense_picard_input",
+      "source_live_count": 2,
+      "source_ordinary_width_mass": 0.002767195191680138,
+      "source_reset_sha256": "5c6d22a9cc7cfd1ab2eb662ec992f2831a37eade4a8fada129bc6171f7f9dfbb",
+      "source_structured_width_mass": 1.8465392777491565e-05,
+      "tamper_metadata_preserved_consumer": true,
+      "tamper_payload_changed_consumer": true
+    },
+    {
+      "accepted_boundary_index": 299,
+      "boundary_endpoint_sha256": "f54c0664c1686bab685225aacc6dc7c5e879143221a14f07f9f05a7e913edc1a",
+      "boundary_h": 0.01,
+      "complete_ledger_categories": [
+        "initial_remainder",
+        "polynomial_truncation",
+        "cutoff",
+        "integration_overflow",
+        "composition_overflow",
+        "poly_times_remainder",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "picard_residual",
+        "roundoff_safeguard",
+        "reset_or_reconditioning"
+      ],
+      "complete_ledger_contains_image": true,
+      "consumers": {
+        "bounded_source_ledger": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -6.156655454871855e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779701962139098e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": -0.357253302508147,
+              "lo": -0.5445128956557417,
+              "width": 0.1872595931475947
+            },
+            {
+              "hi": -2.4713056518473273,
+              "lo": -2.627170252486458,
+              "width": 0.15586460063913068
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "7742c7576150f4e6f983b1677b65c93f2a9f399de5f29778deed5c4c15e8a62f",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -6.156655454871855e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779701962139098e-06
+            ]
+          ],
+          "result_sha256": "928a53226a6205995c19f6c6c751092e81d562c2d0fac08128c685f855b3b082",
+          "segment_widths": [
+            0.21273504474508612,
+            0.1727681416183793
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.384334454512815e-05
+            ]
+          ]
+        },
+        "flowstar_operator": {
+          "reason": "the Torch accepted prestate does not serialize Flow* Phi_L/J and ordinary remainder as a lossless Flow* Symbolic_Remainder object; a lossy adapter is forbidden",
+          "status": "UNAVAILABLE"
+        },
+        "legacy_normalized_insertion": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -6.156629543860204e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.77967242996732e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": -0.35725330250818965,
+              "lo": -0.5445128922488317,
+              "width": 0.18725958974064208
+            },
+            {
+              "hi": -2.4713056521905576,
+              "lo": -2.627169907743842,
+              "width": 0.15586425555328456
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 2,
+          "input_sha256": "77e269b422cedcb3139538ea967e806fa9caf811e65c2cb5a51ae84832870583",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -6.156629543860204e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.77967242996732e-06
+            ]
+          ],
+          "result_sha256": "fd6237f65c3ed2629f390f4fc8c83991b4cf5a537409afc7131390eae9126b9e",
+          "segment_widths": [
+            0.21273503964284138,
+            0.17276779494517938
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.38433704561398e-05
+            ]
+          ]
+        },
+        "metadata_tamper": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -6.156655454871855e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779701962139098e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": -0.357253302508147,
+              "lo": -0.5445128956557417,
+              "width": 0.1872595931475947
+            },
+            {
+              "hi": -2.4713056518473273,
+              "lo": -2.627170252486458,
+              "width": 0.15586460063913068
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "7742c7576150f4e6f983b1677b65c93f2a9f399de5f29778deed5c4c15e8a62f",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -6.156655454871855e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779701962139098e-06
+            ]
+          ],
+          "result_sha256": "928a53226a6205995c19f6c6c751092e81d562c2d0fac08128c685f855b3b082",
+          "segment_widths": [
+            0.21273504474508612,
+            0.1727681416183793
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.384334454512815e-05
+            ]
+          ]
+        },
+        "ordinary_only_same_source_set": {
+          "candidate_remainder": [
+            [
+              -2.000006000000004e-06,
+              -1.1890151431489938e-05
+            ],
+            [
+              2.000006000000004e-06,
+              1.1513198110006088e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": -0.35725335996290153,
+              "lo": -0.5445128382009873,
+              "width": 0.18725947823808578
+            },
+            {
+              "hi": -2.471305740787897,
+              "lo": -2.627170163545717,
+              "width": 0.15586442275782011
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "4ccc5561b9952eae5099a93a5974e7984a02c72cbaaba228585da8fafaf3d6ed",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -2.000006000000004e-06,
+              -1.1890151431489938e-05
+            ],
+            [
+              2.000006000000004e-06,
+              1.1513198110006088e-05
+            ]
+          ],
+          "result_sha256": "25141e1a1b941eaf8ba7db51edbb475eb35ddae9a3895cc967574019a40e862d",
+          "segment_widths": [
+            0.21273492917550194,
+            0.1727679582145996
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.799999400000001e-05,
+              8.810984856851006e-05
+            ]
+          ]
+        },
+        "payload_tamper_plus_1_percent": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -6.156656137087236e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779702642935387e-06
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": -0.3572532919335695,
+              "lo": -0.5445129062303192,
+              "width": 0.18725961429674978
+            },
+            {
+              "hi": -2.471305593622279,
+              "lo": -2.6271703107115076,
+              "width": 0.1558647170892287
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "62405f8b5dc7d16035ed2458378416a67a91e7dd684188e02903ae4dc10b0397",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -6.156656137087236e-06
+            ],
+            [
+              1.0000030000000013e-06,
+              5.779702642935387e-06
+            ]
+          ],
+          "result_sha256": "1367da1650b4521876cbed07dac7e4a9a49edacaf3e6ff13b9775fece5b5c815",
+          "segment_widths": [
+            0.21273506590084165,
+            0.17276825812370158
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              9.384334386291277e-05
+            ]
+          ]
+        }
+      },
+      "label": "before_T_3",
+      "ordinary_materialization_contains_same_affine_source_set": true,
+      "ordinary_reset_sha256": "4ccc5561b9952eae5099a93a5974e7984a02c72cbaaba228585da8fafaf3d6ed",
+      "source_fingerprint": "26cf992e281f05cc51b48c68325e5199af6e572764db3235d7377b556e60abb4",
+      "source_first_consumer_field": "affine_source_coefficient_in_next_dense_picard_input",
+      "source_live_count": 2,
+      "source_ordinary_width_mass": 0.03559370230942354,
+      "source_reset_sha256": "7742c7576150f4e6f983b1677b65c93f2a9f399de5f29778deed5c4c15e8a62f",
+      "source_structured_width_mass": 1.3467134262203218e-05,
+      "tamper_metadata_preserved_consumer": true,
+      "tamper_payload_changed_consumer": true
+    },
+    {
+      "accepted_boundary_index": 631,
+      "boundary_endpoint_sha256": "e10e8f7f072dc1be144dd80541b67c273cfb94ff13afbd1a76fb55e8dd0a6ad7",
+      "boundary_h": 0.01,
+      "complete_ledger_categories": [
+        "initial_remainder",
+        "polynomial_truncation",
+        "cutoff",
+        "integration_overflow",
+        "composition_overflow",
+        "poly_times_remainder",
+        "remainder_times_poly",
+        "remainder_times_remainder",
+        "picard_residual",
+        "roundoff_safeguard",
+        "reset_or_reconditioning"
+      ],
+      "complete_ledger_contains_image": true,
+      "consumers": {
+        "bounded_source_ledger": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.84323376153679e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721704478376883e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 0.881030648781021,
+              "lo": -0.03548154917997163,
+              "width": 0.9165121979609927
+            },
+            {
+              "hi": 3.3257331989742074,
+              "lo": 1.7358647929071385,
+              "width": 1.5898684060670691
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "091d0d63694d62c0d3b1fa748f15bed91f6ab36fa69eebce80e33348563d3e53",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.84323376153679e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721704478376883e-05
+            ]
+          ],
+          "result_sha256": "145b8d62c4493f7c2b85435fb48dae7891dba75237c9b1467095ede590b637ca",
+          "segment_widths": [
+            0.9420415854562361,
+            1.6080795266003496
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              2.7829552162311744e-06
+            ]
+          ]
+        },
+        "flowstar_operator": {
+          "reason": "the Torch accepted prestate does not serialize Flow* Phi_L/J and ordinary remainder as a lossless Flow* Symbolic_Remainder object; a lossy adapter is forbidden",
+          "status": "UNAVAILABLE"
+        },
+        "legacy_normalized_insertion": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.843069181021467e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.720323095713795e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 0.8810305537307842,
+              "lo": -0.035481549136891714,
+              "width": 0.916512102867676
+            },
+            {
+              "hi": 3.325723578679553,
+              "lo": 1.7358648504128245,
+              "width": 1.589858728266729
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 2,
+          "input_sha256": "81a35d243951b1d16c49ca43a08a288eda71b492c0a2d6beebcaecc95188ff37",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.843069181021467e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.720323095713795e-05
+            ]
+          ],
+          "result_sha256": "de0d1ac5fac9dfbdefb4add49c6dac1b1a1a3adfce404aa2680f1177a2d61171",
+          "segment_widths": [
+            0.9420414425127687,
+            1.608069802478752
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              2.796769042862058e-06
+            ]
+          ]
+        },
+        "metadata_tamper": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.84323376153679e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721704478376883e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 0.881030648781021,
+              "lo": -0.03548154917997163,
+              "width": 0.9165121979609927
+            },
+            {
+              "hi": 3.3257331989742074,
+              "lo": 1.7358647929071385,
+              "width": 1.5898684060670691
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "091d0d63694d62c0d3b1fa748f15bed91f6ab36fa69eebce80e33348563d3e53",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.84323376153679e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721704478376883e-05
+            ]
+          ],
+          "result_sha256": "145b8d62c4493f7c2b85435fb48dae7891dba75237c9b1467095ede590b637ca",
+          "segment_widths": [
+            0.9420415854562361,
+            1.6080795266003496
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              2.7829552162311744e-06
+            ]
+          ]
+        },
+        "ordinary_only_same_source_set": {
+          "candidate_remainder": [
+            [
+              -2.000006000000004e-06,
+              -0.00017444055254910176
+            ],
+            [
+              2.000006000000004e-06,
+              0.00018322524825246947
+            ]
+          ],
+          "endpoint": [],
+          "input_active_variables": [
+            0,
+            1
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "14f3c19f9b3c1f4dce1e75c772637a423aad8577ed58b7c21a59a7c251b917a1",
+          "message": "Flowstar raw remainder compat residual not subset of target remainder",
+          "raw_picard_image": [
+            [
+              -2.000006000000004e-06,
+              -0.00017444055254910176
+            ],
+            [
+              2.000006000000004e-06,
+              0.00018322524825246947
+            ]
+          ],
+          "result_sha256": "eb8e41053f29709c1a91420588ace12bed3d23b8054848f1307ae46b782399c2",
+          "segment_widths": [
+            0.9420398539164846,
+            1.6080768517052464
+          ],
+          "status": "failed",
+          "subset_margin": [
+            [
+              9.799999400000001e-05,
+              -8.322524825246946e-05
+            ]
+          ]
+        },
+        "payload_tamper_plus_1_percent": {
+          "candidate_remainder": [
+            [
+              -1.0000030000000013e-06,
+              -8.843250469441078e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721721196974033e-05
+            ]
+          ],
+          "endpoint": [
+            {
+              "hi": 0.8810306674344629,
+              "lo": -0.03548156783341348,
+              "width": 0.9165122352678765
+            },
+            {
+              "hi": 3.3257340722138853,
+              "lo": 1.7358639196675618,
+              "width": 1.5898701525463237
+            }
+          ],
+          "input_active_variables": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "input_n_vars": 4,
+          "input_sha256": "6fe6d74169c89b3d498ed64989f41c5def4ddc999909074306484c5d3235ae0b",
+          "message": "",
+          "raw_picard_image": [
+            [
+              -1.0000030000000013e-06,
+              -8.843250469441078e-05
+            ],
+            [
+              1.0000030000000013e-06,
+              9.721721196974033e-05
+            ]
+          ],
+          "result_sha256": "60d31b3f77b77bf25e25f30e402e4c844605ad52366f1d7baf30dcd9d5914941",
+          "segment_widths": [
+            0.9420416227716935,
+            1.6080812738477532
+          ],
+          "status": "validated",
+          "subset_margin": [
+            [
+              9.8999997e-05,
+              2.782788030259673e-06
+            ]
+          ]
+        }
+      },
+      "label": "before_T_6_32",
+      "ordinary_materialization_contains_same_affine_source_set": true,
+      "ordinary_reset_sha256": "14f3c19f9b3c1f4dce1e75c772637a423aad8577ed58b7c21a59a7c251b917a1",
+      "source_fingerprint": "620238814ac0be13c20980d07f4eb6eaf2beba5f51f17780782ce1b4ce0e211d",
+      "source_first_consumer_field": "affine_source_coefficient_in_next_dense_picard_input",
+      "source_live_count": 2,
+      "source_ordinary_width_mass": 2.132575068115425,
+      "source_reset_sha256": "091d0d63694d62c0d3b1fa748f15bed91f6ab36fa69eebce80e33348563d3e53",
+      "source_structured_width_mass": 0.00017404984705641306,
+      "tamper_metadata_preserved_consumer": true,
+      "tamper_payload_changed_consumer": true
+    }
+  ],
+  "runtime_s": 257.9547442430048,
+  "schema": "bounded_source_same_prestate_actual_consumer_audit_v1",
+  "target_remainder_radius": 0.0001,
+  "validation_mode": "flowstar_raw_remainder_compat"
+}

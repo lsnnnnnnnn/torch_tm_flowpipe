@@ -1,0 +1,21 @@
+{
+  "cases": [
+    {
+      "case": "raw_scientific_mutation",
+      "reason": "VerificationError: size mismatch: 04_causal_runs/scientific_summary.json",
+      "rejected": true
+    },
+    {
+      "case": "refinalized_semantic_conclusion_mutation",
+      "reason": "VerificationError: scientific conclusion",
+      "rejected": true
+    },
+    {
+      "case": "required_oracle_file_deleted",
+      "reason": "VerificationError: manifest coverage mismatch",
+      "rejected": true
+    }
+  ],
+  "passed": true,
+  "schema": "vdp_t1_t3_bounded_source_tamper_tests_v1"
+}

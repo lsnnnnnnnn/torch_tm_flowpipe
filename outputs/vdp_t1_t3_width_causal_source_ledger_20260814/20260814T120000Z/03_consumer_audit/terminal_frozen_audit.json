@@ -1,0 +1,132 @@
+{
+  "actual_source_variables": [
+    2,
+    3
+  ],
+  "candidate_reference_result_sha256": "419926404a21dfaa830c81325e6ad976caa76eaa3b116f633fe531ee66abc6f6",
+  "checkpoint_full_sha256": "1bf88e142701835c182cc4dcc58cbf7934962339d62684b39933350f68dd349c",
+  "checkpoint_schema": "torch_tm_flowpipe_terminal_checkpoint_v1",
+  "flowstar_operator": {
+    "reason": "candidate checkpoint has no lossless Flow* Phi_L/J Symbolic_Remainder object",
+    "status": "UNAVAILABLE"
+  },
+  "h": 0.0037189963054920306,
+  "interpretation": "The frozen prestate is the candidate's own last accepted affine source input. Ordinary-only and legacy box controls are constructed from that same represented component box.",
+  "metadata_tamper_preserved_actual_consumer": true,
+  "metadata_tamper_reference_sha256": "4bb5435e433b931948f568e7268795faba5b3334bd11a32ae658dee274f3cb18",
+  "payload_tamper_changed_actual_consumer": true,
+  "rows": {
+    "candidate_source_payload": {
+      "input_sha256": "f7c00b593e9022005d9c1bcdcfdc53578970470817be94d1c9899a9ae122f51f",
+      "message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "raw_picard_image": [
+        [
+          -3.7190263054920325e-07,
+          -0.00010127000153669533
+        ],
+        [
+          3.7190263054920325e-07,
+          9.815942313874244e-05
+        ]
+      ],
+      "result_sha256": "419926404a21dfaa830c81325e6ad976caa76eaa3b116f633fe531ee66abc6f6",
+      "status": "failed",
+      "subset_margin": [
+        [
+          9.96280973694508e-05,
+          -1.2700015366953245e-06
+        ]
+      ]
+    },
+    "legacy_box_reparameterization_same_component_box": {
+      "input_sha256": "dedf04a3b457b45aed47d90085c276d07c242ff3ea9690adc7eabfce1b0c45e1",
+      "message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "raw_picard_image": [
+        [
+          -3.7190263054920325e-07,
+          -0.00010126987910659699
+        ],
+        [
+          3.7190263054920325e-07,
+          9.815413455217879e-05
+        ]
+      ],
+      "result_sha256": "ae0d39098f7cef0a42195bfa0471c42109917faf894dc345b5bbed6119542960",
+      "status": "failed",
+      "subset_margin": [
+        [
+          9.96280973694508e-05,
+          -1.2698791065969843e-06
+        ]
+      ]
+    },
+    "metadata_tamper": {
+      "input_sha256": "f7c00b593e9022005d9c1bcdcfdc53578970470817be94d1c9899a9ae122f51f",
+      "message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "raw_picard_image": [
+        [
+          -3.7190263054920325e-07,
+          -0.00010127000153669533
+        ],
+        [
+          3.7190263054920325e-07,
+          9.815942313874244e-05
+        ]
+      ],
+      "result_sha256": "419926404a21dfaa830c81325e6ad976caa76eaa3b116f633fe531ee66abc6f6",
+      "status": "failed",
+      "subset_margin": [
+        [
+          9.96280973694508e-05,
+          -1.2700015366953245e-06
+        ]
+      ]
+    },
+    "ordinary_only_same_affine_source_set": {
+      "input_sha256": "70c530ee63376faf9fb81efefa72ce776dc4ff6d8b72234c3b7d7d7d6304ea03",
+      "message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "raw_picard_image": [
+        [
+          -7.099962037757521e-07,
+          -0.00018009388109986474
+        ],
+        [
+          7.099962037757521e-07,
+          0.00017698330105650142
+        ]
+      ],
+      "result_sha256": "f60a451c1f24434b19447cd5d04a22d893f4b126b041bdf98f9d633466282984",
+      "status": "failed",
+      "subset_margin": [
+        [
+          9.929000379622425e-05,
+          -8.009388109986473e-05
+        ]
+      ]
+    },
+    "payload_tamper_plus_1_percent": {
+      "input_sha256": "312fce35058a46fc9029493b6a70af6df05b743a04861b3d39248cccab643f0d",
+      "message": "Flowstar raw remainder compat residual not subset of target remainder",
+      "raw_picard_image": [
+        [
+          -3.7190263054920325e-07,
+          -0.00010127007740950639
+        ],
+        [
+          3.7190263054920325e-07,
+          9.815949902670456e-05
+        ]
+      ],
+      "result_sha256": "3f66820c1f99355af1778e4111c6c000bab28da95a5369862fe8103d12ddc11a",
+      "status": "failed",
+      "subset_margin": [
+        [
+          9.96280973694508e-05,
+          -1.270077409506383e-06
+        ]
+      ]
+    }
+  },
+  "schema": "bounded_source_terminal_same_prestate_audit_v1",
+  "time": 6.382737816137232
+}
