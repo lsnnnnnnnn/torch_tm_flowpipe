@@ -62,8 +62,16 @@ Torch y: lower 219/720575940379279360
   `9f9b6d6832d27849cd5ba3ac96487d2a5a673a03`, `experiments`
   `443815b2fd8c0e1fffe067b40d237ad2365362e1`, `tests`
   `ed4d275f0303eced414302661d0364151c8c9c6d`
-- attestation commit: resolved by the following attestation-only commit; the
-  publication tip itself is the remote branch ref and is checked after push
+- attestation commit: `19867c9108b23c00e179532d2108de0c9b0428a3`;
+  its diff from the scientific SHA changes no `src`, `experiments`, or `tests`
+- publication tip: remote branch ref
+  `refs/heads/codex/step1-stage-oracle-sound-carry-candidate-20260813`;
+  the exact tip is checked after every push and reported in the terminal
+  summary because a commit cannot contain its own SHA
+- publication semantics:
+  `scientific_sha_fresh_clone_verified=true`,
+  `attestation_tip_contains_no_scientific_tree_changes=true`,
+  `final_tip_fresh_clone_verified=false`
 - evidence package:
   `outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/20260814T014356Z`
 
