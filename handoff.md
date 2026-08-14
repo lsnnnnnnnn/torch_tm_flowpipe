@@ -63,8 +63,15 @@ Evidence package:
 
 `outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z`
 
-Publication SHAs and detached-clone attestation are filled by the two-commit
-publication procedure below; the scientific result above is frozen.
+Scientific commit:
+`8ac2962bf691dd81ae5d06a9ea146bb011b7ec42`.
+
+That exact SHA was pushed, cloned again from GitHub, checked out detached, and
+accepted independently: package verifier PASS, `compileall` PASS, focused
+41/41, full pytest 745 passed plus 2 skipped, and clean clone status. The
+attestation is the immediate child commit containing
+`07_acceptance/scientific_acceptance.json`; no scientific source is changed by
+that commit. The scientific result above is frozen.
 
 ---
 
