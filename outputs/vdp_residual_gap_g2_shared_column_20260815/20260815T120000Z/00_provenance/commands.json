@@ -1,0 +1,18 @@
+{
+  "commands": [
+    "conda run -n py11 python experiments/audit_vdp_lossless_operator_matrix_20260815.py --help",
+    "conda run -n py11 python experiments/audit_g1_owner_interventions_20260815.py --help",
+    "conda run -n py11 python experiments/audit_g1_terminal_owner_interventions_20260815.py --help",
+    "conda run -n py11 python experiments/export_g2_blackbox_coefficients.py --help",
+    "python experiments/independent_g2_exact_oracle.py --help",
+    "conda run -n py11 python experiments/audit_g2_checkpoint_resume_20260815.py --help",
+    "conda run -n py11 python experiments/run_vdp_g2_fresh_matrix_20260815.py --help",
+    "conda run -n py11 python experiments/summarize_vdp_g2_matrix_20260815.py --help",
+    "conda run -n py11 python experiments/benchmark_g2_cpu_cuda_20260815.py --help",
+    "conda run -n py11 python -m compileall -q src experiments tests",
+    "conda run -n py11 pytest -q [focused files] --junitxml=focused_pytest.xml",
+    "conda run -n py11 pytest -q --junitxml=full_pytest.xml",
+    "python experiments/verify_vdp_g2_evidence_20260815.py --package <package>"
+  ],
+  "schema": "vdp_g2_commands_v1"
+}

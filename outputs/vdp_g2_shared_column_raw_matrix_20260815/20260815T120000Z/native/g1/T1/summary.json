@@ -1,0 +1,122 @@
+{
+  "accepted_steps": 50,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "codex/vdp-residual-gap-g2-shared-column-carry-20260815",
+  "commit": "aa85e51df5af5a73c2d80f0dd3e26923e4dc04b9",
+  "completed_horizon": 1.0,
+  "completed_requested_horizon": true,
+  "config_sha256": "fc3f0b514af3a6ecb9c49753899fc30a596eb4cdff6a6159505a76753e003508",
+  "contract_identity": {
+    "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+    "partition_b1_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+    "partition_b64_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+    "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558"
+  },
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_kernel_s": 11.942329493002035,
+  "dense_range_contexts": [
+    "polynomial_truncation"
+  ],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 4,
+  "dense_range_method": "adaptive_subdivision",
+  "dense_range_trigger": "proactive_depth1_on_named_contexts",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_to_host_s": 0.0,
+  "device_transfer_count": 0,
+  "diagnostic_factors": [
+    "reset_mode=normalized_insertion_bounded_source_ledger_o4_g1"
+  ],
+  "effective_h_max": 0.1,
+  "effective_h_min": 0.002,
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 2.066505710396909,
+    "x_lo": 1.0990754609166946,
+    "y_hi": 2.4638767057176882,
+    "y_lo": -0.4939629013264121
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "host_to_device_s": 0.0,
+  "initialization_contract": "exact_decimal_contract",
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 49,
+    "width_sum": 0.2221664489588993,
+    "x_hi": 1.9538349352804358,
+    "x_lo": 1.8610123463451946,
+    "x_width": 0.0928225889352412,
+    "y_hi": -0.35868954333039044,
+    "y_lo": -0.48803340335404854,
+    "y_width": 0.1293438600236581
+  },
+  "message": "",
+  "nonkernel_nontransfer_solver_s": 26.749469998991117,
+  "partition": "B1",
+  "partition_count": 1,
+  "peak_rss_bytes": 435474432,
+  "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
+  "range_leaf_evaluations": 2800,
+  "range_subdivision_invocations": 700,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.203554956513329,
+    "x_hi": 1.9495777781906474,
+    "x_lo": 1.8610282359650752,
+    "x_width": 0.08854954222557221,
+    "y_hi": -0.3698179340765395,
+    "y_lo": -0.4848233483642963,
+    "y_width": 0.11500541428775679
+  },
+  "rejected_attempts": 8,
+  "rejected_step_records": 0,
+  "requested_horizon": 1.0,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion_bounded_source_ledger_o4_g1",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 38.69179949199315,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "schedule": {
+    "adaptive_fallback_allowed": true,
+    "h_decimal": null,
+    "h_hex": null,
+    "kind": "adaptive",
+    "requested_steps": null
+  },
+  "segment_boundary_conversion_count": 100,
+  "single_factor_diagnostic": true,
+  "status": "completed",
+  "support": "complete_total_degree_O4",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "trace_flush_every": 0,
+  "trace_io_s": 0.38486676901811734,
+  "trace_write_count": 1,
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "worktree_dirty": false
+}

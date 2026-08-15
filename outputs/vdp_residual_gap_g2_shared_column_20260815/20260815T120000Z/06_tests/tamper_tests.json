@@ -1,0 +1,21 @@
+{
+  "cases": [
+    {
+      "case": "raw_numeric_checksum_mutation",
+      "reason": "VerificationError: size mismatch: 04_matrix/fixed_curve.csv.gz",
+      "rejected": true
+    },
+    {
+      "case": "refinalized_semantic_conclusion_mutation",
+      "reason": "VerificationError: stored G2 decision",
+      "rejected": true
+    },
+    {
+      "case": "refinalized_required_oracle_deletion",
+      "reason": "VerificationError: invalid JSON /tmp/vdp-g2-tamper-j81rqjbm/required/03_oracle/independent_oracle.json: [Errno 2] No such file or directory: '/tmp/vdp-g2-tamper-j81rqjbm/required/03_oracle/independent_oracle.json'",
+      "rejected": true
+    }
+  ],
+  "passed": true,
+  "schema": "vdp_g2_evidence_tamper_tests_v1"
+}

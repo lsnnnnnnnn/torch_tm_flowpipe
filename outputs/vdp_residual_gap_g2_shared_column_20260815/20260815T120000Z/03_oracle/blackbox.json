@@ -1,0 +1,561 @@
+{
+  "arithmetic": "binary64_dyadic_fixtures",
+  "candidate": "normalized_insertion_bounded_shared_source_o4_g2",
+  "cases": {
+    "affine_shared_column_x2y": {
+      "observed": [
+        [
+          [
+            0,
+            0
+          ],
+          "0x1.0000000000000p+1"
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          "0x1.4000000000000p-1"
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          "0x1.0000000000000p-4"
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          "0x1.0000000000000p-9"
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          "0x1.c000000000000p+0"
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          "0x1.4000000000000p-2"
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          "0x1.8000000000000p-7"
+        ],
+        [
+          [
+            2,
+            0
+          ],
+          "0x1.0000000000000p-2"
+        ],
+        [
+          [
+            3,
+            0
+          ],
+          "-0x1.0000000000000p-4"
+        ]
+      ],
+      "x": [
+        [
+          [
+            0,
+            0
+          ],
+          "1"
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          "1/2"
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          "1/8"
+        ]
+      ],
+      "y": [
+        [
+          [
+            0,
+            0
+          ],
+          "2"
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          "-1/4"
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          "1/8"
+        ]
+      ]
+    },
+    "canonical_merge": {
+      "input_terms": [
+        [
+          [
+            1
+          ],
+          "1/2"
+        ],
+        [
+          [
+            1
+          ],
+          "1/4"
+        ],
+        [
+          [
+            1
+          ],
+          "-1/8"
+        ],
+        [
+          [
+            0
+          ],
+          "3/2"
+        ]
+      ],
+      "observed": [
+        [
+          [
+            0
+          ],
+          "0x1.8000000000000p+0"
+        ],
+        [
+          [
+            1
+          ],
+          "0x1.4000000000000p-1"
+        ]
+      ]
+    },
+    "degree4_truncation": {
+      "base": [
+        [
+          [
+            0,
+            0
+          ],
+          "1"
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          "1"
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          "1"
+        ]
+      ],
+      "dropped": [
+        [
+          [
+            0,
+            5
+          ],
+          "0x1.0000000000000p+0"
+        ],
+        [
+          [
+            1,
+            4
+          ],
+          "0x1.4000000000000p+2"
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            3,
+            2
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            4,
+            1
+          ],
+          "0x1.4000000000000p+2"
+        ],
+        [
+          [
+            5,
+            0
+          ],
+          "0x1.0000000000000p+0"
+        ]
+      ],
+      "kept": [
+        [
+          [
+            0,
+            0
+          ],
+          "0x1.0000000000000p+0"
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          "0x1.4000000000000p+2"
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          "0x1.4000000000000p+2"
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          "0x1.4000000000000p+2"
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          "0x1.4000000000000p+4"
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          "0x1.e000000000000p+4"
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          "0x1.4000000000000p+4"
+        ],
+        [
+          [
+            2,
+            0
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          "0x1.e000000000000p+4"
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          "0x1.e000000000000p+4"
+        ],
+        [
+          [
+            3,
+            0
+          ],
+          "0x1.4000000000000p+3"
+        ],
+        [
+          [
+            3,
+            1
+          ],
+          "0x1.4000000000000p+4"
+        ],
+        [
+          [
+            4,
+            0
+          ],
+          "0x1.4000000000000p+2"
+        ]
+      ],
+      "order": 4,
+      "power": 5
+    },
+    "oldest_current_retirement": {
+      "collapsed_interval_hex": [
+        "-0x1.0000000000004p-4",
+        "0x1.8000000000005p-4"
+      ],
+      "current_indices": [
+        4,
+        5
+      ],
+      "input": [
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "0x1.0000000000000p-2"
+        ],
+        [
+          [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "0x1.0000000000000p-4"
+        ],
+        [
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "0x1.0000000000000p-5"
+        ],
+        [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "0x1.0000000000000p-1"
+        ],
+        [
+          [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "0x1.0000000000000p-3"
+        ]
+      ],
+      "oldest_indices": [
+        2,
+        3
+      ],
+      "retained_after_collapse": [
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "0x1.0000000000000p-2"
+        ],
+        [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "0x1.0000000000000p-1"
+        ],
+        [
+          [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "0x1.0000000000000p-3"
+        ]
+      ],
+      "rotated_current": [
+        [
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "0x1.0000000000000p-2"
+        ],
+        [
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "0x1.0000000000000p-3"
+        ]
+      ]
+    },
+    "retry_atomicity": {
+      "accepted": false,
+      "after": {
+        "accepted_boundary_index": 0,
+        "base_dim": 2,
+        "collapse_count": 0,
+        "fingerprint": "571b07b91d2e6f57514a12a30b2929b6e74eb8cf2c13de1b1e02ff3241715321",
+        "fresh_active": [
+          false,
+          false
+        ],
+        "fresh_lineage": [
+          [],
+          []
+        ],
+        "fresh_radii_hex": [
+          "0x0.0p+0",
+          "0x0.0p+0"
+        ],
+        "fresh_source_ids": [
+          "",
+          ""
+        ],
+        "generation": 0,
+        "generations_retained": 2,
+        "live_source_count": 0,
+        "retained_active": [
+          false,
+          false
+        ],
+        "retained_lineage": [
+          [],
+          []
+        ],
+        "retained_payload_sha256": "643d5437104296e21d906ecb15b2c96ad278f20cfc4af53b12bb6069bd853726",
+        "retained_source_ids": [
+          "",
+          ""
+        ],
+        "retired_source_count": 0,
+        "schema": "complete_o4_g2_shared_column_carry",
+        "schema_version": 1,
+        "state_dim": 2,
+        "variable_count": 6
+      },
+      "before": {
+        "accepted_boundary_index": 0,
+        "base_dim": 2,
+        "collapse_count": 0,
+        "fingerprint": "571b07b91d2e6f57514a12a30b2929b6e74eb8cf2c13de1b1e02ff3241715321",
+        "fresh_active": [
+          false,
+          false
+        ],
+        "fresh_lineage": [
+          [],
+          []
+        ],
+        "fresh_radii_hex": [
+          "0x0.0p+0",
+          "0x0.0p+0"
+        ],
+        "fresh_source_ids": [
+          "",
+          ""
+        ],
+        "generation": 0,
+        "generations_retained": 2,
+        "live_source_count": 0,
+        "retained_active": [
+          false,
+          false
+        ],
+        "retained_lineage": [
+          [],
+          []
+        ],
+        "retained_payload_sha256": "643d5437104296e21d906ecb15b2c96ad278f20cfc4af53b12bb6069bd853726",
+        "retained_source_ids": [
+          "",
+          ""
+        ],
+        "retired_source_count": 0,
+        "schema": "complete_o4_g2_shared_column_carry",
+        "schema_version": 1,
+        "state_dim": 2,
+        "variable_count": 6
+      },
+      "object_identity_preserved": true,
+      "proposed_generation": 1
+    }
+  },
+  "schema": "g2_project_blackbox_coefficients_v1"
+}

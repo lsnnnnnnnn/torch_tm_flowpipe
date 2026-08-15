@@ -1,0 +1,97 @@
+{
+  "authoritative_scientific_lane": "CPU_float64_B1",
+  "candidate": "normalized_insertion_bounded_shared_source_o4_g2",
+  "cuda_available": true,
+  "cuda_over_cpu_full_solver_speedup": 0.43216273610296685,
+  "cuda_semantics": "implementation_consistency_only_not_formal_directed_rounding",
+  "full_solver_speedup_claimed": false,
+  "implementation_consistency": {
+    "comparison": "implementation_consistency_only_not_formal_directed_rounding",
+    "endpoint_fields_close": true,
+    "segment_fields_close": true
+  },
+  "kernel_only_speedup_extrapolated": false,
+  "rows": [
+    {
+      "accepted_steps": 10,
+      "batch": 1,
+      "completed_horizon": 0.1,
+      "dense_picard_range_validator_kernel_s": 5.091832261998206,
+      "device": "cpu",
+      "device_name": "x86_64",
+      "device_to_host_s": 0.0,
+      "endpoint_raw": {
+        "tightening_applied": false,
+        "width_sum": 0.6054222631634352,
+        "x_hi": 1.6263444200029198,
+        "x_lo": 1.3228734354314644,
+        "x_width": 0.3034709845714554,
+        "y_hi": 2.2210752262939555,
+        "y_lo": 1.9191239477019757,
+        "y_width": 0.3019512785919798
+      },
+      "fallback_count": 0,
+      "full_solver_runtime_s": 10.770035097026266,
+      "host_to_device_s": 0.0,
+      "last_segment_raw": {
+        "boundary_conversions": 2,
+        "index": 9,
+        "width_sum": 0.6725236684562428,
+        "x_hi": 1.62665981130057,
+        "x_lo": 1.3016612241888723,
+        "x_width": 0.3249985871116976,
+        "y_hi": 2.263134048456579,
+        "y_lo": 1.915608967112034,
+        "y_width": 0.3475250813445452
+      },
+      "nonkernel_nontransfer_solver_s": 5.67820283502806,
+      "relative_output": "full_solver_cpu_B1_T0p1",
+      "subprocess_wall_s": 12.408183374995133,
+      "timing_synchronized": true,
+      "trace_io_s": 0.07313197001349181,
+      "transfer_count": 0
+    },
+    {
+      "accepted_steps": 10,
+      "batch": 1,
+      "completed_horizon": 0.1,
+      "dense_picard_range_validator_kernel_s": 6.392799848050345,
+      "device": "cuda",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "device_to_host_s": 0.2692561090225354,
+      "endpoint_raw": {
+        "tightening_applied": false,
+        "width_sum": 0.6054222631634352,
+        "x_hi": 1.6263444200029198,
+        "x_lo": 1.3228734354314644,
+        "x_width": 0.3034709845714554,
+        "y_hi": 2.2210752262939555,
+        "y_lo": 1.9191239477019757,
+        "y_width": 0.3019512785919798
+      },
+      "fallback_count": 0,
+      "full_solver_runtime_s": 24.921248865983216,
+      "host_to_device_s": 0.2880250640155282,
+      "last_segment_raw": {
+        "boundary_conversions": 2,
+        "index": 9,
+        "width_sum": 0.6725236684562428,
+        "x_hi": 1.62665981130057,
+        "x_lo": 1.3016612241888723,
+        "x_width": 0.3249985871116976,
+        "y_hi": 2.263134048456579,
+        "y_lo": 1.915608967112034,
+        "y_width": 0.3475250813445452
+      },
+      "nonkernel_nontransfer_solver_s": 17.971167844894808,
+      "relative_output": "full_solver_cuda_B1_T0p1",
+      "subprocess_wall_s": 26.701389573019696,
+      "timing_synchronized": true,
+      "trace_io_s": 0.07395206499495544,
+      "transfer_count": 20
+    }
+  ],
+  "schema": "g2_cpu_cuda_full_solver_performance_v1",
+  "timing_note": "H2D and D2H cover the real sparse/dense boundary conversions; the synchronized kernel phase covers dense Picard construction, polynomial range extraction, and validation.",
+  "workload": "same_exact_decimal_B1_10_step_fixed_h0p01_T0p1"
+}
