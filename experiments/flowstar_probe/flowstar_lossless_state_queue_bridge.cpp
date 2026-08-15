@@ -585,8 +585,10 @@ void configure(
     vector<Interval> target(ode->expressions.size(), Interval(-1e-4, 1e-4));
     setting->setRemainderEstimation(target);
     vector<Interval> box(variables.size());
-    box[x_id] = Interval(1.1, 1.4);
-    box[y_id] = Interval(2.35, 2.45);
+    // Frozen 2026-08-15 lane: MPFR parses the decimal endpoints with directed
+    // rounding before Flowpipe's affine normalization.
+    box[x_id] = Interval("1.1", "1.4");
+    box[y_id] = Interval("2.35", "2.45");
     initial = new Flowpipe(box);
 }
 
@@ -594,7 +596,7 @@ Computational_Setting *observer_setting = NULL;
 string observer_directory;
 vector<Snapshot> captured;
 const set<unsigned long> selected_steps = {
-    1, 2, 10, 50, 99, 100, 101, 200, 300, 397, 474, 632
+    1, 2, 10, 50, 99, 100, 101, 200, 299, 300, 397, 474, 631, 632
 };
 
 string fixture_name(const unsigned long step, const string &phase)

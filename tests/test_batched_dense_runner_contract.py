@@ -21,6 +21,7 @@ def test_runner_loads_unmodified_authoritative_contract():
     runner = _runner_module()
     contract = runner.load_contract()
     assert contract["initial_box"] == [[1.1, 1.4], [2.35, 2.45]]
+    assert contract["initial_box_exact_decimal"] == [["1.1", "1.4"], ["2.35", "2.45"]]
     assert contract["requested_order"] == 4
     assert contract["target_remainder_radius"] == 1e-4
     assert contract["cutoff"] == 1e-10
@@ -69,6 +70,7 @@ def test_dense_runner_writes_fail_closed_parseable_outputs(tmp_path):
         "segments.csv",
         "checkpoints.csv",
         "remainder_ledger.jsonl",
+        "owner_ledger.jsonl",
         "range_trace.jsonl",
         "profile.csv",
         "summary.json",
@@ -113,6 +115,10 @@ def test_dense_runner_fixed_schedule_has_exact_binary64_trace(tmp_path):
     assert summary["partition"] == "B1"
     assert summary["fallback_count"] == 0
     assert summary["endpoint_repair_used"] is False
+    assert summary["initialization_contract"] == "binary64_literal_matched_contract"
+    assert summary["host_to_device_s"] == 0.0
+    assert summary["device_to_host_s"] == 0.0
+    assert summary["dense_kernel_s"] > 0.0
     assert summary["peak_rss_bytes"] > 0
     assert summary["trace_flush_every"] == 0
     assert summary["trace_write_count"] == 1

@@ -133,20 +133,23 @@ def _settings_rows(template: Mapping[str, str]) -> list[tuple[str, str]]:
     return rows
 
 
-def export_torch_initial_state(template_path: Path, output_path: Path) -> dict[str, object]:
-    """Export a real Torch float64 normal state into the shared schema."""
+def export_torch_normal_state(
+    state: FlowstarNormalFlowpipeState,
+    template_path: Path,
+    output_path: Path,
+    *,
+    local_time: float,
+    phase: str = "torch_state",
+) -> dict[str, object]:
+    """Export an actual Torch normal prestate without dropping its TM payload."""
 
-    state = FlowstarNormalFlowpipeState.from_initial_box(
-        [Interval(1.1, 1.4), Interval(2.35, 2.45)],
-        order=4,
-    )
     template = parse_file(template_path)
     rows: list[tuple[str, str]] = [
         ("schema", SCHEMA),
         ("producer", "torch_binary64"),
-        ("phase", "torch_state"),
+        ("phase", str(phase)),
         ("step", str(state.step_index)),
-        ("local_time", encode_binary64(0.0)),
+        ("local_time", encode_binary64(float(local_time))),
         ("state_dimension", str(len(state.tmv_pre))),
         ("variable_dimension", str(len(state.domain))),
     ]
@@ -195,6 +198,21 @@ def export_torch_initial_state(template_path: Path, output_path: Path) -> dict[s
     }
 
 
+def export_torch_initial_state(template_path: Path, output_path: Path) -> dict[str, object]:
+    """Export the historical real Torch float64 initial state."""
+
+    state = FlowstarNormalFlowpipeState.from_initial_box(
+        [Interval(1.1, 1.4), Interval(2.35, 2.45)],
+        order=4,
+    )
+    return export_torch_normal_state(
+        state,
+        template_path,
+        output_path,
+        local_time=0.0,
+    )
+
+
 def iter_canonical_dyadics(records: Mapping[str, str]) -> Iterable[tuple[str, str]]:
     for key, value in records.items():
         if key == "local_time" or key == "settings.local_step":
@@ -208,6 +226,7 @@ __all__ = [
     "decode_binary64_exact",
     "encode_binary64",
     "export_torch_initial_state",
+    "export_torch_normal_state",
     "iter_canonical_dyadics",
     "parse_file",
     "parse_records",

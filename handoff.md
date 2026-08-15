@@ -1,83 +1,77 @@
-# Flow*–Torch T=1/T=3 bounded-source carry handoff — 2026-08-14
+# Flow*–Torch VDP residual-gap/G2 handoff — 2026-08-15
 
 Current scientific decision:
 
-`T1_T3_WIDTH_CAUSE_CLOSED__EARLY_GAP_IMPROVED__TERMINAL_STILL_OPEN`
+`G2_MECHANISM_IMPROVED__PRODUCTION_GATE_NOT_MET`
 
-This experiment refines the carry diagnosis without superseding the broader
-canonical compatibility outcomes:
-`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
-`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`,
-`CARRY_MISSING_SYMBOLIC_SEMANTICS`, and `NO_FIX_AUTHORIZED`.
+This is the only current candidate conclusion. Total attribution separately
+remains `LOSSLESS_CROSS_OPERATOR_CELL_UNAVAILABLE__TOTAL_CAUSE_OPEN`. The
+2026-08-14 G1 measurements remain valid, but their former unqualified
+`T1_T3_WIDTH_CAUSE_CLOSED` label is superseded by
+`docs/VDP_G1_CAUSAL_CLAIM_ERRATUM_20260815.md`.
 
-## Result
+## Current result
 
-The T=1 gap is the accumulated cost of repeatedly materializing shared
-parameterization uncertainty at accepted boundaries. By T=3, the same loss has
-been applied hundreds of times. Near T=6.32, the wider prestate is fed through
-the quadratic/cubic uncertainty terms of `x^2 y`, producing nonlinear positive
-feedback rather than constant linear growth.
+G1's affine source is a real next-step dense-Picard polynomial input: payload
+tampering changes the consumer and metadata-only tampering does not. Its fixed
+reductions account for only about 0.147%–0.465% of the T=1 legacy excess,
+0.211%–0.227% at T=3, and 0.261%–0.307% at T=6.32.
 
-The authoritative raw ledger reproduces legacy excess ranges
-`0.002715–0.008898` at T=1, `0.047013–0.048814` at T=3, and
-`0.763437–1.468248` at T=6.32. Direct raw Flow* minima are all greater than
-0.0086; the apparent graph zero remains a projection artifact.
+Step 1 already contains a local Flow*–Torch operator delta before any old
+`J/Phi_L` source crosses an accepted boundary. The existing lossless bridge
+proves Flow* native round-trip and native continuation, but the two full-state
+cross-operator cells remain unavailable because neither operator can consume
+the other tool's complete state without dropping dimensions or `Phi_L/J`.
+Total T=1/T=3 attribution is therefore open.
 
-The preregistered production candidate is
-`normalized_insertion_bounded_source_ledger_o4_g1`. It has exactly one live
-source per state component for one Picard generation, a fixed `2d` boundary
-shape, immutable retry state, and no fallback. All 13 independent micro-oracles
-and actual payload/metadata consumer tests pass. The first causally active field
-is the affine source coefficient in the next dense Picard input.
+Frozen same-prestate interventions show G1 identity is better than
+ordinary-materializing the same source, while legacy rebox remains slightly
+better than G1 on those isolated prestates. The thirteen prior micro-oracles
+are project-core-backed, not implementation-independent.
 
-Fresh fixed-schedule reductions versus legacy are:
+The sole fixed-shape `3d`/two-generation G2 candidate enters the real dense
+Picard consumer and passes the independent exact-rational, containment,
+rotation, no-double-count, retry, and checkpoint/resume gates. It is narrower
+than G1 in all four fixed channels at T=1, T=3, and T=6.32. However, it removes
+only about `0.265%–0.280%` of legacy excess at T=3 and
+`0.442%–0.529%` at T=6.32, far below the required 10%.
 
-- T=1: `1.26e-5–2.38e-5` across the four endpoint/segment channels;
-- T=3: `9.92e-5–1.11e-4`;
-- T=6.32: `0.00199–0.00450`.
+Native G2 stops at `6.384691066788196`: later than G1's
+`6.382737816137232`, but earlier than legacy's `6.397083942944808`. It does not
+reach T=10 and is not a production success. The V100 B1 full solver is slower
+than CPU (speedup ratio about `0.432`); no GPU speedup is claimed.
 
-No ratio crossing above 1.1/1.5/2/5 moves at 0.01 resolution. The dominant
-post-boundary mass at 6.32 remains ordinary (`2.1933445893`) rather than fresh
-structured (`0.00018633694`), explaining the limited effect.
+Historical orthogonal compatibility tokens retained by repository-wide status tests are `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`, `DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`, `CARRY_MISSING_SYMBOLIC_SEMANTICS`, and `NO_FIX_AUTHORIZED`.
+They describe older scopes and are not competing current G2 conclusions.
 
-Native G1 completes T=1/T=3/T=6 but accepts only 300 segments through
-`6.382737816137232`; legacy accepts 307 through `6.397083942944808`. Fresh
-T=7.5/T=10 requests repeat those stops. The candidate therefore improves the
-early curve but does not close the terminal and is slightly worse in native
-horizon.
+Detailed current reports:
 
-The V100 provides no speedup: the synchronized lift kernel is slower for
-B1/B8/B64/B256/B512, and the full T=0.1 candidate is 16.38 s on V100 versus
-5.47 s on CPU. CPU float64 B1 remains authoritative.
+- `docs/VDP_G1_CAUSAL_CLAIM_ERRATUM_20260815.md`
+- `docs/VDP_T1_T3_RESIDUAL_CAUSAL_DECOMPOSITION_20260815.md`
+- `docs/COMPLETE_O4_G2_SHARED_COLUMN_CONTRACT_20260815.md`
+- `docs/VDP_G2_SHARED_COLUMN_RESULT_20260815.md`
 
-Gate A's exact-decimal outward initialization is also complete in both audit
-drivers and consumed by the real step path. Its 1e-16 correction is not the
-long-horizon cause.
+## Historical sections
 
-Detailed contract and report:
+The material below is retained only as a historical record. Its local evidence
+and publication metadata remain useful, but any historical "current" or
+`CAUSE_CLOSED` wording is superseded by the single current conclusion above.
 
-- `docs/COMPLETE_O4_BOUNDED_SOURCE_LEDGER_CONTRACT_20260814.md`
-- `docs/VDP_T1_T3_WIDTH_CAUSAL_REPORT_20260814.md`
+---
 
-Evidence package:
+# Historical G1 bounded-source carry handoff — 2026-08-14
 
-`outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z`
-
-Scientific commit:
-`8ac2962bf691dd81ae5d06a9ea146bb011b7ec42`.
-
-That exact SHA was pushed, cloned again from GitHub, checked out detached, and
-accepted independently: package verifier PASS, `compileall` PASS, focused
-41/41, full pytest 745 passed plus 2 skipped, and clean clone status. The
-attestation is the immediate child commit containing
-`07_acceptance/scientific_acceptance.json`; no scientific source is changed by
-that commit. The scientific result above is frozen.
+See `docs/VDP_T1_T3_WIDTH_CAUSAL_REPORT_20260814.md` and
+`outputs/vdp_t1_t3_width_causal_source_ledger_20260814/20260814T120000Z`.
+Scientific SHA: `8ac2962bf691dd81ae5d06a9ea146bb011b7ec42`; attestation SHA:
+`771948ef7592d5b5c81e35e36ba4aa067674821e`.
 
 ---
 
 # Prior Flow*–Torch step-1 oracle handoff — 2026-08-14
 
-Current decision: fail closed at Gate D; no candidate is authorized.
+Historical decision at that checkpoint: fail closed at Gate D; no candidate
+was authorized.
 
 The canonical broader outcomes remain
 `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,
@@ -106,7 +100,7 @@ negative result refines their mechanism evidence without superseding them.
    input encoding on both engines. Gates C/D must then be rerun before any
    operator candidate.
 
-## Current status table
+## Historical status table
 
 ```text
 COMMON_STEP1_MATHEMATICAL_INPUT_CLOSED
@@ -167,7 +161,7 @@ Detailed reports:
 
 # Prior Flow*–Torch causal mechanism closure handoff — 2026-08-13
 
-Final scientific decision: `NO_FIX_AUTHORIZED`.
+Historical scientific decision at that checkpoint: `NO_FIX_AUTHORIZED`.
 
 Repository-level compatibility context (historical suites remain superseded
 where their own banners say so): `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`,

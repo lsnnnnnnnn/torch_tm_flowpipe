@@ -129,9 +129,19 @@ class DenseExecutionCounters:
     inner_loop_scalar_count: int = 0
     range_subdivision_invocations: int = 0
     range_leaf_evaluations: int = 0
+    host_to_device_s: float = 0.0
+    dense_kernel_s: float = 0.0
+    device_to_host_s: float = 0.0
 
-    def as_dict(self) -> dict[str, int]:
-        return {name: int(getattr(self, name)) for name in self.__dataclass_fields__}
+    def as_dict(self) -> dict[str, int | float]:
+        return {
+            name: (
+                float(getattr(self, name))
+                if name.endswith("_s")
+                else int(getattr(self, name))
+            )
+            for name in self.__dataclass_fields__
+        }
 
 
 @dataclass(frozen=True)
@@ -2578,6 +2588,11 @@ def sparse_tmvector_to_dense(
     if not isinstance(tmv, TMVector) or len(tmv) == 0:
         raise TypeError("sparse_tmvector_to_dense requires a non-empty TMVector")
     n_vars = tmv.n_vars
+    source_device = tmv[0].polynomial.device
+    transferring = torch.device(source_device) != torch.device(device)
+    if transferring and torch.device(device).type == "cuda":
+        torch.cuda.synchronize(torch.device(device))
+    transfer_started = time.perf_counter()
     basis = BatchedMonomialBasis.build(n_vars, int(order), str(torch.device(device)))
     coeffs = torch.zeros((1, len(tmv), basis.num_terms), dtype=dtype, device=device)
     rem_lo = torch.empty((1, len(tmv)), dtype=dtype, device=device)
@@ -2599,9 +2614,11 @@ def sparse_tmvector_to_dense(
         counters.boundary_scalar_loop_count += 1
         counters.segment_boundary_conversions += int(segment_boundary)
         counters.inner_loop_conversions += int(not segment_boundary)
-        source_device = tmv[0].polynomial.device
-        if torch.device(source_device) != torch.device(device):
+        if transferring:
+            if torch.device(device).type == "cuda":
+                torch.cuda.synchronize(torch.device(device))
             counters.device_transfer_count += 1
+            counters.host_to_device_s += time.perf_counter() - transfer_started
     return BatchedTaylorModel(
         BatchedPolynomial(coeffs, basis),
         rem_lo,
@@ -2628,6 +2645,10 @@ def dense_to_sparse_tmvector(
 
     if model.poly.batch != 1:
         raise ValueError("dense-to-sparse boundary conversion currently requires batch=1")
+    transferring = model.poly.coeffs.device.type != "cpu"
+    if transferring:
+        torch.cuda.synchronize(model.poly.coeffs.device)
+    transfer_started = time.perf_counter()
     exponents = [tuple(int(value) for value in row) for row in model.poly.basis.exponents.detach().cpu().tolist()]
     domain = [Interval(lo.detach().clone(), hi.detach().clone()) for lo, hi in zip(model.domain_lo[0], model.domain_hi[0])]
     models = []
@@ -2650,8 +2671,10 @@ def dense_to_sparse_tmvector(
         counters.boundary_scalar_loop_count += 1
         counters.segment_boundary_conversions += int(segment_boundary)
         counters.inner_loop_conversions += int(not segment_boundary)
-        if model.poly.coeffs.device.type != "cpu":
+        if transferring:
+            torch.cuda.synchronize(model.poly.coeffs.device)
             counters.device_transfer_count += 1
+            counters.device_to_host_s += time.perf_counter() - transfer_started
     return TMVector(models)
 
 

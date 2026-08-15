@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import time
 from dataclasses import dataclass, replace
 from fractions import Fraction
 from typing import Any, Callable, Iterable, List, Mapping, Sequence
@@ -43,6 +44,17 @@ from .source_ledger import (
     collapse_source_polynomial,
     commit_or_preserve as source_ledger_commit_or_preserve,
     source_payload_hash,
+)
+from .g2_shared_column import (
+    G2_SHARED_COLUMN_CANDIDATE,
+    G2SharedColumnState,
+    accepted_successor as g2_accepted_successor,
+    commit_or_preserve as g2_commit_or_preserve,
+    owner_rows as g2_owner_rows,
+    partition_source_terms as g2_partition_source_terms,
+    polynomial_payload_sha256 as g2_polynomial_payload_sha256,
+    polynomial_table as g2_polynomial_table,
+    rotate_current_to_retained as g2_rotate_current_to_retained,
 )
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
@@ -167,6 +179,8 @@ class FlowstarNormalFlowpipeState:
     complete_initial_tm: TMVector | None = None
     structured_remainder_state: Any | None = None
     bounded_source_ledger_state: BoundedSourceLedgerState | None = None
+    g2_shared_column_state: G2SharedColumnState | None = None
+    g2_retained_source_tm: TMVector | None = None
 
     @staticmethod
     def from_initial_box(
@@ -259,6 +273,7 @@ class FlowstarNormalFlowpipeState:
     def endpoint_tm(self) -> TMVector:
         models: list[TaylorModel] = []
         source_state = self.bounded_source_ledger_state
+        g2_state = self.g2_shared_column_state
         for index, (model, center, scale) in enumerate(zip(self.tmv_right, self.center, self.scales)):
             physical = (model * float(scale)) + float(center)
             if source_state is not None and source_state.active[index]:
@@ -269,6 +284,18 @@ class FlowstarNormalFlowpipeState:
                     order=model.order,
                 )
                 physical = physical + source * radius
+            if g2_state is not None:
+                if self.g2_retained_source_tm is None:
+                    raise ValueError("G2 normal state is missing retained polynomial payload")
+                physical = physical + self.g2_retained_source_tm[index]
+                if g2_state.fresh_active[index]:
+                    radius = float.fromhex(g2_state.fresh_radii_hex[index])
+                    source = TaylorModel.variable(
+                        2 * g2_state.state_dim + index,
+                        self.domain,
+                        order=model.order,
+                    )
+                    physical = physical + source * radius
             models.append(physical)
         return TMVector(models)
 
@@ -276,6 +303,17 @@ class FlowstarNormalFlowpipeState:
         return self.endpoint_tm().range_box()
 
     def normalized_initial_tm(self, order: int | None = None) -> TMVector:
+        if self.g2_shared_column_state is not None:
+            if self.g2_retained_source_tm is None:
+                raise ValueError("G2 normal state is missing retained polynomial payload")
+            return _g2_shared_column_reset_tm(
+                self.center,
+                self.scales,
+                self.g2_retained_source_tm,
+                self.g2_shared_column_state,
+                int(order) if order is not None else _tm_max_degree(self.tmv_pre),
+                self.domain,
+            )
         if self.bounded_source_ledger_state is not None:
             return _bounded_source_ledger_affine_reset_tm(
                 self.center,
@@ -310,6 +348,16 @@ class FlowstarNormalFlowpipeState:
                 for model, rem in zip(tmv, self.initial_remainders)
             )
         return tmv
+
+    def with_bounded_source_g1(self, order: int) -> "FlowstarNormalFlowpipeState":
+        """Return the explicitly initialized fixed-2d G1 state."""
+
+        return _initialize_bounded_source_normal_state(self, int(order))
+
+    def with_g2_shared_columns(self, order: int) -> "FlowstarNormalFlowpipeState":
+        """Return the explicitly initialized fixed-3d G2 state."""
+
+        return _initialize_g2_shared_column_normal_state(self, int(order))
 
     def diagnostic_widths(self) -> dict[str, Any]:
         diagnostics = {
@@ -853,6 +901,133 @@ def _initialize_bounded_source_normal_state(
     return initialized
 
 
+def _g2_zero_retained_tm(
+    state_dim: int,
+    domain: Sequence[Interval],
+    order: int,
+) -> TMVector:
+    dim = int(state_dim)
+    domain_l = list(domain)
+    if len(domain_l) != 3 * dim:
+        raise ValueError("G2 retained payload requires exactly 3d variables")
+    dtype = domain_l[0].lo.dtype
+    device = domain_l[0].lo.device
+    return TMVector(
+        TaylorModel(
+            Polynomial.zero(3 * dim, dtype=dtype, device=device),
+            Interval.zero(dtype=dtype, device=device),
+            domain_l,
+            order=int(order),
+        )
+        for _ in range(dim)
+    )
+
+
+def _g2_shared_column_reset_tm(
+    centers: Sequence[Any],
+    scales: Sequence[Any],
+    retained_tm: TMVector,
+    source_state: G2SharedColumnState,
+    order: int,
+    domain: Sequence[Interval],
+) -> TMVector:
+    """Build the sole G2 physical reset consumed by the next dense Picard."""
+
+    dim = source_state.state_dim
+    domain_l = list(domain)
+    if len(domain_l) != 3 * dim or retained_tm.n_vars != 3 * dim:
+        raise ValueError("G2 reset is fixed to exactly 3d variables")
+    if len(centers) != dim or len(scales) != dim or len(retained_tm) != dim:
+        raise ValueError("G2 reset state dimension mismatch")
+    if g2_polynomial_payload_sha256([model.polynomial for model in retained_tm]) != source_state.retained_payload_sha256:
+        raise ValueError("G2 retained polynomial payload hash mismatch")
+    if any(
+        not torch.equal(retained_interval.lo, reset_interval.lo)
+        or not torch.equal(retained_interval.hi, reset_interval.hi)
+        for retained_interval, reset_interval in zip(retained_tm.domain, domain_l)
+    ):
+        raise ValueError("G2 retained polynomial domain mismatch")
+    dtype = domain_l[0].lo.dtype
+    device = domain_l[0].lo.device
+    models: list[TaylorModel] = []
+    for index in range(dim):
+        retained = retained_tm[index]
+        if bool(torch.any(retained.remainder.lo != 0) or torch.any(retained.remainder.hi != 0)):
+            raise ValueError("G2 retained sources cannot carry an ordinary remainder")
+        poly = retained.polynomial
+        if any(
+            exponent[2 * dim + offset]
+            for exponent in poly.terms
+            for offset in range(dim)
+        ):
+            raise ValueError("G2 retained payload illegally occupies the fresh bank")
+        poly = poly + Polynomial.constant(
+            torch.as_tensor(centers[index], dtype=dtype, device=device), 3 * dim
+        )
+        scale = torch.as_tensor(scales[index], dtype=dtype, device=device)
+        if bool(torch.any(scale != 0)):
+            poly = poly + Polynomial.variable(index, 3 * dim, dtype=dtype, device=device) * scale
+        if source_state.fresh_active[index]:
+            radius = torch.as_tensor(
+                float.fromhex(source_state.fresh_radii_hex[index]),
+                dtype=dtype,
+                device=device,
+            )
+            if bool(torch.any(radius != 0)):
+                poly = poly + Polynomial.variable(
+                    2 * dim + index, 3 * dim, dtype=dtype, device=device
+                ) * radius
+        models.append(
+            TaylorModel(
+                poly,
+                Interval.zero(dtype=dtype, device=device),
+                domain_l,
+                order=int(order),
+            )
+        )
+    return TMVector(models)
+
+
+def _initialize_g2_shared_column_normal_state(
+    state: FlowstarNormalFlowpipeState,
+    order: int,
+) -> FlowstarNormalFlowpipeState:
+    """Extend the initial normal state with two inactive d-slot banks."""
+
+    dim = len(state.center)
+    if len(state.domain) != dim or state.tmv_right.n_vars != dim:
+        raise ValueError("G2 initialization requires the canonical d-variable normal state")
+    tmv_pre = state.tmv_pre
+    tmv_right = state.tmv_right
+    domain = list(state.domain)
+    for _ in range(2 * dim):
+        unit = _unit_interval_like(domain[0])
+        tmv_pre = tmv_pre.extend_domain(unit)
+        tmv_right = tmv_right.extend_domain(unit)
+        domain.append(unit)
+    source_state = G2SharedColumnState.initial(dim)
+    retained = _g2_zero_retained_tm(dim, domain, order)
+    initialized = replace(
+        state,
+        tmv_pre=tmv_pre,
+        tmv_right=tmv_right,
+        domain=domain,
+        g2_shared_column_state=source_state,
+        g2_retained_source_tm=retained,
+        diagnostics={
+            **dict(state.diagnostics or {}),
+            "reset_mode": G2_SHARED_COLUMN_CANDIDATE,
+            "g2_initial_state": True,
+            "g2_schema": source_state.schema,
+            "g2_fingerprint": source_state.fingerprint,
+            "g2_variable_count": 3 * dim,
+            "g2_live_source_count": 0,
+        },
+    )
+    initialized.normalized_initial_tm(order)
+    return initialized
+
+
 def _tm_with_order(model: TaylorModel, order: int) -> TaylorModel:
     return TaylorModel(
         model.polynomial,
@@ -950,6 +1125,7 @@ def _insert_ctrunc_normal_like_scalar(
     kept, dropped = acc.polynomial.truncate(int(order))
     trunc_range = _poly_interval_with_split(dropped, out_domain, acc.truncation_range_split)
     cutoff_kept, cutoff_range = kept.cutoff(cutoff_threshold, out_domain)
+    cutoff_removed = kept - cutoff_kept
     remainder = acc.remainder + outer.remainder + trunc_range + cutoff_range
     result = TaylorModel(
         cutoff_kept,
@@ -970,6 +1146,36 @@ def _insert_ctrunc_normal_like_scalar(
     _diag_add_component_width(diagnostics, "output_remainder_width", result.remainder, component_index)
     _diag_add_count(diagnostics, "terms_before_insertion_truncation", len(acc.polynomial.terms))
     _diag_add_count(diagnostics, "terms_after_insertion", len(result.polynomial.terms))
+    if diagnostics is not None:
+        owner_rows = diagnostics.setdefault("_insertion_owner_rows", [])
+        if not isinstance(owner_rows, list):
+            raise ValueError("insertion owner diagnostics must be a list")
+        for category, owner_poly, enclosure in (
+            ("insertion_truncation", dropped, trunc_range),
+            ("insertion_cutoff", cutoff_removed, cutoff_range),
+        ):
+            payload = g2_polynomial_table(owner_poly)
+            owner_rows.append(
+                {
+                    "category": category,
+                    "component": component_index,
+                    "canonical_support_sha256": hashlib.sha256(
+                        json.dumps(
+                            [row[0] for row in payload],
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode("utf-8")
+                    ).hexdigest(),
+                    "coefficient_payload_sha256": hashlib.sha256(
+                        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+                    ).hexdigest(),
+                    "term_count": len(owner_poly.terms),
+                    "outward_lo_hex": float(enclosure.lo.detach().cpu()).hex(),
+                    "outward_hi_hex": float(enclosure.hi.detach().cpu()).hex(),
+                    "width": float(enclosure.width().detach().cpu()),
+                    "containment_witness": "discarded_canonical_polynomial_outward_range",
+                }
+            )
     return result
 
 
@@ -2077,7 +2283,35 @@ def _flowstar_bounded_source_ledger_transition(
     # consumer.  Duplicate full exponents have already merged in Polynomial.
     collapsed_models: list[TaylorModel] = []
     collapse_rows: list[dict[str, Any]] = []
+    retired_owner_rows: list[Mapping[str, Any]] = []
+    carried_ordinary_rows: list[dict[str, Any]] = []
     for component, model in enumerate(inserted):
+        ordinary_lo = float(model.remainder.lo.detach().cpu())
+        ordinary_hi = float(model.remainder.hi.detach().cpu())
+        carried_ordinary_rows.append(
+            {
+                "category": "ordinary_parameterization_composition_remainder",
+                "component": component,
+                "outward_lo_hex": ordinary_lo.hex(),
+                "outward_hi_hex": ordinary_hi.hex(),
+                "width": ordinary_hi - ordinary_lo,
+                "canonical_support_sha256": hashlib.sha256(
+                    f"ordinary_parameterization:{component}:{ordinary_lo.hex()}:{ordinary_hi.hex()}".encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "actual_inserted_TaylorModel_ordinary_remainder",
+                "owner_resolution": "cumulative_preexisting_ordinary_dependency_not_recoverably_additive",
+            }
+        )
+        retired_owner_rows.extend(
+            g2_owner_rows(
+                model.polynomial,
+                previous_state.domain,
+                component=component,
+                oldest_indices=source_before.source_indices,
+                current_indices=(),
+                oldest_source_ids=source_before.source_ids,
+            )
+        )
         collapse = collapse_source_polynomial(
             model.polynomial,
             previous_state.domain,
@@ -2125,7 +2359,8 @@ def _flowstar_bounded_source_ledger_transition(
     scale_box = collapsed.range_box()
     scales: list[float] = []
     inv_scales: list[float] = []
-    for interval in scale_box:
+    rebox_rows: list[dict[str, Any]] = []
+    for component, interval in enumerate(scale_box):
         magnitude = _interval_magnitude(interval)
         scale = 0.0 if magnitude is None or magnitude == 0.0 else float(magnitude)
         # Normal range and later outward sums must remain inside [-1,1]
@@ -2135,6 +2370,17 @@ def _flowstar_bounded_source_ledger_transition(
                 scale = math.nextafter(scale, math.inf)
         scales.append(scale)
         inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
+        rebox_rows.append(
+            {
+                "component": component,
+                "input_lo_hex": float(interval.lo.detach().cpu()).hex(),
+                "input_hi_hex": float(interval.hi.detach().cpu()).hex(),
+                "input_width": float(interval.width().detach().cpu()),
+                "symmetric_output_width": 2.0 * scale,
+                "additional_width": max(0.0, 2.0 * scale - float(interval.width().detach().cpu())),
+                "fresh_source_excluded": True,
+            }
+        )
     tmv_right = _scale_tmvector_components(collapsed, inv_scales)
     right_box = tmv_right.range_box()
     if any(float(interval.lo) < -1.0 or float(interval.hi) > 1.0 for interval in right_box):
@@ -2176,12 +2422,38 @@ def _flowstar_bounded_source_ledger_transition(
 
     structured_width = float(torch.sum(2.0 * lift.radius).detach().cpu())
     ordinary_width = sum(float(model.remainder.width().detach().cpu()) for model in collapsed)
+    dense_owner_rows: list[dict[str, Any]] = []
+    for category in REMAINDER_LEDGER_CATEGORIES:
+        entry_lo, entry_hi = decomposition.ledger.entries[category]
+        for component in range(dim):
+            lo = float(entry_lo[0, component].detach().cpu())
+            hi = float(entry_hi[0, component].detach().cpu())
+            dense_owner_rows.append(
+                {
+                    "category": category,
+                    "component": component,
+                    "outward_lo_hex": lo.hex(),
+                    "outward_hi_hex": hi.hex(),
+                    "width": hi - lo,
+                    "canonical_support_sha256": hashlib.sha256(
+                        f"{category}:{component}:{lo.hex()}:{hi.hex()}".encode("utf-8")
+                    ).hexdigest(),
+                    "containment_witness": "complete_dense_validated_ledger_contains_unchanged_image",
+                }
+            )
     diagnostics.update(
         {
             "source_ledger_post_fingerprint": source_after.fingerprint,
             "source_ledger_live_source_count": source_after.live_source_count,
             "source_ledger_source_ids": list(source_after.source_ids),
             "source_ledger_collapse_rows": collapse_rows,
+            "source_ledger_retired_owner_rows": retired_owner_rows,
+            "source_ledger_carried_ordinary_owner_rows": carried_ordinary_rows,
+            "source_ledger_dense_owner_rows": dense_owner_rows,
+            "source_ledger_insertion_owner_rows": list(diagnostics.pop("_insertion_owner_rows", [])),
+            "source_ledger_rebox_owner_rows": rebox_rows,
+            "source_ledger_owner_intervals_additive": False,
+            "source_ledger_owner_interaction_policy": "owner intervals retained; no exact additive claim",
             "source_ledger_collapse_count": source_after.collapse_count,
             "source_ledger_retired_source_count": source_after.retired_source_count,
             "source_ledger_affine_lift": lift.as_dict(),
@@ -2212,6 +2484,320 @@ def _flowstar_bounded_source_ledger_transition(
         step_index=int(previous_state.step_index) + 1,
         diagnostics=diagnostics,
         bounded_source_ledger_state=source_after,
+    )
+    diagnostics.update(state.diagnostic_widths())
+    return reset_tm, state, diagnostics
+
+
+def _flowstar_g2_shared_column_transition(
+    seg: FlowpipeSegment,
+    previous_state: FlowstarNormalFlowpipeState,
+    order: int,
+    *,
+    cutoff_threshold: float | None,
+    right_map_range_mode: str,
+    right_map_center_mode: str,
+) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
+    """Commit the fixed-3d two-generation G2 boundary, or fail closed."""
+
+    from .batched_dense_tm import REMAINDER_LEDGER_CATEGORIES
+
+    source_before = previous_state.g2_shared_column_state
+    retained_before = previous_state.g2_retained_source_tm
+    if not isinstance(source_before, G2SharedColumnState) or retained_before is None:
+        raise ValueError("G2 transition requires initialized accepted source state")
+    if seg.status != "validated" or seg.validated_remainder_decomposition is None:
+        raise ValueError("G2 transition requires an accepted complete dense ledger")
+    decomposition = seg.validated_remainder_decomposition
+    if not bool(torch.all(decomposition.contains_image)):
+        raise FloatingPointError("G2 complete ledger does not contain accepted Picard image")
+    if decomposition.ledger.category_order != REMAINDER_LEDGER_CATEGORIES:
+        raise ValueError("G2 requires the complete O4 owner-ledger schema")
+    dim = source_before.state_dim
+    if len(seg.final_tm) != dim or len(previous_state.center) != dim:
+        raise ValueError("G2 state dimension disagrees with accepted endpoint")
+    if len(previous_state.domain) != 3 * dim or seg.final_tm.n_vars != 3 * dim:
+        raise ValueError("G2 boundary shape must remain exactly 3d")
+    if retained_before.n_vars != 3 * dim or len(retained_before) != dim:
+        raise ValueError("G2 retained source payload shape mismatch")
+    if right_map_range_mode != "standard" or right_map_center_mode != "constant":
+        raise ValueError("G2 preregistration freezes standard range and constant center modes")
+
+    diagnostics: dict[str, Any] = {
+        "reset_mode": G2_SHARED_COLUMN_CANDIDATE,
+        "step_index": int(previous_state.step_index) + 1,
+        "g2_schema": source_before.schema,
+        "g2_schema_version": source_before.schema_version,
+        "g2_source_generations": 2,
+        "g2_pre_fingerprint": source_before.fingerprint,
+        "g2_pre_live_source_count": source_before.live_source_count,
+        "g2_boundary_atomicity": "accepted_only_immutable_commit",
+        "g2_variable_count": 3 * dim,
+        "g2_no_fallback": True,
+    }
+
+    # Compose base dependency through the right map and both source banks by
+    # identity.  Thus a source ID is shared by x and y and by every nonlinear
+    # path in the just-completed real dense Picard consumer.
+    inner_models = list(previous_state.tmv_right)
+    inner_models.extend(
+        TaylorModel.variable(dim + index, previous_state.domain, order=order)
+        for index in range(2 * dim)
+    )
+    augmented_inner = TMVector(inner_models)
+    endpoint_without_constants = _tmvector_without_remainder(
+        _tmvector_rm_constants(seg.final_tm)
+    )
+    inserted = insert_ctrunc_normal_like(
+        endpoint_without_constants,
+        augmented_inner,
+        int(order),
+        cutoff_threshold,
+        previous_state.domain,
+        diagnostics,
+    )
+    assert isinstance(inserted, TMVector)
+
+    # Collapse every term containing oldest, including oldest*current terms.
+    # Only the surviving current-bearing polynomial is renamed into retained
+    # slots; the source-free part and all collapse/remainder mass are reboxed.
+    base_models: list[TaylorModel] = []
+    retained_models: list[TaylorModel] = []
+    collapse_rows: list[dict[str, Any]] = []
+    retired_owner_rows: list[Mapping[str, Any]] = []
+    carried_ordinary_rows: list[dict[str, Any]] = []
+    for component, model in enumerate(inserted):
+        ordinary_lo = float(model.remainder.lo.detach().cpu())
+        ordinary_hi = float(model.remainder.hi.detach().cpu())
+        carried_ordinary_rows.append(
+            {
+                "category": "ordinary_parameterization_composition_remainder",
+                "component": component,
+                "outward_lo_hex": ordinary_lo.hex(),
+                "outward_hi_hex": ordinary_hi.hex(),
+                "width": ordinary_hi - ordinary_lo,
+                "canonical_support_sha256": hashlib.sha256(
+                    f"ordinary_parameterization:{component}:{ordinary_lo.hex()}:{ordinary_hi.hex()}".encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "actual_inserted_TaylorModel_ordinary_remainder",
+                "owner_resolution": "cumulative_preexisting_ordinary_dependency_not_recoverably_additive",
+            }
+        )
+        retired_owner_rows.extend(
+            g2_owner_rows(
+                model.polynomial,
+                previous_state.domain,
+                component=component,
+                oldest_indices=source_before.oldest_indices,
+                current_indices=source_before.current_indices,
+                oldest_source_ids=source_before.retained_source_ids,
+            )
+        )
+        collapse = collapse_source_polynomial(
+            model.polynomial,
+            previous_state.domain,
+            source_before.oldest_indices,
+        )
+        surviving = g2_partition_source_terms(
+            collapse.retained,
+            source_before.current_indices,
+        )
+        ordinary = model.remainder + collapse.collapsed
+        base_models.append(
+            TaylorModel(
+                surviving.source_free,
+                ordinary,
+                previous_state.domain,
+                order=int(order),
+                truncation_range_split=model.truncation_range_split,
+            )
+        )
+        rotated = g2_rotate_current_to_retained(
+            surviving.source_bearing,
+            dim,
+        )
+        retained_models.append(
+            TaylorModel(
+                rotated,
+                Interval.zero(
+                    dtype=rotated.dtype,
+                    device=rotated.device,
+                ),
+                previous_state.domain,
+                order=int(order),
+                truncation_range_split=model.truncation_range_split,
+            )
+        )
+        collapse_rows.append(
+            {
+                "component": component,
+                "oldest_source_term_count": collapse.source_term_count,
+                "surviving_term_count": collapse.retained_term_count,
+                "retained_current_term_count": len(rotated.terms),
+                "oldest_support_sha256": collapse.source_support_sha256,
+                "surviving_support_sha256": collapse.retained_support_sha256,
+                "current_support_sha256": surviving.source_bearing_support_sha256,
+                "collapsed_lo_hex": float(collapse.collapsed.lo.detach().cpu()).hex(),
+                "collapsed_hi_hex": float(collapse.collapsed.hi.detach().cpu()).hex(),
+                "collapsed_width": float(collapse.collapsed.width().detach().cpu()),
+                "containment_witness": "canonical_merge_then_single_outward_evaluation",
+            }
+        )
+    base = TMVector(base_models)
+    retained_after = TMVector(retained_models)
+    retained_payload_hash = g2_polynomial_payload_sha256(
+        [model.polynomial for model in retained_after]
+    )
+    retained_active = tuple(
+        any(
+            exponent[dim + source]
+            for model in retained_after
+            for exponent in model.polynomial.terms
+        )
+        for source in range(dim)
+    )
+
+    lift = source_ledger_affine_lift_interval(
+        decomposition.decomposition_lo,
+        decomposition.decomposition_hi,
+    )
+    if lift.midpoint.shape != (1, dim):
+        raise ValueError("G2 production bridge currently requires B1")
+    old_center = _tmvector_constant_part(seg.final_tm)
+    center = [
+        float(value) + float(lift.midpoint[0, index].detach().cpu())
+        for index, value in enumerate(old_center)
+    ]
+
+    base_box = base.range_box()
+    scales: list[float] = []
+    inv_scales: list[float] = []
+    rebox_rows: list[dict[str, Any]] = []
+    for component, interval in enumerate(base_box):
+        magnitude = _interval_magnitude(interval)
+        scale = 0.0 if magnitude is None or magnitude == 0.0 else float(magnitude)
+        if scale > 0.0:
+            for _ in range(8):
+                scale = math.nextafter(scale, math.inf)
+        scales.append(scale)
+        inv_scales.append(1.0 if scale == 0.0 else 1.0 / scale)
+        rebox_rows.append(
+            {
+                "component": component,
+                "input_lo_hex": float(interval.lo.detach().cpu()).hex(),
+                "input_hi_hex": float(interval.hi.detach().cpu()).hex(),
+                "input_width": float(interval.width().detach().cpu()),
+                "symmetric_output_width": 2.0 * scale,
+                "additional_width": max(0.0, 2.0 * scale - float(interval.width().detach().cpu())),
+                "retained_source_excluded": True,
+                "fresh_source_excluded": True,
+            }
+        )
+    tmv_right = _scale_tmvector_components(base, inv_scales)
+    right_box = tmv_right.range_box()
+    if any(float(interval.lo) < -1.0 or float(interval.hi) > 1.0 for interval in right_box):
+        raise FloatingPointError("G2 normalized base right map leaves [-1,1]")
+
+    source_after_proposed = g2_accepted_successor(
+        source_before,
+        lift.radius,
+        REMAINDER_LEDGER_CATEGORIES,
+        retained_payload_sha256=retained_payload_hash,
+        retained_active=retained_active,
+    )
+    source_after = g2_commit_or_preserve(
+        source_before,
+        source_after_proposed,
+        accepted=True,
+    )
+    reset_tm = _g2_shared_column_reset_tm(
+        center,
+        scales,
+        retained_after,
+        source_after,
+        int(order),
+        previous_state.domain,
+    )
+
+    dense_owner_rows: list[dict[str, Any]] = []
+    for category in REMAINDER_LEDGER_CATEGORIES:
+        entry_lo, entry_hi = decomposition.ledger.entries[category]
+        for component in range(dim):
+            lo = float(entry_lo[0, component].detach().cpu())
+            hi = float(entry_hi[0, component].detach().cpu())
+            dense_owner_rows.append(
+                {
+                    "category": category,
+                    "component": component,
+                    "outward_lo_hex": lo.hex(),
+                    "outward_hi_hex": hi.hex(),
+                    "width": hi - lo,
+                    "canonical_support_sha256": hashlib.sha256(
+                        f"{category}:{component}:{lo.hex()}:{hi.hex()}".encode("utf-8")
+                    ).hexdigest(),
+                    "containment_witness": "complete_dense_validated_ledger_contains_unchanged_image",
+                    "additivity": "ledger_additive_before_affine_lift",
+                }
+            )
+
+    reset_coeff_hash = hashlib.sha256(
+        json.dumps(
+            [g2_polynomial_table(model.polynomial) for model in reset_tm],
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    ordinary_width = sum(float(model.remainder.width().detach().cpu()) for model in base)
+    fresh_width = float(torch.sum(2.0 * lift.radius).detach().cpu())
+    retained_ranges = retained_after.range_box()
+    retained_width = sum(float(interval.width().detach().cpu()) for interval in retained_ranges)
+    diagnostics.update(
+        {
+            "g2_post_fingerprint": source_after.fingerprint,
+            "g2_retained_source_ids": list(source_after.retained_source_ids),
+            "g2_fresh_source_ids": list(source_after.fresh_source_ids),
+            "g2_retained_active": list(source_after.retained_active),
+            "g2_fresh_active": list(source_after.fresh_active),
+            "g2_live_source_count": source_after.live_source_count,
+            "g2_collapse_count": source_after.collapse_count,
+            "g2_retired_source_count": source_after.retired_source_count,
+            "g2_collapse_rows": collapse_rows,
+            "g2_retired_owner_rows": retired_owner_rows,
+            "g2_carried_ordinary_owner_rows": carried_ordinary_rows,
+            "g2_dense_owner_rows": dense_owner_rows,
+            "g2_insertion_owner_rows": list(diagnostics.pop("_insertion_owner_rows", [])),
+            "g2_rebox_owner_rows": rebox_rows,
+            "g2_affine_lift": lift.as_dict(),
+            "g2_retained_payload_sha256": retained_payload_hash,
+            "g2_reset_coefficients_sha256": reset_coeff_hash,
+            "g2_ordinary_collapsed_width_mass": ordinary_width,
+            "g2_retained_shared_source_width_mass": retained_width,
+            "g2_fresh_structured_width_mass": fresh_width,
+            "g2_owner_intervals_additive": False,
+            "g2_owner_interaction_policy": "per-owner intervals retained; no exact additive claim",
+            "g2_next_picard_input_n_vars": reset_tm.n_vars,
+            "g2_next_picard_input_active_variables": sorted(reset_tm.active_variables()),
+            "g2_endpoint_contains_accepted_image": True,
+            "scale_x": scales[0] if dim > 0 else "",
+            "scale_y": scales[1] if dim > 1 else "",
+            "center_x": center[0] if dim > 0 else "",
+            "center_y": center[1] if dim > 1 else "",
+        }
+    )
+    _add_width_metrics(diagnostics, "g2_base_inserted", base_box)
+    _add_width_metrics(diagnostics, "g2_retained_source", retained_ranges)
+    _add_width_metrics(diagnostics, "g2_reset", reset_tm.range_box())
+
+    state = FlowstarNormalFlowpipeState(
+        tmv_pre=seg.tm,
+        tmv_right=tmv_right,
+        domain=list(previous_state.domain),
+        center=center,
+        scales=scales,
+        step_index=int(previous_state.step_index) + 1,
+        diagnostics=diagnostics,
+        g2_shared_column_state=source_after,
+        g2_retained_source_tm=retained_after,
     )
     diagnostics.update(state.diagnostic_widths())
     return reset_tm, state, diagnostics
@@ -5041,19 +5627,28 @@ def _flowpipe_step_from_tm_hybrid_dense(
         )
 
     def _validate(model: BatchedTaylorModel):
-        return dense_picard_validate_step(
-            ode_fn,
-            model,
-            h=float(h),
-            order=int(order),
-            tau_index=tau_index,
-            target_remainder_radius=target_remainder_radius,
-            cutoff_threshold=cutoff_threshold,
-            max_validation_attempts=2 if max_validation_attempts is None else int(max_validation_attempts),
-            validation_eps=validation_eps,
-            validation_mode=validation_mode,
-            counters=counters,
-        )
+        device = model.poly.coeffs.device
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        started = time.perf_counter()
+        try:
+            return dense_picard_validate_step(
+                ode_fn,
+                model,
+                h=float(h),
+                order=int(order),
+                tau_index=tau_index,
+                target_remainder_radius=target_remainder_radius,
+                cutoff_threshold=cutoff_threshold,
+                max_validation_attempts=2 if max_validation_attempts is None else int(max_validation_attempts),
+                validation_eps=validation_eps,
+                validation_mode=validation_mode,
+                counters=counters,
+            )
+        finally:
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            counters.dense_kernel_s += time.perf_counter() - started
 
     lane_trace: list[Mapping[str, Any]] = []
     try:
@@ -5664,6 +6259,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion_structured_remainder_k16",
         "normalized_insertion_structured_total_delta_k16",
         BOUNDED_SOURCE_LEDGER_CANDIDATE,
+        G2_SHARED_COLUMN_CANDIDATE,
     }
     if reset_mode not in {"normalized_endpoint_box", "flowstar_symbolic_remainder_queue", *normal_insertion_modes}:
         raise ValueError(
@@ -5674,7 +6270,8 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion_horner', or "
             "'normalized_insertion_structured_remainder_k16', or "
             "'normalized_insertion_structured_total_delta_k16', or "
-            f"'{BOUNDED_SOURCE_LEDGER_CANDIDATE}'"
+            f"'{BOUNDED_SOURCE_LEDGER_CANDIDATE}', or "
+            f"'{G2_SHARED_COLUMN_CANDIDATE}'"
         )
     if right_map_range_mode not in {"standard", "normal_eval"}:
         raise ValueError("right_map_range_mode must be 'standard' or 'normal_eval'")
@@ -5693,6 +6290,8 @@ def flowpipe_step_flowstar_style_adaptive(
         normal_state = FlowstarNormalFlowpipeState.from_initial_box(x0, order)
         if reset_mode == BOUNDED_SOURCE_LEDGER_CANDIDATE:
             normal_state = _initialize_bounded_source_normal_state(normal_state, order)
+        elif reset_mode == G2_SHARED_COLUMN_CANDIDATE:
+            normal_state = _initialize_g2_shared_column_normal_state(normal_state, order)
         elif reset_mode in {
             "normalized_insertion_structured_remainder_k16",
             "normalized_insertion_structured_total_delta_k16",
@@ -5740,6 +6339,51 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = {**queue_stats, "reset_mode": reset_mode}
         elif reset_mode in normal_insertion_modes:
+            if reset_mode == G2_SHARED_COLUMN_CANDIDATE:
+                assert normal_state is not None
+                source_before = normal_state.g2_shared_column_state
+                try:
+                    reset_tm, normal_state, normal_stats = _flowstar_g2_shared_column_transition(
+                        seg,
+                        normal_state,
+                        order,
+                        cutoff_threshold=cutoff_threshold,
+                        right_map_range_mode=right_map_range_mode,
+                        right_map_center_mode=right_map_center_mode,
+                    )
+                except (FloatingPointError, RuntimeError, ValueError) as exc:
+                    seg.status = "failed"
+                    seg.message = (
+                        "G2 shared-column accepted-boundary gate failed closed: "
+                        f"{type(exc).__name__}: {exc}"
+                    )
+                    seg.reset_tm = None
+                    seg.flowstar_normal_state = normal_state
+                    seg.source_ledger_state_before = source_before
+                    seg.source_ledger_state_after = source_before
+                    seg.next_h = accepted_h
+                    return seg
+                seg.reset_tm = reset_tm
+                seg.flowstar_normal_state = normal_state
+                seg.flowstar_normal_stats = {**normal_stats, "reset_mode": reset_mode}
+                seg.source_ledger_state_before = source_before
+                seg.source_ledger_state_after = normal_state.g2_shared_column_state
+                seg.source_ledger_boundary_result = {
+                    "accepted": True,
+                    "pre_fingerprint": source_before.fingerprint if source_before else "",
+                    "post_fingerprint": (
+                        normal_state.g2_shared_column_state.fingerprint
+                        if normal_state.g2_shared_column_state
+                        else ""
+                    ),
+                    "next_picard_input_coefficients_sha256": normal_stats.get(
+                        "g2_reset_coefficients_sha256", ""
+                    ),
+                }
+                seg.flowstar_symbolic_queue_state = None
+                seg.flowstar_symbolic_queue_stats = {"reset_mode": reset_mode}
+                seg.next_h = min(accepted_h * effective_grow_factor, h_max)
+                return seg
             if reset_mode == BOUNDED_SOURCE_LEDGER_CANDIDATE:
                 assert normal_state is not None
                 source_before = normal_state.bounded_source_ledger_state

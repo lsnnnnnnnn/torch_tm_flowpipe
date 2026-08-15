@@ -30,11 +30,13 @@ from .batched_dense_tm import (
     VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION,
 )
 from .source_ledger import BoundedSourceLedgerState
+from .g2_shared_column import G2SharedColumnState, polynomial_payload_sha256
 
 
 SCHEMA_V1 = "torch_tm_flowpipe_terminal_checkpoint_v1"
 SCHEMA_V2 = "torch_tm_flowpipe_terminal_checkpoint_v2"
 SCHEMA_V3 = "torch_tm_flowpipe_terminal_checkpoint_v3"
+SCHEMA_V4 = "torch_tm_flowpipe_terminal_checkpoint_v4"
 SCHEMA = SCHEMA_V1
 PAYLOAD_NAME = "terminal_state.json"
 MANIFEST_NAME = "terminal_state_manifest.json"
@@ -424,6 +426,16 @@ def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
             if isinstance(state.bounded_source_ledger_state, BoundedSourceLedgerState)
             else None
         ),
+        "g2_shared_column": (
+            state.g2_shared_column_state.as_dict()
+            if isinstance(state.g2_shared_column_state, G2SharedColumnState)
+            else None
+        ),
+        "g2_retained_source_tm": (
+            _encode_tmvector(state.g2_retained_source_tm)
+            if state.g2_retained_source_tm is not None
+            else None
+        ),
     }
 
 
@@ -432,6 +444,7 @@ def _decode_normal_state(
     *,
     require_structured: bool = False,
     require_bounded_source: bool = False,
+    require_g2: bool = False,
 ) -> FlowstarNormalFlowpipeState:
     if bool(value.get("symbolic_queue_present")):
         raise ValueError("symbolic queue payload is unsupported and cannot be silently dropped")
@@ -488,6 +501,36 @@ def _decode_normal_state(
             schema_version=int(bounded_value["schema_version"]),
             generations_retained=int(bounded_value["generations_retained"]),
         )
+    g2_value = value.get("g2_shared_column")
+    retained_value = value.get("g2_retained_source_tm")
+    if require_g2 and (not isinstance(g2_value, Mapping) or not isinstance(retained_value, Mapping)):
+        raise ValueError("v4 checkpoint is missing required G2 source state")
+    if not require_g2 and (g2_value is not None or retained_value is not None):
+        raise ValueError("non-v4 checkpoint cannot contain a G2 source state")
+    g2_state = None
+    g2_retained = None
+    if isinstance(g2_value, Mapping):
+        g2_state = G2SharedColumnState(
+            state_dim=int(g2_value["state_dim"]),
+            base_dim=int(g2_value["base_dim"]),
+            accepted_boundary_index=int(g2_value["accepted_boundary_index"]),
+            generation=int(g2_value["generation"]),
+            retained_source_ids=tuple(str(item) for item in g2_value["retained_source_ids"]),
+            fresh_source_ids=tuple(str(item) for item in g2_value["fresh_source_ids"]),
+            retained_active=tuple(bool(item) for item in g2_value["retained_active"]),
+            fresh_active=tuple(bool(item) for item in g2_value["fresh_active"]),
+            fresh_radii_hex=tuple(str(item) for item in g2_value["fresh_radii_hex"]),
+            retained_lineage=tuple(tuple(str(name) for name in row) for row in g2_value["retained_lineage"]),
+            fresh_lineage=tuple(tuple(str(name) for name in row) for row in g2_value["fresh_lineage"]),
+            retained_payload_sha256=str(g2_value["retained_payload_sha256"]),
+            collapse_count=int(g2_value["collapse_count"]),
+            retired_source_count=int(g2_value["retired_source_count"]),
+            schema=str(g2_value["schema"]),
+            schema_version=int(g2_value["schema_version"]),
+            generations_retained=int(g2_value["generations_retained"]),
+        )
+        assert isinstance(retained_value, Mapping)
+        g2_retained = _decode_tmvector(retained_value)
     return FlowstarNormalFlowpipeState(
         tmv_pre=tmv_pre,
         tmv_right=tmv_right,
@@ -501,6 +544,8 @@ def _decode_normal_state(
         initial_remainders=initial,
         structured_remainder_state=structured_state,
         bounded_source_ledger_state=bounded_state,
+        g2_shared_column_state=g2_state,
+        g2_retained_source_tm=g2_retained,
     )
 
 
@@ -536,15 +581,30 @@ def save_terminal_checkpoint(
         normal_state.bounded_source_ledger_state,
         BoundedSourceLedgerState,
     )
-    if active_structured and active_bounded_source:
-        raise ValueError("checkpoint cannot contain both structured K16 and bounded G1 states")
-    schema = SCHEMA_V2 if active_structured else SCHEMA_V3 if active_bounded_source else SCHEMA_V1
+    active_g2 = isinstance(normal_state.g2_shared_column_state, G2SharedColumnState)
+    if sum((active_structured, active_bounded_source, active_g2)) > 1:
+        raise ValueError("checkpoint cannot contain multiple carry-state families")
+    if active_g2 != (normal_state.g2_retained_source_tm is not None):
+        raise ValueError("G2 checkpoint metadata and retained polynomial must coexist")
+    schema = (
+        SCHEMA_V2 if active_structured else
+        SCHEMA_V3 if active_bounded_source else
+        SCHEMA_V4 if active_g2 else
+        SCHEMA_V1
+    )
+    if active_g2:
+        reconstructed = normal_state.normalized_initial_tm()
+        if _encode_tmvector(reconstructed) != _encode_tmvector(current):
+            raise ValueError("G2 checkpoint current input is not its canonical materialization")
     current_encoded = _encode_tmvector(current)
     normal_encoded = _encode_normal_state(normal_state)
     if not active_structured:
         normal_encoded.pop("structured_remainder", None)
     if not active_bounded_source:
         normal_encoded.pop("bounded_source_ledger", None)
+    if not active_g2:
+        normal_encoded.pop("g2_shared_column", None)
+        normal_encoded.pop("g2_retained_source_tm", None)
     payload = {
         "schema": schema,
         "current": current_encoded,
@@ -571,6 +631,13 @@ def save_terminal_checkpoint(
         hashes["bounded_source_ledger"] = {
             "component_sha256": _sha256_json(normal_encoded["bounded_source_ledger"]),
         }
+    if active_g2:
+        hashes["g2_shared_column"] = {
+            "component_sha256": _sha256_json(normal_encoded["g2_shared_column"]),
+        }
+        hashes["g2_retained_source_tm"] = _tmvector_hashes(
+            normal_encoded["g2_retained_source_tm"]
+        )
     manifest = {
         "schema": schema,
         "payload_file": PAYLOAD_NAME,
@@ -606,7 +673,7 @@ def load_terminal_checkpoint(
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"invalid terminal checkpoint files: {exc}") from exc
     schema = manifest.get("schema")
-    if schema not in {SCHEMA_V1, SCHEMA_V2, SCHEMA_V3}:
+    if schema not in {SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4}:
         raise ValueError("terminal checkpoint schema mismatch")
     actual_payload_sha = _sha256_bytes(payload_bytes)
     if actual_payload_sha != manifest.get("payload_sha256"):
@@ -639,7 +706,22 @@ def load_terminal_checkpoint(
         normal_value,
         require_structured=schema == SCHEMA_V2,
         require_bounded_source=schema == SCHEMA_V3,
+        require_g2=schema == SCHEMA_V4,
     )
+    if schema == SCHEMA_V4:
+        g2_state = normal_state.g2_shared_column_state
+        retained = normal_state.g2_retained_source_tm
+        if g2_state is None or retained is None:
+            raise ValueError("v4 checkpoint lost G2 state during decode")
+        if current.n_vars != g2_state.variable_count or retained.n_vars != g2_state.variable_count:
+            raise ValueError("v4 checkpoint violates fixed 3d G2 shape")
+        if polynomial_payload_sha256(
+            [model.polynomial for model in retained]
+        ) != g2_state.retained_payload_sha256:
+            raise ValueError("v4 checkpoint G2 retained payload hash mismatch")
+        reconstructed = normal_state.normalized_initial_tm(expected_order)
+        if _encode_tmvector(reconstructed) != _encode_tmvector(current):
+            raise ValueError("v4 checkpoint current input is not the canonical G2 materialization")
     if expected_order is not None:
         models = [*current.models, *normal_state.tmv_pre.models, *normal_state.tmv_right.models]
         if any(model.order != int(expected_order) for model in models):
@@ -667,6 +749,15 @@ def load_terminal_checkpoint(
         actual_hashes["bounded_source_ledger"] = {
             "component_sha256": _sha256_json(bounded_encoded),
         }
+    if schema == SCHEMA_V4:
+        g2_encoded = normal_value.get("g2_shared_column")
+        retained_encoded = normal_value.get("g2_retained_source_tm")
+        if not isinstance(g2_encoded, Mapping) or not isinstance(retained_encoded, Mapping):
+            raise ValueError("v4 checkpoint is missing required G2 payloads")
+        actual_hashes["g2_shared_column"] = {
+            "component_sha256": _sha256_json(g2_encoded),
+        }
+        actual_hashes["g2_retained_source_tm"] = _tmvector_hashes(retained_encoded)
     if actual_hashes != manifest.get("hashes"):
         raise ValueError("terminal checkpoint reconstructed state hash mismatch")
     scheduler = payload.get("scheduler")
@@ -684,6 +775,7 @@ __all__ = [
     "SCHEMA_V1",
     "SCHEMA_V2",
     "SCHEMA_V3",
+    "SCHEMA_V4",
     "TerminalCheckpoint",
     "load_terminal_checkpoint",
     "save_terminal_checkpoint",

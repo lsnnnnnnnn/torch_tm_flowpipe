@@ -60,6 +60,7 @@ def load_contract() -> dict[str, Any]:
     contract = {
         "ode": matched_vdp["ode"],
         "initial_box": matched_vdp["initial_set"],
+        "initial_box_exact_decimal": [["1.1", "1.4"], ["2.35", "2.45"]],
         "requested_order": int(matched_vdp["requested_order"]),
         "target_remainder_radius": max(abs(float(bound)) for interval in matched_vdp["remainder_initialization"] for bound in interval),
         "cutoff": float(matched_vdp["cutoff"]),
@@ -140,6 +141,7 @@ def _write_trace_outputs(
     profile_rows: Sequence[Mapping[str, Any]],
     range_trace_rows: Sequence[Mapping[str, Any]],
     horner_stage_rows: Sequence[Mapping[str, Any]],
+    owner_rows: Sequence[Mapping[str, Any]],
 ) -> None:
     _write_csv(output_dir / "segments.csv", segment_rows)
     _write_csv(output_dir / "attempts.csv", attempt_rows)
@@ -148,6 +150,7 @@ def _write_trace_outputs(
     _write_csv(output_dir / "profile.csv", profile_rows)
     _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
     _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
+    _write_jsonl(output_dir / "owner_ledger.jsonl", owner_rows)
 
 
 def _git(args: Sequence[str]) -> str:
@@ -341,7 +344,10 @@ def _failure_type(status: str, message: str, h_remaining: float, h_min: float) -
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
-    contract = load_contract()
+    contract = {
+        **load_contract(),
+        "initialization_contract": args.initialization_contract,
+    }
     requested_horizon = float(args.horizon)
     if requested_horizon <= 0 or requested_horizon > contract["target_horizon"] + 1e-12:
         raise ValueError("horizon must be positive and no larger than the authoritative target")
@@ -371,6 +377,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "save_terminal_checkpoint": bool(args.save_terminal_checkpoint),
+        "initialization_contract": args.initialization_contract,
         "trace_flush_every": int(args.trace_flush_every),
         "dense_range_method": args.dense_range_method,
         "dense_range_trigger": args.dense_range_trigger,
@@ -417,6 +424,22 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     )
     current: TMVector | list[Interval] = initial_box
     normal_state: FlowstarNormalFlowpipeState | None = None
+    if args.initialization_contract == "exact_decimal_contract":
+        if args.reset_mode not in {
+            "normalized_insertion",
+            "normalized_insertion_bounded_source_ledger_o4_g1",
+            "normalized_insertion_bounded_shared_source_o4_g2",
+        }:
+            raise ValueError("exact-decimal matrix lane supports only frozen legacy/G1/G2 modes")
+        normal_state = FlowstarNormalFlowpipeState.from_exact_decimal_box(
+            [(row[0], row[1]) for row in contract["initial_box_exact_decimal"]],
+            contract["requested_order"],
+        )
+        if args.reset_mode == "normalized_insertion_bounded_source_ledger_o4_g1":
+            normal_state = normal_state.with_bounded_source_g1(contract["requested_order"])
+        elif args.reset_mode == "normalized_insertion_bounded_shared_source_o4_g2":
+            normal_state = normal_state.with_g2_shared_columns(contract["requested_order"])
+        current = normal_state.normalized_initial_tm(contract["requested_order"])
     samples = _samples(contract["initial_box"])
     fixed_step = None if args.fixed_step is None else float(args.fixed_step)
     if fixed_step is not None:
@@ -437,6 +460,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     profile_rows: list[dict[str, Any]] = []
     range_trace_rows: list[dict[str, Any]] = []
     horner_stage_rows: list[dict[str, Any]] = []
+    owner_rows: list[dict[str, Any]] = []
     range_call_count = 0
     total_sample_violations = 0
     max_sample_violation = 0.0
@@ -445,6 +469,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     fallback_count = 0
     conversion_count = 0
     device_transfer_count = 0
+    host_to_device_s = 0.0
+    dense_kernel_s = 0.0
+    device_to_host_s = 0.0
     status = "completed"
     message = ""
     crossed: set[float] = set()
@@ -463,6 +490,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             profile_rows=profile_rows,
             range_trace_rows=range_trace_rows,
             horner_stage_rows=horner_stage_rows,
+            owner_rows=owner_rows,
         )
         trace_io_s += time.perf_counter() - io_started
         trace_write_count += 1
@@ -567,6 +595,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         fallback_count += int(counters.get("sparse_fallback_count", 0))
         conversion_count += int(counters.get("segment_boundary_conversions", 0))
         device_transfer_count += int(counters.get("device_transfer_count", 0))
+        host_to_device_s += float(counters.get("host_to_device_s", 0.0))
+        dense_kernel_s += float(counters.get("dense_kernel_s", 0.0))
+        device_to_host_s += float(counters.get("device_to_host_s", 0.0))
         row = {
             "segment_index": len(segment_rows),
             "status": "accepted" if accepted else "rejected",
@@ -586,6 +617,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 segment.reset_tm if accepted else None
             ),
             "candidate_coefficient_sha256": _coefficient_sha256(segment.tm),
+            "next_boundary_term_count": (
+                sum(len(model.polynomial.terms) for model in segment.reset_tm)
+                if accepted and segment.reset_tm is not None
+                else ""
+            ),
+            "next_boundary_active_variables": (
+                sorted(segment.reset_tm.active_variables())
+                if accepted and segment.reset_tm is not None
+                else []
+            ),
             "raw_remainder": segment.candidate_remainder,
             "post_poly_diff_remainder": segment.picard_image_remainder,
             "target_margins": segment.subset_margin,
@@ -615,6 +656,34 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for key, value in (segment.flowstar_normal_stats or {}).items():
             if isinstance(value, (str, int, float, bool)) or value is None:
                 row[f"carry_{key}"] = value
+        normal_stats = segment.flowstar_normal_stats or {}
+        for owner_group in (
+            "source_ledger_retired_owner_rows",
+            "source_ledger_carried_ordinary_owner_rows",
+            "source_ledger_dense_owner_rows",
+            "source_ledger_insertion_owner_rows",
+            "source_ledger_rebox_owner_rows",
+            "g2_retired_owner_rows",
+            "g2_carried_ordinary_owner_rows",
+            "g2_dense_owner_rows",
+            "g2_insertion_owner_rows",
+            "g2_rebox_owner_rows",
+        ):
+            values = normal_stats.get(owner_group, [])
+            if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+                continue
+            owner_rows.extend(
+                {
+                    "segment_index": len(segment_rows),
+                    "t_before": current_time,
+                    "t_after": t_hi,
+                    "reset_mode": args.reset_mode,
+                    "owner_group": owner_group,
+                    **_jsonable(value),
+                }
+                for value in values
+                if isinstance(value, Mapping)
+            )
         segment_rows.append(row)
         for diagnostic in diagnostics:
             attempt_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(diagnostic)})
@@ -642,7 +711,17 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                     range_call_count += 1
                 range_trace_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(compact_trace)})
         row["stage_runtime_s"] = step_wall
-        profile_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, "h_attempted": h_try, "total_wall_s": step_wall, "backend_lane": segment.backend_lane})
+        profile_rows.append({
+            "segment_index": len(segment_rows) - 1,
+            "t_before": current_time,
+            "h_attempted": h_try,
+            "total_wall_s": step_wall,
+            "host_to_device_s": float(counters.get("host_to_device_s", 0.0)),
+            "dense_kernel_s": float(counters.get("dense_kernel_s", 0.0)),
+            "device_to_host_s": float(counters.get("device_to_host_s", 0.0)),
+            "device_transfer_count": int(counters.get("device_transfer_count", 0)),
+            "backend_lane": segment.backend_lane,
+        })
 
         if not accepted:
             if args.save_terminal_checkpoint:
@@ -811,6 +890,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "backend_lane": "hybrid_dense_core" if args.tm_backend == "dense" else "sparse_reference",
         "device": args.device,
         "reset_mode": args.reset_mode,
+        "initialization_contract": args.initialization_contract,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
         "dense_range_method": args.dense_range_method,
@@ -827,6 +907,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "fallback_count": fallback_count,
         "segment_boundary_conversion_count": conversion_count,
         "device_transfer_count": device_transfer_count,
+        "host_to_device_s": host_to_device_s,
+        "dense_kernel_s": dense_kernel_s,
+        "device_to_host_s": device_to_host_s,
+        "nonkernel_nontransfer_solver_s": max(
+            0.0,
+            runtime - host_to_device_s - dense_kernel_s - device_to_host_s,
+        ),
         "range_subdivision_invocations": sum(int(row.get("range_subdivision_invocations", 0)) for row in segment_rows),
         "range_leaf_evaluations": sum(int(row.get("range_leaf_evaluations", 0)) for row in segment_rows),
         "sample_sanity_violations": total_sample_violations,
@@ -875,6 +962,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--tm-backend", choices=("sparse", "dense"), required=True)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+    parser.add_argument(
+        "--initialization-contract",
+        choices=("binary64_literal_matched_contract", "exact_decimal_contract"),
+        default="binary64_literal_matched_contract",
+        help="keep legacy default unchanged; authoritative 20260815 matrix selects exact_decimal_contract",
+    )
     parser.add_argument("--horizon", type=float, default=10.0)
     parser.add_argument("--fixed-step", type=float)
     parser.add_argument(
@@ -895,6 +988,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "normalized_insertion_horner_symqueue_v2",
             "normalized_insertion_structured_remainder_k16",
             "normalized_insertion_bounded_source_ledger_o4_g1",
+            "normalized_insertion_bounded_shared_source_o4_g2",
         ),
         default="normalized_insertion",
     )
