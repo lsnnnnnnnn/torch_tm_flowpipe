@@ -211,6 +211,16 @@ def finalize(
     package = package.resolve()
     if not package.is_dir():
         raise FileNotFoundError(package)
+    if stage == "scientific_precommit":
+        write_json(
+            package / "07_fresh_clone/acceptance.json",
+            {
+                "schema": "vdp_g2_fresh_clone_acceptance_v1",
+                "status": "PENDING_SCIENTIFIC_SHA",
+                "git_status_porcelain_empty": False,
+                "scientific_sha": None,
+            },
+        )
     excluded = {package / "manifest.json", package / "SHA256SUMS"}
     files = sorted(path for path in package.rglob("*") if path.is_file() and path not in excluded)
     records = {

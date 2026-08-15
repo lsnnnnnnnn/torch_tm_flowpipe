@@ -17,6 +17,8 @@ import xml.etree.ElementTree as ET
 
 CANDIDATE = "normalized_insertion_bounded_shared_source_o4_g2"
 PARTIAL = "G2_MECHANISM_IMPROVED__PRODUCTION_GATE_NOT_MET"
+VALIDATED = "G2_VDP_T10_VALIDATED"
+REJECTED = "G2_SHARED_COLUMN_CARRY_REJECTED"
 TOTAL = "LOSSLESS_CROSS_OPERATOR_CELL_UNAVAILABLE__TOTAL_CAUSE_OPEN"
 LEGACY_NATIVE = 6.397083942944808
 CHANNELS = ("endpoint_x", "endpoint_y", "segment_tube_x", "segment_tube_y")
@@ -29,6 +31,15 @@ class VerificationError(ValueError):
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise VerificationError(message)
+
+
+def classify_g2(*, production_success: bool, reached_t10: bool, mechanism_improved: bool) -> str:
+    """Derive the scientific label from gates, without assuming this package's outcome."""
+    if production_success and reached_t10:
+        return VALIDATED
+    if mechanism_improved:
+        return PARTIAL
+    return REJECTED
 
 
 def load(path: Path) -> Any:
@@ -245,9 +256,12 @@ def verify_matrix(root: Path) -> dict[str, Any]:
         )
     )
     production = bool(t1 and excess_gate and native_gate and fixed_no_failure and terminal_margin_gate)
-    computed = "G2_VDP_T10_VALIDATED" if production and native["g2"]["completed_requested_horizon"] else PARTIAL if mechanism else "G2_SHARED_COLUMN_CARRY_REJECTED"
-    require(computed == PARTIAL, "unexpected recomputed G2 decision")
-    require(summary["conclusion"] == computed and summary["gates"]["production_success"] is False, "stored G2 decision")
+    computed = classify_g2(
+        production_success=production,
+        reached_t10=bool(native["g2"]["completed_requested_horizon"]),
+        mechanism_improved=mechanism,
+    )
+    require(summary["conclusion"] == computed, "stored G2 decision")
     require(summary["gates"] == {
         "independent_oracle": True,
         "fixed_T1_all_four_no_wider_than_G1": t1,
@@ -258,8 +272,6 @@ def verify_matrix(root: Path) -> dict[str, Any]:
         "production_success": production,
     }, "stored production gates")
     require(summary["total_cause_conclusion"] == TOTAL, "stored total-cause decision")
-    require(max(fractions) < 0.01, "G2 excess-removal scale unexpectedly changed")
-    require(float(native["g2"]["completed_horizon"]) < LEGACY_NATIVE and not native["g2"]["completed_requested_horizon"], "native negative result")
     return {
         "requests": 36,
         "curve_rows": row_count,
@@ -328,7 +340,7 @@ def verify(package: Path) -> dict[str, Any]:
     matrix = verify_matrix(root)
     performance = verify_performance(root)
     acceptance = verify_acceptance(root, manifest)
-    require(manifest["conclusion"] == matrix["conclusion"] == PARTIAL, "manifest conclusion")
+    require(manifest["conclusion"] == matrix["conclusion"], "manifest conclusion")
     require(manifest["total_cause_conclusion"] == gate_a["conclusion"] == TOTAL, "manifest total-cause")
     return {
         "schema": "vdp_g2_shared_column_verification_v1",

@@ -57,6 +57,17 @@ Detailed current reports:
 - `docs/COMPLETE_O4_G2_SHARED_COLUMN_CONTRACT_20260815.md`
 - `docs/VDP_G2_SHARED_COLUMN_RESULT_20260815.md`
 
+## Replacement publication pending
+
+The earlier publication pair `f215a670c52bf233857e66d9f23439feeaac5135` /
+`395559556246a2bcb321e850bc53a6e70ea34003` is superseded.  Its numerical
+evidence remains unchanged, but the completion audit found that the verifier,
+after correctly recomputing every gate, redundantly required the observed
+partial-success label.  This tree removes that package-specific expectation
+and tests all three preregistered classifications.  A replacement scientific
+SHA and evidence-only fresh-clone attestation child will be recorded here after
+the GitHub detached-clone run passes.
+
 ## Historical sections
 
 The material below is retained only as a historical record. Its local evidence

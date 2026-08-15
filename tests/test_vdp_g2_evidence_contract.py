@@ -29,3 +29,23 @@ def test_compact_g2_evidence_recomputes_to_fail_closed_decisions():
     assert result["conclusion"] == "G2_MECHANISM_IMPROVED__PRODUCTION_GATE_NOT_MET"
     assert result["total_cause_conclusion"] == "LOSSLESS_CROSS_OPERATOR_CELL_UNAVAILABLE__TOTAL_CAUSE_OPEN"
     assert result["integrity"]["bytes"] < 25 * 1024 * 1024
+
+
+def test_verifier_classifies_all_preregistered_outcomes_without_observed_label_assumption():
+    verifier = _load_verifier()
+
+    assert verifier.classify_g2(
+        production_success=True,
+        reached_t10=True,
+        mechanism_improved=True,
+    ) == "G2_VDP_T10_VALIDATED"
+    assert verifier.classify_g2(
+        production_success=False,
+        reached_t10=False,
+        mechanism_improved=True,
+    ) == "G2_MECHANISM_IMPROVED__PRODUCTION_GATE_NOT_MET"
+    assert verifier.classify_g2(
+        production_success=False,
+        reached_t10=False,
+        mechanism_improved=False,
+    ) == "G2_SHARED_COLUMN_CARRY_REJECTED"
