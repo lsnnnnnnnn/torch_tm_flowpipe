@@ -57,6 +57,23 @@ Detailed current reports:
 - `docs/COMPLETE_O4_G2_SHARED_COLUMN_CONTRACT_20260815.md`
 - `docs/VDP_G2_SHARED_COLUMN_RESULT_20260815.md`
 
+## Publication attestation
+
+- Scientific SHA: `f215a670c52bf233857e66d9f23439feeaac5135`.
+- Detached fresh clone: PASS from the GitHub HTTPS origin at that exact SHA;
+  compileall, 41 focused tests, 758 full tests with 2 skipped, the independent
+  15-check oracle, package verification, and clean porcelain all passed.
+- The attestation child changes only this handoff and evidence finalization;
+  it changes no `src`, `experiments`, `tests`, or scientific raw-matrix file.
+- Publication branch:
+  `refs/heads/codex/vdp-residual-gap-g2-shared-column-carry-20260815`.  The
+  exact attestation SHA is the remote branch tip reported after push because a
+  commit cannot contain its own SHA.
+- Publication semantics:
+  `scientific_sha_fresh_clone_verified=true`,
+  `attestation_tip_contains_no_scientific_tree_changes=true`, and
+  `final_tip_fresh_clone_verified=false`.
+
 ## Historical sections
 
 The material below is retained only as a historical record. Its local evidence
