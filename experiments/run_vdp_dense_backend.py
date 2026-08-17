@@ -26,6 +26,7 @@ from torch_tm_flowpipe import (
     DenseRangePolicy,
     FlowstarNormalFlowpipeState,
     Interval,
+    NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
     PolynomialODE,
     TMVector,
     flowpipe_step_flowstar_style_adaptive,
@@ -430,6 +431,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if args.initialization_contract == "exact_decimal_contract":
         if args.reset_mode not in {
             "normalized_insertion",
+            NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
             "normalized_insertion_bounded_source_ledger_o4_g1",
             "normalized_insertion_bounded_shared_source_o4_g2",
         }:
@@ -985,6 +987,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--reset-mode",
         choices=(
             "normalized_insertion",
+            NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
             "normalized_insertion_complete_polynomial",
             "normalized_insertion_symqueue_v2",
             "normalized_insertion_horner",

@@ -71,6 +71,9 @@ ODEFunction = Callable[..., Sequence[TaylorModel] | TMVector]
 
 FLOWSTAR_COMPAT_STEP_SHRINK = 0.5
 FLOWSTAR_COMPAT_STEP_GROW = 1.1
+NORMALIZED_INSERTION_DEPENDENCY_PRESERVING = (
+    "normalized_insertion_dependency_preserving"
+)
 
 
 @dataclass
@@ -1213,6 +1216,106 @@ def insert_ctrunc_normal_like(
     return _insert_ctrunc_normal_like_scalar(outer, inner, order, cutoff_threshold, domain, diagnostics)
 
 
+def insert_ctrunc_normal_dependency_preserving(
+    outer: TaylorModel | TMVector,
+    inner: TMVector,
+    order: int,
+    cutoff_threshold: float | None,
+    domain: Sequence[Interval] | None = None,
+    diagnostics: dict[str, Any] | None = None,
+) -> TaylorModel | TMVector:
+    """Factorized production insertion in the frozen order ``0, ..., n-1``.
+
+    Unlike the legacy monomial loop, the recursive Horner graph shares each
+    coefficient branch before multiplying by an inserted map.  This reduces
+    repeated materialization of the same ordinary remainder across sibling
+    monomial paths.  Truncation, cutoff, and all remainder products remain
+    outward interval operations at every multiplication stage.
+    """
+
+    canonical_order = tuple(range(len(inner)))
+    stage_rows: list[dict[str, Any]] = []
+    top_components: list[dict[str, Any]] = []
+    if isinstance(outer, TMVector):
+        result: TaylorModel | TMVector = TMVector(
+            _insert_ctrunc_normal_horner_scalar(
+                model,
+                inner,
+                int(order),
+                cutoff_threshold,
+                domain,
+                component_index=index,
+                stage_rows=stage_rows,
+                top_components=top_components,
+            )
+            for index, model in enumerate(outer)
+        )
+    else:
+        result = _insert_ctrunc_normal_horner_scalar(
+            outer,
+            inner,
+            int(order),
+            cutoff_threshold,
+            domain,
+            component_index=None,
+            stage_rows=stage_rows,
+            top_components=top_components,
+        )
+    if diagnostics is not None:
+        models = result.models if isinstance(result, TMVector) else [result]
+        diagnostics["insertion_dependency_preserving_used"] = True
+        diagnostics["insertion_canonical_variable_order"] = list(canonical_order)
+        diagnostics["insertion_components"] = len(models)
+        diagnostics["insertion_factorized_multiplication_count"] = sum(
+            row.get("operation") == "multiply_inserted_right_map"
+            for row in stage_rows
+        )
+        diagnostics["_dependency_preserving_stage_rows"] = [
+            dict(row) for row in stage_rows
+        ]
+        diagnostics["_dependency_preserving_top_components"] = sorted(
+            (dict(row) for row in top_components),
+            key=lambda row: _float_or_none(row.get("width")) or 0.0,
+            reverse=True,
+        )
+        diagnostics["insertion_truncation_width"] = _stage_width_sum(
+            stage_rows, "truncation_width"
+        )
+        diagnostics["insertion_cutoff_width"] = _stage_width_sum(
+            stage_rows, "cutoff_width"
+        )
+        diagnostics["insertion_inner_remainder_times_poly_width"] = _stage_width_sum(
+            stage_rows, "p_left_times_right_remainder_width"
+        )
+        diagnostics["insertion_accumulated_remainder_times_inner_poly_width"] = _stage_width_sum(
+            stage_rows, "p_right_times_left_remainder_width"
+        )
+        diagnostics["insertion_remainder_times_poly_width"] = (
+            diagnostics["insertion_inner_remainder_times_poly_width"]
+            + diagnostics["insertion_accumulated_remainder_times_inner_poly_width"]
+        )
+        diagnostics["insertion_remainder_times_remainder_width"] = _stage_width_sum(
+            stage_rows, "remainder_times_remainder_width"
+        )
+        diagnostics["terms_after_insertion"] = sum(
+            len(model.polynomial.terms) for model in models
+        )
+        for component_index, model in enumerate(models):
+            name = _horner_component_name(component_index)
+            poly_range = model.polynomial.evaluate_interval(model.domain)
+            _diag_add_width(diagnostics, "composed_poly_range_width", poly_range)
+            diagnostics[f"composed_poly_range_width_{name}"] = _interval_width_float(poly_range)
+            _diag_add_width(diagnostics, "output_remainder_width", model.remainder)
+            diagnostics[f"output_remainder_width_{name}"] = _interval_width_float(model.remainder)
+            diagnostics[f"insertion_truncation_width_{name}"] = _stage_width_sum(
+                stage_rows, "truncation_width", component_index
+            )
+            diagnostics[f"insertion_cutoff_width_{name}"] = _stage_width_sum(
+                stage_rows, "cutoff_width", component_index
+            )
+    return result
+
+
 
 
 def _object_range_box(obj: TaylorModel | TMVector) -> list[Interval]:
@@ -1843,6 +1946,7 @@ def _flowstar_normalized_insertion_transition(
     right_map_center_mode: str = "constant",
     horner_diagnostic: bool = False,
     horner_insertion: bool = False,
+    dependency_preserving_insertion: bool = False,
     complete_polynomial_carry: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
@@ -1863,7 +1967,11 @@ def _flowstar_normalized_insertion_transition(
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
-    if horner_insertion and symbolic_queue_v2:
+    if horner_insertion and dependency_preserving_insertion:
+        raise ValueError("select exactly one normal-insertion algorithm")
+    if dependency_preserving_insertion:
+        mode_name = NORMALIZED_INSERTION_DEPENDENCY_PRESERVING
+    elif horner_insertion and symbolic_queue_v2:
         mode_name = "normalized_insertion_horner_symqueue_v2"
     elif complete_polynomial_carry:
         mode_name = "normalized_insertion_complete_polynomial"
@@ -1891,7 +1999,17 @@ def _flowstar_normalized_insertion_transition(
     _add_width_metrics(diagnostics, "endpoint_tm", endpoint_box)
     center = _tmvector_constant_part(seg.final_tm)
     endpoint_without_constants = _tmvector_rm_constants(seg.final_tm)
-    if horner_insertion:
+    if dependency_preserving_insertion:
+        inserted = insert_ctrunc_normal_dependency_preserving(
+            endpoint_without_constants,
+            prev.tmv_right,
+            int(order),
+            cutoff_threshold,
+            prev.domain,
+            diagnostics,
+        )
+        assert isinstance(inserted, TMVector)
+    elif horner_insertion:
         horner_result = insert_ctrunc_normal_horner_diagnostic(
             endpoint_without_constants,
             prev.tmv_right,
@@ -6316,6 +6434,7 @@ def flowpipe_step_flowstar_style_adaptive(
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     normal_insertion_modes = {
         "normalized_insertion",
+        NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
         "normalized_insertion_complete_polynomial",
         "normalized_insertion_symqueue",
         "normalized_insertion_symqueue_split",
@@ -6333,6 +6452,7 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion', 'normalized_insertion_complete_polynomial', "
             "'normalized_insertion_symqueue', "
             "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
+            f"'{NORMALIZED_INSERTION_DEPENDENCY_PRESERVING}', "
             "'normalized_insertion_horner', or "
             "'normalized_insertion_structured_remainder_k16', or "
             "'normalized_insertion_structured_total_delta_k16', or "
@@ -6545,6 +6665,9 @@ def flowpipe_step_flowstar_style_adaptive(
                 "normalized_insertion_horner",
                 "normalized_insertion_horner_symqueue_v2",
             }
+            use_dependency_preserving = (
+                reset_mode == NORMALIZED_INSERTION_DEPENDENCY_PRESERVING
+            )
             use_complete_polynomial = reset_mode == "normalized_insertion_complete_polynomial"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
@@ -6562,6 +6685,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 right_map_center_mode=right_map_center_mode,
                 horner_diagnostic=horner_diagnostic,
                 horner_insertion=use_horner,
+                dependency_preserving_insertion=use_dependency_preserving,
                 complete_polynomial_carry=use_complete_polynomial,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
