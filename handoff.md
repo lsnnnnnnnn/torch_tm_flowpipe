@@ -59,10 +59,13 @@ Detailed current reports:
 
 ## Publication attestation
 
-- Replacement scientific SHA: `792808e0c0f02172c1c9feb88e12353002760077`.
+- Final evidence-strengthened scientific SHA:
+  `5e9ec57fc11c4b1bd7f08cf070ba3ee6f053a0ca`.
 - Detached fresh clone: PASS from the GitHub HTTPS origin at that exact SHA;
-  compileall, 41 focused tests, 759 full tests with 2 skipped, the independent
-  15-check oracle, package verification, and clean porcelain all passed.
+  compileall, 41 focused tests, 759 total full-suite tests with 2 skipped, the
+  independent 15-check oracle, package verification, and clean porcelain all
+  passed.  The verifier directly recomputed the ten packaged native prestate
+  byte round trips and the five-position dense/fresh/rebox owner contracts.
 - The attestation child changes only this handoff and evidence finalization;
   it changes no `src`, `experiments`, `tests`, or scientific raw-matrix file.
 - Publication branch:
@@ -73,10 +76,12 @@ Detailed current reports:
   `scientific_sha_fresh_clone_verified=true`,
   `attestation_tip_contains_no_scientific_tree_changes=true`, and
   `final_tip_fresh_clone_verified=false`.
-- The earlier publication pair `f215a670c52bf233857e66d9f23439feeaac5135` /
-  `395559556246a2bcb321e850bc53a6e70ea34003` is superseded. Its numerical
-  evidence is unchanged; the replacement removes a redundant observed-label
-  expectation from the verifier and tests all three preregistered outcomes.
+- The earlier scientific/attestation pair
+  `792808e0c0f02172c1c9feb88e12353002760077` /
+  `ba86e0d6dfc90bbd76724740fc190c507ff2aa94` is superseded.  Its numerical
+  evidence and decision are unchanged; the final pair additionally exports
+  the actual-transition dense/fresh/rebox owners and makes the verifier
+  recompute packaged fixture hashes instead of trusting summary flags.
 
 ## Historical sections
 
