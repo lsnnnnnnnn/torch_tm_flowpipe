@@ -365,3 +365,4 @@ G2 成功不自动等于根因闭合。只有 Gate A 的 lossless 四个 cross-o
 - 最终回复给出 branch、scientific SHA、attestation SHA、远端 SHA、测试数量、四个 checkpoint 表、native horizon 表和唯一当前结论。
 
 不要用“做了很多工作”作为完成标准。完成标准是：**归因结论不再越界、G2 进入真实 consumer、独立 soundness oracle 成立、固定曲线有显著收益，并且 native horizon 至少恢复 legacy；否则诚实冻结负结果。**
+

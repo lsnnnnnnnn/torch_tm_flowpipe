@@ -327,6 +327,24 @@ def variants(previous: FlowstarNormalFlowpipeState, segment: Any) -> tuple[dict[
         ordinary_lift=ordinary_lift,
         fresh_lift=fresh_lift,
     )
+    actual_state = segment.flowstar_normal_state
+    if actual_state is None:
+        raise ValueError("G1 owner intervention requires the accepted transition diagnostics")
+    actual_diagnostics = actual_state.diagnostics
+    required_diagnostics = (
+        "source_ledger_dense_owner_rows",
+        "source_ledger_fresh_structured_owner_rows",
+        "source_ledger_insertion_owner_rows",
+        "source_ledger_rebox_owner_rows",
+        "source_ledger_carried_ordinary_owner_rows",
+        "source_ledger_retired_owner_rows",
+        "source_ledger_owner_categories",
+        "source_ledger_structured_width_mass",
+        "source_ledger_ordinary_width_mass",
+    )
+    missing = [name for name in required_diagnostics if name not in actual_diagnostics]
+    if missing:
+        raise ValueError(f"accepted G1 transition is missing owner diagnostics: {missing}")
     owner_record = {
         "retired_source_owners": retired_rows,
         "carried_ordinary_owners": carried_rows,
@@ -334,6 +352,19 @@ def variants(previous: FlowstarNormalFlowpipeState, segment: Any) -> tuple[dict[
         "retained_old_source_payload_sha256": polynomial_payload_sha256(old_source_polys),
         "fresh_lift": fresh_lift.as_dict(),
         "ordinary_lift": ordinary_lift.as_dict(),
+        "actual_transition": {
+            "dense_validated_ledger_owners": actual_diagnostics["source_ledger_dense_owner_rows"],
+            "fresh_structured_source_owners": actual_diagnostics["source_ledger_fresh_structured_owner_rows"],
+            "insertion_owners": actual_diagnostics["source_ledger_insertion_owner_rows"],
+            "rebox_owners": actual_diagnostics["source_ledger_rebox_owner_rows"],
+            "carried_ordinary_owners": actual_diagnostics["source_ledger_carried_ordinary_owner_rows"],
+            "retired_source_owners": actual_diagnostics["source_ledger_retired_owner_rows"],
+            "owner_categories": actual_diagnostics["source_ledger_owner_categories"],
+            "fresh_structured_width_mass": actual_diagnostics["source_ledger_structured_width_mass"],
+            "ordinary_collapsed_width_mass": actual_diagnostics["source_ledger_ordinary_width_mass"],
+            "owner_intervals_additive": actual_diagnostics["source_ledger_owner_intervals_additive"],
+            "owner_interaction_policy": actual_diagnostics["source_ledger_owner_interaction_policy"],
+        },
         "interactions_additive": False,
     }
     return {
