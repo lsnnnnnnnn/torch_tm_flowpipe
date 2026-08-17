@@ -22,6 +22,19 @@ REJECTED = "G2_SHARED_COLUMN_CARRY_REJECTED"
 TOTAL = "LOSSLESS_CROSS_OPERATOR_CELL_UNAVAILABLE__TOTAL_CAUSE_OPEN"
 LEGACY_NATIVE = 6.397083942944808
 CHANNELS = ("endpoint_x", "endpoint_y", "segment_tube_x", "segment_tube_y")
+REMAINDER_OWNER_CATEGORIES = (
+    "initial_remainder",
+    "polynomial_truncation",
+    "cutoff",
+    "integration_overflow",
+    "composition_overflow",
+    "poly_times_remainder",
+    "remainder_times_poly",
+    "remainder_times_remainder",
+    "picard_residual",
+    "roundoff_safeguard",
+    "reset_or_reconditioning",
+)
 
 
 class VerificationError(ValueError):
@@ -51,6 +64,27 @@ def load(path: Path) -> Any:
 
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def canonical_sha(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def verify_owner_interval(row: dict[str, Any], *, label: str) -> tuple[float, float]:
+    for field in (
+        "outward_lo_hex",
+        "outward_hi_hex",
+        "width",
+        "canonical_support_sha256",
+        "containment_witness",
+    ):
+        require(field in row, f"{label} missing {field}")
+    lo = float.fromhex(row["outward_lo_hex"])
+    hi = float.fromhex(row["outward_hi_hex"])
+    require(hi >= lo and hi - lo == float(row["width"]), f"{label} outward width")
+    require(len(row["canonical_support_sha256"]) == 64, f"{label} canonical hash")
+    require(bool(row["containment_witness"]), f"{label} containment witness")
+    return lo, hi
 
 
 def verify_integrity(root: Path) -> dict[str, Any]:
@@ -116,9 +150,61 @@ def verify_gate_a(root: Path) -> dict[str, Any]:
     require(bridge["canonical_byte_roundtrips_exact"] == bridge["fixture_count"] == 28, "Flow* byte round trips")
     require(bridge["next_step_roundtrips_exact"] == 28, "Flow* continuation parity")
     require(matrix["common_component_box_used"] is False and matrix["queue_dropped"] is False, "lossy Gate A adapter")
+    fixture_root = root / "01_gate_a/fixtures"
+    for label in matrix["positions"]:
+        fixture = fixture_root / label
+        flow_row = next(
+            row for row in rows
+            if row["label"] == label and row["operator"] == row["prestate"] == "Flowstar"
+        )
+        flow_pre = fixture / "flowstar_prestate.state"
+        flow_roundtrip = fixture / "flowstar_prestate.roundtrip.state"
+        flow_next = fixture / "flowstar_on_flowstar_next.state"
+        require(flow_pre.read_bytes() == flow_roundtrip.read_bytes(), f"{label} Flow* byte round trip")
+        require(sha(flow_pre) == flow_row["prestate_sha256"], f"{label} Flow* prestate hash")
+        require(sha(flow_next) == flow_row["next_state_sha256"], f"{label} Flow* next-state hash")
+
+        torch_row = next(
+            row for row in rows
+            if row["label"] == label and row["operator"] == row["prestate"] == "Torch"
+        )
+        torch_pre = fixture / "torch_prestate/terminal_state.json"
+        torch_pre_manifest = fixture / "torch_prestate/terminal_state_manifest.json"
+        torch_roundtrip = fixture / "torch_prestate_roundtrip/terminal_state.json"
+        torch_roundtrip_manifest = fixture / "torch_prestate_roundtrip/terminal_state_manifest.json"
+        require(torch_pre.read_bytes() == torch_roundtrip.read_bytes(), f"{label} Torch byte round trip")
+        require(
+            torch_pre_manifest.read_bytes() == torch_roundtrip_manifest.read_bytes(),
+            f"{label} Torch manifest round trip",
+        )
+        manifest = load(torch_pre_manifest)
+        require(manifest == torch_row["checkpoint_manifest"], f"{label} Torch manifest cell")
+        require(sha(torch_pre) == manifest["payload_sha256"], f"{label} Torch payload hash")
+        require(
+            sha(fixture / "torch_on_torch_output.json") == torch_row["torch_output_sha256"],
+            f"{label} Torch operator output hash",
+        )
+
+        owners = load(fixture / "torch_owner_ledgers.json")
+        require(owners["schema"] == "torch_common_prestate_separate_owner_ledgers_v1", f"{label} owner schema")
+        require(owners["ledgers_merged"] is False, f"{label} owner ledgers merged")
+        require(owners["h_hex"] == "0x1.47ae147ae147bp-7", f"{label} fixture h")
+        dense = owners["complete_o4_validated_owner_ledger"]
+        require(len(dense) == 2 * len(REMAINDER_OWNER_CATEGORIES), f"{label} dense owner coverage")
+        require(
+            {row["category"] for row in dense} == set(REMAINDER_OWNER_CATEGORIES),
+            f"{label} dense owner categories",
+        )
+        require({row["component"] for row in dense} == {0, 1}, f"{label} dense owner components")
+        for owner in dense:
+            lo = float.fromhex(owner["lo_hex"])
+            hi = float.fromhex(owner["hi_hex"])
+            require(hi >= lo and hi - lo == float(owner["width"]), f"{label} dense owner width")
+        require(len(owners["ordinary_remainder_ledger"]) == 2, f"{label} ordinary ledger coverage")
+        require(owners["contains_unchanged_picard_image"] is True, f"{label} ledger containment")
     computed = TOTAL if counts.get(("Torch", "Flowstar", "UNAVAILABLE_LOSSLESS_CROSS_OPERATOR_CELL")) else "INVALID"
     require(computed == matrix["conclusion"] and matrix["total_cause_closed"] is False, "Gate A conclusion")
-    return {"positions": 5, "cells": 20, "conclusion": computed}
+    return {"positions": 5, "cells": 20, "fixture_roundtrips_recomputed": 10, "conclusion": computed}
 
 
 def verify_oracle(root: Path) -> dict[str, Any]:
@@ -165,6 +251,41 @@ def verify_gate_b(root: Path) -> dict[str, Any]:
             require(consumers[name]["consumer_output_sha256"] != payload["consumer_output_sha256"], "Gate B payload control")
             require(consumers[name]["consumer_output_sha256"] == metadata["consumer_output_sha256"], "Gate B metadata control")
             passed_controls += 1
+        actual = row["owners"]["actual_transition"]
+        require(actual["owner_intervals_additive"] is False, "Gate B owner additivity")
+        require(tuple(actual["owner_categories"]) == REMAINDER_OWNER_CATEGORIES, "Gate B owner categories")
+        dense = actual["dense_validated_ledger_owners"]
+        require(len(dense) == 2 * len(REMAINDER_OWNER_CATEGORIES), "Gate B dense owner coverage")
+        require({owner["category"] for owner in dense} == set(REMAINDER_OWNER_CATEGORIES), "Gate B dense categories")
+        for owner in dense:
+            verify_owner_interval(owner, label=f"{row['label']} dense owner")
+            expected = canonical_sha(
+                f"{owner['category']}:{owner['component']}:"
+                f"{owner['outward_lo_hex']}:{owner['outward_hi_hex']}"
+            )
+            require(owner["canonical_support_sha256"] == expected, "Gate B dense canonical hash")
+        fresh = actual["fresh_structured_source_owners"]
+        require(len(fresh) == 2 and {owner["component"] for owner in fresh} == {0, 1}, "Gate B fresh owners")
+        for owner in fresh:
+            _, hi = verify_owner_interval(owner, label=f"{row['label']} fresh owner")
+            expected = canonical_sha(
+                f"{owner['source_id']}:{owner['midpoint_hex']}:{hi.hex()}"
+            )
+            require(owner["canonical_support_sha256"] == expected, "Gate B fresh canonical hash")
+        rebox = actual["rebox_owners"]
+        require(len(rebox) == 2 and {owner["component"] for owner in rebox} == {0, 1}, "Gate B rebox owners")
+        for owner in rebox:
+            verify_owner_interval(owner, label=f"{row['label']} rebox owner")
+            expected = canonical_sha(
+                f"g1_symmetric_rebox:{owner['component']}:"
+                f"{owner['input_lo_hex']}:{owner['input_hi_hex']}:"
+                f"{owner['outward_lo_hex']}:{owner['outward_hi_hex']}"
+            )
+            require(owner["canonical_support_sha256"] == expected, "Gate B rebox canonical hash")
+        require(len(actual["insertion_owners"]) == 4, "Gate B insertion owner coverage")
+        require(len(actual["carried_ordinary_owners"]) == 2, "Gate B ordinary owner coverage")
+        require(float(actual["fresh_structured_width_mass"]) >= 0.0, "Gate B fresh mass")
+        require(float(actual["ordinary_collapsed_width_mass"]) >= 0.0, "Gate B ordinary mass")
     terminal = load(root / "02_gate_b/terminal_owner_interventions.json")
     require(terminal["terminal_time"] > 6.0 and terminal["failure_message"], "G1 terminal prestate")
     for name, status in terminal["controls"].items():
@@ -177,7 +298,13 @@ def verify_gate_b(root: Path) -> dict[str, Any]:
     ordinary = sum(float(row["width"]) for row in owners["carried_ordinary_owners"])
     retired = sum(float(row["width"]) for row in owners["retired_source_owners"])
     require(ordinary > 1.0 and retired < 0.01 and ordinary > retired * 100, "ordinary-owner dominance")
-    return {"fixed_positions": 5, "passed_controls": passed_controls, "not_applicable": not_applicable, "terminal_time": terminal["terminal_time"]}
+    return {
+        "fixed_positions": 5,
+        "owner_categories_per_component": len(REMAINDER_OWNER_CATEGORIES),
+        "passed_controls": passed_controls,
+        "not_applicable": not_applicable,
+        "terminal_time": terminal["terminal_time"],
+    }
 
 
 def verify_resume(root: Path) -> dict[str, Any]:
