@@ -2376,8 +2376,20 @@ def _flowstar_bounded_source_ledger_transition(
                 "input_lo_hex": float(interval.lo.detach().cpu()).hex(),
                 "input_hi_hex": float(interval.hi.detach().cpu()).hex(),
                 "input_width": float(interval.width().detach().cpu()),
+                "outward_lo_hex": (-scale).hex(),
+                "outward_hi_hex": scale.hex(),
+                "width": 2.0 * scale,
                 "symmetric_output_width": 2.0 * scale,
                 "additional_width": max(0.0, 2.0 * scale - float(interval.width().detach().cpu())),
+                "canonical_support_sha256": hashlib.sha256(
+                    (
+                        f"g1_symmetric_rebox:{component}:"
+                        f"{float(interval.lo.detach().cpu()).hex()}:"
+                        f"{float(interval.hi.detach().cpu()).hex()}:"
+                        f"{(-scale).hex()}:{scale.hex()}"
+                    ).encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "outward_symmetric_rebox_contains_source_free_input_interval",
                 "fresh_source_excluded": True,
             }
         )
@@ -2422,6 +2434,26 @@ def _flowstar_bounded_source_ledger_transition(
 
     structured_width = float(torch.sum(2.0 * lift.radius).detach().cpu())
     ordinary_width = sum(float(model.remainder.width().detach().cpu()) for model in collapsed)
+    fresh_owner_rows: list[dict[str, Any]] = []
+    for component in range(dim):
+        midpoint = float(lift.midpoint[0, component].detach().cpu())
+        radius = float(lift.radius[0, component].detach().cpu())
+        source_id = source_after.source_ids[component]
+        fresh_owner_rows.append(
+            {
+                "category": "fresh_complete_validated_ledger_source",
+                "component": component,
+                "source_id": source_id,
+                "midpoint_hex": midpoint.hex(),
+                "outward_lo_hex": (-radius).hex(),
+                "outward_hi_hex": radius.hex(),
+                "width": 2.0 * radius,
+                "canonical_support_sha256": hashlib.sha256(
+                    f"{source_id}:{midpoint.hex()}:{radius.hex()}".encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "midpoint_plus_affine_source_contains_complete_dense_validated_ledger",
+            }
+        )
     dense_owner_rows: list[dict[str, Any]] = []
     for category in REMAINDER_LEDGER_CATEGORIES:
         entry_lo, entry_hi = decomposition.ledger.entries[category]
@@ -2450,6 +2482,7 @@ def _flowstar_bounded_source_ledger_transition(
             "source_ledger_retired_owner_rows": retired_owner_rows,
             "source_ledger_carried_ordinary_owner_rows": carried_ordinary_rows,
             "source_ledger_dense_owner_rows": dense_owner_rows,
+            "source_ledger_fresh_structured_owner_rows": fresh_owner_rows,
             "source_ledger_insertion_owner_rows": list(diagnostics.pop("_insertion_owner_rows", [])),
             "source_ledger_rebox_owner_rows": rebox_rows,
             "source_ledger_owner_intervals_additive": False,
@@ -2687,8 +2720,20 @@ def _flowstar_g2_shared_column_transition(
                 "input_lo_hex": float(interval.lo.detach().cpu()).hex(),
                 "input_hi_hex": float(interval.hi.detach().cpu()).hex(),
                 "input_width": float(interval.width().detach().cpu()),
+                "outward_lo_hex": (-scale).hex(),
+                "outward_hi_hex": scale.hex(),
+                "width": 2.0 * scale,
                 "symmetric_output_width": 2.0 * scale,
                 "additional_width": max(0.0, 2.0 * scale - float(interval.width().detach().cpu())),
+                "canonical_support_sha256": hashlib.sha256(
+                    (
+                        f"g2_symmetric_rebox:{component}:"
+                        f"{float(interval.lo.detach().cpu()).hex()}:"
+                        f"{float(interval.hi.detach().cpu()).hex()}:"
+                        f"{(-scale).hex()}:{scale.hex()}"
+                    ).encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "outward_symmetric_rebox_contains_source_free_input_interval",
                 "retained_source_excluded": True,
                 "fresh_source_excluded": True,
             }
@@ -2749,6 +2794,26 @@ def _flowstar_g2_shared_column_transition(
     ).hexdigest()
     ordinary_width = sum(float(model.remainder.width().detach().cpu()) for model in base)
     fresh_width = float(torch.sum(2.0 * lift.radius).detach().cpu())
+    fresh_owner_rows: list[dict[str, Any]] = []
+    for component in range(dim):
+        midpoint = float(lift.midpoint[0, component].detach().cpu())
+        radius = float(lift.radius[0, component].detach().cpu())
+        source_id = source_after.fresh_source_ids[component]
+        fresh_owner_rows.append(
+            {
+                "category": "fresh_complete_validated_ledger_source",
+                "component": component,
+                "source_id": source_id,
+                "midpoint_hex": midpoint.hex(),
+                "outward_lo_hex": (-radius).hex(),
+                "outward_hi_hex": radius.hex(),
+                "width": 2.0 * radius,
+                "canonical_support_sha256": hashlib.sha256(
+                    f"{source_id}:{midpoint.hex()}:{radius.hex()}".encode("utf-8")
+                ).hexdigest(),
+                "containment_witness": "midpoint_plus_affine_source_contains_complete_dense_validated_ledger",
+            }
+        )
     retained_ranges = retained_after.range_box()
     retained_width = sum(float(interval.width().detach().cpu()) for interval in retained_ranges)
     diagnostics.update(
@@ -2765,6 +2830,7 @@ def _flowstar_g2_shared_column_transition(
             "g2_retired_owner_rows": retired_owner_rows,
             "g2_carried_ordinary_owner_rows": carried_ordinary_rows,
             "g2_dense_owner_rows": dense_owner_rows,
+            "g2_fresh_structured_owner_rows": fresh_owner_rows,
             "g2_insertion_owner_rows": list(diagnostics.pop("_insertion_owner_rows", [])),
             "g2_rebox_owner_rows": rebox_rows,
             "g2_affine_lift": lift.as_dict(),

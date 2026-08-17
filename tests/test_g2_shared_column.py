@@ -152,6 +152,20 @@ def test_real_dense_consumer_rotates_two_generations_with_six_variables() -> Non
     assert third_state.retired_source_count == 2
     assert third_state.retained_source_ids == second_state.fresh_source_ids
 
+    diagnostics = third.flowstar_normal_state.diagnostics
+    assert len(diagnostics["g2_dense_owner_rows"]) == 22
+    assert len(diagnostics["g2_fresh_structured_owner_rows"]) == 2
+    assert len(diagnostics["g2_rebox_owner_rows"]) == 2
+    for owner in (
+        diagnostics["g2_dense_owner_rows"]
+        + diagnostics["g2_fresh_structured_owner_rows"]
+        + diagnostics["g2_rebox_owner_rows"]
+    ):
+        assert len(owner["canonical_support_sha256"]) == 64
+        assert "outward_lo_hex" in owner and "outward_hi_hex" in owner
+        assert owner["width"] >= 0.0
+        assert owner["containment_witness"]
+
 
 def test_g2_retained_and_fresh_payloads_are_not_double_counted() -> None:
     first = _step([Interval(1.1, 1.4), Interval(2.35, 2.45)])
