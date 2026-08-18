@@ -31,6 +31,9 @@ class _Expression:
     def __rsub__(self, other):
         return _Expression(f"({_text(other)}-{self.text})")
 
+    def __neg__(self):
+        return _Expression(f"(-{self.text})")
+
 
 def _text(value):
     return value.text if isinstance(value, _Expression) else repr(value)
@@ -59,6 +62,15 @@ def test_polynomial_ode_preserves_canonical_vdp_term_and_factor_order():
 
     assert result[0].text == "y"
     assert result[1].text == "((y-x)-((x*x)*y))"
+
+
+def test_polynomial_ode_opt_in_factorized_graph_matches_flowstar_expression():
+    ode = PolynomialODE.from_system_spec(_vdp_spec())
+
+    result = ode.evaluate_canonical_factorized([_Expression("x"), _Expression("y")])
+
+    assert result[0].text == "y"
+    assert result[1].text == "(((1.0-(x*x))*y)-x)"
 
 
 def test_polynomial_ode_rejects_bad_power_dimension():

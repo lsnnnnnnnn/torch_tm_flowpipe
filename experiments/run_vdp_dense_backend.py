@@ -346,6 +346,8 @@ def _failure_type(status: str, message: str, h_remaining: float, h_min: float) -
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
     contract = load_contract()
+    if args.validation_mode is not None:
+        contract = {**contract, "validation_mode": args.validation_mode}
     if args.initialization_contract == "exact_decimal_contract":
         contract = {
             **contract,
@@ -369,6 +371,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         diagnostic_factors.append(f"right_map_center_mode={args.right_map_center_mode}")
     if args.right_map_range_mode != "standard":
         diagnostic_factors.append(f"right_map_range_mode={args.right_map_range_mode}")
+    if contract["validation_mode"] != "flowstar_raw_remainder_compat":
+        diagnostic_factors.append(f"validation_mode={contract['validation_mode']}")
     config_snapshot = {
         "contract": contract,
         "requested_horizon": requested_horizon,
@@ -378,6 +382,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reset_mode": args.reset_mode,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
+        "validation_mode": contract["validation_mode"],
         "diagnostic_factors": diagnostic_factors,
         "single_factor_diagnostic": len(diagnostic_factors) == 1,
         "save_terminal_checkpoint": bool(args.save_terminal_checkpoint),
@@ -898,6 +903,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "initialization_contract": args.initialization_contract,
         "right_map_center_mode": args.right_map_center_mode,
         "right_map_range_mode": args.right_map_range_mode,
+        "validation_mode": contract["validation_mode"],
         "dense_range_method": args.dense_range_method,
         "dense_range_trigger": args.dense_range_trigger,
         "dense_range_max_depth": int(args.dense_range_max_depth),
@@ -1000,6 +1006,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--right-map-center-mode", choices=("constant", "range_midpoint"), default="constant")
     parser.add_argument("--right-map-range-mode", choices=("standard", "normal_eval"), default="standard")
+    parser.add_argument(
+        "--validation-mode",
+        choices=(
+            "flowstar_raw_remainder_compat",
+            "flowstar_raw_remainder_compat_factorized_joint",
+        ),
+        help="opt-in dense raw-RHS operator; omission preserves the frozen contract default",
+    )
     parser.add_argument(
         "--dense-range-method",
         choices=(

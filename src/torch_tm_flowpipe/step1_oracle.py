@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from itertools import product
+import math
 from typing import Any, Iterable, Mapping, Sequence
 
 
@@ -230,6 +231,59 @@ class RationalPolynomial:
                 term = term * factor
             result = result + term
         return result
+
+    def bernstein_range(self, domain: Sequence[RationalInterval]) -> RationalInterval:
+        """Return an exact tensor-product Bernstein enclosure on ``domain``.
+
+        The polynomial is first mapped affinely to the unit box, then its
+        power-basis coefficients are converted exactly to Bernstein
+        coefficients.  Their convex hull encloses the complete polynomial
+        image; no floating-point evaluation or sampling is involved.
+        """
+        if len(domain) != self.n_vars:
+            raise ValueError("polynomial/domain dimensions differ")
+        if not self.terms:
+            return RationalInterval.point(0)
+
+        unit = RationalPolynomial.constant(self.n_vars, 0)
+        for exponent, coefficient in self.terms.items():
+            expanded = RationalPolynomial.constant(self.n_vars, coefficient)
+            for variable, power in enumerate(exponent):
+                lower = domain[variable].lo
+                width = domain[variable].hi - lower
+                factor_terms: dict[Exponent, Fraction] = {}
+                for unit_power in range(power + 1):
+                    factor_exponent = [0] * self.n_vars
+                    factor_exponent[variable] = unit_power
+                    factor_terms[tuple(factor_exponent)] = (
+                        Fraction(math.comb(power, unit_power))
+                        * lower ** (power - unit_power)
+                        * width**unit_power
+                    )
+                expanded = expanded * RationalPolynomial(self.n_vars, factor_terms)
+            unit = unit + expanded
+
+        degrees = tuple(
+            max((exponent[variable] for exponent in unit.terms), default=0)
+            for variable in range(self.n_vars)
+        )
+        coefficients: dict[Exponent, Fraction] = {
+            beta: Fraction(0)
+            for beta in product(*(range(degree + 1) for degree in degrees))
+        }
+        # Sparse contribution form of the tensor power-to-Bernstein map.
+        for alpha, power_coefficient in unit.terms.items():
+            for beta in product(
+                *(range(alpha_i, degree + 1) for alpha_i, degree in zip(alpha, degrees, strict=True))
+            ):
+                weight = Fraction(1)
+                for alpha_i, beta_i, degree in zip(alpha, beta, degrees, strict=True):
+                    weight *= Fraction(
+                        math.comb(beta_i, alpha_i),
+                        math.comb(degree, alpha_i),
+                    )
+                coefficients[beta] += power_coefficient * weight
+        return RationalInterval(min(coefficients.values()), max(coefficients.values()))
 
     @property
     def degree(self) -> int:

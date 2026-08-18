@@ -168,6 +168,7 @@ class RawRemainderTraceRecorder:
     picard_iteration: int
     normalization_scale: Sequence[float]
     target_intervals: Sequence[tuple[float, float]]
+    expression_mode: str = "ordered_terms"
     nodes: list[dict[str, Any]] = field(default_factory=list)
     component_roots: dict[int, str] = field(default_factory=dict)
     _operation_counts: dict[str, int] = field(default_factory=dict)
@@ -175,15 +176,22 @@ class RawRemainderTraceRecorder:
     def _next_id(self, operation: str, component: int) -> str:
         count = self._operation_counts.get(operation, 0) + 1
         self._operation_counts[operation] = count
-        semantic: dict[tuple[str, int], str] = {
-            # PolynomialODE preserves the canonical distributed form
-            # y - x - x^2*y.  These are production operations, not a
-            # post-hoc rewrite to Flow*'s factored (1-x^2)*y-x tree.
-            ("subtract", 1): "y_rhs.y_minus_x",
-            ("multiply", 1): "y_rhs.x_squared",
-            ("multiply", 2): "y_rhs.x_squared_times_y",
-            ("subtract", 2): "y_rhs.distributed_final",
-        }
+        if self.expression_mode == "canonical_factorized_joint":
+            semantic: dict[tuple[str, int], str] = {
+                ("multiply", 1): "y_rhs.x_squared_joint",
+                ("subtract", 1): "y_rhs.one_minus_x_squared",
+                ("multiply", 2): "y_rhs.factor_times_y",
+                ("subtract", 2): "y_rhs.factorized_final",
+            }
+        else:
+            semantic = {
+                # PolynomialODE's frozen default preserves the canonical
+                # distributed form y - x - x^2*y.
+                ("subtract", 1): "y_rhs.y_minus_x",
+                ("multiply", 1): "y_rhs.x_squared",
+                ("multiply", 2): "y_rhs.x_squared_times_y",
+                ("subtract", 2): "y_rhs.distributed_final",
+            }
         label = semantic.get((operation, count), f"{operation}_{count:03d}")
         return f"torch.i{self.picard_iteration}.c{component}.{label}"
 
@@ -281,6 +289,7 @@ class RawRemainderTraceRecorder:
         validate_expression_dag(self.nodes)
         return {
             "schema": SCHEMA,
+            "expression_mode": self.expression_mode,
             "node_fields": list(NODE_FIELDS),
             "nodes": self.nodes,
         }

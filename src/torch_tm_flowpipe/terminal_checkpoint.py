@@ -726,10 +726,20 @@ def load_terminal_checkpoint(
         models = [*current.models, *normal_state.tmv_pre.models, *normal_state.tmv_right.models]
         if any(model.order != int(expected_order) for model in models):
             raise ValueError("terminal checkpoint order mismatch")
+
+    def reconstructed_hashes(decoded: TMVector, encoded: Mapping[str, Any]) -> dict[str, str]:
+        # Checkpoints intentionally decode tensors on CPU.  Preserve the
+        # recorded source-device provenance while hashing the reconstructed
+        # numeric state, so a CUDA checkpoint remains safely portable and its
+        # exact payload still verifies.
+        reconstructed = _encode_tmvector(decoded)
+        reconstructed["source_device"] = str(encoded.get("source_device", "cpu"))
+        return _tmvector_hashes(reconstructed)
+
     actual_hashes = {
-        "current": tmvector_hashes(current),
-        "normal_tmv_pre": tmvector_hashes(normal_state.tmv_pre),
-        "normal_tmv_right": tmvector_hashes(normal_state.tmv_right),
+        "current": reconstructed_hashes(current, current_value),
+        "normal_tmv_pre": reconstructed_hashes(normal_state.tmv_pre, normal_value["tmv_pre"]),
+        "normal_tmv_right": reconstructed_hashes(normal_state.tmv_right, normal_value["tmv_right"]),
     }
     if schema == SCHEMA_V2:
         structured_encoded = normal_value.get("structured_remainder")

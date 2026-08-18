@@ -288,6 +288,54 @@ def _interval_mul(
     return _down(torch.min(candidates, dim=0).values), _up(torch.max(candidates, dim=0).values)
 
 
+def _shared_square_remainder_range(
+    poly_lo: torch.Tensor,
+    poly_hi: torch.Tensor,
+    rem_lo: torch.Tensor,
+    rem_hi: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Enclose ``2*p*r + r^2`` without duplicating the shared ``r``.
+
+    On a rectangle the extrema occur at the four corners, at ``r = 0``,
+    or at the convex-in-r vertex ``r = -p`` for an endpoint of ``p``.
+    Candidate arithmetic is padded outwards with ``nextafter``.
+    """
+
+    def point_value(p: torch.Tensor, r: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        square_lo, square_hi = _interval_mul(r, r, r, r)
+        product_lo, product_hi = _interval_mul(p, p, r, r)
+        linear_lo, linear_hi = _interval_scale(product_lo, product_hi, 2.0)
+        return _interval_add(square_lo, square_hi, linear_lo, linear_hi)
+
+    lower_candidates: list[torch.Tensor] = []
+    upper_candidates: list[torch.Tensor] = []
+    for p in (poly_lo, poly_hi):
+        for r in (rem_lo, rem_hi):
+            lo, hi = point_value(p, r)
+            lower_candidates.append(lo)
+            upper_candidates.append(hi)
+        vertex = -p
+        inside = (vertex >= rem_lo) & (vertex <= rem_hi)
+        vertex_value = _down(-_up(p * p))
+        lower_candidates.append(
+            torch.where(inside, vertex_value, torch.full_like(vertex_value, torch.inf))
+        )
+    zero_inside = (rem_lo <= 0.0) & (rem_hi >= 0.0)
+    zeros = torch.zeros_like(rem_lo)
+    lower_candidates.append(torch.where(zero_inside, zeros, torch.full_like(zeros, torch.inf)))
+    upper_candidates.append(torch.where(zero_inside, zeros, torch.full_like(zeros, -torch.inf)))
+    result_lo = torch.amin(torch.stack(lower_candidates, dim=0), dim=0)
+    result_hi = torch.amax(torch.stack(upper_candidates, dim=0), dim=0)
+    # An identically-zero ordinary remainder has no square cross term.  Keep
+    # that exact identity instead of manufacturing subnormal nextafter noise.
+    zero_remainder = (rem_lo == 0.0) & (rem_hi == 0.0)
+    zeros = torch.zeros_like(result_lo)
+    return (
+        torch.where(zero_remainder, zeros, result_lo),
+        torch.where(zero_remainder, zeros, result_hi),
+    )
+
+
 def _interval_scale(
     lo: torch.Tensor,
     hi: torch.Tensor,
@@ -2346,6 +2394,82 @@ class BatchedTaylorModel:
         ledger = ledger.add("remainder_times_remainder", i_j_lo, i_j_hi)
         return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
+    def square_trunc_dependency_preserving(
+        self,
+        *,
+        max_degree: int | None = None,
+    ) -> "BatchedTaylorModel":
+        """Square a TM while retaining the identity of its ordinary remainder."""
+
+        poly, trunc_lo, trunc_hi = self.poly.mul_trunc(
+            self.poly,
+            return_truncation_bound=True,
+            domain_lo=self.domain_lo,
+            domain_hi=self.domain_hi,
+            max_degree=max_degree,
+            range_policy=self.range_policy,
+            range_trace=self.range_trace,
+            range_context="polynomial_truncation",
+        )
+        # The dense multiplication plan contains structurally possible
+        # overflow routes even when all corresponding coefficients are zero.
+        # Its generic range path outward-pads that zero polynomial; H2 keeps
+        # the stronger exact identity without changing legacy multiplication.
+        _, _, _, dropped_left, dropped_right, _, _ = (
+            self.poly.basis.multiplication_plan_for_degree(max_degree)
+        )
+        if dropped_left.numel() == 0:
+            truncation_exact_zero = torch.ones_like(trunc_lo, dtype=torch.bool)
+        else:
+            dropped_products = (
+                self.poly.coeffs.index_select(-1, dropped_left)
+                * self.poly.coeffs.index_select(-1, dropped_right)
+            )
+            truncation_exact_zero = torch.all(dropped_products == 0.0, dim=-1)
+        trunc_zeros = torch.zeros_like(trunc_lo)
+        trunc_lo = torch.where(truncation_exact_zero, trunc_zeros, trunc_lo)
+        trunc_hi = torch.where(truncation_exact_zero, trunc_zeros, trunc_hi)
+        p_lo, p_hi = self.poly.range_bound(
+            self.domain_lo,
+            self.domain_hi,
+            policy=self.range_policy,
+            context="poly_times_remainder",
+            trace=self.range_trace,
+        )
+        joint_lo, joint_hi = _shared_square_remainder_range(
+            p_lo,
+            p_hi,
+            self.rem_lo,
+            self.rem_hi,
+        )
+        rem_lo, rem_hi = _interval_add(trunc_lo, trunc_hi, joint_lo, joint_hi)
+        exact_zero = (
+            (trunc_lo == 0.0)
+            & (trunc_hi == 0.0)
+            & (joint_lo == 0.0)
+            & (joint_hi == 0.0)
+        )
+        zeros = torch.zeros_like(rem_lo)
+        rem_lo = torch.where(exact_zero, zeros, rem_lo)
+        rem_hi = torch.where(exact_zero, zeros, rem_hi)
+        ledger = DenseRemainderLedger.empty()
+        ledger = ledger.add("polynomial_truncation", trunc_lo, trunc_hi)
+        # The joint interval owns 2*P*R + R^2.  The other two historical
+        # product slots are explicitly zero so ledger totals stay additive.
+        ledger = ledger.add("poly_times_remainder", joint_lo, joint_hi)
+        ledger = ledger.add("remainder_times_poly", zeros, zeros)
+        ledger = ledger.add("remainder_times_remainder", zeros, zeros)
+        return BatchedTaylorModel(
+            poly,
+            rem_lo,
+            rem_hi,
+            self.domain_lo,
+            self.domain_hi,
+            ledger,
+            self.range_policy,
+            self.range_trace,
+        )
+
     def integrate(self, var_index: int) -> "BatchedTaylorModel":
         poly, overflow_lo, overflow_hi = self.poly.integrate(
             var_index,
@@ -2723,6 +2847,7 @@ class _DenseRawTraceScalar:
         recorder: RawRemainderTraceRecorder | None = None,
         node_id: str | None = None,
         expression_component: int = 0,
+        dependency_preserving: bool = False,
     ):
         if model.poly.out_dim != 1:
             raise ValueError("raw trace scalars require output dimension one")
@@ -2732,6 +2857,7 @@ class _DenseRawTraceScalar:
         self.recorder = recorder
         self.node_id = node_id
         self.expression_component = int(expression_component)
+        self.dependency_preserving = bool(dependency_preserving)
 
     @property
     def domain(self) -> list[Any]:
@@ -2761,6 +2887,7 @@ class _DenseRawTraceScalar:
             expression_component=(
                 self.expression_component if expression_component is None else int(expression_component)
             ),
+            dependency_preserving=self.dependency_preserving,
         )
 
     @staticmethod
@@ -2869,11 +2996,16 @@ class _DenseRawTraceScalar:
 
     def __mul__(self, other: Any) -> "_DenseRawTraceScalar":
         other_trace = self._coerce(other)
-        product = self.model.mul_trunc(
-            other_trace.model,
-            max_degree=self.effective_order,
+        shared_square = self.dependency_preserving and self is other_trace
+        product = (
+            self.model.square_trunc_dependency_preserving(max_degree=self.effective_order)
+            if shared_square
+            else self.model.mul_trunc(other_trace.model, max_degree=self.effective_order)
         ).apply_cutoff(self.cutoff_threshold)
-        return self._record_binary("multiply", other_trace, product)
+        recorded = self._record_binary("multiply", other_trace, product)
+        if shared_square and self.recorder is not None:
+            self.recorder.nodes[-1]["dependency_preserving_joint_square"] = True
+        return recorded
 
     __rmul__ = __mul__
 
@@ -2911,7 +3043,14 @@ def _call_dense_raw_trace_rhs(
     effective_order: int,
     cutoff_threshold: float | None,
     recorder: RawRemainderTraceRecorder | None = None,
+    evaluation_mode: str = "ordered_terms",
 ) -> BatchedTaylorModel:
+    if evaluation_mode not in {"ordered_terms", "canonical_factorized_joint"}:
+        raise ValueError("unknown dense raw RHS evaluation mode")
+    if recorder is not None:
+        if recorder.nodes and recorder.expression_mode != evaluation_mode:
+            raise ValueError("cannot change raw trace expression mode after recording nodes")
+        recorder.expression_mode = evaluation_mode
     state_models: list[_DenseRawTraceScalar] = []
     for index in range(candidate.poly.out_dim):
         component_model = candidate.component(index)
@@ -2933,11 +3072,18 @@ def _call_dense_raw_trace_rhs(
                 recorder=recorder,
                 node_id=node_id,
                 expression_component=index,
+                dependency_preserving=evaluation_mode == "canonical_factorized_joint",
             )
         )
     state = _DenseRawTraceVector(state_models)
     try:
-        output = rhs_fn(state)  # type: ignore[arg-type]
+        if evaluation_mode == "canonical_factorized_joint":
+            evaluator = getattr(rhs_fn, "evaluate_canonical_factorized", None)
+            if not callable(evaluator):
+                raise TypeError("canonical factorized raw RHS requires PolynomialODE-style evaluator")
+            output = evaluator(state)
+        else:
+            output = rhs_fn(state)  # type: ignore[arg-type]
     except TypeError as one_argument_error:
         try:
             output = rhs_fn(state, None)  # type: ignore[misc,arg-type]
@@ -2954,6 +3100,22 @@ def _call_dense_raw_trace_rhs(
     return BatchedTaylorModel.concat([value.model for value in values])
 
 
+def _call_dense_rhs_evaluation(
+    rhs_fn: DenseRHS,
+    state: BatchedTaylorModel,
+    *,
+    evaluation_mode: str,
+) -> BatchedTaylorModel:
+    if evaluation_mode == "ordered_terms":
+        return call_dense_rhs(rhs_fn, state)
+    if evaluation_mode != "canonical_factorized_joint":
+        raise ValueError("unknown dense RHS evaluation mode")
+    evaluator = getattr(rhs_fn, "evaluate_canonical_factorized", None)
+    if not callable(evaluator):
+        raise TypeError("canonical factorized raw RHS requires PolynomialODE-style evaluator")
+    return _coerce_dense_rhs_output(evaluator(state), state)
+
+
 def _dense_flowstar_raw_compat_image(
     rhs_fn: DenseRHS,
     base_ext: BatchedTaylorModel,
@@ -2965,6 +3127,7 @@ def _dense_flowstar_raw_compat_image(
     cutoff_threshold: float | None,
     validation_eps: float,
     raw_trace_recorder: RawRemainderTraceRecorder | None = None,
+    raw_rhs_evaluation: str = "ordered_terms",
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -2977,13 +3140,18 @@ def _dense_flowstar_raw_compat_image(
         effective_order=max(int(order) - 1, 0),
         cutoff_threshold=cutoff_threshold,
         recorder=raw_trace_recorder,
+        evaluation_mode=raw_rhs_evaluation,
     )
     tau_lo = candidate_with_target.domain_lo[:, tau_index].view(-1, 1)
     tau_hi = candidate_with_target.domain_hi[:, tau_index].view(-1, 1)
     before_lo, before_hi = _interval_mul(tau_lo, tau_hi, raw_rhs.rem_lo, raw_rhs.rem_hi)
     before_lo, before_hi = _inflate_tensor_interval(before_lo, before_hi, validation_eps)
 
-    regular_rhs = call_dense_rhs(rhs_fn, candidate_with_target)
+    regular_rhs = _call_dense_rhs_evaluation(
+        rhs_fn,
+        candidate_with_target,
+        evaluation_mode=raw_rhs_evaluation,
+    )
     tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
     poly_diff = tmp.poly.sub(candidate_poly.poly)
     diff_lo, diff_hi = poly_diff.range_bound(
@@ -3130,6 +3298,7 @@ def _dense_flowstar_raw_compat_image(
             "additive outward split of the unchanged raw-compat image: base ledger + "
             "time-scaled raw RHS ledger + polynomial difference + rounding padding"
         ),
+        "raw_rhs_evaluation": raw_rhs_evaluation,
     }, decomposition
 
 
@@ -3289,6 +3458,7 @@ def dense_picard_validate_step(
         "target_remainder_refined",
         "target_remainder_flowstar_ctrunc",
         "flowstar_raw_remainder_compat",
+        "flowstar_raw_remainder_compat_factorized_joint",
     }
     if validation_mode not in supported_modes:
         raise ValueError(f"dense Picard currently requires one of {sorted(supported_modes)}")
@@ -3409,7 +3579,10 @@ def dense_picard_validate_step(
         ordinary_lo, ordinary_hi = residual.range_bound(context="retained_polynomial")
         ordinary_lo, ordinary_hi = _inflate_tensor_interval(ordinary_lo, ordinary_hi, validation_eps)
         compat_extra: Mapping[str, Any] = {}
-        if validation_mode == "flowstar_raw_remainder_compat":
+        if validation_mode in {
+            "flowstar_raw_remainder_compat",
+            "flowstar_raw_remainder_compat_factorized_joint",
+        }:
             image_lo, image_hi, compat_extra, decomposition = _dense_flowstar_raw_compat_image(
                 rhs_fn,
                 base_ext,
@@ -3420,6 +3593,11 @@ def dense_picard_validate_step(
                 cutoff_threshold=cutoff_threshold,
                 validation_eps=validation_eps,
                 raw_trace_recorder=raw_remainder_trace_recorder,
+                raw_rhs_evaluation=(
+                    "canonical_factorized_joint"
+                    if validation_mode == "flowstar_raw_remainder_compat_factorized_joint"
+                    else "ordered_terms"
+                ),
             )
         else:
             image_lo, image_hi = ordinary_lo, ordinary_hi
@@ -3444,7 +3622,10 @@ def dense_picard_validate_step(
         last_segment_model = candidate.with_remainder(image_lo, image_hi, category="picard_residual")
         rejection_reason = "" if self_subset else (
             "Flowstar raw remainder compat residual not subset of target remainder"
-            if validation_mode == "flowstar_raw_remainder_compat"
+            if validation_mode in {
+                "flowstar_raw_remainder_compat",
+                "flowstar_raw_remainder_compat_factorized_joint",
+            }
             else "Picard residual not subset of target remainder"
         )
         if rejection_reason:

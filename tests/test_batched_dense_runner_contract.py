@@ -202,3 +202,43 @@ def test_runner_labels_exactly_one_noncanonical_factor(tmp_path):
     summary = runner.run(args)
     assert summary["single_factor_diagnostic"] is True
     assert summary["diagnostic_factors"] == ["right_map_center_mode=range_midpoint"]
+
+
+def test_runner_h2_validation_mode_is_explicitly_opt_in(tmp_path):
+    runner = _runner_module()
+    defaults = runner.parse_args(
+        ["--output-dir", str(tmp_path / "default"), "--tm-backend", "dense"]
+    )
+    assert defaults.validation_mode is None
+
+    output = tmp_path / "h2"
+    args = runner.parse_args(
+        [
+            "--output-dir",
+            str(output),
+            "--tm-backend",
+            "dense",
+            "--device",
+            "cpu",
+            "--horizon",
+            "0.01",
+            "--fixed-step",
+            "0.01",
+            "--initialization-contract",
+            "exact_decimal_contract",
+            "--reset-mode",
+            "normalized_insertion_dependency_preserving",
+            "--validation-mode",
+            "flowstar_raw_remainder_compat_factorized_joint",
+            "--trace-flush-every",
+            "0",
+        ]
+    )
+    summary = runner.run(args)
+
+    assert summary["completed_requested_horizon"] is True
+    assert summary["validation_mode"] == "flowstar_raw_remainder_compat_factorized_joint"
+    assert summary["diagnostic_factors"] == [
+        "reset_mode=normalized_insertion_dependency_preserving",
+        "validation_mode=flowstar_raw_remainder_compat_factorized_joint",
+    ]
