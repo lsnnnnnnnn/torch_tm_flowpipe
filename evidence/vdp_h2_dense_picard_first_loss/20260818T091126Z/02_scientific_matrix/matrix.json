@@ -402,6 +402,113 @@
       "worktree_dirty": false
     }
   },
+  "native_rejection_diagnostics": {
+    "h1": {
+      "failed_attempt_count": 46,
+      "image_interval": [
+        -0.00011568740048260418,
+        0.00011993186550679303
+      ],
+      "largest_additive_validated_ledger_category": "polynomial_truncation",
+      "largest_additive_validated_ledger_width": 0.0002204441045981688,
+      "last_failed_h_try": 0.0038168662916664795,
+      "last_failed_segment_index": 293,
+      "last_failed_t_before": 6.441433080631058,
+      "limiting_component": "y",
+      "limiting_side": "upper",
+      "lower_overrun": 1.568740048260418e-05,
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "subset_margin": -1.993186550679302e-05,
+      "target_interval": [
+        -0.0001,
+        0.0001
+      ],
+      "upper_overrun": 1.993186550679302e-05,
+      "validated_ledger_widths_for_limiting_component": {
+        "composition_overflow": 0.0,
+        "cutoff": 1.69856188140096e-310,
+        "initial_remainder": 1.5267465166665928e-06,
+        "integration_overflow": 0.0,
+        "picard_residual": 2.0000000000000004e-12,
+        "poly_times_remainder": 1.6072735429754404e-06,
+        "polynomial_truncation": 0.0002204441045981688,
+        "remainder_times_poly": 1.2040844581670171e-05,
+        "remainder_times_remainder": 2.907499159865355e-10,
+        "reset_or_reconditioning": 0.0,
+        "roundoff_safeguard": 3.999999929806682e-12
+      }
+    },
+    "h1_h2": {
+      "failed_attempt_count": 44,
+      "image_interval": [
+        -0.00010064678895982489,
+        0.00010685420052420151
+      ],
+      "largest_additive_validated_ledger_category": "polynomial_truncation",
+      "largest_additive_validated_ledger_width": 0.00019374133210958038,
+      "last_failed_h_try": 0.0036549097749204694,
+      "last_failed_segment_index": 278,
+      "last_failed_t_before": 6.482041958201616,
+      "limiting_component": "y",
+      "limiting_side": "upper",
+      "lower_overrun": 6.46788959824887e-07,
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "subset_margin": -6.854200524201504e-06,
+      "target_interval": [
+        -0.0001,
+        0.0001
+      ],
+      "upper_overrun": 6.854200524201504e-06,
+      "validated_ledger_widths_for_limiting_component": {
+        "composition_overflow": 0.0,
+        "cutoff": 1.62648883907573e-310,
+        "initial_remainder": 7.309819549840943e-07,
+        "integration_overflow": 0.0,
+        "picard_residual": 2.000000411925625e-12,
+        "poly_times_remainder": 1.0559850018405085e-06,
+        "polynomial_truncation": 0.00019374133210958038,
+        "remainder_times_poly": 1.1972393561224544e-05,
+        "remainder_times_remainder": 2.9085639624994475e-10,
+        "reset_or_reconditioning": 0.0,
+        "roundoff_safeguard": 3.999999943359209e-12
+      }
+    },
+    "legacy": {
+      "failed_attempt_count": 48,
+      "image_interval": [
+        -0.00011999959116807211,
+        0.00011599079695982674
+      ],
+      "largest_additive_validated_ledger_category": "polynomial_truncation",
+      "largest_additive_validated_ledger_width": 0.0002218054019881942,
+      "last_failed_h_try": 0.003623635847674574,
+      "last_failed_segment_index": 307,
+      "last_failed_t_before": 6.397083942944808,
+      "limiting_component": "y",
+      "limiting_side": "lower",
+      "lower_overrun": 1.9999591168072105e-05,
+      "rejection_reason": "Flowstar raw remainder compat residual not subset of target remainder",
+      "subset_margin": -1.9999591168072105e-05,
+      "target_interval": [
+        -0.0001,
+        0.0001
+      ],
+      "upper_overrun": 1.5990796959826733e-05,
+      "validated_ledger_widths_for_limiting_component": {
+        "composition_overflow": 0.0,
+        "cutoff": 1.6125714794822e-310,
+        "initial_remainder": 1.4494543390698304e-06,
+        "integration_overflow": 0.0,
+        "picard_residual": 2.0000000000000004e-12,
+        "poly_times_remainder": 1.4089993841642806e-06,
+        "polynomial_truncation": 0.0002218054019881942,
+        "remainder_times_poly": 1.1326266051555203e-05,
+        "remainder_times_remainder": 2.603649150369765e-10,
+        "reset_or_reconditioning": 0.0,
+        "roundoff_safeguard": 4.000000024674372e-12
+      }
+    }
+  },
   "runtime_ratios": {
     "fixed_T6p32_h1_h2_over_legacy": 1.3402985633616509,
     "native_T10_request_h1_h2_over_legacy": 1.2101322102377858
