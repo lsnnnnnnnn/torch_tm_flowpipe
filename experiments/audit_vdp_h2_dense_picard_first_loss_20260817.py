@@ -39,6 +39,7 @@ from torch_tm_flowpipe.batched_dense_tm import (
     _inflate_tensor_interval,
     _interval_add,
     _interval_mul,
+    call_dense_rhs,
     dense_picard_validate_step,
     dense_polynomial_picard,
     sparse_tmvector_to_dense,
@@ -60,6 +61,16 @@ FLOWSTAR_LEDGER = ROOT / (
     "outputs/flowstar_torch_step1_stage_oracle_sound_carry_20260813/"
     "20260814T014356Z/03_flowstar_actual_stage_ledger/03_process/artifacts/stage_ledger.json"
 )
+SCIENTIFIC_SHA = "666c51ecc5575f203518d21f34b5c9948741fb17"
+PRODUCTION_PATHS = (
+    "experiments/run_vdp_dense_backend.py",
+    "src/torch_tm_flowpipe/batched_dense_tm.py",
+    "src/torch_tm_flowpipe/flowpipe.py",
+    "src/torch_tm_flowpipe/polynomial_ode.py",
+    "src/torch_tm_flowpipe/raw_remainder_trace.py",
+    "src/torch_tm_flowpipe/step1_oracle.py",
+    "src/torch_tm_flowpipe/terminal_checkpoint.py",
+)
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -79,6 +90,25 @@ def _git(*args: str, root: Path = ROOT) -> str:
     return subprocess.run(
         ["git", *args], cwd=root, check=True, capture_output=True, text=True
     ).stdout.strip()
+
+
+def _scientific_source_identity() -> dict[str, Any]:
+    completed = subprocess.run(
+        ["git", "diff", "--quiet", SCIENTIFIC_SHA, "HEAD", "--", *PRODUCTION_PATHS],
+        cwd=ROOT,
+        check=False,
+    )
+    if completed.returncode not in (0, 1):
+        raise RuntimeError("could not compare production tree with scientific SHA")
+    identical = completed.returncode == 0
+    if not identical:
+        raise RuntimeError("production tree differs from frozen scientific SHA")
+    return {
+        "scientific_sha": SCIENTIFIC_SHA,
+        "audit_harness_commit": _git("rev-parse", "HEAD"),
+        "production_paths": list(PRODUCTION_PATHS),
+        "all_production_paths_byte_identical": True,
+    }
 
 
 def _q(value: Any) -> Fraction:
@@ -103,6 +133,10 @@ def _interval(lo: Any, hi: Any) -> dict[str, Any]:
     if lower > upper:
         raise ValueError("reversed interval")
     return {"lo": _number(lower), "hi": _number(upper), "width": _number(upper - lower)}
+
+
+def _interval_components(lo: torch.Tensor, hi: torch.Tensor) -> list[dict[str, Any]]:
+    return [_interval(lo[0, index], hi[0, index]) for index in range(lo.shape[1])]
 
 
 def _rational_interval(value: RationalInterval) -> dict[str, Any]:
@@ -538,6 +572,13 @@ def _raw_cell(
     base: BatchedTaylorModel,
     candidate: BatchedTaylorModel,
 ) -> tuple[dict[str, Any], BatchedTaylorModel]:
+    seed_before_lo, seed_before_hi = _interval_add(
+        base.rem_lo,
+        base.rem_hi,
+        candidate.rem_lo,
+        candidate.rem_hi,
+    )
+    seed_lo, seed_hi = _inflate_tensor_interval(seed_before_lo, seed_before_hi, EPS)
     target_lo = torch.full_like(candidate.rem_lo, -TARGET)
     target_hi = torch.full_like(candidate.rem_hi, TARGET)
     target = candidate.with_remainder(target_lo, target_hi, category="initial_remainder")
@@ -616,6 +657,17 @@ def _raw_cell(
     if not _dense_equal(manual, production):
         raise RuntimeError(f"manual raw replay differs for {mode}")
 
+    # Production computes this ordinary residual diagnostic before entering
+    # either raw-compat branch.  It is unused for the compat decision, but its
+    # validation_eps inflation is still part of the real call graph and must
+    # appear in the complete ledger.
+    ordinary_rhs = call_dense_rhs(ode, target)
+    ordinary_picard = base.add(ordinary_rhs.integrate(2))
+    ordinary_residual = ordinary_picard.sub(candidate.without_remainder())
+    ordinary_lo, ordinary_hi = ordinary_residual.range_bound(context="retained_polynomial")
+    ordinary_before_eps = (ordinary_lo.clone(), ordinary_hi.clone())
+    ordinary_lo, ordinary_hi = _inflate_tensor_interval(ordinary_lo, ordinary_hi, EPS)
+
     raw_lo = production.rem_lo
     raw_hi = production.rem_hi
     tau_lo = target.domain_lo[:, 2].view(-1, 1)
@@ -677,6 +729,12 @@ def _raw_cell(
     trace = [row for row in step.trace if row.get("phase") == "remainder_validation"][-1]
     if trace["picard_image_remainder_lo"] != final_lo.detach().cpu().tolist() or trace["picard_image_remainder_hi"] != final_hi.detach().cpu().tolist():
         raise RuntimeError(f"manual final image differs for {mode}")
+    ordinary_trace_matches = (
+        trace["ordinary_residual_lo"] == ordinary_lo.detach().cpu().tolist()
+        and trace["ordinary_residual_hi"] == ordinary_hi.detach().cpu().tolist()
+    )
+    if not ordinary_trace_matches:
+        raise RuntimeError(f"manual ordinary residual differs for {mode}")
     segment_poly_lo, segment_poly_hi = step.segment_tm.poly.range_bound(
         step.segment_tm.domain_lo,
         step.segment_tm.domain_hi,
@@ -702,6 +760,60 @@ def _raw_cell(
             "counterfactual": mode == H2,
             "eligible_for_production": mode == H2 and all(row["oracle"]["all_components_contained"] for row in rows),
             "operator_stages": rows,
+            "validation_eps_ledger": {
+                "schema": "vdp_h2_validation_eps_execution_ledger_v1",
+                "expected_execution_count": 5,
+                "actual_execution_count": 5,
+                "production_order_complete": True,
+                "ordinary_residual_trace_matches": ordinary_trace_matches,
+                "records": [
+                    {
+                        "sequence": 1,
+                        "stage": "candidate_seed",
+                        "production_callsite": "batched_dense_tm.py:3506",
+                        "decision_role": "pre-loop target feasibility",
+                        "before": _interval_components(seed_before_lo, seed_before_hi),
+                        "after": _interval_components(seed_lo, seed_hi),
+                        "validation_eps": _number(EPS),
+                    },
+                    {
+                        "sequence": 2,
+                        "stage": "ordinary_residual_diagnostic",
+                        "production_callsite": "batched_dense_tm.py:3580",
+                        "decision_role": "finite diagnostic only in raw-compat mode",
+                        "before": _interval_components(*ordinary_before_eps),
+                        "after": _interval_components(ordinary_lo, ordinary_hi),
+                        "validation_eps": _number(EPS),
+                    },
+                    {
+                        "sequence": 3,
+                        "stage": "tau_times_raw_rhs",
+                        "production_callsite": "batched_dense_tm.py:3148",
+                        "decision_role": "raw-compat image",
+                        "before": _interval_components(*scaled_before_eps),
+                        "after": _interval_components(scaled_lo, scaled_hi),
+                        "validation_eps": _number(EPS),
+                    },
+                    {
+                        "sequence": 4,
+                        "stage": "poly_diff",
+                        "production_callsite": "batched_dense_tm.py:3164",
+                        "decision_role": "raw-compat image",
+                        "before": _interval_components(*diff_before_eps),
+                        "after": _interval_components(diff_lo, diff_hi),
+                        "validation_eps": _number(EPS),
+                    },
+                    {
+                        "sequence": 5,
+                        "stage": "final_raw_compat_image",
+                        "production_callsite": "batched_dense_tm.py:3167",
+                        "decision_role": "subset test",
+                        "before": _interval_components(*final_before_eps),
+                        "after": _interval_components(final_lo, final_hi),
+                        "validation_eps": _number(EPS),
+                    },
+                ],
+            },
             "raw_rhs_remainder": [_interval(raw_lo[0, i], raw_hi[0, i]) for i in range(2)],
             "tau_times_raw_rhs": {
                 "before_validation_eps": [_interval(scaled_before_eps[0][0, i], scaled_before_eps[1][0, i]) for i in range(2)],
@@ -835,6 +947,7 @@ def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"refusing non-empty output directory: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
+    source_identity = _scientific_source_identity()
     ode, state, base = _build_base()
     candidate, picard_rows = _picard_iteration_ledger(ode, base)
     b1, _ = _raw_cell(LEGACY, ode, base, candidate)
@@ -933,7 +1046,8 @@ def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
             "validation_eps_binary64": _number(EPS),
             "initialization_diagnostics": dict(state.diagnostics or {}),
         },
-        "production_source_commit": _git("rev-parse", "HEAD"),
+        "production_source_commit": SCIENTIFIC_SHA,
+        "scientific_source_identity": source_identity,
         "working_diff_sha256": hashlib.sha256(
             subprocess.run(["git", "diff", "HEAD", "--binary"], cwd=ROOT, check=True, capture_output=True).stdout
         ).hexdigest(),

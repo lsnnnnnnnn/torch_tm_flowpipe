@@ -114,6 +114,51 @@ def _compact_run(summary: Mapping[str, Any]) -> dict[str, Any]:
     return {key: summary[key] for key in keys}
 
 
+def _native_rejection_diagnostic(evidence: Path, lane: str) -> dict[str, Any]:
+    path = evidence / "native_T10" / lane / "attempts.csv"
+    with path.open(newline="", encoding="utf-8") as handle:
+        failed = [
+            row
+            for row in csv.DictReader(handle)
+            if row["validation_status"].lower() == "failed"
+        ]
+    if not failed:
+        raise ValueError(f"native lane has no failed validation attempts: {lane}")
+    row = failed[-1]
+    image_lo = json.loads(row["picard_image_remainder_lo"])[0]
+    image_hi = json.loads(row["picard_image_remainder_hi"])[0]
+    target_lo = json.loads(row["candidate_remainder_lo"])[0]
+    target_hi = json.loads(row["candidate_remainder_hi"])[0]
+    margins = json.loads(row["subset_margin"])[0]
+    component = min(range(len(margins)), key=lambda index: margins[index])
+    upper_overrun = float(image_hi[component]) - float(target_hi[component])
+    lower_overrun = float(target_lo[component]) - float(image_lo[component])
+    limiting_side = "upper" if upper_overrun >= lower_overrun else "lower"
+    ledger = json.loads(row["validated_remainder_ledger_intervals"])
+    widths = {
+        category: float(interval["width"][0][component])
+        for category, interval in ledger.items()
+    }
+    largest_category = max(widths, key=widths.__getitem__)
+    return {
+        "failed_attempt_count": len(failed),
+        "last_failed_segment_index": int(row["segment_index"]),
+        "last_failed_t_before": float(row["t_before"]),
+        "last_failed_h_try": float(row["h_try"]),
+        "limiting_component": ("x", "y")[component],
+        "limiting_side": limiting_side,
+        "subset_margin": float(margins[component]),
+        "upper_overrun": upper_overrun,
+        "lower_overrun": lower_overrun,
+        "image_interval": [float(image_lo[component]), float(image_hi[component])],
+        "target_interval": [float(target_lo[component]), float(target_hi[component])],
+        "largest_additive_validated_ledger_category": largest_category,
+        "largest_additive_validated_ledger_width": widths[largest_category],
+        "validated_ledger_widths_for_limiting_component": widths,
+        "rejection_reason": row["rejection_reason"],
+    }
+
+
 def summarize(evidence: Path) -> dict[str, Any]:
     evidence = evidence.resolve()
     gate = _load(evidence / "gates/summary.json")
@@ -178,6 +223,10 @@ def summarize(evidence: Path) -> dict[str, Any]:
     }
     native_summaries = {
         lane: _summary_row(evidence / "native_T10" / lane)
+        for lane in LANES
+    }
+    native_rejections = {
+        lane: _native_rejection_diagnostic(evidence, lane)
         for lane in LANES
     }
     cpu_t01 = {
@@ -251,6 +300,7 @@ def summarize(evidence: Path) -> dict[str, Any]:
         "fixed": fixed_matrix,
         "fixed_T6p32_runs": {lane: _compact_run(row) for lane, row in fixed_summaries.items()},
         "native_T10_requests": {lane: _compact_run(row) for lane, row in native_summaries.items()},
+        "native_rejection_diagnostics": native_rejections,
         "runtime_ratios": runtime_ratios,
         "cpu_T0p1": {lane: _compact_run(row) for lane, row in cpu_t01.items()},
         "v100_T0p1": {lane: _compact_run(row) for lane, row in v100_t01.items()},

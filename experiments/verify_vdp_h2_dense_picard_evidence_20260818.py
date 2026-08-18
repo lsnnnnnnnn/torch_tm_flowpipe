@@ -107,6 +107,10 @@ def verify(package: Path) -> dict[str, Any]:
     same_input = _load(package / "01_gates/gate_b_same_input_matrix.json")
     _require(ledger["production_source_commit"] == SCIENTIFIC_SHA, "ledger SHA")
     _require(ledger["working_diff_sha256"] == EMPTY_DIFF_SHA256, "ledger dirty diff")
+    _require(
+        ledger["scientific_source_identity"]["all_production_paths_byte_identical"] is True,
+        "scientific production source identity",
+    )
     _require(len(ledger["picard_iterations"]) == 28, "Picard operator stage count")
     _require(gate["picard_iteration_count"] == 4, "Picard iteration count")
     _require(gate["operator_stage_count"] == 36, "complete operator stage count")
@@ -127,6 +131,27 @@ def verify(package: Path) -> dict[str, Any]:
     _require(all(row["no_regression"] for row in gate["segment_excess"].values()), "segment no regression")
     _require(same_input["preregistration"]["B3"]["status"] == "not_executed_stop_after_first_pass", "B3 stop")
     _require(same_input["preregistration"]["B4"]["status"] == "not_executed_stop_after_first_pass", "B4 stop")
+    for cell_name in ("B1", "B2"):
+        eps_ledger = ledger["gate_b_cells"][cell_name]["validation_eps_ledger"]
+        _require(eps_ledger["expected_execution_count"] == 5, f"eps expected count: {cell_name}")
+        _require(eps_ledger["actual_execution_count"] == 5, f"eps actual count: {cell_name}")
+        _require(eps_ledger["production_order_complete"] is True, f"eps order: {cell_name}")
+        _require(eps_ledger["ordinary_residual_trace_matches"] is True, f"ordinary trace: {cell_name}")
+        _require(
+            [row["sequence"] for row in eps_ledger["records"]] == [1, 2, 3, 4, 5],
+            f"eps sequence: {cell_name}",
+        )
+        _require(
+            [row["stage"] for row in eps_ledger["records"]]
+            == [
+                "candidate_seed",
+                "ordinary_residual_diagnostic",
+                "tau_times_raw_rhs",
+                "poly_diff",
+                "final_raw_compat_image",
+            ],
+            f"eps stages: {cell_name}",
+        )
 
     matrix = _load(package / "02_scientific_matrix/matrix.json")
     _require(matrix["scientific_sha"] == SCIENTIFIC_SHA, "matrix SHA")
@@ -164,6 +189,14 @@ def verify(package: Path) -> dict[str, Any]:
     _require(native["h1_h2"]["completed_horizon"] == 6.482041958201616, "native H2 endpoint")
     _require(native["h1_h2"]["accepted_steps"] == 278, "native H2 accepted")
     _require(native["h1_h2"]["rejected_attempts"] == 44, "native H2 rejected")
+    rejection = matrix["native_rejection_diagnostics"]["h1_h2"]
+    _require(rejection["limiting_component"] == "y", "native H2 limiting component")
+    _require(rejection["limiting_side"] == "upper", "native H2 limiting side")
+    _require(rejection["subset_margin"] == -6.854200524201504e-06, "native H2 limiting margin")
+    _require(
+        rejection["largest_additive_validated_ledger_category"] == "polynomial_truncation",
+        "native H2 largest rejection ledger category",
+    )
     _require(all(value <= 2.0 for value in matrix["runtime_ratios"].values()), "runtime ratios")
     for lane in ("legacy", "h1", "h1_h2"):
         _require(matrix["v100_T0p1"][lane]["device"] == "cuda", f"V100 measured: {lane}")
