@@ -82,6 +82,14 @@ The audit records one explicit downstream `validation_eps` reserve where the
 production validation path owns it; it is a non-additive local witness and is
 not injected once per audited stage.
 
+The execution ledger separately records all five actual `validation_eps`
+inflations in production order: candidate seed, ordinary-residual diagnostic,
+time-scaled raw RHS, `poly_diff`, and final raw-compat image.  Each has exact
+binary64-rational before/after intervals.  The ordinary-residual replay matches
+the production trace; it is a finite diagnostic rather than a decision image
+in raw-compat mode.  The audit-harness commit also proves that every production
+path is byte-identical to scientific SHA `666c51e`.
+
 Soundness boundary: H2 preserves the shared identity only for an actual
 self-square.  It still treats the polynomial range and the one remainder symbol
 as independent, so the joint enclosure is conservative.  The extrema of
@@ -171,6 +179,14 @@ The H1+H2 native runtime is 1.2101x legacy.  On the fixed T=6.32 runs it is
 342.551 s versus 255.578 s legacy, or 1.3403x; peak RSS is 640,303,104 B versus
 643,198,976 B.  Both measured CPU ratios pass the 2x gate.  The T=10 stretch
 goal remains failed.
+
+The terminal H1+H2 rejection is localized to y's upper side: the final image is
+`[-1.0064678895982489e-4, 1.0685420052420151e-4]` against target
+`[-1e-4,1e-4]`, giving limiting margin `-6.854200524201504e-6`.  The largest
+additive validated-ledger category for that component is
+`polynomial_truncation`, width `1.9374133210958038e-4`.  For comparison, legacy
+is y/lower limited and H1 is y/upper limited; all three have
+`polynomial_truncation` as their largest additive category.
 
 ## V100 measurement
 
