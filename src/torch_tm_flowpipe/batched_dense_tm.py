@@ -10,6 +10,7 @@ remainder validation never convert through a Python polynomial dictionary.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from fractions import Fraction
 from functools import lru_cache
 import hashlib
 from itertools import product
@@ -2637,6 +2638,293 @@ class BatchedTaylorModel:
 DenseRHS = Callable[[BatchedTaylorModel], Any]
 
 
+def _aggregate_interval_polynomial_routes(
+    exponents: torch.Tensor,
+    coefficient_lo: torch.Tensor,
+    coefficient_hi: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Aggregate equal exponent routes with a conservative summation bound."""
+
+    if exponents.ndim != 2 or coefficient_lo.ndim != 2 or coefficient_hi.shape != coefficient_lo.shape:
+        raise ValueError("joint-closure route tensors have inconsistent shapes")
+    if coefficient_lo.shape[1] != exponents.shape[0]:
+        raise ValueError("joint-closure coefficient and exponent counts disagree")
+    unique, inverse = torch.unique(exponents, dim=0, sorted=True, return_inverse=True)
+    batch = coefficient_lo.shape[0]
+    target = inverse.view(1, -1).expand(batch, -1)
+    lo_sum = torch.zeros((batch, unique.shape[0]), dtype=coefficient_lo.dtype, device=coefficient_lo.device)
+    hi_sum = torch.zeros_like(lo_sum)
+    lo_abs = torch.zeros_like(lo_sum)
+    hi_abs = torch.zeros_like(lo_sum)
+    lo_sum.scatter_add_(1, target, coefficient_lo)
+    hi_sum.scatter_add_(1, target, coefficient_hi)
+    lo_abs.scatter_add_(1, target, coefficient_lo.abs())
+    hi_abs.scatter_add_(1, target, coefficient_hi.abs())
+    counts = torch.zeros(unique.shape[0], dtype=coefficient_lo.dtype, device=coefficient_lo.device)
+    counts.scatter_add_(0, inverse, torch.ones_like(inverse, dtype=coefficient_lo.dtype))
+    # torch.finfo.eps is twice the unit roundoff and therefore deliberately
+    # conservative for the standard sequential-summation gamma bound.
+    rounds = counts + 1.0
+    eps = torch.finfo(coefficient_lo.dtype).eps
+    gamma = rounds * eps / (1.0 - rounds * eps)
+    lo = _down(lo_sum - gamma.view(1, -1) * lo_abs)
+    hi = _up(hi_sum + gamma.view(1, -1) * hi_abs)
+    if not _interval_is_valid(lo, hi):
+        raise FloatingPointError("joint-closure coefficient aggregation failed")
+    return unique, lo, hi
+
+
+def _interval_axis_transform(
+    value_lo: torch.Tensor,
+    value_hi: torch.Tensor,
+    matrix_lo: torch.Tensor,
+    matrix_hi: torch.Tensor,
+    axis: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Apply one batched interval matrix to one polynomial tensor axis."""
+
+    tensor_axis = int(axis) + 1  # axis zero is the batch dimension.
+    moved_lo = value_lo.movedim(tensor_axis, -1)
+    moved_hi = value_hi.movedim(tensor_axis, -1)
+    if matrix_lo.shape != matrix_hi.shape or matrix_lo.ndim != 3:
+        raise ValueError("joint-closure transform matrix must have shape [batch,out,in]")
+    if matrix_lo.shape[0] != moved_lo.shape[0] or matrix_lo.shape[2] != moved_lo.shape[-1]:
+        raise ValueError("joint-closure transform matrix dimension mismatch")
+    view_shape = (matrix_lo.shape[0],) + (1,) * (moved_lo.ndim - 2) + matrix_lo.shape[1:]
+    product_lo, product_hi = _interval_mul(
+        moved_lo.unsqueeze(-2),
+        moved_hi.unsqueeze(-2),
+        matrix_lo.view(view_shape),
+        matrix_hi.view(view_shape),
+    )
+    summed_lo = product_lo.sum(dim=-1)
+    summed_hi = product_hi.sum(dim=-1)
+    rounds = float(product_lo.shape[-1] + 1)
+    eps = torch.finfo(product_lo.dtype).eps
+    gamma = rounds * eps / (1.0 - rounds * eps)
+    out_lo = _down(summed_lo - gamma * product_lo.abs().sum(dim=-1))
+    out_hi = _up(summed_hi + gamma * product_hi.abs().sum(dim=-1))
+    return out_lo.movedim(-1, tensor_axis), out_hi.movedim(-1, tensor_axis)
+
+
+def _affine_power_transform_matrix(
+    lower: torch.Tensor,
+    upper: torch.Tensor,
+    degree: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Outward matrix for ``x = lower + (upper-lower) z`` in power form."""
+
+    batch = lower.shape[0]
+    size = int(degree) + 1
+    matrix_lo = torch.zeros((batch, size, size), dtype=lower.dtype, device=lower.device)
+    matrix_hi = torch.zeros_like(matrix_lo)
+    ones = torch.ones_like(lower)
+    lower_powers: list[tuple[torch.Tensor, torch.Tensor]] = [(ones, ones)]
+    width_lo, width_hi = _interval_sub(upper, upper, lower, lower)
+    width_powers: list[tuple[torch.Tensor, torch.Tensor]] = [(ones, ones)]
+    for _ in range(int(degree)):
+        lower_powers.append(_interval_mul(*lower_powers[-1], lower, lower))
+        width_powers.append(_interval_mul(*width_powers[-1], width_lo, width_hi))
+    for input_degree in range(size):
+        for output_degree in range(input_degree + 1):
+            term_lo, term_hi = _interval_mul(
+                *lower_powers[input_degree - output_degree],
+                *width_powers[output_degree],
+            )
+            factor = torch.full_like(lower, float(math.comb(input_degree, output_degree)))
+            term_lo, term_hi = _interval_mul(term_lo, term_hi, factor, factor)
+            matrix_lo[:, output_degree, input_degree] = term_lo
+            matrix_hi[:, output_degree, input_degree] = term_hi
+    return matrix_lo, matrix_hi
+
+
+def _fraction_interval(
+    value: Fraction,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    rounded = torch.as_tensor(float(value), dtype=dtype, device=device)
+    if value in {Fraction(0), Fraction(1)}:
+        return rounded, rounded
+    # Conversion to the target dtype may round a second time.  Padding both
+    # directions is cheap and sound for every floating dtype supported here.
+    return _down(rounded), _up(rounded)
+
+
+def _power_to_bernstein_matrix(
+    batch: int,
+    degree: int,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    size = int(degree) + 1
+    matrix_lo = torch.zeros((int(batch), size, size), dtype=dtype, device=device)
+    matrix_hi = torch.zeros_like(matrix_lo)
+    for bernstein_index in range(size):
+        for power_index in range(bernstein_index + 1):
+            ratio = Fraction(
+                math.comb(bernstein_index, power_index),
+                math.comb(int(degree), power_index),
+            )
+            lo, hi = _fraction_interval(ratio, dtype=dtype, device=device)
+            matrix_lo[:, bernstein_index, power_index] = lo
+            matrix_hi[:, bernstein_index, power_index] = hi
+    return matrix_lo, matrix_hi
+
+
+def _joint_factorized_vdp_residual_closure(
+    x: BatchedTaylorModel,
+    y: BatchedTaylorModel,
+    retained_y_rhs: BatchedTaylorModel,
+) -> tuple[BatchedTaylorModel, Mapping[str, Any]]:
+    """Enclose the complete factor-times-y residual in one joint operator.
+
+    The semantic expression is ``(1-X**2)*Y-X-retained_y_rhs.poly`` with
+    ``X=P_x+r_x`` and ``Y=P_y+r_y``.  Expansion below is only a coefficient
+    construction for one tensor-product Bernstein range; no intermediate
+    interval is materialized, so all five input dependencies remain shared.
+    """
+
+    x._check_domain(y)
+    x._check_domain(retained_y_rhs)
+    if x.poly.out_dim != 1 or y.poly.out_dim != 1 or retained_y_rhs.poly.out_dim != 1:
+        raise ValueError("joint VDP closure requires scalar x, y, and retained RHS models")
+    if x.n_vars + 2 > 8:
+        raise ValueError("joint VDP closure supports at most eight joint variables")
+    batch = x.poly.batch
+    dtype = x.poly.coeffs.dtype
+    device = x.poly.coeffs.device
+    base_dim = x.n_vars
+
+    def active_polynomial_terms(model: BatchedTaylorModel) -> tuple[torch.Tensor, torch.Tensor]:
+        active = torch.any(model.poly.coeffs[:, 0, :] != 0, dim=0)
+        indices = torch.nonzero(active, as_tuple=False).reshape(-1)
+        return (
+            model.poly.coeffs[:, 0, :].index_select(1, indices),
+            model.poly.basis.exponents.index_select(0, indices),
+        )
+
+    x_coeff, x_exp_base = active_polynomial_terms(x)
+    y_coeff, y_exp_base = active_polynomial_terms(y)
+    retained_coeff, retained_exp_base = active_polynomial_terms(retained_y_rhs)
+    zero_pair = torch.zeros((1, 2), dtype=torch.long, device=device)
+    x_exp = torch.cat((x_exp_base, zero_pair.expand(x_exp_base.shape[0], -1)), dim=1)
+    y_exp = torch.cat((y_exp_base, zero_pair.expand(y_exp_base.shape[0], -1)), dim=1)
+    retained_exp = torch.cat(
+        (retained_exp_base, zero_pair.expand(retained_exp_base.shape[0], -1)),
+        dim=1,
+    )
+    rx_exp = torch.zeros((1, base_dim + 2), dtype=torch.long, device=device)
+    ry_exp = torch.zeros_like(rx_exp)
+    rx_exp[0, base_dim] = 1
+    ry_exp[0, base_dim + 1] = 1
+    ones = torch.ones((batch, 1), dtype=dtype, device=device)
+    x_coeff = torch.cat((x_coeff, ones), dim=1)
+    y_coeff = torch.cat((y_coeff, ones), dim=1)
+    x_exp = torch.cat((x_exp, rx_exp), dim=0)
+    y_exp = torch.cat((y_exp, ry_exp), dim=0)
+
+    # The cubic routes are vectorized; shared x/r_x occurrences aggregate to
+    # the same joint exponent rather than becoming independent intervals.
+    xx_lo, xx_hi = _interval_mul(
+        x_coeff[:, :, None],
+        x_coeff[:, :, None],
+        x_coeff[:, None, :],
+        x_coeff[:, None, :],
+    )
+    cubic_lo, cubic_hi = _interval_mul(
+        xx_lo[:, :, :, None],
+        xx_hi[:, :, :, None],
+        y_coeff[:, None, None, :],
+        y_coeff[:, None, None, :],
+    )
+    cubic_exp = (
+        x_exp[:, None, None, :]
+        + x_exp[None, :, None, :]
+        + y_exp[None, None, :, :]
+    ).reshape(-1, base_dim + 2)
+    cubic_lo = cubic_lo.reshape(batch, -1)
+    cubic_hi = cubic_hi.reshape(batch, -1)
+
+    route_exponents = torch.cat((y_exp, x_exp, cubic_exp, retained_exp), dim=0)
+    route_lo = torch.cat((y_coeff, -x_coeff, -cubic_hi, -retained_coeff), dim=1)
+    route_hi = torch.cat((y_coeff, -x_coeff, -cubic_lo, -retained_coeff), dim=1)
+    unique_exp, coefficient_lo, coefficient_hi = _aggregate_interval_polynomial_routes(
+        route_exponents,
+        route_lo,
+        route_hi,
+    )
+    degrees = tuple(int(value) for value in unique_exp.max(dim=0).values.detach().cpu().tolist())
+    shape = tuple(value + 1 for value in degrees)
+    flat_size = math.prod(shape)
+    strides = [math.prod(shape[index + 1 :]) for index in range(len(shape))]
+    flat_index = sum(unique_exp[:, index] * strides[index] for index in range(len(shape)))
+    dense_lo = torch.zeros((batch, flat_size), dtype=dtype, device=device)
+    dense_hi = torch.zeros_like(dense_lo)
+    dense_lo.scatter_(1, flat_index.view(1, -1).expand(batch, -1), coefficient_lo)
+    dense_hi.scatter_(1, flat_index.view(1, -1).expand(batch, -1), coefficient_hi)
+    dense_lo = dense_lo.reshape((batch,) + shape)
+    dense_hi = dense_hi.reshape((batch,) + shape)
+
+    domain_lo = torch.cat((x.domain_lo, x.rem_lo, y.rem_lo), dim=1)
+    domain_hi = torch.cat((x.domain_hi, x.rem_hi, y.rem_hi), dim=1)
+    for axis, degree in enumerate(degrees):
+        matrix_lo, matrix_hi = _affine_power_transform_matrix(
+            domain_lo[:, axis],
+            domain_hi[:, axis],
+            degree,
+        )
+        dense_lo, dense_hi = _interval_axis_transform(
+            dense_lo,
+            dense_hi,
+            matrix_lo,
+            matrix_hi,
+            axis,
+        )
+    for axis, degree in enumerate(degrees):
+        matrix_lo, matrix_hi = _power_to_bernstein_matrix(
+            batch,
+            degree,
+            dtype=dtype,
+            device=device,
+        )
+        dense_lo, dense_hi = _interval_axis_transform(
+            dense_lo,
+            dense_hi,
+            matrix_lo,
+            matrix_hi,
+            axis,
+        )
+    closure_lo = _down(dense_lo.reshape(batch, -1).min(dim=1).values).view(batch, 1)
+    closure_hi = _up(dense_hi.reshape(batch, -1).max(dim=1).values).view(batch, 1)
+    if not _interval_is_valid(closure_lo, closure_hi):
+        raise FloatingPointError("joint factor-times-y Bernstein closure failed")
+    closure = BatchedTaylorModel(
+        retained_y_rhs.poly,
+        closure_lo,
+        closure_hi,
+        retained_y_rhs.domain_lo,
+        retained_y_rhs.domain_hi,
+        DenseRemainderLedger.empty().add("composition_overflow", closure_lo, closure_hi),
+        retained_y_rhs.range_policy,
+        retained_y_rhs.range_trace,
+    )
+    return closure, {
+        "operator": "factor_times_y_joint_tensor_bernstein",
+        "semantic_expression": "(1-(P_x+r_x)^2)*(P_y+r_y)-(P_x+r_x)-retained_y_rhs_polynomial",
+        "joint_variables": [*range(base_dim), "r_x", "r_y"],
+        "degrees": list(degrees),
+        "route_count": int(route_exponents.shape[0]),
+        "unique_coefficient_count": int(unique_exp.shape[0]),
+        "bernstein_coefficient_count": int(flat_size),
+        "range_lo": closure_lo.detach().cpu().tolist(),
+        "range_hi": closure_hi.detach().cpu().tolist(),
+        "rounding": "nextafter interval products/transforms plus gamma-bounded aggregation",
+    }
+
+
 @dataclass(frozen=True)
 class DenseValidatedRemainderDecomposition:
     """Tensor-native additive certificate for one final validation image."""
@@ -3044,13 +3332,25 @@ def _call_dense_raw_trace_rhs(
     cutoff_threshold: float | None,
     recorder: RawRemainderTraceRecorder | None = None,
     evaluation_mode: str = "ordered_terms",
+    dependency_preserving_square: bool | None = None,
 ) -> BatchedTaylorModel:
-    if evaluation_mode not in {"ordered_terms", "canonical_factorized_joint"}:
+    if evaluation_mode not in {
+        "ordered_terms",
+        "canonical_factorized_joint",
+        "canonical_factorized_joint_closure",
+    }:
         raise ValueError("unknown dense raw RHS evaluation mode")
     if recorder is not None:
         if recorder.nodes and recorder.expression_mode != evaluation_mode:
             raise ValueError("cannot change raw trace expression mode after recording nodes")
         recorder.expression_mode = evaluation_mode
+    preserve_square = (
+        evaluation_mode in {"canonical_factorized_joint", "canonical_factorized_joint_closure"}
+        if dependency_preserving_square is None
+        else bool(dependency_preserving_square)
+    )
+    if recorder is not None:
+        recorder.dependency_preserving_square = preserve_square
     state_models: list[_DenseRawTraceScalar] = []
     for index in range(candidate.poly.out_dim):
         component_model = candidate.component(index)
@@ -3072,12 +3372,12 @@ def _call_dense_raw_trace_rhs(
                 recorder=recorder,
                 node_id=node_id,
                 expression_component=index,
-                dependency_preserving=evaluation_mode == "canonical_factorized_joint",
+                dependency_preserving=preserve_square,
             )
         )
     state = _DenseRawTraceVector(state_models)
     try:
-        if evaluation_mode == "canonical_factorized_joint":
+        if evaluation_mode in {"canonical_factorized_joint", "canonical_factorized_joint_closure"}:
             evaluator = getattr(rhs_fn, "evaluate_canonical_factorized", None)
             if not callable(evaluator):
                 raise TypeError("canonical factorized raw RHS requires PolynomialODE-style evaluator")
@@ -3108,7 +3408,7 @@ def _call_dense_rhs_evaluation(
 ) -> BatchedTaylorModel:
     if evaluation_mode == "ordered_terms":
         return call_dense_rhs(rhs_fn, state)
-    if evaluation_mode != "canonical_factorized_joint":
+    if evaluation_mode not in {"canonical_factorized_joint", "canonical_factorized_joint_closure"}:
         raise ValueError("unknown dense RHS evaluation mode")
     evaluator = getattr(rhs_fn, "evaluate_canonical_factorized", None)
     if not callable(evaluator):
@@ -3128,6 +3428,7 @@ def _dense_flowstar_raw_compat_image(
     validation_eps: float,
     raw_trace_recorder: RawRemainderTraceRecorder | None = None,
     raw_rhs_evaluation: str = "ordered_terms",
+    raw_dependency_preserving_square: bool | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -3141,11 +3442,86 @@ def _dense_flowstar_raw_compat_image(
         cutoff_threshold=cutoff_threshold,
         recorder=raw_trace_recorder,
         evaluation_mode=raw_rhs_evaluation,
+        dependency_preserving_square=raw_dependency_preserving_square,
     )
+    closure_certificate: Mapping[str, Any] | None = None
+    pre_closure_y_interval: dict[str, Any] | None = None
+    if raw_rhs_evaluation == "canonical_factorized_joint_closure":
+        pre_closure_y = raw_rhs.component(1)
+        pre_closure_y_interval = {
+            "lo": pre_closure_y.rem_lo.detach().cpu().tolist(),
+            "hi": pre_closure_y.rem_hi.detach().cpu().tolist(),
+        }
+        closed_y, closure_certificate = _joint_factorized_vdp_residual_closure(
+            candidate_with_target.component(0),
+            candidate_with_target.component(1),
+            pre_closure_y,
+        )
+        raw_rhs = BatchedTaylorModel.concat((raw_rhs.component(0), closed_y))
+        if raw_trace_recorder is not None:
+            old_root = raw_trace_recorder.component_roots[1]
+            raw_trace_recorder.mark_discard(
+                (old_root,),
+                reason="joint factor-times-y closure replaces the intermediate raw remainder",
+            )
+            closure_id = f"torch.i{raw_trace_recorder.picard_iteration}.c1.factor_times_y_joint_closure"
+            closure_parents = (
+                f"torch.i{raw_trace_recorder.picard_iteration}.c0.state_input",
+                f"torch.i{raw_trace_recorder.picard_iteration}.c1.state_input",
+            )
+            raw_trace_recorder.add_model_node(
+                operation="factor_times_y_joint_tensor_bernstein",
+                component=1,
+                model=closed_y,
+                parents=closure_parents,
+                remainder_inputs=((closed_y.rem_lo, closed_y.rem_hi),),
+                order_before=max(int(order) - 1, 0),
+                order_after=max(int(order) - 1, 0),
+                node_id=closure_id,
+                production_event=False,
+            )
+            raw_trace_recorder.add_interval_event(
+                stage_id=closure_id,
+                operation="factor_times_y_joint_tensor_bernstein",
+                component=1,
+                lo=closed_y.rem_lo,
+                hi=closed_y.rem_hi,
+                parents=closure_parents,
+                model=closed_y,
+                decision_role="raw_rhs_remainder_replacement",
+            )
+            raw_trace_recorder.register_component_root(1, closure_id)
     tau_lo = candidate_with_target.domain_lo[:, tau_index].view(-1, 1)
     tau_hi = candidate_with_target.domain_hi[:, tau_index].view(-1, 1)
     before_lo, before_hi = _interval_mul(tau_lo, tau_hi, raw_rhs.rem_lo, raw_rhs.rem_hi)
+    tau_pre_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            tau_pre_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.tau_scale",
+                    operation="tau_interval_multiply",
+                    component=component,
+                    lo=before_lo[:, component : component + 1],
+                    hi=before_hi[:, component : component + 1],
+                    parents=(raw_trace_recorder.component_roots[component],),
+                )
+            )
     before_lo, before_hi = _inflate_tensor_interval(before_lo, before_hi, validation_eps)
+    tau_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            tau_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.tau_validation_eps",
+                    operation="validation_eps_inflation",
+                    component=component,
+                    lo=before_lo[:, component : component + 1],
+                    hi=before_hi[:, component : component + 1],
+                    parents=(tau_pre_event_ids[component],),
+                    validation_eps_payment=validation_eps,
+                )
+            )
 
     regular_rhs = _call_dense_rhs_evaluation(
         rhs_fn,
@@ -3161,14 +3537,86 @@ def _dense_flowstar_raw_compat_image(
         context="raw_compat_poly_diff",
         trace=candidate_poly.range_trace,
     )
+    diff_pre_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        state_parents = tuple(
+            f"torch.i{raw_trace_recorder.picard_iteration}.c{index}.state_input"
+            for index in range(candidate_with_target.poly.out_dim)
+        )
+        for component in range(candidate_with_target.poly.out_dim):
+            diff_pre_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.poly_diff_range",
+                    operation="poly_diff_range_bound",
+                    component=component,
+                    lo=diff_lo[:, component : component + 1],
+                    hi=diff_hi[:, component : component + 1],
+                    parents=state_parents,
+                )
+            )
     diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
+    diff_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            diff_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.poly_diff_validation_eps",
+                    operation="validation_eps_inflation",
+                    component=component,
+                    lo=diff_lo[:, component : component + 1],
+                    hi=diff_hi[:, component : component + 1],
+                    parents=(diff_pre_event_ids[component],),
+                    validation_eps_payment=validation_eps,
+                )
+            )
     assembled_lo, assembled_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, before_lo, before_hi)
+    assembly_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            assembly_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.raw_assembly",
+                    operation="raw_candidate_assembly",
+                    component=component,
+                    lo=assembled_lo[:, component : component + 1],
+                    hi=assembled_hi[:, component : component + 1],
+                    parents=(tau_event_ids[component],),
+                )
+            )
     check_pre_rounding_lo, check_pre_rounding_hi = _interval_add(assembled_lo, assembled_hi, diff_lo, diff_hi)
+    pre_rounding_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            pre_rounding_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.pre_final_validation_eps",
+                    operation="poly_diff_interval_add",
+                    component=component,
+                    lo=check_pre_rounding_lo[:, component : component + 1],
+                    hi=check_pre_rounding_hi[:, component : component + 1],
+                    parents=(assembly_event_ids[component], diff_event_ids[component]),
+                )
+            )
     check_lo, check_hi = _inflate_tensor_interval(
         check_pre_rounding_lo,
         check_pre_rounding_hi,
         validation_eps,
     )
+    final_event_ids: list[str] = []
+    if raw_trace_recorder is not None:
+        for component in range(candidate_with_target.poly.out_dim):
+            final_event_ids.append(
+                raw_trace_recorder.add_interval_event(
+                    stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.poly_roundoff",
+                    operation="validation_eps_inflation",
+                    component=component,
+                    lo=check_lo[:, component : component + 1],
+                    hi=check_hi[:, component : component + 1],
+                    parents=(pre_rounding_event_ids[component],),
+                    validation_eps_payment=validation_eps,
+                    decision_role="final_subset_image",
+                )
+            )
     validated_ledger = DenseRemainderLedger.empty()
     for category, (entry_lo, entry_hi) in base_ext.ledger.entries.items():
         validated_ledger = validated_ledger.add(category, entry_lo, entry_hi)
@@ -3199,6 +3647,7 @@ def _dense_flowstar_raw_compat_image(
                 order_before=max(int(order) - 1, 0),
                 order_after=int(order),
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.truncate_o4",
+                production_event=False,
             )
             cutoff_id = raw_trace_recorder.add_model_node(
                 operation="cutoff_discard",
@@ -3209,6 +3658,7 @@ def _dense_flowstar_raw_compat_image(
                 order_before=int(order),
                 order_after=int(order),
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.cutoff",
+                production_event=False,
             )
             integrated_model = raw_component.integrate(tau_index).with_remainder(
                 before_lo[:, component : component + 1],
@@ -3225,6 +3675,7 @@ def _dense_flowstar_raw_compat_image(
                 order_after=int(order),
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.integrate",
                 roundoff=(-abs(float(validation_eps)), abs(float(validation_eps))),
+                production_event=False,
             )
             assembly_model = candidate_poly.component(component).with_remainder(
                 assembled_lo[:, component : component + 1],
@@ -3243,6 +3694,7 @@ def _dense_flowstar_raw_compat_image(
                 order_before=int(order),
                 order_after=int(order),
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.raw_assembly",
+                production_event=False,
             )
             roundoff_model = candidate_poly.component(component).with_remainder(
                 check_lo[:, component : component + 1],
@@ -3262,6 +3714,7 @@ def _dense_flowstar_raw_compat_image(
                 order_after=int(order),
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.poly_roundoff",
                 roundoff=(-abs(float(validation_eps)), abs(float(validation_eps))),
+                production_event=False,
             )
             raw_trace_recorder.add_model_node(
                 operation="subset_test",
@@ -3274,6 +3727,16 @@ def _dense_flowstar_raw_compat_image(
                 node_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.subset",
                 subset_margin=float(margins[:, component].detach().cpu().reshape(-1)[0]),
                 decision="accept" if bool(torch.all(margins >= 0)) else "reject",
+                production_event=False,
+            )
+            raw_trace_recorder.add_interval_event(
+                stage_id=f"torch.i{raw_trace_recorder.picard_iteration}.c{component}.subset",
+                operation="subset_test",
+                component=component,
+                lo=check_lo[:, component : component + 1],
+                hi=check_hi[:, component : component + 1],
+                parents=(final_event_ids[component],),
+                decision_role="subset_decision",
             )
         raw_trace_recorder.finalize_decision(
             margins.detach().cpu().reshape(-1).tolist(),
@@ -3299,6 +3762,8 @@ def _dense_flowstar_raw_compat_image(
             "time-scaled raw RHS ledger + polynomial difference + rounding padding"
         ),
         "raw_rhs_evaluation": raw_rhs_evaluation,
+        "factor_times_y_joint_closure": closure_certificate,
+        "pre_closure_y_remainder": pre_closure_y_interval,
     }, decomposition
 
 
@@ -3444,6 +3909,8 @@ def dense_picard_validate_step(
     counters: DenseExecutionCounters | None = None,
     polynomial_observer: Callable[[int, BatchedTaylorModel, BatchedTaylorModel], None] | None = None,
     raw_remainder_trace_recorder: RawRemainderTraceRecorder | None = None,
+    raw_rhs_evaluation_override: str | None = None,
+    raw_dependency_preserving_square: bool | None = None,
 ) -> DenseValidatedStep:
     """Run true dense Picard and an unchanged interval subset self-map test.
 
@@ -3459,9 +3926,23 @@ def dense_picard_validate_step(
         "target_remainder_flowstar_ctrunc",
         "flowstar_raw_remainder_compat",
         "flowstar_raw_remainder_compat_factorized_joint",
+        "flowstar_raw_remainder_compat_factorized_joint_closure",
     }
     if validation_mode not in supported_modes:
         raise ValueError(f"dense Picard currently requires one of {sorted(supported_modes)}")
+    if raw_rhs_evaluation_override not in {
+        None,
+        "ordered_terms",
+        "canonical_factorized_joint",
+        "canonical_factorized_joint_closure",
+    }:
+        raise ValueError("unknown raw RHS evaluation override")
+    if raw_rhs_evaluation_override is not None and validation_mode not in {
+        "flowstar_raw_remainder_compat",
+        "flowstar_raw_remainder_compat_factorized_joint",
+        "flowstar_raw_remainder_compat_factorized_joint_closure",
+    }:
+        raise ValueError("raw RHS evaluation override requires a raw-compat validation mode")
     if h <= 0:
         raise ValueError("h must be positive")
     if max_validation_attempts <= 0:
@@ -3503,7 +3984,35 @@ def dense_picard_validate_step(
     target_lo = torch.full_like(candidate.rem_lo, -target_radius)
     target_hi = torch.full_like(candidate.rem_hi, target_radius)
     seed_lo, seed_hi = _interval_add(base_ext.rem_lo, base_ext.rem_hi, candidate.rem_lo, candidate.rem_hi)
+    seed_pre_event_ids: list[str] = []
+    if raw_remainder_trace_recorder is not None:
+        for component in range(candidate.poly.out_dim):
+            seed_pre_event_ids.append(
+                raw_remainder_trace_recorder.add_interval_event(
+                    stage_id=f"torch.seed.c{component}.before_validation_eps",
+                    operation="candidate_seed_interval_add",
+                    component=component,
+                    lo=seed_lo[:, component : component + 1],
+                    hi=seed_hi[:, component : component + 1],
+                    decision_role="pre_loop_feasibility_input",
+                )
+            )
     seed_lo, seed_hi = _inflate_tensor_interval(seed_lo, seed_hi, validation_eps)
+    seed_event_ids: list[str] = []
+    if raw_remainder_trace_recorder is not None:
+        for component in range(candidate.poly.out_dim):
+            seed_event_ids.append(
+                raw_remainder_trace_recorder.add_interval_event(
+                    stage_id=f"torch.seed.c{component}.validation_eps",
+                    operation="validation_eps_inflation",
+                    component=component,
+                    lo=seed_lo[:, component : component + 1],
+                    hi=seed_hi[:, component : component + 1],
+                    parents=(seed_pre_event_ids[component],),
+                    validation_eps_payment=validation_eps,
+                    decision_role="pre_loop_feasibility_gate",
+                )
+            )
     seed_margin = _subset_margin(target_lo, target_hi, seed_lo, seed_hi)
     empty_margin = torch.full_like(seed_margin, -torch.inf)
     seed_decomposition = _validated_remainder_decomposition(
@@ -3561,6 +4070,11 @@ def dense_picard_validate_step(
 
     refined = validation_mode == "target_remainder_refined"
     current_lo, current_hi = (seed_lo, seed_hi) if refined else (target_lo, target_hi)
+    if raw_remainder_trace_recorder is not None and not refined:
+        raw_remainder_trace_recorder.mark_discard(
+            seed_event_ids,
+            reason="seed passed the feasibility gate; fixed target remainder replaces it",
+        )
     last_image_lo = seed_lo
     last_image_hi = seed_hi
     last_margin = seed_margin
@@ -3577,11 +4091,40 @@ def dense_picard_validate_step(
         picard_image = base_ext.add(rhs.integrate(tau_index))
         residual = picard_image.sub(candidate.without_remainder())
         ordinary_lo, ordinary_hi = residual.range_bound(context="retained_polynomial")
+        ordinary_pre_event_ids: list[str] = []
+        if raw_remainder_trace_recorder is not None:
+            for component in range(candidate.poly.out_dim):
+                ordinary_pre_event_ids.append(
+                    raw_remainder_trace_recorder.add_interval_event(
+                        stage_id=f"torch.attempt{attempt}.ordinary.c{component}.before_validation_eps",
+                        operation="ordinary_residual_range",
+                        component=component,
+                        lo=ordinary_lo[:, component : component + 1],
+                        hi=ordinary_hi[:, component : component + 1],
+                        decision_role="ordinary_path_diagnostic",
+                    )
+                )
         ordinary_lo, ordinary_hi = _inflate_tensor_interval(ordinary_lo, ordinary_hi, validation_eps)
+        ordinary_event_ids: list[str] = []
+        if raw_remainder_trace_recorder is not None:
+            for component in range(candidate.poly.out_dim):
+                ordinary_event_ids.append(
+                    raw_remainder_trace_recorder.add_interval_event(
+                        stage_id=f"torch.attempt{attempt}.ordinary.c{component}.validation_eps",
+                        operation="validation_eps_inflation",
+                        component=component,
+                        lo=ordinary_lo[:, component : component + 1],
+                        hi=ordinary_hi[:, component : component + 1],
+                        parents=(ordinary_pre_event_ids[component],),
+                        validation_eps_payment=validation_eps,
+                        decision_role="finite_predicate_only_in_raw_compat_mode",
+                    )
+                )
         compat_extra: Mapping[str, Any] = {}
         if validation_mode in {
             "flowstar_raw_remainder_compat",
             "flowstar_raw_remainder_compat_factorized_joint",
+            "flowstar_raw_remainder_compat_factorized_joint_closure",
         }:
             image_lo, image_hi, compat_extra, decomposition = _dense_flowstar_raw_compat_image(
                 rhs_fn,
@@ -3594,11 +4137,25 @@ def dense_picard_validate_step(
                 validation_eps=validation_eps,
                 raw_trace_recorder=raw_remainder_trace_recorder,
                 raw_rhs_evaluation=(
-                    "canonical_factorized_joint"
-                    if validation_mode == "flowstar_raw_remainder_compat_factorized_joint"
-                    else "ordered_terms"
+                    raw_rhs_evaluation_override
+                    if raw_rhs_evaluation_override is not None
+                    else (
+                        "canonical_factorized_joint"
+                        if validation_mode == "flowstar_raw_remainder_compat_factorized_joint"
+                        else (
+                            "canonical_factorized_joint_closure"
+                            if validation_mode == "flowstar_raw_remainder_compat_factorized_joint_closure"
+                            else "ordered_terms"
+                        )
+                    )
                 ),
+                raw_dependency_preserving_square=raw_dependency_preserving_square,
             )
+            if raw_remainder_trace_recorder is not None:
+                raw_remainder_trace_recorder.mark_discard(
+                    ordinary_event_ids,
+                    reason="raw-compat image replaces ordinary residual for numeric subset widths",
+                )
         else:
             image_lo, image_hi = ordinary_lo, ordinary_hi
             decomposition = _validated_remainder_decomposition(

@@ -1011,6 +1011,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         choices=(
             "flowstar_raw_remainder_compat",
             "flowstar_raw_remainder_compat_factorized_joint",
+            "flowstar_raw_remainder_compat_factorized_joint_closure",
         ),
         help="opt-in dense raw-RHS operator; omission preserves the frozen contract default",
     )

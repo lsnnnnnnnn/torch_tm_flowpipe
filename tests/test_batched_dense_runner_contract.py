@@ -242,3 +242,39 @@ def test_runner_h2_validation_mode_is_explicitly_opt_in(tmp_path):
         "reset_mode=normalized_insertion_dependency_preserving",
         "validation_mode=flowstar_raw_remainder_compat_factorized_joint",
     ]
+
+
+def test_runner_c1_validation_mode_is_explicitly_opt_in(tmp_path):
+    runner = _runner_module()
+    output = tmp_path / "c1"
+    mode = "flowstar_raw_remainder_compat_factorized_joint_closure"
+    args = runner.parse_args(
+        [
+            "--output-dir",
+            str(output),
+            "--tm-backend",
+            "dense",
+            "--device",
+            "cpu",
+            "--horizon",
+            "0.01",
+            "--fixed-step",
+            "0.01",
+            "--initialization-contract",
+            "exact_decimal_contract",
+            "--reset-mode",
+            "normalized_insertion_dependency_preserving",
+            "--validation-mode",
+            mode,
+            "--trace-flush-every",
+            "0",
+        ]
+    )
+    summary = runner.run(args)
+
+    assert summary["completed_requested_horizon"] is True
+    assert summary["validation_mode"] == mode
+    assert summary["diagnostic_factors"] == [
+        "reset_mode=normalized_insertion_dependency_preserving",
+        f"validation_mode={mode}",
+    ]

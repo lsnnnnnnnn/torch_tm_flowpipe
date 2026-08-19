@@ -22,7 +22,10 @@ from torch_tm_flowpipe.batched_dense_tm import (
     BatchedPolynomial,
     BatchedTaylorModel,
     DenseExecutionCounters,
+    _call_dense_raw_trace_rhs,
+    _joint_factorized_vdp_residual_closure,
     dense_picard_validate_step,
+    dense_polynomial_picard,
     sparse_tmvector_to_dense,
 )
 from torch_tm_flowpipe.raw_remainder_trace import RawRemainderTraceRecorder
@@ -31,6 +34,7 @@ from torch_tm_flowpipe.step1_oracle import RationalInterval, RationalPolynomial
 
 LEGACY = "flowstar_raw_remainder_compat"
 H2 = "flowstar_raw_remainder_compat_factorized_joint"
+C1 = "flowstar_raw_remainder_compat_factorized_joint_closure"
 
 
 @pytest.mark.unit
@@ -110,6 +114,48 @@ def _scalar_tm(
 
 def _q(value: torch.Tensor) -> Fraction:
     return Fraction.from_float(float(value.detach().cpu().reshape(-1)[0]))
+
+
+def _rational_poly(model: BatchedTaylorModel, *, n_vars: int) -> RationalPolynomial:
+    return RationalPolynomial(
+        n_vars,
+        {
+            tuple(exponent) + (0,) * (n_vars - model.n_vars): Fraction.from_float(
+                float(model.poly.coeffs[0, 0, slot])
+            )
+            for slot, exponent in enumerate(model.poly.basis.exponent_to_index)
+            if float(model.poly.coeffs[0, 0, slot]) != 0.0
+        },
+    )
+
+
+def _rational_variable(n_vars: int, index: int) -> RationalPolynomial:
+    exponent = [0] * n_vars
+    exponent[index] = 1
+    return RationalPolynomial(n_vars, {tuple(exponent): Fraction(1)})
+
+
+def _exact_joint_closure_oracle(
+    x: BatchedTaylorModel,
+    y: BatchedTaylorModel,
+    retained: BatchedTaylorModel,
+) -> RationalInterval:
+    n_vars = x.n_vars + 2
+    px = _rational_poly(x, n_vars=n_vars) + _rational_variable(n_vars, x.n_vars)
+    py = _rational_poly(y, n_vars=n_vars) + _rational_variable(n_vars, x.n_vars + 1)
+    retained_poly = _rational_poly(retained, n_vars=n_vars)
+    residual = (RationalPolynomial.constant(n_vars, 1) - px * px) * py - px - retained_poly
+    domain = tuple(
+        RationalInterval(
+            Fraction.from_float(float(lo)),
+            Fraction.from_float(float(hi)),
+        )
+        for lo, hi in zip(
+            torch.cat((x.domain_lo[0], x.rem_lo[0], y.rem_lo[0])),
+            torch.cat((x.domain_hi[0], x.rem_hi[0], y.rem_hi[0])),
+        )
+    )
+    return residual.bernstein_range(domain)
 
 
 @pytest.mark.unit
@@ -247,7 +293,152 @@ def test_h2_same_step1_prestate_reduces_first_y_raw_residual_without_x_regressio
     assert any("factor_times_y" in value for value in ids)
 
 
-def _full_h2_step(current, state, device: str):
+@pytest.mark.unit
+def test_c1_step1_joint_closure_contains_fraction_oracle_and_clears_micro_gate() -> None:
+    state, base = _step1_base()
+    candidate, _ = dense_polynomial_picard(
+        _vdp(),
+        base.without_remainder(),
+        tau_index=2,
+        order=4,
+        iterations=4,
+        cutoff_threshold=1.0e-10,
+    )
+    target = candidate.with_remainder(
+        torch.full_like(candidate.rem_lo, -1.0e-4),
+        torch.full_like(candidate.rem_hi, 1.0e-4),
+        category="initial_remainder",
+    )
+    h2_raw = _call_dense_raw_trace_rhs(
+        _vdp(),
+        target,
+        effective_order=3,
+        cutoff_threshold=1.0e-10,
+        evaluation_mode="canonical_factorized_joint",
+        dependency_preserving_square=True,
+    )
+    closure, certificate = _joint_factorized_vdp_residual_closure(
+        target.component(0),
+        target.component(1),
+        h2_raw.component(1),
+    )
+    exact = _exact_joint_closure_oracle(
+        target.component(0),
+        target.component(1),
+        h2_raw.component(1),
+    )
+    production = RationalInterval(_q(closure.rem_lo), _q(closure.rem_hi))
+    h2_width = _q(h2_raw.rem_hi[:, 1]) - _q(h2_raw.rem_lo[:, 1])
+    removed_fraction = (h2_width - production.width) / (h2_width - exact.width)
+
+    recorder = RawRemainderTraceRecorder(
+        run_id="c1-unit",
+        tool="torch",
+        source_commit="0" * 40,
+        binary_sha256="0" * 64,
+        checkpoint_sha256="1" * 64,
+        t_pre=0.0,
+        h=0.01,
+        picard_iteration=4,
+        normalization_scale=state.scales,
+        target_intervals=((-1.0e-4, 1.0e-4), (-1.0e-4, 1.0e-4)),
+    )
+    step = dense_picard_validate_step(
+        _vdp(),
+        base,
+        h=0.01,
+        order=4,
+        tau_index=2,
+        target_remainder_radius=1.0e-4,
+        cutoff_threshold=1.0e-10,
+        max_validation_attempts=2,
+        validation_eps=1.0e-12,
+        validation_mode=C1,
+        raw_remainder_trace_recorder=recorder,
+    )
+
+    assert exact.subseteq(production)
+    assert removed_fraction >= Fraction(1, 10)
+    assert certificate["operator"] == "factor_times_y_joint_tensor_bernstein"
+    assert step.status == "validated"
+    assert torch.equal(step.segment_tm.poly.coeffs, candidate.poly.coeffs)
+    artifact = recorder.artifact()
+    assert artifact["expression_mode"] == "canonical_factorized_joint_closure"
+    closure_event = next(
+        row for row in artifact["execution_events"]
+        if row["operation"] == "factor_times_y_joint_tensor_bernstein"
+    )
+    old_root = next(
+        row for row in artifact["execution_events"]
+        if row["stage_id"].endswith("factorized_final")
+    )
+    assert closure_event["discard_site"] is None
+    assert old_root["discard_site"] is not None
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("x_args", "y_args", "raw_order", "cutoff"),
+    [
+        (
+            {"constant": 0.0, "linear": 0.0, "remainder": (0.0, 0.0)},
+            {"constant": 0.0, "linear": 0.0, "remainder": (0.0, 0.0)},
+            0,
+            None,
+        ),
+        (
+            {"constant": 1.2, "linear": 0.4, "remainder": (-0.03, 0.01)},
+            {"constant": 0.7, "linear": -0.2, "remainder": (-0.02, 0.04)},
+            1,
+            1.0e-2,
+        ),
+        (
+            {
+                "constant": 1.0,
+                "linear": math.ldexp(1.0, -530),
+                "remainder": (-math.ldexp(1.0, -540), math.ldexp(1.0, -539)),
+            },
+            {
+                "constant": 1.0,
+                "linear": -math.ldexp(1.0, -530),
+                "remainder": (-math.ldexp(1.0, -541), math.ldexp(1.0, -540)),
+            },
+            0,
+            math.ldexp(1.0, -529),
+        ),
+    ],
+    ids=("zero", "asymmetric-cutoff-order-overflow", "underflow-cutoff-boundary"),
+)
+def test_c1_adversarial_joint_closure_contains_exact_oracle(
+    x_args: dict[str, object],
+    y_args: dict[str, object],
+    raw_order: int,
+    cutoff: float | None,
+) -> None:
+    x = _scalar_tm(**x_args)
+    y = _scalar_tm(**y_args)
+    state = BatchedTaylorModel.concat((x, y))
+    raw = _call_dense_raw_trace_rhs(
+        _vdp(),
+        state,
+        effective_order=raw_order,
+        cutoff_threshold=cutoff,
+        evaluation_mode="canonical_factorized_joint",
+        dependency_preserving_square=True,
+    )
+    closure, _ = _joint_factorized_vdp_residual_closure(x, y, raw.component(1))
+    exact = _exact_joint_closure_oracle(x, y, raw.component(1))
+    production = RationalInterval(_q(closure.rem_lo), _q(closure.rem_hi))
+
+    assert exact.subseteq(production)
+    assert torch.all(torch.isfinite(closure.rem_lo))
+    assert torch.all(torch.isfinite(closure.rem_hi))
+    if x_args["constant"] == 0.0:
+        assert production.lo <= 0 <= production.hi
+        assert float(production.width) < 1.0e-300
+
+
+def _full_h2_step(current, state, device: str, validation_mode: str = H2):
     return flowpipe_step_flowstar_style_adaptive(
         _vdp(),
         current,
@@ -259,7 +450,7 @@ def _full_h2_step(current, state, device: str):
         cutoff_threshold=1.0e-10,
         max_validation_attempts=2,
         validation_eps=1.0e-12,
-        validation_mode=H2,
+        validation_mode=validation_mode,
         reset_mode="normalized_insertion_dependency_preserving",
         step_policy_mode="flowstar_compat",
         flowstar_normal_state=state,
@@ -299,6 +490,42 @@ def test_h2_checkpoint_resume_is_bitwise_on_each_device(tmp_path: Path, device: 
     uninterrupted = _full_h2_step(first.reset_tm, first.flowstar_normal_state, device)
     loaded = load_terminal_checkpoint(checkpoint, expected_contract=contract, expected_order=4, expected_dtype="float64")
     resumed = _full_h2_step(loaded.current, loaded.normal_state, device)
+
+    assert uninterrupted.status == resumed.status == "validated"
+    assert uninterrupted.reset_tm is not None and resumed.reset_tm is not None
+    assert tmvector_hashes(uninterrupted.reset_tm) == tmvector_hashes(resumed.reset_tm)
+    assert uninterrupted.flowstar_normal_state is not None
+    assert resumed.flowstar_normal_state is not None
+    assert uninterrupted.flowstar_normal_state.center == resumed.flowstar_normal_state.center
+    assert uninterrupted.flowstar_normal_state.scales == resumed.flowstar_normal_state.scales
+
+
+@pytest.mark.unit
+def test_c1_checkpoint_resume_is_bitwise_on_cpu(tmp_path: Path) -> None:
+    state = FlowstarNormalFlowpipeState.from_exact_decimal_box(
+        [("11/10", "7/5"), ("47/20", "49/20")], 4
+    )
+    first = _full_h2_step(state.normalized_initial_tm(4), state, "cpu", C1)
+    assert first.status == "validated"
+    assert first.reset_tm is not None and first.flowstar_normal_state is not None
+    contract = {"validation_mode": C1, "reset_mode": "normalized_insertion_dependency_preserving"}
+    checkpoint = tmp_path / "c1-cpu"
+    save_terminal_checkpoint(
+        checkpoint,
+        current=first.reset_tm,
+        normal_state=first.flowstar_normal_state,
+        scheduler={"current_time": 0.01, "h_next": 0.01},
+        contract=contract,
+        provenance={"test": "c1-checkpoint-resume", "device": "cpu"},
+    )
+    uninterrupted = _full_h2_step(first.reset_tm, first.flowstar_normal_state, "cpu", C1)
+    loaded = load_terminal_checkpoint(
+        checkpoint,
+        expected_contract=contract,
+        expected_order=4,
+        expected_dtype="float64",
+    )
+    resumed = _full_h2_step(loaded.current, loaded.normal_state, "cpu", C1)
 
     assert uninterrupted.status == resumed.status == "validated"
     assert uninterrupted.reset_tm is not None and resumed.reset_tm is not None

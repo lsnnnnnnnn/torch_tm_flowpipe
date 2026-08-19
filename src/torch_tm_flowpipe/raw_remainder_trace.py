@@ -8,8 +8,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import hashlib
+import inspect
 import json
 import math
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import torch
@@ -169,16 +171,94 @@ class RawRemainderTraceRecorder:
     normalization_scale: Sequence[float]
     target_intervals: Sequence[tuple[float, float]]
     expression_mode: str = "ordered_terms"
+    dependency_preserving_square: bool | None = None
     nodes: list[dict[str, Any]] = field(default_factory=list)
     component_roots: dict[int, str] = field(default_factory=dict)
     _operation_counts: dict[str, int] = field(default_factory=dict)
+    execution_events: list[dict[str, Any]] = field(default_factory=list)
+    _execution_models: dict[str, Any] = field(default_factory=dict, init=False, repr=False)
+
+    @staticmethod
+    def _callsite() -> dict[str, Any]:
+        frame = inspect.currentframe()
+        if frame is None or frame.f_back is None or frame.f_back.f_back is None:
+            raise RuntimeError("could not capture production trace callsite")
+        caller = frame.f_back.f_back
+        return {
+            "file": str(Path(caller.f_code.co_filename).resolve()),
+            "function": caller.f_code.co_qualname,
+            "line": int(caller.f_lineno),
+        }
+
+    def add_interval_event(
+        self,
+        *,
+        stage_id: str,
+        operation: str,
+        component: int,
+        lo: torch.Tensor,
+        hi: torch.Tensor,
+        parents: Sequence[str] = (),
+        model: Any | None = None,
+        validation_eps_payment: float | None = None,
+        decision_role: str = "numeric_input",
+        discard_site: Mapping[str, Any] | None = None,
+        source_override: Mapping[str, Any] | None = None,
+    ) -> str:
+        """Record an already-executed production interval without changing it."""
+
+        identifier = str(stage_id)
+        if any(row["stage_id"] == identifier for row in self.execution_events):
+            raise ValueError(f"duplicate production event id: {identifier}")
+        self.execution_events.append(
+            {
+                "sequence": len(self.execution_events) + 1,
+                "stage_id": identifier,
+                "operation": str(operation),
+                "component": int(component),
+                "parent_stage_ids": [str(value) for value in parents],
+                "production_interval": tensor_interval_record(lo, hi),
+                "source": (
+                    self._callsite()
+                    if source_override is None
+                    else dict(source_override)
+                ),
+                "validation_eps_payment": (
+                    None
+                    if validation_eps_payment is None
+                    else float_record(validation_eps_payment)
+                ),
+                "decision_role": str(decision_role),
+                "discard_site": None if discard_site is None else dict(discard_site),
+            }
+        )
+        if model is not None:
+            self._execution_models[identifier] = model
+        return identifier
+
+    def mark_discard(self, stage_ids: Sequence[str], *, reason: str) -> None:
+        callsite = self._callsite()
+        by_id = {row["stage_id"]: row for row in self.execution_events}
+        for stage_id in stage_ids:
+            if stage_id not in by_id:
+                raise ValueError(f"cannot discard unknown production event: {stage_id}")
+            if by_id[stage_id]["discard_site"] is not None:
+                raise ValueError(f"production event already discarded: {stage_id}")
+            by_id[stage_id]["discard_site"] = {**callsite, "reason": str(reason)}
 
     def _next_id(self, operation: str, component: int) -> str:
         count = self._operation_counts.get(operation, 0) + 1
         self._operation_counts[operation] = count
-        if self.expression_mode == "canonical_factorized_joint":
+        if self.expression_mode in {
+            "canonical_factorized_joint",
+            "canonical_factorized_joint_closure",
+        }:
             semantic: dict[tuple[str, int], str] = {
-                ("multiply", 1): "y_rhs.x_squared_joint",
+                ("multiply", 1): (
+                    "y_rhs.x_squared_joint"
+                    if self.dependency_preserving_square
+                    else "y_rhs.x_squared_generic"
+                ),
                 ("subtract", 1): "y_rhs.one_minus_x_squared",
                 ("multiply", 2): "y_rhs.factor_times_y",
                 ("subtract", 2): "y_rhs.factorized_final",
@@ -188,7 +268,11 @@ class RawRemainderTraceRecorder:
                 # PolynomialODE's frozen default preserves the canonical
                 # distributed form y - x - x^2*y.
                 ("subtract", 1): "y_rhs.y_minus_x",
-                ("multiply", 1): "y_rhs.x_squared",
+                ("multiply", 1): (
+                    "y_rhs.x_squared_joint"
+                    if self.dependency_preserving_square
+                    else "y_rhs.x_squared_generic"
+                ),
                 ("multiply", 2): "y_rhs.x_squared_times_y",
                 ("subtract", 2): "y_rhs.distributed_final",
             }
@@ -211,6 +295,7 @@ class RawRemainderTraceRecorder:
         subset_margin: float | None = None,
         decision: str = "not_applicable",
         dropped_support_sha256: str | None = None,
+        production_event: bool = True,
     ) -> str:
         identifier = node_id or self._next_id(operation, int(component))
         if any(row["expression_node_id"] == identifier for row in self.nodes):
@@ -273,6 +358,17 @@ class RawRemainderTraceRecorder:
         if missing:
             raise AssertionError(f"trace implementation omitted common fields: {sorted(missing)}")
         self.nodes.append(node)
+        if production_event:
+            self.add_interval_event(
+                stage_id=identifier,
+                operation=operation,
+                component=component,
+                lo=model.rem_lo,
+                hi=model.rem_hi,
+                parents=parents,
+                model=model,
+                source_override=self._callsite(),
+            )
         return identifier
 
     def register_component_root(self, component: int, node_id: str) -> None:
@@ -287,11 +383,13 @@ class RawRemainderTraceRecorder:
 
     def artifact(self) -> dict[str, Any]:
         validate_expression_dag(self.nodes)
+        validate_execution_events(self.execution_events)
         return {
             "schema": SCHEMA,
             "expression_mode": self.expression_mode,
             "node_fields": list(NODE_FIELDS),
             "nodes": self.nodes,
+            "execution_events": self.execution_events,
         }
 
 
@@ -311,6 +409,26 @@ def validate_expression_dag(nodes: Sequence[Mapping[str, Any]]) -> None:
         seen.add(node_id)
 
 
+def validate_execution_events(events: Sequence[Mapping[str, Any]]) -> None:
+    seen: set[str] = set()
+    for expected_sequence, event in enumerate(events, 1):
+        if int(event.get("sequence", -1)) != expected_sequence:
+            raise ValueError("production event sequence is missing or reordered")
+        stage_id = str(event.get("stage_id", ""))
+        if not stage_id or stage_id in seen:
+            raise ValueError(f"invalid or duplicate production event id: {stage_id!r}")
+        unresolved = [
+            str(parent)
+            for parent in event.get("parent_stage_ids", ())
+            if str(parent) not in seen
+        ]
+        if unresolved:
+            raise ValueError(
+                f"production event {stage_id} has non-prior parents: {unresolved}"
+            )
+        seen.add(stage_id)
+
+
 __all__ = [
     "NODE_FIELDS",
     "RawRemainderTraceRecorder",
@@ -318,5 +436,6 @@ __all__ = [
     "dropped_product_support_sha",
     "float_record",
     "interval_record",
+    "validate_execution_events",
     "validate_expression_dag",
 ]

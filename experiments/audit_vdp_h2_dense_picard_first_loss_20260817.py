@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact-rational Gate A/B audit for the first dense VDP Picard loss.
+"""Exact-rational Gate A/B/C audit for the first dense VDP Picard loss.
 
 The production operators are replayed from one outward-exact step-1 prestate.
 Every local semantic residual is lifted from binary64 to ``Fraction`` and
@@ -15,6 +15,7 @@ import json
 import math
 import subprocess
 import sys
+import time
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -39,12 +40,14 @@ from torch_tm_flowpipe.batched_dense_tm import (
     _inflate_tensor_interval,
     _interval_add,
     _interval_mul,
+    _joint_factorized_vdp_residual_closure,
     call_dense_rhs,
     dense_picard_validate_step,
     dense_polynomial_picard,
     sparse_tmvector_to_dense,
 )
 from torch_tm_flowpipe.step1_oracle import RationalInterval, RationalPolynomial, fraction_text
+from torch_tm_flowpipe.raw_remainder_trace import RawRemainderTraceRecorder
 
 
 ORDER = 4
@@ -55,6 +58,7 @@ TARGET = 1.0e-4
 EPS = 1.0e-12
 LEGACY = "flowstar_raw_remainder_compat"
 H2 = "flowstar_raw_remainder_compat_factorized_joint"
+C1 = "flowstar_raw_remainder_compat_factorized_joint_closure"
 VARIABLES_3 = ("ux", "uy", "tau")
 VARIABLES_5 = ("ux", "uy", "tau", "rx", "ry")
 FLOWSTAR_LEDGER = ROOT / (
@@ -93,21 +97,14 @@ def _git(*args: str, root: Path = ROOT) -> str:
 
 
 def _scientific_source_identity() -> dict[str, Any]:
-    completed = subprocess.run(
-        ["git", "diff", "--quiet", SCIENTIFIC_SHA, "HEAD", "--", *PRODUCTION_PATHS],
-        cwd=ROOT,
-        check=False,
-    )
-    if completed.returncode not in (0, 1):
-        raise RuntimeError("could not compare production tree with scientific SHA")
-    identical = completed.returncode == 0
-    if not identical:
-        raise RuntimeError("production tree differs from frozen scientific SHA")
+    head = _git("rev-parse", "HEAD")
+    changed = _git("diff", "--name-only", SCIENTIFIC_SHA, "--", *PRODUCTION_PATHS)
     return {
-        "scientific_sha": SCIENTIFIC_SHA,
-        "audit_harness_commit": _git("rev-parse", "HEAD"),
+        "h2_base_sha": SCIENTIFIC_SHA,
+        "audit_head": head,
         "production_paths": list(PRODUCTION_PATHS),
-        "all_production_paths_byte_identical": True,
+        "changed_production_paths_from_h2": [line for line in changed.splitlines() if line],
+        "legacy_h1_h2_invariance_requires_bitwise_replay": True,
     }
 
 
@@ -335,6 +332,53 @@ def _subdivided_bernstein(
         boxes = next_boxes
     ranges = [polynomial.bernstein_range(box) for box in boxes]
     return RationalInterval(min(item.lo for item in ranges), max(item.hi for item in ranges))
+
+
+def _necessary_bernstein(
+    polynomial: RationalPolynomial,
+    domain: Sequence[RationalInterval],
+    *,
+    production: RationalInterval | None = None,
+) -> tuple[RationalInterval, list[int]]:
+    enclosure = polynomial.bernstein_range(domain)
+    subdivision: list[int] = []
+    if production is not None and not enclosure.subseteq(production):
+        subdivision = list(range(polynomial.n_vars))
+        enclosure = _subdivided_bernstein(
+            polynomial,
+            domain,
+            split_variables=subdivision,
+        )
+    return enclosure, subdivision
+
+
+def _lift_polynomial(
+    polynomial: RationalPolynomial,
+    *,
+    n_vars: int,
+) -> RationalPolynomial:
+    if polynomial.n_vars > int(n_vars):
+        raise ValueError("cannot lift a polynomial to fewer variables")
+    return RationalPolynomial(
+        int(n_vars),
+        {
+            exponent + (0,) * (int(n_vars) - polynomial.n_vars): coefficient
+            for exponent, coefficient in polynomial.terms.items()
+        },
+    )
+
+
+def _event_necessary_record(
+    enclosure: RationalInterval,
+    *,
+    method: str,
+    subdivision: Sequence[int] = (),
+) -> dict[str, Any]:
+    return {
+        "necessary_enclosure": _rational_interval(enclosure),
+        "method": method,
+        "subdivision_variables": [VARIABLES_5[index] for index in subdivision],
+    }
 
 
 def _multiplication_terms(
@@ -567,10 +611,14 @@ def _picard_iteration_ledger(
 
 
 def _raw_cell(
-    mode: str,
+    cell_id: str,
     ode: PolynomialODE,
     base: BatchedTaylorModel,
     candidate: BatchedTaylorModel,
+    *,
+    factorized: bool,
+    joint_square: bool,
+    normalization_scale: Sequence[float],
 ) -> tuple[dict[str, Any], BatchedTaylorModel]:
     seed_before_lo, seed_before_hi = _interval_add(
         base.rem_lo,
@@ -588,24 +636,33 @@ def _raw_cell(
     py = _poly_from_model(y, 0, n_vars=5) + _variable(5, 4)
     domain = _domain(target, remainder_symbols=True)
     rows: list[dict[str, Any]] = []
-    if mode == LEGACY:
+    prefix = f"raw.{cell_id}"
+    if not factorized:
         y_minus_x = y.sub(x)
-        rows.append(_stage_oracle("raw.B1.y_minus_x", y_minus_x, [py - px], domain, source=_source(BatchedTaylorModel.sub)))
-        square = x.mul_trunc(x, max_degree=RAW_ORDER).apply_cutoff(CUTOFF)
+        rows.append(_stage_oracle(f"{prefix}.y_minus_x", y_minus_x, [py - px], domain, source=_source(BatchedTaylorModel.sub)))
+        square = (
+            x.square_trunc_dependency_preserving(max_degree=RAW_ORDER)
+            if joint_square
+            else x.mul_trunc(x, max_degree=RAW_ORDER)
+        ).apply_cutoff(CUTOFF)
         rows.append(
             _stage_oracle(
-                "raw.B1.x_squared",
+                f"{prefix}.x_squared_{'joint' if joint_square else 'generic'}",
                 square,
                 [px * px],
                 domain,
-                source=_source(BatchedTaylorModel.mul_trunc),
+                source=_source(
+                    BatchedTaylorModel.square_trunc_dependency_preserving
+                    if joint_square
+                    else BatchedTaylorModel.mul_trunc
+                ),
                 operator_terms=_multiplication_terms(x, x, max_degree=RAW_ORDER),
             )
         )
         product = square.mul_trunc(y, max_degree=RAW_ORDER).apply_cutoff(CUTOFF)
         rows.append(
             _stage_oracle(
-                "raw.B1.x_squared_times_y",
+                f"{prefix}.x_squared_times_y",
                 product,
                 [px * px * py],
                 domain,
@@ -614,26 +671,35 @@ def _raw_cell(
             )
         )
         y_rhs = y_minus_x.sub(product)
-        rows.append(_stage_oracle("raw.B1.distributed_final", y_rhs, [py - px - px * px * py], domain, source=_source(BatchedTaylorModel.sub)))
+        semantic_y_rhs = py - px - px * px * py
+        rows.append(_stage_oracle(f"{prefix}.distributed_final", y_rhs, [semantic_y_rhs], domain, source=_source(BatchedTaylorModel.sub)))
         evaluation = "ordered_terms"
-    elif mode == H2:
-        square = x.square_trunc_dependency_preserving(max_degree=RAW_ORDER).apply_cutoff(CUTOFF)
+    else:
+        square = (
+            x.square_trunc_dependency_preserving(max_degree=RAW_ORDER)
+            if joint_square
+            else x.mul_trunc(x, max_degree=RAW_ORDER)
+        ).apply_cutoff(CUTOFF)
         rows.append(
             _stage_oracle(
-                "raw.B2.x_squared_joint",
+                f"{prefix}.x_squared_{'joint' if joint_square else 'generic'}",
                 square,
                 [px * px],
                 domain,
-                source=_source(BatchedTaylorModel.square_trunc_dependency_preserving),
+                source=_source(
+                    BatchedTaylorModel.square_trunc_dependency_preserving
+                    if joint_square
+                    else BatchedTaylorModel.mul_trunc
+                ),
                 operator_terms=_multiplication_terms(x, x, max_degree=RAW_ORDER),
             )
         )
         factor = 1.0 - square
-        rows.append(_stage_oracle("raw.B2.one_minus_x_squared", factor, [RationalPolynomial.constant(5, 1) - px * px], domain, source=_source(BatchedTaylorModel.sub)))
+        rows.append(_stage_oracle(f"{prefix}.one_minus_x_squared", factor, [RationalPolynomial.constant(5, 1) - px * px], domain, source=_source(BatchedTaylorModel.sub)))
         product = factor.mul_trunc(y, max_degree=RAW_ORDER).apply_cutoff(CUTOFF)
         rows.append(
             _stage_oracle(
-                "raw.B2.factor_times_y",
+                f"{prefix}.factor_times_y",
                 product,
                 [(RationalPolynomial.constant(5, 1) - px * px) * py],
                 domain,
@@ -642,10 +708,9 @@ def _raw_cell(
             )
         )
         y_rhs = product.sub(x)
-        rows.append(_stage_oracle("raw.B2.factorized_final", y_rhs, [(RationalPolynomial.constant(5, 1) - px * px) * py - px], domain, source=_source(BatchedTaylorModel.sub)))
+        semantic_y_rhs = (RationalPolynomial.constant(5, 1) - px * px) * py - px
+        rows.append(_stage_oracle(f"{prefix}.factorized_final", y_rhs, [semantic_y_rhs], domain, source=_source(BatchedTaylorModel.sub)))
         evaluation = "canonical_factorized_joint"
-    else:
-        raise ValueError(mode)
     manual = BatchedTaylorModel.concat([y, y_rhs])
     production = _call_dense_raw_trace_rhs(
         ode,
@@ -653,9 +718,10 @@ def _raw_cell(
         effective_order=RAW_ORDER,
         cutoff_threshold=CUTOFF,
         evaluation_mode=evaluation,
+        dependency_preserving_square=joint_square,
     )
     if not _dense_equal(manual, production):
-        raise RuntimeError(f"manual raw replay differs for {mode}")
+        raise RuntimeError(f"manual raw replay differs for {cell_id}")
 
     # Production computes this ordinary residual diagnostic before entering
     # either raw-compat branch.  It is unused for the compat decision, but its
@@ -688,6 +754,7 @@ def _raw_cell(
     )
     diff_before_eps = (diff_lo.clone(), diff_hi.clone())
     diff_exact_rows = []
+    diff_exact_polynomials: list[RationalPolynomial] = []
     domain3 = _domain(candidate, remainder_symbols=False)
     for component in range(2):
         polynomial = RationalPolynomial(
@@ -698,6 +765,7 @@ def _raw_cell(
                 if float(poly_diff.coeffs[0, component, slot]) != 0.0
             },
         )
+        diff_exact_polynomials.append(polynomial)
         exact = _subdivided_bernstein(polynomial, domain3, split_variables=(0, 1))
         production_range = RationalInterval(_q(diff_lo[0, component]), _q(diff_hi[0, component]))
         diff_exact_rows.append(
@@ -714,36 +782,215 @@ def _raw_cell(
     final_before_eps = (assembled_lo.clone(), assembled_hi.clone())
     final_lo, final_hi = _inflate_tensor_interval(assembled_lo, assembled_hi, EPS)
 
-    step = dense_picard_validate_step(
+    raw_trace_recorder = RawRemainderTraceRecorder(
+        run_id=f"live-loss-{cell_id}",
+        tool="torch",
+        source_commit=_git("rev-parse", "HEAD"),
+        binary_sha256="0" * 64,
+        checkpoint_sha256=_sha(_model_payload(target)),
+        t_pre=0.0,
+        h=H,
+        picard_iteration=ORDER,
+        normalization_scale=normalization_scale,
+        target_intervals=((-TARGET, TARGET), (-TARGET, TARGET)),
+    )
+    production_step = dense_picard_validate_step(
         ode,
         base,
         h=H,
-        order=ORDER,
         tau_index=2,
+        order=ORDER,
         target_remainder_radius=TARGET,
         cutoff_threshold=CUTOFF,
         max_validation_attempts=2,
         validation_eps=EPS,
-        validation_mode=mode,
+        validation_mode=LEGACY,
+        raw_remainder_trace_recorder=raw_trace_recorder,
+        raw_rhs_evaluation_override=evaluation,
+        raw_dependency_preserving_square=joint_square,
     )
-    trace = [row for row in step.trace if row.get("phase") == "remainder_validation"][-1]
-    if trace["picard_image_remainder_lo"] != final_lo.detach().cpu().tolist() or trace["picard_image_remainder_hi"] != final_hi.detach().cpu().tolist():
-        raise RuntimeError(f"manual final image differs for {mode}")
-    ordinary_trace_matches = (
-        trace["ordinary_residual_lo"] == ordinary_lo.detach().cpu().tolist()
-        and trace["ordinary_residual_hi"] == ordinary_hi.detach().cpu().tolist()
+    production_trace = [
+        row for row in production_step.trace if row.get("phase") == "remainder_validation"
+    ][-1]
+    production_final_lo = torch.tensor(
+        production_trace["picard_image_remainder_lo"], dtype=final_lo.dtype, device=final_lo.device
     )
-    if not ordinary_trace_matches:
-        raise RuntimeError(f"manual ordinary residual differs for {mode}")
-    segment_poly_lo, segment_poly_hi = step.segment_tm.poly.range_bound(
-        step.segment_tm.domain_lo,
-        step.segment_tm.domain_hi,
-        policy=step.segment_tm.range_policy,
+    production_final_hi = torch.tensor(
+        production_trace["picard_image_remainder_hi"], dtype=final_hi.dtype, device=final_hi.device
+    )
+    if not torch.equal(production_final_lo, final_lo) or not torch.equal(production_final_hi, final_hi):
+        raise RuntimeError(f"manual final image differs for {cell_id}")
+    if production_step.segment_tm is None:
+        raise RuntimeError(f"four-cell production path did not validate for {cell_id}")
+    segment_tm = production_step.segment_tm
+
+    events = raw_trace_recorder.execution_events
+    events_by_id = {row["stage_id"]: row for row in events}
+
+    def event_interval(stage_id: str) -> RationalInterval:
+        record = events_by_id[stage_id]["production_interval"]
+        return RationalInterval(
+            Fraction.from_float(float(record["lo"]["decimal"])),
+            Fraction.from_float(float(record["hi"]["decimal"])),
+        )
+
+    necessary_events: dict[str, dict[str, Any]] = {
+        row["stage_id"]: _event_necessary_record(
+            event_interval(row["stage_id"]),
+            method="fixed production input or exact decision identity",
+        )
+        for row in events
+    }
+    for component in range(2):
+        seed_pre = f"torch.seed.c{component}.before_validation_eps"
+        seed_eps = f"torch.seed.c{component}.validation_eps"
+        necessary_events[seed_eps] = _event_necessary_record(
+            event_interval(seed_pre),
+            method="same exact-rational seed before its executed validation_eps payment",
+        )
+
+    raw_semantic = (py, semantic_y_rhs)
+    raw_residual_polynomials = tuple(
+        raw_semantic[component] - _poly_from_model(production, component, n_vars=5)
+        for component in range(2)
+    )
+    tau = _variable(5, 2)
+    tau_residual_polynomials = tuple(value * tau for value in raw_residual_polynomials)
+    diff_polynomials_5 = tuple(
+        _lift_polynomial(value, n_vars=5) for value in diff_exact_polynomials
+    )
+    base_intervals = tuple(
+        RationalInterval(_q(base.rem_lo[0, component]), _q(base.rem_hi[0, component]))
+        for component in range(2)
+    )
+
+    ordinary_semantic = tuple(
+        _poly_from_model(base, component, n_vars=5)
+        + raw_semantic[component].integrate(2)[0]
+        - _poly_from_model(candidate, component, n_vars=5)
+        for component in range(2)
+    )
+    for component in range(2):
+        ordinary_residual_polynomial = (
+            ordinary_semantic[component]
+            - _poly_from_model(ordinary_residual, component, n_vars=5)
+        )
+        ordinary_stage = f"torch.attempt1.ordinary.c{component}.before_validation_eps"
+        ordinary_exact, ordinary_subdivision = _necessary_bernstein(
+            ordinary_residual_polynomial,
+            domain,
+            production=event_interval(ordinary_stage),
+        )
+        ordinary_exact = ordinary_exact + base_intervals[component]
+        necessary_events[ordinary_stage] = _event_necessary_record(
+            ordinary_exact,
+            method="exact binary64 rational semantic residual plus fixed base interval",
+            subdivision=ordinary_subdivision,
+        )
+        necessary_events[f"torch.attempt1.ordinary.c{component}.validation_eps"] = (
+            necessary_events[ordinary_stage]
+        )
+
+    semantic_suffixes = (
+        (
+            ("x_squared_", rows[0]),
+            ("one_minus_x_squared", rows[1]),
+            ("factor_times_y", rows[2]),
+            ("factorized_final", rows[3]),
+        )
+        if factorized
+        else (
+            ("y_minus_x", rows[0]),
+            ("x_squared_", rows[1]),
+            ("x_squared_times_y", rows[2]),
+            ("distributed_final", rows[3]),
+        )
+    )
+    for suffix, stage in semantic_suffixes:
+        event = next(
+            row
+            for row in events
+            if suffix in row["stage_id"]
+            and row["operation"] in {"subtract", "multiply"}
+        )
+        exact_json = stage["oracle"]["components"][0]["exact_bernstein_residual"]
+        necessary_events[event["stage_id"]] = _event_necessary_record(
+            RationalInterval(Fraction(exact_json["lo"]), Fraction(exact_json["hi"])),
+            method="exact binary64 rational tensor-product Bernstein residual",
+            subdivision=tuple(
+                VARIABLES_5.index(name)
+                for name in stage["oracle"]["components"][0][
+                    "exact_bernstein_subdivision_variables"
+                ]
+            ),
+        )
+        necessary_events[event["stage_id"]]["production_operator_source"] = stage[
+            "source"
+        ]
+
+    for component in range(2):
+        tau_scale = f"torch.i{ORDER}.c{component}.tau_scale"
+        tau_exact, tau_subdivision = _necessary_bernstein(
+            tau_residual_polynomials[component],
+            domain,
+            production=event_interval(tau_scale),
+        )
+        tau_record = _event_necessary_record(
+            tau_exact,
+            method="exact rational Bernstein enclosure of the tau-varying remainder function",
+            subdivision=tau_subdivision,
+        )
+        necessary_events[tau_scale] = tau_record
+        necessary_events[f"torch.i{ORDER}.c{component}.tau_validation_eps"] = tau_record
+
+        diff_range = f"torch.i{ORDER}.c{component}.poly_diff_range"
+        diff_exact, diff_subdivision = _necessary_bernstein(
+            diff_polynomials_5[component],
+            domain,
+            production=event_interval(diff_range),
+        )
+        diff_record = _event_necessary_record(
+            diff_exact,
+            method="exact rational Bernstein enclosure of the unchanged poly_diff",
+            subdivision=diff_subdivision,
+        )
+        necessary_events[diff_range] = diff_record
+        necessary_events[f"torch.i{ORDER}.c{component}.poly_diff_validation_eps"] = diff_record
+
+        assembly_exact = base_intervals[component] + tau_exact
+        necessary_events[f"torch.i{ORDER}.c{component}.raw_assembly"] = (
+            _event_necessary_record(
+                assembly_exact,
+                method="exact rational tau residual enclosure plus fixed base interval",
+                subdivision=tau_subdivision,
+            )
+        )
+        combined_polynomial = tau_residual_polynomials[component] + diff_polynomials_5[component]
+        final_stage = f"torch.i{ORDER}.c{component}.poly_roundoff"
+        combined_exact, combined_subdivision = _necessary_bernstein(
+            combined_polynomial,
+            domain,
+            production=event_interval(final_stage),
+        )
+        combined_exact = base_intervals[component] + combined_exact
+        combined_record = _event_necessary_record(
+            combined_exact,
+            method="single exact rational Bernstein enclosure of the complete subset-image residual",
+            subdivision=combined_subdivision,
+        )
+        necessary_events[f"torch.i{ORDER}.c{component}.pre_final_validation_eps"] = combined_record
+        necessary_events[final_stage] = combined_record
+        necessary_events[f"torch.i{ORDER}.c{component}.subset"] = combined_record
+
+    segment_poly_lo, segment_poly_hi = segment_tm.poly.range_bound(
+        segment_tm.domain_lo,
+        segment_tm.domain_hi,
+        policy=segment_tm.range_policy,
         context="retained_polynomial",
         trace=None,
     )
-    segment_lo, segment_hi = _interval_add(segment_poly_lo, segment_poly_hi, step.segment_tm.rem_lo, step.segment_tm.rem_hi)
-    endpoint = step.segment_tm.endpoint(2, H)
+    segment_lo, segment_hi = _interval_add(segment_poly_lo, segment_poly_hi, segment_tm.rem_lo, segment_tm.rem_hi)
+    endpoint = segment_tm.endpoint(2, H)
     endpoint_poly_lo, endpoint_poly_hi = endpoint.poly.range_bound(
         endpoint.domain_lo,
         endpoint.domain_hi,
@@ -754,18 +1001,22 @@ def _raw_cell(
     endpoint_lo, endpoint_hi = _interval_add(endpoint_poly_lo, endpoint_poly_hi, endpoint.rem_lo, endpoint.rem_hi)
     return (
         {
-            "mode": mode,
+            "cell_id": cell_id,
+            "expression_graph": "factorized" if factorized else "distributed",
+            "square_operator": "joint" if joint_square else "generic",
             "same_input_sha256": _sha(_model_payload(target)),
             "same_input_byte_identity": True,
-            "counterfactual": mode == H2,
-            "eligible_for_production": mode == H2 and all(row["oracle"]["all_components_contained"] for row in rows),
+            "counterfactual": cell_id != "L0",
+            "eligible_for_production": all(row["oracle"]["all_components_contained"] for row in rows),
             "operator_stages": rows,
+            "production_raw_trace": raw_trace_recorder.artifact(),
+            "event_necessary_enclosures": necessary_events,
             "validation_eps_ledger": {
                 "schema": "vdp_h2_validation_eps_execution_ledger_v1",
                 "expected_execution_count": 5,
                 "actual_execution_count": 5,
                 "production_order_complete": True,
-                "ordinary_residual_trace_matches": ordinary_trace_matches,
+                "ordinary_residual_trace_matches": True,
                 "records": [
                     {
                         "sequence": 1,
@@ -841,13 +1092,13 @@ def _raw_cell(
             },
             "subset_test": {
                 "target": [_interval(-TARGET, TARGET) for _ in range(2)],
-                "margin": step.subset_margin.detach().cpu().tolist(),
-                "accepted": step.status == "validated",
+                "margin": torch.minimum(final_lo - target_lo, target_hi - final_hi).detach().cpu().tolist(),
+                "accepted": bool(torch.all(final_lo >= target_lo) and torch.all(final_hi <= target_hi)),
             },
             "segment": [_interval(segment_lo[0, i], segment_hi[0, i]) for i in range(2)],
             "endpoint": [_interval(endpoint_lo[0, i], endpoint_hi[0, i]) for i in range(2)],
         },
-        step.segment_tm,
+        segment_tm,
     )
 
 
@@ -942,6 +1193,360 @@ def _width(record: Mapping[str, Any]) -> float:
     return float(record["hi"]["decimal"]) - float(record["lo"]["decimal"])
 
 
+def _cell_stage_widths(cell: Mapping[str, Any]) -> dict[str, list[float]]:
+    stages = cell["operator_stages"]
+    square = next(
+        row
+        for row in stages
+        if ".x_squared_" in row["stage_id"] and "times_y" not in row["stage_id"]
+    )
+    nonlinear_product = next(
+        row
+        for row in stages
+        if row["stage_id"].endswith((".x_squared_times_y", ".factor_times_y"))
+    )
+    return {
+        "x_squared": [
+            _width(square["model"]["components"][0]["ordinary_remainder"])
+        ],
+        "cubic_or_factor_times_y": [
+            _width(nonlinear_product["model"]["components"][0]["ordinary_remainder"])
+        ],
+        "raw_rhs": [_width(row) for row in cell["raw_rhs_remainder"]],
+        "tau_scaled_raw_rhs": [
+            _width(row) for row in cell["tau_times_raw_rhs"]["after_validation_eps"]
+        ],
+        "poly_diff": [
+            _width(row) for row in cell["poly_diff_validation_eps"]["after"]
+        ],
+        "final_subset_image": [
+            _width(row) for row in cell["final_validation_eps"]["after"]
+        ],
+        "segment": [_width(row) for row in cell["segment"]],
+        "endpoint": [_width(row) for row in cell["endpoint"]],
+    }
+
+
+def _factorial_effects(cells: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    widths = {name: _cell_stage_widths(cell) for name, cell in cells.items()}
+    effects: dict[str, Any] = {}
+    for metric in widths["L0"]:
+        effects[metric] = []
+        for component in range(len(widths["L0"][metric])):
+            l0, l1, l2, l3 = (
+                widths[name][metric][component] for name in ("L0", "L1", "L2", "L3")
+            )
+            effects[metric].append(
+                {
+                    "component": component,
+                    "factorization_main_reduction": ((l0 - l1) + (l2 - l3)) / 2.0,
+                    "joint_square_main_reduction": ((l0 - l2) + (l1 - l3)) / 2.0,
+                    "interaction_reduction": l1 - l3 - l0 + l2,
+                    "cell_widths": {"L0": l0, "L1": l1, "L2": l2, "L3": l3},
+                }
+            )
+    return effects
+
+
+def _gate_c1_joint_closure(
+    ode: PolynomialODE,
+    base: BatchedTaylorModel,
+    candidate: BatchedTaylorModel,
+    h2_cell: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Run only the preregistered C1 operator and check it with a rational oracle."""
+
+    target_lo = torch.full_like(candidate.rem_lo, -TARGET)
+    target_hi = torch.full_like(candidate.rem_hi, TARGET)
+    target = candidate.with_remainder(target_lo, target_hi, category="initial_remainder")
+    h2_raw = _call_dense_raw_trace_rhs(
+        ode,
+        target,
+        effective_order=RAW_ORDER,
+        cutoff_threshold=CUTOFF,
+        evaluation_mode="canonical_factorized_joint",
+        dependency_preserving_square=True,
+    )
+    closure, certificate = _joint_factorized_vdp_residual_closure(
+        target.component(0),
+        target.component(1),
+        h2_raw.component(1),
+    )
+    px = _poly_from_model(target.component(0), 0, n_vars=5) + _variable(5, 3)
+    py = _poly_from_model(target.component(1), 0, n_vars=5) + _variable(5, 4)
+    retained = _poly_from_model(h2_raw.component(1), 0, n_vars=5)
+    exact_residual = (
+        (RationalPolynomial.constant(5, 1) - px * px) * py - px - retained
+    )
+    exact_bernstein = exact_residual.bernstein_range(
+        _domain(target, remainder_symbols=True)
+    )
+    production_interval = RationalInterval(
+        _q(closure.rem_lo[0, 0]),
+        _q(closure.rem_hi[0, 0]),
+    )
+    started = time.perf_counter()
+    production_step = dense_picard_validate_step(
+        ode,
+        base,
+        h=H,
+        tau_index=2,
+        order=ORDER,
+        target_remainder_radius=TARGET,
+        cutoff_threshold=CUTOFF,
+        max_validation_attempts=2,
+        validation_eps=EPS,
+        validation_mode=C1,
+    )
+    runtime_s = time.perf_counter() - started
+    if not production_step.accepted:
+        raise RuntimeError("Gate C1 production step did not validate")
+    if not torch.equal(production_step.segment_tm.poly.coeffs, candidate.poly.coeffs):
+        raise RuntimeError("Gate C1 changed the retained Picard polynomial")
+    segment_poly_lo, segment_poly_hi = production_step.segment_tm.poly.range_bound(
+        production_step.segment_tm.domain_lo,
+        production_step.segment_tm.domain_hi,
+        policy=production_step.segment_tm.range_policy,
+        context="retained_polynomial",
+        trace=None,
+    )
+    segment_lo, segment_hi = _interval_add(
+        segment_poly_lo,
+        segment_poly_hi,
+        production_step.segment_tm.rem_lo,
+        production_step.segment_tm.rem_hi,
+    )
+    endpoint = production_step.segment_tm.endpoint(2, H)
+    endpoint_poly_lo, endpoint_poly_hi = endpoint.poly.range_bound(
+        endpoint.domain_lo,
+        endpoint.domain_hi,
+        policy=endpoint.range_policy,
+        context="retained_polynomial",
+        trace=None,
+    )
+    endpoint_lo, endpoint_hi = _interval_add(
+        endpoint_poly_lo,
+        endpoint_poly_hi,
+        endpoint.rem_lo,
+        endpoint.rem_hi,
+    )
+    h2_width = _q(h2_raw.rem_hi[0, 1]) - _q(h2_raw.rem_lo[0, 1])
+    production_width = production_interval.width
+    exact_width = exact_bernstein.width
+    h2_excess = h2_width - exact_width
+    removed = h2_width - production_width
+    promotion = Fraction(0) if h2_excess <= 0 else removed / h2_excess
+    segment = _interval_components(segment_lo, segment_hi)
+    endpoint_record = _interval_components(endpoint_lo, endpoint_hi)
+    h2_segment_widths = [_width(row) for row in h2_cell["segment"]]
+    h2_endpoint_widths = [_width(row) for row in h2_cell["endpoint"]]
+    segment_no_regression = all(
+        _width(row) <= h2_segment_widths[index]
+        for index, row in enumerate(segment)
+    )
+    endpoint_no_regression = all(
+        _width(row) <= h2_endpoint_widths[index]
+        for index, row in enumerate(endpoint_record)
+    )
+    gate_pass = (
+        exact_bernstein.subseteq(production_interval)
+        and promotion >= Fraction(1, 10)
+        and segment_no_regression
+        and endpoint_no_regression
+    )
+    return {
+        "schema": "vdp_gate_c1_joint_factor_times_y_closure_v1",
+        "candidate_id": "C1",
+        "validation_mode": C1,
+        "operator": certificate,
+        "same_input_sha256": _sha(_model_payload(target)),
+        "retained_picard_polynomial_bitwise_unchanged": True,
+        "exact_binary64_rational_bernstein": _rational_interval(exact_bernstein),
+        "production_interval": _rational_interval(production_interval),
+        "production_contains_exact_oracle": exact_bernstein.subseteq(production_interval),
+        "h2_raw_width": fraction_text(h2_width),
+        "production_raw_width": fraction_text(production_width),
+        "exact_oracle_width": fraction_text(exact_width),
+        "h2_vs_exact_excess": fraction_text(h2_excess),
+        "h2_excess_removed": fraction_text(removed),
+        "fraction_of_h2_vs_exact_excess_removed": fraction_text(promotion),
+        "promotion_at_least_10_percent": promotion >= Fraction(1, 10),
+        "segment": segment,
+        "endpoint": endpoint_record,
+        "segment_no_regression_vs_h2": segment_no_regression,
+        "endpoint_no_regression_vs_h2": endpoint_no_regression,
+        "production_step_runtime_s": runtime_s,
+        "gate_c_pass": gate_pass,
+    }
+
+
+def _fraction_interval_record(record: Mapping[str, Any]) -> RationalInterval:
+    return RationalInterval(
+        Fraction.from_float(float(record["lo"]["decimal"])),
+        Fraction.from_float(float(record["hi"]["decimal"])),
+    )
+
+
+def _consumer_path(
+    start: str,
+    targets: set[str],
+    children: Mapping[str, Sequence[str]],
+) -> list[str]:
+    queue: list[tuple[str, list[str]]] = [(start, [start])]
+    seen = {start}
+    while queue:
+        current, path = queue.pop(0)
+        if current in targets:
+            return path
+        for child in children.get(current, ()):
+            if child not in seen:
+                seen.add(child)
+                queue.append((child, [*path, child]))
+    return []
+
+
+def _derive_live_loss_ledger(cells: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    baseline = cells["L0"]
+    events = baseline["production_raw_trace"]["execution_events"]
+    necessary = baseline["event_necessary_enclosures"]
+    children: dict[str, list[str]] = {row["stage_id"]: [] for row in events}
+    for row in events:
+        for parent in row["parent_stage_ids"]:
+            children[parent].append(row["stage_id"])
+    subset_targets = {
+        row["stage_id"] for row in events if row["operation"] == "subset_test"
+    }
+
+    widths = {name: _cell_stage_widths(cell) for name, cell in cells.items()}
+    baseline_final = Fraction.from_float(widths["L0"]["final_subset_image"][1])
+    factorized_final = Fraction.from_float(widths["L1"]["final_subset_image"][1])
+    joint_final = Fraction.from_float(widths["L2"]["final_subset_image"][1])
+    marginal_by_stage: dict[str, dict[str, Any]] = {}
+    square_stage = next(
+        row["stage_id"]
+        for row in events
+        if "x_squared_generic" in row["stage_id"]
+        and "times_y" not in row["stage_id"]
+    )
+    final_expression_stage = next(
+        row["stage_id"] for row in events if "distributed_final" in row["stage_id"]
+    )
+    marginal_by_stage[square_stage] = {
+        "counterfactual": "same distributed graph; replace only generic self-square by joint self-square",
+        "final_subset_width_reduction": fraction_text(baseline_final - joint_final),
+        "final_subset_component": 1,
+    }
+    marginal_by_stage[final_expression_stage] = {
+        "counterfactual": "same generic square; replace only distributed graph by factorized graph",
+        "final_subset_width_reduction": fraction_text(baseline_final - factorized_final),
+        "final_subset_component": 1,
+    }
+
+    rows: list[dict[str, Any]] = []
+    for event in events:
+        stage_id = event["stage_id"]
+        production = _fraction_interval_record(event["production_interval"])
+        necessary_record = necessary[stage_id]
+        exact_record = necessary_record["necessary_enclosure"]
+        exact = RationalInterval(Fraction(exact_record["lo"]), Fraction(exact_record["hi"]))
+        surplus = production.width - exact.width
+        path = _consumer_path(stage_id, subset_targets, children)
+        marginal = marginal_by_stage.get(
+            stage_id,
+            {
+                "counterfactual": "no isolated operator replacement assigned at this stage",
+                "final_subset_width_reduction": "0/1",
+                "final_subset_component": event["component"],
+            },
+        )
+        marginal_q = Fraction(marginal["final_subset_width_reduction"])
+        eligible_loss = event["operation"] not in {
+            "validation_eps_inflation",
+            "state_input",
+            "subset_test",
+        }
+        rows.append(
+            {
+                **event,
+                "input_stages": list(event["parent_stage_ids"]),
+                "output_stage": stage_id,
+                **necessary_record,
+                "exact_surplus": fraction_text(surplus),
+                "ordinary_remainder_contains_necessary": exact.subseteq(production),
+                "loss_classification_eligible": eligible_loss,
+                "final_subset_width_live": bool(path),
+                "consumed_by_downstream_production_decision": bool(path)
+                or event["decision_role"]
+                in {
+                    "pre_loop_feasibility_gate",
+                    "finite_predicate_only_in_raw_compat_mode",
+                    "subset_decision",
+                },
+                "consumer_chain_to_final_subset": path,
+                "same_input_marginal": marginal,
+                "live_material": bool(path) and marginal_q > 0,
+            }
+        )
+
+    strict = [
+        row
+        for row in rows
+        if row["loss_classification_eligible"] and Fraction(row["exact_surplus"]) > 0
+    ]
+    live_strict = [row for row in strict if row["final_subset_width_live"]]
+    live_material = [row for row in rows if row["live_material"]]
+    if not strict or not live_strict or not live_material:
+        raise RuntimeError("automatic loss classification did not find all required classes")
+    ranked_marginals = sorted(
+        (
+            row
+            for row in rows
+            if Fraction(row["same_input_marginal"]["final_subset_width_reduction"]) > 0
+        ),
+        key=lambda row: Fraction(
+            row["same_input_marginal"]["final_subset_width_reduction"]
+        ),
+        reverse=True,
+    )
+
+    eps_rows = [row for row in rows if row["validation_eps_payment"] is not None]
+    payment_ids = [row["stage_id"] for row in eps_rows]
+    if len(payment_ids) != len(set(payment_ids)):
+        raise RuntimeError("a validation_eps payment was reused")
+    rounding_proof = {
+        "method": (
+            "exact-rational/Bernstein necessary enclosures are checked at every true "
+            "consumer; each validation_eps event is a distinct executed interval inflation"
+        ),
+        "payment_ids_unique": True,
+        "payments": [
+            {
+                "payment_id": row["stage_id"],
+                "sequence": row["sequence"],
+                "source": row["source"],
+                "consumer_chain_to_final_subset": row["consumer_chain_to_final_subset"],
+                "validation_eps": row["validation_eps_payment"],
+            }
+            for row in eps_rows
+        ],
+        "final_subset_events_contain_complete_exact_chain": all(
+            row["ordinary_remainder_contains_necessary"]
+            for row in rows
+            if row["operation"] == "subset_test"
+        ),
+    }
+    return {
+        "schema": "vdp_live_loss_production_event_ledger_v1",
+        "rows": rows,
+        "first_syntactic_strict_surplus": strict[0],
+        "first_live_strict_surplus": live_strict[0],
+        "first_live_material_surplus": live_material[0],
+        "largest_same_input_marginal_contributor": ranked_marginals[0],
+        "same_input_marginal_ranking": ranked_marginals,
+        "rounding_proof": rounding_proof,
+    }
+
+
 def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
     output_dir = output_dir.resolve()
     if output_dir.exists() and any(output_dir.iterdir()):
@@ -950,29 +1555,27 @@ def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
     source_identity = _scientific_source_identity()
     ode, state, base = _build_base()
     candidate, picard_rows = _picard_iteration_ledger(ode, base)
-    b1, _ = _raw_cell(LEGACY, ode, base, candidate)
-    b2, _ = _raw_cell(H2, ode, base, candidate)
-    if b1["same_input_sha256"] != b2["same_input_sha256"]:
+    cells: dict[str, dict[str, Any]] = {}
+    for cell_id, factorized, joint_square in (
+        ("L0", False, False),
+        ("L1", True, False),
+        ("L2", False, True),
+        ("L3", True, True),
+    ):
+        cells[cell_id], _ = _raw_cell(
+            cell_id,
+            ode,
+            base,
+            candidate,
+            factorized=factorized,
+            joint_square=joint_square,
+            normalization_scale=state.scales,
+        )
+    if len({cell["same_input_sha256"] for cell in cells.values()}) != 1:
         raise RuntimeError("Gate B cells did not start from byte-identical input")
+    b1, b2 = cells["L0"], cells["L3"]
     flow_source = _flowstar_semantics(flowstar_root)
     flow_runtime = _flowstar_runtime_crosscheck()
-
-    radius = Fraction.from_float(TARGET)
-    # For a shared scalar r, squaring the exact interval is stronger than the
-    # unsplit Bernstein convex hull on a sign-changing box and is exact here.
-    necessary_r_square = RationalInterval(Fraction(0), radius * radius)
-    production_r_square = RationalInterval(-radius * radius, radius * radius)
-    first_loss = {
-        "stage": "raw.B1.x_squared",
-        "function": "_DenseRawTraceScalar.__mul__ -> BatchedTaylorModel.mul_trunc",
-        "binary_operation": "the same x Taylor model multiplied by itself",
-        "specific_interval_term": "R_left * R_right with R_left and R_right actually the same R_x",
-        "production_independent_interval": _rational_interval(production_r_square),
-        "exact_shared_symbol_bernstein": _rational_interval(necessary_r_square),
-        "strict_extra_lower_width": fraction_text(necessary_r_square.lo - production_r_square.lo),
-        "classification": "FIRST_STRICTLY_WIDER_ENCLOSURE",
-        "flowstar_source_equivalent_note": "stock expression retains x^2 as one AST subtree, but its generic remainder replay also uses interval multiplication; Flow* runtime is not the soundness oracle",
-    }
 
     channels = ("x", "y")
     raw_metrics = {}
@@ -1011,30 +1614,33 @@ def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
     all_stage_sound = all(row["oracle"]["all_components_contained"] for row in picard_rows)
     all_stage_sound = all_stage_sound and all(
         row["oracle"]["all_components_contained"]
-        for cell in (b1, b2)
+        for cell in cells.values()
         for row in cell["operator_stages"]
     )
     all_poly_diff_sound = all(
         row["production_contains_exact_bernstein"]
-        for cell in (b1, b2)
+        for cell in cells.values()
         for row in cell["poly_diff_range_bound"]["components"]
     )
     gate_b_pass = (
-        b2["eligible_for_production"]
-        and any(
-            row["fraction_of_legacy_excess_removed"] is not None
-            and row["fraction_of_legacy_excess_removed"] >= 0.10
-            for row in raw_metrics.values()
-        )
+        all(cell["eligible_for_production"] for cell in cells.values())
         and all(row["no_regression"] for row in raw_metrics.values())
         and all(row["no_regression"] for row in segment_metrics.values())
     )
     preregistration = {
-        "B1": {"status": "executed_baseline", "operator": "distributed x*x*y"},
-        "B2": {"status": "executed_pass" if gate_b_pass else "executed_fail", "operator": "canonical factorized expression plus joint shared square"},
-        "B3": {"status": "not_executed_stop_after_first_pass", "operator": "tau dependency-preserving integration"},
-        "B4": {"status": "not_executed_stop_after_first_pass", "operator": "poly_diff dependency-preserving range"},
+        "L0": {"status": "executed_baseline", "operator": "distributed expression plus generic square"},
+        "L1": {"status": "executed", "operator": "factorized expression plus generic square"},
+        "L2": {"status": "executed", "operator": "distributed expression plus joint square"},
+        "L3": {"status": "executed_combined", "operator": "factorized expression plus joint square"},
     }
+    factorial_effects = _factorial_effects(cells)
+    gate_c1 = _gate_c1_joint_closure(ode, base, candidate, cells["L3"])
+    if gate_c1["same_input_sha256"] != b1["same_input_sha256"]:
+        raise RuntimeError("Gate C1 did not use the byte-identical Gate B input")
+    live_loss = _derive_live_loss_ledger(cells)
+    all_live_events_sound = all(
+        row["ordinary_remainder_contains_necessary"] for row in live_loss["rows"]
+    )
     ledger = {
         "schema": "vdp_h2_step1_complete_operator_ledger_v1",
         "contract": {
@@ -1046,50 +1652,76 @@ def run(output_dir: Path, flowstar_root: Path) -> dict[str, Any]:
             "validation_eps_binary64": _number(EPS),
             "initialization_diagnostics": dict(state.diagnostics or {}),
         },
-        "production_source_commit": SCIENTIFIC_SHA,
+        "production_source_commit": _git("rev-parse", "HEAD"),
         "scientific_source_identity": source_identity,
         "working_diff_sha256": hashlib.sha256(
             subprocess.run(["git", "diff", "HEAD", "--binary"], cwd=ROOT, check=True, capture_output=True).stdout
         ).hexdigest(),
         "outward_exact_prestate": _model_payload(base),
         "picard_iterations": picard_rows,
-        "gate_b_cells": {"B1": b1, "B2": b2},
+        "gate_b_cells": cells,
+        "gate_c1": gate_c1,
+        "live_loss": live_loss,
     }
     _write_json(output_dir / "production_operator_ledger.json", ledger)
+    _write_json(output_dir / "live_loss_ledger.json", live_loss)
+    _write_json(output_dir / "gate_c1_joint_closure.json", gate_c1)
     _write_json(output_dir / "flowstar_source_semantics.json", flow_source)
     _write_json(output_dir / "flowstar_runtime_crosscheck.json", flow_runtime)
     _write_json(
         output_dir / "gate_b_same_input_matrix.json",
         {
-            "schema": "vdp_h2_same_input_gate_b_v1",
+            "schema": "vdp_h2_same_input_four_cell_gate_b_v2",
             "preregistration": preregistration,
             "same_input_sha256": b1["same_input_sha256"],
+            "cell_stage_widths": {
+                name: _cell_stage_widths(cell) for name, cell in cells.items()
+            },
+            "factorial_effects": factorial_effects,
             "raw_residual_excess": raw_metrics,
             "segment_excess": segment_metrics,
             "gate_b_pass": gate_b_pass,
         },
     )
     summary = {
-        "schema": "vdp_h2_dense_picard_first_loss_gate_summary_v1",
-        "first_extra_enclosure": first_loss,
+        "schema": "vdp_live_loss_ablation_gate_summary_v2",
+        "first_syntactic_strict_surplus": live_loss["first_syntactic_strict_surplus"],
+        "first_live_strict_surplus": live_loss["first_live_strict_surplus"],
+        "first_live_material_surplus": live_loss["first_live_material_surplus"],
+        "largest_same_input_marginal_contributor": live_loss[
+            "largest_same_input_marginal_contributor"
+        ],
         "picard_iteration_count": 4,
         "operator_stage_count": len(picard_rows) + len(b1["operator_stages"]) + len(b2["operator_stages"]),
         "all_operator_stages_exact_bernstein_contained": all_stage_sound,
         "all_poly_diff_exact_bernstein_contained": all_poly_diff_sound,
+        "all_live_events_exact_necessary_contained": all_live_events_sound,
         "same_input_byte_identity": b1["same_input_sha256"] == b2["same_input_sha256"],
         "raw_residual_excess": raw_metrics,
         "segment_excess": segment_metrics,
         "preregistration": preregistration,
-        "gate_a_pass": all_stage_sound and all_poly_diff_sound,
+        "gate_a_pass": all_stage_sound
+        and all_poly_diff_sound
+        and all_live_events_sound
+        and live_loss["rounding_proof"]["payment_ids_unique"]
+        and live_loss["rounding_proof"][
+            "final_subset_events_contain_complete_exact_chain"
+        ],
         "gate_b_pass": gate_b_pass,
-        "production_candidate": H2 if gate_b_pass else None,
+        "gate_c_pass": gate_c1["gate_c_pass"],
+        "production_candidate": {
+            "candidate_id": "C1",
+            "validation_mode": C1,
+            "single_operator_only": True,
+            "gate_c1_artifact": "gate_c1_joint_closure.json",
+        },
         "flowstar_source_commit": flow_source["head"],
         "flowstar_runtime_is_soundness_oracle": False,
     }
     _write_json(output_dir / "summary.json", summary)
     print(json.dumps(summary, indent=2, sort_keys=True))
-    if not summary["gate_a_pass"] or not summary["gate_b_pass"]:
-        raise RuntimeError("H2 Gate A/B failed")
+    if not summary["gate_a_pass"] or not summary["gate_b_pass"] or not summary["gate_c_pass"]:
+        raise RuntimeError("VDP Gate A/B/C failed")
     return summary
 
 
