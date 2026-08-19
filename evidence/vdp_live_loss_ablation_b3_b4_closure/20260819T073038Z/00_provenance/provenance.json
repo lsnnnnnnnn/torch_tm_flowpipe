@@ -1,0 +1,71 @@
+{
+  "base_sha": "2cdb7a9509d5908baef79a02cfde18ea0682430c",
+  "branch": "codex/vdp-live-loss-ablation-b3-b4-closure-20260819",
+  "environment": {
+    "cpu_count": 80,
+    "cuda_available": true,
+    "cuda_device_0": "Tesla V100-SXM2-16GB",
+    "cuda_version": "12.1",
+    "platform": "Linux-7.0.0-29-generic-x86_64-with-glibc2.43",
+    "python": "3.11.15",
+    "torch": "2.5.1+cu121"
+  },
+  "packaging_head": "dbe03dcdfbf2f36b1d58013373d1d235ace1a48e",
+  "packaging_worktree_status": "?? docs/VDP_LIVE_LOSS_ABLATION_B3_B4_CLOSURE_20260819.md\n?? evidence/vdp_live_loss_ablation_b3_b4_closure/\n?? experiments/package_vdp_live_loss_evidence_20260819.py\n?? experiments/summarize_vdp_live_loss_matrix_20260819.py\n?? experiments/verify_vdp_live_loss_evidence_20260819.py\n?? tests/test_vdp_live_loss_evidence.py\n",
+  "raw_range_trace_policy": "range_trace.jsonl is omitted because it is mechanically redundant and 150+ MiB; commands/configs, every attempt, every segment, remainder ledgers, checkpoints, profiles, decisions and summaries are retained",
+  "schema": "vdp_live_loss_c1_provenance_v1",
+  "scientific_commit_time": "2026-08-19T07:05:22Z",
+  "scientific_runs_all_report_clean": true,
+  "scientific_sha": "dbe03dcdfbf2f36b1d58013373d1d235ace1a48e",
+  "scientific_tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "source_hashes_at_scientific_sha": {
+    "experiments/audit_vdp_h2_dense_picard_first_loss_20260817.py": {
+      "bytes": 72042,
+      "sha256": "b3c9d2bef6aca625b9edf562ef25c5d39479938ed900dc1d6774de41940ce17f"
+    },
+    "experiments/run_vdp_dense_backend.py": {
+      "bytes": 48310,
+      "sha256": "cd9cab24c98aeb3fcc9aa7c2d06930af2976f10475e63d9ceb8da97f6e03c0ce"
+    },
+    "experiments/tamper_test_vdp_live_loss_ablation_20260819.py": {
+      "bytes": 3751,
+      "sha256": "92eff7c48a50ffd797c9e03eb7454a74becc71c4f3b563cfb074c8c0705b7ccb"
+    },
+    "experiments/verify_vdp_live_loss_ablation_20260819.py": {
+      "bytes": 12365,
+      "sha256": "e5de518ff40c1a94d24dd3daf863935e8f37602ee6d7ed10ea482018ba80e78f"
+    },
+    "src/torch_tm_flowpipe/batched_dense_tm.py": {
+      "bytes": 189714,
+      "sha256": "745cab66740c8fec62a1b47e84ba58196231263d962475917adf40d593921845"
+    },
+    "src/torch_tm_flowpipe/flowpipe.py": {
+      "bytes": 298918,
+      "sha256": "06f3bb24e462e127866dc94e0fb1f0f27d097b40a87b8904bc49e34a4e71bfbd"
+    },
+    "src/torch_tm_flowpipe/polynomial_ode.py": {
+      "bytes": 6636,
+      "sha256": "52374fcdee81be6f9e1b989f7c6eb27648933efd4483d779b3d9885cacc8ced5"
+    },
+    "src/torch_tm_flowpipe/raw_remainder_trace.py": {
+      "bytes": 17204,
+      "sha256": "896a40d0f70029ac808ec701329370fc82901fc861649a5b7151e6ebaa34336f"
+    },
+    "src/torch_tm_flowpipe/step1_oracle.py": {
+      "bytes": 31981,
+      "sha256": "5bb28419152d95e967eecea5f828d605dc0a79f8cc01892d6b2278d21c92e0d3"
+    },
+    "src/torch_tm_flowpipe/terminal_checkpoint.py": {
+      "bytes": 35217,
+      "sha256": "65f2f356378b51e6ef76c97037483b3ac4881cf5d4a5b6cff9165f54610056d8"
+    },
+    "tests/test_batched_dense_runner_contract.py": {
+      "bytes": 8967,
+      "sha256": "0973346dde74d9fcca1bcbb034e7ec50f05e680421b050c569b2464185d67f33"
+    },
+    "tests/test_vdp_h2_dense_picard.py": {
+      "bytes": 20845,
+      "sha256": "38030043c7e719d1ca3283bbecfbdf853a5ae7cc20efdf064c1073aa8cbcb9a5"
+    }
+  }
+}
