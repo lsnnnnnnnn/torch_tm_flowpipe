@@ -63,6 +63,24 @@ def _git(*args: str) -> str:
     ).stdout.strip()
 
 
+def _scheduler_minimum_exhausted(
+    summary: Mapping[str, Any],
+    scheduler: Mapping[str, Any],
+    *,
+    attempted_h: float,
+) -> bool:
+    if summary.get("failure_type") != "minimum_step_reached":
+        return False
+    checkpoint_h = float(scheduler["h_attempted"])
+    if checkpoint_h != attempted_h:
+        raise ValueError("terminal checkpoint/reference attempted h mismatch")
+    if int(scheduler["terminal_internal_step_rejections"]) < 1:
+        return False
+    h_min = float(summary["h_min"])
+    next_retry_h = float(scheduler["next_retry_h"])
+    return attempted_h + 1.0e-15 >= h_min and next_retry_h < h_min - 1.0e-15
+
+
 def _candidate_hex(candidate) -> list[list[str]]:
     return [
         [float(value).hex() for value in candidate.poly.coeffs[0, component].tolist()]
@@ -108,6 +126,8 @@ def diagnose(run_dir: Path, output: Path) -> dict[str, Any]:
     # used by this replay directly as well.
     if checkpoint.contract["validation_mode"] != C2:
         raise ValueError("terminal checkpoint is not the C2 production lane")
+    if checkpoint.contract["reset_mode"] != summary["reset_mode"]:
+        raise ValueError("terminal checkpoint/summary reset mode mismatch")
     head = _git("rev-parse", "HEAD")
     status = _git("status", "--porcelain")
     diff = subprocess.run(
@@ -122,6 +142,11 @@ def diagnose(run_dir: Path, output: Path) -> dict[str, Any]:
         raise ValueError("terminal run/scientific checkout provenance mismatch")
 
     h = float(reference["attempted_h"])
+    scheduler_minimum_exhausted = _scheduler_minimum_exhausted(
+        summary,
+        checkpoint.scheduler,
+        attempted_h=h,
+    )
     base = sparse_tmvector_to_dense(
         checkpoint.current.extend_domain(Interval(0.0, h)),
         order=4,
@@ -227,7 +252,11 @@ def diagnose(run_dir: Path, output: Path) -> dict[str, Any]:
         "t_before": reference["t_before"],
         "h_attempted": h,
         "h_min": summary["h_min"],
-        "scheduler_at_h_min": h <= float(summary["h_min"]) + 1.0e-15,
+        "scheduler_next_retry_h": checkpoint.scheduler["next_retry_h"],
+        "scheduler_terminal_internal_step_rejections": checkpoint.scheduler[
+            "terminal_internal_step_rejections"
+        ],
+        "scheduler_at_h_min": scheduler_minimum_exhausted,
         "production_first_self_map_subset": first_subset,
         "production_stop_reason": "first_self_map_subset_failure" if not first_subset else "unexpected_acceptance",
         "production_refinement_committed": False,
@@ -250,7 +279,7 @@ def diagnose(run_dir: Path, output: Path) -> dict[str, Any]:
         ),
         "failure_classification": (
             "scheduler_h_min_after_first_self_map_subset_failure"
-            if not first_subset and h <= float(summary["h_min"]) + 1.0e-15
+            if not first_subset and scheduler_minimum_exhausted
             else "first_self_map_subset_failure"
         ),
         "largest_additive_ledger_owner": largest_owner,

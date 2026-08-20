@@ -763,7 +763,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                         "terminal_internal_step_rejections": int(segment.step_rejections),
                         "next_retry_h": segment.next_h,
                     },
-                    contract=contract,
+                    contract={**contract, "reset_mode": args.reset_mode},
                     provenance={
                         "branch": command["branch"],
                         "commit": command["commit"],

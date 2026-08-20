@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from tamper_test_vdp_c2_refinement_20260820 import run as run_tamper
 from tamper_test_vdp_c2_refinement_20260820 import verify_refinement_ledger
+from package_vdp_c2_evidence_20260820 import RAW_RUN_EXCLUDED_FILES
 
 
 EMPTY_DIFF_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -77,6 +78,17 @@ def verify(root: Path) -> dict[str, Any]:
     _require(
         manifest["packaging_commit_separate_from_scientific_commit"] is True,
         "scientific/package commit separation",
+    )
+    _require(
+        manifest["raw_run_excluded_files"] == list(RAW_RUN_EXCLUDED_FILES),
+        "raw-run exclusion disclosure",
+    )
+    _require(
+        not any(
+            path.name in RAW_RUN_EXCLUDED_FILES
+            for path in (root / "03_raw_runs").rglob("*")
+        ),
+        "excluded raw trace present",
     )
     expected_paths = {
         str(path.relative_to(root))

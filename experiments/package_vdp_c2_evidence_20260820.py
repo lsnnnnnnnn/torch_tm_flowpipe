@@ -10,6 +10,13 @@ import shutil
 from typing import Any, Sequence
 
 
+RAW_RUN_EXCLUDED_FILES = (
+    "horner_stage_trace.jsonl",
+    "owner_ledger.jsonl",
+    "range_trace.jsonl",
+)
+
+
 def _sha(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -24,6 +31,14 @@ def _copy(source: Path, destination: Path) -> None:
     else:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+
+
+def _copy_raw_runs(source: Path, destination: Path) -> None:
+    shutil.copytree(
+        source,
+        destination,
+        ignore=shutil.ignore_patterns(*RAW_RUN_EXCLUDED_FILES),
+    )
 
 
 def package(
@@ -48,12 +63,12 @@ def package(
         (baseline_verification, output / "00_provenance/baseline_verification.json"),
         (gate_dir, output / "01_step1_causal_gate"),
         (matrix_summary, output / "02_scientific_matrix/matrix.json"),
-        (matrix_dir, output / "03_raw_runs"),
         (tests_dir, output / "04_tests"),
         (report, output / "05_report/VDP_C2_POST_ACCEPT_REFINEMENT_20260820.md"),
     )
     for source, destination in sources:
         _copy(source.resolve(), destination)
+    _copy_raw_runs(matrix_dir.resolve(), output / "03_raw_runs")
 
     excluded = {"manifest.json", "SHA256SUMS"}
     rows = []
@@ -71,6 +86,12 @@ def package(
         "schema": "vdp_c2_evidence_manifest_v1",
         "scientific_sha": scientific_sha,
         "packaging_commit_separate_from_scientific_commit": True,
+        "raw_run_excluded_files": list(RAW_RUN_EXCLUDED_FILES),
+        "raw_run_exclusion_rationale": (
+            "derived range/Horner/owner traces are mechanically redundant; "
+            "attempts, segments, remainder/refinement ledgers, summaries, commands, "
+            "configs, profiles, decisions, checkpoints, and run index are retained"
+        ),
         "file_count": len(rows),
         "total_bytes": sum(row["bytes"] for row in rows),
         "files": rows,
