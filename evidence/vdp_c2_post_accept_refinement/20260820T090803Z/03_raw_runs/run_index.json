@@ -1,0 +1,143 @@
+{
+  "clean_detached": true,
+  "runs": [
+    {
+      "completed_horizon": 0.01,
+      "lane": "legacy",
+      "runner_returncode": 0,
+      "runtime_s": 0.32631240400951356,
+      "scenario": "step1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 0.01,
+      "lane": "production_c1_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 0.29616719589103013,
+      "scenario": "step1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 0.01,
+      "lane": "production_c2_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 0.4043170950608328,
+      "scenario": "step1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 1.0,
+      "lane": "legacy",
+      "runner_returncode": 0,
+      "runtime_s": 41.929388060001656,
+      "scenario": "fixed_T1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 1.0,
+      "lane": "production_c1_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 55.38218707498163,
+      "scenario": "fixed_T1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 1.0,
+      "lane": "production_c2_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 69.16091886290815,
+      "scenario": "fixed_T1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 3.0,
+      "lane": "legacy",
+      "runner_returncode": 0,
+      "runtime_s": 134.954308010987,
+      "scenario": "fixed_T3",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 3.0,
+      "lane": "production_c1_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 182.70830826403107,
+      "scenario": "fixed_T3",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 3.0,
+      "lane": "production_c2_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 217.5794806779595,
+      "scenario": "fixed_T3",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 6.32,
+      "lane": "legacy",
+      "runner_returncode": 0,
+      "runtime_s": 300.93167195504066,
+      "scenario": "fixed_T6p32",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 6.32,
+      "lane": "production_c1_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 393.8766192969633,
+      "scenario": "fixed_T6p32",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 6.32,
+      "lane": "production_c2_candidate",
+      "runner_returncode": 0,
+      "runtime_s": 476.67491814808454,
+      "scenario": "fixed_T6p32",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 6.397083942944808,
+      "lane": "legacy",
+      "runner_returncode": 1,
+      "runtime_s": 142.96452142298222,
+      "scenario": "native_T10",
+      "status": "failed"
+    },
+    {
+      "completed_horizon": 6.589638579126679,
+      "lane": "production_c1_candidate",
+      "runner_returncode": 1,
+      "runtime_s": 160.79296519397758,
+      "scenario": "native_T10",
+      "status": "failed"
+    },
+    {
+      "completed_horizon": 6.714914669607182,
+      "lane": "production_c2_candidate",
+      "runner_returncode": 1,
+      "runtime_s": 178.97924788296223,
+      "scenario": "native_T10",
+      "status": "failed"
+    },
+    {
+      "completed_horizon": 0.1,
+      "lane": "cpu",
+      "peak_rss_bytes": 422727680,
+      "runtime_s": 5.802951020072214,
+      "scenario": "consistency_T0p1",
+      "status": "completed"
+    },
+    {
+      "completed_horizon": 0.1,
+      "lane": "cuda",
+      "peak_rss_bytes": 1020002304,
+      "runtime_s": 17.000214330968447,
+      "scenario": "consistency_T0p1",
+      "status": "completed"
+    }
+  ],
+  "schema": "vdp_c2_fresh_cpu_matrix_run_v1",
+  "scientific_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca"
+}

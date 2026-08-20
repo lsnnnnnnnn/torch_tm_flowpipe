@@ -1,0 +1,31 @@
+{
+  "schema": "vdp_c2_baseline_package_verification_v1",
+  "scientific_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+  "h2_package_verified": true,
+  "h2_package_scientific_sha": "666c51ecc5575f203518d21f34b5c9948741fb17",
+  "h2_package_decision": "H2_OPERATOR_ACCEPTED__OVERALL_SUCCESS_TARGET_FAILED",
+  "h2_package_file_count": 163,
+  "h2_package_bytes": 26577940,
+  "c1_package_verified": true,
+  "c1_package_scientific_sha": "dbe03dcdfbf2f36b1d58013373d1d235ace1a48e",
+  "c1_package_decision": "C1_SOUND_AND_PRODUCTION_USEFUL__OVERALL_T1_T3_SUCCESS_FAILED__T10_STRETCH_FAILED",
+  "c1_package_file_count": 111,
+  "c1_package_bytes": 39190792,
+  "frozen_contract": {
+    "ode": ["y", "y-x-x^2*y"],
+    "initial_box_exact_decimal": [["1.1", "1.4"], ["2.35", "2.45"]],
+    "order": 4,
+    "fixed_h": "0.01",
+    "target_remainder_radius": "1e-4",
+    "cutoff": "1e-10",
+    "validation_eps": "1e-12"
+  },
+  "authoritative_contract_git_blobs": {
+    "benchmarks/canonical.yaml": "79d1aa05bab003ee14be6b0d3ba0ff1656d27feb",
+    "benchmarks/three_tool_matched_contract.yaml": "66dcd49dd54c87f654b873c335317890adc034ee"
+  },
+  "contract_blobs_identical_to_requested_tip_1f514a2": true,
+  "input_and_configuration_identity_verified": true,
+  "h2_verifier_command": "conda run -n py11 python experiments/verify_vdp_h2_dense_picard_evidence_20260818.py evidence/vdp_h2_dense_picard_first_loss/20260818T091126Z",
+  "c1_verifier_command": "conda run -n py11 python experiments/verify_vdp_live_loss_evidence_20260819.py evidence/vdp_live_loss_ablation_b3_b4_closure/20260819T073038Z"
+}

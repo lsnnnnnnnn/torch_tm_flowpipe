@@ -1,0 +1,122 @@
+{
+  "all_committed_exact_oracle_contained": true,
+  "all_published_channels_no_wider": true,
+  "c1_mode": "flowstar_raw_remainder_compat_factorized_joint_closure",
+  "c1_vs_flowstar_x_gap_fraction_removed": 1.1338369716550598,
+  "c1_x_raw_image_width": 2.0000060000000026e-06,
+  "c1_y_raw_image_width": 2.6020086299715395e-05,
+  "c2_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+  "c2_x_final_raw_image_width": 1.0674997070575039e-07,
+  "c2_y_final_raw_image_width": 1.067417758129762e-05,
+  "candidate_polynomial_bitwise_identical": true,
+  "candidate_polynomial_sha256": "805e9b93c16285662bc077e84d4e266cefeea30fd8daebee62688c4ed91e9b22",
+  "committed_refinement_count": 4,
+  "detached_head": true,
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_code": "",
+  "final_remainder_ledger_iteration": 4,
+  "final_remainder_ledger_matches_last_commit": true,
+  "first_acceptance_decision_identical": true,
+  "flowstar_constants": {
+    "max_refinement_steps_macro": 490,
+    "replay_limit": 491,
+    "stop_ratio": 0.99
+  },
+  "flowstar_x_raw_image_width_runtime_crosscheck_only": 3.30228001377617e-07,
+  "frozen_contract": {
+    "cutoff": 1e-10,
+    "h": 0.01,
+    "initial_box_exact": [
+      [
+        "11/10",
+        "7/5"
+      ],
+      [
+        "47/20",
+        "49/20"
+      ]
+    ],
+    "ode": "x'=y; y'=y-x-x^2*y",
+    "order": 4,
+    "reset_mode": "normalized_insertion_dependency_preserving",
+    "target_remainder_radius": 0.0001,
+    "validation_eps": 1e-12
+  },
+  "gate_pass": true,
+  "metadata_used_for_numeric_decision": false,
+  "publication_phase_contract": {
+    "first_validation": "C1 image R1 establishes step acceptance",
+    "next_step_reset_carry": "existing dependency-preserving normal insertion after publication",
+    "post_accept_refinement": "only atomic subset proposals replace R1",
+    "published_segment_endpoint": "last committed remainder with unchanged candidate polynomial"
+  },
+  "published_channels": {
+    "endpoint_x": {
+      "c1_width": 0.30089849698777377,
+      "c2_no_wider": true,
+      "c2_width": 0.3008966037317445
+    },
+    "endpoint_y": {
+      "c1_width": 0.12132468789343599,
+      "c2_no_wider": true,
+      "c2_width": 0.12130934198471711
+    },
+    "segment_x": {
+      "c1_width": 0.32524722193229555,
+      "c2_no_wider": true,
+      "c2_width": 0.32524532867626627
+    },
+    "segment_y": {
+      "c1_width": 0.14941787022099542,
+      "c2_no_wider": true,
+      "c2_width": 0.14940252431227655
+    }
+  },
+  "refinement_stop_reason": "stop_ratio",
+  "sampling_used_for_containment": false,
+  "schema": "vdp_c2_step1_causal_gate_v1",
+  "scientific_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+  "vdp_structural_fingerprint": {
+    "canonical": "state_dim=2;x'=0x1.0000000000000p+0*y;y'=0x1.0000000000000p+0*y-0x1.0000000000000p+0*x-0x1.0000000000000p+0*x^2*y",
+    "components": [
+      [
+        {
+          "coefficient_hex": "0x1.0000000000000p+0",
+          "powers": [
+            0,
+            1
+          ]
+        }
+      ],
+      [
+        {
+          "coefficient_hex": "0x1.0000000000000p+0",
+          "powers": [
+            0,
+            1
+          ]
+        },
+        {
+          "coefficient_hex": "-0x1.0000000000000p+0",
+          "powers": [
+            1,
+            0
+          ]
+        },
+        {
+          "coefficient_hex": "-0x1.0000000000000p+0",
+          "powers": [
+            2,
+            1
+          ]
+        }
+      ]
+    ],
+    "schema": "frozen_vdp_polynomial_ode_binary64_v1",
+    "sha256": "2d593aaa797b6ad50f9f7bb2169887674d459ddefe7c7d8ab223ff1b97259f80",
+    "state_dim": 2
+  },
+  "worktree_clean": true,
+  "y_raw_image_no_regression": true
+}
