@@ -40,6 +40,26 @@ def _load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _validate_runner_outcome(
+    *, scenario: str, lane: str, returncode: int, summary: dict[str, Any]
+) -> None:
+    if returncode not in (0, 1):
+        raise subprocess.CalledProcessError(returncode, [str(RUNNER)])
+    completed_requested = summary.get("completed_requested_horizon")
+    if type(completed_requested) is not bool:
+        raise ValueError(f"invalid completion flag: {scenario}/{lane}")
+    expected_returncode = 0 if completed_requested else 1
+    expected_status = "completed" if completed_requested else "failed"
+    if returncode != expected_returncode or summary.get("status") != expected_status:
+        raise ValueError(
+            f"runner exit/status mismatch: {scenario}/{lane}: "
+            f"exit={returncode}, status={summary.get('status')!r}, "
+            f"completed_requested_horizon={completed_requested}"
+        )
+    if scenario != "native_T10" and not completed_requested:
+        raise ValueError(f"fixed scientific run did not complete: {scenario}/{lane}")
+
+
 def run(output_dir: Path, *, wall_cap_s: float) -> dict[str, Any]:
     output_dir = output_dir.resolve()
     if output_dir.exists() and any(output_dir.iterdir()):
@@ -106,12 +126,20 @@ def run(output_dir: Path, *, wall_cap_s: float) -> dict[str, Any]:
                 command.extend(("--fixed-step", format(fixed_step, ".17g")))
             if scenario == "native_T10":
                 command.append("--save-terminal-checkpoint")
-            subprocess.run(command, cwd=ROOT, check=True)
+            completed_process = subprocess.run(command, cwd=ROOT, check=False)
+            if not (destination / "summary.json").is_file():
+                raise ValueError(f"missing run summary: {scenario}/{lane}")
             summary = _load(destination / "summary.json")
             if summary["commit"] != head or summary["worktree_dirty"] is not False:
                 raise ValueError(f"run provenance mismatch: {scenario}/{lane}")
             if summary["tracked_diff_sha256"] != EMPTY_DIFF_SHA256:
                 raise ValueError(f"run tracked diff is nonempty: {scenario}/{lane}")
+            _validate_runner_outcome(
+                scenario=scenario,
+                lane=lane,
+                returncode=completed_process.returncode,
+                summary=summary,
+            )
             completed.append(
                 {
                     "scenario": scenario,
@@ -119,6 +147,7 @@ def run(output_dir: Path, *, wall_cap_s: float) -> dict[str, Any]:
                     "status": summary["status"],
                     "completed_horizon": summary["completed_horizon"],
                     "runtime_s": summary["runtime_s"],
+                    "runner_returncode": completed_process.returncode,
                 }
             )
     for device in ("cpu", "cuda"):
