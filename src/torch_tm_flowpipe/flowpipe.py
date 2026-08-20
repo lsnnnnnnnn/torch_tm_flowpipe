@@ -6017,6 +6017,7 @@ def flowpipe_step_from_tm(
     if validation_mode in {
         "flowstar_raw_remainder_compat_factorized_joint",
         "flowstar_raw_remainder_compat_factorized_joint_closure",
+        "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
     } and tm_backend != "dense":
         raise ValueError("factorized-joint raw remainder evaluation is dense-only")
     if diagnostic_context is not None:
@@ -6091,6 +6092,7 @@ def flowpipe_step_from_tm(
         "flowstar_raw_remainder_compat",
         "flowstar_raw_remainder_compat_factorized_joint",
         "flowstar_raw_remainder_compat_factorized_joint_closure",
+        "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
     }:
         raise ValueError(
             "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_normal_eval', "
@@ -6439,6 +6441,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "flowstar_raw_remainder_compat",
         "flowstar_raw_remainder_compat_factorized_joint",
         "flowstar_raw_remainder_compat_factorized_joint_closure",
+        "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
     }:
         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
     normal_insertion_modes = {

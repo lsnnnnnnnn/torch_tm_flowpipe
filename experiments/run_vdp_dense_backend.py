@@ -139,6 +139,7 @@ def _write_trace_outputs(
     attempt_rows: Sequence[Mapping[str, Any]],
     checkpoint_rows: Sequence[Mapping[str, Any]],
     ledger_rows: Sequence[Mapping[str, Any]],
+    refinement_rows: Sequence[Mapping[str, Any]],
     profile_rows: Sequence[Mapping[str, Any]],
     range_trace_rows: Sequence[Mapping[str, Any]],
     horner_stage_rows: Sequence[Mapping[str, Any]],
@@ -148,6 +149,7 @@ def _write_trace_outputs(
     _write_csv(output_dir / "attempts.csv", attempt_rows)
     _write_csv(output_dir / "checkpoints.csv", checkpoint_rows)
     _write_jsonl(output_dir / "remainder_ledger.jsonl", ledger_rows)
+    _write_jsonl(output_dir / "refinement_ledger.jsonl", refinement_rows)
     _write_csv(output_dir / "profile.csv", profile_rows)
     _write_jsonl(output_dir / "range_trace.jsonl", range_trace_rows)
     _write_jsonl(output_dir / "horner_stage_trace.jsonl", horner_stage_rows)
@@ -467,6 +469,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     attempt_rows: list[dict[str, Any]] = []
     checkpoint_rows: list[dict[str, Any]] = []
     ledger_rows: list[dict[str, Any]] = []
+    refinement_rows: list[dict[str, Any]] = []
     profile_rows: list[dict[str, Any]] = []
     range_trace_rows: list[dict[str, Any]] = []
     horner_stage_rows: list[dict[str, Any]] = []
@@ -497,6 +500,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             attempt_rows=attempt_rows,
             checkpoint_rows=checkpoint_rows,
             ledger_rows=ledger_rows,
+            refinement_rows=refinement_rows,
             profile_rows=profile_rows,
             range_trace_rows=range_trace_rows,
             horner_stage_rows=horner_stage_rows,
@@ -700,6 +704,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         for trace_row in segment.backend_trace or []:
             if trace_row.get("phase") == "remainder_validation":
                 ledger_rows.append({"segment_index": len(segment_rows) - 1, "t_before": current_time, **_jsonable(trace_row)})
+            if trace_row.get("phase") == "post_accept_refinement":
+                refinement_rows.append(
+                    {
+                        "segment_index": len(segment_rows) - 1,
+                        "t_before": current_time,
+                        **_jsonable(trace_row),
+                    }
+                )
             if trace_row.get("phase") in {"polynomial_range", "range_validation_lane", "range_fail_closed"}:
                 compact_trace = dict(trace_row)
                 stages = list(compact_trace.pop("horner_stages", []))
@@ -1012,6 +1024,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "flowstar_raw_remainder_compat",
             "flowstar_raw_remainder_compat_factorized_joint",
             "flowstar_raw_remainder_compat_factorized_joint_closure",
+            "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
         ),
         help="opt-in dense raw-RHS operator; omission preserves the frozen contract default",
     )

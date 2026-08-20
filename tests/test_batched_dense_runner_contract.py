@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -278,3 +279,42 @@ def test_runner_c1_validation_mode_is_explicitly_opt_in(tmp_path):
         "reset_mode=normalized_insertion_dependency_preserving",
         f"validation_mode={mode}",
     ]
+
+
+def test_runner_c2_writes_post_accept_refinement_ledger(tmp_path):
+    runner = _runner_module()
+    output = tmp_path / "c2"
+    mode = "flowstar_raw_remainder_compat_factorized_joint_closure_refined"
+    args = runner.parse_args(
+        [
+            "--output-dir",
+            str(output),
+            "--tm-backend",
+            "dense",
+            "--device",
+            "cpu",
+            "--horizon",
+            "0.01",
+            "--fixed-step",
+            "0.01",
+            "--initialization-contract",
+            "exact_decimal_contract",
+            "--reset-mode",
+            "normalized_insertion_dependency_preserving",
+            "--validation-mode",
+            mode,
+            "--trace-flush-every",
+            "0",
+        ]
+    )
+    summary = runner.run(args)
+
+    assert summary["completed_requested_horizon"] is True
+    assert summary["validation_mode"] == mode
+    rows = [
+        json.loads(line)
+        for line in (output / "refinement_ledger.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert rows
+    assert rows[-1]["stop_reason"] == "stop_ratio"
+    assert all(row["committed"] for row in rows)

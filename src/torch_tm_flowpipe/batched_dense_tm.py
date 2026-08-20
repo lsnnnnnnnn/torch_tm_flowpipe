@@ -25,6 +25,7 @@ from .raw_remainder_trace import (
     dropped_product_support_sha,
     interval_record,
 )
+from .polynomial_ode import PolynomialODE, PolynomialODETerm
 
 
 REMAINDER_LEDGER_CATEGORIES = (
@@ -43,6 +44,69 @@ REMAINDER_LEDGER_CATEGORIES = (
 
 VALIDATED_REMAINDER_SOURCE_SCHEMA = "torch_tm_flowpipe_validated_remainder_sources"
 VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION = 1
+
+FLOWSTAR_RAW_REMAINDER_REFINED_MODE = (
+    "flowstar_raw_remainder_compat_factorized_joint_closure_refined"
+)
+FLOWSTAR_MAX_REFINEMENT_STEPS = 490
+FLOWSTAR_STOP_RATIO = 0.99
+# The pinned Flow* loop uses ``rSteps <= MAX_REFINEMENT_STEPS`` starting at
+# zero, so the macro value 490 permits 491 post-accept remainder replays.
+FLOWSTAR_REFINEMENT_REPLAY_LIMIT = FLOWSTAR_MAX_REFINEMENT_STEPS + 1
+
+_FROZEN_VDP_COMPONENTS = (
+    (PolynomialODETerm(1.0, (0, 1)),),
+    (
+        PolynomialODETerm(1.0, (0, 1)),
+        PolynomialODETerm(-1.0, (1, 0)),
+        PolynomialODETerm(-1.0, (2, 1)),
+    ),
+)
+
+
+def _frozen_vdp_structural_fingerprint(rhs_fn: Any) -> Mapping[str, Any]:
+    """Fail closed unless ``rhs_fn`` is exactly the frozen binary64 VDP ODE."""
+
+    if type(rhs_fn) is not PolynomialODE:
+        raise TypeError(
+            "VDP factorized joint closure requires an exact PolynomialODE; "
+            "custom callables and subclasses are rejected"
+        )
+    if type(rhs_fn.state_dim) is not int or rhs_fn.state_dim != 2:
+        raise ValueError("VDP factorized joint closure requires exactly two states")
+    if type(rhs_fn.components) is not tuple or len(rhs_fn.components) != 2:
+        raise ValueError("VDP structural fingerprint component mismatch")
+    for actual_component, expected_component in zip(rhs_fn.components, _FROZEN_VDP_COMPONENTS):
+        if type(actual_component) is not tuple or len(actual_component) != len(expected_component):
+            raise ValueError("VDP structural fingerprint term-count mismatch")
+        for actual, expected in zip(actual_component, expected_component):
+            if type(actual) is not PolynomialODETerm:
+                raise TypeError("VDP structural fingerprint requires canonical PolynomialODETerm values")
+            if type(actual.coefficient) is not float or actual.coefficient.hex() != expected.coefficient.hex():
+                raise ValueError("VDP structural fingerprint binary64 coefficient mismatch")
+            if type(actual.powers) is not tuple or actual.powers != expected.powers:
+                raise ValueError("VDP structural fingerprint power mismatch")
+            if any(type(power) is not int for power in actual.powers):
+                raise TypeError("VDP structural fingerprint powers must be exact integers")
+    canonical = (
+        "state_dim=2;x'=0x1.0000000000000p+0*y;"
+        "y'=0x1.0000000000000p+0*y-0x1.0000000000000p+0*x-"
+        "0x1.0000000000000p+0*x^2*y"
+    )
+    return {
+        "schema": "frozen_vdp_polynomial_ode_binary64_v1",
+        "canonical": canonical,
+        "sha256": hashlib.sha256(canonical.encode("ascii")).hexdigest(),
+        "state_dim": 2,
+        "components": [
+            [{"coefficient_hex": "0x1.0000000000000p+0", "powers": [0, 1]}],
+            [
+                {"coefficient_hex": "0x1.0000000000000p+0", "powers": [0, 1]},
+                {"coefficient_hex": "-0x1.0000000000000p+0", "powers": [1, 0]},
+                {"coefficient_hex": "-0x1.0000000000000p+0", "powers": [2, 1]},
+            ],
+        ],
+    }
 
 _INTEGRATION_PLAN_CACHE: dict[
     tuple[int, int, str, int, torch.dtype],
@@ -2774,25 +2838,33 @@ def _power_to_bernstein_matrix(
     return matrix_lo, matrix_hi
 
 
-def _joint_factorized_vdp_residual_closure(
+@dataclass(frozen=True)
+class _JointVDPCoefficientCache:
+    """Remainder-independent coefficient tensor for repeated C1 closures."""
+
+    dense_lo: torch.Tensor
+    dense_hi: torch.Tensor
+    degrees: tuple[int, ...]
+    route_count: int
+    unique_coefficient_count: int
+    source_x_coefficients: torch.Tensor
+    source_y_coefficients: torch.Tensor
+    retained_y_rhs_coefficients: torch.Tensor
+    source_domain_lo: torch.Tensor
+    source_domain_hi: torch.Tensor
+    base_bernstein_lo: torch.Tensor | None = None
+    base_bernstein_hi: torch.Tensor | None = None
+
+
+def _prepare_joint_factorized_vdp_coefficient_cache(
     x: BatchedTaylorModel,
     y: BatchedTaylorModel,
     retained_y_rhs: BatchedTaylorModel,
-) -> tuple[BatchedTaylorModel, Mapping[str, Any]]:
-    """Enclose the complete factor-times-y residual in one joint operator.
+    *,
+    prepare_base_bernstein: bool = False,
+) -> _JointVDPCoefficientCache:
+    """Build only data proven independent of ``rem_lo/rem_hi``."""
 
-    The semantic expression is ``(1-X**2)*Y-X-retained_y_rhs.poly`` with
-    ``X=P_x+r_x`` and ``Y=P_y+r_y``.  Expansion below is only a coefficient
-    construction for one tensor-product Bernstein range; no intermediate
-    interval is materialized, so all five input dependencies remain shared.
-    """
-
-    x._check_domain(y)
-    x._check_domain(retained_y_rhs)
-    if x.poly.out_dim != 1 or y.poly.out_dim != 1 or retained_y_rhs.poly.out_dim != 1:
-        raise ValueError("joint VDP closure requires scalar x, y, and retained RHS models")
-    if x.n_vars + 2 > 8:
-        raise ValueError("joint VDP closure supports at most eight joint variables")
     batch = x.poly.batch
     dtype = x.poly.coeffs.dtype
     device = x.poly.coeffs.device
@@ -2826,8 +2898,6 @@ def _joint_factorized_vdp_residual_closure(
     x_exp = torch.cat((x_exp, rx_exp), dim=0)
     y_exp = torch.cat((y_exp, ry_exp), dim=0)
 
-    # The cubic routes are vectorized; shared x/r_x occurrences aggregate to
-    # the same joint exponent rather than becoming independent intervals.
     xx_lo, xx_hi = _interval_mul(
         x_coeff[:, :, None],
         x_coeff[:, :, None],
@@ -2867,10 +2937,108 @@ def _joint_factorized_vdp_residual_closure(
     dense_hi.scatter_(1, flat_index.view(1, -1).expand(batch, -1), coefficient_hi)
     dense_lo = dense_lo.reshape((batch,) + shape)
     dense_hi = dense_hi.reshape((batch,) + shape)
+    base_bernstein_lo: torch.Tensor | None = None
+    base_bernstein_hi: torch.Tensor | None = None
+    if prepare_base_bernstein:
+        base_bernstein_lo = dense_lo
+        base_bernstein_hi = dense_hi
+        for axis, degree in enumerate(degrees[:base_dim]):
+            matrix_lo, matrix_hi = _affine_power_transform_matrix(
+                x.domain_lo[:, axis],
+                x.domain_hi[:, axis],
+                degree,
+            )
+            base_bernstein_lo, base_bernstein_hi = _interval_axis_transform(
+                base_bernstein_lo,
+                base_bernstein_hi,
+                matrix_lo,
+                matrix_hi,
+                axis,
+            )
+        for axis, degree in enumerate(degrees[:base_dim]):
+            matrix_lo, matrix_hi = _power_to_bernstein_matrix(
+                batch,
+                degree,
+                dtype=dtype,
+                device=device,
+            )
+            base_bernstein_lo, base_bernstein_hi = _interval_axis_transform(
+                base_bernstein_lo,
+                base_bernstein_hi,
+                matrix_lo,
+                matrix_hi,
+                axis,
+            )
+    return _JointVDPCoefficientCache(
+        dense_lo=dense_lo,
+        dense_hi=dense_hi,
+        degrees=degrees,
+        route_count=int(route_exponents.shape[0]),
+        unique_coefficient_count=int(unique_exp.shape[0]),
+        source_x_coefficients=x.poly.coeffs.detach().clone(),
+        source_y_coefficients=y.poly.coeffs.detach().clone(),
+        retained_y_rhs_coefficients=retained_y_rhs.poly.coeffs.detach().clone(),
+        source_domain_lo=x.domain_lo.detach().clone(),
+        source_domain_hi=x.domain_hi.detach().clone(),
+        base_bernstein_lo=base_bernstein_lo,
+        base_bernstein_hi=base_bernstein_hi,
+    )
+
+
+def _joint_factorized_vdp_residual_closure(
+    x: BatchedTaylorModel,
+    y: BatchedTaylorModel,
+    retained_y_rhs: BatchedTaylorModel,
+    *,
+    coefficient_cache: _JointVDPCoefficientCache | None = None,
+) -> tuple[BatchedTaylorModel, Mapping[str, Any]]:
+    """Enclose the complete factor-times-y residual in one joint operator.
+
+    The semantic expression is ``(1-X**2)*Y-X-retained_y_rhs.poly`` with
+    ``X=P_x+r_x`` and ``Y=P_y+r_y``.  Expansion below is only a coefficient
+    construction for one tensor-product Bernstein range; no intermediate
+    interval is materialized, so all five input dependencies remain shared.
+    """
+
+    x._check_domain(y)
+    x._check_domain(retained_y_rhs)
+    if x.poly.out_dim != 1 or y.poly.out_dim != 1 or retained_y_rhs.poly.out_dim != 1:
+        raise ValueError("joint VDP closure requires scalar x, y, and retained RHS models")
+    if x.n_vars + 2 > 8:
+        raise ValueError("joint VDP closure supports at most eight joint variables")
+    cache = coefficient_cache or _prepare_joint_factorized_vdp_coefficient_cache(
+        x,
+        y,
+        retained_y_rhs,
+    )
+    if not (
+        torch.equal(cache.source_x_coefficients, x.poly.coeffs)
+        and torch.equal(cache.source_y_coefficients, y.poly.coeffs)
+        and torch.equal(cache.retained_y_rhs_coefficients, retained_y_rhs.poly.coeffs)
+        and torch.equal(cache.source_domain_lo, x.domain_lo)
+        and torch.equal(cache.source_domain_hi, x.domain_hi)
+    ):
+        raise ValueError("joint VDP coefficient cache polynomial mismatch")
+    batch = x.poly.batch
+    dtype = x.poly.coeffs.dtype
+    device = x.poly.coeffs.device
+    base_dim = x.n_vars
+    degrees = cache.degrees
+    use_base_bernstein_cache = coefficient_cache is not None
+    if use_base_bernstein_cache and (
+        cache.base_bernstein_lo is None or cache.base_bernstein_hi is None
+    ):
+        raise ValueError("joint VDP coefficient cache lacks the base Bernstein transform")
+    dense_lo = cache.base_bernstein_lo if use_base_bernstein_cache else cache.dense_lo
+    dense_hi = cache.base_bernstein_hi if use_base_bernstein_cache else cache.dense_hi
+    assert dense_lo is not None and dense_hi is not None
+    flat_size = math.prod(value + 1 for value in degrees)
 
     domain_lo = torch.cat((x.domain_lo, x.rem_lo, y.rem_lo), dim=1)
     domain_hi = torch.cat((x.domain_hi, x.rem_hi, y.rem_hi), dim=1)
-    for axis, degree in enumerate(degrees):
+    transform_axes = range(base_dim, len(degrees)) if use_base_bernstein_cache else range(len(degrees))
+    for axis in transform_axes:
+        degree = degrees[axis]
         matrix_lo, matrix_hi = _affine_power_transform_matrix(
             domain_lo[:, axis],
             domain_hi[:, axis],
@@ -2883,7 +3051,9 @@ def _joint_factorized_vdp_residual_closure(
             matrix_hi,
             axis,
         )
-    for axis, degree in enumerate(degrees):
+    bernstein_axes = range(base_dim, len(degrees)) if use_base_bernstein_cache else range(len(degrees))
+    for axis in bernstein_axes:
+        degree = degrees[axis]
         matrix_lo, matrix_hi = _power_to_bernstein_matrix(
             batch,
             degree,
@@ -2916,12 +3086,14 @@ def _joint_factorized_vdp_residual_closure(
         "semantic_expression": "(1-(P_x+r_x)^2)*(P_y+r_y)-(P_x+r_x)-retained_y_rhs_polynomial",
         "joint_variables": [*range(base_dim), "r_x", "r_y"],
         "degrees": list(degrees),
-        "route_count": int(route_exponents.shape[0]),
-        "unique_coefficient_count": int(unique_exp.shape[0]),
+        "route_count": cache.route_count,
+        "unique_coefficient_count": cache.unique_coefficient_count,
         "bernstein_coefficient_count": int(flat_size),
         "range_lo": closure_lo.detach().cpu().tolist(),
         "range_hi": closure_hi.detach().cpu().tolist(),
         "rounding": "nextafter interval products/transforms plus gamma-bounded aggregation",
+        "coefficient_cache_reused": coefficient_cache is not None,
+        "remainder_independent_base_bernstein_cache_reused": use_base_bernstein_cache,
     }
 
 
@@ -3416,6 +3588,71 @@ def _call_dense_rhs_evaluation(
     return _coerce_dense_rhs_output(evaluator(state), state)
 
 
+@dataclass(frozen=True)
+class _VDPRefinementStaticCache:
+    """C2 data proven independent of the current remainder vector."""
+
+    retained_y_rhs: BatchedTaylorModel
+    closure_coefficients: _JointVDPCoefficientCache
+    poly_diff: BatchedPolynomial
+    diff_lo: torch.Tensor
+    diff_hi: torch.Tensor
+    tmp_ledger: DenseRemainderLedger
+
+
+def _prepare_vdp_refinement_static_cache(
+    rhs_fn: DenseRHS,
+    base_ext: BatchedTaylorModel,
+    candidate: BatchedTaylorModel,
+    candidate_with_remainder: BatchedTaylorModel,
+    *,
+    tau_index: int,
+    order: int,
+    cutoff_threshold: float | None,
+    validation_eps: float,
+) -> _VDPRefinementStaticCache:
+    raw = _call_dense_raw_trace_rhs(
+        rhs_fn,
+        candidate_with_remainder,
+        effective_order=max(int(order) - 1, 0),
+        cutoff_threshold=cutoff_threshold,
+        evaluation_mode="canonical_factorized_joint",
+        dependency_preserving_square=True,
+    )
+    retained_y_rhs = raw.component(1)
+    closure_coefficients = _prepare_joint_factorized_vdp_coefficient_cache(
+        candidate_with_remainder.component(0),
+        candidate_with_remainder.component(1),
+        retained_y_rhs,
+        prepare_base_bernstein=True,
+    )
+    # Polynomial coefficients, their difference, and its domain are all fixed
+    # across remainder-only replays.  Only these exact cached values are reused.
+    regular_rhs = _call_dense_rhs_evaluation(
+        rhs_fn,
+        candidate.without_remainder(),
+        evaluation_mode="canonical_factorized_joint_closure",
+    )
+    tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
+    poly_diff = tmp.poly.sub(candidate.poly)
+    diff_lo, diff_hi = poly_diff.range_bound(
+        candidate.domain_lo,
+        candidate.domain_hi,
+        policy=candidate.range_policy,
+        context="raw_compat_poly_diff",
+        trace=candidate.range_trace,
+    )
+    diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
+    return _VDPRefinementStaticCache(
+        retained_y_rhs=retained_y_rhs,
+        closure_coefficients=closure_coefficients,
+        poly_diff=poly_diff,
+        diff_lo=diff_lo,
+        diff_hi=diff_hi,
+        tmp_ledger=tmp.ledger,
+    )
+
+
 def _dense_flowstar_raw_compat_image(
     rhs_fn: DenseRHS,
     base_ext: BatchedTaylorModel,
@@ -3429,21 +3666,31 @@ def _dense_flowstar_raw_compat_image(
     raw_trace_recorder: RawRemainderTraceRecorder | None = None,
     raw_rhs_evaluation: str = "ordered_terms",
     raw_dependency_preserving_square: bool | None = None,
+    joint_closure_coefficient_cache: _JointVDPCoefficientCache | None = None,
+    refinement_static_cache: _VDPRefinementStaticCache | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
     Mapping[str, Any],
     DenseValidatedRemainderDecomposition,
 ]:
-    raw_rhs = _call_dense_raw_trace_rhs(
-        rhs_fn,
-        candidate_with_target,
-        effective_order=max(int(order) - 1, 0),
-        cutoff_threshold=cutoff_threshold,
-        recorder=raw_trace_recorder,
-        evaluation_mode=raw_rhs_evaluation,
-        dependency_preserving_square=raw_dependency_preserving_square,
-    )
+    if refinement_static_cache is not None:
+        if raw_trace_recorder is not None or raw_rhs_evaluation != "canonical_factorized_joint_closure":
+            raise ValueError("C2 static replay cache requires untraced canonical closure evaluation")
+        raw_rhs = BatchedTaylorModel.concat(
+            (candidate_with_target.component(1), refinement_static_cache.retained_y_rhs)
+        )
+        joint_closure_coefficient_cache = refinement_static_cache.closure_coefficients
+    else:
+        raw_rhs = _call_dense_raw_trace_rhs(
+            rhs_fn,
+            candidate_with_target,
+            effective_order=max(int(order) - 1, 0),
+            cutoff_threshold=cutoff_threshold,
+            recorder=raw_trace_recorder,
+            evaluation_mode=raw_rhs_evaluation,
+            dependency_preserving_square=raw_dependency_preserving_square,
+        )
     closure_certificate: Mapping[str, Any] | None = None
     pre_closure_y_interval: dict[str, Any] | None = None
     if raw_rhs_evaluation == "canonical_factorized_joint_closure":
@@ -3456,6 +3703,7 @@ def _dense_flowstar_raw_compat_image(
             candidate_with_target.component(0),
             candidate_with_target.component(1),
             pre_closure_y,
+            coefficient_cache=joint_closure_coefficient_cache,
         )
         raw_rhs = BatchedTaylorModel.concat((raw_rhs.component(0), closed_y))
         if raw_trace_recorder is not None:
@@ -3523,20 +3771,27 @@ def _dense_flowstar_raw_compat_image(
                 )
             )
 
-    regular_rhs = _call_dense_rhs_evaluation(
-        rhs_fn,
-        candidate_with_target,
-        evaluation_mode=raw_rhs_evaluation,
-    )
-    tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
-    poly_diff = tmp.poly.sub(candidate_poly.poly)
-    diff_lo, diff_hi = poly_diff.range_bound(
-        candidate_poly.domain_lo,
-        candidate_poly.domain_hi,
-        policy=candidate_poly.range_policy,
-        context="raw_compat_poly_diff",
-        trace=candidate_poly.range_trace,
-    )
+    if refinement_static_cache is None:
+        regular_rhs = _call_dense_rhs_evaluation(
+            rhs_fn,
+            candidate_with_target,
+            evaluation_mode=raw_rhs_evaluation,
+        )
+        tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
+        poly_diff = tmp.poly.sub(candidate_poly.poly)
+        diff_lo, diff_hi = poly_diff.range_bound(
+            candidate_poly.domain_lo,
+            candidate_poly.domain_hi,
+            policy=candidate_poly.range_policy,
+            context="raw_compat_poly_diff",
+            trace=candidate_poly.range_trace,
+        )
+        tmp_ledger = tmp.ledger
+    else:
+        poly_diff = refinement_static_cache.poly_diff
+        diff_lo = refinement_static_cache.diff_lo
+        diff_hi = refinement_static_cache.diff_hi
+        tmp_ledger = refinement_static_cache.tmp_ledger
     diff_pre_event_ids: list[str] = []
     if raw_trace_recorder is not None:
         state_parents = tuple(
@@ -3554,7 +3809,8 @@ def _dense_flowstar_raw_compat_image(
                     parents=state_parents,
                 )
             )
-    diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
+    if refinement_static_cache is None:
+        diff_lo, diff_hi = _inflate_tensor_interval(diff_lo, diff_hi, validation_eps)
     diff_event_ids: list[str] = []
     if raw_trace_recorder is not None:
         for component in range(candidate_with_target.poly.out_dim):
@@ -3745,14 +4001,31 @@ def _dense_flowstar_raw_compat_image(
     return check_lo, check_hi, {
         "raw_rhs_remainder_lo": raw_rhs.rem_lo.detach().cpu().tolist(),
         "raw_rhs_remainder_hi": raw_rhs.rem_hi.detach().cpu().tolist(),
+        "raw_rhs_polynomial_coefficient_hex": [
+            [
+                [float(value).hex() for value in component]
+                for component in batch_row
+            ]
+            for batch_row in raw_rhs.poly.coeffs.detach().cpu().tolist()
+        ],
+        "raw_rhs_polynomial_exponents": raw_rhs.poly.basis.exponents.detach().cpu().tolist(),
         "accumulated_before_x0_add_lo": before_lo.detach().cpu().tolist(),
         "accumulated_before_x0_add_hi": before_hi.detach().cpu().tolist(),
         "poly_diff_range_lo": diff_lo.detach().cpu().tolist(),
         "poly_diff_range_hi": diff_hi.detach().cpu().tolist(),
+        "poly_diff_coefficients": poly_diff.coeffs.detach().cpu().tolist(),
+        "poly_diff_coefficient_hex": [
+            [
+                [float(value).hex() for value in component]
+                for component in batch_row
+            ]
+            for batch_row in poly_diff.coeffs.detach().cpu().tolist()
+        ],
+        "poly_diff_exponents": poly_diff.basis.exponents.detach().cpu().tolist(),
         "raw_remainder_ledger_widths": raw_rhs.ledger.widths(),
         "raw_remainder_ledger_intervals": raw_rhs.ledger.intervals(),
-        "tmp_remainder_ledger_widths": tmp.ledger.widths(),
-        "tmp_remainder_ledger_intervals": tmp.ledger.intervals(),
+        "tmp_remainder_ledger_widths": tmp_ledger.widths(),
+        "tmp_remainder_ledger_intervals": tmp_ledger.intervals(),
         "validated_remainder_ledger_intervals": decomposition.ledger.intervals(),
         "validated_remainder_decomposition_lo": decomposition.decomposition_lo.detach().cpu().tolist(),
         "validated_remainder_decomposition_hi": decomposition.decomposition_hi.detach().cpu().tolist(),
@@ -3894,6 +4167,236 @@ def _subset_margin(
     return torch.minimum(inner_lo - outer_lo, outer_hi - inner_hi)
 
 
+def _dense_polynomial_sha256(model: BatchedTaylorModel) -> str:
+    digest = hashlib.sha256()
+    for label, tensor in (
+        ("coefficients", model.poly.coeffs),
+        ("exponents", model.poly.basis.exponents),
+    ):
+        value = tensor.detach().cpu().contiguous()
+        digest.update(label.encode("ascii") + b"\0")
+        digest.update(str(value.dtype).encode("ascii") + b"\0")
+        digest.update(repr(tuple(value.shape)).encode("ascii") + b"\0")
+        digest.update(value.numpy().tobytes(order="C"))
+    return digest.hexdigest()
+
+
+def _flowstar_width_ratio(
+    old_lo: torch.Tensor,
+    old_hi: torch.Tensor,
+    new_lo: torch.Tensor,
+    new_hi: torch.Tensor,
+) -> torch.Tensor:
+    """Binary64 analogue of Flow* ``old.widthRatio(new)`` (new/old)."""
+
+    old_zero = old_lo == old_hi
+    new_zero = new_lo == new_hi
+    old_width = torch.where(old_zero, torch.zeros_like(old_lo), _up(old_hi - old_lo))
+    new_width = torch.where(new_zero, torch.zeros_like(new_lo), _up(new_hi - new_lo))
+    raw = new_width / old_width
+    ratio = torch.where(new_zero & ~old_zero, torch.zeros_like(raw), _up(raw))
+    return torch.where(old_zero, torch.full_like(ratio, torch.nan), ratio)
+
+
+def _atomic_refinement_decision(
+    retained_lo: torch.Tensor,
+    retained_hi: torch.Tensor,
+    proposed_lo: torch.Tensor,
+    proposed_hi: torch.Tensor,
+) -> tuple[bool, bool, str, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Decide one refinement proposal without partially updating components."""
+
+    finite_components = (
+        torch.isfinite(proposed_lo)
+        & torch.isfinite(proposed_hi)
+        & (proposed_lo <= proposed_hi)
+    )
+    margins = _subset_margin(retained_lo, retained_hi, proposed_lo, proposed_hi)
+    subset_components = finite_components & (margins >= 0)
+    ratios = _flowstar_width_ratio(
+        retained_lo,
+        retained_hi,
+        proposed_lo,
+        proposed_hi,
+    )
+    if not bool(torch.all(finite_components)):
+        return False, False, "nonfinite_proposal", subset_components, margins, ratios
+    if not bool(torch.all(subset_components)):
+        return False, False, "component_subset_failure", subset_components, margins, ratios
+    equal_components = (proposed_lo == retained_lo) & (proposed_hi == retained_hi)
+    if bool(torch.all(equal_components)):
+        return True, False, "fixed_point", subset_components, margins, ratios
+    continue_refining = bool(torch.any(torch.isfinite(ratios) & (ratios <= FLOWSTAR_STOP_RATIO)))
+    return (
+        True,
+        continue_refining,
+        "continue" if continue_refining else "stop_ratio",
+        subset_components,
+        margins,
+        ratios,
+    )
+
+
+def _post_accept_refine_raw_remainder(
+    rhs_fn: DenseRHS,
+    base_ext: BatchedTaylorModel,
+    candidate: BatchedTaylorModel,
+    *,
+    retained_lo: torch.Tensor,
+    retained_hi: torch.Tensor,
+    retained_decomposition: DenseValidatedRemainderDecomposition,
+    tau_index: int,
+    order: int,
+    cutoff_threshold: float | None,
+    validation_eps: float,
+    structural_fingerprint: Mapping[str, Any],
+    replay_limit: int = FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+) -> tuple[
+    torch.Tensor,
+    torch.Tensor,
+    DenseValidatedRemainderDecomposition,
+    tuple[Mapping[str, Any], ...],
+]:
+    """Replay the accepted C1 remainder map with atomic vector commits."""
+
+    if replay_limit < 0 or replay_limit > FLOWSTAR_REFINEMENT_REPLAY_LIMIT:
+        raise ValueError(
+            f"refinement replay_limit must lie in [0, {FLOWSTAR_REFINEMENT_REPLAY_LIMIT}]"
+        )
+    final_lo = retained_lo
+    final_hi = retained_hi
+    final_decomposition = retained_decomposition
+    polynomial_sha256 = _dense_polynomial_sha256(candidate)
+    rows: list[Mapping[str, Any]] = []
+    if replay_limit == 0:
+        rows.append(
+            {
+                "phase": "post_accept_refinement",
+                "refinement_iteration": 0,
+                "committed": False,
+                "stop_reason": "configured_zero_replays",
+                "retained_polynomial_sha256": polynomial_sha256,
+                "flowstar_max_refinement_steps_macro": FLOWSTAR_MAX_REFINEMENT_STEPS,
+                "flowstar_refinement_replay_limit": FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+                "flowstar_stop_ratio": FLOWSTAR_STOP_RATIO,
+                "vdp_structural_fingerprint": structural_fingerprint,
+            }
+        )
+        return final_lo, final_hi, final_decomposition, tuple(rows)
+
+    cache_seed = candidate.with_remainder(
+        retained_lo,
+        retained_hi,
+        category="initial_remainder",
+    )
+    static_cache = _prepare_vdp_refinement_static_cache(
+        rhs_fn,
+        base_ext,
+        candidate,
+        cache_seed,
+        tau_index=tau_index,
+        order=order,
+        cutoff_threshold=cutoff_threshold,
+        validation_eps=validation_eps,
+    )
+
+    for iteration in range(1, replay_limit + 1):
+        input_lo = final_lo
+        input_hi = final_hi
+        candidate_with_remainder = candidate.with_remainder(
+            input_lo,
+            input_hi,
+            category="initial_remainder",
+        )
+        try:
+            proposed_lo, proposed_hi, compat_extra, proposed_decomposition = (
+                _dense_flowstar_raw_compat_image(
+                    rhs_fn,
+                    base_ext,
+                    candidate_with_remainder,
+                    candidate,
+                    tau_index=tau_index,
+                    order=order,
+                    cutoff_threshold=cutoff_threshold,
+                    validation_eps=validation_eps,
+                    raw_rhs_evaluation="canonical_factorized_joint_closure",
+                    raw_dependency_preserving_square=True,
+                    refinement_static_cache=static_cache,
+                )
+            )
+            commit, continue_refining, stop_reason, subsets, margins, ratios = (
+                _atomic_refinement_decision(input_lo, input_hi, proposed_lo, proposed_hi)
+            )
+        except (FloatingPointError, RuntimeError, ValueError) as exc:
+            rows.append(
+                {
+                    "phase": "post_accept_refinement",
+                    "refinement_iteration": iteration,
+                    "committed": False,
+                    "stop_reason": "evaluation_failed_closed",
+                    "exception": f"{type(exc).__name__}: {exc}",
+                    "input_remainder_lo": input_lo.detach().cpu().tolist(),
+                    "input_remainder_hi": input_hi.detach().cpu().tolist(),
+                    "retained_polynomial_sha256": polynomial_sha256,
+                    "vdp_structural_fingerprint": structural_fingerprint,
+                }
+            )
+            break
+
+        if commit:
+            final_lo = proposed_lo
+            final_hi = proposed_hi
+            final_decomposition = proposed_decomposition
+        if commit and continue_refining and iteration == replay_limit:
+            stop_reason = "max_refinement_replays_reached"
+            continue_refining = False
+        component_rows = []
+        for component in range(candidate.poly.out_dim):
+            component_rows.append(
+                {
+                    "component": component,
+                    "input_interval": [
+                        float(input_lo[:, component].detach().cpu().reshape(-1)[0]),
+                        float(input_hi[:, component].detach().cpu().reshape(-1)[0]),
+                    ],
+                    "output_interval": [
+                        float(proposed_lo[:, component].detach().cpu().reshape(-1)[0]),
+                        float(proposed_hi[:, component].detach().cpu().reshape(-1)[0]),
+                    ],
+                    "subset": bool(subsets[:, component].detach().cpu().reshape(-1)[0]),
+                    "subset_margin": float(margins[:, component].detach().cpu().reshape(-1)[0]),
+                    "width_ratio_new_over_old": float(
+                        ratios[:, component].detach().cpu().reshape(-1)[0]
+                    ),
+                }
+            )
+        rows.append(
+            {
+                "phase": "post_accept_refinement",
+                "refinement_iteration": iteration,
+                "committed": commit,
+                "continue_refining": continue_refining,
+                "stop_reason": stop_reason,
+                "components": component_rows,
+                "input_remainder_lo": input_lo.detach().cpu().tolist(),
+                "input_remainder_hi": input_hi.detach().cpu().tolist(),
+                "proposed_remainder_lo": proposed_lo.detach().cpu().tolist(),
+                "proposed_remainder_hi": proposed_hi.detach().cpu().tolist(),
+                "retained_remainder_lo": final_lo.detach().cpu().tolist(),
+                "retained_remainder_hi": final_hi.detach().cpu().tolist(),
+                "retained_polynomial_sha256": polynomial_sha256,
+                "flowstar_max_refinement_steps_macro": FLOWSTAR_MAX_REFINEMENT_STEPS,
+                "flowstar_refinement_replay_limit": FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+                "flowstar_stop_ratio": FLOWSTAR_STOP_RATIO,
+                "vdp_structural_fingerprint": structural_fingerprint,
+                **compat_extra,
+            }
+        )
+        if not commit or not continue_refining:
+            break
+    return final_lo, final_hi, final_decomposition, tuple(rows)
+
+
 def dense_picard_validate_step(
     rhs_fn: DenseRHS,
     base_ext: BatchedTaylorModel,
@@ -3927,6 +4430,7 @@ def dense_picard_validate_step(
         "flowstar_raw_remainder_compat",
         "flowstar_raw_remainder_compat_factorized_joint",
         "flowstar_raw_remainder_compat_factorized_joint_closure",
+        FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
     }
     if validation_mode not in supported_modes:
         raise ValueError(f"dense Picard currently requires one of {sorted(supported_modes)}")
@@ -3941,8 +4445,14 @@ def dense_picard_validate_step(
         "flowstar_raw_remainder_compat",
         "flowstar_raw_remainder_compat_factorized_joint",
         "flowstar_raw_remainder_compat_factorized_joint_closure",
+        FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
     }:
         raise ValueError("raw RHS evaluation override requires a raw-compat validation mode")
+    if validation_mode in {
+        "flowstar_raw_remainder_compat_factorized_joint_closure",
+        FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+    } and raw_rhs_evaluation_override not in {None, "canonical_factorized_joint_closure"}:
+        raise ValueError("C1/C2 VDP closure modes cannot override the canonical closure evaluator")
     if h <= 0:
         raise ValueError("h must be positive")
     if max_validation_attempts <= 0:
@@ -3951,6 +4461,12 @@ def dense_picard_validate_step(
         raise ValueError("requested order differs from the dense basis order")
     if base_ext.domain_lo.shape[1] != base_ext.poly.basis.dim:
         raise ValueError("dense domain/basis variable mismatch")
+    structural_fingerprint: Mapping[str, Any] | None = None
+    if validation_mode in {
+        "flowstar_raw_remainder_compat_factorized_joint_closure",
+        FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+    }:
+        structural_fingerprint = _frozen_vdp_structural_fingerprint(rhs_fn)
     if not torch.allclose(
         base_ext.domain_lo[:, tau_index],
         torch.zeros_like(base_ext.domain_lo[:, tau_index]),
@@ -4125,6 +4641,7 @@ def dense_picard_validate_step(
             "flowstar_raw_remainder_compat",
             "flowstar_raw_remainder_compat_factorized_joint",
             "flowstar_raw_remainder_compat_factorized_joint_closure",
+            FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
         }:
             image_lo, image_hi, compat_extra, decomposition = _dense_flowstar_raw_compat_image(
                 rhs_fn,
@@ -4144,13 +4661,21 @@ def dense_picard_validate_step(
                         if validation_mode == "flowstar_raw_remainder_compat_factorized_joint"
                         else (
                             "canonical_factorized_joint_closure"
-                            if validation_mode == "flowstar_raw_remainder_compat_factorized_joint_closure"
+                            if validation_mode in {
+                                "flowstar_raw_remainder_compat_factorized_joint_closure",
+                                FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+                            }
                             else "ordered_terms"
                         )
                     )
                 ),
                 raw_dependency_preserving_square=raw_dependency_preserving_square,
             )
+            if structural_fingerprint is not None:
+                compat_extra = {
+                    **compat_extra,
+                    "vdp_structural_fingerprint": structural_fingerprint,
+                }
             if raw_remainder_trace_recorder is not None:
                 raw_remainder_trace_recorder.mark_discard(
                     ordinary_event_ids,
@@ -4251,6 +4776,36 @@ def dense_picard_validate_step(
                 decomposition,
             )
         if self_subset:
+            if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE:
+                assert structural_fingerprint is not None
+                (
+                    refined_lo,
+                    refined_hi,
+                    refined_decomposition,
+                    refinement_trace,
+                ) = _post_accept_refine_raw_remainder(
+                    rhs_fn,
+                    base_ext,
+                    candidate,
+                    retained_lo=image_lo,
+                    retained_hi=image_hi,
+                    retained_decomposition=decomposition,
+                    tau_index=tau_index,
+                    order=order,
+                    cutoff_threshold=cutoff_threshold,
+                    validation_eps=validation_eps,
+                    structural_fingerprint=structural_fingerprint,
+                )
+                trace.extend(refinement_trace)
+                last_image_lo = refined_lo
+                last_image_hi = refined_hi
+                last_margin = _subset_margin(target_lo, target_hi, refined_lo, refined_hi)
+                last_decomposition = refined_decomposition
+                last_segment_model = candidate.with_remainder(
+                    refined_lo,
+                    refined_hi,
+                    category="picard_residual",
+                )
             endpoint = last_segment_model.endpoint(tau_index, float(h))
             return DenseValidatedStep(
                 last_segment_model,
@@ -4261,14 +4816,14 @@ def dense_picard_validate_step(
                 contract,
                 counters,
                 tuple(trace),
-                image_lo,
-                image_hi,
-                image_lo,
-                image_hi,
+                last_image_lo,
+                last_image_hi,
+                last_image_lo,
+                last_image_hi,
                 last_margin,
-                image_lo,
-                image_hi,
-                decomposition,
+                last_image_lo,
+                last_image_hi,
+                last_decomposition,
             )
         if not refined or not target_subset:
             break
@@ -4313,6 +4868,10 @@ __all__ = [
     "DenseTMContract",
     "DenseValidatedRemainderDecomposition",
     "DenseValidatedStep",
+    "FLOWSTAR_MAX_REFINEMENT_STEPS",
+    "FLOWSTAR_RAW_REMAINDER_REFINED_MODE",
+    "FLOWSTAR_REFINEMENT_REPLAY_LIMIT",
+    "FLOWSTAR_STOP_RATIO",
     "REMAINDER_LEDGER_CATEGORIES",
     "VALIDATED_REMAINDER_SOURCE_SCHEMA",
     "VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION",
