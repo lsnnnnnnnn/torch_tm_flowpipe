@@ -141,7 +141,7 @@ def test_frozen_vdp_structural_fingerprint_is_binary64_exact() -> None:
 
 
 @pytest.mark.unit
-def test_legacy_h1_h2_and_default_step1_binary64_snapshots_are_unchanged(step1_bundle) -> None:
+def test_default_legacy_h1_h2_and_c1_step1_binary64_snapshots_are_unchanged(step1_bundle) -> None:
     _, base, _, _, _ = step1_bundle
     expected = {
         None: (
@@ -155,6 +155,10 @@ def test_legacy_h1_h2_and_default_step1_binary64_snapshots_are_unchanged(step1_b
         H2: (
             ("-0x1.0c6faed22b5ccp-20", "-0x1.ea5bf6c560793p-17"),
             ("0x1.0c6faed22b5ccp-20", "0x1.1d3c7c6352cf1p-16"),
+        ),
+        C1: (
+            ("-0x1.0c6faed22b5ccp-20", "-0x1.3b30093b71782p-17"),
+            ("0x1.0c6faed22b5ccp-20", "0x1.16f366d380020p-16"),
         ),
     }
     for mode, (expected_lo, expected_hi) in expected.items():

@@ -51,6 +51,31 @@ def _widths(summary: Mapping[str, Any]) -> dict[str, float]:
     }
 
 
+def _first_rejection(run_dir: Path) -> Mapping[str, Any] | None:
+    with (run_dir / "attempts.csv").open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("validation_status") != "failed":
+                continue
+            outer_lo = json.loads(row["candidate_remainder_lo"])[0]
+            outer_hi = json.loads(row["candidate_remainder_hi"])[0]
+            image_lo = json.loads(row["picard_image_remainder_lo"])[0]
+            image_hi = json.loads(row["picard_image_remainder_hi"])[0]
+            margins = []
+            for component in range(len(outer_lo)):
+                margins.append((image_lo[component] - outer_lo[component], component, "lower"))
+                margins.append((outer_hi[component] - image_hi[component], component, "upper"))
+            margin, component, side = min(margins)
+            return {
+                "t_before": float(row["t_before"]),
+                "h": float(row["h"]),
+                "adaptive_attempt_index": int(row["adaptive_attempt_index"]),
+                "limiting_component": ("x", "y")[component],
+                "limiting_side": side,
+                "subset_margin": float(margin),
+            }
+    return None
+
+
 def _flowstar() -> dict[float, dict[str, float]]:
     channel_names = {
         "endpoint_x": "endpoint_x",
@@ -131,6 +156,7 @@ def summarize(
 
     step1 = {
         "legacy": _widths(summaries["step1"]["legacy"]),
+        "historical_h1_candidate": historical["step1"]["h1"],
         "gate_b_h1_h2_candidate": historical["step1"]["h1_h2"],
         "production_c1_candidate": _widths(summaries["step1"]["production_c1_candidate"]),
         "production_c2_candidate": _widths(summaries["step1"]["production_c2_candidate"]),
@@ -145,6 +171,7 @@ def summarize(
         c2_widths = _widths(summaries[scenario]["production_c2_candidate"])
         fixed[key] = {}
         for channel in CHANNELS:
+            h1 = float(historical["fixed"][key][channel]["h1_width"])
             h2 = float(historical["fixed"][key][channel]["h1_h2_width"])
             legacy = legacy_widths[channel]
             c1 = c1_widths[channel]
@@ -155,6 +182,7 @@ def summarize(
             fixed[key][channel] = {
                 "flowstar_width": flow,
                 "legacy_width": legacy,
+                "historical_h1_candidate_width": h1,
                 "gate_b_h1_h2_candidate_width": h2,
                 "production_c1_candidate_width": c1,
                 "production_c2_candidate_width": c2,
@@ -191,16 +219,17 @@ def summarize(
         for channel in CHANNELS
     )
     if early_gate and t10:
-        decision = "C2_SOUND_AND_T1_T3_TARGET_MET__T10_MET"
+        decision = "C2_T1_T3_AND_T10_PASSED"
     elif early_gate:
-        decision = "C2_SOUND_AND_T1_T3_TARGET_MET__T10_NOT_MET"
+        decision = "C2_T1_T3_GATE_PASSED__T10_FAILED"
     else:
-        decision = "C2_SOUND_AND_PRODUCTION_USEFUL__T1_T3_TARGET_NOT_MET"
+        decision = "C2_SOUND_LOCAL_CAUSE_ACCEPTED__PRODUCTION_GATE_FAILED"
     result = {
         "schema": "vdp_c2_scientific_matrix_v1",
         "scientific_sha": scientific_sha,
         "baseline_verification": baseline_verification,
         "lane_naming": {
+            "historical_h1_candidate": "historical H1 candidate, package-verified",
             "gate_b_h1_h2_candidate": "historical H1+H2 candidate, package-verified",
             "production_c1_candidate": "fresh C1 closure lane",
             "production_c2_candidate": "fresh post-accept refinement lane",
@@ -209,6 +238,21 @@ def summarize(
         "step1": step1,
         "fixed": fixed,
         "runtime_ratios": runtime_ratios,
+        "run_accounting": {
+            scenario: {
+                lane: {
+                    "accepted_steps": row["accepted_steps"],
+                    "rejected_attempts": row["rejected_attempts"],
+                    "completed_horizon": row["completed_horizon"],
+                    "completed_requested_horizon": row["completed_requested_horizon"],
+                    "runtime_s": row["runtime_s"],
+                    "status": row["status"],
+                    "first_rejection": _first_rejection(matrix_root / scenario / lane),
+                }
+                for lane, row in summaries[scenario].items()
+            }
+            for scenario in ("fixed_T1", "fixed_T3", "fixed_T6p32", "native_T10")
+        },
         "native": {
             lane: {
                 "status": row["status"],

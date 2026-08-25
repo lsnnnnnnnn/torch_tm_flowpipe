@@ -22,11 +22,10 @@ from package_vdp_c2_evidence_20260820 import RAW_RUN_EXCLUDED_FILES
 
 EMPTY_DIFF_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 ALLOWED_DECISIONS = {
-    "C2_SOUND_AND_T1_T3_TARGET_MET__T10_MET",
-    "C2_SOUND_AND_T1_T3_TARGET_MET__T10_NOT_MET",
-    "C2_SOUND_AND_PRODUCTION_USEFUL__T1_T3_TARGET_NOT_MET",
-    "POST_ACCEPT_REFINEMENT_CAUSAL_GATE_FAILED",
-    "C2_SOUNDNESS_OR_PROVENANCE_FAILED",
+    "C2_CAUSAL_GATE_FAILED",
+    "C2_SOUND_LOCAL_CAUSE_ACCEPTED__PRODUCTION_GATE_FAILED",
+    "C2_T1_T3_GATE_PASSED__T10_FAILED",
+    "C2_T1_T3_AND_T10_PASSED",
 }
 
 
@@ -133,7 +132,17 @@ def verify(root: Path) -> dict[str, Any]:
     _require(gate["final_remainder_ledger_matches_last_commit"] is True, "final ledger")
     verify_refinement_ledger(refinement, oracle, gate)
     tamper = run_tamper(gate_dir)
-    _require(tamper["passed"] is True and len(tamper["cases"]) == 6, "tamper suite")
+    required_tamper_cases = {
+        "swap_components",
+        "partial_commit",
+        "stale_cache",
+        "wrong_stop_ratio",
+    }
+    _require(tamper["passed"] is True, "tamper suite")
+    _require(
+        required_tamper_cases <= {str(case["case"]) for case in tamper["cases"]},
+        "required tamper cases",
+    )
 
     source = _load(gate_dir / "flowstar_pinned_contract.json")
     _require(source["commit"] == "b85a3211748cb77b736fe4ad42ee02d8d2b81148", "Flow* SHA")
@@ -148,15 +157,25 @@ def verify(root: Path) -> dict[str, Any]:
     _require(matrix["scientific_sha"] == scientific_sha, "matrix scientific SHA")
     _require(not _forbidden_candidate_width(matrix), "ambiguous candidate_width field")
     _require(matrix["decision"] in ALLOWED_DECISIONS, "allowed final decision")
-    _require(matrix["decision"] not in {"POST_ACCEPT_REFINEMENT_CAUSAL_GATE_FAILED", "C2_SOUNDNESS_OR_PROVENANCE_FAILED"}, "successful soundness/provenance")
+    expected_decision = (
+        "C2_T1_T3_AND_T10_PASSED"
+        if matrix["gates"]["T1_T3_all_eight_checks_remove_10pct_legacy_excess"]
+        and matrix["gates"]["reaches_T10"]
+        else "C2_T1_T3_GATE_PASSED__T10_FAILED"
+        if matrix["gates"]["T1_T3_all_eight_checks_remove_10pct_legacy_excess"]
+        else "C2_SOUND_LOCAL_CAUSE_ACCEPTED__PRODUCTION_GATE_FAILED"
+    )
+    _require(matrix["decision"] == expected_decision, "final decision/gate consistency")
     lane_naming = matrix["lane_naming"]
     _require(set(lane_naming) >= {
+        "historical_h1_candidate",
         "gate_b_h1_h2_candidate",
         "production_c1_candidate",
         "production_c2_candidate",
     }, "lane naming")
     for horizon, channels in matrix["fixed"].items():
         for channel, row in channels.items():
+            _require("historical_h1_candidate_width" in row, f"H1 width: {horizon}/{channel}")
             expected = (row["legacy_width"] - row["production_c2_candidate_width"]) / (
                 row["legacy_width"] - row["flowstar_width"]
             )
@@ -175,6 +194,25 @@ def verify(root: Path) -> dict[str, Any]:
     _require(matrix["gates"]["v100_implementation_consistency_at_1e_12"] is True, "V100 consistency")
     _require(matrix["v100_consistency"]["scope"].startswith("implementation consistency only"), "CUDA scope")
     _require("directed-rounding soundness" in matrix["cuda_claim_scope"], "CUDA soundness disclaimer")
+    accounting = matrix["run_accounting"]
+    for scenario, accepted in (("fixed_T1", 100), ("fixed_T3", 300), ("fixed_T6p32", 632)):
+        for lane in ("legacy", "production_c1_candidate", "production_c2_candidate"):
+            row = accounting[scenario][lane]
+            _require(row["accepted_steps"] == accepted, f"accepted steps: {scenario}/{lane}")
+            _require(row["rejected_attempts"] == 0, f"fixed rejection: {scenario}/{lane}")
+            _require(row["first_rejection"] is None, f"fixed first rejection: {scenario}/{lane}")
+    expected_first_sides = {
+        "legacy": "lower",
+        "production_c1_candidate": "upper",
+        "production_c2_candidate": "upper",
+    }
+    for lane, expected_side in expected_first_sides.items():
+        first = accounting["native_T10"][lane]["first_rejection"]
+        _require(first["t_before"] == 0.0 and first["h"] == 0.1, f"native first rejection: {lane}")
+        _require(
+            first["limiting_component"] == "y" and first["limiting_side"] == expected_side,
+            f"native limiting component: {lane}",
+        )
 
     raw = root / "03_raw_runs"
     lane_modes = {

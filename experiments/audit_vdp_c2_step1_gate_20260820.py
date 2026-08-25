@@ -428,11 +428,11 @@ def run(output_dir: Path, flowstar_repo: Path) -> dict[str, Any]:
             "next_step_reset_carry": "existing dependency-preserving normal insertion after publication",
         },
         "gate_pass": gate_pass,
-        "failure_code": "" if gate_pass else "POST_ACCEPT_REFINEMENT_CAUSAL_GATE_FAILED",
+        "failure_code": "" if gate_pass else "C2_CAUSAL_GATE_FAILED",
     }
     _write_json(output_dir / "gate_a.json", gate)
     if not gate_pass:
-        raise ValueError("POST_ACCEPT_REFINEMENT_CAUSAL_GATE_FAILED")
+        raise ValueError("C2_CAUSAL_GATE_FAILED")
     return gate
 
 

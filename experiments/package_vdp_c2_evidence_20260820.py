@@ -41,35 +41,14 @@ def _copy_raw_runs(source: Path, destination: Path) -> None:
     )
 
 
-def package(
-    output: Path,
-    *,
-    gate_dir: Path,
-    matrix_dir: Path,
-    matrix_summary: Path,
-    baseline_verification: Path,
-    tests_dir: Path,
-    report: Path,
-    provenance_dir: Path,
-) -> dict[str, Any]:
-    output = output.resolve()
-    if output.exists() and any(output.iterdir()):
-        raise ValueError("package output must be new or empty")
-    output.mkdir(parents=True, exist_ok=True)
-    matrix = json.loads(matrix_summary.read_text(encoding="utf-8"))
-    scientific_sha = str(matrix["scientific_sha"])
-    sources = (
-        (provenance_dir, output / "00_provenance"),
-        (baseline_verification, output / "00_provenance/baseline_verification.json"),
-        (gate_dir, output / "01_step1_causal_gate"),
-        (matrix_summary, output / "02_scientific_matrix/matrix.json"),
-        (tests_dir, output / "04_tests"),
-        (report, output / "05_report/VDP_C2_POST_ACCEPT_REFINEMENT_20260820.md"),
-    )
-    for source, destination in sources:
-        _copy(source.resolve(), destination)
-    _copy_raw_runs(matrix_dir.resolve(), output / "03_raw_runs")
+def refresh_manifest(output: Path) -> dict[str, Any]:
+    """Rebuild hashes after a fail-closed package audit updates derived artifacts."""
 
+    output = output.resolve()
+    matrix = json.loads(
+        (output / "02_scientific_matrix/matrix.json").read_text(encoding="utf-8")
+    )
+    scientific_sha = str(matrix["scientific_sha"])
     excluded = {"manifest.json", "SHA256SUMS"}
     rows = []
     for path in sorted(output.rglob("*")):
@@ -104,6 +83,35 @@ def package(
         encoding="utf-8",
     )
     return manifest
+
+
+def package(
+    output: Path,
+    *,
+    gate_dir: Path,
+    matrix_dir: Path,
+    matrix_summary: Path,
+    baseline_verification: Path,
+    tests_dir: Path,
+    report: Path,
+    provenance_dir: Path,
+) -> dict[str, Any]:
+    output = output.resolve()
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("package output must be new or empty")
+    output.mkdir(parents=True, exist_ok=True)
+    sources = (
+        (provenance_dir, output / "00_provenance"),
+        (baseline_verification, output / "00_provenance/baseline_verification.json"),
+        (gate_dir, output / "01_step1_causal_gate"),
+        (matrix_summary, output / "02_scientific_matrix/matrix.json"),
+        (tests_dir, output / "04_tests"),
+        (report, output / "05_report/VDP_C2_POST_ACCEPT_REFINEMENT_20260820.md"),
+    )
+    for source, destination in sources:
+        _copy(source.resolve(), destination)
+    _copy_raw_runs(matrix_dir.resolve(), output / "03_raw_runs")
+    return refresh_manifest(output)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
