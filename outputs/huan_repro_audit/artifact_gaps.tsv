@@ -1,0 +1,7 @@
+artifact_id	status	evidence	effect
+CURRENT_ENGINE_SOURCE	AVAILABLE	clean Git HEAD d5f0b68fcd36ba5f582733624f074728fe9720d8	permits a new source/build/proof-kernel audit at this exact revision
+HISTORICAL_DIRTY_PATCHES	MISSING	all 450 integration result records are -dirty; base commits exist but patches/untracked files do not	historical paper timing/verdict records are not exact clean-source reproductions
+PAPER_PDF	MISSING	no new_crown_reach*.pdf or docs/paper/*.pdf is present	proof mapping uses docs/paper/main.tex, which the engine README identifies as authoritative, and records the format gap
+EXTERNAL_FLOWSTAR	INACCESSIBLE	documented /home/huan/projects/flowstar checkout cannot be traversed by the audit account	stock Flow* cross-tool reruns require a separately pinned accessible checkout
+EXTERNAL_AUTOLIRPA	INAPPLICABLE_PLANT_ONLY_AND_INACCESSIBLE_TARGET	documented patched /home/huan/projects/Verifier_Development tree is inaccessible	controller tests are excluded by the goal's hard prohibition and cannot support any claim
+TARGET_HARDWARE	MISMATCH	current host exposes 16GB V100-class devices; REPRODUCE.md reports 32GB V100-SXM2 devices	paper throughput and maximum-batch memory claims cannot be directly compared

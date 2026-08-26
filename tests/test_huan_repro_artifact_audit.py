@@ -41,7 +41,7 @@ def test_engine_root_requires_source_package_and_build_file(tmp_path: Path) -> N
     assert AUDIT.find_engine_roots(tmp_path) == [complete]
 
 
-def test_record_provenance_distinguishes_dirty_and_clean(tmp_path: Path) -> None:
+def test_record_provenance_retains_dirty_base_revision(tmp_path: Path) -> None:
     records = tmp_path / "comparison" / "run" / "records"
     records.mkdir(parents=True)
     (records / "dirty.json").write_text(
@@ -50,13 +50,12 @@ def test_record_provenance_distinguishes_dirty_and_clean(tmp_path: Path) -> None
     (records / "clean.json").write_text(
         json.dumps({"git": {"flowstar_gpu": "def"}}), encoding="utf-8"
     )
-    (records / "unrelated.json").write_text(json.dumps({"git": {}}), encoding="utf-8")
 
     rows = AUDIT.collect_record_provenance(tmp_path)
 
-    assert [(row["flowstar_gpu_revision"], row["source_state"]) for row in rows] == [
+    assert [(row["base_revision"], row["source_state"]) for row in rows] == [
         ("def", "CLEAN"),
-        ("abc-dirty", "DIRTY"),
+        ("abc", "DIRTY"),
     ]
 
 
@@ -75,50 +74,38 @@ def test_checksum_verifier_rejects_tamper_and_uncovered_file(tmp_path: Path) -> 
     ]
 
 
-def test_missing_artifact_requests_name_dirty_patch_and_exact_inputs() -> None:
-    rows = AUDIT.missing_artifact_rows(["abc-dirty"])
+def test_gap_rows_do_not_conflate_current_head_with_dirty_records() -> None:
+    rows = AUDIT.artifact_gap_rows({"git": {"head": "clean-head"}})
     by_id = {row["artifact_id"]: row for row in rows}
 
-    assert by_id["EXACT_CLEAN_STATE"]["status"] == "MISSING"
-    assert "abc-dirty" in by_id["EXACT_CLEAN_STATE"]["evidence"]
-    assert "git diff --binary" in by_id["DIRTY_PATCHES"]["request_from_huan"]
-    assert "frozen VDP" in by_id["ENGINE_BENCHMARKS"]["request_from_huan"]
+    assert by_id["CURRENT_ENGINE_SOURCE"]["status"] == "AVAILABLE"
+    assert "clean-head" in by_id["CURRENT_ENGINE_SOURCE"]["evidence"]
+    assert by_id["HISTORICAL_DIRTY_PATCHES"]["status"] == "MISSING"
+    assert "not exact" in by_id["HISTORICAL_DIRTY_PATCHES"]["effect"]
+    assert by_id["PAPER_PDF"]["status"] == "MISSING"
 
 
-def test_committed_phase_a_package_verifies_and_fails_closed() -> None:
+def test_committed_phase_a_package_opens_only_current_source_gate() -> None:
     output_root = ROOT / "outputs" / "huan_repro_audit"
     inventory = json.loads((output_root / "artifact_inventory.json").read_text(encoding="utf-8"))
-    candidate = inventory["candidate_repositories"][0]
+    manifest = json.loads((output_root / "source_manifest.json").read_text(encoding="utf-8"))
 
-    assert inventory["primary_decision"] == "HUAN_REPRO_BLOCKED_MISSING_CORE_SOURCE"
-    assert inventory["source_closure"]["qualifying_engine_roots"] == []
-    assert inventory["stop_rule"] == {
-        "phases_not_run": ["B", "C", "D", "E", "F"],
-        "reason": (
-            "flowstar_gpu/src/flowstar_gpu, engine build files, and exact clean "
-            "engine source state are unavailable"
-        ),
-        "triggered": True,
-    }
-    assert candidate["result_record_provenance"]["clean_record_count"] == 0
-    assert candidate["result_record_provenance"]["dirty_record_count"] == 450
-    assert candidate["symlinks"]["inaccessible_count"] == 94
+    assert inventory["schema"].endswith("/2")
+    assert inventory["source_closure"]["current_clean_engine_source_available"] is True
+    assert inventory["source_closure"]["historical_dirty_experiment_state_available"] is False
+    assert inventory["phase_gates"]["current_source_build_and_kernel_audit"] == "OPEN"
+    assert inventory["phase_gates"]["historical_result_exact_reproduction"].startswith("CLOSED")
+    assert inventory["phase_gates"]["controller_coupling_scope"] == "PROHIBITED_NOT_RUN"
+    assert manifest["git"]["clean"] is True
+    assert manifest["historical_dirty_state_exact"] is False
+    assert "src/flowstar_gpu/interval.py" in manifest["key_file_sha256"]
     assert AUDIT.verify_checksums(output_root) == []
 
 
-def test_inapplicable_scientific_tables_are_ledgered_not_fabricated() -> None:
+def test_artifact_gap_table_replaces_obsolete_missing_source_table() -> None:
     output_root = ROOT / "outputs" / "huan_repro_audit"
-    report = (ROOT / "docs" / "HUAN_ENGINE_REPRODUCTION_AUDIT_20260826.md").read_text(
-        encoding="utf-8"
-    )
-    inapplicable = (
-        "source_manifest.json",
-        "proof_to_code_map.csv",
-        "step1_common_input.csv",
-        "fixed_horizon_matrix.csv",
-        "native_terminal.json",
-        "batch_throughput.csv",
-    )
-    for name in inapplicable:
-        assert not (output_root / name).exists()
-        assert f"`outputs/huan_repro_audit/{name}` | `NOT_RUN_SOURCE_MISSING`" in report
+    gaps = (output_root / "artifact_gaps.tsv").read_text(encoding="utf-8")
+
+    assert "CURRENT_ENGINE_SOURCE\tAVAILABLE" in gaps
+    assert "HISTORICAL_DIRTY_PATCHES\tMISSING" in gaps
+    assert not (output_root / "missing_artifacts.tsv").exists()

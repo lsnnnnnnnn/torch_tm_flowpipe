@@ -2,41 +2,26 @@
   "audit_date": "2026-08-26",
   "candidate_repositories": [
     {
-      "available_integration_sources": [
-        "src/CrownReach.cpp",
-        "src/CrownReach.h",
-        "src/CrownSettings.cpp",
-        "src/crown.py",
-        "src/run.py"
-      ],
-      "available_result_reports": [
-        "comparison/ANALYSIS_NOTES.md",
-        "comparison/HARDSUITE_POLYCROWN_ABLATION.md",
-        "comparison/PHASE_F_PLAN.md",
-        "comparison/POLYCROWN_CAMPAIGN.md",
-        "comparison/REPORT.md",
-        "comparison/SUITE_RESULTS.csv",
-        "comparison/SUITE_RESULTS.json",
-        "comparison/SUITE_RESULTS.md"
-      ],
       "classification": "WRAPPER_INTEGRATION_AND_RESULT_REPOSITORY",
       "git": {
         "branch": "main",
         "clean": true,
+        "full_diff": "",
         "head": "c28f0db949b87c475bf58404767b771f42d26dbe",
         "history_commit_count": 33,
         "remote_v": [
           "origin\thttps://github.com/huanzhang12/CROWN-Reach-GPU (fetch)",
           "origin\thttps://github.com/huanzhang12/CROWN-Reach-GPU (push)"
         ],
-        "status_porcelain": []
+        "status_porcelain": [],
+        "submodules": [],
+        "tags": []
       },
       "path": "/srv/local/shengenli/CROWN-Reach-GPU",
       "required_engine_source": {
         "build_file_present_for_engine": false,
         "path": "src/flowstar_gpu",
-        "present": false,
-        "tracked_paths_with_engine_name": []
+        "present": false
       },
       "result_record_provenance": {
         "clean_record_count": 0,
@@ -910,13 +895,71 @@
         "yaml_regular_files": 317,
         "yaml_symlinks": 90
       }
+    },
+    {
+      "classification": "FLOWSTAR_GPU_ENGINE_SOURCE_REPOSITORY",
+      "git": {
+        "branch": "main",
+        "clean": true,
+        "full_diff": "",
+        "head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+        "history_commit_count": 132,
+        "remote_v": [
+          "origin\thttps://github.com/huanzhang12/flowstar-gpu (fetch)",
+          "origin\thttps://github.com/huanzhang12/flowstar-gpu (push)"
+        ],
+        "status_porcelain": [],
+        "submodules": [],
+        "tags": []
+      },
+      "locks": {
+        "pyproject.toml": true,
+        "uv.lock": true
+      },
+      "path": "/srv/local/shengenli/flowstar-gpu",
+      "recorded_dirty_base_commits_present": {
+        "3e12487d10604f5d3fa33e0a22c87acd368d3bc6": true,
+        "876db965465c5af10e8c258f8d73833d653fc22e": true,
+        "d1b67e0bbfe7ee6cbaa774cd5d8f7dbcc27e480f": true
+      },
+      "recorded_dirty_patches_present": false,
+      "required_docs": {
+        "OPTIMIZATION.md": true,
+        "REPRODUCE.md": true,
+        "paper_authoritative_tex": true,
+        "paper_pdf": false
+      },
+      "required_engine_source": {
+        "build_files": [
+          "Makefile",
+          "pyproject.toml"
+        ],
+        "path": "src/flowstar_gpu",
+        "present": true
+      },
+      "tracked_file_counts": {
+        "all": 990,
+        "benchmark_artifacts": 790,
+        "engine_source": 32,
+        "tests": 89
+      }
     }
   ],
-  "primary_decision": "HUAN_REPRO_BLOCKED_MISSING_CORE_SOURCE",
-  "schema": "torch_tm_flowpipe.huan_repro_artifact_inventory/1",
+  "phase_gates": {
+    "controller_coupling_scope": "PROHIBITED_NOT_RUN",
+    "current_source_build_and_kernel_audit": "OPEN",
+    "historical_result_exact_reproduction": "CLOSED_MISSING_DIRTY_PATCHES",
+    "paper_pdf_mapping": "CLOSED_PDF_MISSING__AUTHORITATIVE_TEX_AVAILABLE",
+    "plant_only_scope": "OPEN"
+  },
+  "schema": "torch_tm_flowpipe.huan_repro_artifact_inventory/2",
   "search": {
     "candidate_paths": [
-      "/srv/local/shengenli/CROWN-Reach-GPU"
+      "/srv/local/shengenli/CROWN-Reach-GPU",
+      "/srv/local/shengenli/flowstar-gpu",
+      "/srv/local/shengenli/flowstar-gpu/docs/OPTIMIZATION.md",
+      "/srv/local/shengenli/flowstar-gpu/docs/REPRODUCE.md",
+      "/srv/local/shengenli/flowstar-gpu/src/flowstar_gpu"
     ],
     "errors": [],
     "max_depth": 4,
@@ -930,29 +973,26 @@
     "root": "/srv/local/shengenli"
   },
   "source_closure": {
-    "all_required_artifacts_available": false,
-    "engine_source_available": false,
-    "optimization_doc_available": false,
-    "paper_note_available": false,
-    "qualifying_engine_roots": [],
-    "reproduce_doc_available": false
+    "authoritative_paper_tex_available": true,
+    "current_clean_engine_source_available": true,
+    "historical_dirty_experiment_state_available": false,
+    "optimization_doc_available": true,
+    "paper_pdf_available": false,
+    "qualifying_engine_roots": [
+      "/srv/local/shengenli/flowstar-gpu"
+    ],
+    "reproduce_doc_available": true
   },
   "stop_rule": {
-    "phases_not_run": [
-      "B",
-      "C",
-      "D",
-      "E",
-      "F"
-    ],
-    "reason": "flowstar_gpu/src/flowstar_gpu, engine build files, and exact clean engine source state are unavailable",
-    "triggered": true
+    "reason": "historical -dirty patches are absent; current clean HEAD remains auditable",
+    "triggered_for_current_source_audit": false,
+    "triggered_for_historical_paper_result_claims": true
   },
   "torch_baseline": {
     "actual_target_sha": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
     "branch": "codex/huan-flowstar-gpu-reproduction-audit-20260826",
     "expected_target_sha": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
-    "head": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "head": "d4ce1fe71d2de791b9ec47cf480033863a7f971b",
     "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826",
     "scientific_code_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
     "target_log": [

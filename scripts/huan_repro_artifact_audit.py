@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Fail-closed artifact inventory for the Huan flowstar_gpu audit.
+"""Artifact and source-closure inventory for the Huan flowstar_gpu audit.
 
-This script deliberately does not import or reconstruct the missing engine.  It
-records enough local evidence to decide whether the Phase A source-closure gate
-in goal_vdp_terminal.md permits scientific reproduction.
+The inventory deliberately separates two questions which must not be merged:
+
+* is a clean, inspectable engine revision available for a new audit; and
+* are the historical ``-dirty`` result records exactly reproducible?
+
+The first can be true while the second remains false because a dirty patch is
+missing. Scientific runners consume this inventory and must fail closed at the
+narrower gate that applies to their claim.
 """
 
 from __future__ import annotations
@@ -21,7 +26,6 @@ from typing import Any, Iterable
 
 
 AUDIT_DATE = "2026-08-26"
-PRIMARY_DECISION = "HUAN_REPRO_BLOCKED_MISSING_CORE_SOURCE"
 ENGINE_SOURCE_SUFFIX = Path("src/flowstar_gpu")
 BUILD_FILE_NAMES = {
     "CMakeLists.txt",
@@ -40,16 +44,33 @@ DISCOVERY_PATTERNS = (
 )
 
 
-def _run_git(repo: Path, *args: str) -> str:
+def _run_git(repo: Path, *args: str, check: bool = True) -> str:
     result = subprocess.run(
         ["git", *args],
         cwd=repo,
-        check=True,
+        check=check,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
     )
     return result.stdout.rstrip("\n")
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _is_regular_accessible(path: Path) -> bool:
+    """Return False for missing, non-regular, broken, or inaccessible paths."""
+
+    try:
+        return path.is_file() and not path.is_symlink()
+    except OSError:
+        return False
 
 
 def _matches_discovery_name(name: str) -> bool:
@@ -58,7 +79,7 @@ def _matches_discovery_name(name: str) -> bool:
 
 
 def discover_candidates(root: Path, max_depth: int = 4) -> tuple[list[Path], list[str]]:
-    """Mirror the goal's bounded artifact discovery without following symlinks."""
+    """Mirror the goal's bounded artifact discovery without following links."""
 
     root = root.resolve()
     hits: set[Path] = set()
@@ -80,16 +101,16 @@ def discover_candidates(root: Path, max_depth: int = 4) -> tuple[list[Path], lis
 
 
 def find_engine_roots(search_root: Path, max_depth: int = 4) -> list[Path]:
-    """Find candidates that contain both the required package and a build file."""
+    """Find roots containing both the required package and a build file."""
 
     roots: set[Path] = set()
+    search_root = search_root.resolve()
     for current, dirs, _files in os.walk(search_root, followlinks=False):
         current_path = Path(current)
-        depth = len(current_path.resolve().relative_to(search_root.resolve()).parts)
+        depth = len(current_path.resolve().relative_to(search_root).parts)
         if depth >= max_depth:
             dirs[:] = []
-        source = current_path / ENGINE_SOURCE_SUFFIX
-        if not source.is_dir():
+        if not (current_path / ENGINE_SOURCE_SUFFIX).is_dir():
             continue
         if any((current_path / name).is_file() for name in BUILD_FILE_NAMES):
             roots.add(current_path)
@@ -137,12 +158,8 @@ def _json_record_provenance(path: Path) -> str | None:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         return None
-    if not isinstance(payload, dict):
-        return None
-    git = payload.get("git")
-    if not isinstance(git, dict):
-        return None
-    value = git.get("flowstar_gpu")
+    git = payload.get("git") if isinstance(payload, dict) else None
+    value = git.get("flowstar_gpu") if isinstance(git, dict) else None
     return value if isinstance(value, str) and value else None
 
 
@@ -150,100 +167,61 @@ def collect_record_provenance(repo: Path) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for path in sorted((repo / "comparison").glob("**/records/*.json")):
         value = _json_record_provenance(path)
-        if value is None:
-            continue
-        rows.append(
-            {
-                "path": path.relative_to(repo).as_posix(),
-                "flowstar_gpu_revision": value,
-                "source_state": "DIRTY" if value.endswith("-dirty") else "CLEAN",
-            }
-        )
+        if value is not None:
+            rows.append(
+                {
+                    "path": path.relative_to(repo).as_posix(),
+                    "flowstar_gpu_revision": value,
+                    "base_revision": value.removesuffix("-dirty"),
+                    "source_state": "DIRTY" if value.endswith("-dirty") else "CLEAN",
+                }
+            )
     return rows
 
 
 def _tracked_paths(repo: Path) -> list[str]:
-    output = _run_git(repo, "ls-files", "-z")
-    return [item for item in output.split("\0") if item]
+    return [item for item in _run_git(repo, "ls-files", "-z").split("\0") if item]
 
 
-def candidate_repository_inventory(repo: Path) -> dict[str, Any]:
+def _git_inventory(repo: Path) -> dict[str, Any]:
+    status = _run_git(repo, "status", "--porcelain=v1")
+    return {
+        "head": _run_git(repo, "rev-parse", "HEAD"),
+        "branch": _run_git(repo, "branch", "--show-current"),
+        "remote_v": _run_git(repo, "remote", "-v").splitlines(),
+        "status_porcelain": status.splitlines(),
+        "clean": not bool(status),
+        "history_commit_count": int(_run_git(repo, "rev-list", "--count", "--all")),
+        "tags": _run_git(repo, "tag", "--list").splitlines(),
+        "submodules": _run_git(repo, "submodule", "status", "--recursive").splitlines(),
+        "full_diff": _run_git(repo, "diff", "--binary"),
+    }
+
+
+def integration_repository_inventory(repo: Path) -> dict[str, Any]:
     tracked = _tracked_paths(repo)
     records = collect_record_provenance(repo)
     provenance_counts = Counter(row["flowstar_gpu_revision"] for row in records)
     symlinks = scan_symlinks(repo)
-    integration_sources = [
-        path
-        for path in tracked
-        if path
-        in {
-            "src/CrownReach.cpp",
-            "src/CrownReach.h",
-            "src/CrownSettings.cpp",
-            "src/crown.py",
-            "src/run.py",
-        }
-    ]
-    result_reports = [
-        path
-        for path in tracked
-        if path
-        in {
-            "comparison/ANALYSIS_NOTES.md",
-            "comparison/HARDSUITE_POLYCROWN_ABLATION.md",
-            "comparison/PHASE_F_PLAN.md",
-            "comparison/POLYCROWN_CAMPAIGN.md",
-            "comparison/REPORT.md",
-            "comparison/SUITE_RESULTS.csv",
-            "comparison/SUITE_RESULTS.json",
-            "comparison/SUITE_RESULTS.md",
-        }
-    ]
-    engine_named_paths = [
-        path
-        for path in tracked
-        if "flowstar_gpu" in path.lower()
-        or path.endswith("REPRODUCE.md")
-        or path.endswith("OPTIMIZATION.md")
-    ]
-    onnx_files = [path for path in tracked if path.lower().endswith(".onnx")]
-    yaml_files = [path for path in tracked if path.lower().endswith(('.yaml', '.yml'))]
-    log_files = [path for path in tracked if path.lower().endswith((".log", ".out", ".err"))]
-    yaml_symlinks = [path for path in yaml_files if (repo / path).is_symlink()]
-    yaml_regular_files = [
-        path for path in yaml_files if not (repo / path).is_symlink() and (repo / path).is_file()
-    ]
-    onnx_regular_files = [
-        path for path in onnx_files if not (repo / path).is_symlink() and (repo / path).is_file()
-    ]
-    status = _run_git(repo, "status", "--porcelain=v1")
+    yaml_files = [p for p in tracked if p.lower().endswith((".yaml", ".yml"))]
+    onnx_files = [p for p in tracked if p.lower().endswith(".onnx")]
     return {
         "path": str(repo.resolve()),
         "classification": "WRAPPER_INTEGRATION_AND_RESULT_REPOSITORY",
-        "git": {
-            "head": _run_git(repo, "rev-parse", "HEAD"),
-            "branch": _run_git(repo, "branch", "--show-current"),
-            "remote_v": _run_git(repo, "remote", "-v").splitlines(),
-            "status_porcelain": status.splitlines(),
-            "clean": not bool(status),
-            "history_commit_count": int(_run_git(repo, "rev-list", "--count", "--all")),
-        },
+        "git": _git_inventory(repo),
         "required_engine_source": {
             "path": "src/flowstar_gpu",
             "present": (repo / ENGINE_SOURCE_SUFFIX).is_dir(),
-            "tracked_paths_with_engine_name": engine_named_paths,
             "build_file_present_for_engine": False,
         },
-        "available_integration_sources": integration_sources,
-        "available_result_reports": result_reports,
         "tracked_file_counts": {
             "all": len(tracked),
             "onnx_model_paths": len(onnx_files),
-            "onnx_regular_files": len(onnx_regular_files),
+            "onnx_regular_files": sum(_is_regular_accessible(repo / p) for p in onnx_files),
             "yaml_config_paths": len(yaml_files),
-            "yaml_regular_files": len(yaml_regular_files),
-            "yaml_symlinks": len(yaml_symlinks),
-            "log_out_err_paths": len(log_files),
+            "yaml_regular_files": sum(_is_regular_accessible(repo / p) for p in yaml_files),
+            "yaml_symlinks": sum((repo / p).is_symlink() for p in yaml_files),
+            "log_out_err_paths": sum(p.lower().endswith((".log", ".out", ".err")) for p in tracked),
         },
         "symlinks": {
             "all": symlinks,
@@ -257,6 +235,48 @@ def candidate_repository_inventory(repo: Path) -> dict[str, Any]:
             "dirty_record_count": sum(row["source_state"] == "DIRTY" for row in records),
             "revision_counts": dict(sorted(provenance_counts.items())),
         },
+    }
+
+
+def engine_repository_inventory(repo: Path, recorded_revisions: Iterable[str]) -> dict[str, Any]:
+    tracked = _tracked_paths(repo)
+    base_revisions = sorted({value.removesuffix("-dirty") for value in recorded_revisions})
+    bases: dict[str, bool] = {}
+    for revision in base_revisions:
+        result = subprocess.run(
+            ["git", "cat-file", "-e", f"{revision}^{{commit}}"],
+            cwd=repo,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        bases[revision] = result.returncode == 0
+    return {
+        "path": str(repo.resolve()),
+        "classification": "FLOWSTAR_GPU_ENGINE_SOURCE_REPOSITORY",
+        "git": _git_inventory(repo),
+        "required_engine_source": {
+            "path": "src/flowstar_gpu",
+            "present": (repo / ENGINE_SOURCE_SUFFIX).is_dir(),
+            "build_files": sorted(name for name in BUILD_FILE_NAMES if (repo / name).is_file()),
+        },
+        "required_docs": {
+            "REPRODUCE.md": (repo / "docs/REPRODUCE.md").is_file(),
+            "OPTIMIZATION.md": (repo / "docs/OPTIMIZATION.md").is_file(),
+            "paper_authoritative_tex": (repo / "docs/paper/main.tex").is_file(),
+            "paper_pdf": any((repo / "docs/paper").glob("*.pdf")),
+        },
+        "locks": {
+            "pyproject.toml": (repo / "pyproject.toml").is_file(),
+            "uv.lock": (repo / "uv.lock").is_file(),
+        },
+        "tracked_file_counts": {
+            "all": len(tracked),
+            "engine_source": sum(p.startswith("src/flowstar_gpu/") for p in tracked),
+            "tests": sum(p.startswith("tests/") for p in tracked),
+            "benchmark_artifacts": sum(p.startswith("benchmarks/") for p in tracked),
+        },
+        "recorded_dirty_base_commits_present": bases,
+        "recorded_dirty_patches_present": False,
     }
 
 
@@ -277,80 +297,73 @@ def torch_baseline_inventory(repo: Path) -> dict[str, Any]:
     }
 
 
-def missing_artifact_rows(record_revisions: Iterable[str]) -> list[dict[str, str]]:
-    revisions = ", ".join(sorted(record_revisions)) or "no revision records found"
+def artifact_gap_rows(engine: dict[str, Any]) -> list[dict[str, str]]:
     return [
         {
-            "artifact_id": "ENGINE_SOURCE",
-            "required_item": "actual flowstar_gpu source repository including src/flowstar_gpu and build files",
+            "artifact_id": "CURRENT_ENGINE_SOURCE",
+            "status": "AVAILABLE",
+            "evidence": f"clean Git HEAD {engine['git']['head']}",
+            "effect": "permits a new source/build/proof-kernel audit at this exact revision",
+        },
+        {
+            "artifact_id": "HISTORICAL_DIRTY_PATCHES",
             "status": "MISSING",
-            "evidence": "bounded local discovery found no qualifying engine root",
-            "request_from_huan": "provide repository access or an immutable source archive with a complete SHA256 manifest",
+            "evidence": "all 450 integration result records are -dirty; base commits exist but patches/untracked files do not",
+            "effect": "historical paper timing/verdict records are not exact clean-source reproductions",
         },
         {
-            "artifact_id": "ENGINE_HISTORY",
-            "required_item": "flowstar_gpu .git history or immutable archive provenance",
+            "artifact_id": "PAPER_PDF",
             "status": "MISSING",
-            "evidence": "only the separate CROWN-Reach-GPU repository has Git history",
-            "request_from_huan": "provide full Git history, tags, submodules, remote URL, and target commit",
+            "evidence": "no new_crown_reach*.pdf or docs/paper/*.pdf is present",
+            "effect": "proof mapping uses docs/paper/main.tex, which the engine README identifies as authoritative, and records the format gap",
         },
         {
-            "artifact_id": "EXACT_CLEAN_STATE",
-            "required_item": "exact clean engine commit used by the target experiment",
-            "status": "MISSING",
-            "evidence": f"available run records reference only dirty states: {revisions}",
-            "request_from_huan": "identify and export a clean reproduction commit for every claimed result family",
+            "artifact_id": "EXTERNAL_FLOWSTAR",
+            "status": "INACCESSIBLE",
+            "evidence": "documented /home/huan/projects/flowstar checkout cannot be traversed by the audit account",
+            "effect": "stock Flow* cross-tool reruns require a separately pinned accessible checkout",
         },
         {
-            "artifact_id": "DIRTY_PATCHES",
-            "required_item": "complete uncommitted patches for every -dirty run record",
-            "status": "MISSING",
-            "evidence": "CROWN-Reach-GPU records retain revision labels but not the engine patches",
-            "request_from_huan": "provide git diff --binary and untracked files for each recorded -dirty state",
+            "artifact_id": "EXTERNAL_AUTOLIRPA",
+            "status": "INAPPLICABLE_PLANT_ONLY_AND_INACCESSIBLE_TARGET",
+            "evidence": "documented patched /home/huan/projects/Verifier_Development tree is inaccessible",
+            "effect": "controller tests are excluded by the goal's hard prohibition and cannot support any claim",
         },
         {
-            "artifact_id": "REPRODUCE_DOC",
-            "required_item": "flowstar_gpu/docs/REPRODUCE.md",
-            "status": "MISSING",
-            "evidence": "not present in local discovery or CROWN-Reach-GPU history",
-            "request_from_huan": "provide the exact version used for the recorded campaigns",
-        },
-        {
-            "artifact_id": "OPTIMIZATION_DOC",
-            "required_item": "flowstar_gpu/docs/OPTIMIZATION.md",
-            "status": "MISSING",
-            "evidence": "not present in local discovery or CROWN-Reach-GPU history",
-            "request_from_huan": "provide the exact version used for the recorded campaigns",
-        },
-        {
-            "artifact_id": "PAPER_NOTE",
-            "required_item": "new_crown_reach*.pdf proof note",
-            "status": "MISSING",
-            "evidence": "no matching PDF was found by the required bounded discovery",
-            "request_from_huan": "provide the exact PDF and its SHA256 digest",
-        },
-        {
-            "artifact_id": "ENGINE_BENCHMARKS",
-            "required_item": "engine benchmark configs, controllers/models, graded specs, and generation scripts",
-            "status": "MISSING",
-            "evidence": "records contain absolute /home/huan/projects/flowstar_gpu paths; those files are absent",
-            "request_from_huan": "provide every referenced file with path mapping and SHA256, including the frozen VDP port",
-        },
-        {
-            "artifact_id": "DEPENDENCY_LOCK",
-            "required_item": "pinned Flow*, CROWN-Reach, auto_LiRPA, PyTorch/CUDA, compiler, and Python versions",
-            "status": "PARTIAL_ONLY",
-            "evidence": "reports mention selected versions, but no engine-owned complete lock or source closure is present",
-            "request_from_huan": "provide lockfiles plus git SHAs, compiler output, pip/conda freeze, and CUDA runtime/driver capture",
-        },
-        {
-            "artifact_id": "MACHINE_AND_COMMANDS",
-            "required_item": "exact GPU identity and execution commands for target experiments",
-            "status": "PARTIAL_ONLY",
-            "evidence": "reports name Tesla V100-32GB and records retain commands, but exact machine/software capture is absent",
-            "request_from_huan": "provide nvidia-smi -q, lscpu, environment capture, warmup/repetition protocol, and canonical commands",
+            "artifact_id": "TARGET_HARDWARE",
+            "status": "MISMATCH",
+            "evidence": "current host exposes 16GB V100-class devices; REPRODUCE.md reports 32GB V100-SXM2 devices",
+            "effect": "paper throughput and maximum-batch memory claims cannot be directly compared",
         },
     ]
+
+
+def source_manifest(engine_repo: Path, engine: dict[str, Any]) -> dict[str, Any]:
+    tracked = _tracked_paths(engine_repo)
+    tree = _run_git(engine_repo, "ls-tree", "-r", "--full-tree", "HEAD")
+    key_paths = [
+        "pyproject.toml",
+        "uv.lock",
+        "docs/REPRODUCE.md",
+        "docs/OPTIMIZATION.md",
+        "docs/paper/main.tex",
+        *[p for p in tracked if p.startswith("src/flowstar_gpu/")],
+    ]
+    return {
+        "schema": "torch_tm_flowpipe.huan_source_manifest/1",
+        "audit_date": AUDIT_DATE,
+        "repository": engine["path"],
+        "git": engine["git"],
+        "git_tree_listing_sha256": hashlib.sha256((tree + "\n").encode()).hexdigest(),
+        "tracked_file_count": len(tracked),
+        "key_file_sha256": {
+            path: _sha256(engine_repo / path)
+            for path in sorted(key_paths)
+            if (engine_repo / path).is_file()
+        },
+        "historical_dirty_state_exact": False,
+        "historical_dirty_state_gap": "dirty patches and untracked files for recorded runs are absent",
+    }
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -372,7 +385,8 @@ def _write_raw_logs(
     hits: list[Path],
     discovery_errors: list[str],
     torch: dict[str, Any],
-    candidate: dict[str, Any],
+    integration: dict[str, Any],
+    engine: dict[str, Any],
     records: list[dict[str, str]],
 ) -> None:
     raw = output_root / "raw_logs"
@@ -399,27 +413,35 @@ def _write_raw_logs(
         *torch["target_log"],
     ]
     (raw / "torch_provenance.log").write_text("\n".join(torch_lines) + "\n", encoding="utf-8")
-    candidate_lines = [
-        f"path={candidate['path']}",
-        f"classification={candidate['classification']}",
-        f"head={candidate['git']['head']}",
-        f"branch={candidate['git']['branch']}",
-        f"clean={str(candidate['git']['clean']).lower()}",
-        f"history_commit_count={candidate['git']['history_commit_count']}",
-        *(f"remote={remote}" for remote in candidate["git"]["remote_v"]),
-        f"required_engine_source_present={str(candidate['required_engine_source']['present']).lower()}",
-        f"record_files_with_engine_revision={candidate['result_record_provenance']['record_files_with_engine_revision']}",
-        f"clean_record_count={candidate['result_record_provenance']['clean_record_count']}",
-        f"dirty_record_count={candidate['result_record_provenance']['dirty_record_count']}",
+    integration_lines = [
+        f"path={integration['path']}",
+        f"classification={integration['classification']}",
+        f"head={integration['git']['head']}",
+        f"clean={str(integration['git']['clean']).lower()}",
+        f"record_files={integration['result_record_provenance']['record_files_with_engine_revision']}",
+        f"dirty_records={integration['result_record_provenance']['dirty_record_count']}",
+        *(f"remote={remote}" for remote in integration["git"]["remote_v"]),
     ]
-    for revision, count in candidate["result_record_provenance"]["revision_counts"].items():
-        candidate_lines.append(f"record_revision={revision}\tcount={count}")
-    (raw / "crown_reach_gpu_provenance.log").write_text(
-        "\n".join(candidate_lines) + "\n", encoding="utf-8"
-    )
+    (raw / "crown_reach_gpu_provenance.log").write_text("\n".join(integration_lines) + "\n", encoding="utf-8")
+    engine_lines = [
+        f"path={engine['path']}",
+        f"classification={engine['classification']}",
+        f"head={engine['git']['head']}",
+        f"branch={engine['git']['branch']}",
+        f"clean={str(engine['git']['clean']).lower()}",
+        f"history_commit_count={engine['git']['history_commit_count']}",
+        f"source_present={str(engine['required_engine_source']['present']).lower()}",
+        f"build_files={','.join(engine['required_engine_source']['build_files'])}",
+        f"tags={','.join(engine['git']['tags'])}",
+        f"submodules={len(engine['git']['submodules'])}",
+        *(f"remote={remote}" for remote in engine["git"]["remote_v"]),
+        *(f"record_base={revision}\tpresent={str(present).lower()}" for revision, present in engine["recorded_dirty_base_commits_present"].items()),
+        "recorded_dirty_patches_present=false",
+    ]
+    (raw / "flowstar_gpu_provenance.log").write_text("\n".join(engine_lines) + "\n", encoding="utf-8")
     _write_tsv(
         raw / "record_provenance.tsv",
-        ["path", "flowstar_gpu_revision", "source_state"],
+        ["path", "flowstar_gpu_revision", "base_revision", "source_state"],
         records,
     )
     _write_tsv(
@@ -433,7 +455,7 @@ def _write_raw_logs(
             "target_probe_error",
             "external_absolute_target",
         ],
-        candidate["symlinks"]["all"],
+        integration["symlinks"]["all"],
     )
 
 
@@ -441,20 +463,18 @@ def write_checksums(output_root: Path) -> None:
     checksum_path = output_root / "SHA256SUMS"
     rows: list[str] = []
     for path in sorted(output_root.rglob("*")):
-        if not path.is_file() or path == checksum_path:
-            continue
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        rows.append(f"{digest}  {path.relative_to(output_root).as_posix()}")
+        if path.is_file() and path != checksum_path:
+            rows.append(f"{_sha256(path)}  {path.relative_to(output_root).as_posix()}")
     checksum_path.write_text("\n".join(rows) + "\n", encoding="utf-8")
 
 
 def verify_checksums(output_root: Path) -> list[str]:
     checksum_path = output_root / "SHA256SUMS"
-    errors: list[str] = []
     if not checksum_path.is_file():
         return ["SHA256SUMS is missing"]
+    errors: list[str] = []
     covered: set[str] = set()
-    for line_number, line in enumerate(checksum_path.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_number, line in enumerate(checksum_path.read_text(encoding="utf-8").splitlines(), 1):
         try:
             expected, relative = line.split("  ", 1)
         except ValueError:
@@ -464,32 +484,40 @@ def verify_checksums(output_root: Path) -> list[str]:
         path = output_root / relative
         if not path.is_file():
             errors.append(f"missing covered file: {relative}")
-            continue
-        actual = hashlib.sha256(path.read_bytes()).hexdigest()
-        if actual != expected:
+        elif _sha256(path) != expected:
             errors.append(f"checksum mismatch: {relative}")
-    actual_files = {
+    actual = {
         path.relative_to(output_root).as_posix()
         for path in output_root.rglob("*")
         if path.is_file() and path != checksum_path
     }
-    for relative in sorted(actual_files - covered):
-        errors.append(f"uncovered file: {relative}")
+    errors.extend(f"uncovered file: {relative}" for relative in sorted(actual - covered))
     return errors
 
 
-def generate(search_root: Path, candidate_repo: Path, torch_repo: Path, output_root: Path) -> dict[str, Any]:
+def generate(
+    search_root: Path,
+    integration_repo: Path,
+    engine_repo: Path,
+    torch_repo: Path,
+    output_root: Path,
+) -> dict[str, Any]:
     hits, discovery_errors = discover_candidates(search_root)
     engine_roots = find_engine_roots(search_root)
-    candidate = candidate_repository_inventory(candidate_repo)
+    records = collect_record_provenance(integration_repo)
+    integration = integration_repository_inventory(integration_repo)
+    engine = engine_repository_inventory(
+        engine_repo, (row["flowstar_gpu_revision"] for row in records)
+    )
     torch = torch_baseline_inventory(torch_repo)
-    records = collect_record_provenance(candidate_repo)
-    record_revisions = candidate["result_record_provenance"]["revision_counts"].keys()
-    missing = missing_artifact_rows(record_revisions)
+    current_gate = (
+        engine["git"]["clean"]
+        and engine["required_engine_source"]["present"]
+        and bool(engine["required_engine_source"]["build_files"])
+    )
     inventory = {
-        "schema": "torch_tm_flowpipe.huan_repro_artifact_inventory/1",
+        "schema": "torch_tm_flowpipe.huan_repro_artifact_inventory/2",
         "audit_date": AUDIT_DATE,
-        "primary_decision": PRIMARY_DECISION,
         "search": {
             "root": str(search_root.resolve()),
             "max_depth": 4,
@@ -498,31 +526,49 @@ def generate(search_root: Path, candidate_repo: Path, torch_repo: Path, output_r
             "errors": discovery_errors,
         },
         "torch_baseline": torch,
-        "candidate_repositories": [candidate],
+        "candidate_repositories": [integration, engine],
         "source_closure": {
             "qualifying_engine_roots": [str(path) for path in engine_roots],
-            "engine_source_available": bool(engine_roots),
-            "paper_note_available": any(
-                path.is_file() and fnmatch.fnmatch(path.name.lower(), "new_crown_reach*.pdf")
-                for path in hits
-            ),
-            "reproduce_doc_available": any(path.name.lower() == "reproduce.md" for path in hits),
-            "optimization_doc_available": any(path.name.lower() == "optimization.md" for path in hits),
-            "all_required_artifacts_available": False,
+            "current_clean_engine_source_available": current_gate,
+            "historical_dirty_experiment_state_available": False,
+            "paper_pdf_available": engine["required_docs"]["paper_pdf"],
+            "authoritative_paper_tex_available": engine["required_docs"]["paper_authoritative_tex"],
+            "reproduce_doc_available": engine["required_docs"]["REPRODUCE.md"],
+            "optimization_doc_available": engine["required_docs"]["OPTIMIZATION.md"],
+        },
+        "phase_gates": {
+            "current_source_build_and_kernel_audit": "OPEN" if current_gate else "CLOSED",
+            "historical_result_exact_reproduction": "CLOSED_MISSING_DIRTY_PATCHES",
+            "paper_pdf_mapping": "CLOSED_PDF_MISSING__AUTHORITATIVE_TEX_AVAILABLE",
+            "plant_only_scope": "OPEN",
+            "controller_coupling_scope": "PROHIBITED_NOT_RUN",
         },
         "stop_rule": {
-            "triggered": True,
-            "reason": "flowstar_gpu/src/flowstar_gpu, engine build files, and exact clean engine source state are unavailable",
-            "phases_not_run": ["B", "C", "D", "E", "F"],
+            "triggered_for_current_source_audit": not current_gate,
+            "triggered_for_historical_paper_result_claims": True,
+            "reason": "historical -dirty patches are absent; current clean HEAD remains auditable",
         },
     }
     _write_json(output_root / "artifact_inventory.json", inventory)
+    _write_json(output_root / "source_manifest.json", source_manifest(engine_repo, engine))
     _write_tsv(
-        output_root / "missing_artifacts.tsv",
-        ["artifact_id", "required_item", "status", "evidence", "request_from_huan"],
-        missing,
+        output_root / "artifact_gaps.tsv",
+        ["artifact_id", "status", "evidence", "effect"],
+        artifact_gap_rows(engine),
     )
-    _write_raw_logs(output_root, search_root, hits, discovery_errors, torch, candidate, records)
+    _write_raw_logs(
+        output_root,
+        search_root,
+        hits,
+        discovery_errors,
+        torch,
+        integration,
+        engine,
+        records,
+    )
+    obsolete = output_root / "missing_artifacts.tsv"
+    if obsolete.exists():
+        obsolete.unlink()
     write_checksums(output_root)
     return inventory
 
@@ -530,7 +576,13 @@ def generate(search_root: Path, candidate_repo: Path, torch_repo: Path, output_r
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--search-root", type=Path, required=True)
-    parser.add_argument("--candidate-repo", type=Path, required=True)
+    parser.add_argument(
+        "--candidate-repo",
+        type=Path,
+        required=True,
+        help="CROWN-Reach-GPU integration/result repository",
+    )
+    parser.add_argument("--engine-repo", type=Path, required=True)
     parser.add_argument("--torch-repo", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--verify-only", action="store_true")
@@ -542,13 +594,18 @@ def main() -> int:
     if args.verify_only:
         errors = verify_checksums(args.output_root)
         if errors:
-            for error in errors:
-                print(error)
+            print("\n".join(errors))
             return 1
         print(f"verified {args.output_root / 'SHA256SUMS'}")
         return 0
-    inventory = generate(args.search_root, args.candidate_repo, args.torch_repo, args.output_root)
-    print(inventory["primary_decision"])
+    inventory = generate(
+        args.search_root,
+        args.candidate_repo,
+        args.engine_repo,
+        args.torch_repo,
+        args.output_root,
+    )
+    print(inventory["phase_gates"]["current_source_build_and_kernel_audit"])
     return 0
 
 
