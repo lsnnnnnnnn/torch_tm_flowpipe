@@ -219,7 +219,9 @@ def main() -> int:
     parser.add_argument("--expected-head", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    payload = run(args.engine_root.resolve(), args.python.resolve(), args.expected_head)
+    # Preserve the venv entry path.  Resolving its symlink would execute the
+    # base interpreter without the venv's pytest/dependency environment.
+    payload = run(args.engine_root.resolve(), args.python.absolute(), args.expected_head)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(
