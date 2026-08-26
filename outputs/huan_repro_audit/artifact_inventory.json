@@ -1,0 +1,971 @@
+{
+  "audit_date": "2026-08-26",
+  "candidate_repositories": [
+    {
+      "available_integration_sources": [
+        "src/CrownReach.cpp",
+        "src/CrownReach.h",
+        "src/CrownSettings.cpp",
+        "src/crown.py",
+        "src/run.py"
+      ],
+      "available_result_reports": [
+        "comparison/ANALYSIS_NOTES.md",
+        "comparison/HARDSUITE_POLYCROWN_ABLATION.md",
+        "comparison/PHASE_F_PLAN.md",
+        "comparison/POLYCROWN_CAMPAIGN.md",
+        "comparison/REPORT.md",
+        "comparison/SUITE_RESULTS.csv",
+        "comparison/SUITE_RESULTS.json",
+        "comparison/SUITE_RESULTS.md"
+      ],
+      "classification": "WRAPPER_INTEGRATION_AND_RESULT_REPOSITORY",
+      "git": {
+        "branch": "main",
+        "clean": true,
+        "head": "c28f0db949b87c475bf58404767b771f42d26dbe",
+        "history_commit_count": 33,
+        "remote_v": [
+          "origin\thttps://github.com/huanzhang12/CROWN-Reach-GPU (fetch)",
+          "origin\thttps://github.com/huanzhang12/CROWN-Reach-GPU (push)"
+        ],
+        "status_porcelain": []
+      },
+      "path": "/srv/local/shengenli/CROWN-Reach-GPU",
+      "required_engine_source": {
+        "build_file_present_for_engine": false,
+        "path": "src/flowstar_gpu",
+        "present": false,
+        "tracked_paths_with_engine_name": []
+      },
+      "result_record_provenance": {
+        "clean_record_count": 0,
+        "dirty_record_count": 450,
+        "record_files_with_engine_revision": 450,
+        "revision_counts": {
+          "3e12487d10604f5d3fa33e0a22c87acd368d3bc6-dirty": 374,
+          "876db965465c5af10e8c258f8d73833d653fc22e-dirty": 25,
+          "d1b67e0bbfe7ee6cbaa774cd5d8f7dbcc27e480f-dirty": 51
+        }
+      },
+      "symlinks": {
+        "all": [
+          {
+            "external_absolute_target": true,
+            "path": "auto_LiRPA",
+            "resolved_target": "/home/huan/projects/Verifier_Development/auto_LiRPA",
+            "target": "/home/huan/projects/Verifier_Development/auto_LiRPA",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/Verifier_Development/auto_LiRPA'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "external_autolirpa",
+            "resolved_target": "/home/huan/projects/Verifier_Development",
+            "target": "/home/huan/projects/Verifier_Development",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/Verifier_Development'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "flowstar",
+            "resolved_target": "/home/huan/projects/flowstar",
+            "target": "/home/huan/projects/flowstar",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": false,
+            "path": "src/auto_LiRPA",
+            "resolved_target": "/home/huan/projects/Verifier_Development/auto_LiRPA/auto_LiRPA",
+            "target": "../auto_LiRPA/auto_LiRPA/",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/Verifier_Development/auto_LiRPA/auto_LiRPA'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/acc_chain_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/configs/acc_chain_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n3/acc_chain_n3_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n3/configs/acc_chain_n3_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n4/acc_chain_n4_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n4/configs/acc_chain_n4_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n5/acc_chain_n5_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n5/configs/acc_chain_n5_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n6/acc_chain_n6_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n6/configs/acc_chain_n6_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n7/acc_chain_n7_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n7/configs/acc_chain_n7_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n8/acc_chain_n8_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n8/configs/acc_chain_n8_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_fail_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_fail_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_hold_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_hold_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC-Chain/rungs/acc_chain_n9/acc_chain_n9_official_B1024.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1024.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1024.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC-Chain/rungs/acc_chain_n9/configs/acc_chain_n9_official_B1024.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC/acc_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC/acc_fail_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_fail_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC/acc_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ACC/acc_hold_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ACC/configs/acc_hold_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ArtificialPancreas/artificialpancreas_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ArtificialPancreas/artificialpancreas_fail_B8.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B8.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B8.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_fail_B8.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ArtificialPancreas/artificialpancreas_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ArtificialPancreas/artificialpancreas_hold_B8.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B8.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B8.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ArtificialPancreas/configs/artificialpancreas_hold_B8.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_fail_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_fail_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_hold_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_hold_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Exothermic/cstr_exothermic_official_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Exothermic/configs/cstr_exothermic_official_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_fail_B2048.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B2048.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B2048.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_fail_B2048.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_hold_B2048.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B2048.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B2048.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_hold_B2048.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CSTR-Runaway/cstr_runaway_official_B2048.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B2048.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B2048.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CSTR-Runaway/configs/cstr_runaway_official_B2048.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CartPole/cartpole_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CartPole/cartpole_fail_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_fail_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CartPole/cartpole_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/CartPole/cartpole_hold_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/CartPole/configs/cartpole_hold_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_fail_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_fail_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_hold_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_hold_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_official_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking/docking_official_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking/configs/docking_official_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking6D/docking6d_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Docking6D/docking6d_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Docking6D/configs/docking6d_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/F16-GCAS/f16_gcas_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/F16-GCAS/f16_gcas_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/F16-GCAS/configs/f16_gcas_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ToraRemain/toraremain_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ToraRemain/toraremain_fail_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_fail_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ToraRemain/toraremain_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/ToraRemain/toraremain_hold_B256.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B256.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B256.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/ToraRemain/configs/toraremain_hold_B256.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Vehicle-SingleTrack/vehicle_singletrack_fail_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Vehicle-SingleTrack/vehicle_singletrack_fail_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_fail_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Vehicle-SingleTrack/vehicle_singletrack_hold_B1.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B1.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B1.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B1.yaml'",
+            "target_status": "INACCESSIBLE"
+          },
+          {
+            "external_absolute_target": true,
+            "path": "src/configs/nncs_hard_suite/Vehicle-SingleTrack/vehicle_singletrack_hold_B64.yaml",
+            "resolved_target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B64.yaml",
+            "target": "/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B64.yaml",
+            "target_exists": false,
+            "target_probe_error": "PermissionError: [Errno 13] Permission denied: '/home/huan/projects/flowstar_gpu/benchmarks/Vehicle-SingleTrack/configs/vehicle_singletrack_hold_B64.yaml'",
+            "target_status": "INACCESSIBLE"
+          }
+        ],
+        "broken_count": 0,
+        "external_absolute_count": 93,
+        "inaccessible_count": 94
+      },
+      "tracked_file_counts": {
+        "all": 2837,
+        "log_out_err_paths": 1063,
+        "onnx_model_paths": 171,
+        "onnx_regular_files": 171,
+        "yaml_config_paths": 407,
+        "yaml_regular_files": 317,
+        "yaml_symlinks": 90
+      }
+    }
+  ],
+  "primary_decision": "HUAN_REPRO_BLOCKED_MISSING_CORE_SOURCE",
+  "schema": "torch_tm_flowpipe.huan_repro_artifact_inventory/1",
+  "search": {
+    "candidate_paths": [
+      "/srv/local/shengenli/CROWN-Reach-GPU"
+    ],
+    "errors": [],
+    "max_depth": 4,
+    "patterns": [
+      "*flowstar*gpu*",
+      "*CROWN-Reach*GPU*",
+      "new_crown_reach*.pdf",
+      "REPRODUCE.md",
+      "OPTIMIZATION.md"
+    ],
+    "root": "/srv/local/shengenli"
+  },
+  "source_closure": {
+    "all_required_artifacts_available": false,
+    "engine_source_available": false,
+    "optimization_doc_available": false,
+    "paper_note_available": false,
+    "qualifying_engine_roots": [],
+    "reproduce_doc_available": false
+  },
+  "stop_rule": {
+    "phases_not_run": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "reason": "flowstar_gpu/src/flowstar_gpu, engine build files, and exact clean engine source state are unavailable",
+    "triggered": true
+  },
+  "torch_baseline": {
+    "actual_target_sha": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "branch": "codex/huan-flowstar-gpu-reproduction-audit-20260826",
+    "expected_target_sha": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "head": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826",
+    "scientific_code_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+    "target_log": [
+      "0fea265 Close VDP C2 terminal evidence contract",
+      "b263b84 Package VDP C2 scientific evidence",
+      "29c9ee8 Harden C2 terminal and evidence provenance",
+      "7fb2a7d Handle native scientific noncompletion explicitly",
+      "5ce33ad Implement VDP post-accept remainder refinement",
+      "1f514a2 Package VDP live-loss closure evidence",
+      "dbe03dc Add live-loss audit and joint residual closure",
+      "2cdb7a9 Strengthen VDP H2 completion evidence"
+    ],
+    "target_matches_expected": true,
+    "target_ref": "origin/codex/vdp-post-accept-refinement-c2-20260820"
+  }
+}
