@@ -1,0 +1,39 @@
+From 743f6205e6408072193ad76e940e7f15030e8d3c Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 26 Aug 2026 10:16:48 +0000
+Subject: [PATCH 3/3] Keep strict guards within coverage budget
+
+---
+ src/flowstar_gpu/sparse_exec.py | 2 +-
+ src/flowstar_gpu/support.py     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/flowstar_gpu/sparse_exec.py b/src/flowstar_gpu/sparse_exec.py
+index 3b43956..08cd769 100644
+--- a/src/flowstar_gpu/sparse_exec.py
++++ b/src/flowstar_gpu/sparse_exec.py
+@@ -1485,7 +1485,7 @@ def advance_sparse(
+                     iv.from_point(lin_part), st.tmv_sup,
+                     eng, interval=True,
+                 )
+-                if add_sup is not sup_nt and add_sup.ids != sup_nt.ids:  # pragma: no cover - canonical union invariant
++                if add_sup is not sup_nt and add_sup.ids != sup_nt.ids:
+                     raise RuntimeError("strict sparse addition support mismatch")
+                 add_error = iv.sub(exact_add, iv.from_point(new_tmv))
+                 coeff_error = iv.add(lin_error, add_error)
+diff --git a/src/flowstar_gpu/support.py b/src/flowstar_gpu/support.py
+index a2caf7e..a595efc 100644
+--- a/src/flowstar_gpu/support.py
++++ b/src/flowstar_gpu/support.py
+@@ -750,7 +750,7 @@ def evaluate_time_end_s_with_roundoff(
+     """Sparse endpoint evaluation plus strict coefficient-error range."""
+     point, sup_out = evaluate_time_end_s(coeffs, eng, sup)
+     check_sup, tgt, endf = eng.evalt(sup)
+-    if check_sup.ids != sup_out.ids:  # pragma: no cover - cached canonical invariant
++    if check_sup.ids != sup_out.ids:
+         raise RuntimeError("endpoint support changed between point and interval routes")
+     src_iv = iv.mul(iv.from_point(coeffs), iv.from_point(endf))
+     shape = (*coeffs.shape[:-1], sup_out.size)
+-- 
+2.53.0
+

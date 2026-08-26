@@ -1,0 +1,1744 @@
+From 9359167934bc95ce92d653228745264a6c47209e Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 26 Aug 2026 09:05:50 +0000
+Subject: [PATCH 1/3] Close strict floating-point proof contract
+
+---
+ src/flowstar_gpu/composition.py               |  14 +-
+ src/flowstar_gpu/config.py                    |   6 +
+ src/flowstar_gpu/determinism.py               |  69 ++-
+ src/flowstar_gpu/flowpipe.py                  | 317 ++++++++++-
+ src/flowstar_gpu/interval.py                  |   7 +-
+ src/flowstar_gpu/polynomial.py                |  77 +++
+ src/flowstar_gpu/sparse_exec.py               | 134 ++++-
+ src/flowstar_gpu/support.py                   |  46 ++
+ src/flowstar_gpu/symbolic_remainder.py        |  52 +-
+ src/flowstar_gpu/tape_kernels.py              |   1 +
+ tests/properties/test_interval_props.py       |  12 +-
+ tests/soundness/test_strict_proof_contract.py | 532 ++++++++++++++++++
+ 12 files changed, 1241 insertions(+), 26 deletions(-)
+ create mode 100644 tests/soundness/test_strict_proof_contract.py
+
+diff --git a/src/flowstar_gpu/composition.py b/src/flowstar_gpu/composition.py
+index 743d77e..0bcc683 100644
+--- a/src/flowstar_gpu/composition.py
++++ b/src/flowstar_gpu/composition.py
+@@ -212,7 +212,13 @@ def compose(
+         lastvars = lastvars_all[lo : lo + chunk]
+         pa = m_coeffs[:, parents]  # [B, Lc, Ts]
+         gv = g_coeffs_sp[:, lastvars]  # [B, Lc, Ts]
+-        prod = poly.mul_point_spatial(pa, gv, tables)  # [B, Lc, Ts2]
++        if strict:
++            prod, coefficient_roundoff = poly.mul_point_spatial_with_roundoff(
++                pa, gv, tables
++            )
++        else:
++            prod = poly.mul_point_spatial(pa, gv, tables)  # [B, Lc, Ts2]
++            coefficient_roundoff = None
+         pa_range = poly.range_normal_spatial(pa, tables)  # [B, L, 2]
+         # Remainder algebra of mul_insert_ctrunc_normal (I1*I2 + P2*I1 + P1*I2):
+         p_rem = m_rem[:, parents]  # [B, L, 2]
+@@ -223,6 +229,12 @@ def compose(
+         kept, tail = poly.ctrunc_normal_spatial(prod, tables, order)  # [B, L, K], [B, L, 2]
+         kept, round_rng = poly.cutoff_normal_spatial(kept, tables, cutoff_threshold)
+         rem = iv.add(rem, iv.add(tail, round_rng))
++        if coefficient_roundoff is not None:
++            # The exact coefficient product equals the retained tier-P point
++            # polynomial plus this ranged error.  Charge it once here; later
++            # image levels propagate it through ``p_rem`` like any other
++            # ordinary remainder contribution.
++            rem = iv.add(rem, coefficient_roundoff)
+         out_row = torch.zeros(B, members.shape[0], Ts, dtype=dt, device=dev)
+         out_row[..., : kept.shape[-1]] = kept
+         m_coeffs[:, members] = out_row
+diff --git a/src/flowstar_gpu/config.py b/src/flowstar_gpu/config.py
+index fb29775..740aecb 100644
+--- a/src/flowstar_gpu/config.py
++++ b/src/flowstar_gpu/config.py
+@@ -7,6 +7,7 @@ configurations against a Flow* driver line-by-line.
+ 
+ from __future__ import annotations
+ 
++from collections.abc import Callable
+ from dataclasses import dataclass
+ 
+ 
+@@ -69,6 +70,9 @@ class Settings:
+     max_refinement_steps: int = 490
+     stop_ratio: float = 0.99
+     validate_intervals: bool = False
++    # Optional audit-only observer.  It receives refinement ledger records and
++    # is never called when None, so the production numerical path is unchanged.
++    refinement_callback: Callable[[dict[str, object]], None] | None = None
+ 
+     def __post_init__(self) -> None:
+         if self.step <= 0:
+@@ -109,3 +113,5 @@ class Settings:
+                 "combines them (with subdivision); backlog item recorded in "
+                 "ARCHITECTURE.md scope notes"
+             )
++        if self.refinement_callback is not None and not callable(self.refinement_callback):
++            raise TypeError("refinement_callback must be callable or None")
+diff --git a/src/flowstar_gpu/determinism.py b/src/flowstar_gpu/determinism.py
+index 12a3e08..d724348 100644
+--- a/src/flowstar_gpu/determinism.py
++++ b/src/flowstar_gpu/determinism.py
+@@ -15,11 +15,77 @@ public entry points (reach, benchmarks) call it first thing.
+ from __future__ import annotations
+ 
+ import os
++from typing import Any
+ 
+ import torch
+ 
++_NO_FTZ_CHECKED: set[str] = set()
+ 
+-def enable_determinism() -> None:
++
++def _probe_gradual_underflow(device: torch.device, check_custom: bool) -> dict[str, Any]:
++    """Exercise representative binary64 subnormal operations on one path."""
++    zero = torch.zeros((), dtype=torch.float64, device=device)
++    one = torch.ones((), dtype=torch.float64, device=device)
++    eta = torch.nextafter(zero, one)
++    smallest_normal = torch.tensor(
++        torch.finfo(torch.float64).tiny, dtype=torch.float64, device=device
++    )
++    results: dict[str, Any] = {
++        "nextafter_eta": eta.item() == 5e-324,
++        "mul_identity": (eta * one).item() == 5e-324,
++        "normal_to_subnormal": (smallest_normal * (2.0**-52)).item() == 5e-324,
++        "subnormal_add": (eta + eta).item() == 1e-323,
++        "custom_checked": False,
++        "custom_mul_identity": True,
++    }
++    if device.type == "cuda":
++        torch.cuda.synchronize(device)
++    if check_custom and device.type == "cuda":
++        from . import cuda_kernels as ck
++
++        if ck.available():
++            interval = torch.stack((eta, eta)).reshape(1, 2)
++            point_one = torch.ones(1, dtype=torch.float64, device=device)
++            custom = ck.iv_mul_point(interval, point_one)
++            torch.cuda.synchronize(device)
++            results["custom_checked"] = True
++            results["custom_mul_identity"] = bool(
++                (custom[0, 0] == eta) & (custom[0, 1] == eta)
++            )
++    return results
++
++
++def assert_gradual_underflow(device: str | torch.device | None = None) -> None:
++    """Fail closed unless every active float64 path preserves subnormals.
++
++    CPU is always checked because host fallbacks remain part of the engine.
++    Selecting CUDA additionally checks torch CUDA arithmetic and, when the
++    shipped custom extension is active, a directed-rounding custom kernel.
++    The cache is per concrete device and can be cleared by tests to exercise
++    simulated FTZ rejection.
++    """
++    requested = torch.device("cpu" if device is None else device)
++    devices = [torch.device("cpu")]
++    if requested.type == "cuda":
++        devices.append(requested)
++    for active in devices:
++        key = str(active)
++        if key in _NO_FTZ_CHECKED:
++            continue
++        observations = _probe_gradual_underflow(active, check_custom=True)
++        failed = [
++            name for name, value in observations.items()
++            if name != "custom_checked" and value is not True
++        ]
++        if failed:
++            raise FloatingPointError(
++                f"gradual-underflow/no-FTZ startup check failed on {active}: "
++                f"{', '.join(failed)}"
++            )
++        _NO_FTZ_CHECKED.add(key)
++
++
++def enable_determinism(device: str | torch.device | None = None) -> None:
+     """Force deterministic kernels. Safe to call more than once.
+ 
+     - CUBLAS_WORKSPACE_CONFIG=:4096:8 makes CUBLAS GEMMs deterministic
+@@ -31,3 +97,4 @@ def enable_determinism() -> None:
+     """
+     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+     torch.use_deterministic_algorithms(True)
++    assert_gradual_underflow(device)
+diff --git a/src/flowstar_gpu/flowpipe.py b/src/flowstar_gpu/flowpipe.py
+index b8975fd..6b979d1 100644
+--- a/src/flowstar_gpu/flowpipe.py
++++ b/src/flowstar_gpu/flowpipe.py
+@@ -32,6 +32,7 @@ from .config import Settings
+ from .monomials import MonomialTables, build_tables
+ from .ode_compiler import CompiledODE, compile_ode, exec_point, exec_replay, exec_valid
+ from .polynomial import StepTables, build_step_tables, build_step_tables_batched
++from .rounding import dot_error_bound
+ from .symbolic_remainder import SymbolicRemainder, make_symbolic_remainder, propagate
+ 
+ # Lane status codes (int8).
+@@ -43,12 +44,36 @@ DONE = 2
+ # the lane loudly instead (GOTCHAS #2), with the same frozen-lane semantics as
+ # a contraction failure.
+ FAILED_DIV = 3
++# All fail-closed arithmetic/domain events share the historical status value 3
++# so existing consumers remain compatible.  The refinement ledger's
++# ``bad_nonfinite_mask`` distinguishes a generic non-finite event from a
++# division/transcendental domain failure.
++FAILED_ARITHMETIC = FAILED_DIV
+ 
+ # Flow* refinement constants (include.h:37,45) — Settings can override.
+ THRESHOLD_HIGH = 1e-12  # reach loop epsilon-start (Continuous.h:601)
+ INITIAL_SIMP = 1e-4  # SR-path-only aggressive tmv cutoff (include.h, GOTCHAS #4)
+ 
+ 
++def _lane_nonfinite(*tensors: torch.Tensor) -> torch.Tensor:
++    """Return a batch mask for NaN/Inf in any supplied tensor."""
++    if not tensors:
++        raise ValueError("_lane_nonfinite needs at least one tensor")
++    batch = tensors[0].shape[0]
++    bad = torch.zeros(batch, dtype=torch.bool, device=tensors[0].device)
++    for tensor in tensors:
++        if tensor.shape[0] != batch:
++            raise ValueError("non-finite lane check received mismatched batches")
++        if tensor.numel() == 0:
++            continue
++        dims = tuple(range(1, tensor.dim()))
++        finite = torch.isfinite(tensor)
++        if dims:
++            finite = finite.all(dim=dims)
++        bad |= ~finite
++    return bad
++
++
+ @dataclass
+ class FlowpipeBatch:
+     """One batch of flowpipes (see module docstring for shapes)."""
+@@ -108,6 +133,57 @@ class ReachResult:
+     final_fp: FlowpipeBatch | None = None
+ 
+ 
++@dataclass
++class RefinementCacheState:
++    """Generation/ownership certificate for refinement replay proposals.
++
++    ``cache`` and ``tails`` contain polynomial ranges/truncation tails and are
++    immutable across refinement; the candidate remainder is supplied afresh
++    to every replay.  This audit state proves which mixed candidate vector a
++    proposal generation consumed.  Each replay advances ``generation`` and
++    transfers ownership to the resulting sequential partial-commit vector.
++    """
++
++    cache_id: str
++    tails_id: str
++    generation: int
++    owner_remainder: torch.Tensor
++    source_remainder: torch.Tensor
++
++    def require(
++        self,
++        expected_generation: int,
++        expected_owner: torch.Tensor | None = None,
++    ) -> None:
++        if self.generation != expected_generation:
++            raise RuntimeError(
++                "stale refinement cache generation: "
++                f"cache={self.cache_id} has {self.generation}, "
++                f"expected {expected_generation}"
++            )
++        if expected_owner is not None and not torch.equal(
++            self.owner_remainder, expected_owner
++        ):
++            raise RuntimeError(
++                "stale refinement cache owner: proposal input does not match "
++                f"generation {expected_generation} for cache={self.cache_id}"
++            )
++
++    def commit(self, remainder: torch.Tensor) -> None:
++        self.generation += 1
++        self.owner_remainder = remainder.clone()
++
++
++def _refinement_cache_id(tensor: torch.Tensor, prefix: str) -> str:
++    return f"{prefix}:{tensor.untyped_storage().data_ptr():x}:{tuple(tensor.shape)}"
++
++
++def _trace_refinement(settings: Settings, record: dict[str, object]) -> None:
++    callback = settings.refinement_callback
++    if callback is not None:
++        callback(record)
++
++
+ def initial_flowpipe(boxes: torch.Tensor, tables: MonomialTables) -> FlowpipeBatch:
+     """Box initial sets -> canonical flowpipes (Flow* Flowpipe(box), :260).
+ 
+@@ -118,7 +194,9 @@ def initial_flowpipe(boxes: torch.Tensor, tables: MonomialTables) -> FlowpipeBat
+     """
+     B, n, _ = boxes.shape
+     dev, dt = boxes.device, boxes.dtype
+-    mid = (boxes[..., 0] + boxes[..., 1]) * 0.5  # [B, n] RN midpoint
++    # Half-before-add avoids spurious overflow for finite same-sign endpoints;
++    # the outward radius below absorbs its RN/subnormal error.
++    mid = boxes[..., 0] * 0.5 + boxes[..., 1] * 0.5  # [B, n] RN midpoint
+     # Sound radius: max distance from mid to either endpoint, rounded up 1 ulp.
+     from .rounding import next_up
+ 
+@@ -228,6 +306,7 @@ def _validate_and_refine(
+     f_iv, f_rem, cache, tails = exec_valid(
+         code, x, x_rem, order - 1, tables, step, settings.cutoff, bad_out=bad
+     )
++    bad |= _lane_nonfinite(x, new_x0, x_rem, f_iv, f_rem, cache, tails)
+     int_f_iv = poly.integrate_t_iv(f_iv, tables, max_deg_in=order - 1)  # [B, n, K, 2]
+     tmv_tmp_coeffs = torch.zeros(B, n, T, 2, dtype=x.dtype, device=x.device)
+     tmv_tmp_coeffs[..., : int_f_iv.shape[-2], :] = int_f_iv
+@@ -242,11 +321,38 @@ def _validate_and_refine(
+     # (j) Contraction check (Continuous.cpp:985-1006): Picard image inside the
+     #     guess, per lane over all dims. Bad lanes (M5) can never pass.
+     total = iv.add(tmv_tmp_rem, int_diff)  # [B, n, 2]
++    bad |= _lane_nonfinite(tmv_tmp_coeffs, tmv_tmp_rem, int_diff, total)
+     ok = iv.contains(x_rem, total).all(dim=-1) & ~bad  # [B]
+ 
++    cache_state = None
++    if settings.refinement_callback is not None:
++        cache_state = RefinementCacheState(
++            cache_id=_refinement_cache_id(cache, "range-cache"),
++            tails_id=_refinement_cache_id(tails, "strict-tails"),
++            generation=0,
++            owner_remainder=total.clone(),
++            source_remainder=x_rem.clone(),
++        )
++        for lane in range(B):
++            _trace_refinement(
++                settings,
++                {
++                    "event": "initial_self_map",
++                    "lane": lane,
++                    "initial_self_map_ok": bool(ok[lane].item()),
++                    "input_remainder_vector": x_rem[lane].detach().cpu().tolist(),
++                    "proposal_interval": total[lane].detach().cpu().tolist(),
++                    "bad_nonfinite_mask": bool(bad[lane].item()),
++                    "input_generation": 0,
++                    "proposal_generation": 0,
++                    "cache_id": cache_state.cache_id,
++                    "tails_id": cache_state.tails_id,
++                },
++            )
++
+     # (k) Refinement — shared with the sparse path (identical [B, n, 2] math).
+     cur, bad = refine_loop(code, total, ok, bad, cache, tails, strict, int_diff,
+-                           step, settings)
++                           step, settings, cache_state=cache_state)
+     return cur, ok, bad
+ 
+ 
+@@ -261,6 +367,8 @@ def refine_loop(
+     int_diff: torch.Tensor,
+     step: StepTables,
+     settings: Settings,
++    *,
++    cache_state: RefinementCacheState | None = None,
+ ) -> tuple[torch.Tensor, torch.Tensor]:
+     """Refinement loop (Continuous.cpp:1008-1036): remainder-only replay until
+     improvement stalls (STOP_RATIO) or MAX_REFINEMENT_STEPS. Representation-
+@@ -269,16 +377,46 @@ def refine_loop(
+     B, n, _ = accepted.shape
+     cur = accepted  # [B, n, 2] current remainders (junk for failed lanes)
+     refining = ok.clone()  # [B]
+-    for _ in range(settings.max_refinement_steps):
++    if cache_state is None and settings.refinement_callback is not None:
++        cache_state = RefinementCacheState(
++            cache_id=_refinement_cache_id(cache, "range-cache"),
++            tails_id=_refinement_cache_id(tails, "strict-tails"),
++            generation=0,
++            owner_remainder=accepted.clone(),
++            source_remainder=accepted.clone(),
++        )
++    tracked = cache_state is not None
++    trace_enabled = settings.refinement_callback is not None
++    expected_generation = 0
++    if tracked:
++        assert cache_state is not None
++        cache_state.require(expected_generation, cur)
++    iterations = (
++        torch.zeros(B, dtype=torch.int64, device=accepted.device)
++        if trace_enabled
++        else None
++    )
++    for iteration in range(settings.max_refinement_steps):
+         if not bool(refining.any()):
+             break
++        if tracked:
++            assert cache_state is not None
++            cache_state.require(expected_generation, cur)
++        input_cur = cur if trace_enabled else None
++        input_refining = refining.clone() if trace_enabled else None
+         bad_replay = torch.zeros_like(bad)  # [B]
+         new_rem = exec_replay(code, cur, cache, tails, strict, bad_out=bad_replay)
++        bad_replay |= _lane_nonfinite(new_rem)
+         # A replay-time domain violation on a refining lane fails it like the
+         # valid-pass one (division domains only shrink during refinement, so
+         # this cannot fire for a lane exec_valid accepted — pure defense).
+         bad = bad | (bad_replay & refining)
+         refining = refining & ~bad_replay
++        # Prevent already-failed lanes' Inf/NaN payloads from contaminating
++        # subsequent vectorized arithmetic; their state is frozen below.
++        new_rem = torch.where(
++            bad_replay.view(B, 1, 1), torch.zeros_like(new_rem), new_rem
++        )
+         new_rem = iv.mul(new_rem, step.dt(new_rem.dim() - 1).expand_as(new_rem))
+         new_rem = iv.add(new_rem, int_diff)
+         sub_ok = iv.contains(cur, new_rem)  # [B, n] refined still inside current
+@@ -299,6 +437,68 @@ def refine_loop(
+         cur = torch.where(update.unsqueeze(-1), new_rem, cur)
+         # Lane keeps refining iff no dim failed AND some dim still improves.
+         refining = refining & (~fail_any.any(dim=-1)) & improved.any(dim=-1)
++        if trace_enabled:
++            assert iterations is not None and input_refining is not None
++            iterations += input_refining.long()
++        if tracked:
++            assert cache_state is not None
++            cache_state.commit(cur)
++            expected_generation += 1
++        if trace_enabled:
++            assert cache_state is not None and input_cur is not None
++            assert input_refining is not None
++            for lane in range(B):
++                if not bool(input_refining[lane].item()):
++                    continue
++                for component in range(n):
++                    committed = bool(update[lane, component].item())
++                    _trace_refinement(
++                        settings,
++                        {
++                            "event": "refinement_component",
++                            "lane": lane,
++                            "iteration": iteration,
++                            "component_order": component,
++                            "initial_self_map_ok": bool(ok[lane].item()),
++                            "input_remainder_vector": input_cur[lane].detach().cpu().tolist(),
++                            "input_generation": expected_generation - 1,
++                            "proposal_interval": new_rem[lane, component].detach().cpu().tolist(),
++                            "proposal_generation": expected_generation,
++                            "subset_result": bool(sub_ok[lane, component].item()),
++                            "commit_result": committed,
++                            "commit_mask": update[lane].detach().cpu().tolist(),
++                            "vector_after_commit": cur[lane].detach().cpu().tolist(),
++                            "stop_ratio_inputs": {
++                                "new_width": float(iv.width(new_rem[lane, component]).item()),
++                                "old_width": float(iv.width(input_cur[lane, component]).item()),
++                                "ratio": float(ratio[lane, component].item()),
++                                "threshold": settings.stop_ratio,
++                            },
++                            "stop_decision": bool(refining[lane].item()),
++                            "bad_nonfinite_mask": bool(bad_replay[lane].item()),
++                            "cache_id": cache_state.cache_id,
++                            "cache_generation": cache_state.generation,
++                            "tails_id": cache_state.tails_id,
++                        },
++                    )
++
++    if trace_enabled:
++        assert cache_state is not None and iterations is not None
++        for lane in range(B):
++            _trace_refinement(
++                settings,
++                {
++                    "event": "final_remainder_owner",
++                    "lane": lane,
++                    "initial_self_map_ok": bool(ok[lane].item()),
++                    "iterations": int(iterations[lane].item()),
++                    "final_accepted_remainder": cur[lane].detach().cpu().tolist(),
++                    "final_generation": cache_state.generation,
++                    "cache_id": cache_state.cache_id,
++                    "tails_id": cache_state.tails_id,
++                    "bad_nonfinite_mask": bool(bad[lane].item()),
++                },
++            )
+ 
+     return cur, bad
+ 
+@@ -334,8 +534,14 @@ def advance(
+     #     ADAPTIVE NOTE: this delta belongs to the PREVIOUS accepted step (the
+     #     new flowpipe starts at its end) — Flow* runs stages (a)-(f) BEFORE
+     #     setStepsize(new) for exactly this reason (Continuous.cpp:1233-1338).
+-    x0_sp_full = poly.evaluate_time_end(fp.pre_coeffs, tables, step_prev or step)  # [B, n, Ts]
+-    x0_rem = fp.pre_rem  # [B, n, 2]
++    if strict:
++        x0_sp_full, endpoint_roundoff = poly.evaluate_time_end_with_roundoff(
++            fp.pre_coeffs, tables, step_prev or step
++        )
++        x0_rem = iv.add(fp.pre_rem, endpoint_roundoff)
++    else:
++        x0_sp_full = poly.evaluate_time_end(fp.pre_coeffs, tables, step_prev or step)  # [B, n, Ts]
++        x0_rem = fp.pre_rem  # [B, n, 2]
+ 
+     # (b) Split off the constant part c0 (Continuous.cpp:869-882; the
+     #     remainder-midpoint absorption there is commented out — GOTCHAS #3).
+@@ -366,7 +572,23 @@ def advance(
+         x0_other[..., var_img] = 0.0  # degree >= 2 terms only
+         # (decompose puts the REMAINDER on the nonlinear part: TaylorModel.h:1091)
+         phi_i = lin_a * sr.scalars.unsqueeze(1)  # [B, n, n] right-scaled columns
+-        j_lin = propagate(sr, phi_i)  # [B, n, 2] linear image of history rems
++        phi_i_iv = None
++        if strict:
++            # The stored point Phi stays unchanged, while this interval matrix
++            # encloses the exact product of its binary64 factors.  Subsequent
++            # strict queue products propagate this enclosure rather than
++            # treating rounded Phi entries as exact.
++            phi_i_iv = iv.mul(
++                iv.from_point(lin_a),
++                (
++                    sr.scalars_iv.unsqueeze(1)
++                    if sr.scalars_iv is not None
++                    else iv.from_point(sr.scalars.unsqueeze(1))
++                ),
++            )
++        j_lin = propagate(
++            sr, phi_i, strict=strict, phi_i_iv=phi_i_iv
++        )  # [B, n, 2] linear image of history rems
+ 
+         if sr.queue_len > 0:
+             # Nonlinear-only composition; its remainder is this step's J entry.
+@@ -379,6 +601,22 @@ def advance(
+             lin_part = torch.einsum("bij,bjt->bit", lin_a, fp.tmv_coeffs)  # [B, n, Ts]
+             new_tmv_coeffs = comp_c + lin_part
+             new_tmv_rem = iv.add(j_new, j_lin)
++            if strict:
++                # Charge both the linear GEMM reduction and the final tier-P
++                # coefficient addition.  The error polynomial is ranged over
++                # the actual spatial basis and inserted exactly once.
++                abs_dot = torch.einsum(
++                    "bij,bjt->bit", lin_a.abs(), fp.tmv_coeffs.abs()
++                )
++                lin_radius = dot_error_bound(abs_dot, n)
++                lin_error = torch.stack((-lin_radius, lin_radius), dim=-1)
++                exact_add = iv.add(iv.from_point(comp_c), iv.from_point(lin_part))
++                add_error = iv.sub(exact_add, iv.from_point(new_tmv_coeffs))
++                coeff_error = iv.add(lin_error, add_error)
++                new_tmv_rem = iv.add(
++                    new_tmv_rem,
++                    poly.range_normal_iv_spatial(coeff_error, tables),
++                )
+         else:
+             # First SR step: full composition, exactly like non-SR
+             # (Continuous.cpp:2247-2290).
+@@ -402,14 +640,43 @@ def advance(
+     point_dim = S <= 2.2250738585072014e-308  # [B, n]
+     S = torch.where(point_dim, torch.zeros_like(S), S)
+     scale = torch.where(point_dim, torch.ones_like(S), 1.0 / S.clamp(min=1e-300))
++    scale_iv = None
++    pre_scale_coeffs = new_tmv_coeffs
++    if strict:
++        safe_s = torch.where(point_dim, torch.ones_like(S), S)
++        scale_iv, _scale_bad = iv.rec(iv.from_point(safe_s))
++        scale_iv = torch.where(
++            point_dim.unsqueeze(-1), iv.from_point(torch.ones_like(S)), scale_iv
++        )
+     new_tmv_coeffs = new_tmv_coeffs * scale.unsqueeze(-1)  # [B, n, Ts] tier-P
+-    new_tmv_rem = iv.mul_point(new_tmv_rem, scale)  # remainder scales too
++    if strict:
++        assert scale_iv is not None
++        exact_scaled_coeffs = iv.mul(
++            iv.from_point(pre_scale_coeffs), scale_iv.unsqueeze(-2)
++        )
++        scale_coeff_error = iv.sub(
++            exact_scaled_coeffs, iv.from_point(new_tmv_coeffs)
++        )
++        new_tmv_rem = iv.mul(new_tmv_rem, scale_iv)
++        new_tmv_rem = iv.add(
++            new_tmv_rem,
++            poly.range_normal_iv_spatial(scale_coeff_error, tables),
++        )
++    else:
++        new_tmv_rem = iv.mul_point(new_tmv_rem, scale)  # remainder scales too
+ 
+     if sr is not None:
+         # Flow* Continuous.cpp:2296-2322: scalars remember this step's invS
+         # (0 for point dims), and the freshly scaled tmv gets the aggressive
+         # INITIAL_SIMP (1e-4) cutoff that only the SR paths apply (GOTCHAS #4).
+         sr.scalars = torch.where(point_dim, torch.zeros_like(scale), scale)
++        if strict:
++            assert scale_iv is not None
++            sr.scalars_iv = torch.where(
++                point_dim.unsqueeze(-1),
++                iv.from_point(torch.zeros_like(scale)),
++                scale_iv,
++            )
+         tmv_full2 = torch.zeros(B, n, T, dtype=x0_sp.dtype, device=x0_sp.device)
+         tmv_full2[..., tables.spatial_index] = new_tmv_coeffs
+         kept, dropped_rng = poly.cutoff_normal(tmv_full2, tables, step, INITIAL_SIMP)
+@@ -498,8 +765,14 @@ def advance_adaptive(
+     step_prev = build_step_tables_batched(tables, prev_deltas)
+ 
+     # Stages (a)-(g) — identical to advance() with per-lane previous tables.
+-    x0_sp_full = poly.evaluate_time_end(fp.pre_coeffs, tables, step_prev)  # [B, n, Ts]
+-    x0_rem = fp.pre_rem
++    if strict:
++        x0_sp_full, endpoint_roundoff = poly.evaluate_time_end_with_roundoff(
++            fp.pre_coeffs, tables, step_prev
++        )
++        x0_rem = iv.add(fp.pre_rem, endpoint_roundoff)
++    else:
++        x0_sp_full = poly.evaluate_time_end(fp.pre_coeffs, tables, step_prev)  # [B, n, Ts]
++        x0_rem = fp.pre_rem
+     c0 = x0_sp_full[..., 0].clone()  # [B, n]
+     x0_sp = x0_sp_full.clone()
+     x0_sp[..., 0] = 0.0
+@@ -516,8 +789,30 @@ def advance_adaptive(
+     point_dim = S <= 2.2250738585072014e-308
+     S = torch.where(point_dim, torch.zeros_like(S), S)
+     scale = torch.where(point_dim, torch.ones_like(S), 1.0 / S.clamp(min=1e-300))
++    scale_iv = None
++    pre_scale_coeffs = new_tmv_coeffs
++    if strict:
++        safe_s = torch.where(point_dim, torch.ones_like(S), S)
++        scale_iv, _scale_bad = iv.rec(iv.from_point(safe_s))
++        scale_iv = torch.where(
++            point_dim.unsqueeze(-1), iv.from_point(torch.ones_like(S)), scale_iv
++        )
+     new_tmv_coeffs = new_tmv_coeffs * scale.unsqueeze(-1)
+-    new_tmv_rem = iv.mul_point(new_tmv_rem, scale)
++    if strict:
++        assert scale_iv is not None
++        exact_scaled_coeffs = iv.mul(
++            iv.from_point(pre_scale_coeffs), scale_iv.unsqueeze(-2)
++        )
++        scale_coeff_error = iv.sub(
++            exact_scaled_coeffs, iv.from_point(new_tmv_coeffs)
++        )
++        new_tmv_rem = iv.mul(new_tmv_rem, scale_iv)
++        new_tmv_rem = iv.add(
++            new_tmv_rem,
++            poly.range_normal_iv_spatial(scale_coeff_error, tables),
++        )
++    else:
++        new_tmv_rem = iv.mul_point(new_tmv_rem, scale)
+ 
+     new_x0 = torch.zeros(B, n, T, dtype=x0_sp.dtype, device=x0_sp.device)
+     new_x0[..., 0] = c0
+@@ -591,7 +886,7 @@ def reach(
+     """
+     from .determinism import enable_determinism
+ 
+-    enable_determinism()
++    enable_determinism(settings.device)
+ 
+     # M5: elementary/div cache layouts are sized for the order the validated
+     # pass runs at — Flow*'s k = order - 1 (Picard_ctrunc_normal, TaylorModel.h:3711).
+diff --git a/src/flowstar_gpu/interval.py b/src/flowstar_gpu/interval.py
+index 795bc52..adf10fa 100644
+--- a/src/flowstar_gpu/interval.py
++++ b/src/flowstar_gpu/interval.py
+@@ -88,13 +88,15 @@ def hi(iv: torch.Tensor) -> torch.Tensor:
+ 
+ 
+ def assert_valid(iv: torch.Tensor, what: str = "interval") -> None:
+-    """Debug/boundary check: lo <= hi and no NaN. Raises on violation.
++    """Finite-certificate boundary check: ordered and entirely finite.
+ 
+     Not called inside kernels (cost + graph breaks); pipeline stages call it on
+     entry/exit under a config flag, and tests call it liberally.
+     """
+     if torch.isnan(iv).any():
+         raise FloatingPointError(f"{what}: NaN endpoint")
++    if torch.isinf(iv).any():
++        raise FloatingPointError(f"{what}: infinite endpoint is not a finite certificate")
+     if (iv[..., 0] > iv[..., 1]).any():
+         raise FloatingPointError(f"{what}: lo > hi")
+ 
+@@ -399,7 +401,8 @@ def contains(outer: torch.Tensor, inner: torch.Tensor) -> torch.Tensor:
+     Matches Flow* Interval::subseteq (Interval.cpp:1243): closed-interval
+     containment with plain float comparisons.
+     """
+-    return (outer[..., 0] <= inner[..., 0]) & (inner[..., 1] <= outer[..., 1])
++    finite = torch.isfinite(outer).all(dim=-1) & torch.isfinite(inner).all(dim=-1)
++    return finite & (outer[..., 0] <= inner[..., 0]) & (inner[..., 1] <= outer[..., 1])
+ 
+ 
+ def width(iv: torch.Tensor) -> torch.Tensor:
+diff --git a/src/flowstar_gpu/polynomial.py b/src/flowstar_gpu/polynomial.py
+index 736dd36..cc4c776 100644
+--- a/src/flowstar_gpu/polynomial.py
++++ b/src/flowstar_gpu/polynomial.py
+@@ -437,6 +437,52 @@ def mul_point_spatial(a: torch.Tensor, b: torch.Tensor, tables: MonomialTables)
+     )
+ 
+ 
++def mul_iv_spatial(
++    a_iv: torch.Tensor, b_iv: torch.Tensor, tables: MonomialTables
++) -> torch.Tensor:
++    """Rigorous spatial coefficient product.
++
++    This is the t-free counterpart of :func:`mul_iv`.  It is used by strict
++    composition to enclose the exact coefficient generated from the stored
++    binary64 operands while preserving the ordinary tier-P point result.
++    """
++    pa = a_iv[..., tables.sp_pair_i, :]
++    pb = b_iv[..., tables.sp_pair_j, :]
++    products = iv.mul(pa, pb)
++    tag = f"sp:{tables.n}:{tables.k}"
++    lo_hat = _segment_sum_with(products[..., 0], tables.sp_seg_len, tables.Ts2, tag)
++    hi_hat = _segment_sum_with(products[..., 1], tables.sp_seg_len, tables.Ts2, tag)
++    mag_hat = _segment_sum_with(iv.mag(products), tables.sp_seg_len, tables.Ts2, tag)
++    error = dot_error_bound(mag_hat, tables.sp_seg_len)
++    return torch.stack((next_down(lo_hat - error), next_up(hi_hat + error)), dim=-1)
++
++
++def range_normal_iv_spatial(
++    coeffs_iv: torch.Tensor, tables: MonomialTables
++) -> torch.Tensor:
++    """Range a t-free interval-coefficient polynomial on ``[-1,1]^n``."""
++    m_basis = coeffs_iv.shape[-2]
++    terms = iv.mul(coeffs_iv, tables.sp_cat_iv[:m_basis])
++    return iv.sum(terms, dim=-1)
++
++
++def mul_point_spatial_with_roundoff(
++    a: torch.Tensor, b: torch.Tensor, tables: MonomialTables
++) -> tuple[torch.Tensor, torch.Tensor]:
++    """Tier-P spatial product plus its strict coefficient-error range.
++
++    The point coefficients are bit-identical to :func:`mul_point_spatial`.
++    Independently, degenerate interval inputs are multiplied by the rigorous
++    tier-I path.  Subtracting the retained point coefficient yields an
++    interval polynomial enclosing *only* coefficient formation roundoff; its
++    range is returned for insertion exactly once into the ordinary remainder.
++    """
++    point = mul_point_spatial(a, b, tables)
++    exact_coeff = mul_iv_spatial(iv.from_point(a), iv.from_point(b), tables)
++    coefficient_error = iv.sub(exact_coeff, iv.from_point(point))
++    return point, range_normal_iv_spatial(coefficient_error, tables)
++
++
+ def range_normal_spatial(coeffs: torch.Tensor, tables: MonomialTables) -> torch.Tensor:
+     """Range of a t-free point polynomial over [-1, 1]^n: [..., M<=Ts2] -> [..., 2]."""
+     m_basis = coeffs.shape[-1]
+@@ -551,3 +597,34 @@ def evaluate_time_end(
+     out = torch.zeros(*coeffs.shape[:-1], tables.Ts, dtype=coeffs.dtype, device=coeffs.device)
+     out.index_add_(-1, tgt, src)
+     return out
++
++
++def evaluate_time_end_with_roundoff(
++    coeffs: torch.Tensor, tables: MonomialTables, step: StepTables
++) -> tuple[torch.Tensor, torch.Tensor]:
++    """Endpoint substitution plus strict range of coefficient roundoff.
++
++    The first result is exactly :func:`evaluate_time_end`.  The second ranges
++    the difference between that retained point polynomial and a rigorous
++    interval-coefficient evaluation of the same binary64 coefficients and
++    stored endpoint powers.
++    """
++    point = evaluate_time_end(coeffs, tables, step)
++    m_basis = coeffs.shape[-1]
++    factors = step.end_gather(tables.t_deg[:m_basis], coeffs.dim())
++    src_iv = iv.mul(iv.from_point(coeffs), iv.from_point(factors))
++    tgt = tables.eval_t_spatial[:m_basis]
++    if m_basis > tables.eval_t_valid_len:
++        raise ValueError("evaluate_time_end_with_roundoff: spatial degree exceeds k")
++    shape = (*coeffs.shape[:-1], tables.Ts)
++    lo_hat = torch.zeros(shape, dtype=coeffs.dtype, device=coeffs.device)
++    hi_hat = torch.zeros_like(lo_hat)
++    mag_hat = torch.zeros_like(lo_hat)
++    lo_hat.index_add_(-1, tgt, src_iv[..., 0])
++    hi_hat.index_add_(-1, tgt, src_iv[..., 1])
++    mag_hat.index_add_(-1, tgt, iv.mag(src_iv))
++    counts = torch.bincount(tgt, minlength=tables.Ts)
++    error = dot_error_bound(mag_hat, counts)
++    exact_coeff = torch.stack((next_down(lo_hat - error), next_up(hi_hat + error)), dim=-1)
++    coefficient_error = iv.sub(exact_coeff, iv.from_point(point))
++    return point, range_normal_iv_spatial(coefficient_error, tables)
+diff --git a/src/flowstar_gpu/sparse_exec.py b/src/flowstar_gpu/sparse_exec.py
+index b5746ea..3e764c1 100644
+--- a/src/flowstar_gpu/sparse_exec.py
++++ b/src/flowstar_gpu/sparse_exec.py
+@@ -923,7 +923,13 @@ def compose_s(
+                 pa_range[:, j] = sp.range_spatial_s(sub, eng, psup)
+         gv = g_coeffs[:, lv["lastvars"]]  # [B, L, Sg]
+         gv_rem = g_rem[:, lv["lastvars"]]
+-        prod = sp.mul_point_s(pa, gv, lv["pb"])  # [B, L, S2]
++        if strict:
++            prod, coefficient_roundoff = sp.mul_point_s_with_roundoff(
++                pa, gv, lv["pb"], eng
++            )
++        else:
++            prod = sp.mul_point_s(pa, gv, lv["pb"])  # [B, L, S2]
++            coefficient_roundoff = None
+         rem = iv.mul(p_rem, gv_rem)
+         rem = iv.add(rem, iv.mul(g_range[:, lv["lastvars"]], p_rem))
+         rem = iv.add(rem, iv.mul(pa_range, gv_rem))
+@@ -936,6 +942,8 @@ def compose_s(
+             tail = torch.zeros(B, L, 2, dtype=dt, device=dev)
+         kept, round_rng = sp.cutoff_spatial_s(kept, eng, lv["sup_lvl"], cutoff_threshold)
+         rem = iv.add(rem, iv.add(tail, round_rng))
++        if coefficient_roundoff is not None:
++            rem = iv.add(rem, coefficient_roundoff)
+         out_rows = torch.zeros(B, L, cs.sup_m.size, dtype=dt, device=dev)
+         out_rows.index_copy_(-1, eng.embed_idx(lv["sup_lvl"], cs.sup_m), kept)
+         m_coeffs[:, lv["rows"]] = out_rows
+@@ -1095,11 +1103,19 @@ def _refine_dispatch(
+     step: StepTables,
+     settings: Settings,
+     eng: sp.SparseEngine,
++    cache_state=None,
+ ) -> tuple[torch.Tensor, torch.Tensor]:
+     """Refinement dispatcher: ONE-LAUNCH tape-interpreter kernel when the
+     tape serializes (tape_kernels; bitwise-equal to the eager loop by its
+     test contract, 200-450x faster), else the chunked graph, else eager."""
+     from . import tape_kernels as tk
++    from .flowpipe import refine_loop
++
++    if settings.refinement_callback is not None:
++        return refine_loop(
++            code, accepted, ok, bad, cache, tails, strict, int_diff, step,
++            settings, cache_state=cache_state,
++        )
+ 
+     if USE_TAPE_KERNELS and accepted.is_cuda and tk.available():
+         tapes = _eng_cache(eng, "_rtape")
+@@ -1174,7 +1190,11 @@ def refine_loop_graphed(
+     def body(cur_s, refining_s, bad_s, cache_s, tails_s, int_diff_s):
+         bad_replay = torch.zeros_like(bad_s)
+         new_rem = exec_replay(code, cur_s, cache_s, tails_s, strict, bad_out=bad_replay)
++        bad_replay |= ~torch.isfinite(new_rem).all(dim=(1, 2))
+         live = refining_s & ~bad_replay  # [B]
++        new_rem = torch.where(
++            bad_replay.view(B, 1, 1), torch.zeros_like(new_rem), new_rem
++        )
+         new_rem = iv.mul(new_rem, dt_iv)
+         new_rem = iv.add(new_rem, int_diff_s)
+         sub_ok = iv.contains(cur_s, new_rem)  # [B, n]
+@@ -1385,6 +1405,7 @@ def advance_sparse(
+     data shrinkage from cutoffs feeds the next specialization.
+     """
+     B, n, _ = st.pre.shape
++    from .flowpipe import _lane_nonfinite
+     dt, dev = st.pre.dtype, st.pre.device
+     strict = settings.mode == "strict"
+     order = settings.order
+@@ -1392,7 +1413,14 @@ def advance_sparse(
+     tables, step = eng.tables, eng.step
+ 
+     # (a) tmvPre at t = delta (t-free full-basis ids), (b) split constant.
+-    x0f, sup0f = sp.evaluate_time_end_s(st.pre, eng, st.pre_sup)  # [B, n, S0]
++    if strict:
++        x0f, sup0f, endpoint_roundoff = sp.evaluate_time_end_s_with_roundoff(
++            st.pre, eng, st.pre_sup
++        )
++        x0_rem = iv.add(st.pre_rem, endpoint_roundoff)
++    else:
++        x0f, sup0f = sp.evaluate_time_end_s(st.pre, eng, st.pre_sup)  # [B, n, S0]
++        x0_rem = st.pre_rem
+     c0 = x0f[..., 0].clone()  # [B, n]
+     x0f = x0f.clone()
+     x0f[..., 0] = 0.0
+@@ -1400,7 +1428,7 @@ def advance_sparse(
+ 
+     if sr is None:
+         new_tmv, new_tmv_rem, sup_nt = compose_s(
+-            x0f, st.pre_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
++            x0f, x0_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
+             order, cutoff_eps, strict, sched, eng,
+         )
+     else:
+@@ -1422,11 +1450,21 @@ def advance_sparse(
+             torch.zeros_like(x0_other[..., present]),
+         )  # zero the linear columns (kept branchless for clarity)
+         phi_i = lin_a * sr.scalars.unsqueeze(1)  # [B, n, n]
+-        j_lin = propagate(sr, phi_i)  # [B, n, 2]
++        phi_i_iv = None
++        if strict:
++            phi_i_iv = iv.mul(
++                iv.from_point(lin_a),
++                (
++                    sr.scalars_iv.unsqueeze(1)
++                    if sr.scalars_iv is not None
++                    else iv.from_point(sr.scalars.unsqueeze(1))
++                ),
++            )
++        j_lin = propagate(sr, phi_i, strict=strict, phi_i_iv=phi_i_iv)  # [B, n, 2]
+ 
+         if sr.queue_len > 0:
+             comp_c, comp_rem, sup_c = compose_s(
+-                x0_other, st.pre_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
++                x0_other, x0_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
+                 order, cutoff_eps, strict, sched, eng,
+             )
+             lin_part = torch.einsum("bij,bjt->bit", lin_a, st.tmv)  # [B, n, St]
+@@ -1435,9 +1473,29 @@ def advance_sparse(
+             )
+             j_new = comp_rem
+             new_tmv_rem = iv.add(j_new, j_lin)
++            if strict:
++                abs_dot = torch.einsum("bij,bjt->bit", lin_a.abs(), st.tmv.abs())
++                lin_radius = dot_error_bound(abs_dot, n)
++                lin_error_src = torch.stack((-lin_radius, lin_radius), dim=-1)
++                lin_error = sp.embed_s(
++                    lin_error_src, eng, st.tmv_sup, sup_nt, interval=True
++                )
++                exact_add, add_sup = sp.add_aligned(
++                    iv.from_point(comp_c), sup_c,
++                    iv.from_point(lin_part), st.tmv_sup,
++                    eng, interval=True,
++                )
++                if add_sup is not sup_nt and add_sup.ids != sup_nt.ids:  # pragma: no cover - canonical union invariant
++                    raise RuntimeError("strict sparse addition support mismatch")
++                add_error = iv.sub(exact_add, iv.from_point(new_tmv))
++                coeff_error = iv.add(lin_error, add_error)
++                new_tmv_rem = iv.add(
++                    new_tmv_rem,
++                    sp.range_spatial_iv_s(coeff_error, eng, sup_nt),
++                )
+         else:
+             new_tmv, new_tmv_rem, sup_nt = compose_s(
+-                x0f, st.pre_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
++                x0f, x0_rem, st.tmv, st.tmv_rem, sup0sp, st.tmv_sup,
+                 order, cutoff_eps, strict, sched, eng,
+             )
+             j_new = new_tmv_rem
+@@ -1462,13 +1520,40 @@ def advance_sparse(
+         )
+         aux[("x0n",)] = ax
+     sup_x0n, pos_full, arange_n, var_sups0 = ax
++    pre_scale_tmv = new_tmv
++    pre_scale_rem = new_tmv_rem
+     new_tmv, new_tmv_rem, S, point_dim, scale, new_x0 = gl.run(
+         ("precond", sup_nt, B), _g_precond,
+         new_tmv, new_tmv_rem, eng.cat(sup_nt), c0, pos_full, arange_n, sup_x0n.size,
+     )
++    scale_iv = None
++    if strict:
++        safe_s = torch.where(point_dim, torch.ones_like(S), S)
++        scale_iv, _scale_bad = iv.rec(iv.from_point(safe_s))
++        scale_iv = torch.where(
++            point_dim.unsqueeze(-1), iv.from_point(torch.ones_like(S)), scale_iv
++        )
++        exact_scaled_coeffs = iv.mul(
++            iv.from_point(pre_scale_tmv), scale_iv.unsqueeze(-2)
++        )
++        scale_coeff_error = iv.sub(
++            exact_scaled_coeffs, iv.from_point(new_tmv)
++        )
++        new_tmv_rem = iv.mul(pre_scale_rem, scale_iv)
++        new_tmv_rem = iv.add(
++            new_tmv_rem,
++            sp.range_spatial_iv_s(scale_coeff_error, eng, sup_nt),
++        )
+ 
+     if sr is not None:
+         sr.scalars = torch.where(point_dim, torch.zeros_like(scale), scale)
++        if strict:
++            assert scale_iv is not None
++            sr.scalars_iv = torch.where(
++                point_dim.unsqueeze(-1),
++                iv.from_point(torch.zeros_like(scale)),
++                scale_iv,
++            )
+         new_tmv, dropped_rng = sp.cutoff_spatial_s(new_tmv, eng, sup_nt, INITIAL_SIMP)
+         new_tmv_rem = iv.add(new_tmv_rem, dropped_rng)
+         # new_x0's S-scatter used the pre-cutoff S — unchanged by the cutoff
+@@ -1512,6 +1597,7 @@ def advance_sparse(
+     f_iv, f_rem, cache, tails, bad = _graphed_valid(
+         spec_v, code, x, x_rem, bad, eng, cutoff_eps, tabs
+     )
++    bad |= _lane_nonfinite(x, new_x0, x_rem, f_iv, f_rem, cache, tails)
+     # (h)-(j) interval integration + difference bound + contraction inputs
+     # — one compiled glue region (_g_validpost).
+     sup_fv = spec_v.sup_out_union
+@@ -1529,9 +1615,43 @@ def advance_sparse(
+         e_int, e_x0, e_t, e_xx, eng.factor(sup_d), dt_iv,
+         sup_ivo.size, sup_t.size, sup_d.size,
+     )
++    bad |= _lane_nonfinite(total, int_diff)
+     ok = ok_dims.all(dim=-1) & ~bad
++    cache_state = None
++    if settings.refinement_callback is not None:
++        from .flowpipe import (
++            RefinementCacheState,
++            _refinement_cache_id,
++            _trace_refinement,
++        )
++
++        cache_state = RefinementCacheState(
++            cache_id=_refinement_cache_id(cache, "range-cache"),
++            tails_id=_refinement_cache_id(tails, "strict-tails"),
++            generation=0,
++            owner_remainder=total.clone(),
++            source_remainder=x_rem.clone(),
++        )
++        for lane in range(B):
++            _trace_refinement(
++                settings,
++                {
++                    "event": "initial_self_map",
++                    "lane": lane,
++                    "initial_self_map_ok": bool(ok[lane].item()),
++                    "input_remainder_vector": x_rem[lane].detach().cpu().tolist(),
++                    "proposal_interval": total[lane].detach().cpu().tolist(),
++                    "bad_nonfinite_mask": bool(bad[lane].item()),
++                    "input_generation": 0,
++                    "proposal_generation": 0,
++                    "cache_id": cache_state.cache_id,
++                    "tails_id": cache_state.tails_id,
++                },
++            )
+     cur, bad = _refine_dispatch(code, total, ok, bad, cache, tails, strict,
+-                                int_diff, step, settings, eng)
++                                int_diff, step, settings, eng, cache_state)
++    bad |= _lane_nonfinite(cur)
++    ok &= ~bad
+ 
+     # (l) Emit — compiled glue region (_g_emit; frozen-lane union merge).
+     sup_up, e_new, e_old = eng.union(sup_x, st.pre_sup)
+diff --git a/src/flowstar_gpu/support.py b/src/flowstar_gpu/support.py
+index 30856b2..a2caf7e 100644
+--- a/src/flowstar_gpu/support.py
++++ b/src/flowstar_gpu/support.py
+@@ -563,6 +563,22 @@ def mul_iv_s(a_iv: torch.Tensor, b_iv: torch.Tensor, pb: PairBind) -> torch.Tens
+     return torch.stack((next_down(lo_hat - err), next_up(hi_hat + err)), dim=-1)
+ 
+ 
++def mul_point_s_with_roundoff(
++    a: torch.Tensor, b: torch.Tensor, pb: PairBind, eng: SparseEngine
++) -> tuple[torch.Tensor, torch.Tensor]:
++    """Sparse tier-P product plus a strict range of coefficient roundoff.
++
++    The point result follows the normal production path unchanged.  A second,
++    rigorous interval-coefficient product encloses the exact real polynomial
++    induced by the binary64 inputs.  Their difference is ranged over the
++    output support and is suitable for one insertion into the TM remainder.
++    """
++    point = mul_point_s(a, b, pb)
++    exact_coeff = mul_iv_s(iv.from_point(a), iv.from_point(b), pb)
++    coefficient_error = iv.sub(exact_coeff, iv.from_point(point))
++    return point, range_spatial_iv_s(coefficient_error, eng, pb.sup_out)
++
++
+ def range_normal_s(coeffs: torch.Tensor, eng: SparseEngine, sup: Support) -> torch.Tensor:
+     """intEvalNormal of a point polynomial on a FULL support: [..., S] -> [..., 2]."""
+     if _kern(coeffs):
+@@ -594,6 +610,13 @@ def range_spatial_s(coeffs: torch.Tensor, eng: SparseEngine, sup: Support) -> to
+     return iv.dot_point_iv(coeffs, eng.cat(sup), dim=-1)
+ 
+ 
++def range_spatial_iv_s(
++    coeffs_iv: torch.Tensor, eng: SparseEngine, sup: Support
++) -> torch.Tensor:
++    """Range a sparse t-free interval polynomial over ``[-1,1]^n``."""
++    return iv.sum(iv.mul(coeffs_iv, eng.cat(sup)), dim=-1)
++
++
+ def ctrunc_iv_s(
+     coeffs_iv: torch.Tensor, eng: SparseEngine, sup: Support, order: int
+ ) -> tuple[torch.Tensor, torch.Tensor, Support]:
+@@ -721,6 +744,29 @@ def evaluate_time_end_s(
+     return out, sup_out
+ 
+ 
++def evaluate_time_end_s_with_roundoff(
++    coeffs: torch.Tensor, eng: SparseEngine, sup: Support
++) -> tuple[torch.Tensor, Support, torch.Tensor]:
++    """Sparse endpoint evaluation plus strict coefficient-error range."""
++    point, sup_out = evaluate_time_end_s(coeffs, eng, sup)
++    check_sup, tgt, endf = eng.evalt(sup)
++    if check_sup.ids != sup_out.ids:  # pragma: no cover - cached canonical invariant
++        raise RuntimeError("endpoint support changed between point and interval routes")
++    src_iv = iv.mul(iv.from_point(coeffs), iv.from_point(endf))
++    shape = (*coeffs.shape[:-1], sup_out.size)
++    lo_hat = torch.zeros(shape, dtype=coeffs.dtype, device=coeffs.device)
++    hi_hat = torch.zeros_like(lo_hat)
++    mag_hat = torch.zeros_like(lo_hat)
++    lo_hat.index_add_(-1, tgt, src_iv[..., 0])
++    hi_hat.index_add_(-1, tgt, src_iv[..., 1])
++    mag_hat.index_add_(-1, tgt, iv.mag(src_iv))
++    counts = torch.bincount(tgt, minlength=sup_out.size)
++    error = dot_error_bound(mag_hat, counts)
++    exact_coeff = torch.stack((next_down(lo_hat - error), next_up(hi_hat + error)), dim=-1)
++    coefficient_error = iv.sub(exact_coeff, iv.from_point(point))
++    return point, sup_out, range_spatial_iv_s(coefficient_error, eng, sup_out)
++
++
+ def embed_s(
+     coeffs: torch.Tensor, eng: SparseEngine, sup_from: Support, sup_to: Support,
+     interval: bool = False,
+diff --git a/src/flowstar_gpu/symbolic_remainder.py b/src/flowstar_gpu/symbolic_remainder.py
+index 3c49c9c..347b6b1 100644
+--- a/src/flowstar_gpu/symbolic_remainder.py
++++ b/src/flowstar_gpu/symbolic_remainder.py
+@@ -51,6 +51,12 @@ class SymbolicRemainder:
+     max_size: int
+     phi_buf: torch.Tensor
+     j_buf: torch.Tensor
++    # Strict-only interval enclosure of the exact Phi matrices represented by
++    # ``phi_buf``.  Allocated lazily so parity mode keeps its memory contract.
++    phi_iv_buf: torch.Tensor | None = None
++    # Strict enclosure of the exact reciprocal preconditioners represented by
++    # ``scalars``.  None means the initial exact all-ones state.
++    scalars_iv: torch.Tensor | None = None
+     qlen: int = 0  # phi entries (pushed by propagate, BEFORE the branch)
+     jlen: int = 0  # J entries (pushed by append_j, AFTER composition)
+ 
+@@ -71,6 +77,8 @@ class SymbolicRemainder:
+         self.qlen = 0
+         self.jlen = 0
+         self.scalars = torch.ones_like(self.scalars)
++        if self.scalars_iv is not None:
++            self.scalars_iv = iv.from_point(self.scalars)
+ 
+     def reset_if_full(self) -> bool:
+         """Flow*'s queue-capacity rule, verbatim. Returns True iff it reset.
+@@ -200,7 +208,23 @@ def make_symbolic_remainder(
+     )
+ 
+ 
+-def propagate(sr: SymbolicRemainder, phi_i: torch.Tensor) -> torch.Tensor:
++def _matmul_iv(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
++    """Interval matrix product ``a @ b`` with arbitrary leading Q axis.
++
++    ``a`` is ``[B,i,k,2]`` and ``b`` is ``[Q,B,k,j,2]``.  The result is
++    ``[Q,B,i,j,2]``; every multiply and reduction is outward enclosed.
++    """
++    products = iv.mul(a.unsqueeze(0).unsqueeze(-2), b.unsqueeze(2))
++    return iv.sum(products, dim=3)
++
++
++def propagate(
++    sr: SymbolicRemainder,
++    phi_i: torch.Tensor,
++    *,
++    strict: bool = False,
++    phi_i_iv: torch.Tensor | None = None,
++) -> torch.Tensor:
+     """Queue update + linear image of history remainders (Continuous.cpp:2161-2177).
+ 
+     phi_i [B, n, n]: this step's linear map with last step's invS folded in
+@@ -216,20 +240,44 @@ def propagate(sr: SymbolicRemainder, phi_i: torch.Tensor) -> torch.Tensor:
+     """
+     B, n, _ = phi_i.shape
+ 
++    if strict:
++        if phi_i_iv is None:
++            raise ValueError("strict symbolic propagation requires phi_i_iv")
++        if sr.phi_iv_buf is None:
++            sr.phi_iv_buf = torch.zeros(
++                *sr.phi_buf.shape, 2,
++                dtype=sr.phi_buf.dtype,
++                device=sr.phi_buf.device,
++            )
++
+     if sr.qlen > 1:
+         live = sr.phi_buf[1 : sr.qlen]  # [Q-1, B, n, n] view
+         live.copy_(torch.einsum("bij,qbjk->qbik", phi_i, live))
++        if strict:
++            assert sr.phi_iv_buf is not None and phi_i_iv is not None
++            live_iv = sr.phi_iv_buf[1 : sr.qlen]
++            live_iv.copy_(_matmul_iv(phi_i_iv, live_iv))
+     if sr.qlen >= sr.max_size:  # pragma: no cover  # guarded by the reach-loop reset (Continuous.h:891); defensive only
+         raise RuntimeError("symbolic-remainder queue overflow: caller missed reset()")
+     sr.phi_buf[sr.qlen] = phi_i
++    if strict:
++        assert sr.phi_iv_buf is not None and phi_i_iv is not None
++        sr.phi_iv_buf[sr.qlen] = phi_i_iv
+     sr.qlen += 1
+ 
+     if sr.qlen <= 1:
+         return torch.zeros(B, n, 2, dtype=phi_i.dtype, device=phi_i.device)
+ 
+     q = sr.qlen - 1
+-    phis = sr.phi_buf[1 : q + 1].movedim(0, 1)  # [B, Q, n, n] view (no copy)
+     js = sr.j_buf[:q].movedim(0, 1)  # [B, Q, n, 2] (j[q-1] pairing)
++    if strict:
++        assert sr.phi_iv_buf is not None
++        phis_iv = sr.phi_iv_buf[1 : q + 1].movedim(0, 1)  # [B,Q,n,n,2]
++        terms_iv = iv.mul(phis_iv, js.unsqueeze(2))  # [B,Q,n,n,2]
++        terms = iv.sum(terms_iv, dim=-1)  # [B,Q,n,2]
++        return iv.sum(terms, dim=1)
++
++    phis = sr.phi_buf[1 : q + 1].movedim(0, 1)  # [B, Q, n, n] view (no copy)
+     # Point-matrix x interval-vector per queue entry: row i gets
+     # sum_k phis[..., i, k] * js[..., k, :]; then interval-sum over the queue.
+     terms = iv.dot_point_iv(phis, js.unsqueeze(2), dim=-1)  # [B, Q, n, 2]
+diff --git a/src/flowstar_gpu/tape_kernels.py b/src/flowstar_gpu/tape_kernels.py
+index 57406ec..843e313 100644
+--- a/src/flowstar_gpu/tape_kernels.py
++++ b/src/flowstar_gpu/tape_kernels.py
+@@ -544,6 +544,7 @@ __global__ void refine_tape_kernel(
+         IV r = {slo[out_slots[d]], shi[out_slots[d]]};
+         r = iv_mul(r, {dt_lo, dt_hi});
+         r = iv_add(r, {int_diff[(b * n + d) * 2], int_diff[(b * n + d) * 2 + 1]});
++        if (!isfinite(r.lo) || !isfinite(r.hi)) iter_bad = true;
+         newr[d] = r;
+       }
+       // bad = bad | (bad_replay & refining); refining &= ~bad_replay — a bad
+diff --git a/tests/properties/test_interval_props.py b/tests/properties/test_interval_props.py
+index b87b20f..ce1a73b 100644
+--- a/tests/properties/test_interval_props.py
++++ b/tests/properties/test_interval_props.py
+@@ -398,8 +398,14 @@ def test_contains_closed_boundary_semantics(device, a):
+         assert iv.contains(t, inner).item()
+         assert not iv.contains(inner, t).item()
+     wider = iv.add(t, _iv([-1.0, 1.0], device))
+-    assert iv.contains(wider, t).item()
+-    assert not iv.contains(t, wider).item()
++    if bool(torch.isfinite(wider).all()):
++        assert iv.contains(wider, t).item()
++        assert not iv.contains(t, wider).item()
++    else:
++        # Extended intervals remain sound internal enclosures, but the
++        # production finite-certificate predicate must fail closed.
++        assert not iv.contains(wider, t).item()
++        assert not iv.contains(t, wider).item()
+ 
+ 
+ @given(a=endpoints(finite_f64))
+@@ -446,5 +452,7 @@ def test_assert_valid(device):
+     iv.assert_valid(ok)  # no raise
+     with pytest.raises(FloatingPointError, match="NaN"):
+         iv.assert_valid(_iv([math.nan, 1.0], device), "x")
++    with pytest.raises(FloatingPointError, match="infinite"):
++        iv.assert_valid(_iv([-math.inf, math.inf], device), "x")
+     with pytest.raises(FloatingPointError, match="lo > hi"):
+         iv.assert_valid(_iv([2.0, 1.0], device), "x")
+diff --git a/tests/soundness/test_strict_proof_contract.py b/tests/soundness/test_strict_proof_contract.py
+new file mode 100644
+index 0000000..b4f62d5
+--- /dev/null
++++ b/tests/soundness/test_strict_proof_contract.py
+@@ -0,0 +1,532 @@
++"""Exact/adversarial gates for the strict floating-point proof closure."""
++
++from __future__ import annotations
++
++import math
++from fractions import Fraction
++
++import pytest
++import torch
++
++from flowstar_gpu import determinism
++from flowstar_gpu import interval as iv
++from flowstar_gpu import polynomial as poly
++from flowstar_gpu import support as sparse
++from flowstar_gpu.config import Settings
++from flowstar_gpu.flowpipe import FAILED_ARITHMETIC, RefinementCacheState, reach, refine_loop
++from flowstar_gpu.monomials import build_tables
++from flowstar_gpu.polynomial import build_step_tables
++from flowstar_gpu.symbolic_remainder import make_symbolic_remainder, propagate
++
++
++def _exact_mm(a, b):
++    n = len(a)
++    return [
++        [sum((a[i][k] * b[k][j] for k in range(n)), Fraction()) for j in range(n)]
++        for i in range(n)
++    ]
++
++
++def _exact_mv(a, b):
++    n = len(a)
++    return [sum((a[i][k] * b[k] for k in range(n)), Fraction()) for i in range(n)]
++
++
++def _adversarial_matrix(n: int, step: int) -> list[list[float]]:
++    """Finite binary64 matrices spanning cancellation and extreme exponents."""
++    scales = [1.0, 1.0, 1.0, 2.0**500, 2.0**-500]
++    scale = scales[step]
++    matrix = [[0.0 for _ in range(n)] for _ in range(n)]
++    for i in range(n):
++        matrix[i][i] = scale * (1.0000000000000002 if step % 2 else 1.0)
++        if n > 1:
++            matrix[i][(i + 1) % n] = scale * (-1.0 if i % 2 else 0.9999999999999999)
++    return matrix
++
++
++def _adversarial_j(n: int, step: int) -> list[float]:
++    scales = [2.0**-500, 2.0**500, 5e-324, 2.0**-500, 1.0]
++    return [scales[step] * (-1.0 if i % 2 else 1.0) for i in range(n)]
++
++
++@pytest.mark.parametrize("n", [1, 2, 3])
++def test_symbolic_phi_exact_oracle_all_queue_boundaries_and_reset(n: int) -> None:
++    """Strict Phi/J propagation encloses exact rationals at every live length."""
++    capacity = 5
++    sr = make_symbolic_remainder(1, n, capacity, "cpu")
++    exact_phis: list[list[list[Fraction]]] = []
++    exact_js: list[list[Fraction]] = []
++
++    for step in range(capacity):
++        matrix = _adversarial_matrix(n, step)
++        point = torch.tensor([matrix], dtype=torch.float64)
++        got = propagate(sr, point, strict=True, phi_i_iv=iv.from_point(point))
++        exact_matrix = [[Fraction(value) for value in row] for row in matrix]
++        for q in range(1, len(exact_phis)):
++            exact_phis[q] = _exact_mm(exact_matrix, exact_phis[q])
++        exact_phis.append(exact_matrix)
++        exact = [Fraction() for _ in range(n)]
++        for q in range(1, len(exact_phis)):
++            image = _exact_mv(exact_phis[q], exact_js[q - 1])
++            exact = [x + y for x, y in zip(exact, image, strict=True)]
++        assert sr.qlen == step + 1
++        assert torch.isfinite(got).all()
++        for component in range(n):
++            assert Fraction(got[0, component, 0].item()) <= exact[component]
++            assert exact[component] <= Fraction(got[0, component, 1].item())
++        j_values = _adversarial_j(n, step)
++        j = torch.tensor([[[value, value] for value in j_values]], dtype=torch.float64)
++        sr.append_j(j)
++        exact_js.append([Fraction(value) for value in j_values])
++
++    assert sr.queue_len == capacity
++    assert sr.reset_if_full()
++    assert sr.queue_len == 0
++    assert sr.qlen == 0
++    assert torch.equal(sr.scalars, torch.ones_like(sr.scalars))
++    assert sr.scalars_iv is None
++
++    identity = torch.eye(n, dtype=torch.float64).unsqueeze(0)
++    after_reset = propagate(sr, identity, strict=True, phi_i_iv=iv.from_point(identity))
++    assert torch.equal(after_reset, torch.zeros_like(after_reset))
++
++
++def test_symbolic_phi_minimal_pre_repair_witness_is_closed_in_strict() -> None:
++    """Three Phi pushes reproduce the minimized d5f0b68 under-enclosure."""
++    matrices = [
++        [[0.0, 0.0], [0.0, 0.0]],
++        [[1.0000000000000002, 0.0], [-1.0, 0.0]],
++        [[0.0, 0.0], [0.9999999999999999, 1.0000000000000002]],
++    ]
++    js = [[1048576.0, 0.0], [0.0, 0.0]]
++    parity = make_symbolic_remainder(1, 2, 8, "cpu")
++    strict = make_symbolic_remainder(1, 2, 8, "cpu")
++    exact_phis = []
++    exact_js = []
++    parity_out = strict_out = None
++    exact = [Fraction(), Fraction()]
++
++    for step, matrix in enumerate(matrices):
++        point = torch.tensor([matrix], dtype=torch.float64)
++        parity_out = propagate(parity, point)
++        strict_out = propagate(strict, point, strict=True, phi_i_iv=iv.from_point(point))
++        exact_matrix = [[Fraction(value) for value in row] for row in matrix]
++        for q in range(1, len(exact_phis)):
++            exact_phis[q] = _exact_mm(exact_matrix, exact_phis[q])
++        exact_phis.append(exact_matrix)
++        exact = [Fraction(), Fraction()]
++        for q in range(1, len(exact_phis)):
++            image = _exact_mv(exact_phis[q], exact_js[q - 1])
++            exact = [x + y for x, y in zip(exact, image, strict=True)]
++        if step < len(js):
++            j = torch.tensor([[[value, value] for value in js[step]]], dtype=torch.float64)
++            parity.append_j(j)
++            strict.append_j(j)
++            exact_js.append([Fraction(value) for value in js[step]])
++
++    assert parity_out is not None and strict_out is not None
++    # Historical point-Phi path encloses approximately -2.3283e-10 while the
++    # exact result is approximately -1.16415e-10: a concrete under-enclosure.
++    assert not (
++        Fraction(parity_out[0, 1, 0].item())
++        <= exact[1]
++        <= Fraction(parity_out[0, 1, 1].item())
++    )
++    assert Fraction(strict_out[0, 1, 0].item()) <= exact[1]
++    assert exact[1] <= Fraction(strict_out[0, 1, 1].item())
++
++
++def test_spatial_point_product_is_unchanged_and_roundoff_is_enclosed() -> None:
++    tables = build_tables(1, 4)
++    a = torch.tensor([[1.0000000000000002, -1.0, 2.0**-20, 0.0, 0.0]], dtype=torch.float64)
++    b = torch.tensor([[0.9999999999999999, 1.0, -(2.0**20), 0.0, 0.0]], dtype=torch.float64)
++    point = poly.mul_point_spatial(a, b, tables)
++    strict_point, error_range = poly.mul_point_spatial_with_roundoff(a, b, tables)
++    assert torch.equal(point, strict_point)
++    exact_coeff = poly.mul_iv_spatial(iv.from_point(a), iv.from_point(b), tables)
++    coeff_error = iv.sub(exact_coeff, iv.from_point(point))
++    reranged = poly.range_normal_iv_spatial(coeff_error, tables)
++    assert torch.equal(error_range, reranged)
++    assert bool(iv.contains(error_range, torch.zeros_like(error_range)).all())
++
++
++def test_dense_and_sparse_retained_coefficients_enclose_exact_rationals() -> None:
++    """Independent convolution oracle covers mixed signs/exponents/zero."""
++    tables = build_tables(2, 3)
++    values_a = [
++        1.0000000000000002, -1.0, 2.0**1020, 2.0**-500,
++        5e-324, -0.0, 0.5, -0.25, 3.0, -2.0,
++    ]
++    values_b = [
++        0.9999999999999999, 1.0, 2.0**-500, -2.0**-500,
++        1.0, 0.0, -0.5, 0.25, -3.0, 2.0,
++    ]
++    a = torch.tensor([values_a[: tables.Ts]], dtype=torch.float64)
++    b = torch.tensor([values_b[: tables.Ts]], dtype=torch.float64)
++    dense_point, dense_range = poly.mul_point_spatial_with_roundoff(a, b, tables)
++    dense_exact_iv = poly.mul_iv_spatial(iv.from_point(a), iv.from_point(b), tables)
++
++    step = build_step_tables(tables, 0.01)
++    engine = sparse.SparseEngine(tables, step, "cpu")
++    factor_support = sparse.full_support(tables, tables.k, spatial=True)
++    pair = engine.pair(factor_support, factor_support)
++    sparse_point, sparse_range = sparse.mul_point_s_with_roundoff(
++        a, b, pair, engine
++    )
++    sparse_exact_iv = sparse.mul_iv_s(iv.from_point(a), iv.from_point(b), pair)
++
++    assert torch.equal(dense_point, sparse_point)
++    assert torch.equal(dense_range, sparse_range)
++    assert torch.equal(dense_exact_iv, sparse_exact_iv)
++    offsets = pair.seg_offsets.cpu().tolist()
++    ia = pair.pair_ia.cpu().tolist()
++    jb = pair.pair_jb.cpu().tolist()
++    for output in range(pair.sup_out.size):
++        exact = sum(
++            (
++                Fraction(a[0, ia[p]].item()) * Fraction(b[0, jb[p]].item())
++                for p in range(offsets[output], offsets[output + 1])
++            ),
++            Fraction(),
++        )
++        assert Fraction(dense_exact_iv[0, output, 0].item()) <= exact
++        assert exact <= Fraction(dense_exact_iv[0, output, 1].item())
++        point = Fraction(dense_point[0, output].item())
++        error = exact - point
++        coeff_error = iv.sub(
++            dense_exact_iv[:, output], iv.from_point(dense_point[:, output])
++        )
++        assert Fraction(coeff_error[0, 0].item()) <= error
++        assert error <= Fraction(coeff_error[0, 1].item())
++
++
++def test_endpoint_point_coefficients_stay_bitwise_and_error_is_charged() -> None:
++    tables = build_tables(1, 4)
++    step = build_step_tables(tables, 0.01)
++    coeffs = torch.tensor(
++        [[
++            1.0000000000000002,
++            -(2.0**20),
++            0.9999999999999999,
++            2.0**-20,
++            -1.0,
++            0.5,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++            0.0,
++        ]],
++        dtype=torch.float64,
++    )
++    assert coeffs.shape[-1] == tables.T
++    point = poly.evaluate_time_end(coeffs, tables, step)
++    strict_point, error_range = poly.evaluate_time_end_with_roundoff(coeffs, tables, step)
++    assert torch.equal(point, strict_point)
++    assert bool(iv.contains(error_range, torch.zeros_like(error_range)).all())
++
++
++def test_no_ftz_startup_rejects_simulated_flush(monkeypatch) -> None:
++    determinism._NO_FTZ_CHECKED.clear()
++
++    def flushed(_device, check_custom):
++        assert check_custom is True
++        return {
++            "nextafter_eta": True,
++            "mul_identity": False,
++            "normal_to_subnormal": False,
++            "subnormal_add": False,
++            "custom_checked": False,
++            "custom_mul_identity": True,
++        }
++
++    monkeypatch.setattr(determinism, "_probe_gradual_underflow", flushed)
++    with pytest.raises(FloatingPointError, match="no-FTZ"):
++        determinism.assert_gradual_underflow("cpu")
++    assert not determinism._NO_FTZ_CHECKED
++
++
++def test_nonfinite_intervals_are_never_finite_certificates() -> None:
++    finite = torch.tensor([[-1.0, 1.0]], dtype=torch.float64)
++    extended = torch.tensor([[-torch.inf, torch.inf]], dtype=torch.float64)
++    assert not bool(iv.contains(extended, finite).item())
++    assert not bool(iv.contains(finite, extended).item())
++    with pytest.raises(FloatingPointError, match="infinite"):
++        iv.assert_valid(extended)
++
++
++def test_overflow_lane_fails_before_any_certificate_is_emitted() -> None:
++    boxes = torch.tensor([[[1e308, 1e308]]], dtype=torch.float64)
++    result = reach(
++        ["1e308*x"], ["x"], boxes, 1.0,
++        Settings(step=1.0, order=2, remainder_estimation=1e-4, device="cpu"),
++    )
++    assert result.steps_completed.tolist() == [0]
++    assert result.status.tolist() == [FAILED_ARITHMETIC]
++    assert torch.isfinite(result.final_fp.pre_coeffs).all()
++
++
++class _UnitStep:
++    def dt(self, _rank):
++        return torch.tensor([1.0, 1.0], dtype=torch.float64)
++
++
++def test_refinement_trace_owns_partial_commit_and_detects_stale_cache(monkeypatch) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    proposal = torch.tensor([[[-0.5, 0.5], [-2.0, 2.0]]], dtype=torch.float64)
++    monkeypatch.setattr(fp, "exec_replay", lambda *_args, **_kwargs: proposal.clone())
++    accepted = torch.tensor([[[-1.0, 1.0], [-1.0, 1.0]]], dtype=torch.float64)
++    ok = torch.tensor([True])
++    bad = torch.tensor([False])
++    cache = torch.zeros(1, 1, 2, dtype=torch.float64)
++    tails = torch.zeros(1, 1, 2, dtype=torch.float64)
++    trace = []
++    settings = Settings(
++        step=1.0,
++        order=2,
++        device="cpu",
++        max_refinement_steps=1,
++        refinement_callback=trace.append,
++    )
++    state = RefinementCacheState("cache", "tails", 0, accepted.clone(), accepted.clone())
++    cur, bad_out = refine_loop(
++        object(), accepted, ok, bad, cache, tails, False,
++        torch.zeros_like(accepted), _UnitStep(), settings, cache_state=state,
++    )
++    assert not bool(bad_out.item())
++    components = [row for row in trace if row["event"] == "refinement_component"]
++    assert [row["commit_result"] for row in components] == [True, False]
++    assert cur[0, 0].tolist() == components[0]["proposal_interval"]
++    assert torch.equal(cur[0, 1], accepted[0, 1])
++    final = [row for row in trace if row["event"] == "final_remainder_owner"][-1]
++    assert final["final_accepted_remainder"] == cur[0].tolist()
++    assert final["final_generation"] == 1
++
++    stale = RefinementCacheState("cache", "tails", 9, accepted.clone(), accepted.clone())
++    with pytest.raises(RuntimeError, match="stale refinement cache generation"):
++        refine_loop(
++            object(), accepted, ok, bad, cache, tails, False,
++            torch.zeros_like(accepted), _UnitStep(), settings, cache_state=stale,
++        )
++
++    stale_owner = RefinementCacheState(
++        "cache", "tails", 0, accepted + 1.0, accepted.clone()
++    )
++    with pytest.raises(RuntimeError, match="stale refinement cache owner"):
++        refine_loop(
++            object(), accepted, ok, bad, cache, tails, False,
++            torch.zeros_like(accepted), _UnitStep(), settings,
++            cache_state=stale_owner,
++        )
++
++
++def test_initial_self_map_failure_performs_zero_replay(monkeypatch) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    calls = 0
++
++    def replay(*_args, **_kwargs):
++        nonlocal calls
++        calls += 1
++        raise AssertionError("replay must not run")
++
++    monkeypatch.setattr(fp, "exec_replay", replay)
++    accepted = torch.tensor([[[-2.0, 2.0]]], dtype=torch.float64)
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", refinement_callback=trace.append
++    )
++    cur, _ = refine_loop(
++        object(), accepted, torch.tensor([False]), torch.tensor([False]),
++        torch.zeros(1, 0, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(accepted), _UnitStep(), settings,
++    )
++    assert calls == 0
++    assert torch.equal(cur, accepted)
++    assert [row["iterations"] for row in trace if row["event"] == "final_remainder_owner"] == [0]
++
++
++def test_refinement_first_component_failure_leaves_all_components_untouched(
++    monkeypatch,
++) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    proposal = torch.tensor([[[-2.0, 2.0], [-0.5, 0.5]]], dtype=torch.float64)
++    monkeypatch.setattr(fp, "exec_replay", lambda *_args, **_kwargs: proposal.clone())
++    accepted = torch.tensor([[[-1.0, 1.0], [-1.0, 1.0]]], dtype=torch.float64)
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", max_refinement_steps=1,
++        refinement_callback=trace.append,
++    )
++    cur, bad = refine_loop(
++        object(), accepted, torch.tensor([True]), torch.tensor([False]),
++        torch.zeros(1, 1, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(accepted), _UnitStep(), settings,
++    )
++    assert not bool(bad.item())
++    assert torch.equal(cur, accepted)
++    components = [row for row in trace if row["event"] == "refinement_component"]
++    assert [row["subset_result"] for row in components] == [False, True]
++    assert [row["commit_result"] for row in components] == [False, False]
++    assert components[-1]["commit_mask"] == [False, False]
++
++
++def test_refinement_nonfinite_proposal_fails_and_preserves_finite_owner(
++    monkeypatch,
++) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    monkeypatch.setattr(
++        fp,
++        "exec_replay",
++        lambda *_args, **_kwargs: torch.tensor([[[float("inf"), float("inf")]]]),
++    )
++    accepted = torch.tensor([[[-1.0, 1.0]]], dtype=torch.float64)
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", refinement_callback=trace.append
++    )
++    cur, bad = refine_loop(
++        object(), accepted, torch.tensor([True]), torch.tensor([False]),
++        torch.zeros(1, 1, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(accepted), _UnitStep(), settings,
++    )
++    assert bool(bad.item())
++    assert torch.equal(cur, accepted)
++    component = [row for row in trace if row["event"] == "refinement_component"][0]
++    assert component["bad_nonfinite_mask"]
++    assert not component["commit_result"]
++
++
++@pytest.mark.parametrize(
++    ("accepted", "proposal"),
++    [
++        ((-2.0, 1.0), (-1.0, 0.25)),
++        ((-1e-320, 1e-320), (-1e-322, 1e-322)),
++    ],
++)
++def test_refinement_asymmetric_and_subnormal_proposals_commit(
++    monkeypatch, accepted, proposal
++) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    old = torch.tensor([[accepted]], dtype=torch.float64)
++    proposed = torch.tensor([[proposal]], dtype=torch.float64)
++    monkeypatch.setattr(fp, "exec_replay", lambda *_args, **_kwargs: proposed.clone())
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", max_refinement_steps=1,
++        refinement_callback=trace.append,
++    )
++    cur, bad = refine_loop(
++        object(), old, torch.tensor([True]), torch.tensor([False]),
++        torch.zeros(1, 1, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(old), _UnitStep(), settings,
++    )
++    assert not bool(bad.item())
++    component = [row for row in trace if row["event"] == "refinement_component"][0]
++    assert component["subset_result"] and component["commit_result"]
++    assert torch.equal(
++        cur[0, 0], torch.tensor(component["proposal_interval"], dtype=torch.float64)
++    )
++
++
++def test_refinement_zero_width_ratio_is_finite_and_does_not_commit(monkeypatch) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    point = torch.zeros(1, 1, 2, dtype=torch.float64)
++    monkeypatch.setattr(fp, "exec_replay", lambda *_args, **_kwargs: point.clone())
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", max_refinement_steps=1,
++        refinement_callback=trace.append,
++    )
++    cur, bad = refine_loop(
++        object(), point, torch.tensor([True]), torch.tensor([False]),
++        torch.zeros(1, 1, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(point), _UnitStep(), settings,
++    )
++    assert not bool(bad.item())
++    component = [row for row in trace if row["event"] == "refinement_component"][0]
++    assert math.isfinite(component["stop_ratio_inputs"]["ratio"])
++    assert not component["subset_result"]
++    assert not component["commit_result"]
++    assert torch.equal(cur, point)
++
++
++@pytest.mark.parametrize("relation", ["below", "equal", "above"])
++def test_refinement_stop_ratio_boundary_is_recorded(monkeypatch, relation: str) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    proposal = torch.tensor([[[-0.5, 0.5]]], dtype=torch.float64)
++    monkeypatch.setattr(fp, "exec_replay", lambda *_args, **_kwargs: proposal.clone())
++    accepted = torch.tensor([[[-1.0, 1.0]]], dtype=torch.float64)
++    replayed = iv.mul(proposal, torch.tensor([1.0, 1.0], dtype=torch.float64))
++    replayed = iv.add(replayed, torch.zeros_like(replayed))
++    ratio = float((iv.width(replayed) / iv.width(accepted)).item())
++    threshold = {
++        "below": math.nextafter(ratio, math.inf),
++        "equal": ratio,
++        "above": math.nextafter(ratio, -math.inf),
++    }[relation]
++    trace = []
++    settings = Settings(
++        step=1.0, order=2, device="cpu", max_refinement_steps=1,
++        stop_ratio=threshold, refinement_callback=trace.append,
++    )
++    refine_loop(
++        object(), accepted, torch.tensor([True]), torch.tensor([False]),
++        torch.zeros(1, 1, 2), torch.zeros(1, 1, 2), False,
++        torch.zeros_like(accepted), _UnitStep(), settings,
++    )
++    component = [row for row in trace if row["event"] == "refinement_component"][0]
++    assert component["stop_ratio_inputs"]["ratio"] == ratio
++    assert component["stop_decision"] is (relation != "above")
++
++
++@pytest.mark.parametrize("max_steps", [0, 1, 490, 491])
++def test_refinement_trace_is_bitwise_observational_at_iteration_boundaries(
++    monkeypatch, max_steps: int
++) -> None:
++    import flowstar_gpu.flowpipe as fp
++
++    def contract(_code, current, *_args, **_kwargs):
++        return current * 0.5
++
++    monkeypatch.setattr(fp, "exec_replay", contract)
++    accepted = torch.tensor([[[-1.0, 1.0]]], dtype=torch.float64)
++    common = dict(
++        step=1.0,
++        order=2,
++        device="cpu",
++        max_refinement_steps=max_steps,
++        stop_ratio=0.75,
++    )
++    cache = torch.zeros(1, 1, 2, dtype=torch.float64)
++    tails = torch.zeros(1, 1, 2, dtype=torch.float64)
++    args = (
++        object(),
++        accepted.clone(),
++        torch.tensor([True]),
++        torch.tensor([False]),
++        cache,
++        tails,
++        False,
++        torch.zeros_like(accepted),
++        _UnitStep(),
++    )
++    without_trace = refine_loop(*args, Settings(**common))
++    trace = []
++    with_trace = refine_loop(*args, Settings(**common, refinement_callback=trace.append))
++    assert torch.equal(without_trace[0], with_trace[0])
++    assert torch.equal(without_trace[1], with_trace[1])
++    final = [row for row in trace if row["event"] == "final_remainder_owner"]
++    assert len(final) == 1
++    assert final[0]["iterations"] == max_steps
++    assert final[0]["final_generation"] == max_steps
+-- 
+2.53.0
+

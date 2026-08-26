@@ -1,0 +1,119 @@
+From b0ff55745d69205f3afb4dc8077b9ac1310bfff3 Mon Sep 17 00:00:00 2001
+From: lsnnnnnnnn <lishengen89@gmail.com>
+Date: Wed, 26 Aug 2026 09:23:22 +0000
+Subject: [PATCH 2/3] Expose refinement attempt and limiting-side evidence
+
+---
+ src/flowstar_gpu/flowpipe.py                  | 18 +++++++++++++++++-
+ src/flowstar_gpu/sparse_exec.py               | 15 +++++++++++++++
+ tests/soundness/test_strict_proof_contract.py | 18 ++++++++++++++++++
+ 3 files changed, 50 insertions(+), 1 deletion(-)
+
+diff --git a/src/flowstar_gpu/flowpipe.py b/src/flowstar_gpu/flowpipe.py
+index 6b979d1..973c4ca 100644
+--- a/src/flowstar_gpu/flowpipe.py
++++ b/src/flowstar_gpu/flowpipe.py
+@@ -322,7 +322,8 @@ def _validate_and_refine(
+     #     guess, per lane over all dims. Bad lanes (M5) can never pass.
+     total = iv.add(tmv_tmp_rem, int_diff)  # [B, n, 2]
+     bad |= _lane_nonfinite(tmv_tmp_coeffs, tmv_tmp_rem, int_diff, total)
+-    ok = iv.contains(x_rem, total).all(dim=-1) & ~bad  # [B]
++    subset_dims = iv.contains(x_rem, total)  # [B, n]
++    ok = subset_dims.all(dim=-1) & ~bad  # [B]
+ 
+     cache_state = None
+     if settings.refinement_callback is not None:
+@@ -334,6 +335,11 @@ def _validate_and_refine(
+             source_remainder=x_rem.clone(),
+         )
+         for lane in range(B):
++            attempted_step = (
++                step.delta
++                if step.lanes == 0
++                else float(step.deltas[lane].item())
++            )
+             _trace_refinement(
+                 settings,
+                 {
+@@ -342,6 +348,16 @@ def _validate_and_refine(
+                     "initial_self_map_ok": bool(ok[lane].item()),
+                     "input_remainder_vector": x_rem[lane].detach().cpu().tolist(),
+                     "proposal_interval": total[lane].detach().cpu().tolist(),
++                    "attempted_step": attempted_step,
++                    "subset_by_component": subset_dims[lane].detach().cpu().tolist(),
++                    "subset_margin_by_component": {
++                        "lower": (
++                            total[lane, :, 0] - x_rem[lane, :, 0]
++                        ).detach().cpu().tolist(),
++                        "upper": (
++                            x_rem[lane, :, 1] - total[lane, :, 1]
++                        ).detach().cpu().tolist(),
++                    },
+                     "bad_nonfinite_mask": bool(bad[lane].item()),
+                     "input_generation": 0,
+                     "proposal_generation": 0,
+diff --git a/src/flowstar_gpu/sparse_exec.py b/src/flowstar_gpu/sparse_exec.py
+index 3e764c1..3b43956 100644
+--- a/src/flowstar_gpu/sparse_exec.py
++++ b/src/flowstar_gpu/sparse_exec.py
+@@ -1633,6 +1633,11 @@ def advance_sparse(
+             source_remainder=x_rem.clone(),
+         )
+         for lane in range(B):
++            attempted_step = (
++                step.delta
++                if step.lanes == 0
++                else float(step.deltas[lane].item())
++            )
+             _trace_refinement(
+                 settings,
+                 {
+@@ -1641,6 +1646,16 @@ def advance_sparse(
+                     "initial_self_map_ok": bool(ok[lane].item()),
+                     "input_remainder_vector": x_rem[lane].detach().cpu().tolist(),
+                     "proposal_interval": total[lane].detach().cpu().tolist(),
++                    "attempted_step": attempted_step,
++                    "subset_by_component": ok_dims[lane].detach().cpu().tolist(),
++                    "subset_margin_by_component": {
++                        "lower": (
++                            total[lane, :, 0] - x_rem[lane, :, 0]
++                        ).detach().cpu().tolist(),
++                        "upper": (
++                            x_rem[lane, :, 1] - total[lane, :, 1]
++                        ).detach().cpu().tolist(),
++                    },
+                     "bad_nonfinite_mask": bool(bad[lane].item()),
+                     "input_generation": 0,
+                     "proposal_generation": 0,
+diff --git a/tests/soundness/test_strict_proof_contract.py b/tests/soundness/test_strict_proof_contract.py
+index b4f62d5..0c17d93 100644
+--- a/tests/soundness/test_strict_proof_contract.py
++++ b/tests/soundness/test_strict_proof_contract.py
+@@ -270,6 +270,24 @@ def test_overflow_lane_fails_before_any_certificate_is_emitted() -> None:
+     assert torch.isfinite(result.final_fp.pre_coeffs).all()
+ 
+ 
++def test_production_initial_self_map_trace_exposes_step_and_side_margins() -> None:
++    trace = []
++    result = reach(
++        ["1"], ["x"],
++        torch.tensor([[[-0.5, 0.5]]], dtype=torch.float64),
++        0.03125,
++        Settings(
++            step=0.03125, order=3, device="cpu", max_refinement_steps=0,
++            refinement_callback=trace.append,
++        ),
++    )
++    assert result.steps_completed.tolist() == [1]
++    initial = [row for row in trace if row["event"] == "initial_self_map"][0]
++    assert initial["attempted_step"] == 0.03125
++    assert initial["subset_by_component"] == [True]
++    assert set(initial["subset_margin_by_component"]) == {"lower", "upper"}
++
++
+ class _UnitStep:
+     def dt(self, _rank):
+         return torch.tensor([1.0, 1.0], dtype=torch.float64)
+-- 
+2.53.0
+
