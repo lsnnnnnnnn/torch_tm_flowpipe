@@ -46,8 +46,17 @@ REQUIRED = (
     "commands/vdp_huan_phase_e.log",
     "commands/vdp_huan_phase_e_final.log",
     "commands/huan_plant_full.log",
+    "commands/huan_plant_full_final.log",
     "commands/torch_full.log",
     "commands/torch_full_py11.log",
+    "commands/torch_full_final.log",
+    "commands/d1_d2_cpu.log",
+    "commands/d1_d2_cuda.log",
+    "commands/d4_chunk_cpu_audit.log",
+    "commands/d4_chunk_cuda_audit.log",
+    "commands/d5_refinement_cpu_audit.log",
+    "commands/d5_refinement_cuda_audit.log",
+    "commands/d6_repaired_witness.log",
     "vdp/contract_matrix.csv",
     "vdp/step1_common_input.csv",
     "vdp/refinement_ledgers.jsonl.gz",
@@ -271,7 +280,10 @@ def verify(repo: Path, output: Path) -> list[str]:
     gate = _json(output / "phase_d_gate_v2.json")
     errors.extend(verify_phase_d(gate))
     for device in ("cpu", "cuda"):
-        errors.extend(verify_d2_route_evidence(_json(output / f"raw_logs/proof_kernel_{device}.json"), device))
+        kernel = _json(output / f"raw_logs/proof_kernel_{device}.json")
+        if kernel.get("engine_head") != HUAN_HEAD:
+            errors.append(f"D2 {device} engine SHA mismatch")
+        errors.extend(verify_d2_route_evidence(kernel, device))
         refinement = _json(output / f"refinement_boundary_{device}_v2.json")
         errors.extend(verify_refinement_evidence(refinement, device))
         if not _json(output / f"chunk_boundary_{device}_v2.json").get("gate_passed"):
@@ -293,15 +305,37 @@ def verify(repo: Path, output: Path) -> list[str]:
     if not strict_sources or any(row["status"] != "MAPPED_AND_TESTED" for row in strict_sources):
         errors.append("strict roundoff source ledger is incomplete")
     errors.extend(verify_phase_e(output))
-    for relative in ("commands/phase_d_scientific_gate.log", "commands/vdp_huan_phase_e_final.log", "commands/huan_plant_full.log", "commands/torch_full_py11.log"):
+    final_captures = (
+        "commands/phase_d_scientific_gate.log",
+        "commands/vdp_huan_phase_e_final.log",
+        "commands/huan_plant_full_final.log",
+        "commands/torch_full_final.log",
+        "commands/d1_d2_cpu.log",
+        "commands/d1_d2_cuda.log",
+        "commands/d4_chunk_cpu_audit.log",
+        "commands/d4_chunk_cuda_audit.log",
+        "commands/d5_refinement_cpu_audit.log",
+        "commands/d5_refinement_cuda_audit.log",
+        "commands/d6_repaired_witness.log",
+    )
+    huan_source_captures = set(final_captures) - {"commands/torch_full_final.log"}
+    for relative in final_captures:
         header, body = capture_header(output / relative)
         if header.get("schema") != "torch_tm_flowpipe.huan_command_capture/2" or header.get("returncode") != 0:
             errors.append(f"command capture failed or has wrong schema: {relative}")
-        if relative.endswith(("huan_plant_full.log", "torch_full_py11.log")) and "passed" not in body:
+        if relative in huan_source_captures and not any(
+            source.get("head") == HUAN_HEAD and source.get("dirty") is False
+            for source in header.get("sources", [])
+        ):
+            errors.append(f"final Huan source provenance missing: {relative}")
+        if relative.endswith(("huan_plant_full_final.log", "torch_full_final.log")) and "passed" not in body:
             errors.append(f"full regression pass count absent: {relative}")
     failed_header, failed_body = capture_header(output / "commands/torch_full.log")
     if failed_header.get("returncode") != 2 or "No module named 'pandas'" not in failed_body:
         errors.append("Torch wrong-environment diagnostic capture changed or is missing")
+    pragma_header, pragma_body = capture_header(output / "commands/huan_plant_full.log")
+    if pragma_header.get("returncode") != 1 or "2 failed, 1025 passed" not in pragma_body:
+        errors.append("Huan pragma-budget diagnostic capture changed or is missing")
     for report in required_reports[:2]:
         text = report.read_text(encoding="utf-8")
         if PRIMARY not in text or "package verifier" not in text.lower():
