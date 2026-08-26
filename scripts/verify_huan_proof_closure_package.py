@@ -44,6 +44,7 @@ REQUIRED = (
     "witnesses/d6_repaired_minimal_witness.json",
     "commands/phase_d_scientific_gate.log",
     "commands/vdp_huan_phase_e.log",
+    "commands/vdp_huan_phase_e_final.log",
     "commands/huan_plant_full.log",
     "commands/torch_full.log",
     "commands/torch_full_py11.log",
@@ -292,7 +293,7 @@ def verify(repo: Path, output: Path) -> list[str]:
     if not strict_sources or any(row["status"] != "MAPPED_AND_TESTED" for row in strict_sources):
         errors.append("strict roundoff source ledger is incomplete")
     errors.extend(verify_phase_e(output))
-    for relative in ("commands/phase_d_scientific_gate.log", "commands/vdp_huan_phase_e.log", "commands/huan_plant_full.log", "commands/torch_full_py11.log"):
+    for relative in ("commands/phase_d_scientific_gate.log", "commands/vdp_huan_phase_e_final.log", "commands/huan_plant_full.log", "commands/torch_full_py11.log"):
         header, body = capture_header(output / relative)
         if header.get("schema") != "torch_tm_flowpipe.huan_command_capture/2" or header.get("returncode") != 0:
             errors.append(f"command capture failed or has wrong schema: {relative}")
