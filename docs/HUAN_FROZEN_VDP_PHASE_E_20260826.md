@@ -3,7 +3,7 @@
 Primary status: `HUAN_PROOF_CONTRACT_CLOSED__VDP_CONTRACT_NOT_PORTABLE`
 
 Phase E started only after the final scientific D1–D6 gate passed for Huan
-`b0ff55745d69205f3afb4dc8077b9ac1310bfff3`. The package verifier mentioned
+`743f6205e6408072193ad76e940e7f15030e8d3c`. The package verifier mentioned
 below checks artifacts only; it is not the scientific authorization gate.
 
 ## Frozen request

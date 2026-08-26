@@ -22,7 +22,7 @@ import subprocess
 from typing import Any, Iterable, Mapping, Sequence
 
 
-HUAN_HEAD = "b0ff55745d69205f3afb4dc8077b9ac1310bfff3"
+HUAN_HEAD = "743f6205e6408072193ad76e940e7f15030e8d3c"
 FLOWSTAR_HEAD = "b85a3211748cb77b736fe4ad42ee02d8d2b81148"
 TORCH_C2_SCIENTIFIC = "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca"
 TORCH_C2_PACKAGE = "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c"

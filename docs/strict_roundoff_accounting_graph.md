@@ -1,6 +1,6 @@
 # Huan strict roundoff accounting graph
 
-Engine SHA: `b0ff55745d69205f3afb4dc8077b9ac1310bfff3`
+Engine SHA: `743f6205e6408072193ad76e940e7f15030e8d3c`
 
 Scope: polynomial plant reachability in `mode="strict"`, binary64, finite
 intermediates, gradual underflow, and the checked `m*u` reduction hypothesis.

@@ -29,7 +29,7 @@ FIXED = {
     "fixed_T3": 3.0,
     "fixed_T6p32": 6.32,
 }
-ENGINE_HEAD = "b0ff55745d69205f3afb4dc8077b9ac1310bfff3"
+ENGINE_HEAD = "743f6205e6408072193ad76e940e7f15030e8d3c"
 
 
 def _git(root: Path, *args: str) -> str:

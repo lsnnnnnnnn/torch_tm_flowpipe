@@ -2,7 +2,7 @@
 
 Primary status: `HUAN_PROOF_CONTRACT_CLOSED__VDP_CONTRACT_NOT_PORTABLE`
 
-Repaired engine: `b0ff55745d69205f3afb4dc8077b9ac1310bfff3` on
+Repaired engine: `743f6205e6408072193ad76e940e7f15030e8d3c` on
 `codex/strict-proof-contract-closure-20260826`.
 
 This report covers the polynomial plant engine only. It does not extend to
@@ -114,7 +114,7 @@ clone/generation path is taken, so production semantics are unchanged.
 
 The bounded search inspected stashes, reflogs, unreachable objects, worktrees,
 sibling repositories, patches, manifests, archives, histories, logs, and build
-copies: 154,683 files and 457 candidates. None reconstructs any of the three
+copies: 159,266 files and 470 candidates. None reconstructs any of the three
 recorded dirty source states exactly. Final result:
 `HISTORICAL_DIRTY_PATCHES_NOT_FOUND_AFTER_BOUNDED_SEARCH`.
 
@@ -139,4 +139,3 @@ but those historical numbers must not be attributed to the repaired SHA.
 10. No throughput publication is authorized. A later round first needs a
     reviewed implementation of adaptive step plus symbolic queue 100 under the
     unchanged frozen settings, followed by a new D gate and Phase E.
-
