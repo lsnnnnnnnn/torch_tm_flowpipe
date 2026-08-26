@@ -57,6 +57,8 @@ REQUIRED = (
     "commands/d5_refinement_cpu_audit.log",
     "commands/d5_refinement_cuda_audit.log",
     "commands/d6_repaired_witness.log",
+    "commands/torch_c2_source_freeze.log",
+    "commands/previous_package_verifier.log",
     "vdp/contract_matrix.csv",
     "vdp/step1_common_input.csv",
     "vdp/refinement_ledgers.jsonl.gz",
@@ -336,6 +338,12 @@ def verify(repo: Path, output: Path) -> list[str]:
     pragma_header, pragma_body = capture_header(output / "commands/huan_plant_full.log")
     if pragma_header.get("returncode") != 1 or "2 failed, 1025 passed" not in pragma_body:
         errors.append("Huan pragma-budget diagnostic capture changed or is missing")
+    freeze_header, freeze_body = capture_header(output / "commands/torch_c2_source_freeze.log")
+    if freeze_header.get("returncode") != 0 or freeze_body:
+        errors.append("Torch C2 source freeze diff is nonempty or failed")
+    previous_header, previous_body = capture_header(output / "commands/previous_package_verifier.log")
+    if previous_header.get("returncode") != 0 or '"ok": true' not in previous_body:
+        errors.append("previous Huan package verifier expected-result check failed")
     for report in required_reports[:2]:
         text = report.read_text(encoding="utf-8")
         if PRIMARY not in text or "package verifier" not in text.lower():
