@@ -55,25 +55,25 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/rounding.py; src/flowstar_gpu/interval.py; src/flowstar_gpu/transcendental.py; src/flowstar_gpu/cuda_kernels.py",
         "symbol_or_function": "next_up,next_down; add,sub,mul,div; sqrt_iv; iv_* CUDA kernels",
         "kernel_or_operation": "RN+nextafter CPU fallback or directed __dadd/__dmul CUDA endpoints",
-        "runtime_assertion": "dtype f64 guards; division bad mask; no general finite-output guard at primitive boundary",
-        "unit_test": "tests/properties/test_interval_props.py; tests/properties/test_transcendental_props.py; tests/unit/test_cuda_kernels.py; huan_proof_kernel_audit.py D1",
+        "runtime_assertion": "dtype f64 guards; division bad mask; certificate-boundary finite assertions and per-lane non-finite mask",
+        "unit_test": "tests/properties/test_interval_props.py; tests/properties/test_transcendental_props.py; tests/unit/test_cuda_kernels.py; tests/soundness/test_strict_proof_contract.py; huan_proof_kernel_audit.py D1",
         "oracle": "Fraction exact endpoints and mpmath sqrt",
         "status": "MAPPED_AND_TESTED",
-        "gap": "overflow returns an extended interval; fail-closed status is supplied only by division or downstream contraction, not every primitive",
+        "gap": "primitives may return extended intervals internally; only finite validated flowpipes are certificates",
     },
     {
         "claim_id": "FP_NO_FTZ_STARTUP",
         "paper_section": "3 / Floating-point soundness without directed rounding",
         "theorem_or_assumption": "equation engine-fpmodel startup condition",
         "mathematical_hypotheses": "float64 subnormals are preserved by every deployed path",
-        "source_file": "src/flowstar_gpu/determinism.py; tests/unit/test_denormal_ftz.py",
-        "symbol_or_function": "enable_determinism; denormal tests",
+        "source_file": "src/flowstar_gpu/determinism.py; src/flowstar_gpu/flowpipe.py",
+        "symbol_or_function": "assert_gradual_underflow; enable_determinism; reach",
         "kernel_or_operation": "startup and CUDA float64 arithmetic",
-        "runtime_assertion": "none in production startup",
-        "unit_test": "tests/unit/test_denormal_ftz.py; huan_proof_kernel_audit.py no_ftz",
+        "runtime_assertion": "CPU always checked; selected CUDA and active custom interval-multiply route additionally checked before reach",
+        "unit_test": "tests/unit/test_denormal_ftz.py; tests/soundness/test_strict_proof_contract.py::test_no_ftz_startup_rejects_simulated_flush; huan_proof_kernel_audit.py no_ftz",
         "oracle": "smallest-subnormal identities",
-        "status": "CONTRADICTED",
-        "gap": "paper says the engine asserts no-FTZ at startup; source only tests it out of band",
+        "status": "MAPPED_AND_TESTED",
+        "gap": "direct low-level advance_sparse callers must invoke production initialization; public plant reach does so",
     },
     {
         "claim_id": "FP_OVERFLOW_DIVZERO_FAIL_CLOSED",
@@ -83,11 +83,11 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/interval.py; src/flowstar_gpu/flowpipe.py",
         "symbol_or_function": "rec,div,assert_valid; _validate_and_refine",
         "kernel_or_operation": "reciprocal-then-multiply; contraction predicate",
-        "runtime_assertion": "division returns bad mask; contraction rejects non-contained extended results",
-        "unit_test": "tests/properties/test_interval_props.py; huan_proof_kernel_audit.py D1",
+        "runtime_assertion": "division/domain bad masks plus generic per-lane finite checks; assert_valid rejects infinite certificate endpoints",
+        "unit_test": "tests/properties/test_interval_props.py; tests/soundness/test_strict_proof_contract.py; huan_proof_kernel_audit.py D1",
         "oracle": "exact extended-real enclosure and explicit bad-mask checks",
-        "status": "PARTIALLY_MAPPED",
-        "gap": "division is explicit; generic overflow is not converted to a primitive status and assert_valid permits infinity",
+        "status": "MAPPED_AND_TESTED",
+        "gap": "status value 3 is retained for compatibility and the audit trace distinguishes generic non-finite from domain failures",
     },
     {
         "claim_id": "FP_ANY_ORDER_REDUCTION",
@@ -125,11 +125,11 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/config.py; src/flowstar_gpu/composition.py; src/flowstar_gpu/flowpipe.py; src/flowstar_gpu/symbolic_remainder.py",
         "symbol_or_function": "Settings.mode; compose(strict); _validate_and_refine; propagate",
         "kernel_or_operation": "composition GEMM inflation and validated point-vs-interval defect",
-        "runtime_assertion": "mode enum only",
-        "unit_test": "tests/unit/test_composition.py; tests/unit/test_sparse_exec.py",
-        "oracle": "strict remainder superset of parity plus source-path accounting audit",
-        "status": "CONTRADICTED",
-        "gap": "strict does not charge symbolic Phi einsums and does not visibly charge retained monomial-image point-product roundoff",
+        "runtime_assertion": "strict Phi requires interval Phi; finite/m*u guards; coefficient errors ranged on the actual dense/sparse support",
+        "unit_test": "tests/unit/test_composition.py; tests/unit/test_sparse_exec.py; tests/soundness/test_strict_proof_contract.py",
+        "oracle": "Fraction Phi and dense/sparse convolution oracles plus source-path accounting audit",
+        "status": "MAPPED_AND_TESTED",
+        "gap": "parity deliberately preserves Flow*'s point-coefficient trust model and is not promoted to strict soundness",
     },
     {
         "claim_id": "LANE_CERT_MASK_FREEZE_RETRY_REFINE",
@@ -157,7 +157,7 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "unit_test": "tests/unit/test_flowpipe.py; tests/unit/test_tape_kernels.py; audit refinement control tests",
         "oracle": "call-count and state-freeze assertions",
         "status": "MAPPED_AND_TESTED",
-        "gap": "no public refinement ledger records every proposal/commit",
+        "gap": "CUDA fused execution is cross-checked against the shared eager semantics; audit callbacks intentionally select the observable eager route",
     },
     {
         "claim_id": "SPARSE_SUPPORT_SUPERSET",
@@ -199,7 +199,7 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "unit_test": "tests/unit/test_composition.py; tests/unit/test_sparse_exec.py",
         "oracle": "Fraction evaluation and sampled Taylor-model containment",
         "status": "MAPPED_AND_TESTED",
-        "gap": "strict accounting of the retained point-product coefficients is incomplete",
+        "gap": "strict widens the ordinary remainder; parity intentionally omits the additional coefficient-error range",
     },
     {
         "claim_id": "SYMBOLIC_QUEUE_RECONSTRUCT_CLEAR",
@@ -209,11 +209,11 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/symbolic_remainder.py; src/flowstar_gpu/flowpipe.py; src/flowstar_gpu/sparse_exec.py",
         "symbol_or_function": "propagate; append_j; reset_if_full; advance",
         "kernel_or_operation": "Phi queue products and interval J reconstruction",
-        "runtime_assertion": "queue overflow guard; >= capacity reset",
-        "unit_test": "tests/unit/test_flowpipe.py; tests/unit/test_sparse_exec.py; tests/soundness/test_containment.py",
-        "oracle": "reset-boundary replay against a non-reset queue and containment trajectories",
-        "status": "PARTIALLY_MAPPED",
-        "gap": "queue semantics are tested, but strict-mode Phi-product roundoff is uncharged",
+        "runtime_assertion": "queue overflow guard; >= capacity reset; strict propagation requires exact-enclosing interval Phi/scalars",
+        "unit_test": "tests/unit/test_flowpipe.py; tests/unit/test_sparse_exec.py; tests/soundness/test_containment.py; tests/soundness/test_strict_proof_contract.py",
+        "oracle": "Fraction matrix/J reconstruction at sizes 1--3 and all queue/reset boundaries",
+        "status": "MAPPED_AND_TESTED",
+        "gap": "phi_buf remains the parity point path; phi_iv_buf is allocated only for strict mode",
     },
     {
         "claim_id": "TRANSCENDENTAL_ASSUMPTIONS",
@@ -237,11 +237,11 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/flowpipe.py; src/flowstar_gpu/composition.py; src/flowstar_gpu/symbolic_remainder.py",
         "symbol_or_function": "reach/advance; compose; propagate",
         "kernel_or_operation": "polynomial Picard, composition, and optional symbolic remainder",
-        "runtime_assertion": "f64 and selected length guards only",
-        "unit_test": "plant-only upstream suite and huan_proof_kernel_audit.py",
-        "oracle": "proof-to-code closure audit",
-        "status": "CONTRADICTED",
-        "gap": "unconditional scope is not established when no-FTZ is not asserted and strict point-roundoff coverage has identified holes",
+        "runtime_assertion": "f64/length guards, production no-FTZ assertion, generic finite-lane mask, and strict coefficient accounting",
+        "unit_test": "plant-only upstream suite; tests/soundness/test_strict_proof_contract.py; huan_proof_kernel_audit.py",
+        "oracle": "proof-to-code closure audit with Fraction coefficient/Phi witnesses",
+        "status": "MAPPED_AND_TESTED",
+        "gap": "promotion applies only to strict polynomial plant reach under enforced finite hypotheses; transcendental library claims remain conditional",
     },
 )
 
@@ -365,14 +365,113 @@ def _audit_d1(torch: Any, iv: Any, trans: Any, device: str) -> dict[str, Any]:
     rows.append({"case": "sqrt-subnormal-max", "pass": not bool(sqrt_bad.item()) and mp.mpf(sqrt_lo) <= exact_lo and exact_hi <= mp.mpf(sqrt_hi), "out": sqrt_out.tolist()})
 
     overflow = iv.mul(tensor((1e300, 1.5e308)), tensor((1e300, 1.5e308)))
-    rows.append({"case": "mul-overflow-extended", "pass": not bool(torch.isnan(overflow).any()) and math.isinf(overflow[1].item()), "out": overflow.tolist(), "classification": "NONFINITE_EXTENDED_ENCLOSURE_NOT_A_FINITE_CERTIFICATE"})
+    finite_probe = tensor((-1.0, 1.0))
+    finite_certificate_rejected = not bool(iv.contains(overflow, finite_probe).item())
+    try:
+        iv.assert_valid(overflow)
+    except FloatingPointError:
+        assert_valid_rejected = True
+    else:
+        assert_valid_rejected = False
+    rows.append({
+        "case": "mul-overflow-extended",
+        "pass": (
+            not bool(torch.isnan(overflow).any())
+            and math.isinf(overflow[1].item())
+            and finite_certificate_rejected
+            and assert_valid_rejected
+        ),
+        "out": overflow.tolist(),
+        "finite_certificate_rejected": finite_certificate_rejected,
+        "assert_valid_rejected": assert_valid_rejected,
+        "classification": "NONFINITE_EXTENDED_ENCLOSURE_NOT_A_FINITE_CERTIFICATE",
+    })
 
     tiny = torch.tensor(1e-310, dtype=torch.float64, device=device)
     no_ftz = (tiny * 0.5).item() == 5e-311 and torch.nextafter(torch.zeros_like(tiny), torch.full_like(tiny, math.inf)).item() == 5e-324
     return {"cases": rows, "case_count": len(rows), "passed": sum(bool(row["pass"]) for row in rows), "no_ftz_observed": no_ftz}
 
 
-def _audit_d2(torch: Any, rounding: Any, device: str) -> dict[str, Any]:
+def _route_row(
+    *,
+    case_name: str,
+    m: int,
+    schedule_name: str,
+    execution_backend: str,
+    actual_device: str,
+    kernel_path: str,
+    kernel_invocation_observed: bool,
+    exact: Fraction,
+    hat: float | None,
+    abs_hat: float | None,
+    interval: tuple[float, float] | None,
+    rounding: Any,
+    torch: Any,
+    bound_device: str,
+) -> dict[str, Any]:
+    """Build one route-tagged D2 result.
+
+    Host schedules are mathematical any-order witnesses.  Device routes name
+    the operation that actually executed; an enclosing interval route records
+    containment directly, while a point route applies the shipped inflation.
+    """
+    finite = (
+        interval is not None
+        and all(math.isfinite(value) for value in interval)
+    ) or (
+        interval is None
+        and hat is not None
+        and abs_hat is not None
+        and math.isfinite(hat)
+        and math.isfinite(abs_hat)
+    )
+    base: dict[str, Any] = {
+        "case": case_name,
+        "m": m,
+        "schedule_name": schedule_name,
+        "execution_backend": execution_backend,
+        "actual_device": actual_device,
+        "kernel_path": kernel_path,
+        "kernel_invocation_observed": kernel_invocation_observed,
+        "finite_hypotheses_satisfied": finite,
+        "m_u_gate": m * rounding.U <= 0.25,
+    }
+    if not finite:
+        return {
+            **base,
+            "status": "OUTSIDE_FINITE_INTERMEDIATE_HYPOTHESIS",
+            "exact_error": None,
+            "computed_inflation": None,
+            "containment": None,
+        }
+    if interval is not None:
+        lo, hi = interval
+        contained = _contains_fraction(lo, hi, exact)
+        return {
+            **base,
+            "status": "PASS" if contained else "FAIL",
+            "interval": [lo, hi],
+            "exact_error": None,
+            "computed_inflation": hi - lo,
+            "containment": contained,
+        }
+    assert hat is not None and abs_hat is not None
+    bound = rounding.dot_error_bound(
+        torch.tensor(abs_hat, dtype=torch.float64, device=bound_device), m
+    ).item()
+    error = abs(Fraction(hat) - exact)
+    contained = error <= Fraction(bound)
+    return {
+        **base,
+        "status": "PASS" if contained else "FAIL",
+        "hat": hat,
+        "exact_error": float(error),
+        "computed_inflation": bound,
+        "containment": contained,
+    }
+
+
+def _audit_d2(torch: Any, rounding: Any, iv: Any, ck: Any, device: str) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     failures: list[dict[str, Any]] = []
     rng = random.Random(20260826)
@@ -391,29 +490,134 @@ def _audit_d2(torch: Any, rounding: Any, device: str) -> dict[str, Any]:
         perm = list(range(m))
         rng.shuffle(perm)
         schedules: dict[str, tuple[float, float]] = {
-            "sequential": (_sequential(rounded_products), _sequential(abs_products)),
-            "pairwise": (_pairwise(rounded_products), _pairwise(abs_products)),
-            "chunk3": (_chunked(rounded_products, 3), _chunked(abs_products, 3)),
-            "chunk17": (_chunked(rounded_products, 17), _chunked(abs_products, 17)),
-            "permuted": (_pairwise([rounded_products[i] for i in perm]), _pairwise([abs_products[i] for i in perm])),
-            "fma": (_fma_dot(a, b), _pairwise(abs_products)),
+            "host_sequential": (_sequential(rounded_products), _sequential(abs_products)),
+            "host_pairwise": (_pairwise(rounded_products), _pairwise(abs_products)),
+            "host_chunk3": (_chunked(rounded_products, 3), _chunked(abs_products, 3)),
+            "host_chunk17": (_chunked(rounded_products, 17), _chunked(abs_products, 17)),
+            "host_permuted": (_pairwise([rounded_products[i] for i in perm]), _pairwise([abs_products[i] for i in perm])),
+            "host_fma": (_fma_dot(a, b), _pairwise(abs_products)),
         }
+        for schedule, (hat, abs_hat) in schedules.items():
+            row = _route_row(
+                case_name=case_name,
+                m=m,
+                schedule_name=schedule,
+                execution_backend="host_python",
+                actual_device="host_python_float",
+                kernel_path=f"scripts.huan_proof_kernel_audit.{schedule}",
+                kernel_invocation_observed=True,
+                exact=exact,
+                hat=hat,
+                abs_hat=abs_hat,
+                interval=None,
+                rounding=rounding,
+                torch=torch,
+                bound_device="cpu",
+            )
+            rows.append(row)
+            if row["status"] == "FAIL":
+                failures.append(row)
+
         ta = torch.tensor(a, dtype=torch.float64, device=device)
         tb = torch.tensor(b, dtype=torch.float64, device=device)
-        schedules["torch_dot"] = (torch.dot(ta, tb).item(), torch.dot(ta.abs(), tb.abs()).item())
-        for schedule, (hat, abs_hat) in schedules.items():
-            if not math.isfinite(hat) or not math.isfinite(abs_hat):
-                rows.append({"case": case_name, "m": m, "schedule": schedule, "status": "OUTSIDE_FINITE_INTERMEDIATE_HYPOTHESIS"})
-                continue
-            bound = rounding.dot_error_bound(torch.tensor(abs_hat, dtype=torch.float64, device=device), m).item()
-            error = abs(Fraction(hat) - exact)
-            passed = error <= Fraction(bound)
-            row = {"case": case_name, "m": m, "schedule": schedule, "status": "PASS" if passed else "FAIL", "bound": bound, "error": float(error), "precondition_m_u_le_quarter": m * rounding.U <= 0.25}
+        backend = "torch_cuda" if ta.is_cuda else "torch_cpu"
+        actual_device = str(ta.device)
+
+        device_routes: list[tuple[str, float, float, str]] = []
+        dot_hat = torch.dot(ta, tb)
+        dot_abs = torch.dot(ta.abs(), tb.abs())
+        sum_hat = torch.sum(ta * tb)
+        sum_abs = torch.sum(ta.abs() * tb.abs())
+        einsum_hat = torch.einsum("i,i->", ta, tb)
+        einsum_abs = torch.einsum("i,i->", ta.abs(), tb.abs())
+        if ta.is_cuda:
+            torch.cuda.synchronize(ta.device)
+        device_routes.extend(
+            [
+                ("torch_dot", dot_hat.item(), dot_abs.item(), "torch.dot"),
+                ("torch_sum_mul", sum_hat.item(), sum_abs.item(), "torch.sum(a*b)"),
+                ("engine_point_einsum", einsum_hat.item(), einsum_abs.item(), "torch.einsum(i,i->)"),
+            ]
+        )
+        for schedule, hat, abs_hat, kernel_path in device_routes:
+            row = _route_row(
+                case_name=case_name,
+                m=m,
+                schedule_name=schedule,
+                execution_backend=backend,
+                actual_device=actual_device,
+                kernel_path=kernel_path,
+                kernel_invocation_observed=True,
+                exact=exact,
+                hat=hat,
+                abs_hat=abs_hat,
+                interval=None,
+                rounding=rounding,
+                torch=torch,
+                bound_device=device,
+            )
             rows.append(row)
-            if not passed:
+            if row["status"] == "FAIL":
                 failures.append(row)
+
+        # Production interval-dot route.  On CUDA this dispatches through
+        # flowstar_gpu.interval._ck.iv_dot_point_iv; a narrowly scoped wrapper
+        # proves the custom operation was invoked instead of merely available.
+        custom_calls = 0
+        original_custom = ck.iv_dot_point_iv
+
+        def counted_custom(*args: Any, **kwargs: Any) -> Any:
+            nonlocal custom_calls
+            custom_calls += 1
+            return original_custom(*args, **kwargs)
+
+        if ta.is_cuda:
+            ck.iv_dot_point_iv = counted_custom
+        try:
+            engine_iv = iv.dot_point_iv(ta, iv.from_point(tb), dim=-1)
+            if ta.is_cuda:
+                torch.cuda.synchronize(ta.device)
+        finally:
+            if ta.is_cuda:
+                ck.iv_dot_point_iv = original_custom
+        engine_interval = tuple(float(value) for value in engine_iv.tolist())
+        engine_backend = "custom_cuda" if custom_calls else backend
+        row = _route_row(
+            case_name=case_name,
+            m=m,
+            schedule_name="engine_interval_dot",
+            execution_backend=engine_backend,
+            actual_device=actual_device,
+            kernel_path="flowstar_gpu.interval.dot_point_iv",
+            kernel_invocation_observed=(custom_calls > 0) if ta.is_cuda else True,
+            exact=exact,
+            hat=None,
+            abs_hat=None,
+            interval=engine_interval,
+            rounding=rounding,
+            torch=torch,
+            bound_device=device,
+        )
+        row["custom_cuda_invocation_count"] = custom_calls
+        rows.append(row)
+        if row["status"] == "FAIL":
+            failures.append(row)
     checked = sum(row["status"] in {"PASS", "FAIL"} for row in rows)
-    return {"rows": rows, "checked": checked, "passed": sum(row["status"] == "PASS" for row in rows), "failures": failures}
+    route_counts: dict[str, int] = {}
+    invocation_counts: dict[str, int] = {}
+    for row in rows:
+        backend = row["execution_backend"]
+        route_counts[backend] = route_counts.get(backend, 0) + 1
+        if row["kernel_invocation_observed"]:
+            invocation_counts[backend] = invocation_counts.get(backend, 0) + 1
+    return {
+        "rows": rows,
+        "checked": checked,
+        "passed": sum(row["status"] == "PASS" for row in rows),
+        "failures": failures,
+        "route_counts": route_counts,
+        "kernel_invocation_counts": invocation_counts,
+    }
 
 
 def run(engine_root: Path, device: str) -> dict[str, Any]:
@@ -423,22 +627,29 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
     trans = importlib.import_module("flowstar_gpu.transcendental")
     rounding = importlib.import_module("flowstar_gpu.rounding")
     ck = importlib.import_module("flowstar_gpu.cuda_kernels")
+    determinism = importlib.import_module("flowstar_gpu.determinism")
     if device == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
     kernel_available = bool(ck.available()) if device == "cuda" else False
+    determinism.assert_gradual_underflow(device)
     d1 = _audit_d1(torch, iv, trans, device)
-    d2 = _audit_d2(torch, rounding, device)
+    d2 = _audit_d2(torch, rounding, iv, ck, device)
     return {
-        "schema": "torch_tm_flowpipe.huan_proof_kernel_audit/1",
+        "schema": "torch_tm_flowpipe.huan_proof_kernel_audit/2",
         "engine_root": str(engine_root.resolve()),
         "engine_head": _git_head(engine_root),
         "device": device,
         "torch": torch.__version__,
         "cuda_runtime": torch.version.cuda,
         "cuda_kernel_available": kernel_available,
+        "production_no_ftz_assertion_passed": True,
         "d1": d1,
         "d2": d2,
-        "gate_passed": d1["passed"] == d1["case_count"] and d1["no_ftz_observed"] and not d2["failures"],
+        "gate_passed": (
+            d1["passed"] == d1["case_count"]
+            and d1["no_ftz_observed"]
+            and not d2["failures"]
+        ),
     }
 
 
@@ -454,12 +665,89 @@ def _git_head(repo: Path) -> str:
     ).stdout.strip()
 
 
+D2_ROUTE_INVENTORY: tuple[dict[str, str], ...] = (
+    {
+        "schedule_name": "host_sequential|host_pairwise|host_chunk3|host_chunk17|host_permuted|host_fma",
+        "execution_backend": "host_python",
+        "kernel_path": "Python binary64 helpers",
+        "evidence_scope": "any-order mathematical oracle; never CPU/CUDA kernel evidence",
+    },
+    {
+        "schedule_name": "torch_dot",
+        "execution_backend": "torch_cpu|torch_cuda",
+        "kernel_path": "torch.dot",
+        "evidence_scope": "actual point reduction on the tagged tensor device",
+    },
+    {
+        "schedule_name": "torch_sum_mul",
+        "execution_backend": "torch_cpu|torch_cuda",
+        "kernel_path": "torch.sum(a*b)",
+        "evidence_scope": "actual product then reduction on the tagged tensor device",
+    },
+    {
+        "schedule_name": "engine_point_einsum",
+        "execution_backend": "torch_cpu|torch_cuda",
+        "kernel_path": "torch.einsum(i,i->)",
+        "evidence_scope": "point-reduction primitive used by engine composition paths",
+    },
+    {
+        "schedule_name": "engine_interval_dot",
+        "execution_backend": "torch_cpu|custom_cuda",
+        "kernel_path": "flowstar_gpu.interval.dot_point_iv",
+        "evidence_scope": "actual production interval-dot route; custom CUDA requires a counted dispatch",
+    },
+)
+
+
+def write_d2_outputs(payload: dict[str, Any], output_root: Path) -> None:
+    """Write the corrected route-separated evidence requested by Phase 1."""
+    output_root.mkdir(parents=True, exist_ok=True)
+    inventory = output_root / "d2_schedule_inventory.csv"
+    with inventory.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=tuple(D2_ROUTE_INVENTORY[0]))
+        writer.writeheader()
+        writer.writerows(D2_ROUTE_INVENTORY)
+
+    d2 = payload["d2"]
+    common = {
+        "schema": "torch_tm_flowpipe.huan_d2_route_evidence/1",
+        "engine_head": payload["engine_head"],
+        "torch": payload["torch"],
+        "cuda_runtime": payload["cuda_runtime"],
+    }
+    host_rows = [row for row in d2["rows"] if row["execution_backend"] == "host_python"]
+    actual_rows = [row for row in d2["rows"] if row["execution_backend"] != "host_python"]
+    if payload["device"] == "cpu":
+        host_payload = {
+            **common,
+            "scope": "host binary64 reduction-order oracle; not device-kernel evidence",
+            "rows": host_rows,
+            "checked": sum(row["status"] in {"PASS", "FAIL"} for row in host_rows),
+            "passed": sum(row["status"] == "PASS" for row in host_rows),
+        }
+        (output_root / "d2_host_order_oracle.json").write_text(
+            json.dumps(host_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+    actual_payload = {
+        **common,
+        "scope": f"actual {payload['device']} routes only",
+        "rows": actual_rows,
+        "checked": sum(row["status"] in {"PASS", "FAIL"} for row in actual_rows),
+        "passed": sum(row["status"] == "PASS" for row in actual_rows),
+        "kernel_invocation_counts": d2["kernel_invocation_counts"],
+    }
+    (output_root / f"d2_actual_{payload['device']}.json").write_text(
+        json.dumps(actual_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engine-root", type=Path, required=True)
     parser.add_argument("--device", choices=("cpu", "cuda"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--proof-map", type=Path, required=True)
+    parser.add_argument("--d2-output-root", type=Path)
     return parser.parse_args()
 
 
@@ -472,6 +760,8 @@ def main() -> int:
     payload["gate_passed"] = payload["gate_passed"] and not map_errors
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if args.d2_output_root is not None:
+        write_d2_outputs(payload, args.d2_output_root)
     print(json.dumps({"device": args.device, "gate_passed": payload["gate_passed"], "d1": [payload["d1"]["passed"], payload["d1"]["case_count"]], "d2": [payload["d2"]["passed"], payload["d2"]["checked"]], "kernel": payload["cuda_kernel_available"]}, sort_keys=True))
     return 0 if payload["gate_passed"] else 1
 

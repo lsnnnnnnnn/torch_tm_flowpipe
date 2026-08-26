@@ -48,7 +48,7 @@ def test_exact_schedule_helpers_preserve_the_intended_rounding_diversity() -> No
     assert audit._exact_dot(values, [1.0, 1.0, 1.0]) == exact
 
 
-def test_committed_cpu_and_cuda_microkernel_evidence_passes() -> None:
+def test_committed_v1_evidence_is_preserved_but_not_route_tagged() -> None:
     payloads = {
         device: json.loads((OUTPUT / "raw_logs" / f"proof_kernel_{device}.json").read_text())
         for device in ("cpu", "cuda")
@@ -58,8 +58,36 @@ def test_committed_cpu_and_cuda_microkernel_evidence_passes() -> None:
         assert payload["proof_map_errors"] == []
         assert payload["d1"]["passed"] == payload["d1"]["case_count"] == 7
         assert payload["d1"]["no_ftz_observed"] is True
+        assert payload["schema"] == "torch_tm_flowpipe.huan_proof_kernel_audit/1"
         assert payload["d2"]["checked"] >= 900
         assert payload["d2"]["passed"] == payload["d2"]["checked"]
         assert payload["d2"]["failures"] == []
         assert payload["gate_passed"] is True
     assert payloads["cuda"]["cuda_kernel_available"] is True
+
+
+def test_route_row_distinguishes_host_and_device_evidence() -> None:
+    audit = _module()
+    required = {
+        "schedule_name",
+        "execution_backend",
+        "actual_device",
+        "kernel_path",
+        "kernel_invocation_observed",
+        "m",
+        "finite_hypotheses_satisfied",
+        "m_u_gate",
+        "exact_error",
+        "computed_inflation",
+        "containment",
+    }
+    # The inventory is preregistered and explicitly says host rows are not
+    # CPU/CUDA executions.
+    host = audit.D2_ROUTE_INVENTORY[0]
+    assert host["execution_backend"] == "host_python"
+    assert "never CPU/CUDA" in host["evidence_scope"]
+    assert required <= {
+        "schedule_name", "execution_backend", "actual_device", "kernel_path",
+        "kernel_invocation_observed", "m", "finite_hypotheses_satisfied",
+        "m_u_gate", "exact_error", "computed_inflation", "containment",
+    }

@@ -14,7 +14,36 @@ SPEC.loader.exec_module(VERIFIER)
 
 
 def test_committed_huan_package_verifies() -> None:
-    assert VERIFIER.verify(ROOT, ROOT / "outputs" / "huan_repro_audit") == []
+    errors = VERIFIER.verify(ROOT, ROOT / "outputs" / "huan_repro_audit")
+    assert errors == [
+        "D2 cpu evidence lacks route-tagged schema v2",
+        "D2 cuda evidence lacks route-tagged schema v2",
+    ]
+
+
+def test_cuda_availability_cannot_substitute_for_invocation() -> None:
+    row = {
+        "schedule_name": "engine_interval_dot",
+        "execution_backend": "custom_cuda",
+        "actual_device": "cuda:0",
+        "kernel_path": "flowstar_gpu.interval.dot_point_iv",
+        "kernel_invocation_observed": False,
+        "custom_cuda_invocation_count": 0,
+        "m": 2,
+        "finite_hypotheses_satisfied": True,
+        "m_u_gate": True,
+        "exact_error": None,
+        "computed_inflation": 1e-15,
+        "containment": True,
+        "status": "PASS",
+    }
+    payload = {
+        "schema": "torch_tm_flowpipe.huan_proof_kernel_audit/2",
+        "cuda_kernel_available": True,
+        "d2": {"rows": [row], "checked": 1, "passed": 1},
+    }
+    errors = VERIFIER.verify_d2_route_evidence(payload, "cuda")
+    assert "D2 CUDA custom route lacks nonzero invocation evidence" in errors
 
 
 def test_capture_header_requires_delimiter_and_parses_json(tmp_path: Path) -> None:

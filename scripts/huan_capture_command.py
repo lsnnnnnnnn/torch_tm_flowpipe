@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -21,7 +22,32 @@ CAPTURED_ENV = (
     "HYPOTHESIS_PROFILE",
     "HUAN_CONFIG_ROOT",
     "PYTHONPATH",
+    "FLOWSTAR_NO_CUDA_KERNEL",
+    "PYTHONHASHSEED",
 )
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _source_state(root: Path) -> dict[str, object]:
+    def git(*args: str) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=root, check=True, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        ).stdout.strip()
+
+    return {
+        "root": str(root.resolve()),
+        "head": git("rev-parse", "HEAD"),
+        "branch": git("branch", "--show-current"),
+        "dirty": bool(git("status", "--porcelain")),
+    }
 
 
 def main() -> int:
@@ -29,6 +55,14 @@ def main() -> int:
     parser.add_argument("--cwd", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--label", required=True)
+    parser.add_argument(
+        "--source-root", type=Path, action="append", default=[],
+        help="Git source root to record; repeat for multiple repositories",
+    )
+    parser.add_argument(
+        "--artifact", type=Path, action="append", default=[],
+        help="Command-produced file whose SHA256 must be captured; repeatable",
+    )
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
@@ -45,8 +79,19 @@ def main() -> int:
         stderr=subprocess.STDOUT,
     )
     elapsed = time.monotonic() - before
+    artifacts = []
+    for raw_path in args.artifact:
+        path = raw_path if raw_path.is_absolute() else args.cwd / raw_path
+        artifacts.append(
+            {
+                "path": str(path.resolve()),
+                "exists": path.is_file(),
+                "sha256": _sha256(path) if path.is_file() else None,
+                "size": path.stat().st_size if path.is_file() else None,
+            }
+        )
     header = {
-        "schema": "torch_tm_flowpipe.huan_command_capture/1",
+        "schema": "torch_tm_flowpipe.huan_command_capture/2",
         "label": args.label,
         "started_utc": started.isoformat(),
         "cwd": str(args.cwd.resolve()),
@@ -54,6 +99,8 @@ def main() -> int:
         "environment": {key: os.environ[key] for key in CAPTURED_ENV if key in os.environ},
         "returncode": result.returncode,
         "elapsed_seconds": elapsed,
+        "sources": [_source_state(root) for root in args.source_root],
+        "artifacts": artifacts,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

@@ -94,6 +94,55 @@ def capture_header(path: Path) -> tuple[dict[str, Any], str]:
     return json.loads(header), body
 
 
+def verify_d2_route_evidence(kernel: dict[str, Any], device: str) -> list[str]:
+    """Verify executed D2 routes, not mere CUDA-extension availability.
+
+    Schema v1 mislabeled host-Python schedules as CUDA when the outer audit
+    process selected CUDA.  It is intentionally rejected here: correcting the
+    scientific label is more important than keeping the legacy package green.
+    """
+    errors: list[str] = []
+    if kernel.get("schema") != "torch_tm_flowpipe.huan_proof_kernel_audit/2":
+        return [f"D2 {device} evidence lacks route-tagged schema v2"]
+    d2 = kernel.get("d2", {})
+    rows = d2.get("rows", [])
+    required = {
+        "schedule_name",
+        "execution_backend",
+        "actual_device",
+        "kernel_path",
+        "kernel_invocation_observed",
+        "m",
+        "finite_hypotheses_satisfied",
+        "m_u_gate",
+        "exact_error",
+        "computed_inflation",
+        "containment",
+    }
+    for number, row in enumerate(rows, 1):
+        missing = required - set(row)
+        if missing:
+            errors.append(f"D2 {device} row {number} missing {sorted(missing)}")
+    checked = sum(row.get("status") in {"PASS", "FAIL"} for row in rows)
+    passed = sum(row.get("status") == "PASS" for row in rows)
+    if d2.get("checked") != checked or d2.get("passed") != passed or checked != passed:
+        errors.append(f"D2 {device} route-derived counts or containment failed")
+    expected_backend = "torch_cuda" if device == "cuda" else "torch_cpu"
+    if not any(row.get("execution_backend") == expected_backend for row in rows):
+        errors.append(f"D2 {device} has no actual {expected_backend} route")
+    if device == "cuda":
+        custom = [row for row in rows if row.get("execution_backend") == "custom_cuda"]
+        if not custom:
+            errors.append("D2 CUDA has no executed custom_cuda route")
+        elif any(
+            not row.get("kernel_invocation_observed")
+            or row.get("custom_cuda_invocation_count", 0) <= 0
+            for row in custom
+        ):
+            errors.append("D2 CUDA custom route lacks nonzero invocation evidence")
+    return errors
+
+
 def verify(repo_root: Path, output_root: Path) -> list[str]:
     errors: list[str] = []
     for relative in REQUIRED_OUTPUTS:
@@ -139,10 +188,7 @@ def verify(repo_root: Path, output_root: Path) -> list[str]:
         kernel = json.loads((output_root / "raw_logs" / f"proof_kernel_{device}.json").read_text())
         if not kernel["gate_passed"] or kernel["d1"]["passed"] != 7:
             errors.append(f"D1 evidence failed for {device}")
-        if kernel["d2"]["passed"] != kernel["d2"]["checked"] or kernel["d2"]["checked"] != 987:
-            errors.append(f"D2 evidence failed for {device}")
-        if device == "cuda" and not kernel["cuda_kernel_available"]:
-            errors.append("CUDA evidence used no shipped fused kernel")
+        errors.extend(verify_d2_route_evidence(kernel, device))
 
     upstream_header, upstream_body = capture_header(output_root / "upstream_tests.log")
     mapped_header, mapped_body = capture_header(output_root / "raw_logs" / "upstream_path_mapped_replay.log")
