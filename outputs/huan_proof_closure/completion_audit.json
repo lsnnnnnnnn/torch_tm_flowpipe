@@ -1,0 +1,261 @@
+{
+  "allowed_partial_completion": true,
+  "overall": "GOAL_EXECUTED_WITH_MANDATORY_VDP_PORTABILITY_STOP",
+  "primary_status": "HUAN_PROOF_CONTRACT_CLOSED__VDP_CONTRACT_NOT_PORTABLE",
+  "remaining_unresolved_scientific_claims": [
+    "Huan parity native T=10 reachability",
+    "Huan strict native T=10 reachability",
+    "fresh four-lane cross-tool ranking and first divergence",
+    "Huan adjudication of Torch C2 terminal y-upper failure",
+    "category-separated step-1 cutoff/roundoff decomposition and queue snapshot",
+    "historical 450-run dirty-source reproduction",
+    "throughput Phase F"
+  ],
+  "requirements": [
+    {
+      "evidence": [
+        "phase_d_gate_v2.json",
+        "vdp/phase_e_decision.json"
+      ],
+      "goal_section": "0",
+      "id": "0_ordered_objective",
+      "note": "Audit correction preceded proof repair; Phase E began only after D1-D6 passed.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "commands/torch_c2_source_freeze.log",
+        "source_manifest.json"
+      ],
+      "goal_section": "1.1",
+      "id": "1_torch_c2_frozen",
+      "note": "The required source diff is empty at scientific SHA 29c9ee8.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "commands/phase0_huan_worktrees.log",
+        "commands/phase0_huan_branch_reflog.log"
+      ],
+      "goal_section": "1.2",
+      "id": "1_huan_isolated",
+      "note": "Original checkout remained unmodified; repair branch was pushed.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "vdp/phase_e_decision.json"
+      ],
+      "goal_section": "1.3",
+      "id": "1_scope_exclusions",
+      "note": "No controller/coupling/transcendental substitute or throughput campaign ran.",
+      "status": "NOT_APPLICABLE_SCOPE_EXCLUSION"
+    },
+    {
+      "evidence": [
+        "source_manifest.json",
+        "environment.txt",
+        "commands/phase0_torch_fetch.log",
+        "commands/phase0_torch_audit_base.log",
+        "commands/phase0_torch_worktrees.log",
+        "commands/phase0_huan_status.log",
+        "commands/phase0_huan_head.log",
+        "commands/phase0_huan_worktrees.log",
+        "commands/phase0_huan_uv_lock_diff.log"
+      ],
+      "goal_section": "2",
+      "id": "2_phase0_provenance",
+      "note": "Verbatim command captures and the audit-only ninja/PyYAML overlay are preserved.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "d2_schedule_inventory.csv",
+        "d2_host_order_oracle.json",
+        "d2_actual_cpu.json",
+        "d2_actual_cuda.json",
+        "commands/d1_d2_cpu.log",
+        "commands/d1_d2_cuda.log"
+      ],
+      "goal_section": "3",
+      "id": "3_corrected_d2",
+      "note": "Host, Torch CPU, Torch CUDA, and custom CUDA routes are separately counted with invocation evidence.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "dirty_patch_recovery.json",
+        "dirty_patch_candidates.csv"
+      ],
+      "goal_section": "4",
+      "id": "4_dirty_patch_search",
+      "note": "Bounded search conclusion is HISTORICAL_DIRTY_PATCHES_NOT_FOUND_AFTER_BOUNDED_SEARCH.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "strict_roundoff_sources.csv",
+        "witnesses/d6_minimal_witness.json",
+        "witnesses/d6_repaired_minimal_witness.json",
+        "commands/d6_repaired_witness.log"
+      ],
+      "goal_section": "5",
+      "id": "5_d6_map_oracles_repair",
+      "note": "A concrete symbolic-Phi under-enclosure was minimized and strict accounting was repaired without changing parity semantics.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "raw_logs/proof_kernel_cpu.json",
+        "raw_logs/proof_kernel_cuda.json",
+        "phase_d_gate_v2.json"
+      ],
+      "goal_section": "6",
+      "id": "6_no_ftz_nonfinite",
+      "note": "Production startup and certificate boundaries fail closed.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "refinement_boundary_cpu_v2.json",
+        "refinement_boundary_cuda_v2.json",
+        "commands/d5_refinement_cpu_audit.log",
+        "commands/d5_refinement_cuda_audit.log"
+      ],
+      "goal_section": "7",
+      "id": "7_refinement_cache",
+      "note": "Sequential partial commits, owner generations, stale-cache tamper, and final ownership are machine-verifiable.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "phase_d_gate_v2.json",
+        "commands/phase_d_scientific_gate.log",
+        "proof_to_code_map_v2.csv"
+      ],
+      "goal_section": "8",
+      "id": "8_two_verifiers_d1_d6",
+      "note": "Scientific rerun and artifact-only verifier have distinct scopes.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "vdp/contract_matrix.csv",
+        "vdp/native_terminal.json"
+      ],
+      "goal_section": "9.1",
+      "id": "9_frozen_contract",
+      "note": "Fixed settings were represented; adaptive 0.002..0.1 plus SR100 is rejected without changing the contract.",
+      "status": "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE"
+    },
+    {
+      "evidence": [
+        "vdp/fixed_horizon_matrix.csv",
+        "vdp/phase_e_decision.json"
+      ],
+      "goal_section": "9.2",
+      "id": "9_four_lanes",
+      "note": "Eight Huan fixed runs completed; fresh Flow*/Torch runs were forbidden after the portability stop.",
+      "status": "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE"
+    },
+    {
+      "evidence": [
+        "vdp/step1_common_input.csv",
+        "vdp/refinement_ledgers.jsonl.gz",
+        "vdp/huan_final/run_index.json"
+      ],
+      "goal_section": "9.3",
+      "id": "9_step1_detail",
+      "note": "Hash, self-map, refinement, final remainder, endpoint/tube and aggregate roundoff are recorded. Candidate coefficients, an internal queue snapshot, and category-separated cutoff/remainder totals were not serialized before the mandatory stop and are explicitly labeled unavailable.",
+      "status": "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP"
+    },
+    {
+      "evidence": [
+        "vdp/native_terminal.json",
+        "vdp/first_divergence.json"
+      ],
+      "goal_section": "9.3-9.4",
+      "id": "9_native_and_adjudication",
+      "note": "No T=10, cross-tool ranking, first-divergence, or Torch-terminal-cause claim is made.",
+      "status": "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE"
+    },
+    {
+      "evidence": [
+        "vdp/phase_e_decision.json"
+      ],
+      "goal_section": "9.5",
+      "id": "9_primary_and_throughput",
+      "note": "Primary portability-stop label and explicit no-throughput status are present.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "commands/huan_plant_full_final.log",
+        "commands/torch_full_final.log",
+        "commands/previous_package_verifier.log"
+      ],
+      "goal_section": "10",
+      "id": "10_regressions_tamper",
+      "note": "Full suites and focused artifact/cache/kernel/status/fabrication tamper checks passed.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "source_manifest.json",
+        "SHA256SUMS"
+      ],
+      "goal_section": "11",
+      "id": "11_reports_artifacts",
+      "note": "Required reports, maps, gates, scripts, outputs, and fallback patch series are present.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "commands/phase0_torch_branch_reflog.log",
+        "commands/phase0_huan_branch_reflog.log"
+      ],
+      "goal_section": "12",
+      "id": "12_commit_push",
+      "note": "Both repair branches have committed, pushed histories; final tip equality is rechecked outside this self-hashed artifact.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "vdp/native_terminal.json",
+        "vdp/phase_e_decision.json",
+        "vdp/first_divergence.json"
+      ],
+      "goal_section": "13",
+      "id": "13_stop_loss",
+      "note": "The portability stop was obeyed; stopped rows contain no fabricated science.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "dirty_patch_recovery.json"
+      ],
+      "goal_section": "14",
+      "id": "14_external_material",
+      "note": "Missing historical patches and external review inputs are listed as non-blocking requests in the report.",
+      "status": "PROVEN_COMPLETE"
+    },
+    {
+      "evidence": [
+        "vdp/phase_e_decision.json"
+      ],
+      "goal_section": "original goal Phase F",
+      "id": "original_goal_phase_f",
+      "note": "The follow-up goal explicitly excludes throughput Phase F this round.",
+      "status": "SUPERSEDED_BY_FOLLOWUP_GOAL"
+    }
+  ],
+  "schema": "torch_tm_flowpipe.huan_goal_completion_audit/1",
+  "status_vocabulary": [
+    "PROVEN_COMPLETE",
+    "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE",
+    "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP",
+    "NOT_APPLICABLE_SCOPE_EXCLUSION",
+    "SUPERSEDED_BY_FOLLOWUP_GOAL"
+  ],
+  "unsupported_green_claims": false
+}

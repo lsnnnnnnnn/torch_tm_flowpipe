@@ -1,0 +1,36 @@
+{
+  "artifacts": [],
+  "command": [
+    "git",
+    "reflog",
+    "show",
+    "--date=iso",
+    "codex/strict-proof-contract-closure-20260826"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 0.0022639459930360317,
+  "environment": {},
+  "label": "PHASE0_HUAN_BRANCH_CREATION_REFLOG",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "main",
+      "dirty": false,
+      "head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "root": "/srv/local/shengenli/flowstar-gpu"
+    },
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "918af3953a5ece77dbfbb2460745c6caaed9cb98",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T11:24:17.485859+00:00"
+}
+--- combined stdout/stderr ---
+743f620 codex/strict-proof-contract-closure-20260826@{2026-08-26 10:16:48 +0000}: commit: Keep strict guards within coverage budget
+b0ff557 codex/strict-proof-contract-closure-20260826@{2026-08-26 09:23:22 +0000}: commit: Expose refinement attempt and limiting-side evidence
+9359167 codex/strict-proof-contract-closure-20260826@{2026-08-26 09:05:50 +0000}: commit: Close strict floating-point proof contract
+d5f0b68 codex/strict-proof-contract-closure-20260826@{2026-08-26 08:19:08 +0000}: branch: Created from d5f0b68fcd36ba5f582733624f074728fe9720d8

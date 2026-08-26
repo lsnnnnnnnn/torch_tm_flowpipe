@@ -1,0 +1,39 @@
+{
+  "artifacts": [],
+  "command": [
+    "git",
+    "worktree",
+    "list",
+    "--porcelain"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 0.0018251189030706882,
+  "environment": {},
+  "label": "PHASE0_HUAN_WORKTREE_REGISTRATION",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "main",
+      "dirty": false,
+      "head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "root": "/srv/local/shengenli/flowstar-gpu"
+    },
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "918af3953a5ece77dbfbb2460745c6caaed9cb98",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T11:24:17.438631+00:00"
+}
+--- combined stdout/stderr ---
+worktree /srv/local/shengenli/flowstar-gpu
+HEAD d5f0b68fcd36ba5f582733624f074728fe9720d8
+branch refs/heads/main
+
+worktree /srv/local/shengenli/flowstar-gpu-proof-closure-20260826
+HEAD 743f6205e6408072193ad76e940e7f15030e8d3c
+branch refs/heads/codex/strict-proof-contract-closure-20260826
+

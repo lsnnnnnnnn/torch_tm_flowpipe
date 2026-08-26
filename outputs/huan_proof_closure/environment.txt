@@ -1,5 +1,5 @@
 schema=torch_tm_flowpipe.huan_environment/1
-generated_utc=2026-08-26T11:19:21.880618+00:00
+generated_utc=2026-08-26T11:55:19.559600+00:00
 platform=Linux-7.0.0-29-generic-x86_64-with-glibc2.43
 audit_overlay=ninja and PyYAML installed outside uv.lock; uv.lock intentionally unchanged
 
@@ -25,7 +25,7 @@ Thread(s) per core:                      2
 Core(s) per socket:                      20
 Socket(s):                               2
 Stepping:                                4
-CPU(s) scaling MHz:                      38%
+CPU(s) scaling MHz:                      34%
 CPU max MHz:                             3700.0000
 CPU min MHz:                             1000.0000
 BogoMIPS:                                4000.00
@@ -64,7 +64,7 @@ returncode=0
 
 ==============NVSMI LOG==============
 
-Timestamp                                              : Wed Aug 26 11:19:21 2026
+Timestamp                                              : Wed Aug 26 11:55:19 2026
 Driver Version                                         : 580.159.03
 CUDA Version                                           : 13.0
 
@@ -149,7 +149,7 @@ GPU 00000000:1A:00.0
         Replays Since Reset                            : 0
         Replay Number Rollovers                        : 0
         Tx Throughput                                  : 0 KB/s
-        Rx Throughput                                  : 48 KB/s
+        Rx Throughput                                  : 0 KB/s
         Atomic Caps Outbound                           : N/A
         Atomic Caps Inbound                            : N/A
     Fan Speed                                          : N/A
@@ -251,13 +251,13 @@ GPU 00000000:1A:00.0
         Pending Page Blacklist                         : No
     Remapped Rows                                      : N/A
     Temperature
-        GPU Current Temp                               : 38 C
+        GPU Current Temp                               : 39 C
         GPU T.Limit Temp                               : N/A
         GPU Shutdown Temp                              : 90 C
         GPU Slowdown Temp                              : 87 C
         GPU Max Operating Temp                         : 83 C
         GPU Target Temperature                         : N/A
-        Memory Current Temp                            : 35 C
+        Memory Current Temp                            : 37 C
         Memory Max Operating Temp                      : 85 C
     GPU Power Readings
         Average Power Draw                             : N/A
@@ -402,7 +402,7 @@ GPU 00000000:1C:00.0
         Replays Since Reset                            : 0
         Replay Number Rollovers                        : 0
         Tx Throughput                                  : 0 KB/s
-        Rx Throughput                                  : 0 KB/s
+        Rx Throughput                                  : 48 KB/s
         Atomic Caps Outbound                           : N/A
         Atomic Caps Inbound                            : N/A
     Fan Speed                                          : N/A
@@ -514,7 +514,7 @@ GPU 00000000:1C:00.0
         Memory Max Operating Temp                      : 85 C
     GPU Power Readings
         Average Power Draw                             : N/A
-        Instantaneous Power Draw                       : 42.37 W
+        Instantaneous Power Draw                       : 42.46 W
         Current Power Limit                            : 300.00 W
         Requested Power Limit                          : 300.00 W
         Default Power Limit                            : 300.00 W
@@ -654,14 +654,14 @@ GPU 00000000:1D:00.0
             Firmware                                   : N/A
         Replays Since Reset                            : 0
         Replay Number Rollovers                        : 0
-        Tx Throughput                                  : 13476 KB/s
-        Rx Throughput                                  : 75146 KB/s
+        Tx Throughput                                  : 0 KB/s
+        Rx Throughput                                  : 0 KB/s
         Atomic Caps Outbound                           : N/A
         Atomic Caps Inbound                            : N/A
     Fan Speed                                          : N/A
     Performance State                                  : P0
     Clocks Event Reasons
-        Idle                                           : Not Active
+        Idle                                           : Active
         Applications Clocks Setting                    : Not Active
         SW Power Cap                                   : Not Active
         HW Slowdown                                    : Not Active
@@ -680,19 +680,19 @@ GPU 00000000:1D:00.0
     FB Memory Usage
         Total                                          : 16384 MiB
         Reserved                                       : 240 MiB
-        Used                                           : 438 MiB
-        Free                                           : 15707 MiB
+        Used                                           : 0 MiB
+        Free                                           : 16145 MiB
     BAR1 Memory Usage
         Total                                          : 16384 MiB
-        Used                                           : 5 MiB
-        Free                                           : 16379 MiB
+        Used                                           : 2 MiB
+        Free                                           : 16382 MiB
     Conf Compute Protected Memory Usage
         Total                                          : 0 MiB
         Used                                           : 0 MiB
         Free                                           : 0 MiB
     Compute Mode                                       : Default
     Utilization
-        GPU                                            : 18 %
+        GPU                                            : 0 %
         Memory                                         : 0 %
         Encoder                                        : 0 %
         Decoder                                        : 0 %
@@ -757,17 +757,17 @@ GPU 00000000:1D:00.0
         Pending Page Blacklist                         : No
     Remapped Rows                                      : N/A
     Temperature
-        GPU Current Temp                               : 42 C
+        GPU Current Temp                               : 38 C
         GPU T.Limit Temp                               : N/A
         GPU Shutdown Temp                              : 90 C
         GPU Slowdown Temp                              : 87 C
         GPU Max Operating Temp                         : 83 C
         GPU Target Temperature                         : N/A
-        Memory Current Temp                            : 40 C
+        Memory Current Temp                            : 36 C
         Memory Max Operating Temp                      : 85 C
     GPU Power Readings
         Average Power Draw                             : N/A
-        Instantaneous Power Draw                       : 69.63 W
+        Instantaneous Power Draw                       : 43.53 W
         Current Power Limit                            : 300.00 W
         Requested Power Limit                          : 300.00 W
         Default Power Limit                            : 300.00 W
@@ -789,10 +789,10 @@ GPU 00000000:1D:00.0
         Requested Profiles                             : N/A
         Enforced Profiles                              : N/A
     Clocks
-        Graphics                                       : 1530 MHz
-        SM                                             : 1530 MHz
+        Graphics                                       : 135 MHz
+        SM                                             : 135 MHz
         Memory                                         : 877 MHz
-        Video                                          : 1372 MHz
+        Video                                          : 555 MHz
     Applications Clocks
         Graphics                                       : 1530 MHz
         Memory                                         : 877 MHz
@@ -824,13 +824,7 @@ GPU 00000000:1D:00.0
             Access Timeout Recovery                    : N/A
             Incorrect Configuration                    : N/A
             Partition Assigned                         : N/A
-    Processes
-        GPU instance ID                   : N/A
-        Compute instance ID               : N/A
-        Process ID                        : 1806373
-            Type                          : C
-            Name                          : python
-            Used GPU Memory               : 434 MiB
+    Processes                                          : None
     Capabilities
         EGM                                            : disabled
 
@@ -913,8 +907,8 @@ GPU 00000000:1E:00.0
             Firmware                                   : N/A
         Replays Since Reset                            : 0
         Replay Number Rollovers                        : 0
-        Tx Throughput                                  : 48 KB/s
-        Rx Throughput                                  : 0 KB/s
+        Tx Throughput                                  : 0 KB/s
+        Rx Throughput                                  : 48 KB/s
         Atomic Caps Outbound                           : N/A
         Atomic Caps Inbound                            : N/A
     Fan Speed                                          : N/A
@@ -1016,7 +1010,7 @@ GPU 00000000:1E:00.0
         Pending Page Blacklist                         : No
     Remapped Rows                                      : N/A
     Temperature
-        GPU Current Temp                               : 39 C
+        GPU Current Temp                               : 40 C
         GPU T.Limit Temp                               : N/A
         GPU Shutdown Temp                              : 90 C
         GPU Slowdown Temp                              : 87 C
@@ -1026,7 +1020,7 @@ GPU 00000000:1E:00.0
         Memory Max Operating Temp                      : 85 C
     GPU Power Readings
         Average Power Draw                             : N/A
-        Instantaneous Power Draw                       : 43.90 W
+        Instantaneous Power Draw                       : 44.38 W
         Current Power Limit                            : 300.00 W
         Requested Power Limit                          : 300.00 W
         Default Power Limit                            : 300.00 W

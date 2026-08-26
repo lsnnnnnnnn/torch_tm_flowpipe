@@ -1,0 +1,37 @@
+{
+  "artifacts": [],
+  "command": [
+    "git",
+    "log",
+    "-5",
+    "--oneline",
+    "--decorate"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 0.002114702947437763,
+  "environment": {},
+  "label": "PHASE0_HUAN_LOG5",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "main",
+      "dirty": false,
+      "head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "root": "/srv/local/shengenli/flowstar-gpu"
+    },
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "918af3953a5ece77dbfbb2460745c6caaed9cb98",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T11:24:17.462436+00:00"
+}
+--- combined stdout/stderr ---
+d5f0b68 (HEAD -> main, origin/main, origin/HEAD) FP-sound CROWN plan: mark Phase A done (F1/F2 retired, crown_fp c8ab137)
+efb19cf FP-sound CROWN: phased implementation plan (pre-review)
+ab18861 FP-sound CROWN: deep research memo + five research-notes files
+464537b upstream PR drafts: split S-shaped dtype fix and CROWN-Optimized keep-best fix
+e982a6d upstream PR draft: S-shaped + CROWN-Optimized default-dtype fixes
