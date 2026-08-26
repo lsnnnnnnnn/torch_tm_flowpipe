@@ -139,3 +139,7 @@ but those historical numbers must not be attributed to the repaired SHA.
 10. No throughput publication is authorized. A later round first needs a
     reviewed implementation of adaptive step plus symbolic queue 100 under the
     unchanged frozen settings, followed by a new D gate and Phase E.
+
+The machine-readable requirement-by-requirement disposition, including the
+honest partial step-1 trace and every stop-loss consequence, is
+`outputs/huan_proof_closure/completion_audit.json`.

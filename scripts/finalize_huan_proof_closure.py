@@ -172,6 +172,29 @@ def _compact_fixed(row: Mapping[str, Any]) -> dict[str, Any]:
         "segment_tube_y_width": channels["segment_tube_width"][1],
         "runtime_s": row["runtime_s"],
         "peak_gpu_memory_bytes": row["peak_gpu_memory_bytes"],
+        "retained_candidate_polynomial_sha256": row[
+            "retained_candidate_polynomial_sha256"
+        ],
+        "retained_candidate_coefficients": None,
+        "retained_candidate_coefficients_status": (
+            "HASH_CAPTURED__COEFFICIENTS_NOT_SERIALIZED_BEFORE_PORTABILITY_STOP"
+        ),
+        "first_self_map": row["first_self_map"],
+        "refinement_ledger_path": "vdp/refinement_ledgers.jsonl.gz",
+        "ordinary_remainder_final": row["step1_remainder"],
+        "ordinary_remainder_decomposition_status": (
+            "AGGREGATE_FINAL_REMAINDER_ONLY__CATEGORY_TOTALS_NOT_EXPOSED"
+        ),
+        "symbolic_queue_capacity": row["settings"]["symbolic_remainder_queue"],
+        "symbolic_queue_state": None,
+        "symbolic_queue_state_status": (
+            "ENABLED__INTERNAL_QUEUE_SNAPSHOT_NOT_EXPOSED"
+        ),
+        "cutoff_threshold": row["settings"]["cutoff"],
+        "cutoff_contribution": None,
+        "cutoff_contribution_status": "NOT_SEPARATELY_EXPOSED",
+        "roundoff_contribution_ledger": row["roundoff_contribution_ledger"],
+        "final_accepted_remainder": row["step1_remainder"],
         "not_run_reason": "",
     }
 
@@ -199,6 +222,21 @@ def _stopped_fixed(lane: str, sha: str, scenario: str, horizon: float) -> dict[s
         "segment_tube_y_width": None,
         "runtime_s": None,
         "peak_gpu_memory_bytes": None,
+        "retained_candidate_polynomial_sha256": None,
+        "retained_candidate_coefficients": None,
+        "retained_candidate_coefficients_status": STOP,
+        "first_self_map": None,
+        "refinement_ledger_path": None,
+        "ordinary_remainder_final": None,
+        "ordinary_remainder_decomposition_status": STOP,
+        "symbolic_queue_capacity": None,
+        "symbolic_queue_state": None,
+        "symbolic_queue_state_status": STOP,
+        "cutoff_threshold": None,
+        "cutoff_contribution": None,
+        "cutoff_contribution_status": STOP,
+        "roundoff_contribution_ledger": None,
+        "final_accepted_remainder": None,
         "not_run_reason": "mandatory Huan adaptive+SR100 contract-portability stop occurred before this lane",
     }
 
@@ -219,6 +257,13 @@ def _write_phase_e(output: Path) -> None:
         "endpoint_x", "endpoint_y", "endpoint_x_width", "endpoint_y_width",
         "segment_tube_x", "segment_tube_y", "segment_tube_x_width",
         "segment_tube_y_width", "runtime_s", "peak_gpu_memory_bytes", "not_run_reason",
+        "retained_candidate_polynomial_sha256", "retained_candidate_coefficients",
+        "retained_candidate_coefficients_status", "first_self_map",
+        "refinement_ledger_path", "ordinary_remainder_final",
+        "ordinary_remainder_decomposition_status", "symbolic_queue_capacity",
+        "symbolic_queue_state", "symbolic_queue_state_status", "cutoff_threshold",
+        "cutoff_contribution", "cutoff_contribution_status",
+        "roundoff_contribution_ledger", "final_accepted_remainder",
     )
     _write_csv(output / "vdp/fixed_horizon_matrix.csv", fixed, fields)
     _write_csv(
@@ -313,6 +358,212 @@ def _write_phase_e(output: Path) -> None:
     )
 
 
+def _write_completion_audit(output: Path) -> None:
+    """Record a requirement-by-requirement closure, including mandatory stops."""
+
+    proven = "PROVEN_COMPLETE"
+    stopped = "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE"
+    partial = "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP"
+    excluded = "NOT_APPLICABLE_SCOPE_EXCLUSION"
+    superseded = "SUPERSEDED_BY_FOLLOWUP_GOAL"
+    requirements = [
+        {
+            "id": "0_ordered_objective",
+            "goal_section": "0",
+            "status": proven,
+            "evidence": ["phase_d_gate_v2.json", "vdp/phase_e_decision.json"],
+            "note": "Audit correction preceded proof repair; Phase E began only after D1-D6 passed.",
+        },
+        {
+            "id": "1_torch_c2_frozen",
+            "goal_section": "1.1",
+            "status": proven,
+            "evidence": ["commands/torch_c2_source_freeze.log", "source_manifest.json"],
+            "note": "The required source diff is empty at scientific SHA 29c9ee8.",
+        },
+        {
+            "id": "1_huan_isolated",
+            "goal_section": "1.2",
+            "status": proven,
+            "evidence": ["commands/phase0_huan_worktrees.log", "commands/phase0_huan_branch_reflog.log"],
+            "note": "Original checkout remained unmodified; repair branch was pushed.",
+        },
+        {
+            "id": "1_scope_exclusions",
+            "goal_section": "1.3",
+            "status": excluded,
+            "evidence": ["vdp/phase_e_decision.json"],
+            "note": "No controller/coupling/transcendental substitute or throughput campaign ran.",
+        },
+        {
+            "id": "2_phase0_provenance",
+            "goal_section": "2",
+            "status": proven,
+            "evidence": [
+                "source_manifest.json", "environment.txt",
+                "commands/phase0_torch_fetch.log", "commands/phase0_torch_audit_base.log",
+                "commands/phase0_torch_worktrees.log", "commands/phase0_huan_status.log",
+                "commands/phase0_huan_head.log", "commands/phase0_huan_worktrees.log",
+                "commands/phase0_huan_uv_lock_diff.log",
+            ],
+            "note": "Verbatim command captures and the audit-only ninja/PyYAML overlay are preserved.",
+        },
+        {
+            "id": "3_corrected_d2",
+            "goal_section": "3",
+            "status": proven,
+            "evidence": [
+                "d2_schedule_inventory.csv", "d2_host_order_oracle.json",
+                "d2_actual_cpu.json", "d2_actual_cuda.json",
+                "commands/d1_d2_cpu.log", "commands/d1_d2_cuda.log",
+            ],
+            "note": "Host, Torch CPU, Torch CUDA, and custom CUDA routes are separately counted with invocation evidence.",
+        },
+        {
+            "id": "4_dirty_patch_search",
+            "goal_section": "4",
+            "status": proven,
+            "evidence": ["dirty_patch_recovery.json", "dirty_patch_candidates.csv"],
+            "note": "Bounded search conclusion is HISTORICAL_DIRTY_PATCHES_NOT_FOUND_AFTER_BOUNDED_SEARCH.",
+        },
+        {
+            "id": "5_d6_map_oracles_repair",
+            "goal_section": "5",
+            "status": proven,
+            "evidence": [
+                "strict_roundoff_sources.csv", "witnesses/d6_minimal_witness.json",
+                "witnesses/d6_repaired_minimal_witness.json", "commands/d6_repaired_witness.log",
+            ],
+            "note": "A concrete symbolic-Phi under-enclosure was minimized and strict accounting was repaired without changing parity semantics.",
+        },
+        {
+            "id": "6_no_ftz_nonfinite",
+            "goal_section": "6",
+            "status": proven,
+            "evidence": ["raw_logs/proof_kernel_cpu.json", "raw_logs/proof_kernel_cuda.json", "phase_d_gate_v2.json"],
+            "note": "Production startup and certificate boundaries fail closed.",
+        },
+        {
+            "id": "7_refinement_cache",
+            "goal_section": "7",
+            "status": proven,
+            "evidence": [
+                "refinement_boundary_cpu_v2.json", "refinement_boundary_cuda_v2.json",
+                "commands/d5_refinement_cpu_audit.log", "commands/d5_refinement_cuda_audit.log",
+            ],
+            "note": "Sequential partial commits, owner generations, stale-cache tamper, and final ownership are machine-verifiable.",
+        },
+        {
+            "id": "8_two_verifiers_d1_d6",
+            "goal_section": "8",
+            "status": proven,
+            "evidence": ["phase_d_gate_v2.json", "commands/phase_d_scientific_gate.log", "proof_to_code_map_v2.csv"],
+            "note": "Scientific rerun and artifact-only verifier have distinct scopes.",
+        },
+        {
+            "id": "9_frozen_contract",
+            "goal_section": "9.1",
+            "status": stopped,
+            "evidence": ["vdp/contract_matrix.csv", "vdp/native_terminal.json"],
+            "note": "Fixed settings were represented; adaptive 0.002..0.1 plus SR100 is rejected without changing the contract.",
+        },
+        {
+            "id": "9_four_lanes",
+            "goal_section": "9.2",
+            "status": stopped,
+            "evidence": ["vdp/fixed_horizon_matrix.csv", "vdp/phase_e_decision.json"],
+            "note": "Eight Huan fixed runs completed; fresh Flow*/Torch runs were forbidden after the portability stop.",
+        },
+        {
+            "id": "9_step1_detail",
+            "goal_section": "9.3",
+            "status": partial,
+            "evidence": ["vdp/step1_common_input.csv", "vdp/refinement_ledgers.jsonl.gz", "vdp/huan_final/run_index.json"],
+            "note": "Hash, self-map, refinement, final remainder, endpoint/tube and aggregate roundoff are recorded. Candidate coefficients, an internal queue snapshot, and category-separated cutoff/remainder totals were not serialized before the mandatory stop and are explicitly labeled unavailable.",
+        },
+        {
+            "id": "9_native_and_adjudication",
+            "goal_section": "9.3-9.4",
+            "status": stopped,
+            "evidence": ["vdp/native_terminal.json", "vdp/first_divergence.json"],
+            "note": "No T=10, cross-tool ranking, first-divergence, or Torch-terminal-cause claim is made.",
+        },
+        {
+            "id": "9_primary_and_throughput",
+            "goal_section": "9.5",
+            "status": proven,
+            "evidence": ["vdp/phase_e_decision.json"],
+            "note": "Primary portability-stop label and explicit no-throughput status are present.",
+        },
+        {
+            "id": "10_regressions_tamper",
+            "goal_section": "10",
+            "status": proven,
+            "evidence": [
+                "commands/huan_plant_full_final.log", "commands/torch_full_final.log",
+                "commands/previous_package_verifier.log",
+            ],
+            "note": "Full suites and focused artifact/cache/kernel/status/fabrication tamper checks passed.",
+        },
+        {
+            "id": "11_reports_artifacts",
+            "goal_section": "11",
+            "status": proven,
+            "evidence": ["source_manifest.json", "SHA256SUMS"],
+            "note": "Required reports, maps, gates, scripts, outputs, and fallback patch series are present.",
+        },
+        {
+            "id": "12_commit_push",
+            "goal_section": "12",
+            "status": proven,
+            "evidence": ["commands/phase0_torch_branch_reflog.log", "commands/phase0_huan_branch_reflog.log"],
+            "note": "Both repair branches have committed, pushed histories; final tip equality is rechecked outside this self-hashed artifact.",
+        },
+        {
+            "id": "13_stop_loss",
+            "goal_section": "13",
+            "status": proven,
+            "evidence": ["vdp/native_terminal.json", "vdp/phase_e_decision.json", "vdp/first_divergence.json"],
+            "note": "The portability stop was obeyed; stopped rows contain no fabricated science.",
+        },
+        {
+            "id": "14_external_material",
+            "goal_section": "14",
+            "status": proven,
+            "evidence": ["dirty_patch_recovery.json"],
+            "note": "Missing historical patches and external review inputs are listed as non-blocking requests in the report.",
+        },
+        {
+            "id": "original_goal_phase_f",
+            "goal_section": "original goal Phase F",
+            "status": superseded,
+            "evidence": ["vdp/phase_e_decision.json"],
+            "note": "The follow-up goal explicitly excludes throughput Phase F this round.",
+        },
+    ]
+    _write_json(
+        output / "completion_audit.json",
+        {
+            "schema": "torch_tm_flowpipe.huan_goal_completion_audit/1",
+            "primary_status": PRIMARY,
+            "overall": "GOAL_EXECUTED_WITH_MANDATORY_VDP_PORTABILITY_STOP",
+            "allowed_partial_completion": True,
+            "unsupported_green_claims": False,
+            "status_vocabulary": [proven, stopped, partial, excluded, superseded],
+            "requirements": requirements,
+            "remaining_unresolved_scientific_claims": [
+                "Huan parity native T=10 reachability",
+                "Huan strict native T=10 reachability",
+                "fresh four-lane cross-tool ranking and first divergence",
+                "Huan adjudication of Torch C2 terminal y-upper failure",
+                "category-separated step-1 cutoff/roundoff decomposition and queue snapshot",
+                "historical 450-run dirty-source reproduction",
+                "throughput Phase F",
+            ],
+        },
+    )
+
+
 def _write_environment(output: Path) -> None:
     commands = [
         ("uname", "uname", "-a"),
@@ -401,6 +652,7 @@ def run(args: argparse.Namespace) -> None:
     if not gate.get("overall_gate_passed") or gate.get("engine_head") != HUAN_HEAD:
         raise RuntimeError("final Phase-D scientific gate is not closed at the repaired SHA")
     _write_phase_e(output)
+    _write_completion_audit(output)
     _write_environment(output)
     _write_manifest(
         args.repo_root.resolve(), args.engine_root.resolve(),

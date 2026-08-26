@@ -42,6 +42,15 @@ The complete proposals, component margins, sequential commits, final owners,
 endpoint/tube boxes, and ordinary remainders are in the Huan run index and the
 compressed refinement ledger.
 
+The top-level step-1 table preserves those recorded fields and labels three
+unavailable internals explicitly. The candidate polynomial was serialized only
+as a SHA256, not as coefficients; the reach result did not expose an internal
+symbolic-queue snapshot; and cutoff/composition/preconditioning contributions
+were not exposed as category totals separate from the final ordinary
+remainder. None was reconstructed after the portability stop. Accordingly the
+completion audit marks step-1 detail as
+`PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP`, not fully closed.
+
 ## Mandatory native stop
 
 Both Huan modes reject the exact native setting during `Settings`

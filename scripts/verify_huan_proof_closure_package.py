@@ -23,6 +23,7 @@ TORCH_C2_SCIENTIFIC = "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca"
 PRIMARY = "HUAN_PROOF_CONTRACT_CLOSED__VDP_CONTRACT_NOT_PORTABLE"
 STOP = "NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP"
 REQUIRED = (
+    "completion_audit.json",
     "source_manifest.json",
     "environment.txt",
     "proof_to_code_map_v2.csv",
@@ -59,6 +60,19 @@ REQUIRED = (
     "commands/d6_repaired_witness.log",
     "commands/torch_c2_source_freeze.log",
     "commands/previous_package_verifier.log",
+    "commands/phase0_torch_fetch.log",
+    "commands/phase0_torch_remote.log",
+    "commands/phase0_torch_audit_base.log",
+    "commands/phase0_torch_base_show.log",
+    "commands/phase0_torch_worktrees.log",
+    "commands/phase0_torch_branch_reflog.log",
+    "commands/phase0_huan_status.log",
+    "commands/phase0_huan_head.log",
+    "commands/phase0_huan_remote.log",
+    "commands/phase0_huan_log.log",
+    "commands/phase0_huan_worktrees.log",
+    "commands/phase0_huan_branch_reflog.log",
+    "commands/phase0_huan_uv_lock_diff.log",
     "vdp/contract_matrix.csv",
     "vdp/step1_common_input.csv",
     "vdp/refinement_ledgers.jsonl.gz",
@@ -232,6 +246,51 @@ def verify_phase_e(output: Path) -> list[str]:
         errors.append("a Huan fixed run is incomplete or mislabeled")
     if any(row["execution_status"] != STOP or not _blank_scientific(row) for row in stopped):
         errors.append("stopped Flow*/Torch row contains fabricated scientific data")
+    step1 = _csv(output / "vdp/step1_common_input.csv")
+    step1_huan = [row for row in step1 if row.get("lane") in {"huan_parity", "huan_strict"}]
+    step1_stopped = [row for row in step1 if row.get("lane") in {"stock_flowstar", "torch_c2"}]
+    if len(step1) != 4 or len(step1_huan) != 2 or len(step1_stopped) != 2:
+        errors.append("step-1 table has the wrong lane cardinality")
+    expected_detail_status = {
+        "retained_candidate_coefficients_status": (
+            "HASH_CAPTURED__COEFFICIENTS_NOT_SERIALIZED_BEFORE_PORTABILITY_STOP"
+        ),
+        "ordinary_remainder_decomposition_status": (
+            "AGGREGATE_FINAL_REMAINDER_ONLY__CATEGORY_TOTALS_NOT_EXPOSED"
+        ),
+        "symbolic_queue_state_status": "ENABLED__INTERNAL_QUEUE_SNAPSHOT_NOT_EXPOSED",
+        "cutoff_contribution_status": "NOT_SEPARATELY_EXPOSED",
+    }
+    for row in step1_huan:
+        if any(row.get(key) != value for key, value in expected_detail_status.items()):
+            errors.append(f"{row.get('lane')} step-1 unavailable-detail status is ambiguous")
+        if (
+            len(row.get("retained_candidate_polynomial_sha256", "")) != 64
+            or not row.get("first_self_map")
+            or row.get("refinement_ledger_path") != "vdp/refinement_ledgers.jsonl.gz"
+            or not row.get("ordinary_remainder_final")
+            or row.get("symbolic_queue_capacity") != "100"
+            or row.get("cutoff_threshold") != "1e-10"
+            or not row.get("roundoff_contribution_ledger")
+            or not row.get("final_accepted_remainder")
+        ):
+            errors.append(f"{row.get('lane')} step-1 recorded detail is incomplete")
+        if any(
+            row.get(key, "") not in {"", "null"}
+            for key in (
+                "retained_candidate_coefficients", "symbolic_queue_state",
+                "cutoff_contribution",
+            )
+        ):
+            errors.append(f"{row.get('lane')} step-1 contains fabricated unavailable detail")
+    if any(
+        row.get("execution_status") != STOP
+        or row.get("retained_candidate_polynomial_sha256", "") not in {"", "null"}
+        or row.get("first_self_map", "") not in {"", "null"}
+        or row.get("final_accepted_remainder", "") not in {"", "null"}
+        for row in step1_stopped
+    ):
+        errors.append("stopped step-1 row contains fabricated operator detail")
     native = _json(output / "vdp/native_terminal.json")
     for lane in ("huan_parity", "huan_strict"):
         if native.get(lane, {}).get("status") != "NOT_RUN_CONTRACT_NOT_PORTABLE":
@@ -241,6 +300,52 @@ def verify_phase_e(output: Path) -> list[str]:
         errors.append("cross-tool divergence was fabricated or mislabeled")
     if divergence.get("huan_vs_flowstar") is not None or divergence.get("huan_vs_torch_c2") is not None:
         errors.append("cross-tool divergence contains fabricated values")
+    return errors
+
+
+def verify_completion_audit(payload: Mapping[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if payload.get("schema") != "torch_tm_flowpipe.huan_goal_completion_audit/1":
+        return ["completion audit schema mismatch"]
+    if payload.get("primary_status") != PRIMARY:
+        errors.append("completion audit primary status mismatch")
+    if payload.get("overall") != "GOAL_EXECUTED_WITH_MANDATORY_VDP_PORTABILITY_STOP":
+        errors.append("completion audit overall result mismatch")
+    if payload.get("unsupported_green_claims") is not False:
+        errors.append("completion audit permits unsupported green claims")
+    allowed = set(payload.get("status_vocabulary", []))
+    required_statuses = {
+        "PROVEN_COMPLETE",
+        "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE",
+        "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP",
+        "NOT_APPLICABLE_SCOPE_EXCLUSION",
+        "SUPERSEDED_BY_FOLLOWUP_GOAL",
+    }
+    if allowed != required_statuses:
+        errors.append("completion audit status vocabulary mismatch")
+    rows = payload.get("requirements")
+    if not isinstance(rows, list) or len(rows) < 20:
+        return errors + ["completion audit requirement coverage is incomplete"]
+    by_id = {row.get("id"): row for row in rows if isinstance(row, Mapping)}
+    required_ids = {
+        "2_phase0_provenance", "3_corrected_d2", "4_dirty_patch_search",
+        "5_d6_map_oracles_repair", "6_no_ftz_nonfinite", "7_refinement_cache",
+        "8_two_verifiers_d1_d6", "9_frozen_contract", "9_four_lanes",
+        "9_step1_detail", "9_native_and_adjudication", "10_regressions_tamper",
+        "12_commit_push", "13_stop_loss", "original_goal_phase_f",
+    }
+    if not required_ids <= set(by_id):
+        errors.append("completion audit omits required goal sections")
+    if any(row.get("status") not in allowed for row in by_id.values()):
+        errors.append("completion audit contains an unknown status")
+    if by_id.get("9_step1_detail", {}).get("status") != "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP":
+        errors.append("completion audit inflates step-1 detail closure")
+    for item in ("9_frozen_contract", "9_four_lanes", "9_native_and_adjudication"):
+        if by_id.get(item, {}).get("status") != "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE":
+            errors.append(f"completion audit hides mandatory stop: {item}")
+    unresolved = payload.get("remaining_unresolved_scientific_claims")
+    if not isinstance(unresolved, list) or len(unresolved) < 7:
+        errors.append("completion audit unresolved-claim ledger is incomplete")
     return errors
 
 
@@ -281,6 +386,7 @@ def verify(repo: Path, output: Path) -> list[str]:
         errors.append("historical dirty-patch conclusion mismatch")
     gate = _json(output / "phase_d_gate_v2.json")
     errors.extend(verify_phase_d(gate))
+    errors.extend(verify_completion_audit(_json(output / "completion_audit.json")))
     for device in ("cpu", "cuda"):
         kernel = _json(output / f"raw_logs/proof_kernel_{device}.json")
         if kernel.get("engine_head") != HUAN_HEAD:
@@ -306,6 +412,18 @@ def verify(repo: Path, output: Path) -> list[str]:
     strict_sources = _csv(output / "strict_roundoff_sources.csv")
     if not strict_sources or any(row["status"] != "MAPPED_AND_TESTED" for row in strict_sources):
         errors.append("strict roundoff source ledger is incomplete")
+    precision_ids = {
+        "DENSE_MONOMIAL_CONVOLUTION", "SPARSE_MONOMIAL_CONVOLUTION",
+        "DENSE_COMPOSITION_CONTRACTION", "SPARSE_COMPOSITION_CONTRACTION",
+        "SYMBOLIC_PHI_FACTOR", "SYMBOLIC_PHI_QUEUE_PRODUCT",
+        "SYMBOLIC_PHI_J_RECONSTRUCTION",
+    }
+    for row in strict_sources:
+        if row.get("source_id") in precision_ids and any(
+            not row.get(key)
+            for key in ("source_line", "tensor_shapes", "reduction_length_schedule")
+        ):
+            errors.append(f"strict roundoff source lacks line/shape/reduction detail: {row.get('source_id')}")
     errors.extend(verify_phase_e(output))
     final_captures = (
         "commands/phase_d_scientific_gate.log",
@@ -344,6 +462,31 @@ def verify(repo: Path, output: Path) -> list[str]:
     previous_header, previous_body = capture_header(output / "commands/previous_package_verifier.log")
     if previous_header.get("returncode") != 0 or '"ok": true' not in previous_body:
         errors.append("previous Huan package verifier expected-result check failed")
+    phase0_expected = {
+        "commands/phase0_torch_fetch.log": "PHASE0_TORCH_FETCH_PRUNE",
+        "commands/phase0_torch_remote.log": "PHASE0_TORCH_REMOTE",
+        "commands/phase0_torch_audit_base.log": "PHASE0_TORCH_AUDIT_BASE",
+        "commands/phase0_torch_base_show.log": "PHASE0_TORCH_BASE_SHOW_FULLER",
+        "commands/phase0_torch_worktrees.log": "PHASE0_TORCH_WORKTREE_REGISTRATION",
+        "commands/phase0_torch_branch_reflog.log": "PHASE0_TORCH_BRANCH_CREATION_REFLOG",
+        "commands/phase0_huan_status.log": "PHASE0_HUAN_ORIGINAL_STATUS",
+        "commands/phase0_huan_head.log": "PHASE0_HUAN_ORIGINAL_HEAD",
+        "commands/phase0_huan_remote.log": "PHASE0_HUAN_REMOTE",
+        "commands/phase0_huan_log.log": "PHASE0_HUAN_LOG5",
+        "commands/phase0_huan_worktrees.log": "PHASE0_HUAN_WORKTREE_REGISTRATION",
+        "commands/phase0_huan_branch_reflog.log": "PHASE0_HUAN_BRANCH_CREATION_REFLOG",
+        "commands/phase0_huan_uv_lock_diff.log": "PHASE0_HUAN_UV_LOCK_UNCHANGED",
+    }
+    for relative, label in phase0_expected.items():
+        header, body = capture_header(output / relative)
+        if header.get("returncode") != 0 or header.get("label") != label:
+            errors.append(f"Phase-0 command capture failed or mislabeled: {relative}")
+        if relative.endswith("phase0_torch_audit_base.log") and "3eade462eb454bcebd4465cbeb835aa4bea85025" not in body:
+            errors.append("Phase-0 Torch audit base mismatch")
+        if relative.endswith("phase0_huan_head.log") and "d5f0b68fcd36ba5f582733624f074728fe9720d8" not in body:
+            errors.append("Phase-0 Huan base mismatch")
+        if relative.endswith("phase0_huan_uv_lock_diff.log") and body:
+            errors.append("Huan uv.lock changed from the required base")
     for report in required_reports[:2]:
         text = report.read_text(encoding="utf-8")
         if PRIMARY not in text or "package verifier" not in text.lower():

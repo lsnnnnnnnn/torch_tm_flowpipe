@@ -159,6 +159,56 @@ def _phase_e_fixture(root: Path) -> None:
                 }
             )
     _write_csv(vdp / "fixed_horizon_matrix.csv", rows)
+    step1 = []
+    for row in rows:
+        if row["scenario"] != "step1":
+            continue
+        if row["lane"] in {"huan_parity", "huan_strict"}:
+            row = {
+                **row,
+                "retained_candidate_polynomial_sha256": "a" * 64,
+                "retained_candidate_coefficients": "",
+                "retained_candidate_coefficients_status": (
+                    "HASH_CAPTURED__COEFFICIENTS_NOT_SERIALIZED_BEFORE_PORTABILITY_STOP"
+                ),
+                "first_self_map": "{}",
+                "refinement_ledger_path": "vdp/refinement_ledgers.jsonl.gz",
+                "ordinary_remainder_final": "[[0, 0], [0, 0]]",
+                "ordinary_remainder_decomposition_status": (
+                    "AGGREGATE_FINAL_REMAINDER_ONLY__CATEGORY_TOTALS_NOT_EXPOSED"
+                ),
+                "symbolic_queue_capacity": "100",
+                "symbolic_queue_state": "",
+                "symbolic_queue_state_status": (
+                    "ENABLED__INTERNAL_QUEUE_SNAPSHOT_NOT_EXPOSED"
+                ),
+                "cutoff_threshold": "1e-10",
+                "cutoff_contribution": "",
+                "cutoff_contribution_status": "NOT_SEPARATELY_EXPOSED",
+                "roundoff_contribution_ledger": "{}",
+                "final_accepted_remainder": "[[0, 0], [0, 0]]",
+            }
+        else:
+            row = {
+                **row,
+                "retained_candidate_polynomial_sha256": "",
+                "retained_candidate_coefficients": "",
+                "retained_candidate_coefficients_status": VERIFIER.STOP,
+                "first_self_map": "",
+                "refinement_ledger_path": "",
+                "ordinary_remainder_final": "",
+                "ordinary_remainder_decomposition_status": VERIFIER.STOP,
+                "symbolic_queue_capacity": "",
+                "symbolic_queue_state": "",
+                "symbolic_queue_state_status": VERIFIER.STOP,
+                "cutoff_threshold": "",
+                "cutoff_contribution": "",
+                "cutoff_contribution_status": VERIFIER.STOP,
+                "roundoff_contribution_ledger": "",
+                "final_accepted_remainder": "",
+            }
+        step1.append(row)
+    _write_csv(vdp / "step1_common_input.csv", step1)
     (vdp / "native_terminal.json").write_text(
         json.dumps(
             {
@@ -199,3 +249,50 @@ def test_checksum_tamper_and_uncovered_file_are_rejected(tmp_path: Path) -> None
         "checksum mismatch: a.txt",
         "uncovered file: extra.txt",
     ]
+
+
+def test_step1_unavailable_detail_must_not_be_inflated(tmp_path: Path) -> None:
+    _phase_e_fixture(tmp_path)
+    rows = VERIFIER._csv(tmp_path / "vdp/step1_common_input.csv")
+    strict = next(row for row in rows if row["lane"] == "huan_strict")
+    strict["symbolic_queue_state"] = "fabricated snapshot"
+    _write_csv(tmp_path / "vdp/step1_common_input.csv", rows)
+    assert "huan_strict step-1 contains fabricated unavailable detail" in VERIFIER.verify_phase_e(tmp_path)
+
+
+def test_completion_audit_requires_honest_partial_and_stop_labels() -> None:
+    statuses = [
+        "PROVEN_COMPLETE",
+        "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE",
+        "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP",
+        "NOT_APPLICABLE_SCOPE_EXCLUSION",
+        "SUPERSEDED_BY_FOLLOWUP_GOAL",
+    ]
+    ids = {
+        "2_phase0_provenance", "3_corrected_d2", "4_dirty_patch_search",
+        "5_d6_map_oracles_repair", "6_no_ftz_nonfinite", "7_refinement_cache",
+        "8_two_verifiers_d1_d6", "9_frozen_contract", "9_four_lanes",
+        "9_step1_detail", "9_native_and_adjudication", "10_regressions_tamper",
+        "12_commit_push", "13_stop_loss", "original_goal_phase_f",
+    }
+    rows = [{"id": item, "status": "PROVEN_COMPLETE"} for item in ids]
+    rows.extend(
+        {"id": f"padding_{index}", "status": "PROVEN_COMPLETE"}
+        for index in range(5)
+    )
+    by_id = {row["id"]: row for row in rows}
+    by_id["9_step1_detail"]["status"] = "PARTIAL_EVIDENCE_BEFORE_MANDATORY_STOP"
+    for item in ("9_frozen_contract", "9_four_lanes", "9_native_and_adjudication"):
+        by_id[item]["status"] = "STOPPED_BY_MANDATORY_CONTRACT_PORTABILITY_RULE"
+    payload = {
+        "schema": "torch_tm_flowpipe.huan_goal_completion_audit/1",
+        "primary_status": VERIFIER.PRIMARY,
+        "overall": "GOAL_EXECUTED_WITH_MANDATORY_VDP_PORTABILITY_STOP",
+        "unsupported_green_claims": False,
+        "status_vocabulary": statuses,
+        "requirements": rows,
+        "remaining_unresolved_scientific_claims": [str(i) for i in range(7)],
+    }
+    assert VERIFIER.verify_completion_audit(payload) == []
+    by_id["9_step1_detail"]["status"] = "PROVEN_COMPLETE"
+    assert "completion audit inflates step-1 detail closure" in VERIFIER.verify_completion_audit(payload)

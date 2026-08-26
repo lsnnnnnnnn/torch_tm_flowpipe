@@ -111,11 +111,11 @@ CLAIMS: tuple[dict[str, str], ...] = (
         "source_file": "src/flowstar_gpu/rounding.py",
         "symbol_or_function": "sum_error_bound; dot_error_bound",
         "kernel_or_operation": "(2m-1)u(1+2mu)*abs_dot_rn + m*eta with next_up",
-        "runtime_assertion": "reduction length and f64 checked; abs_dot finiteness not checked",
+        "runtime_assertion": "reduction length and f64 checked; downstream per-lane nonfinite mask and assert_valid reject a nonfinite certificate",
         "unit_test": "tests/properties/test_rounding_props.py; huan_proof_kernel_audit.py D2",
         "oracle": "Fraction exact error versus the shipped computed bound",
         "status": "MAPPED_AND_TESTED",
-        "gap": "an overflowing absolute reduction yields a non-finite bound rather than an explicit status",
+        "gap": "the primitive may return a nonfinite inflation on overflow; public validation classifies that lane nonfinite and cannot issue a finite certificate",
     },
     {
         "claim_id": "STRICT_VERSUS_PARITY",
