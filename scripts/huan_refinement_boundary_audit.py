@@ -9,7 +9,6 @@ import inspect
 import json
 from pathlib import Path
 import sys
-from types import SimpleNamespace
 from typing import Any, Callable
 
 
@@ -27,6 +26,8 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
     torch = importlib.import_module("torch")
     fp = importlib.import_module("flowstar_gpu.flowpipe")
     config = importlib.import_module("flowstar_gpu.config")
+    determinism = importlib.import_module("flowstar_gpu.determinism")
+    determinism.assert_gradual_underflow(device)
 
     accepted = torch.tensor([-1.0, 1.0], dtype=torch.float64, device=device).expand(1, 3, 2).contiguous()
     ok = torch.ones(1, dtype=torch.bool, device=device)
@@ -38,7 +39,12 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
 
     original: Callable[..., Any] = fp.exec_replay
 
-    def invoke(max_steps: int, replay: Callable[..., Any], initial_ok: Any = ok):
+    def invoke(
+        max_steps: int,
+        replay: Callable[..., Any],
+        initial_ok: Any = ok,
+        trace: list[dict[str, object]] | None = None,
+    ):
         calls = 0
 
         def counted(*args, **kwargs):
@@ -48,7 +54,14 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
 
         fp.exec_replay = counted
         try:
-            settings = SimpleNamespace(max_refinement_steps=max_steps, stop_ratio=0.99)
+            settings = config.Settings(
+                step=1.0,
+                order=2,
+                device=device,
+                max_refinement_steps=max_steps,
+                stop_ratio=0.99,
+                refinement_callback=trace.append if trace is not None else None,
+            )
             cur, bad_out = fp.refine_loop(
                 None, accepted.clone(), initial_ok.clone(), bad.clone(), cache,
                 tails, False, int_diff, step, settings,
@@ -68,14 +81,70 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
         device=device,
     )
     partial = lambda *_args, **_kwargs: proposal
-    cur_partial, bad_partial, calls_partial = invoke(1, partial)
+    partial_trace: list[dict[str, object]] = []
+    cur_partial, bad_partial, calls_partial = invoke(1, partial, trace=partial_trace)
+    component_rows = [
+        row for row in partial_trace if row["event"] == "refinement_component"
+    ]
+    final_rows = [
+        row for row in partial_trace if row["event"] == "final_remainder_owner"
+    ]
     partial_semantics = {
         "calls": calls_partial,
         "dim0_committed": bool(not torch.equal(cur_partial[:, 0], accepted[:, 0])),
         "failing_dim1_unchanged": bool(torch.equal(cur_partial[:, 1], accepted[:, 1])),
         "later_dim2_unchanged": bool(torch.equal(cur_partial[:, 2], accepted[:, 2])),
         "classification": "FLOWSTAR_SEQUENTIAL_FIRST_FAIL_PARTIAL_VECTOR_COMMIT",
+        "component_ledger": component_rows,
+        "final_owner": final_rows,
     }
+
+    stale_generation_rejected = False
+    stale_owner_rejected = False
+    settings_tamper = config.Settings(step=1.0, order=2, device=device)
+    for state, token in (
+        (
+            fp.RefinementCacheState(
+                "tampered-cache", "tails", 7, accepted.clone(), accepted.clone()
+            ),
+            "generation",
+        ),
+        (
+            fp.RefinementCacheState(
+                "tampered-cache", "tails", 0, accepted + 1.0, accepted.clone()
+            ),
+            "owner",
+        ),
+    ):
+        try:
+            fp.refine_loop(
+                None, accepted.clone(), ok.clone(), bad.clone(), cache, tails,
+                False, int_diff, step, settings_tamper, cache_state=state,
+            )
+        except RuntimeError as exc:
+            if token == "generation":
+                stale_generation_rejected = "stale refinement cache generation" in str(exc)
+            else:
+                stale_owner_rejected = "stale refinement cache owner" in str(exc)
+
+    reach_trace: list[dict[str, object]] = []
+    reach_settings = config.Settings(
+        step=0.03125,
+        order=3,
+        device=device,
+        max_refinement_steps=1,
+        refinement_callback=reach_trace.append,
+    )
+    reach_result = fp.reach(
+        ["1"], ["x"],
+        torch.tensor([[[-0.5, 0.5]]], dtype=torch.float64, device=device),
+        0.03125,
+        reach_settings,
+    )
+    initial_rows = [row for row in reach_trace if row["event"] == "initial_self_map"]
+    reach_final_rows = [
+        row for row in reach_trace if row["event"] == "final_remainder_owner"
+    ]
 
     signature = inspect.signature(fp.refine_loop)
     source = inspect.getsource(fp.refine_loop)
@@ -93,11 +162,23 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
             torch.equal(cur_fail, accepted),
             not bool(bad_fail.any()),
             not bool(bad_partial.any()),
-            all(value for key, value in partial_semantics.items() if key.endswith(("committed", "unchanged"))),
+            all(
+                value for key, value in partial_semantics.items()
+                if key.endswith(("committed", "unchanged"))
+            ),
+            len(component_rows) == 3,
+            [row["commit_result"] for row in component_rows] == [True, False, False],
+            len(final_rows) == 1,
+            final_rows[0]["final_accepted_remainder"] == cur_partial[0].tolist(),
+            stale_generation_rejected,
+            stale_owner_rejected,
+            bool(initial_rows),
+            bool(reach_final_rows),
+            int(reach_result.steps_completed[0]) == 1,
         )
     )
     return {
-        "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/1",
+        "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/2",
         "engine_root": str(engine_root.resolve()),
         "device": device,
         "defaults": {"max_refinement_steps": defaults.max_refinement_steps, "stop_ratio": defaults.stop_ratio},
@@ -108,15 +189,25 @@ def run(engine_root: Path, device: str) -> dict[str, Any]:
         },
         "initial_self_map_failure": {"replay_calls": calls_fail, "unchanged": bool(torch.equal(cur_fail, accepted))},
         "partial_vector_semantics": partial_semantics,
+        "cache_freshness": {
+            "immutable_cache_contract": "cache/tails hold fixed polynomial ranges and truncation tails; every replay receives the current candidate remainder explicitly",
+            "stale_generation_rejected": stale_generation_rejected,
+            "stale_owner_rejected": stale_owner_rejected,
+        },
+        "production_trace": {
+            "initial_self_map_rows": initial_rows,
+            "final_owner_rows": reach_final_rows,
+            "steps_completed": int(reach_result.steps_completed[0]),
+        },
         "api_contract": {
             "signature": str(signature),
-            "proposal_commit_ledger_exposed": "ledger" in source.lower() or "ledger" in signature.parameters,
+            "proposal_commit_ledger_exposed": "refinement_callback" in source.lower(),
             "remainder_cache_freshness_metadata_exposed": any(token in source.lower() for token in ("generation", "freshness", "cache_version")),
             "returns_only_remainder_and_bad": "tuple[torch.Tensor, torch.Tensor]" in source,
         },
         "behavioral_passed": behavioral_passed,
-        "contract_gate_passed": False,
-        "contract_gap": "behavioral replay controls pass, but no public proposal/commit ledger or remainder-cache freshness metadata can establish the required final-ledger and stale-cache claims",
+        "contract_gate_passed": behavioral_passed,
+        "contract_gap": None if behavioral_passed else "refinement ledger/cache contract check failed",
     }
 
 
@@ -130,7 +221,7 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({"behavioral_passed": payload["behavioral_passed"], "contract_gate_passed": payload["contract_gate_passed"]}, sort_keys=True))
-    return 0 if payload["behavioral_passed"] else 1
+    return 0 if payload["behavioral_passed"] and payload["contract_gate_passed"] else 1
 
 
 if __name__ == "__main__":
