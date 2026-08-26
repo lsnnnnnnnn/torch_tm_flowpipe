@@ -204,7 +204,7 @@ def _stopped_fixed(lane: str, sha: str, scenario: str, horizon: float) -> dict[s
 
 
 def _write_phase_e(output: Path) -> None:
-    huan = _json(output / "vdp/huan/run_index.json")
+    huan = _json(output / "vdp/huan_final/run_index.json")
     if huan.get("engine_head") != HUAN_HEAD or huan.get("primary_status") != PRIMARY:
         raise RuntimeError("Huan Phase-E index does not carry the required stop result")
     fixed = [_compact_fixed(row) for row in huan["fixed_runs"]]
@@ -227,7 +227,7 @@ def _write_phase_e(output: Path) -> None:
         fields,
     )
     shutil.copyfile(
-        output / "vdp/huan/refinement_ledgers.jsonl.gz",
+        output / "vdp/huan_final/refinement_ledgers.jsonl.gz",
         output / "vdp/refinement_ledgers.jsonl.gz",
     )
     native = {
@@ -290,6 +290,25 @@ def _write_phase_e(output: Path) -> None:
             "torch_c2_fresh_lane": STOP,
             "throughput_phase": THROUGHPUT,
             "contract_was_changed": False,
+        },
+    )
+    _write_json(
+        output / "vdp/superseded_runs.json",
+        {
+            "schema": "torch_tm_flowpipe.huan_vdp_superseded_runs/1",
+            "authoritative_path": "vdp/huan_final",
+            "authoritative_huan_sha": HUAN_HEAD,
+            "superseded": [
+                {
+                    "path": "vdp/huan",
+                    "huan_sha": "b0ff55745d69205f3afb4dc8077b9ac1310bfff3",
+                    "reason": (
+                        "pre-final full-suite run; later source commit removed two "
+                        "coverage-only pragma annotations without numerical changes"
+                    ),
+                    "eligible_for_final_claims": False,
+                }
+            ],
         },
     )
 

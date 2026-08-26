@@ -54,7 +54,8 @@ REQUIRED = (
     "vdp/native_terminal.json",
     "vdp/first_divergence.json",
     "vdp/phase_e_decision.json",
-    "vdp/huan/run_index.json",
+    "vdp/superseded_runs.json",
+    "vdp/huan_final/run_index.json",
     "SHA256SUMS",
 )
 
@@ -201,6 +202,15 @@ def verify_phase_e(output: Path) -> list[str]:
         errors.append("Phase-E claims the frozen contract was changed")
     if decision.get("native_parity") != "NOT_RUN_CONTRACT_NOT_PORTABLE" or decision.get("native_strict") != "NOT_RUN_CONTRACT_NOT_PORTABLE":
         errors.append("Phase-E native portability stop missing")
+    authoritative = _json(output / "vdp/huan_final/run_index.json")
+    if authoritative.get("engine_head") != HUAN_HEAD or authoritative.get("primary_status") != PRIMARY:
+        errors.append("authoritative Huan Phase-E run index source/status mismatch")
+    superseded = _json(output / "vdp/superseded_runs.json")
+    if superseded.get("authoritative_huan_sha") != HUAN_HEAD or any(
+        row.get("eligible_for_final_claims") is not False
+        for row in superseded.get("superseded", [])
+    ):
+        errors.append("superseded Huan run ledger mismatch")
     rows = _csv(output / "vdp/fixed_horizon_matrix.csv")
     huan = [row for row in rows if row["lane"] in {"huan_parity", "huan_strict"}]
     stopped = [row for row in rows if row["lane"] in {"stock_flowstar", "torch_c2"}]

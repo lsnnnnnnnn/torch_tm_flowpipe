@@ -94,6 +94,18 @@ def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
 def _phase_e_fixture(root: Path) -> None:
     vdp = root / "vdp"
     vdp.mkdir()
+    (vdp / "huan_final").mkdir()
+    (vdp / "huan_final/run_index.json").write_text(
+        json.dumps({"engine_head": VERIFIER.HUAN_HEAD, "primary_status": VERIFIER.PRIMARY})
+    )
+    (vdp / "superseded_runs.json").write_text(
+        json.dumps(
+            {
+                "authoritative_huan_sha": VERIFIER.HUAN_HEAD,
+                "superseded": [{"eligible_for_final_claims": False}],
+            }
+        )
+    )
     (vdp / "phase_e_decision.json").write_text(
         json.dumps(
             {
