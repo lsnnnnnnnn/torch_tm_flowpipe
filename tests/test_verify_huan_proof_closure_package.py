@@ -4,6 +4,7 @@ import csv
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,6 +13,13 @@ SPEC = importlib.util.spec_from_file_location("verify_huan_proof_closure_package
 assert SPEC is not None and SPEC.loader is not None
 VERIFIER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(VERIFIER)
+FINALIZER_SCRIPT = ROOT / "scripts/finalize_huan_proof_closure.py"
+FINALIZER_SPEC = importlib.util.spec_from_file_location(
+    "finalize_huan_proof_closure", FINALIZER_SCRIPT
+)
+assert FINALIZER_SPEC is not None and FINALIZER_SPEC.loader is not None
+FINALIZER = importlib.util.module_from_spec(FINALIZER_SPEC)
+FINALIZER_SPEC.loader.exec_module(FINALIZER)
 
 
 def _d2_row(backend: str, *, invoked: bool = True) -> dict[str, object]:
@@ -296,3 +304,34 @@ def test_completion_audit_requires_honest_partial_and_stop_labels() -> None:
     assert VERIFIER.verify_completion_audit(payload) == []
     by_id["9_step1_detail"]["status"] = "PROVEN_COMPLETE"
     assert "completion audit inflates step-1 detail closure" in VERIFIER.verify_completion_audit(payload)
+
+
+def test_finalizer_checks_manifest_before_mutating_package(
+    tmp_path: Path, monkeypatch: object
+) -> None:
+    output = tmp_path / "output"
+    output.mkdir()
+    (output / "phase_d_gate_v2.json").write_text(
+        json.dumps(
+            {
+                "overall_gate_passed": True,
+                "engine_head": FINALIZER.HUAN_HEAD,
+            }
+        )
+    )
+    order: list[str] = []
+    monkeypatch.setattr(FINALIZER, "_write_manifest", lambda *args: order.append("manifest"))
+    monkeypatch.setattr(FINALIZER, "_write_phase_e", lambda *args: order.append("phase_e"))
+    monkeypatch.setattr(FINALIZER, "_write_completion_audit", lambda *args: order.append("audit"))
+    monkeypatch.setattr(FINALIZER, "_write_environment", lambda *args: order.append("environment"))
+    monkeypatch.setattr(FINALIZER, "_write_checksums", lambda *args: order.append("checksums"))
+    FINALIZER.run(
+        SimpleNamespace(
+            output_root=output,
+            repo_root=tmp_path,
+            engine_root=tmp_path,
+            torch_c2_root=tmp_path,
+            flowstar_root=tmp_path,
+        )
+    )
+    assert order == ["manifest", "phase_e", "audit", "environment", "checksums"]

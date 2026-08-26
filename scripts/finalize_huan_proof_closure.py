@@ -651,13 +651,16 @@ def run(args: argparse.Namespace) -> None:
     gate = _json(output / "phase_d_gate_v2.json")
     if not gate.get("overall_gate_passed") or gate.get("engine_head") != HUAN_HEAD:
         raise RuntimeError("final Phase-D scientific gate is not closed at the repaired SHA")
-    _write_phase_e(output)
-    _write_completion_audit(output)
-    _write_environment(output)
+    # Inspect all repositories before touching any tracked package output.
+    # Otherwise this finalizer makes its own audit worktree dirty and then
+    # rejects that self-created state while building the manifest.
     _write_manifest(
         args.repo_root.resolve(), args.engine_root.resolve(),
         args.torch_c2_root.resolve(), args.flowstar_root.resolve(), output,
     )
+    _write_phase_e(output)
+    _write_completion_audit(output)
+    _write_environment(output)
     _write_checksums(output)
 
 
