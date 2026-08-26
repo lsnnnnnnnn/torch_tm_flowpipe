@@ -1,0 +1,70 @@
+{
+  "schema": "torch_tm_flowpipe.huan_phase_d_gate/1",
+  "engine_head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+  "primary_decision": "HUAN_SOURCE_BUILDS__PROOF_MAPPING_INCOMPLETE",
+  "overall_gate_passed": false,
+  "gates": {
+    "D1_ELEMENTWISE_INTERVALS": {
+      "status": "PASS_LOCAL_MICROKERNEL",
+      "evidence": [
+        "raw_logs/proof_kernel_cpu.json: 7/7",
+        "raw_logs/proof_kernel_cuda.json: 7/7"
+      ],
+      "gap": "generic overflow produces an extended interval rather than a primitive fail-closed status; it is not counted as a finite certificate"
+    },
+    "D2_ANY_ORDER_REDUCTION": {
+      "status": "PASS_LOCAL_MICROKERNEL",
+      "evidence": [
+        "raw_logs/proof_kernel_cpu.json: 987/987",
+        "raw_logs/proof_kernel_cuda.json: 987/987, fused kernel available"
+      ],
+      "gap": "the deployed no-FTZ behavior was observed, but the paper's claimed production startup assertion is absent"
+    },
+    "D3_DENSE_SPARSE_SUPPORT": {
+      "status": "PASS_EXISTING_BATTERY_WITH_SCOPE_NOTE",
+      "evidence": [
+        "raw_logs/phase_d3_dense_sparse.log: 84 passed, 2 skipped",
+        "dense/sparse operator matrix, strict and oversized supports, exact support maps, truncation/cutoff twins, structural zeros, random coefficients, and five-step operator sequences"
+      ],
+      "gap": "the two skips are CUDA cases covered separately by the D4 CUDA battery"
+    },
+    "D4_CHUNKING_LANE_DIVERGENCE": {
+      "status": "PASS_PINNED_REGIONS_WITH_SCOPE_NOTE",
+      "evidence": [
+        "raw_logs/phase_d4_chunk_lane.log: 55 passed, 1 skipped",
+        "raw_logs/chunk_boundary_cpu.json and chunk_boundary_cuda.json: chunks 1,2,3,5,7 and B=1-in-B=2 bitwise"
+      ],
+      "gap": "the battery mixes healthy/contraction-failed and safe/unsafe/unknown lanes; division failure is checked separately rather than in the same heterogeneous batch, and bitwise neutrality is claimed only for fused/fixed member-separable regions"
+    },
+    "D5_PICARD_REFINEMENT": {
+      "status": "FAIL_CONTRACT_INSTRUMENTATION_GAP",
+      "evidence": [
+        "raw_logs/phase_d5_refinement.log: 41 passed",
+        "raw_logs/refinement_boundary_cpu.json and refinement_boundary_cuda.json: initial failure makes zero replay calls, exact 490/491 caps, and Flow* first-failing-dimension partial commits"
+      ],
+      "gap": "refine_loop exposes no proposal/commit ledger or remainder-cache freshness metadata, so last-committed decomposition and stale-cache rejection cannot be established"
+    },
+    "D6_STRICT_PARITY": {
+      "status": "FAIL_PROOF_CONTRADICTION",
+      "evidence": [
+        "raw_logs/phase_d6_strict_parity.log: 25 passed",
+        "proof_to_code_map.csv: STRICT_VERSUS_PARITY=CONTRADICTED"
+      ],
+      "gap": "existing tests show the final composition GEMM widens strict over parity, but symbolic Phi einsums and retained monomial-image point products are not completely charged"
+    }
+  },
+  "additional_blockers": [
+    "FP_NO_FTZ_STARTUP is CONTRADICTED",
+    "POLYNOMIAL_ONLY_UNCONDITIONAL is CONTRADICTED",
+    "the frozen project lock omits ninja and PyYAML, so a pinned audit overlay is required for CUDA JIT and tests"
+  ],
+  "phase_e": "NOT_RUN_D_GATE_FAILED",
+  "phase_f": "NOT_RUN_D_GATE_FAILED",
+  "scientific_deliverables": {
+    "step1_common_input.csv": "NOT_RUN_D_GATE_FAILED",
+    "fixed_horizon_matrix.csv": "NOT_RUN_D_GATE_FAILED",
+    "native_terminal.json": "NOT_RUN_D_GATE_FAILED",
+    "batch_throughput.csv": "NOT_RUN_D_GATE_FAILED"
+  },
+  "controller_scope": "PROHIBITED_NOT_RUN"
+}

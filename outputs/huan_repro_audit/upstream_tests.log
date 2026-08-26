@@ -1,0 +1,241 @@
+{
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--ignore-glob=tests/unit/test_nn*.py",
+    "--ignore=tests/unit/test_onnx_controllers.py",
+    "--ignore=tests/unit/test_s2_coverage.py",
+    "--ignore=tests/adversarial/test_nncs_adversarial.py"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 1847.2287835818715,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "HYPOTHESIS_PROFILE": "dev"
+  },
+  "label": "UPSTREAM_PLANT_ONLY_RAW",
+  "returncode": 1,
+  "schema": "torch_tm_flowpipe.huan_command_capture/1",
+  "started_utc": "2026-08-26T06:11:52.486789+00:00"
+}
+--- combined stdout/stderr ---
+.............xx..xx.x................................................... [  7%]
+.............s.....................s.................................... [ 14%]
+........................................................................ [ 21%]
+........................................................................ [ 28%]
+.............................ss......................................... [ 35%]
+........................................................................ [ 42%]
+........................................................................ [ 49%]
+........................................................................ [ 56%]
+........................................................................ [ 63%]
+............................................s........................... [ 71%]
+........................................................................ [ 78%]
+.....................................................................ss. [ 85%]
+........................................................................ [ 92%]
+........................................................................ [ 99%]
+FFFFF.                                                                   [100%]
+=================================== FAILURES ===================================
+__________ test_in_vivo_bitwise_on_benchmark_tapes[quad_reduced.yaml] __________
+
+cfg = 'quad_reduced.yaml'
+
+    @pytest.mark.parametrize("cfg", [
+        "quad_reduced.yaml", "tora_relu_tanh.yaml", "attitude_control.yaml",
+        "double_pendulum_less_robust.yaml", "nav_standard.yaml",
+    ])
+    def test_in_vivo_bitwise_on_benchmark_tapes(cfg):
+        """WHY: the real benchmark tapes are the deployment target — captured
+        from genuine advance_sparse runs, kernel output must match the eager
+        executors bitwise on every array."""
+>       eng, caps_v, caps_p = _run_benchmark_capture(cfg)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_tape_kernels_valid.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_tape_kernels_valid.py:187: in _run_benchmark_capture
+    if not cfg_path.exists():
+           ^^^^^^^^^^^^^^^^^
+../miniforge3/lib/python3.13/pathlib/_abc.py:450: in exists
+    self.stat(follow_symlinks=follow_symlinks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/huan/projects/CROWN-Reach/src/configs/quad_reduced.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/home/huan/projects/CROWN-Reach/src/configs/quad_reduced.yaml'
+
+../miniforge3/lib/python3.13/pathlib/_local.py:515: PermissionError
+_________ test_in_vivo_bitwise_on_benchmark_tapes[tora_relu_tanh.yaml] _________
+
+cfg = 'tora_relu_tanh.yaml'
+
+    @pytest.mark.parametrize("cfg", [
+        "quad_reduced.yaml", "tora_relu_tanh.yaml", "attitude_control.yaml",
+        "double_pendulum_less_robust.yaml", "nav_standard.yaml",
+    ])
+    def test_in_vivo_bitwise_on_benchmark_tapes(cfg):
+        """WHY: the real benchmark tapes are the deployment target — captured
+        from genuine advance_sparse runs, kernel output must match the eager
+        executors bitwise on every array."""
+>       eng, caps_v, caps_p = _run_benchmark_capture(cfg)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_tape_kernels_valid.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_tape_kernels_valid.py:187: in _run_benchmark_capture
+    if not cfg_path.exists():
+           ^^^^^^^^^^^^^^^^^
+../miniforge3/lib/python3.13/pathlib/_abc.py:450: in exists
+    self.stat(follow_symlinks=follow_symlinks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/huan/projects/CROWN-Reach/src/configs/tora_relu_tanh.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/home/huan/projects/CROWN-Reach/src/configs/tora_relu_tanh.yaml'
+
+../miniforge3/lib/python3.13/pathlib/_local.py:515: PermissionError
+________ test_in_vivo_bitwise_on_benchmark_tapes[attitude_control.yaml] ________
+
+cfg = 'attitude_control.yaml'
+
+    @pytest.mark.parametrize("cfg", [
+        "quad_reduced.yaml", "tora_relu_tanh.yaml", "attitude_control.yaml",
+        "double_pendulum_less_robust.yaml", "nav_standard.yaml",
+    ])
+    def test_in_vivo_bitwise_on_benchmark_tapes(cfg):
+        """WHY: the real benchmark tapes are the deployment target — captured
+        from genuine advance_sparse runs, kernel output must match the eager
+        executors bitwise on every array."""
+>       eng, caps_v, caps_p = _run_benchmark_capture(cfg)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_tape_kernels_valid.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_tape_kernels_valid.py:187: in _run_benchmark_capture
+    if not cfg_path.exists():
+           ^^^^^^^^^^^^^^^^^
+../miniforge3/lib/python3.13/pathlib/_abc.py:450: in exists
+    self.stat(follow_symlinks=follow_symlinks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/huan/projects/CROWN-Reach/src/configs/attitude_control.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/home/huan/projects/CROWN-Reach/src/configs/attitude_control.yaml'
+
+../miniforge3/lib/python3.13/pathlib/_local.py:515: PermissionError
+__ test_in_vivo_bitwise_on_benchmark_tapes[double_pendulum_less_robust.yaml] ___
+
+cfg = 'double_pendulum_less_robust.yaml'
+
+    @pytest.mark.parametrize("cfg", [
+        "quad_reduced.yaml", "tora_relu_tanh.yaml", "attitude_control.yaml",
+        "double_pendulum_less_robust.yaml", "nav_standard.yaml",
+    ])
+    def test_in_vivo_bitwise_on_benchmark_tapes(cfg):
+        """WHY: the real benchmark tapes are the deployment target — captured
+        from genuine advance_sparse runs, kernel output must match the eager
+        executors bitwise on every array."""
+>       eng, caps_v, caps_p = _run_benchmark_capture(cfg)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_tape_kernels_valid.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_tape_kernels_valid.py:187: in _run_benchmark_capture
+    if not cfg_path.exists():
+           ^^^^^^^^^^^^^^^^^
+../miniforge3/lib/python3.13/pathlib/_abc.py:450: in exists
+    self.stat(follow_symlinks=follow_symlinks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/huan/projects/CROWN-Reach/src/configs/double_pendulum_less_robust.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/home/huan/projects/CROWN-Reach/src/configs/double_pendulum_less_robust.yaml'
+
+../miniforge3/lib/python3.13/pathlib/_local.py:515: PermissionError
+__________ test_in_vivo_bitwise_on_benchmark_tapes[nav_standard.yaml] __________
+
+cfg = 'nav_standard.yaml'
+
+    @pytest.mark.parametrize("cfg", [
+        "quad_reduced.yaml", "tora_relu_tanh.yaml", "attitude_control.yaml",
+        "double_pendulum_less_robust.yaml", "nav_standard.yaml",
+    ])
+    def test_in_vivo_bitwise_on_benchmark_tapes(cfg):
+        """WHY: the real benchmark tapes are the deployment target — captured
+        from genuine advance_sparse runs, kernel output must match the eager
+        executors bitwise on every array."""
+>       eng, caps_v, caps_p = _run_benchmark_capture(cfg)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_tape_kernels_valid.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_tape_kernels_valid.py:187: in _run_benchmark_capture
+    if not cfg_path.exists():
+           ^^^^^^^^^^^^^^^^^
+../miniforge3/lib/python3.13/pathlib/_abc.py:450: in exists
+    self.stat(follow_symlinks=follow_symlinks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/huan/projects/CROWN-Reach/src/configs/nav_standard.yaml')
+follow_symlinks = True
+
+    def stat(self, *, follow_symlinks=True):
+        """
+        Return the result of the stat() system call on this path, like
+        os.stat() does.
+        """
+>       return os.stat(self, follow_symlinks=follow_symlinks)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: '/home/huan/projects/CROWN-Reach/src/configs/nav_standard.yaml'
+
+../miniforge3/lib/python3.13/pathlib/_local.py:515: PermissionError
+=============================== warnings summary ===============================
+tests/unit/test_sparse_exec.py: 14 warnings
+  /srv/local/shengenli/flowstar-gpu/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes[quad_reduced.yaml]
+FAILED tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes[tora_relu_tanh.yaml]
+FAILED tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes[attitude_control.yaml]
+FAILED tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes[double_pendulum_less_robust.yaml]
+FAILED tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes[nav_standard.yaml]
+5 failed, 997 passed, 7 skipped, 5 xfailed, 14 warnings in 1844.43s (0:30:44)

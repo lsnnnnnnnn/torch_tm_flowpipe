@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "pytest_huan_config_path",
+    "tests/unit/test_tape_kernels_valid.py::test_in_vivo_bitwise_on_benchmark_tapes"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 8.219861380988732,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "HUAN_CONFIG_ROOT": "/srv/local/shengenli/CROWN-Reach-GPU/src/configs",
+    "PYTHONPATH": "/srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826/scripts"
+  },
+  "label": "UPSTREAM_FIVE_PATH_MAPPED_REPLAY",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/1",
+  "started_utc": "2026-08-26T06:43:18.001791+00:00"
+}
+--- combined stdout/stderr ---
+.....                                                                    [100%]
+5 passed in 7.17s

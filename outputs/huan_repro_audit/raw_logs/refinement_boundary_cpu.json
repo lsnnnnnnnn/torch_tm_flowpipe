@@ -1,0 +1,34 @@
+{
+  "api_contract": {
+    "proposal_commit_ledger_exposed": false,
+    "remainder_cache_freshness_metadata_exposed": false,
+    "returns_only_remainder_and_bad": true,
+    "signature": "(code: 'CompiledODE', accepted: 'torch.Tensor', ok: 'torch.Tensor', bad: 'torch.Tensor', cache: 'torch.Tensor', tails: 'torch.Tensor', strict: 'bool', int_diff: 'torch.Tensor', step: 'StepTables', settings: 'Settings') -> 'tuple[torch.Tensor, torch.Tensor]'"
+  },
+  "behavioral_passed": true,
+  "cap_boundary": {
+    "calls_490": 490,
+    "calls_491": 491,
+    "iteration_491_subset_of_490": true
+  },
+  "contract_gap": "behavioral replay controls pass, but no public proposal/commit ledger or remainder-cache freshness metadata can establish the required final-ledger and stale-cache claims",
+  "contract_gate_passed": false,
+  "defaults": {
+    "max_refinement_steps": 490,
+    "stop_ratio": 0.99
+  },
+  "device": "cpu",
+  "engine_root": "/srv/local/shengenli/flowstar-gpu",
+  "initial_self_map_failure": {
+    "replay_calls": 0,
+    "unchanged": true
+  },
+  "partial_vector_semantics": {
+    "calls": 1,
+    "classification": "FLOWSTAR_SEQUENTIAL_FIRST_FAIL_PARTIAL_VECTOR_COMMIT",
+    "dim0_committed": true,
+    "failing_dim1_unchanged": true,
+    "later_dim2_unchanged": true
+  },
+  "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/1"
+}

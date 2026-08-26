@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/test_cuda_kernels.py",
+    "tests/adversarial/test_batch_invariance.py",
+    "tests/unit/test_safety.py::test_spatial_images_member_chunking_is_bitwise_neutral",
+    "tests/unit/test_flowpipe.py::test_reach_mixed_fate_batch",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_div_rhs_bad_channel_plumbed"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 20.008431094000116,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++"
+  },
+  "label": "D4_CHUNKING_LANE_DIVERGENCE",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/1",
+  "started_utc": "2026-08-26T06:06:28.103230+00:00"
+}
+--- combined stdout/stderr ---
+........................................s...............                 [100%]
+55 passed, 1 skipped in 18.74s

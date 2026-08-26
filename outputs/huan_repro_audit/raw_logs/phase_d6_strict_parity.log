@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/test_composition.py",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_vs_dense",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_crosses_sr_queue_resets_like_dense"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu",
+  "elapsed_seconds": 5.744018699042499,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++"
+  },
+  "label": "D6_STRICT_PARITY",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/1",
+  "started_utc": "2026-08-26T06:07:16.585624+00:00"
+}
+--- combined stdout/stderr ---
+.........................                                                [100%]
+25 passed in 4.45s
