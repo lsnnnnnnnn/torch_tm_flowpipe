@@ -46,6 +46,7 @@ REQUIRED = (
     "commands/vdp_huan_phase_e.log",
     "commands/huan_plant_full.log",
     "commands/torch_full.log",
+    "commands/torch_full_py11.log",
     "vdp/contract_matrix.csv",
     "vdp/step1_common_input.csv",
     "vdp/refinement_ledgers.jsonl.gz",
@@ -281,12 +282,15 @@ def verify(repo: Path, output: Path) -> list[str]:
     if not strict_sources or any(row["status"] != "MAPPED_AND_TESTED" for row in strict_sources):
         errors.append("strict roundoff source ledger is incomplete")
     errors.extend(verify_phase_e(output))
-    for relative in ("commands/phase_d_scientific_gate.log", "commands/vdp_huan_phase_e.log", "commands/huan_plant_full.log", "commands/torch_full.log"):
+    for relative in ("commands/phase_d_scientific_gate.log", "commands/vdp_huan_phase_e.log", "commands/huan_plant_full.log", "commands/torch_full_py11.log"):
         header, body = capture_header(output / relative)
         if header.get("schema") != "torch_tm_flowpipe.huan_command_capture/2" or header.get("returncode") != 0:
             errors.append(f"command capture failed or has wrong schema: {relative}")
-        if relative.endswith(("huan_plant_full.log", "torch_full.log")) and "passed" not in body:
+        if relative.endswith(("huan_plant_full.log", "torch_full_py11.log")) and "passed" not in body:
             errors.append(f"full regression pass count absent: {relative}")
+    failed_header, failed_body = capture_header(output / "commands/torch_full.log")
+    if failed_header.get("returncode") != 2 or "No module named 'pandas'" not in failed_body:
+        errors.append("Torch wrong-environment diagnostic capture changed or is missing")
     for report in required_reports[:2]:
         text = report.read_text(encoding="utf-8")
         if PRIMARY not in text or "package verifier" not in text.lower():
