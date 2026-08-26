@@ -1,0 +1,53 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/test_results/d6.xml",
+      "sha256": "8e6212202fe58717b7709b7ac321e7033ca0dfc3b415c3c42ffad3773497a89d",
+      "size": 6976
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/test_composition.py",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_vs_dense",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_crosses_sr_queue_resets_like_dense",
+    "tests/soundness/test_strict_proof_contract.py",
+    "--junitxml=/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/test_results/d6.xml"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "elapsed_seconds": 6.6721042189747095,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src"
+  },
+  "label": "D6_STRICT_EXACT_ORACLES",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "8a82ceeca4a9a7fcb0e9a6a3b378d7e42166aa6e",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "9359167934bc95ce92d653228745264a6c47209e",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T09:15:53.026725+00:00"
+}
+--- combined stdout/stderr ---
+.................................................                        [100%]
+49 passed in 5.45s

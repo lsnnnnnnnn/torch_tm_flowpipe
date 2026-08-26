@@ -1,0 +1,301 @@
+{
+  "api_contract": {
+    "proposal_commit_ledger_exposed": true,
+    "remainder_cache_freshness_metadata_exposed": true,
+    "returns_only_remainder_and_bad": true,
+    "signature": "(code: 'CompiledODE', accepted: 'torch.Tensor', ok: 'torch.Tensor', bad: 'torch.Tensor', cache: 'torch.Tensor', tails: 'torch.Tensor', strict: 'bool', int_diff: 'torch.Tensor', step: 'StepTables', settings: 'Settings', *, cache_state: 'RefinementCacheState | None' = None) -> 'tuple[torch.Tensor, torch.Tensor]'"
+  },
+  "behavioral_passed": true,
+  "cache_freshness": {
+    "immutable_cache_contract": "cache/tails hold fixed polynomial ranges and truncation tails; every replay receives the current candidate remainder explicitly",
+    "stale_generation_rejected": true,
+    "stale_owner_rejected": true
+  },
+  "cap_boundary": {
+    "calls_490": 490,
+    "calls_491": 491,
+    "iteration_491_subset_of_490": true
+  },
+  "contract_gap": null,
+  "contract_gate_passed": true,
+  "defaults": {
+    "max_refinement_steps": 490,
+    "stop_ratio": 0.99
+  },
+  "device": "cuda",
+  "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "initial_self_map_failure": {
+    "replay_calls": 0,
+    "unchanged": true
+  },
+  "partial_vector_semantics": {
+    "calls": 1,
+    "classification": "FLOWSTAR_SEQUENTIAL_FIRST_FAIL_PARTIAL_VECTOR_COMMIT",
+    "component_ledger": [
+      {
+        "bad_nonfinite_mask": false,
+        "cache_generation": 1,
+        "cache_id": "range-cache:0:(1, 0, 2)",
+        "commit_mask": [
+          true,
+          false,
+          false
+        ],
+        "commit_result": true,
+        "component_order": 0,
+        "event": "refinement_component",
+        "initial_self_map_ok": true,
+        "input_generation": 0,
+        "input_remainder_vector": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ],
+        "iteration": 0,
+        "lane": 0,
+        "proposal_generation": 1,
+        "proposal_interval": [
+          -0.5,
+          0.5
+        ],
+        "stop_decision": false,
+        "stop_ratio_inputs": {
+          "new_width": 1.0000000000000002,
+          "old_width": 2.0000000000000004,
+          "ratio": 0.5,
+          "threshold": 0.99
+        },
+        "subset_result": true,
+        "tails_id": "strict-tails:0:(1, 0, 2)",
+        "vector_after_commit": [
+          [
+            -0.5,
+            0.5
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "bad_nonfinite_mask": false,
+        "cache_generation": 1,
+        "cache_id": "range-cache:0:(1, 0, 2)",
+        "commit_mask": [
+          true,
+          false,
+          false
+        ],
+        "commit_result": false,
+        "component_order": 1,
+        "event": "refinement_component",
+        "initial_self_map_ok": true,
+        "input_generation": 0,
+        "input_remainder_vector": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ],
+        "iteration": 0,
+        "lane": 0,
+        "proposal_generation": 1,
+        "proposal_interval": [
+          -2.0,
+          2.0
+        ],
+        "stop_decision": false,
+        "stop_ratio_inputs": {
+          "new_width": 4.000000000000001,
+          "old_width": 2.0000000000000004,
+          "ratio": 2.0,
+          "threshold": 0.99
+        },
+        "subset_result": false,
+        "tails_id": "strict-tails:0:(1, 0, 2)",
+        "vector_after_commit": [
+          [
+            -0.5,
+            0.5
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "bad_nonfinite_mask": false,
+        "cache_generation": 1,
+        "cache_id": "range-cache:0:(1, 0, 2)",
+        "commit_mask": [
+          true,
+          false,
+          false
+        ],
+        "commit_result": false,
+        "component_order": 2,
+        "event": "refinement_component",
+        "initial_self_map_ok": true,
+        "input_generation": 0,
+        "input_remainder_vector": [
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ],
+        "iteration": 0,
+        "lane": 0,
+        "proposal_generation": 1,
+        "proposal_interval": [
+          -0.25,
+          0.25
+        ],
+        "stop_decision": false,
+        "stop_ratio_inputs": {
+          "new_width": 0.5000000000000001,
+          "old_width": 2.0000000000000004,
+          "ratio": 0.25,
+          "threshold": 0.99
+        },
+        "subset_result": true,
+        "tails_id": "strict-tails:0:(1, 0, 2)",
+        "vector_after_commit": [
+          [
+            -0.5,
+            0.5
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "dim0_committed": true,
+    "failing_dim1_unchanged": true,
+    "final_owner": [
+      {
+        "bad_nonfinite_mask": false,
+        "cache_id": "range-cache:0:(1, 0, 2)",
+        "event": "final_remainder_owner",
+        "final_accepted_remainder": [
+          [
+            -0.5,
+            0.5
+          ],
+          [
+            -1.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0
+          ]
+        ],
+        "final_generation": 1,
+        "initial_self_map_ok": true,
+        "iterations": 1,
+        "lane": 0,
+        "tails_id": "strict-tails:0:(1, 0, 2)"
+      }
+    ],
+    "later_dim2_unchanged": true
+  },
+  "production_trace": {
+    "final_owner_rows": [
+      {
+        "bad_nonfinite_mask": false,
+        "cache_id": "range-cache:749247a0a000:(1, 1, 2)",
+        "event": "final_remainder_owner",
+        "final_accepted_remainder": [
+          [
+            -0.0,
+            0.0
+          ]
+        ],
+        "final_generation": 1,
+        "initial_self_map_ok": true,
+        "iterations": 1,
+        "lane": 0,
+        "tails_id": "strict-tails:749247a0a200:(1, 1, 2)"
+      }
+    ],
+    "initial_self_map_rows": [
+      {
+        "attempted_step": 0.03125,
+        "bad_nonfinite_mask": false,
+        "cache_id": "range-cache:749247a0a000:(1, 1, 2)",
+        "event": "initial_self_map",
+        "initial_self_map_ok": true,
+        "input_generation": 0,
+        "input_remainder_vector": [
+          [
+            -0.0001,
+            0.0001
+          ]
+        ],
+        "lane": 0,
+        "proposal_generation": 0,
+        "proposal_interval": [
+          [
+            -0.0,
+            0.0
+          ]
+        ],
+        "subset_by_component": [
+          true
+        ],
+        "subset_margin_by_component": {
+          "lower": [
+            0.0001
+          ],
+          "upper": [
+            0.0001
+          ]
+        },
+        "tails_id": "strict-tails:749247a0a200:(1, 1, 2)"
+      }
+    ],
+    "steps_completed": 1
+  },
+  "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/2"
+}

@@ -1,0 +1,45 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/dirty_patch_recovery.json",
+      "sha256": "694bd3be45a5ff0d937553732d3f9371e9f1fb062bf865f4fac599e5c3cf78ce",
+      "size": 6735
+    },
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/dirty_patch_candidates.csv",
+      "sha256": "3b14550def85c50ffd311f9236ea1ddc57349f46073dd81a534c1bb4680578f5",
+      "size": 163493
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/huan_dirty_patch_recovery.py",
+    "--search-root",
+    "/srv/local/shengenli",
+    "--record-provenance",
+    "outputs/huan_repro_audit/raw_logs/record_provenance.tsv",
+    "--output-json",
+    "outputs/huan_proof_closure/dirty_patch_recovery.json",
+    "--output-csv",
+    "outputs/huan_proof_closure/dirty_patch_candidates.csv"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 7.247768871951848,
+  "environment": {},
+  "label": "HISTORICAL_DIRTY_PATCH_BOUNDED_SEARCH_FINAL",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "b57c8ade4a6e36d5ee598aef99a4704407b93950",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T09:47:38.997590+00:00"
+}
+--- combined stdout/stderr ---
+{"candidates": 470, "conclusion": "HISTORICAL_DIRTY_PATCHES_NOT_FOUND_AFTER_BOUNDED_SEARCH"}

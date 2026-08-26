@@ -1,0 +1,50 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/refinement_boundary_cpu_v2.json",
+      "sha256": "ec7585f62800e0ee45393b2c20b880ff3b7d88c8777871c9b50c9c7bae99e629",
+      "size": 7604
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/huan_refinement_boundary_audit.py",
+    "--engine-root",
+    "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+    "--device",
+    "cpu",
+    "--output",
+    "outputs/huan_proof_closure/refinement_boundary_cpu_v2.json"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 3.1633035119157284,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0"
+  },
+  "label": "D5_REFINEMENT_CPU_FINAL_TEST_CLEAN_SOURCE",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "89d4d921d1580f1b07b4cbab0aba15fbda11d74d",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T10:22:21.916392+00:00"
+}
+--- combined stdout/stderr ---
+{"behavioral_passed": true, "contract_gate_passed": true}

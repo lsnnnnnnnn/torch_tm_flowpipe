@@ -1,0 +1,69 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "pytest_huan_config_path",
+    "--ignore-glob=tests/unit/test_nn*.py",
+    "--ignore=tests/unit/test_onnx_controllers.py",
+    "--ignore=tests/unit/test_s2_coverage.py",
+    "--ignore=tests/adversarial/test_nncs_adversarial.py"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "elapsed_seconds": 2646.94110806915,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "HUAN_CONFIG_ROOT": "/srv/local/shengenli/CROWN-Reach-GPU/src/configs",
+    "HYPOTHESIS_PROFILE": "dev",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/scripts:/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src"
+  },
+  "label": "HUAN_PLANT_ONLY_FULL_FINAL_TEST_CLEAN_SOURCE",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    },
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "703dbf0b221b73d908eb93fd0a2b74578219a25c",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T10:24:05.441229+00:00"
+}
+--- combined stdout/stderr ---
+.............xx..xx.x................................................... [  6%]
+.............s.....................s.................................... [ 13%]
+........................................................................ [ 20%]
+........................................................................ [ 27%]
+.............................ss......................................... [ 34%]
+........................................................................ [ 41%]
+........................................................................ [ 48%]
+........................................................................ [ 55%]
+........................................................................ [ 62%]
+.....................................................................s.. [ 69%]
+........................................................................ [ 76%]
+........................................................................ [ 83%]
+......................ss................................................ [ 90%]
+........................................................................ [ 97%]
+...............................                                          [100%]
+=============================== warnings summary ===============================
+tests/unit/test_sparse_exec.py: 14 warnings
+  /srv/local/shengenli/flowstar-gpu/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1027 passed, 7 skipped, 5 xfailed, 14 warnings in 2644.05s (0:44:04)

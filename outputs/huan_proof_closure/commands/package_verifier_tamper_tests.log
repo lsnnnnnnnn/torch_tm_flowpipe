@@ -1,0 +1,29 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_verify_huan_proof_closure_package.py",
+    "tests/test_verify_huan_repro_package.py"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 0.4231234937906265,
+  "environment": {},
+  "label": "PACKAGE_VERIFIER_TAMPER_TESTS_FINAL",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "d661cd5383a3e5ebd89a58760ee2a678172cd690",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T11:18:14.299162+00:00"
+}
+--- combined stdout/stderr ---
+.........                                                                [100%]
+9 passed in 0.05s

@@ -1,0 +1,54 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/test_results/d4.xml",
+      "sha256": "248318ef57930830d9b153d09b95ad7721621faacc7ce7b33c7b0480682c8de3",
+      "size": 6849
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/test_cuda_kernels.py",
+    "tests/adversarial/test_batch_invariance.py",
+    "tests/unit/test_safety.py::test_spatial_images_member_chunking_is_bitwise_neutral",
+    "tests/unit/test_flowpipe.py::test_reach_mixed_fate_batch",
+    "tests/unit/test_sparse_exec.py::test_advance_sparse_div_rhs_bad_channel_plumbed",
+    "--junitxml=/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/test_results/d4.xml"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "elapsed_seconds": 51.13049275497906,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src"
+  },
+  "label": "D4_CHUNKING_LANE_DIVERGENCE",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "8a82ceeca4a9a7fcb0e9a6a3b378d7e42166aa6e",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "9359167934bc95ce92d653228745264a6c47209e",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T09:14:25.814362+00:00"
+}
+--- combined stdout/stderr ---
+........................................s...............                 [100%]
+55 passed, 1 skipped in 49.88s

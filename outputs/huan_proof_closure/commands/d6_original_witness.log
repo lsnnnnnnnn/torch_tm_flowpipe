@@ -1,0 +1,49 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/witnesses/d6_minimal_witness.json",
+      "sha256": "69735b8ab30bef71136434ff671b3d18c177a52113d1df78106029533474ce55",
+      "size": 1300
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/huan_strict_roundoff_audit.py",
+    "--engine-root",
+    "/srv/local/shengenli/flowstar-gpu",
+    "--output",
+    "outputs/huan_proof_closure/witnesses/d6_minimal_witness.json",
+    "--expect",
+    "under_enclosure"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 1.4390738669317216,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0"
+  },
+  "label": "D6_ORIGINAL_MINIMIZED_WITNESS",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "8a82ceeca4a9a7fcb0e9a6a3b378d7e42166aa6e",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "main",
+      "dirty": false,
+      "head": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "root": "/srv/local/shengenli/flowstar-gpu"
+    }
+  ],
+  "started_utc": "2026-08-26T09:12:39.300762+00:00"
+}
+--- combined stdout/stderr ---
+{"classification": "D6_CONCRETE_UNDERENCLOSURE_WITNESS_FOUND", "expected": "D6_CONCRETE_UNDERENCLOSURE_WITNESS_FOUND"}

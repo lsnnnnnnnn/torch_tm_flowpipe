@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/raw_logs/proof_kernel_cpu.json",
+      "sha256": "333ff88c9f8e4b71fcf55e32fbeed1ba4373fcadeb23c97e7b0617d4b08e45e6",
+      "size": 802421
+    },
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/d2_schedule_inventory.csv",
+      "sha256": "ef25e240454dcde128023f789a4298b1df78e0945bd46c48c3caac2a2c8efd53",
+      "size": 718
+    },
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/d2_host_order_oracle.json",
+      "sha256": "d945e66c5b458e21b151ff7168321f6a66c6ea54617201e3b1ee0d4977aeb83c",
+      "size": 458990
+    },
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/d2_actual_cpu.json",
+      "sha256": "f471b49c02415a69063f6076cd95b88bd4d5383f06d57e6ae5a537e6ca75992f",
+      "size": 295848
+    },
+    {
+      "exists": true,
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure/proof_to_code_map_v2.csv",
+      "sha256": "e92b996b68dfe0927af6876daa6e67bb64155fe5a3cc9435beec4c1f7076c9bf",
+      "size": 10281
+    }
+  ],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/huan_proof_kernel_audit.py",
+    "--engine-root",
+    "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+    "--device",
+    "cpu",
+    "--output",
+    "outputs/huan_proof_closure/raw_logs/proof_kernel_cpu.json",
+    "--proof-map",
+    "outputs/huan_proof_closure/proof_to_code_map_v2.csv",
+    "--d2-output-root",
+    "outputs/huan_proof_closure"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 1.8839703530538827,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0"
+  },
+  "label": "D1_D2_CPU_FINAL_TEST_CLEAN_SOURCE",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "89d4d921d1580f1b07b4cbab0aba15fbda11d74d",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T10:21:47.209601+00:00"
+}
+--- combined stdout/stderr ---
+{"d1": [7, 7], "d2": [1410, 1410], "device": "cpu", "gate_passed": true, "kernel": false}

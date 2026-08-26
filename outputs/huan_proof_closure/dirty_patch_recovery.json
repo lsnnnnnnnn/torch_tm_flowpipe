@@ -1,0 +1,122 @@
+{
+  "bounded_file_count": 159266,
+  "candidate_count": 470,
+  "captured_utc": "2026-08-26T09:47:46.233256+00:00",
+  "conclusion": "HISTORICAL_DIRTY_PATCHES_NOT_FOUND_AFTER_BOUNDED_SEARCH",
+  "dirty_base_revisions": [
+    "3e12487d10604f5d3fa33e0a22c87acd368d3bc6",
+    "876db965465c5af10e8c258f8d73833d653fc22e",
+    "d1b67e0bbfe7ee6cbaa774cd5d8f7dbcc27e480f"
+  ],
+  "git_evidence": [
+    {
+      "commands": [
+        {
+          "command": [
+            "git",
+            "stash",
+            "list",
+            "--date=iso"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu",
+          "output": "",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "reflog",
+            "--all",
+            "--date=iso"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu",
+          "output": "b0ff557 refs/remotes/origin/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:24:23 +0000}: update by push\nb0ff557 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:23:22 +0000}: commit: Expose refinement attempt and limiting-side evidence\nb0ff557 worktrees/flowstar-gpu-proof-closure-20260826/HEAD@{2026-08-26 09:23:22 +0000}: commit: Expose refinement attempt and limiting-side evidence\n9359167 refs/remotes/origin/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:05:57 +0000}: update by push\n9359167 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:05:50 +0000}: commit: Close strict floating-point proof contract\n9359167 worktrees/flowstar-gpu-proof-closure-20260826/HEAD@{2026-08-26 09:05:50 +0000}: commit: Close strict floating-point proof contract\nd5f0b68 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 08:19:08 +0000}: branch: Created from d5f0b68fcd36ba5f582733624f074728fe9720d8\nd5f0b68 worktrees/flowstar-gpu-proof-closure-20260826/HEAD@{2026-08-26 08:19:08 +0000}: reset: moving to HEAD\nd5f0b68 worktrees/flowstar-gpu-proof-closure-20260826/HEAD@{2026-08-26 08:19:08 +0000}: \nd5f0b68 refs/heads/main@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\nd5f0b68 refs/remotes/origin/HEAD@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\nd5f0b68 HEAD@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\n",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "fsck",
+            "--full",
+            "--no-reflogs",
+            "--unreachable"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu",
+          "output": "",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "worktree",
+            "list",
+            "--porcelain"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu",
+          "output": "worktree /srv/local/shengenli/flowstar-gpu\nHEAD d5f0b68fcd36ba5f582733624f074728fe9720d8\nbranch refs/heads/main\n\nworktree /srv/local/shengenli/flowstar-gpu-proof-closure-20260826\nHEAD b0ff55745d69205f3afb4dc8077b9ac1310bfff3\nbranch refs/heads/codex/strict-proof-contract-closure-20260826\n\n",
+          "returncode": 0
+        }
+      ],
+      "repository": "/srv/local/shengenli/flowstar-gpu"
+    },
+    {
+      "commands": [
+        {
+          "command": [
+            "git",
+            "stash",
+            "list",
+            "--date=iso"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "output": "",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "reflog",
+            "--all",
+            "--date=iso"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "output": "b0ff557 refs/remotes/origin/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:24:23 +0000}: update by push\nb0ff557 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:23:22 +0000}: commit: Expose refinement attempt and limiting-side evidence\nb0ff557 HEAD@{2026-08-26 09:23:22 +0000}: commit: Expose refinement attempt and limiting-side evidence\n9359167 refs/remotes/origin/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:05:57 +0000}: update by push\n9359167 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 09:05:50 +0000}: commit: Close strict floating-point proof contract\n9359167 HEAD@{2026-08-26 09:05:50 +0000}: commit: Close strict floating-point proof contract\nd5f0b68 refs/heads/codex/strict-proof-contract-closure-20260826@{2026-08-26 08:19:08 +0000}: branch: Created from d5f0b68fcd36ba5f582733624f074728fe9720d8\nd5f0b68 HEAD@{2026-08-26 08:19:08 +0000}: reset: moving to HEAD\nd5f0b68 HEAD@{2026-08-26 08:19:08 +0000}: \nd5f0b68 refs/heads/main@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\nd5f0b68 refs/remotes/origin/HEAD@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\nd5f0b68 main-worktree/HEAD@{2026-08-26 05:22:09 +0000}: clone: from https://github.com/huanzhang12/flowstar-gpu\n",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "fsck",
+            "--full",
+            "--no-reflogs",
+            "--unreachable"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "output": "",
+          "returncode": 0
+        },
+        {
+          "command": [
+            "git",
+            "worktree",
+            "list",
+            "--porcelain"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "output": "worktree /srv/local/shengenli/flowstar-gpu\nHEAD d5f0b68fcd36ba5f582733624f074728fe9720d8\nbranch refs/heads/main\n\nworktree /srv/local/shengenli/flowstar-gpu-proof-closure-20260826\nHEAD b0ff55745d69205f3afb4dc8077b9ac1310bfff3\nbranch refs/heads/codex/strict-proof-contract-closure-20260826\n\n",
+          "returncode": 0
+        }
+      ],
+      "repository": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    }
+  ],
+  "interpretation": "A base commit or a log mentioning '-dirty' is not the missing tracked diff plus untracked-file snapshot.",
+  "record_path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_repro_audit/raw_logs/record_provenance.tsv",
+  "repositories_searched": [
+    "/srv/local/shengenli/flowstar-gpu",
+    "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+  ],
+  "schema": "torch_tm_flowpipe.huan_dirty_patch_recovery/1",
+  "search_root": "/srv/local/shengenli",
+  "unresolved_candidate_count": 0
+}

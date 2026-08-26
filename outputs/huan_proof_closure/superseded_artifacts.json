@@ -1,0 +1,61 @@
+{
+  "schema": "torch_tm_flowpipe.huan_proof_closure_superseded_artifacts/1",
+  "authoritative_huan_sha": "743f6205e6408072193ad76e940e7f15030e8d3c",
+  "authoritative_replacements": {
+    "D1_D2": [
+      "raw_logs/proof_kernel_cpu.json",
+      "raw_logs/proof_kernel_cuda.json",
+      "commands/d1_d2_cpu.log",
+      "commands/d1_d2_cuda.log"
+    ],
+    "D3_D6": [
+      "phase_d_gate_v2.json",
+      "commands/phase_d_scientific_gate.log",
+      "commands/huan_plant_full_final.log"
+    ],
+    "D4_boundary": [
+      "chunk_boundary_cpu_v2.json",
+      "chunk_boundary_cuda_v2.json"
+    ],
+    "D5_boundary": [
+      "refinement_boundary_cpu_v2.json",
+      "refinement_boundary_cuda_v2.json"
+    ],
+    "D6_witness": [
+      "witnesses/d6_repaired_minimal_witness.json",
+      "commands/d6_repaired_witness.log"
+    ]
+  },
+  "superseded": [
+    {
+      "paths": [
+        "commands/d2_corrected_cpu.json",
+        "commands/d2_corrected_cuda.json"
+      ],
+      "source_sha": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "reason": "pre-repair corrected-route development copies; final route-tagged raw logs replace them"
+    },
+    {
+      "paths": [
+        "commands/d3_dense_sparse.log",
+        "commands/d4_chunk_lane.log",
+        "commands/d5_refinement.log",
+        "commands/d6_strict_exact.log",
+        "test_results/d3.xml",
+        "test_results/d4.xml",
+        "test_results/d5.xml",
+        "test_results/d6.xml"
+      ],
+      "source_sha": "9359167934bc95ce92d653228745264a6c47209e",
+      "reason": "intermediate repaired-source targeted suite; final scientific gate and 1027-pass full suite replace it"
+    },
+    {
+      "paths": [
+        "commands/d6_repaired_minimal_witness.json"
+      ],
+      "source_sha": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+      "reason": "intermediate command-side copy; final witness lives under witnesses/"
+    }
+  ],
+  "eligible_for_final_claims": false
+}

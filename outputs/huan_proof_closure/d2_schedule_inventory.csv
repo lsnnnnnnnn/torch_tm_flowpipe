@@ -1,0 +1,6 @@
+schedule_name,execution_backend,kernel_path,evidence_scope
+host_sequential|host_pairwise|host_chunk3|host_chunk17|host_permuted|host_fma,host_python,Python binary64 helpers,any-order mathematical oracle; never CPU/CUDA kernel evidence
+torch_dot,torch_cpu|torch_cuda,torch.dot,actual point reduction on the tagged tensor device
+torch_sum_mul,torch_cpu|torch_cuda,torch.sum(a*b),actual product then reduction on the tagged tensor device
+engine_point_einsum,torch_cpu|torch_cuda,"torch.einsum(i,i->)",point-reduction primitive used by engine composition paths
+engine_interval_dot,torch_cpu|custom_cuda,flowstar_gpu.interval.dot_point_iv,actual production interval-dot route; custom CUDA requires a counted dispatch

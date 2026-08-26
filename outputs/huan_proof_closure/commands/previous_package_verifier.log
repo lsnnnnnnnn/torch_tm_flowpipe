@@ -1,0 +1,36 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/check_previous_huan_verifier_expected.py",
+    "--repo-root",
+    ".",
+    "--output-root",
+    "outputs/huan_repro_audit"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 0.053540742956101894,
+  "environment": {},
+  "label": "PREVIOUS_HUAN_PACKAGE_VERIFIER_EXPECTED_D2_REJECTION_FINAL",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "cf9e7026cb3eb56ed4298d6ef2132571f534597d",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T11:10:38.086868+00:00"
+}
+--- combined stdout/stderr ---
+{
+  "errors": [
+    "D2 cpu evidence lacks route-tagged schema v2",
+    "D2 cuda evidence lacks route-tagged schema v2"
+  ],
+  "interpretation": "legacy package is intentionally rejected only for its two schema-v1 D2 labels; availability is not accepted as CUDA invocation",
+  "ok": true,
+  "schema": "torch_tm_flowpipe.previous_huan_verifier_expected_result/1"
+}

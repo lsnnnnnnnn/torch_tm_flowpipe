@@ -1,0 +1,159 @@
+{
+  "accepted_steps": 632,
+  "channels": {
+    "endpoint": [
+      [
+        0.3280038569088999,
+        0.5175695837920375
+      ],
+      [
+        2.4559311634257117,
+        2.610572721250735
+      ]
+    ],
+    "endpoint_roundoff": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "endpoint_width": [
+      0.1895657268831377,
+      0.15464155782502334
+    ],
+    "segment_tube": [
+      [
+        0.3027243010502397,
+        0.5175994702388728
+      ],
+      [
+        2.438685940619443,
+        2.610918934082683
+      ]
+    ],
+    "segment_tube_width": [
+      0.21487516918863311,
+      0.17223299346323986
+    ]
+  },
+  "completed_horizon": 6.32,
+  "completed_requested_horizon": true,
+  "device": "cuda",
+  "failed_terminal_first_self_map": null,
+  "first_self_map": {
+    "attempted_step": 0.01,
+    "bad_nonfinite_mask": false,
+    "cache_id": "range-cache:7b6357a23000:(1, 6, 2)",
+    "event": "initial_self_map",
+    "initial_self_map_ok": true,
+    "input_generation": 0,
+    "input_remainder_vector": [
+      [
+        -0.0001,
+        0.0001
+      ],
+      [
+        -0.0001,
+        0.0001
+      ]
+    ],
+    "lane": 0,
+    "proposal_generation": 0,
+    "proposal_interval": [
+      [
+        -1.1936564575195332e-06,
+        1.4339079621826188e-06
+      ],
+      [
+        -1.8274487411491737e-05,
+        2.0003441565742736e-05
+      ]
+    ],
+    "subset_by_component": [
+      true,
+      true
+    ],
+    "subset_margin_by_component": {
+      "lower": [
+        9.880634354248048e-05,
+        8.172551258850827e-05
+      ],
+      "upper": [
+        9.856609203781738e-05,
+        7.999655843425726e-05
+      ]
+    },
+    "tails_id": "strict-tails:7b6357a23200:(1, 5, 2)"
+  },
+  "mode": "parity",
+  "peak_gpu_memory_bytes": 33805824,
+  "prefix_tube": [
+    [
+      -2.014498058818634,
+      2.0616485809808234
+    ],
+    [
+      -2.7068789632066856,
+      2.610918934082683
+    ]
+  ],
+  "refinement_iterations": 3069,
+  "rejected_attempts": 0,
+  "requested_horizon": 6.32,
+  "retained_candidate_polynomial_sha256": "975dd4e1efefb1580556b8c144ecf937253d6efd9455fcd3ae2f051854c57f22",
+  "roundoff_contribution_ledger": {
+    "composition_and_preconditioning": "charged in ordinary remainder; category totals are not separately exposed",
+    "parity_policy": "Flow* point-coefficient trust model",
+    "strict_endpoint_roundoff": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "runtime_s": 18.400051941163838,
+  "scenario": "fixed_T6p32",
+  "settings": {
+    "complete_total_degree_order": 4,
+    "cutoff": 1e-10,
+    "fixed_step": 0.01,
+    "initial_set": [
+      [
+        1.1,
+        1.4
+      ],
+      [
+        2.35,
+        2.45
+      ]
+    ],
+    "remainder_radius": 0.0001,
+    "rhs": [
+      "y",
+      "y - x - x^2*y"
+    ],
+    "symbolic_remainder_queue": 100,
+    "validation_epsilon": "engine-unmatched; loop threshold is 1e-12"
+  },
+  "source_sha": "b0ff55745d69205f3afb4dc8077b9ac1310bfff3",
+  "status_code": 2,
+  "step1_remainder": [
+    [
+      -6.306078196816914e-08,
+      8.047629233987816e-08
+    ],
+    [
+      -6.305052020606481e-06,
+      8.046590558693206e-06
+    ]
+  ],
+  "tool": "huan_flowstar_gpu"
+}

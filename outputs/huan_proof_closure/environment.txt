@@ -1,0 +1,1125 @@
+schema=torch_tm_flowpipe.huan_environment/1
+generated_utc=2026-08-26T11:19:21.880618+00:00
+platform=Linux-7.0.0-29-generic-x86_64-with-glibc2.43
+audit_overlay=ninja and PyYAML installed outside uv.lock; uv.lock intentionally unchanged
+
+[uname]
+command=["uname", "-a"]
+returncode=0
+Linux huan-c4140-server-3 7.0.0-29-generic #29-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 17 20:52:35 UTC 2026 x86_64 GNU/Linux
+
+[lscpu]
+command=["lscpu"]
+returncode=0
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           46 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  80
+On-line CPU(s) list:                     0-79
+Vendor ID:                               GenuineIntel
+Model name:                              Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz
+CPU family:                              6
+Model:                                   85
+Thread(s) per core:                      2
+Core(s) per socket:                      20
+Socket(s):                               2
+Stepping:                                4
+CPU(s) scaling MHz:                      38%
+CPU max MHz:                             3700.0000
+CPU min MHz:                             1000.0000
+BogoMIPS:                                4000.00
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cdp_l3 intel_ppin ssbd mba ibrs ibpb stibp tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb intel_pt avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts hwp hwp_act_window hwp_epp hwp_pkg_req vnmi pku ospke md_clear flush_l1d arch_capabilities
+Virtualization:                          VT-x
+L1d cache:                               1.3 MiB (40 instances)
+L1i cache:                               1.3 MiB (40 instances)
+L2 cache:                                40 MiB (40 instances)
+L3 cache:                                55 MiB (2 instances)
+NUMA node(s):                            2
+NUMA node0 CPU(s):                       0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78
+NUMA node1 CPU(s):                       1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79
+Vulnerability Gather data sampling:      Vulnerable
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             KVM: Vulnerable
+Vulnerability L1tf:                      Mitigation; PTE Inversion; VMX vulnerable
+Vulnerability Mds:                       Vulnerable; SMT vulnerable
+Vulnerability Meltdown:                  Vulnerable
+Vulnerability Mmio stale data:           Vulnerable
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Vulnerable
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Vulnerable
+Vulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers
+Vulnerability Spectre v2:                Vulnerable; IBPB: disabled; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Vulnerable
+Vulnerability Vmscape:                   Vulnerable
+
+[nvidia-smi]
+command=["nvidia-smi", "-q"]
+returncode=0
+
+==============NVSMI LOG==============
+
+Timestamp                                              : Wed Aug 26 11:19:21 2026
+Driver Version                                         : 580.159.03
+CUDA Version                                           : 13.0
+
+Attached GPUs                                          : 4
+GPU 00000000:1A:00.0
+    Product Name                                       : Tesla V100-SXM2-16GB
+    Product Brand                                      : Tesla
+    Product Architecture                               : Volta
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Disabled
+    Persistence Mode                                   : Enabled
+    Addressing Mode                                    : N/A
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0324417015279
+    GPU UUID                                           : GPU-c1336362-1a12-45dd-8d3f-d2011d6f51ae
+    GPU PDI                                            : 0xe266a7f39fa2
+    Minor Number                                       : 0
+    VBIOS Version                                      : 88.00.9F.00.01
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x1a00
+    Board Part Number                                  : 900-2G503-A500-000
+    GPU Part Number                                    : 1DB1-895-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : N/A
+        Slot Number                                    : N/A
+        Tray Index                                     : N/A
+        Host ID                                        : N/A
+        Peer Type                                      : N/A
+        Module Id                                      : 4
+        GPU Fabric GUID                                : N/A
+    Inforom Version
+        Image Version                                  : G503.0201.00.03
+        OEM Object                                     : 1.1
+        ECC Object                                     : 5.0
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : N/A
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : N/A
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x1A
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x2
+        Device Id                                      : 0x1DB110DE
+        Bus Id                                         : 00000000:1A:00.0
+        Sub System Id                                  : 0x121210DE
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 3
+                Current                                : 3
+                Device Current                         : 3
+                Device Max                             : 3
+                Host Max                               : 3
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 0 KB/s
+        Rx Throughput                                  : 48 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : N/A
+    Fan Speed                                          : N/A
+    Performance State                                  : P0
+    Clocks Event Reasons
+        Idle                                           : Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 79728 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 16384 MiB
+        Reserved                                       : 240 MiB
+        Used                                           : 0 MiB
+        Free                                           : 16145 MiB
+    BAR1 Memory Usage
+        Total                                          : 16384 MiB
+        Used                                           : 2 MiB
+        Free                                           : 16382 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 0 %
+        Memory                                         : 0 %
+        Encoder                                        : 0 %
+        Decoder                                        : 0 %
+        JPEG                                           : N/A
+        OFA                                            : N/A
+    Encoder Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Mode
+        Current                                        : Enabled
+        Pending                                        : Enabled
+    ECC Errors
+        Volatile
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+        Aggregate
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+    Retired Pages
+        Single Bit ECC                                 : 0
+        Double Bit ECC                                 : 0
+        Pending Page Blacklist                         : No
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 38 C
+        GPU T.Limit Temp                               : N/A
+        GPU Shutdown Temp                              : 90 C
+        GPU Slowdown Temp                              : 87 C
+        GPU Max Operating Temp                         : 83 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : 35 C
+        Memory Max Operating Temp                      : 85 C
+    GPU Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : 44.35 W
+        Current Power Limit                            : 300.00 W
+        Requested Power Limit                          : 300.00 W
+        Default Power Limit                            : 300.00 W
+        Min Power Limit                                : 150.00 W
+        Max Power Limit                                : 300.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    Clocks
+        Graphics                                       : 135 MHz
+        SM                                             : 135 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 555 MHz
+    Applications Clocks
+        Graphics                                       : 1530 MHz
+        Memory                                         : 877 MHz
+    Default Applications Clocks
+        Graphics                                       : 1312 MHz
+        Memory                                         : 877 MHz
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 1530 MHz
+        SM                                             : 1530 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 1372 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : 1530 MHz
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes                                          : None
+    Capabilities
+        EGM                                            : disabled
+
+GPU 00000000:1C:00.0
+    Product Name                                       : NVIDIA Graphics Device
+    Product Brand                                      : Tesla
+    Product Architecture                               : Volta
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : No
+    Display Active                                     : Disabled
+    Persistence Mode                                   : Enabled
+    Addressing Mode                                    : N/A
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0332017030191
+    GPU UUID                                           : GPU-1c6effec-22d4-17fd-fdf1-7ce10166132e
+    GPU PDI                                            : 0xbb42fbb2610
+    Minor Number                                       : 1
+    VBIOS Version                                      : 88.00.13.00.00
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x1c00
+    Board Part Number                                  : 699-2G503-0200-100
+    GPU Part Number                                    : 1DB0-890-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : N/A
+        Slot Number                                    : N/A
+        Tray Index                                     : N/A
+        Host ID                                        : N/A
+        Peer Type                                      : N/A
+        Module Id                                      : 4
+        GPU Fabric GUID                                : N/A
+    Inforom Version
+        Image Version                                  : G503.0200.00.03
+        OEM Object                                     : 1.1
+        ECC Object                                     : 5.0
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : N/A
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : N/A
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x1C
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x2
+        Device Id                                      : 0x1DB010DE
+        Bus Id                                         : 00000000:1C:00.0
+        Sub System Id                                  : 0x121310DE
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 3
+                Current                                : 3
+                Device Current                         : 3
+                Device Max                             : 3
+                Host Max                               : 3
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 0 KB/s
+        Rx Throughput                                  : 0 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : N/A
+    Fan Speed                                          : N/A
+    Performance State                                  : P0
+    Clocks Event Reasons
+        Idle                                           : Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 96912162 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 16384 MiB
+        Reserved                                       : 240 MiB
+        Used                                           : 0 MiB
+        Free                                           : 16145 MiB
+    BAR1 Memory Usage
+        Total                                          : 16384 MiB
+        Used                                           : 2 MiB
+        Free                                           : 16382 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 0 %
+        Memory                                         : 0 %
+        Encoder                                        : 0 %
+        Decoder                                        : 0 %
+        JPEG                                           : N/A
+        OFA                                            : N/A
+    Encoder Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Mode
+        Current                                        : Disabled
+        Pending                                        : Disabled
+    ECC Errors
+        Volatile
+            Single Bit            
+                Device Memory                          : N/A
+                Register File                          : N/A
+                L1 Cache                               : N/A
+                L2 Cache                               : N/A
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : N/A
+            Double Bit            
+                Device Memory                          : N/A
+                Register File                          : N/A
+                L1 Cache                               : N/A
+                L2 Cache                               : N/A
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : N/A
+        Aggregate
+            Single Bit            
+                Device Memory                          : N/A
+                Register File                          : N/A
+                L1 Cache                               : N/A
+                L2 Cache                               : N/A
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : N/A
+            Double Bit            
+                Device Memory                          : N/A
+                Register File                          : N/A
+                L1 Cache                               : N/A
+                L2 Cache                               : N/A
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : N/A
+    Retired Pages
+        Single Bit ECC                                 : 0
+        Double Bit ECC                                 : 0
+        Pending Page Blacklist                         : No
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 35 C
+        GPU T.Limit Temp                               : N/A
+        GPU Shutdown Temp                              : 90 C
+        GPU Slowdown Temp                              : 87 C
+        GPU Max Operating Temp                         : 83 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : 31 C
+        Memory Max Operating Temp                      : 85 C
+    GPU Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : 42.37 W
+        Current Power Limit                            : 300.00 W
+        Requested Power Limit                          : 300.00 W
+        Default Power Limit                            : 300.00 W
+        Min Power Limit                                : 100.00 W
+        Max Power Limit                                : 300.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    Clocks
+        Graphics                                       : 135 MHz
+        SM                                             : 135 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 555 MHz
+    Applications Clocks
+        Graphics                                       : 1530 MHz
+        Memory                                         : 877 MHz
+    Default Applications Clocks
+        Graphics                                       : 1312 MHz
+        Memory                                         : 877 MHz
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 1530 MHz
+        SM                                             : 1530 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 1372 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : 1530 MHz
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes                                          : None
+    Capabilities
+        EGM                                            : disabled
+
+GPU 00000000:1D:00.0
+    Product Name                                       : Tesla V100-SXM2-16GB
+    Product Brand                                      : Tesla
+    Product Architecture                               : Volta
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Disabled
+    Persistence Mode                                   : Enabled
+    Addressing Mode                                    : N/A
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0321518027778
+    GPU UUID                                           : GPU-698a9283-60ee-cc64-7d87-4e33f6fabc82
+    GPU PDI                                            : 0x7c107753369
+    Minor Number                                       : 2
+    VBIOS Version                                      : 88.00.9F.00.01
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x1d00
+    Board Part Number                                  : 900-2G503-A500-000
+    GPU Part Number                                    : 1DB1-895-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : N/A
+        Slot Number                                    : N/A
+        Tray Index                                     : N/A
+        Host ID                                        : N/A
+        Peer Type                                      : N/A
+        Module Id                                      : 4
+        GPU Fabric GUID                                : N/A
+    Inforom Version
+        Image Version                                  : G503.0201.00.03
+        OEM Object                                     : 1.1
+        ECC Object                                     : 5.0
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : N/A
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : N/A
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x1D
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x2
+        Device Id                                      : 0x1DB110DE
+        Bus Id                                         : 00000000:1D:00.0
+        Sub System Id                                  : 0x121210DE
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 3
+                Current                                : 3
+                Device Current                         : 3
+                Device Max                             : 3
+                Host Max                               : 3
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 13476 KB/s
+        Rx Throughput                                  : 75146 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : N/A
+    Fan Speed                                          : N/A
+    Performance State                                  : P0
+    Clocks Event Reasons
+        Idle                                           : Not Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 5377981 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 16384 MiB
+        Reserved                                       : 240 MiB
+        Used                                           : 438 MiB
+        Free                                           : 15707 MiB
+    BAR1 Memory Usage
+        Total                                          : 16384 MiB
+        Used                                           : 5 MiB
+        Free                                           : 16379 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 18 %
+        Memory                                         : 0 %
+        Encoder                                        : 0 %
+        Decoder                                        : 0 %
+        JPEG                                           : N/A
+        OFA                                            : N/A
+    Encoder Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Mode
+        Current                                        : Enabled
+        Pending                                        : Enabled
+    ECC Errors
+        Volatile
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+        Aggregate
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+    Retired Pages
+        Single Bit ECC                                 : 0
+        Double Bit ECC                                 : 0
+        Pending Page Blacklist                         : No
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 42 C
+        GPU T.Limit Temp                               : N/A
+        GPU Shutdown Temp                              : 90 C
+        GPU Slowdown Temp                              : 87 C
+        GPU Max Operating Temp                         : 83 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : 40 C
+        Memory Max Operating Temp                      : 85 C
+    GPU Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : 69.63 W
+        Current Power Limit                            : 300.00 W
+        Requested Power Limit                          : 300.00 W
+        Default Power Limit                            : 300.00 W
+        Min Power Limit                                : 150.00 W
+        Max Power Limit                                : 300.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    Clocks
+        Graphics                                       : 1530 MHz
+        SM                                             : 1530 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 1372 MHz
+    Applications Clocks
+        Graphics                                       : 1530 MHz
+        Memory                                         : 877 MHz
+    Default Applications Clocks
+        Graphics                                       : 1312 MHz
+        Memory                                         : 877 MHz
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 1530 MHz
+        SM                                             : 1530 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 1372 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : 1530 MHz
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1806373
+            Type                          : C
+            Name                          : python
+            Used GPU Memory               : 434 MiB
+    Capabilities
+        EGM                                            : disabled
+
+GPU 00000000:1E:00.0
+    Product Name                                       : Tesla V100-SXM2-16GB
+    Product Brand                                      : Tesla
+    Product Architecture                               : Volta
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Disabled
+    Persistence Mode                                   : Enabled
+    Addressing Mode                                    : N/A
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0324417022333
+    GPU UUID                                           : GPU-1ad11bb9-50d4-6b9d-22f8-fc8c33180e56
+    GPU PDI                                            : 0xffeeff8819a2
+    Minor Number                                       : 3
+    VBIOS Version                                      : 88.00.9F.00.01
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x1e00
+    Board Part Number                                  : 900-2G503-A500-000
+    GPU Part Number                                    : 1DB1-895-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : N/A
+        Slot Number                                    : N/A
+        Tray Index                                     : N/A
+        Host ID                                        : N/A
+        Peer Type                                      : N/A
+        Module Id                                      : 4
+        GPU Fabric GUID                                : N/A
+    Inforom Version
+        Image Version                                  : G503.0201.00.03
+        OEM Object                                     : 1.1
+        ECC Object                                     : 5.0
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : N/A
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : N/A
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x1E
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x2
+        Device Id                                      : 0x1DB110DE
+        Bus Id                                         : 00000000:1E:00.0
+        Sub System Id                                  : 0x121210DE
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 3
+                Current                                : 3
+                Device Current                         : 3
+                Device Max                             : 3
+                Host Max                               : 3
+            Link Width
+                Max                                    : 16x
+                Current                                : 16x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 0
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 48 KB/s
+        Rx Throughput                                  : 0 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : N/A
+    Fan Speed                                          : N/A
+    Performance State                                  : P0
+    Clocks Event Reasons
+        Idle                                           : Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 1218267 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 16384 MiB
+        Reserved                                       : 240 MiB
+        Used                                           : 0 MiB
+        Free                                           : 16145 MiB
+    BAR1 Memory Usage
+        Total                                          : 16384 MiB
+        Used                                           : 2 MiB
+        Free                                           : 16382 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 0 %
+        Memory                                         : 0 %
+        Encoder                                        : 0 %
+        Decoder                                        : 0 %
+        JPEG                                           : N/A
+        OFA                                            : N/A
+    Encoder Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Mode
+        Current                                        : Enabled
+        Pending                                        : Enabled
+    ECC Errors
+        Volatile
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+        Aggregate
+            Single Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : N/A
+                Total                                  : 0
+            Double Bit            
+                Device Memory                          : 0
+                Register File                          : 0
+                L1 Cache                               : 0
+                L2 Cache                               : 0
+                Texture Memory                         : N/A
+                Texture Shared                         : N/A
+                CBU                                    : 0
+                Total                                  : 0
+    Retired Pages
+        Single Bit ECC                                 : 0
+        Double Bit ECC                                 : 0
+        Pending Page Blacklist                         : No
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 39 C
+        GPU T.Limit Temp                               : N/A
+        GPU Shutdown Temp                              : 90 C
+        GPU Slowdown Temp                              : 87 C
+        GPU Max Operating Temp                         : 83 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : 37 C
+        Memory Max Operating Temp                      : 85 C
+    GPU Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : 43.90 W
+        Current Power Limit                            : 300.00 W
+        Requested Power Limit                          : 300.00 W
+        Default Power Limit                            : 300.00 W
+        Min Power Limit                                : 150.00 W
+        Max Power Limit                                : 300.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    Clocks
+        Graphics                                       : 135 MHz
+        SM                                             : 135 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 555 MHz
+    Applications Clocks
+        Graphics                                       : 1530 MHz
+        Memory                                         : 877 MHz
+    Default Applications Clocks
+        Graphics                                       : 1312 MHz
+        Memory                                         : 877 MHz
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 1530 MHz
+        SM                                             : 1530 MHz
+        Memory                                         : 877 MHz
+        Video                                          : 1372 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : 1530 MHz
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes                                          : None
+    Capabilities
+        EGM                                            : disabled
+
+[nvcc]
+command=["/usr/local/cuda-12.6/bin/nvcc", "--version"]
+returncode=0
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Wed_Aug_14_10:10:22_PDT_2024
+Cuda compilation tools, release 12.6, V12.6.68
+Build cuda_12.6.r12.6/compiler.34714021_0
+
+[gcc]
+command=["/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc", "--version"]
+returncode=0
+x86_64-conda-linux-gnu-gcc (conda-forge gcc 13.4.0-20) 13.4.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[g++]
+command=["/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++", "--version"]
+returncode=0
+x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[python]
+command=["/srv/local/shengenli/flowstar-gpu/.venv/bin/python", "--version"]
+returncode=0
+Python 3.13.13
+
+[torch]
+command=["/srv/local/shengenli/flowstar-gpu/.venv/bin/python", "-c", "import torch; print(torch.__version__); print(torch.version.cuda); print(torch.cuda.get_device_name(0))"]
+returncode=0
+2.13.0+cu126
+12.6
+Tesla V100-SXM2-16GB

@@ -1,0 +1,52 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "scripts/finalize_huan_proof_closure.py",
+    "--repo-root",
+    ".",
+    "--engine-root",
+    "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+    "--torch-c2-root",
+    "/srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826",
+    "--flowstar-root",
+    "/srv/local/shengenli/flowstar_causal_stock_b85a321_20260813",
+    "--output-root",
+    "outputs/huan_proof_closure"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 2.3848520279861987,
+  "environment": {},
+  "label": "FINALIZE_HUAN_PROOF_CLOSURE_PACKAGE_FINAL",
+  "returncode": 0,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "d661cd5383a3e5ebd89a58760ee2a678172cd690",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    },
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    },
+    {
+      "branch": "",
+      "dirty": false,
+      "head": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826"
+    },
+    {
+      "branch": "",
+      "dirty": true,
+      "head": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "root": "/srv/local/shengenli/flowstar_causal_stock_b85a321_20260813"
+    }
+  ],
+  "started_utc": "2026-08-26T11:17:45.682717+00:00"
+}
+--- combined stdout/stderr ---
+{"output_root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure", "primary_status": "HUAN_PROOF_CONTRACT_CLOSED__VDP_CONTRACT_NOT_PORTABLE"}

@@ -1,0 +1,125 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "pytest_huan_config_path",
+    "--ignore-glob=tests/unit/test_nn*.py",
+    "--ignore=tests/unit/test_onnx_controllers.py",
+    "--ignore=tests/unit/test_s2_coverage.py",
+    "--ignore=tests/adversarial/test_nncs_adversarial.py"
+  ],
+  "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "elapsed_seconds": 2370.100488370983,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "HUAN_CONFIG_ROOT": "/srv/local/shengenli/CROWN-Reach-GPU/src/configs",
+    "HYPOTHESIS_PROFILE": "dev",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/scripts:/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src"
+  },
+  "label": "HUAN_PLANT_ONLY_FULL_FINAL",
+  "returncode": 1,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/strict-proof-contract-closure-20260826",
+      "dirty": false,
+      "head": "b0ff55745d69205f3afb4dc8077b9ac1310bfff3",
+      "root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826"
+    },
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "9fa58f0ead2fa32df33cc266900b095e2716d0c9",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T09:36:08.441847+00:00"
+}
+--- combined stdout/stderr ---
+.............xx..xx.x................................................... [  6%]
+.............s.....................s.................................... [ 13%]
+........................................................................ [ 20%]
+........................................................................ [ 27%]
+.............................ss......................................... [ 34%]
+........................................................................ [ 41%]
+........................................................................ [ 48%]
+........................................................................ [ 55%]
+........................................................................ [ 62%]
+.....................................................................s.. [ 69%]
+........................................................................ [ 76%]
+........................................................................ [ 83%]
+......................ss...........FF................................... [ 90%]
+........................................................................ [ 97%]
+...............................                                          [100%]
+=================================== FAILURES ===================================
+______________________________ test_pragma_budget ______________________________
+
+    def test_pragma_budget():
+        """The total pragma count must stay within the hard budget: exclusions are
+        for invariant guards only, never for dodging tests."""
+        hits = _find_pragmas()
+        listing = "\n".join(f"{p}:{n}: {line.strip()}" for p, n, line in hits)
+>       assert len(hits) <= PRAGMA_BUDGET, (
+            f"{len(hits)} coverage pragmas exceed the budget of {PRAGMA_BUDGET}:\n{listing}"
+        )
+E       AssertionError: 18 coverage pragmas exceed the budget of 16:
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/composition.py:123: if members.size == 0:  # pragma: no cover  # unreachable guard: r_1^d exists for every 2 <= d <= k (build_tables enforces k >= 2)
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/cuda_kernels.py:531: except Exception:  # pragma: no cover  # build-env dependent, exercised on CPU CI
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/expr_parser.py:103: for kind in ("num", "ident", "op"):  # pragma: no cover  # loop exit unreachable: a successful match has exactly one non-None group
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/ode_compiler.py:341: else:  # pragma: no cover  # unreachable: parser emits only + - * / ^
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/ode_compiler.py:344: raise AssertionError(f"unknown AST node {node!r}")  # pragma: no cover  # unreachable: parser output is total
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/ode_compiler.py:433: else:  # pragma: no cover  # unreachable: compile_ode emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/ode_compiler.py:629: else:  # pragma: no cover  # unreachable: compile_ode emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/ode_compiler.py:740: else:  # pragma: no cover  # unreachable: compile_ode emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/safety.py:299: raise AssertionError("t-power target lookup failed")  # pragma: no cover  # basis closed under t-multiplication up to 2k
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/safety.py:485: continue  # pragma: no cover  # unreachable: ambiguous is nonempty (early return above) and loop-invariant
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:271: else:  # pragma: no cover  # compile_ode emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:542: else:  # pragma: no cover  # unreachable: specialize emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:699: else:  # pragma: no cover  # unreachable: specialize emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:1488: if add_sup is not sup_nt and add_sup.ids != sup_nt.ids:  # pragma: no cover - canonical union invariant
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/support.py:753: if check_sup.ids != sup_out.ids:  # pragma: no cover - cached canonical invariant
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/symbolic_remainder.py:260: if sr.qlen >= sr.max_size:  # pragma: no cover  # guarded by the reach-loop reset (Continuous.h:891); defensive only
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/tape_kernels.py:1894: else:  # pragma: no cover  # unreachable: specialize emits only known ops
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/tape_kernels.py:2397: else:  # pragma: no cover  # unreachable: specialize emits only known ops
+E       assert 18 <= 16
+E        +  where 18 = len([(PosixPath('/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/composition.py'), 123, '       ...gpu/ode_compiler.py'), 433, '        else:  # pragma: no cover  # unreachable: compile_ode emits only known ops'), ...])
+
+tests/unit/test_pragma_budget.py:40: AssertionError
+__________________________ test_pragmas_carry_reasons __________________________
+
+    def test_pragmas_carry_reasons():
+        """Every pragma must justify itself inline (`...no cover  # reason`), so a
+        reviewer never has to archaeologize why a line is uncovered."""
+        offenders = [
+            f"{p}:{n}: {line.strip()}"
+            for p, n, line in _find_pragmas()
+            if not REASON_RE.search(line)
+        ]
+>       assert not offenders, "coverage pragmas without a trailing reason comment:\n" + "\n".join(
+            offenders
+        )
+E       AssertionError: coverage pragmas without a trailing reason comment:
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:1488: if add_sup is not sup_nt and add_sup.ids != sup_nt.ids:  # pragma: no cover - canonical union invariant
+E         /srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/support.py:753: if check_sup.ids != sup_out.ids:  # pragma: no cover - cached canonical invariant
+E       assert not ['/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/sparse_exec.py:1488: if add_sup is not sup...26/src/flowstar_gpu/support.py:753: if check_sup.ids != sup_out.ids:  # pragma: no cover - cached canonical invariant']
+
+tests/unit/test_pragma_budget.py:53: AssertionError
+=============================== warnings summary ===============================
+tests/unit/test_sparse_exec.py: 14 warnings
+  /srv/local/shengenli/flowstar-gpu/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_pragma_budget.py::test_pragma_budget - AssertionError:...
+FAILED tests/unit/test_pragma_budget.py::test_pragmas_carry_reasons - Asserti...
+2 failed, 1025 passed, 7 skipped, 5 xfailed, 14 warnings in 2367.21s (0:39:27)

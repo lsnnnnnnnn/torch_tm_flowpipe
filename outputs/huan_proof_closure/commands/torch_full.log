@@ -1,0 +1,49 @@
+{
+  "artifacts": [],
+  "command": [
+    "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "cwd": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+  "elapsed_seconds": 5.616379666840658,
+  "environment": {
+    "CC": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc",
+    "CUDAHOSTCXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "CUDA_HOME": "/usr/local/cuda-12.6",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "CXX": "/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826:/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/src"
+  },
+  "label": "TORCH_FULL_SUITE_FINAL",
+  "returncode": 2,
+  "schema": "torch_tm_flowpipe.huan_command_capture/2",
+  "sources": [
+    {
+      "branch": "codex/huan-strict-proof-contract-vdp-phase-e-20260826",
+      "dirty": false,
+      "head": "b57c8ade4a6e36d5ee598aef99a4704407b93950",
+      "root": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826"
+    }
+  ],
+  "started_utc": "2026-08-26T09:48:54.396628+00:00"
+}
+--- combined stdout/stderr ---
+
+==================================== ERRORS ====================================
+__________ ERROR collecting tests/test_flowstar_queue_state_audit.py ___________
+ImportError while importing test module '/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/tests/test_flowstar_queue_state_audit.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniforge3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_flowstar_queue_state_audit.py:7: in <module>
+    import pandas as pd
+E   ModuleNotFoundError: No module named 'pandas'
+=========================== short test summary info ============================
+ERROR tests/test_flowstar_queue_state_audit.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 4.67s

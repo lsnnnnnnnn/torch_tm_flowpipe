@@ -1,0 +1,1056 @@
+{
+  "engine_clean": true,
+  "engine_head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+  "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "gates": {
+    "D1_ELEMENTWISE_NO_FTZ_NONFINITE": {
+      "evidence": {
+        "cpu": {
+          "d1": {
+            "case_count": 7,
+            "cases": [
+              {
+                "case": "add-ordinary",
+                "out": [
+                  0.39999999999999997,
+                  0.6000000000000002
+                ],
+                "pass": true
+              },
+              {
+                "case": "sub-cancellation",
+                "out": [
+                  -5e-324,
+                  5e-324
+                ],
+                "pass": true
+              },
+              {
+                "case": "mul-signed-zero",
+                "out": [
+                  -5e-324,
+                  5e-324
+                ],
+                "pass": true
+              },
+              {
+                "case": "mul-subnormal",
+                "out": [
+                  -5e-324,
+                  2.0005e-320
+                ],
+                "pass": true
+              },
+              {
+                "case": "div-zero-containing",
+                "out": [
+                  -Infinity,
+                  Infinity
+                ],
+                "pass": true
+              },
+              {
+                "case": "sqrt-subnormal-max",
+                "out": [
+                  2.2227587494850772e-162,
+                  1.3407807929942597e+154
+                ],
+                "pass": true
+              },
+              {
+                "assert_valid_rejected": true,
+                "case": "mul-overflow-extended",
+                "classification": "NONFINITE_EXTENDED_ENCLOSURE_NOT_A_FINITE_CERTIFICATE",
+                "finite_certificate_rejected": true,
+                "out": [
+                  1.7976931348623157e+308,
+                  Infinity
+                ],
+                "pass": true
+              }
+            ],
+            "no_ftz_observed": true,
+            "passed": 7
+          },
+          "production_no_ftz_assertion_passed": true
+        },
+        "cuda": {
+          "d1": {
+            "case_count": 7,
+            "cases": [
+              {
+                "case": "add-ordinary",
+                "out": [
+                  0.39999999999999997,
+                  0.6000000000000001
+                ],
+                "pass": true
+              },
+              {
+                "case": "sub-cancellation",
+                "out": [
+                  -0.0,
+                  0.0
+                ],
+                "pass": true
+              },
+              {
+                "case": "mul-signed-zero",
+                "out": [
+                  -0.0,
+                  0.0
+                ],
+                "pass": true
+              },
+              {
+                "case": "mul-subnormal",
+                "out": [
+                  0.0,
+                  2e-320
+                ],
+                "pass": true
+              },
+              {
+                "case": "div-zero-containing",
+                "out": [
+                  -Infinity,
+                  Infinity
+                ],
+                "pass": true
+              },
+              {
+                "case": "sqrt-subnormal-max",
+                "out": [
+                  2.2227587494850772e-162,
+                  1.3407807929942597e+154
+                ],
+                "pass": true
+              },
+              {
+                "assert_valid_rejected": true,
+                "case": "mul-overflow-extended",
+                "classification": "NONFINITE_EXTENDED_ENCLOSURE_NOT_A_FINITE_CERTIFICATE",
+                "finite_certificate_rejected": true,
+                "out": [
+                  1.7976931348623157e+308,
+                  Infinity
+                ],
+                "pass": true
+              }
+            ],
+            "no_ftz_observed": true,
+            "passed": 7
+          },
+          "production_no_ftz_assertion_passed": true
+        }
+      },
+      "passed": true
+    },
+    "D2_ANY_ORDER_ACTUAL_ROUTES": {
+      "evidence": {
+        "cpu": {
+          "checked": 1410,
+          "kernel_invocation_counts": {
+            "host_python": 846,
+            "torch_cpu": 564
+          },
+          "passed": 1410,
+          "route_counts": {
+            "host_python": 846,
+            "torch_cpu": 564
+          }
+        },
+        "cuda": {
+          "checked": 1410,
+          "kernel_invocation_counts": {
+            "custom_cuda": 141,
+            "host_python": 846,
+            "torch_cuda": 423
+          },
+          "passed": 1410,
+          "route_counts": {
+            "custom_cuda": 141,
+            "host_python": 846,
+            "torch_cuda": 423
+          }
+        }
+      },
+      "passed": true
+    },
+    "D3_DENSE_SPARSE_SUPPORT": {
+      "evidence": {
+        "command": [
+          "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/unit/test_sparse_support.py",
+          "tests/unit/test_sparse_exec.py",
+          "tests/soundness/test_sparse_containment.py"
+        ],
+        "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+        "returncode": 0,
+        "stdout": "........................................................................ [ 83%]\n..ss..........                                                           [100%]\n=============================== warnings summary ===============================\ntests/unit/test_sparse_exec.py: 14 warnings\n  /srv/local/shengenli/flowstar-gpu/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n84 passed, 2 skipped, 14 warnings in 13.59s\n",
+        "stdout_sha256": "0a1ca7fe0c4956671e7a7d15703d359bd35656ad8875836fe5a30b6ff3b97024"
+      },
+      "passed": true
+    },
+    "D4_CHUNK_LANE": {
+      "evidence": {
+        "chunk_audits": {
+          "cpu": {
+            "b1_embedded_in_b2": {
+              "coefficients_bitwise": true,
+              "remainders_bitwise": true
+            },
+            "basis_size": 35,
+            "chunk_cases": [
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 1
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": true,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 2
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 3
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 5
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": true,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 7
+              }
+            ],
+            "degree4_level_members": 15,
+            "device": "cpu",
+            "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+            "gate_passed": true,
+            "schema": "torch_tm_flowpipe.huan_chunk_boundary_audit/1"
+          },
+          "cuda": {
+            "b1_embedded_in_b2": {
+              "coefficients_bitwise": true,
+              "remainders_bitwise": true
+            },
+            "basis_size": 35,
+            "chunk_cases": [
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 1
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": true,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 2
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 3
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": false,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 5
+              },
+              {
+                "awkward_nondivisor_of_degree4_level": true,
+                "coefficients_bitwise": true,
+                "remainders_bitwise": true,
+                "requested_member_chunk": 7
+              }
+            ],
+            "degree4_level_members": 15,
+            "device": "cuda",
+            "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+            "gate_passed": true,
+            "schema": "torch_tm_flowpipe.huan_chunk_boundary_audit/1"
+          }
+        },
+        "pytest": {
+          "command": [
+            "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/unit/test_cuda_kernels.py",
+            "tests/adversarial/test_batch_invariance.py",
+            "tests/unit/test_safety.py::test_spatial_images_member_chunking_is_bitwise_neutral",
+            "tests/unit/test_flowpipe.py::test_reach_mixed_fate_batch",
+            "tests/unit/test_sparse_exec.py::test_advance_sparse_div_rhs_bad_channel_plumbed"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "returncode": 0,
+          "stdout": "........................................s...............                 [100%]\n55 passed, 1 skipped in 50.84s\n",
+          "stdout_sha256": "f2089692ad7ce352ff5a5628cf2dc91aaaeee2633e6484cef6a451b72d2697fc"
+        }
+      },
+      "passed": true
+    },
+    "D5_REFINEMENT_LEDGER_CACHE": {
+      "evidence": {
+        "pytest": {
+          "command": [
+            "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/unit/test_flowpipe.py",
+            "tests/unit/test_tape_kernels.py",
+            "tests/unit/test_coverage_edges.py::test_refine_graph_cap_exit_and_diagnostics_ring",
+            "tests/soundness/test_strict_proof_contract.py"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "returncode": 0,
+          "stdout": "..................................................................       [100%]\n66 passed in 13.11s\n",
+          "stdout_sha256": "8467d44efa26815567e210ca0a21e96c2fb9f57a270989e52b33fa97ddf34e3f"
+        },
+        "refinement_audits": {
+          "cpu": {
+            "api_contract": {
+              "proposal_commit_ledger_exposed": true,
+              "remainder_cache_freshness_metadata_exposed": true,
+              "returns_only_remainder_and_bad": true,
+              "signature": "(code: 'CompiledODE', accepted: 'torch.Tensor', ok: 'torch.Tensor', bad: 'torch.Tensor', cache: 'torch.Tensor', tails: 'torch.Tensor', strict: 'bool', int_diff: 'torch.Tensor', step: 'StepTables', settings: 'Settings', *, cache_state: 'RefinementCacheState | None' = None) -> 'tuple[torch.Tensor, torch.Tensor]'"
+            },
+            "behavioral_passed": true,
+            "cache_freshness": {
+              "immutable_cache_contract": "cache/tails hold fixed polynomial ranges and truncation tails; every replay receives the current candidate remainder explicitly",
+              "stale_generation_rejected": true,
+              "stale_owner_rejected": true
+            },
+            "cap_boundary": {
+              "calls_490": 490,
+              "calls_491": 491,
+              "iteration_491_subset_of_490": true
+            },
+            "contract_gap": null,
+            "contract_gate_passed": true,
+            "defaults": {
+              "max_refinement_steps": 490,
+              "stop_ratio": 0.99
+            },
+            "device": "cpu",
+            "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+            "initial_self_map_failure": {
+              "replay_calls": 0,
+              "unchanged": true
+            },
+            "partial_vector_semantics": {
+              "calls": 1,
+              "classification": "FLOWSTAR_SEQUENTIAL_FIRST_FAIL_PARTIAL_VECTOR_COMMIT",
+              "component_ledger": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": true,
+                  "component_order": 0,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -0.5000000000000002,
+                    0.5000000000000002
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 1.0000000000000007,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 0.5000000000000002,
+                    "threshold": 0.99
+                  },
+                  "subset_result": true,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5000000000000002,
+                      0.5000000000000002
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                },
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": false,
+                  "component_order": 1,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -2.000000000000001,
+                    2.000000000000001
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 4.000000000000003,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 2.000000000000001,
+                    "threshold": 0.99
+                  },
+                  "subset_result": false,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5000000000000002,
+                      0.5000000000000002
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                },
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": false,
+                  "component_order": 2,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -0.2500000000000001,
+                    0.2500000000000001
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 0.5000000000000003,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 0.2500000000000001,
+                    "threshold": 0.99
+                  },
+                  "subset_result": true,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5000000000000002,
+                      0.5000000000000002
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                }
+              ],
+              "dim0_committed": true,
+              "failing_dim1_unchanged": true,
+              "final_owner": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "event": "final_remainder_owner",
+                  "final_accepted_remainder": [
+                    [
+                      -0.5000000000000002,
+                      0.5000000000000002
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "final_generation": 1,
+                  "initial_self_map_ok": true,
+                  "iterations": 1,
+                  "lane": 0,
+                  "tails_id": "strict-tails:0:(1, 0, 2)"
+                }
+              ],
+              "later_dim2_unchanged": true
+            },
+            "production_trace": {
+              "final_owner_rows": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:5c77d97f6200:(1, 1, 2)",
+                  "event": "final_remainder_owner",
+                  "final_accepted_remainder": [
+                    [
+                      -1.1796119636642328e-16,
+                      1.2490009027033053e-16
+                    ]
+                  ],
+                  "final_generation": 1,
+                  "initial_self_map_ok": true,
+                  "iterations": 1,
+                  "lane": 0,
+                  "tails_id": "strict-tails:5c77d97f6240:(1, 1, 2)"
+                }
+              ],
+              "initial_self_map_rows": [
+                {
+                  "attempted_step": 0.03125,
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:5c77d97f6200:(1, 1, 2)",
+                  "event": "initial_self_map",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -0.0001,
+                      0.0001
+                    ]
+                  ],
+                  "lane": 0,
+                  "proposal_generation": 0,
+                  "proposal_interval": [
+                    [
+                      -1.1796119636642328e-16,
+                      1.2490009027033053e-16
+                    ]
+                  ],
+                  "subset_by_component": [
+                    true
+                  ],
+                  "subset_margin_by_component": {
+                    "lower": [
+                      9.999999999988204e-05
+                    ],
+                    "upper": [
+                      9.99999999998751e-05
+                    ]
+                  },
+                  "tails_id": "strict-tails:5c77d97f6240:(1, 1, 2)"
+                }
+              ],
+              "steps_completed": 1
+            },
+            "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/2"
+          },
+          "cuda": {
+            "api_contract": {
+              "proposal_commit_ledger_exposed": true,
+              "remainder_cache_freshness_metadata_exposed": true,
+              "returns_only_remainder_and_bad": true,
+              "signature": "(code: 'CompiledODE', accepted: 'torch.Tensor', ok: 'torch.Tensor', bad: 'torch.Tensor', cache: 'torch.Tensor', tails: 'torch.Tensor', strict: 'bool', int_diff: 'torch.Tensor', step: 'StepTables', settings: 'Settings', *, cache_state: 'RefinementCacheState | None' = None) -> 'tuple[torch.Tensor, torch.Tensor]'"
+            },
+            "behavioral_passed": true,
+            "cache_freshness": {
+              "immutable_cache_contract": "cache/tails hold fixed polynomial ranges and truncation tails; every replay receives the current candidate remainder explicitly",
+              "stale_generation_rejected": true,
+              "stale_owner_rejected": true
+            },
+            "cap_boundary": {
+              "calls_490": 490,
+              "calls_491": 491,
+              "iteration_491_subset_of_490": true
+            },
+            "contract_gap": null,
+            "contract_gate_passed": true,
+            "defaults": {
+              "max_refinement_steps": 490,
+              "stop_ratio": 0.99
+            },
+            "device": "cuda",
+            "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+            "initial_self_map_failure": {
+              "replay_calls": 0,
+              "unchanged": true
+            },
+            "partial_vector_semantics": {
+              "calls": 1,
+              "classification": "FLOWSTAR_SEQUENTIAL_FIRST_FAIL_PARTIAL_VECTOR_COMMIT",
+              "component_ledger": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": true,
+                  "component_order": 0,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -0.5,
+                    0.5
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 1.0000000000000002,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 0.5,
+                    "threshold": 0.99
+                  },
+                  "subset_result": true,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5,
+                      0.5
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                },
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": false,
+                  "component_order": 1,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -2.0,
+                    2.0
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 4.000000000000001,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 2.0,
+                    "threshold": 0.99
+                  },
+                  "subset_result": false,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5,
+                      0.5
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                },
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_generation": 1,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "commit_mask": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "commit_result": false,
+                  "component_order": 2,
+                  "event": "refinement_component",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "iteration": 0,
+                  "lane": 0,
+                  "proposal_generation": 1,
+                  "proposal_interval": [
+                    -0.25,
+                    0.25
+                  ],
+                  "stop_decision": false,
+                  "stop_ratio_inputs": {
+                    "new_width": 0.5000000000000001,
+                    "old_width": 2.0000000000000004,
+                    "ratio": 0.25,
+                    "threshold": 0.99
+                  },
+                  "subset_result": true,
+                  "tails_id": "strict-tails:0:(1, 0, 2)",
+                  "vector_after_commit": [
+                    [
+                      -0.5,
+                      0.5
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ]
+                }
+              ],
+              "dim0_committed": true,
+              "failing_dim1_unchanged": true,
+              "final_owner": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:0:(1, 0, 2)",
+                  "event": "final_remainder_owner",
+                  "final_accepted_remainder": [
+                    [
+                      -0.5,
+                      0.5
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ],
+                    [
+                      -1.0,
+                      1.0
+                    ]
+                  ],
+                  "final_generation": 1,
+                  "initial_self_map_ok": true,
+                  "iterations": 1,
+                  "lane": 0,
+                  "tails_id": "strict-tails:0:(1, 0, 2)"
+                }
+              ],
+              "later_dim2_unchanged": true
+            },
+            "production_trace": {
+              "final_owner_rows": [
+                {
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:7033b7a49800:(1, 1, 2)",
+                  "event": "final_remainder_owner",
+                  "final_accepted_remainder": [
+                    [
+                      -0.0,
+                      0.0
+                    ]
+                  ],
+                  "final_generation": 1,
+                  "initial_self_map_ok": true,
+                  "iterations": 1,
+                  "lane": 0,
+                  "tails_id": "strict-tails:7033b7a49a00:(1, 1, 2)"
+                }
+              ],
+              "initial_self_map_rows": [
+                {
+                  "attempted_step": 0.03125,
+                  "bad_nonfinite_mask": false,
+                  "cache_id": "range-cache:7033b7a49800:(1, 1, 2)",
+                  "event": "initial_self_map",
+                  "initial_self_map_ok": true,
+                  "input_generation": 0,
+                  "input_remainder_vector": [
+                    [
+                      -0.0001,
+                      0.0001
+                    ]
+                  ],
+                  "lane": 0,
+                  "proposal_generation": 0,
+                  "proposal_interval": [
+                    [
+                      -0.0,
+                      0.0
+                    ]
+                  ],
+                  "subset_by_component": [
+                    true
+                  ],
+                  "subset_margin_by_component": {
+                    "lower": [
+                      0.0001
+                    ],
+                    "upper": [
+                      0.0001
+                    ]
+                  },
+                  "tails_id": "strict-tails:7033b7a49a00:(1, 1, 2)"
+                }
+              ],
+              "steps_completed": 1
+            },
+            "schema": "torch_tm_flowpipe.huan_refinement_boundary_audit/2"
+          }
+        }
+      },
+      "passed": true
+    },
+    "D6_STRICT_ROUNDOFF": {
+      "evidence": {
+        "minimal_witness": {
+          "classification": "D6_REPAIRED_STRICT_CONTAINS_MINIMAL_WITNESS",
+          "engine_head": "743f6205e6408072193ad76e940e7f15030e8d3c",
+          "engine_root": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "exact_result_float": [
+            0.0,
+            -1.1641532182693484e-10
+          ],
+          "exact_result_fraction": [
+            "0",
+            "-4503599627370497/38685626227668133590597632"
+          ],
+          "historical_j_columns": [
+            [
+              1048576.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "matrices": [
+            [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                1.0000000000000002,
+                0.0
+              ],
+              [
+                -1.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.9999999999999999,
+                1.0000000000000002
+              ]
+            ]
+          ],
+          "minimality": "greedy zero-deletion fixed point over a seeded q=3,n=2 witness; two Phi products and one nonzero J remain",
+          "parity_or_legacy_point_phi": {
+            "all_contained": false,
+            "contains_exact": [
+              true,
+              false
+            ],
+            "intervals": [
+              [
+                -7.4e-323,
+                7.4e-323
+              ],
+              [
+                -2.3283064365386994e-10,
+                -2.3283064365386942e-10
+              ]
+            ]
+          },
+          "schema": "torch_tm_flowpipe.huan_d6_minimal_witness/1",
+          "strict_interval_phi": {
+            "all_contained": true,
+            "contains_exact": [
+              true,
+              true
+            ],
+            "intervals": [
+              [
+                -3.626467e-317,
+                3.626467e-317
+              ],
+              [
+                -1.2805685400962854e-09,
+                9.31322574615481e-10
+              ]
+            ]
+          }
+        },
+        "parity_trust_model": "Flow* point-coefficient arithmetic retained for reproduction; not promoted to the strict soundness claim",
+        "pytest": {
+          "command": [
+            "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/unit/test_composition.py",
+            "tests/unit/test_sparse_exec.py::test_advance_sparse_vs_dense",
+            "tests/unit/test_sparse_exec.py::test_advance_sparse_crosses_sr_queue_resets_like_dense",
+            "tests/soundness/test_strict_proof_contract.py"
+          ],
+          "cwd": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+          "returncode": 0,
+          "stdout": "..................................................                       [100%]\n50 passed in 5.98s\n",
+          "stdout_sha256": "450e10eef7c07682086bb7bf21d1d62b2760b35f2d743fee019d40ab45794903"
+        }
+      },
+      "passed": true
+    }
+  },
+  "generated_utc": "2026-08-26T10:19:13.348048+00:00",
+  "overall_gate_passed": true,
+  "phase_e_authorized": true,
+  "primary_status": "HUAN_STRICT_PROOF_CONTRACT_CLOSED__PHASE_E_AUTHORIZED",
+  "python": "/srv/local/shengenli/flowstar-gpu/.venv/bin/python",
+  "schema": "torch_tm_flowpipe.huan_scientific_gate/2",
+  "scope": "scientific rerun: imports engine and executes D1-D6"
+}

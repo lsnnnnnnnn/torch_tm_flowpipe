@@ -1,0 +1,41 @@
+lane,source_sha,setting,required_value,actual_or_declared_value,comparison,execution_status,evidence_note
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,ode,x'=y; y'=y-x-x^2*y,x'=y; y'=y-x-x^2*y,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,initial_set,"x=[1.1,1.4]; y=[2.35,2.45]","x=[1.1,1.4]; y=[2.35,2.45]",SEMANTICALLY_EQUIVALENT_BINARY64_ENDPOINTS,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,taylor_order,complete total-degree O4,complete total-degree O4,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,fixed_step,0.01,0.01,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,ordinary_remainder,"[-1e-4,1e-4] per component","[-1e-4,1e-4] per component",IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,cutoff,1e-10,1e-10,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,validation_epsilon,1e-12,1e-12,SEMANTICALLY_EQUIVALENT_LOOP_THRESHOLD,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,native_h_min,0.002,0.002,IDENTICAL_WHEN_CONFIGURABLE,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,native_h_max,0.1,0.1,IDENTICAL_WHEN_CONFIGURABLE,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+stock_flowstar,b85a3211748cb77b736fe4ad42ee02d8d2b81148,symbolic_remainder_queue,100,100,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,ode,x'=y; y'=y-x-x^2*y,x'=y; y'=y-x-x^2*y,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,initial_set,"x=[1.1,1.4]; y=[2.35,2.45]","x=[1.1,1.4]; y=[2.35,2.45]",SEMANTICALLY_EQUIVALENT_BINARY64_ENDPOINTS,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,taylor_order,complete total-degree O4,complete total-degree O4,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,fixed_step,0.01,0.01,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,ordinary_remainder,"[-1e-4,1e-4] per component","[-1e-4,1e-4] per component",IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,cutoff,1e-10,1e-10,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,validation_epsilon,1e-12,1e-12,SEMANTICALLY_EQUIVALENT_LOOP_THRESHOLD,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,native_h_min,0.002,0.002,IDENTICAL_WHEN_CONFIGURABLE,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,native_h_max,0.1,0.1,IDENTICAL_WHEN_CONFIGURABLE,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+torch_c2,29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca,symbolic_remainder_queue,100,100,IDENTICAL,NOT_RUN_AFTER_CONTRACT_PORTABILITY_STOP,source inspected; run forbidden after Huan portability stop
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,ode,x'=y; y'=y-x-x^2*y,x'=y; y'=y-x-x^2*y,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,initial_set,"x=[1.1,1.4]; y=[2.35,2.45]","x=[1.1,1.4]; y=[2.35,2.45]",SEMANTICALLY_EQUIVALENT_BINARY64_ENDPOINTS,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,taylor_order,complete total-degree O4,complete total-degree O4,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,fixed_step,0.01,0.01,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,ordinary_remainder,"[-1e-4,1e-4] per component","[-1e-4,1e-4] per component",IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,cutoff,1e-10,1e-10,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,validation_epsilon,1e-12,1e-12,SEMANTICALLY_EQUIVALENT_LOOP_THRESHOLD,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,native_h_min,0.002,0.002,UNREPRESENTABLE_WITH_SYMBOLIC_QUEUE_100,NOT_RUN_CONTRACT_NOT_PORTABLE,Settings rejects adaptive step with symbolic remainder
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,native_h_max,0.1,0.1,UNREPRESENTABLE_WITH_SYMBOLIC_QUEUE_100,NOT_RUN_CONTRACT_NOT_PORTABLE,Settings rejects adaptive step with symbolic remainder
+huan_parity,743f6205e6408072193ad76e940e7f15030e8d3c,symbolic_remainder_queue,100,100,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,ode,x'=y; y'=y-x-x^2*y,x'=y; y'=y-x-x^2*y,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,initial_set,"x=[1.1,1.4]; y=[2.35,2.45]","x=[1.1,1.4]; y=[2.35,2.45]",SEMANTICALLY_EQUIVALENT_BINARY64_ENDPOINTS,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,taylor_order,complete total-degree O4,complete total-degree O4,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,fixed_step,0.01,0.01,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,ordinary_remainder,"[-1e-4,1e-4] per component","[-1e-4,1e-4] per component",IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,cutoff,1e-10,1e-10,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,validation_epsilon,1e-12,1e-12,SEMANTICALLY_EQUIVALENT_LOOP_THRESHOLD,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,native_h_min,0.002,0.002,UNREPRESENTABLE_WITH_SYMBOLIC_QUEUE_100,NOT_RUN_CONTRACT_NOT_PORTABLE,Settings rejects adaptive step with symbolic remainder
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,native_h_max,0.1,0.1,UNREPRESENTABLE_WITH_SYMBOLIC_QUEUE_100,NOT_RUN_CONTRACT_NOT_PORTABLE,Settings rejects adaptive step with symbolic remainder
+huan_strict,743f6205e6408072193ad76e940e7f15030e8d3c,symbolic_remainder_queue,100,100,IDENTICAL,EXECUTED_FIXED_CONTRACT,fresh CUDA fixed-step run
