@@ -1,0 +1,52 @@
+{
+  "fixed_horizons": {
+    "T1": 1.0,
+    "T3": 3.0,
+    "T6p32": 6.32
+  },
+  "gates": {
+    "horizon_tolerance": 1e-12,
+    "no_regression_horizons": [
+      "T1",
+      "T3"
+    ],
+    "recovery_horizon": "T6p32",
+    "runtime_ratio_max": 2.0,
+    "t6_recovery_min": 0.25,
+    "width_tolerance": 1e-12
+  },
+  "native_expectations": {
+    "c2": {
+      "accepted": 233,
+      "completed_horizon": 6.714914669607182,
+      "completed_requested_horizon": false,
+      "rejected": 37,
+      "status": "failed"
+    },
+    "c3": {
+      "accepted": 246,
+      "completed_horizon": 10.0,
+      "completed_requested_horizon": true,
+      "rejected": 35,
+      "status": "completed"
+    },
+    "flowstar": {
+      "accepted": 290,
+      "completed_horizon": 10.0,
+      "status": "completed"
+    }
+  },
+  "schema": "torch_tm_flowpipe.vdp_c3_remote_evidence_contract/1",
+  "source_shas": {
+    "c2_package": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "c2_scientific": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+    "c3_assembly": "73e5484764df96847daf3dbbd90b637dbe2d6e06",
+    "c3_scientific": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+    "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "huan_repaired": "743f6205e6408072193ad76e940e7f15030e8d3c"
+  },
+  "statuses": {
+    "failed_stop": "C3_REMOTE_EVIDENCE_CLOSURE_FAILED_STOP",
+    "passed": "CROSS_STEP_CAUSE_IDENTIFIED__C3_PRODUCTION_GATE_PASSED__NATIVE_T10_REACHED"
+  }
+}

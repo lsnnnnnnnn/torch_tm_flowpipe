@@ -1,0 +1,203 @@
+{
+  "fixed": {
+    "T1": {
+      "c2": {
+        "accepted": 100,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 69.65158100798726,
+        "source_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+        "widths": {
+          "endpoint_x": 0.08690210260056719,
+          "endpoint_y": 0.11330064714554311,
+          "tube_x": 0.09116743444638176,
+          "tube_y": 0.12752100314573267
+        }
+      },
+      "c3": {
+        "accepted": 100,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 84.73038512305357,
+        "source_sha": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+        "widths": {
+          "endpoint_x": 0.08679182202047642,
+          "endpoint_y": 0.11319421553408476,
+          "tube_x": 0.09105712524838339,
+          "tube_y": 0.1274088214729645
+        }
+      },
+      "flowstar": {
+        "accepted": 100,
+        "completed": true,
+        "widths": {
+          "endpoint_x": 0.07951782806323093,
+          "endpoint_y": 0.1115769155531654,
+          "tube_x": 0.08375257163162497,
+          "tube_y": 0.11966699301819556
+        }
+      },
+      "requested_horizon": 1.0
+    },
+    "T3": {
+      "c2": {
+        "accepted": 300,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 215.0929506518878,
+        "source_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+        "widths": {
+          "endpoint_x": 0.17642726362022332,
+          "endpoint_y": 0.13712668492908442,
+          "tube_x": 0.20189926521047008,
+          "tube_y": 0.15402146508384362
+        }
+      },
+      "c3": {
+        "accepted": 300,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 262.66309660393745,
+        "source_sha": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+        "widths": {
+          "endpoint_x": 0.17566099310627115,
+          "endpoint_y": 0.13475173360980142,
+          "tube_x": 0.20113275246937823,
+          "tube_y": 0.15164539254479203
+        }
+      },
+      "flowstar": {
+        "accepted": 300,
+        "completed": true,
+        "widths": {
+          "endpoint_x": 0.13850532673418248,
+          "endpoint_y": 0.10885167146482555,
+          "tube_x": 0.16392087538948363,
+          "tube_y": 0.1256837925656762
+        }
+      },
+      "requested_horizon": 3.0
+    },
+    "T6p32": {
+      "c2": {
+        "accepted": 632,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 453.127798672067,
+        "source_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+        "widths": {
+          "endpoint_x": 0.278220978087515,
+          "endpoint_y": 0.2918636063260518,
+          "tube_x": 0.3035572989320149,
+          "tube_y": 0.3095143914957208
+        }
+      },
+      "c3": {
+        "accepted": 632,
+        "completed": true,
+        "rejected": 0,
+        "runtime_s": 575.4932541381568,
+        "source_sha": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+        "widths": {
+          "endpoint_x": 0.18809351006532632,
+          "endpoint_y": 0.14820923307000378,
+          "tube_x": 0.21340251277511102,
+          "tube_y": 0.16579784420043886
+        }
+      },
+      "flowstar": {
+        "accepted": 632,
+        "completed": true,
+        "widths": {
+          "endpoint_x": 0.15307555562376207,
+          "endpoint_y": 0.12229562798699911,
+          "tube_x": 0.1783272999656937,
+          "tube_y": 0.13982130901719003
+        }
+      },
+      "requested_horizon": 6.32
+    }
+  },
+  "gates": {
+    "T1_T3_no_regression": true,
+    "T6p32_recovery": true,
+    "fixed_runs_complete": true,
+    "native_horizon_and_counts": true,
+    "runtime": true,
+    "source_shas": true,
+    "tests": true
+  },
+  "highest_status": "CROSS_STEP_CAUSE_IDENTIFIED__C3_PRODUCTION_GATE_PASSED__NATIVE_T10_REACHED",
+  "native": {
+    "c2": {
+      "accepted": 233,
+      "completed_horizon": 6.714914669607182,
+      "completed_requested_horizon": false,
+      "raw_counts_consistent": true,
+      "rejected": 37,
+      "runtime_s": 176.06470915512182,
+      "source_sha": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+      "status": "failed"
+    },
+    "c3": {
+      "accepted": 246,
+      "completed_horizon": 10.0,
+      "completed_requested_horizon": true,
+      "raw_counts_consistent": true,
+      "rejected": 35,
+      "runtime_s": 218.93242472899146,
+      "source_sha": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+      "status": "completed"
+    },
+    "flowstar": {
+      "accepted": 290,
+      "completed_horizon": 10.0,
+      "source_sha": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "status": "completed"
+    }
+  },
+  "no_regression_by_horizon": {
+    "T1": true,
+    "T3": true
+  },
+  "runtime_ratio_c3_over_c2": {
+    "T1": 1.2164890429886603,
+    "T3": 1.22116087862423,
+    "T6p32": 1.2700462338101812
+  },
+  "schema": "torch_tm_flowpipe.vdp_c3_remote_evidence_result/1",
+  "source_shas_expected": {
+    "c2_package": "0fea2657b30aea5f8cfe326dbcd06d659b8dd26c",
+    "c2_scientific": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+    "c3_assembly": "73e5484764df96847daf3dbbd90b637dbe2d6e06",
+    "c3_scientific": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+    "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "huan_repaired": "743f6205e6408072193ad76e940e7f15030e8d3c"
+  },
+  "source_shas_observed": {
+    "c2_scientific": [
+      "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca"
+    ],
+    "c3_scientific": [
+      "190e06714dbfe2afe53650b577916dfeca73dd5a"
+    ],
+    "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "huan_repaired": "743f6205e6408072193ad76e940e7f15030e8d3c"
+  },
+  "t6_recovery_by_channel": {
+    "endpoint_x": 0.7201818991684907,
+    "endpoint_y": 0.8471786634668123,
+    "tube_x": 0.7199136540849904,
+    "tube_y": 0.8469204825333093
+  },
+  "tests": {
+    "case_ids_sha256": "02f22dff0cf40f888328171ecffb00cf286499a0b0d8a6d6d6c624594a044f69",
+    "counts_consistent": true,
+    "duplicate_case_ids": false,
+    "errors": 0,
+    "failed": 0,
+    "passed": 868,
+    "skipped": 2,
+    "total": 870
+  }
+}

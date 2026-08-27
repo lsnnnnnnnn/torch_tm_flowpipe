@@ -1,0 +1,124 @@
+{
+  "accepted_steps": 632,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "codex/vdp-c3-huan-cross-step-causal-closure-20260827",
+  "commit": "190e06714dbfe2afe53650b577916dfeca73dd5a",
+  "completed_horizon": 6.32,
+  "completed_requested_horizon": true,
+  "config_sha256": "ef041b4360177cf5a2bb434f46a370097348066869c230b18ebdeee424ffd9c5",
+  "contract_identity": {
+    "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+    "partition_b1_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+    "partition_b64_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+    "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558"
+  },
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_kernel_s": 185.56288384180516,
+  "dense_range_contexts": [
+    "polynomial_truncation"
+  ],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 4,
+  "dense_range_method": "adaptive_subdivision",
+  "dense_range_trigger": "proactive_depth1_on_named_contexts",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_to_host_s": 0.0,
+  "device_transfer_count": 0,
+  "diagnostic_factors": [
+    "reset_mode=normalized_insertion_dependency_preserving_c3_sr100",
+    "validation_mode=flowstar_raw_remainder_compat_factorized_joint_closure_refined"
+  ],
+  "effective_h_max": 0.01,
+  "effective_h_min": 0.01,
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 2.0617997986560117,
+    "x_lo": -2.014185834085046,
+    "y_hi": 2.6077032531349937,
+    "y_lo": -2.7060945453099645
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "host_to_device_s": 0.0,
+  "initialization_contract": "exact_decimal_contract",
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 631,
+    "width_sum": 0.3792003569755499,
+    "x_hi": 0.5168631525249757,
+    "x_lo": 0.3034606397498647,
+    "x_width": 0.21340251277511102,
+    "y_hi": 2.6077032531349937,
+    "y_lo": 2.441905408934555,
+    "y_width": 0.16579784420043886
+  },
+  "message": "",
+  "nonkernel_nontransfer_solver_s": 389.9303702963516,
+  "partition": "B1",
+  "partition_count": 1,
+  "peak_rss_bytes": 890519552,
+  "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
+  "range_leaf_evaluations": 45504,
+  "range_subdivision_invocations": 11376,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.3363027431353301,
+    "x_hi": 0.5168334858759959,
+    "x_lo": 0.32873997581066955,
+    "x_width": 0.18809351006532632,
+    "y_hi": 2.607358452556936,
+    "y_lo": 2.459149219486932,
+    "y_width": 0.14820923307000378
+  },
+  "rejected_attempts": 0,
+  "rejected_step_records": 0,
+  "requested_horizon": 6.32,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion_dependency_preserving_c3_sr100",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 575.4932541381568,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "schedule": {
+    "adaptive_fallback_allowed": false,
+    "h_decimal": "0.01",
+    "h_hex": "0x1.47ae147ae147bp-7",
+    "kind": "fixed",
+    "requested_steps": 632
+  },
+  "segment_boundary_conversion_count": 1264,
+  "single_factor_diagnostic": false,
+  "status": "completed",
+  "support": "complete_total_degree_O4",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "trace_flush_every": 50,
+  "trace_io_s": 59.603431465802714,
+  "trace_write_count": 13,
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "validation_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+  "worktree_dirty": false
+}
