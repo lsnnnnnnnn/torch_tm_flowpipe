@@ -23,6 +23,18 @@ def van_der_pol_ode(x: TMVector, u: TMVector | None = None, mu: float = 1.0) -> 
     return TMVector([x[1], mu * (1.0 - x[0] * x[0]) * x[1] - x[0]])
 
 
+def brusselator_ode(x: TMVector, u: TMVector | None = None) -> TMVector:
+    """Pinned Flow* expression tree for the polynomial Brusselator benchmark."""
+
+    del u
+    return TMVector(
+        [
+            1.0 + x[0] * (x[0] * x[1] - 4.0),
+            x[0] * (3.0 - x[0] * x[1]),
+        ]
+    )
+
+
 def affine_controlled_ode(x: TMVector, u: TMVector | None = None) -> TMVector:
     """Simple controlled polynomial plant: x0' = x1 + u0, x1' = -x0 + u0."""
     if u is None or len(u) == 0:
