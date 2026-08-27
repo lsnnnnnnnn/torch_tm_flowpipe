@@ -269,13 +269,24 @@ def divergence_payload() -> tuple[dict[str, Any], list[dict[str, Any]]]:
                 continue
             in0 = sr0[step]["detail"]["incoming"]
             in100 = sr100[step]["detail"]["incoming"]
+            semantic_in0 = {key: in0[key] for key in ("pre_coeffs", "pre_remainder", "right_map_range")}
+            semantic_in100 = {key: in100[key] for key in ("pre_coeffs", "pre_remainder", "right_map_range")}
+            candidate0 = sr0[step]["detail"]["candidate_polynomial"]
+            candidate100 = sr100[step]["detail"]["candidate_polynomial"]
             init0 = ref0[step]["initial"]
             init100 = ref100[step]["initial"]
             same_input.append({
                 "record_type": "same_input_first_divergence",
                 "mode": mode, "step": step, "operator_left": "SR0", "operator_right": "SR100",
-                "incoming_hash_left": canonical_hash(in0), "incoming_hash_right": canonical_hash(in100),
-                "same_incoming_tm": canonical_hash(in0) == canonical_hash(in100),
+                "incoming_hash_left": canonical_hash(semantic_in0), "incoming_hash_right": canonical_hash(semantic_in100),
+                "same_incoming_tm": semantic_in0 == semantic_in100,
+                "full_operator_state_hash_left": canonical_hash(in0),
+                "full_operator_state_hash_right": canonical_hash(in100),
+                "same_boundary_carry_polynomial": in0["carry_coeffs"] == in100["carry_coeffs"],
+                "same_carry_remainder_representation": in0["carry_remainder"] == in100["carry_remainder"],
+                "same_candidate_polynomial": candidate0 == candidate100,
+                "candidate_polynomial_hash_left": canonical_hash(candidate0),
+                "candidate_polynomial_hash_right": canonical_hash(candidate100),
                 "same_h_order_remainder": True,
                 "first_self_map_left": jdump(init0["proposal_interval"]),
                 "first_self_map_right": jdump(init100["proposal_interval"]),
@@ -597,7 +608,7 @@ The dominant long-prefix cause is the missing bounded cross-step symbolic-remain
 1. **Why are Huan and C2 close at T1/T3?** Only a short history has accumulated, and the newly generated per-step remainder is small. Re-boxing the history in C2 has little time to compound, so both engines publish similar widths.
 2. **Why does the T6.32 gap grow?** C2 repeatedly materializes old remainder dependency during boundary composition. Huan's SR100 keeps old interval columns separate and transports them through composed linear maps; the repeated wrapping loss therefore accumulates in C2 but largely not in Huan/C3.
 3. **Is symbolic remainder the main cause?** Yes. Removing it in Huan explains the C2–Huan gap fractions (endpoint x/y, tube x/y) of {', '.join(f'{parity_explained[f"explained_gap_fraction_{c}"]:.3f}' for c in CHANNELS)} in parity and {', '.join(f'{strict_explained[f"explained_gap_fraction_{c}"]:.3f}' for c in CHANNELS)} in strict, above every authorization threshold.
-4. **Where is the first live/material divergence?** Parity first changes the retained live state and published width at step 3; strict has an ulp-scale live/published change at step 2. Both first exceed the material `1e-12` width threshold at step 3. The first arithmetic operator difference is step 2.
+4. **Where is the first live/material divergence?** Parity first changes operator arithmetic and the retained carry hash at step {divergence['modes']['parity']['first_live_retained_state_difference_step']}, publishes a width difference at step {divergence['modes']['parity']['first_published_width_difference_step']}, and first exceeds the material `1e-12` width threshold at step {divergence['modes']['parity']['first_material_published_width_difference_step']}. Strict has an ulp-scale live/published change at step {divergence['modes']['strict']['first_live_retained_state_difference_step']} and first becomes material at step {divergence['modes']['strict']['first_material_published_width_difference_step']}.
 5. **What did C3 change, and why is it sound?** It splits the accepted boundary map into nonlinear composition plus a linear history image. Each new remainder has one explicit generation/boundary owner; old owners are multiplied by outward interval Phi products; coefficient addition/scaling/cutoff errors are charged once; reject/retry cannot mutate accepted state; capacity 100 resets only after an accepted commit and the next step full-reanchors the self-contained right-map enclosure. Stale/partial/nonfinite states fail closed, v5 checkpoints retain the full queue, and an exact Fraction oracle plus tamper/rollback/reset/subnormal/restart tests passed.
 6. **Fixed four-channel results?** Channel order below is endpoint x, endpoint y, tube x, tube y.
 
