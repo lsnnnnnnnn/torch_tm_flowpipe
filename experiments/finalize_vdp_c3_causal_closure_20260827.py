@@ -458,6 +458,13 @@ def checkpoint_rows() -> list[dict[str, Any]]:
 
 
 def native_matrix() -> list[dict[str, Any]]:
+    def limiting_component_side(raw_margins: str) -> str:
+        margins = json.loads(raw_margins)
+        values = list(margins[0])
+        index = min(range(len(values)), key=values.__getitem__)
+        component = ("x", "y")[index] if index < 2 else f"component_{index}"
+        return f"{component}; lower/upper side not separately exposed; component_margin={values[index]}"
+
     rows: list[dict[str, Any]] = []
     flow = read_json(RUN / "phase_f/flowstar/native_T10/summary.json")
     rows.append({
@@ -477,7 +484,13 @@ def native_matrix() -> list[dict[str, Any]]:
         bad = [row for row in attempts if row["validation_status"] == "failed"]
         segments = read_csv(base / "segments.csv")
         terminal = segments[-1]
+        last_attempt = attempts[-1]
         first_bad = bad[0] if bad else None
+        terminal_attempts = [
+            row for row in attempts
+            if row["segment_index"] == terminal["segment_index"]
+            and f(row["h_try"]) == f(terminal["h_attempted"])
+        ]
         rows.append({
             "tool": "Torch", "mode": lane, "source_sha": source, "requested_horizon": 10,
             "completed_horizon": summary["completed_horizon"], "reached_T10": summary["completed_requested_horizon"],
@@ -487,9 +500,12 @@ def native_matrix() -> list[dict[str, Any]]:
                 "reason": first_bad["rejection_reason"], "margins": json.loads(first_bad["subset_margin"]),
             }) if first_bad else "none",
             "terminal_attempted_h": terminal["h_attempted"], "next_retry_h": terminal["next_h"],
-            "limiting_component_side": "y; side encoded by negative target/subset margin" if not summary["completed_requested_horizon"] else "none at terminal",
-            "first_self_map_margins": first_bad["subset_margin"] if first_bad else "",
-            "refinement_entered": bool(first_bad and first_bad.get("attempt")),
+            "first_rejection_limiting_component_side": limiting_component_side(first_bad["subset_margin"]) if first_bad else "none",
+            "first_rejection_first_self_map_margins": first_bad["subset_margin"] if first_bad else "",
+            "limiting_component_side": limiting_component_side(last_attempt["subset_margin"]),
+            "first_self_map_margins": last_attempt["subset_margin"],
+            "terminal_validation_status": last_attempt["validation_status"],
+            "refinement_entered": any(int(row["attempt"]) > 1 for row in terminal_attempts),
             **dict(zip(CHANNELS, torch_widths(summary))), "runtime_s": summary["runtime_s"],
             "status": summary["status"], "failure_type": summary["failure_type"],
         })
