@@ -23,6 +23,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from torch_tm_flowpipe import (
+    C3_CROSS_STEP_SYMBOLIC_QUEUE,
     DenseRangePolicy,
     FlowstarNormalFlowpipeState,
     Interval,
@@ -439,6 +440,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         if args.reset_mode not in {
             "normalized_insertion",
             NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
+            C3_CROSS_STEP_SYMBOLIC_QUEUE,
             "normalized_insertion_bounded_source_ledger_o4_g1",
             "normalized_insertion_bounded_shared_source_o4_g2",
         }:
@@ -564,6 +566,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             reset_mode=args.reset_mode,
             step_policy_mode=contract["step_policy_mode"],
             flowstar_normal_state=normal_state,
+            flowstar_symbolic_queue_max_size=100,
             right_map_center_mode=args.right_map_center_mode,
             right_map_range_mode=args.right_map_range_mode,
             tm_backend=args.tm_backend,
@@ -1006,6 +1009,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         choices=(
             "normalized_insertion",
             NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
+            C3_CROSS_STEP_SYMBOLIC_QUEUE,
             "normalized_insertion_complete_polynomial",
             "normalized_insertion_symqueue_v2",
             "normalized_insertion_horner",

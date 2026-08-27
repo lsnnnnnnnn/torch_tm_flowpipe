@@ -31,12 +31,17 @@ from .batched_dense_tm import (
 )
 from .source_ledger import BoundedSourceLedgerState
 from .g2_shared_column import G2SharedColumnState, polynomial_payload_sha256
+from .symbolic_remainder import (
+    FlowstarSymbolicRemainderQueue,
+    validate_c3_symbolic_queue,
+)
 
 
 SCHEMA_V1 = "torch_tm_flowpipe_terminal_checkpoint_v1"
 SCHEMA_V2 = "torch_tm_flowpipe_terminal_checkpoint_v2"
 SCHEMA_V3 = "torch_tm_flowpipe_terminal_checkpoint_v3"
 SCHEMA_V4 = "torch_tm_flowpipe_terminal_checkpoint_v4"
+SCHEMA_V5 = "torch_tm_flowpipe_terminal_checkpoint_v5"
 SCHEMA = SCHEMA_V1
 PAYLOAD_NAME = "terminal_state.json"
 MANIFEST_NAME = "terminal_state_manifest.json"
@@ -389,8 +394,12 @@ def _decode_structured_state(value: Mapping[str, Any]) -> StructuredRemainderSta
 
 
 def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
-    if state.symbolic_queue is not None:
-        raise ValueError("non-empty symbolic queue checkpointing is not supported by this canonical lane")
+    symbolic_queue = state.symbolic_queue
+    if symbolic_queue is not None:
+        validate_c3_symbolic_queue(
+            symbolic_queue,
+            expected_boundary_index=state.step_index,
+        )
     diagnostics = state.diagnostics if isinstance(state.diagnostics, Mapping) else {}
     structured_candidate = diagnostics.get(
         "structured_candidate",
@@ -406,7 +415,34 @@ def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
         "scales_hex": [_scalar_hex(value) for value in state.scales],
         "step_index": int(state.step_index),
         "diagnostics": _json_safe(state.diagnostics),
-        "symbolic_queue_present": False,
+        "symbolic_queue_present": symbolic_queue is not None,
+        "symbolic_queue": (
+            {
+                "max_size": int(symbolic_queue.max_size),
+                "scalars_hex": [_scalar_hex(value) for value in symbolic_queue.scalars],
+                "scalars_iv": [_encode_interval(value) for value in symbolic_queue.scalars_iv],
+                "J": [
+                    [_encode_interval(value) for value in column]
+                    for column in symbolic_queue.J
+                ],
+                "Phi_L_hex": [
+                    [[_scalar_hex(value) for value in row] for row in matrix]
+                    for matrix in symbolic_queue.Phi_L
+                ],
+                "Phi_L_iv": [
+                    [[_encode_interval(value) for value in row] for row in matrix]
+                    for matrix in symbolic_queue.Phi_L_iv
+                ],
+                "generation": int(symbolic_queue.generation),
+                "accepted_boundary_index": int(symbolic_queue.accepted_boundary_index),
+                "owner_generations": list(symbolic_queue.owner_generations),
+                "owner_boundary_indices": list(symbolic_queue.owner_boundary_indices),
+                "reset_count": int(symbolic_queue.reset_count),
+                "owner_schema": symbolic_queue.owner_schema,
+            }
+            if symbolic_queue is not None
+            else None
+        ),
         "symbolic_queue_max_size": int(state.symbolic_queue_max_size),
         "initial_remainders": (
             [_encode_interval(interval) for interval in state.initial_remainders]
@@ -445,9 +481,11 @@ def _decode_normal_state(
     require_structured: bool = False,
     require_bounded_source: bool = False,
     require_g2: bool = False,
+    require_symbolic_queue: bool = False,
 ) -> FlowstarNormalFlowpipeState:
-    if bool(value.get("symbolic_queue_present")):
-        raise ValueError("symbolic queue payload is unsupported and cannot be silently dropped")
+    symbolic_present = bool(value.get("symbolic_queue_present"))
+    if symbolic_present != bool(require_symbolic_queue):
+        raise ValueError("checkpoint symbolic queue presence does not match its schema")
     tmv_pre_value = value.get("tmv_pre")
     tmv_right_value = value.get("tmv_right")
     if not isinstance(tmv_pre_value, Mapping) or not isinstance(tmv_right_value, Mapping):
@@ -455,6 +493,54 @@ def _decode_normal_state(
     tmv_pre = _decode_tmvector(tmv_pre_value)
     tmv_right = _decode_tmvector(tmv_right_value)
     dtype = tmv_pre[0].polynomial.dtype
+    symbolic_state = None
+    symbolic_value = value.get("symbolic_queue")
+    if require_symbolic_queue:
+        if not isinstance(symbolic_value, Mapping):
+            raise ValueError("v5 checkpoint is missing its required C3 symbolic queue")
+        try:
+            scalars = tuple(float.fromhex(str(item)) for item in symbolic_value["scalars_hex"])
+            phi_l = tuple(
+                tuple(
+                    tuple(float.fromhex(str(item)) for item in row)
+                    for row in matrix
+                )
+                for matrix in symbolic_value["Phi_L_hex"]
+            )
+            scalars_iv = tuple(
+                _decode_interval(item, dtype=dtype)
+                for item in symbolic_value["scalars_iv"]
+            )
+            j_columns = tuple(
+                tuple(_decode_interval(item, dtype=dtype) for item in column)
+                for column in symbolic_value["J"]
+            )
+            phi_l_iv = tuple(
+                tuple(
+                    tuple(_decode_interval(item, dtype=dtype) for item in row)
+                    for row in matrix
+                )
+                for matrix in symbolic_value["Phi_L_iv"]
+            )
+            symbolic_state = FlowstarSymbolicRemainderQueue(
+                j_columns,
+                phi_l,
+                scalars,
+                int(symbolic_value["max_size"]),
+                Phi_L_iv=phi_l_iv,
+                scalars_iv=scalars_iv,
+                generation=int(symbolic_value["generation"]),
+                accepted_boundary_index=int(symbolic_value["accepted_boundary_index"]),
+                owner_generations=tuple(int(item) for item in symbolic_value["owner_generations"]),
+                owner_boundary_indices=tuple(int(item) for item in symbolic_value["owner_boundary_indices"]),
+                reset_count=int(symbolic_value["reset_count"]),
+                owner_schema=str(symbolic_value["owner_schema"]),
+            )
+            validate_c3_symbolic_queue(symbolic_state)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("invalid v5 C3 symbolic queue encoding") from exc
+    elif symbolic_value is not None:
+        raise ValueError("non-v5 checkpoint cannot contain a symbolic queue payload")
     domain_value = value.get("domain")
     if not isinstance(domain_value, list):
         raise ValueError("checkpoint normal domain must be a list")
@@ -539,7 +625,7 @@ def _decode_normal_state(
         scales=scales,
         step_index=int(value.get("step_index", -1)),
         diagnostics=value.get("diagnostics") if isinstance(value.get("diagnostics"), Mapping) else None,
-        symbolic_queue=None,
+        symbolic_queue=symbolic_state,
         symbolic_queue_max_size=int(value.get("symbolic_queue_max_size", 100)),
         initial_remainders=initial,
         structured_remainder_state=structured_state,
@@ -582,7 +668,8 @@ def save_terminal_checkpoint(
         BoundedSourceLedgerState,
     )
     active_g2 = isinstance(normal_state.g2_shared_column_state, G2SharedColumnState)
-    if sum((active_structured, active_bounded_source, active_g2)) > 1:
+    active_symbolic_queue = normal_state.symbolic_queue is not None
+    if sum((active_structured, active_bounded_source, active_g2, active_symbolic_queue)) > 1:
         raise ValueError("checkpoint cannot contain multiple carry-state families")
     if active_g2 != (normal_state.g2_retained_source_tm is not None):
         raise ValueError("G2 checkpoint metadata and retained polynomial must coexist")
@@ -590,6 +677,7 @@ def save_terminal_checkpoint(
         SCHEMA_V2 if active_structured else
         SCHEMA_V3 if active_bounded_source else
         SCHEMA_V4 if active_g2 else
+        SCHEMA_V5 if active_symbolic_queue else
         SCHEMA_V1
     )
     if active_g2:
@@ -605,6 +693,8 @@ def save_terminal_checkpoint(
     if not active_g2:
         normal_encoded.pop("g2_shared_column", None)
         normal_encoded.pop("g2_retained_source_tm", None)
+    if not active_symbolic_queue:
+        normal_encoded.pop("symbolic_queue", None)
     payload = {
         "schema": schema,
         "current": current_encoded,
@@ -638,6 +728,10 @@ def save_terminal_checkpoint(
         hashes["g2_retained_source_tm"] = _tmvector_hashes(
             normal_encoded["g2_retained_source_tm"]
         )
+    if active_symbolic_queue:
+        hashes["symbolic_queue"] = {
+            "component_sha256": _sha256_json(normal_encoded["symbolic_queue"]),
+        }
     manifest = {
         "schema": schema,
         "payload_file": PAYLOAD_NAME,
@@ -673,7 +767,7 @@ def load_terminal_checkpoint(
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"invalid terminal checkpoint files: {exc}") from exc
     schema = manifest.get("schema")
-    if schema not in {SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4}:
+    if schema not in {SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA_V4, SCHEMA_V5}:
         raise ValueError("terminal checkpoint schema mismatch")
     actual_payload_sha = _sha256_bytes(payload_bytes)
     if actual_payload_sha != manifest.get("payload_sha256"):
@@ -707,6 +801,7 @@ def load_terminal_checkpoint(
         require_structured=schema == SCHEMA_V2,
         require_bounded_source=schema == SCHEMA_V3,
         require_g2=schema == SCHEMA_V4,
+        require_symbolic_queue=schema == SCHEMA_V5,
     )
     if schema == SCHEMA_V4:
         g2_state = normal_state.g2_shared_column_state
@@ -722,6 +817,14 @@ def load_terminal_checkpoint(
         reconstructed = normal_state.normalized_initial_tm(expected_order)
         if _encode_tmvector(reconstructed) != _encode_tmvector(current):
             raise ValueError("v4 checkpoint current input is not the canonical G2 materialization")
+    if schema == SCHEMA_V5:
+        queue = normal_state.symbolic_queue
+        if queue is None:
+            raise ValueError("v5 checkpoint lost C3 symbolic queue during decode")
+        validate_c3_symbolic_queue(
+            queue,
+            expected_boundary_index=normal_state.step_index,
+        )
     if expected_order is not None:
         models = [*current.models, *normal_state.tmv_pre.models, *normal_state.tmv_right.models]
         if any(model.order != int(expected_order) for model in models):
@@ -768,6 +871,13 @@ def load_terminal_checkpoint(
             "component_sha256": _sha256_json(g2_encoded),
         }
         actual_hashes["g2_retained_source_tm"] = _tmvector_hashes(retained_encoded)
+    if schema == SCHEMA_V5:
+        symbolic_encoded = normal_value.get("symbolic_queue")
+        if not isinstance(symbolic_encoded, Mapping):
+            raise ValueError("v5 checkpoint is missing required symbolic queue payload")
+        actual_hashes["symbolic_queue"] = {
+            "component_sha256": _sha256_json(symbolic_encoded),
+        }
     if actual_hashes != manifest.get("hashes"):
         raise ValueError("terminal checkpoint reconstructed state hash mismatch")
     scheduler = payload.get("scheduler")
@@ -786,6 +896,7 @@ __all__ = [
     "SCHEMA_V2",
     "SCHEMA_V3",
     "SCHEMA_V4",
+    "SCHEMA_V5",
     "TerminalCheckpoint",
     "load_terminal_checkpoint",
     "save_terminal_checkpoint",

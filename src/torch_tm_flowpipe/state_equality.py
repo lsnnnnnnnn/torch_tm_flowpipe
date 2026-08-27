@@ -198,6 +198,44 @@ def _add_normal_state(
         fields, f"{path}.symbolic_queue_max_size", state.symbolic_queue_max_size
     )
     _add_scalar(fields, f"{path}.symbolic_queue_present", state.symbolic_queue is not None)
+    queue = state.symbolic_queue
+    if queue is not None:
+        _add_scalar(fields, f"{path}.symbolic_queue.generation", queue.generation)
+        _add_scalar(
+            fields,
+            f"{path}.symbolic_queue.accepted_boundary_index",
+            queue.accepted_boundary_index,
+        )
+        _add_scalar(fields, f"{path}.symbolic_queue.reset_count", queue.reset_count)
+        _add_float_tree(fields, f"{path}.symbolic_queue.scalars", queue.scalars)
+        _add_float_tree(
+            fields,
+            f"{path}.symbolic_queue.owner_generations",
+            queue.owner_generations,
+        )
+        _add_float_tree(
+            fields,
+            f"{path}.symbolic_queue.owner_boundary_indices",
+            queue.owner_boundary_indices,
+        )
+        for column_index, column in enumerate(queue.J):
+            for component_index, interval in enumerate(column):
+                _add_interval(
+                    fields,
+                    f"{path}.symbolic_queue.J[{column_index}][{component_index}]",
+                    interval,
+                )
+        _add_float_tree(fields, f"{path}.symbolic_queue.Phi_L", queue.Phi_L)
+        for matrix_index, matrix in enumerate(queue.Phi_L_iv):
+            for row_index, row in enumerate(matrix):
+                for column_index, interval in enumerate(row):
+                    _add_interval(
+                        fields,
+                        f"{path}.symbolic_queue.Phi_L_iv[{matrix_index}][{row_index}][{column_index}]",
+                        interval,
+                    )
+        for index, interval in enumerate(queue.scalars_iv):
+            _add_interval(fields, f"{path}.symbolic_queue.scalars_iv[{index}]", interval)
     initial = state.initial_remainders
     _add_scalar(fields, f"{path}.initial_remainders.present", initial is not None)
     if initial is not None:

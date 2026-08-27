@@ -8,7 +8,11 @@ default TaylorModel implementation.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+import hashlib
+import json
 from typing import Any, Iterable, Mapping, Sequence
+
+import torch
 
 from .interval import Interval
 from .polynomial import Polynomial
@@ -51,6 +55,7 @@ class SymbolicRemainderState:
 
 IntervalColumn = tuple[Interval, ...]
 RealMatrix = tuple[tuple[float, ...], ...]
+IntervalMatrix = tuple[tuple[Interval, ...], ...]
 
 
 @dataclass(frozen=True)
@@ -67,10 +72,58 @@ class FlowstarSymbolicRemainderQueue:
     Phi_L: tuple[RealMatrix, ...]
     scalars: tuple[float, ...]
     max_size: int
+    # C3-only certified mirrors and ownership metadata.  The legacy diagnostic
+    # queue leaves these empty, while the opt-in C3 lane requires and validates
+    # every field before it consumes the state.
+    Phi_L_iv: tuple[IntervalMatrix, ...] = ()
+    scalars_iv: tuple[Interval, ...] = ()
+    generation: int = 0
+    accepted_boundary_index: int = 0
+    owner_generations: tuple[int, ...] = ()
+    owner_boundary_indices: tuple[int, ...] = ()
+    reset_count: int = 0
+    owner_schema: str = "legacy_diagnostic"
 
     @staticmethod
     def empty(dim: int, max_size: int = 100) -> "FlowstarSymbolicRemainderQueue":
         return FlowstarSymbolicRemainderQueue((), (), tuple(1.0 for _ in range(int(dim))), int(max_size))
+
+    @staticmethod
+    def empty_c3(
+        dim: int,
+        max_size: int = 100,
+        *,
+        accepted_boundary_index: int = 0,
+        generation: int | None = None,
+        reset_count: int = 0,
+        reference: Interval | None = None,
+    ) -> "FlowstarSymbolicRemainderQueue":
+        """Create an explicitly owned C3 queue at an accepted boundary."""
+
+        if int(max_size) < 1:
+            raise ValueError("C3 symbolic queue max_size must be positive")
+        if int(dim) < 1:
+            raise ValueError("C3 symbolic queue dimension must be positive")
+        if generation is None:
+            generation = int(accepted_boundary_index)
+        if reference is None:
+            reference = Interval.zero()
+        ones = tuple(1.0 for _ in range(int(dim)))
+        ones_iv = tuple(Interval.point(torch.ones_like(reference.lo)) for _ in range(int(dim)))
+        return FlowstarSymbolicRemainderQueue(
+            (),
+            (),
+            ones,
+            int(max_size),
+            Phi_L_iv=(),
+            scalars_iv=ones_iv,
+            generation=int(generation),
+            accepted_boundary_index=int(accepted_boundary_index),
+            owner_generations=(),
+            owner_boundary_indices=(),
+            reset_count=int(reset_count),
+            owner_schema="c3_cross_step_sr_v1",
+        )
 
     @property
     def dim(self) -> int:
@@ -136,6 +189,74 @@ def _matmul_interval_col(matrix: RealMatrix, column: IntervalColumn, reference: 
                 acc = acc + iv * float(scalar)
         out.append(acc)
     return tuple(out)
+
+
+def _identity_interval_matrix(dim: int, reference: Interval) -> IntervalMatrix:
+    return tuple(
+        tuple(
+            Interval.point(
+                torch.as_tensor(
+                    1.0 if i == j else 0.0,
+                    dtype=reference.dtype,
+                    device=reference.device,
+                )
+            )
+            for j in range(int(dim))
+        )
+        for i in range(int(dim))
+    )
+
+
+def _matmul_interval_matrix(a: IntervalMatrix, b: IntervalMatrix, reference: Interval) -> IntervalMatrix:
+    dim = len(a)
+    out: list[tuple[Interval, ...]] = []
+    for i in range(dim):
+        row: list[Interval] = []
+        for j in range(dim):
+            acc = _zero_interval_like_interval(reference)
+            for k in range(dim):
+                acc = acc + a[i][k] * b[k][j]
+            row.append(acc)
+        out.append(tuple(row))
+    return tuple(out)
+
+
+def _matmul_interval_matrix_col(
+    matrix: IntervalMatrix,
+    column: IntervalColumn,
+    reference: Interval,
+) -> IntervalColumn:
+    out: list[Interval] = []
+    for row in matrix:
+        acc = _zero_interval_like_interval(reference)
+        for value, interval in zip(row, column):
+            acc = acc + value * interval
+        out.append(acc)
+    return tuple(out)
+
+
+def _real_matrix_as_intervals(matrix: RealMatrix, reference: Interval) -> IntervalMatrix:
+    return tuple(
+        tuple(
+            Interval.point(
+                torch.as_tensor(value, dtype=reference.dtype, device=reference.device)
+            )
+            for value in row
+        )
+        for row in matrix
+    )
+
+
+def _right_scale_interval_matrix(
+    matrix: RealMatrix,
+    scalars: Sequence[Interval],
+    reference: Interval,
+) -> IntervalMatrix:
+    point = _real_matrix_as_intervals(matrix, reference)
+    return tuple(
+        tuple(value * scalars[j] for j, value in enumerate(row))
+        for row in point
+    )
 
 
 def _add_interval_columns(a: IntervalColumn, b: IntervalColumn) -> IntervalColumn:
@@ -204,6 +325,240 @@ def _propagate_queue_v2(
     for phi, column in zip(updated_phi, state.J):
         propagated = _add_interval_columns(propagated, _matmul_interval_col(phi, column, reference))
     return updated_phi, propagated
+
+
+def _c3_interval_finite(value: Interval) -> bool:
+    return value.is_finite() and bool(torch.all(torch.isfinite(value.width())))
+
+
+def validate_c3_symbolic_queue(
+    state: FlowstarSymbolicRemainderQueue,
+    *,
+    expected_boundary_index: int | None = None,
+) -> None:
+    """Fail closed on stale, partial, nonfinite, or multiply-owned C3 state."""
+
+    if state.owner_schema != "c3_cross_step_sr_v1":
+        raise ValueError("C3 symbolic queue owner schema mismatch")
+    if state.dim < 1 or state.max_size < 1:
+        raise ValueError("C3 symbolic queue has invalid dimension/capacity")
+    lengths = {
+        len(state.J),
+        len(state.Phi_L),
+        len(state.Phi_L_iv),
+        len(state.owner_generations),
+        len(state.owner_boundary_indices),
+    }
+    if len(lengths) != 1:
+        raise ValueError("C3 symbolic queue partial update: queue payload lengths disagree")
+    if len(state.J) >= state.max_size:
+        raise ValueError("C3 symbolic queue reached capacity without accepted-boundary reset")
+    if len(state.scalars) != state.dim or len(state.scalars_iv) != state.dim:
+        raise ValueError("C3 symbolic queue scalar dimension mismatch")
+    if state.generation != state.accepted_boundary_index:
+        raise ValueError("C3 symbolic queue stale generation")
+    if expected_boundary_index is not None and state.accepted_boundary_index != int(expected_boundary_index):
+        raise ValueError("C3 symbolic queue stale accepted-boundary owner")
+    if tuple(sorted(state.owner_generations)) != state.owner_generations:
+        raise ValueError("C3 symbolic queue owner generations are not monotone")
+    if len(set(state.owner_generations)) != len(state.owner_generations):
+        raise ValueError("C3 symbolic queue duplicate generation owner")
+    if tuple(sorted(state.owner_boundary_indices)) != state.owner_boundary_indices:
+        raise ValueError("C3 symbolic queue owner boundaries are not monotone")
+    if state.owner_generations != state.owner_boundary_indices:
+        raise ValueError("C3 symbolic queue generation/boundary ownership mismatch")
+    if state.owner_generations and state.owner_generations[-1] > state.generation:
+        raise ValueError("C3 symbolic queue owner is newer than its state generation")
+    for scalar, scalar_iv in zip(state.scalars, state.scalars_iv):
+        if not torch.isfinite(torch.as_tensor(float(scalar), dtype=torch.float64)):
+            raise FloatingPointError("C3 symbolic queue has nonfinite point scalar")
+        if not _c3_interval_finite(scalar_iv) or not scalar_iv.contains(float(scalar)):
+            raise FloatingPointError("C3 symbolic queue scalar enclosure is invalid")
+    for point_matrix, interval_matrix in zip(state.Phi_L, state.Phi_L_iv):
+        if len(point_matrix) != state.dim or len(interval_matrix) != state.dim:
+            raise ValueError("C3 symbolic queue Phi row dimension mismatch")
+        for point_row, interval_row in zip(point_matrix, interval_matrix):
+            if len(point_row) != state.dim or len(interval_row) != state.dim:
+                raise ValueError("C3 symbolic queue Phi column dimension mismatch")
+            for point, enclosure in zip(point_row, interval_row):
+                if not torch.isfinite(torch.as_tensor(float(point), dtype=torch.float64)):
+                    raise FloatingPointError("C3 symbolic queue has nonfinite point Phi")
+                if not _c3_interval_finite(enclosure) or not enclosure.contains(float(point)):
+                    raise FloatingPointError("C3 symbolic queue Phi enclosure is invalid")
+    for column in state.J:
+        if len(column) != state.dim or not all(_c3_interval_finite(value) for value in column):
+            raise FloatingPointError("C3 symbolic queue J column is invalid")
+
+
+def c3_symbolic_queue_propagate(
+    state: FlowstarSymbolicRemainderQueue,
+    linear: RealMatrix,
+    *,
+    expected_boundary_index: int,
+    reference: Interval,
+) -> tuple[tuple[RealMatrix, ...], tuple[IntervalMatrix, ...], IntervalColumn, dict[str, Any]]:
+    """Outward-propagate existing C3 owners without mutating accepted state."""
+
+    validate_c3_symbolic_queue(state, expected_boundary_index=expected_boundary_index)
+    if len(linear) != state.dim or any(len(row) != state.dim for row in linear):
+        raise ValueError("C3 symbolic queue linear map dimension mismatch")
+    if any(not torch.isfinite(torch.as_tensor(float(value), dtype=torch.float64)) for row in linear for value in row):
+        raise FloatingPointError("C3 symbolic queue received nonfinite linear map")
+
+    phi_i = _right_scale_matrix(linear, state.scalars)
+    phi_i_iv = _right_scale_interval_matrix(linear, state.scalars_iv, reference)
+    updated_point = tuple(_matmul_real(phi_i, value) for value in state.Phi_L)
+    updated_interval = tuple(
+        _matmul_interval_matrix(phi_i_iv, value, reference)
+        for value in state.Phi_L_iv
+    )
+    propagated = tuple(_zero_interval_like_interval(reference) for _ in range(state.dim))
+    for matrix, column in zip(updated_interval, state.J):
+        propagated = _add_interval_columns(
+            propagated,
+            _matmul_interval_matrix_col(matrix, column, reference),
+        )
+    stats = {
+        "queue_size_before": len(state.J),
+        "generation_before": state.generation,
+        "accepted_boundary_before": state.accepted_boundary_index,
+        "current_linear_map_entries": _matrix_entries(linear),
+        "current_phi_l_map_entries": _matrix_entries(phi_i),
+        "propagated_symbolic_width_sum": _column_width_sum(propagated),
+        "propagated_symbolic_width_x": _column_widths(propagated)[0],
+        "propagated_symbolic_width_y": _column_widths(propagated)[1] if state.dim > 1 else "",
+    }
+    return updated_point, updated_interval, propagated, stats
+
+
+def c3_symbolic_queue_commit(
+    state: FlowstarSymbolicRemainderQueue,
+    updated_phi: tuple[RealMatrix, ...],
+    updated_phi_iv: tuple[IntervalMatrix, ...],
+    current_j: IntervalColumn,
+    *,
+    scales: Sequence[float],
+    accepted_boundary_index: int,
+    reference: Interval,
+) -> tuple[FlowstarSymbolicRemainderQueue, dict[str, Any]]:
+    """Atomically commit one accepted owner, then reset exactly at capacity."""
+
+    validate_c3_symbolic_queue(
+        state,
+        expected_boundary_index=int(accepted_boundary_index) - 1,
+    )
+    if len(updated_phi) != len(state.J) or len(updated_phi_iv) != len(state.J):
+        raise ValueError("C3 symbolic queue propagation/commit partial update")
+    if len(current_j) != state.dim or not all(_c3_interval_finite(value) for value in current_j):
+        raise FloatingPointError("C3 symbolic queue refuses nonfinite current owner")
+    if len(scales) != state.dim:
+        raise ValueError("C3 symbolic queue scale dimension mismatch")
+    scale_points = tuple(float(value) for value in scales)
+    if any(
+        value < 0.0
+        or not torch.isfinite(torch.as_tensor(value, dtype=torch.float64))
+        for value in scale_points
+    ):
+        raise FloatingPointError("C3 symbolic queue refuses invalid normalization scale")
+    inverse_point = tuple(0.0 if value == 0.0 else 1.0 / value for value in scale_points)
+    inverse_iv = tuple(
+        Interval.zero(dtype=reference.dtype, device=reference.device)
+        if value == 0.0
+        else Interval.point(
+            torch.as_tensor(value, dtype=reference.dtype, device=reference.device)
+        ).reciprocal()
+        for value in scale_points
+    )
+    for point, enclosure in zip(inverse_point, inverse_iv):
+        if not enclosure.contains(point):
+            raise AssertionError("C3 inverse-scale outward enclosure lost its point representative")
+
+    identity = _identity_matrix(state.dim)
+    identity_iv = _identity_interval_matrix(state.dim, reference)
+    next_generation = state.generation + 1
+    if next_generation != int(accepted_boundary_index):
+        raise ValueError("C3 symbolic queue generation did not advance exactly once")
+    pending_j = state.J + (tuple(current_j),)
+    pending_phi = tuple(updated_phi) + (identity,)
+    pending_phi_iv = tuple(updated_phi_iv) + (identity_iv,)
+    pending_owner_generations = state.owner_generations + (next_generation,)
+    pending_owner_boundaries = state.owner_boundary_indices + (int(accepted_boundary_index),)
+    queue_reset = len(pending_j) >= state.max_size
+    if queue_reset:
+        next_state = FlowstarSymbolicRemainderQueue.empty_c3(
+            state.dim,
+            state.max_size,
+            accepted_boundary_index=int(accepted_boundary_index),
+            generation=next_generation,
+            reset_count=state.reset_count + 1,
+            reference=reference,
+        )
+    else:
+        next_state = FlowstarSymbolicRemainderQueue(
+            pending_j,
+            pending_phi,
+            inverse_point,
+            state.max_size,
+            Phi_L_iv=pending_phi_iv,
+            scalars_iv=inverse_iv,
+            generation=next_generation,
+            accepted_boundary_index=int(accepted_boundary_index),
+            owner_generations=pending_owner_generations,
+            owner_boundary_indices=pending_owner_boundaries,
+            reset_count=state.reset_count,
+            owner_schema="c3_cross_step_sr_v1",
+        )
+        validate_c3_symbolic_queue(next_state, expected_boundary_index=accepted_boundary_index)
+    return next_state, {
+        "queue_size_after": len(next_state.J),
+        "queue_size_before_reset": len(pending_j),
+        "queue_reset": queue_reset,
+        "generation_after": next_state.generation,
+        "accepted_boundary_after": next_state.accepted_boundary_index,
+        "reset_count": next_state.reset_count,
+        "current_owner_generation": next_generation,
+        "current_owner_boundary": int(accepted_boundary_index),
+        "current_owner_width_sum": _column_width_sum(tuple(current_j)),
+    }
+
+
+def c3_symbolic_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
+    """Canonical binary64/interval fingerprint for ledgers and checkpoints."""
+
+    validate_c3_symbolic_queue(state)
+    payload = {
+        "max_size": state.max_size,
+        "generation": state.generation,
+        "accepted_boundary_index": state.accepted_boundary_index,
+        "reset_count": state.reset_count,
+        "owners": list(zip(state.owner_generations, state.owner_boundary_indices)),
+        "scalars": [float(value).hex() for value in state.scalars],
+        "scalars_iv": [
+            [float(value.lo.detach().cpu()).hex(), float(value.hi.detach().cpu()).hex()]
+            for value in state.scalars_iv
+        ],
+        "J": [
+            [
+                [float(value.lo.detach().cpu()).hex(), float(value.hi.detach().cpu()).hex()]
+                for value in column
+            ]
+            for column in state.J
+        ],
+        "Phi_L": [[[float(value).hex() for value in row] for row in matrix] for matrix in state.Phi_L],
+        "Phi_L_iv": [
+            [
+                [
+                    [float(value.lo.detach().cpu()).hex(), float(value.hi.detach().cpu()).hex()]
+                    for value in row
+                ]
+                for row in matrix
+            ]
+            for matrix in state.Phi_L_iv
+        ],
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("ascii")
+    ).hexdigest()
 
 
 def _updated_phi_and_propagated_remainder(

@@ -117,6 +117,7 @@ _PUBLIC_MODULES = {
     "FlowstarNormalFlowpipeState": ".flowpipe",
     "HornerInsertionDiagnosticResult": ".flowpipe",
     "NORMALIZED_INSERTION_DEPENDENCY_PRESERVING": ".flowpipe",
+    "C3_CROSS_STEP_SYMBOLIC_QUEUE": ".flowpipe",
     "flowpipe_multi_step": ".flowpipe",
     "flowpipe_step": ".flowpipe",
     "flowpipe_step_flowstar_style_adaptive": ".flowpipe",
