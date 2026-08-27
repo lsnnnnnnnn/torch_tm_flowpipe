@@ -122,8 +122,20 @@ def causal_by_step(queue: int, mode: str) -> tuple[dict[int, dict[str, Any]], li
     return ({int(row["step"]): row for row in rows if row.get("event") == "causal_step"}, rows)
 
 
-def refinement_by_step(queue: int, mode: str) -> dict[int, dict[str, Any]]:
-    if queue == 100:
+def crossing_supplement_by_step(mode: str) -> dict[int, dict[str, Any]]:
+    path = RUN / f"phase_b/callback_crossings_gpu0/sr100/{mode}/causal_ledger.jsonl.gz"
+    rows = read_gz_jsonl(path)
+    return {int(row["step"]): row for row in rows if row.get("event") == "causal_step"}
+
+
+def refinement_by_step(
+    queue: int, mode: str, *, crossing_supplement: bool = False
+) -> dict[int, dict[str, Any]]:
+    if crossing_supplement:
+        if queue != 100:
+            raise ValueError("crossing supplement only exists for SR100")
+        path = RUN / f"phase_b/callback_crossings_gpu0/sr100/{mode}/refinement_ledger.jsonl.gz"
+    elif queue == 100:
         path = RUN / f"phase_b/callback_on_gpu0/sr100/{mode}/refinement_ledger.jsonl.gz"
     else:
         path = RUN / f"phase_c/sr0_sr1_sr10/sr{queue}/{mode}/refinement_ledger.jsonl.gz"
@@ -309,6 +321,11 @@ def checkpoint_rows() -> list[dict[str, Any]]:
     h_parity, _ = causal_by_step(100, "parity")
     h_strict, _ = causal_by_step(100, "strict")
     h_ref = {mode: refinement_by_step(100, mode) for mode in ("parity", "strict")}
+    h_cross = {mode: crossing_supplement_by_step(mode) for mode in ("parity", "strict")}
+    h_cross_ref = {
+        mode: refinement_by_step(100, mode, crossing_supplement=True)
+        for mode in ("parity", "strict")
+    }
 
     special = set(CHECKPOINTS)
     crossings: list[tuple[str, str, float, int]] = []
@@ -361,13 +378,19 @@ def checkpoint_rows() -> list[dict[str, Any]]:
             if step not in source:
                 continue
             row = source[step]
+            ref_source = h_ref[mode]
+            capture = "primary_callback_capture"
+            if "detail" not in row:
+                row = h_cross[mode][step]
+                ref_source = h_cross_ref[mode]
+                capture = "supplemental_crossing_detail_capture"
             detail = row["detail"]
-            initial = h_ref[mode][step]["initial"]
-            final = h_ref[mode][step].get("final", {})
+            initial = ref_source[step]["initial"]
+            final = ref_source[step].get("final", {})
             widths = huan_row_widths(row)
             rows.append({
                 "tool": "Huan", "mode": f"{mode}_SR100", "step": step, "t": step * 0.01,
-                "reason": "common_or_crossing_checkpoint", **dict(zip(CHANNELS, widths)),
+                "reason": f"common_or_crossing_checkpoint;{capture}", **dict(zip(CHANNELS, widths)),
                 "retained_polynomial_hash": row["retained_pre_polynomial"]["sha256"],
                 "retained_term_count": jdump(row["retained_pre_polynomial"]["term_count_by_lane_component"]),
                 "coefficient_norms": jdump({
@@ -463,6 +486,7 @@ def source_manifest() -> dict[str, Any]:
         RUN / "phase_a/torch_c2/fixed_T6p32/summary.json",
         RUN / "phase_a/flowstar/fixed_T6p32/stock.csv",
         RUN / "phase_b/callback_on_gpu0/run_index.json",
+        RUN / "phase_b/callback_crossings_gpu0/run_index.json",
         RUN / "phase_c/sr0_sr1_sr10/run_index.json",
         RUN / "phase_c/symbolic_queue_fraction_oracle_step3.json",
         RUN / "phase_e/torch_c3/fixed_T1/summary.json",
@@ -496,6 +520,20 @@ def source_manifest() -> dict[str, Any]:
             "parity_snapshot_sha256": "b32f0261d958fdb829183902703a0002238ae6d86d4b45892fd0a4c7f8255b48",
             "strict_snapshot_sha256": "335b93cd250664287650599d1e0333e2962b0ddd5e3bd3ec12e4195de2c821ed",
             "off_on_bitwise_equal": True,
+        },
+        "huan_crossing_detail_supplement": {
+            "instrumented_source_sha": HUAN_LEDGER_SHA,
+            "role": "read-only full-detail recapture at post-hoc ratio crossing steps",
+            "max_terminal_channel_width_abs_difference_from_primary_capture": max(
+                abs(a - b)
+                for mode in ("parity", "strict")
+                for a, b in zip(
+                    huan_widths(read_json(RUN / "phase_b/callback_on_gpu0/run_index.json")["runs"][0 if mode == "parity" else 1]),
+                    huan_widths(read_json(RUN / "phase_b/callback_crossings_gpu0/run_index.json")["runs"][0 if mode == "parity" else 1]),
+                )
+            ),
+            "replay_tolerance": 1e-11,
+            "within_replay_tolerance": True,
         },
         "evidence_files": [
             {"path": str(path), "sha256": sha256(path), "size": path.stat().st_size}
