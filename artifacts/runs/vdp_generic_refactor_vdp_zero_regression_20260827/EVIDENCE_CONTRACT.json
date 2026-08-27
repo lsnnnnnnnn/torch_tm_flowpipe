@@ -1,0 +1,51 @@
+{
+  "comparison": {
+    "c3_numeric_tolerance": 1e-12,
+    "segment_ignored_fields": [
+      "dense_kernel_s",
+      "stage_runtime_s"
+    ],
+    "summary_ignored_fields": [
+      "branch",
+      "commit",
+      "dense_kernel_s",
+      "nonkernel_nontransfer_solver_s",
+      "peak_rss_bytes",
+      "runtime_s",
+      "trace_io_s"
+    ]
+  },
+  "empty_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "fixed_horizons": {
+    "T1": 1.0,
+    "T3": 3.0,
+    "T6p32": 6.32
+  },
+  "native_expectations": {
+    "torch_c2": {
+      "accepted_steps": 233,
+      "completed_horizon": 6.714914669607182,
+      "completed_requested_horizon": false,
+      "rejected_attempts": 37,
+      "status": "failed"
+    },
+    "torch_c3": {
+      "accepted_steps": 246,
+      "completed_horizon": 10.0,
+      "completed_requested_horizon": true,
+      "rejected_attempts": 35,
+      "status": "completed"
+    }
+  },
+  "schema": "torch_tm_flowpipe.vdp_generic_refactor_regression_contract/1",
+  "source_commits": {
+    "candidate": {
+      "torch_c2": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+      "torch_c3": "b88888691eaeefac1fb2e48d5ab0f82ad50c58ac"
+    },
+    "reference": {
+      "torch_c2": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+      "torch_c3": "190e06714dbfe2afe53650b577916dfeca73dd5a"
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "accepted_steps": 300,
+  "backend_lane": "hybrid_dense_core",
+  "branch": "",
+  "commit": "29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca",
+  "completed_horizon": 3.0,
+  "completed_requested_horizon": true,
+  "config_sha256": "a23b2a2e237f258c1b9d5f722ceafc461b7accef94ea28c708d9bb72764f83e5",
+  "contract_identity": {
+    "initial_set_sha256": "6c5d62e42a402633ed163af1e06067987c18ea184022a028c71aa702620dc461",
+    "partition_b1_sha256": "a1034dd119366e324fd1c523c294ad8eb07a3a93905765084dc22ad18c1e9b42",
+    "partition_b64_sha256": "e66e54f6c4fdaba04dc8547d5d2e096d7e83219ab6139210180cea98b2663faa",
+    "rhs_sha256": "022633261f2d3d2a2bd6405d261eb77657e5693bdd4447e3fcaf5bca1ca21558"
+  },
+  "contract_target_horizon": 10.0,
+  "cutoff": 1e-10,
+  "dense_kernel_s": 88.41730555915274,
+  "dense_range_contexts": [
+    "polynomial_truncation"
+  ],
+  "dense_range_max_depth": 1,
+  "dense_range_max_leaves": 4,
+  "dense_range_method": "adaptive_subdivision",
+  "dense_range_trigger": "proactive_depth1_on_named_contexts",
+  "dense_range_variable_orders": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      1,
+      0,
+      2
+    ],
+    [
+      2,
+      0,
+      1
+    ]
+  ],
+  "device": "cpu",
+  "device_to_host_s": 0.0,
+  "device_transfer_count": 0,
+  "diagnostic_factors": [
+    "reset_mode=normalized_insertion_dependency_preserving",
+    "validation_mode=flowstar_raw_remainder_compat_factorized_joint_closure_refined"
+  ],
+  "effective_h_max": 0.01,
+  "effective_h_min": 0.01,
+  "endpoint_repair_used": false,
+  "endpoint_tightening_used": false,
+  "failure_type": "",
+  "fallback_count": 0,
+  "full_tube": {
+    "x_hi": 2.0618226098096732,
+    "x_lo": -0.5391261481412183,
+    "y_hi": 2.4610647926212508,
+    "y_lo": -2.618185417012956
+  },
+  "h_max": 0.1,
+  "h_min": 0.002,
+  "host_to_device_s": 0.0,
+  "initialization_contract": "exact_decimal_contract",
+  "last_segment": {
+    "boundary_conversions": 2,
+    "index": 299,
+    "width_sum": 0.3559207302943137,
+    "x_hi": -0.3372268829307482,
+    "x_lo": -0.5391261481412183,
+    "x_width": 0.20189926521047008,
+    "y_hi": -2.4641639519291125,
+    "y_lo": -2.618185417012956,
+    "y_width": 0.15402146508384362
+  },
+  "message": "",
+  "nonkernel_nontransfer_solver_s": 131.71744987298734,
+  "partition": "B1",
+  "partition_count": 1,
+  "peak_rss_bytes": 637304832,
+  "peak_rss_source": "getrusage_RUSAGE_SELF_ru_maxrss",
+  "range_leaf_evaluations": 21600,
+  "range_subdivision_invocations": 5400,
+  "raw_endpoint": {
+    "tightening_applied": false,
+    "width_sum": 0.31355394854930774,
+    "x_hi": -0.3626695299197412,
+    "x_lo": -0.5390967935399645,
+    "x_width": 0.17642726362022332,
+    "y_hi": -2.4806868216839995,
+    "y_lo": -2.617813506613084,
+    "y_width": 0.13712668492908442
+  },
+  "rejected_attempts": 0,
+  "rejected_step_records": 0,
+  "requested_horizon": 3.0,
+  "requested_order": 4,
+  "reset_mode": "normalized_insertion_dependency_preserving",
+  "right_map_center_mode": "constant",
+  "right_map_range_mode": "standard",
+  "runtime_s": 220.13475543214008,
+  "sample_sanity_max_violation": 0.0,
+  "sample_sanity_status": "passed",
+  "sample_sanity_violations": 0,
+  "schedule": {
+    "adaptive_fallback_allowed": false,
+    "h_decimal": "0.01",
+    "h_hex": "0x1.47ae147ae147bp-7",
+    "kind": "fixed",
+    "requested_steps": 300
+  },
+  "segment_boundary_conversion_count": 600,
+  "single_factor_diagnostic": false,
+  "status": "completed",
+  "support": "complete_total_degree_O4",
+  "target_remainder_radius": 0.0001,
+  "tm_backend": "dense",
+  "trace_flush_every": 50,
+  "trace_io_s": 17.985832057660446,
+  "trace_write_count": 7,
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "validation_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+  "worktree_dirty": false
+}
