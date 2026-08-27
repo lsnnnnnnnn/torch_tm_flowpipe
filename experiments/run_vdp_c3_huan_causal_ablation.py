@@ -77,8 +77,9 @@ def _box_channels(
     iv: Any,
     poly: Any,
 ) -> dict[str, Any]:
-    coeffs = record.pre_coeffs
-    remainder = record.pre_rem
+    device = tables.spatial_index.device
+    coeffs = record.pre_coeffs.to(device)
+    remainder = record.pre_rem.to(device)
     tube = iv.add(poly.range_normal(coeffs, tables, step), remainder)
     if mode == "strict":
         endpoint_coeffs, endpoint_roundoff = poly.evaluate_time_end_with_roundoff(
