@@ -113,6 +113,11 @@ def huan_widths(row: Mapping[str, Any]) -> list[float]:
     return [*map(float, channels["endpoint_width"]), *map(float, channels["segment_tube_width"])]
 
 
+def huan_summary_widths(path: Path) -> list[float]:
+    channels = read_json(path)["final_channels"]
+    return [*map(float, channels["endpoint_width"]), *map(float, channels["segment_tube_width"])]
+
+
 def causal_by_step(queue: int, mode: str) -> tuple[dict[int, dict[str, Any]], list[dict[str, Any]]]:
     if queue == 100:
         base = RUN / f"phase_b/callback_on_gpu0/sr100/{mode}"
@@ -528,8 +533,8 @@ def source_manifest() -> dict[str, Any]:
                 abs(a - b)
                 for mode in ("parity", "strict")
                 for a, b in zip(
-                    huan_widths(read_json(RUN / "phase_b/callback_on_gpu0/run_index.json")["runs"][0 if mode == "parity" else 1]),
-                    huan_widths(read_json(RUN / "phase_b/callback_crossings_gpu0/run_index.json")["runs"][0 if mode == "parity" else 1]),
+                    huan_summary_widths(RUN / f"phase_b/callback_on_gpu0/sr100/{mode}/summary.json"),
+                    huan_summary_widths(RUN / f"phase_b/callback_crossings_gpu0/sr100/{mode}/summary.json"),
                 )
             ),
             "replay_tolerance": 1e-11,
