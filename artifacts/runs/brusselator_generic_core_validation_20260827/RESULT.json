@@ -1,0 +1,96 @@
+{
+  "accepted_steps": {
+    "flowstar": 1000,
+    "torch_generic_no_queue": 141,
+    "torch_generic_sr100": 355
+  },
+  "contract_sha256": "da927873150fab2b1ebf5699705f98090eddf040b228997154997cba91e4085d",
+  "exact_fraction_2d_test_passed": true,
+  "first_live_divergence": {
+    "fields": [
+      "endpoint_x_lo_hex",
+      "endpoint_x_hi_hex",
+      "endpoint_y_lo_hex",
+      "endpoint_y_hi_hex",
+      "tube_x_lo_hex",
+      "tube_x_hi_hex",
+      "tube_y_lo_hex",
+      "tube_y_hi_hex"
+    ],
+    "maximum_absolute_bound_delta": 2.2231994023513835e-11,
+    "step": 3,
+    "time": 0.06
+  },
+  "flowstar_checks": {
+    "finite_consistent_boxes": true,
+    "native_horizon_consistent": true,
+    "row_count_matches": true
+  },
+  "flowstar_completed_t20": true,
+  "junit_sha256": "7025e338cab0aef379f01f34e3b06fd9274d486de27353e9f3fc95c07334d74b",
+  "lane_checks": {
+    "torch_generic_no_queue": {
+      "at_most_one_terminal_rejection": true,
+      "endpoint_published_only_on_accept": true,
+      "finite_consistent_boxes": true,
+      "local_sample_sanity": true,
+      "native_horizon_consistent": true,
+      "no_queue_created": true,
+      "nonempty": true,
+      "rollback": true,
+      "row_count_matches": true,
+      "summary_certificate": true,
+      "validation_passed": true
+    },
+    "torch_generic_sr100": {
+      "at_most_one_terminal_rejection": true,
+      "endpoint_published_only_on_accept": true,
+      "finite_consistent_boxes": true,
+      "local_sample_sanity": true,
+      "native_horizon_consistent": true,
+      "nonempty": true,
+      "owner_accounting": true,
+      "rollback": false,
+      "row_count_matches": true,
+      "summary_certificate": false,
+      "validation_passed": true
+    }
+  },
+  "late_common_prefix": {
+    "common_horizon": 2.82,
+    "common_steps": 141,
+    "late_first_step": 113,
+    "late_last_step": 141,
+    "late_rows": 29,
+    "median_no_queue_over_sr100_endpoint": 40.50971851626615,
+    "median_no_queue_over_sr100_tube": 25.494698410456568,
+    "p95_sr100_over_no_queue_endpoint": 0.035659550731049816,
+    "p95_sr100_over_no_queue_tube": 0.05753201553938736
+  },
+  "material_gain": {
+    "eligible": true,
+    "horizon_criterion": false,
+    "late_tightness_criterion": false,
+    "passed": false
+  },
+  "native_horizons": {
+    "flowstar": 20,
+    "torch_generic_no_queue": 2.82,
+    "torch_generic_sr100": 7.1000000000000005
+  },
+  "runtime_seconds": {
+    "flowstar": 14.47922775,
+    "torch_generic_no_queue": 217.38104767305776,
+    "torch_generic_sr100": 524.7536557819694
+  },
+  "schema": "torch_tm_flowpipe.brusselator_second_system_result/1",
+  "soundness_gate_passed": false,
+  "source_checks": {
+    "contract_hash_matches": true,
+    "flowstar_source_pinned": true,
+    "generic_core_unchanged": true,
+    "torch_same_clean_commit": true
+  },
+  "status": "C3_GENERICITY_SOUNDNESS_GATE_FAILED_STOP",
+  "torch_run_commit": "33ea600d01143177d02784b204cafabb4343711d"
+}
