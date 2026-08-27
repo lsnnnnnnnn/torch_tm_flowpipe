@@ -33,7 +33,7 @@ from .source_ledger import BoundedSourceLedgerState
 from .g2_shared_column import G2SharedColumnState, polynomial_payload_sha256
 from .symbolic_remainder import (
     FlowstarSymbolicRemainderQueue,
-    validate_c3_symbolic_queue,
+    validate_accepted_boundary_sr_queue,
 )
 
 
@@ -396,7 +396,7 @@ def _decode_structured_state(value: Mapping[str, Any]) -> StructuredRemainderSta
 def _encode_normal_state(state: FlowstarNormalFlowpipeState) -> dict[str, Any]:
     symbolic_queue = state.symbolic_queue
     if symbolic_queue is not None:
-        validate_c3_symbolic_queue(
+        validate_accepted_boundary_sr_queue(
             symbolic_queue,
             expected_boundary_index=state.step_index,
         )
@@ -497,7 +497,7 @@ def _decode_normal_state(
     symbolic_value = value.get("symbolic_queue")
     if require_symbolic_queue:
         if not isinstance(symbolic_value, Mapping):
-            raise ValueError("v5 checkpoint is missing its required C3 symbolic queue")
+            raise ValueError("v5 checkpoint is missing its accepted-boundary SR queue")
         try:
             scalars = tuple(float.fromhex(str(item)) for item in symbolic_value["scalars_hex"])
             phi_l = tuple(
@@ -536,9 +536,9 @@ def _decode_normal_state(
                 reset_count=int(symbolic_value["reset_count"]),
                 owner_schema=str(symbolic_value["owner_schema"]),
             )
-            validate_c3_symbolic_queue(symbolic_state)
+            validate_accepted_boundary_sr_queue(symbolic_state)
         except (KeyError, TypeError, ValueError) as exc:
-            raise ValueError("invalid v5 C3 symbolic queue encoding") from exc
+            raise ValueError("invalid v5 accepted-boundary SR queue encoding") from exc
     elif symbolic_value is not None:
         raise ValueError("non-v5 checkpoint cannot contain a symbolic queue payload")
     domain_value = value.get("domain")
@@ -820,8 +820,8 @@ def load_terminal_checkpoint(
     if schema == SCHEMA_V5:
         queue = normal_state.symbolic_queue
         if queue is None:
-            raise ValueError("v5 checkpoint lost C3 symbolic queue during decode")
-        validate_c3_symbolic_queue(
+            raise ValueError("v5 checkpoint lost accepted-boundary SR queue during decode")
+        validate_accepted_boundary_sr_queue(
             queue,
             expected_boundary_index=normal_state.step_index,
         )

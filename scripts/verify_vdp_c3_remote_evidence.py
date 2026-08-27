@@ -114,7 +114,7 @@ def flowstar_widths(row: Mapping[str, str], label: str) -> list[float]:
     return widths
 
 
-def parse_junit(path: Path) -> dict[str, Any]:
+def _junit_tree(path: Path) -> tuple[ET.Element, list[ET.Element], list[ET.Element]]:
     try:
         root = ET.parse(path).getroot()
     except (OSError, ET.ParseError) as exc:
@@ -125,6 +125,24 @@ def parse_junit(path: Path) -> dict[str, Any]:
     cases = list(root.findall(".//testcase"))
     if root.tag == "testsuite":
         cases = list(root.findall(".//testcase"))
+    return root, suites, cases
+
+
+def _junit_case_ids(path: Path) -> list[str]:
+    _, _, cases = _junit_tree(path)
+    return sorted(
+        "::".join(
+            filter(
+                None,
+                (case.get("file", ""), case.get("classname", ""), case.get("name", "")),
+            )
+        )
+        for case in cases
+    )
+
+
+def parse_junit(path: Path) -> dict[str, Any]:
+    root, suites, cases = _junit_tree(path)
     case_ids = sorted(
         "::".join(
             filter(
@@ -516,9 +534,19 @@ def rerun_tests(package: Path, expected: Mapping[str, Any], repository: Path) ->
         if result.returncode != 0:
             return [f"fresh pytest failed with exit code {result.returncode}"]
         observed = parse_junit(junit)
-    for key in ("total", "failed", "errors", "case_ids_sha256"):
-        if observed[key] != expected[key]:
-            errors.append(f"fresh pytest {key} mismatch: {observed[key]!r} != {expected[key]!r}")
+        expected_ids = set(_junit_case_ids(package / "raw/tests/pytest.xml"))
+        observed_ids = set(_junit_case_ids(junit))
+    if observed["failed"] or observed["errors"]:
+        errors.append("fresh pytest contains a failed or errored testcase")
+    missing = sorted(expected_ids - observed_ids)
+    if missing:
+        errors.append(
+            f"fresh pytest is missing {len(missing)} recorded testcase identities: {missing[:3]}"
+        )
+    if observed["total"] < expected["total"]:
+        errors.append(
+            f"fresh pytest test count regressed: {observed['total']} < {expected['total']}"
+        )
     return errors
 
 

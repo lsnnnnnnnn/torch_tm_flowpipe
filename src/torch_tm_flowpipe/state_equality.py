@@ -200,6 +200,8 @@ def _add_normal_state(
     _add_scalar(fields, f"{path}.symbolic_queue_present", state.symbolic_queue is not None)
     queue = state.symbolic_queue
     if queue is not None:
+        _add_scalar(fields, f"{path}.symbolic_queue.owner_schema", queue.owner_schema)
+        _add_scalar(fields, f"{path}.symbolic_queue.max_size", queue.max_size)
         _add_scalar(fields, f"{path}.symbolic_queue.generation", queue.generation)
         _add_scalar(
             fields,

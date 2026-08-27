@@ -56,6 +56,8 @@ class SymbolicRemainderState:
 IntervalColumn = tuple[Interval, ...]
 RealMatrix = tuple[tuple[float, ...], ...]
 IntervalMatrix = tuple[tuple[Interval, ...], ...]
+ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA = "accepted_boundary_sr_v1"
+C3_CROSS_STEP_SR_OWNER_SCHEMA = "c3_cross_step_sr_v1"
 
 
 @dataclass(frozen=True)
@@ -72,9 +74,9 @@ class FlowstarSymbolicRemainderQueue:
     Phi_L: tuple[RealMatrix, ...]
     scalars: tuple[float, ...]
     max_size: int
-    # C3-only certified mirrors and ownership metadata.  The legacy diagnostic
-    # queue leaves these empty, while the opt-in C3 lane requires and validates
-    # every field before it consumes the state.
+    # Certified mirrors and accepted-boundary ownership metadata.  The legacy
+    # diagnostic queue leaves these empty; generic SR and its frozen C3 wrapper
+    # validate every field before consuming the state.
     Phi_L_iv: tuple[IntervalMatrix, ...] = ()
     scalars_iv: tuple[Interval, ...] = ()
     generation: int = 0
@@ -100,10 +102,38 @@ class FlowstarSymbolicRemainderQueue:
     ) -> "FlowstarSymbolicRemainderQueue":
         """Create an explicitly owned C3 queue at an accepted boundary."""
 
+        return FlowstarSymbolicRemainderQueue.empty_accepted_boundary_sr(
+            dim,
+            max_size,
+            accepted_boundary_index=accepted_boundary_index,
+            generation=generation,
+            reset_count=reset_count,
+            reference=reference,
+            owner_schema=C3_CROSS_STEP_SR_OWNER_SCHEMA,
+        )
+
+    @staticmethod
+    def empty_accepted_boundary_sr(
+        dim: int,
+        max_size: int = 100,
+        *,
+        accepted_boundary_index: int = 0,
+        generation: int | None = None,
+        reset_count: int = 0,
+        reference: Interval | None = None,
+        owner_schema: str = ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
+    ) -> "FlowstarSymbolicRemainderQueue":
+        """Create a plant-independent queue owned by one accepted boundary."""
+
         if int(max_size) < 1:
-            raise ValueError("C3 symbolic queue max_size must be positive")
+            raise ValueError("accepted-boundary SR queue max_size must be positive")
         if int(dim) < 1:
-            raise ValueError("C3 symbolic queue dimension must be positive")
+            raise ValueError("accepted-boundary SR queue dimension must be positive")
+        if owner_schema not in {
+            ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
+            C3_CROSS_STEP_SR_OWNER_SCHEMA,
+        }:
+            raise ValueError("accepted-boundary SR queue owner schema is unsupported")
         if generation is None:
             generation = int(accepted_boundary_index)
         if reference is None:
@@ -122,7 +152,7 @@ class FlowstarSymbolicRemainderQueue:
             owner_generations=(),
             owner_boundary_indices=(),
             reset_count=int(reset_count),
-            owner_schema="c3_cross_step_sr_v1",
+            owner_schema=owner_schema,
         )
 
     @property
@@ -327,21 +357,29 @@ def _propagate_queue_v2(
     return updated_phi, propagated
 
 
-def _c3_interval_finite(value: Interval) -> bool:
-    return value.is_finite() and bool(torch.all(torch.isfinite(value.width())))
+def _accepted_boundary_sr_interval_finite(value: Interval) -> bool:
+    return (
+        value.device.type == "cpu"
+        and value.dtype == torch.float64
+        and value.is_finite()
+        and bool(torch.all(torch.isfinite(value.width())))
+    )
 
 
-def validate_c3_symbolic_queue(
+def validate_accepted_boundary_sr_queue(
     state: FlowstarSymbolicRemainderQueue,
     *,
     expected_boundary_index: int | None = None,
 ) -> None:
-    """Fail closed on stale, partial, nonfinite, or multiply-owned C3 state."""
+    """Fail closed on stale, partial, nonfinite, or multiply-owned queue state."""
 
-    if state.owner_schema != "c3_cross_step_sr_v1":
-        raise ValueError("C3 symbolic queue owner schema mismatch")
+    if state.owner_schema not in {
+        ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
+        C3_CROSS_STEP_SR_OWNER_SCHEMA,
+    }:
+        raise ValueError("accepted-boundary SR queue owner schema mismatch")
     if state.dim < 1 or state.max_size < 1:
-        raise ValueError("C3 symbolic queue has invalid dimension/capacity")
+        raise ValueError("accepted-boundary SR queue has invalid dimension/capacity")
     lengths = {
         len(state.J),
         len(state.Phi_L),
@@ -350,60 +388,65 @@ def validate_c3_symbolic_queue(
         len(state.owner_boundary_indices),
     }
     if len(lengths) != 1:
-        raise ValueError("C3 symbolic queue partial update: queue payload lengths disagree")
+        raise ValueError("accepted-boundary SR queue partial update: queue payload lengths disagree")
     if len(state.J) >= state.max_size:
-        raise ValueError("C3 symbolic queue reached capacity without accepted-boundary reset")
+        raise ValueError("accepted-boundary SR queue reached capacity without reset")
     if len(state.scalars) != state.dim or len(state.scalars_iv) != state.dim:
-        raise ValueError("C3 symbolic queue scalar dimension mismatch")
+        raise ValueError("accepted-boundary SR queue scalar dimension mismatch")
     if state.generation != state.accepted_boundary_index:
-        raise ValueError("C3 symbolic queue stale generation")
+        raise ValueError("accepted-boundary SR queue stale generation")
     if expected_boundary_index is not None and state.accepted_boundary_index != int(expected_boundary_index):
-        raise ValueError("C3 symbolic queue stale accepted-boundary owner")
+        raise ValueError("accepted-boundary SR queue stale accepted-boundary owner")
     if tuple(sorted(state.owner_generations)) != state.owner_generations:
-        raise ValueError("C3 symbolic queue owner generations are not monotone")
+        raise ValueError("accepted-boundary SR queue owner generations are not monotone")
     if len(set(state.owner_generations)) != len(state.owner_generations):
-        raise ValueError("C3 symbolic queue duplicate generation owner")
+        raise ValueError("accepted-boundary SR queue duplicate generation owner")
     if tuple(sorted(state.owner_boundary_indices)) != state.owner_boundary_indices:
-        raise ValueError("C3 symbolic queue owner boundaries are not monotone")
+        raise ValueError("accepted-boundary SR queue owner boundaries are not monotone")
     if state.owner_generations != state.owner_boundary_indices:
-        raise ValueError("C3 symbolic queue generation/boundary ownership mismatch")
+        raise ValueError("accepted-boundary SR queue generation/boundary ownership mismatch")
     if state.owner_generations and state.owner_generations[-1] > state.generation:
-        raise ValueError("C3 symbolic queue owner is newer than its state generation")
+        raise ValueError("accepted-boundary SR queue owner is newer than its state generation")
     for scalar, scalar_iv in zip(state.scalars, state.scalars_iv):
         if not torch.isfinite(torch.as_tensor(float(scalar), dtype=torch.float64)):
-            raise FloatingPointError("C3 symbolic queue has nonfinite point scalar")
-        if not _c3_interval_finite(scalar_iv) or not scalar_iv.contains(float(scalar)):
-            raise FloatingPointError("C3 symbolic queue scalar enclosure is invalid")
+            raise FloatingPointError("accepted-boundary SR queue has nonfinite point scalar")
+        if not _accepted_boundary_sr_interval_finite(scalar_iv) or not scalar_iv.contains(float(scalar)):
+            raise FloatingPointError("accepted-boundary SR queue scalar enclosure is invalid")
     for point_matrix, interval_matrix in zip(state.Phi_L, state.Phi_L_iv):
         if len(point_matrix) != state.dim or len(interval_matrix) != state.dim:
-            raise ValueError("C3 symbolic queue Phi row dimension mismatch")
+            raise ValueError("accepted-boundary SR queue Phi row dimension mismatch")
         for point_row, interval_row in zip(point_matrix, interval_matrix):
             if len(point_row) != state.dim or len(interval_row) != state.dim:
-                raise ValueError("C3 symbolic queue Phi column dimension mismatch")
+                raise ValueError("accepted-boundary SR queue Phi column dimension mismatch")
             for point, enclosure in zip(point_row, interval_row):
                 if not torch.isfinite(torch.as_tensor(float(point), dtype=torch.float64)):
-                    raise FloatingPointError("C3 symbolic queue has nonfinite point Phi")
-                if not _c3_interval_finite(enclosure) or not enclosure.contains(float(point)):
-                    raise FloatingPointError("C3 symbolic queue Phi enclosure is invalid")
+                    raise FloatingPointError("accepted-boundary SR queue has nonfinite point Phi")
+                if not _accepted_boundary_sr_interval_finite(enclosure) or not enclosure.contains(float(point)):
+                    raise FloatingPointError("accepted-boundary SR queue Phi enclosure is invalid")
     for column in state.J:
-        if len(column) != state.dim or not all(_c3_interval_finite(value) for value in column):
-            raise FloatingPointError("C3 symbolic queue J column is invalid")
+        if len(column) != state.dim or not all(
+            _accepted_boundary_sr_interval_finite(value) for value in column
+        ):
+            raise FloatingPointError("accepted-boundary SR queue J column is invalid")
 
 
-def c3_symbolic_queue_propagate(
+def accepted_boundary_sr_queue_propagate(
     state: FlowstarSymbolicRemainderQueue,
     linear: RealMatrix,
     *,
     expected_boundary_index: int,
     reference: Interval,
 ) -> tuple[tuple[RealMatrix, ...], tuple[IntervalMatrix, ...], IntervalColumn, dict[str, Any]]:
-    """Outward-propagate existing C3 owners without mutating accepted state."""
+    """Outward-propagate existing owners without mutating accepted state."""
 
-    validate_c3_symbolic_queue(state, expected_boundary_index=expected_boundary_index)
+    validate_accepted_boundary_sr_queue(
+        state,
+        expected_boundary_index=expected_boundary_index,
+    )
     if len(linear) != state.dim or any(len(row) != state.dim for row in linear):
-        raise ValueError("C3 symbolic queue linear map dimension mismatch")
+        raise ValueError("accepted-boundary SR queue linear map dimension mismatch")
     if any(not torch.isfinite(torch.as_tensor(float(value), dtype=torch.float64)) for row in linear for value in row):
-        raise FloatingPointError("C3 symbolic queue received nonfinite linear map")
+        raise FloatingPointError("accepted-boundary SR queue received nonfinite linear map")
 
     phi_i = _right_scale_matrix(linear, state.scalars)
     phi_i_iv = _right_scale_interval_matrix(linear, state.scalars_iv, reference)
@@ -431,7 +474,7 @@ def c3_symbolic_queue_propagate(
     return updated_point, updated_interval, propagated, stats
 
 
-def c3_symbolic_queue_commit(
+def accepted_boundary_sr_queue_commit(
     state: FlowstarSymbolicRemainderQueue,
     updated_phi: tuple[RealMatrix, ...],
     updated_phi_iv: tuple[IntervalMatrix, ...],
@@ -443,23 +486,25 @@ def c3_symbolic_queue_commit(
 ) -> tuple[FlowstarSymbolicRemainderQueue, dict[str, Any]]:
     """Atomically commit one accepted owner, then reset exactly at capacity."""
 
-    validate_c3_symbolic_queue(
+    validate_accepted_boundary_sr_queue(
         state,
         expected_boundary_index=int(accepted_boundary_index) - 1,
     )
     if len(updated_phi) != len(state.J) or len(updated_phi_iv) != len(state.J):
-        raise ValueError("C3 symbolic queue propagation/commit partial update")
-    if len(current_j) != state.dim or not all(_c3_interval_finite(value) for value in current_j):
-        raise FloatingPointError("C3 symbolic queue refuses nonfinite current owner")
+        raise ValueError("accepted-boundary SR queue propagation/commit partial update")
+    if len(current_j) != state.dim or not all(
+        _accepted_boundary_sr_interval_finite(value) for value in current_j
+    ):
+        raise FloatingPointError("accepted-boundary SR queue refuses nonfinite current owner")
     if len(scales) != state.dim:
-        raise ValueError("C3 symbolic queue scale dimension mismatch")
+        raise ValueError("accepted-boundary SR queue scale dimension mismatch")
     scale_points = tuple(float(value) for value in scales)
     if any(
         value < 0.0
         or not torch.isfinite(torch.as_tensor(value, dtype=torch.float64))
         for value in scale_points
     ):
-        raise FloatingPointError("C3 symbolic queue refuses invalid normalization scale")
+        raise FloatingPointError("accepted-boundary SR queue refuses invalid normalization scale")
     inverse_point = tuple(0.0 if value == 0.0 else 1.0 / value for value in scale_points)
     inverse_iv = tuple(
         Interval.zero(dtype=reference.dtype, device=reference.device)
@@ -471,13 +516,13 @@ def c3_symbolic_queue_commit(
     )
     for point, enclosure in zip(inverse_point, inverse_iv):
         if not enclosure.contains(point):
-            raise AssertionError("C3 inverse-scale outward enclosure lost its point representative")
+            raise AssertionError("accepted-boundary SR inverse scale lost its point representative")
 
     identity = _identity_matrix(state.dim)
     identity_iv = _identity_interval_matrix(state.dim, reference)
     next_generation = state.generation + 1
     if next_generation != int(accepted_boundary_index):
-        raise ValueError("C3 symbolic queue generation did not advance exactly once")
+        raise ValueError("accepted-boundary SR queue generation did not advance exactly once")
     pending_j = state.J + (tuple(current_j),)
     pending_phi = tuple(updated_phi) + (identity,)
     pending_phi_iv = tuple(updated_phi_iv) + (identity_iv,)
@@ -485,13 +530,14 @@ def c3_symbolic_queue_commit(
     pending_owner_boundaries = state.owner_boundary_indices + (int(accepted_boundary_index),)
     queue_reset = len(pending_j) >= state.max_size
     if queue_reset:
-        next_state = FlowstarSymbolicRemainderQueue.empty_c3(
+        next_state = FlowstarSymbolicRemainderQueue.empty_accepted_boundary_sr(
             state.dim,
             state.max_size,
             accepted_boundary_index=int(accepted_boundary_index),
             generation=next_generation,
             reset_count=state.reset_count + 1,
             reference=reference,
+            owner_schema=state.owner_schema,
         )
     else:
         next_state = FlowstarSymbolicRemainderQueue(
@@ -506,9 +552,12 @@ def c3_symbolic_queue_commit(
             owner_generations=pending_owner_generations,
             owner_boundary_indices=pending_owner_boundaries,
             reset_count=state.reset_count,
-            owner_schema="c3_cross_step_sr_v1",
+            owner_schema=state.owner_schema,
         )
-        validate_c3_symbolic_queue(next_state, expected_boundary_index=accepted_boundary_index)
+        validate_accepted_boundary_sr_queue(
+            next_state,
+            expected_boundary_index=accepted_boundary_index,
+        )
     return next_state, {
         "queue_size_after": len(next_state.J),
         "queue_size_before_reset": len(pending_j),
@@ -522,10 +571,10 @@ def c3_symbolic_queue_commit(
     }
 
 
-def c3_symbolic_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
+def accepted_boundary_sr_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
     """Canonical binary64/interval fingerprint for ledgers and checkpoints."""
 
-    validate_c3_symbolic_queue(state)
+    validate_accepted_boundary_sr_queue(state)
     payload = {
         "max_size": state.max_size,
         "generation": state.generation,
@@ -559,6 +608,76 @@ def c3_symbolic_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("ascii")
     ).hexdigest()
+
+
+def validate_c3_symbolic_queue(
+    state: FlowstarSymbolicRemainderQueue,
+    *,
+    expected_boundary_index: int | None = None,
+) -> None:
+    """Frozen C3 wrapper over the generic accepted-boundary queue validator."""
+
+    if state.owner_schema != C3_CROSS_STEP_SR_OWNER_SCHEMA:
+        raise ValueError("C3 symbolic queue owner schema mismatch")
+    validate_accepted_boundary_sr_queue(
+        state,
+        expected_boundary_index=expected_boundary_index,
+    )
+
+
+def c3_symbolic_queue_propagate(
+    state: FlowstarSymbolicRemainderQueue,
+    linear: RealMatrix,
+    *,
+    expected_boundary_index: int,
+    reference: Interval,
+) -> tuple[tuple[RealMatrix, ...], tuple[IntervalMatrix, ...], IntervalColumn, dict[str, Any]]:
+    """Frozen C3 wrapper over generic outward owner propagation."""
+
+    validate_c3_symbolic_queue(
+        state,
+        expected_boundary_index=expected_boundary_index,
+    )
+    return accepted_boundary_sr_queue_propagate(
+        state,
+        linear,
+        expected_boundary_index=expected_boundary_index,
+        reference=reference,
+    )
+
+
+def c3_symbolic_queue_commit(
+    state: FlowstarSymbolicRemainderQueue,
+    updated_phi: tuple[RealMatrix, ...],
+    updated_phi_iv: tuple[IntervalMatrix, ...],
+    current_j: IntervalColumn,
+    *,
+    scales: Sequence[float],
+    accepted_boundary_index: int,
+    reference: Interval,
+) -> tuple[FlowstarSymbolicRemainderQueue, dict[str, Any]]:
+    """Frozen C3 wrapper over the generic accepted-only atomic commit."""
+
+    validate_c3_symbolic_queue(
+        state,
+        expected_boundary_index=int(accepted_boundary_index) - 1,
+    )
+    return accepted_boundary_sr_queue_commit(
+        state,
+        updated_phi,
+        updated_phi_iv,
+        current_j,
+        scales=scales,
+        accepted_boundary_index=accepted_boundary_index,
+        reference=reference,
+    )
+
+
+def c3_symbolic_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
+    """Frozen C3 wrapper over the generic queue fingerprint."""
+
+    validate_c3_symbolic_queue(state)
+    return accepted_boundary_sr_queue_sha256(state)
 
 
 def _updated_phi_and_propagated_remainder(

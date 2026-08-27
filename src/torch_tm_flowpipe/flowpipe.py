@@ -56,11 +56,17 @@ from .g2_shared_column import (
     polynomial_table as g2_polynomial_table,
     rotate_current_to_retained as g2_rotate_current_to_retained,
 )
+from .accepted_boundary_sr import (
+    AcceptedBoundarySRPrepared,
+    commit_accepted_boundary_sr,
+    prepare_accepted_boundary_sr,
+)
 from .symbolic_remainder import (
+    ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
+    C3_CROSS_STEP_SR_OWNER_SCHEMA,
     FlowstarSymbolicRemainderQueue,
     SymbolicRemainderState,
-    c3_symbolic_queue_commit,
-    c3_symbolic_queue_propagate,
+    accepted_boundary_sr_queue_sha256,
     c3_symbolic_queue_sha256,
     flowstar_normalized_insertion_linear_queue_v2_reset,
     flowstar_normalized_insertion_symbolic_queue_reset,
@@ -79,6 +85,9 @@ NORMALIZED_INSERTION_DEPENDENCY_PRESERVING = (
 )
 C3_CROSS_STEP_SYMBOLIC_QUEUE = (
     "normalized_insertion_dependency_preserving_c3_sr100"
+)
+GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER = (
+    "normalized_insertion_dependency_preserving_generic_sr"
 )
 
 
@@ -1322,202 +1331,6 @@ def insert_ctrunc_normal_dependency_preserving(
     return result
 
 
-def _c3_interval_polynomial_range(
-    coefficient_intervals: Mapping[tuple[int, ...], Interval],
-    domain: Sequence[Interval],
-    *,
-    reference: Interval,
-) -> Interval:
-    """Range an interval-coefficient polynomial with outward operations."""
-
-    total = Interval.zero(dtype=reference.dtype, device=reference.device)
-    for exponent in sorted(coefficient_intervals):
-        term = coefficient_intervals[exponent]
-        for variable, power in zip(domain, exponent):
-            if power:
-                term = term * variable.pow_int(int(power))
-        total = total + term
-    return total
-
-
-def _c3_linear_split(
-    outer: TMVector,
-) -> tuple[tuple[tuple[float, ...], ...], TMVector]:
-    """Split A*r from a constant-free endpoint map; the remainder stays nonlinear."""
-
-    dim = len(outer)
-    matrix: list[tuple[float, ...]] = []
-    nonlinear_models: list[TaylorModel] = []
-    for model in outer:
-        row = [0.0 for _ in range(dim)]
-        nonlinear_terms: dict[tuple[int, ...], torch.Tensor] = {}
-        for exponent, coefficient in model.polynomial.terms.items():
-            if sum(exponent) == 1:
-                variable = next((index for index, power in enumerate(exponent) if power == 1), None)
-                if variable is not None and variable < dim:
-                    row[variable] = float(coefficient.detach().cpu())
-                    continue
-            nonlinear_terms[exponent] = coefficient
-        matrix.append(tuple(row))
-        nonlinear_models.append(
-            TaylorModel(
-                Polynomial(nonlinear_terms, model.n_vars),
-                model.remainder,
-                list(model.domain),
-                order=model.order,
-                truncation_range_split=model.truncation_range_split,
-            )
-        )
-    return tuple(matrix), TMVector(nonlinear_models)
-
-
-def _c3_linear_polynomial_image(
-    linear: tuple[tuple[float, ...], ...],
-    inner: TMVector,
-) -> tuple[TMVector, tuple[Interval, ...]]:
-    """Apply A to inner polynomials and outward-charge every coefficient rounding."""
-
-    if any(model.polynomial.device.type != "cpu" for model in inner):
-        raise ValueError("C3 symbolic queue is CPU-authoritative and rejects non-CPU polynomial state")
-    dim = len(inner)
-    reference = inner[0].remainder
-    models: list[TaylorModel] = []
-    errors: list[Interval] = []
-    for output_index in range(dim):
-        point_terms: dict[tuple[int, ...], torch.Tensor] = {}
-        exact_terms: dict[tuple[int, ...], Interval] = {}
-        for input_index in range(dim):
-            scalar = float(linear[output_index][input_index])
-            scalar_tensor = torch.as_tensor(
-                scalar,
-                dtype=reference.dtype,
-                device=reference.device,
-            )
-            for exponent, coefficient in inner[input_index].polynomial.terms.items():
-                product = scalar_tensor * coefficient
-                point_terms[exponent] = point_terms.get(
-                    exponent, torch.zeros_like(product)
-                ) + product
-                exact_product = Interval.point(scalar_tensor) * Interval.point(coefficient)
-                exact_terms[exponent] = exact_terms.get(
-                    exponent,
-                    Interval.zero(dtype=reference.dtype, device=reference.device),
-                ) + exact_product
-        polynomial = Polynomial(point_terms, inner[0].n_vars)
-        coefficient_errors: dict[tuple[int, ...], Interval] = {}
-        for exponent in set(exact_terms) | set(polynomial.terms):
-            point = polynomial.terms.get(
-                exponent,
-                torch.zeros((), dtype=reference.dtype, device=reference.device),
-            )
-            exact = exact_terms.get(
-                exponent,
-                Interval.zero(dtype=reference.dtype, device=reference.device),
-            )
-            coefficient_errors[exponent] = exact - Interval.point(point)
-        error_range = _c3_interval_polynomial_range(
-            coefficient_errors,
-            inner.domain,
-            reference=reference,
-        )
-        errors.append(error_range)
-        models.append(
-            TaylorModel(
-                polynomial,
-                error_range,
-                list(inner.domain),
-                order=max(model.order or 0 for model in inner),
-            )
-        )
-    return TMVector(models), tuple(errors)
-
-
-def _c3_add_polynomial_images(
-    nonlinear: TMVector,
-    linear: TMVector,
-    propagated: Sequence[Interval],
-) -> tuple[TMVector, tuple[Interval, ...]]:
-    """Add polynomial paths and return the current (non-history) J owner."""
-
-    reference = nonlinear[0].remainder
-    models: list[TaylorModel] = []
-    current_j: list[Interval] = []
-    for nonlinear_model, linear_model, history in zip(nonlinear, linear, propagated):
-        polynomial = nonlinear_model.polynomial + linear_model.polynomial
-        addition_errors: dict[tuple[int, ...], Interval] = {}
-        for exponent in set(nonlinear_model.polynomial.terms) | set(linear_model.polynomial.terms):
-            zero = torch.zeros((), dtype=reference.dtype, device=reference.device)
-            left = nonlinear_model.polynomial.terms.get(exponent, zero)
-            right = linear_model.polynomial.terms.get(exponent, zero)
-            point = polynomial.terms.get(exponent, zero)
-            addition_errors[exponent] = (
-                Interval.point(left) + Interval.point(right) - Interval.point(point)
-            )
-        addition_error = _c3_interval_polynomial_range(
-            addition_errors,
-            nonlinear_model.domain,
-            reference=reference,
-        )
-        owner = nonlinear_model.remainder + linear_model.remainder + addition_error
-        current_j.append(owner)
-        models.append(
-            TaylorModel(
-                polynomial,
-                owner + history,
-                list(nonlinear_model.domain),
-                order=nonlinear_model.order,
-                truncation_range_split=nonlinear_model.truncation_range_split,
-            )
-        )
-    return TMVector(models), tuple(current_j)
-
-
-def _c3_scale_and_cutoff_right_map(
-    inserted: TMVector,
-    scales: Sequence[float],
-    cutoff_threshold: float | None,
-) -> tuple[TMVector, tuple[Interval, ...]]:
-    """Normalize a right map and return new unscaled rounding/cutoff owners."""
-
-    reference = inserted[0].remainder
-    models: list[TaylorModel] = []
-    unscaled_sources: list[Interval] = []
-    for model, scale in zip(inserted, scales):
-        inv_scale = 1.0 if float(scale) == 0.0 else 1.0 / float(scale)
-        inv_tensor = torch.as_tensor(inv_scale, dtype=reference.dtype, device=reference.device)
-        point_terms = {
-            exponent: coefficient * inv_tensor
-            for exponent, coefficient in model.polynomial.terms.items()
-        }
-        polynomial = Polynomial(point_terms, model.n_vars)
-        coefficient_errors: dict[tuple[int, ...], Interval] = {}
-        for exponent, coefficient in model.polynomial.terms.items():
-            exact = Interval.point(coefficient) * Interval.point(inv_tensor)
-            coefficient_errors[exponent] = exact - Interval.point(polynomial.terms[exponent])
-        coefficient_error = _c3_interval_polynomial_range(
-            coefficient_errors,
-            model.domain,
-            reference=reference,
-        )
-        kept, cutoff_range = polynomial.cutoff(cutoff_threshold, model.domain)
-        scaled_remainder = model.remainder * Interval.point(inv_tensor)
-        added_scaled_source = coefficient_error + cutoff_range
-        models.append(
-            TaylorModel(
-                kept,
-                scaled_remainder + added_scaled_source,
-                list(model.domain),
-                order=model.order,
-                truncation_range_split=model.truncation_range_split,
-            )
-        )
-        scale_tensor = torch.as_tensor(float(scale), dtype=reference.dtype, device=reference.device)
-        unscaled_sources.append(added_scaled_source * Interval.point(scale_tensor))
-    return TMVector(models), tuple(unscaled_sources)
-
-
-
-
 def _object_range_box(obj: TaylorModel | TMVector) -> list[Interval]:
     if isinstance(obj, TMVector):
         return obj.range_box()
@@ -2129,6 +1942,48 @@ def _add_right_map_centering_diagnostics(
     diagnostics["reconstruction_remainder_hi_diff"] = max_rem_hi_diff
 
 
+def _vdp_frozen_c3_accepted_boundary_prepare(
+    endpoint_map_without_constants: TMVector,
+    right_map: TMVector,
+    *,
+    domain: Sequence[Interval],
+    order: int,
+    cutoff_threshold: float | None,
+    queue_state: FlowstarSymbolicRemainderQueue | None,
+    queue_capacity: int,
+    previous_accepted_boundary_index: int,
+    scalar_recenter_remainder_midpoint: bool,
+    right_map_range_mode: str,
+    right_map_center_mode: str,
+    diagnostics: dict[str, Any],
+) -> AcceptedBoundarySRPrepared:
+    """Frozen VDP C3 wrapper around the plant-independent SR primitive."""
+
+    if int(queue_capacity) != 100:
+        raise ValueError("the frozen VDP C3 wrapper requires symbolic queue capacity 100")
+    if int(order) != 4 or cutoff_threshold != 1e-10:
+        raise ValueError("the frozen VDP C3 wrapper requires order=4 and cutoff=1e-10")
+    if (
+        scalar_recenter_remainder_midpoint
+        or right_map_range_mode != "standard"
+        or right_map_center_mode != "constant"
+    ):
+        raise ValueError("the frozen VDP C3 wrapper requires the standard/constant boundary map")
+    return prepare_accepted_boundary_sr(
+        endpoint_map_without_constants,
+        right_map,
+        domain=domain,
+        order=order,
+        cutoff_threshold=cutoff_threshold,
+        queue_state=queue_state,
+        queue_capacity=queue_capacity,
+        previous_accepted_boundary_index=previous_accepted_boundary_index,
+        compose=insert_ctrunc_normal_dependency_preserving,
+        diagnostics=diagnostics,
+        owner_schema=C3_CROSS_STEP_SR_OWNER_SCHEMA,
+    )
+
+
 def _flowstar_normalized_insertion_transition(
     seg: FlowpipeSegment,
     previous_state: FlowstarNormalFlowpipeState | None,
@@ -2148,6 +2003,7 @@ def _flowstar_normalized_insertion_transition(
     horner_insertion: bool = False,
     dependency_preserving_insertion: bool = False,
     c3_symbolic_queue: bool = False,
+    generic_accepted_boundary_sr: bool = False,
     complete_polynomial_carry: bool = False,
 ) -> tuple[TMVector, FlowstarNormalFlowpipeState, dict[str, Any]]:
     prev = previous_state
@@ -2168,10 +2024,15 @@ def _flowstar_normalized_insertion_transition(
     if symbolic_queue_mode not in {"", "flowstar_linear_v2"}:
         raise ValueError("symbolic_queue_mode must be empty or 'flowstar_linear_v2'")
     symbolic_queue_v2 = symbolic_queue_mode == "flowstar_linear_v2"
-    if horner_insertion and (dependency_preserving_insertion or c3_symbolic_queue):
+    accepted_boundary_sr = c3_symbolic_queue or generic_accepted_boundary_sr
+    if c3_symbolic_queue and generic_accepted_boundary_sr:
+        raise ValueError("select the frozen C3 wrapper or the generic accepted-boundary SR mode")
+    if horner_insertion and (dependency_preserving_insertion or accepted_boundary_sr):
         raise ValueError("select exactly one normal-insertion algorithm")
     if c3_symbolic_queue:
         mode_name = C3_CROSS_STEP_SYMBOLIC_QUEUE
+    elif generic_accepted_boundary_sr:
+        mode_name = GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER
     elif dependency_preserving_insertion:
         mode_name = NORMALIZED_INSERTION_DEPENDENCY_PRESERVING
     elif horner_insertion and symbolic_queue_v2:
@@ -2188,13 +2049,12 @@ def _flowstar_normalized_insertion_transition(
         mode_name = "normalized_insertion_symqueue"
     else:
         mode_name = "normalized_insertion"
-    if c3_symbolic_queue:
-        if int(symbolic_queue_max_size) != 100:
-            raise ValueError("the frozen C3 contract requires symbolic queue capacity 100")
-        if int(order) != 4 or cutoff_threshold != 1e-10:
-            raise ValueError("the VDP-specific C3 lane requires order=4 and cutoff=1e-10")
-        if scalar_recenter_remainder_midpoint or right_map_range_mode != "standard" or right_map_center_mode != "constant":
-            raise ValueError("the VDP-specific C3 lane requires the frozen standard/constant boundary map")
+    if generic_accepted_boundary_sr and (
+        scalar_recenter_remainder_midpoint or right_map_center_mode != "constant"
+    ):
+        raise ValueError(
+            "generic accepted-boundary SR requires constant-centered normalization"
+        )
     endpoint_box = seg.final_tm.range_box()
     diagnostics: dict[str, Any] = {
         "reset_mode": mode_name,
@@ -2210,69 +2070,55 @@ def _flowstar_normalized_insertion_transition(
     center = _tmvector_constant_part(seg.final_tm)
     endpoint_without_constants = _tmvector_rm_constants(seg.final_tm)
     next_queue = prev.symbolic_queue if prev.symbolic_queue is not None else symbolic_queue_state
-    c3_current_j: tuple[Interval, ...] | None = None
-    c3_propagated: tuple[Interval, ...] | None = None
-    c3_updated_phi: tuple[Any, ...] | None = None
-    c3_updated_phi_iv: tuple[Any, ...] | None = None
-    if c3_symbolic_queue:
-        if next_queue is None:
-            next_queue = FlowstarSymbolicRemainderQueue.empty_c3(
-                len(endpoint_without_constants),
-                symbolic_queue_max_size,
-                accepted_boundary_index=prev.step_index,
-                generation=prev.step_index,
-                reference=endpoint_without_constants[0].remainder,
-            )
-        linear, nonlinear_outer = _c3_linear_split(endpoint_without_constants)
-        (
-            c3_updated_phi,
-            c3_updated_phi_iv,
-            c3_propagated,
-            c3_queue_stats,
-        ) = c3_symbolic_queue_propagate(
-            next_queue,
-            linear,
-            expected_boundary_index=prev.step_index,
-            reference=endpoint_without_constants[0].remainder,
-        )
-        diagnostics.update(c3_queue_stats)
-        if len(next_queue.J) == 0:
-            inserted = insert_ctrunc_normal_dependency_preserving(
+    accepted_sr_prepared: AcceptedBoundarySRPrepared | None = None
+    if accepted_boundary_sr:
+        if c3_symbolic_queue:
+            accepted_sr_prepared = _vdp_frozen_c3_accepted_boundary_prepare(
                 endpoint_without_constants,
                 prev.tmv_right,
-                int(order),
-                cutoff_threshold,
-                prev.domain,
-                diagnostics,
+                domain=prev.domain,
+                order=order,
+                cutoff_threshold=cutoff_threshold,
+                queue_state=next_queue,
+                queue_capacity=symbolic_queue_max_size,
+                previous_accepted_boundary_index=prev.step_index,
+                scalar_recenter_remainder_midpoint=scalar_recenter_remainder_midpoint,
+                right_map_range_mode=right_map_range_mode,
+                right_map_center_mode=right_map_center_mode,
+                diagnostics=diagnostics,
             )
-            assert isinstance(inserted, TMVector)
-            c3_current_j = tuple(model.remainder for model in inserted)
-            diagnostics["c3_composition_branch"] = "full_reanchor"
         else:
-            nonlinear_inserted = insert_ctrunc_normal_dependency_preserving(
-                nonlinear_outer,
+            accepted_sr_prepared = prepare_accepted_boundary_sr(
+                endpoint_without_constants,
                 prev.tmv_right,
-                int(order),
-                cutoff_threshold,
-                prev.domain,
-                diagnostics,
+                domain=prev.domain,
+                order=order,
+                cutoff_threshold=cutoff_threshold,
+                queue_state=next_queue,
+                queue_capacity=symbolic_queue_max_size,
+                previous_accepted_boundary_index=prev.step_index,
+                compose=insert_ctrunc_normal_dependency_preserving,
+                diagnostics=diagnostics,
+                owner_schema=ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
             )
-            assert isinstance(nonlinear_inserted, TMVector)
-            linear_inserted, _linear_errors = _c3_linear_polynomial_image(
-                linear,
-                prev.tmv_right,
-            )
-            inserted, c3_current_j = _c3_add_polynomial_images(
-                nonlinear_inserted,
-                linear_inserted,
-                c3_propagated,
-            )
-            diagnostics["c3_composition_branch"] = "nonlinear_plus_linear_queue"
-        diagnostics["c3_symbolic_queue_enabled"] = True
-        diagnostics["c3_owner_schema"] = next_queue.owner_schema
-        diagnostics["c3_queue_hash_before"] = c3_symbolic_queue_sha256(next_queue)
-        diagnostics["c3_current_owner_width_sum_pre_cutoff"] = sum(
-            _interval_width_float(value) for value in c3_current_j
+        inserted = accepted_sr_prepared.inserted
+        next_queue = accepted_sr_prepared.queue_before
+        diagnostics.update(accepted_sr_prepared.stats)
+        diagnostic_prefix = "c3" if c3_symbolic_queue else "accepted_boundary_sr"
+        diagnostics[f"{diagnostic_prefix}_composition_branch"] = (
+            accepted_sr_prepared.composition_branch
+        )
+        diagnostics[f"{diagnostic_prefix}_symbolic_queue_enabled"] = True
+        diagnostics[f"{diagnostic_prefix}_owner_schema"] = next_queue.owner_schema
+        queue_hash = (
+            c3_symbolic_queue_sha256(next_queue)
+            if c3_symbolic_queue
+            else accepted_boundary_sr_queue_sha256(next_queue)
+        )
+        diagnostics[f"{diagnostic_prefix}_queue_hash_before"] = queue_hash
+        diagnostics[f"{diagnostic_prefix}_current_owner_width_sum_pre_cutoff"] = sum(
+            _interval_width_float(value)
+            for value in accepted_sr_prepared.current_owner
         )
     elif dependency_preserving_insertion:
         inserted = insert_ctrunc_normal_dependency_preserving(
@@ -2403,45 +2249,44 @@ def _flowstar_normalized_insertion_transition(
         hypothetical_centered_scales=hypothetical_centered_scales,
         applied_shifts=applied_shifts,
     )
-    if c3_symbolic_queue:
-        if (
-            next_queue is None
-            or c3_current_j is None
-            or c3_updated_phi is None
-            or c3_updated_phi_iv is None
+    if accepted_boundary_sr:
+        if accepted_sr_prepared is None or next_queue is None:
+            raise AssertionError("accepted-boundary SR transition lost its pending owner")
+        if inserted_for_reset is not accepted_sr_prepared.inserted:
+            accepted_sr_prepared = replace(
+                accepted_sr_prepared,
+                inserted=inserted_for_reset,
+            )
+        accepted_sr_committed = commit_accepted_boundary_sr(
+            accepted_sr_prepared,
+            normalization_scales=scales,
+            cutoff_threshold=cutoff_threshold,
+        )
+        tmv_right = accepted_sr_committed.normalized_right_map
+        next_queue = accepted_sr_committed.queue_after
+        diagnostics.update(
+            {
+                key: value
+                for key, value in accepted_sr_committed.stats.items()
+                if key not in {
+                    "composition_branch",
+                    "unscaled_roundoff_cutoff_owner_width_sum",
+                    "total_interval_image_width_sum",
+                }
+            }
+        )
+        diagnostic_prefix = "c3" if c3_symbolic_queue else "accepted_boundary_sr"
+        diagnostics[f"{diagnostic_prefix}_queue_hash_after"] = (
+            c3_symbolic_queue_sha256(next_queue)
+            if c3_symbolic_queue
+            else accepted_boundary_sr_queue_sha256(next_queue)
+        )
+        for name in (
+            "unscaled_roundoff_cutoff_owner_width_sum",
+            "current_owner_width_sum",
+            "total_interval_image_width_sum",
         ):
-            raise AssertionError("C3 symbolic queue transition lost its pending owner")
-        tmv_right, unscaled_sources = _c3_scale_and_cutoff_right_map(
-            inserted_for_reset,
-            scales,
-            cutoff_threshold,
-        )
-        c3_current_j = tuple(
-            owner + source
-            for owner, source in zip(c3_current_j, unscaled_sources)
-        )
-        next_queue, c3_commit_stats = c3_symbolic_queue_commit(
-            next_queue,
-            c3_updated_phi,
-            c3_updated_phi_iv,
-            c3_current_j,
-            scales=scales,
-            accepted_boundary_index=int(prev.step_index) + 1,
-            reference=inserted_for_reset[0].remainder,
-        )
-        diagnostics.update(c3_commit_stats)
-        diagnostics["c3_queue_hash_after"] = c3_symbolic_queue_sha256(next_queue)
-        diagnostics["c3_unscaled_roundoff_cutoff_owner_width_sum"] = sum(
-            _interval_width_float(value) for value in unscaled_sources
-        )
-        diagnostics["c3_current_owner_width_sum"] = sum(
-            _interval_width_float(value) for value in c3_current_j
-        )
-        diagnostics["c3_total_interval_image_width_sum"] = (
-            sum(_interval_width_float(value) for value in c3_propagated)
-            if c3_propagated is not None
-            else 0.0
-        )
+            diagnostics[f"{diagnostic_prefix}_{name}"] = accepted_sr_committed.stats[name]
     else:
         tmv_right = _scale_tmvector_components(inserted_for_reset, inv_scales).apply_cutoff(cutoff_threshold)
     _add_width_metrics(diagnostics, "inserted_endpoint", scale_box)
@@ -2450,7 +2295,7 @@ def _flowstar_normalized_insertion_transition(
     reset_box = reset_tm.range_box()
     _add_width_metrics(diagnostics, "normalized_reset", reset_box)
     initial_remainders: tuple[Interval, ...] | None = None
-    if symbolic_queue_v2 and not c3_symbolic_queue:
+    if symbolic_queue_v2 and not accepted_boundary_sr:
         reset_tm, next_queue, queue_stats = flowstar_normalized_insertion_linear_queue_v2_reset(
             inserted_for_reset,
             reset_tm,
@@ -2506,7 +2351,7 @@ def _flowstar_normalized_insertion_transition(
         scales=scales,
         step_index=int(prev.step_index) + 1,
         diagnostics=diagnostics,
-        symbolic_queue=next_queue if (symbolic_queue or symbolic_queue_v2 or c3_symbolic_queue) else None,
+        symbolic_queue=next_queue if (symbolic_queue or symbolic_queue_v2 or accepted_boundary_sr) else None,
         symbolic_queue_max_size=int(symbolic_queue_max_size),
         initial_remainders=initial_remainders,
         complete_initial_tm=complete_initial_tm,
@@ -6762,6 +6607,7 @@ def flowpipe_step_flowstar_style_adaptive(
         "normalized_insertion",
         NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
         C3_CROSS_STEP_SYMBOLIC_QUEUE,
+        GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER,
         "normalized_insertion_complete_polynomial",
         "normalized_insertion_symqueue",
         "normalized_insertion_symqueue_split",
@@ -6781,6 +6627,7 @@ def flowpipe_step_flowstar_style_adaptive(
             "'normalized_insertion_symqueue_split', 'normalized_insertion_symqueue_v2', "
             f"'{NORMALIZED_INSERTION_DEPENDENCY_PRESERVING}', "
             f"'{C3_CROSS_STEP_SYMBOLIC_QUEUE}', "
+            f"'{GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER}', "
             "'normalized_insertion_horner', or "
             "'normalized_insertion_structured_remainder_k16', or "
             "'normalized_insertion_structured_total_delta_k16', or "
@@ -6997,6 +6844,9 @@ def flowpipe_step_flowstar_style_adaptive(
                 reset_mode == NORMALIZED_INSERTION_DEPENDENCY_PRESERVING
             )
             use_c3_symbolic_queue = reset_mode == C3_CROSS_STEP_SYMBOLIC_QUEUE
+            use_generic_accepted_boundary_sr = (
+                reset_mode == GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER
+            )
             use_complete_polynomial = reset_mode == "normalized_insertion_complete_polynomial"
             reset_tm, normal_state, normal_stats = _flowstar_normalized_insertion_transition(
                 seg,
@@ -7016,13 +6866,18 @@ def flowpipe_step_flowstar_style_adaptive(
                 horner_insertion=use_horner,
                 dependency_preserving_insertion=use_dependency_preserving,
                 c3_symbolic_queue=use_c3_symbolic_queue,
+                generic_accepted_boundary_sr=use_generic_accepted_boundary_sr,
                 complete_polynomial_carry=use_complete_polynomial,
             )
             symbolic_output_remainders = normal_stats.get("_symbolic_output_remainders")
             if (use_split or use_v2) and symbolic_output_remainders:
                 seg.final_tm = _tmvector_add_remainders(seg.final_tm, symbolic_output_remainders)
                 seg.tm = _tmvector_add_remainders(seg.tm, symbolic_output_remainders)
-            if (use_symqueue or use_c3_symbolic_queue) and normal_state is not None:
+            if (
+                use_symqueue
+                or use_c3_symbolic_queue
+                or use_generic_accepted_boundary_sr
+            ) and normal_state is not None:
                 queue_state = normal_state.symbolic_queue
             seg.reset_tm = reset_tm
             seg.flowstar_normal_state = normal_state
@@ -7030,7 +6885,11 @@ def flowpipe_step_flowstar_style_adaptive(
             seg.flowstar_symbolic_queue_state = queue_state
             seg.flowstar_symbolic_queue_stats = (
                 {**normal_stats, "reset_mode": reset_mode}
-                if (use_symqueue or use_c3_symbolic_queue)
+                if (
+                    use_symqueue
+                    or use_c3_symbolic_queue
+                    or use_generic_accepted_boundary_sr
+                )
                 else {"reset_mode": reset_mode}
             )
         else:
