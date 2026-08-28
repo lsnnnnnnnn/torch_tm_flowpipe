@@ -1,0 +1,24 @@
+In file included from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Constraints.h:9,
+                 from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Geometry.h:9,
+                 from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Continuous.h:9,
+                 from /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/experiments/flowstar_probe/flowstar_brusselator_canonical_range.cpp:1:
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/TaylorModel.h: In member function ‘void flowstar::TaylorModel<DATA_TYPE2>::derivative(flowstar::TaylorModel<DATA_TYPE2>&, unsigned int) const’:
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/TaylorModel.h:900:21: warning: no match for ‘operator=’ (operand types are ‘const flowstar::Interval’ and ‘int’) [-Wtemplate-body]
+  900 |         remainder = 0;
+      |                     ^
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/TaylorModel.h:900:21: note: there are 3 candidates
+In file included from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Matrix.h:10,
+                 from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Polynomial.h:10,
+                 from /tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/TaylorModel.h:9:
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:250:20: note: candidate 1: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Interval&)’ (near match)
+  250 |         Interval & operator = (const Interval & I);
+      |                    ^~~~~~~~
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:250:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:251:20: note: candidate 2: ‘flowstar::Interval& flowstar::Interval::operator=(const flowstar::Real&)’ (near match)
+  251 |         Interval & operator = (const Real & r);
+      |                    ^~~~~~~~
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:251:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:252:20: note: candidate 3: ‘flowstar::Interval& flowstar::Interval::operator=(double)’ (near match)
+  252 |         Interval & operator = (const double d);
+      |                    ^~~~~~~~
+/tmp/flowstar-brusselator-canonical-vdt8yw7j/repo/flowstar-toolbox/Interval.h:252:20: note: passing ‘const flowstar::Interval*’ as ‘this’ argument discards qualifiers

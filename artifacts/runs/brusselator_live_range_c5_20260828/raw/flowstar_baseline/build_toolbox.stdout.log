@@ -1,0 +1,14 @@
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Interval.o Interval.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Variables.o Variables.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o settings.o settings.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Matrix.o Matrix.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Geometry.o Geometry.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Constraints.o Constraints.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Continuous.o Continuous.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Discrete.o Discrete.cpp
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o Hybrid.o Hybrid.cpp
+bison -d -v modelParser.y
+flex modelLexer.l
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o lex.yy.o lex.yy.c
+/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive -O3 -c -I . -I /usr/local/include -g -O3 -std=c++11 -o modelParser.tab.o modelParser.tab.c
+ar rcs libflowstar.a Interval.o Variables.o settings.o Matrix.o Geometry.o Constraints.o Continuous.o Discrete.o Hybrid.o lex.yy.o modelParser.tab.o

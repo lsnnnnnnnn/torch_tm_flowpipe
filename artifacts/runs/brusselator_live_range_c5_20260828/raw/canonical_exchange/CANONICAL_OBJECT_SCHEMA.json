@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "flowstar_harness_variable_order": [
+    "tau",
+    "ux",
+    "uy"
+  ],
+  "live_labels": [
+    "boundary_normalization",
+    "right_map_construction",
+    "composition_truncation",
+    "cutoff_payment",
+    "Picard_validation",
+    "next_step_initialization"
+  ],
+  "numeric_encoding": "canonical finite Python/C hexadecimal binary64",
+  "order": 6,
+  "physical_encoding": "ordered newline-terminated UTF-8 key=value records",
+  "reporting_labels": [
+    "reporting_endpoint",
+    "reporting_tube"
+  ],
+  "required_payloads": [
+    "complete monomial exponent and coefficient tables",
+    "ordinary remainder endpoints",
+    "SR propagated history and current owner",
+    "full SR queue history and generation metadata",
+    "pre/post normalization center and scale",
+    "domains and local-time power tables",
+    "cutoff and source hashes"
+  ],
+  "schema_id": "torch_tm_flowpipe.brusselator_live_range_exchange/1",
+  "state_dimension": 2,
+  "tau_index": 2,
+  "title": "Brusselator live-range canonical exchange object",
+  "torch_variable_order": [
+    "ux",
+    "uy",
+    "tau"
+  ],
+  "unknown_field_policy": "the exchange index authenticates every complete object by SHA-256; duplicate, missing, malformed, decimal, nonfinite, and invalid required payload fields are rejected"
+}

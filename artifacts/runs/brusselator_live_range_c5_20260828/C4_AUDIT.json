@@ -1,0 +1,91 @@
+{
+  "classification": "sound functional compatibility; not bitwise or source-line Flow* parity",
+  "flowstar_max_refinement_steps_macro": 490,
+  "flowstar_replay_limit": 491,
+  "flowstar_stop_ratio": 0.99,
+  "full_prefix_certificate_checks_passed": true,
+  "items": [
+    {
+      "claim": "refinement only after successful first raw self-map",
+      "item": 1,
+      "passed": true
+    },
+    {
+      "claim": "failed first self-map cannot be rescued",
+      "item": 2,
+      "passed": true
+    },
+    {
+      "claim": "candidate polynomial fixed/hash invariant",
+      "item": 3,
+      "passed": true
+    },
+    {
+      "claim": "all remainder-dependent quantities recomputed per proposal",
+      "item": 4,
+      "passed": true
+    },
+    {
+      "claim": "generic C4 uses no unproved static cache",
+      "item": 5,
+      "passed": true
+    },
+    {
+      "claim": "whole-vector atomic subset commit",
+      "item": 6,
+      "passed": true
+    },
+    {
+      "claim": "subset/nonfinite/evaluation failures retain last certified vector",
+      "item": 7,
+      "passed": true
+    },
+    {
+      "claim": "final decomposition/owner belongs to last committed remainder",
+      "item": 8,
+      "passed": true
+    },
+    {
+      "claim": "epsilon/cutoff/roundoff/current-owner payments have single named owners",
+      "item": 9,
+      "passed": true
+    },
+    {
+      "claim": "refined remainder enters SR queue without double count",
+      "item": 10,
+      "passed": true
+    },
+    {
+      "claim": "rejected attempt leaves queue/checkpoint/boundary/current owner unchanged",
+      "item": 11,
+      "passed": true
+    },
+    {
+      "claim": "eight replays are observed stop-ratio outcome, not a hard-coded Flow* parity claim",
+      "item": 12,
+      "passed": true
+    }
+  ],
+  "observed_step1_committed_replays": 8,
+  "payment_ownership_interpretation": {
+    "cutoff_and_roundoff": "each discarded/rounded contribution has one ledger owner",
+    "sr_current_owner": "current owner excludes propagated history and is committed once",
+    "validation_epsilon": "distinct tau-scale, fixed polynomial-difference, and final assembly error sources each receive one named epsilon enclosure; no source is transferred twice"
+  },
+  "schema": "torch_tm_flowpipe.brusselator_c4_contract_audit/1",
+  "source_evidence": {
+    "accepted_boundary_prepare_commit": [
+      "accepted_boundary_sr.prepare_accepted_boundary_sr",
+      "accepted_boundary_sr.commit_accepted_boundary_sr"
+    ],
+    "atomic_decision": "batched_dense_tm._atomic_refinement_decision",
+    "generic_full_recompute": "batched_dense_tm._dense_flowstar_raw_compat_image",
+    "refinement_entry_and_fail_closed": "batched_dense_tm._post_accept_refine_raw_remainder"
+  },
+  "status": "C4_REFINEMENT_CONTRACT_PASSED",
+  "test_evidence": [
+    "tests/test_brusselator_c4_generic_refinement.py",
+    "tests/test_vdp_c2_post_accept_refinement.py",
+    "tests/test_brusselator_c5_live_range.py"
+  ]
+}

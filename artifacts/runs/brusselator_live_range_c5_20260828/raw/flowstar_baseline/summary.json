@@ -1,0 +1,99 @@
+{
+  "accepted_steps": 1000,
+  "benchmark_sha256": "b982f7c6f737e4b5e070942dc5fe01fa9d60e17a419a146d42444c71b5bf4f3b",
+  "build": {
+    "checkout": {
+      "command": [
+        "git",
+        "checkout",
+        "--quiet",
+        "b85a3211748cb77b736fe4ad42ee02d8d2b81148"
+      ],
+      "cwd": "/tmp/flowstar-brusselator-second-f_7gqn8e/repo",
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.0661503931041807
+    },
+    "clone": {
+      "command": [
+        "git",
+        "clone",
+        "--quiet",
+        "--no-hardlinks",
+        "/srv/local/shengenli/flowstar_vdp_c3_baseline_b85a321",
+        "/tmp/flowstar-brusselator-second-f_7gqn8e/repo"
+      ],
+      "cwd": "/tmp/flowstar-brusselator-second-f_7gqn8e",
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 0.12059452896937728
+    },
+    "driver": {
+      "command": [
+        "/usr/bin/x86_64-linux-gnu-g++-15",
+        "-fpermissive",
+        "-O3",
+        "-std=c++11",
+        "-I",
+        "/tmp/flowstar-brusselator-second-f_7gqn8e/repo/flowstar-toolbox",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/experiments/flowstar_probe/flowstar_brusselator_second_system.cpp",
+        "-L",
+        "/tmp/flowstar-brusselator-second-f_7gqn8e/repo/flowstar-toolbox",
+        "-L",
+        "/usr/local/lib",
+        "-o",
+        "/tmp/flowstar-brusselator-second-f_7gqn8e/flowstar_brusselator_second_system",
+        "-lflowstar",
+        "-lmpfr",
+        "-lgmp",
+        "-lgsl",
+        "-lgslcblas",
+        "-lm",
+        "-lglpk"
+      ],
+      "cwd": "/tmp/flowstar-brusselator-second-f_7gqn8e",
+      "exit_code": 0,
+      "stderr_sha256": "08819dd1a95eda83d6b144e43a925f5878a588910ccc9f77c52e05bc4d4678ce",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": 1.66936262906529
+    },
+    "toolbox": {
+      "command": [
+        "make",
+        "-j1",
+        "CXX=/usr/bin/x86_64-linux-gnu-g++-15 -fpermissive"
+      ],
+      "cwd": "/tmp/flowstar-brusselator-second-f_7gqn8e/repo/flowstar-toolbox",
+      "exit_code": 0,
+      "stderr_sha256": "8503cb73cbaf53ec528bbbf76660d72cbb7e41edb04666f8654560de2ea21af6",
+      "stdout_sha256": "333bdc151677679bb59b17adca99bcf68d8e47d543ed3f86f05def1f8f559367",
+      "wall_seconds": 36.40495207393542
+    }
+  },
+  "compiler": "x86_64-linux-gnu-g++-15 (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "completed_horizon": 20,
+  "completed_requested_horizon": true,
+  "contract_sha256": "da927873150fab2b1ebf5699705f98090eddf040b228997154997cba91e4085d",
+  "cutoff": 1e-10,
+  "driver_sha256": "f573c35fa02d5fe8806c432334db9d07457b07aff25db3788e218aa49daeb4a0",
+  "endpoint_semantics": "Flowpipe::intEvalNormal(step_end_exp_table)",
+  "fixed_step": 0.02,
+  "lane": "flowstar",
+  "order": 6,
+  "process_exit_code": 0,
+  "process_wall_seconds": 19.68901471607387,
+  "queue_capacity": 1000,
+  "reported_core_seconds": 14.407382,
+  "requested_horizon": 20.0,
+  "requested_steps": 1000,
+  "result_status_code": 2,
+  "schema": "flowstar_brusselator_second_system_summary_v1",
+  "segments_sha256": "08e184e2b0a99be48417be8971ed6632eccec0630849787a1048b9962d15f567",
+  "solver_wall_seconds": 14.412807252,
+  "source_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "source_tree_tracked_changes_after_build": "",
+  "target_remainder_radius": 0.0001,
+  "tube_semantics": "Flowpipe::intEvalNormal(step_exp_table)"
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "torch_tm_flowpipe.brusselator_live_range_c5_provenance/1",
+  "generated_utc_date": "2026-08-28",
+  "repository": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+  "branch": "codex/torch-flowstar-brusselator-live-range-c5-20260828",
+  "remote_provenance_closed": true,
+  "remote_c4_branch": "codex/vdp-terminal-sr1000-c4-closure-20260828",
+  "remote_c4_branch_tip": "89d0c17c3f6b3e99ac1d068f1573bda7e4f82cbe",
+  "c4_scientific_commit": "26323929d6f4fee0893478f6927ae76c5129bf47",
+  "c4_evidence_commit": "89d0c17c3f6b3e99ac1d068f1573bda7e4f82cbe",
+  "c4_evidence_contains_c4_scientific_commit": true,
+  "c5_scientific_commit": null,
+  "c5_scientific_commit_reason": "No operator passed all mandatory causal gates; no C5 solver mode was implemented.",
+  "c5_audit_tooling_commit": "2d56fc423a63ef10cc6a24b4a43ba9055d2fe493",
+  "final_package_commit_identity": "The immutable final package commit is the Git commit containing this manifest and is reported by the verifier/final handoff; embedding that commit in its own content would be self-referential.",
+  "flowstar_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+  "frozen_contract": {
+    "system": "Brusselator",
+    "rhs": [
+      "1 + x * (x * y - 4)",
+      "x * (3 - x * y)"
+    ],
+    "initial_x": [1.48, 1.52],
+    "initial_y": [2.98, 3.02],
+    "device": "cpu",
+    "dtype": "float64",
+    "partition": "B1",
+    "order": 6,
+    "fixed_step": 0.02,
+    "requested_steps": 1000,
+    "requested_horizon": 20.0,
+    "target_remainder": [-0.0001, 0.0001],
+    "cutoff": 1e-10,
+    "validation_eps": 1e-12,
+    "endpoint_repair": false,
+    "torch_symbolic_remainder_capacity": 1000,
+    "flowstar_symbolic_remainder_capacity": 1000
+  },
+  "fresh_runs": {
+    "torch_c4": {
+      "solver_commit": "6ccc08abd74cd77dca5f06c31917eff93198804b",
+      "summary_sha256": "8c085c0514e280bb2dd6e871e04f628ccf95ad8445d78add74cd8b7c07480953",
+      "accepted_steps": 1000,
+      "completed_horizon": 20.0
+    },
+    "torch_legacy": {
+      "solver_commit": "b007042412953b2ea53fc68c30c9a32b954dca37",
+      "summary_sha256": "f51a93015599737c3a758737e9e924590cde8862205a555440082c239a865be6",
+      "accepted_steps": 357,
+      "completed_horizon": 7.140000000000001
+    },
+    "stock_flowstar": {
+      "source_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+      "summary_sha256": "16056097e30591e5014f3a978e43ff3aac4b8c3ae9e72872b8ab30c18431e5a7",
+      "accepted_steps": 1000,
+      "completed_horizon": 20.0
+    }
+  },
+  "exchange_evidence": {
+    "canonical_index_sha256": "7a5d14c61624de7e2ae59f6fc8689d44766a27610f086f0ae7fb196a012a9a5a",
+    "range_replay_sha256": "6a69d0e055f16d39841895d1cba9c315178b0c2bf755e61d8ab15aa2f033a0f7",
+    "matrix_sha256": "15bb609cef2266442f8808d279d9f11568f50c64f6274e3b3c3eebf6e5a5a555",
+    "canonical_object_count": 11,
+    "matrix_row_count": 286,
+    "all_exact_local_outward_checks": true
+  },
+  "source_hashes": {
+    "src/torch_tm_flowpipe/brusselator_canonical_exchange.py": "72c6c235f3bd9ec29c4c8f5aeca89eaf89aa93c4a1fbb213d7c2b1460ea1eed2",
+    "experiments/export_brusselator_canonical_tm.py": "6c1271d31f7f95f20fb03d851e2e6f5c0b110578940c07a21f5d2af861b5ccc2",
+    "experiments/replay_brusselator_range_pipeline.py": "df3412c04f0266837067d253251662c2c634fdccddc30b801968479e18efe8a7",
+    "experiments/analyze_brusselator_live_range_cause.py": "2ca2962e5bdf3d45590e7844280159aefc258ab282d5f4b02415263bcfdd69a4",
+    "experiments/flowstar_probe/flowstar_brusselator_canonical_range.cpp": "c604492d52dc7382b51400afbb51dd1ce1c25fd2d2b76b68e154c7c363482075",
+    "experiments/flowstar_probe/flowstar_canonical_range_access.patch": "9df436a9524040fa042a5f11aae432a0b2270609a694fb8cb451e1a13e6fc260",
+    "scripts/verify_brusselator_c5_evidence.py": "ca5dde44e0c799bd27f0df34fabb0a0fd4648af4bfea1c8313c5d29149edbabe"
+  },
+  "result_sha256": "c89bf886ddee9c580bd1bd9616a5a30365bbc2ddabfb3feaa270d79e6b842baa",
+  "status": "LIVE_RANGE_DOMINANT_CAUSE_NOT_IDENTIFIED__NO_C5"
+}

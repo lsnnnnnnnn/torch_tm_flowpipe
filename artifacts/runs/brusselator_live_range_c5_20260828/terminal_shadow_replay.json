@@ -1,0 +1,444 @@
+{
+  "c4_completed_requested_horizon": true,
+  "material_improvement_rule": "margin improvement >= max(1e-12, 10% of the baseline negative deficit)",
+  "material_improvement_threshold": null,
+  "reason": "C4 completed all 1000 requested steps; no rejected terminal attempt exists, so gate 4 cannot authorize C5.",
+  "schema": "torch_tm_flowpipe.brusselator_terminal_shadow_replay/1",
+  "shadow_replays": [
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          8.398238375374435e-05,
+          8.198184596517477e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.198184596517477e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "baseline_status": "validated",
+      "boundary_step": 1,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 2,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          8.398238375374435e-05,
+          8.198184596517477e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.198184596517477e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          8.351318021803e-05,
+          8.151241312888271e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.151241312888271e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "baseline_status": "validated",
+      "boundary_step": 2,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 5.55653613398821e-19,
+      "next_attempt_step": 3,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          8.351318021803056e-05,
+          8.151241312888326e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.151241312888326e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "shadow_status": "validated",
+      "strictly_improved": true
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          8.303522342909756e-05,
+          8.103413358607705e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.103413358607705e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "baseline_status": "validated",
+      "boundary_step": 3,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 4,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          8.303522342909756e-05,
+          8.103413358607705e-05
+        ],
+        "finite": true,
+        "limiting_margin": 8.103413358607705e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 8,
+        "entered_after_first_self_map": true,
+        "last_iteration": 8,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 8
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.05562471138298e-05,
+          9.255624540281648e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.05562471138298e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 100,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 2.417770844642675e-15,
+      "next_attempt_step": 101,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.055624711624757e-05,
+          9.255624540523433e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.055624711624757e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": true
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.167661033658811e-05,
+          9.367661035925083e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.167661033658811e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 200,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 201,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.167661033658811e-05,
+          9.367661035925083e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.167661033658811e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.126731587076687e-05,
+          9.326731510295904e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.126731587076687e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 300,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 301,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.126731587076687e-05,
+          9.326731510295904e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.126731587076687e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.144545513803197e-05,
+          9.344545498645141e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.144545513803197e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 996,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 997,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.144545513803197e-05,
+          9.344545498645141e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.144545513803197e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.143868170293256e-05,
+          9.343868153820839e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.143868170293256e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 997,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 998,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.143868170293256e-05,
+          9.343868153820839e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.143868170293256e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.143170399011865e-05,
+          9.343170381095955e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.143170399011865e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 998,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 999,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.143170399011865e-05,
+          9.343170381095955e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.143170399011865e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    },
+    {
+      "baseline_first_self_map": {
+        "component_margins": [
+          9.142451266096079e-05,
+          9.34245124659316e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.142451266096079e-05,
+        "subset_result": true
+      },
+      "baseline_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "baseline_status": "validated",
+      "boundary_step": 999,
+      "configured_cutoff_unchanged": true,
+      "limiting_margin_improvement": 0.0,
+      "next_attempt_step": 1000,
+      "queue_policy_unchanged": true,
+      "replacement": "H_flowstar_insert_ctrunc_normal_plus_flowstar_range_for_scale",
+      "shadow_first_self_map": {
+        "component_margins": [
+          9.142451266096079e-05,
+          9.34245124659316e-05
+        ],
+        "finite": true,
+        "limiting_margin": 9.142451266096079e-05,
+        "subset_result": true
+      },
+      "shadow_post_accept_refinement": {
+        "committed_replay_count": 9,
+        "entered_after_first_self_map": true,
+        "last_iteration": 9,
+        "last_stop_reason": "stop_ratio",
+        "proposal_count": 9
+      },
+      "shadow_status": "validated",
+      "strictly_improved": false
+    }
+  ],
+  "terminal_attempt_step": null,
+  "terminal_causal_gate_passed": false,
+  "terminal_rejection_exists": false,
+  "terminal_shadow": null,
+  "terminal_shadow_available": false
+}
