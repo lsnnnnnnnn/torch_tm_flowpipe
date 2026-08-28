@@ -121,7 +121,10 @@ def _schema() -> dict[str, Any]:
             "next_step_initialization",
         ],
         "reporting_labels": ["reporting_endpoint", "reporting_tube"],
-        "unknown_field_policy": "reject in Python tests; Flow* harness consumes required prefixes and hashes full input",
+        "unknown_field_policy": (
+            "the exchange index authenticates every complete object by SHA-256; duplicate, "
+            "missing, malformed, decimal, nonfinite, and invalid required payload fields are rejected"
+        ),
     }
 
 
