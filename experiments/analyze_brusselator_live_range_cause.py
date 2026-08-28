@@ -139,6 +139,91 @@ def _validation_margins(path: Path) -> dict[int, list[float]]:
     return result
 
 
+def _first_validation_records(path: Path) -> dict[int, dict[str, Any]]:
+    result: dict[int, dict[str, Any]] = {}
+    with gzip.open(path, "rt", encoding="utf-8") as handle:
+        for line in handle:
+            row = json.loads(line)
+            if row.get("phase") != "remainder_validation" or int(row.get("attempt", -1)) != 1:
+                continue
+            result[int(row["step"])] = row
+    return result
+
+
+def _terminal_measurement(
+    summary: Mapping[str, Any],
+    segments: Sequence[Mapping[str, str]],
+    diagnostics_path: Path | None,
+) -> dict[str, Any]:
+    accepted = [row for row in segments if row.get("status", "accepted") == "accepted"]
+    if not accepted:
+        raise ValueError("lane has no accepted segment to summarize")
+    last = accepted[-1]
+    rejected = next(
+        (row for row in reversed(segments) if row.get("status") == "rejected"),
+        None,
+    )
+    terminal_step = int(rejected["step"]) if rejected else int(last["step"])
+    first_self_map: dict[str, Any] | None = None
+    if diagnostics_path is not None:
+        diagnostic = _first_validation_records(diagnostics_path).get(terminal_step)
+        if diagnostic is not None:
+            candidates_lo = diagnostic["candidate_remainder_lo"][0]
+            candidates_hi = diagnostic["candidate_remainder_hi"][0]
+            image_lo = diagnostic["picard_image_remainder_lo"][0]
+            image_hi = diagnostic["picard_image_remainder_hi"][0]
+            sides: list[dict[str, Any]] = []
+            for component in range(len(candidates_lo)):
+                lower = float(image_lo[component]) - float(candidates_lo[component])
+                upper = float(candidates_hi[component]) - float(image_hi[component])
+                sides.extend(
+                    (
+                        {"component": component, "side": "lower", "margin": lower},
+                        {"component": component, "side": "upper", "margin": upper},
+                    )
+                )
+            limiting = min(sides, key=lambda row: row["margin"])
+            first_self_map = {
+                "attempt_step": terminal_step,
+                "subset_result": bool(diagnostic["subset_result"]),
+                "component_margins": [
+                    min(sides[2 * component]["margin"], sides[2 * component + 1]["margin"])
+                    for component in range(len(candidates_lo))
+                ],
+                "limiting_component": int(limiting["component"]),
+                "limiting_side": str(limiting["side"]),
+                "limiting_margin": float(limiting["margin"]),
+            }
+    bounds = {
+        field: float(last[field])
+        for field in BOUND_FIELDS
+        if field in last and str(last[field]) != ""
+    }
+    return {
+        "accepted_steps": int(summary["accepted_steps"]),
+        "completed_horizon": float(summary["completed_horizon"]),
+        "last_accepted_step": int(last["step"]),
+        "last_accepted_endpoint_and_tube": bounds,
+        "rejected_terminal_attempt": int(rejected["step"]) if rejected else None,
+        "terminal_attempt_kind": "rejected" if rejected else "completed_requested_final_step",
+        "terminal_first_self_map": first_self_map,
+        "final_queue_size": (
+            int(last["queue_size"]) if last.get("queue_size", "") != "" else None
+        ),
+        "final_queue_reset_count": (
+            int(last["queue_reset_count"])
+            if last.get("queue_reset_count", "") != ""
+            else summary.get("queue_reset_count")
+        ),
+        "solver_wall_seconds": float(
+            summary.get(
+                "solver_wall_seconds",
+                summary.get("process_wall_seconds", summary.get("runtime_seconds")),
+            )
+        ),
+    }
+
+
 def _first_margin_difference(c4: Mapping[int, list[float]], legacy: Mapping[int, list[float]]) -> dict[str, Any] | None:
     for step in sorted(set(c4) & set(legacy)):
         left = c4[step]
@@ -676,6 +761,26 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "stock_flowstar": flowstar_summary,
         "first_c4_legacy_published_difference": published,
         "first_c4_legacy_validation_margin_difference": margin,
+        "recorded_measurements": {
+            "c4": {
+                **_terminal_measurement(
+                    c4_summary, c4_rows, c4_dir / "diagnostics.jsonl.gz"
+                ),
+                "selected_post_accept_refinement": [
+                    {
+                        "attempt_step": row["next_attempt_step"],
+                        **row["baseline_post_accept_refinement"],
+                    }
+                    for row in shadows
+                ],
+            },
+            "legacy": _terminal_measurement(
+                legacy_summary, legacy_rows, legacy_dir / "diagnostics.jsonl.gz"
+            ),
+            "stock_flowstar": _terminal_measurement(
+                flowstar_summary, flowstar_rows, None
+            ),
+        },
         "c4_horizon_gain_over_legacy": (
             float(c4_summary["completed_horizon"]) - float(legacy_summary["completed_horizon"])
         ),
