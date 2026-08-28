@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 import torch
 
+import torch_tm_flowpipe.batched_dense_tm as dense_module
 from torch_tm_flowpipe import FlowstarNormalFlowpipeState, Interval
 from torch_tm_flowpipe.batched_dense_tm import (
     DenseRangePolicy,
@@ -152,3 +153,45 @@ def test_generic_c4_rejects_non_ordered_raw_override() -> None:
             raw_rhs_evaluation_override="canonical_factorized_joint",
             **COMMON,
         )
+
+
+@pytest.mark.unit
+def test_generic_c4_failed_first_raw_self_map_is_not_rescued() -> None:
+    result = dense_picard_validate_step(
+        brusselator_ode,
+        _base(),
+        validation_mode=C4,
+        **{**COMMON, "target_remainder_radius": 1.0e-5},
+    )
+    assert result.status == "failed"
+    assert _validation(result)["subset_result"] is False
+    assert _refinements(result) == []
+
+
+@pytest.mark.unit
+def test_generic_c4_refinement_exception_fails_closed_at_last_certified_vector(monkeypatch) -> None:
+    baseline = dense_picard_validate_step(
+        brusselator_ode, _base(), validation_mode=LEGACY, **COMMON
+    )
+    original = dense_module._dense_flowstar_raw_compat_image
+    calls = 0
+
+    def injected(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise RuntimeError("injected refinement-only evaluation failure")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(dense_module, "_dense_flowstar_raw_compat_image", injected)
+    result = dense_picard_validate_step(
+        brusselator_ode, _base(), validation_mode=C4, **COMMON
+    )
+    assert result.status == "validated"
+    assert torch.equal(result.segment_tm.poly.coeffs, baseline.segment_tm.poly.coeffs)
+    assert torch.equal(result.segment_tm.rem_lo, baseline.segment_tm.rem_lo)
+    assert torch.equal(result.segment_tm.rem_hi, baseline.segment_tm.rem_hi)
+    rows = _refinements(result)
+    assert len(rows) == 1
+    assert rows[0]["committed"] is False
+    assert rows[0]["stop_reason"] == "evaluation_failed_closed"
