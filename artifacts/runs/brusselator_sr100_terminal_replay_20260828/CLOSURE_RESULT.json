@@ -1,0 +1,54 @@
+{
+  "accepted_steps": {
+    "flowstar": 1000,
+    "torch_generic_no_queue": 141,
+    "torch_generic_sr100": 355
+  },
+  "contract_sha256": "a81e498b783b28210a9aa8de3d25cb6be47b0c44918fabb45572218724cac4f8",
+  "material_gain": {
+    "eligible": true,
+    "horizon_criterion": false,
+    "late_tightness_criterion": false,
+    "passed": false
+  },
+  "native_horizons": {
+    "flowstar": 20,
+    "torch_generic_no_queue": 2.82,
+    "torch_generic_sr100": 7.1000000000000005
+  },
+  "original_result_sha256": "001d564fe306509710628cfa246d86a1e990cde85522b903c2908d29bf345526",
+  "original_sr100_false_checks": [
+    "rollback",
+    "summary_certificate"
+  ],
+  "original_status": "C3_GENERICITY_SOUNDNESS_GATE_FAILED_STOP",
+  "recomputed_sr100_checks": {
+    "at_most_one_terminal_rejection": true,
+    "endpoint_published_only_on_accept": true,
+    "finite_consistent_boxes": true,
+    "local_sample_sanity": true,
+    "native_horizon_consistent": true,
+    "nonempty": true,
+    "owner_accounting": true,
+    "rollback": true,
+    "row_count_matches": true,
+    "summary_certificate": true,
+    "validation_passed": true
+  },
+  "schema": "torch_tm_flowpipe.brusselator_terminal_replay_closure/1",
+  "soundness_gate_passed": true,
+  "status": "C3_GENERIC_CORE_VALIDATED__SECOND_SYSTEM_NO_MATERIAL_GAIN",
+  "supplemental_replay_checks": {
+    "checkpoint_files_byte_equal": true,
+    "checkpoint_full_hash_equal": true,
+    "clean_tracked_run": true,
+    "contract_hash_matches": true,
+    "exactly_one_terminal_attempt": true,
+    "generic_core_unchanged": true,
+    "published_prefix_recomputed": true,
+    "queue_metadata_unchanged": true,
+    "runner_rollback_conclusion": true,
+    "terminal_rejected_without_publication": true
+  },
+  "terminal_replay_result_sha256": "02aa9e66bb297a541339510ca99540c616e2eca9444dcaa616a856ca421c4b10"
+}
