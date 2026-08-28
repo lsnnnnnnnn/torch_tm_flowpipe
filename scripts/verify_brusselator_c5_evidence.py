@@ -161,6 +161,7 @@ def verify(artifact: Path) -> dict[str, Any]:
                 "tm.boundary_outer_nonlinear",
                 "tm.right_map_input",
                 "tm.boundary_torch_inserted",
+                "tm.right_map_torch_post_cutoff",
             ):
                 take_tmv(dict(records), prefix)
         except Exception as exc:

@@ -294,6 +294,23 @@ void write_box_json(ostream &output, const char *key, const vector<Interval> &bo
     output << ']';
 }
 
+void write_term_counts_json(
+    ostream &output,
+    const char *key,
+    const TaylorModelVec<Real> &value,
+    bool &first)
+{
+    if (!first) output << ',';
+    first = false;
+    output << '\"' << key << "\":[";
+    for (size_t component = 0; component < value.tms.size(); ++component)
+    {
+        if (component > 0) output << ',';
+        output << value.tms[component].expansion.terms.size();
+    }
+    output << ']';
+}
+
 void write_real_hex(ostream &output, const string &key, const Real &value)
 {
     output << key << '=' << hex_double(value.toDouble()) << '\n';
@@ -473,6 +490,36 @@ int main(int argc, char **argv)
         composed_poly.intEvalNormal(composed_poly_range, endpoint_table);
         composed.intEvalNormal(composed_full_range, endpoint_table);
 
+        TaylorModelVec<Real> torch_inserted = take_tmv(fields, "tm.boundary_torch_inserted");
+        TaylorModelVec<Real> torch_post_right = take_tmv(fields, "tm.right_map_torch_post_cutoff");
+        const vector<Real> post_scales = take_real_vector(fields, "post.scale");
+        vector<Real> inverse_scales;
+        for (size_t component = 0; component < post_scales.size(); ++component)
+        {
+            if (post_scales[component] == 0)
+            {
+                inverse_scales.push_back(Real(1.0));
+            }
+            else
+            {
+                Real inverse = 1 / post_scales[component];
+                inverse_scales.push_back(inverse);
+            }
+        }
+        TaylorModelVec<Real> flow_scaled_pre_cutoff = torch_inserted;
+        flow_scaled_pre_cutoff.scale_assign(inverse_scales);
+        TaylorModelVec<Real> flow_initial_simp = flow_scaled_pre_cutoff;
+        flow_initial_simp.cutoff_normal(endpoint_table, Interval(-1e-4, 1e-4));
+        vector<Interval> flow_scaled_pre_cutoff_range;
+        vector<Interval> flow_initial_simp_range;
+        vector<Interval> torch_post_right_range;
+        flow_scaled_pre_cutoff.intEvalNormal(flow_scaled_pre_cutoff_range, endpoint_table);
+        flow_initial_simp.intEvalNormal(flow_initial_simp_range, endpoint_table);
+        torch_post_right.intEvalNormal(torch_post_right_range, endpoint_table);
+        const vector<Interval> flow_scaled_pre_cutoff_remainders = remainders(flow_scaled_pre_cutoff);
+        const vector<Interval> flow_initial_simp_remainders = remainders(flow_initial_simp);
+        const vector<Interval> torch_post_right_remainders = remainders(torch_post_right);
+
         ofstream output(argv[2], ios::binary);
         if (!output)
         {
@@ -508,6 +555,15 @@ int main(int argc, char **argv)
         write_box_json(cout, "composition_polynomial", composed_poly_range, first);
         write_box_json(cout, "composition_full", composed_full_range, first);
         write_box_json(cout, "composition_current_owner", current_owner, first);
+        write_box_json(cout, "right_map_flow_scaled_pre_cutoff_full", flow_scaled_pre_cutoff_range, first);
+        write_box_json(cout, "right_map_flow_initial_simp_full", flow_initial_simp_range, first);
+        write_box_json(cout, "right_map_torch_actual_full", torch_post_right_range, first);
+        write_box_json(cout, "right_map_flow_scaled_pre_cutoff_remainder", flow_scaled_pre_cutoff_remainders, first);
+        write_box_json(cout, "right_map_flow_initial_simp_remainder", flow_initial_simp_remainders, first);
+        write_box_json(cout, "right_map_torch_actual_remainder", torch_post_right_remainders, first);
+        write_term_counts_json(cout, "right_map_flow_scaled_pre_cutoff_term_counts", flow_scaled_pre_cutoff, first);
+        write_term_counts_json(cout, "right_map_flow_initial_simp_term_counts", flow_initial_simp, first);
+        write_term_counts_json(cout, "right_map_torch_actual_term_counts", torch_post_right, first);
         cout << "}\n";
         return 0;
     }

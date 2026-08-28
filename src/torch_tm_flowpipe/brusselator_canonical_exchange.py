@@ -442,6 +442,12 @@ def build_exchange_records(
         prepared.inserted,
         variable_order=VARIABLE_ORDER[:2],
     )
+    _append_tmv(
+        rows,
+        "tm.right_map_torch_post_cutoff",
+        post_state.tmv_right,
+        variable_order=VARIABLE_ORDER[:2],
+    )
     _append_real_matrix(rows, "boundary.linear", linear)
     _append_interval_vector(rows, "boundary.sr_propagated_history", prepared.propagated_history)
     _append_interval_vector(rows, "boundary.sr_current_owner", prepared.current_owner)

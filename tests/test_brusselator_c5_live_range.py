@@ -132,6 +132,7 @@ def test_canonical_export_import_round_trip_and_complete_required_payloads(tmp_p
         "tm.boundary_outer_nonlinear",
         "tm.right_map_input",
         "tm.boundary_torch_inserted",
+        "tm.right_map_torch_post_cutoff",
     ):
         imported = take_tmv(dict(records), prefix)
         original_records = dict(records)

@@ -381,6 +381,20 @@ def _replay_one(
         "torch_inserted_support_sha256": _support_sha(torch_inserted),
         "flowstar_inserted_support_sha256": _support_sha(flow_inserted),
         "all_exact_local_outward_checks": all(row["exact_local_outward_contained"] for row in rows),
+        "post_scale_cutoff_diagnostics": {
+            key: flow_result[key]
+            for key in (
+                "right_map_flow_scaled_pre_cutoff_full",
+                "right_map_flow_initial_simp_full",
+                "right_map_torch_actual_full",
+                "right_map_flow_scaled_pre_cutoff_remainder",
+                "right_map_flow_initial_simp_remainder",
+                "right_map_torch_actual_remainder",
+                "right_map_flow_scaled_pre_cutoff_term_counts",
+                "right_map_flow_initial_simp_term_counts",
+                "right_map_torch_actual_term_counts",
+            )
+        },
     }
     return rows, result
 

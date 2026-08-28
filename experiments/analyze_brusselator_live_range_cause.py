@@ -480,6 +480,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if not all(row["exact_local_outward_contained"] == "True" for row in matrix):
         raise ValueError("same-object matrix failed an exact/local outward check")
     ordered = _operator_differences(matrix)
+    replay_summary = json.loads(
+        (replay_dir / "range_replay.json").read_text(encoding="utf-8")
+    )
+    ordered[0]["post_scale_cutoff_same_input_diagnostics"] = [
+        {
+            "accepted_step": int(row["accepted_step"]),
+            **dict(row["post_scale_cutoff_diagnostics"]),
+        }
+        for row in replay_summary["objects"]
+    ]
     shadows = _shadow_replays(
         c4_dir=c4_dir,
         objects_dir=objects_dir,
