@@ -612,6 +612,38 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         None,
     )
     terminal_rejection_exists = int(c4_summary["rejected_steps"]) > 0
+    terminal_shadow = next(
+        (
+            row
+            for row in shadows
+            if row["boundary_step"] == int(c4_summary["accepted_steps"])
+        ),
+        None,
+    )
+    terminal_baseline_margin = (
+        float(terminal_shadow["baseline_first_self_map"]["limiting_margin"])
+        if terminal_shadow is not None
+        else None
+    )
+    terminal_improvement = (
+        float(terminal_shadow["limiting_margin_improvement"])
+        if terminal_shadow is not None
+        else None
+    )
+    terminal_material_threshold = (
+        max(MATERIAL, 0.1 * max(0.0, -terminal_baseline_margin))
+        if terminal_baseline_margin is not None
+        else None
+    )
+    terminal_causal_gate = bool(
+        terminal_rejection_exists
+        and terminal_shadow is not None
+        and terminal_improvement is not None
+        and terminal_material_threshold is not None
+        and terminal_improvement >= terminal_material_threshold
+        and terminal_shadow["shadow_first_self_map"]["limiting_margin"]
+        > terminal_shadow["baseline_first_self_map"]["limiting_margin"]
+    )
     terminal = {
         "schema": "torch_tm_flowpipe.brusselator_terminal_shadow_replay/1",
         "c4_completed_requested_horizon": bool(c4_summary["completed_requested_horizon"]),
@@ -620,12 +652,21 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             int(c4_summary["accepted_steps"]) + 1 if terminal_rejection_exists else None
         ),
         "shadow_replays": shadows,
-        "terminal_shadow_available": terminal_rejection_exists,
-        "terminal_causal_gate_passed": False,
+        "terminal_shadow_available": bool(terminal_rejection_exists and terminal_shadow),
+        "terminal_shadow": terminal_shadow,
+        "material_improvement_rule": (
+            "margin improvement >= max(1e-12, 10% of the baseline negative deficit)"
+        ),
+        "material_improvement_threshold": terminal_material_threshold,
+        "terminal_causal_gate_passed": terminal_causal_gate,
         "reason": (
             "C4 completed all 1000 requested steps; no rejected terminal attempt exists, so gate 4 cannot authorize C5."
             if not terminal_rejection_exists
-            else "No single H replacement converted the terminal margin sufficiently."
+            else (
+                "The single H replacement materially improves the rejected terminal first-self-map margin."
+                if terminal_causal_gate
+                else "The single H replacement did not materially improve the rejected terminal margin."
+            )
         ),
     }
     _write_json(output / "terminal_shadow_replay.json", terminal)
@@ -639,7 +680,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "first_next_step_margin_difference": first_live_decision,
         "terminal_causal_effect": {
             "available": terminal_rejection_exists,
-            "passed": False,
+            "passed": terminal_causal_gate,
             "reason": terminal["reason"],
         },
         "reporting_only_operators": ["A", "B", "C", "D", "E", "F"],
@@ -693,7 +734,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             len(registered_later) == 3 and all(row["strictly_improved"] for row in registered_later)
         ),
         "next_step_limiting_margin_strictly_improved": bool(first_shadow and first_shadow["strictly_improved"]),
-        "terminal_shadow_margin_materially_improved": False,
+        "terminal_shadow_margin_materially_improved": terminal_causal_gate,
         "exact_local_outward_oracle": True,
         "owner_cache_atomicity_audit": True,
         "not_reporting_only": True,
