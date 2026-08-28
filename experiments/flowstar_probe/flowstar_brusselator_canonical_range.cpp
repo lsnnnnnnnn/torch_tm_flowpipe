@@ -213,8 +213,11 @@ TaylorModelVec<Real> take_tmv(const map<string, string> &fields, const string &p
             {
                 throw runtime_error("explicit zero canonical coefficient: " + term);
             }
-            terms.push_back(Term<Real>(Real(coefficient), flowstar_exponents(canonical)));
+            Term<Real> parsed(Real(coefficient), 3);
+            parsed.canonicalRangeSetDegrees(flowstar_exponents(canonical));
+            terms.push_back(parsed);
         }
+        terms.sort();
         const Interval remainder = take_interval(fields, base + ".ordinary_remainder");
         models.push_back(TaylorModel<Real>(Polynomial<Real>(terms), remainder));
     }

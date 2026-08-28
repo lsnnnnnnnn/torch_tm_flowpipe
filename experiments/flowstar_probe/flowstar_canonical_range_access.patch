@@ -1,13 +1,19 @@
 diff --git a/flowstar-toolbox/Term.h b/flowstar-toolbox/Term.h
 --- a/flowstar-toolbox/Term.h
 +++ b/flowstar-toolbox/Term.h
-@@ -33,4 +33,9 @@ public:
+@@ -33,4 +33,15 @@ public:
  	unsigned int degree() const;		// degree of the term
  	unsigned int dimension() const;		// dimension of the term
  
 +#ifdef FLOWSTAR_CANONICAL_RANGE_ACCESS
 +	const DATA_TYPE & canonicalRangeCoefficient() const { return coefficient; }
 +	const std::vector<unsigned int> & canonicalRangeDegrees() const { return degrees; }
++	void canonicalRangeSetDegrees(const std::vector<unsigned int> & input)
++	{
++		degrees = input;
++		d = 0;
++		for(unsigned int i = 0; i < degrees.size(); ++i) d += degrees[i];
++	}
 +#endif
 +
  	void evaluate(DATA_TYPE & result, const std::vector<DATA_TYPE> & domain) const;	// evaluation of the term
