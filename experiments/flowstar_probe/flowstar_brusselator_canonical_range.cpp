@@ -346,6 +346,18 @@ void write_composed_tmv(ostream &output, const TaylorModelVec<Real> &value)
     }
 }
 
+vector<Interval> remainders(const TaylorModelVec<Real> &value)
+{
+    Matrix<Interval> matrix(static_cast<int>(value.tms.size()), 1);
+    value.Remainder(matrix);
+    vector<Interval> result;
+    for (size_t component = 0; component < value.tms.size(); ++component)
+    {
+        result.push_back(matrix[component][0]);
+    }
+    return result;
+}
+
 } // namespace
 
 int main(int argc, char **argv)
@@ -418,13 +430,13 @@ int main(int argc, char **argv)
         {
             TaylorModelVec<Real> outer = take_tmv(fields, "tm.boundary_outer_full");
             outer.insert_ctrunc_normal(composed, right, right_poly_range, endpoint_table, 3, 6, cutoff);
-            composed.Remainder(current_owner);
+            current_owner = remainders(composed);
         }
         else if (branch == "nonlinear_plus_linear_queue")
         {
             TaylorModelVec<Real> nonlinear = take_tmv(fields, "tm.boundary_outer_nonlinear");
             nonlinear.insert_ctrunc_normal(composed, right, right_poly_range, endpoint_table, 3, 6, cutoff);
-            composed.Remainder(current_owner);
+            current_owner = remainders(composed);
             Matrix<Real> linear = take_real_matrix(fields, "boundary.linear");
             vector<Polynomial<Real> > right_polynomials;
             right.Expansion(right_polynomials);
