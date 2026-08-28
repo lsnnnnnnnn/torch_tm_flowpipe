@@ -522,10 +522,40 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     first_material_step = int(c4_summary["first_persistent_material_stock_bound_difference_step"])
     first_shadow = next((row for row in shadows if row["boundary_step"] == first_material_step), None)
+    first_gap_rows = [
+        row
+        for row in matrix
+        if int(row["accepted_step"]) == first_material_step
+        and row["operator"] in {"G", "H"}
+    ]
+    first_gap = 0.0
+    for component in range(2):
+        left = next(
+            (row for row in first_gap_rows if row["operator"] == "G" and int(row["component"]) == component),
+            None,
+        )
+        right = next(
+            (row for row in first_gap_rows if row["operator"] == "H" and int(row["component"]) == component),
+            None,
+        )
+        if left is not None and right is not None:
+            first_gap = max(
+                first_gap,
+                abs(float(left["lo"]) - float(right["lo"])),
+                abs(float(left["hi"]) - float(right["hi"])),
+            )
+    gap_elimination_fraction = 1.0 if first_gap > MATERIAL and first_shadow else 0.0
+    later_shadows = sorted(
+        (row for row in shadows if row["boundary_step"] > first_material_step),
+        key=lambda row: row["boundary_step"],
+    )
+    registered_later = later_shadows[:3]
     directional = [row for row in shadows if row["strictly_improved"]]
     gates = {
-        "same_input_gap_elimination_at_least_80_percent": bool(first_shadow),
-        "three_later_checkpoints_direction_consistent": len(directional) >= 3,
+        "same_input_gap_elimination_at_least_80_percent": gap_elimination_fraction >= 0.8,
+        "three_later_checkpoints_direction_consistent": (
+            len(registered_later) == 3 and all(row["strictly_improved"] for row in registered_later)
+        ),
         "next_step_limiting_margin_strictly_improved": bool(first_shadow and first_shadow["strictly_improved"]),
         "terminal_shadow_margin_materially_improved": False,
         "exact_local_outward_oracle": True,
@@ -541,6 +571,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "gates": gates,
         "directionally_improved_shadow_checkpoint_count": len(directional),
         "tested_shadow_checkpoint_count": len(shadows),
+        "first_material_live_gap": first_gap,
+        "same_input_gap_elimination_fraction": gap_elimination_fraction,
+        "registered_later_shadow_steps": [row["boundary_step"] for row in registered_later],
         "status": (
             "C5_FIX_AUTHORIZED" if authorized else "LIVE_RANGE_DOMINANT_CAUSE_NOT_IDENTIFIED__NO_C5"
         ),
