@@ -397,6 +397,17 @@ def _operator_differences(matrix: Sequence[Mapping[str, str]]) -> list[dict[str,
                 "first_material_difference": material[0] if material else None,
                 "material_checkpoint_count": len({row["accepted_step"] for row in material}),
                 "maximum_bound_delta": max((row["max_bound_delta"] for row in witnesses), default=0.0),
+                **(
+                    {
+                        "path_semantics": (
+                            "X1 is Torch's live early endpoint apply_cutoff(1e-10); "
+                            "X2 is Flow*'s actual no-cutoff endpoint entering decomposition. "
+                            "X3 is diagnostic only and is excluded from authorization."
+                        )
+                    }
+                    if cause == "cutoff_normal ownership"
+                    else {}
+                ),
             }
         )
     # Normalization is evaluated after G/H: different H ranges imply different
@@ -516,6 +527,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         },
         "reporting_only_operators": ["A", "B", "C", "D", "E", "F"],
         "live_operators": ["G", "H", "X1", "X2"],
+        "diagnostic_only_operators": ["X3"],
         "material_threshold": MATERIAL,
     }
     _write_json(output / "first_live_range_divergence.json", first_live)

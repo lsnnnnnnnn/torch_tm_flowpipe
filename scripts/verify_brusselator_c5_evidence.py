@@ -167,7 +167,9 @@ def verify(artifact: Path) -> dict[str, Any]:
             errors.append(f"canonical object import rejected {path.name}: {exc}")
 
     matrix = _csv(artifact / "same_object_range_matrix.csv")
-    expected_operators = {"A", "B", "C", "D", "E", "F", "G", "H", "X1", "X2"}
+    expected_operators = {
+        "A", "B", "C", "D", "E", "F", "G", "H", "X1", "X2", "X3"
+    }
     if not matrix or {row["operator"] for row in matrix} != expected_operators:
         errors.append("same-object range matrix lacks required operators")
     if any(row["exact_local_outward_contained"] != "True" for row in matrix):

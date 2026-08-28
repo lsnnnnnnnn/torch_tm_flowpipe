@@ -399,11 +399,13 @@ int main(int argc, char **argv)
         vector<Interval> endpoint_full_range;
         vector<Interval> tube_poly_range;
         vector<Interval> tube_full_range;
+        vector<Interval> endpoint_pre_cutoff_range;
         vector<Interval> endpoint_flowstar_cutoff_range;
         endpoint_poly.intEvalNormal(endpoint_poly_range, endpoint_table);
         endpoint.intEvalNormal(endpoint_full_range, endpoint_table);
         tube_poly.intEvalNormal(tube_poly_range, tube_table);
         tube.intEvalNormal(tube_full_range, tube_table);
+        endpoint_pre_cutoff.intEvalNormal(endpoint_pre_cutoff_range, endpoint_table);
         endpoint_flowstar_cutoff.intEvalNormal(endpoint_flowstar_cutoff_range, endpoint_table);
 
         TaylorModelVec<Real> right = take_tmv(fields, "tm.right_map_input");
@@ -489,6 +491,7 @@ int main(int argc, char **argv)
         write_box_json(cout, "endpoint_full", endpoint_full_range, first);
         write_box_json(cout, "tube_polynomial", tube_poly_range, first);
         write_box_json(cout, "tube_full", tube_full_range, first);
+        write_box_json(cout, "endpoint_pre_cutoff_full", endpoint_pre_cutoff_range, first);
         write_box_json(cout, "endpoint_flowstar_cutoff_full", endpoint_flowstar_cutoff_range, first);
         write_box_json(cout, "composition_polynomial", composed_poly_range, first);
         write_box_json(cout, "composition_full", composed_full_range, first);
