@@ -528,6 +528,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "reporting_only_operators": ["A", "B", "C", "D", "E", "F"],
         "live_operators": ["G", "H", "X1", "X2"],
         "diagnostic_only_operators": ["X3"],
+        "binary_interaction_check": {
+            "entered": False,
+            "reason": (
+                "No individual operator can pass the mandatory rejected-terminal gate because "
+                "the C4 baseline completes T20; combining operators would exceed authorization."
+            ),
+        },
         "material_threshold": MATERIAL,
     }
     _write_json(output / "first_live_range_divergence.json", first_live)
@@ -665,6 +672,23 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             for number, claim, passed in c4_audit_items
         ],
         "classification": "sound functional compatibility; not bitwise or source-line Flow* parity",
+        "payment_ownership_interpretation": {
+            "validation_epsilon": (
+                "distinct tau-scale, fixed polynomial-difference, and final assembly error sources "
+                "each receive one named epsilon enclosure; no source is transferred twice"
+            ),
+            "cutoff_and_roundoff": "each discarded/rounded contribution has one ledger owner",
+            "sr_current_owner": "current owner excludes propagated history and is committed once",
+        },
+        "source_evidence": {
+            "refinement_entry_and_fail_closed": "batched_dense_tm._post_accept_refine_raw_remainder",
+            "atomic_decision": "batched_dense_tm._atomic_refinement_decision",
+            "generic_full_recompute": "batched_dense_tm._dense_flowstar_raw_compat_image",
+            "accepted_boundary_prepare_commit": [
+                "accepted_boundary_sr.prepare_accepted_boundary_sr",
+                "accepted_boundary_sr.commit_accepted_boundary_sr",
+            ],
+        },
         "flowstar_max_refinement_steps_macro": 490,
         "flowstar_replay_limit": 491,
         "flowstar_stop_ratio": 0.99,
