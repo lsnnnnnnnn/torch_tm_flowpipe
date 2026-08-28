@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from fractions import Fraction
 import hashlib
 
 import pytest
 
-from torch_tm_flowpipe import FlowstarNormalFlowpipeState
+from torch_tm_flowpipe import FlowstarNormalFlowpipeState, commit_accepted_boundary_sr
 from torch_tm_flowpipe.brusselator_canonical_exchange import (
     CUTOFF,
     ORDER,
@@ -16,6 +17,10 @@ from torch_tm_flowpipe.brusselator_canonical_exchange import (
     write_records,
 )
 from torch_tm_flowpipe.step1_oracle import RationalInterval, RationalPolynomial
+from torch_tm_flowpipe.interval import Interval
+from torch_tm_flowpipe.symbolic_remainder import accepted_boundary_sr_queue_sha256
+from torch_tm_flowpipe.taylor_model import TaylorModel
+from torch_tm_flowpipe.tm_vector import TMVector
 from experiments.run_brusselator_sr1000_parity import _policy, _step
 
 
@@ -183,12 +188,70 @@ def test_composition_truncation_owner_and_normalization_reconstruct_live_poststa
     assert _tm_payload(built.reconstructed_post_right) == _tm_payload(
         segment.flowstar_normal_state.tmv_right
     )
-    assert segment.flowstar_normal_state.center == [
-        pytest.approx(float(value))
-        for value in segment.flowstar_normal_state.center
-    ]
+    records = dict(built.records)
+    for label, expected in (
+        ("post.center", segment.flowstar_normal_state.center),
+        ("post.scale", segment.flowstar_normal_state.scales),
+    ):
+        assert int(records[f"{label}.count"]) == len(expected)
+        assert [
+            float.fromhex(records[f"{label}.{index}"]).hex()
+            for index in range(len(expected))
+        ] == [float(value).hex() for value in expected]
     assert all(scale > 0.0 for scale in segment.flowstar_normal_state.scales)
     assert diagnostics
+
+
+@pytest.mark.unit
+def test_same_input_live_operator_substitution_is_atomic_and_preserves_polynomial_queue_policy(
+    step1_exchange,
+):
+    _pre, segment, _diagnostics, built = step1_exchange
+    assert segment.flowstar_normal_state is not None
+    delta = Interval(-2.0**-48, 2.0**-48)
+    substituted_inserted = TMVector(
+        [
+            TaylorModel(
+                model.polynomial,
+                model.remainder + delta,
+                list(model.domain),
+                order=model.order,
+                truncation_range_split=model.truncation_range_split,
+            )
+            for model in built.prepared.inserted
+        ]
+    )
+    substituted = replace(
+        built.prepared,
+        inserted=substituted_inserted,
+        current_owner=tuple(owner + delta for owner in built.prepared.current_owner),
+    )
+    queue_before_hash = accepted_boundary_sr_queue_sha256(built.prepared.queue_before)
+    baseline = commit_accepted_boundary_sr(
+        built.prepared,
+        normalization_scales=segment.flowstar_normal_state.scales,
+        cutoff_threshold=CUTOFF,
+    )
+    shadow = commit_accepted_boundary_sr(
+        substituted,
+        normalization_scales=segment.flowstar_normal_state.scales,
+        cutoff_threshold=CUTOFF,
+    )
+    assert accepted_boundary_sr_queue_sha256(built.prepared.queue_before) == queue_before_hash
+    assert substituted.queue_before is built.prepared.queue_before
+    for baseline_model, shadow_model in zip(
+        baseline.normalized_right_map, shadow.normalized_right_map, strict=True
+    ):
+        assert baseline_model.polynomial.terms.keys() == shadow_model.polynomial.terms.keys()
+        assert all(
+            float(baseline_model.polynomial.terms[exponent]).hex()
+            == float(shadow_model.polynomial.terms[exponent]).hex()
+            for exponent in baseline_model.polynomial.terms
+        )
+        assert shadow_model.remainder.contains(baseline_model.remainder.lo)
+        assert shadow_model.remainder.contains(baseline_model.remainder.hi)
+    assert shadow.queue_after.max_size == baseline.queue_after.max_size == 1000
+    assert shadow.queue_after.accepted_boundary_index == baseline.queue_after.accepted_boundary_index
 
 
 @pytest.mark.unit
