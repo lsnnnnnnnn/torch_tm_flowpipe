@@ -161,7 +161,7 @@ def test_generic_c4_failed_first_raw_self_map_is_not_rescued() -> None:
         brusselator_ode,
         _base(),
         validation_mode=C4,
-        **{**COMMON, "target_remainder_radius": 1.0e-5},
+        **{**COMMON, "target_remainder_radius": 1.0e-8},
     )
     assert result.status == "failed"
     assert _validation(result)["subset_result"] is False
