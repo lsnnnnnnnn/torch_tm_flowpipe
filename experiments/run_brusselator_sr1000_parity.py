@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import deque
 import csv
 import gzip
 import hashlib
@@ -310,6 +311,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     prefix_lo = [INITIAL_FLOAT[0][0], INITIAL_FLOAT[1][0]]
     prefix_hi = [INITIAL_FLOAT[0][1], INITIAL_FLOAT[1][1]]
     rows: list[dict[str, Any]] = []
+    # Each requested boundary after step 1 also needs its immediately preceding
+    # poststate so the accepted-boundary composition can be replayed from the
+    # exact same live input.
+    selected_checkpoint_steps = {1, 2, 3, 99, 100, 199, 200, 299, 300}
+    selected_checkpoint_states: dict[
+        int, tuple[TMVector, FlowstarNormalFlowpipeState]
+    ] = {}
+    rolling_checkpoint_states: deque[
+        tuple[int, TMVector, FlowstarNormalFlowpipeState]
+    ] = deque(maxlen=6)
     rejected = 0
     terminal_message = ""
     first_bitwise_step: int | None = None
@@ -490,11 +501,42 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             rows.append(row)
             current = segment.reset_tm
             state = segment.flowstar_normal_state
+            if args.capture_c5_checkpoints:
+                if step_index in selected_checkpoint_steps:
+                    selected_checkpoint_states[step_index] = (current, state)
+                rolling_checkpoint_states.append((step_index, current, state))
             if step_index % 25 == 0:
                 _write_rows(output / "segments.csv", rows)
 
     runtime = time.perf_counter() - started
     _write_rows(output / "segments.csv", rows)
+    checkpoint_records: list[dict[str, Any]] = []
+    if args.capture_c5_checkpoints:
+        for step_index, current_at_step, state_at_step in rolling_checkpoint_states:
+            selected_checkpoint_states.setdefault(
+                step_index, (current_at_step, state_at_step)
+            )
+        checkpoint_root = output / "accepted_checkpoints"
+        for step_index in sorted(selected_checkpoint_states):
+            current_at_step, state_at_step = selected_checkpoint_states[step_index]
+            checkpoint_dir = checkpoint_root / f"accepted_step_{step_index:04d}"
+            manifest = _checkpoint(
+                checkpoint_dir,
+                current=current_at_step,
+                state=state_at_step,
+                accepted_steps=step_index,
+                provenance={
+                    **provenance,
+                    "capture_purpose": "brusselator_live_range_c5_same_object_exchange",
+                },
+            )
+            checkpoint_records.append(
+                {
+                    "accepted_step": step_index,
+                    "relative_directory": checkpoint_dir.relative_to(output).as_posix(),
+                    "full_checkpoint_sha256": manifest["full_checkpoint_sha256"],
+                }
+            )
     accepted_rows = [row for row in rows if row["status"] == "accepted"]
     accepted_steps = len(accepted_rows)
     completed = accepted_steps == REQUESTED_STEPS and rejected == 0
@@ -564,6 +606,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "tracked_diff_sha256": command["tracked_diff_sha256"],
         "worktree_dirty": bool(command["worktree_status"]),
         "contract_sha256": command["contract_sha256"],
+        "c5_checkpoint_capture_enabled": bool(args.capture_c5_checkpoints),
+        "accepted_checkpoint_records": checkpoint_records,
     }
     _write_json(output / "summary.json", summary)
     return summary
@@ -582,6 +626,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default=CONFIG["validation_mode"],
     )
     parser.add_argument("--lane-label", default="torch_generic_sr1000")
+    parser.add_argument(
+        "--capture-c5-checkpoints",
+        action="store_true",
+        help=(
+            "retain the fixed early checkpoints and the final six accepted states; "
+            "serialization occurs after solver timing"
+        ),
+    )
     return parser.parse_args(argv)
 
 
