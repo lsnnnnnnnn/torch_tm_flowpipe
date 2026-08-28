@@ -10,6 +10,7 @@
 #include <list>
 #include <map>
 #include <sstream>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -311,6 +312,57 @@ void write_term_counts_json(
     output << ']';
 }
 
+string degree_key(const vector<unsigned int> &degrees)
+{
+    ostringstream output;
+    for (size_t index = 0; index < degrees.size(); ++index)
+    {
+        if (index > 0) output << ',';
+        output << degrees[index];
+    }
+    return output.str();
+}
+
+void write_removed_terms_json(
+    ostream &output,
+    const char *key,
+    const TaylorModelVec<Real> &before,
+    const TaylorModelVec<Real> &after,
+    const vector<Interval> &endpoint_table,
+    bool &first)
+{
+    if (!first) output << ',';
+    first = false;
+    output << '\"' << key << "\":[";
+    bool first_term = true;
+    for (size_t component = 0; component < before.tms.size(); ++component)
+    {
+        set<string> retained;
+        for (list<Term<Real> >::const_iterator iterator = after.tms[component].expansion.terms.begin();
+             iterator != after.tms[component].expansion.terms.end(); ++iterator)
+        {
+            retained.insert(degree_key(iterator->canonicalRangeDegrees()));
+        }
+        for (list<Term<Real> >::const_iterator iterator = before.tms[component].expansion.terms.begin();
+             iterator != before.tms[component].expansion.terms.end(); ++iterator)
+        {
+            const vector<unsigned int> &degrees = iterator->canonicalRangeDegrees();
+            if (retained.find(degree_key(degrees)) != retained.end()) continue;
+            Interval payment;
+            iterator->intEvalNormal(payment, endpoint_table);
+            if (!first_term) output << ',';
+            first_term = false;
+            output << "{\"component\":" << component;
+            output << ",\"exponents_tau_ux_uy\":[" << degrees[0] << ',' << degrees[1] << ',' << degrees[2] << ']';
+            output << ",\"coefficient_hex\":\"" << hex_double(iterator->canonicalRangeCoefficient().toDouble()) << "\"";
+            output << ",\"interval_payment\":";
+            write_interval_json(output, payment);
+            output << '}';
+        }
+    }
+    output << ']';
+}
+
 void write_real_hex(ostream &output, const string &key, const Real &value)
 {
     output << key << '=' << hex_double(value.toDouble()) << '\n';
@@ -564,6 +616,13 @@ int main(int argc, char **argv)
         write_term_counts_json(cout, "right_map_flow_scaled_pre_cutoff_term_counts", flow_scaled_pre_cutoff, first);
         write_term_counts_json(cout, "right_map_flow_initial_simp_term_counts", flow_initial_simp, first);
         write_term_counts_json(cout, "right_map_torch_actual_term_counts", torch_post_right, first);
+        write_removed_terms_json(
+            cout,
+            "right_map_flow_initial_simp_removed_terms",
+            flow_scaled_pre_cutoff,
+            flow_initial_simp,
+            endpoint_table,
+            first);
         cout << "}\n";
         return 0;
     }

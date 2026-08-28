@@ -393,6 +393,7 @@ def _replay_one(
                 "right_map_flow_scaled_pre_cutoff_term_counts",
                 "right_map_flow_initial_simp_term_counts",
                 "right_map_torch_actual_term_counts",
+                "right_map_flow_initial_simp_removed_terms",
             )
         },
     }
