@@ -214,6 +214,26 @@ def _first_validation(diagnostics: Iterable[Mapping[str, Any]]) -> dict[str, Any
     raise ValueError("shadow replay emitted no first validation record")
 
 
+def _refinement_record(segment: Any) -> dict[str, Any]:
+    rows = [
+        row
+        for row in segment.backend_trace
+        if row.get("phase") == "post_accept_refinement"
+    ]
+    committed = [row for row in rows if row.get("committed") is True]
+    return {
+        "entered_after_first_self_map": bool(rows),
+        "proposal_count": len(rows),
+        "committed_replay_count": len(committed),
+        "last_iteration": (
+            int(rows[-1]["refinement_iteration"]) if rows else None
+        ),
+        "last_stop_reason": (
+            rows[-1].get("stop_reason", rows[-1].get("reason")) if rows else None
+        ),
+    }
+
+
 def _shadow_replays(
     *,
     c4_dir: Path,
@@ -323,6 +343,8 @@ def _shadow_replays(
                 "shadow_status": shadow_segment.status,
                 "baseline_first_self_map": baseline_first,
                 "shadow_first_self_map": shadow_first,
+                "baseline_post_accept_refinement": _refinement_record(baseline_segment),
+                "shadow_post_accept_refinement": _refinement_record(shadow_segment),
                 "limiting_margin_improvement": (
                     shadow_first["limiting_margin"] - baseline_first["limiting_margin"]
                 ),
