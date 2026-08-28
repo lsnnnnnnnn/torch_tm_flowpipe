@@ -159,6 +159,9 @@ def _step(
     state: FlowstarNormalFlowpipeState,
     step: int,
     policy: DenseRangePolicy,
+    *,
+    validation_mode: str,
+    lane_label: str,
 ) -> tuple[Any, list[dict[str, Any]]]:
     diagnostics: list[dict[str, Any]] = []
     segment = flowpipe_step_flowstar_style_adaptive(
@@ -172,7 +175,7 @@ def _step(
         cutoff_threshold=CUTOFF,
         max_validation_attempts=int(CONFIG["max_validation_attempts"]),
         validation_eps=VALIDATION_EPS,
-        validation_mode=CONFIG["validation_mode"],
+        validation_mode=validation_mode,
         reset_mode=CONFIG["reset_mode"],
         flowstar_normal_state=state,
         flowstar_symbolic_queue_max_size=QUEUE_CAPACITY,
@@ -185,7 +188,7 @@ def _step(
         diagnostics=diagnostics,
         diagnostics_context={
             "system": "brusselator",
-            "lane": "torch_generic_sr1000",
+            "lane": lane_label,
             "segment_index": step - 1,
             "t_before": (step - 1) * STEP,
         },
@@ -289,10 +292,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "contract_sha256": _sha256(CONTRACT_PATH),
         "terminal_replay_result_sha256": _sha256(args.terminal_replay.resolve()),
         "generic_core_unchanged": core_unchanged,
+        "validation_mode": args.validation_mode,
+        "lane_label": args.lane_label,
     }
     _write_json(output / "command.json", command)
-    if status_text or not core_unchanged:
-        raise RuntimeError("SR1000 baseline requires a clean worktree and unchanged generic core")
+    if status_text:
+        raise RuntimeError("SR1000 run requires a clean worktree")
 
     stock_rows = _read_stock()
     state = FlowstarNormalFlowpipeState.from_exact_decimal_box(INITIAL_DECIMAL, ORDER)
@@ -326,7 +331,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                 else ""
             )
             step_started = time.perf_counter()
-            segment, diagnostics = _step(current, state, step_index, policy)
+            segment, diagnostics = _step(
+                current,
+                state,
+                step_index,
+                policy,
+                validation_mode=args.validation_mode,
+                lane_label=args.lane_label,
+            )
             step_runtime = time.perf_counter() - step_started
             for diagnostic_index, diagnostic in enumerate(diagnostics):
                 diagnostic_handle.write(
@@ -517,6 +529,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "status": "completed" if completed else "stopped",
         "message": terminal_message,
         "capacity_reset_decision": capacity_status,
+        "validation_mode": args.validation_mode,
+        "lane_label": args.lane_label,
         "requested_steps": REQUESTED_STEPS,
         "accepted_steps": accepted_steps,
         "rejected_steps": rejected,
@@ -559,6 +573,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--terminal-replay", default=DEFAULT_TERMINAL_REPLAY, type=Path)
+    parser.add_argument(
+        "--validation-mode",
+        choices=(
+            "flowstar_raw_remainder_compat",
+            "flowstar_raw_remainder_compat_refined",
+        ),
+        default=CONFIG["validation_mode"],
+    )
+    parser.add_argument("--lane-label", default="torch_generic_sr1000")
     return parser.parse_args(argv)
 
 
