@@ -25,6 +25,7 @@ _PUBLIC_MODULES = {
     "DenseValidatedRemainderDecomposition": ".batched_dense_tm",
     "DenseValidatedStep": ".batched_dense_tm",
     "FLOWSTAR_MAX_REFINEMENT_STEPS": ".batched_dense_tm",
+    "FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE": ".batched_dense_tm",
     "FLOWSTAR_RAW_REMAINDER_REFINED_MODE": ".batched_dense_tm",
     "FLOWSTAR_REFINEMENT_REPLAY_LIMIT": ".batched_dense_tm",
     "FLOWSTAR_STOP_RATIO": ".batched_dense_tm",
