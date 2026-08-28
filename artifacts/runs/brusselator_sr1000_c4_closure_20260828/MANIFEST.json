@@ -1,0 +1,209 @@
+{
+  "baseline_commit": "beb0daf310c360a28a0ecce04554a29bc30d0dbe",
+  "c4_commit": "26323929d6f4fee0893478f6927ae76c5129bf47",
+  "generated_utc": "2026-08-28T02:46:52.596858+00:00",
+  "raw_files": [
+    {
+      "encoding": "identity",
+      "path": "raw/c4/MANIFEST.json",
+      "sha256": "9eb44db695b9926a248c3bc687fb37537f25a7034322cb02ff7fba439092ae3d",
+      "size": 2588,
+      "source": "/srv/local/shengenli/brusselator_c4_same_input_20260828_v4/MANIFEST.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/c4/RESULT.json",
+      "sha256": "4741ee538ac076d70829a490cc57a25d37036438bb09d5414f31b3357c129ff3",
+      "size": 1871,
+      "source": "/srv/local/shengenli/brusselator_c4_same_input_20260828_v4/RESULT.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/c4/core.patch",
+      "sha256": "2511866ca6a66520deab0f637a10d2027d6cbbbfe459d553cdae1446873d8f4b",
+      "size": 11802,
+      "source": "git diff --binary beb0daf310c360a28a0ecce04554a29bc30d0dbe 26323929d6f4fee0893478f6927ae76c5129bf47 -- src/torch_tm_flowpipe/batched_dense_tm.py src/torch_tm_flowpipe/flowpipe.py src/torch_tm_flowpipe/__init__.py"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/c4/operator_ledger.json",
+      "sha256": "cfc6617388947c050d76567d0cfd3266d617eb315a6b1c492cb8330fc5a85f0d",
+      "size": 4247,
+      "source": "/srv/local/shengenli/brusselator_c4_same_input_20260828_v4/operator_ledger.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/c4/provenance.json",
+      "sha256": "71315aab3767133b53d8886eea58b721799d4ca2fb7789b53ab36bbed57cdf33",
+      "size": 2505,
+      "source": "/srv/local/shengenli/brusselator_c4_same_input_20260828_v4/provenance.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/c4/same_input_gate.json",
+      "sha256": "d3bbd2fe8461bbcf66131ee635cad9e6c851006dfa99994683ed11bef305fca5",
+      "size": 690,
+      "source": "/srv/local/shengenli/brusselator_c4_same_input_20260828_v4/same_input_gate.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/contract.json",
+      "sha256": "a81e498b783b28210a9aa8de3d25cb6be47b0c44918fabb45572218724cac4f8",
+      "size": 2915,
+      "source": "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/benchmarks/brusselator_terminal_sr1000_contract.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/flowstar/binary.sha256",
+      "sha256": "a64e040f34def57bab1d8505239278bf60ce2791480ed667b3d803065b9a84a9",
+      "size": 116,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/binary.sha256"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/flowstar/compose_probe_result.json",
+      "sha256": "24638e7e43ff8b0069fccc9ae8684db8bda4e1451fce1b75b149e1b8f9d8a246",
+      "size": 502,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/compose_probe_result.json"
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/flowstar/compose_probe_trace.jsonl.gz",
+      "sha256": "66a8754685bfa8565dedde44a95447d4debbf657cd7261cfe3f87fa19d1d35aa",
+      "size": 57627,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/compose_probe_trace.jsonl",
+      "uncompressed_sha256": "d4ff216cc6aac996343b458b1e706358b7cd5759273bf6b7ca53d718ffeac96e",
+      "uncompressed_size": 2183070
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/flowstar/flowstar_brusselator_step1_compose_probe.cpp",
+      "sha256": "dfaa231c1e411364675827c66c6daaa2c11b8bd5dc0e781346a8821b725b85ca",
+      "size": 4047,
+      "source": "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/experiments/flowstar_probe/flowstar_brusselator_step1_compose_probe.cpp"
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/flowstar/frozen_stock_segments.csv.gz",
+      "sha256": "fc6b486585d71d90de45d8a74da81a6702e970cd9626b80737b2e1080d95a774",
+      "size": 209220,
+      "source": "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/artifacts/runs/brusselator_generic_core_validation_20260827/raw/flowstar/segments.csv",
+      "uncompressed_sha256": "08e184e2b0a99be48417be8971ed6632eccec0630849787a1048b9962d15f567",
+      "uncompressed_size": 709352
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/flowstar/observed.csv.gz",
+      "sha256": "fc6b486585d71d90de45d8a74da81a6702e970cd9626b80737b2e1080d95a774",
+      "size": 209220,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/observed.csv",
+      "uncompressed_sha256": "08e184e2b0a99be48417be8971ed6632eccec0630849787a1048b9962d15f567",
+      "uncompressed_size": 709352
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/flowstar/observed_summary.json",
+      "sha256": "5a86dfe0b88400726c542a56186d94e683b76229b03ace5020b545b2e6e97129",
+      "size": 441,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/observed_summary.json"
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/flowstar/observed_trace.jsonl.gz",
+      "sha256": "aa85d8ccdcb8537131de2c1f5008479bb2f269b83fb9509aa7956dcc5f29b951",
+      "size": 48567,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/observed_trace.jsonl",
+      "uncompressed_sha256": "c609602866d2ea72b53eb43bc2250a618d60cc7d30477ffc1c2c9f48bbeb9ede",
+      "uncompressed_size": 1330448
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/flowstar/observer.patch",
+      "sha256": "e2f9186e1576502d45771dfc5c244998680a1947d5c5bde7b8251536d7ac813c",
+      "size": 42911,
+      "source": "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/experiments/flowstar_step1_stage_observer_20260813.patch"
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/flowstar/unobserved.csv.gz",
+      "sha256": "fc6b486585d71d90de45d8a74da81a6702e970cd9626b80737b2e1080d95a774",
+      "size": 209220,
+      "source": "/srv/local/shengenli/brusselator_step1_operator_trace_20260828/unobserved.csv",
+      "uncompressed_sha256": "08e184e2b0a99be48417be8971ed6632eccec0630849787a1048b9962d15f567",
+      "uncompressed_size": 709352
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/same_input_prestate/terminal_state.json",
+      "sha256": "f8aaa267138becc20426391db524acac67482fd23e20139c84d864d58efb498a",
+      "size": 4765,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/material_candidate_step_1_prestate/terminal_state.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/same_input_prestate/terminal_state_manifest.json",
+      "sha256": "5532dabb9c1eaefc917a0dca9aacf218b8b8b9fce32fbdf258ed2947d204bd18",
+      "size": 1585,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/material_candidate_step_1_prestate/terminal_state_manifest.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/command.json",
+      "sha256": "0f2f2e9c3a84910beb15a7231f3302c5559b3d2cfce8059df18bdba17002bccc",
+      "size": 846,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/command.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/diagnostics.jsonl.gz",
+      "sha256": "e461be71e38a9e6ac6c3e7c105a7a92bbd3b8fed591e94dba8e1fc5081d8daee",
+      "size": 667567,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/diagnostics.jsonl.gz"
+    },
+    {
+      "encoding": "gzip-mtime-0",
+      "path": "raw/sr1000/segments.csv.gz",
+      "sha256": "79599371516d12c819954fef71dc32ad24e9b901a581fb925e2ef08af5d26428",
+      "size": 180600,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/segments.csv",
+      "uncompressed_sha256": "3d6bd021a236500e5e2ff3d5be38d552c61ac400d7809a2e432ad51e9bcc1dac",
+      "uncompressed_size": 1070717
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/summary.json",
+      "sha256": "0638f1229a410bd608474565e4770432fab7d96e461e80ed1d2502ce81f94ae9",
+      "size": 1656,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/summary.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/terminal_checkpoint_after/terminal_state.json",
+      "sha256": "fe7e9b8034b0dd5c3c8ed9c212addcca496ee0ed2bf64481f73f6c750dc0f9c6",
+      "size": 206161,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/terminal_checkpoint_after/terminal_state.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/terminal_checkpoint_after/terminal_state_manifest.json",
+      "sha256": "6816ecc4b20cc4c5948f305fc70280a280bba40b43fb3d0d56c03a5a8f0283bc",
+      "size": 1690,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/terminal_checkpoint_after/terminal_state_manifest.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/terminal_checkpoint_before/terminal_state.json",
+      "sha256": "fe7e9b8034b0dd5c3c8ed9c212addcca496ee0ed2bf64481f73f6c750dc0f9c6",
+      "size": 206161,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/terminal_checkpoint_before/terminal_state.json"
+    },
+    {
+      "encoding": "identity",
+      "path": "raw/sr1000/terminal_checkpoint_before/terminal_state_manifest.json",
+      "sha256": "6816ecc4b20cc4c5948f305fc70280a280bba40b43fb3d0d56c03a5a8f0283bc",
+      "size": 1690,
+      "source": "/srv/local/shengenli/brusselator_sr1000_parity_20260828/terminal_checkpoint_before/terminal_state_manifest.json"
+    }
+  ],
+  "schema": "torch_tm_flowpipe.brusselator_sr1000_c4_manifest/1"
+}

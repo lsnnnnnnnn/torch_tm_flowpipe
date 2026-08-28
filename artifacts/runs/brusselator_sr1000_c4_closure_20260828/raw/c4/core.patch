@@ -1,0 +1,245 @@
+diff --git a/src/torch_tm_flowpipe/__init__.py b/src/torch_tm_flowpipe/__init__.py
+index b28385f..408e0d2 100644
+--- a/src/torch_tm_flowpipe/__init__.py
++++ b/src/torch_tm_flowpipe/__init__.py
+@@ -25,6 +25,7 @@ _PUBLIC_MODULES = {
+     "DenseValidatedRemainderDecomposition": ".batched_dense_tm",
+     "DenseValidatedStep": ".batched_dense_tm",
+     "FLOWSTAR_MAX_REFINEMENT_STEPS": ".batched_dense_tm",
++    "FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE": ".batched_dense_tm",
+     "FLOWSTAR_RAW_REMAINDER_REFINED_MODE": ".batched_dense_tm",
+     "FLOWSTAR_REFINEMENT_REPLAY_LIMIT": ".batched_dense_tm",
+     "FLOWSTAR_STOP_RATIO": ".batched_dense_tm",
+diff --git a/src/torch_tm_flowpipe/batched_dense_tm.py b/src/torch_tm_flowpipe/batched_dense_tm.py
+index e849379..e23b36b 100644
+--- a/src/torch_tm_flowpipe/batched_dense_tm.py
++++ b/src/torch_tm_flowpipe/batched_dense_tm.py
+@@ -48,6 +48,7 @@ VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION = 1
+ FLOWSTAR_RAW_REMAINDER_REFINED_MODE = (
+     "flowstar_raw_remainder_compat_factorized_joint_closure_refined"
+ )
++FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE = "flowstar_raw_remainder_compat_refined"
+ FLOWSTAR_MAX_REFINEMENT_STEPS = 490
+ FLOWSTAR_STOP_RATIO = 0.99
+ # The pinned Flow* loop uses ``rSteps <= MAX_REFINEMENT_STEPS`` starting at
+@@ -4249,7 +4250,9 @@ def _post_accept_refine_raw_remainder(
+     order: int,
+     cutoff_threshold: float | None,
+     validation_eps: float,
+-    structural_fingerprint: Mapping[str, Any],
++    structural_fingerprint: Mapping[str, Any] | None,
++    raw_rhs_evaluation: str = "canonical_factorized_joint_closure",
++    raw_dependency_preserving_square: bool | None = True,
+     replay_limit: int = FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+ ) -> tuple[
+     torch.Tensor,
+@@ -4257,7 +4260,7 @@ def _post_accept_refine_raw_remainder(
+     DenseValidatedRemainderDecomposition,
+     tuple[Mapping[str, Any], ...],
+ ]:
+-    """Replay the accepted C1 remainder map with atomic vector commits."""
++    """Replay an accepted raw-compat remainder map with atomic vector commits."""
+ 
+     if replay_limit < 0 or replay_limit > FLOWSTAR_REFINEMENT_REPLAY_LIMIT:
+         raise ValueError(
+@@ -4279,26 +4282,34 @@ def _post_accept_refine_raw_remainder(
+                 "flowstar_max_refinement_steps_macro": FLOWSTAR_MAX_REFINEMENT_STEPS,
+                 "flowstar_refinement_replay_limit": FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+                 "flowstar_stop_ratio": FLOWSTAR_STOP_RATIO,
+-                "vdp_structural_fingerprint": structural_fingerprint,
++                **(
++                    {"vdp_structural_fingerprint": structural_fingerprint}
++                    if structural_fingerprint is not None
++                    else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
++                ),
+             }
+         )
+         return final_lo, final_hi, final_decomposition, tuple(rows)
+ 
+-    cache_seed = candidate.with_remainder(
+-        retained_lo,
+-        retained_hi,
+-        category="initial_remainder",
+-    )
+-    static_cache = _prepare_vdp_refinement_static_cache(
+-        rhs_fn,
+-        base_ext,
+-        candidate,
+-        cache_seed,
+-        tau_index=tau_index,
+-        order=order,
+-        cutoff_threshold=cutoff_threshold,
+-        validation_eps=validation_eps,
+-    )
++    static_cache: _VDPRefinementStaticCache | None = None
++    if raw_rhs_evaluation == "canonical_factorized_joint_closure":
++        if structural_fingerprint is None:
++            raise ValueError("canonical closure refinement requires a structural fingerprint")
++        cache_seed = candidate.with_remainder(
++            retained_lo,
++            retained_hi,
++            category="initial_remainder",
++        )
++        static_cache = _prepare_vdp_refinement_static_cache(
++            rhs_fn,
++            base_ext,
++            candidate,
++            cache_seed,
++            tau_index=tau_index,
++            order=order,
++            cutoff_threshold=cutoff_threshold,
++            validation_eps=validation_eps,
++        )
+ 
+     for iteration in range(1, replay_limit + 1):
+         input_lo = final_lo
+@@ -4319,8 +4330,8 @@ def _post_accept_refine_raw_remainder(
+                     order=order,
+                     cutoff_threshold=cutoff_threshold,
+                     validation_eps=validation_eps,
+-                    raw_rhs_evaluation="canonical_factorized_joint_closure",
+-                    raw_dependency_preserving_square=True,
++                    raw_rhs_evaluation=raw_rhs_evaluation,
++                    raw_dependency_preserving_square=raw_dependency_preserving_square,
+                     refinement_static_cache=static_cache,
+                 )
+             )
+@@ -4338,7 +4349,11 @@ def _post_accept_refine_raw_remainder(
+                     "input_remainder_lo": input_lo.detach().cpu().tolist(),
+                     "input_remainder_hi": input_hi.detach().cpu().tolist(),
+                     "retained_polynomial_sha256": polynomial_sha256,
+-                    "vdp_structural_fingerprint": structural_fingerprint,
++                    **(
++                        {"vdp_structural_fingerprint": structural_fingerprint}
++                        if structural_fingerprint is not None
++                        else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
++                    ),
+                 }
+             )
+             break
+@@ -4388,7 +4403,11 @@ def _post_accept_refine_raw_remainder(
+                 "flowstar_max_refinement_steps_macro": FLOWSTAR_MAX_REFINEMENT_STEPS,
+                 "flowstar_refinement_replay_limit": FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+                 "flowstar_stop_ratio": FLOWSTAR_STOP_RATIO,
+-                "vdp_structural_fingerprint": structural_fingerprint,
++                **(
++                    {"vdp_structural_fingerprint": structural_fingerprint}
++                    if structural_fingerprint is not None
++                    else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
++                ),
+                 **compat_extra,
+             }
+         )
+@@ -4431,6 +4450,7 @@ def dense_picard_validate_step(
+         "flowstar_raw_remainder_compat_factorized_joint",
+         "flowstar_raw_remainder_compat_factorized_joint_closure",
+         FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
++        FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE,
+     }
+     if validation_mode not in supported_modes:
+         raise ValueError(f"dense Picard currently requires one of {sorted(supported_modes)}")
+@@ -4446,6 +4466,7 @@ def dense_picard_validate_step(
+         "flowstar_raw_remainder_compat_factorized_joint",
+         "flowstar_raw_remainder_compat_factorized_joint_closure",
+         FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
++        FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE,
+     }:
+         raise ValueError("raw RHS evaluation override requires a raw-compat validation mode")
+     if validation_mode in {
+@@ -4453,6 +4474,11 @@ def dense_picard_validate_step(
+         FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+     } and raw_rhs_evaluation_override not in {None, "canonical_factorized_joint_closure"}:
+         raise ValueError("C1/C2 VDP closure modes cannot override the canonical closure evaluator")
++    if (
++        validation_mode == FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE
++        and raw_rhs_evaluation_override not in {None, "ordered_terms"}
++    ):
++        raise ValueError("generic raw refinement requires ordered-terms evaluation")
+     if h <= 0:
+         raise ValueError("h must be positive")
+     if max_validation_attempts <= 0:
+@@ -4642,6 +4668,7 @@ def dense_picard_validate_step(
+             "flowstar_raw_remainder_compat_factorized_joint",
+             "flowstar_raw_remainder_compat_factorized_joint_closure",
+             FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
++            FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE,
+         }:
+             image_lo, image_hi, compat_extra, decomposition = _dense_flowstar_raw_compat_image(
+                 rhs_fn,
+@@ -4707,6 +4734,7 @@ def dense_picard_validate_step(
+             if validation_mode in {
+                 "flowstar_raw_remainder_compat",
+                 "flowstar_raw_remainder_compat_factorized_joint",
++                FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE,
+             }
+             else "Picard residual not subset of target remainder"
+         )
+@@ -4776,8 +4804,12 @@ def dense_picard_validate_step(
+                 decomposition,
+             )
+         if self_subset:
+-            if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE:
+-                assert structural_fingerprint is not None
++            if validation_mode in {
++                FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
++                FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE,
++            }:
++                if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE:
++                    assert structural_fingerprint is not None
+                 (
+                     refined_lo,
+                     refined_hi,
+@@ -4795,6 +4827,14 @@ def dense_picard_validate_step(
+                     cutoff_threshold=cutoff_threshold,
+                     validation_eps=validation_eps,
+                     structural_fingerprint=structural_fingerprint,
++                    raw_rhs_evaluation=(
++                        "canonical_factorized_joint_closure"
++                        if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE
++                        else "ordered_terms"
++                    ),
++                    raw_dependency_preserving_square=(
++                        True if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE else None
++                    ),
+                 )
+                 trace.extend(refinement_trace)
+                 last_image_lo = refined_lo
+@@ -4869,6 +4909,7 @@ __all__ = [
+     "DenseValidatedRemainderDecomposition",
+     "DenseValidatedStep",
+     "FLOWSTAR_MAX_REFINEMENT_STEPS",
++    "FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE",
+     "FLOWSTAR_RAW_REMAINDER_REFINED_MODE",
+     "FLOWSTAR_REFINEMENT_REPLAY_LIMIT",
+     "FLOWSTAR_STOP_RATIO",
+diff --git a/src/torch_tm_flowpipe/flowpipe.py b/src/torch_tm_flowpipe/flowpipe.py
+index 3f13094..b4dd8b4 100644
+--- a/src/torch_tm_flowpipe/flowpipe.py
++++ b/src/torch_tm_flowpipe/flowpipe.py
+@@ -6177,8 +6177,9 @@ def flowpipe_step_from_tm(
+         "flowstar_raw_remainder_compat_factorized_joint",
+         "flowstar_raw_remainder_compat_factorized_joint_closure",
+         "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
++        "flowstar_raw_remainder_compat_refined",
+     } and tm_backend != "dense":
+-        raise ValueError("factorized-joint raw remainder evaluation is dense-only")
++        raise ValueError("refined/factorized raw remainder evaluation is dense-only")
+     if diagnostic_context is not None:
+         diagnostics_context = diagnostic_context
+     if diagnostic_mode is not None:
+@@ -6252,6 +6253,7 @@ def flowpipe_step_from_tm(
+         "flowstar_raw_remainder_compat_factorized_joint",
+         "flowstar_raw_remainder_compat_factorized_joint_closure",
+         "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
++        "flowstar_raw_remainder_compat_refined",
+     }:
+         raise ValueError(
+             "validation_mode must be 'growth', 'current', 'target_remainder', 'target_remainder_normal_eval', "
+@@ -6601,6 +6603,7 @@ def flowpipe_step_flowstar_style_adaptive(
+         "flowstar_raw_remainder_compat_factorized_joint",
+         "flowstar_raw_remainder_compat_factorized_joint_closure",
+         "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
++        "flowstar_raw_remainder_compat_refined",
+     }:
+         raise ValueError("flowstar_style adaptive validation must use a target remainder mode")
+     normal_insertion_modes = {

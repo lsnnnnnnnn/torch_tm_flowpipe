@@ -1,0 +1,33 @@
+{
+  "c4_commit": "26323929d6f4fee0893478f6927ae76c5129bf47",
+  "c4_mode": "flowstar_raw_remainder_compat_refined",
+  "c4_status": "C4_FIX_AUTHORIZED",
+  "c4_stock_remainder_error_ratio": 5.954573175153376e-05,
+  "capacity_reset_decision": "NOT_SOLELY_QUEUE_RESET_CAPACITY",
+  "checks": {
+    "c3_terminal_rollback_closed": true,
+    "c4_analysis_manifest": true,
+    "c4_patch_bound_to_commit": true,
+    "compose_probe_matches_stock": true,
+    "contract_identity": true,
+    "first_material_divergence": true,
+    "flowstar_observer_output_equivalent": true,
+    "flowstar_trace_provenance": true,
+    "operator_search_order": true,
+    "queue_capacity_not_reached_or_reset": true,
+    "same_input_c4_gate": true,
+    "same_input_checkpoint": true,
+    "single_c4_fix_authorized": true,
+    "sr1000_clean_frozen_execution": true,
+    "sr1000_prefix_and_terminal_rejection": true,
+    "stock_prefix_available": true,
+    "truncation_owner_trace_recomputed": true
+  },
+  "first_material_max_delta": 5.148648021724432e-08,
+  "first_material_operator_divergence": "truncation_cutoff_owners",
+  "schema": "torch_tm_flowpipe.brusselator_sr1000_c4_closure/1",
+  "status": "BRUSSELATOR_SR1000_OPERATOR_C4_CLOSED",
+  "stock_accepted_steps": 1000,
+  "torch_accepted_steps": 357,
+  "torch_terminal_rejection_step": 358
+}

@@ -1,0 +1,60 @@
+{
+  "files": {
+    "RESULT.json": {
+      "bytes": 1871,
+      "sha256": "4741ee538ac076d70829a490cc57a25d37036438bb09d5414f31b3357c129ff3"
+    },
+    "operator_ledger.json": {
+      "bytes": 4247,
+      "sha256": "cfc6617388947c050d76567d0cfd3266d617eb315a6b1c492cb8330fc5a85f0d"
+    },
+    "provenance.json": {
+      "bytes": 2505,
+      "sha256": "71315aab3767133b53d8886eea58b721799d4ca2fb7789b53ab36bbed57cdf33"
+    },
+    "same_input_gate.json": {
+      "bytes": 690,
+      "sha256": "d3bbd2fe8461bbcf66131ee635cad9e6c851006dfa99994683ed11bef305fca5"
+    }
+  },
+  "result": {
+    "baseline_reproduces_frozen_sr1000_step1": true,
+    "c4_change": "generic atomic post-accept ordered-terms raw-remainder refinement",
+    "c4_core_diff_sha256": "2511866ca6a66520deab0f637a10d2027d6cbbbfe459d553cdae1446873d8f4b",
+    "c4_fix_budget": 1,
+    "c4_mode": "flowstar_raw_remainder_compat_refined",
+    "c4_numeric_fixes_authorized": 1,
+    "c4_status": "C4_FIX_AUTHORIZED",
+    "capacity_verdict": "NOT_SOLELY_QUEUE_RESET_CAPACITY",
+    "endpoint_range_semantics_is_later_not_first": true,
+    "first_material_max_delta": 5.148648021724432e-08,
+    "first_material_operator_divergence": "truncation_cutoff_owners",
+    "first_material_search_index": 3,
+    "flowstar_observer_output_equivalent": true,
+    "full_c4_prefix_rerun_performed": false,
+    "full_c4_prefix_rerun_reason": "frozen contract permits one paired local operator evaluation, not another benchmark",
+    "same_input_checkpoint_sha256": "c8dea2b07eed81f29e1ac395e3f2b1f7d2528ab9064992d18db0b05c0641bb0b",
+    "same_input_gate": {
+      "all_commits_subset": true,
+      "baseline_stock_remainder_l1_error": 6.619180550258724e-05,
+      "candidate_stock_remainder_l1_error": 3.941439494606757e-09,
+      "first_acceptance_identical_to_legacy": true,
+      "mode": "flowstar_raw_remainder_compat_refined",
+      "queue_hash_after_accept": "6b517cb9479e80424b18a43dce4766e408b89a19210b649b6c41c896d114e627",
+      "queue_present_after_accept": true,
+      "refinement_iterations": 8,
+      "retained_polynomial_equal": true,
+      "sample_endpoint_violations": 0,
+      "sample_solver_ok": true,
+      "sample_tube_violations": 0,
+      "stock_remainder_error_ratio": 5.954573175153376e-05,
+      "stop_reason": "stop_ratio",
+      "validated_decomposition_contains_image": true
+    },
+    "same_input_hashes_equal": true,
+    "schema": "torch_tm_flowpipe.brusselator_c4_same_input_result/1",
+    "sr1000_accepted_steps": 357,
+    "stock_accepted_steps": 1000
+  },
+  "schema": "torch_tm_flowpipe.brusselator_c4_manifest/1"
+}

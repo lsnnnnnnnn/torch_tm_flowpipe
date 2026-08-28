@@ -1,0 +1,151 @@
+{
+  "material_threshold": 1e-12,
+  "stages": [
+    {
+      "flowstar_queue_j_size": 0,
+      "flowstar_queue_phi_size": 0,
+      "flowstar_right_map_identity": true,
+      "material": false,
+      "max_coefficient_interval_distance": 1.734723475976807e-17,
+      "max_coefficient_witness": {
+        "component": 0,
+        "exponent_ux_uy_tau": [
+          1,
+          0,
+          0
+        ],
+        "flowstar_hi": 0.020000000000000018,
+        "flowstar_lo": 0.020000000000000018,
+        "interval_distance": 1.734723475976807e-17,
+        "torch": 0.02
+      },
+      "search_index": 1,
+      "stage": "accepted_input_right_map_queue",
+      "support_equal": true,
+      "torch_queue_absent": true,
+      "torch_right_map_identity": true
+    },
+    {
+      "flowstar_observer_stage": "candidate_target",
+      "material": false,
+      "max_coefficient_interval_distance": 1.7763568394002505e-15,
+      "max_coefficient_witness": {
+        "component": 0,
+        "exponent_ux_uy_tau": [
+          0,
+          0,
+          5
+        ],
+        "flowstar_hi": -8.337394205729165,
+        "flowstar_lo": -8.337394205729165,
+        "interval_distance": 1.7763568394002505e-15,
+        "torch": -8.337394205729167
+      },
+      "search_index": 2,
+      "stage": "polynomial_picard_pre_truncation",
+      "support_equal": true
+    },
+    {
+      "flowstar_candidate_cutoff_hooks_all_zero": true,
+      "flowstar_terminal_degree_truncation": [
+        [
+          -2.7057522211747316e-07,
+          1.9748673455136367e-07
+        ],
+        [
+          -1.9748673455136367e-07,
+          2.7057522211747316e-07
+        ]
+      ],
+      "mapping": "Flow* candidate_intermediate_ranges[7,14] are the terminal x/y ODE degree-discard intervals and equal candidate attempt hooks[4,9]",
+      "material": true,
+      "max_cutoff_owner_magnitude": 2.225073858507202e-308,
+      "max_degree_truncation_bound_delta": 5.148648021724432e-08,
+      "search_index": 3,
+      "stage": "truncation_cutoff_owners",
+      "torch_degree_truncation_ledger": [
+        [
+          -2.5731238254642676e-07,
+          1.4600025433411935e-07
+        ],
+        [
+          -1.5677520850078987e-07,
+          2.7566370105771534e-07
+        ]
+      ]
+    },
+    {
+      "flowstar_initial_subset_image": [
+        [
+          -1.5562562889483347e-05,
+          1.556036450344192e-05
+        ],
+        [
+          -1.7560722740223187e-05,
+          1.7563059745020256e-05
+        ]
+      ],
+      "material": true,
+      "max_bound_delta": 4.986694492941165e-09,
+      "search_index": 4,
+      "stage": "raw_rhs_remainder_picard_residual",
+      "torch_initial_subset_image": [
+        [
+          -1.555888368451373e-05,
+          1.5555520546646836e-05
+        ],
+        [
+          -1.7555736045730245e-05,
+          1.7559250710884035e-05
+        ]
+      ]
+    },
+    {
+      "baseline_stock_l1_error": 6.619180550258724e-05,
+      "c4_stock_l1_error": 3.941439494606757e-09,
+      "flowstar_accepted_remainder": [
+        [
+          -1.0256262340411214e-08,
+          -8.517414352354687e-09
+        ],
+        [
+          8.349672236460269e-09,
+          1.046213625838395e-08
+        ]
+      ],
+      "material": true,
+      "search_index": 5,
+      "stage": "validated_remainder_subset",
+      "torch_baseline_remainder": [
+        [
+          -1.555888368451373e-05,
+          -1.7555736045730245e-05
+        ],
+        [
+          1.5555520546646836e-05,
+          1.7559250710884035e-05
+        ]
+      ],
+      "torch_c4_remainder": [
+        [
+          -1.0031087325429114e-08,
+          -6.816921191150636e-09
+        ],
+        [
+          6.471248618629602e-09,
+          1.0599483958973888e-08
+        ]
+      ]
+    },
+    {
+      "baseline_stock_max_bound_delta": 0.001894782010347651,
+      "candidate_stock_max_bound_delta": 0.0019123309294721835,
+      "flowstar_compose_probe_matches_frozen_stock_bit_exact": true,
+      "flowstar_range_semantics": "compose_normal then per-term intEvalNormal without tau-term collection",
+      "later_material_observation": true,
+      "search_index": 6,
+      "stage": "endpoint_tube_range",
+      "torch_range_semantics": "substitute tau=h, collect equal state monomials, then interval-evaluate"
+    }
+  ]
+}

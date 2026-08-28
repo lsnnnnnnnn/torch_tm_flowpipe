@@ -1,0 +1,79 @@
+{
+  "schema": "torch_tm_flowpipe.brusselator_terminal_sr1000_contract/1",
+  "scope": {
+    "baseline_execution_order": [
+      "sr100_terminal_replay_once",
+      "torch_sr1000_once"
+    ],
+    "additional_benchmarks_allowed": false,
+    "capacity_sweep_allowed": false,
+    "c4_numeric_fix_budget": 1,
+    "same_input_paired_operator_evaluation_allowed_after_noncapacity_verdict": true
+  },
+  "identity": {
+    "plant": "brusselator_fixed_expression_tree",
+    "flowstar_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "flowstar_benchmark_sha256": "b982f7c6f737e4b5e070942dc5fe01fa9d60e17a419a146d42444c71b5bf4f3b",
+    "flowstar_segments_sha256": "08e184e2b0a99be48417be8971ed6632eccec0630849787a1048b9962d15f567",
+    "generic_core_commit": "b88888691eaeefac1fb2e48d5ab0f82ad50c58ac",
+    "published_sr100_commit": "33ea600d01143177d02784b204cafabb4343711d"
+  },
+  "terminal_replay": {
+    "queue_capacity": 100,
+    "accepted_prefix_steps": 355,
+    "terminal_attempt_step": 356,
+    "terminal_attempt_budget": 1,
+    "prefix_comparison": "bit_exact_endpoint_tube_bounds_and_queue_hash_each_boundary",
+    "rollback_comparison": "byte_exact_v5_checkpoint_and_queue_metadata"
+  },
+  "sr1000": {
+    "initial_decimal_box": [
+      ["1.48", "1.52"],
+      ["2.98", "3.02"]
+    ],
+    "partition": "B1",
+    "dtype": "float64",
+    "device": "cpu",
+    "order": 6,
+    "fixed_step_decimal": "0.02",
+    "fixed_step_hex": "0x1.47ae147ae147bp-6",
+    "requested_steps": 1000,
+    "requested_horizon_decimal": "20",
+    "target_remainder_decimal": ["-1e-4", "1e-4"],
+    "cutoff_decimal": "1e-10",
+    "queue_capacity": 1000,
+    "validation_mode": "flowstar_raw_remainder_compat",
+    "max_validation_attempts": 2,
+    "validation_eps_decimal": "1e-12",
+    "right_map_range_mode": "standard",
+    "right_map_center_mode": "constant",
+    "reset_mode": "normalized_insertion_dependency_preserving_generic_sr",
+    "endpoint_tightening": false,
+    "adaptive_retry": false,
+    "dense_range_policy": {
+      "method": "adaptive_subdivision",
+      "max_depth": 1,
+      "max_leaves": 4,
+      "split_vars": [0, 1],
+      "trigger": "proactive_depth1_on_named_contexts",
+      "named_contexts": ["polynomial_truncation"]
+    }
+  },
+  "decision": {
+    "capacity_sufficient_requires_accepted_steps": 1000,
+    "capacity_sufficient_status": "QUEUE_RESET_CAPACITY_SUFFICIENT",
+    "capacity_insufficient_status": "NOT_SOLELY_QUEUE_RESET_CAPACITY",
+    "material_absolute_threshold_decimal": "1e-12",
+    "material_requires_persistence": true,
+    "material_persistence_consecutive_boundaries": 3,
+    "operator_search_order": [
+      "accepted_input_right_map_queue",
+      "polynomial_picard_pre_truncation",
+      "truncation_cutoff_owners",
+      "raw_rhs_remainder_picard_residual",
+      "validated_remainder_subset",
+      "endpoint_tube_range",
+      "normalization_insertion_symbolic_history"
+    ]
+  }
+}
