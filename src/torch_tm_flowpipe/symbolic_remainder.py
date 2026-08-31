@@ -237,7 +237,13 @@ def _identity_interval_matrix(dim: int, reference: Interval) -> IntervalMatrix:
     )
 
 
-def _matmul_interval_matrix(a: IntervalMatrix, b: IntervalMatrix, reference: Interval) -> IntervalMatrix:
+def _matmul_interval_matrix_scalar(
+    a: IntervalMatrix,
+    b: IntervalMatrix,
+    reference: Interval,
+) -> IntervalMatrix:
+    """Original scalar-object schedule retained as a bitwise test oracle."""
+
     dim = len(a)
     out: list[tuple[Interval, ...]] = []
     for i in range(dim):
@@ -251,11 +257,13 @@ def _matmul_interval_matrix(a: IntervalMatrix, b: IntervalMatrix, reference: Int
     return tuple(out)
 
 
-def _matmul_interval_matrix_col(
+def _matmul_interval_matrix_col_scalar(
     matrix: IntervalMatrix,
     column: IntervalColumn,
     reference: Interval,
 ) -> IntervalColumn:
+    """Original scalar-object schedule retained as a bitwise test oracle."""
+
     out: list[Interval] = []
     for row in matrix:
         acc = _zero_interval_like_interval(reference)
@@ -263,6 +271,161 @@ def _matmul_interval_matrix_col(
             acc = acc + value * interval
         out.append(acc)
     return tuple(out)
+
+
+def _pack_interval_matrices(
+    matrices: Sequence[IntervalMatrix],
+    *,
+    dim: int,
+    reference: Interval,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if not matrices:
+        empty = torch.empty(
+            (0, int(dim), int(dim)),
+            dtype=reference.dtype,
+            device=reference.device,
+        )
+        return empty, empty.clone()
+    lo = torch.stack(
+        [torch.stack([torch.stack([value.lo for value in row]) for row in matrix]) for matrix in matrices]
+    )
+    hi = torch.stack(
+        [torch.stack([torch.stack([value.hi for value in row]) for row in matrix]) for matrix in matrices]
+    )
+    return lo, hi
+
+
+def _pack_interval_columns(
+    columns: Sequence[IntervalColumn],
+    *,
+    dim: int,
+    reference: Interval,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if not columns:
+        empty = torch.empty(
+            (0, int(dim)),
+            dtype=reference.dtype,
+            device=reference.device,
+        )
+        return empty, empty.clone()
+    return (
+        torch.stack([torch.stack([value.lo for value in column]) for column in columns]),
+        torch.stack([torch.stack([value.hi for value in column]) for column in columns]),
+    )
+
+
+def _tensor_interval_mul(
+    a_lo: torch.Tensor,
+    a_hi: torch.Tensor,
+    b_lo: torch.Tensor,
+    b_hi: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    candidates = torch.stack(
+        (a_lo * b_lo, a_lo * b_hi, a_hi * b_lo, a_hi * b_hi),
+        dim=0,
+    )
+    return (
+        torch.nextafter(torch.amin(candidates, dim=0), torch.full_like(a_lo, -torch.inf)),
+        torch.nextafter(torch.amax(candidates, dim=0), torch.full_like(a_hi, torch.inf)),
+    )
+
+
+def _tensor_interval_add(
+    a_lo: torch.Tensor,
+    a_hi: torch.Tensor,
+    b_lo: torch.Tensor,
+    b_hi: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    return (
+        torch.nextafter(a_lo + b_lo, torch.full_like(a_lo, -torch.inf)),
+        torch.nextafter(a_hi + b_hi, torch.full_like(a_hi, torch.inf)),
+    )
+
+
+def _tensorized_interval_matrix_update_and_image(
+    left: IntervalMatrix,
+    matrices: Sequence[IntervalMatrix],
+    columns: Sequence[IntervalColumn],
+    reference: Interval,
+) -> tuple[tuple[IntervalMatrix, ...], IntervalColumn]:
+    """Run the unchanged owner schedule in packed CPU float64 tensors.
+
+    Matrix products are parallel only across independent owners.  The inner-k
+    and owner accumulation loops retain the scalar reference order and apply
+    one outward ``nextafter`` after every multiplication and addition.
+    """
+
+    dim = len(left)
+    owner_count = len(matrices)
+    if owner_count != len(columns):
+        raise ValueError("accepted-boundary SR tensor pack owner count mismatch")
+    if owner_count == 0:
+        return (), tuple(_zero_interval_like_interval(reference) for _ in range(dim))
+    left_lo, left_hi = _pack_interval_matrices(
+        (left,), dim=dim, reference=reference
+    )
+    matrix_lo, matrix_hi = _pack_interval_matrices(
+        matrices, dim=dim, reference=reference
+    )
+    updated_lo = torch.zeros_like(matrix_lo)
+    updated_hi = torch.zeros_like(matrix_hi)
+    for k in range(dim):
+        a_lo = left_lo[0, :, k].view(1, dim, 1)
+        a_hi = left_hi[0, :, k].view(1, dim, 1)
+        b_lo = matrix_lo[:, k, :].view(owner_count, 1, dim)
+        b_hi = matrix_hi[:, k, :].view(owner_count, 1, dim)
+        product_lo, product_hi = _tensor_interval_mul(a_lo, a_hi, b_lo, b_hi)
+        updated_lo, updated_hi = _tensor_interval_add(
+            updated_lo,
+            updated_hi,
+            product_lo,
+            product_hi,
+        )
+
+    column_lo, column_hi = _pack_interval_columns(
+        columns, dim=dim, reference=reference
+    )
+    image_lo = torch.zeros((owner_count, dim), dtype=reference.dtype, device=reference.device)
+    image_hi = torch.zeros_like(image_lo)
+    for k in range(dim):
+        product_lo, product_hi = _tensor_interval_mul(
+            updated_lo[:, :, k],
+            updated_hi[:, :, k],
+            column_lo[:, k].view(owner_count, 1),
+            column_hi[:, k].view(owner_count, 1),
+        )
+        image_lo, image_hi = _tensor_interval_add(
+            image_lo,
+            image_hi,
+            product_lo,
+            product_hi,
+        )
+
+    propagated_lo = torch.zeros((dim,), dtype=reference.dtype, device=reference.device)
+    propagated_hi = torch.zeros_like(propagated_lo)
+    for owner in range(owner_count):
+        propagated_lo, propagated_hi = _tensor_interval_add(
+            propagated_lo,
+            propagated_hi,
+            image_lo[owner],
+            image_hi[owner],
+        )
+
+    updated = tuple(
+        tuple(
+            tuple(
+                Interval(updated_lo[owner, row, col], updated_hi[owner, row, col])
+                for col in range(dim)
+            )
+            for row in range(dim)
+        )
+        for owner in range(owner_count)
+    )
+    propagated = tuple(
+        Interval(propagated_lo[row], propagated_hi[row])
+        for row in range(dim)
+    )
+    return updated, propagated
 
 
 def _real_matrix_as_intervals(matrix: RealMatrix, reference: Interval) -> IntervalMatrix:
@@ -366,6 +529,37 @@ def _accepted_boundary_sr_interval_finite(value: Interval) -> bool:
     )
 
 
+def _validated_interval_bounds(
+    values: Sequence[Interval],
+    *,
+    message: str,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Validate scalar CPU binary64 intervals with one packed tensor pass."""
+
+    if not values:
+        empty = torch.empty((0,), dtype=torch.float64)
+        return empty, empty.clone()
+    if any(
+        value.device.type != "cpu"
+        or value.dtype != torch.float64
+        or value.lo.numel() != 1
+        or value.hi.numel() != 1
+        for value in values
+    ):
+        raise FloatingPointError(message)
+    lo = torch.stack([value.lo.reshape(()) for value in values])
+    hi = torch.stack([value.hi.reshape(()) for value in values])
+    width = torch.nextafter(hi - lo, torch.full_like(hi, torch.inf))
+    if not bool(
+        torch.all(torch.isfinite(lo))
+        and torch.all(torch.isfinite(hi))
+        and torch.all(torch.isfinite(width))
+        and torch.all(lo <= hi)
+    ):
+        raise FloatingPointError(message)
+    return lo, hi
+
+
 def validate_accepted_boundary_sr_queue(
     state: FlowstarSymbolicRemainderQueue,
     *,
@@ -407,27 +601,49 @@ def validate_accepted_boundary_sr_queue(
         raise ValueError("accepted-boundary SR queue generation/boundary ownership mismatch")
     if state.owner_generations and state.owner_generations[-1] > state.generation:
         raise ValueError("accepted-boundary SR queue owner is newer than its state generation")
-    for scalar, scalar_iv in zip(state.scalars, state.scalars_iv):
-        if not torch.isfinite(torch.as_tensor(float(scalar), dtype=torch.float64)):
-            raise FloatingPointError("accepted-boundary SR queue has nonfinite point scalar")
-        if not _accepted_boundary_sr_interval_finite(scalar_iv) or not scalar_iv.contains(float(scalar)):
-            raise FloatingPointError("accepted-boundary SR queue scalar enclosure is invalid")
+    scalar_points = torch.as_tensor(
+        tuple(float(value) for value in state.scalars),
+        dtype=torch.float64,
+    )
+    if not bool(torch.all(torch.isfinite(scalar_points))):
+        raise FloatingPointError("accepted-boundary SR queue has nonfinite point scalar")
+    scalar_lo, scalar_hi = _validated_interval_bounds(
+        state.scalars_iv,
+        message="accepted-boundary SR queue scalar enclosure is invalid",
+    )
+    if not bool(torch.all((scalar_points >= scalar_lo) & (scalar_points <= scalar_hi))):
+        raise FloatingPointError("accepted-boundary SR queue scalar enclosure is invalid")
+
+    point_phi_values: list[float] = []
+    interval_phi_values: list[Interval] = []
     for point_matrix, interval_matrix in zip(state.Phi_L, state.Phi_L_iv):
         if len(point_matrix) != state.dim or len(interval_matrix) != state.dim:
             raise ValueError("accepted-boundary SR queue Phi row dimension mismatch")
         for point_row, interval_row in zip(point_matrix, interval_matrix):
             if len(point_row) != state.dim or len(interval_row) != state.dim:
                 raise ValueError("accepted-boundary SR queue Phi column dimension mismatch")
-            for point, enclosure in zip(point_row, interval_row):
-                if not torch.isfinite(torch.as_tensor(float(point), dtype=torch.float64)):
-                    raise FloatingPointError("accepted-boundary SR queue has nonfinite point Phi")
-                if not _accepted_boundary_sr_interval_finite(enclosure) or not enclosure.contains(float(point)):
-                    raise FloatingPointError("accepted-boundary SR queue Phi enclosure is invalid")
+            point_phi_values.extend(float(point) for point in point_row)
+            interval_phi_values.extend(interval_row)
+    if point_phi_values:
+        point_phi = torch.as_tensor(point_phi_values, dtype=torch.float64)
+        if not bool(torch.all(torch.isfinite(point_phi))):
+            raise FloatingPointError("accepted-boundary SR queue has nonfinite point Phi")
+        phi_lo, phi_hi = _validated_interval_bounds(
+            interval_phi_values,
+            message="accepted-boundary SR queue Phi enclosure is invalid",
+        )
+        if not bool(torch.all((point_phi >= phi_lo) & (point_phi <= phi_hi))):
+            raise FloatingPointError("accepted-boundary SR queue Phi enclosure is invalid")
+
+    j_values: list[Interval] = []
     for column in state.J:
-        if len(column) != state.dim or not all(
-            _accepted_boundary_sr_interval_finite(value) for value in column
-        ):
+        if len(column) != state.dim:
             raise FloatingPointError("accepted-boundary SR queue J column is invalid")
+        j_values.extend(column)
+    _validated_interval_bounds(
+        j_values,
+        message="accepted-boundary SR queue J column is invalid",
+    )
 
 
 def accepted_boundary_sr_queue_propagate(
@@ -436,13 +652,15 @@ def accepted_boundary_sr_queue_propagate(
     *,
     expected_boundary_index: int,
     reference: Interval,
+    _validated: bool = False,
 ) -> tuple[tuple[RealMatrix, ...], tuple[IntervalMatrix, ...], IntervalColumn, dict[str, Any]]:
     """Outward-propagate existing owners without mutating accepted state."""
 
-    validate_accepted_boundary_sr_queue(
-        state,
-        expected_boundary_index=expected_boundary_index,
-    )
+    if not _validated:
+        validate_accepted_boundary_sr_queue(
+            state,
+            expected_boundary_index=expected_boundary_index,
+        )
     if len(linear) != state.dim or any(len(row) != state.dim for row in linear):
         raise ValueError("accepted-boundary SR queue linear map dimension mismatch")
     if any(not torch.isfinite(torch.as_tensor(float(value), dtype=torch.float64)) for row in linear for value in row):
@@ -451,16 +669,12 @@ def accepted_boundary_sr_queue_propagate(
     phi_i = _right_scale_matrix(linear, state.scalars)
     phi_i_iv = _right_scale_interval_matrix(linear, state.scalars_iv, reference)
     updated_point = tuple(_matmul_real(phi_i, value) for value in state.Phi_L)
-    updated_interval = tuple(
-        _matmul_interval_matrix(phi_i_iv, value, reference)
-        for value in state.Phi_L_iv
+    updated_interval, propagated = _tensorized_interval_matrix_update_and_image(
+        phi_i_iv,
+        state.Phi_L_iv,
+        state.J,
+        reference,
     )
-    propagated = tuple(_zero_interval_like_interval(reference) for _ in range(state.dim))
-    for matrix, column in zip(updated_interval, state.J):
-        propagated = _add_interval_columns(
-            propagated,
-            _matmul_interval_matrix_col(matrix, column, reference),
-        )
     stats = {
         "queue_size_before": len(state.J),
         "generation_before": state.generation,
@@ -634,10 +848,8 @@ def c3_symbolic_queue_propagate(
 ) -> tuple[tuple[RealMatrix, ...], tuple[IntervalMatrix, ...], IntervalColumn, dict[str, Any]]:
     """Frozen C3 wrapper over generic outward owner propagation."""
 
-    validate_c3_symbolic_queue(
-        state,
-        expected_boundary_index=expected_boundary_index,
-    )
+    if state.owner_schema != C3_CROSS_STEP_SR_OWNER_SCHEMA:
+        raise ValueError("C3 symbolic queue owner schema mismatch")
     return accepted_boundary_sr_queue_propagate(
         state,
         linear,
@@ -658,10 +870,8 @@ def c3_symbolic_queue_commit(
 ) -> tuple[FlowstarSymbolicRemainderQueue, dict[str, Any]]:
     """Frozen C3 wrapper over the generic accepted-only atomic commit."""
 
-    validate_c3_symbolic_queue(
-        state,
-        expected_boundary_index=int(accepted_boundary_index) - 1,
-    )
+    if state.owner_schema != C3_CROSS_STEP_SR_OWNER_SCHEMA:
+        raise ValueError("C3 symbolic queue owner schema mismatch")
     return accepted_boundary_sr_queue_commit(
         state,
         updated_phi,
@@ -676,7 +886,8 @@ def c3_symbolic_queue_commit(
 def c3_symbolic_queue_sha256(state: FlowstarSymbolicRemainderQueue) -> str:
     """Frozen C3 wrapper over the generic queue fingerprint."""
 
-    validate_c3_symbolic_queue(state)
+    if state.owner_schema != C3_CROSS_STEP_SR_OWNER_SCHEMA:
+        raise ValueError("C3 symbolic queue owner schema mismatch")
     return accepted_boundary_sr_queue_sha256(state)
 
 

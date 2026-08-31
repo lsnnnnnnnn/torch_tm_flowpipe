@@ -382,6 +382,7 @@ def prepare_accepted_boundary_sr(
             linear,
             expected_boundary_index=previous_accepted_boundary_index,
             reference=reference,
+            _validated=True,
         )
     )
     if len(queue.J) == 0:
