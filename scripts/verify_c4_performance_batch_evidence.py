@@ -215,6 +215,8 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     allocations = _rows(artifact_dir / "allocation_profile.csv")
     assert REQUIRED_PROFILE_WINDOWS <= {row["window"] for row in allocations}
     assert all(int(row["peak_rss_bytes"]) > 0 for row in allocations)
+    assert all(int(row["temporary_tensor_result_count"]) > 0 for row in allocations)
+    assert all(int(row["temporary_tensor_logical_bytes"]) > 0 for row in allocations)
     assert (artifact_dir / "flamegraph.txt").is_file()
 
     authorization = _read_json(artifact_dir / "optimization_authorization.json")

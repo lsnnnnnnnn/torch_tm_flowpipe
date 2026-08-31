@@ -8,6 +8,7 @@ import csv
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import pstats
 import resource
@@ -19,12 +20,15 @@ import tracemalloc
 from typing import Any, Callable, Mapping, Sequence
 
 import torch
+from torch.utils._python_dispatch import TorchDispatchMode
+from torch.utils._pytree import tree_flatten
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+CODE_ROOT = Path(os.environ.get("C4_PROFILE_CODE_ROOT", str(ROOT))).resolve()
+SRC = CODE_ROOT / "src"
+if str(CODE_ROOT) not in sys.path:
+    sys.path.insert(0, str(CODE_ROOT))
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
@@ -195,15 +199,44 @@ def _run_vdp_prefix(count: int, observer_mode: str) -> tuple[Any, Any, Any, int]
     return current, state, segment, int(count)
 
 
-def _measure_allocations(action: Callable[[], tuple[Any, Any, Any, int]]) -> tuple[int, int, tuple[Any, Any, Any, int]]:
+class _TensorResultCounter(TorchDispatchMode):
+    """Count logical tensor results without changing operator scheduling."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.count = 0
+        self.logical_bytes = 0
+
+    def __torch_dispatch__(self, func, types, args=(), kwargs=None):
+        del types
+        result = func(*args, **(kwargs or {}))
+        values, _spec = tree_flatten(result)
+        for value in values:
+            if isinstance(value, torch.Tensor):
+                self.count += 1
+                self.logical_bytes += int(value.numel()) * int(value.element_size())
+        return result
+
+
+def _measure_allocations(
+    action: Callable[[], tuple[Any, Any, Any, int]],
+) -> tuple[int, int, int, int, tuple[Any, Any, Any, int]]:
     tracemalloc.start()
     before = tracemalloc.take_snapshot()
-    result = action()
+    tensor_counter = _TensorResultCounter()
+    with tensor_counter:
+        result = action()
     after = tracemalloc.take_snapshot()
     _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     count = sum(max(0, stat.count_diff) for stat in after.compare_to(before, "lineno"))
-    return count, int(peak), result
+    return (
+        count,
+        int(peak),
+        tensor_counter.count,
+        tensor_counter.logical_bytes,
+        result,
+    )
 
 
 def _observer_measurements(repeats: int, prefix_steps: int) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -213,13 +246,19 @@ def _observer_measurements(repeats: int, prefix_steps: int) -> tuple[list[dict[s
         runtimes: list[float] = []
         allocation_count = 0
         allocation_peak = 0
+        tensor_result_count = 0
+        tensor_result_bytes = 0
         final_result = None
         for repeat in range(int(repeats)):
             started = time.perf_counter()
             if repeat == 0:
-                allocation_count, allocation_peak, final_result = _measure_allocations(
-                    lambda: _run_brusselator_steps(prefix_steps, observer_mode)
-                )
+                (
+                    allocation_count,
+                    allocation_peak,
+                    tensor_result_count,
+                    tensor_result_bytes,
+                    final_result,
+                ) = _measure_allocations(lambda: _run_brusselator_steps(prefix_steps, observer_mode))
             else:
                 final_result = _run_brusselator_steps(prefix_steps, observer_mode)
             runtimes.append(time.perf_counter() - started)
@@ -262,6 +301,9 @@ def _observer_measurements(repeats: int, prefix_steps: int) -> tuple[list[dict[s
                 "checkpoint_sha256": manifest["full_checkpoint_sha256"],
                 "python_positive_allocation_count": allocation_count,
                 "tracemalloc_peak_bytes": allocation_peak,
+                "temporary_tensor_result_count": tensor_result_count,
+                "temporary_tensor_logical_bytes": tensor_result_bytes,
+                "temporary_tensor_measurement": "TorchDispatch logical operator outputs; views and persistent outputs included",
                 "peak_rss_bytes": _peak_rss_bytes(),
                 "accepted_steps": accepted,
                 "rejected_steps": 0,
@@ -329,7 +371,13 @@ def _profile_action(
     window: str,
     action: Callable[[], tuple[Any, Any, Any, int]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], str, dict[str, Any]]:
-    allocation_count, allocation_peak, _warm_result = _measure_allocations(action)
+    (
+        allocation_count,
+        allocation_peak,
+        tensor_result_count,
+        tensor_result_bytes,
+        _warm_result,
+    ) = _measure_allocations(action)
     profiler = cProfile.Profile()
     started = time.perf_counter()
     profiler.enable()
@@ -402,6 +450,9 @@ def _profile_action(
             "window": window,
             "python_positive_allocation_count": allocation_count,
             "tracemalloc_peak_bytes": allocation_peak,
+            "temporary_tensor_result_count": tensor_result_count,
+            "temporary_tensor_logical_bytes": tensor_result_bytes,
+            "temporary_tensor_measurement": "TorchDispatch logical operator outputs; views and persistent outputs included",
             "peak_rss_bytes": _peak_rss_bytes(),
         }
     ]
@@ -482,6 +533,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "profile_windows": windows,
         "profile_bucket_semantics": "mutually_exclusive_cProfile_exclusive_time_by_function_class",
         "tail_checkpoint": None if args.tail_checkpoint is None else str(args.tail_checkpoint.resolve()),
+        "profile_code_root": str(CODE_ROOT),
         "status": "PROFILE_COMPLETE",
     }
     _write_json(output / "profile_summary.json", result)
