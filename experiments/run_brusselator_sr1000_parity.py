@@ -163,6 +163,7 @@ def _step(
     *,
     validation_mode: str,
     lane_label: str,
+    observer_mode: str = "full_evidence",
 ) -> tuple[Any, list[dict[str, Any]]]:
     diagnostics: list[dict[str, Any]] = []
     segment = flowpipe_step_flowstar_style_adaptive(
@@ -193,6 +194,7 @@ def _step(
             "segment_index": step - 1,
             "t_before": (step - 1) * STEP,
         },
+        dense_observer_mode=observer_mode,
     )
     return segment, diagnostics
 

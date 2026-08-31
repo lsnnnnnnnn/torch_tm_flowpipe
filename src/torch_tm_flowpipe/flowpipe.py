@@ -5909,12 +5909,14 @@ def _flowpipe_step_from_tm_hybrid_dense(
     selective_high_degree_terms_top_k: int | None,
     normal_eval_range_split: int | None,
     dense_range_policy: Any | None,
+    dense_observer_mode: str,
 ) -> FlowpipeSegment:
     """Dense Picard/validation with one sparse bridge at each segment boundary."""
     from .batched_dense_tm import (
         BatchedTaylorModel,
         DenseRangePolicy,
         DenseExecutionCounters,
+        DENSE_OBSERVER_FULL,
         dense_picard_validate_step,
         dense_to_sparse_tmvector,
         sparse_tmvector_to_dense,
@@ -5945,7 +5947,8 @@ def _flowpipe_step_from_tm_hybrid_dense(
         if range_policy.trigger == "on_validation_failure" and range_policy.method != "natural"
         else range_policy
     )
-    range_trace: list[dict[str, Any]] = []
+    full_evidence = dense_observer_mode == DENSE_OBSERVER_FULL
+    range_trace: list[dict[str, Any]] | None = [] if full_evidence else None
     base_ext_dense = sparse_tmvector_to_dense(
         base_ext_sparse,
         order=int(order),
@@ -5957,7 +5960,11 @@ def _flowpipe_step_from_tm_hybrid_dense(
         range_trace=range_trace,
     )
 
-    def _with_policy(model: BatchedTaylorModel, policy: DenseRangePolicy, trace: list[dict[str, Any]]) -> BatchedTaylorModel:
+    def _with_policy(
+        model: BatchedTaylorModel,
+        policy: DenseRangePolicy,
+        trace: list[dict[str, Any]] | None,
+    ) -> BatchedTaylorModel:
         return BatchedTaylorModel(
             model.poly,
             model.rem_lo,
@@ -5987,6 +5994,7 @@ def _flowpipe_step_from_tm_hybrid_dense(
                 validation_eps=validation_eps,
                 validation_mode=validation_mode,
                 counters=counters,
+                observer_mode=dense_observer_mode,
             )
         finally:
             if device.type == "cuda":
@@ -5997,8 +6005,10 @@ def _flowpipe_step_from_tm_hybrid_dense(
     try:
         dense_result = _validate(base_ext_dense)
         lane_trace.extend(dense_result.trace)
-        lane_trace.extend(range_trace)
-        lane_trace.append(
+        if range_trace is not None:
+            lane_trace.extend(range_trace)
+        if dense_observer_mode != "production_no_observer":
+            lane_trace.append(
             {
                 "phase": "range_validation_lane",
                 "range_method": initial_policy.method,
@@ -6006,20 +6016,22 @@ def _flowpipe_step_from_tm_hybrid_dense(
                 "validation_status": dense_result.status,
                 "natural_validation_failed": initial_policy.method == "natural" and not dense_result.accepted,
                 "subdivision_validation_passed": False,
-            }
-        )
+                }
+            )
         if (
             not dense_result.accepted
             and range_policy.trigger == "on_validation_failure"
             and range_policy.method != "natural"
         ):
             for depth in range(1, int(range_policy.max_depth) + 1):
-                level_trace: list[dict[str, Any]] = []
+                level_trace: list[dict[str, Any]] | None = [] if full_evidence else None
                 level_policy = replace(range_policy, max_depth=depth, trigger="always")
                 level_result = _validate(_with_policy(base_ext_dense, level_policy, level_trace))
                 lane_trace.extend(level_result.trace)
-                lane_trace.extend(level_trace)
-                lane_trace.append(
+                if level_trace is not None:
+                    lane_trace.extend(level_trace)
+                if dense_observer_mode != "production_no_observer":
+                    lane_trace.append(
                     {
                         "phase": "range_validation_lane",
                         "range_method": level_policy.method,
@@ -6027,21 +6039,23 @@ def _flowpipe_step_from_tm_hybrid_dense(
                         "validation_status": level_result.status,
                         "natural_validation_failed": True,
                         "subdivision_validation_passed": level_result.accepted,
-                    }
-                )
+                        }
+                    )
                 dense_result = level_result
                 if level_result.accepted:
                     break
     except (FloatingPointError, RuntimeError, ValueError) as exc:
-        lane_trace.extend(range_trace)
-        lane_trace.append(
+        if range_trace is not None:
+            lane_trace.extend(range_trace)
+        if dense_observer_mode != "production_no_observer":
+            lane_trace.append(
             {
                 "phase": "range_fail_closed",
                 "finite": False,
                 "range_method": range_policy.method,
                 "rejection_reason": f"{type(exc).__name__}: {exc}",
-            }
-        )
+                }
+            )
         segment_tm = dense_to_sparse_tmvector(base_ext_dense, counters=counters, segment_boundary=True)
         return FlowpipeSegment(
             tm=segment_tm,
@@ -6164,6 +6178,7 @@ def flowpipe_step_from_tm(
     dense_device: torch.device | str = "cpu",
     dense_dtype: torch.dtype = torch.float64,
     dense_range_policy: Any | None = None,
+    dense_observer_mode: str = "full_evidence",
 ) -> FlowpipeSegment:
     """Build one flowpipe segment from a TM initial condition.
 
@@ -6210,6 +6225,7 @@ def flowpipe_step_from_tm(
             selective_high_degree_terms_top_k=selective_high_degree_terms_top_k,
             normal_eval_range_split=normal_eval_range_split,
             dense_range_policy=dense_range_policy,
+            dense_observer_mode=dense_observer_mode,
         )
     if h <= 0:
         raise ValueError("h must be positive")
@@ -6588,6 +6604,7 @@ def flowpipe_step_flowstar_style_adaptive(
     dense_dtype: torch.dtype = torch.float64,
     dense_range_policy: Any | None = None,
     structured_allow_outward_renormalization: bool = True,
+    dense_observer_mode: str = "full_evidence",
 ) -> FlowpipeSegment:
     if h_min <= 0 or h_max <= 0:
         raise ValueError("h_min and h_max must be positive")
@@ -6943,6 +6960,7 @@ def flowpipe_step_flowstar_style_adaptive(
             dense_device=dense_device,
             dense_dtype=dense_dtype,
             dense_range_policy=dense_range_policy,
+            dense_observer_mode=dense_observer_mode,
         )
         seg.step_rejections = rejections
         if seg.status == "validated" and intervals_are_finite(seg.final_tm.range_box()):
@@ -6989,6 +7007,7 @@ def flowpipe_step_flowstar_style_adaptive(
                 dense_device=dense_device,
                 dense_dtype=dense_dtype,
                 dense_range_policy=dense_range_policy,
+                dense_observer_mode=dense_observer_mode,
             )
             fallback_seg.step_rejections = rejections
             last_seg = fallback_seg

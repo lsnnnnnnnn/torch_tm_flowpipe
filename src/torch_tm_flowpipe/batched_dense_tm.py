@@ -54,6 +54,21 @@ FLOWSTAR_STOP_RATIO = 0.99
 # The pinned Flow* loop uses ``rSteps <= MAX_REFINEMENT_STEPS`` starting at
 # zero, so the macro value 490 permits 491 post-accept remainder replays.
 FLOWSTAR_REFINEMENT_REPLAY_LIMIT = FLOWSTAR_MAX_REFINEMENT_STEPS + 1
+DENSE_OBSERVER_NONE = "production_no_observer"
+DENSE_OBSERVER_LIGHTWEIGHT = "lightweight_counters"
+DENSE_OBSERVER_FULL = "full_evidence"
+DENSE_OBSERVER_MODES = (
+    DENSE_OBSERVER_NONE,
+    DENSE_OBSERVER_LIGHTWEIGHT,
+    DENSE_OBSERVER_FULL,
+)
+
+
+def _validate_dense_observer_mode(observer_mode: str) -> str:
+    mode = str(observer_mode)
+    if mode not in DENSE_OBSERVER_MODES:
+        raise ValueError(f"observer_mode must be one of {DENSE_OBSERVER_MODES}")
+    return mode
 
 _FROZEN_VDP_COMPONENTS = (
     (PolynomialODETerm(1.0, (0, 1)),),
@@ -195,6 +210,13 @@ class DenseExecutionCounters:
     inner_loop_scalar_count: int = 0
     range_subdivision_invocations: int = 0
     range_leaf_evaluations: int = 0
+    polynomial_picard_iterations: int = 0
+    post_accept_replay_calls: int = 0
+    post_accept_committed_replays: int = 0
+    post_accept_stop_ratio_count: int = 0
+    post_accept_fixed_point_count: int = 0
+    post_accept_failure_count: int = 0
+    post_accept_replay_cap_count: int = 0
     host_to_device_s: float = 0.0
     dense_kernel_s: float = 0.0
     device_to_host_s: float = 0.0
@@ -3669,6 +3691,7 @@ def _dense_flowstar_raw_compat_image(
     raw_dependency_preserving_square: bool | None = None,
     joint_closure_coefficient_cache: _JointVDPCoefficientCache | None = None,
     refinement_static_cache: _VDPRefinementStaticCache | None = None,
+    record_evidence: bool = True,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -3999,7 +4022,7 @@ def _dense_flowstar_raw_compat_image(
             margins.detach().cpu().reshape(-1).tolist(),
             bool(torch.all(margins >= 0)),
         )
-    return check_lo, check_hi, {
+    evidence = {
         "raw_rhs_remainder_lo": raw_rhs.rem_lo.detach().cpu().tolist(),
         "raw_rhs_remainder_hi": raw_rhs.rem_hi.detach().cpu().tolist(),
         "raw_rhs_polynomial_coefficient_hex": [
@@ -4038,7 +4061,8 @@ def _dense_flowstar_raw_compat_image(
         "raw_rhs_evaluation": raw_rhs_evaluation,
         "factor_times_y_joint_closure": closure_certificate,
         "pre_closure_y_remainder": pre_closure_y_interval,
-    }, decomposition
+    } if record_evidence else {}
+    return check_lo, check_hi, evidence, decomposition
 
 
 def dense_polynomial_picard(
@@ -4050,6 +4074,8 @@ def dense_polynomial_picard(
     iterations: int | None = None,
     cutoff_threshold: float | None = None,
     observer: Callable[[int, BatchedTaylorModel, BatchedTaylorModel], None] | None = None,
+    observer_mode: str = DENSE_OBSERVER_FULL,
+    counters: DenseExecutionCounters | None = None,
 ) -> tuple[BatchedTaylorModel, tuple[Mapping[str, Any], ...]]:
     """Construct the dense polynomial Picard candidate in physical local time.
 
@@ -4057,11 +4083,14 @@ def dense_polynomial_picard(
     pre-cutoff Picard image and retained post-cutoff iterate and is never used
     by the solver decision path.
     """
+    observer_mode = _validate_dense_observer_mode(observer_mode)
     if base_poly.poly.basis.order != int(order):
         raise ValueError("dense Picard order must match its complete basis")
     g = base_poly.without_remainder()
     rows: list[Mapping[str, Any]] = []
     for iteration in range(1, max(1, int(order) if iterations is None else int(iterations)) + 1):
+        if counters is not None:
+            counters.polynomial_picard_iterations += 1
         rhs = call_dense_rhs(rhs_fn, g)
         picard = base_poly.without_remainder().add(rhs.integrate(tau_index))
         # Match sparse _picard_polynomial: arithmetic remainder is audited but
@@ -4080,8 +4109,8 @@ def dense_polynomial_picard(
         ).apply_cutoff(cutoff_threshold)
         if observer is not None:
             observer(iteration, picard, g)
-        rows.append(
-            {
+        if observer_mode == DENSE_OBSERVER_FULL:
+            rows.append({
                 "phase": "polynomial_picard",
                 "iteration": iteration,
                 "basis_hash": g.poly.basis.fingerprint,
@@ -4102,8 +4131,15 @@ def dense_polynomial_picard(
                 "finite": g.is_finite(),
                 "range_method": g.range_policy.method,
                 "subdivision_depth": g.range_policy.max_depth,
-            }
-        )
+            })
+        elif observer_mode == DENSE_OBSERVER_LIGHTWEIGHT:
+            rows.append(
+                {
+                    "phase": "polynomial_picard",
+                    "iteration": iteration,
+                    "finite": g.is_finite(),
+                }
+            )
         if not g.is_finite():
             break
     return g, tuple(rows)
@@ -4254,6 +4290,8 @@ def _post_accept_refine_raw_remainder(
     raw_rhs_evaluation: str = "canonical_factorized_joint_closure",
     raw_dependency_preserving_square: bool | None = True,
     replay_limit: int = FLOWSTAR_REFINEMENT_REPLAY_LIMIT,
+    observer_mode: str = DENSE_OBSERVER_FULL,
+    counters: DenseExecutionCounters | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
@@ -4262,6 +4300,7 @@ def _post_accept_refine_raw_remainder(
 ]:
     """Replay an accepted raw-compat remainder map with atomic vector commits."""
 
+    observer_mode = _validate_dense_observer_mode(observer_mode)
     if replay_limit < 0 or replay_limit > FLOWSTAR_REFINEMENT_REPLAY_LIMIT:
         raise ValueError(
             f"refinement replay_limit must lie in [0, {FLOWSTAR_REFINEMENT_REPLAY_LIMIT}]"
@@ -4269,10 +4308,15 @@ def _post_accept_refine_raw_remainder(
     final_lo = retained_lo
     final_hi = retained_hi
     final_decomposition = retained_decomposition
-    polynomial_sha256 = _dense_polynomial_sha256(candidate)
+    polynomial_sha256 = (
+        _dense_polynomial_sha256(candidate)
+        if observer_mode == DENSE_OBSERVER_FULL
+        else ""
+    )
     rows: list[Mapping[str, Any]] = []
     if replay_limit == 0:
-        rows.append(
+        if observer_mode != DENSE_OBSERVER_NONE:
+            rows.append(
             {
                 "phase": "post_accept_refinement",
                 "refinement_iteration": 0,
@@ -4287,8 +4331,8 @@ def _post_accept_refine_raw_remainder(
                     if structural_fingerprint is not None
                     else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
                 ),
-            }
-        )
+                }
+            )
         return final_lo, final_hi, final_decomposition, tuple(rows)
 
     static_cache: _VDPRefinementStaticCache | None = None
@@ -4312,6 +4356,8 @@ def _post_accept_refine_raw_remainder(
         )
 
     for iteration in range(1, replay_limit + 1):
+        if counters is not None:
+            counters.post_accept_replay_calls += 1
         input_lo = final_lo
         input_hi = final_hi
         candidate_with_remainder = candidate.with_remainder(
@@ -4333,13 +4379,17 @@ def _post_accept_refine_raw_remainder(
                     raw_rhs_evaluation=raw_rhs_evaluation,
                     raw_dependency_preserving_square=raw_dependency_preserving_square,
                     refinement_static_cache=static_cache,
+                    record_evidence=observer_mode == DENSE_OBSERVER_FULL,
                 )
             )
             commit, continue_refining, stop_reason, subsets, margins, ratios = (
                 _atomic_refinement_decision(input_lo, input_hi, proposed_lo, proposed_hi)
             )
         except (FloatingPointError, RuntimeError, ValueError) as exc:
-            rows.append(
+            if counters is not None:
+                counters.post_accept_failure_count += 1
+            if observer_mode != DENSE_OBSERVER_NONE:
+                rows.append(
                 {
                     "phase": "post_accept_refinement",
                     "refinement_iteration": iteration,
@@ -4354,21 +4404,32 @@ def _post_accept_refine_raw_remainder(
                         if structural_fingerprint is not None
                         else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
                     ),
-                }
-            )
+                    }
+                )
             break
 
         if commit:
+            if counters is not None:
+                counters.post_accept_committed_replays += 1
             final_lo = proposed_lo
             final_hi = proposed_hi
             final_decomposition = proposed_decomposition
         if commit and continue_refining and iteration == replay_limit:
             stop_reason = "max_refinement_replays_reached"
             continue_refining = False
+        if counters is not None and not continue_refining:
+            if stop_reason == "stop_ratio":
+                counters.post_accept_stop_ratio_count += 1
+            elif stop_reason == "fixed_point":
+                counters.post_accept_fixed_point_count += 1
+            elif stop_reason == "max_refinement_replays_reached":
+                counters.post_accept_replay_cap_count += 1
+            elif not commit:
+                counters.post_accept_failure_count += 1
         component_rows = []
-        for component in range(candidate.poly.out_dim):
-            component_rows.append(
-                {
+        if observer_mode == DENSE_OBSERVER_FULL:
+            for component in range(candidate.poly.out_dim):
+                component_rows.append({
                     "component": component,
                     "input_interval": [
                         float(input_lo[:, component].detach().cpu().reshape(-1)[0]),
@@ -4383,10 +4444,9 @@ def _post_accept_refine_raw_remainder(
                     "width_ratio_new_over_old": float(
                         ratios[:, component].detach().cpu().reshape(-1)[0]
                     ),
-                }
-            )
-        rows.append(
-            {
+                })
+        if observer_mode == DENSE_OBSERVER_FULL:
+            rows.append({
                 "phase": "post_accept_refinement",
                 "refinement_iteration": iteration,
                 "committed": commit,
@@ -4409,8 +4469,17 @@ def _post_accept_refine_raw_remainder(
                     else {"generic_raw_rhs_evaluation": raw_rhs_evaluation}
                 ),
                 **compat_extra,
-            }
-        )
+            })
+        elif observer_mode == DENSE_OBSERVER_LIGHTWEIGHT:
+            rows.append(
+                {
+                    "phase": "post_accept_refinement",
+                    "refinement_iteration": iteration,
+                    "committed": commit,
+                    "continue_refining": continue_refining,
+                    "stop_reason": stop_reason,
+                }
+            )
         if not commit or not continue_refining:
             break
     return final_lo, final_hi, final_decomposition, tuple(rows)
@@ -4433,6 +4502,7 @@ def dense_picard_validate_step(
     raw_remainder_trace_recorder: RawRemainderTraceRecorder | None = None,
     raw_rhs_evaluation_override: str | None = None,
     raw_dependency_preserving_square: bool | None = None,
+    observer_mode: str = DENSE_OBSERVER_FULL,
 ) -> DenseValidatedStep:
     """Run true dense Picard and an unchanged interval subset self-map test.
 
@@ -4441,6 +4511,9 @@ def dense_picard_validate_step(
     They are deliberately excluded from all validation decisions and default
     to ``None`` so the legacy execution path is unchanged.
     """
+    observer_mode = _validate_dense_observer_mode(observer_mode)
+    if raw_remainder_trace_recorder is not None and observer_mode != DENSE_OBSERVER_FULL:
+        raise ValueError("raw remainder trace recorder requires full_evidence observer mode")
     supported_modes = {
         "target_remainder",
         "target_remainder_normal_eval",
@@ -4520,6 +4593,8 @@ def dense_picard_validate_step(
         iterations=order,
         cutoff_threshold=cutoff_threshold,
         observer=polynomial_observer,
+        observer_mode=observer_mode,
+        counters=counters,
     )
     trace: list[Mapping[str, Any]] = list(picard_trace)
     target_radius = abs(float(target_remainder_radius))
@@ -4582,15 +4657,14 @@ def dense_picard_validate_step(
             seed_decomposition,
         )
     if not bool(torch.all(seed_margin >= 0)):
-        trace.append(
-            {
+        if observer_mode != DENSE_OBSERVER_NONE:
+            trace.append({
                 "phase": "remainder_validation",
                 "attempt": 0,
                 "validation_status": "failed",
                 "rejection_reason": "initial or cutoff remainder exceeds target remainder",
                 "subset_margin": seed_margin.detach().cpu().tolist(),
-            }
-        )
+            })
         return DenseValidatedStep(
             candidate,
             None,
@@ -4623,7 +4697,9 @@ def dense_picard_validate_step(
     last_decomposition = seed_decomposition
     last_segment_model = candidate.with_remainder(current_lo, current_hi, category="initial_remainder")
     last_rejection_reason = "Picard residual not subset of target remainder"
+    completed_attempts = 0
     for attempt in range(1, max_validation_attempts + 1):
+        completed_attempts = attempt
         candidate_with_remainder = candidate.with_remainder(
             current_lo,
             current_hi,
@@ -4697,6 +4773,7 @@ def dense_picard_validate_step(
                     )
                 ),
                 raw_dependency_preserving_square=raw_dependency_preserving_square,
+                record_evidence=observer_mode == DENSE_OBSERVER_FULL,
             )
             if structural_fingerprint is not None:
                 compat_extra = {
@@ -4740,8 +4817,8 @@ def dense_picard_validate_step(
         )
         if rejection_reason:
             last_rejection_reason = rejection_reason
-        trace.append(
-            {
+        if observer_mode == DENSE_OBSERVER_FULL:
+            trace.append({
                 "phase": "remainder_validation",
                 "attempt": attempt,
                 "validation_mode": validation_mode,
@@ -4782,8 +4859,21 @@ def dense_picard_validate_step(
                 "range_method": candidate.range_policy.method,
                 "subdivision_depth": candidate.range_policy.max_depth,
                 **compat_extra,
-            }
-        )
+            })
+        elif observer_mode == DENSE_OBSERVER_LIGHTWEIGHT:
+            trace.append(
+                {
+                    "phase": "remainder_validation",
+                    "attempt": attempt,
+                    "validation_mode": validation_mode,
+                    "validation_status": "validated" if self_subset else "failed",
+                    "finite": finite,
+                    "subset_result": self_subset,
+                    "target_subset_result": target_subset,
+                    "subset_margin": last_margin.detach().cpu().tolist(),
+                    "rejection_reason": rejection_reason,
+                }
+            )
         if not finite:
             return DenseValidatedStep(
                 last_segment_model,
@@ -4835,6 +4925,8 @@ def dense_picard_validate_step(
                     raw_dependency_preserving_square=(
                         True if validation_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE else None
                     ),
+                    observer_mode=observer_mode,
+                    counters=counters,
                 )
                 trace.extend(refinement_trace)
                 last_image_lo = refined_lo
@@ -4877,7 +4969,7 @@ def dense_picard_validate_step(
         last_segment_model,
         None,
         "failed",
-        min(max_validation_attempts, len([row for row in trace if row.get("phase") == "remainder_validation"])),
+        min(max_validation_attempts, completed_attempts),
         last_rejection_reason,
         contract,
         counters,
@@ -4908,6 +5000,10 @@ __all__ = [
     "DenseTMContract",
     "DenseValidatedRemainderDecomposition",
     "DenseValidatedStep",
+    "DENSE_OBSERVER_FULL",
+    "DENSE_OBSERVER_LIGHTWEIGHT",
+    "DENSE_OBSERVER_MODES",
+    "DENSE_OBSERVER_NONE",
     "FLOWSTAR_MAX_REFINEMENT_STEPS",
     "FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE",
     "FLOWSTAR_RAW_REMAINDER_REFINED_MODE",
