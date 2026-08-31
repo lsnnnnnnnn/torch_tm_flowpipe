@@ -23,6 +23,15 @@ def test_formal_reference_configuration_freezes_c3_and_c4_contracts() -> None:
     assert vdp.accepted_boundary_sr_mode == C3_CROSS_STEP_SYMBOLIC_QUEUE
     assert vdp.post_accept_refinement_mode == FLOWSTAR_RAW_REMAINDER_REFINED_MODE
     assert vdp.accepted_boundary_sr_capacity == 100
+    assert vdp.range_policy_mapping == {
+        "method": "adaptive_subdivision",
+        "max_depth": 1,
+        "max_leaves": 4,
+        "split_vars": (0, 1),
+        "trigger": "proactive_depth1_on_named_contexts",
+        "named_contexts": ("polynomial_truncation",),
+        "variable_orders": ((0, 1, 2), (1, 0, 2), (2, 0, 1)),
+    }
     assert brusselator.accepted_boundary_sr_mode == GENERIC_ACCEPTED_BOUNDARY_SYMBOLIC_REMAINDER
     assert brusselator.post_accept_refinement_mode == FLOWSTAR_RAW_REMAINDER_GENERIC_REFINED_MODE
     assert brusselator.accepted_boundary_sr_capacity == 1000

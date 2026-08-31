@@ -130,7 +130,15 @@ class FlowstarLikePolynomialPlantConfig:
             post_accept_refinement_mode=FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
             right_map_range_mode="standard",
             right_map_center_mode="constant",
-            range_policy=(("method", "natural"), ("trigger", "always")),
+            range_policy=(
+                ("method", "adaptive_subdivision"),
+                ("max_depth", 1),
+                ("max_leaves", 4),
+                ("split_vars", (0, 1)),
+                ("trigger", "proactive_depth1_on_named_contexts"),
+                ("named_contexts", ("polynomial_truncation",)),
+                ("variable_orders", ((0, 1, 2), (1, 0, 2), (2, 0, 1))),
+            ),
             step_policy="flowstar_compat_native_h_min_0.002_h_max_0.1",
         )
 

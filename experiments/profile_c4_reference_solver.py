@@ -160,7 +160,7 @@ def _vdp_initial() -> tuple[PolynomialODE, Any, FlowstarNormalFlowpipeState]:
 def _run_vdp_prefix(count: int, observer_mode: str) -> tuple[Any, Any, Any, int]:
     config = FlowstarLikePolynomialPlantConfig.van_der_pol()
     ode, current, state = _vdp_initial()
-    policy = DenseRangePolicy(method="natural", trigger="always")
+    policy = DenseRangePolicy(**config.range_policy_mapping)
     segment = None
     for step in range(1, int(count) + 1):
         segment = flowpipe_step_flowstar_style_adaptive(

@@ -7,7 +7,8 @@ configuration, not a portfolio and not an automatic mode selector.
 `FlowstarLikePolynomialPlantConfig.van_der_pol()` binds the accepted native C3
 contract: the canonical order-4 Van der Pol plant, CPU binary64, Flow*-pinned
 post-accept refinement, accepted-boundary queue capacity 100, constant-centered
-normal insertion, and the frozen native step policy through T=10.
+normal insertion, the accepted proactive depth-1 subdivision policy on
+polynomial truncation, and the frozen native step policy through T=10.
 
 `FlowstarLikePolynomialPlantConfig.brusselator()` binds the accepted generic C4
 contract: the canonical ordered-term Brusselator expression, exact-decimal
