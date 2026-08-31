@@ -117,6 +117,45 @@ def test_tensorized_owner_payload_retains_subnormal_and_owner_addition_order() -
     assert torch.equal(packed_image[0].hi, scalar_image[0].hi)
 
 
+def test_tensorized_owner_payload_recomputes_after_source_tensor_tamper() -> None:
+    """There is no stale result cache: every call repacks current owner data."""
+
+    reference = Interval.zero()
+    left = ((Interval(1.0, 1.0),),)
+    owner_matrix = ((Interval(2.0, 2.0),),)
+    matrices = (owner_matrix,)
+    columns = ((Interval(3.0, 3.0),),)
+    before_matrices, before_image = _tensorized_interval_matrix_update_and_image(
+        left,
+        matrices,
+        columns,
+        reference,
+    )
+    owner_matrix[0][0].lo.fill_(4.0)
+    owner_matrix[0][0].hi.fill_(4.0)
+    after_matrices, after_image = _tensorized_interval_matrix_update_and_image(
+        left,
+        matrices,
+        columns,
+        reference,
+    )
+    scalar_matrix = _matmul_interval_matrix_scalar(left, owner_matrix, reference)
+    scalar_image = _add_interval_columns(
+        (Interval.zero(),),
+        _matmul_interval_matrix_col_scalar(
+            scalar_matrix,
+            columns[0],
+            reference,
+        ),
+    )
+    assert not torch.equal(before_matrices[0][0][0].lo, after_matrices[0][0][0].lo)
+    assert not torch.equal(before_image[0].lo, after_image[0].lo)
+    assert torch.equal(after_matrices[0][0][0].lo, scalar_matrix[0][0].lo)
+    assert torch.equal(after_matrices[0][0][0].hi, scalar_matrix[0][0].hi)
+    assert torch.equal(after_image[0].lo, scalar_image[0].lo)
+    assert torch.equal(after_image[0].hi, scalar_image[0].hi)
+
+
 @pytest.mark.parametrize("payload", ["scalar", "phi", "owner"])
 def test_packed_validation_fails_closed_after_mutable_tensor_tamper(payload: str) -> None:
     owner = Interval(-0.125, 0.25)
