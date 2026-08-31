@@ -43,10 +43,67 @@ except RuntimeError:
 
 from experiments.profile_c4_reference_solver import (
     _run_brusselator_steps,
-    _run_vdp_prefix,
     _snapshot,
+    _vdp_initial,
 )
-from torch_tm_flowpipe import DENSE_OBSERVER_NONE, save_terminal_checkpoint
+from torch_tm_flowpipe import (
+    C3_CROSS_STEP_SYMBOLIC_QUEUE,
+    DENSE_OBSERVER_NONE,
+    DenseRangePolicy,
+    FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+    flowpipe_step_flowstar_style_adaptive,
+    save_terminal_checkpoint,
+)
+
+def run_vdp_prefix(count):
+    # Bind the accepted C3 evidence policy explicitly.  The frozen numerical
+    # reference predates the config wrapper and its old profile helper used a
+    # natural range policy, which is not the authoritative C3 T10 contract.
+    ode, current, state = _vdp_initial()
+    policy = DenseRangePolicy(
+        method="adaptive_subdivision",
+        max_depth=1,
+        max_leaves=4,
+        split_vars=(0, 1),
+        trigger="proactive_depth1_on_named_contexts",
+        named_contexts=("polynomial_truncation",),
+        variable_orders=((0, 1, 2), (1, 0, 2), (2, 0, 1)),
+    )
+    segment = None
+    for _ in range(count):
+        segment = flowpipe_step_flowstar_style_adaptive(
+            ode,
+            current,
+            h=0.01,
+            h_min=0.01,
+            h_max=0.01,
+            order=4,
+            target_remainder_radius=1e-4,
+            cutoff_threshold=1e-10,
+            max_validation_attempts=2,
+            validation_eps=1e-12,
+            validation_mode=FLOWSTAR_RAW_REMAINDER_REFINED_MODE,
+            reset_mode=C3_CROSS_STEP_SYMBOLIC_QUEUE,
+            step_policy_mode="flowstar_compat",
+            flowstar_normal_state=state,
+            flowstar_symbolic_queue_max_size=100,
+            right_map_center_mode="constant",
+            right_map_range_mode="standard",
+            tm_backend="dense",
+            dense_device="cpu",
+            dense_dtype=torch.float64,
+            dense_range_policy=policy,
+            dense_observer_mode=DENSE_OBSERVER_NONE,
+        )
+        if (
+            segment.status != "validated"
+            or segment.reset_tm is None
+            or segment.flowstar_normal_state is None
+        ):
+            raise RuntimeError(f"VDP reference rejected fixed prefix: {segment.message}")
+        current = segment.reset_tm
+        state = segment.flowstar_normal_state
+    return current, state, segment, count
 
 def peak_rss_bytes():
     value = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
@@ -67,10 +124,7 @@ for repeat in range(repeats):
             DENSE_OBSERVER_NONE,
         )
     elif workload == "vdp_prefix":
-        current, state, segment, accepted = _run_vdp_prefix(
-            steps,
-            DENSE_OBSERVER_NONE,
-        )
+        current, state, segment, accepted = run_vdp_prefix(steps)
     else:
         raise ValueError(f"unknown workload: {workload}")
     wall_s = time.perf_counter() - started
