@@ -385,7 +385,11 @@ def _scientific_summary(summary: Mapping[str, Any]) -> dict[str, Any]:
     return {field: summary.get(field) for field in fields}
 
 
-def _csv_scientific_sha(path: Path) -> str:
+def _csv_scientific_sha(
+    path: Path,
+    *,
+    fields: Sequence[str] | None = None,
+) -> tuple[str, tuple[str, ...]]:
     excluded = {
         "stage_runtime_s",
         "dense_kernel_s",
@@ -393,13 +397,24 @@ def _csv_scientific_sha(path: Path) -> str:
         "device_to_host_s",
     }
     with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        selected = tuple(
+            field
+            for field in (fields or tuple(reader.fieldnames or ()))
+            if field not in excluded
+        )
         rows = [
-            {key: value for key, value in row.items() if key not in excluded}
-            for row in csv.DictReader(handle)
+            {key: row.get(key, "") for key in selected}
+            for row in reader
         ]
-    return hashlib.sha256(
-        json.dumps(rows, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
-    ).hexdigest()
+    return (
+        hashlib.sha256(
+            json.dumps(rows, sort_keys=True, separators=(",", ":"), allow_nan=False).encode(
+                "utf-8"
+            )
+        ).hexdigest(),
+        selected,
+    )
 
 
 def _vdp_regression(root: Path) -> dict[str, Any]:
@@ -420,9 +435,12 @@ def _vdp_regression(root: Path) -> dict[str, Any]:
         native_summary_equal = _scientific_summary(current_native) == _scientific_summary(
             baseline_native
         )
-        native_segments_sha = _csv_scientific_sha(run_root / "native" / "segments.csv")
-        baseline_native_segments_sha = _csv_scientific_sha(
+        baseline_native_segments_sha, baseline_fields = _csv_scientific_sha(
             native_baseline_dir / "segments.csv"
+        )
+        native_segments_sha, current_projected_fields = _csv_scientific_sha(
+            run_root / "native" / "segments.csv",
+            fields=baseline_fields,
         )
         fixed_results: dict[str, Any] = {}
         for label, horizon in (("T1", "1"), ("T3", "3"), ("T6p32", "6.32")):
@@ -454,6 +472,9 @@ def _vdp_regression(root: Path) -> dict[str, Any]:
             "segments_scientific_sha256": native_segments_sha,
             "baseline_segments_scientific_sha256": baseline_native_segments_sha,
             "segments_exact": native_segments_sha == baseline_native_segments_sha,
+            "historical_scientific_columns_compared": len(baseline_fields),
+            "current_projection_columns": len(current_projected_fields),
+            "current_extra_observer_columns_ignored": True,
         },
         "fixed_snapshots": fixed_results,
     }
