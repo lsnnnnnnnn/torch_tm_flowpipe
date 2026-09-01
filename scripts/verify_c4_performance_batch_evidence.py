@@ -172,7 +172,8 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     assert provenance["cpu_contention_observed"] is False
 
     reference_config = _read_json(artifact_dir / "REFERENCE_CONFIG.json")
-    assert reference_config == formal_reference_configuration(), "reference config drift"
+    serialized_reference_config = json.loads(json.dumps(formal_reference_configuration()))
+    assert reference_config == serialized_reference_config, "reference config drift"
 
     observer_rows = _rows(artifact_dir / "production_vs_audit_overhead.csv")
     assert {row["lane"] for row in observer_rows} == {

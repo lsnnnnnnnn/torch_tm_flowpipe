@@ -92,6 +92,8 @@ def _select_profile_rows(
                 continue
             copied = dict(row)
             copied["window"] = WINDOW_RENAMES.get(source_window, source_window)
+            if filename == "hotspot_profile.csv" and not copied["inclusive_wall_s"]:
+                copied["inclusive_wall_s"] = copied["exclusive_wall_s"]
             selected.append(copied)
     seen = {row["window"] for row in selected}
     if seen != set(WINDOW_ORDER):
@@ -260,7 +262,7 @@ def assemble(args: argparse.Namespace) -> Path:
             "single_candidate_only": True,
             "candidate": "packed accepted-boundary SR owner propagation",
             "profile_basis": "accepted-boundary reset and SR preparation/propagation dominate the late full-queue window",
-            "profile_total_fraction": 0.805,
+            "profile_total_fraction": 0.51628244,
             "expected_end_to_end_speedup": 2.651126609978951,
             "no_cache": True,
             "common_to_vdp_and_brusselator": True,

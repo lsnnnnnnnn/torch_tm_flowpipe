@@ -36,13 +36,17 @@ not double count nested calls. The required windows are Brusselator steps
 `call_count_matrix.csv`, `allocation_profile.csv`, and `flamegraph.txt` are the
 authoritative outputs.
 
-The initial 1–20 reference profile spent 63.412 s under profiler overhead. The
-inclusive accepted-boundary reset path accounted for 52.8% and queue
-preparation for 45.4%. At steps 996–1000, the reset path accounted for 80.5%,
-queue preparation for 53.6%, and queue propagation/validation for about 38%.
-The repeated work was construction and scalar dispatch over independent 2×2
-interval owner payloads. The same accepted-boundary SR mechanism is used by
-the C3 VDP and generic C4 Brusselator lanes.
+The formal 1–20 and 1–100 reference profiles spent 42.372 s and 255.912 s under
+profiler overhead; the VDP-20 window took 14.697 s. In the 1–100 window the
+inclusive accepted-boundary reset path accounted for 56.10% and SR preparation
+for 45.81%. At steps 901–1000, which took 662.214 s under profiling, the reset
+path accounted for 81.61%, SR preparation for 51.63%, queue validation for
+38.43%, and queue propagation for 37.21%. These inclusive figures overlap as
+call paths. The mutually exclusive tail buckets were 55.16% Python
+orchestration/allocation, 29.86% outward interval accounting, and 6.64% SR
+history propagation. The repeated work was construction and scalar dispatch
+over independent 2×2 interval owner payloads. The same accepted-boundary SR
+mechanism is used by the C3 VDP and generic C4 Brusselator lanes.
 
 ## Single authorized optimization
 

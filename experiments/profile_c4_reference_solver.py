@@ -474,7 +474,7 @@ def _profile_action(
             "primitive_calls": "",
             "total_calls": "",
             "exclusive_wall_s": value,
-            "inclusive_wall_s": "",
+            "inclusive_wall_s": value,
             "inclusive_fraction_of_solver": value / wall if wall else 0.0,
         }
         for bucket, value in bucket_totals.items()

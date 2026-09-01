@@ -3,6 +3,11 @@ from __future__ import annotations
 import csv
 
 from experiments.run_c4_performance_gate import WORKER, _csv_scientific_sha, _iqr
+from scripts.verify_c4_performance_batch_evidence import (
+    ARTIFACT_RELATIVE,
+    ROOT as REPO_ROOT,
+    verify,
+)
 
 
 def test_performance_worker_binds_production_scope_and_authoritative_vdp_policy() -> None:
@@ -46,3 +51,10 @@ def test_inclusive_iqr_is_defined_for_required_three_and_five_repeats() -> None:
     assert _iqr([1.0, 2.0, 3.0]) == 1.0
     assert _iqr([1.0, 2.0, 3.0, 4.0, 5.0]) == 2.0
 
+
+def test_committed_c4_evidence_package_verifies_fail_closed() -> None:
+    result = verify(REPO_ROOT, REPO_ROOT / ARTIFACT_RELATIVE)
+    assert result["status"] == "C4_PERFORMANCE_BATCH_EVIDENCE_VERIFIED"
+    assert result["package_status"] == (
+        "C4_REFERENCE_FROZEN__CPU_BATCH_FOUNDATION_PASSED__CPU_SPEED_GATE_FAILED"
+    )
