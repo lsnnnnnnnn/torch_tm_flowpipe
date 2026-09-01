@@ -1,0 +1,29 @@
+{
+  "architecture_note": "The foundation batches independently owned B1 solver lanes with fixed CPU orchestration; full-solver tensor fusion is intentionally deferred until these semantics are the CUDA oracle.",
+  "b8_median_s": 9.249689949909225,
+  "b8_runtime_diagnostic_passed": true,
+  "b8_slowdown_vs_8x_serial_b1": 0.9926797525970289,
+  "batch_sizes": [
+    1,
+    2,
+    8
+  ],
+  "checkpoint_resume_passed": true,
+  "chunk_invariance_passed": true,
+  "cpu_affinity": [
+    0
+  ],
+  "device": "cpu",
+  "dtype": "torch.float64",
+  "duplicate_embedding_passed": true,
+  "equivalence_passed": true,
+  "equivalence_rows": 51,
+  "fused_full_solver_kernel_claimed": false,
+  "heterogeneous_isolation_passed": true,
+  "independent_lane_orchestration": true,
+  "schema": "torch_tm_flowpipe.c4_cpu_batch_equivalence/1",
+  "scientific_sha": "7608dd52e48af3ce8ae2e0a8343aae125c63b7f4",
+  "serial_b1_median_s": 9.317899277899414,
+  "status": "CPU_BATCH_FOUNDATION_PASSED",
+  "whole_b8_sha256": "78173b31cb0dce346890e72158fa4ee748c2fbb676c6fafb67dc051c664d4a91"
+}

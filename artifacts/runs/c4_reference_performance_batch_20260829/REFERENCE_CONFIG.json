@@ -1,0 +1,157 @@
+{
+  "name": "flowstar_like_polynomial_plant_reference",
+  "plants": {
+    "brusselator": {
+      "accepted_boundary_sr_capacity": 1000,
+      "accepted_boundary_sr_enabled": true,
+      "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_generic_sr",
+      "authoritative_device": "cpu",
+      "authoritative_dtype": "float64",
+      "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+      "cutoff": 1e-10,
+      "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+      "endpoint_repair": false,
+      "fixed_step": 0.02,
+      "fixed_step_hex": "0x1.47ae147ae147bp-6",
+      "generic_post_accept_raw_remainder_refinement_enabled": true,
+      "initial_decimal_box": [
+        [
+          "1.48",
+          "1.52"
+        ],
+        [
+          "2.98",
+          "3.02"
+        ]
+      ],
+      "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+      "lane_name": "flowstar_like_polynomial_plant_reference",
+      "order": 6,
+      "outward_rounding": "torch_nextafter_binary64",
+      "plant": "brusselator",
+      "post_accept_refinement_mode": "flowstar_raw_remainder_compat_refined",
+      "range_policy": {
+        "max_depth": 1,
+        "max_leaves": 4,
+        "method": "adaptive_subdivision",
+        "named_contexts": [
+          "polynomial_truncation"
+        ],
+        "split_vars": [
+          0,
+          1
+        ],
+        "trigger": "proactive_depth1_on_named_contexts",
+        "variable_orders": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            2
+          ],
+          [
+            2,
+            0,
+            1
+          ]
+        ]
+      },
+      "refinement_replay_limit": 491,
+      "requested_horizon": 20.0,
+      "requested_horizon_hex": "0x1.4000000000000p+4",
+      "rhs_term_evaluation": "ordered_terms",
+      "right_map_center_mode": "constant",
+      "right_map_range_mode": "standard",
+      "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+      "step_policy": "fixed_no_retry",
+      "stop_ratio": 0.99,
+      "stop_ratio_hex": "0x1.fae147ae147aep-1",
+      "subset_commit": "whole_vector_atomic",
+      "target_remainder_radius": 0.0001,
+      "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+      "validation_epsilon": 1e-12,
+      "validation_epsilon_hex": "0x1.19799812dea11p-40"
+    },
+    "van_der_pol": {
+      "accepted_boundary_sr_capacity": 100,
+      "accepted_boundary_sr_enabled": true,
+      "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_c3_sr100",
+      "authoritative_device": "cpu",
+      "authoritative_dtype": "float64",
+      "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+      "cutoff": 1e-10,
+      "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+      "endpoint_repair": false,
+      "fixed_step": null,
+      "fixed_step_hex": null,
+      "generic_post_accept_raw_remainder_refinement_enabled": true,
+      "initial_decimal_box": [
+        [
+          "1.1",
+          "1.4"
+        ],
+        [
+          "2.35",
+          "2.45"
+        ]
+      ],
+      "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+      "lane_name": "flowstar_like_polynomial_plant_reference",
+      "order": 4,
+      "outward_rounding": "torch_nextafter_binary64",
+      "plant": "van_der_pol",
+      "post_accept_refinement_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+      "range_policy": {
+        "max_depth": 1,
+        "max_leaves": 4,
+        "method": "adaptive_subdivision",
+        "named_contexts": [
+          "polynomial_truncation"
+        ],
+        "split_vars": [
+          0,
+          1
+        ],
+        "trigger": "proactive_depth1_on_named_contexts",
+        "variable_orders": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            2
+          ],
+          [
+            2,
+            0,
+            1
+          ]
+        ]
+      },
+      "refinement_replay_limit": 491,
+      "requested_horizon": 10.0,
+      "requested_horizon_hex": "0x1.4000000000000p+3",
+      "rhs_term_evaluation": "ordered_terms",
+      "right_map_center_mode": "constant",
+      "right_map_range_mode": "standard",
+      "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+      "step_policy": "flowstar_compat_native_h_min_0.002_h_max_0.1",
+      "stop_ratio": 0.99,
+      "stop_ratio_hex": "0x1.fae147ae147aep-1",
+      "subset_commit": "whole_vector_atomic",
+      "target_remainder_radius": 0.0001,
+      "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+      "validation_epsilon": 1e-12,
+      "validation_epsilon_hex": "0x1.19799812dea11p-40"
+    }
+  },
+  "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+  "selection_semantics": "explicit_frozen_configuration_not_a_portfolio"
+}

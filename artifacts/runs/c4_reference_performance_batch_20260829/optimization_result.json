@@ -1,0 +1,37 @@
+{
+  "b1_exact": true,
+  "brusselator_full_speedup": 2.0595567003492343,
+  "brusselator_prefix_100_speedup": 1.113910523258529,
+  "brusselator_prefix_300_speedup": 1.2806160448117674,
+  "brusselator_regression_passed": true,
+  "correctness_gate_passed": true,
+  "cpu_affinity": [
+    0
+  ],
+  "full_speed_gate_passed": true,
+  "fully_measured": true,
+  "memory_gate_passed": true,
+  "no_second_optimization_stacked": true,
+  "observer_mode": "production_no_observer",
+  "optimized_full_peak_rss_bytes": 477151232,
+  "prefix_speed_gate_passed": false,
+  "reference_full_peak_rss_bytes": 474890240,
+  "schema": "torch_tm_flowpipe.c4_performance_gate/1",
+  "scientific_roots": {
+    "optimized": {
+      "clean": true,
+      "label": "optimized",
+      "root": "/srv/local/shengenli/c4_perf_batch_work_20260831/optimized_4939fb2",
+      "sha": "4939fb288c941a67f55cc191f4d75f8594692f47"
+    },
+    "reference": {
+      "clean": true,
+      "label": "reference",
+      "root": "/srv/local/shengenli/c4-gate-smoke.vB8psR",
+      "sha": "f34b5fa4155f5475a681411b627d68345ed401ea"
+    }
+  },
+  "status": "SEMANTICS_PRESERVING_OPTIMIZATION_CORRECT__PRODUCTION_SPEED_GATE_FAILED",
+  "timer_scope": "solver_only_excludes_snapshot_serialization_checkpoint",
+  "vdp_regression_passed": true
+}
