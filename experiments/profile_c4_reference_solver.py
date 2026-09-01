@@ -20,8 +20,6 @@ import tracemalloc
 from typing import Any, Callable, Mapping, Sequence
 
 import torch
-from torch.utils._python_dispatch import TorchDispatchMode
-from torch.utils._pytree import tree_flatten
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -199,23 +197,63 @@ def _run_vdp_prefix(count: int, observer_mode: str) -> tuple[Any, Any, Any, int]
     return current, state, segment, int(count)
 
 
-class _TensorResultCounter(TorchDispatchMode):
-    """Count logical tensor results without changing operator scheduling."""
+class _TensorResultCounter:
+    """Count Python-visible torch tensor-producing API results.
+
+    This intentionally avoids a low-level dispatch/profiler mode: those modes
+    changed the one-step wall time by tens of times and would make the required
+    100-step attribution windows operationally misleading.  The wrapped calls
+    return their original results unchanged.
+    """
+
+    _NAMES = (
+        "arange",
+        "as_tensor",
+        "cat",
+        "empty",
+        "empty_like",
+        "full",
+        "full_like",
+        "maximum",
+        "minimum",
+        "nextafter",
+        "ones",
+        "ones_like",
+        "stack",
+        "tensor",
+        "zeros",
+        "zeros_like",
+    )
 
     def __init__(self) -> None:
-        super().__init__()
         self.count = 0
         self.logical_bytes = 0
+        self._originals: dict[str, Any] = {}
 
-    def __torch_dispatch__(self, func, types, args=(), kwargs=None):
-        del types
-        result = func(*args, **(kwargs or {}))
-        values, _spec = tree_flatten(result)
+    def _record(self, result: Any) -> Any:
+        values = result if isinstance(result, (tuple, list)) else (result,)
         for value in values:
             if isinstance(value, torch.Tensor):
                 self.count += 1
                 self.logical_bytes += int(value.numel()) * int(value.element_size())
         return result
+
+    def __enter__(self) -> "_TensorResultCounter":
+        for name in self._NAMES:
+            original = getattr(torch, name)
+            self._originals[name] = original
+
+            def wrapped(*args, _original=original, **kwargs):
+                return self._record(_original(*args, **kwargs))
+
+            setattr(torch, name, wrapped)
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> None:
+        del exc_type, exc, traceback
+        for name, original in self._originals.items():
+            setattr(torch, name, original)
+        self._originals.clear()
 
 
 def _measure_allocations(
@@ -303,7 +341,7 @@ def _observer_measurements(repeats: int, prefix_steps: int) -> tuple[list[dict[s
                 "tracemalloc_peak_bytes": allocation_peak,
                 "temporary_tensor_result_count": tensor_result_count,
                 "temporary_tensor_logical_bytes": tensor_result_bytes,
-                "temporary_tensor_measurement": "TorchDispatch logical operator outputs; views and persistent outputs included",
+                "temporary_tensor_measurement": "Python-visible torch tensor-producing API results; views and persistent outputs included",
                 "peak_rss_bytes": _peak_rss_bytes(),
                 "accepted_steps": accepted,
                 "rejected_steps": 0,
@@ -452,7 +490,7 @@ def _profile_action(
             "tracemalloc_peak_bytes": allocation_peak,
             "temporary_tensor_result_count": tensor_result_count,
             "temporary_tensor_logical_bytes": tensor_result_bytes,
-            "temporary_tensor_measurement": "TorchDispatch logical operator outputs; views and persistent outputs included",
+            "temporary_tensor_measurement": "Python-visible torch tensor-producing API results; views and persistent outputs included",
             "peak_rss_bytes": _peak_rss_bytes(),
         }
     ]
