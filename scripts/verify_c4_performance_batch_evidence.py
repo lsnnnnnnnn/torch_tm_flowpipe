@@ -31,12 +31,15 @@ REQUIRED_ARTIFACTS = (
     "hotspot_profile.csv",
     "call_count_matrix.csv",
     "allocation_profile.csv",
+    "flamegraph.txt",
+    "profile_summary.json",
     "optimization_authorization.json",
     "optimization_result.json",
     "prefix_runtime_matrix.csv",
     "full_runtime_matrix.csv",
     "cpu_batch_equivalence.csv",
     "cpu_batch_runtime.csv",
+    "cpu_batch_result.json",
     "RESULT.json",
     "SHA256SUMS",
 )
@@ -79,6 +82,7 @@ REQUIRED_SCRIPTS = (
     "experiments/profile_c4_reference_solver.py",
     "experiments/run_c4_performance_gate.py",
     "experiments/run_c4_cpu_batch_equivalence.py",
+    "scripts/package_c4_performance_batch_evidence.py",
     "scripts/verify_c4_performance_batch_evidence.py",
 )
 
@@ -158,9 +162,11 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     assert provenance["source_package_sha"] == "ed9c305dc39c25eab23a96f4fb3775cc2d13d396"
     assert provenance["source_branch"] == "codex/torch-flowstar-brusselator-live-range-c5-20260828"
     assert provenance["branch"] == "codex/c4-reference-performance-batch-foundation-20260829"
-    assert provenance["reference_scientific_sha"]
-    assert provenance["optimized_scientific_sha"]
-    assert provenance["batch_scientific_sha"]
+    assert provenance["reference_scientific_sha"] == "f34b5fa4155f5475a681411b627d68345ed401ea"
+    assert provenance["optimized_scientific_sha"] == "4939fb288c941a67f55cc191f4d75f8594692f47"
+    assert provenance["batch_scientific_sha"] == "7608dd52e48af3ce8ae2e0a8343aae125c63b7f4"
+    assert provenance["instrumentation_sha"] == "d6b543446402ef6b12717b727b236fc7c9c75af5"
+    assert len(provenance["evidence_assembly_code_sha"]) == 40
     assert provenance["formal_runs_clean"] is True
     assert provenance["cpu_affinity"] == [0]
     assert provenance["cpu_contention_observed"] is False
@@ -217,7 +223,11 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     assert all(int(row["peak_rss_bytes"]) > 0 for row in allocations)
     assert all(int(row["temporary_tensor_result_count"]) > 0 for row in allocations)
     assert all(int(row["temporary_tensor_logical_bytes"]) > 0 for row in allocations)
-    assert (artifact_dir / "flamegraph.txt").is_file()
+    profile_summary = _read_json(artifact_dir / "profile_summary.json")
+    assert profile_summary["status"] == "PROFILE_COMPLETE"
+    assert profile_summary["numerical_reference_sha"] == provenance["reference_scientific_sha"]
+    assert profile_summary["instrumentation_sha"] == provenance["instrumentation_sha"]
+    assert profile_summary["cpu_affinity"] == [0]
 
     authorization = _read_json(artifact_dir / "optimization_authorization.json")
     assert authorization["schema"] == "torch_tm_flowpipe.c4_optimization_authorization/1"
@@ -271,6 +281,13 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
         and float(row["wall_s"]) > 0.0
         for row in prefix
     )
+    for row in prefix:
+        expected_sha = (
+            provenance["reference_scientific_sha"]
+            if row["variant"] == "reference"
+            else provenance["optimized_scientific_sha"]
+        )
+        assert row["scientific_sha"] == expected_sha
 
     full = _rows(artifact_dir / "full_runtime_matrix.csv")
     assert {row["variant"] for row in full} == {"reference", "optimized"}
@@ -278,6 +295,15 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     assert all(int(row["accepted_steps"]) == 1000 for row in full)
     assert all(int(row["rejected_steps"]) == 0 for row in full)
     assert all(_finite(row["wall_s"]) and float(row["wall_s"]) > 0.0 for row in full)
+    for row in full:
+        expected_sha = (
+            provenance["reference_scientific_sha"]
+            if row["variant"] == "reference"
+            else provenance["optimized_scientific_sha"]
+        )
+        assert row["scientific_sha"] == expected_sha
+        assert row["observer_mode"] == "production_no_observer"
+        assert row["timer_scope"] == "solver_only_excludes_snapshot_serialization_checkpoint"
 
     optimization = _read_json(artifact_dir / "optimization_result.json")
     measured100 = _median(prefix, "reference", 100) / _median(prefix, "optimized", 100)
@@ -318,6 +344,11 @@ def verify(repo_root: Path, artifact_dir: Path) -> dict[str, Any]:
     b8 = [float(row["wall_s"]) for row in batch_runtime if row["case"] == "B8_independent_lane_batch"]
     assert serial and b8
     assert statistics.median(b8) <= 2.0 * statistics.median(serial)
+    batch_result = _read_json(artifact_dir / "cpu_batch_result.json")
+    assert batch_result["scientific_sha"] == provenance["batch_scientific_sha"]
+    assert batch_result["cpu_affinity"] == [0]
+    assert batch_result["equivalence_passed"] is True
+    assert batch_result["b8_runtime_diagnostic_passed"] is True
 
     result = _read_json(artifact_dir / "RESULT.json")
     expected_final = (

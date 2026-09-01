@@ -32,8 +32,8 @@ The formal evidence covers:
 - B8 checkpoint/resume versus uninterrupted execution;
 - diagnostic 8×serial-B1 and B8 wall time, throughput, and process peak RSS.
 
-The initial full smoke produced 51 equivalence rows with no failure. B8 took
-9.051779 s versus 9.114162 s for 8×serial B1, a 0.9932× ratio and therefore
+The formal clean-SHA run produced 51 equivalence rows with no failure. B8 took
+9.249690 s versus 9.317899 s for 8×serial B1, a 0.992680× ratio and therefore
 inside the required “not slower than 2×” diagnostic bound. The committed
 `cpu_batch_equivalence.csv` and `cpu_batch_runtime.csv` contain the formal clean
 batch-SHA run.
@@ -41,4 +41,3 @@ batch-SHA run.
 CUDA remains out of scope. The next CUDA lane must use these per-lane CPU
 fingerprints as its oracle and define a separate floating-point soundness
 contract before any controller integration.
-

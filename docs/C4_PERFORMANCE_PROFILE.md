@@ -26,8 +26,10 @@ RSS and positive Python allocation counts, is
 ## Profile method and attribution
 
 `experiments/profile_c4_reference_solver.py` uses `cProfile` for inclusive and
-exclusive attribution, `tracemalloc` for positive Python allocation counts and
-temporary bytes, explicit solver counters, and process high-water RSS. Every
+exclusive attribution, `tracemalloc` for positive Python allocation counts,
+lightweight wrappers around Python-visible tensor-producing APIs for temporary
+tensor result counts and logical bytes, explicit solver counters, and process
+high-water RSS. Every
 function receives exactly one exclusive high-level bucket, so bucket totals do
 not double count nested calls. The required windows are Brusselator steps
 1–20, 1–100, 901–1000, and a representative VDP prefix. `hotspot_profile.csv`,
@@ -70,3 +72,14 @@ for the final pass/fail classification. Per the one-candidate rule, a correct
 optimization that misses those gates is retained and reported without stacking
 a second numerical optimization.
 
+## Formal production gates
+
+All formal rows were pinned to CPU 0 and generated from clean detached
+scientific roots. The 100-step Brusselator reference and optimized medians were
+205.223872 s and 184.237304 s (1.113911×). The 300-step medians were
+667.551832 s and 521.273988 s (1.280616×). The single full-T20 runs were
+4060.693636 s and 1971.634787 s (2.059557×). Full-run peak RSS was 474,890,240
+bytes and 477,151,232 bytes, so the 1.5× memory gate passed. The prefix gates
+did not reach 2×, so the overall CPU speed gate failed even though the full-run
+gate passed. VDP and Brusselator outputs remained exact, and no second
+optimization was attempted.

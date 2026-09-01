@@ -46,11 +46,17 @@ the oracle required before a future CUDA implementation.
 Profile the frozen reference:
 
 ```bash
+C4_PROFILE_CODE_ROOT=<clean-reference-root> taskset -c 0 \
 conda run -n py11 python experiments/profile_c4_reference_solver.py \
   --output-dir <profile-dir> \
   --observer-repeats 3 \
   --brusselator-prefix-steps 100 \
-  --vdp-prefix-steps 20
+  --vdp-prefix-steps 20 \
+  --tail-checkpoint <bitwise-equivalent-step-900-checkpoint> \
+  --tail-start-step 901 --tail-steps 100
+
+# A second invocation with --brusselator-prefix-steps 20 supplies the
+# independently measured 1--20 window.
 ```
 
 Run clean detached scientific roots through the performance gate:
@@ -73,6 +79,12 @@ Run the real B1/B2/B8 contract and verify the package:
 ```bash
 conda run -n py11 python experiments/run_c4_cpu_batch_equivalence.py \
   --output-dir <batch-dir> --runtime-repeats 1 --cpu 0
+
+conda run -n py11 python scripts/package_c4_performance_batch_evidence.py \
+  --observer-profile-dir <observer-profile-dir> \
+  --prefix-profile-dir <1-20-profile-dir> \
+  --formal-profile-dir <formal-profile-dir> \
+  --gate-dir <gate-dir> --batch-dir <batch-dir>
 
 conda run -n py11 python scripts/verify_c4_performance_batch_evidence.py --json
 ```
@@ -97,3 +109,9 @@ no second optimization is added to make the headline pass. CPU batch and both
 zero-regression gates, rather than CPU speed, determine whether the next CUDA
 batch round is authorized.
 
+The formal measurements reached 1.113911× at Brusselator step 100, 1.280616×
+at step 300, and 2.059557× for the full T20 run. Thus correctness, memory,
+full-run speed, and CPU-batch gates passed, while the two prefix speed gates
+failed. The formal CPU B8/8×B1 ratio was 0.992680×. This is the expected final
+classification above and authorizes the next CUDA batch research round without
+claiming that CUDA was implemented here.
