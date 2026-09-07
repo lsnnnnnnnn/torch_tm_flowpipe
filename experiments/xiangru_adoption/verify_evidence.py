@@ -43,14 +43,24 @@ def verify(root,check_hashes=True):
         require(contained==r['contains_exact'] and not all(contained),'known witness inclusion recomputation')
         require(r['parsed_mode']==r['requested_mode'],'witness mode mismatch')
         if r['device']=='cuda':require(r['cuda_kernel_names'],'CUDA execution unproven')
-    scale=json.loads((root/'preconditioning_exact_singleton.json').read_text())
-    singleton=[r for r in scale['rows'] if r.get('set_inclusion_witness')]
-    require(len(singleton)==2,'singleton scaling witness missing')
-    for r in singleton:
-        exact=Fraction(r['original_coefficient'])+Fraction(r['original_remainder'][0])
-        c=Fraction(r['scaled_coefficient']);s=Fraction(r['S']);lo,hi=map(Fraction,r['scaled_remainder'])
-        require(not s*(c+lo)<=exact<=s*(c+hi),'scaling witness not independently reproduced')
-        require(str(exact)==r['exact_input_fraction'],'scaling input identity')
+    scale=json.loads((root/'preconditioning_centered_exact.json').read_text())
+    failed_devices=set()
+    for r in scale['rows']:
+        a,e=Fraction(r['a']),Fraction(r['remainder_radius'])
+        c=Fraction(r['scaled_linear_coefficient']);s=Fraction(r['S']);lo,hi=map(Fraction,r['scaled_remainder'])
+        exact_lo,exact_hi=-a-e,a+e;lower,upper=s*(-abs(c)+lo),s*(abs(c)+hi)
+        require(r['state_dimension']==2 and r['original_constant_coefficient']==r['scaled_constant_coefficient']==0,
+                'centered production invariant missing')
+        require(r['original_remainder']==[-float(e),float(e)] and r['domain']==[[-1.,1.],[-1.,1.]],
+                'centered affine domain or symmetric remainder changed')
+        require((str(exact_lo),str(exact_hi))==(r['exact_original_lower'],r['exact_original_upper']),
+                'normalization exact original set changed')
+        require((str(lower),str(upper))==(r['exact_reconstructed_lower'],r['exact_reconstructed_upper']),
+                'normalization returned set cannot be reproduced')
+        contained=lower<=exact_lo and upper>=exact_hi
+        require(contained==r['whole_set_contained'],'normalization inclusion classification changed')
+        if not contained and e>0:failed_devices.add(r['device'])
+    require(failed_devices=={'cpu','cuda'},'centered normalization witness not reproduced on both devices')
     short=json.loads((root/'raw_minimal/candidate_short/summary.json').read_text())
     require(short['imported_package']==str(Path(paths['xiangru_new'])/'src/flowstar_gpu/__init__.py'),
             'candidate actual import path differs from pinned checkout')
