@@ -6,7 +6,7 @@
 
 对照证据起点为 `df50c55ef640b0ca9d90b132c88235b8ec07510b`；我们的实际数值运行来自独立 worktree `our_optimized` 的 `4939fb288c941a67f55cc191f4d75f8594692f47`，CPU 任务包装另固定在 `7608dd52e48af3ce8ae2e0a8343aae125c63b7f4`。用户远端 main 当时另有 `b2f34f5b2077e34662a2559d8c09b1d264bd7d98`，没有替换本轮指定参考。审计分支的 numerical `src/` 相对 df50c55 无改动。
 
-原生 Flow* 数值基准为 `b85a3211748cb77b736fe4ad42ee02d8d2b81148`。新的独立目录加两个 const 只读 term 访问器，本地观察提交 `722a561`；重新构建，未更改数值语句。两状态驱动和 CPU 运行器来自独立且干净的 scientific worktree `runner_scientific`，固定在 `c1326f7`。正式数值版本与后来的报告封装提交分开记录。
+原生 Flow* 数值基准为 `b85a3211748cb77b736fe4ad42ee02d8d2b81148`。新的独立目录加两个 const 只读 term 访问器，本地观察提交 `722a5611c0b33564b11916b13474d0d21d74bc0c`；重新构建，未更改数值语句。两状态驱动和 CPU 运行器来自独立且干净的 scientific worktree `runner_scientific`，固定在 `c1326f7549f20ae9036291386a4a65e575f5f488`。正式数值版本与后来的报告封装提交分开记录。
 
 机器为 `huan-c4140-server-3`，Xeon Gold 6138，80 个逻辑 CPU。本轮 GPU 为设备 0 的 Tesla V100-SXM2-16GB，sm_70，驱动 580.159.03。CPU 计时单线程、亲和性 CPU 2；短正确性检查在其他核执行。没有终止其他用户任务，也没有读取完整进程参数。
 
