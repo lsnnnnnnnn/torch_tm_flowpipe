@@ -30,13 +30,17 @@ def outward(v, upper):
 
 def measure(model):
     domains = [tuple(map(f, pair)) for pair in model['domain']]
+    if any(len(d)!=2 or d[0]>d[1] for d in domains):raise ValueError('invalid domain')
     result = []
     for component in model['components']:
         lo, hi = map(f, component['remainder'])
+        if lo>hi:raise ValueError('invalid remainder')
         for term in component['terms']:
             bounds = tuple(map(f, term['coefficient']))
+            if len(bounds)!=2 or bounds[0]>bounds[1]:raise ValueError('invalid coefficient interval')
             assert len(term['degrees']) == len(domains)
             for d, exponent in zip(domains, term['degrees']):
+                if not isinstance(exponent,int) or exponent<0:raise ValueError('invalid polynomial exponent')
                 bounds = product(bounds, power(d, exponent))
             lo += bounds[0]
             hi += bounds[1]
