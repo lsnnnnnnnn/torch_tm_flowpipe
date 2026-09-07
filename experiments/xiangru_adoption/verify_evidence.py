@@ -21,6 +21,7 @@ def verify(root,check_hashes=True):
     if check_hashes:require((root/'SHA256SUMS').read_text()==checksum(root),'outer hashes differ')
     contract=json.loads((root/'MATCHED_CONTRACTS.json').read_text())
     source=json.loads((root/'source_manifest.json').read_text())
+    paths=json.loads((root/'session_paths.json').read_text())
     require(source['candidate']['actual_runtime_sha']=='1c16d4ef2cb91cc94b1c784f7383e1eba135d8d3','candidate identity changed')
     require(source['ours_numerical_reference']=='4939fb288c941a67f55cc191f4d75f8594692f47','our reference identity changed')
     for name,order,step,queue,horizon in [('brusselator',6,.02,1000,20),('van_der_pol',4,.01,100,10)]:
@@ -51,6 +52,8 @@ def verify(root,check_hashes=True):
         require(not s*(c+lo)<=exact<=s*(c+hi),'scaling witness not independently reproduced')
         require(str(exact)==r['exact_input_fraction'],'scaling input identity')
     short=json.loads((root/'raw_minimal/candidate_short/summary.json').read_text())
+    require(short['imported_package']==str(Path(paths['xiangru_new'])/'src/flowstar_gpu/__init__.py'),
+            'candidate actual import path differs from pinned checkout')
     for r in short['rows']:
         require(r['mode']==r['settings']['mode'],'actual candidate mode differs from parsed Settings')
         require(r['device']==r['settings']['device'],'candidate device mismatch')
@@ -70,8 +73,15 @@ def verify(root,check_hashes=True):
     for shortname in ['brusselator','vdp']:
         d=root/'raw_minimal'/('our_'+shortname+'_full')
         summary=json.loads((d/'summary.json').read_text());bounds=read_csv(d/'bounds.csv')
+        require(summary['source_sha']==source['ours_numerical_reference'],'our numerical SHA mismatch')
+        runner_key='our_brusselator_runner_sha' if shortname=='brusselator' else 'our_vdp_runner_sha'
+        require(summary['runner_sha']==source[runner_key],'our scientific runner SHA mismatch')
+        require(summary['imported_package']==str(Path(paths['our_optimized'])/'src/torch_tm_flowpipe/__init__.py'),
+                'our actual import path differs from pinned checkout')
+        require((summary['device'],summary['cpu_threads'],summary['affinity'])==('cpu',1,[2]),
+                'our measured execution context differs from frozen CPU setup')
         fixed_h=Fraction(.02 if shortname=='brusselator' else .01)
-        require(all(Fraction(row['h'])==fixed_h for row in bounds),'our fixed step was changed or clamped')
+        require(all(Fraction(float(row['h']))==fixed_h for row in bounds),'our fixed step was changed or clamped')
         count=0;last=Fraction()
         with gzip.open(d/'models.jsonl.gz','rt') as h:
           for line,row in zip(h,bounds,strict=True):
