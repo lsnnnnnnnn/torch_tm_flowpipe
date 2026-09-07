@@ -1,0 +1,23 @@
+{
+  "verified_packaging_sha": "78a3e2757b2aa7252c428fe23f143328a6b307b1",
+  "clone_path": "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/independent_evidence",
+  "clone_source": "https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git",
+  "method": "Fresh remote shallow clone with independent objects and sparse checkout; no shared worktree or third-party sources.",
+  "clone_clean": true,
+  "objects_alternates_present": false,
+  "verifier_argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.backend_reevaluation.verify_evidence",
+    "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/independent_evidence/artifacts/runs/backend_reevaluation_20260907T061907Z"
+  ],
+  "exit_code": 0,
+  "result": {
+    "status": "VERIFIED",
+    "decision": "REPAIR_REUSE_NOT_LOCAL__NO_ADOPTION",
+    "exact_map_rows": 51,
+    "independent_endpoint_rows": 8,
+    "recomputed_tables": 7,
+    "scope": "Static exact evidence verification; source reruns require local/private third-party source access."
+  }
+}

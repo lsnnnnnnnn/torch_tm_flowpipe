@@ -26,4 +26,4 @@
 
 项目完整脚本要求的七组隔离回归共 **59 通过、9 跳过、1 失败**。唯一失败为 `test_frozen_historical_result_manifest_is_unchanged`，原因是新工作树没有收录 `experiments/three_way_common_contract/results/20260724T132534Z` 的旧结果目录；未修改相关源码或断言，依目标第 15 节记录后停止恢复旧资料。项目不同用例合计 1013 通过、11 跳过、1 项历史资料检查失败，不能称为全绿。全部 JUnit、原始日志、实际退出码及每组命令见 `tests/TEST_EXECUTIONS.json` 与相邻文件。
 
-独立副本将复核已提交的同一证据包；最终发布核对保存在本轮 ROOT 下 final_delivery.json。它记录远端 tip、本地 HEAD、独立 clone HEAD 和 verifier 输出，封装提交不充当数值算法 SHA。
+已从用户 GitHub 新分支建立独立对象库的 fresh clone，核验封装提交 `78a3e2757b2aa7252c428fe23f143328a6b307b1` 成功：51 行三方精确映射、8 行独立端点观察、七张汇总表全部重算通过；记录已收入 tests/independent_initial.json、日志与退出码。本次最终封装后的再次核对保存在本轮 ROOT 下 final_delivery.json。它记录远端 tip、本地 HEAD、独立 clone HEAD 和 verifier 输出，封装提交不充当数值算法 SHA。
