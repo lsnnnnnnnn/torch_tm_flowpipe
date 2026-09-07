@@ -84,7 +84,7 @@ def main():
         record = {'step':index,'plant':args.plant,'t_start_exact':str(t_before),'t_end_exact':str(total_time),'models':{}}
         for name, tm in [('endpoint',segment.endpoint_raw_tm),('tube',segment.tm)]:
             records = []
-            var_names = tuple(['u'+str(i) for i in range(tm.n_vars)])
+            var_names = ('ux','uy','tau') if tm.n_vars == 3 else ('ux','uy')
             _append_tmv(records,name,tm,variable_order=var_names)
             model = from_existing_canonical(dict(records),name)
             record['models'][name] = model
