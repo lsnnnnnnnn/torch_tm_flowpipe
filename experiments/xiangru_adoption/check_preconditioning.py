@@ -47,6 +47,19 @@ def main():
                          'scaled_remainder':rem.flatten().tolist(),'exact_input_fraction':str(exact),
                          'exact_reconstructed_lower':str(lower),'exact_reconstructed_upper':str(upper),
                          'exact_error_of_point':str(s*c-exact),'contained':lower<=exact<=upper})
+        # A singleton set, so no alternative choice of the internal variable
+        # can disguise the missing error as a harmless reparameterization.
+        a,e=1.1,2.0**-52
+        scaled,rem,S,point,inv,x0=_g_precond(tensor([[[a]]]),tensor([[[e,e]]]),tensor([[1.0,1.0]]),c0,pos,arange,2)
+        exact=Fraction(a)+Fraction(e);s,c=Fraction(S.item()),Fraction(scaled.item())
+        l,h=map(Fraction,rem.flatten().tolist());lower,upper=s*(c+l),s*(c+h)
+        rows.append({'device':device,'a':'singleton: 1.1 + [2^-52,2^-52]',
+                     'original_coefficient':a,'original_remainder':[e,e],
+                     'S':S.item(),'inverse':inv.item(),'scaled_coefficient':scaled.item(),
+                     'scaled_remainder':rem.flatten().tolist(),'exact_input_fraction':str(exact),
+                     'exact_reconstructed_lower':str(lower),'exact_reconstructed_upper':str(upper),
+                     'exact_error_of_point':str(s*c-exact),'contained':lower<=exact<=upper,
+                     'set_inclusion_witness':True})
     fn=Path(inspect.getsourcefile(_g_precond)).resolve()
     root=fn.parents[2]
     result={'schema':'xiangru_preconditioning_exact/1','source_function':str(fn),
