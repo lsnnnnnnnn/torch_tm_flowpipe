@@ -1,0 +1,147 @@
+{
+  "results": [
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 4,
+      "xml": "tests/old_symbolic_phi.xml",
+      "log": "tests/old_symbolic_phi.log",
+      "exit_code": 0,
+      "seconds": 1.212
+    },
+    {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 9,
+      "xml": "tests/related_final.xml",
+      "log": "tests/related_final.log",
+      "exit_code": 0,
+      "seconds": 0.316
+    },
+    {
+      "tests": 956,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "passed": 954,
+      "xml": "tests/full_root.xml",
+      "log": "tests/full_root.log",
+      "exit_code": 0,
+      "seconds": 450.117
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 6,
+      "xml": "tests/other_test_groups/common_contract.xml",
+      "log": "tests/other_test_groups/common_contract.log",
+      "exit_code": 0,
+      "seconds": 0.083
+    },
+    {
+      "tests": 16,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 15,
+      "xml": "tests/other_test_groups/comparison_repair.xml",
+      "log": "tests/other_test_groups/comparison_repair.log",
+      "exit_code": 1,
+      "seconds": 3.875,
+      "failure_details": [
+        {
+          "name": "test_frozen_historical_result_manifest_is_unchanged",
+          "class": "experiments.three_way_comparison_repair.tests.test_harness_integrity",
+          "detail": "def test_frozen_historical_result_manifest_is_unchanged() -> None:\n>       assert FROZEN_RESULT.exists()\nE       AssertionError: assert False\nE        +  where False = <bound method Path.exists of PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z')>()\nE        +    where <bound method Path.exists of PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z')> = PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z').exists\n\nexperiments/three_way_comparison_repair/tests/test_harness_integrity.py:169: AssertionError"
+        }
+      ]
+    },
+    {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4,
+      "passed": 13,
+      "xml": "tests/other_test_groups/deep_study.xml",
+      "log": "tests/other_test_groups/deep_study.log",
+      "exit_code": 0,
+      "seconds": 2.088
+    },
+    {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 8,
+      "xml": "tests/other_test_groups/diffreach_followup.xml",
+      "log": "tests/other_test_groups/diffreach_followup.log",
+      "exit_code": 0,
+      "seconds": 9.668
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 2,
+      "xml": "tests/other_test_groups/diffreach_support.xml",
+      "log": "tests/other_test_groups/diffreach_support.log",
+      "exit_code": 0,
+      "seconds": 4.261
+    },
+    {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 6,
+      "xml": "tests/other_test_groups/first_order_three_way.xml",
+      "log": "tests/other_test_groups/first_order_three_way.log",
+      "exit_code": 0,
+      "seconds": 1.704
+    },
+    {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 9,
+      "xml": "tests/other_test_groups/torch_basis.xml",
+      "log": "tests/other_test_groups/torch_basis.log",
+      "exit_code": 0,
+      "seconds": 1.845
+    }
+  ],
+  "distinct_project_totals": {
+    "passed": 1013,
+    "skipped": 11,
+    "failed": 1
+  },
+  "our_root": {
+    "passed": 954,
+    "skipped": 2,
+    "failed": 0
+  },
+  "other_groups": {
+    "passed": 59,
+    "skipped": 9,
+    "failed": 1
+  },
+  "old_candidate_related": {
+    "passed": 4,
+    "failed": 0
+  },
+  "new_related_tests_are_included_in_root": true,
+  "historical_missing_fixture": {
+    "test": "test_frozen_historical_result_manifest_is_unchanged",
+    "path": "experiments/three_way_common_contract/results/20260724T132534Z",
+    "reason": "Historical untracked result directory absent from new worktree. No numerical source changes. Goal section 15 explicitly says to record missing historical test data rather than reconstruct old experiments.",
+    "action": "Recorded actual failure, no recovery or assertion changes."
+  }
+}

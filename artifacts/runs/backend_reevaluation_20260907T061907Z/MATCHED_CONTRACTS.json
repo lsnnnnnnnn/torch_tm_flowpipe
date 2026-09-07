@@ -1,0 +1,4097 @@
+{
+  "schema": "xiangru_matched_adoption/1",
+  "preregistered_utc": "2026-09-07T03:29:24.080509+00:00",
+  "goal_source_sha256": "153369ffa9b4e7c326d5c508c5dfcb5cc2fe709a44fbf39c7f39931c82d11fad",
+  "plants": {
+    "brusselator": {
+      "state_names": [
+        "x",
+        "y"
+      ],
+      "state_dimension": 2,
+      "clock_state": false,
+      "rhs_expression_strings": [
+        "1 + x*(x*y - 4)",
+        "x*(3 - x*y)"
+      ],
+      "rhs_expression_trees": [
+        "Expression(body=BinOp(left=Constant(value=1), op=Add(), right=BinOp(left=Name(id='x', ctx=Load()), op=Mult(), right=BinOp(left=BinOp(left=Name(id='x', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())), op=Sub(), right=Constant(value=4)))))",
+        "Expression(body=BinOp(left=Name(id='x', ctx=Load()), op=Mult(), right=BinOp(left=Constant(value=3), op=Sub(), right=BinOp(left=Name(id='x', ctx=Load()), op=Mult(), right=Name(id='y', ctx=Load())))))"
+      ],
+      "initial_decimal_box": [
+        [
+          "1.48",
+          "1.52"
+        ],
+        [
+          "2.98",
+          "3.02"
+        ]
+      ],
+      "initial_representation": [
+        {
+          "lower": {
+            "decimal": "1.48",
+            "nearest_binary64_hex": "0x1.7ae147ae147aep+0",
+            "nearest_binary64_fraction": "3332663724254167/2251799813685248",
+            "exact_decimal_fraction": "37/25"
+          },
+          "upper": {
+            "decimal": "1.52",
+            "nearest_binary64_hex": "0x1.851eb851eb852p+0",
+            "nearest_binary64_fraction": "3422735716801577/2251799813685248",
+            "exact_decimal_fraction": "38/25"
+          },
+          "enclosing_binary64": [
+            1.48,
+            1.52
+          ],
+          "enclosing_binary64_hex": [
+            "0x1.7ae147ae147aep+0",
+            "0x1.851eb851eb852p+0"
+          ]
+        },
+        {
+          "lower": {
+            "decimal": "2.98",
+            "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+            "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+            "exact_decimal_fraction": "149/50"
+          },
+          "upper": {
+            "decimal": "3.02",
+            "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+            "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+            "exact_decimal_fraction": "151/50"
+          },
+          "enclosing_binary64": [
+            2.98,
+            3.02
+          ],
+          "enclosing_binary64_hex": [
+            "0x1.7d70a3d70a3d7p+1",
+            "0x1.828f5c28f5c29p+1"
+          ]
+        }
+      ],
+      "initial_semantics": "Exact decimal target; each backend encloses it outward in its own scalar format. Candidate uses recorded outward binary64 endpoints.",
+      "order": 6,
+      "step": {
+        "decimal": "0.02",
+        "nearest_binary64_hex": "0x1.47ae147ae147bp-6",
+        "nearest_binary64_fraction": "5764607523034235/288230376151711744",
+        "exact_decimal_fraction": "1/50"
+      },
+      "requested_horizon": {
+        "decimal": "20",
+        "nearest_binary64_hex": "0x1.4000000000000p+4",
+        "nearest_binary64_fraction": "20",
+        "exact_decimal_fraction": "20"
+      },
+      "requested_steps": 1000,
+      "target_remainder_radius": {
+        "decimal": "1e-4",
+        "nearest_binary64_hex": "0x1.a36e2eb1c432dp-14",
+        "nearest_binary64_fraction": "7378697629483821/73786976294838206464",
+        "exact_decimal_fraction": "1/10000"
+      },
+      "cutoff": {
+        "decimal": "1e-10",
+        "nearest_binary64_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "nearest_binary64_fraction": "7737125245533627/77371252455336267181195264",
+        "exact_decimal_fraction": "1/10000000000"
+      },
+      "validation_eps_ours": {
+        "decimal": "1e-12",
+        "nearest_binary64_hex": "0x1.19799812dea11p-40",
+        "nearest_binary64_fraction": "4951760157141521/4951760157141521099596496896",
+        "exact_decimal_fraction": "1/1000000000000"
+      },
+      "sr_capacity": 1000,
+      "initial_partitions": 1,
+      "endpoint_repair": false,
+      "endpoint_tightening": false,
+      "our_frozen_configuration": {
+        "accepted_boundary_sr_capacity": 1000,
+        "accepted_boundary_sr_enabled": true,
+        "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_generic_sr",
+        "authoritative_device": "cpu",
+        "authoritative_dtype": "float64",
+        "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+        "cutoff": 1e-10,
+        "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "endpoint_repair": false,
+        "fixed_step": 0.02,
+        "fixed_step_hex": "0x1.47ae147ae147bp-6",
+        "generic_post_accept_raw_remainder_refinement_enabled": true,
+        "initial_decimal_box": [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+        "lane_name": "flowstar_like_polynomial_plant_reference",
+        "order": 6,
+        "outward_rounding": "torch_nextafter_binary64",
+        "plant": "brusselator",
+        "post_accept_refinement_mode": "flowstar_raw_remainder_compat_refined",
+        "range_policy": {
+          "max_depth": 1,
+          "max_leaves": 4,
+          "method": "adaptive_subdivision",
+          "named_contexts": [
+            "polynomial_truncation"
+          ],
+          "split_vars": [
+            0,
+            1
+          ],
+          "trigger": "proactive_depth1_on_named_contexts",
+          "variable_orders": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ]
+        },
+        "refinement_replay_limit": 491,
+        "requested_horizon": 20.0,
+        "requested_horizon_hex": "0x1.4000000000000p+4",
+        "rhs_term_evaluation": "ordered_terms",
+        "right_map_center_mode": "constant",
+        "right_map_range_mode": "standard",
+        "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+        "step_policy": "fixed_no_retry",
+        "stop_ratio": 0.99,
+        "stop_ratio_hex": "0x1.fae147ae147aep-1",
+        "subset_commit": "whole_vector_atomic",
+        "target_remainder_radius": 0.0001,
+        "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+        "validation_epsilon": 1e-12,
+        "validation_epsilon_hex": "0x1.19799812dea11p-40"
+      },
+      "candidate_settings": {
+        "mode": "explicit parity OR strict",
+        "step_min": -1,
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "different_task_boxes_decimal": [
+        [
+          [
+            "1.477",
+            "1.517"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.478",
+            "1.518"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.479",
+            "1.519"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.481",
+            "1.521"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.482",
+            "1.522"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.483",
+            "1.523"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.484",
+            "1.524"
+          ],
+          [
+            "2.979",
+            "3.019"
+          ]
+        ],
+        [
+          [
+            "1.477",
+            "1.517"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.478",
+            "1.518"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.479",
+            "1.519"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.481",
+            "1.521"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.482",
+            "1.522"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.483",
+            "1.523"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.484",
+            "1.524"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        [
+          [
+            "1.477",
+            "1.517"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.478",
+            "1.518"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.479",
+            "1.519"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.481",
+            "1.521"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.482",
+            "1.522"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.483",
+            "1.523"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.484",
+            "1.524"
+          ],
+          [
+            "2.981",
+            "3.021"
+          ]
+        ],
+        [
+          [
+            "1.477",
+            "1.517"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.478",
+            "1.518"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.479",
+            "1.519"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.481",
+            "1.521"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.482",
+            "1.522"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.483",
+            "1.523"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ],
+        [
+          [
+            "1.484",
+            "1.524"
+          ],
+          [
+            "2.982",
+            "3.022"
+          ]
+        ]
+      ],
+      "different_task_boxes_binary": [
+        [
+          {
+            "lower": {
+              "decimal": "1.477",
+              "nearest_binary64_hex": "0x1.7a1cac083126fp+0",
+              "nearest_binary64_fraction": "6651816649626223/4503599627370496",
+              "exact_decimal_fraction": "1477/1000"
+            },
+            "upper": {
+              "decimal": "1.517",
+              "nearest_binary64_hex": "0x1.845a1cac08312p+0",
+              "nearest_binary64_fraction": "3415980317360521/2251799813685248",
+              "exact_decimal_fraction": "1517/1000"
+            },
+            "enclosing_binary64": [
+              1.4769999999999999,
+              1.5170000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a1cac083126ep+0",
+              "0x1.845a1cac08313p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.478",
+              "nearest_binary64_hex": "0x1.7a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "6656320249253593/4503599627370496",
+              "exact_decimal_fraction": "739/500"
+            },
+            "upper": {
+              "decimal": "1.518",
+              "nearest_binary64_hex": "0x1.849ba5e353f7dp+0",
+              "nearest_binary64_fraction": "6836464234348413/4503599627370496",
+              "exact_decimal_fraction": "759/500"
+            },
+            "enclosing_binary64": [
+              1.478,
+              1.518
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a5e353f7ced9p+0",
+              "0x1.849ba5e353f7dp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.479",
+              "nearest_binary64_hex": "0x1.7a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1665205962220241/1125899906842624",
+              "exact_decimal_fraction": "1479/1000"
+            },
+            "upper": {
+              "decimal": "1.519",
+              "nearest_binary64_hex": "0x1.84dd2f1a9fbe7p+0",
+              "nearest_binary64_fraction": "6840967833975783/4503599627370496",
+              "exact_decimal_fraction": "1519/1000"
+            },
+            "enclosing_binary64": [
+              1.4789999999999999,
+              1.5190000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a9fbe76c8b43p+0",
+              "0x1.84dd2f1a9fbe8p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.48",
+              "nearest_binary64_hex": "0x1.7ae147ae147aep+0",
+              "nearest_binary64_fraction": "3332663724254167/2251799813685248",
+              "exact_decimal_fraction": "37/25"
+            },
+            "upper": {
+              "decimal": "1.52",
+              "nearest_binary64_hex": "0x1.851eb851eb852p+0",
+              "nearest_binary64_fraction": "3422735716801577/2251799813685248",
+              "exact_decimal_fraction": "38/25"
+            },
+            "enclosing_binary64": [
+              1.48,
+              1.52
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ae147ae147aep+0",
+              "0x1.851eb851eb852p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.481",
+              "nearest_binary64_hex": "0x1.7b22d0e560419p+0",
+              "nearest_binary64_fraction": "6669831048135705/4503599627370496",
+              "exact_decimal_fraction": "1481/1000"
+            },
+            "upper": {
+              "decimal": "1.521",
+              "nearest_binary64_hex": "0x1.85604189374bcp+0",
+              "nearest_binary64_fraction": "1712493758307631/1125899906842624",
+              "exact_decimal_fraction": "1521/1000"
+            },
+            "enclosing_binary64": [
+              1.4809999999999999,
+              1.5210000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b22d0e560418p+0",
+              "0x1.85604189374bdp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.482",
+              "nearest_binary64_hex": "0x1.7b645a1cac083p+0",
+              "nearest_binary64_fraction": "6674334647763075/4503599627370496",
+              "exact_decimal_fraction": "741/500"
+            },
+            "upper": {
+              "decimal": "1.522",
+              "nearest_binary64_hex": "0x1.85a1cac083127p+0",
+              "nearest_binary64_fraction": "6854478632857895/4503599627370496",
+              "exact_decimal_fraction": "761/500"
+            },
+            "enclosing_binary64": [
+              1.482,
+              1.522
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b645a1cac083p+0",
+              "0x1.85a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.483",
+              "nearest_binary64_hex": "0x1.7ba5e353f7ceep+0",
+              "nearest_binary64_fraction": "3339419123695223/2251799813685248",
+              "exact_decimal_fraction": "1483/1000"
+            },
+            "upper": {
+              "decimal": "1.523",
+              "nearest_binary64_hex": "0x1.85e353f7ced91p+0",
+              "nearest_binary64_fraction": "6858982232485265/4503599627370496",
+              "exact_decimal_fraction": "1523/1000"
+            },
+            "enclosing_binary64": [
+              1.4829999999999999,
+              1.5230000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ba5e353f7cedp+0",
+              "0x1.85e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.484",
+              "nearest_binary64_hex": "0x1.7be76c8b43958p+0",
+              "nearest_binary64_fraction": "835417730877227/562949953421312",
+              "exact_decimal_fraction": "371/250"
+            },
+            "upper": {
+              "decimal": "1.524",
+              "nearest_binary64_hex": "0x1.8624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1715871458028159/1125899906842624",
+              "exact_decimal_fraction": "381/250"
+            },
+            "enclosing_binary64": [
+              1.484,
+              1.524
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7be76c8b43958p+0",
+              "0x1.8624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.979",
+              "nearest_binary64_hex": "0x1.7d4fdf3b645a2p+1",
+              "nearest_binary64_fraction": "3354055822484177/1125899906842624",
+              "exact_decimal_fraction": "2979/1000"
+            },
+            "upper": {
+              "decimal": "3.019",
+              "nearest_binary64_hex": "0x1.826e978d4fdf4p+1",
+              "nearest_binary64_fraction": "1699545909378941/562949953421312",
+              "exact_decimal_fraction": "3019/1000"
+            },
+            "enclosing_binary64": [
+              2.9789999999999996,
+              3.019
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d4fdf3b645a1p+1",
+              "0x1.826e978d4fdf4p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.477",
+              "nearest_binary64_hex": "0x1.7a1cac083126fp+0",
+              "nearest_binary64_fraction": "6651816649626223/4503599627370496",
+              "exact_decimal_fraction": "1477/1000"
+            },
+            "upper": {
+              "decimal": "1.517",
+              "nearest_binary64_hex": "0x1.845a1cac08312p+0",
+              "nearest_binary64_fraction": "3415980317360521/2251799813685248",
+              "exact_decimal_fraction": "1517/1000"
+            },
+            "enclosing_binary64": [
+              1.4769999999999999,
+              1.5170000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a1cac083126ep+0",
+              "0x1.845a1cac08313p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.478",
+              "nearest_binary64_hex": "0x1.7a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "6656320249253593/4503599627370496",
+              "exact_decimal_fraction": "739/500"
+            },
+            "upper": {
+              "decimal": "1.518",
+              "nearest_binary64_hex": "0x1.849ba5e353f7dp+0",
+              "nearest_binary64_fraction": "6836464234348413/4503599627370496",
+              "exact_decimal_fraction": "759/500"
+            },
+            "enclosing_binary64": [
+              1.478,
+              1.518
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a5e353f7ced9p+0",
+              "0x1.849ba5e353f7dp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.479",
+              "nearest_binary64_hex": "0x1.7a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1665205962220241/1125899906842624",
+              "exact_decimal_fraction": "1479/1000"
+            },
+            "upper": {
+              "decimal": "1.519",
+              "nearest_binary64_hex": "0x1.84dd2f1a9fbe7p+0",
+              "nearest_binary64_fraction": "6840967833975783/4503599627370496",
+              "exact_decimal_fraction": "1519/1000"
+            },
+            "enclosing_binary64": [
+              1.4789999999999999,
+              1.5190000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a9fbe76c8b43p+0",
+              "0x1.84dd2f1a9fbe8p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.48",
+              "nearest_binary64_hex": "0x1.7ae147ae147aep+0",
+              "nearest_binary64_fraction": "3332663724254167/2251799813685248",
+              "exact_decimal_fraction": "37/25"
+            },
+            "upper": {
+              "decimal": "1.52",
+              "nearest_binary64_hex": "0x1.851eb851eb852p+0",
+              "nearest_binary64_fraction": "3422735716801577/2251799813685248",
+              "exact_decimal_fraction": "38/25"
+            },
+            "enclosing_binary64": [
+              1.48,
+              1.52
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ae147ae147aep+0",
+              "0x1.851eb851eb852p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.481",
+              "nearest_binary64_hex": "0x1.7b22d0e560419p+0",
+              "nearest_binary64_fraction": "6669831048135705/4503599627370496",
+              "exact_decimal_fraction": "1481/1000"
+            },
+            "upper": {
+              "decimal": "1.521",
+              "nearest_binary64_hex": "0x1.85604189374bcp+0",
+              "nearest_binary64_fraction": "1712493758307631/1125899906842624",
+              "exact_decimal_fraction": "1521/1000"
+            },
+            "enclosing_binary64": [
+              1.4809999999999999,
+              1.5210000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b22d0e560418p+0",
+              "0x1.85604189374bdp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.482",
+              "nearest_binary64_hex": "0x1.7b645a1cac083p+0",
+              "nearest_binary64_fraction": "6674334647763075/4503599627370496",
+              "exact_decimal_fraction": "741/500"
+            },
+            "upper": {
+              "decimal": "1.522",
+              "nearest_binary64_hex": "0x1.85a1cac083127p+0",
+              "nearest_binary64_fraction": "6854478632857895/4503599627370496",
+              "exact_decimal_fraction": "761/500"
+            },
+            "enclosing_binary64": [
+              1.482,
+              1.522
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b645a1cac083p+0",
+              "0x1.85a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.483",
+              "nearest_binary64_hex": "0x1.7ba5e353f7ceep+0",
+              "nearest_binary64_fraction": "3339419123695223/2251799813685248",
+              "exact_decimal_fraction": "1483/1000"
+            },
+            "upper": {
+              "decimal": "1.523",
+              "nearest_binary64_hex": "0x1.85e353f7ced91p+0",
+              "nearest_binary64_fraction": "6858982232485265/4503599627370496",
+              "exact_decimal_fraction": "1523/1000"
+            },
+            "enclosing_binary64": [
+              1.4829999999999999,
+              1.5230000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ba5e353f7cedp+0",
+              "0x1.85e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.484",
+              "nearest_binary64_hex": "0x1.7be76c8b43958p+0",
+              "nearest_binary64_fraction": "835417730877227/562949953421312",
+              "exact_decimal_fraction": "371/250"
+            },
+            "upper": {
+              "decimal": "1.524",
+              "nearest_binary64_hex": "0x1.8624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1715871458028159/1125899906842624",
+              "exact_decimal_fraction": "381/250"
+            },
+            "enclosing_binary64": [
+              1.484,
+              1.524
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7be76c8b43958p+0",
+              "0x1.8624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.98",
+              "nearest_binary64_hex": "0x1.7d70a3d70a3d7p+1",
+              "nearest_binary64_fraction": "6710363444782039/2251799813685248",
+              "exact_decimal_fraction": "149/50"
+            },
+            "upper": {
+              "decimal": "3.02",
+              "nearest_binary64_hex": "0x1.828f5c28f5c29p+1",
+              "nearest_binary64_fraction": "6800435437329449/2251799813685248",
+              "exact_decimal_fraction": "151/50"
+            },
+            "enclosing_binary64": [
+              2.98,
+              3.02
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.477",
+              "nearest_binary64_hex": "0x1.7a1cac083126fp+0",
+              "nearest_binary64_fraction": "6651816649626223/4503599627370496",
+              "exact_decimal_fraction": "1477/1000"
+            },
+            "upper": {
+              "decimal": "1.517",
+              "nearest_binary64_hex": "0x1.845a1cac08312p+0",
+              "nearest_binary64_fraction": "3415980317360521/2251799813685248",
+              "exact_decimal_fraction": "1517/1000"
+            },
+            "enclosing_binary64": [
+              1.4769999999999999,
+              1.5170000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a1cac083126ep+0",
+              "0x1.845a1cac08313p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.478",
+              "nearest_binary64_hex": "0x1.7a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "6656320249253593/4503599627370496",
+              "exact_decimal_fraction": "739/500"
+            },
+            "upper": {
+              "decimal": "1.518",
+              "nearest_binary64_hex": "0x1.849ba5e353f7dp+0",
+              "nearest_binary64_fraction": "6836464234348413/4503599627370496",
+              "exact_decimal_fraction": "759/500"
+            },
+            "enclosing_binary64": [
+              1.478,
+              1.518
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a5e353f7ced9p+0",
+              "0x1.849ba5e353f7dp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.479",
+              "nearest_binary64_hex": "0x1.7a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1665205962220241/1125899906842624",
+              "exact_decimal_fraction": "1479/1000"
+            },
+            "upper": {
+              "decimal": "1.519",
+              "nearest_binary64_hex": "0x1.84dd2f1a9fbe7p+0",
+              "nearest_binary64_fraction": "6840967833975783/4503599627370496",
+              "exact_decimal_fraction": "1519/1000"
+            },
+            "enclosing_binary64": [
+              1.4789999999999999,
+              1.5190000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a9fbe76c8b43p+0",
+              "0x1.84dd2f1a9fbe8p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.48",
+              "nearest_binary64_hex": "0x1.7ae147ae147aep+0",
+              "nearest_binary64_fraction": "3332663724254167/2251799813685248",
+              "exact_decimal_fraction": "37/25"
+            },
+            "upper": {
+              "decimal": "1.52",
+              "nearest_binary64_hex": "0x1.851eb851eb852p+0",
+              "nearest_binary64_fraction": "3422735716801577/2251799813685248",
+              "exact_decimal_fraction": "38/25"
+            },
+            "enclosing_binary64": [
+              1.48,
+              1.52
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ae147ae147aep+0",
+              "0x1.851eb851eb852p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.481",
+              "nearest_binary64_hex": "0x1.7b22d0e560419p+0",
+              "nearest_binary64_fraction": "6669831048135705/4503599627370496",
+              "exact_decimal_fraction": "1481/1000"
+            },
+            "upper": {
+              "decimal": "1.521",
+              "nearest_binary64_hex": "0x1.85604189374bcp+0",
+              "nearest_binary64_fraction": "1712493758307631/1125899906842624",
+              "exact_decimal_fraction": "1521/1000"
+            },
+            "enclosing_binary64": [
+              1.4809999999999999,
+              1.5210000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b22d0e560418p+0",
+              "0x1.85604189374bdp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.482",
+              "nearest_binary64_hex": "0x1.7b645a1cac083p+0",
+              "nearest_binary64_fraction": "6674334647763075/4503599627370496",
+              "exact_decimal_fraction": "741/500"
+            },
+            "upper": {
+              "decimal": "1.522",
+              "nearest_binary64_hex": "0x1.85a1cac083127p+0",
+              "nearest_binary64_fraction": "6854478632857895/4503599627370496",
+              "exact_decimal_fraction": "761/500"
+            },
+            "enclosing_binary64": [
+              1.482,
+              1.522
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b645a1cac083p+0",
+              "0x1.85a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.483",
+              "nearest_binary64_hex": "0x1.7ba5e353f7ceep+0",
+              "nearest_binary64_fraction": "3339419123695223/2251799813685248",
+              "exact_decimal_fraction": "1483/1000"
+            },
+            "upper": {
+              "decimal": "1.523",
+              "nearest_binary64_hex": "0x1.85e353f7ced91p+0",
+              "nearest_binary64_fraction": "6858982232485265/4503599627370496",
+              "exact_decimal_fraction": "1523/1000"
+            },
+            "enclosing_binary64": [
+              1.4829999999999999,
+              1.5230000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ba5e353f7cedp+0",
+              "0x1.85e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.484",
+              "nearest_binary64_hex": "0x1.7be76c8b43958p+0",
+              "nearest_binary64_fraction": "835417730877227/562949953421312",
+              "exact_decimal_fraction": "371/250"
+            },
+            "upper": {
+              "decimal": "1.524",
+              "nearest_binary64_hex": "0x1.8624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1715871458028159/1125899906842624",
+              "exact_decimal_fraction": "381/250"
+            },
+            "enclosing_binary64": [
+              1.484,
+              1.524
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7be76c8b43958p+0",
+              "0x1.8624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.981",
+              "nearest_binary64_hex": "0x1.7d916872b020cp+1",
+              "nearest_binary64_fraction": "1678153811148931/562949953421312",
+              "exact_decimal_fraction": "2981/1000"
+            },
+            "upper": {
+              "decimal": "3.021",
+              "nearest_binary64_hex": "0x1.82b020c49ba5ep+1",
+              "nearest_binary64_fraction": "3401343618571567/1125899906842624",
+              "exact_decimal_fraction": "3021/1000"
+            },
+            "enclosing_binary64": [
+              2.981,
+              3.0210000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7d916872b020cp+1",
+              "0x1.82b020c49ba5fp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.477",
+              "nearest_binary64_hex": "0x1.7a1cac083126fp+0",
+              "nearest_binary64_fraction": "6651816649626223/4503599627370496",
+              "exact_decimal_fraction": "1477/1000"
+            },
+            "upper": {
+              "decimal": "1.517",
+              "nearest_binary64_hex": "0x1.845a1cac08312p+0",
+              "nearest_binary64_fraction": "3415980317360521/2251799813685248",
+              "exact_decimal_fraction": "1517/1000"
+            },
+            "enclosing_binary64": [
+              1.4769999999999999,
+              1.5170000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a1cac083126ep+0",
+              "0x1.845a1cac08313p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.478",
+              "nearest_binary64_hex": "0x1.7a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "6656320249253593/4503599627370496",
+              "exact_decimal_fraction": "739/500"
+            },
+            "upper": {
+              "decimal": "1.518",
+              "nearest_binary64_hex": "0x1.849ba5e353f7dp+0",
+              "nearest_binary64_fraction": "6836464234348413/4503599627370496",
+              "exact_decimal_fraction": "759/500"
+            },
+            "enclosing_binary64": [
+              1.478,
+              1.518
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a5e353f7ced9p+0",
+              "0x1.849ba5e353f7dp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.479",
+              "nearest_binary64_hex": "0x1.7a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1665205962220241/1125899906842624",
+              "exact_decimal_fraction": "1479/1000"
+            },
+            "upper": {
+              "decimal": "1.519",
+              "nearest_binary64_hex": "0x1.84dd2f1a9fbe7p+0",
+              "nearest_binary64_fraction": "6840967833975783/4503599627370496",
+              "exact_decimal_fraction": "1519/1000"
+            },
+            "enclosing_binary64": [
+              1.4789999999999999,
+              1.5190000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7a9fbe76c8b43p+0",
+              "0x1.84dd2f1a9fbe8p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.48",
+              "nearest_binary64_hex": "0x1.7ae147ae147aep+0",
+              "nearest_binary64_fraction": "3332663724254167/2251799813685248",
+              "exact_decimal_fraction": "37/25"
+            },
+            "upper": {
+              "decimal": "1.52",
+              "nearest_binary64_hex": "0x1.851eb851eb852p+0",
+              "nearest_binary64_fraction": "3422735716801577/2251799813685248",
+              "exact_decimal_fraction": "38/25"
+            },
+            "enclosing_binary64": [
+              1.48,
+              1.52
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ae147ae147aep+0",
+              "0x1.851eb851eb852p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.481",
+              "nearest_binary64_hex": "0x1.7b22d0e560419p+0",
+              "nearest_binary64_fraction": "6669831048135705/4503599627370496",
+              "exact_decimal_fraction": "1481/1000"
+            },
+            "upper": {
+              "decimal": "1.521",
+              "nearest_binary64_hex": "0x1.85604189374bcp+0",
+              "nearest_binary64_fraction": "1712493758307631/1125899906842624",
+              "exact_decimal_fraction": "1521/1000"
+            },
+            "enclosing_binary64": [
+              1.4809999999999999,
+              1.5210000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b22d0e560418p+0",
+              "0x1.85604189374bdp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.482",
+              "nearest_binary64_hex": "0x1.7b645a1cac083p+0",
+              "nearest_binary64_fraction": "6674334647763075/4503599627370496",
+              "exact_decimal_fraction": "741/500"
+            },
+            "upper": {
+              "decimal": "1.522",
+              "nearest_binary64_hex": "0x1.85a1cac083127p+0",
+              "nearest_binary64_fraction": "6854478632857895/4503599627370496",
+              "exact_decimal_fraction": "761/500"
+            },
+            "enclosing_binary64": [
+              1.482,
+              1.522
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7b645a1cac083p+0",
+              "0x1.85a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.483",
+              "nearest_binary64_hex": "0x1.7ba5e353f7ceep+0",
+              "nearest_binary64_fraction": "3339419123695223/2251799813685248",
+              "exact_decimal_fraction": "1483/1000"
+            },
+            "upper": {
+              "decimal": "1.523",
+              "nearest_binary64_hex": "0x1.85e353f7ced91p+0",
+              "nearest_binary64_fraction": "6858982232485265/4503599627370496",
+              "exact_decimal_fraction": "1523/1000"
+            },
+            "enclosing_binary64": [
+              1.4829999999999999,
+              1.5230000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7ba5e353f7cedp+0",
+              "0x1.85e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.484",
+              "nearest_binary64_hex": "0x1.7be76c8b43958p+0",
+              "nearest_binary64_fraction": "835417730877227/562949953421312",
+              "exact_decimal_fraction": "371/250"
+            },
+            "upper": {
+              "decimal": "1.524",
+              "nearest_binary64_hex": "0x1.8624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1715871458028159/1125899906842624",
+              "exact_decimal_fraction": "381/250"
+            },
+            "enclosing_binary64": [
+              1.484,
+              1.524
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7be76c8b43958p+0",
+              "0x1.8624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.982",
+              "nearest_binary64_hex": "0x1.7db22d0e56042p+1",
+              "nearest_binary64_fraction": "3357433522204705/1125899906842624",
+              "exact_decimal_fraction": "1491/500"
+            },
+            "upper": {
+              "decimal": "3.022",
+              "nearest_binary64_hex": "0x1.82d0e56041893p+1",
+              "nearest_binary64_fraction": "6804939036956819/2251799813685248",
+              "exact_decimal_fraction": "1511/500"
+            },
+            "enclosing_binary64": [
+              2.9819999999999998,
+              3.0220000000000002
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.7db22d0e56041p+1",
+              "0x1.82d0e56041894p+1"
+            ]
+          }
+        ]
+      ],
+      "checkpoints": [
+        1,
+        5,
+        10,
+        15,
+        20
+      ]
+    },
+    "van_der_pol": {
+      "state_names": [
+        "x",
+        "y"
+      ],
+      "state_dimension": 2,
+      "clock_state": false,
+      "rhs_expression_strings": [
+        "y",
+        "y - x - x*x*y"
+      ],
+      "rhs_expression_trees": [
+        "Expression(body=Name(id='y', ctx=Load()))",
+        "Expression(body=BinOp(left=BinOp(left=Name(id='y', ctx=Load()), op=Sub(), right=Name(id='x', ctx=Load())), op=Sub(), right=BinOp(left=BinOp(left=Name(id='x', ctx=Load()), op=Mult(), right=Name(id='x', ctx=Load())), op=Mult(), right=Name(id='y', ctx=Load()))))"
+      ],
+      "initial_decimal_box": [
+        [
+          "1.1",
+          "1.4"
+        ],
+        [
+          "2.35",
+          "2.45"
+        ]
+      ],
+      "initial_representation": [
+        {
+          "lower": {
+            "decimal": "1.1",
+            "nearest_binary64_hex": "0x1.199999999999ap+0",
+            "nearest_binary64_fraction": "2476979795053773/2251799813685248",
+            "exact_decimal_fraction": "11/10"
+          },
+          "upper": {
+            "decimal": "1.4",
+            "nearest_binary64_hex": "0x1.6666666666666p+0",
+            "nearest_binary64_fraction": "3152519739159347/2251799813685248",
+            "exact_decimal_fraction": "7/5"
+          },
+          "enclosing_binary64": [
+            1.0999999999999999,
+            1.4000000000000001
+          ],
+          "enclosing_binary64_hex": [
+            "0x1.1999999999999p+0",
+            "0x1.6666666666667p+0"
+          ]
+        },
+        {
+          "lower": {
+            "decimal": "2.35",
+            "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+            "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+            "exact_decimal_fraction": "47/20"
+          },
+          "upper": {
+            "decimal": "2.45",
+            "nearest_binary64_hex": "0x1.399999999999ap+1",
+            "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+            "exact_decimal_fraction": "49/20"
+          },
+          "enclosing_binary64": [
+            2.3499999999999996,
+            2.45
+          ],
+          "enclosing_binary64_hex": [
+            "0x1.2ccccccccccccp+1",
+            "0x1.399999999999ap+1"
+          ]
+        }
+      ],
+      "initial_semantics": "Exact decimal target; each backend encloses it outward in its own scalar format. Candidate uses recorded outward binary64 endpoints.",
+      "order": 4,
+      "step": {
+        "decimal": "0.01",
+        "nearest_binary64_hex": "0x1.47ae147ae147bp-7",
+        "nearest_binary64_fraction": "5764607523034235/576460752303423488",
+        "exact_decimal_fraction": "1/100"
+      },
+      "requested_horizon": {
+        "decimal": "10",
+        "nearest_binary64_hex": "0x1.4000000000000p+3",
+        "nearest_binary64_fraction": "10",
+        "exact_decimal_fraction": "10"
+      },
+      "requested_steps": 1000,
+      "target_remainder_radius": {
+        "decimal": "1e-4",
+        "nearest_binary64_hex": "0x1.a36e2eb1c432dp-14",
+        "nearest_binary64_fraction": "7378697629483821/73786976294838206464",
+        "exact_decimal_fraction": "1/10000"
+      },
+      "cutoff": {
+        "decimal": "1e-10",
+        "nearest_binary64_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "nearest_binary64_fraction": "7737125245533627/77371252455336267181195264",
+        "exact_decimal_fraction": "1/10000000000"
+      },
+      "validation_eps_ours": {
+        "decimal": "1e-12",
+        "nearest_binary64_hex": "0x1.19799812dea11p-40",
+        "nearest_binary64_fraction": "4951760157141521/4951760157141521099596496896",
+        "exact_decimal_fraction": "1/1000000000000"
+      },
+      "sr_capacity": 100,
+      "initial_partitions": 1,
+      "endpoint_repair": false,
+      "endpoint_tightening": false,
+      "our_frozen_configuration": {
+        "accepted_boundary_sr_capacity": 100,
+        "accepted_boundary_sr_enabled": true,
+        "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_c3_sr100",
+        "authoritative_device": "cpu",
+        "authoritative_dtype": "float64",
+        "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+        "cutoff": 1e-10,
+        "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "endpoint_repair": false,
+        "fixed_step": null,
+        "fixed_step_hex": null,
+        "generic_post_accept_raw_remainder_refinement_enabled": true,
+        "initial_decimal_box": [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+        "lane_name": "flowstar_like_polynomial_plant_reference",
+        "order": 4,
+        "outward_rounding": "torch_nextafter_binary64",
+        "plant": "van_der_pol",
+        "post_accept_refinement_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+        "range_policy": {
+          "max_depth": 1,
+          "max_leaves": 4,
+          "method": "adaptive_subdivision",
+          "named_contexts": [
+            "polynomial_truncation"
+          ],
+          "split_vars": [
+            0,
+            1
+          ],
+          "trigger": "proactive_depth1_on_named_contexts",
+          "variable_orders": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ]
+        },
+        "refinement_replay_limit": 491,
+        "requested_horizon": 10.0,
+        "requested_horizon_hex": "0x1.4000000000000p+3",
+        "rhs_term_evaluation": "ordered_terms",
+        "right_map_center_mode": "constant",
+        "right_map_range_mode": "standard",
+        "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+        "step_policy": "flowstar_compat_native_h_min_0.002_h_max_0.1",
+        "stop_ratio": 0.99,
+        "stop_ratio_hex": "0x1.fae147ae147aep-1",
+        "subset_commit": "whole_vector_atomic",
+        "target_remainder_radius": 0.0001,
+        "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+        "validation_epsilon": 1e-12,
+        "validation_epsilon_hex": "0x1.19799812dea11p-40"
+      },
+      "candidate_settings": {
+        "mode": "explicit parity OR strict",
+        "step_min": -1,
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "different_task_boxes_decimal": [
+        [
+          [
+            "1.097",
+            "1.397"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.098",
+            "1.398"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.099",
+            "1.399"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.101",
+            "1.401"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.102",
+            "1.402"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.103",
+            "1.403"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.104",
+            "1.404"
+          ],
+          [
+            "2.349",
+            "2.449"
+          ]
+        ],
+        [
+          [
+            "1.097",
+            "1.397"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.098",
+            "1.398"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.099",
+            "1.399"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.101",
+            "1.401"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.102",
+            "1.402"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.103",
+            "1.403"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.104",
+            "1.404"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        [
+          [
+            "1.097",
+            "1.397"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.098",
+            "1.398"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.099",
+            "1.399"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.101",
+            "1.401"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.102",
+            "1.402"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.103",
+            "1.403"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.104",
+            "1.404"
+          ],
+          [
+            "2.351",
+            "2.451"
+          ]
+        ],
+        [
+          [
+            "1.097",
+            "1.397"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.098",
+            "1.398"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.099",
+            "1.399"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.101",
+            "1.401"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.102",
+            "1.402"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.103",
+            "1.403"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ],
+        [
+          [
+            "1.104",
+            "1.404"
+          ],
+          [
+            "2.352",
+            "2.452"
+          ]
+        ]
+      ],
+      "different_task_boxes_binary": [
+        [
+          {
+            "lower": {
+              "decimal": "1.097",
+              "nearest_binary64_hex": "0x1.18d4fdf3b645ap+0",
+              "nearest_binary64_fraction": "2470224395612717/2251799813685248",
+              "exact_decimal_fraction": "1097/1000"
+            },
+            "upper": {
+              "decimal": "1.397",
+              "nearest_binary64_hex": "0x1.65a1cac083127p+0",
+              "nearest_binary64_fraction": "6291528679436583/4503599627370496",
+              "exact_decimal_fraction": "1397/1000"
+            },
+            "enclosing_binary64": [
+              1.097,
+              1.397
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.18d4fdf3b645ap+0",
+              "0x1.65a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.098",
+              "nearest_binary64_hex": "0x1.1916872b020c5p+0",
+              "nearest_binary64_fraction": "4944952390852805/4503599627370496",
+              "exact_decimal_fraction": "549/500"
+            },
+            "upper": {
+              "decimal": "1.398",
+              "nearest_binary64_hex": "0x1.65e353f7ced91p+0",
+              "nearest_binary64_fraction": "6296032279063953/4503599627370496",
+              "exact_decimal_fraction": "699/500"
+            },
+            "enclosing_binary64": [
+              1.0979999999999999,
+              1.3980000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1916872b020c4p+0",
+              "0x1.65e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.099",
+              "nearest_binary64_hex": "0x1.195810624dd2fp+0",
+              "nearest_binary64_fraction": "4949455990480175/4503599627370496",
+              "exact_decimal_fraction": "1099/1000"
+            },
+            "upper": {
+              "decimal": "1.399",
+              "nearest_binary64_hex": "0x1.6624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1575133969672831/1125899906842624",
+              "exact_decimal_fraction": "1399/1000"
+            },
+            "enclosing_binary64": [
+              1.099,
+              1.399
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.195810624dd2fp+0",
+              "0x1.6624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.1",
+              "nearest_binary64_hex": "0x1.199999999999ap+0",
+              "nearest_binary64_fraction": "2476979795053773/2251799813685248",
+              "exact_decimal_fraction": "11/10"
+            },
+            "upper": {
+              "decimal": "1.4",
+              "nearest_binary64_hex": "0x1.6666666666666p+0",
+              "nearest_binary64_fraction": "3152519739159347/2251799813685248",
+              "exact_decimal_fraction": "7/5"
+            },
+            "enclosing_binary64": [
+              1.0999999999999999,
+              1.4000000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1999999999999p+0",
+              "0x1.6666666666667p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.101",
+              "nearest_binary64_hex": "0x1.19db22d0e5604p+0",
+              "nearest_binary64_fraction": "1239615797433729/1125899906842624",
+              "exact_decimal_fraction": "1101/1000"
+            },
+            "upper": {
+              "decimal": "1.401",
+              "nearest_binary64_hex": "0x1.66a7ef9db22d1p+0",
+              "nearest_binary64_fraction": "6309543077946065/4503599627370496",
+              "exact_decimal_fraction": "1401/1000"
+            },
+            "enclosing_binary64": [
+              1.101,
+              1.401
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.19db22d0e5604p+0",
+              "0x1.66a7ef9db22d1p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.102",
+              "nearest_binary64_hex": "0x1.1a1cac083126fp+0",
+              "nearest_binary64_fraction": "4962966789362287/4503599627370496",
+              "exact_decimal_fraction": "551/500"
+            },
+            "upper": {
+              "decimal": "1.402",
+              "nearest_binary64_hex": "0x1.66e978d4fdf3bp+0",
+              "nearest_binary64_fraction": "6314046677573435/4503599627370496",
+              "exact_decimal_fraction": "701/500"
+            },
+            "enclosing_binary64": [
+              1.1019999999999999,
+              1.4020000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a1cac083126ep+0",
+              "0x1.66e978d4fdf3cp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.103",
+              "nearest_binary64_hex": "0x1.1a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "4967470388989657/4503599627370496",
+              "exact_decimal_fraction": "1103/1000"
+            },
+            "upper": {
+              "decimal": "1.403",
+              "nearest_binary64_hex": "0x1.672b020c49ba6p+0",
+              "nearest_binary64_fraction": "3159275138600403/2251799813685248",
+              "exact_decimal_fraction": "1403/1000"
+            },
+            "enclosing_binary64": [
+              1.103,
+              1.403
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a5e353f7ced9p+0",
+              "0x1.672b020c49ba6p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.104",
+              "nearest_binary64_hex": "0x1.1a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1242993497154257/1125899906842624",
+              "exact_decimal_fraction": "138/125"
+            },
+            "upper": {
+              "decimal": "1.404",
+              "nearest_binary64_hex": "0x1.676c8b4395810p+0",
+              "nearest_binary64_fraction": "395190867301761/281474976710656",
+              "exact_decimal_fraction": "351/250"
+            },
+            "enclosing_binary64": [
+              1.1039999999999999,
+              1.4040000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a9fbe76c8b43p+0",
+              "0x1.676c8b4395811p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.349",
+              "nearest_binary64_hex": "0x1.2cac083126e98p+1",
+              "nearest_binary64_fraction": "661184720293331/281474976710656",
+              "exact_decimal_fraction": "2349/1000"
+            },
+            "upper": {
+              "decimal": "2.449",
+              "nearest_binary64_hex": "0x1.3978d4fdf3b64p+1",
+              "nearest_binary64_fraction": "1378664435928793/562949953421312",
+              "exact_decimal_fraction": "2449/1000"
+            },
+            "enclosing_binary64": [
+              2.3489999999999998,
+              2.4490000000000003
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2cac083126e97p+1",
+              "0x1.3978d4fdf3b65p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.097",
+              "nearest_binary64_hex": "0x1.18d4fdf3b645ap+0",
+              "nearest_binary64_fraction": "2470224395612717/2251799813685248",
+              "exact_decimal_fraction": "1097/1000"
+            },
+            "upper": {
+              "decimal": "1.397",
+              "nearest_binary64_hex": "0x1.65a1cac083127p+0",
+              "nearest_binary64_fraction": "6291528679436583/4503599627370496",
+              "exact_decimal_fraction": "1397/1000"
+            },
+            "enclosing_binary64": [
+              1.097,
+              1.397
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.18d4fdf3b645ap+0",
+              "0x1.65a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.098",
+              "nearest_binary64_hex": "0x1.1916872b020c5p+0",
+              "nearest_binary64_fraction": "4944952390852805/4503599627370496",
+              "exact_decimal_fraction": "549/500"
+            },
+            "upper": {
+              "decimal": "1.398",
+              "nearest_binary64_hex": "0x1.65e353f7ced91p+0",
+              "nearest_binary64_fraction": "6296032279063953/4503599627370496",
+              "exact_decimal_fraction": "699/500"
+            },
+            "enclosing_binary64": [
+              1.0979999999999999,
+              1.3980000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1916872b020c4p+0",
+              "0x1.65e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.099",
+              "nearest_binary64_hex": "0x1.195810624dd2fp+0",
+              "nearest_binary64_fraction": "4949455990480175/4503599627370496",
+              "exact_decimal_fraction": "1099/1000"
+            },
+            "upper": {
+              "decimal": "1.399",
+              "nearest_binary64_hex": "0x1.6624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1575133969672831/1125899906842624",
+              "exact_decimal_fraction": "1399/1000"
+            },
+            "enclosing_binary64": [
+              1.099,
+              1.399
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.195810624dd2fp+0",
+              "0x1.6624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.1",
+              "nearest_binary64_hex": "0x1.199999999999ap+0",
+              "nearest_binary64_fraction": "2476979795053773/2251799813685248",
+              "exact_decimal_fraction": "11/10"
+            },
+            "upper": {
+              "decimal": "1.4",
+              "nearest_binary64_hex": "0x1.6666666666666p+0",
+              "nearest_binary64_fraction": "3152519739159347/2251799813685248",
+              "exact_decimal_fraction": "7/5"
+            },
+            "enclosing_binary64": [
+              1.0999999999999999,
+              1.4000000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1999999999999p+0",
+              "0x1.6666666666667p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.101",
+              "nearest_binary64_hex": "0x1.19db22d0e5604p+0",
+              "nearest_binary64_fraction": "1239615797433729/1125899906842624",
+              "exact_decimal_fraction": "1101/1000"
+            },
+            "upper": {
+              "decimal": "1.401",
+              "nearest_binary64_hex": "0x1.66a7ef9db22d1p+0",
+              "nearest_binary64_fraction": "6309543077946065/4503599627370496",
+              "exact_decimal_fraction": "1401/1000"
+            },
+            "enclosing_binary64": [
+              1.101,
+              1.401
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.19db22d0e5604p+0",
+              "0x1.66a7ef9db22d1p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.102",
+              "nearest_binary64_hex": "0x1.1a1cac083126fp+0",
+              "nearest_binary64_fraction": "4962966789362287/4503599627370496",
+              "exact_decimal_fraction": "551/500"
+            },
+            "upper": {
+              "decimal": "1.402",
+              "nearest_binary64_hex": "0x1.66e978d4fdf3bp+0",
+              "nearest_binary64_fraction": "6314046677573435/4503599627370496",
+              "exact_decimal_fraction": "701/500"
+            },
+            "enclosing_binary64": [
+              1.1019999999999999,
+              1.4020000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a1cac083126ep+0",
+              "0x1.66e978d4fdf3cp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.103",
+              "nearest_binary64_hex": "0x1.1a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "4967470388989657/4503599627370496",
+              "exact_decimal_fraction": "1103/1000"
+            },
+            "upper": {
+              "decimal": "1.403",
+              "nearest_binary64_hex": "0x1.672b020c49ba6p+0",
+              "nearest_binary64_fraction": "3159275138600403/2251799813685248",
+              "exact_decimal_fraction": "1403/1000"
+            },
+            "enclosing_binary64": [
+              1.103,
+              1.403
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a5e353f7ced9p+0",
+              "0x1.672b020c49ba6p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.104",
+              "nearest_binary64_hex": "0x1.1a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1242993497154257/1125899906842624",
+              "exact_decimal_fraction": "138/125"
+            },
+            "upper": {
+              "decimal": "1.404",
+              "nearest_binary64_hex": "0x1.676c8b4395810p+0",
+              "nearest_binary64_fraction": "395190867301761/281474976710656",
+              "exact_decimal_fraction": "351/250"
+            },
+            "enclosing_binary64": [
+              1.1039999999999999,
+              1.4040000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a9fbe76c8b43p+0",
+              "0x1.676c8b4395811p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.35",
+              "nearest_binary64_hex": "0x1.2cccccccccccdp+1",
+              "nearest_binary64_fraction": "5291729562160333/2251799813685248",
+              "exact_decimal_fraction": "47/20"
+            },
+            "upper": {
+              "decimal": "2.45",
+              "nearest_binary64_hex": "0x1.399999999999ap+1",
+              "nearest_binary64_fraction": "2758454771764429/1125899906842624",
+              "exact_decimal_fraction": "49/20"
+            },
+            "enclosing_binary64": [
+              2.3499999999999996,
+              2.45
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.097",
+              "nearest_binary64_hex": "0x1.18d4fdf3b645ap+0",
+              "nearest_binary64_fraction": "2470224395612717/2251799813685248",
+              "exact_decimal_fraction": "1097/1000"
+            },
+            "upper": {
+              "decimal": "1.397",
+              "nearest_binary64_hex": "0x1.65a1cac083127p+0",
+              "nearest_binary64_fraction": "6291528679436583/4503599627370496",
+              "exact_decimal_fraction": "1397/1000"
+            },
+            "enclosing_binary64": [
+              1.097,
+              1.397
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.18d4fdf3b645ap+0",
+              "0x1.65a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.098",
+              "nearest_binary64_hex": "0x1.1916872b020c5p+0",
+              "nearest_binary64_fraction": "4944952390852805/4503599627370496",
+              "exact_decimal_fraction": "549/500"
+            },
+            "upper": {
+              "decimal": "1.398",
+              "nearest_binary64_hex": "0x1.65e353f7ced91p+0",
+              "nearest_binary64_fraction": "6296032279063953/4503599627370496",
+              "exact_decimal_fraction": "699/500"
+            },
+            "enclosing_binary64": [
+              1.0979999999999999,
+              1.3980000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1916872b020c4p+0",
+              "0x1.65e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.099",
+              "nearest_binary64_hex": "0x1.195810624dd2fp+0",
+              "nearest_binary64_fraction": "4949455990480175/4503599627370496",
+              "exact_decimal_fraction": "1099/1000"
+            },
+            "upper": {
+              "decimal": "1.399",
+              "nearest_binary64_hex": "0x1.6624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1575133969672831/1125899906842624",
+              "exact_decimal_fraction": "1399/1000"
+            },
+            "enclosing_binary64": [
+              1.099,
+              1.399
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.195810624dd2fp+0",
+              "0x1.6624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.1",
+              "nearest_binary64_hex": "0x1.199999999999ap+0",
+              "nearest_binary64_fraction": "2476979795053773/2251799813685248",
+              "exact_decimal_fraction": "11/10"
+            },
+            "upper": {
+              "decimal": "1.4",
+              "nearest_binary64_hex": "0x1.6666666666666p+0",
+              "nearest_binary64_fraction": "3152519739159347/2251799813685248",
+              "exact_decimal_fraction": "7/5"
+            },
+            "enclosing_binary64": [
+              1.0999999999999999,
+              1.4000000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1999999999999p+0",
+              "0x1.6666666666667p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.101",
+              "nearest_binary64_hex": "0x1.19db22d0e5604p+0",
+              "nearest_binary64_fraction": "1239615797433729/1125899906842624",
+              "exact_decimal_fraction": "1101/1000"
+            },
+            "upper": {
+              "decimal": "1.401",
+              "nearest_binary64_hex": "0x1.66a7ef9db22d1p+0",
+              "nearest_binary64_fraction": "6309543077946065/4503599627370496",
+              "exact_decimal_fraction": "1401/1000"
+            },
+            "enclosing_binary64": [
+              1.101,
+              1.401
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.19db22d0e5604p+0",
+              "0x1.66a7ef9db22d1p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.102",
+              "nearest_binary64_hex": "0x1.1a1cac083126fp+0",
+              "nearest_binary64_fraction": "4962966789362287/4503599627370496",
+              "exact_decimal_fraction": "551/500"
+            },
+            "upper": {
+              "decimal": "1.402",
+              "nearest_binary64_hex": "0x1.66e978d4fdf3bp+0",
+              "nearest_binary64_fraction": "6314046677573435/4503599627370496",
+              "exact_decimal_fraction": "701/500"
+            },
+            "enclosing_binary64": [
+              1.1019999999999999,
+              1.4020000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a1cac083126ep+0",
+              "0x1.66e978d4fdf3cp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.103",
+              "nearest_binary64_hex": "0x1.1a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "4967470388989657/4503599627370496",
+              "exact_decimal_fraction": "1103/1000"
+            },
+            "upper": {
+              "decimal": "1.403",
+              "nearest_binary64_hex": "0x1.672b020c49ba6p+0",
+              "nearest_binary64_fraction": "3159275138600403/2251799813685248",
+              "exact_decimal_fraction": "1403/1000"
+            },
+            "enclosing_binary64": [
+              1.103,
+              1.403
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a5e353f7ced9p+0",
+              "0x1.672b020c49ba6p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.104",
+              "nearest_binary64_hex": "0x1.1a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1242993497154257/1125899906842624",
+              "exact_decimal_fraction": "138/125"
+            },
+            "upper": {
+              "decimal": "1.404",
+              "nearest_binary64_hex": "0x1.676c8b4395810p+0",
+              "nearest_binary64_fraction": "395190867301761/281474976710656",
+              "exact_decimal_fraction": "351/250"
+            },
+            "enclosing_binary64": [
+              1.1039999999999999,
+              1.4040000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a9fbe76c8b43p+0",
+              "0x1.676c8b4395811p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.351",
+              "nearest_binary64_hex": "0x1.2ced916872b02p+1",
+              "nearest_binary64_fraction": "2646990680987009/1125899906842624",
+              "exact_decimal_fraction": "2351/1000"
+            },
+            "upper": {
+              "decimal": "2.451",
+              "nearest_binary64_hex": "0x1.39ba5e353f7cfp+1",
+              "nearest_binary64_fraction": "5519161343342543/2251799813685248",
+              "exact_decimal_fraction": "2451/1000"
+            },
+            "enclosing_binary64": [
+              2.351,
+              2.451
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2ced916872b02p+1",
+              "0x1.39ba5e353f7cfp+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.097",
+              "nearest_binary64_hex": "0x1.18d4fdf3b645ap+0",
+              "nearest_binary64_fraction": "2470224395612717/2251799813685248",
+              "exact_decimal_fraction": "1097/1000"
+            },
+            "upper": {
+              "decimal": "1.397",
+              "nearest_binary64_hex": "0x1.65a1cac083127p+0",
+              "nearest_binary64_fraction": "6291528679436583/4503599627370496",
+              "exact_decimal_fraction": "1397/1000"
+            },
+            "enclosing_binary64": [
+              1.097,
+              1.397
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.18d4fdf3b645ap+0",
+              "0x1.65a1cac083127p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.098",
+              "nearest_binary64_hex": "0x1.1916872b020c5p+0",
+              "nearest_binary64_fraction": "4944952390852805/4503599627370496",
+              "exact_decimal_fraction": "549/500"
+            },
+            "upper": {
+              "decimal": "1.398",
+              "nearest_binary64_hex": "0x1.65e353f7ced91p+0",
+              "nearest_binary64_fraction": "6296032279063953/4503599627370496",
+              "exact_decimal_fraction": "699/500"
+            },
+            "enclosing_binary64": [
+              1.0979999999999999,
+              1.3980000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1916872b020c4p+0",
+              "0x1.65e353f7ced92p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.099",
+              "nearest_binary64_hex": "0x1.195810624dd2fp+0",
+              "nearest_binary64_fraction": "4949455990480175/4503599627370496",
+              "exact_decimal_fraction": "1099/1000"
+            },
+            "upper": {
+              "decimal": "1.399",
+              "nearest_binary64_hex": "0x1.6624dd2f1a9fcp+0",
+              "nearest_binary64_fraction": "1575133969672831/1125899906842624",
+              "exact_decimal_fraction": "1399/1000"
+            },
+            "enclosing_binary64": [
+              1.099,
+              1.399
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.195810624dd2fp+0",
+              "0x1.6624dd2f1a9fcp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.1",
+              "nearest_binary64_hex": "0x1.199999999999ap+0",
+              "nearest_binary64_fraction": "2476979795053773/2251799813685248",
+              "exact_decimal_fraction": "11/10"
+            },
+            "upper": {
+              "decimal": "1.4",
+              "nearest_binary64_hex": "0x1.6666666666666p+0",
+              "nearest_binary64_fraction": "3152519739159347/2251799813685248",
+              "exact_decimal_fraction": "7/5"
+            },
+            "enclosing_binary64": [
+              1.0999999999999999,
+              1.4000000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1999999999999p+0",
+              "0x1.6666666666667p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.101",
+              "nearest_binary64_hex": "0x1.19db22d0e5604p+0",
+              "nearest_binary64_fraction": "1239615797433729/1125899906842624",
+              "exact_decimal_fraction": "1101/1000"
+            },
+            "upper": {
+              "decimal": "1.401",
+              "nearest_binary64_hex": "0x1.66a7ef9db22d1p+0",
+              "nearest_binary64_fraction": "6309543077946065/4503599627370496",
+              "exact_decimal_fraction": "1401/1000"
+            },
+            "enclosing_binary64": [
+              1.101,
+              1.401
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.19db22d0e5604p+0",
+              "0x1.66a7ef9db22d1p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.102",
+              "nearest_binary64_hex": "0x1.1a1cac083126fp+0",
+              "nearest_binary64_fraction": "4962966789362287/4503599627370496",
+              "exact_decimal_fraction": "551/500"
+            },
+            "upper": {
+              "decimal": "1.402",
+              "nearest_binary64_hex": "0x1.66e978d4fdf3bp+0",
+              "nearest_binary64_fraction": "6314046677573435/4503599627370496",
+              "exact_decimal_fraction": "701/500"
+            },
+            "enclosing_binary64": [
+              1.1019999999999999,
+              1.4020000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a1cac083126ep+0",
+              "0x1.66e978d4fdf3cp+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.103",
+              "nearest_binary64_hex": "0x1.1a5e353f7ced9p+0",
+              "nearest_binary64_fraction": "4967470388989657/4503599627370496",
+              "exact_decimal_fraction": "1103/1000"
+            },
+            "upper": {
+              "decimal": "1.403",
+              "nearest_binary64_hex": "0x1.672b020c49ba6p+0",
+              "nearest_binary64_fraction": "3159275138600403/2251799813685248",
+              "exact_decimal_fraction": "1403/1000"
+            },
+            "enclosing_binary64": [
+              1.103,
+              1.403
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a5e353f7ced9p+0",
+              "0x1.672b020c49ba6p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ],
+        [
+          {
+            "lower": {
+              "decimal": "1.104",
+              "nearest_binary64_hex": "0x1.1a9fbe76c8b44p+0",
+              "nearest_binary64_fraction": "1242993497154257/1125899906842624",
+              "exact_decimal_fraction": "138/125"
+            },
+            "upper": {
+              "decimal": "1.404",
+              "nearest_binary64_hex": "0x1.676c8b4395810p+0",
+              "nearest_binary64_fraction": "395190867301761/281474976710656",
+              "exact_decimal_fraction": "351/250"
+            },
+            "enclosing_binary64": [
+              1.1039999999999999,
+              1.4040000000000001
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.1a9fbe76c8b43p+0",
+              "0x1.676c8b4395811p+0"
+            ]
+          },
+          {
+            "lower": {
+              "decimal": "2.352",
+              "nearest_binary64_hex": "0x1.2d0e560418937p+1",
+              "nearest_binary64_fraction": "5296233161787703/2251799813685248",
+              "exact_decimal_fraction": "294/125"
+            },
+            "upper": {
+              "decimal": "2.452",
+              "nearest_binary64_hex": "0x1.39db22d0e5604p+1",
+              "nearest_binary64_fraction": "1380353285789057/562949953421312",
+              "exact_decimal_fraction": "613/250"
+            },
+            "enclosing_binary64": [
+              2.352,
+              2.4520000000000004
+            ],
+            "enclosing_binary64_hex": [
+              "0x1.2d0e560418937p+1",
+              "0x1.39db22d0e5605p+1"
+            ]
+          }
+        ]
+      ],
+      "checkpoints": [
+        1,
+        3,
+        6.32,
+        10
+      ]
+    }
+  },
+  "vdp_adaptive": {
+    "h_min": {
+      "decimal": "0.002",
+      "nearest_binary64_hex": "0x1.0624dd2f1a9fcp-9",
+      "nearest_binary64_fraction": "1152921504606847/576460752303423488",
+      "exact_decimal_fraction": "1/500"
+    },
+    "h_max": {
+      "decimal": "0.1",
+      "nearest_binary64_hex": "0x1.999999999999ap-4",
+      "nearest_binary64_fraction": "3602879701896397/36028797018963968",
+      "exact_decimal_fraction": "1/10"
+    },
+    "horizon": {
+      "decimal": "10",
+      "nearest_binary64_hex": "0x1.4000000000000p+3",
+      "nearest_binary64_fraction": "10",
+      "exact_decimal_fraction": "10"
+    },
+    "strategy": "existing flowstar_compat growth/shrink strategy",
+    "candidate_adaptive_plus_sr": "unsupported per Settings.__post_init__; verify exception; no replacement implementation"
+  },
+  "validation_eps_semantics": {
+    "ours": "Outward absolute inflation of raw RHS/integrated remainder and subset-check intervals; inspect flowpipe.py _flowstar_raw_remainder_compat_check.",
+    "candidate": "No corresponding error-budget field; THRESHOLD_HIGH=1e-12 is reach-loop time bookkeeping only.",
+    "flowstar": "No added validation_eps analogue; native directed interval computations."
+  },
+  "modes": [
+    "our_cpu_reference",
+    "native_flowstar",
+    "xiangru_parity",
+    "xiangru_strict"
+  ],
+  "hardware_protocol": {
+    "gpu_index": 0,
+    "cpu_threads": 1,
+    "cpu_affinity": [
+      2
+    ],
+    "dtype": "float64",
+    "cuda_sync_before_after": true,
+    "warm_cold_export_separate": true,
+    "skip_nonidle_repeats": true
+  },
+  "batch_protocol": {
+    "main": 32,
+    "auxiliary": [
+      1,
+      8
+    ],
+    "equivalence": [
+      1,
+      2,
+      8
+    ],
+    "oom_fallback": "Only confirmed B32 OOM permits B16, retain failed B32 record.",
+    "short_steps": 20,
+    "short_repeats": 5,
+    "full_strict_repeats": 3,
+    "full_flowstar_serial_repeats": 3,
+    "our_full_b1_repeats": 1,
+    "distinct_boxes": "Fixed list above, prefixes for smaller B.",
+    "no_answer_caching": true,
+    "continue_full_condition": "Key strict correctness passes, no confirmed underenclosure; short main-batch complete-solve median beats serial Flowstar median and gives >=5x throughput vs measured our serial short batch."
+  },
+  "width_protocol": {
+    "published": "Actual endpoint and each segment tube, separately x/y.",
+    "common": "Read-only export of complete published Taylor model or legal factorized map; same outward normal-domain interval evaluator; never align unrelated internal coordinates.",
+    "reuse": "our brusselator_canonical_exchange and candidate io.oracle/adapters inspected first; metrics on uncomposed tmvPre alone are insufficient.",
+    "alignment": "Match actual local-time domains; fixed-step exact accumulated binary64 step as mathematical schedule. Reach-loop epsilon recorded separately. No interpolated enclosure.",
+    "statistics": [
+      "time_weighted_median",
+      "time_weighted_p95",
+      "max_and_time",
+      "checkpoints",
+      "bound_shifts",
+      "center_shifts",
+      "disjoint",
+      "missing_intervals"
+    ],
+    "zero_denominator_threshold": 1e-12,
+    "zero_denominator_policy": "absolute difference, no infinite ratio",
+    "missing_export": "Report published bounds and timing only; common width gate remains unverified."
+  },
+  "adoption_thresholds": {
+    "correctness": "Strict 2D Brusselator T20, strict fixed VDP >=6.32, exact/local/history/rollback/isolation pass; actual CPU/CUDA source identifiable.",
+    "width_vs_ours_each_step_each_of_four": {
+      "multiplier": 1.1,
+      "absolute_tolerance": 1e-12
+    },
+    "near_flowstar_each_of_four": {
+      "time_weighted_p95_max": 1.1,
+      "maximum_ratio_max": 1.25
+    },
+    "strict_main_batch_speedup_vs_ours_min": 5,
+    "strict_main_batch_full_time_ratio_vs_flowstar_max": 1.0
+  },
+  "stop_rules": [
+    "Confirmed underenclosure stops affected long runs and speed promotion; unaffected comparisons continue.",
+    "No numerical patch before first baseline report; at most one localized numerical mechanism.",
+    "No adaptive+SR implementation, order/step/budget tuning, or extra systems.",
+    "Optional adapter only if correctness, width and main-batch speed gates pass. Default unchanged."
+  ]
+}

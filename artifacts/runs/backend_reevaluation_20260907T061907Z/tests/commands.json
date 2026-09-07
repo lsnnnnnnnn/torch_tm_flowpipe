@@ -1,0 +1,149 @@
+{
+  "shell": "bash; set -euo pipefail; pipeline saves PIPESTATUS[0] to matching .exit",
+  "full_root": {
+    "source_sha": "96de71f7e02e1d8280f208c716179d93efe79ab5",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--junitxml=artifacts/runs/backend_reevaluation_20260907T061907Z/tests/full_root.xml"
+    ],
+    "cwd": "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit",
+    "environment": {
+      "PATH_prefix": "/srv/local/shengenli/miniforge3/envs/py11/bin",
+      "PYTHONPATH": "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/src",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "old_symbolic_phi": {
+    "argv": [
+      "bash",
+      "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/env_B.sh",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/tests/soundness/test_strict_proof_contract.py",
+      "-k",
+      "symbolic_phi",
+      "--junitxml=/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/tests/old_symbolic_phi.xml"
+    ]
+  },
+  "crosschecks": [
+    {
+      "implementation": "A",
+      "driver_sha": "a7939c163078470c72b32650b7bc561c9637500d",
+      "argv": [
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/backend_reevaluation/crosscheck.py",
+        "--implementation",
+        "A",
+        "--source",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream",
+        "--witness",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/xiangru_adoption_20260907T032448Z/known_witness_replay.json",
+        "--devices",
+        "cpu",
+        "cuda",
+        "--output",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/raw_minimal/A.json"
+      ],
+      "environment_file": "env_A.sh"
+    },
+    {
+      "implementation": "B",
+      "driver_sha": "a7939c163078470c72b32650b7bc561c9637500d",
+      "argv": [
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/backend_reevaluation/crosscheck.py",
+        "--implementation",
+        "B",
+        "--source",
+        "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+        "--witness",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/xiangru_adoption_20260907T032448Z/known_witness_replay.json",
+        "--devices",
+        "cpu",
+        "cuda",
+        "--output",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/raw_minimal/B.json"
+      ],
+      "environment_file": "env_B.sh"
+    },
+    {
+      "implementation": "C",
+      "driver_sha": "98585566f11942e11e820760c373a05a976eb5de",
+      "argv": [
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/backend_reevaluation/crosscheck.py",
+        "--implementation",
+        "C",
+        "--source",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_optimized",
+        "--witness",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/xiangru_adoption_20260907T032448Z/known_witness_replay.json",
+        "--devices",
+        "cpu",
+        "--output",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/raw_minimal/C.json"
+      ],
+      "environment_file": null
+    },
+    {
+      "implementation": "A",
+      "driver_sha": "98585566f11942e11e820760c373a05a976eb5de",
+      "argv": [
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/backend_reevaluation/check_endpoint_obstacle.py",
+        "--implementation",
+        "A",
+        "--source",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream",
+        "--output",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/raw_minimal/endpoint_A.json"
+      ],
+      "environment_file": "env_A.sh"
+    },
+    {
+      "implementation": "B",
+      "driver_sha": "98585566f11942e11e820760c373a05a976eb5de",
+      "argv": [
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/backend_reevaluation/check_endpoint_obstacle.py",
+        "--implementation",
+        "B",
+        "--source",
+        "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+        "--output",
+        "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/raw_minimal/endpoint_B.json"
+      ],
+      "environment_file": "env_B.sh"
+    }
+  ],
+  "frozen_evidence_verification": {
+    "source_sha": "3ca31b8cafc0ad4bf36214417c5a971e145f3ae0",
+    "argv": [
+      "taskset",
+      "-c",
+      "4",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "experiments/xiangru_adoption/verify_evidence.py",
+      "artifacts/runs/xiangru_adoption_20260907T032448Z"
+    ],
+    "log": "frozen_evidence_verify.log",
+    "exit_record": "frozen_evidence_verify.exit",
+    "full_numerical_rerun": false
+  }
+}

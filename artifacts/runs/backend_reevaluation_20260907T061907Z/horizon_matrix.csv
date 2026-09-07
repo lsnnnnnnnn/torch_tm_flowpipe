@@ -1,0 +1,7 @@
+plant,mode,requested_horizon,accepted_horizon,accepted_steps,status,source,reason
+brusselator,our_cpu_reference,20.0,20.0,1000,REUSED_FROZEN,raw_minimal/our_brusselator_full/summary.json,Frozen numerical observation; no new correctness guarantee.
+brusselator,native_flowstar,20.0,20,1000,REUSED_FROZEN,raw_minimal/native_brusselator/summary.json,Frozen numerical observation; no new correctness guarantee.
+brusselator,repaired_strict,20.0,,,NOT_STARTED,,Third independent endpoint-substitution underenclosure; goal sections 4/8 stop candidate repairs before worktree creation.
+van_der_pol,our_cpu_reference,10.0,10.0,1000,REUSED_FROZEN,raw_minimal/our_vdp_full/summary.json,Frozen numerical observation; no new correctness guarantee.
+van_der_pol,native_flowstar,10.0,10,1000,REUSED_FROZEN,raw_minimal/native_vdp/summary.json,Frozen numerical observation; no new correctness guarantee.
+van_der_pol,repaired_strict,10.0,,,NOT_STARTED,,Third independent endpoint-substitution underenclosure; goal sections 4/8 stop candidate repairs before worktree creation.

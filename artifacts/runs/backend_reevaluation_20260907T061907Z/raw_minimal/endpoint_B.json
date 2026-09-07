@@ -1,0 +1,334 @@
+{
+  "schema": "backend_reevaluation_endpoint_obstacle/1",
+  "source_sha": "743f6205e6408072193ad76e940e7f15030e8d3c",
+  "source_clean": true,
+  "source_path": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+  "driver_sha": "98585566f11942e11e820760c373a05a976eb5de",
+  "imported_package": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu/__init__.py",
+  "python": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+  "torch_version": "2.5.1+cu124",
+  "segment_extension": "/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/extensions_B/flowstar_seg_kernels/flowstar_seg_kernels.so",
+  "rows": [
+    {
+      "implementation": "B",
+      "backend": "dense",
+      "device": "cpu",
+      "requested_mode": "strict",
+      "actual_mode": "strict",
+      "source_file": "src/flowstar_gpu/flowpipe.py",
+      "observed_line": 564,
+      "function": "advance",
+      "pre_terms": [
+        {
+          "degrees": [
+            0,
+            0,
+            0
+          ],
+          "coefficient": -1.0
+        },
+        {
+          "degrees": [
+            1,
+            0,
+            0
+          ],
+          "coefficient": 100.0
+        }
+      ],
+      "pre_remainders": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "h": 0.01,
+      "endpoint_coefficients": [
+        0.0,
+        0.0
+      ],
+      "endpoint_remainders": [
+        [
+          -2.3314683517128418e-15,
+          2.3314683517128418e-15
+        ],
+        [
+          -2.3314683517128418e-15,
+          2.3314683517128418e-15
+        ]
+      ],
+      "exact_image": [
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ],
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ]
+      ],
+      "returned_image": [
+        [
+          "-5910974510923809/2535301200456458802993406410752",
+          "5910974510923809/2535301200456458802993406410752"
+        ],
+        [
+          "-5910974510923809/2535301200456458802993406410752",
+          "5910974510923809/2535301200456458802993406410752"
+        ]
+      ],
+      "contains": true,
+      "mapping": "Exact binary64 polynomial -1+100*t evaluated at binary64(0.01); singleton endpoint image in each component.",
+      "call_chain": [
+        "advance",
+        "evaluate_time_end"
+      ],
+      "no_history_no_scaling": true
+    },
+    {
+      "implementation": "B",
+      "backend": "sparse",
+      "device": "cpu",
+      "requested_mode": "strict",
+      "actual_mode": "strict",
+      "source_file": "src/flowstar_gpu/sparse_exec.py",
+      "observed_line": 1424,
+      "function": "advance_sparse",
+      "pre_terms": [
+        {
+          "degrees": [
+            0,
+            0,
+            0
+          ],
+          "coefficient": -1.0
+        },
+        {
+          "degrees": [
+            1,
+            0,
+            0
+          ],
+          "coefficient": 100.0
+        }
+      ],
+      "pre_remainders": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "h": 0.01,
+      "endpoint_coefficients": [
+        0.0,
+        0.0
+      ],
+      "endpoint_remainders": [
+        [
+          -9.992007221626429e-16,
+          9.992007221626429e-16
+        ],
+        [
+          -9.992007221626429e-16,
+          9.992007221626429e-16
+        ]
+      ],
+      "exact_image": [
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ],
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ]
+      ],
+      "returned_image": [
+        [
+          "-2533274790395909/2535301200456458802993406410752",
+          "2533274790395909/2535301200456458802993406410752"
+        ],
+        [
+          "-2533274790395909/2535301200456458802993406410752",
+          "2533274790395909/2535301200456458802993406410752"
+        ]
+      ],
+      "contains": true,
+      "mapping": "Exact binary64 polynomial -1+100*t evaluated at binary64(0.01); singleton endpoint image in each component.",
+      "call_chain": [
+        "advance_sparse",
+        "evaluate_time_end_s"
+      ],
+      "no_history_no_scaling": true
+    },
+    {
+      "implementation": "B",
+      "backend": "dense",
+      "device": "cuda",
+      "requested_mode": "strict",
+      "actual_mode": "strict",
+      "source_file": "src/flowstar_gpu/flowpipe.py",
+      "observed_line": 564,
+      "function": "advance",
+      "pre_terms": [
+        {
+          "degrees": [
+            0,
+            0,
+            0
+          ],
+          "coefficient": -1.0
+        },
+        {
+          "degrees": [
+            1,
+            0,
+            0
+          ],
+          "coefficient": 100.0
+        }
+      ],
+      "pre_remainders": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "h": 0.01,
+      "endpoint_coefficients": [
+        0.0,
+        0.0
+      ],
+      "endpoint_remainders": [
+        [
+          -1.998401444325291e-15,
+          2.220446049250322e-15
+        ],
+        [
+          -1.998401444325291e-15,
+          2.220446049250322e-15
+        ]
+      ],
+      "exact_image": [
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ],
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ]
+      ],
+      "returned_image": [
+        [
+          "-5066549580791831/2535301200456458802993406410752",
+          "5629499534213143/2535301200456458802993406410752"
+        ],
+        [
+          "-5066549580791831/2535301200456458802993406410752",
+          "5629499534213143/2535301200456458802993406410752"
+        ]
+      ],
+      "contains": true,
+      "mapping": "Exact binary64 polynomial -1+100*t evaluated at binary64(0.01); singleton endpoint image in each component.",
+      "call_chain": [
+        "advance",
+        "evaluate_time_end"
+      ],
+      "no_history_no_scaling": true
+    },
+    {
+      "implementation": "B",
+      "backend": "sparse",
+      "device": "cuda",
+      "requested_mode": "strict",
+      "actual_mode": "strict",
+      "source_file": "src/flowstar_gpu/sparse_exec.py",
+      "observed_line": 1424,
+      "function": "advance_sparse",
+      "pre_terms": [
+        {
+          "degrees": [
+            0,
+            0,
+            0
+          ],
+          "coefficient": -1.0
+        },
+        {
+          "degrees": [
+            1,
+            0,
+            0
+          ],
+          "coefficient": 100.0
+        }
+      ],
+      "pre_remainders": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "h": 0.01,
+      "endpoint_coefficients": [
+        0.0,
+        0.0
+      ],
+      "endpoint_remainders": [
+        [
+          -6.661338147750945e-16,
+          8.881784197001258e-16
+        ],
+        [
+          -6.661338147750945e-16,
+          8.881784197001258e-16
+        ]
+      ],
+      "exact_image": [
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ],
+        [
+          "3/144115188075855872",
+          "3/144115188075855872"
+        ]
+      ],
+      "returned_image": [
+        [
+          "-3377699720527875/5070602400912917605986812821504",
+          "4503599627370499/5070602400912917605986812821504"
+        ],
+        [
+          "-3377699720527875/5070602400912917605986812821504",
+          "4503599627370499/5070602400912917605986812821504"
+        ]
+      ],
+      "contains": true,
+      "mapping": "Exact binary64 polynomial -1+100*t evaluated at binary64(0.01); singleton endpoint image in each component.",
+      "call_chain": [
+        "advance_sparse",
+        "evaluate_time_end_s"
+      ],
+      "no_history_no_scaling": true
+    }
+  ],
+  "scope": "Local endpoint prerequisite only. No third dynamical system or trajectory run; no numerical repair."
+}

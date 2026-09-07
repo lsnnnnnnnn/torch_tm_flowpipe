@@ -1,0 +1,38 @@
+{
+  "allowed_chains": [
+    "history_matrix_and_error_propagation",
+    "normalization_scaling_and_reconstruction"
+  ],
+  "candidate_worktree_created": false,
+  "candidate_numerical_edits": [],
+  "our_numerical_edits": [],
+  "proposed_before_stop": {
+    "history": [
+      "SymbolicRemainder interval Phi/scalars",
+      "propagate",
+      "flowpipe.advance linear merge/current-J owner",
+      "sparse_exec.advance_sparse linear merge/current-J owner"
+    ],
+    "normalization": [
+      "flowpipe.advance scale/restore and current-J owner",
+      "sparse_exec.advance_sparse around _g_precond and current-J owner"
+    ]
+  },
+  "independent_obstacle": {
+    "mapping": "endpoint substitution -1+100*t at binary64(0.01)",
+    "functions": [
+      "flowpipe.advance -> evaluate_time_end",
+      "sparse_exec.advance_sparse -> evaluate_time_end_s"
+    ],
+    "evidence": [
+      "raw_minimal/endpoint_A.json",
+      "raw_minimal/endpoint_B.json"
+    ],
+    "no_history_no_scaling": true
+  },
+  "stop_sections": [
+    4,
+    8
+  ],
+  "old_source_read_scope": "Only relevant production callers, arithmetic helpers, matching old tests and environment metadata; inspection ended after reuse decision."
+}

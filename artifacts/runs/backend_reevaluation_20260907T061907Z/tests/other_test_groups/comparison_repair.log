@@ -1,0 +1,15 @@
+.....F..........                                                         [100%]
+=================================== FAILURES ===================================
+_____________ test_frozen_historical_result_manifest_is_unchanged ______________
+
+    def test_frozen_historical_result_manifest_is_unchanged() -> None:
+>       assert FROZEN_RESULT.exists()
+E       AssertionError: assert False
+E        +  where False = <bound method Path.exists of PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z')>()
+E        +    where <bound method Path.exists of PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z')> = PosixPath('/srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/experiments/three_way_common_contract/results/20260724T132534Z').exists
+
+experiments/three_way_comparison_repair/tests/test_harness_integrity.py:169: AssertionError
+- generated xml file: /srv/local/shengenli/strict_backend_reevaluation_20260907T061907Z/our_audit/artifacts/runs/backend_reevaluation_20260907T061907Z/tests/other_test_groups/comparison_repair.xml -
+=========================== short test summary info ============================
+FAILED experiments/three_way_comparison_repair/tests/test_harness_integrity.py::test_frozen_historical_result_manifest_is_unchanged
+1 failed, 15 passed in 3.87s
