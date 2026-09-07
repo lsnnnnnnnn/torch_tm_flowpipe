@@ -4,6 +4,7 @@ import csv
 from fractions import Fraction
 import gzip
 import json
+import math
 from pathlib import Path
 from common import measure
 
@@ -19,7 +20,8 @@ def write_csv(p,rows):
         w=csv.DictWriter(h,fieldnames=fields);w.writeheader();w.writerows(rows)
 
 def weighted_quantile(pairs,q):
-    pairs=sorted(pairs);target=q*sum(w for _,w in pairs);total=0
+    pairs=sorted((v,Fraction(w)) for v,w in pairs)
+    target=Fraction(str(q))*sum((w for _,w in pairs),Fraction());total=Fraction()
     for v,w in pairs:
         total+=w
         if total>=target:return v
@@ -100,7 +102,12 @@ def tables(root):
                             'measured':True,'solve_seconds':s['solve_seconds'],'export_seconds':s['export_seconds'],
                             'repeats':1,'source':'raw_minimal/'+directory.name+'/summary.json',
                             'throughput_tasks_per_second':1/s['solve_seconds'],'steps_per_second':s['accepted_steps']/s['solve_seconds'],
-                            'reason':''})
+                            'requested_task_completed':s['accepted_steps']==cfg['requested_steps'],
+                            'failure_count':int(s['accepted_steps']!=cfg['requested_steps']),
+                            'reason':'One observed run; no warm-repeat median or variance claim.'})
+            if s['accepted_steps']!=cfg['requested_steps']:
+                timings[-1]['measurement']='first_solve_until_rejection_in_fresh_process'
+                timings[-1]['throughput_tasks_per_second']=None
             process=directory/'process_time.txt'
             if process.exists():
                 metrics=dict(v.split('=',1) for v in process.read_text().split() if '=' in v)
@@ -133,33 +140,55 @@ def tables(root):
        for dim in DIMS:
         relevant=[r for r in widths if (r['plant'],r['view'],r['range_kind'],r['state'])==(plant,view,kind,dim)]
         for comparison in ['strict_vs_ours','strict_vs_flowstar','strict_vs_parity','ours_vs_flowstar']:
-            found=[r for r in relevant if r[comparison] is not None]
+            num,den=comparison.split('_vs_')
+            comparable=[r for r in relevant if r[num+'_width'] is not None and r[den+'_width'] is not None]
+            found=[r for r in comparable if r[comparison] is not None]
             base={'plant':plant,'view':view,'range_kind':kind,'state':dim,'comparison':comparison,
                   'scope':'DIAGNOSTIC_ONLY' if comparison.startswith('strict') else 'ACCEPTED_COMMON_PREFIX',
                   'requested_duration':float(cfg['requested_horizon']['decimal']),
-                  'compared_duration':sum(r['duration'] for r in found),
-                  'missing_duration':sum(r['duration'] for r in relevant if r[comparison] is None)}
+                  'compared_duration':math.fsum(r['duration'] for r in comparable),
+                  'ratio_duration':math.fsum(r['duration'] for r in found),
+                  'near_zero_denominator_duration':math.fsum(r['duration'] for r in comparable if r[comparison] is None),
+                  'missing_duration':float(cfg['requested_horizon']['decimal'])-math.fsum(r['duration'] for r in comparable),
+                  'full_requested_coverage':len(comparable)==cfg['requested_steps']}
+            if comparable:
+                base.update(max_absolute_width_difference=max(abs(r[comparison+'_absolute_width_difference']) for r in comparable),
+                            max_absolute_lower_shift=max(abs(r[comparison+'_lower_shift']) for r in comparable),
+                            max_absolute_upper_shift=max(abs(r[comparison+'_upper_shift']) for r in comparable),
+                            max_absolute_center_shift=max(abs(r[comparison+'_center_shift']) for r in comparable),
+                            disjoint_duration=math.fsum(r['duration'] for r in comparable if r[comparison+'_disjoint']),
+                            duration_above_1_10_plus_1e_12=math.fsum(r['duration'] for r in comparable if r[num+'_width']>1.10*r[den+'_width']+1e-12))
             if found:
                 worst=max(found,key=lambda r:r[comparison]);pairs=[(r[comparison],r['duration']) for r in found]
                 base.update(max_ratio=worst[comparison],max_at_time=worst['t_end'],
                             weighted_median=weighted_quantile(pairs,.5),weighted_p95=weighted_quantile(pairs,.95))
-                num,den=comparison.split('_vs_')
-                base.update(worst_numerator_width=worst[num+'_width'],worst_denominator_width=worst[den+'_width'],
-                            max_absolute_lower_shift=max(abs(r[comparison+'_lower_shift']) for r in found),
-                            max_absolute_upper_shift=max(abs(r[comparison+'_upper_shift']) for r in found),
-                            max_absolute_center_shift=max(abs(r[comparison+'_center_shift']) for r in found),
-                            disjoint_duration=sum(r['duration'] for r in found if r[comparison+'_disjoint']))
+                base.update(worst_numerator_width=worst[num+'_width'],worst_denominator_width=worst[den+'_width'])
             summaries.append(base)
+            def checkpoint_row(h,selection,requested_time):
+                return {**{k:base[k] for k in ['plant','view','range_kind','state','comparison','scope']},
+                        'selection':selection,'requested_time':requested_time,
+                        'actual_time':h['t_end'] if h else None,
+                        'ratio':h[comparison] if h else None,
+                        'numerator_width':h[num+'_width'] if h else None,
+                        'denominator_width':h[den+'_width'] if h else None,
+                        'numerator_lo':h[num+'_lo'] if h else None,
+                        'numerator_hi':h[num+'_hi'] if h else None,
+                        'denominator_lo':h[den+'_lo'] if h else None,
+                        'denominator_hi':h[den+'_hi'] if h else None,
+                        'absolute_width_difference':h[comparison+'_absolute_width_difference'] if h else None,
+                        'reason':'' if h and h[num+'_width'] is not None and h[den+'_width'] is not None else 'missing_or_stopped'}
             for t in cfg['checkpoints']:
                 hits=[r for r in relevant if abs(r['t_end']-t)<=1e-12]
                 h=hits[0] if hits else None
-                checkpoints.append({**{k:base[k] for k in ['plant','view','range_kind','state','comparison','scope']},
-                                    'requested_time':t,'actual_time':h['t_end'] if h else None,
-                                    'ratio':h[comparison] if h else None,
-                                    'reason':'' if h and h[comparison] is not None else 'missing_or_stopped'})
+                checkpoints.append(checkpoint_row(h,'specified_checkpoint',t))
+            if found:checkpoints.append(checkpoint_row(worst,'maximum_ratio_in_observed_prefix',None))
+    equivalence=[dict(r,box_set='repeated_full_box',scope='TWO_STEP_DIAGNOSTIC') for r in short['batch_equivalence']]
+    state_checks=json.loads((root/'candidate_state_checks_with_distinct.json').read_text())
+    equivalence.extend(dict(r,box_set='first_two_preregistered_distinct_boxes',scope='TWO_STEP_DIAGNOSTIC')
+                       for r in state_checks['rows'] if r['check']=='different_preregistered_boxes_batch_equivalence')
     return {'widths_full_prefix.csv':widths,'width_summary.csv':summaries,'width_at_checkpoints.csv':checkpoints,
             'horizon_matrix.csv':horizons,'timings_raw.csv':timings,'timing_summary.csv':timings,
-            'batch_equivalence.csv':short['batch_equivalence']}
+            'batch_equivalence.csv':equivalence}
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('root',type=Path);a=p.parse_args()

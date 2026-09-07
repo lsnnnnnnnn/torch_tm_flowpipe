@@ -55,6 +55,16 @@ def verify(root,check_hashes=True):
         require(r['mode']==r['settings']['mode'],'actual candidate mode differs from parsed Settings')
         require(r['device']==r['settings']['device'],'candidate device mismatch')
         require(r['step']<=2 and r['adoption_eligible'] is False,'defective path used beyond diagnostic scope')
+    key=lambda r:tuple(r[k] for k in ['plant','device','backend','mode','step'])
+    candidate_index={key(r):r for r in short['rows'] if r['batch']==1}
+    seen=set()
+    with gzip.open(root/'raw_minimal/candidate_short/models.jsonl.gz','rt') as h:
+        for line in h:
+            obj=json.loads(line);record=candidate_index[key(obj)];seen.add(key(obj))
+            for kind in ['endpoint','tube']:
+                require(measure(obj['models'][kind])==record['bounds'][kind]['common_composed_range'],
+                        'candidate common bound differs from full exported object')
+    require(seen==set(candidate_index),'candidate exported object missing')
     # Validate source tables against complete mathematical exports, independently
     # of the aggregate tables and their outer hashes.
     for shortname in ['brusselator','vdp']:
