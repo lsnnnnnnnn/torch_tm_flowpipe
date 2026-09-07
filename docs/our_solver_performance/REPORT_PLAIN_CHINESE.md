@@ -62,5 +62,5 @@
 - 实际入口：`BatchedTaylorModel.endpoint`；以及 `dense_to_sparse_tmvector` 后的 `TMVector.substitute_const(...).drop_variable(...).apply_cutoff(...)`，与 `flowpipe.py:6090` 发布入口相同。没有注入替代数学实现。
 - 远端分支：`codex/our-solver-prepared-replay-performance-20260907T074937Z`，仅用户自己的仓库新分支；不合并 main。
 - 结果：`artifacts/runs/our_solver_replay_performance_20260907T074937Z/`。工作树：`/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo`。
-- 独立克隆只复算已提交反例、档案保留、计时表、身份及停止决定；没有再次跑长实验。最终验证的具体提交和退出码由 ROOT 下的 final_delivery.json 记录。
+- 独立克隆只复算已提交反例、档案保留、计时表、身份及停止决定；没有再次跑长实验。已从 GitHub 新分支建立独立对象库，在干净证据提交 `9ddb996cf89ec55d87d767c349752c3d420e13a5` 上复核成功，退出码 0；原始记录已收录 `tests/independent_initial.json/.log/.exit`。最终封装提交再次复核的具体 SHA 与退出码由 ROOT 下的 final_delivery.json 记录。
 - 复核命令：在该分支根目录用原 py11 执行 `PYTHONPATH=src:. python -m experiments.our_solver_performance.verify_evidence artifacts/runs/our_solver_replay_performance_20260907T074937Z`。

@@ -1,0 +1,31 @@
+{
+  "tested_sha": "9ddb996cf89ec55d87d767c349752c3d420e13a5",
+  "clone_path": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/independent_verify",
+  "source": "https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git",
+  "branch": "codex/our-solver-prepared-replay-performance-20260907T074937Z",
+  "independent_object_store": true,
+  "clean": true,
+  "argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.our_solver_performance.verify_evidence",
+    "artifacts/runs/our_solver_replay_performance_20260907T074937Z"
+  ],
+  "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/independent_verify",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/independent_verify/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/independent_verify"
+  },
+  "exit_code": 0,
+  "verification": {
+    "status": "VERIFIED",
+    "decision": "OUR_REFERENCE_DEFECT_FOUND__PERFORMANCE_STOP",
+    "endpoint_entries": 2,
+    "failing_components": 4,
+    "archived_bound_rows": 8000,
+    "fresh_solver_runs": 0,
+    "verification_scope": "Submitted evidence and exact local witness; no long experiments rerun."
+  },
+  "scope": "Submitted evidence verification only; no full pytest matrix or long solver runs rerun."
+}
