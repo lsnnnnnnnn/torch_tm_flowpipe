@@ -7,8 +7,12 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
-from build_tables import read_csv, tables, write_csv
-from common import measure
+if __package__:
+    from .build_tables import read_csv, tables, write_csv
+    from .common import measure
+else:
+    from build_tables import read_csv, tables, write_csv
+    from common import measure
 
 def require(value,message):
     if not value:raise ValueError(message)

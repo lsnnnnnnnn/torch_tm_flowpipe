@@ -29,10 +29,11 @@ def main():
                 got=[r for r in rr if r[lane+'_lo']!='']
                 ts=[float(r['t_end']) for r in got]
                 lo=[float(r[lane+'_lo']) for r in got];hi=[float(r[lane+'_hi']) for r in got]
-                ax.plot(ts,lo,color=colors[lane],lw=.8,ls='--' if lane in ['strict','parity'] else '-',label=labels[lane])
-                ax.plot(ts,hi,color=colors[lane],lw=.8,ls='--' if lane in ['strict','parity'] else '-')
+                style='steps-pre' if kind=='tube' else 'default'
+                ax.plot(ts,lo,color=colors[lane],lw=.8,drawstyle=style,ls='--' if lane in ['strict','parity'] else '-',label=labels[lane])
+                ax.plot(ts,hi,color=colors[lane],lw=.8,drawstyle=style,ls='--' if lane in ['strict','parity'] else '-')
                 if lane in ['ours','flowstar']:
-                    ax.fill_between(ts,lo,hi,color=colors[lane],alpha=.11)
+                    ax.fill_between(ts,lo,hi,color=colors[lane],alpha=.11,step='pre' if kind=='tube' else None)
                     if ts and ts[-1]<end-1e-10:ax.axvline(ts[-1],color='red',ls=':',label=f'{labels[lane]} stopped at {ts[-1]:g}')
             for mark in historical:
                 if mark['plant']==plant:

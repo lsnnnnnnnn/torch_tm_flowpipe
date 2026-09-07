@@ -6,7 +6,10 @@ import gzip
 import json
 import math
 from pathlib import Path
-from common import measure
+if __package__:
+    from .common import measure
+else:
+    from common import measure
 
 KINDS=['endpoint','tube'];DIMS=['x','y'];VIEWS=['published','common']
 

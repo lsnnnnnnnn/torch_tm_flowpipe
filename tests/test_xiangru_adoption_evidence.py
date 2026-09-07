@@ -3,13 +3,11 @@ from fractions import Fraction
 import json
 from pathlib import Path
 import shutil
-import sys
 import pytest
 
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'experiments/xiangru_adoption'))
-from common import measure
-from verify_evidence import checksum, verify
+from experiments.xiangru_adoption.common import measure
+from experiments.xiangru_adoption.verify_evidence import checksum, verify
 
 ARTIFACTS=ROOT/'artifacts/runs/xiangru_adoption_20260907T032448Z'
 
