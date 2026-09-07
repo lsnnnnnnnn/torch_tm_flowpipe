@@ -60,7 +60,7 @@ def main():
                                lane_label='matched_adoption',observer_mode=core.DENSE_OBSERVER_NONE)
         else:
             segment = core.flowpipe_step_flowstar_style_adaptive(
-                ode,current,h=min(h,float(Fraction(target)-total_time)),
+                ode,current,h=min(h,float(Fraction(target)-total_time)) if args.adaptive else h,
                 h_min=0.002 if args.adaptive else 0.01, h_max=0.1 if args.adaptive else 0.01,
                 order=config.order,target_remainder_radius=config.target_remainder_radius,
                 cutoff_threshold=config.cutoff,max_validation_attempts=2,

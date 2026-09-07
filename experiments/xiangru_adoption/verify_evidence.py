@@ -70,6 +70,8 @@ def verify(root,check_hashes=True):
     for shortname in ['brusselator','vdp']:
         d=root/'raw_minimal'/('our_'+shortname+'_full')
         summary=json.loads((d/'summary.json').read_text());bounds=read_csv(d/'bounds.csv')
+        fixed_h=Fraction(.02 if shortname=='brusselator' else .01)
+        require(all(Fraction(row['h'])==fixed_h for row in bounds),'our fixed step was changed or clamped')
         count=0;last=Fraction()
         with gzip.open(d/'models.jsonl.gz','rt') as h:
           for line,row in zip(h,bounds,strict=True):
