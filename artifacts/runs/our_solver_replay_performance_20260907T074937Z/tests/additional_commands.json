@@ -1,0 +1,115 @@
+[
+  {
+    "name": "endpoint_driver",
+    "source_sha": "f37fd212e530bffc9518262970df8d5892f07d8a",
+    "source_clean": true,
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.our_solver_performance.reference_endpoint",
+      "--output",
+      "artifacts/runs/our_solver_replay_performance_20260907T074937Z/raw_minimal/endpoint_reference.json"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "log": "tests/endpoint_driver.log",
+    "exit": "tests/endpoint_driver.exit",
+    "counted_in_complete_matrix": false
+  },
+  {
+    "name": "endpoint_regression",
+    "source_sha": "f37fd212e530bffc9518262970df8d5892f07d8a",
+    "source_clean": true,
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_reference_endpoint_containment.py",
+      "--junitxml=artifacts/runs/our_solver_replay_performance_20260907T074937Z/tests/endpoint_regression.xml"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "log": "tests/endpoint_regression.log",
+    "exit": "tests/endpoint_regression.exit",
+    "counted_in_complete_matrix": false
+  },
+  {
+    "name": "evidence_focused",
+    "source_sha": "f5e7e78883adb3b1b7f5f7410fe5eeb69f18649c",
+    "source_clean": true,
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_solver_performance_evidence.py",
+      "--junitxml=artifacts/runs/our_solver_replay_performance_20260907T074937Z/tests/evidence_focused.xml"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "log": "tests/evidence_focused.log",
+    "exit": "tests/evidence_focused.exit",
+    "counted_in_complete_matrix": false
+  },
+  {
+    "name": "reused_verifier_once",
+    "source_sha": "f5e7e78883adb3b1b7f5f7410fe5eeb69f18649c",
+    "source_clean": true,
+    "argv": [
+      "taskset",
+      "-c",
+      "4",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.backend_reevaluation.verify_evidence",
+      "artifacts/runs/backend_reevaluation_20260907T061907Z"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "log": "tests/reused_verifier_once.log",
+    "exit": "tests/reused_verifier_once.exit",
+    "counted_in_complete_matrix": false
+  }
+]

@@ -1,0 +1,319 @@
+{
+  "schema": "our_solver_endpoint_witness/1",
+  "source_sha": "f37fd212e530bffc9518262970df8d5892f07d8a",
+  "source_clean": true,
+  "numerical_base_sha": "f23c375f7935dc2f85a37a0ad69814ab052168bb",
+  "source_root": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+  "imported_package": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_files": {
+    "src/torch_tm_flowpipe/batched_dense_tm.py": "be65226b057a3a6c6005af171488fa546b449624fe7c9eab963f0c55c8c0fc7a",
+    "src/torch_tm_flowpipe/flowpipe.py": "ba6240970e5e7393b9f13bf5371e66f076f5675b0eb766c613385181f9c806ef",
+    "src/torch_tm_flowpipe/tm_vector.py": "8a966fc5ed59fce37a4d6c4282d77feeaa95de8408ee1f8521c348acc527407a",
+    "src/torch_tm_flowpipe/taylor_model.py": "40e9103880ebc79f1f2618b71c9d175c628d94c0a581296b4c07c697ba6f3eca",
+    "src/torch_tm_flowpipe/polynomial.py": "a42ed99e9d3929f55a5e7f97ca850e69381a84b28bc7f022101f1145993bfbad",
+    "src/torch_tm_flowpipe/interval.py": "c7247b0830dc952cf238e9784a2b951a9c6673f5aefcb0d3ed0f14ac9b04d549"
+  },
+  "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "torch_version": "2.5.1+cu121",
+  "device": "cpu",
+  "dtype": "float64",
+  "batch": 1,
+  "threads": 1,
+  "interop_threads": 1,
+  "cpu_affinity": [
+    5
+  ],
+  "time_hex": "0x1.47ae147ae147bp-7",
+  "time_fraction": "5764607523034235/576460752303423488",
+  "exact_value": "3/144115188075855872",
+  "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+  "order": 4,
+  "rows": [
+    {
+      "entry": "published_endpoint",
+      "input_model": {
+        "domain": [
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "0x0.0p+0",
+            "0x1.47ae147ae147bp-7"
+          ]
+        ],
+        "variables": [
+          "ux",
+          "uy",
+          "tau"
+        ],
+        "components": [
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": [
+              {
+                "degrees": [
+                  0,
+                  0,
+                  0
+                ],
+                "coefficient": [
+                  "-0x1.0000000000000p+0",
+                  "-0x1.0000000000000p+0"
+                ]
+              },
+              {
+                "degrees": [
+                  0,
+                  0,
+                  1
+                ],
+                "coefficient": [
+                  "0x1.9000000000000p+6",
+                  "0x1.9000000000000p+6"
+                ]
+              }
+            ]
+          },
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": [
+              {
+                "degrees": [
+                  0,
+                  0,
+                  0
+                ],
+                "coefficient": [
+                  "-0x1.0000000000000p+0",
+                  "-0x1.0000000000000p+0"
+                ]
+              },
+              {
+                "degrees": [
+                  0,
+                  0,
+                  1
+                ],
+                "coefficient": [
+                  "0x1.9000000000000p+6",
+                  "0x1.9000000000000p+6"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "output_model": {
+        "domain": [
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ]
+        ],
+        "variables": [
+          "ux",
+          "uy"
+        ],
+        "components": [
+          {
+            "remainder": [
+              "-0x0.0000000000001p-1022",
+              "0x0.0000000000001p-1022"
+            ],
+            "terms": []
+          },
+          {
+            "remainder": [
+              "-0x0.0000000000001p-1022",
+              "0x0.0000000000001p-1022"
+            ],
+            "terms": []
+          }
+        ]
+      },
+      "full_range_hex": [
+        [
+          "-0x0.0000000000002p-1022",
+          "0x0.0000000000002p-1022"
+        ],
+        [
+          "-0x0.0000000000002p-1022",
+          "0x0.0000000000002p-1022"
+        ]
+      ],
+      "represented_range_hex": [
+        [
+          "-0x0.0000000000001p-1022",
+          "0x0.0000000000001p-1022"
+        ],
+        [
+          "-0x0.0000000000001p-1022",
+          "0x0.0000000000001p-1022"
+        ]
+      ],
+      "contains": [
+        false,
+        false
+      ]
+    },
+    {
+      "entry": "dense_internal_endpoint",
+      "input_model": {
+        "domain": [
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "0x0.0p+0",
+            "0x1.47ae147ae147bp-7"
+          ]
+        ],
+        "variables": [
+          "ux",
+          "uy",
+          "tau"
+        ],
+        "components": [
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": [
+              {
+                "degrees": [
+                  0,
+                  0,
+                  0
+                ],
+                "coefficient": [
+                  "-0x1.0000000000000p+0",
+                  "-0x1.0000000000000p+0"
+                ]
+              },
+              {
+                "degrees": [
+                  0,
+                  0,
+                  1
+                ],
+                "coefficient": [
+                  "0x1.9000000000000p+6",
+                  "0x1.9000000000000p+6"
+                ]
+              }
+            ]
+          },
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": [
+              {
+                "degrees": [
+                  0,
+                  0,
+                  0
+                ],
+                "coefficient": [
+                  "-0x1.0000000000000p+0",
+                  "-0x1.0000000000000p+0"
+                ]
+              },
+              {
+                "degrees": [
+                  0,
+                  0,
+                  1
+                ],
+                "coefficient": [
+                  "0x1.9000000000000p+6",
+                  "0x1.9000000000000p+6"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "output_model": {
+        "domain": [
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ],
+          [
+            "-0x1.0000000000000p+0",
+            "0x1.0000000000000p+0"
+          ]
+        ],
+        "variables": [
+          "ux",
+          "uy"
+        ],
+        "components": [
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": []
+          },
+          {
+            "remainder": [
+              "0x0.0p+0",
+              "0x0.0p+0"
+            ],
+            "terms": []
+          }
+        ]
+      },
+      "full_range_hex": [
+        [
+          "-0x0.0000000000001p-1022",
+          "0x0.0000000000001p-1022"
+        ],
+        [
+          "-0x0.0000000000001p-1022",
+          "0x0.0000000000001p-1022"
+        ]
+      ],
+      "represented_range_hex": [
+        [
+          "0x0.0p+0",
+          "0x0.0p+0"
+        ],
+        [
+          "0x0.0p+0",
+          "0x0.0p+0"
+        ]
+      ],
+      "contains": [
+        false,
+        false
+      ]
+    }
+  ],
+  "scope": "Actual local substitution methods; no ODE solve, history or normalization."
+}
