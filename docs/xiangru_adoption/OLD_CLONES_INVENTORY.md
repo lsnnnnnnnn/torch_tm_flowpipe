@@ -17,3 +17,5 @@
 
 完整的已修改文件名、脱敏 remote、worktree 清单和旧证据位置保存在本轮 raw_minimal/old_clones_inventory.json。
 主要旧 Xiangru 为 84184de6；新版新增仓库内 GPU 引擎、相关测试和来源许可记录。旧 Xiangru 工作树干净，没有必须移植的未提交修补。原生 Flow* 和用户主工作树有本地改动，均原样保留。
+
+本轮结束阶段已再次只读核对最初列出的十个仓库，HEAD、分支、工作树状态和 worktree 列表均未变化，详见证据包 `raw_minimal/old_clones_final_check.json`。为运行既有完整测试，另外只读取得 `torch_tm_flowpipe_three_tool_study` 中一个历史结果目录；其内容与测试原先固定的摘要一致，独立复制到本轮审计目录，未修改来源。
