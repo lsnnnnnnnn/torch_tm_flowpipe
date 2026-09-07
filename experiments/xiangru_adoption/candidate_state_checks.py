@@ -49,6 +49,31 @@ def main():
     except ValueError as exc: rows.append({'check':'mismatched_task_dimension','rejected':True,'exception':str(exc)})
     rows.append({'check':'checkpoint_resume','status':'NO_PUBLIC_CHECKPOINT_RESUME_CONTRACT',
                  'reason':'No candidate checkpoint API or documented resume promise found in the plant execution modules; no new resume feature added.'})
+    from flowstar_gpu import sparse_exec as se, support as sp
+    contract=json.loads((a.output.parent/'MATCHED_CONTRACTS.json').read_text())
+    for plant,cfg in contract['plants'].items():
+        settings=Settings(step=float(cfg['step']['decimal']),order=cfg['order'],sr_queue=cfg['sr_capacity'],mode='strict',device='cuda')
+        tab=build_tables(2,settings.order).to('cuda');step=build_step_tables(tab,settings.step)
+        sched=build_schedule(2,settings.order,'cuda');code=compile_ode(cfg['rhs_expression_strings'],['x','y'],order=settings.order-1)
+        boxes=torch.tensor([[b['enclosing_binary64'] for b in box] for box in cfg['different_task_boxes_binary'][:2]],dtype=torch.float64,device='cuda')
+        def run_two(inputs):
+            eng=sp.SparseEngine(tab,step,'cuda');st=se.initial_sparse_state(inputs,eng,sched)
+            queue=make_symbolic_remainder(len(inputs),2,settings.sr_queue,'cuda');states=[]
+            for _ in range(2):
+                st,ok=se.advance_sparse(st,code,eng,sched,settings,build_rem_est(settings,2,len(inputs)),queue)
+                st=se.prune_state(st,eng)
+                pre=torch.zeros(len(inputs),2,tab.T,dtype=torch.float64,device='cuda');pre[...,list(st.pre_sup.ids)]=st.pre
+                tmv=torch.zeros(len(inputs),2,tab.Ts,dtype=torch.float64,device='cuda');tmv[...,list(st.tmv_sup.ids)]=st.tmv
+                states.append(([x.cpu().clone() for x in [pre,st.pre_rem,tmv,st.tmv_rem]],ok.tolist()))
+            return states
+        batch=run_two(boxes)
+        for lane in range(2):
+            individual=run_two(boxes[lane:lane+1])
+            for i,((actual,ok),(expected,one_ok)) in enumerate(zip(batch,individual),start=1):
+                rows.append({'check':'different_preregistered_boxes_batch_equivalence','plant':plant,'device':'cuda','mode':'strict','backend':'sparse',
+                             'batch':2,'lane':lane,'step':i,'accepted':ok[lane] and one_ok[0],
+                             'bitwise_equal':all(torch.equal(x[lane:lane+1],y) for x,y in zip(actual,expected)),
+                             'scope':'Two-step diagnostic, not long-prefix correctness admission.'})
     a.output.write_text(json.dumps({'schema':'xiangru_state_checks/1','rows':rows},indent=2,allow_nan=False)+'\n')
     print(json.dumps(rows,indent=2))
 
