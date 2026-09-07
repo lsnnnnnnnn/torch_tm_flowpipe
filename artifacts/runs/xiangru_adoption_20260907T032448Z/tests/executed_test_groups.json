@@ -1,5 +1,5 @@
 {
-  "scope": "All original root tests and seven isolated experiment groups executed; new five package tests passed. A final all-at-once root suite is running to include new tests with the existing collection.",
+  "scope": "Final complete root test collection plus the seven isolated experiment groups required by scripts/run_complete_pytest.sh. All tests covered; native tests and new evidence tests run together.",
   "results": [
     {
       "name": "pytest",
@@ -121,6 +121,17 @@
       "time": "55.734",
       "timestamp": "2026-09-07T04:27:12.619331",
       "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "our_complete_root_tests.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "2",
+      "tests": "947",
+      "time": "455.407",
+      "timestamp": "2026-09-07T04:31:26.877432",
+      "hostname": "huan-c4140-server-3"
     }
   ],
   "resolved_environment_failures": [
@@ -136,5 +147,18 @@
       "resolution": "Copied original fixture read-only after matching its exact pre-existing expected manifest; reran all 16 group tests; passed.",
       "rerun": "other_test_groups/comparison_repair_after_fixture.xml"
     }
-  ]
+  ],
+  "final_unique_totals": {
+    "our_root_passed": 945,
+    "our_root_skipped": 2,
+    "other_seven_groups_passed": 60,
+    "other_seven_groups_skipped": 9,
+    "combined_passed": 1005,
+    "combined_skipped": 11
+  },
+  "resolved_test_import_failure": {
+    "source": "our_full_collection_import_error.xml",
+    "fix": "b87043a: package-qualified imports avoid historical common.py name collision",
+    "final_full_root_result": "945 passed, 2 skipped"
+  }
 }
