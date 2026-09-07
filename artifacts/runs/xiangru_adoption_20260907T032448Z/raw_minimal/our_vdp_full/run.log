@@ -1,0 +1,73 @@
+{"accepted_steps": 1, "time": 0.01, "solve_seconds": 0.41017524898052216}
+{"accepted_steps": 25, "time": 0.25, "solve_seconds": 15.385188604239374}
+{"accepted_steps": 50, "time": 0.5, "solve_seconds": 32.214264744892716}
+{"accepted_steps": 75, "time": 0.75, "solve_seconds": 49.30021791206673}
+{"accepted_steps": 100, "time": 1.0, "solve_seconds": 66.47374121658504}
+{"accepted_steps": 125, "time": 1.25, "solve_seconds": 83.05727559467778}
+{"accepted_steps": 150, "time": 1.5, "solve_seconds": 100.21190045122057}
+{"accepted_steps": 175, "time": 1.75, "solve_seconds": 117.38631611457095}
+{"accepted_steps": 200, "time": 2.0, "solve_seconds": 134.7512929532677}
+{"accepted_steps": 225, "time": 2.25, "solve_seconds": 151.38839600235224}
+{"accepted_steps": 250, "time": 2.5, "solve_seconds": 168.30896139331162}
+{"accepted_steps": 275, "time": 2.75, "solve_seconds": 185.5599998096004}
+{"accepted_steps": 300, "time": 3.0, "solve_seconds": 203.11924826726317}
+{"accepted_steps": 325, "time": 3.25, "solve_seconds": 220.17424537753686}
+{"accepted_steps": 350, "time": 3.5, "solve_seconds": 237.4247430707328}
+{"accepted_steps": 375, "time": 3.75, "solve_seconds": 255.07786958105862}
+{"accepted_steps": 400, "time": 4.0, "solve_seconds": 272.590864202939}
+{"accepted_steps": 425, "time": 4.25, "solve_seconds": 289.26131842006}
+{"accepted_steps": 450, "time": 4.5, "solve_seconds": 305.94220945751294}
+{"accepted_steps": 475, "time": 4.75, "solve_seconds": 322.55453684413806}
+{"accepted_steps": 500, "time": 5.0, "solve_seconds": 339.67242606310174}
+{"accepted_steps": 525, "time": 5.25, "solve_seconds": 356.3418196439743}
+{"accepted_steps": 550, "time": 5.5, "solve_seconds": 373.06852909876034}
+{"accepted_steps": 575, "time": 5.75, "solve_seconds": 390.1350167533383}
+{"accepted_steps": 600, "time": 6.0, "solve_seconds": 407.5243185698055}
+{"accepted_steps": 625, "time": 6.25, "solve_seconds": 424.1381808137521}
+{"accepted_steps": 650, "time": 6.5, "solve_seconds": 441.37591535178944}
+{"accepted_steps": 675, "time": 6.75, "solve_seconds": 459.0745891975239}
+{"accepted_steps": 700, "time": 7.0, "solve_seconds": 476.9261624533683}
+{"accepted_steps": 725, "time": 7.25, "solve_seconds": 494.06801799545065}
+{"accepted_steps": 750, "time": 7.5, "solve_seconds": 510.9481503041461}
+{"accepted_steps": 775, "time": 7.75, "solve_seconds": 528.0713173416443}
+{"accepted_steps": 800, "time": 8.0, "solve_seconds": 545.1690206509084}
+{"accepted_steps": 825, "time": 8.25, "solve_seconds": 561.5101053756662}
+{"accepted_steps": 850, "time": 8.5, "solve_seconds": 578.2781758354977}
+{"accepted_steps": 875, "time": 8.75, "solve_seconds": 595.2789172218181}
+{"accepted_steps": 900, "time": 9.0, "solve_seconds": 612.5611321264878}
+{"accepted_steps": 925, "time": 9.25, "solve_seconds": 629.1283219647594}
+{"accepted_steps": 950, "time": 9.5, "solve_seconds": 645.9898876110092}
+{"accepted_steps": 975, "time": 9.75, "solve_seconds": 663.3849484734237}
+{"accepted_steps": 1000, "time": 10.0, "solve_seconds": 681.2492698188871}
+{
+  "schema": "xiangru_our_reference_run/1",
+  "plant": "van_der_pol",
+  "mode": "our_cpu_reference",
+  "adaptive": false,
+  "requested_horizon": 10.0,
+  "accepted_steps": 1000,
+  "accepted_horizon": 10.0,
+  "accepted_horizon_exact": "720575940379279375/72057594037927936",
+  "failure": null,
+  "completed": true,
+  "solve_seconds": 681.2492698188871,
+  "export_seconds": 13.37419575219974,
+  "inside_process_seconds": 696.6772570391186,
+  "source_sha": "4939fb288c941a67f55cc191f4d75f8594692f47",
+  "source_clean_at_start": true,
+  "runner_sha": "901029fdd395dc69c9357ad911b594250b4240cc",
+  "imported_package": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_optimized/src/torch_tm_flowpipe/__init__.py",
+  "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "torch_version": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "device": "cpu",
+  "cpu_threads": 1,
+  "affinity": [
+    2
+  ],
+  "peak_rss_bytes": 466776064,
+  "final_queue_size": 0,
+  "final_queue_reset_count": 10,
+  "config": "FlowstarLikePolynomialPlantConfig(plant='van_der_pol', initial_decimal_box=(('1.1', '1.4'), ('2.35', '2.45')), order=4, fixed_step=None, requested_horizon=10.0, target_remainder_radius=0.0001, cutoff=1e-10, validation_epsilon=1e-12, accepted_boundary_sr_capacity=100, accepted_boundary_sr_mode='normalized_insertion_dependency_preserving_c3_sr100', post_accept_refinement_mode='flowstar_raw_remainder_compat_factorized_joint_closure_refined', right_map_range_mode='standard', right_map_center_mode='constant', range_policy=(('method', 'adaptive_subdivision'), ('max_depth', 1), ('max_leaves', 4), ('split_vars', (0, 1)), ('trigger', 'proactive_depth1_on_named_contexts'), ('named_contexts', ('polynomial_truncation',)), ('variable_orders', ((0, 1, 2), (1, 0, 2), (2, 0, 1)))), step_policy='flowstar_compat_native_h_min_0.002_h_max_0.1', endpoint_repair=False, accepted_boundary_sr_enabled=True, generic_post_accept_raw_remainder_refinement_enabled=True, refinement_replay_limit=491, stop_ratio=0.99, subset_commit='whole_vector_atomic', rhs_term_evaluation='ordered_terms', authoritative_device='cpu', authoritative_dtype='float64', outward_rounding='torch_nextafter_binary64', insertion_reset_semantics='normal_constant_centered_accepted_only_commit', checkpoint_rollback_policy='v5_full_queue_accept_commit_reject_immutable', lane_name='flowstar_like_polynomial_plant_reference', schema='torch_tm_flowpipe.polynomial_plant_reference/1')"
+}

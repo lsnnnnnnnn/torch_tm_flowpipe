@@ -1,0 +1,45 @@
+{
+  "schema": "xiangru_adoption_decision/1",
+  "decision": "DO_NOT_ADOPT_YET__CONFIRMED_CORRECTNESS_DEFECT",
+  "candidate_sha": "1c16d4ef2cb91cc94b1c784f7383e1eba135d8d3",
+  "candidate_numerical_patch": false,
+  "optional_backend_added": false,
+  "default_backend_changed": false,
+  "our_numerical_src_changed": false,
+  "gates": {
+    "correctness_and_function": "FAIL_CONFIRMED_EXACT_LOCAL_UNDERENCLOSURES",
+    "full_prefix_width": "NOT_EVALUATED_AFTER_CORRECTNESS_FAILURE",
+    "main_batch_speed": "NOT_EVALUATED_AFTER_CORRECTNESS_FAILURE"
+  },
+  "reasons": [
+    "Historical point-matrix propagation misses preserved exact Fraction witness on CPU/CUDA, parity/strict.",
+    "Independent centered two-state affine normalization underenclosure on CPU/CUDA; zero constant coefficients and symmetric remainders meet production invariants; fixing both requires more than one numerical mechanism."
+  ],
+  "candidate_complete_solve_seconds": null,
+  "candidate_complete_horizons": {
+    "brusselator": null,
+    "van_der_pol": null
+  },
+  "candidate_algorithm_accepted_diagnostic_horizons": {
+    "brusselator": 0.04,
+    "van_der_pol": 0.02
+  },
+  "actual_cpu_references": {
+    "brusselator": {
+      "our_accepted_horizon": 20.0,
+      "flowstar_accepted_horizon": 20,
+      "our_solve_seconds": 1990.778945621103,
+      "flowstar_solve_seconds": 13.569828379
+    },
+    "vdp": {
+      "our_accepted_horizon": 10.0,
+      "flowstar_accepted_horizon": 10,
+      "our_solve_seconds": 681.2492698188871,
+      "flowstar_solve_seconds": 1.4884663539999998
+    }
+  },
+  "access_or_hardware_missing": false,
+  "adaptive_plus_history_candidate": "UNSUPPORTED",
+  "source_and_environment_blocked": false,
+  "third_party_code_published": false
+}

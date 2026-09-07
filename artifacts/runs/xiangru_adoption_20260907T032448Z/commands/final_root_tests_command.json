@@ -1,0 +1,24 @@
+{
+  "source_commit_at_start": "b87043ac21fb1fedf506fac4829d8d38114633bf",
+  "scope": "All root tests together, including the five new evidence tests; source/import correction is included.",
+  "argv": [
+    "taskset",
+    "-c",
+    "5",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests",
+    "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_complete_root_tests.xml"
+  ],
+  "explicit_environment": {
+    "PATH_prefix": "/srv/local/shengenli/miniforge3/envs/py11/bin",
+    "PYTHONPATH": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/src",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  }
+}

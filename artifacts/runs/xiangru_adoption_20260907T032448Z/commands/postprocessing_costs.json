@@ -1,0 +1,40 @@
+{
+  "scope": "Separate from solver and in-run export timers.",
+  "stages": [
+    {
+      "stage": "tables",
+      "seconds": 14.779000286012888,
+      "returncode": 0,
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "python3",
+        "experiments/xiangru_adoption/build_tables.py",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/artifacts/runs/xiangru_adoption_20260907T032448Z"
+      ]
+    },
+    {
+      "stage": "figures",
+      "seconds": 2.635424809064716,
+      "returncode": 0,
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "experiments/xiangru_adoption/plot_results.py",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/artifacts/runs/xiangru_adoption_20260907T032448Z"
+      ]
+    },
+    {
+      "stage": "reports",
+      "seconds": 0.029985086992383003,
+      "returncode": 0,
+      "argv": [
+        "python3",
+        "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/finalize_reports.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "schema": "xiangru_state_checks/1",
+  "rows": [
+    {
+      "device": "cpu",
+      "mode": "parity",
+      "check": "mixed_fate_rejection",
+      "first_ok": [
+        true,
+        false
+      ],
+      "second_ok": [
+        true,
+        false
+      ],
+      "failed_flowpipe_frozen": true,
+      "successful_lane_equal_to_individual": true,
+      "sr_queue_mutates_for_failed_lane": true,
+      "semantics": "Upstream freezes published flowpipe but advances a global SR queue with junk for stopped lanes; no supported resume of a stopped lane."
+    },
+    {
+      "device": "cpu",
+      "mode": "parity",
+      "check": "nonfinite_input",
+      "accepted_steps": [
+        0
+      ],
+      "status": [
+        1
+      ],
+      "invalid_success_published": false,
+      "exception": null
+    },
+    {
+      "device": "cpu",
+      "mode": "strict",
+      "check": "mixed_fate_rejection",
+      "first_ok": [
+        true,
+        false
+      ],
+      "second_ok": [
+        true,
+        false
+      ],
+      "failed_flowpipe_frozen": true,
+      "successful_lane_equal_to_individual": true,
+      "sr_queue_mutates_for_failed_lane": true,
+      "semantics": "Upstream freezes published flowpipe but advances a global SR queue with junk for stopped lanes; no supported resume of a stopped lane."
+    },
+    {
+      "device": "cpu",
+      "mode": "strict",
+      "check": "nonfinite_input",
+      "accepted_steps": [
+        0
+      ],
+      "status": [
+        1
+      ],
+      "invalid_success_published": false,
+      "exception": null
+    },
+    {
+      "device": "cuda",
+      "mode": "parity",
+      "check": "mixed_fate_rejection",
+      "first_ok": [
+        true,
+        false
+      ],
+      "second_ok": [
+        true,
+        false
+      ],
+      "failed_flowpipe_frozen": true,
+      "successful_lane_equal_to_individual": true,
+      "sr_queue_mutates_for_failed_lane": true,
+      "semantics": "Upstream freezes published flowpipe but advances a global SR queue with junk for stopped lanes; no supported resume of a stopped lane."
+    },
+    {
+      "device": "cuda",
+      "mode": "parity",
+      "check": "nonfinite_input",
+      "accepted_steps": [
+        0
+      ],
+      "status": [
+        1
+      ],
+      "invalid_success_published": false,
+      "exception": null
+    },
+    {
+      "device": "cuda",
+      "mode": "strict",
+      "check": "mixed_fate_rejection",
+      "first_ok": [
+        true,
+        false
+      ],
+      "second_ok": [
+        true,
+        false
+      ],
+      "failed_flowpipe_frozen": true,
+      "successful_lane_equal_to_individual": true,
+      "sr_queue_mutates_for_failed_lane": true,
+      "semantics": "Upstream freezes published flowpipe but advances a global SR queue with junk for stopped lanes; no supported resume of a stopped lane."
+    },
+    {
+      "device": "cuda",
+      "mode": "strict",
+      "check": "nonfinite_input",
+      "accepted_steps": [
+        0
+      ],
+      "status": [
+        1
+      ],
+      "invalid_success_published": false,
+      "exception": null
+    },
+    {
+      "check": "adaptive_plus_sr",
+      "supported": false,
+      "exception": "adaptive stepsize with symbolic remainders is not implemented. KNOWN GAP: coupled_vanderpol is the one shipped benchmark that combines them (with subdivision); backlog item recorded in ARCHITECTURE.md scope notes"
+    },
+    {
+      "check": "mismatched_task_dimension",
+      "rejected": true,
+      "exception": "boxes have 3 dims, ODE has 2"
+    },
+    {
+      "check": "checkpoint_resume",
+      "status": "NO_PUBLIC_CHECKPOINT_RESUME_CONTRACT",
+      "reason": "No candidate checkpoint API or documented resume promise found in the plant execution modules; no new resume feature added."
+    }
+  ]
+}

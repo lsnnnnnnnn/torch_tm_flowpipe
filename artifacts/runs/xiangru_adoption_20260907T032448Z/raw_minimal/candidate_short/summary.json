@@ -1,0 +1,3229 @@
+{
+  "schema": "xiangru_short_diagnostics/1",
+  "imported_package": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/__init__.py",
+  "python": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+  "torch_version": "2.5.1+cu124",
+  "cuda_build": "12.4",
+  "segment_extension": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/torch_extensions/flowstar_seg_kernels/flowstar_seg_kernels.so",
+  "tape_extension": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/torch_extensions/flowstar_tape_kernels/flowstar_tape_kernels.so",
+  "rows": [
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.05243666982278228,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127031007134566,
+              1.5587991482634636
+            ],
+            [
+              2.9304159732351924,
+              2.977371683596427
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127031007134863,
+              1.5587991482634334
+            ],
+            [
+              2.93041597323525,
+              2.977371683596368
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643298801232,
+              1.5587997832974796
+            ],
+            [
+              2.9304153420350563,
+              3.0234653710964268
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.476964329880153,
+              1.5587997832974494
+            ],
+            [
+              2.9304153420351144,
+              3.023465371096368
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.051405421923846006,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5463747182793115,
+              1.5995582644360247
+            ],
+            [
+              2.8799888749604476,
+              2.9311991090897163
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5465163100025427,
+              1.5993989615713209
+            ],
+            [
+              2.8801449058794026,
+              2.93106290286858
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610825021133,
+              1.5995604805947556
+            ],
+            [
+              2.879988085907868,
+              2.979495748583781
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5093026742253448,
+              1.5994011777300519
+            ],
+            [
+              2.8801441168268225,
+              2.979359542362645
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.05397712578997016,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.512703096496493,
+              1.5587991520620723
+            ],
+            [
+              2.930415969002375,
+              2.9773716883945847
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127030964964991,
+              1.5587991520620657
+            ],
+            [
+              2.930415969002407,
+              2.9773716883945514
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643256631597,
+              1.5587997870960884
+            ],
+            [
+              2.930415337802239,
+              3.0234653758945846
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.476964325663166,
+              1.5587997870960815
+            ],
+            [
+              2.930415337802272,
+              3.0234653758945513
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.05424851179122925,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5463747077712264,
+              1.599558274348897
+            ],
+            [
+              2.879988863928533,
+              2.931199120933665
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.546515402913665,
+              1.5993998905092048
+            ],
+            [
+              2.8801439200834458,
+              2.9310638647197296
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610719940283,
+              1.599560490507628
+            ],
+            [
+              2.879988074875953,
+              2.97949576042773
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.509301767136467,
+              1.5994021066679358
+            ],
+            [
+              2.880143131030866,
+              2.9793605042137945
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.04872475378215313,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.512703100713457,
+              1.5587991482634633
+            ],
+            [
+              2.930415973235193,
+              2.9773716835964263
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127031007134863,
+              1.5587991482634334
+            ],
+            [
+              2.93041597323525,
+              2.977371683596368
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643298801236,
+              1.5587997832974791
+            ],
+            [
+              2.9304153420350567,
+              3.0234653710964263
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.476964329880153,
+              1.5587997832974494
+            ],
+            [
+              2.9304153420351144,
+              3.023465371096368
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.04672507615759969,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.546374718279312,
+              1.5995582644360244
+            ],
+            [
+              2.879988874960448,
+              2.931199109089716
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5465163100025432,
+              1.5993989615713207
+            ],
+            [
+              2.8801449058794026,
+              2.9310629028685797
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610825021138,
+              1.5995604805947554
+            ],
+            [
+              2.8799880859078684,
+              2.9794957485837807
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.509302674225345,
+              1.5994011777300516
+            ],
+            [
+              2.880144116826823,
+              2.9793595423626447
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.04353880695998669,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127030964964936,
+              1.5587991520620719
+            ],
+            [
+              2.9304159690023757,
+              2.977371688394584
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127030964965216,
+              1.5587991520620432
+            ],
+            [
+              2.930415969002431,
+              2.9773716883945274
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643256631602,
+              1.5587997870960877
+            ],
+            [
+              2.9304153378022395,
+              3.023465375894584
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.4769643256631881,
+              1.5587997870960593
+            ],
+            [
+              2.930415337802296,
+              3.0234653758945274
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.04565817583352327,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.546374707771227,
+              1.5995582743488963
+            ],
+            [
+              2.8799888639285336,
+              2.9311991209336647
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.546515402913694,
+              1.599399890509176
+            ],
+            [
+              2.880143920083477,
+              2.931063864719699
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610719940292,
+              1.5995604905076273
+            ],
+            [
+              2.8799880748759534,
+              2.9794957604277297
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5093017671364959,
+              1.599402106667907
+            ],
+            [
+              2.8801431310308967,
+              2.979360504213764
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.5389388110488653,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127031007134826,
+              1.5587991482634374
+            ],
+            [
+              2.9304159732352417,
+              2.977371683596375
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127031007134866,
+              1.5587991482634331
+            ],
+            [
+              2.9304159732352506,
+              2.9773716835963677
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643298801496,
+              1.558799783297453
+            ],
+            [
+              2.930415342035107,
+              3.0234653710963744
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.4769643298801534,
+              1.558799783297449
+            ],
+            [
+              2.930415342035115,
+              3.0234653710963677
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.06082564778625965,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5463747182793393,
+              1.5995582644359965
+            ],
+            [
+              2.879988874960499,
+              2.9311991090896647
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5465163100026351,
+              1.5993989615712285
+            ],
+            [
+              2.880144905879501,
+              2.931062902868482
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610825021413,
+              1.5995604805947272
+            ],
+            [
+              2.87998808590792,
+              2.979495748583729
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5093026742254372,
+              1.5994011777299595
+            ],
+            [
+              2.8801441168269206,
+              2.979359542362547
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.07513495488092303,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127030964965191,
+              1.558799152062046
+            ],
+            [
+              2.9304159690024245,
+              2.977371688394533
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127030964964996,
+              1.5587991520620652
+            ],
+            [
+              2.930415969002408,
+              2.977371688394551
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643256631861,
+              1.5587997870960615
+            ],
+            [
+              2.9304153378022897,
+              3.0234653758945327
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.4769643256631662,
+              1.5587997870960812
+            ],
+            [
+              2.9304153378022724,
+              3.023465375894551
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.06358801107853651,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.546374707771255,
+              1.5995582743488685
+            ],
+            [
+              2.879988863928585,
+              2.9311991209336132
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5465154029137576,
+              1.5993998905091125
+            ],
+            [
+              2.8801439200835444,
+              2.9310638647196314
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610719940571,
+              1.5995604905075993
+            ],
+            [
+              2.879988074876006,
+              2.9794957604276773
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5093017671365594,
+              1.5994021066678434
+            ],
+            [
+              2.880143131030964,
+              2.9793605042136964
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 128.00414044084027,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127031007134826,
+              1.5587991482634371
+            ],
+            [
+              2.9304159732352417,
+              2.977371683596375
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5127031007134868,
+              1.5587991482634331
+            ],
+            [
+              2.9304159732352506,
+              2.9773716835963673
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643298801496,
+              1.5587997832974527
+            ],
+            [
+              2.930415342035107,
+              3.0234653710963744
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.4769643298801534,
+              1.558799783297449
+            ],
+            [
+              2.930415342035115,
+              3.0234653710963673
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.02485785074532032,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5463747182793395,
+              1.5995582644359962
+            ],
+            [
+              2.879988874960499,
+              2.9311991090896647
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.546516310002653,
+              1.5993989615712108
+            ],
+            [
+              2.88014490587952,
+              2.931062902868463
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610825021415,
+              1.599560480594727
+            ],
+            [
+              2.87998808590792,
+              2.979495748583729
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.509302674225455,
+              1.5994011777299417
+            ],
+            [
+              2.8801441168269397,
+              2.979359542362528
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.029971084091812372,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5127030964965191,
+              1.5587991520620457
+            ],
+            [
+              2.9304159690024245,
+              2.9773716883945327
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.512703096496522,
+              1.5587991520620428
+            ],
+            [
+              2.930415969002432,
+              2.977371688394527
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.4769643256631861,
+              1.5587997870960613
+            ],
+            [
+              2.9304153378022897,
+              3.0234653758945322
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.4769643256631886,
+              1.5587997870960588
+            ],
+            [
+              2.9304153378022963,
+              3.023465375894527
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.02509209793061018,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.5463747077712553,
+              1.5995582743488683
+            ],
+            [
+              2.879988863928585,
+              2.9311991209336132
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.546515402913804,
+              1.599399890509066
+            ],
+            [
+              2.8801439200835937,
+              2.931063864719582
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.5091610719940574,
+              1.599560490507599
+            ],
+            [
+              2.879988074876006,
+              2.9794957604276773
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.5093017671366058,
+              1.599402106667797
+            ],
+            [
+              2.8801431310310135,
+              2.979360504213647
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "accepted": [
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.030050153844058514,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "accepted": [
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.02457340294495225,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "accepted": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.029417522717267275,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "accepted": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.024675475899130106,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.02,
+        "order": 6,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 1000,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.020983477123081684,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233097168381503,
+              1.42442251339348
+            ],
+            [
+              2.3116641461922556,
+              2.4342982033451324
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233097168381627,
+              1.4244225133934674
+            ],
+            [
+              2.311664146192276,
+              2.434298203345111
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993097041800903,
+              1.4245550696434799
+            ],
+            [
+              2.311658876567831,
+              2.461065078345132
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.099309704180103,
+              1.4245550696434675
+            ],
+            [
+              2.311658876567851,
+              2.4610650783451113
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.021370038855820894,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463420092804106,
+              1.4485748514823857
+            ],
+            [
+              2.2722422313337245,
+              2.4171994799852765
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463101974408327,
+              1.4486064014070812
+            ],
+            [
+              2.2722388537174534,
+              2.4166511655371705
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226096106341834,
+              1.448714941695303
+            ],
+            [
+              2.272236149611264,
+              2.4454676744031327
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1225777987946055,
+              1.4487464916199984
+            ],
+            [
+              2.272232771994993,
+              2.444919359955027
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.020660641137510538,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233095106564863,
+              1.4244229593200566
+            ],
+            [
+              2.3116629124275616,
+              2.434299386503081
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233095106564963,
+              1.4244229593200464
+            ],
+            [
+              2.311662912427559,
+              2.434299386503084
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993094979984264,
+              1.4245555155700564
+            ],
+            [
+              2.3116576428031372,
+              2.4610662615030807
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993094979984366,
+              1.4245555155700464
+            ],
+            [
+              2.311657642803134,
+              2.461066261503084
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.021018150728195906,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463415508401145,
+              1.44857555749203
+            ],
+            [
+              2.272239559136951,
+              2.417202074787357
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463037519182127,
+              1.4486125671264989
+            ],
+            [
+              2.272213921372659,
+              2.416683071080718
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226091521938872,
+              1.4487156477049472
+            ],
+            [
+              2.2722334774144906,
+              2.4454702692052135
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1225713532719857,
+              1.448752657339416
+            ],
+            [
+              2.2722078396501986,
+              2.4449512654985748
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.02243350399658084,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233097168381512,
+              1.4244225133934791
+            ],
+            [
+              2.3116641461922556,
+              2.434298203345132
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233097168381627,
+              1.4244225133934674
+            ],
+            [
+              2.311664146192276,
+              2.434298203345111
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993097041800912,
+              1.424555069643479
+            ],
+            [
+              2.311658876567831,
+              2.4610650783451318
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.099309704180103,
+              1.4245550696434675
+            ],
+            [
+              2.311658876567851,
+              2.4610650783451113
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.020925212185829878,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463420092804115,
+              1.4485748514823849
+            ],
+            [
+              2.2722422313337245,
+              2.417199479985276
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463101974408327,
+              1.4486064014070812
+            ],
+            [
+              2.272238853717454,
+              2.4166511655371705
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226096106341843,
+              1.448714941695302
+            ],
+            [
+              2.272236149611264,
+              2.4454676744031323
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1225777987946055,
+              1.4487464916199984
+            ],
+            [
+              2.272232771994993,
+              2.444919359955027
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.018110889941453934,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233095106564877,
+              1.4244229593200552
+            ],
+            [
+              2.311662912427562,
+              2.4342993865030804
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233095106564992,
+              1.4244229593200437
+            ],
+            [
+              2.3116629124275803,
+              2.434299386503062
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993094979984277,
+              1.424555515570055
+            ],
+            [
+              2.3116576428031377,
+              2.4610662615030803
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993094979984392,
+              1.4245555155700438
+            ],
+            [
+              2.311657642803156,
+              2.4610662615030625
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cpu",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.019558239728212357,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cpu",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463415508401158,
+              1.4485755574920287
+            ],
+            [
+              2.2722395591369513,
+              2.4172020747873564
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463037519182155,
+              1.448612567126496
+            ],
+            [
+              2.272213921372681,
+              2.416683071080696
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226091521938886,
+              1.4487156477049459
+            ],
+            [
+              2.272233477414491,
+              2.445470269205213
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1225713532719885,
+              1.4487526573394132
+            ],
+            [
+              2.2722078396502208,
+              2.4449512654985526
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.031017792876809835,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233097168381616,
+              1.424422513393468
+            ],
+            [
+              2.3116641461922733,
+              2.4342982033451137
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233097168381632,
+              1.4244225133934671
+            ],
+            [
+              2.3116641461922764,
+              2.4342982033451106
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.099309704180102,
+              1.424555069643468
+            ],
+            [
+              2.311658876567849,
+              2.461065078345113
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993097041801032,
+              1.424555069643467
+            ],
+            [
+              2.3116588765678516,
+              2.461065078345111
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.031541412230581045,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463420092804228,
+              1.4485748514823733
+            ],
+            [
+              2.2722422313337427,
+              2.417199479985258
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.146310197440836,
+              1.4486064014070779
+            ],
+            [
+              2.2722388537174716,
+              2.4166511655371523
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226096106341958,
+              1.4487149416952902
+            ],
+            [
+              2.272236149611283,
+              2.445467674403114
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.122577798794609,
+              1.4487464916199948
+            ],
+            [
+              2.2722327719950113,
+              2.4449193599550094
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.030616933945566416,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233095106564979,
+              1.4244229593200444
+            ],
+            [
+              2.3116629124275803,
+              2.4342993865030627
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233095106564968,
+              1.4244229593200461
+            ],
+            [
+              2.3116629124275594,
+              2.4342993865030835
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993094979984384,
+              1.4245555155700442
+            ],
+            [
+              2.311657642803156,
+              2.461066261503062
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993094979984368,
+              1.4245555155700462
+            ],
+            [
+              2.3116576428031346,
+              2.4610662615030834
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "dense",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.031247786711901426,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.146341550840127,
+              1.4485755574920176
+            ],
+            [
+              2.2722395591369695,
+              2.417202074787339
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463037519182162,
+              1.4486125671264953
+            ],
+            [
+              2.272213921372677,
+              2.4166830710807
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226091521939,
+              1.4487156477049346
+            ],
+            [
+              2.2722334774145097,
+              2.4454702692051953
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.122571353271989,
+              1.4487526573394125
+            ],
+            [
+              2.2722078396502168,
+              2.4449512654985566
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.021590074989944696,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233097168381616,
+              1.424422513393468
+            ],
+            [
+              2.3116641461922733,
+              2.4342982033451137
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233097168381632,
+              1.4244225133934671
+            ],
+            [
+              2.3116641461922764,
+              2.4342982033451106
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.099309704180102,
+              1.424555069643468
+            ],
+            [
+              2.311658876567849,
+              2.461065078345113
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993097041801032,
+              1.424555069643467
+            ],
+            [
+              2.311658876567852,
+              2.4610650783451105
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "parity",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.017356419004499912,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "parity",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463420092804228,
+              1.4485748514823733
+            ],
+            [
+              2.2722422313337427,
+              2.417199479985258
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1463101974408363,
+              1.4486064014070776
+            ],
+            [
+              2.272238853717472,
+              2.416651165537152
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226096106341958,
+              1.4487149416952902
+            ],
+            [
+              2.272236149611283,
+              2.445467674403114
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.122577798794609,
+              1.4487464916199948
+            ],
+            [
+              2.2722327719950117,
+              2.444919359955009
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 1,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.021490600891411304,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1233095106564983,
+              1.424422959320044
+            ],
+            [
+              2.3116629124275803,
+              2.4342993865030627
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.1233095106564994,
+              1.4244229593200435
+            ],
+            [
+              2.3116629124275807,
+              2.4342993865030618
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.0993094979984388,
+              1.4245555155700438
+            ],
+            [
+              2.311657642803156,
+              2.461066261503062
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.0993094979984395,
+              1.4245555155700433
+            ],
+            [
+              2.3116576428031563,
+              2.4610662615030616
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 1,
+      "step": 2,
+      "accepted": [
+        true
+      ],
+      "status": [
+        0
+      ],
+      "diagnostic_step_seconds": 0.018004050944000483,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2,
+      "bounds": {
+        "endpoint": {
+          "published_pre_range": [
+            [
+              1.1463415508401273,
+              1.4485755574920172
+            ],
+            [
+              2.27223955913697,
+              2.4172020747873386
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.146303751918219,
+              1.4486125671264924
+            ],
+            [
+              2.2722139213726997,
+              2.4166830710806773
+            ]
+          ]
+        },
+        "tube": {
+          "published_pre_range": [
+            [
+              1.1226091521939003,
+              1.448715647704934
+            ],
+            [
+              2.27223347741451,
+              2.445470269205195
+            ]
+          ],
+          "common_composed_range": [
+            [
+              1.122571353271992,
+              1.4487526573394096
+            ],
+            [
+              2.2722078396502394,
+              2.444951265498534
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "accepted": [
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.021578965708613396,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "accepted": [
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.017896887380629778,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "accepted": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.02122789667919278,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 1
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "accepted": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "diagnostic_step_seconds": 0.017965756822377443,
+      "elapsed_includes_cold_specialization_or_build": true,
+      "adoption_eligible": false,
+      "reason": "Confirmed SR and normalization inclusion defects; bounded diagnostic only.",
+      "settings": {
+        "step": 0.01,
+        "order": 4,
+        "cutoff": 1e-10,
+        "step_min": -1.0,
+        "remainder_estimation": 0.0001,
+        "sr_queue": 100,
+        "mode": "strict",
+        "device": "cuda",
+        "max_refinement_steps": 490,
+        "stop_ratio": 0.99,
+        "validate_intervals": false
+      },
+      "queue_len": 2
+    }
+  ],
+  "batch_equivalence": [
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 2,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 3,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 4,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 5,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 6,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 7,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 2,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 3,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 4,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 5,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 6,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "brusselator",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 7,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 1,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 2,
+      "step": 2,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 2,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 3,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 4,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 5,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 6,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 1,
+      "lane": 7,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 0,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 1,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 2,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 3,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 4,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 5,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 6,
+      "bitwise_equal": true
+    },
+    {
+      "plant": "van_der_pol",
+      "device": "cuda",
+      "backend": "sparse",
+      "mode": "strict",
+      "batch": 8,
+      "step": 2,
+      "lane": 7,
+      "bitwise_equal": true
+    }
+  ]
+}

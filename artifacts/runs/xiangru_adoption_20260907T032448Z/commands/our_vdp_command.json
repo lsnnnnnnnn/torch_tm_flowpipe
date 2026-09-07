@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "/usr/bin/time",
+    "-f",
+    "elapsed_seconds=%e peak_rss_kb=%M",
+    "-o",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_vdp_process_time.txt",
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/runner_vdp_scientific/experiments/xiangru_adoption/run_ours.py",
+    "--source",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_optimized",
+    "--plant",
+    "van_der_pol",
+    "--steps",
+    "1000",
+    "--output",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_vdp_full"
+  ],
+  "explicit_environment": {
+    "PYTHONPATH": "",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  }
+}

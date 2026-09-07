@@ -1,0 +1,11 @@
+plant,mode,step_policy,requested_horizon,accepted_horizon,accepted_steps,status,source,reason,algorithm_accepted_diagnostic_horizon,diagnostic_steps
+brusselator,our_cpu_reference,fixed,20.0,20.0,1000,COMPLETED,raw_minimal/our_brusselator_full/summary.json,,,
+brusselator,native_flowstar,fixed,20.0,20,1000,COMPLETED,raw_minimal/native_brusselator/summary.json,,,
+brusselator,xiangru_parity,fixed,20.0,,,NOT_RUN_AFTER_CONFIRMED_DEFECT,raw_minimal/candidate_short/summary.json,Local exact inclusion failures; two-step outputs are diagnostics.,0.04,2
+brusselator,xiangru_strict,fixed,20.0,,,NOT_RUN_AFTER_CONFIRMED_DEFECT,raw_minimal/candidate_short/summary.json,Local exact inclusion failures; two-step outputs are diagnostics.,0.04,2
+van_der_pol,our_cpu_reference,fixed,10.0,10.0,1000,COMPLETED,raw_minimal/our_vdp_full/summary.json,,,
+van_der_pol,native_flowstar,fixed,10.0,10,1000,COMPLETED,raw_minimal/native_vdp/summary.json,,,
+van_der_pol,xiangru_parity,fixed,10.0,,,NOT_RUN_AFTER_CONFIRMED_DEFECT,raw_minimal/candidate_short/summary.json,Local exact inclusion failures; two-step outputs are diagnostics.,0.02,2
+van_der_pol,xiangru_strict,fixed,10.0,,,NOT_RUN_AFTER_CONFIRMED_DEFECT,raw_minimal/candidate_short/summary.json,Local exact inclusion failures; two-step outputs are diagnostics.,0.02,2
+van_der_pol,xiangru_strict,adaptive_plus_sr,10,,,UNSUPPORTED,,Settings raises NotImplementedError.,,
+van_der_pol,our_cpu_reference,adaptive_plus_sr,10,,,SUPPORTED_HISTORICALLY_NOT_REBENCHMARKED,,Candidate combination unsupported; paired adaptive run skipped by goal section 17.5.,,

@@ -1,0 +1,128 @@
+{
+  "schema": "xiangru_correctness_summary/1",
+  "decision_eligible": false,
+  "known_history_witness": {
+    "classification": "CONFIRMED_UNDERENCLOSURE",
+    "modes_and_devices": [
+      {
+        "device": "cpu",
+        "parsed_mode": "parity",
+        "all_contained": false
+      },
+      {
+        "device": "cpu",
+        "parsed_mode": "strict",
+        "all_contained": false
+      },
+      {
+        "device": "cuda",
+        "parsed_mode": "parity",
+        "all_contained": false
+      },
+      {
+        "device": "cuda",
+        "parsed_mode": "strict",
+        "all_contained": false
+      }
+    ]
+  },
+  "normalization_singleton_witness": {
+    "classification": "AUXILIARY_HELPER_ALGEBRA_DIAGNOSTIC__NOT_PRODUCTION_ZERO_CONSTANT_INPUT",
+    "devices": [
+      "cpu",
+      "cuda"
+    ]
+  },
+  "local_operator_tests": {
+    "candidate_cpu_tests": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "145",
+        "time": "12.242",
+        "timestamp": "2026-09-07T03:31:22.918879",
+        "hostname": "huan-c4140-server-3"
+      }
+    ],
+    "candidate_cuda_tests": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "1",
+        "tests": "147",
+        "time": "12.450",
+        "timestamp": "2026-09-07T03:34:40.219275",
+        "hostname": "huan-c4140-server-3"
+      }
+    ],
+    "candidate_tape_targeted": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "13",
+        "time": "2.675",
+        "timestamp": "2026-09-07T03:53:57.594979",
+        "hostname": "huan-c4140-server-3"
+      }
+    ],
+    "candidate_sparse_state_tests": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "7",
+        "time": "3.254",
+        "timestamp": "2026-09-07T04:08:07.893097",
+        "hostname": "huan-c4140-server-3"
+      }
+    ]
+  },
+  "interpretation": "Exact local inclusion failures are sufficient to reject strict-path admission; no claim that the frozen trajectories instantiate these witness operands.",
+  "not_proved": [
+    "Complete strict error accounting",
+    "Full-prefix strict batch isolation across queue reset",
+    "Safe checkpoint/resume of stopped candidate lanes"
+  ],
+  "related_paths": "History matrix products; reciprocal and retained-coefficient scaling; retained polynomial coefficients and truncation have been inspected without claiming full closure.",
+  "long_runs_stopped_after_defect": true,
+  "sampling_used_as_soundness_proof": false,
+  "distinct_box_batch_checks": {
+    "compared_lanes_and_steps": 8,
+    "all_bitwise_equal": true,
+    "scope": "First two preregistered boxes, two steps, CUDA sparse strict; full-batch campaign not admitted."
+  },
+  "local_queue_checks": "Existing CPU eager tests cross small-capacity resets; added sparse/dense VDP local test uses capacity 4 over 13 steps and parity. These are not the frozen long-run capacity-100/1000 claim.",
+  "normalization_centered_affine_witness": {
+    "classification": "CONFIRMED_LOCAL_SET_UNDERENCLOSURE",
+    "devices": [
+      "cpu",
+      "cuda"
+    ],
+    "source": "preconditioning_centered_exact.json",
+    "production_invariants": [
+      "two state components",
+      "zero constant coefficients",
+      "symmetric remainder containing zero",
+      "normalized spatial domain [-1,1]",
+      "finite normal scales"
+    ],
+    "primary_adoption_evidence": true
+  },
+  "evidence_tamper_tests": {
+    "passed": 4,
+    "types": [
+      "width",
+      "accepted_horizon",
+      "mode",
+      "runtime"
+    ],
+    "outer_hashes_regenerated_before_verification": true,
+    "ordinary_exact_evaluator_test_passed": true
+  }
+}

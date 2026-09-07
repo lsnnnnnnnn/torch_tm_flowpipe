@@ -1,0 +1,9 @@
+feature,our_cpu_reference,native_flowstar,xiangru_parity,xiangru_strict
+fresh_remote_source,fixed 4939fb2,fixed b85a321 + read-only accessors,fresh 1c16d4e,fresh 1c16d4e
+two_state_fixed_plants,Brusselator fixed T20 completed; VDP fixed accepted T10 (1000 steps),Brusselator T20 and VDP T10 completed,two-step diagnostics accepted,two-step diagnostics accepted; not correctness-qualified
+history_matrix_local_inclusion,independent existing reference,"independent baseline, not final truth oracle",confirmed counterexample,confirmed counterexample
+normalization_local_inclusion,unchanged reference path,unchanged numerical path,shared helper misses centered affine set with zero constant and symmetric remainder,shared helper misses centered affine set with zero constant and symmetric remainder
+adaptive_plus_history,existing native T10 capability retained,supported by native API; unmatched adaptive run not repeated,NotImplementedError,NotImplementedError
+failed_lane_state,existing accepted-only reference,serial baseline,published state freezes; global SR queue mutates,published state freezes; global SR queue mutates
+checkpoint_resume,existing checkpoint format v5,not part of this matched process driver,no public plant checkpoint/resume promise,no public plant checkpoint/resume promise
+main_batch_speed_admission,paired campaign not opened,paired campaign not opened,not an adoption route,not opened after exact correctness failure

@@ -1,0 +1,73 @@
+{"accepted_steps": 1, "time": 0.02, "solve_seconds": 1.2483336376026273}
+{"accepted_steps": 25, "time": 0.5, "solve_seconds": 44.415562209673226}
+{"accepted_steps": 50, "time": 1.0, "solve_seconds": 96.06093080807477}
+{"accepted_steps": 75, "time": 1.5, "solve_seconds": 144.22010303661227}
+{"accepted_steps": 100, "time": 2.0, "solve_seconds": 190.53920283867046}
+{"accepted_steps": 125, "time": 2.5, "solve_seconds": 237.16151383146644}
+{"accepted_steps": 150, "time": 3.0, "solve_seconds": 281.8623016541824}
+{"accepted_steps": 175, "time": 3.5, "solve_seconds": 324.96538243908435}
+{"accepted_steps": 200, "time": 4.0, "solve_seconds": 366.5745711615309}
+{"accepted_steps": 225, "time": 4.5, "solve_seconds": 407.2539052348584}
+{"accepted_steps": 250, "time": 5.0, "solve_seconds": 447.74615588597953}
+{"accepted_steps": 275, "time": 5.5, "solve_seconds": 489.45048234658316}
+{"accepted_steps": 300, "time": 6.0, "solve_seconds": 532.6965904361568}
+{"accepted_steps": 325, "time": 6.5, "solve_seconds": 576.314448940102}
+{"accepted_steps": 350, "time": 7.0, "solve_seconds": 626.0790831143968}
+{"accepted_steps": 375, "time": 7.5, "solve_seconds": 686.216343765147}
+{"accepted_steps": 400, "time": 8.0, "solve_seconds": 743.4948008968495}
+{"accepted_steps": 425, "time": 8.5, "solve_seconds": 796.37901537586}
+{"accepted_steps": 450, "time": 9.0, "solve_seconds": 847.4066166258417}
+{"accepted_steps": 475, "time": 9.5, "solve_seconds": 898.0579934450798}
+{"accepted_steps": 500, "time": 10.0, "solve_seconds": 945.4065180686302}
+{"accepted_steps": 525, "time": 10.5, "solve_seconds": 991.6026215734892}
+{"accepted_steps": 550, "time": 11.0, "solve_seconds": 1036.6494589778595}
+{"accepted_steps": 575, "time": 11.5, "solve_seconds": 1082.2431653444655}
+{"accepted_steps": 600, "time": 12.0, "solve_seconds": 1128.2138653062284}
+{"accepted_steps": 625, "time": 12.5, "solve_seconds": 1175.51191365486}
+{"accepted_steps": 650, "time": 13.0, "solve_seconds": 1224.002729808446}
+{"accepted_steps": 675, "time": 13.5, "solve_seconds": 1272.7735859220847}
+{"accepted_steps": 700, "time": 14.0, "solve_seconds": 1323.7978301118128}
+{"accepted_steps": 725, "time": 14.5, "solve_seconds": 1388.5390274887905}
+{"accepted_steps": 750, "time": 15.0, "solve_seconds": 1452.5522395889275}
+{"accepted_steps": 775, "time": 15.5, "solve_seconds": 1513.3109008721076}
+{"accepted_steps": 800, "time": 16.0, "solve_seconds": 1570.8852070700377}
+{"accepted_steps": 825, "time": 16.5, "solve_seconds": 1626.6743654464372}
+{"accepted_steps": 850, "time": 17.0, "solve_seconds": 1680.8227530838922}
+{"accepted_steps": 875, "time": 17.5, "solve_seconds": 1732.328064283356}
+{"accepted_steps": 900, "time": 18.0, "solve_seconds": 1782.7146763582714}
+{"accepted_steps": 925, "time": 18.5, "solve_seconds": 1833.474055104889}
+{"accepted_steps": 950, "time": 19.0, "solve_seconds": 1884.4264226984233}
+{"accepted_steps": 975, "time": 19.5, "solve_seconds": 1936.8814800623804}
+{"accepted_steps": 1000, "time": 20.0, "solve_seconds": 1990.778945621103}
+{
+  "schema": "xiangru_our_reference_run/1",
+  "plant": "brusselator",
+  "mode": "our_cpu_reference",
+  "adaptive": false,
+  "requested_horizon": 20.0,
+  "accepted_steps": 1000,
+  "accepted_horizon": 20.0,
+  "accepted_horizon_exact": "720575940379279375/36028797018963968",
+  "failure": null,
+  "completed": true,
+  "solve_seconds": 1990.778945621103,
+  "export_seconds": 34.17142175603658,
+  "inside_process_seconds": 2029.2539784163237,
+  "source_sha": "4939fb288c941a67f55cc191f4d75f8594692f47",
+  "source_clean_at_start": true,
+  "runner_sha": "c1326f7549f20ae9036291386a4a65e575f5f488",
+  "imported_package": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_optimized/src/torch_tm_flowpipe/__init__.py",
+  "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "torch_version": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "device": "cpu",
+  "cpu_threads": 1,
+  "affinity": [
+    2
+  ],
+  "peak_rss_bytes": 480665600,
+  "final_queue_size": 0,
+  "final_queue_reset_count": 1,
+  "config": "FlowstarLikePolynomialPlantConfig(plant='brusselator', initial_decimal_box=(('1.48', '1.52'), ('2.98', '3.02')), order=6, fixed_step=0.02, requested_horizon=20.0, target_remainder_radius=0.0001, cutoff=1e-10, validation_epsilon=1e-12, accepted_boundary_sr_capacity=1000, accepted_boundary_sr_mode='normalized_insertion_dependency_preserving_generic_sr', post_accept_refinement_mode='flowstar_raw_remainder_compat_refined', right_map_range_mode='standard', right_map_center_mode='constant', range_policy=(('method', 'adaptive_subdivision'), ('max_depth', 1), ('max_leaves', 4), ('split_vars', (0, 1)), ('trigger', 'proactive_depth1_on_named_contexts'), ('named_contexts', ('polynomial_truncation',)), ('variable_orders', ((0, 1, 2), (1, 0, 2), (2, 0, 1)))), step_policy='fixed_no_retry', endpoint_repair=False, accepted_boundary_sr_enabled=True, generic_post_accept_raw_remainder_refinement_enabled=True, refinement_replay_limit=491, stop_ratio=0.99, subset_commit='whole_vector_atomic', rhs_term_evaluation='ordered_terms', authoritative_device='cpu', authoritative_dtype='float64', outward_rounding='torch_nextafter_binary64', insertion_reset_semantics='normal_constant_centered_accepted_only_commit', checkpoint_rollback_policy='v5_full_queue_accept_commit_reject_immutable', lane_name='flowstar_like_polynomial_plant_reference', schema='torch_tm_flowpipe.polynomial_plant_reference/1')"
+}

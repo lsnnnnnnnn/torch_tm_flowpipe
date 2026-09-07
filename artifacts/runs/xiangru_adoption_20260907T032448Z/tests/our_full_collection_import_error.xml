@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="4.796" timestamp="2026-09-07T04:29:30.546008" hostname="huan-c4140-server-3"><testcase classname="" name="tests.test_xiangru_adoption_evidence" time="0.000"><error message="collection failure">ImportError while importing test module '/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/tests/test_xiangru_adoption_evidence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_xiangru_adoption_evidence.py:11: in &lt;module&gt;
+    from common import measure
+E   ImportError: cannot import name 'measure' from 'common' (/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/experiments/three_tool_deep_study/common.py)</error></testcase></testsuite></testsuites>

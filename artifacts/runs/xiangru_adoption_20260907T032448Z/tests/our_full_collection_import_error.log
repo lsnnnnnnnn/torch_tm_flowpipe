@@ -1,0 +1,16 @@
+
+==================================== ERRORS ====================================
+___________ ERROR collecting tests/test_xiangru_adoption_evidence.py ___________
+ImportError while importing test module '/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/tests/test_xiangru_adoption_evidence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniforge3/envs/py11/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_xiangru_adoption_evidence.py:11: in <module>
+    from common import measure
+E   ImportError: cannot import name 'measure' from 'common' (/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/experiments/three_tool_deep_study/common.py)
+- generated xml file: /srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_complete_root_tests.xml -
+=========================== short test summary info ============================
+ERROR tests/test_xiangru_adoption_evidence.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 4.79s

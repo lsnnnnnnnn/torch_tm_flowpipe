@@ -1,0 +1,32 @@
+{
+  "schema": "xiangru_our_reference_run/1",
+  "plant": "van_der_pol",
+  "mode": "our_cpu_reference",
+  "adaptive": false,
+  "requested_horizon": 10.0,
+  "accepted_steps": 1000,
+  "accepted_horizon": 10.0,
+  "accepted_horizon_exact": "720575940379279375/72057594037927936",
+  "failure": null,
+  "completed": true,
+  "solve_seconds": 681.2492698188871,
+  "export_seconds": 13.37419575219974,
+  "inside_process_seconds": 696.6772570391186,
+  "source_sha": "4939fb288c941a67f55cc191f4d75f8594692f47",
+  "source_clean_at_start": true,
+  "runner_sha": "901029fdd395dc69c9357ad911b594250b4240cc",
+  "imported_package": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_optimized/src/torch_tm_flowpipe/__init__.py",
+  "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "torch_version": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "device": "cpu",
+  "cpu_threads": 1,
+  "affinity": [
+    2
+  ],
+  "peak_rss_bytes": 466776064,
+  "final_queue_size": 0,
+  "final_queue_reset_count": 10,
+  "config": "FlowstarLikePolynomialPlantConfig(plant='van_der_pol', initial_decimal_box=(('1.1', '1.4'), ('2.35', '2.45')), order=4, fixed_step=None, requested_horizon=10.0, target_remainder_radius=0.0001, cutoff=1e-10, validation_epsilon=1e-12, accepted_boundary_sr_capacity=100, accepted_boundary_sr_mode='normalized_insertion_dependency_preserving_c3_sr100', post_accept_refinement_mode='flowstar_raw_remainder_compat_factorized_joint_closure_refined', right_map_range_mode='standard', right_map_center_mode='constant', range_policy=(('method', 'adaptive_subdivision'), ('max_depth', 1), ('max_leaves', 4), ('split_vars', (0, 1)), ('trigger', 'proactive_depth1_on_named_contexts'), ('named_contexts', ('polynomial_truncation',)), ('variable_orders', ((0, 1, 2), (1, 0, 2), (2, 0, 1)))), step_policy='flowstar_compat_native_h_min_0.002_h_max_0.1', endpoint_repair=False, accepted_boundary_sr_enabled=True, generic_post_accept_raw_remainder_refinement_enabled=True, refinement_replay_limit=491, stop_ratio=0.99, subset_commit='whole_vector_atomic', rhs_term_evaluation='ordered_terms', authoritative_device='cpu', authoritative_dtype='float64', outward_rounding='torch_nextafter_binary64', insertion_reset_semantics='normal_constant_centered_accepted_only_commit', checkpoint_rollback_policy='v5_full_queue_accept_commit_reject_immutable', lane_name='flowstar_like_polynomial_plant_reference', schema='torch_tm_flowpipe.polynomial_plant_reference/1')"
+}

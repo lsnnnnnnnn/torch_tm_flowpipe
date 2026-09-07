@@ -1,0 +1,135 @@
+{
+  "contract": "Seven isolated experiment groups from scripts/run_complete_pytest.sh; root tests run separately.",
+  "explicit_environment": {
+    "PYTHONPATH": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit/src",
+    "PYTHONNOUSERSITE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "JAX_PLATFORMS": "cpu",
+    "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach"
+  },
+  "groups": [
+    {
+      "name": "torch_basis",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/first_order_followup/tests/test_torch_basis.py",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/torch_basis.xml"
+      ],
+      "returncode": 0,
+      "seconds": 3.243126392364502,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "diffreach_followup",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/first_order_followup/tests/test_diffreach_projection.py",
+        "experiments/first_order_followup/tests/test_diffreach_parity.py",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/diffreach_followup.xml"
+      ],
+      "returncode": 0,
+      "seconds": 12.082814455032349,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "first_order_three_way",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/first_order_three_way/tests/test_benchmark.py",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/first_order_three_way.xml"
+      ],
+      "returncode": 0,
+      "seconds": 2.449615001678467,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "diffreach_support",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/first_order_three_way/tests/test_diffreach_support.py",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/diffreach_support.xml"
+      ],
+      "returncode": 0,
+      "seconds": 4.903196096420288,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "common_contract",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/three_way_common_contract/tests",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/common_contract.xml"
+      ],
+      "returncode": 0,
+      "seconds": 0.4567587375640869,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "comparison_repair",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/three_way_comparison_repair/tests",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/comparison_repair.xml"
+      ],
+      "returncode": 1,
+      "seconds": 4.950325965881348,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    },
+    {
+      "name": "deep_study",
+      "argv": [
+        "taskset",
+        "-c",
+        "4",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "experiments/three_tool_deep_study/tests",
+        "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/other_test_groups/deep_study.xml"
+      ],
+      "returncode": 0,
+      "seconds": 2.8459832668304443,
+      "tested_sha": "061d83b7150ac9663524d89788c7cc488647874e"
+    }
+  ]
+}

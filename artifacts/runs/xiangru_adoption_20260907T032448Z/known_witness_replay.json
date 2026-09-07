@@ -1,0 +1,240 @@
+{
+  "schema": "xiangru_known_witness_replay/1",
+  "source_sha": "1c16d4ef2cb91cc94b1c784f7383e1eba135d8d3",
+  "candidate_root": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream",
+  "source_clean": true,
+  "python_executable": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "torch_version": "2.5.1+cu124",
+  "torch_file": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/candidate_env/lib/python3.11/site-packages/torch/__init__.py",
+  "imported_package": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/__init__.py",
+  "source_function": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/symbolic_remainder.py",
+  "source_line": 203,
+  "callers": {
+    "flowpipe.advance_uses_same_function": true,
+    "sparse_exec.advance_sparse_uses_same_function": true
+  },
+  "extension_path": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/torch_extensions/flowstar_seg_kernels/flowstar_seg_kernels.so",
+  "cpu_threads": 1,
+  "cpu_affinity": [
+    2
+  ],
+  "original_witness_sha256": "69735b8ab30bef71136434ff671b3d18c177a52113d1df78106029533474ce55",
+  "original_replay_script": "scripts/huan_strict_roundoff_audit.py at our frozen evidence base",
+  "matrices": [
+    [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        1.0000000000000002,
+        0.0
+      ],
+      [
+        -1.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        1.0000000000000002
+      ]
+    ]
+  ],
+  "historical_j_columns": [
+    [
+      1048576.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "exact_result_fraction": [
+    "0",
+    "-4503599627370497/38685626227668133590597632"
+  ],
+  "runs": [
+    {
+      "device": "cpu",
+      "requested_mode": "parity",
+      "parsed_mode": "parity",
+      "mode_dispatch": "Both production advance functions call this same mode-independent SR function.",
+      "bounds": [
+        [
+          -7.4e-323,
+          7.4e-323
+        ],
+        [
+          -2.3283064365386994e-10,
+          -2.3283064365386942e-10
+        ]
+      ],
+      "bounds_hex": [
+        [
+          "-0x0.000000000000fp-1022",
+          "0x0.000000000000fp-1022"
+        ],
+        [
+          "-0x1.0000000000006p-32",
+          "-0x1.ffffffffffff8p-33"
+        ]
+      ],
+      "contains_exact": [
+        true,
+        false
+      ],
+      "all_contained": false,
+      "cuda_kernel_names": [],
+      "qlen": 3,
+      "jlen": 2
+    },
+    {
+      "device": "cpu",
+      "requested_mode": "strict",
+      "parsed_mode": "strict",
+      "mode_dispatch": "Both production advance functions call this same mode-independent SR function.",
+      "bounds": [
+        [
+          -7.4e-323,
+          7.4e-323
+        ],
+        [
+          -2.3283064365386994e-10,
+          -2.3283064365386942e-10
+        ]
+      ],
+      "bounds_hex": [
+        [
+          "-0x0.000000000000fp-1022",
+          "0x0.000000000000fp-1022"
+        ],
+        [
+          "-0x1.0000000000006p-32",
+          "-0x1.ffffffffffff8p-33"
+        ]
+      ],
+      "contains_exact": [
+        true,
+        false
+      ],
+      "all_contained": false,
+      "cuda_kernel_names": [],
+      "qlen": 3,
+      "jlen": 2
+    },
+    {
+      "device": "cuda",
+      "requested_mode": "parity",
+      "parsed_mode": "parity",
+      "mode_dispatch": "Both production advance functions call this same mode-independent SR function.",
+      "bounds": [
+        [
+          -2.5e-323,
+          2.5e-323
+        ],
+        [
+          -2.328306436538698e-10,
+          -2.3283064365386953e-10
+        ]
+      ],
+      "bounds_hex": [
+        [
+          "-0x0.0000000000005p-1022",
+          "0x0.0000000000005p-1022"
+        ],
+        [
+          "-0x1.0000000000003p-32",
+          "-0x1.ffffffffffffcp-33"
+        ]
+      ],
+      "contains_exact": [
+        true,
+        false
+      ],
+      "all_contained": false,
+      "cuda_kernel_names": [
+        "(anonymous namespace)::iv_dot_point_iv_kernel(double const*, double const*, double*, long long, long long, bool)",
+        "Memcpy DtoD (Device -> Device)",
+        "void at::native::(anonymous namespace)::CatArrayBatchedCopy_aligned16_contig<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 3, 128, 1>(at::native::(anonymous namespace)::OpaqueType<8u>*, at::native::(anonymous namespace)::CatArrInputTensorMetadata<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 128, 1>, at::native::(anonymous namespace)::TensorSizeStride<unsigned int, 4u>, int, unsigned int)",
+        "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::AbsFunctor<double> >(at::TensorIteratorBase&, at::native::AbsFunctor<double> const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::AbsFunctor<double> >(at::TensorIteratorBase&, at::native::AbsFunctor<double> const&)::{lambda(int)#1})",
+        "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1})",
+        "void at::native::reduce_kernel<256, 2, at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4> >(at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4>)",
+        "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4> >(at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, at::detail::Array<char*, 2> >(int, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, at::detail::Array<char*, 2>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<double, double, double, at::native::maximum_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3> >(int, at::native::BinaryFunctor<double, double, double, at::native::maximum_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<double, double, double, at::native::nextafter_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3> >(int, at::native::BinaryFunctor<double, double, double, at::native::nextafter_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctorOnSelf_add<double>, at::detail::Array<char*, 2> >(int, at::native::CUDAFunctorOnSelf_add<double>, at::detail::Array<char*, 2>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctor_add<double>, at::detail::Array<char*, 3> >(int, at::native::CUDAFunctor_add<double>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<double>, at::detail::Array<char*, 1> >(int, at::native::FillFunctor<double>, at::detail::Array<char*, 1>)",
+        "void gemmSN_NN_kernel<double, 256, 4, 2, 8, 2, 4, false, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double> >(cublasGemmSmallNParams<cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double>, double>)"
+      ],
+      "qlen": 3,
+      "jlen": 2
+    },
+    {
+      "device": "cuda",
+      "requested_mode": "strict",
+      "parsed_mode": "strict",
+      "mode_dispatch": "Both production advance functions call this same mode-independent SR function.",
+      "bounds": [
+        [
+          -2.5e-323,
+          2.5e-323
+        ],
+        [
+          -2.328306436538698e-10,
+          -2.3283064365386953e-10
+        ]
+      ],
+      "bounds_hex": [
+        [
+          "-0x0.0000000000005p-1022",
+          "0x0.0000000000005p-1022"
+        ],
+        [
+          "-0x1.0000000000003p-32",
+          "-0x1.ffffffffffffcp-33"
+        ]
+      ],
+      "contains_exact": [
+        true,
+        false
+      ],
+      "all_contained": false,
+      "cuda_kernel_names": [
+        "(anonymous namespace)::iv_dot_point_iv_kernel(double const*, double const*, double*, long long, long long, bool)",
+        "Memcpy DtoD (Device -> Device)",
+        "void at::native::(anonymous namespace)::CatArrayBatchedCopy_aligned16_contig<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 3, 128, 1>(at::native::(anonymous namespace)::OpaqueType<8u>*, at::native::(anonymous namespace)::CatArrInputTensorMetadata<at::native::(anonymous namespace)::OpaqueType<8u>, unsigned int, 128, 1>, at::native::(anonymous namespace)::TensorSizeStride<unsigned int, 4u>, int, unsigned int)",
+        "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::AbsFunctor<double> >(at::TensorIteratorBase&, at::native::AbsFunctor<double> const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::AbsFunctor<double> >(at::TensorIteratorBase&, at::native::AbsFunctor<double> const&)::{lambda(int)#1})",
+        "void at::native::elementwise_kernel<128, 2, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#6}::operator()() const::{lambda(double)#1} const&)::{lambda(int)#1})",
+        "void at::native::reduce_kernel<256, 2, at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4> >(at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4>)",
+        "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4> >(at::native::ReduceOp<double, at::native::func_wrapper_t<double, at::native::sum_functor<double, double, double>::operator()(at::TensorIterator&)::{lambda(double, double)#1}>, unsigned int, double, 4>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, at::detail::Array<char*, 2> >(int, at::native::AUnaryFunctor<double, double, double, at::native::binary_internal::MulFunctor<double> >, at::detail::Array<char*, 2>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<double, double, double, at::native::maximum_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3> >(int, at::native::BinaryFunctor<double, double, double, at::native::maximum_kernel_cuda(at::TensorIteratorBase&)::{lambda()#2}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::BinaryFunctor<double, double, double, at::native::nextafter_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3> >(int, at::native::BinaryFunctor<double, double, double, at::native::nextafter_kernel_cuda(at::TensorIteratorBase&)::{lambda()#1}::operator()() const::{lambda()#1}::operator()() const::{lambda(double, double)#1}>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctorOnSelf_add<double>, at::detail::Array<char*, 2> >(int, at::native::CUDAFunctorOnSelf_add<double>, at::detail::Array<char*, 2>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::CUDAFunctor_add<double>, at::detail::Array<char*, 3> >(int, at::native::CUDAFunctor_add<double>, at::detail::Array<char*, 3>)",
+        "void at::native::vectorized_elementwise_kernel<4, at::native::FillFunctor<double>, at::detail::Array<char*, 1> >(int, at::native::FillFunctor<double>, at::detail::Array<char*, 1>)",
+        "void gemmSN_NN_kernel<double, 256, 4, 2, 8, 2, 4, false, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double> >(cublasGemmSmallNParams<cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double const>, cublasGemvTensorStridedBatched<double>, double>)"
+      ],
+      "qlen": 3,
+      "jlen": 2
+    }
+  ],
+  "classification": "CONFIRMED_UNDERENCLOSURE",
+  "scope": "Local history transform inclusion test with original operands; does not assert these operands occur on a particular frozen trajectory."
+}

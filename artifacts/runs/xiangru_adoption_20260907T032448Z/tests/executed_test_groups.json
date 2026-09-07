@@ -1,0 +1,140 @@
+{
+  "scope": "All original root tests and seven isolated experiment groups executed; new five package tests passed. A final all-at-once root suite is running to include new tests with the existing collection.",
+  "results": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "2",
+      "tests": "942",
+      "time": "392.679",
+      "timestamp": "2026-09-07T04:06:17.016368",
+      "hostname": "huan-c4140-server-3",
+      "group_file": "our_existing_full_tests.xml"
+    },
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "1",
+      "time": "1.784",
+      "timestamp": "2026-09-07T04:14:06.076077",
+      "hostname": "huan-c4140-server-3",
+      "group_file": "our_existing_path_rerun.xml"
+    },
+    {
+      "group_file": "common_contract.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "6",
+      "time": "0.086",
+      "timestamp": "2026-09-07T04:05:53.489880",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "comparison_repair.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "0",
+      "tests": "16",
+      "time": "4.163",
+      "timestamp": "2026-09-07T04:05:53.946414",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "comparison_repair_after_fixture.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "16",
+      "time": "4.096",
+      "timestamp": "2026-09-07T04:07:15.970807",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "deep_study.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "4",
+      "tests": "17",
+      "time": "2.179",
+      "timestamp": "2026-09-07T04:05:58.901278",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "diffreach_followup.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "8",
+      "time": "11.438",
+      "timestamp": "2026-09-07T04:05:33.871537+00:00",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "diffreach_support.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "2",
+      "time": "4.470",
+      "timestamp": "2026-09-07T04:05:48.406004+00:00",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "first_order_three_way.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "5",
+      "tests": "11",
+      "time": "1.816",
+      "timestamp": "2026-09-07T04:05:46.130793",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "torch_basis.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "9",
+      "time": "2.416",
+      "timestamp": "2026-09-07T04:05:30.800905",
+      "hostname": "huan-c4140-server-3"
+    },
+    {
+      "group_file": "our_adoption_related_tests.xml",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "5",
+      "time": "55.734",
+      "timestamp": "2026-09-07T04:27:12.619331",
+      "hostname": "huan-c4140-server-3"
+    }
+  ],
+  "resolved_environment_failures": [
+    {
+      "initial_group": "our_existing_full_tests",
+      "failure": "One subprocess could not find bare python on PATH.",
+      "resolution": "Reran that unchanged test with py11/bin on PATH; passed.",
+      "rerun": "our_existing_path_rerun.xml"
+    },
+    {
+      "initial_group": "comparison_repair",
+      "failure": "A historical untracked fixture was absent in the new clone.",
+      "resolution": "Copied original fixture read-only after matching its exact pre-existing expected manifest; reran all 16 group tests; passed.",
+      "rerun": "other_test_groups/comparison_repair_after_fixture.xml"
+    }
+  ]
+}

@@ -19,3 +19,5 @@ CUDA toolkit 为 12.6；系统 GCC 15 不适合该 nvcc 的头文件解析，使
 当前 Settings 仍明确拒绝 adaptive + symbolic remainder。没有借此关闭历史队列或新写自适应功能。CPU eager、CUDA dense、CUDA sparse 分别有短诊断；历史传播另外通过 profiler 记录实际 CUDA 矩阵和区间 kernel，不能仅由 `cuda.is_available` 或 extension 加载推断执行路径。
 
 原生 Flow* 的跟踪源码与观察提交一致；其构建目录保留未跟踪的对象文件、静态库和由解析器生成的文件。这些产物单独记录在 `raw_minimal/live_source_check.json`，没有伪装成源码修改或推送的第三方文件。候选与两组 scientific 运行器均保持工作树干净。
+
+VDP summary 中的 config 文本保留原 plant 配置对象，其默认策略名称为 native；本轮干净运行器显式将 h、h_min、h_max 都设置为 0.01。`adaptive:false`、1000 个原始 h 字段与 `execution_contract.json` 记录本次实际固定策略，没有将原生自适应结果重标为固定结果。

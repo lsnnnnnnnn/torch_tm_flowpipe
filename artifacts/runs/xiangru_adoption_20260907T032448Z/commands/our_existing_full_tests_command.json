@@ -1,0 +1,18 @@
+{
+  "cwd": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_audit",
+  "scientific_code_sha": "50f605e",
+  "command": [
+    "taskset",
+    "-c",
+    "5",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests",
+    "--ignore=tests/test_xiangru_adoption_evidence.py",
+    "--junitxml=/srv/local/shengenli/xiangru_adoption_20260907T032448Z/our_existing_full_tests.xml"
+  ],
+  "scope": "All pre-existing root tests; five new package-dependent tests run separately after the final numerical package exists. Together with the seven experiment test processes, this covers the existing complete isolated test contract.",
+  "live_session_id": 7392
+}

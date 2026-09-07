@@ -1,0 +1,21 @@
+{
+  "scope": "Historical context only; these are earlier CPU versions, not new candidate failure observations. No matched old Xiangru trajectory exists; its old snapshot did not contain this engine.",
+  "markers": [
+    {
+      "plant": "brusselator",
+      "time": 7.140000000000001,
+      "plot_label": "Earlier CPU before refinement: stop 7.14",
+      "contract_difference": "Earlier numerical version without accepted-step refinement; same queue 1000 and h 0.02.",
+      "source": "artifacts/runs/brusselator_sr1000_c4_closure_20260828/raw/sr1000/summary.json",
+      "sha256": "0638f1229a410bd608474565e4770432fab7d96e461e80ed1d2502ce81f94ae9"
+    },
+    {
+      "plant": "van_der_pol",
+      "time": 6.714914669607182,
+      "plot_label": "Earlier CPU adaptive stop 6.715 (different policy)",
+      "contract_difference": "Earlier CPU version without historical-source retention; adaptive policy, not this fixed-step contract.",
+      "source": "evidence/vdp_c2_post_accept_refinement/20260820T090803Z/03_raw_runs/native_T10/production_c2_candidate/summary.json",
+      "sha256": "669023da17bed2a29aca9b93964a5ead85231ef8e603ad41cc8618cf1a373035"
+    }
+  ]
+}
