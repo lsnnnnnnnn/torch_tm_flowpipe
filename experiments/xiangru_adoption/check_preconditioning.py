@@ -35,6 +35,18 @@ def main():
                          'point_dimension':point.item(),'exact_input_fraction':str(exact),
                          'exact_reconstructed_lower':str(lower),'exact_reconstructed_upper':str(upper),
                          'exact_error_of_point':str(s*c-exact),'contained':lower<=exact<=upper})
+        original=tensor([[[0.1,1.1]]]); remainder=tensor([[[0.0,0.0]]])
+        scaled,rem,S,point,inv,x0=_g_precond(original,remainder,tensor([[1.0,1.0],[-1.0,1.0]]),c0,pos,arange,2)
+        for u in [-1,1]:
+            exact=Fraction(0.1)+u*Fraction(1.1)
+            c=Fraction(scaled[0,0,0].item())+u*Fraction(scaled[0,0,1].item())
+            s=Fraction(S.item());l,h=map(Fraction,rem.flatten().tolist())
+            lower,upper=s*(c+l),s*(c+h)
+            rows.append({'device':device,'a':'0.1 + 1.1*u','u':u,'original_coefficients':[0.1,1.1],
+                         'S':S.item(),'inverse':inv.item(),'scaled_coefficients':scaled.flatten().tolist(),
+                         'scaled_remainder':rem.flatten().tolist(),'exact_input_fraction':str(exact),
+                         'exact_reconstructed_lower':str(lower),'exact_reconstructed_upper':str(upper),
+                         'exact_error_of_point':str(s*c-exact),'contained':lower<=exact<=upper})
     fn=Path(inspect.getsourcefile(_g_precond)).resolve()
     root=fn.parents[2]
     result={'schema':'xiangru_preconditioning_exact/1','source_function':str(fn),
