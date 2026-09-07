@@ -265,11 +265,27 @@ def main():
     torch.set_num_threads(1)
     witness = json.loads(args.witness.read_text())
     assert str(exact_history(witness["matrices"], witness["historical_j_columns"], [[1., 1.]]*3)[-1][1]) == witness["exact_result_fraction"][1]
-    rows, metadata = our_rows(args, witness) if args.implementation == "C" else candidate_rows(args, witness)
+    if args.implementation != "C" and "cuda" in args.devices:
+        # Build first, so the profiler records the numerical kernels, not JIT
+        # subprocess activity. Each source uses a distinct external cache.
+        from flowstar_gpu import cuda_kernels as ck
+        assert ck.available(), "CUDA extension failed to build"
+        activities = [torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA]
+        with torch.profiler.profile(activities=activities) as prof:
+            rows, metadata = candidate_rows(args, witness)
+            torch.cuda.synchronize()
+        metadata["cuda_kernel_names"] = sorted({e.name for e in prof.events()
+                                                if e.device_type == torch.autograd.DeviceType.CUDA})
+        assert metadata["cuda_kernel_names"], "No actual CUDA work recorded"
+    else:
+        rows, metadata = our_rows(args, witness) if args.implementation == "C" else candidate_rows(args, witness)
     result = dict(schema="backend_reevaluation_crosscheck/1", source_sha=git("rev-parse", "HEAD"),
                   source_clean=not git("status", "--porcelain"), source_path=str(args.source),
                   driver_sha=subprocess.check_output(["git", "-C", str(Path(__file__).resolve().parents[2]), "rev-parse", "HEAD"], text=True).strip(),
                   imported_package=package.__file__, python=sys.executable, torch_version=torch.__version__,
+                  source_files={str(p.relative_to(args.source)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                for p in sorted((args.source / "src" / package.__name__).glob("*.py"))
+                                if p.name in {"symbolic_remainder.py", "flowpipe.py", "sparse_exec.py", "accepted_boundary_sr.py"}},
                   frozen_witness_sha256=hashlib.sha256(args.witness.read_bytes()).hexdigest(),
                   rows=rows, **metadata)
     args.output.parent.mkdir(parents=True, exist_ok=True)
