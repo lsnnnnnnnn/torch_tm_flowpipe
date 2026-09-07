@@ -1,0 +1,379 @@
+{
+  "observed_utc": "2026-09-07T03:25:15.702116+00:00",
+  "scope": "named relevant repositories under user workspace; read-only git, own process cwd only",
+  "repositories": [
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe",
+      "role": "our_repository",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "26a254ef585a9dee394b7e41922c06bf8799f501",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "codex/flowstar-raw-remainder-compat",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## codex/flowstar-raw-remainder-compat\n M README.md\n M experiments/flowstar_probe/flowstar_vdp_step_trace_probe.cpp\n M experiments/flowstar_step_trace_compare.py\n M tests/test_flowstar_step_trace_compare_alignment.py\n?? docs/flowstar_order2_vanderpol_failure.md\n?? worktrees/",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/torch_tm_flowpipe\nHEAD 26a254ef585a9dee394b7e41922c06bf8799f501\nbranch refs/heads/codex/flowstar-raw-remainder-compat\n\nworktree /srv/local/shengenli/c4-gate-smoke.vB8psR\nHEAD f34b5fa4155f5475a681411b627d68345ed401ea\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/batch_7608dd5\nHEAD 7608dd52e48af3ce8ae2e0a8343aae125c63b7f4\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/optimized_4939fb2\nHEAD 4939fb288c941a67f55cc191f4d75f8594692f47\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/s1-boundary164-causal-guarded-carry-20260811\nHEAD 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a\nbranch refs/heads/codex/s1-boundary164-causal-guarded-carry-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-full-horizon-pairwise-carry-closure-20260811\nHEAD 8e7dbfbd305042adbd1bede47381c33ba73d7d7b\nbranch refs/heads/codex/three-tool-full-horizon-pairwise-carry-closure-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-matched-divergence-fixed-support-bridge-20260811\nHEAD 2cb647cd37b530aef12e2b627f48b9b1dcf9aa23\nbranch refs/heads/codex/three-tool-matched-divergence-fixed-support-bridge-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study\nHEAD dd820324902c7d8c13c61c161fa830ae04b52f80\nbranch refs/heads/codex/bern-ibf-tm-feasibility\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829\nHEAD df50c55ef640b0ca9d90b132c88235b8ec07510b\nbranch refs/heads/codex/c4-reference-performance-batch-foundation-20260829\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair\nHEAD 387c1188e1183a9c92521a545243a0c5aae5d51b\nbranch refs/heads/codex/deep-study-protocol-repair-v2\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench\nHEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34\nbranch refs/heads/codex/first-order-three-way-benchmark\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup\nHEAD 3d0ae5444435974e7509e176129fb796c76312ab\nbranch refs/heads/codex/first-order-followup-correctness-matched-basis\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_fixed_object_baseline_4bb10d5\nHEAD 4bb10d54b29dad2b47c5f91ddedafe854a52fac6\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_causal_closure_20260813\nHEAD 3940386a61bdd6edbf3dc1722be031a1da572171\nbranch refs/heads/codex/flowstar-torch-causal-mechanism-closure-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure\nHEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481\nbranch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813\nHEAD cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d\nbranch refs/heads/codex/flowstar-torch-source-carry-root-cause-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10\nHEAD 82c54a244d996ccc08b09cb4ded5f48167415585\nbranch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\nbranch refs/heads/exp\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_mainline_20260810\nHEAD 05ae30b4e41c7b77e39778629ada084623b7270b\nbranch refs/heads/codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters\nHEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3\nbranch refs/heads/codex/native-reproduction-no-adapters-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit\nHEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17\nbranch refs/heads/codex/repository-cleanup-before-external-torch-audit\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle\nHEAD 771948ef7592d5b5c81e35e36ba4aa067674821e\nbranch refs/heads/codex/t1-t3-width-causal-symbolic-carry-20260814\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_structured_remainder\nHEAD 3b7b6ef97d9a33dea8498b7595131ffc6095bc1f\nbranch refs/heads/codex/structured-remainder-compiled-fixed-support-closure-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit\nHEAD 308b735ac577cfea39172976a4c08716f1e54d2f\nbranch refs/heads/codex/three-tool-correctness-parity-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study\nHEAD 9a684d9106633e067bfac0747244b769fa49aa0b\nbranch refs/heads/codex/torch-flowstar-diffreach-deep-study\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison\nHEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10\nbranch refs/heads/codex/three-way-common-contract-comparison\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair\nHEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8\nbranch refs/heads/codex/three-way-comparison-correctness-repair\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_baseline_54f\nHEAD 54f0827c959145c1fee58688d5826d91f99479be\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_completion_verify\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_final_verify\nHEAD 059c7efcf11e8b7247bd4a5336aa9ecc9c806b5d\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_perf_closure\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\nbranch refs/heads/codex/tora-q3-performance-closed-loop-closure-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_phase1_verify\nHEAD c69134867e26f251be39da0c13f0dedcf5a630d8\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_stage_parity_fused_20260809\nHEAD c60539f078e637b1169792d291f17afbe0a2a0fb\nbranch refs/heads/codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay\nHEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_baseline_29c9ee8\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827\nHEAD ed9c305dc39c25eab23a96f4fb3775cc2d13d396\nbranch refs/heads/codex/torch-flowstar-brusselator-live-range-c5-20260828\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit\nHEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b\nbranch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2\nHEAD 2cdb7a9509d5908baef79a02cfde18ea0682430c\nbranch refs/heads/codex/vdp-h2-dense-picard-first-loss-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2_science\nHEAD 666c51ecc5575f203518d21f34b5c9948741fb17\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range\nHEAD 455146df23940caa6f168877ffe6ec6f508c43a4\nbranch refs/heads/codex/vdp-later-terminal-factorized-range-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_normal_insertion_root_cause_fix_20260817\nHEAD 43be6d34461e809c291a2d57e120012755d29d51\nbranch refs/heads/codex/vdp-normal-insertion-root-cause-fix-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_residual_gap_g2_20260815\nHEAD e47ce68c61e73fc38f17fab3037d6cfe1877f3fd\nbranch refs/heads/codex/vdp-residual-gap-g2-shared-column-carry-20260815\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure\nHEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47\nbranch refs/heads/codex/vdp-terminal-range-closure-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\nbranch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806\n\nworktree /srv/local/shengenli/worktrees/s1-prefix-integrated-complete-o4-closure-20260810\nHEAD 8683183e48b7795d13edbdc9a5910fba9d21d16c\nbranch refs/heads/codex/s1-prefix-integrated-complete-o4-closure-20260810",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "[ssh-user]@github.com:lsnnnnnnnn/torch_tm_flowpipe.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/torch_tm_flowpipe/outputs",
+        "/srv/local/shengenli/torch_tm_flowpipe/experiments",
+        "/srv/local/shengenli/torch_tm_flowpipe/tests",
+        "/srv/local/shengenli/torch_tm_flowpipe/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827",
+      "role": "our_frozen_evidence",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "ed9c305dc39c25eab23a96f4fb3775cc2d13d396",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "codex/torch-flowstar-brusselator-live-range-c5-20260828",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## codex/torch-flowstar-brusselator-live-range-c5-20260828...origin/codex/torch-flowstar-brusselator-live-range-c5-20260828",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/torch_tm_flowpipe\nHEAD 26a254ef585a9dee394b7e41922c06bf8799f501\nbranch refs/heads/codex/flowstar-raw-remainder-compat\n\nworktree /srv/local/shengenli/c4-gate-smoke.vB8psR\nHEAD f34b5fa4155f5475a681411b627d68345ed401ea\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/batch_7608dd5\nHEAD 7608dd52e48af3ce8ae2e0a8343aae125c63b7f4\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/optimized_4939fb2\nHEAD 4939fb288c941a67f55cc191f4d75f8594692f47\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/s1-boundary164-causal-guarded-carry-20260811\nHEAD 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a\nbranch refs/heads/codex/s1-boundary164-causal-guarded-carry-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-full-horizon-pairwise-carry-closure-20260811\nHEAD 8e7dbfbd305042adbd1bede47381c33ba73d7d7b\nbranch refs/heads/codex/three-tool-full-horizon-pairwise-carry-closure-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-matched-divergence-fixed-support-bridge-20260811\nHEAD 2cb647cd37b530aef12e2b627f48b9b1dcf9aa23\nbranch refs/heads/codex/three-tool-matched-divergence-fixed-support-bridge-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study\nHEAD dd820324902c7d8c13c61c161fa830ae04b52f80\nbranch refs/heads/codex/bern-ibf-tm-feasibility\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829\nHEAD df50c55ef640b0ca9d90b132c88235b8ec07510b\nbranch refs/heads/codex/c4-reference-performance-batch-foundation-20260829\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair\nHEAD 387c1188e1183a9c92521a545243a0c5aae5d51b\nbranch refs/heads/codex/deep-study-protocol-repair-v2\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench\nHEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34\nbranch refs/heads/codex/first-order-three-way-benchmark\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup\nHEAD 3d0ae5444435974e7509e176129fb796c76312ab\nbranch refs/heads/codex/first-order-followup-correctness-matched-basis\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_fixed_object_baseline_4bb10d5\nHEAD 4bb10d54b29dad2b47c5f91ddedafe854a52fac6\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_causal_closure_20260813\nHEAD 3940386a61bdd6edbf3dc1722be031a1da572171\nbranch refs/heads/codex/flowstar-torch-causal-mechanism-closure-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure\nHEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481\nbranch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813\nHEAD cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d\nbranch refs/heads/codex/flowstar-torch-source-carry-root-cause-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10\nHEAD 82c54a244d996ccc08b09cb4ded5f48167415585\nbranch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\nbranch refs/heads/exp\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_mainline_20260810\nHEAD 05ae30b4e41c7b77e39778629ada084623b7270b\nbranch refs/heads/codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters\nHEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3\nbranch refs/heads/codex/native-reproduction-no-adapters-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit\nHEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17\nbranch refs/heads/codex/repository-cleanup-before-external-torch-audit\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle\nHEAD 771948ef7592d5b5c81e35e36ba4aa067674821e\nbranch refs/heads/codex/t1-t3-width-causal-symbolic-carry-20260814\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_structured_remainder\nHEAD 3b7b6ef97d9a33dea8498b7595131ffc6095bc1f\nbranch refs/heads/codex/structured-remainder-compiled-fixed-support-closure-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit\nHEAD 308b735ac577cfea39172976a4c08716f1e54d2f\nbranch refs/heads/codex/three-tool-correctness-parity-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study\nHEAD 9a684d9106633e067bfac0747244b769fa49aa0b\nbranch refs/heads/codex/torch-flowstar-diffreach-deep-study\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison\nHEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10\nbranch refs/heads/codex/three-way-common-contract-comparison\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair\nHEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8\nbranch refs/heads/codex/three-way-comparison-correctness-repair\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_baseline_54f\nHEAD 54f0827c959145c1fee58688d5826d91f99479be\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_completion_verify\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_final_verify\nHEAD 059c7efcf11e8b7247bd4a5336aa9ecc9c806b5d\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_perf_closure\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\nbranch refs/heads/codex/tora-q3-performance-closed-loop-closure-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_phase1_verify\nHEAD c69134867e26f251be39da0c13f0dedcf5a630d8\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_stage_parity_fused_20260809\nHEAD c60539f078e637b1169792d291f17afbe0a2a0fb\nbranch refs/heads/codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay\nHEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_baseline_29c9ee8\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827\nHEAD ed9c305dc39c25eab23a96f4fb3775cc2d13d396\nbranch refs/heads/codex/torch-flowstar-brusselator-live-range-c5-20260828\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit\nHEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b\nbranch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2\nHEAD 2cdb7a9509d5908baef79a02cfde18ea0682430c\nbranch refs/heads/codex/vdp-h2-dense-picard-first-loss-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2_science\nHEAD 666c51ecc5575f203518d21f34b5c9948741fb17\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range\nHEAD 455146df23940caa6f168877ffe6ec6f508c43a4\nbranch refs/heads/codex/vdp-later-terminal-factorized-range-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_normal_insertion_root_cause_fix_20260817\nHEAD 43be6d34461e809c291a2d57e120012755d29d51\nbranch refs/heads/codex/vdp-normal-insertion-root-cause-fix-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_residual_gap_g2_20260815\nHEAD e47ce68c61e73fc38f17fab3037d6cfe1877f3fd\nbranch refs/heads/codex/vdp-residual-gap-g2-shared-column-carry-20260815\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure\nHEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47\nbranch refs/heads/codex/vdp-terminal-range-closure-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\nbranch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806\n\nworktree /srv/local/shengenli/worktrees/s1-prefix-integrated-complete-o4-closure-20260810\nHEAD 8683183e48b7795d13edbdc9a5910fba9d21d16c\nbranch refs/heads/codex/s1-prefix-integrated-complete-o4-closure-20260810",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "[ssh-user]@github.com:lsnnnnnnnn/torch_tm_flowpipe.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/artifacts/runs",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/outputs",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/outputs/huan_proof_closure",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/experiments",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/tests",
+        "/srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829",
+      "role": "our_performance_evidence",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "df50c55ef640b0ca9d90b132c88235b8ec07510b",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "codex/c4-reference-performance-batch-foundation-20260829",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## codex/c4-reference-performance-batch-foundation-20260829...origin/codex/c4-reference-performance-batch-foundation-20260829",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/torch_tm_flowpipe\nHEAD 26a254ef585a9dee394b7e41922c06bf8799f501\nbranch refs/heads/codex/flowstar-raw-remainder-compat\n\nworktree /srv/local/shengenli/c4-gate-smoke.vB8psR\nHEAD f34b5fa4155f5475a681411b627d68345ed401ea\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/batch_7608dd5\nHEAD 7608dd52e48af3ce8ae2e0a8343aae125c63b7f4\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/optimized_4939fb2\nHEAD 4939fb288c941a67f55cc191f4d75f8594692f47\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/s1-boundary164-causal-guarded-carry-20260811\nHEAD 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a\nbranch refs/heads/codex/s1-boundary164-causal-guarded-carry-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-full-horizon-pairwise-carry-closure-20260811\nHEAD 8e7dbfbd305042adbd1bede47381c33ba73d7d7b\nbranch refs/heads/codex/three-tool-full-horizon-pairwise-carry-closure-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-matched-divergence-fixed-support-bridge-20260811\nHEAD 2cb647cd37b530aef12e2b627f48b9b1dcf9aa23\nbranch refs/heads/codex/three-tool-matched-divergence-fixed-support-bridge-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study\nHEAD dd820324902c7d8c13c61c161fa830ae04b52f80\nbranch refs/heads/codex/bern-ibf-tm-feasibility\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829\nHEAD df50c55ef640b0ca9d90b132c88235b8ec07510b\nbranch refs/heads/codex/c4-reference-performance-batch-foundation-20260829\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair\nHEAD 387c1188e1183a9c92521a545243a0c5aae5d51b\nbranch refs/heads/codex/deep-study-protocol-repair-v2\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench\nHEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34\nbranch refs/heads/codex/first-order-three-way-benchmark\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup\nHEAD 3d0ae5444435974e7509e176129fb796c76312ab\nbranch refs/heads/codex/first-order-followup-correctness-matched-basis\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_fixed_object_baseline_4bb10d5\nHEAD 4bb10d54b29dad2b47c5f91ddedafe854a52fac6\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_causal_closure_20260813\nHEAD 3940386a61bdd6edbf3dc1722be031a1da572171\nbranch refs/heads/codex/flowstar-torch-causal-mechanism-closure-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure\nHEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481\nbranch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813\nHEAD cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d\nbranch refs/heads/codex/flowstar-torch-source-carry-root-cause-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10\nHEAD 82c54a244d996ccc08b09cb4ded5f48167415585\nbranch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\nbranch refs/heads/exp\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_mainline_20260810\nHEAD 05ae30b4e41c7b77e39778629ada084623b7270b\nbranch refs/heads/codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters\nHEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3\nbranch refs/heads/codex/native-reproduction-no-adapters-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit\nHEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17\nbranch refs/heads/codex/repository-cleanup-before-external-torch-audit\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle\nHEAD 771948ef7592d5b5c81e35e36ba4aa067674821e\nbranch refs/heads/codex/t1-t3-width-causal-symbolic-carry-20260814\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_structured_remainder\nHEAD 3b7b6ef97d9a33dea8498b7595131ffc6095bc1f\nbranch refs/heads/codex/structured-remainder-compiled-fixed-support-closure-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit\nHEAD 308b735ac577cfea39172976a4c08716f1e54d2f\nbranch refs/heads/codex/three-tool-correctness-parity-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study\nHEAD 9a684d9106633e067bfac0747244b769fa49aa0b\nbranch refs/heads/codex/torch-flowstar-diffreach-deep-study\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison\nHEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10\nbranch refs/heads/codex/three-way-common-contract-comparison\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair\nHEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8\nbranch refs/heads/codex/three-way-comparison-correctness-repair\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_baseline_54f\nHEAD 54f0827c959145c1fee58688d5826d91f99479be\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_completion_verify\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_final_verify\nHEAD 059c7efcf11e8b7247bd4a5336aa9ecc9c806b5d\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_perf_closure\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\nbranch refs/heads/codex/tora-q3-performance-closed-loop-closure-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_phase1_verify\nHEAD c69134867e26f251be39da0c13f0dedcf5a630d8\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_stage_parity_fused_20260809\nHEAD c60539f078e637b1169792d291f17afbe0a2a0fb\nbranch refs/heads/codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay\nHEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_baseline_29c9ee8\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827\nHEAD ed9c305dc39c25eab23a96f4fb3775cc2d13d396\nbranch refs/heads/codex/torch-flowstar-brusselator-live-range-c5-20260828\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit\nHEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b\nbranch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2\nHEAD 2cdb7a9509d5908baef79a02cfde18ea0682430c\nbranch refs/heads/codex/vdp-h2-dense-picard-first-loss-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2_science\nHEAD 666c51ecc5575f203518d21f34b5c9948741fb17\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range\nHEAD 455146df23940caa6f168877ffe6ec6f508c43a4\nbranch refs/heads/codex/vdp-later-terminal-factorized-range-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_normal_insertion_root_cause_fix_20260817\nHEAD 43be6d34461e809c291a2d57e120012755d29d51\nbranch refs/heads/codex/vdp-normal-insertion-root-cause-fix-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_residual_gap_g2_20260815\nHEAD e47ce68c61e73fc38f17fab3037d6cfe1877f3fd\nbranch refs/heads/codex/vdp-residual-gap-g2-shared-column-carry-20260815\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure\nHEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47\nbranch refs/heads/codex/vdp-terminal-range-closure-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\nbranch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806\n\nworktree /srv/local/shengenli/worktrees/s1-prefix-integrated-complete-o4-closure-20260810\nHEAD 8683183e48b7795d13edbdc9a5910fba9d21d16c\nbranch refs/heads/codex/s1-prefix-integrated-complete-o4-closure-20260810",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "[ssh-user]@github.com:lsnnnnnnnn/torch_tm_flowpipe.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/artifacts/runs",
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/outputs",
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/outputs/huan_proof_closure",
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/experiments",
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/tests",
+        "/srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826",
+      "role": "our_exact_witness_evidence",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "6037cfeac496d606a72e9c14ecbfd979b1cd7479",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## HEAD (no branch)",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/torch_tm_flowpipe\nHEAD 26a254ef585a9dee394b7e41922c06bf8799f501\nbranch refs/heads/codex/flowstar-raw-remainder-compat\n\nworktree /srv/local/shengenli/c4-gate-smoke.vB8psR\nHEAD f34b5fa4155f5475a681411b627d68345ed401ea\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/batch_7608dd5\nHEAD 7608dd52e48af3ce8ae2e0a8343aae125c63b7f4\ndetached\n\nworktree /srv/local/shengenli/c4_perf_batch_work_20260831/optimized_4939fb2\nHEAD 4939fb288c941a67f55cc191f4d75f8594692f47\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/s1-boundary164-causal-guarded-carry-20260811\nHEAD 7b880d0bf6ea2f6182faaaff1c267f1e2ab2c06a\nbranch refs/heads/codex/s1-boundary164-causal-guarded-carry-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-full-horizon-pairwise-carry-closure-20260811\nHEAD 8e7dbfbd305042adbd1bede47381c33ba73d7d7b\nbranch refs/heads/codex/three-tool-full-horizon-pairwise-carry-closure-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe/worktrees/three-tool-matched-divergence-fixed-support-bridge-20260811\nHEAD 2cb647cd37b530aef12e2b627f48b9b1dcf9aa23\nbranch refs/heads/codex/three-tool-matched-divergence-fixed-support-bridge-20260811\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_bern_ibf_study\nHEAD dd820324902c7d8c13c61c161fa830ae04b52f80\nbranch refs/heads/codex/bern-ibf-tm-feasibility\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c2_phase_e_20260826\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_c4_perf_batch_20260829\nHEAD df50c55ef640b0ca9d90b132c88235b8ec07510b\nbranch refs/heads/codex/c4-reference-performance-batch-foundation-20260829\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_deep_study_protocol_repair\nHEAD 387c1188e1183a9c92521a545243a0c5aae5d51b\nbranch refs/heads/codex/deep-study-protocol-repair-v2\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_bench\nHEAD 13e5eece2002e009429d6fb463eed4bc1c53ae34\nbranch refs/heads/codex/first-order-three-way-benchmark\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_first_order_followup\nHEAD 3d0ae5444435974e7509e176129fb796c76312ab\nbranch refs/heads/codex/first-order-followup-correctness-matched-basis\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_fixed_object_baseline_4bb10d5\nHEAD 4bb10d54b29dad2b47c5f91ddedafe854a52fac6\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_causal_closure_20260813\nHEAD 3940386a61bdd6edbf3dc1722be031a1da572171\nbranch refs/heads/codex/flowstar-torch-causal-mechanism-closure-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_scalar_affine_correctness_closure\nHEAD 7d078b5f34467db8bbe4dd672b0136e2fa64a481\nbranch refs/heads/codex/flowstar-scalar-affine-correctness-closure-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_flowstar_source_carry_20260813\nHEAD cdda27bf2c0e7f72e135edbfd2b2ba10a8c5f96d\nbranch refs/heads/codex/flowstar-torch-source-carry-root-cause-20260813\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_generic_batched_tm_vdp_t10\nHEAD 82c54a244d996ccc08b09cb4ded5f48167415585\nbranch refs/heads/codex/generic-batched-tm-backend-vdp-t10-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_huan_repro_audit_20260826\nHEAD 6037cfeac496d606a72e9c14ecbfd979b1cd7479\nbranch refs/heads/exp\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_mainline_20260810\nHEAD 05ae30b4e41c7b77e39778629ada084623b7270b\nbranch refs/heads/codex/torch-tm-flowstar-diffreach-mainline-realignment-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_native_reproduction_no_adapters\nHEAD 438ee68fd71fa6182eb66cac17229e20dd3cb7d3\nbranch refs/heads/codex/native-reproduction-no-adapters-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_repository_cleanup_before_external_torch_audit\nHEAD 7dddc97b5be64c36e530c3e231fd32d5cb834a17\nbranch refs/heads/codex/repository-cleanup-before-external-torch-audit\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_step1_stage_oracle\nHEAD 771948ef7592d5b5c81e35e36ba4aa067674821e\nbranch refs/heads/codex/t1-t3-width-causal-symbolic-carry-20260814\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_structured_remainder\nHEAD 3b7b6ef97d9a33dea8498b7595131ffc6095bc1f\nbranch refs/heads/codex/structured-remainder-compiled-fixed-support-closure-20260810\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_audit\nHEAD 308b735ac577cfea39172976a4c08716f1e54d2f\nbranch refs/heads/codex/three-tool-correctness-parity-20260804\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_tool_study\nHEAD 9a684d9106633e067bfac0747244b769fa49aa0b\nbranch refs/heads/codex/torch-flowstar-diffreach-deep-study\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_comparison\nHEAD 7251adfe8d2f3a5f3fd7a4a89f4b5a2075a19b10\nbranch refs/heads/codex/three-way-common-contract-comparison\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_three_way_repair\nHEAD 9024a8a29bdc0ad668a7c0620bd53872f4313cc8\nbranch refs/heads/codex/three-way-comparison-correctness-repair\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_baseline_54f\nHEAD 54f0827c959145c1fee58688d5826d91f99479be\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_completion_verify\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_final_verify\nHEAD 059c7efcf11e8b7247bd4a5336aa9ecc9c806b5d\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_perf_closure\nHEAD 63efe66cfe7bdda907f8255ba23cebaa9b878233\nbranch refs/heads/codex/tora-q3-performance-closed-loop-closure-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_phase1_verify\nHEAD c69134867e26f251be39da0c13f0dedcf5a630d8\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_tora_q3_stage_parity_fused_20260809\nHEAD c60539f078e637b1169792d291f17afbe0a2a0fb\nbranch refs/heads/codex/tora-q3-stage-parity-fused-kernel-native-t20-20260809\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_a1fb352_frozen_replay\nHEAD a1fb3527bb7c12ce23aa2fb49d66f6380c463c90\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_baseline_29c9ee8\nHEAD 29c9ee8f1fe96b860052b86a2b37d79a37bbb2ca\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_c3_huan_20260827\nHEAD ed9c305dc39c25eab23a96f4fb3775cc2d13d396\nbranch refs/heads/codex/torch-flowstar-brusselator-live-range-c5-20260828\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_cross_step_carry_lineage_audit\nHEAD 4707abed5e8d28ec56c2b5e76b800bd284f0008b\nbranch refs/heads/codex/vdp-cross-step-carry-lineage-audit-20260806\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2\nHEAD 2cdb7a9509d5908baef79a02cfde18ea0682430c\nbranch refs/heads/codex/vdp-h2-dense-picard-first-loss-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_h2_science\nHEAD 666c51ecc5575f203518d21f34b5c9948741fb17\ndetached\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_later_terminal_factorized_range\nHEAD 455146df23940caa6f168877ffe6ec6f508c43a4\nbranch refs/heads/codex/vdp-later-terminal-factorized-range-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_normal_insertion_root_cause_fix_20260817\nHEAD 43be6d34461e809c291a2d57e120012755d29d51\nbranch refs/heads/codex/vdp-normal-insertion-root-cause-fix-20260817\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_residual_gap_g2_20260815\nHEAD e47ce68c61e73fc38f17fab3037d6cfe1877f3fd\nbranch refs/heads/codex/vdp-residual-gap-g2-shared-column-carry-20260815\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_vdp_terminal_range_closure\nHEAD cdb54bd3d2ffb49a0b58245055932756ebc3aa47\nbranch refs/heads/codex/vdp-terminal-range-closure-20260805\n\nworktree /srv/local/shengenli/torch_tm_flowpipe_xiangru_q3_audit\nHEAD c49d74bbf48d1004f7f3818174e7f40b6200b142\nbranch refs/heads/codex/xiangru-q3-matched-baseline-audit-20260806\n\nworktree /srv/local/shengenli/worktrees/s1-prefix-integrated-complete-o4-closure-20260810\nHEAD 8683183e48b7795d13edbdc9a5910fba9d21d16c\nbranch refs/heads/codex/s1-prefix-integrated-complete-o4-closure-20260810",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "[ssh-user]@github.com:lsnnnnnnnn/torch_tm_flowpipe.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/artifacts/runs",
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs",
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/outputs/huan_proof_closure",
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/experiments",
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/tests",
+        "/srv/local/shengenli/torch_tm_flowpipe_huan_proof_closure_20260826/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development",
+      "role": "old_xiangru",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "84184de6c2b3f1ff2da6755f732d91925037025d",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "2026_experiment",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## 2026_experiment...origin/2026_experiment [behind 22]",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/CROWN-Reach_Development\nHEAD 84184de6c2b3f1ff2da6755f732d91925037025d\nbranch refs/heads/2026_experiment\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_27d2905\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce\nHEAD 9bf2ccea781cd47eca1d5ab5954f4e508ee8192f\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_tora_q3_observer\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/xiangruzh/CROWN-Reach_Development.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/CROWN-Reach_Development/experiments",
+        "/srv/local/shengenli/CROWN-Reach_Development/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905",
+      "role": "old_xiangru_native",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "27d29050a5f214b56f211ca9cb411e734ed80230",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## HEAD (no branch)",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/CROWN-Reach_Development\nHEAD 84184de6c2b3f1ff2da6755f732d91925037025d\nbranch refs/heads/2026_experiment\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_27d2905\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce\nHEAD 9bf2ccea781cd47eca1d5ab5954f4e508ee8192f\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_tora_q3_observer\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/xiangruzh/CROWN-Reach_Development.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/experiments",
+        "/srv/local/shengenli/CROWN-Reach_Development_native_27d2905/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce",
+      "role": "old_xiangru_native",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "9bf2ccea781cd47eca1d5ab5954f4e508ee8192f",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## HEAD (no branch)",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/CROWN-Reach_Development\nHEAD 84184de6c2b3f1ff2da6755f732d91925037025d\nbranch refs/heads/2026_experiment\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_27d2905\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce\nHEAD 9bf2ccea781cd47eca1d5ab5954f4e508ee8192f\ndetached\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_tora_q3_observer\nHEAD 27d29050a5f214b56f211ca9cb411e734ed80230\ndetached",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/xiangruzh/CROWN-Reach_Development.git"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce/experiments",
+        "/srv/local/shengenli/CROWN-Reach_Development_native_9bf2cce/docs"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/flowstar",
+      "role": "native_flowstar",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "master",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## master...origin/master\n M flowstar-toolbox/TaylorModel.h\n?? benchmarks/continuous/simple/simple\n?? benchmarks/continuous/simple/simple.o\n?? benchmarks/continuous/simple/simple.plt\n?? benchmarks/continuous/vanderpol/vanderpol\n?? benchmarks/continuous/vanderpol/vanderpol.o\n?? benchmarks/continuous/vanderpol/vanderpol_t_x.eps\n?? benchmarks/continuous/vanderpol/vanderpol_t_x.plt\n?? benchmarks/continuous/vanderpol/vanderpol_t_y.eps\n?? benchmarks/continuous/vanderpol/vanderpol_t_y.plt\n?? flowstar-2.1.0/__MACOSX/\n?? flowstar-2.1.0/flowstar-2.1.0/\n?? flowstar-toolbox/Constraints.o\n?? flowstar-toolbox/Continuous.o\n?? flowstar-toolbox/Discrete.o\n?? flowstar-toolbox/Geometry.o\n?? flowstar-toolbox/Hybrid.o\n?? flowstar-toolbox/Interval.o\n?? flowstar-toolbox/Matrix.o\n?? flowstar-toolbox/Variables.o\n?? flowstar-toolbox/lex.yy.c\n?? flowstar-toolbox/lex.yy.o\n?? flowstar-toolbox/libflowstar.a\n?? flowstar-toolbox/modelParser.output\n?? flowstar-toolbox/modelParser.tab.c\n?? flowstar-toolbox/modelParser.tab.h\n?? flowstar-toolbox/modelParser.tab.o\n?? flowstar-toolbox/settings.o",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/flowstar\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\nbranch refs/heads/master\n\nworktree /srv/local/shengenli/CROWN-Reach_Development_native_27d2905/flowstar\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_causal_instrumented_b85a321_20260813\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_causal_stock_b85a321_20260813\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_mainline_causal_b85a321_20260810\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_mainline_stock_b85a321_20260810\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_source_carry_20260813\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_step1_stage_oracle\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_stock_gcc11\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_three_way_audit\nHEAD 2310c1ac55357d0b48af3b37495a82a3e10ea4ff\nbranch refs/heads/codex/full-picard-revalidated\n\nworktree /srv/local/shengenli/flowstar_vdp_c3_baseline_b85a321\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_vdp_cross_step_instrumented_b85a321\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached\n\nworktree /srv/local/shengenli/flowstar_vdp_cross_step_stock_b85a321\nHEAD b85a3211748cb77b736fe4ad42ee02d8d2b81148\ndetached",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/chenxin415/flowstar"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": []
+    },
+    {
+      "path": "/srv/local/shengenli/flowstar-gpu",
+      "role": "old_huan_reference",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "d5f0b68fcd36ba5f582733624f074728fe9720d8",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "main",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## main...origin/main",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/flowstar-gpu\nHEAD d5f0b68fcd36ba5f582733624f074728fe9720d8\nbranch refs/heads/main\n\nworktree /srv/local/shengenli/flowstar-gpu-proof-closure-20260826\nHEAD 743f6205e6408072193ad76e940e7f15030e8d3c\nbranch refs/heads/codex/strict-proof-contract-closure-20260826\n\nworktree /srv/local/shengenli/flowstar_gpu_vdp_c3_baseline_743f620\nHEAD 743f6205e6408072193ad76e940e7f15030e8d3c\ndetached\n\nworktree /srv/local/shengenli/flowstar_gpu_vdp_c3_causal_ledger_20260827\nHEAD 90be93578ccded480d276cb5e4ced6b4a55803c0\nbranch refs/heads/codex/vdp-c3-readonly-causal-ledger-20260827",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/huanzhang12/flowstar-gpu"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/flowstar-gpu/tests",
+        "/srv/local/shengenli/flowstar-gpu/docs",
+        "/srv/local/shengenli/flowstar-gpu/src/flowstar_gpu"
+      ]
+    },
+    {
+      "path": "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826",
+      "role": "old_huan_patched_reference",
+      "exists": true,
+      "head": {
+        "returncode": 0,
+        "stdout": "743f6205e6408072193ad76e940e7f15030e8d3c",
+        "stderr": ""
+      },
+      "branch": {
+        "returncode": 0,
+        "stdout": "codex/strict-proof-contract-closure-20260826",
+        "stderr": ""
+      },
+      "status": {
+        "returncode": 0,
+        "stdout": "## codex/strict-proof-contract-closure-20260826...origin/codex/strict-proof-contract-closure-20260826",
+        "stderr": ""
+      },
+      "worktrees": {
+        "returncode": 0,
+        "stdout": "worktree /srv/local/shengenli/flowstar-gpu\nHEAD d5f0b68fcd36ba5f582733624f074728fe9720d8\nbranch refs/heads/main\n\nworktree /srv/local/shengenli/flowstar-gpu-proof-closure-20260826\nHEAD 743f6205e6408072193ad76e940e7f15030e8d3c\nbranch refs/heads/codex/strict-proof-contract-closure-20260826\n\nworktree /srv/local/shengenli/flowstar_gpu_vdp_c3_baseline_743f620\nHEAD 743f6205e6408072193ad76e940e7f15030e8d3c\ndetached\n\nworktree /srv/local/shengenli/flowstar_gpu_vdp_c3_causal_ledger_20260827\nHEAD 90be93578ccded480d276cb5e4ced6b4a55803c0\nbranch refs/heads/codex/vdp-c3-readonly-causal-ledger-20260827",
+        "stderr": ""
+      },
+      "remotes": [
+        {
+          "name": "origin",
+          "url": "https://github.com/huanzhang12/flowstar-gpu"
+        }
+      ],
+      "active_own_cwd_processes": [],
+      "evidence_locations": [
+        "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/tests",
+        "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/docs",
+        "/srv/local/shengenli/flowstar-gpu-proof-closure-20260826/src/flowstar_gpu"
+      ]
+    }
+  ]
+}
