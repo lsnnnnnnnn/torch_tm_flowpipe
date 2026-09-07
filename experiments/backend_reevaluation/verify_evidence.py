@@ -32,6 +32,7 @@ def check_maps(root):
     for impl in "ABC":
         data = read(root / "raw_minimal" / (impl + ".json"))
         require(data["source_sha"] == SHAS[impl] and data["source_clean"], "source identity/clean status")
+        require(source["implementations"][impl]["sha"] == SHAS[impl] and source["implementations"][impl]["clean"], "source manifest identity")
         require(data["source_path"] == source["implementations"][impl]["path"], "source path")
         package = "torch_tm_flowpipe" if impl == "C" else "flowstar_gpu"
         require(data["imported_package"] == data["source_path"] + "/src/" + package + "/__init__.py", "actual import")
@@ -167,7 +168,15 @@ def verify(root, check_hashes=True):
             path = Path(td) / name; write_csv(path, rows)
             require(path.read_bytes() == (root / name).read_bytes(), "recomputed table differs: " + name)
     require(read(root / "RESULT.json") == result, "decision disagrees with raw data")
-    require(read(root / "REPAIR_SCOPE.json")["candidate_worktree_created"] is False, "candidate mutation after stop")
+    scope = read(root / "REPAIR_SCOPE.json")
+    require(scope["candidate_worktree_created"] is False and not scope["candidate_numerical_edits"]
+            and not scope["our_numerical_edits"], "numerical mutation after stop")
+    require(scope["allowed_chains"] == ["history_matrix_and_error_propagation", "normalization_scaling_and_reconstruction"], "repair scope changed")
+    context = read(root / "RUN_CONTEXT.json")
+    require(context["status"] == result["status"] and context["candidate_patch_sha"] is None
+            and context["upstream_sha"] == SHAS["A"] and context["driver_shas"] == source["drivers"], "run context contradicts evidence")
+    require(read(root / "LONG_PREFIX_STATE_CHECKS.json")["status"] == "NOT_STARTED", "unrun prefix relabelled")
+    require(read(root / "LOCAL_CONTAINMENT_RESULT.json")["complete_error_ownership_closed"] is False, "local tests promoted to global closure")
     return dict(status="VERIFIED", decision=result["status"], exact_map_rows=len(tables["WITNESS_CROSSCHECK.csv"]),
                 independent_endpoint_rows=8, recomputed_tables=len(tables),
                 scope="Static exact evidence verification; source reruns require local/private third-party source access.")
