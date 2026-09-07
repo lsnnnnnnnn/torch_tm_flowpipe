@@ -101,6 +101,13 @@ def tables(root):
                             'repeats':1,'source':'raw_minimal/'+directory.name+'/summary.json',
                             'throughput_tasks_per_second':1/s['solve_seconds'],'steps_per_second':s['accepted_steps']/s['solve_seconds'],
                             'reason':''})
+            process=directory/'process_time.txt'
+            if process.exists():
+                metrics=dict(v.split('=',1) for v in process.read_text().split() if '=' in v)
+                timings.append({'plant':plant,'mode':lane,'B':1,'device':'cpu','measurement':'fresh_process_including_export',
+                                'measured':True,'process_seconds':float(metrics['elapsed_seconds']),
+                                'export_seconds':s['export_seconds'],'peak_rss_bytes':int(metrics['peak_rss_kb'])*1024,
+                                'repeats':1,'source':'raw_minimal/'+directory.name+'/process_time.txt','reason':''})
         for mode in ['parity','strict']:
             rr=lanes[mode]
             horizons.append({'plant':plant,'mode':'xiangru_'+mode,'step_policy':'fixed','requested_horizon':float(cfg['requested_horizon']['decimal']),
@@ -136,6 +143,12 @@ def tables(root):
                 worst=max(found,key=lambda r:r[comparison]);pairs=[(r[comparison],r['duration']) for r in found]
                 base.update(max_ratio=worst[comparison],max_at_time=worst['t_end'],
                             weighted_median=weighted_quantile(pairs,.5),weighted_p95=weighted_quantile(pairs,.95))
+                num,den=comparison.split('_vs_')
+                base.update(worst_numerator_width=worst[num+'_width'],worst_denominator_width=worst[den+'_width'],
+                            max_absolute_lower_shift=max(abs(r[comparison+'_lower_shift']) for r in found),
+                            max_absolute_upper_shift=max(abs(r[comparison+'_upper_shift']) for r in found),
+                            max_absolute_center_shift=max(abs(r[comparison+'_center_shift']) for r in found),
+                            disjoint_duration=sum(r['duration'] for r in found if r[comparison+'_disjoint']))
             summaries.append(base)
             for t in cfg['checkpoints']:
                 hits=[r for r in relevant if abs(r['t_end']-t)<=1e-12]
