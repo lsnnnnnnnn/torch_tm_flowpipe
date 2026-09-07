@@ -1,6 +1,7 @@
 """Export standalone figures with the entire requested time axis visible."""
 import argparse
 import csv
+import json
 from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
@@ -14,6 +15,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('root',type=Path);a=p.parse_args()
     figs=a.root/'figures';figs.mkdir(exist_ok=True)
     rows=read(a.root/'widths_full_prefix.csv');horizons=read(a.root/'horizon_matrix.csv')
+    historical=json.loads((a.root/'raw_minimal/historical_plot_markers.json').read_text())['markers']
     colors={'ours':'#1670b7','flowstar':'#242424','strict':'#d05e14','parity':'#58823b'}
     labels={'ours':'Our CPU reference','flowstar':'Native Flow*',
             'strict':'Xiangru strict: short diagnostic','parity':'Xiangru parity: short diagnostic'}
@@ -32,6 +34,9 @@ def main():
                 if lane in ['ours','flowstar']:
                     ax.fill_between(ts,lo,hi,color=colors[lane],alpha=.11)
                     if ts and ts[-1]<end-1e-10:ax.axvline(ts[-1],color='red',ls=':',label=f'{labels[lane]} stopped at {ts[-1]:g}')
+            for mark in historical:
+                if mark['plant']==plant:
+                    ax.axvline(mark['time'],color='#8c6b47',ls='-.',lw=.8,label=mark['plot_label'])
             ax.set_title(f'{dim}: {kind} bounds');ax.set_xlim(0,end);ax.set_xlabel('Time')
         axes[0,0].legend(fontsize=7)
         fig.suptitle(title+' | Published bounds, complete requested time axis')
