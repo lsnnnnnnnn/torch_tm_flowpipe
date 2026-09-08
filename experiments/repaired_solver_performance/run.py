@@ -73,7 +73,7 @@ def main():
         started=time.perf_counter()
         restored=core.load_terminal_checkpoint(args.checkpoint,expected_dtype='float64')
         assert restored.contract['plant']==args.plant
-        assert restored.contract['config']==config.as_dict()
+        assert restored.contract['config']==json.loads(json.dumps(config.as_dict()))
         current,state=restored.current,restored.normal_state
         start_step=state.step_index+1
         initial_total=F(restored.scheduler['time_exact'])

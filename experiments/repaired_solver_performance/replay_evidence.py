@@ -38,10 +38,13 @@ def encode_model(model):
 
 def decode_model(value):
     basis=d.BatchedMonomialBasis.build(value['basis_dim'],value['basis_order'],'cpu')
+    policy={**value['range_policy']}
+    for key in ('split_vars','named_contexts'):
+        policy[key]=tuple(policy[key])
     return d.BatchedTaylorModel(d.BatchedPolynomial(decode_tensor(value['coefficients']),basis),
         *(decode_tensor(v) for v in value['remainder']),*(decode_tensor(v) for v in value['domain']),
         d.DenseRemainderLedger({k:tuple(decode_tensor(v) for v in pair) for k,pair in value['ledger'].items()}),
-        d.DenseRangePolicy(**value['range_policy']),None)
+        d.DenseRangePolicy(**policy),None)
 
 
 def proposal_record(lo,hi,result):
