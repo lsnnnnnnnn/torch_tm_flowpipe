@@ -48,7 +48,7 @@ def collect_tests(work_root,output):
     """Copy completed commands only; repeated startup/local tests are uncounted."""
     from experiments.repaired_solver_performance.run_tests import accounting
     directory=output/'tests';directory.mkdir(exist_ok=True)
-    source=work_root/'evidence/tests/finalpackage_v4'
+    source=work_root/'evidence/tests/finalpackage_v5'
     commands=read_json(source/'commands.json')
     assert all(c.get('exit_code')==0 for c in commands),'test job still running or failed'
     for command in commands:
@@ -63,9 +63,23 @@ def collect_tests(work_root,output):
                 shutil.copy2(path,output/command[suffix])
         commands.append(command)
     write_json(directory/'commands.json',commands)
-    for name in ['historical_fixture_recovery.json','MATRIX_COMPLETED.json']:
+    for name in ['historical_fixture_recovery.json','MATRIX_COMPLETED.json','MATRIX_REUSE.json']:
         if (source/name).is_file():shutil.copy2(source/name,directory/name)
     return accounting(output)
+
+
+def collect_fixture_failure(work_root,output):
+    """Keep the actual cross-filesystem fixture error, separate from final tests."""
+    source=work_root/'evidence/tests/finalpackage_v4'
+    target=output/'raw_minimal/tamper_fixture_environment_failure';target.mkdir(exist_ok=True)
+    failed=[c for c in read_json(source/'commands.json') if c['name']=='prepared_evidence']
+    assert len(failed)==1 and failed[0]['exit_code']==1
+    write_json(target/'commands.json',failed)
+    for suffix in ['log','xml','exit']:
+        shutil.copy2(source/('prepared_evidence.'+suffix),target/('prepared_evidence.'+suffix))
+    for suffix in ['log','exit']:
+        shutil.copy2(work_root/('tamper_driver_v4.'+suffix),target/('driver.'+suffix))
+    shutil.copy2(work_root/'tamper_fixture_copy_adjustment.json',output/'raw_minimal/tamper_fixture_copy_adjustment.json')
 
 
 def figures(output,widths,timings,work,remaining,amdahl,flow):
@@ -147,6 +161,7 @@ def assemble(work_root,output):
     for name in ['impure_rhs_gate_reproducer.py','impure_rhs_gate_reproducer.json',
                  'required_control_rhs_reproducer.py','required_control_rhs_reproducer.json']:
         shutil.copy2(work_root/'evidence'/name,output/'raw_minimal'/name)
+    collect_fixture_failure(work_root,output)
     write_json(output/'SOURCE_MAP.json',{'base_sha':BASE_SHA,'runtime_sha':RUNTIME_SHA,'scientific_sha':SCIENTIFIC_SHA,
         'repaired_reference_runtime_sha':'0714e475ed9e73bec31619c9c690d1fd63de3d36',
         'repaired_archive_sha':'196a50e9131336d68df07ad0af353deca0092d19',

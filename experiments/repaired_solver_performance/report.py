@@ -80,6 +80,7 @@ def write_report(package):
         "随后新增准入测试发现，原过滤器会忽略删除外部对象的 del 语句，可能错误接纳带副作用的函数。修正为仅允许解绑未使用的本地参数，并排除 async 函数；冻结方程的算术路径未变。此前矩阵在任何完整 1000 步运行开始前停止，原记录保留；最终计时全部在修正后的干净提交重新测量。新入口失败没有被当成端点基线缺陷，也未改变数学期望。",
         "函数接口复核还发现，原路径允许 rhs(x, u) 的第二参数无默认值，新计划曾漏掉传入 None 的回退调用。用相同 Brusselator 算术复现后，恢复了原来先单参数、遇到 TypeError 再双参数的调用顺序，并验证完整收紧序列一致。最终提交先通过 targeted 与现有完整矩阵，再启动所报告的正式计时；之前的短窗口记录未混入分母，没有重复任何完整 1000 步长跑。",
         "完整矩阵首次运行有一项历史测试因 PATH 找不到裸 python 子进程而失败，同轮其余 1028 passed、2 skipped。修复测试进程 PATH，指向所选原有解释器目录后，先重验该项，再完整重跑矩阵；没有安装新依赖、改数值代码或削弱断言。原失败日志和 XML 保留在 raw_minimal/test_environment_failure，最终去重计数只采用环境修正后的完整矩阵。",
+        "六项证据篡改测试首次在 fixture 阶段遇到跨文件系统硬链接错误，断言尚未执行。改用独立文件复制后只重跑这六项；已通过的完整矩阵日志逐字复用，没有重跑长实验或削弱篡改断言。原始六项 setup errors 及退出码保留在 raw_minimal/tamper_fixture_environment_failure，最终通过记录与它们分开。",
         "GPU 后端选择仍未决定。CPU 执行计划的局部成功或目标未达，都不能自动接纳或否定已保存的 Huan/Xiangru 路线。本轮没有新 tightness 算子、第三系统、完整 CUDA 后端或第三方重新审计。下一轮只建议一个主方向，见 [一页路线决定](ROUTE_DECISION.md)。"]
     # Adjacent Markdown table rows need one newline; prose needs a blank line.
     rendered=[]

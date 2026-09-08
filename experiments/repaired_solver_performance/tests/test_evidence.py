@@ -15,8 +15,7 @@ PACKAGE=Path(os.environ.get('PREPARED_REPLAY_EVIDENCE',str(ROOT/'artifacts/runs/
 
 
 def replace_bytes(path,content):
-    # Copies below use hardlinks to avoid duplicating hundreds of MB. Atomic
-    # replacement is essential: never write through a link to the original.
+    # Only replace the test's independent copy of the evidence file.
     temporary=path.with_name(path.name+'.changed')
     temporary.write_bytes(content);temporary.replace(path)
 
@@ -25,7 +24,8 @@ def replace_bytes(path,content):
 def package(tmp_path):
     assert (PACKAGE/'SHA256SUMS').is_file(),'build the real complete artifact before these tests'
     target=tmp_path/'package'
-    shutil.copytree(PACKAGE,target,copy_function=os.link)
+    # The artifact and pytest's temporary directory may be on different filesystems.
+    shutil.copytree(PACKAGE,target)
     yield target
 
 
