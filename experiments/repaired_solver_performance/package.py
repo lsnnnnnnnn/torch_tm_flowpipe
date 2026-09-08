@@ -37,6 +37,7 @@ def assemble(work,root,repository=ROOT):
         copy_new(work/name,raw/name)
     for name in ('fresh_brusselator_endpoint_recomputation.json','fresh_van_der_pol_endpoint_recomputation.json','fresh_endpoint_recomputation.log','check_fresh_endpoints.py'):
         copy_new(work/name,raw/name)
+    copy_new(work/'contention_observation.json',raw/'contention_observation.json')
     tests=root/'tests';tests.mkdir(exist_ok=True)
     copy_new(work/'full_matrix',tests/'full_matrix')
     copy_new(work/'startup',tests/'startup')
