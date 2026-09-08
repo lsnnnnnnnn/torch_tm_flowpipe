@@ -232,6 +232,28 @@ def test_arithmetic_return_with_external_deletion_is_opaque(tmp_path):
     assert supports(brusselator_ode)  # unbinding its unused local u is harmless
 
 
+def test_required_unused_control_parameter_keeps_original_rhs_call_contract(tmp_path):
+    import importlib.util
+    source=tmp_path/'required_control_rhs.py'
+    source.write_text('from torch_tm_flowpipe import TMVector\n'
+                      'def rhs(x, u):\n'
+                      '    del u\n'
+                      '    return TMVector([1.0+x[0]*(x[0]*x[1]-4.0),x[0]*(3.0-x[0]*x[1])])\n')
+    spec=importlib.util.spec_from_file_location('required_control_replay_rhs',source)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    assert supports(module.rhs)
+    results=[]
+    for enabled in [False,True]:
+        with prepared_remainder_replay(enabled):
+            results.append(d.dense_picard_validate_step(module.rhs,_base(),validation_mode=C4,**COMMON))
+    assert results[0].status==results[1].status=='validated'
+    assert [r for r in results[0].trace if r.get('phase')=='post_accept_refinement']==[
+        r for r in results[1].trace if r.get('phase')=='post_accept_refinement']
+    for name in ['segment_tm','raw_endpoint']:
+        a,b=getattr(results[0],name),getattr(results[1],name)
+        bits(a.poly.coeffs,b.poly.coeffs);bits(a.rem_lo,b.rem_lo);bits(a.rem_hi,b.rem_hi)
+
+
 def test_rejected_attempt_with_populated_history_leaves_both_inputs_unchanged(monkeypatch):
     from torch_tm_flowpipe import accepted_boundary_sr_queue_sha256
     import experiments.run_brusselator_sr1000_parity as contract_runner

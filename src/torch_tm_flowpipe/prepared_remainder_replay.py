@@ -211,7 +211,16 @@ class _Tape:
         for index in range(candidate.poly.out_dim):
             self.instructions.append(('input', index))
             self.values.append(candidate.component(index))
-        outputs = ode([_Scalar(self, i) for i in range(candidate.poly.out_dim)])
+        state = [_Scalar(self, i) for i in range(candidate.poly.out_dim)]
+        # Match both original dense RHS adapters, including their fallback for
+        # an unused but required control parameter.
+        try:
+            outputs = ode(state)
+        except TypeError as one_argument_error:
+            try:
+                outputs = ode(state, None)
+            except TypeError:
+                raise one_argument_error
         if hasattr(outputs, 'models'):
             outputs = outputs.models
         if len(outputs) != candidate.poly.out_dim:
