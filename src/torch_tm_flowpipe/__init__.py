@@ -152,6 +152,7 @@ _PUBLIC_MODULES = {
     "prepare_accepted_boundary_sr": ".accepted_boundary_sr",
     "split_endpoint_taylor_map": ".accepted_boundary_sr",
     "Interval": ".interval",
+    "packed_boundary_execution": ".packed_boundary_range",
     "Polynomial": ".polynomial",
     "PolynomialODE": ".polynomial_ode",
     "PolynomialODETerm": ".polynomial_ode",

@@ -8,6 +8,7 @@ from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
 import torch
 
 from .interval import Interval
+from . import packed_boundary_range as _packed_boundary
 
 Exponent = Tuple[int, ...]
 
@@ -83,6 +84,14 @@ def evaluate_interval_normal(
         state_set.discard(time_var_index)
     if not poly.terms:
         return Interval.zero()
+
+    if _packed_boundary.is_enabled() and step_exp_table is None:
+        packed = _packed_boundary.evaluate_polynomial(
+            poly, domain_l, normal=True, state_variables=tuple(sorted(state_set)),
+            time_variable=time_var_index,
+        )
+        if packed is not NotImplemented:
+            return packed
 
     acc = Interval.zero(dtype=poly.dtype, device=poly.device)
     for exp, c in poly.terms.items():
@@ -319,6 +328,10 @@ class Polynomial:
             raise ValueError(f"domain length {len(domain_l)} != n_vars {self.n_vars}")
         if not self.terms:
             return Interval.zero()
+        if _packed_boundary.is_enabled():
+            packed = _packed_boundary.evaluate_polynomial(self, domain_l)
+            if packed is not NotImplemented:
+                return packed
         acc = Interval.zero(dtype=self.dtype, device=self.device)
         for exp, c in self.terms.items():
             term_iv = Interval.point(c)

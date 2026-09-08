@@ -15,6 +15,7 @@ from typing import Any, Callable, Mapping, Sequence
 import torch
 
 from .interval import Interval
+from . import packed_boundary_range as _packed_boundary
 from .polynomial import Polynomial
 from .symbolic_remainder import (
     ACCEPTED_BOUNDARY_SR_OWNER_SCHEMA,
@@ -106,6 +107,12 @@ def _interval_polynomial_range(
     *,
     reference: Interval,
 ) -> Interval:
+    if _packed_boundary.is_enabled():
+        packed = _packed_boundary.evaluate_interval_coefficients(
+            coefficient_intervals, domain, reference=reference,
+        )
+        if packed is not NotImplemented:
+            return packed
     total = Interval.zero(dtype=reference.dtype, device=reference.device)
     for exponent in sorted(coefficient_intervals):
         term = coefficient_intervals[exponent]
