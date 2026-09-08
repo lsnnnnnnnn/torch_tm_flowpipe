@@ -17,3 +17,8 @@
 直接调用图还包括 G1/G2 source lift 与 S1 structured typed-source 三类重建路径。它们刻意去掉端点普通余项，改用验证器的完整分解。`_endpoint_remainder_decomposition` 为这些消费者派生端点分解：原验证分解保留，本次 E 加入既有 roundoff_safeguard，端点 cutoff 移出项加入 cutoff，并检查合计包含完整发布余项。G1/G2 用它生成下一步 affine source，S1 用它生成 ordinary/structured 边界状态；不再另加完整端点 R，故不会重复加入原验证余项或历史。S1 发布整段的账本也保守保留这笔普通误差；这不是改变 ODE 求解公式。每次读取派生分解无状态修改。
 
 成本包括独立区间幂、系数组合和误差范围计算，计入求解时间。没有实现提速；正式成本待干净数值提交上的完整运行测量。
+
+
+兼容性与受影响预期：完整回归发现旧 CUDA smoke 的状态系数与时间 domain 位于不同设备。辅助函数现在将 domain 无损移动到系数设备，并提升混合 binary32/binary64 输入，避免向较窄系数数组赋值而丢失 enclosure。Python float 的实际 binary64 值在合法域检查前不被缩窄。冻结 CPU binary64 输入只经过恒等转换，幂、乘法、合并及误差范围的运算顺序均不变。这是现有入口的设备/类型兼容修正，没有 CUDA 后端开发。
+
+只更新两处已受影响的旧预期：C2 两步 reset/right hash，以及 C3 关闭归一化实验控制的严格域门槛首次失败位置（11 → 3）。先在干净 scientific SHA `196a50e9131336d68df07ad0af353deca0092d19` 对前者两步、后者三个接受端点用独立 Fraction 检查完整函数包含，再记录 `raw_minimal/affected_golden_audit.json`，最后更新预期。拒绝条件、回滚断言、两个原始端点包含测试均未改。固定长跑和 native adaptive 来自该 SHA；交付兼容修正版本与其身份分开，并对长跑保存的每个端点复算逐位一致性。

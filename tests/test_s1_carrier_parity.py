@@ -36,7 +36,9 @@ def test_c3_no_renormalization_fails_the_exact_domain_gate_without_commit():
     schedule = json.loads(SCHEDULE.read_text(encoding="utf-8"))
     c3 = audit.replay_control("C3", schedule, max_attempt_index=12)
     assert c3["status"] == "domain_gate_failure"
-    assert c3["failure_boundary"] == 11
-    assert len(c3["states"]) == 12
+    # The required endpoint error changes this unnormalized control at
+    # scientific SHA 196a50e9131336d68df07ad0af353deca0092d19. The gate is unchanged.
+    assert c3["failure_boundary"] == 3
+    assert len(c3["states"]) == 4
     assert "normalized right-map total leaves [-1,1]" in c3["attempts"][-1]["message"]
     assert c3["attempts"][-1]["decision"] == "rejected"

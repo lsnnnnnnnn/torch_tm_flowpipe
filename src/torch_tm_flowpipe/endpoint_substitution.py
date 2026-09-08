@@ -79,6 +79,16 @@ def enclose_constant_substitution(
         raise IndexError(var_index)
     if coefficients.dtype not in (torch.float32, torch.float64):
         raise TypeError("endpoint substitution supports binary32/binary64")
+    # Enclosure assignments must never narrow a wider input. Device copies and
+    # binary32 -> binary64 promotion preserve the exact stored real values.
+    # The frozen CPU binary64 lane takes only identity conversions here.
+    inputs = (coefficients, point_coefficients, value, domain_lo, domain_hi)
+    if any(t.dtype not in (torch.float32, torch.float64) for t in inputs):
+        raise TypeError("endpoint substitution requires floating inputs")
+    dtype = torch.float64 if any(t.dtype == torch.float64 for t in inputs) else torch.float32
+    coefficients, point_coefficients, value, domain_lo, domain_hi = (
+        t.to(device=coefficients.device, dtype=dtype) for t in inputs
+    )
     if domain_lo.shape != (batch, dim) or domain_hi.shape != domain_lo.shape:
         raise ValueError("endpoint substitution domain shape mismatch")
     if value.shape != (batch,):

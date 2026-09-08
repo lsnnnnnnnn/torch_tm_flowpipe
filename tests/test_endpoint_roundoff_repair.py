@@ -10,6 +10,28 @@ from torch_tm_flowpipe.batched_dense_tm import BatchedTaylorModel, BatchedPolyno
 from experiments.endpoint_roundoff_repair.local_oracles import CASES, check_case, assert_model_contains, exact_coefficients
 
 
+def test_mixed_precision_preserves_actual_h_and_never_narrows_enclosure():
+    source = TaylorModel(Polynomial({(1, 0):torch.tensor(-1., dtype=torch.float32),
+                                    (1, 1):torch.tensor(100., dtype=torch.float32)}, 2),
+                         Interval.zero(), [Interval(-2., .5), Interval(0., .01)], order=4)
+    result = source.substitute_const(1, .01).drop_variable(1)
+    assert_model_contains(source, result, .01)
+    # A binary64 value outside the original domain cannot be made legal by
+    # narrowing it to binary32 before checking the domain.
+    narrower = [source.domain[0], Interval(0., float(torch.tensor(.01, dtype=torch.float32)))]
+    with pytest.raises(ValueError, match='outside'):
+        source.polynomial.substitute_const_with_roundoff(1, .01, narrower)
+    from torch_tm_flowpipe.endpoint_substitution import enclose_constant_substitution
+    coeff = torch.tensor([[[-1., 100.]]], dtype=torch.float32)
+    qlo, qhi, elo, ehi = enclose_constant_substitution(
+        coeff, [(1, 0), (1, 1)], torch.zeros((1, 1, 1), dtype=torch.float32), [(1,)], 1,
+        torch.tensor([.01], dtype=torch.float64), torch.tensor([[-2., 0.]], dtype=torch.float64),
+        torch.tensor([[.5, .01]], dtype=torch.float64))
+    exact = -1 + 100 * F(.01)
+    assert F(float(qlo.item())) <= exact <= F(float(qhi.item()))
+    assert F(float(elo.item())) <= -2 * exact and F(float(ehi.item())) >= F(.5) * exact
+
+
 @pytest.mark.parametrize('case', CASES)
 def test_general_substitution_fraction_oracle(case):
     check_case(case)

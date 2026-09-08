@@ -231,16 +231,19 @@ def test_c3_checkpoint_resume_is_bit_exact(tmp_path):
     )
 
 
-def test_c3_off_preserves_frozen_c2_two_step_binary64_hashes():
+def test_c3_off_preserves_endpoint_repaired_c2_two_step_binary64_hashes():
     current, state = _initial()
+    # Scientific baseline 196a50e9131336d68df07ad0af353deca0092d19.
+    # Independent Fraction endpoint inclusion preceded this update; see
+    # docs/endpoint_roundoff_repair/ENDPOINT_CONTRACT.md.
     expected = (
         (
-            "73571d915d6465897c4d820ce27e37107b0cd533a81942c8ac263adba6937c19",
-            "ff55d684753c3b8144e270ba6f573358f8b1bc4bbe14dcbbf1cb57b84f371ef4",
+            "1974ff34a4021987de9aac9ad093f7a2701b713819de14ed9a5cdfe299bee286",
+            "cde8ccfa40595f42c93a6bcc1a1f87ba8b13124b3cb53405620b6d4441bc3eed",
         ),
         (
-            "3c6b955985ea3b0610c32467626abc59e5c69c99a269ac482a7ded5c68a5c47a",
-            "6a7e4190f2a6f269c8e7921333866d6a1ddefd424369afdcf675b3ef11f3a957",
+            "adae79369750c454028a2a837992ce372ec9279a3209752484adbcd6645abf53",
+            "9d74cba1f120ca01f6cfa75352a5a4341dae608588f2665d9426965045cdd70f",
         ),
     )
     for expected_pair in expected:

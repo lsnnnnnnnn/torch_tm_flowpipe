@@ -2233,7 +2233,8 @@ class BatchedPolynomial:
         from .endpoint_substitution import enclose_constant_substitution
 
         poly = self.substitute_const_and_drop(var_index, value)
-        values = torch.as_tensor(value, dtype=self.coeffs.dtype, device=self.coeffs.device)
+        values = torch.as_tensor(value, dtype=value.dtype if isinstance(value, torch.Tensor) else torch.float64,
+                                 device=self.coeffs.device)
         if values.ndim == 0:
             values = values.expand(self.batch)
         lo, hi, error_lo, error_hi = enclose_constant_substitution(

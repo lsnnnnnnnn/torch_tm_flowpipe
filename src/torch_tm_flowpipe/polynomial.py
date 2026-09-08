@@ -425,9 +425,10 @@ class Polynomial:
         points = torch.stack([poly.terms.get(e, torch.zeros_like(reference)) for e in full]).reshape(1, 1, -1)
         lo, hi, error_lo, error_hi = enclose_constant_substitution(
             coeffs, exponents, points, reduced, var_index,
-            torch.as_tensor(value, dtype=reference.dtype, device=reference.device).reshape(1),
-            torch.stack([d.lo for d in domain]).reshape(1, -1),
-            torch.stack([d.hi for d in domain]).reshape(1, -1),
+            torch.as_tensor(value, dtype=value.dtype if isinstance(value, torch.Tensor) else torch.float64,
+                            device=reference.device).reshape(1),
+            torch.stack([d.lo.to(device=reference.device) for d in domain]).reshape(1, -1),
+            torch.stack([d.hi.to(device=reference.device) for d in domain]).reshape(1, -1),
         )
         return poly, Interval(error_lo[0, 0], error_hi[0, 0]), {
             e: Interval(lo[0, 0, i], hi[0, 0, i]) for i, e in enumerate(full)
