@@ -73,7 +73,7 @@ def test_binding_rejects_other_attempt_or_mutation(fixed,change):
     args=image_args()
     if change=='candidate': candidate=candidate.clone()
     elif change=='domain': candidate=replace(candidate,domain_hi=candidate.domain_hi+0.001)
-    elif change=='h': args['tau_index']=1
+    elif change=='h': candidate.domain_hi[:,2].fill_(0.025)
     elif change=='order': args['order']=5
     elif change=='cutoff': args['cutoff_threshold']=1e-11
     elif change=='ode': ode=PolynomialODE(((PolynomialODETerm(1.,(1,0)),),)*2,2)
@@ -213,3 +213,36 @@ def test_opt_in_context_restores_and_opaque_rhs_is_not_prepared():
         assert is_enabled()
     assert not is_enabled()
     assert not supports(lambda x: x)
+
+
+def test_rejected_attempt_with_populated_history_leaves_both_inputs_unchanged(monkeypatch):
+    from torch_tm_flowpipe import accepted_boundary_sr_queue_sha256
+    import experiments.run_brusselator_sr1000_parity as contract_runner
+    path=Path(__file__).resolve().parents[1]/'artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal/brusselator_full/checkpoint_0120'
+    restored=load_terminal_checkpoint(path)
+    before=(tmvector_hashes(restored.current),accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue))
+    # Boundary regression only: deliberately force the existing first-accept
+    # rejection path. The frozen scientific runner never changes this budget.
+    monkeypatch.setattr(contract_runner,'REMAINDER_RADIUS',1e-20)
+    outputs=[]
+    for mode in [False,True]:
+        with prepared_remainder_replay(mode):
+            outputs.append(step('brusselator',restored.current,restored.normal_state,121))
+        assert before==(tmvector_hashes(restored.current),accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue))
+    assert outputs[0].status==outputs[1].status=='failed'
+    assert outputs[0].step_rejections==outputs[1].step_rejections
+    assert outputs[0].validation_attempts==outputs[1].validation_attempts
+
+
+def test_plan_storage_is_released_when_the_attempt_returns(monkeypatch):
+    import weakref
+    references=[]
+    original=PreparedRemainderReplay.__init__
+    def record(self,*args,**kwargs):
+        original(self,*args,**kwargs)
+        references.append(weakref.ref(self))
+    monkeypatch.setattr(PreparedRemainderReplay,'__init__',record)
+    with prepared_remainder_replay():
+        output=d.dense_picard_validate_step(brusselator_ode,_base(),validation_mode=C4,**COMMON)
+    assert output.status=='validated' and len(references)==1
+    assert references[0]() is None  # no gc.collect(): per-attempt lifetime
