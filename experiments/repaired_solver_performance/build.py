@@ -48,7 +48,7 @@ def collect_tests(work_root,output):
     """Copy completed commands only; repeated startup/local tests are uncounted."""
     from experiments.repaired_solver_performance.run_tests import accounting
     directory=output/'tests';directory.mkdir(exist_ok=True)
-    source=work_root/'evidence/tests/finalpackage_v2'
+    source=work_root/'evidence/tests/finalpackage_v3'
     commands=read_json(source/'commands.json')
     assert all(c.get('exit_code')==0 for c in commands),'test job still running or failed'
     for command in commands:
@@ -125,7 +125,7 @@ def figures(output,widths,timings,work,remaining,amdahl,flow):
 
 def assemble(work_root,output):
     work_root,output=Path(work_root),Path(output)
-    formal=work_root/'evidence/formal_final'
+    formal=work_root/'evidence/formal_v3'
     assert read_json(formal/'SCHEDULE_COMPLETED.json')['source_sha']==SCIENTIFIC_SHA
     output.mkdir(parents=True,exist_ok=True)
     raw=output/'raw_minimal/formal';collect_formal(formal,raw)
@@ -139,7 +139,9 @@ def assemble(work_root,output):
     shutil.copy2(work_root/'GOAL_FROZEN.md',output/'raw_minimal/GOAL_FROZEN.md')
     shutil.copy2(work_root/'measurement_instrumentation_adjustment.json',output/'raw_minimal/measurement_instrumentation_adjustment.json')
     shutil.copy2(work_root/'admission_guard_adjustment.json',output/'raw_minimal/admission_guard_adjustment.json')
-    for name in ['impure_rhs_gate_reproducer.py','impure_rhs_gate_reproducer.json']:
+    shutil.copy2(work_root/'rhs_call_compat_adjustment.json',output/'raw_minimal/rhs_call_compat_adjustment.json')
+    for name in ['impure_rhs_gate_reproducer.py','impure_rhs_gate_reproducer.json',
+                 'required_control_rhs_reproducer.py','required_control_rhs_reproducer.json']:
         shutil.copy2(work_root/'evidence'/name,output/'raw_minimal'/name)
     write_json(output/'SOURCE_MAP.json',{'base_sha':BASE_SHA,'runtime_sha':RUNTIME_SHA,'scientific_sha':SCIENTIFIC_SHA,
         'repaired_reference_runtime_sha':'0714e475ed9e73bec31619c9c690d1fd63de3d36',

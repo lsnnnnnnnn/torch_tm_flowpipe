@@ -26,6 +26,8 @@ Python 函数只准入直接返回 `TMVector` 的字面算术图（状态索引�
 不识别系统名。任意黑盒 callable 保留原路径。函数 code/全局 TMVector 身份、
 ODE 结构、candidate/base 对象及其版本、tau/order/cutoff/epsilon/policy 均绑定；
 retry、改变 h、candidate 或尺度时由新 attempt 自然重建。
+RHS 首次调用沿用原接口约定：先传 state，遇到 TypeError 再传 state 与 None；
+两次都失败时保留原单参数异常。未使用但必填的 control 参数也有逐轮回归测试。
 
 计划中的固定张量和原动态运算具有 B 维。局部 B2 用不同 R 验证不串 lane。
 现有完整 flowpipe/normal/history 仍为 Python B1；这不是完整 batch 求解器。

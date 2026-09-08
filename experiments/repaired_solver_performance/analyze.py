@@ -13,8 +13,8 @@ from experiments.endpoint_roundoff_repair.frozen import ROOT, MATCHED_SHA256, se
 from experiments.xiangru_adoption.common import measure
 from experiments.repaired_solver_performance.compare import compare_pair
 
-SCIENTIFIC_SHA='513cc6a1925f52bac38600cdd5e5759fba48bc6a'
-RUNTIME_SHA='513cc6a1925f52bac38600cdd5e5759fba48bc6a'
+SCIENTIFIC_SHA='1551ab57aef7324f91882beeba9d368f36b3cdd5'
+RUNTIME_SHA='1551ab57aef7324f91882beeba9d368f36b3cdd5'
 BASE_SHA='7e41f33f515f5315b0dec7003a5b06ed0a79afd5'
 FULL_NAMES=('brusselator_full_reference','brusselator_full_optimized',
             'vdp_full_reference','vdp_full_optimized','vdp_adaptive_optimized')
@@ -137,6 +137,8 @@ def verify_run(path,command=None,*,recompute_common=True):
     hex_equal(summary['export_seconds'],sum(e['export_stop']-e['export_start'] for e in timing))
     initialization=read_json(path/'initialization_event.json')
     hex_equal(summary['setup_seconds'],initialization['stop']-initialization['start'])
+    assert initialization['start']<initialization['stop']<=timing[0]['numerical_start']
+    assert all(a['export_stop']<=b['numerical_start'] for a,b in zip(timing,timing[1:]))
     if recompute_common:
         with gzip.open(path/'models.jsonl.gz','rt') as models:
             count=0

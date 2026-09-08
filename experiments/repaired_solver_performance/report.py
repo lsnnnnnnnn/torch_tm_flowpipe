@@ -71,8 +71,9 @@ def write_report(package):
     text+=['',"Flow* 历史同合同求解时间是 VDP 约 1.488 秒、Brusselator 约 13.570 秒。本次自研 CPU 完整运行仍明显更慢；本轮没有新 Flow* 配对计时，因此不提供本轮 Flow* 速度倍率。旧缺陷 CPU 和旧修复耗时都没有进入新性能分母。",
         f"**测试、版本与局限。** 去重完整测试记录为 {tests.get('passed',0)} passed / {tests.get('skipped',0)} skipped / {tests.get('failed',0)} failed。新证据验证器独立重算 {proof['independently_recomputed_proposal_rounds']} 个 proposal 回合、全程范围/时间和最终状态；六种语义篡改即使重算外层 hash 仍被拒绝。重复局部检查与独立 clone 检查不再加总。原始命令、退出码、XML 和日志均在 [tests]({rel}/tests/commands.json)。",
         f"父提交为 `7e41f33`，未优化数学语义来自最终修复 `0714e475`。本轮最终数值实现与干净科学提交均为 `{result['scientific_sha']}`。最终 package 提交单独记录，不能冒充长跑来源。独立 clone 实际运行相关局部测试并验证新证据，不声称重复全部长实验。",
-        "首次预检曾只记录导出总时间，随后补充逐步起止事件再开始正式矩阵，旧短跑与未完成片段保留为预检，不混入正式重复计时。最终科学矩阵没有 profiler；分析与导出成本单列。",
+        "首次预检曾只记录导出总时间，随后补充逐步起止事件再开始正式矩阵，旧短跑与未完成片段保留为预检，不混入正式重复计时。最终正式速度计时不带 profiler；profile、分析与导出成本单列。",
         "随后新增准入测试发现，原过滤器会忽略删除外部对象的 del 语句，可能错误接纳带副作用的函数。修正为仅允许解绑未使用的本地参数，并排除 async 函数；冻结方程的算术路径未变。此前矩阵在任何完整 1000 步运行开始前停止，原记录保留；最终计时全部在修正后的干净提交重新测量。新入口失败没有被当成端点基线缺陷，也未改变数学期望。",
+        "函数接口复核还发现，原路径允许 rhs(x, u) 的第二参数无默认值，新计划曾漏掉传入 None 的回退调用。用相同 Brusselator 算术复现后，恢复了原来先单参数、遇到 TypeError 再双参数的调用顺序，并验证完整收紧序列一致。最终提交先通过 targeted 与现有完整矩阵，再启动所报告的正式计时；之前的短窗口记录未混入分母，没有重复任何完整 1000 步长跑。",
         "GPU 后端选择仍未决定。CPU 执行计划的局部成功或目标未达，都不能自动接纳或否定已保存的 Huan/Xiangru 路线。本轮没有新 tightness 算子、第三系统、完整 CUDA 后端或第三方重新审计。下一轮只建议一个主方向，见 [一页路线决定](ROUTE_DECISION.md)。"]
     # Adjacent Markdown table rows need one newline; prose needs a blank line.
     rendered=[]
