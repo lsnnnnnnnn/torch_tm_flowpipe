@@ -10,6 +10,8 @@
 
 稠密 endpoint 保留原 ledger，并补齐旧 ledger 求和与实际余项之间缺少的向外 padding；新增代入误差只放在 `endpoint_substitution_roundoff`。返回 remainder 直接取新 ledger 的合计。转换存储形式复制完整 remainder；类别在稀疏转换后可合为 initial_remainder，数学载荷不丢失。
 
+稠密分量拆开再合并时，concat 同样保留新增类别。只有输入账本已包含该类别才复制它，普通验证路径不会多出一个零类别。独立反例检查重组后的完整余项与账本合计，防止端点数值暂时保留而后续账本丢失这笔误差。
+
 账本按类别重新求和可能与实际余项的运算顺序不同。`covering_total` 每次补入缺少的向外 padding 后再次检查总和包含实际输入余项之和；若有限次对账仍不能建立包含则拒绝。该预算只用于拒绝无法表示的对账，不替代包含断言，不改变 ODE 验证预算。端点之后的 dense cutoff 也保持合计与返回余项完全一致。新增类别不进入普通验证器的固定完整类别表，避免对未执行端点代入的验证步骤制造一个额外零项。
 
 发布端点和内部端点分别从原 segment 计算。发布结果的余项被 normal 插入消费；内部结果不会再叠加到发布结果上。normal 左映射保留 segment，下一步实际输入使用新的 center/scales 和右映射。accepted-boundary SR 将端点本步余项经非线性分支记入 current owner，已传播历史由独立 linear queue 分支消费。具体两步、回滚及容量边界证据另存，完成前不宣称使用链已经验证。

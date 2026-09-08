@@ -2717,7 +2717,7 @@ class BatchedTaylorModel:
                             dim=1,
                         ),
                     )
-                    for category in REMAINDER_LEDGER_CATEGORIES
+                    for category in _ALL_REMAINDER_LEDGER_CATEGORIES
                     if any(category in model.ledger.entries for model in models)
                 }
             ),

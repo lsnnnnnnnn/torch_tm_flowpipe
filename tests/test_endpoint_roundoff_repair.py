@@ -76,6 +76,20 @@ def test_batch_two_distinct_h_domains_outputs_and_zero_task():
             assert_model_contains(source,result,float(h[b]))
 
 
+def test_dense_component_reassembly_retains_endpoint_error_ledger():
+    source=TMVector([TaylorModel(Polynomial({(0,0):-1.,(0,1):100.},2),Interval.zero(),
+                                  [Interval(-2.,.5),Interval(0.,.01)],order=4)]*2)
+    endpoint=sparse_tmvector_to_dense(source,order=4).endpoint(1,.01)
+    reassembled=BatchedTaylorModel.concat([endpoint.component(0),endpoint.component(1)])
+    for category,pair in endpoint.ledger.entries.items():
+        assert category in reassembled.ledger.entries
+        assert all(torch.equal(a,b) for a,b in zip(pair,reassembled.ledger.entries[category]))
+    lo,hi=reassembled.ledger.total(reassembled.rem_lo)
+    assert torch.equal(lo,reassembled.rem_lo) and torch.equal(hi,reassembled.rem_hi)
+    for original,result in zip(source,dense_to_sparse_tmvector(reassembled)):
+        assert_model_contains(original,result,.01)
+
+
 @pytest.mark.parametrize('h', [0., .5, -.5])
 def test_subnormal_and_true_zero(h):
     tiny=math.ulp(0.)
