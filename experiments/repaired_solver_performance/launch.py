@@ -14,6 +14,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--cpu',type=int,default=2)
+    parser.add_argument('--vdp90',type=Path,help='reuse an already verified complete boundary90 checkpoint')
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[2]
     sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
@@ -69,9 +70,17 @@ def main():
         print(json.dumps({'job':name,'status':'COMPLETED','whole_process_seconds':record['whole_process_seconds']}),flush=True)
 
     # The missing VDP boundary is reached once from a complete repaired state.
-    job('prepare_vdp_boundary90','run','van_der_pol',mode='reference',steps=70,
-        checkpoint=old/'vdp_full/checkpoint_0020',purpose='checkpoint_preparation_not_speed_denominator')
-    vdp90=args.output/'prepare_vdp_boundary90/checkpoint_0090'
+    if args.vdp90:
+        from torch_tm_flowpipe import load_terminal_checkpoint
+        restored=load_terminal_checkpoint(args.vdp90,expected_dtype='float64',expected_order=4)
+        assert restored.normal_state.step_index==90 and restored.contract['plant']=='van_der_pol'
+        vdp90=args.vdp90.resolve()
+        (args.output/'vdp90_source.json').write_text(json.dumps({'path':str(vdp90),
+            'manifest':restored.manifest,'provenance':restored.provenance,'reused_complete_state':True},indent=2)+'\n')
+    else:
+        job('prepare_vdp_boundary90','run','van_der_pol',mode='reference',steps=70,
+            checkpoint=old/'vdp_full/checkpoint_0020',purpose='checkpoint_preparation_not_speed_denominator')
+        vdp90=args.output/'prepare_vdp_boundary90/checkpoint_0090'
 
     def window(name,plant,checkpoint):
         for repeat in range(3):

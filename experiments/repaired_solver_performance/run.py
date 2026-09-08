@@ -98,7 +98,8 @@ def main():
                                 for p in sorted((ROOT/'src/torch_tm_flowpipe').glob('*.py'))}}
     write_json(output/'execution_contract.json',frozen_config)
     write_json(output/'source.json',provenance)
-    setup_seconds=time.perf_counter()-setup_started
+    setup_stopped=time.perf_counter()
+    setup_seconds=setup_stopped-setup_started
     total=F(restored.scheduler['time_exact']) if restored else F(0)
     starting_total=total
     # Preserve the original native scheduler's binary64 clock and terminal
@@ -209,7 +210,9 @@ def main():
                 h=segment.next_h
             if index in checkpoints or (not args.adaptive and index==start_index+args.steps):
                 checkpoint(output/f'checkpoint_{index:04d}',current,state,total,h,frozen_config,provenance,scheduler_time)
-            export_seconds+=time.perf_counter()-export_start
+            export_stopped=time.perf_counter()
+            export_seconds+=export_stopped-export_start
+            timing_events[-1].update(export_start=export_start,export_stop=export_stopped)
             if index==1 or index%20==0:
                 print(json.dumps({'accepted_steps':index,'time':float(total),'solve_seconds':solve_seconds,
                                   'export_seconds':export_seconds,'queue_size':len(queue.J),'status':'RUNNING'}),flush=True)
@@ -238,6 +241,8 @@ def main():
              'config_digest':hashlib.sha256(json.dumps(frozen_config,sort_keys=True).encode()).hexdigest()}
     assert git('rev-parse','HEAD')==args.scientific_sha and summary['source_clean_at_end']
     write_json(output/'timing_events.json',timing_events)
+    write_json(output/'initialization_event.json',{'start':setup_started,'stop':setup_stopped,
+               'scope':'configuration, initial/checkpoint state, runtime provenance and initial metadata writes'})
     write_json(output/'summary.json',summary)
     print(json.dumps({k:summary[k] for k in ['plant','completed','accepted_steps','rejected_attempts','accepted_horizon_exact','solve_seconds','export_seconds','failure']},indent=2),flush=True)
 
