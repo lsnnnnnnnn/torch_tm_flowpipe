@@ -94,6 +94,11 @@ def check_source(root):
     assert source['generated_report_sha256'] == sha(ROOT/'docs/boundary_execution/REPORT_PLAIN_CHINESE.md')
     assert source['modes'] == {'baseline': {'prepared_remainder_replay': True, 'packed_boundary_execution': False},
                                'candidate': {'prepared_remainder_replay': True, 'packed_boundary_execution': True}}
+    configs = source['configuration_records']
+    assert set(configs) == {'brusselator_full_baseline', 'vdp_full_baseline', 'vdp_adaptive_candidate'}
+    for name, record in configs.items():
+        assert record['path'] == f'raw_minimal/formal/{name}/execution_contract.json'
+        assert sha(root/record['path']) == record['sha256']
     return source
 
 

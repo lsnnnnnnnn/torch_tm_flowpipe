@@ -86,6 +86,9 @@ def source_map(workspace, package_code_sha):
         production_source_root=first['source_root'], production_imported_package=first['imported_package'],
         python=first['python'], python_version=first['python_version'], torch=first['torch_version'],
         dtype=first['dtype'], device=first['device'], affinity=first['affinity'], threads=first['threads'],
+        configuration_records={name: {'path': f'raw_minimal/formal/{name}/execution_contract.json',
+            'sha256': sha(workspace/'formal'/name/'execution_contract.json')}
+            for name in ['brusselator_full_baseline', 'vdp_full_baseline', 'vdp_adaptive_candidate']},
         branch='codex/packed-boundary-execution-20260908T172756Z', root=str(workspace),
         goal_sha256=sha(workspace/'GOAL_FROZEN.md'),
         source_identity_note='Scientific SHA fixes numerical code and runner; package_code_sha fixes analysis and verifier. The final delivery commit is reported by git/verification, never embedded self-referentially.',
