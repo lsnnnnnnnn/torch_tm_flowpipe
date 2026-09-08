@@ -215,6 +215,23 @@ def test_opt_in_context_restores_and_opaque_rhs_is_not_prepared():
     assert not supports(lambda x: x)
 
 
+def test_arithmetic_return_with_external_deletion_is_opaque(tmp_path):
+    import importlib.util
+    source=tmp_path/'impure_rhs.py'
+    source.write_text('from torch_tm_flowpipe import TMVector\n'
+                      'external_values=[1.,2.,3.]\n'
+                      'def rhs(x, u=None):\n'
+                      '    del external_values[0]\n'
+                      '    return TMVector([x[0]+x[1],x[0]-x[1]])\n'
+                      'async def asynchronous(x):\n'
+                      '    return TMVector([x[0]+x[1],x[0]-x[1]])\n')
+    spec=importlib.util.spec_from_file_location('impure_replay_rhs',source)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    assert not supports(module.rhs)
+    assert not supports(module.asynchronous)
+    assert supports(brusselator_ode)  # unbinding its unused local u is harmless
+
+
 def test_rejected_attempt_with_populated_history_leaves_both_inputs_unchanged(monkeypatch):
     from torch_tm_flowpipe import accepted_boundary_sr_queue_sha256
     import experiments.run_brusselator_sr1000_parity as contract_runner

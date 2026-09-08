@@ -51,14 +51,29 @@ def _arithmetic_body(code, source):
     """Admit only a literal arithmetic graph, independent of R and globals.
 
 This gate recognizes syntax, not a system name or equation. Opaque callables,
-branches, attribute reads, mutable defaults and external numerical inputs
+branches, attribute reads and external numerical inputs
 remain on the reference evaluator.
 """
     try:
         node = ast.parse(textwrap.dedent(source)).body[0]
-        state = node.args.args[0].arg
-        body = [n for n in node.body if not (isinstance(n, ast.Expr) and isinstance(n.value, ast.Constant))
-                and not isinstance(n, ast.Delete)]
+        if not isinstance(node, ast.FunctionDef):
+            return False
+        parameters = [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]
+        state = parameters[0].arg
+        unused_parameters = {p.arg for p in parameters[1:]}
+        body = []
+        for statement in node.body:
+            if isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant):
+                continue
+            if isinstance(statement, ast.Delete):
+                # The benchmark's ``del u`` only unbinds an unused parameter.
+                # Deleting a subscript/attribute mutates storage and must stay
+                # on the opaque reference path, even if the return is pure.
+                if not all(isinstance(target, ast.Name) and target.id in unused_parameters
+                           for target in statement.targets):
+                    return False
+                continue
+            body.append(statement)
         if len(body) != 1 or not isinstance(body[0], ast.Return):
             return False
         value = body[0].value
