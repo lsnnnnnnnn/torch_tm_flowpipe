@@ -64,6 +64,15 @@ def verify_sources(root,repository):
     for name,sha in source['candidate_runtime_files'].items():
         require(hashlib.sha256(git_blob(repository,CANDIDATE,name)).hexdigest()==sha==digest(repository/name),'current verifier/runtime source changed')
     require(set(source['candidate_runtime_files'])=={str(p.relative_to(repository)) for p in (repository/'src/torch_tm_flowpipe').glob('*.py')},'runtime file identity coverage')
+    for name,sha in source['frozen_execution_files'].items():
+        require(hashlib.sha256(git_blob(repository,BASE,name)).hexdigest()==sha==digest(repository/name),'frozen setup/RHS/contract file changed')
+    context=read(root/'RUN_CONTEXT.json')
+    require(context['BASE']==BASE and context['reference_scientific_sha']==REFERENCE and context['candidate_scientific_sha']==CANDIDATE,'run context scientific identity')
+    require(context['formal_affinity']==[3] and context['threads']==context['interop_threads']==1 and context['device']=='cpu' and context['dtype']=='float64','run context environment')
+    require(not context['dependency_upgrades'] and not context['old_worktree_files_modified'],'run context scope')
+    contracts={plant:read(root/'raw_minimal/fresh_reference'/plant/'execution_contract.json') for plant in PLANTS}
+    contracts['van_der_pol_adaptive']=read(root/'raw_minimal/production/adaptive_van_der_pol_prepared_remainder_replay/execution_contract.json')
+    require(read(root/'EXECUTION_CONTRACT.json')==contracts,'top-level effective configuration differs from raw runs')
     for path in [*(root/'raw_minimal/fresh_reference').glob('*/source.json'),*(root/'raw_minimal/production').glob('*/source.json')]:
         run=read(path)
         for name,sha in run['source_files'].items():

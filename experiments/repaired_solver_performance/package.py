@@ -53,6 +53,9 @@ def assemble(work,root,repository=ROOT):
         full_reference_scientific=REFERENCE,production_candidate_scientific=CANDIDATE,tested_candidate_runtime=RUNTIME,
         branch='codex/repaired-solver-prepared-replay-performance-20260908T084224Z',
         candidate_runtime_files={str(p.relative_to(repository)):digest(p) for p in sorted((repository/'src/torch_tm_flowpipe').glob('*.py'))},
+        frozen_execution_files={name:digest(repository/name) for name in ('experiments/endpoint_roundoff_repair/frozen.py',
+            'experiments/run_vdp_dense_backend.py','experiments/run_brusselator_sr1000_parity.py',
+            'artifacts/runs/xiangru_adoption_20260907T032448Z/MATCHED_CONTRACTS.json')},
         reused=reused,package_commit_is_scientific_source=False,
         note='Reference runtime is exactly final repaired0714. All new source runtime files at formalf627 equal testedae6. Later helper/report/package commits do not claim to be the source of earlier runs.')
     write_json(root/'SOURCE_MAP.json',source)
