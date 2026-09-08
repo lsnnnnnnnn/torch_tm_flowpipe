@@ -1,0 +1,126 @@
+{
+  "status": "BOUNDARY_EXECUTION_PRESERVED__USEFUL_BELOW_TARGET",
+  "scientific_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+  "parent_sha": "f6af6f67565a954d0c68f88a50cc9c181a2d0b08",
+  "full_pairs": {
+    "brusselator": [
+      {
+        "baseline": "brusselator_full_baseline",
+        "candidate": "brusselator_full_candidate",
+        "accepted_steps": 1000,
+        "all_steps_bitwise_equal": true,
+        "hashes": {
+          "models.jsonl.gz": "3d03c04676e8f92ad7a19ecb3d414af55f5fb2038fc611cf669b9fbec8ec0304",
+          "bounds.csv": "498537c882b3c86158ecc4d7d8e1af60e94bb6f6bbe731d6f3e7a2b3c14f06d2",
+          "endpoint_audit.jsonl": "2fddec894b2c6b02020b8cfff30cc35f802018f55c04caa9fdc2209cd9e794cc"
+        },
+        "baseline_solve_seconds": 1440.1022867751308,
+        "candidate_solve_seconds": 1121.579599372577,
+        "speedup": 1.2839947227827064,
+        "peak_rss_ratio": 1.0004579453518547
+      }
+    ],
+    "van_der_pol": [
+      {
+        "baseline": "vdp_full_baseline",
+        "candidate": "vdp_full_candidate",
+        "accepted_steps": 1000,
+        "all_steps_bitwise_equal": true,
+        "hashes": {
+          "models.jsonl.gz": "16f214c7fe4bc2a7bd2939828693b5fbd08b0f16526c2359382ad17c83149ae8",
+          "bounds.csv": "54cdbe08afcd94607341def95699dc5e0c8906b02b620814fbfcaf83cd084c5d",
+          "endpoint_audit.jsonl": "1f00d1d1dfc9ad25d2b35fab9338f877031e2f008621151c5ea22eca8f3293a9"
+        },
+        "baseline_solve_seconds": 696.1642418624833,
+        "candidate_solve_seconds": 575.061501129996,
+        "speedup": 1.2105909376553992,
+        "peak_rss_ratio": 0.9991838668913227
+      }
+    ]
+  },
+  "short_speedups": {
+    "brusselator_early": [
+      1.3276262747160572,
+      1.3227293578119335,
+      1.367669230061484
+    ],
+    "brusselator_middle": [
+      1.3511194144744991,
+      1.3853367796183413,
+      1.3548750490721808
+    ],
+    "brusselator_late": [
+      1.2303883027601628,
+      1.2138135073144092,
+      1.1904516359525188
+    ],
+    "brusselator_prefix100": [
+      1.4439195831074254,
+      1.415202863007285,
+      1.4481201066900926
+    ],
+    "vdp_early": [
+      1.187142211710702,
+      1.1922429722795027,
+      1.2260082629378033
+    ],
+    "vdp_boundary": [
+      1.2137367086994808,
+      1.2316472069969788,
+      1.2214044462826328
+    ],
+    "van_der_pol_prefix100": [
+      1.2311263065405633,
+      1.211176502467474,
+      1.2277236675101306
+    ]
+  },
+  "prefix100_speedups": {
+    "brusselator": [
+      1.4439195831074254,
+      1.415202863007285,
+      1.4481201066900926
+    ],
+    "van_der_pol": [
+      1.2311263065405633,
+      1.211176502467474,
+      1.2277236675101306
+    ]
+  },
+  "full_speedup_statistics": {
+    "brusselator": {
+      "count": 1,
+      "median": 1.2839947227827064,
+      "minimum": 1.2839947227827064,
+      "maximum": 1.2839947227827064
+    },
+    "van_der_pol": {
+      "count": 1,
+      "median": 1.2105909376553992,
+      "minimum": 1.2105909376553992,
+      "maximum": 1.2105909376553992
+    }
+  },
+  "timing_confidence": {
+    "brusselator": "single_complete_pair_with_three_repeated_short_pairs",
+    "van_der_pol": "single_complete_pair_with_three_repeated_short_pairs"
+  },
+  "vdp_no_stable_slowdown_over_10_percent": true,
+  "peak_rss_within_1p5": true,
+  "fixed_steps_compared_per_system": 1000,
+  "observers": [
+    "published",
+    "common"
+  ],
+  "endpoint_components_compared": 4000,
+  "tube_components_compared": 4000,
+  "adaptive_accepted": 246,
+  "adaptive_rejected": 35,
+  "adaptive_exact_h_sum": "5764607523034236731/576460752303423488",
+  "adaptive_scheduler_time_hex": "0x1.4000000000000p+3",
+  "adaptive_speed_claim": false,
+  "prepared_in_both_modes": true,
+  "boundary_default_enabled": false,
+  "whole_solver_formally_proved": false,
+  "gpu_throughput_claim": false
+}

@@ -1,0 +1,135 @@
+[
+  {
+    "name": "root",
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--ignore=tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/boundary_execution_20260908T172756Z/tests/root.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/boundary_execution_20260908T172756Z/repo/src:/srv/local/shengenli/boundary_execution_20260908T172756Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg09oPxkn:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      2
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/root.log",
+    "xml": "tests/root.xml",
+    "exit": "tests/root.exit",
+    "pid": 3417165,
+    "proc_start_ticks": "232504802",
+    "exit_code": 0,
+    "seconds": 537.0289558190852,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "candidate_endpoint_and_boundary",
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "-p",
+      "experiments.boundary_execution.enable_candidate",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "tests/test_polynomial.py",
+      "tests/test_interval.py",
+      "tests/test_accepted_boundary_sr.py",
+      "tests/test_normalized_insertion.py",
+      "tests/test_symbolic_remainder.py",
+      "tests/test_terminal_checkpoint_v2.py",
+      "--junitxml=/srv/local/shengenli/boundary_execution_20260908T172756Z/tests/candidate_endpoint_and_boundary.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/boundary_execution_20260908T172756Z/repo/src:/srv/local/shengenli/boundary_execution_20260908T172756Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg09oPxkn:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      2
+    ],
+    "count_in_final_matrix": false,
+    "log": "tests/candidate_endpoint_and_boundary.log",
+    "xml": "tests/candidate_endpoint_and_boundary.xml",
+    "exit": "tests/candidate_endpoint_and_boundary.exit",
+    "pid": 3423839,
+    "proc_start_ticks": "232558508",
+    "exit_code": 0,
+    "seconds": 21.309281285852194,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "boundary_evidence",
+    "argv": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_boundary_execution_evidence.py",
+      "--junitxml=/srv/local/shengenli/boundary_execution_20260908T172756Z/packaging_checks/boundary_evidence.xml"
+    ],
+    "source_sha": "720421b72e777fffc6594498bd4051299a187bbe",
+    "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/package",
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/boundary_execution_20260908T172756Z/package/src:/srv/local/shengenli/boundary_execution_20260908T172756Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "affinity": [
+      2
+    ],
+    "log": "tests/boundary_evidence.log",
+    "started_utc": 1788896563.658299,
+    "pid": 3500194,
+    "proc_start_ticks": "233181917",
+    "exit_code": 0,
+    "finished_utc": 1788896573.1843045,
+    "count_in_final_matrix": true,
+    "xml": "tests/boundary_evidence.xml",
+    "exit": "tests/boundary_evidence.exit"
+  }
+]

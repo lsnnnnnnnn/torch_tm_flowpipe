@@ -1,0 +1,140 @@
+[
+  {
+    "name": "vdp_early",
+    "pid": 3424139,
+    "start_ticks": "232560640",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/van_der_pol_before0002",
+      "--steps",
+      "2",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/vdp_early"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890350.8893294,
+    "exit_code": 0,
+    "stop": 1788890357.052932
+  },
+  {
+    "name": "brusselator_early",
+    "pid": 3424265,
+    "start_ticks": "232561257",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/brusselator_before0002",
+      "--steps",
+      "2",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/brusselator_early"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890357.0542605,
+    "exit_code": 0,
+    "stop": 1788890366.6828003
+  },
+  {
+    "name": "brusselator_middle",
+    "pid": 3424408,
+    "start_ticks": "232562220",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/brusselator_before0101",
+      "--steps",
+      "2",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/brusselator_middle"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890366.684671,
+    "exit_code": 0,
+    "stop": 1788890378.3649063
+  },
+  {
+    "name": "brusselator_long",
+    "pid": 3424575,
+    "start_ticks": "232563388",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/brusselator_before0995",
+      "--steps",
+      "2",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/brusselator_long"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890378.3661807,
+    "exit_code": 0,
+    "stop": 1788890402.9084697
+  },
+  {
+    "name": "vdp_reset",
+    "pid": 3424883,
+    "start_ticks": "232565842",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/van_der_pol_before0099",
+      "--steps",
+      "3",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/vdp_reset"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890402.9100215,
+    "exit_code": 0,
+    "stop": 1788890411.790227
+  },
+  {
+    "name": "brusselator_reset",
+    "pid": 3425044,
+    "start_ticks": "232566731",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.boundary_execution.state_equivalence",
+      "--checkpoint",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs/brusselator_before0999",
+      "--steps",
+      "3",
+      "--output",
+      "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_checks/brusselator_reset"
+    ],
+    "source_sha": "5f37cbe0427c480ef0ebbbcaba292143bc8f4ede",
+    "start": 1788890411.79176,
+    "exit_code": 0,
+    "stop": 1788890433.8710265
+  }
+]

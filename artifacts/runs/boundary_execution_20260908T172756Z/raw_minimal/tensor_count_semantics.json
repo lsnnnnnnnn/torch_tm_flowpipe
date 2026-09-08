@@ -1,0 +1,14 @@
+{
+  "torch": "2.5.1+cu121",
+  "mutable_returns_per_call": {
+    "aten.copy_.default": 1,
+    "aten.fill_.Tensor": 1,
+    "aten.index_put_.default": 1,
+    "aten.scatter_.src": 1,
+    "aten.scatter_add_.default": 1,
+    "aten.scatter_reduce_.two": 1,
+    "aten.set_.source_Storage": 1,
+    "aten.set_.source_Storage_storage_offset": 1
+  },
+  "creation_metric": "Observed ATen tensor results excluding in-place self returns; includes new view Tensor objects and factory results, not just storage allocations. Raw output counts remain unchanged."
+}

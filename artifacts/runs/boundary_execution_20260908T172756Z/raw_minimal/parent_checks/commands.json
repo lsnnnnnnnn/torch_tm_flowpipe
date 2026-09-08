@@ -1,0 +1,64 @@
+[
+  {
+    "source_sha": "f6af6f67565a954d0c68f88a50cc9c181a2d0b08",
+    "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/parent_verification",
+    "affinity": [
+      2
+    ],
+    "environment": {
+      "PYTHONPATH": "src:.:tests",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "count_in_current_test_total": false,
+    "name": "parent_targeted",
+    "argv": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_prepared_remainder_replay.py",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "--junitxml=/srv/local/shengenli/boundary_execution_20260908T172756Z/parent_checks/targeted.xml"
+    ],
+    "exit_code": 0,
+    "log": "targeted.log",
+    "xml": "targeted.xml",
+    "exit": "targeted.exit"
+  },
+  {
+    "source_sha": "f6af6f67565a954d0c68f88a50cc9c181a2d0b08",
+    "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/parent_verification",
+    "affinity": [
+      2
+    ],
+    "environment": {
+      "PYTHONPATH": "src:.:tests",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "count_in_current_test_total": false,
+    "name": "parent_verifier",
+    "argv": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.verify",
+      "artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "exit_code": 0,
+    "log": "verifier.log",
+    "exit": "verifier.exit"
+  }
+]

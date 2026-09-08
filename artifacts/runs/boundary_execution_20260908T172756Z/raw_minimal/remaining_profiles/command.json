@@ -1,0 +1,36 @@
+{
+  "name": "remaining_profile",
+  "argv": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.boundary_execution.remaining_profile",
+    "--inputs",
+    "/srv/local/shengenli/boundary_execution_20260908T172756Z/state_inputs",
+    "--formal",
+    "/srv/local/shengenli/boundary_execution_20260908T172756Z/formal",
+    "--output",
+    "/srv/local/shengenli/boundary_execution_20260908T172756Z/remaining_profiles"
+  ],
+  "source_sha": "720421b72e777fffc6594498bd4051299a187bbe",
+  "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/package",
+  "environment": {
+    "PYTHONPATH": "/srv/local/shengenli/boundary_execution_20260908T172756Z/package/src:/srv/local/shengenli/boundary_execution_20260908T172756Z/package",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONNOUSERSITE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "affinity": [
+    2
+  ],
+  "log": "/srv/local/shengenli/boundary_execution_20260908T172756Z/packaging_checks/remaining_profile.log",
+  "started_utc": 1788896530.5528657,
+  "pid": 3499507,
+  "proc_start_ticks": "233178607",
+  "exit_code": 0,
+  "finished_utc": 1788896548.3046541
+}

@@ -1,0 +1,102 @@
+{
+  "plant": "brusselator",
+  "step": 101,
+  "input_state": {
+    "step": 100,
+    "current": {
+      "coefficient_sha256": "612c952a266d4e43dafe9636d7436e3e8c2bfd353f2ded7ed52b0b7f562b92f9",
+      "exponent_support_sha256": "911cc53df83061c015fd22bd26c0b340a4659fe0b0b03630782094c3fc3cd7bc",
+      "domain_sha256": "7d3fd1439160440745dc6a2d357f74246226d6012352f4969a7936c3bdd05aca",
+      "tmvector_sha256": "28dc43f6dba3eefdc7cc9529a3a4b5cd83539b08bd039690761fb0dcecf9458e"
+    },
+    "normal_pre": {
+      "coefficient_sha256": "1d3e0027f89ac6f6d3a8b6beff145f3235cb191a5cd781555e8bc2a4e19cbd73",
+      "exponent_support_sha256": "c5eaa7206a43a147951eb548efec964241e9d84f674e85367917da66300d44ab",
+      "domain_sha256": "9e274c63deb137050c7ce680d1a12084cef04d93eb7bfb7977e98dac38a37dd1",
+      "tmvector_sha256": "46dcb25cc41eb86811749c62df16f7a6f6cd10ee3676755fb35f812e1807bc12"
+    },
+    "normal_right": {
+      "coefficient_sha256": "71d218e4353df2beeaa72cfa7e297c96058178f31aa20f1a56e43b86a71d8464",
+      "exponent_support_sha256": "dc58946b6cf11dfae36cda3df78ef3b0214e9bb2a9ac53e692063dccaf31846d",
+      "domain_sha256": "7d3fd1439160440745dc6a2d357f74246226d6012352f4969a7936c3bdd05aca",
+      "tmvector_sha256": "c8fcaecf7be924947b1b87658a4577cfeae5723770a8d80fca707ac59f1654bf"
+    },
+    "queue": "61fc5cd59b1e8f207096a8b8229883ac7ab6232ddef1888a01f752e7f86ad621",
+    "history_length": 100,
+    "generation": 100,
+    "reset_count": 0
+  },
+  "input_sha256": "a11585cc056b0e50ab15493642beaf0ae5f7d662b54b1b6429fa9da342c62f3d",
+  "implementation_sha256": "bac513043e85a534a3db29a21af4ffb33a526aa9c3a64ffa75fcbc2ce75087c0",
+  "harness_sha256": "e90b54fc88116df1a28fb7dabe7841b058a05c3ca25f6df51de209f68717a094",
+  "profile": "/srv/local/shengenli/boundary_execution_20260908T172756Z/profiles/brusselator_middle_wall",
+  "profile_sha256": "f39bf5bb67ddd28eb740b76c87826f369253606cb89af6bfdd12322ebcfacada",
+  "f": 0.4826530655185461,
+  "s": 2.175628633346708,
+  "local_speedups": [
+    2.175628633346708,
+    2.1396754755570684,
+    2.2662574073810435
+  ],
+  "timings": [
+    {
+      "repeat": 1,
+      "mode": "baseline",
+      "seconds": 0.6495779589749873,
+      "calls": 188
+    },
+    {
+      "repeat": 1,
+      "mode": "candidate",
+      "seconds": 0.2985702380537987,
+      "calls": 188
+    },
+    {
+      "repeat": 2,
+      "mode": "candidate",
+      "seconds": 0.30158375995233655,
+      "calls": 188
+    },
+    {
+      "repeat": 2,
+      "mode": "baseline",
+      "seconds": 0.6452913749963045,
+      "calls": 188
+    },
+    {
+      "repeat": 3,
+      "mode": "baseline",
+      "seconds": 0.6704026022925973,
+      "calls": 188
+    },
+    {
+      "repeat": 3,
+      "mode": "candidate",
+      "seconds": 0.29581926576793194,
+      "calls": 188
+    }
+  ],
+  "allocations": [
+    {
+      "mode": "baseline",
+      "interval_constructions": 11282,
+      "tensor_outputs": 233292,
+      "explicit_copy_events": 45128,
+      "scope": "Separate dispatch pass over exactly the same callbacks; not a time denominator."
+    },
+    {
+      "mode": "candidate",
+      "interval_constructions": 2250,
+      "tensor_outputs": 92576,
+      "explicit_copy_events": 9356,
+      "scope": "Separate dispatch pass over exactly the same callbacks; not a time denominator."
+    }
+  ],
+  "predicted_whole_window_speedup": 1.3528279985066543,
+  "infinite_speedup_limit": 1.9329388720594585,
+  "scope": "Representative actual step range calls; f is the corresponding exclusive full window. Prediction is approximate, not full-run timing.",
+  "same_work_bitwise_equal": true,
+  "required_safety_checks_and_preparation_included": true,
+  "prepared_remainder_replay": true,
+  "production_boundary_enabled": false
+}
