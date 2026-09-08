@@ -1,15 +1,47 @@
-本轮只研究稀疏多项式取范围的执行结构。此文件当前记录隔离原型合同；是否进入生产路径必须先由 `implementation_decision.json` 的真实局部时间与窗口份额决定。
+# 有序取范围的数值与生命周期合同
 
-输入是实际 CPU binary64 系数区间 `[B, output, terms]`、按原顺序排列的单项式支持，以及实际 domain 的两个端点 `[B, variables]`。同一支持中的每个位置都是一次原有项运算，包括显式零项；稀疏入口的支持由原 Polynomial 直接提供，不凭阈值重新筛选。不同输出或任务使用自己的系数与 domain，B2 是这个局部取范围接口的能力。
+科学提交 `5f37cbe0427c480ef0ebbbcaba292143bc8f4ede` 基于
+`f6af6f67565a954d0c68f88a50cc9c181a2d0b08`。正式两种模式都显式开启
+`prepared_remainder_replay(True)`；新的 `packed_boundary_execution` 使用独立
+ContextVar，公共默认值为 False，退出上下文恢复先前值。
 
-结构计划只保存不可变的指数、变量顺序、项索引和 normal parity 规则。LRU 只按这些结构值索引，不保存 Tensor、domain、系数、h、余项或 Python 对象 id。每次调用重新堆叠实际输入并检查 dtype、device、形状和区间合法性。原型的数值结果与变量幂只存在于这次调用；输入原地改变后的下一次调用必须重算。
+生产接入点只有 `Polynomial.evaluate_interval`、`evaluate_interval_normal` 和
+`accepted_boundary_sr._interval_polynomial_range`。这是一条统一的取范围执行链。
+接受标量 CPU binary64 稀疏输入；其他 dtype/device/shape 回退原 evaluator。
+normal 调用带外部 step_exp_table 时也保留原路径。所有原 range policy、分区、
+cutoff、端点误差及收紧设置不变。
 
-变量幂保留原 `Interval.pow_int` 的标量调用路线，分别处理每个 batch/domain，而后只在独立项、输出、任务之间执行并行张量乘法。奇偶幂分支、四个乘法候选的排列、min/max 与 nextafter 位置不变。变量乘法仍按原顺序；幂为零的变量不增加一次乘法。normal evaluator 仍先处理时间、再乘原有 state factor、再处理其他变量。提供显式 step power table 的旧接口须保留原路径，不能忽略表中数值。
+| 对象/操作 | 合同 |
+|---|---|
+| 系数 | 原 binary64 值，私有 `[B, output, terms]` 上下界；不改支持集或零项 |
+| 支持顺序 | 普通/normal 保留 Polynomial 的项顺序；区间系数入口保留原 sorted 顺序 |
+| domain | 原 `[B, variables]` 上下界；每个 batch lane 独立 |
+| 变量幂 | 每个实际 `(variable, power, batch)` 使用原标量 Interval.pow_int；只在一次 evaluate 内复用 |
+| 项乘法 | 保留变量阶段先后次序，四个乘积、原 min/max、nextafter 及有效性检查 |
+| normal | 原时间因子先行，原奇偶状态因子随后，其他变量按原序执行 |
+| 求和 | 从原零区间开始，按原项序逐项加，每次 nextafter 与检查，不用 parallel sum/cumsum |
+| 真零/微量/非有限 | 不加零项裁剪阈值；NaN/无效区间仍拒绝，Inf/溢出与原路径一致；subnormal 单列测试 |
+| 结构缓存 | 有界 LRU128，键为不可变支持、变量数、normal 变量/时间索引；值仅索引、幂次、顺序元数据 |
+| 数值缓存 | 不跨 evaluate 缓存系数、domain、h、余项、区间总值或变量幂；无 Python id 数值缓存 |
+| 所有权 | 输入不原地写入，项上下界为私有 clone；返回结果不共享输入可变存储 |
+| 状态 | accepted-only commit、失败回滚、generation/reset、队列容量和 checkpoint/resume 原样保留 |
+| 误差 | 普通余项、已传播历史、本步新增 E 和 cutoff 支付归属不变，不重复追加误差 |
 
-最终按支持集原顺序逐项相加，每次相加都单独向外舍入并检查区间。不能用 sum、cumsum、并行 reduction 或代数重排替换这条求和链。每一项的区间与最终区间均由逐位对照和独立 Fraction 自然区间 oracle 检查；更窄的输出不构成验收依据。NaN/非法区间与原路径一样拒绝，Inf 和溢出按原 interval 算术的实际结果或异常处理。空支持返回真零。
+独立项和 batch/output 维度一起执行张量乘法；相互依赖的逐项累加继续保持原顺序。
+局部接口支持 B2，测试使用不同系数和 domain，检查无混合；完整 solver 仍只要求 B1，
+不据此声称完整批量加速或 GPU 吞吐。
 
-写入仅发生在本次调用分配的 term 张量中。原系数与 domain 不被修改，返回结果由新的 Interval 持有自己的存储。不存在跨步可变共享数值、当前 remainder 缓存或预先缓存总区间。端点误差 E、cutoff 支付、普通余项类别、当前 owner 与已传播 history 的归属、accepted-only commit、拒绝回滚及队列清空均由原流程执行。
+独立精确有理数 oracle 验证每项和最终区间的包含性，同时检查新旧逐位一致。
+41 项局部测试还覆盖 order4/6、不同输出、非对称范围、严重相消、空项、非有限值、
+回退、共享存储和上下文隔离。代表真实状态通过安全 JSON checkpoint 加载；
+两条执行路径分别连续推进，直接比对完整 dataclass、张量和诊断对象，仅排除
+`host_to_device_s`、`dense_kernel_s`、`device_to_host_s` 三项耗时计数。
+随后分别检查失败尝试不污染已有历史、重复测量不改结果，以及恢复后实际继续一步。
 
-prepared replay 在本轮 baseline 与 candidate 中始终显式开启；它的准入、收紧轮数和缓存内容保持原样。拟议边界开关与 prepared 开关分开，默认关闭。现有混合 dtype、非 CPU 和非标量稀疏入口回退到原 evaluator；局部张量接口自身只声明 CPU binary64。未实现完整 batch solver，也不声明 GPU 吞吐。
+验证范围是上述操作、局部输入和记录运行；不是整个求解器的形式化证明。
 
-验证边界仅限已检查操作和本轮实际运行，不能外推为整个 solver 的形式化证明。生产接入、连续传递、恢复/失败检查及全程对照完成后，交付报告与原始结果共同确定最终状态。
+计时范围另行冻结：正式 solve 计时包含计划构造、打包、必要复制、安全检查和拒绝尝试；
+初始化、外部 JSON/范围测量/检查点导出分别计时。profile 的 Interval/Tensor/copy
+计数使用独立遍历；创建 Interval 的成本嵌在 A–H 内，不另加到总秒数。
+Tensor 原始计数是 ATen 返回 Tensor 的次数；派生数扣除 schema 可确认的原地自身返回，
+包含 view，不能当成 storage 分配字节数。
