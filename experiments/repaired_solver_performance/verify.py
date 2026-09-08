@@ -180,6 +180,7 @@ def verify(root,*,recompute=True,repository=ROOT):
     require(exact(read(root/'RESULT.json'))==exact(data['result']),'final status must follow measured data')
     require(exact(read(root/'raw_minimal/archive_bridges.json'))==exact(data['archive_bridges']),'archive runtime bridge')
     diagnostics=profile_tables(root)
+    require(read(root/'raw_minimal/matched_profiles/method.json')['driver_sha256']==digest(root/'raw_minimal/profile_current.py'),'diagnostic driver identity')
     for key in ('profile_windows','replay_work_counts','remaining_hotspots'):
         csv_equal(root/f'{key}.csv',diagnostics[key])
     decision=read(root/'candidate_decision.json')
