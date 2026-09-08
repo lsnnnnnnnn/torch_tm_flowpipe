@@ -70,6 +70,7 @@ def check_source(root):
     assert source['whole_solver_formal_proof_claimed'] is False and source['new_flowstar_timing'] is False
     expected = source_files(SCIENTIFIC_SHA)
     assert source['scientific_sources'] == expected
+    assert Path(core.__file__).resolve() == (ROOT/'src/torch_tm_flowpipe/__init__.py').resolve()
     assert all(sha(ROOT/p) == digest for p, digest in expected.items()), 'imported numerical source differs'
     changed = set(git('diff', '--name-only', PARENT_SHA, SCIENTIFIC_SHA, '--', 'src/torch_tm_flowpipe').decode().splitlines())
     assert changed == {'src/torch_tm_flowpipe/__init__.py', 'src/torch_tm_flowpipe/polynomial.py',
@@ -78,6 +79,11 @@ def check_source(root):
     assert sha(root/'raw_minimal/GOAL_FROZEN.md') == source['goal_sha256']
     package = source['package_code_sha']
     assert subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', package, 'HEAD']).returncode == 0
+    package_paths = git('ls-tree', '-r', '--name-only', package, 'experiments/boundary_execution',
+        'docs/boundary_execution', 'tests/test_boundary_range_plan.py', 'tests/test_boundary_execution_evidence.py').decode().splitlines()
+    package_paths = set(package_paths) - {'docs/boundary_execution/REPORT_PLAIN_CHINESE.md'}
+    assert set(source['package_sources']) == package_paths
+    assert 'experiments/boundary_execution/verify.py' in package_paths
     for path, digest in source['package_sources'].items():
         assert hashlib.sha256(git('show', f'{package}:{path}')).hexdigest() == digest
         assert sha(ROOT/path) == digest
@@ -114,7 +120,8 @@ def check_tests(root):
                 assert identity not in unique, 'test identity counted twice'
                 unique[identity] = status
         groups[command['name']] = dict(totals)
-    assert {'root', 'candidate_endpoint_and_boundary'} <= set(groups)
+    assert {'root', 'candidate_endpoint_and_boundary', 'boundary_evidence'} <= set(groups)
+    assert groups['boundary_evidence'] == {'passed': 6}
     candidate = next(c for c in commands if c['name'] == 'candidate_endpoint_and_boundary')
     assert 'experiments.boundary_execution.enable_candidate' in candidate['argv']
     fixtures = read_json(root/'tests/historical_fixture_recovery.json')
@@ -308,7 +315,10 @@ def check_states(raw, *, replay=True):
         summaries.append({'case': path.parent.name, 'steps': report['steps'], 'history_lengths': report['history_lengths'],
                           'full_objects_rollback_resume_measurement_verified': True})
     by_name = {r['case']: r for r in summaries}
-    assert len(summaries) == 6
+    expected = {'brusselator_early': [2, 3], 'brusselator_middle': [101, 102],
+                'brusselator_long': [995, 996], 'brusselator_reset': [999, 1000, 1001],
+                'vdp_early': [2, 3], 'vdp_reset': [99, 100, 101]}
+    assert {name: r['steps'] for name, r in by_name.items()} == expected
     assert by_name['vdp_reset']['steps'] == [99, 100, 101]
     assert by_name['vdp_reset']['history_lengths'] == [98, 99, 0]
     assert by_name['brusselator_reset']['steps'] == [999, 1000, 1001]
