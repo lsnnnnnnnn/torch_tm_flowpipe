@@ -52,6 +52,7 @@ def run_group(output,name,root,python,paths,*,cpu,counted,expected_sha=None,envi
     commands=read_json(commands_path) if commands_path.exists() else []
     assert name not in {c['name'] for c in commands},'inspect recorded job; never silently repeat it'
     overrides={'PYTHONPATH':str(root/'src')+':'+str(root),'PYTHONDONTWRITEBYTECODE':'1','PYTHONNOUSERSITE':'1',
+        'PATH':str(Path(python).parent)+os.pathsep+os.environ.get('PATH',''),
         'OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1',
         'DIFFREACH_ROOT':'/srv/local/shengenli/DiffReach','JAX_PLATFORMS':'cpu',**(environment or {})}
     argv=['taskset','-c',str(cpu),python,'-m','pytest','-q','-p','no:cacheprovider',*paths,

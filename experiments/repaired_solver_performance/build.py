@@ -48,7 +48,7 @@ def collect_tests(work_root,output):
     """Copy completed commands only; repeated startup/local tests are uncounted."""
     from experiments.repaired_solver_performance.run_tests import accounting
     directory=output/'tests';directory.mkdir(exist_ok=True)
-    source=work_root/'evidence/tests/finalpackage_v3'
+    source=work_root/'evidence/tests/finalpackage_v4'
     commands=read_json(source/'commands.json')
     assert all(c.get('exit_code')==0 for c in commands),'test job still running or failed'
     for command in commands:
@@ -140,6 +140,10 @@ def assemble(work_root,output):
     shutil.copy2(work_root/'measurement_instrumentation_adjustment.json',output/'raw_minimal/measurement_instrumentation_adjustment.json')
     shutil.copy2(work_root/'admission_guard_adjustment.json',output/'raw_minimal/admission_guard_adjustment.json')
     shutil.copy2(work_root/'rhs_call_compat_adjustment.json',output/'raw_minimal/rhs_call_compat_adjustment.json')
+    shutil.copy2(work_root/'test_environment_adjustment.json',output/'raw_minimal/test_environment_adjustment.json')
+    failed=output/'raw_minimal/test_environment_failure';failed.mkdir(exist_ok=True)
+    for name in ['root.log','root.xml','root.exit','commands.json','historical_fixture_recovery.json']:
+        shutil.copy2(work_root/'evidence/tests/finalpackage_v3'/name,failed/name)
     for name in ['impure_rhs_gate_reproducer.py','impure_rhs_gate_reproducer.json',
                  'required_control_rhs_reproducer.py','required_control_rhs_reproducer.json']:
         shutil.copy2(work_root/'evidence'/name,output/'raw_minimal'/name)
