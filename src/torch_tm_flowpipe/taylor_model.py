@@ -226,8 +226,11 @@ class TaylorModel:
         )
 
     def apply_cutoff(self, threshold: float | None) -> "TaylorModel":
+        return self.apply_cutoff_with_remainder(threshold)[0]
+
+    def apply_cutoff_with_remainder(self, threshold: float | None) -> tuple["TaylorModel", Interval]:
         if threshold is None:
-            return self
+            return self, Interval.zero(dtype=self.remainder.dtype, device=self.remainder.device)
         poly, removed_range = self.polynomial.cutoff(threshold, self.domain)
         return TaylorModel(
             poly,
@@ -235,7 +238,7 @@ class TaylorModel:
             list(self.domain),
             self.order,
             truncation_range_split=self.truncation_range_split,
-        )
+        ), removed_range
 
     def __add__(self, other: Any) -> "TaylorModel":
         other = self._coerce(other)
@@ -317,16 +320,26 @@ class TaylorModel:
         )
 
     def substitute_const(self, var_index: int, value: Any) -> "TaylorModel":
-        poly = self.polynomial.substitute_const(var_index, value)
+        return self.substitute_const_with_roundoff(var_index, value)[0]
+
+    def substitute_const_with_roundoff(self, var_index: int, value: Any) -> tuple["TaylorModel", Interval]:
+        from .endpoint_substitution import add
+
+        if not self.remainder.is_finite():
+            raise FloatingPointError("endpoint substitution has a nonfinite input remainder")
+        poly, error, _ = self.polynomial.substitute_const_with_roundoff(var_index, value, self.domain)
+        remainder = Interval(*add(self.remainder.lo, self.remainder.hi, error.lo, error.hi))
+        if not remainder.is_finite():
+            raise FloatingPointError("endpoint substitution has a nonfinite output remainder")
         # Domain is unchanged here.  Call drop_variable afterwards when the local
         # variable should disappear from the representation.
         return TaylorModel(
             poly,
-            self.remainder,
+            remainder,
             list(self.domain),
             self.order,
             truncation_range_split=self.truncation_range_split,
-        )
+        ), error
 
     def drop_variable(self, var_index: int, *, require_zero_exponent: bool = True) -> "TaylorModel":
         poly = self.polynomial.drop_variable(var_index, require_zero_exponent=require_zero_exponent)

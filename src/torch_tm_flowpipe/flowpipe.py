@@ -129,6 +129,9 @@ class FlowpipeSegment:
     endpoint_semantics: str = "legacy_final_tm"
     endpoint_tightening_applied: bool = False
     endpoint_tightening_validation_method: str = ""
+    endpoint_substitution_roundoff: tuple[Interval, ...] | None = None
+    endpoint_cutoff_remainder: tuple[Interval, ...] | None = None
+    dense_endpoint_ledger: Any | None = None
     backend_lane: str = "sparse_reference"
     backend_counters: Mapping[str, int] | None = None
     backend_trace: Sequence[Mapping[str, Any]] | None = None
@@ -2065,6 +2068,13 @@ def _flowstar_normalized_insertion_transition(
         "endpoint_tm_width_sum": _sum_interval_widths(endpoint_box),
         "reset_box_width_sum": _sum_interval_widths(endpoint_box),
     }
+    if seg.endpoint_substitution_roundoff is not None:
+        diagnostics["endpoint_substitution_roundoff"] = [
+            list(error.to_tuple()) for error in seg.endpoint_substitution_roundoff
+        ]
+        diagnostics["endpoint_substitution_roundoff_owner"] = (
+            "current_accepted_boundary_owner" if accepted_boundary_sr else "inserted_map_remainder"
+        )
     _add_width_metrics(diagnostics, "endpoint_box", endpoint_box)
     _add_width_metrics(diagnostics, "endpoint_tm", endpoint_box)
     center = _tmvector_constant_part(seg.final_tm)
@@ -2485,6 +2495,41 @@ def verify_structured_publication(
     return ((published_lo <= total.lo) & (published_hi >= total.hi)).all(dim=1)
 
 
+def _endpoint_remainder_decomposition(seg: FlowpipeSegment) -> Any:
+    """Extend the accepted-segment ledger for consumers that replace its R.
+
+    G1/G2 affine lifts and S1 typed sources bypass the endpoint's ordinary
+    remainder. Give those paths the newly created substitution and cutoff
+    contributions exactly once, while leaving the validator ledger unchanged.
+    Existing structured-source schemas use roundoff_safeguard for this source;
+    the separate segment field retains the endpoint-specific diagnostic.
+    """
+    decomposition = seg.validated_remainder_decomposition
+    if decomposition is None:
+        raise ValueError("endpoint carry requires the accepted dense decomposition")
+    if seg.endpoint_substitution_roundoff is None:
+        if seg.tau_index is None:
+            # A manually constructed boundary map with no time substitution.
+            return decomposition
+        raise ValueError("endpoint carry lost its substitution error")
+    if seg.endpoint_cutoff_remainder is None or seg.endpoint_raw_tm is None:
+        raise ValueError("endpoint carry lost its new remainder contributions")
+    ledger = decomposition.ledger
+    for category, values in (
+        ("roundoff_safeguard", seg.endpoint_substitution_roundoff),
+        ("cutoff", seg.endpoint_cutoff_remainder),
+    ):
+        lo = torch.stack([value.lo for value in values]).reshape(1, -1)
+        hi = torch.stack([value.hi for value in values]).reshape(1, -1)
+        ledger = ledger.add(category, lo, hi)
+    required_lo, required_hi = _tmvector_remainder_tensor(seg.endpoint_raw_tm)
+    ledger, lo, hi = ledger.covering_total(required_lo, required_hi)
+    return replace(
+        decomposition, ledger=ledger, decomposition_lo=lo, decomposition_hi=hi,
+        contains_image=((lo <= required_lo) & (hi >= required_hi)).all(dim=1),
+    )
+
+
 def _flowstar_bounded_source_ledger_transition(
     seg: FlowpipeSegment,
     previous_state: FlowstarNormalFlowpipeState,
@@ -2508,7 +2553,7 @@ def _flowstar_bounded_source_ledger_transition(
         raise ValueError("bounded source-ledger transition requires an initialized accepted state")
     if seg.status != "validated" or seg.validated_remainder_decomposition is None:
         raise ValueError("bounded source-ledger transition requires an accepted dense ledger")
-    decomposition = seg.validated_remainder_decomposition
+    decomposition = _endpoint_remainder_decomposition(seg)
     if not bool(torch.all(decomposition.contains_image)):
         raise FloatingPointError("validated dense ledger does not contain the accepted Picard image")
     if decomposition.ledger.category_order != REMAINDER_LEDGER_CATEGORIES:
@@ -2818,7 +2863,7 @@ def _flowstar_g2_shared_column_transition(
         raise ValueError("G2 transition requires initialized accepted source state")
     if seg.status != "validated" or seg.validated_remainder_decomposition is None:
         raise ValueError("G2 transition requires an accepted complete dense ledger")
-    decomposition = seg.validated_remainder_decomposition
+    decomposition = _endpoint_remainder_decomposition(seg)
     if not bool(torch.all(decomposition.contains_image)):
         raise FloatingPointError("G2 complete ledger does not contain accepted Picard image")
     if decomposition.ledger.category_order != REMAINDER_LEDGER_CATEGORIES:
@@ -3292,8 +3337,9 @@ def _flowstar_structured_insertion_transition(
         inverse_scale=new_inverse,
     )
 
+    endpoint_decomposition = _endpoint_remainder_decomposition(seg)
     typed_sources = {
-        category: tuple(value.clone() for value in seg.validated_remainder_ledger.entries[category])
+        category: tuple(value.clone() for value in endpoint_decomposition.ledger.entries[category])
         for category in REMAINDER_LEDGER_CATEGORIES
     }
     eligible_centers: list[OutwardIntervalTensor] = []
@@ -6087,11 +6133,22 @@ def _flowpipe_step_from_tm_hybrid_dense(
         counters=counters,
         segment_boundary=True,
     )
-    endpoint_raw_tm = (
-        segment_tm.substitute_const(tau_index, float(h)).drop_variable(tau_index).apply_cutoff(cutoff_threshold)
-        if dense_result.accepted
-        else None
-    )
+    endpoint_raw_tm, endpoint_roundoff, endpoint_cutoff = None, None, None
+    if dense_result.accepted:
+        try:
+            endpoint_raw_tm, endpoint_roundoff = segment_tm.substitute_const_with_roundoff(tau_index, float(h))
+            endpoint_raw_tm, endpoint_cutoff = endpoint_raw_tm.drop_variable(tau_index).apply_cutoff_with_remainder(cutoff_threshold)
+            if not intervals_are_finite(endpoint_raw_tm.range_box()):
+                raise FloatingPointError("nonfinite published endpoint after cutoff")
+        except (FloatingPointError, RuntimeError, ValueError) as exc:
+            return FlowpipeSegment(
+                tm=segment_tm, final_tm=x0_tm, status="failed", h=float(h), order=int(order),
+                validation_attempts=dense_result.validation_attempts,
+                message=f"endpoint substitution failed closed: {type(exc).__name__}: {exc}",
+                tau_index=tau_index, endpoint_semantics="unpublished_rejected_step",
+                backend_lane="hybrid_dense_core", backend_counters=counters.as_dict(),
+                backend_trace=dense_result.trace,
+            )
     final_tm = endpoint_raw_tm if endpoint_raw_tm is not None else x0_tm
 
     context = dict(diagnostics_context or {})
@@ -6133,6 +6190,9 @@ def _flowpipe_step_from_tm_hybrid_dense(
         endpoint_semantics=("endpoint_raw_segment_substitution" if dense_result.accepted else "unpublished_rejected_step"),
         endpoint_tightening_applied=False,
         endpoint_tightening_validation_method="not_applied_dense_raw_endpoint",
+        endpoint_substitution_roundoff=endpoint_roundoff,
+        endpoint_cutoff_remainder=endpoint_cutoff,
+        dense_endpoint_ledger=(dense_result.raw_endpoint.ledger if dense_result.raw_endpoint is not None else None),
         backend_lane="hybrid_dense_core",
         backend_counters=counters.as_dict(),
         backend_trace=dense_result.trace,
@@ -6420,8 +6480,18 @@ def flowpipe_step_from_tm(
             symbolic_remainder=symbolic_remainder,
             max_symbolic_remainders=max_symbolic_remainders,
         )
-    endpoint_raw_tm = validated.substitute_const(tau_index, float(h)).drop_variable(tau_index)
-    endpoint_raw_tm = endpoint_raw_tm.apply_cutoff(cutoff_threshold)
+    try:
+        endpoint_raw_tm, endpoint_roundoff = validated.substitute_const_with_roundoff(tau_index, float(h))
+        endpoint_raw_tm, endpoint_cutoff = endpoint_raw_tm.drop_variable(tau_index).apply_cutoff_with_remainder(cutoff_threshold)
+        if not intervals_are_finite(endpoint_raw_tm.range_box()):
+            raise FloatingPointError("nonfinite published endpoint after cutoff")
+    except (FloatingPointError, RuntimeError, ValueError) as exc:
+        return FlowpipeSegment(
+            tm=validated, final_tm=x0_tm, status="failed", h=float(h), order=int(order),
+            validation_attempts=attempts,
+            message=f"endpoint substitution failed closed: {type(exc).__name__}: {exc}",
+            tau_index=tau_index, endpoint_semantics="unpublished_rejected_step",
+        )
     endpoint_tightened_tm = endpoint_raw_tm
     endpoint_tightening_applied = False
     endpoint_tightening_validation_method = "not_applied"
@@ -6447,11 +6517,14 @@ def flowpipe_step_from_tm(
                     .range_box()
                     .inflate(validation_eps)
                 )
-                endpoint_poly = cand_i.polynomial.substitute_const(tau_index, float(h)).drop_variable(tau_index)
+                endpoint_poly, endpoint_error, _ = cand_i.polynomial.substitute_const_with_roundoff(
+                    tau_index, float(h), cand_i.domain,
+                )
+                endpoint_poly = endpoint_poly.drop_variable(tau_index)
                 endpoint_domain = [d for i, d in enumerate(domain) if i != tau_index]
                 final_models.append(TaylorModel(
                     endpoint_poly,
-                    endpoint_residual,
+                    endpoint_residual + endpoint_error,
                     endpoint_domain,
                     order=candidate_order_i,
                     truncation_range_split=cand_i.truncation_range_split,
@@ -6539,6 +6612,8 @@ def flowpipe_step_from_tm(
             else "endpoint_raw_segment_substitution"
         ),
         endpoint_tightening_applied=endpoint_tightening_applied,
+        endpoint_substitution_roundoff=endpoint_roundoff,
+        endpoint_cutoff_remainder=endpoint_cutoff,
         endpoint_tightening_validation_method=endpoint_tightening_validation_method,
     )
 

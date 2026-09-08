@@ -41,6 +41,7 @@ REMAINDER_LEDGER_CATEGORIES = (
     "roundoff_safeguard",
     "reset_or_reconditioning",
 )
+_ALL_REMAINDER_LEDGER_CATEGORIES = REMAINDER_LEDGER_CATEGORIES + ("endpoint_substitution_roundoff",)
 
 VALIDATED_REMAINDER_SOURCE_SCHEMA = "torch_tm_flowpipe_validated_remainder_sources"
 VALIDATED_REMAINDER_SOURCE_SCHEMA_VERSION = 1
@@ -239,11 +240,11 @@ class DenseRemainderLedger:
     entries: Mapping[str, tuple[torch.Tensor, torch.Tensor]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        unknown = set(self.entries) - set(REMAINDER_LEDGER_CATEGORIES)
+        unknown = set(self.entries) - set(_ALL_REMAINDER_LEDGER_CATEGORIES)
         if unknown:
             raise ValueError(f"unknown remainder ledger categories: {sorted(unknown)}")
         canonical: dict[str, tuple[torch.Tensor, torch.Tensor]] = {}
-        for name in REMAINDER_LEDGER_CATEGORIES:
+        for name in _ALL_REMAINDER_LEDGER_CATEGORIES:
             if name not in self.entries:
                 continue
             lo, hi = self.entries[name]
@@ -264,7 +265,7 @@ class DenseRemainderLedger:
         lo: torch.Tensor,
         hi: torch.Tensor,
     ) -> "DenseRemainderLedger":
-        if category not in REMAINDER_LEDGER_CATEGORIES:
+        if category not in _ALL_REMAINDER_LEDGER_CATEGORIES:
             raise ValueError(f"unknown remainder ledger category: {category}")
         entries = dict(self.entries)
         lo_t = lo.clone()
@@ -297,6 +298,30 @@ class DenseRemainderLedger:
             lo, hi = _interval_add(lo, hi, entry_lo, entry_hi)
         return lo, hi
 
+    def covering_total(
+        self, required_lo: torch.Tensor, required_hi: torch.Tensor,
+    ) -> tuple["DenseRemainderLedger", torch.Tensor, torch.Tensor]:
+        """Reconcile only outward summation padding, with an explicit postcheck.
+
+        Existing arithmetic can accumulate a remainder in a different order
+        from its named ledger. Never silently use a narrower ledger total at
+        the substitution boundary. Each padding update is checked again; an
+        unrepresentable finite reconciliation fails instead of discarding R.
+        """
+        from .endpoint_substitution import _finite
+
+        _finite(required_lo, required_hi)
+        ledger = self
+        for _ in range(4):
+            lo, hi = ledger.total(required_lo)
+            _finite(lo, hi)
+            if bool(torch.all(lo <= required_lo) and torch.all(hi >= required_hi)):
+                return ledger, lo, hi
+            pad_lo = torch.where(required_lo < lo, _down(required_lo - lo), torch.zeros_like(lo))
+            pad_hi = torch.where(required_hi > hi, _up(required_hi - hi), torch.zeros_like(hi))
+            ledger = ledger.add("roundoff_safeguard", pad_lo, pad_hi)
+        raise FloatingPointError("endpoint remainder ledger cannot enclose its actual input sum")
+
     def complete(self, like: torch.Tensor) -> "DenseRemainderLedger":
         """Return the canonical schema with explicit zero rows for all categories."""
         out = DenseRemainderLedger.empty()
@@ -306,6 +331,8 @@ class DenseRemainderLedger:
                 (torch.zeros_like(like), torch.zeros_like(like)),
             )
             out = out.add(category, lo, hi)
+        if "endpoint_substitution_roundoff" in self.entries:
+            out = out.add("endpoint_substitution_roundoff", *self.entries["endpoint_substitution_roundoff"])
         return out
 
     @property
@@ -2200,6 +2227,22 @@ class BatchedPolynomial:
             return torch.einsum("bt,bot->bo", monomials, self.coeffs)
         return torch.einsum("bnt,bot->bno", monomials, self.coeffs)
 
+    def substitute_const_and_drop_with_roundoff(
+        self, var_index: int, value: Any, domain_lo: torch.Tensor, domain_hi: torch.Tensor,
+    ) -> tuple["BatchedPolynomial", torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        from .endpoint_substitution import enclose_constant_substitution
+
+        poly = self.substitute_const_and_drop(var_index, value)
+        values = torch.as_tensor(value, dtype=self.coeffs.dtype, device=self.coeffs.device)
+        if values.ndim == 0:
+            values = values.expand(self.batch)
+        lo, hi, error_lo, error_hi = enclose_constant_substitution(
+            self.coeffs, [tuple(e) for e in self.basis.exponents.detach().cpu().tolist()],
+            poly.coeffs, [tuple(e) for e in poly.basis.exponents.detach().cpu().tolist()],
+            int(var_index), values, domain_lo, domain_hi,
+        )
+        return poly, error_lo, error_hi, lo, hi
+
     def component(self, index: int) -> "BatchedPolynomial":
         idx = int(index)
         return BatchedPolynomial(self.coeffs[:, idx : idx + 1, :], self.basis)
@@ -2590,6 +2633,8 @@ class BatchedTaylorModel:
         )
         rem_lo, rem_hi = _interval_add(self.rem_lo, self.rem_hi, cutoff_lo, cutoff_hi)
         ledger = self.ledger.add("cutoff", cutoff_lo, cutoff_hi)
+        if "endpoint_substitution_roundoff" in ledger.entries:
+            ledger, rem_lo, rem_hi = ledger.covering_total(rem_lo, rem_hi)
         return BatchedTaylorModel(poly, rem_lo, rem_hi, self.domain_lo, self.domain_hi, ledger, self.range_policy, self.range_trace)
 
     def range_bound(self, *, context: str = "retained_polynomial") -> tuple[torch.Tensor, torch.Tensor]:
@@ -2608,11 +2653,21 @@ class BatchedTaylorModel:
         )
 
     def endpoint(self, var_index: int, value: Any) -> "BatchedTaylorModel":
-        poly = self.poly.substitute_const_and_drop(var_index, value)
+        from .endpoint_substitution import _finite
+
+        _finite(self.rem_lo, self.rem_hi)
+        poly, error_lo, error_hi, _, _ = self.poly.substitute_const_and_drop_with_roundoff(
+            var_index, value, self.domain_lo, self.domain_hi,
+        )
         index = int(var_index)
         domain_lo = torch.cat([self.domain_lo[:, :index], self.domain_lo[:, index + 1 :]], dim=1)
         domain_hi = torch.cat([self.domain_hi[:, :index], self.domain_hi[:, index + 1 :]], dim=1)
-        return BatchedTaylorModel(poly, self.rem_lo, self.rem_hi, domain_lo, domain_hi, self.ledger, self.range_policy, self.range_trace)
+        # Only the newly created coefficient error is added as a source. A
+        # checked padding reconciliation preserves the complete incoming R.
+        ledger = self.ledger.add("endpoint_substitution_roundoff", error_lo, error_hi)
+        required_lo, required_hi = _interval_add(self.rem_lo, self.rem_hi, error_lo, error_hi)
+        ledger, rem_lo, rem_hi = ledger.covering_total(required_lo, required_hi)
+        return BatchedTaylorModel(poly, rem_lo, rem_hi, domain_lo, domain_hi, ledger, self.range_policy, self.range_trace)
 
     def component(self, index: int) -> "BatchedTaylorModel":
         idx = int(index)
@@ -4938,7 +4993,16 @@ def dense_picard_validate_step(
                     refined_hi,
                     category="picard_residual",
                 )
-            endpoint = last_segment_model.endpoint(tau_index, float(h))
+            try:
+                endpoint = last_segment_model.endpoint(tau_index, float(h))
+            except (FloatingPointError, RuntimeError, ValueError) as exc:
+                return DenseValidatedStep(
+                    last_segment_model, None, "nonfinite", attempt,
+                    f"endpoint substitution failed closed: {type(exc).__name__}: {exc}",
+                    contract, counters, tuple(trace), last_image_lo, last_image_hi,
+                    last_image_lo, last_image_hi, last_margin,
+                    last_image_lo, last_image_hi, last_decomposition,
+                )
             return DenseValidatedStep(
                 last_segment_model,
                 endpoint,

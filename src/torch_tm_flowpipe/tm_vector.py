@@ -66,6 +66,10 @@ class TMVector:
     def substitute_const(self, var_index: int, value: Any) -> "TMVector":
         return TMVector(m.substitute_const(var_index, value) for m in self.models)
 
+    def substitute_const_with_roundoff(self, var_index: int, value: Any) -> tuple["TMVector", tuple[Interval, ...]]:
+        results = [m.substitute_const_with_roundoff(var_index, value) for m in self.models]
+        return TMVector(m for m, _ in results), tuple(error for _, error in results)
+
     def drop_variable(self, var_index: int, *, require_zero_exponent: bool = True) -> "TMVector":
         return TMVector(m.drop_variable(var_index, require_zero_exponent=require_zero_exponent) for m in self.models)
 
@@ -84,6 +88,10 @@ class TMVector:
         if threshold is None:
             return self
         return TMVector(m.apply_cutoff(threshold) for m in self.models)
+
+    def apply_cutoff_with_remainder(self, threshold: float | None) -> tuple["TMVector", tuple[Interval, ...]]:
+        results = [m.apply_cutoff_with_remainder(threshold) for m in self.models]
+        return TMVector(m for m, _ in results), tuple(error for _, error in results)
 
     def __add__(self, other: "TMVector") -> "TMVector":
         if len(self) != len(other):

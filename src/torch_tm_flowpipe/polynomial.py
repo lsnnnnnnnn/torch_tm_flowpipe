@@ -392,6 +392,7 @@ class Polynomial:
         return total
 
     def substitute_const(self, var_index: int, value: Any) -> "Polynomial":
+        """Point coefficients only; guaranteed interfaces use the enclosure API."""
         if var_index < 0 or var_index >= self.n_vars:
             raise IndexError(var_index)
         v = _coef(value, like=next(iter(self.terms.values())) if self.terms else None)
@@ -404,6 +405,33 @@ class Polynomial:
             new_exp_t = tuple(new_exp)
             out[new_exp_t] = out.get(new_exp_t, torch.zeros_like(val)) + val
         return Polynomial(out, self.n_vars)
+
+    def substitute_const_with_roundoff(
+        self, var_index: int, value: Any, domain: Sequence[Interval],
+    ) -> tuple["Polynomial", Interval, dict[Exponent, Interval]]:
+        """Return retained coefficients, their error range, and q* enclosures."""
+        from .endpoint_substitution import enclose_constant_substitution
+
+        if len(domain) != self.n_vars:
+            raise ValueError("substitution domain length differs from n_vars")
+        if not 0 <= var_index < self.n_vars:
+            raise IndexError(var_index)
+        poly = self.substitute_const(var_index, value)
+        reference = next(iter(self.terms.values()), domain[var_index].lo)
+        exponents = list(self.terms) or [(0,) * self.n_vars]
+        coeffs = torch.stack([self.terms.get(e, torch.zeros_like(reference)) for e in exponents]).reshape(1, 1, -1)
+        reduced = sorted({e[:var_index] + e[var_index + 1:] for e in exponents})
+        full = [e[:var_index] + (0,) + e[var_index:] for e in reduced]
+        points = torch.stack([poly.terms.get(e, torch.zeros_like(reference)) for e in full]).reshape(1, 1, -1)
+        lo, hi, error_lo, error_hi = enclose_constant_substitution(
+            coeffs, exponents, points, reduced, var_index,
+            torch.as_tensor(value, dtype=reference.dtype, device=reference.device).reshape(1),
+            torch.stack([d.lo for d in domain]).reshape(1, -1),
+            torch.stack([d.hi for d in domain]).reshape(1, -1),
+        )
+        return poly, Interval(error_lo[0, 0], error_hi[0, 0]), {
+            e: Interval(lo[0, 0, i], hi[0, 0, i]) for i, e in enumerate(full)
+        }
 
     def drop_variable(self, var_index: int, *, require_zero_exponent: bool = True) -> "Polynomial":
         if var_index < 0 or var_index >= self.n_vars:
