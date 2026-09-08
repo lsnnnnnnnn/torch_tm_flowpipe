@@ -75,7 +75,7 @@ def assemble(work,root,repository=ROOT):
     for name,key in [('timings_raw.csv','timings_raw'),('timing_summary.csv','timing_summary'),('full_width_equivalence.csv','widths')]:write_csv(root/name,data[key])
     for key in ('profile_windows','replay_work_counts','remaining_hotspots'):write_csv(root/f'{key}.csv',diagnostics[key])
     write_csv(root/'flowstar_reused_widths.csv',flowstar['widths']);write_csv(root/'flowstar_reused_summary.csv',flowstar['summary'])
-    write_json(root/'full_run_summaries.json',data['full']);write_json(root/'RESULT.json',data['result'])
+    write_json(root/'full_run_summaries.json',data['full_summaries']);write_json(root/'RESULT.json',data['result'])
     write_json(raw/'archive_bridges.json',data['archive_bridges'])
     write_json(root/'same_input_replay_equivalence.json',replay_summary(root,recompute=False))
     decision=dict(mechanisms_implemented=['prepared_remainder_replay'],preregistration=read(raw/'candidate_preregistration.json'),

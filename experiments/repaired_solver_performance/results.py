@@ -44,7 +44,9 @@ def compare_archive(archive,new_path):
     with gzip.open(archive/'models.jsonl.gz','rt') as a,gzip.open(new_path/'models.jsonl.gz','rt') as b:
         for left,right in zip(a,b,strict=True):
             require(exact(json.loads(left))==exact(json.loads(right)),'reused repaired full model mismatch')
-    return dict(data_origin='REUSED_ENDPOINT_REPAIRED',steps=len(old_bounds),rejections=new['summary']['rejected_attempts'],
+    return dict(archive_data_origin='REUSED_ENDPOINT_REPAIRED',new_data_origin=new['source']['data_origin'],
+                new_scientific_sha=new['source']['scientific_sha'],steps=len(old_bounds),rejections=new['summary']['rejected_attempts'],
+                actual_sum_h=new['summary']['accepted_horizon_exact'],scheduler_time_hex=new['summary']['scheduler_time_hex'],
                 all_h_bounds_models_E_normal_state_queue_replay_bit_identical=True,speed_claim=False)
 
 
@@ -173,5 +175,8 @@ def derive(root,repository):
         mathematical_equivalence='binary64 equality; no tolerance; all endpoint/tube models, E, state/queue hashes and replay decisions',
         preparation_in_solve=True,adaptive_speed_claim=False,flowstar_fresh_speed_claim=False,
         whole_solver_formally_proved=False,gpu_backend_decided=False)
-    return dict(timings_raw=rows,timing_summary=timing_summary,pairs=pairs,full=full,widths=widths,
+    full_summaries=dict(fixed_matched_pairs=full,
+        fixed_run_records={name:run['summary'] for name,run in runs.items() if name.startswith('full_')},
+        adaptive_run_record=runs['adaptive_van_der_pol_prepared_remainder_replay']['summary'],adaptive_archive_equivalence=adaptive)
+    return dict(timings_raw=rows,timing_summary=timing_summary,pairs=pairs,full=full,full_summaries=full_summaries,widths=widths,
                 archive_bridges=archive_bridges,result=result)

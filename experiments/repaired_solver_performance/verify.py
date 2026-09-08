@@ -104,6 +104,18 @@ def verify_test_records(root):
     return dict(unique_totals=totals,groups=groups,targeted_and_clone_repeats_not_added_again=True)
 
 
+def verify_artifact_test_records(root):
+    directory=root/'tests';command=read(directory/'artifact_tests_command.json')
+    require(command['exit_code']==int((directory/'artifact_tests.exit').read_text())==0,'artifact test process failed')
+    require(command['source_clean_at_start'] and command['source_clean_at_end'],'dirty artifact test source')
+    require(read(directory/'commands.json')['artifact_tests']==command,'artifact test command record differs')
+    counts=dict(tests=0,failures=0,errors=0,skipped=0)
+    for suite in ET.parse(directory/'artifact_tests.xml').getroot().iter('testsuite'):
+        for key in counts:counts[key]+=int(suite.get(key,0))
+    require(counts==dict(tests=6,failures=0,errors=0,skipped=0),'six distinct semantic artifact cases must pass')
+    return dict(passed=6,skipped=0,failed=0,errors=0,source_sha=command['source_sha'])
+
+
 def verify_endpoints(path):
     """Reuse repaired endpoint operations; recompute every saved object and E.
 
@@ -176,7 +188,7 @@ def verify(root,*,recompute=True,repository=ROOT):
     data=derive(root,repository)
     for name,key in [('timings_raw.csv','timings_raw'),('timing_summary.csv','timing_summary'),('full_width_equivalence.csv','widths')]:
         csv_equal(root/name,data[key])
-    require(exact(read(root/'full_run_summaries.json'))==exact(data['full']),'full result derivation')
+    require(exact(read(root/'full_run_summaries.json'))==exact(data['full_summaries']),'full result derivation')
     require(exact(read(root/'RESULT.json'))==exact(data['result']),'final status must follow measured data')
     require(exact(read(root/'raw_minimal/archive_bridges.json'))==exact(data['archive_bridges']),'archive runtime bridge')
     diagnostics=profile_tables(root)
@@ -200,6 +212,9 @@ def verify(root,*,recompute=True,repository=ROOT):
     if recompute:
         for plant in PLANTS:endpoints.append(verify_endpoints(root/'raw_minimal/fresh_reference'/plant))
         endpoints.append(verify_endpoints(root/'raw_minimal/production/adaptive_van_der_pol_prepared_remainder_replay'))
+    artifact_tests=verify_artifact_test_records(root)
+    tests['additional_artifact_cases']=artifact_tests
+    tests['unique_totals_including_artifact_cases']=dict(passed=tests['unique_totals']['passed']+artifact_tests['passed'],skipped=tests['unique_totals']['skipped'],failed=0,errors=0)
     return dict(passed=True,files=file_count,identity=identity,tests=tests,replay=replays,
                 exact_saved_endpoint_recomputations=endpoints,full_math_recomputed=recompute,
                 status=data['result']['status'],fresh_full_pairs=2,short_matched_pairs=21,long_ODE_solves_rerun=False)
