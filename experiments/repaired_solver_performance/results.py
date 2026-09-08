@@ -118,7 +118,7 @@ def production_records(root):
             prepared_operation_hits=work.get('prepared_operation_hits',0),
             start_unix=command['start_unix'],finish_unix=command['finish_unix'],
             load_before=json.dumps(command['load_before']),load_after=json.dumps(command['load_after'])))
-        runs[name]=run
+        runs[name]=dict(source=source,summary=summary,contract=run['contract'])
     # All production tasks share one CPU and must not overlap in wall clock.
     chronological=sorted(rows,key=lambda r:r['start_unix'])
     require(all(a['finish_unix']<=b['start_unix'] for a,b in zip(chronological,chronological[1:])),'overlapping formal production processes')
