@@ -31,7 +31,7 @@ PYTHONPATH=src:. OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
 各窗口和100步前缀至少3对、交替先后顺序；固定完整各一对，自适应新优化只做
 合同/状态一致性，不主张自适应速度。
 
-正式长跑固定在 `e3e69138c1cf91018f301d180c5f9f5223720131`。若自行重跑，
+正式长跑固定在 `513cc6a1925f52bac38600cdd5e5759fba48bc6a`。若自行重跑，
 先在该提交创建干净 checkout，再执行上述协调器；最终 package 的提交另有
 分析、验证器与报告，不能把它标成已有长跑的来源。
 

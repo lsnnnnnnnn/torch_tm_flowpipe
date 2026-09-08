@@ -13,8 +13,8 @@ from experiments.endpoint_roundoff_repair.frozen import ROOT, MATCHED_SHA256, se
 from experiments.xiangru_adoption.common import measure
 from experiments.repaired_solver_performance.compare import compare_pair
 
-SCIENTIFIC_SHA='e3e69138c1cf91018f301d180c5f9f5223720131'
-RUNTIME_SHA='dc93b8ea5db3a8c64926167447768d756f583b2a'
+SCIENTIFIC_SHA='513cc6a1925f52bac38600cdd5e5759fba48bc6a'
+RUNTIME_SHA='513cc6a1925f52bac38600cdd5e5759fba48bc6a'
 BASE_SHA='7e41f33f515f5315b0dec7003a5b06ed0a79afd5'
 FULL_NAMES=('brusselator_full_reference','brusselator_full_optimized',
             'vdp_full_reference','vdp_full_optimized','vdp_adaptive_optimized')

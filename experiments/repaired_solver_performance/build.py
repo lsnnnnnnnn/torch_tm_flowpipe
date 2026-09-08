@@ -44,6 +44,30 @@ def collect_formal(source,target):
     shutil.copytree(source/'brusselator_full_reference/checkpoint_0980',target/'brusselator_full_reference/checkpoint_0980',dirs_exist_ok=True)
 
 
+def collect_tests(work_root,output):
+    """Copy completed commands only; repeated startup/local tests are uncounted."""
+    from experiments.repaired_solver_performance.run_tests import accounting
+    directory=output/'tests';directory.mkdir(exist_ok=True)
+    source=work_root/'evidence/tests/finalpackage_v2'
+    commands=read_json(source/'commands.json')
+    assert all(c.get('exit_code')==0 for c in commands),'test job still running or failed'
+    for command in commands:
+        for key in ['xml','log','exit']:
+            if key in command:shutil.copy2(source/Path(command[key]).name,output/command[key])
+    for original in read_json(work_root/'evidence/tests/parent/commands.json'):
+        command={**original,'name':'parent_'+original['name'],'count_in_final_matrix':False}
+        for suffix in ['log','exit','xml']:
+            path=work_root/'evidence/tests/parent'/(original['name']+'.'+suffix)
+            if path.exists():
+                command[suffix]='tests/'+command['name']+'.'+suffix
+                shutil.copy2(path,output/command[suffix])
+        commands.append(command)
+    write_json(directory/'commands.json',commands)
+    for name in ['historical_fixture_recovery.json','MATRIX_COMPLETED.json']:
+        if (source/name).is_file():shutil.copy2(source/name,directory/name)
+    return accounting(output)
+
+
 def figures(output,widths,timings,work,remaining,amdahl,flow):
     import matplotlib
     matplotlib.use('Agg')
@@ -101,7 +125,7 @@ def figures(output,widths,timings,work,remaining,amdahl,flow):
 
 def assemble(work_root,output):
     work_root,output=Path(work_root),Path(output)
-    formal=work_root/'evidence/formal'
+    formal=work_root/'evidence/formal_final'
     assert read_json(formal/'SCHEDULE_COMPLETED.json')['source_sha']==SCIENTIFIC_SHA
     output.mkdir(parents=True,exist_ok=True)
     raw=output/'raw_minimal/formal';collect_formal(formal,raw)
@@ -114,6 +138,9 @@ def assemble(work_root,output):
         shutil.copytree(work_root/f'evidence/prototype_light_{mode}',output/f'raw_minimal/prototype_light_{mode}',dirs_exist_ok=True)
     shutil.copy2(work_root/'GOAL_FROZEN.md',output/'raw_minimal/GOAL_FROZEN.md')
     shutil.copy2(work_root/'measurement_instrumentation_adjustment.json',output/'raw_minimal/measurement_instrumentation_adjustment.json')
+    shutil.copy2(work_root/'admission_guard_adjustment.json',output/'raw_minimal/admission_guard_adjustment.json')
+    for name in ['impure_rhs_gate_reproducer.py','impure_rhs_gate_reproducer.json']:
+        shutil.copy2(work_root/'evidence'/name,output/'raw_minimal'/name)
     write_json(output/'SOURCE_MAP.json',{'base_sha':BASE_SHA,'runtime_sha':RUNTIME_SHA,'scientific_sha':SCIENTIFIC_SHA,
         'repaired_reference_runtime_sha':'0714e475ed9e73bec31619c9c690d1fd63de3d36',
         'repaired_archive_sha':'196a50e9131336d68df07ad0af353deca0092d19',

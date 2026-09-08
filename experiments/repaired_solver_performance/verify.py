@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import subprocess
 import xml.etree.ElementTree as ET
 
@@ -106,6 +107,10 @@ def check_tests(root):
     unique={};groups={}
     for command in commands:
         assert command['exit_code']==0
+        assert re.fullmatch('[0-9a-f]{40}',command['source_sha'])
+        assert re.fullmatch('[a-z0-9_]+',command['name'])
+        for key in ['log','exit','xml']:
+            if key in command:assert command[key]==f"tests/{command['name']}.{key}"
         if command['name']=='old_stop_snapshot':assert command['source_sha']=='73c3b48a3dadd81cd03ecc827bde1228ef7f6ac8'
         elif command['name'].startswith('parent_') or command['name']=='repaired_parent_evidence':assert command['source_sha']==BASE_SHA
         else:
@@ -131,6 +136,28 @@ def check_tests(root):
     expected={'unique_totals':dict(Counter(unique.values())),'groups':groups,'repeated_local_and_clone_tests_added_again':False}
     assert read_json(root/'tests/FINAL_TEST_ACCOUNTING.json')==expected
     return expected
+
+
+def check_captured_checkpoints(root):
+    from torch_tm_flowpipe import load_terminal_checkpoint, tmvector_hashes, accepted_boundary_sr_queue_sha256
+    raw=root/'raw_minimal/formal'
+    for path,index,plant,run,order in [
+        (root/'raw_minimal/checkpoint_0090',90,'van_der_pol','vdp_full_reference',4),
+        (raw/'brusselator_full_reference/checkpoint_0980',980,'brusselator','brusselator_full_reference',6),
+    ]:
+        restored=load_terminal_checkpoint(path,expected_dtype='float64',expected_order=order)
+        assert restored.normal_state.step_index==index and restored.contract['plant']==plant
+        audit=json.loads((raw/run/'endpoint_audit.jsonl').read_text().splitlines()[index-1])
+        assert restored.scheduler['time_exact']==audit['t_end_exact']
+        assert accepted_boundary_sr_queue_sha256(restored.normal_state.symbolic_queue)==audit['queue_sha256']
+        for name,tm in [('current',restored.current),('normal_pre',restored.normal_state.tmv_pre),
+                        ('normal_right',restored.normal_state.tmv_right)]:
+            assert tmvector_hashes(tm)==audit['state_hashes'][name]
+        if index==90:
+            old=read_json(raw/'vdp90_source.json')
+            assert old['manifest']==restored.manifest and old['provenance']==restored.provenance
+            assert old['reused_complete_state']
+        else:assert restored.provenance['scientific_sha']==SCIENTIFIC_SHA
 
 
 def verify(root):
@@ -229,6 +256,7 @@ def verify(root):
     archive=[compare_repaired_archive(raw/name,old/archive) for name,archive in
              [('brusselator_full_reference','brusselator_full'),('vdp_full_reference','vdp_full'),('vdp_adaptive_optimized','vdp_adaptive')]]
     assert read_json(raw/'repaired_archive_equivalence.json')==archive
+    check_captured_checkpoints(root)
     flow,flow_summary=flowstar_widths(raw)
     same_csv(root/'reused_flowstar_widths.csv',flow)
     assert read_json(root/'reused_flowstar_width_summary.json')==flow_summary
