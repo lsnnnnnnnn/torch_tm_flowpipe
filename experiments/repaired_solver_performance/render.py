@@ -37,15 +37,18 @@ def figures(root,data,diagnostics,flowstar):
         fig.suptitle(f'{plant.replace("_"," ").title()} | existing common observer; Flow* reused',y=1.01)
         save(fig,f'{plant}_flowstar_reused_widths')
 
-    full=[r for r in data['timings_raw'] if r['stage']=='full']
-    full.sort(key=lambda r:(r['plant'],r['execution_mode']!='reference'))
-    labels=[('Bruss' if r['plant']=='brusselator' else 'VDP')+'\n'+('reference' if r['execution_mode']=='reference' else 'prepared') for r in full]
-    fig,axes=plt.subplots(1,3,figsize=(12,4.4))
-    for ax,key,title in zip(axes,('solve_seconds','setup_seconds','export_seconds'),('Full numerical solve (includes plan)','Initialization','Export and checkpoints')):
-        values=[r[key] for r in full]
-        bars=ax.bar(range(4),values,color=[colors[i%2] for i in range(4)])
-        ax.bar_label(bars,fmt='%.3f',fontsize=8);ax.set_xticks(range(4),labels);ax.set_title(title);ax.set_ylabel('Seconds');ax.margins(y=.18)
-    save(fig,'full_timing_categories')
+    for stage,figure_name,caption in [('confirmation_full','full_timing_categories','Primary: adjacent confirmation pairs'),
+                                     ('full','initial_full_timing_categories','Initial runs: changing machine load; all retained')]:
+        full=[r for r in data['timings_raw'] if r['stage']==stage]
+        full.sort(key=lambda r:(r['plant'],r['execution_mode']!='reference'))
+        labels=[('Bruss' if r['plant']=='brusselator' else 'VDP')+'\n'+('reference' if r['execution_mode']=='reference' else 'prepared') for r in full]
+        fig,axes=plt.subplots(1,3,figsize=(12,4.4))
+        for ax,key,title in zip(axes,('solve_seconds','setup_seconds','export_seconds'),('Full numerical solve (includes plan)','Initialization','Export and checkpoints')):
+            values=[r[key] for r in full]
+            bars=ax.bar(range(4),values,color=[colors[i%2] for i in range(4)])
+            ax.bar_label(bars,fmt='%.3f',fontsize=8);ax.set_xticks(range(4),labels);ax.set_title(title);ax.set_ylabel('Seconds');ax.margins(y=.18)
+        fig.suptitle(caption,y=1.02)
+        save(fig,figure_name)
 
     groups=defaultdict(list)
     for row in diagnostics['replay_work_counts']:groups[row['window']].append(row)

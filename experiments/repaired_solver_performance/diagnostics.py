@@ -79,7 +79,7 @@ def flowstar_tables(root,repository):
     old={(r['plant'],int(r['step']),r['range_kind'],r['state']):r for r in old if r['view']=='common'}
     widths=[];summary=[]
     for plant in PLANTS:
-        fresh=csv_rows(root/'raw_minimal/production'/f'full_{plant}_prepared_remainder_replay/bounds.csv')
+        fresh=csv_rows(root/'raw_minimal/confirmation'/f'confirm_full_{plant}_prepared_remainder_replay/bounds.csv')
         for row in fresh:
             for kind in ('endpoint','tube'):
                 for component in ('x','y'):

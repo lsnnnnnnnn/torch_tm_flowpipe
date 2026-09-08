@@ -48,6 +48,7 @@ def verify_sources(root,repository):
     source=read(root/'SOURCE_MAP.json')
     require(source['base_commit']==BASE and source['final_repaired_runtime']==REPAIRED,'fixed repaired parent identity')
     require(source['full_reference_scientific']==REFERENCE and source['production_candidate_scientific']==CANDIDATE,'fresh scientific identities')
+    require(source['confirmation_scientific']==CANDIDATE and source['primary_full_timing_set']=='confirmation','primary full timing source identity')
     require(source['tested_candidate_runtime']==RUNTIME,'actual matrix runtime identity')
     require(source['branch']=='codex/repaired-solver-prepared-replay-performance-20260908T084224Z','new branch identity')
     require(source['reused']['endpoint_repaired']['data_origin']=='REUSED_ENDPOINT_REPAIRED','reused endpoint archive cannot become fresh')
@@ -68,12 +69,13 @@ def verify_sources(root,repository):
         require(hashlib.sha256(git_blob(repository,BASE,name)).hexdigest()==sha==digest(repository/name),'frozen setup/RHS/contract file changed')
     context=read(root/'RUN_CONTEXT.json')
     require(context['BASE']==BASE and context['reference_scientific_sha']==REFERENCE and context['candidate_scientific_sha']==CANDIDATE,'run context scientific identity')
+    require(context['primary_full_reference_scientific_sha']==CANDIDATE and context['primary_full_timing_set']=='confirmation','primary matched source context')
     require(context['formal_affinity']==[3] and context['threads']==context['interop_threads']==1 and context['device']=='cpu' and context['dtype']=='float64','run context environment')
     require(not context['dependency_upgrades'] and not context['old_worktree_files_modified'],'run context scope')
     contracts={plant:read(root/'raw_minimal/fresh_reference'/plant/'execution_contract.json') for plant in PLANTS}
     contracts['van_der_pol_adaptive']=read(root/'raw_minimal/production/adaptive_van_der_pol_prepared_remainder_replay/execution_contract.json')
     require(read(root/'EXECUTION_CONTRACT.json')==contracts,'top-level effective configuration differs from raw runs')
-    for path in [*(root/'raw_minimal/fresh_reference').glob('*/source.json'),*(root/'raw_minimal/production').glob('*/source.json')]:
+    for path in [*(root/'raw_minimal/fresh_reference').glob('*/source.json'),*(root/'raw_minimal/production').glob('*/source.json'),*(root/'raw_minimal/confirmation').glob('*/source.json')]:
         run=read(path)
         for name,sha in run['source_files'].items():
             require(hashlib.sha256(git_blob(repository,run['scientific_sha'],name)).hexdigest()==sha,'actual recorded imported source file mismatch')

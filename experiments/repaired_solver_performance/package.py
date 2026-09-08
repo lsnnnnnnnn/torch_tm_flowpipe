@@ -29,9 +29,10 @@ def copy_new(source,target):
 
 def assemble(work,root,repository=ROOT):
     require((work/'production/COMPLETE.json').is_file(),'production sequence must complete before packaging')
+    require((work/'confirmation/COMPLETE.json').is_file(),'preregistered load confirmation pairs must complete before packaging')
     require((work/'matched_profiles/method.json').is_file(),'diagnostic sequence must complete before packaging')
     root.mkdir(parents=True,exist_ok=True);raw=root/'raw_minimal';raw.mkdir(exist_ok=True)
-    for name in ('fresh_reference','production','matched_profiles','baseline_profile','replay_windows'):
+    for name in ('fresh_reference','production','confirmation','matched_profiles','baseline_profile','replay_windows'):
         copy_new(work/name,raw/name)
     for name in ('candidate_preregistration.json','profile_parent.py','profile_current.py','capture_late.py','benchmark.log','matched_profiles.log'):
         copy_new(work/name,raw/name)
@@ -39,6 +40,7 @@ def assemble(work,root,repository=ROOT):
         copy_new(work/name,raw/name)
     copy_new(work/'contention_observation.json',raw/'contention_observation.json')
     copy_new(work/'contention_environment_snapshot.json',raw/'contention_environment_snapshot.json')
+    copy_new(work/'timing_confirmation_preregistration.json',raw/'timing_confirmation_preregistration.json')
     tests=root/'tests';tests.mkdir(exist_ok=True)
     copy_new(work/'full_matrix',tests/'full_matrix')
     copy_new(work/'startup',tests/'startup')
@@ -55,17 +57,19 @@ def assemble(work,root,repository=ROOT):
         package_commit=BASE,files={name:digest(repository/name) for name in names})
     source=dict(schema='repaired_solver_performance_sources/1',base_commit=BASE,final_repaired_runtime=REPAIRED,
         full_reference_scientific=REFERENCE,production_candidate_scientific=CANDIDATE,tested_candidate_runtime=RUNTIME,
+        confirmation_scientific=CANDIDATE,primary_full_timing_set='confirmation',
         branch='codex/repaired-solver-prepared-replay-performance-20260908T084224Z',
         candidate_runtime_files={str(p.relative_to(repository)):digest(p) for p in sorted((repository/'src/torch_tm_flowpipe').glob('*.py'))},
         frozen_execution_files={name:digest(repository/name) for name in ('experiments/endpoint_roundoff_repair/frozen.py',
             'experiments/run_vdp_dense_backend.py','experiments/run_brusselator_sr1000_parity.py',
             'artifacts/runs/xiangru_adoption_20260907T032448Z/MATCHED_CONTRACTS.json')},
         reused=reused,package_commit_is_scientific_source=False,
-        note='Reference runtime is exactly final repaired0714. All new source runtime files at formalf627 equal testedae6. Later helper/report/package commits do not claim to be the source of earlier runs.')
+        note='Initial reference runtime is exactly final repaired0714. Primary adjacent confirmation references usef627 with the unchanged reference path. All formalf627 runtime files equal testedae6. Later helper/report/package commits do not claim to be the source of earlier runs.')
     write_json(root/'SOURCE_MAP.json',source)
     context=read(work/'bootstrap.json')
     context.update(reference_source=str(work/'reference_source'),candidate_source=str(work/'candidate_source'),
         reference_scientific_sha=REFERENCE,candidate_scientific_sha=CANDIDATE,tested_runtime_sha=RUNTIME,
+        primary_full_reference_scientific_sha=CANDIDATE,primary_full_timing_set='confirmation',
         torch='2.5.1+cu121',device='cpu',dtype='float64',interop_threads=1,formal_affinity=[3],diagnostic_affinity=[6],
         dependency_upgrades=False,old_worktree_files_modified=False,profile_times_used_as_speed_denominator=False,
         reference_order_note='The single fresh sequential reference also supplied missing complete checkpoints90/980, so it precedes matched short windows as authorized by goal5.1.')

@@ -67,11 +67,22 @@ def production_records(root):
     require(len(candidate_commands)==45,'finite preregistered production sequence incomplete')
     complete=read(raw/'production/COMPLETE.json')
     require(complete==dict(source_sha=CANDIDATE,production_runs=45,matched_short_pairs=21),'production completion identity')
+    registration=read(raw/'timing_confirmation_preregistration.json')
+    require(registration['initial_full_result_not_yet_available'] and registration['new_full_pairs']==2,'confirmation was registered before selecting a full result')
+    initial_bruss=next(c for c in candidate_commands if c['name']=='full_brusselator_prepared_remainder_replay')
+    require(initial_bruss['start_unix']<registration['recorded_unix']<initial_bruss['finish_unix'],'confirmation decision time versus original full measurement')
+    confirmation_commands=read(raw/'confirmation/commands.json')
+    require(read(raw/'confirmation/COMPLETE.json')==dict(source_sha=CANDIDATE,production_runs=4,full_pairs=2),'confirmation completion identity')
+    require(len(confirmation_commands)==4,'exactly one confirmation full pair per plant')
+    for plant in PLANTS:
+        require([c['mode'] for c in confirmation_commands if c['plant']==plant]==registration['order'][plant],'registered confirmation ordering')
     ordered=[]
     for command in reference_commands:
         plant=command['plant'];ordered.append((f'full_{plant}_reference','full',command,raw/'fresh_reference'/plant,raw/'fresh_reference'/f'{plant}.log'))
     for command in candidate_commands:
         name=command['name'];ordered.append((name,command['stage'],command,raw/'production'/name,raw/'production'/f'{name}.log'))
+    for command in confirmation_commands:
+        name=command['name'];ordered.append((name,'confirmation_full',command,raw/'confirmation'/name,raw/'confirmation'/f'{name}.log'))
     for name,stage,command,directory,log in ordered:
         require(command['exit_code']==0,'nonzero production exit')
         run=read_run(directory);validate_run(run);summary=run['summary'];source=run['source']
@@ -143,28 +154,39 @@ def timing_pairs(root):
 def derive(root,repository):
     rows,runs=production_records(root)
     pairs,timing_summary=timing_pairs(root)
-    full={};widths=[]
+    full={};initial_full={};confirmation_bridges={};widths=[]
     for plant in PLANTS:
         reference=root/'raw_minimal/fresh_reference'/plant
         optimized=root/'raw_minimal/production'/f'full_{plant}_prepared_remainder_replay'
-        result=compare_runs(reference,optimized);widths+=result.pop('widths')
+        result=compare_runs(reference,optimized);result.pop('widths')
         require(result['reference']['steps']==result['optimized']['steps']==1000,'full fixed coverage')
         require(result['reference']['rejections']==result['optimized']['rejections']==0,'fixed rejection behavior')
         result['confidence']='borderline_single_pair' if plant=='brusselator' and abs(result['solve_speedup']/1.5-1)<.1 else 'single_full_pair_with_repeated_windows_and_prefixes'
         require(exact(result)==exact(read(root/'raw_minimal/production'/f'full_{plant}_comparison.json')),'saved full comparison differs')
-        full[plant]=result
+        initial_full[plant]=result
+        confirm_reference=root/'raw_minimal/confirmation'/f'confirm_full_{plant}_reference'
+        confirm_optimized=root/'raw_minimal/confirmation'/f'confirm_full_{plant}_prepared_remainder_replay'
+        primary=compare_runs(confirm_reference,confirm_optimized);widths+=primary.pop('widths')
+        primary['confidence']='borderline_single_pair' if plant=='brusselator' and abs(primary['solve_speedup']/1.5-1)<.1 else 'one_adjacent_confirmation_full_pair_with_repeated_windows_and_prefixes'
+        require(exact(primary)==exact(read(root/'raw_minimal/confirmation'/f'{plant}_comparison.json')),'confirmation full comparison differs')
+        require(primary['reference']['steps']==primary['optimized']['steps']==1000,'confirmation full horizon coverage')
+        bridge=compare_runs(confirm_reference,optimized)
+        confirmation_bridges[plant]=dict(all_initial_and_confirmation_models_E_bounds_states_decisions_bit_identical=bridge['all_steps_bit_identical'],steps=bridge['reference']['steps'])
+        full[plant]=primary
     old=repository/OLD_PACKAGE/'raw_minimal'
     adaptive=compare_archive(old/'vdp_adaptive',root/'raw_minimal/production/adaptive_van_der_pol_prepared_remainder_replay')
     archive_bridges={plant:compare_archive(old/('brusselator_full' if plant=='brusselator' else 'vdp_full'),root/'raw_minimal/fresh_reference'/plant) for plant in PLANTS}
     bruss=full['brusselator']['solve_speedup']
     vdp_ratios=[r['solve_speedup_median'] for r in timing_summary if r['plant']=='van_der_pol']
-    vdp_no_stable_slowdown=all(r>=1/1.1 for r in vdp_ratios)
+    vdp_no_stable_slowdown=all(r>=1/1.1 for r in vdp_ratios) and full['van_der_pol']['solve_speedup']>=1/1.1
     if bruss>=1.5 and vdp_no_stable_slowdown:
         status='REPAIRED_REFERENCE_PRESERVED__PREPARED_REPLAY_SPEED_TARGET_MET'
     elif bruss>1.05 and vdp_no_stable_slowdown:
         status='REPAIRED_REFERENCE_PRESERVED__USEFUL_SPEEDUP_BELOW_TARGET'
     else:status='REPAIRED_REFERENCE_PRESERVED__NO_USEFUL_SPEEDUP'
     result=dict(status=status,brusselator_full_solve_speedup=bruss,brusselator_target=1.5,
+        primary_full_timing_set='preregistered_adjacent_confirmation_pairs',
+        initial_load_mismatched_full_speedups={p:initial_full[p]['solve_speedup'] for p in PLANTS},
         brusselator_confidence=full['brusselator']['confidence'],van_der_pol_full_solve_speedup=full['van_der_pol']['solve_speedup'],
         van_der_pol_no_stable_slowdown_over_10_percent=vdp_no_stable_slowdown,
         all_fixed_steps_bit_identical=True,fixed_accepted_steps={p:1000 for p in PLANTS},
@@ -175,8 +197,8 @@ def derive(root,repository):
         mathematical_equivalence='binary64 equality; no tolerance; all endpoint/tube models, E, state/queue hashes and replay decisions',
         preparation_in_solve=True,adaptive_speed_claim=False,flowstar_fresh_speed_claim=False,
         whole_solver_formally_proved=False,gpu_backend_decided=False)
-    full_summaries=dict(fixed_matched_pairs=full,
-        fixed_run_records={name:run['summary'] for name,run in runs.items() if name.startswith('full_')},
+    full_summaries=dict(fixed_matched_pairs=full,initial_load_mismatched_fixed_pairs=initial_full,confirmation_bridges=confirmation_bridges,
+        fixed_run_records={name:run['summary'] for name,run in runs.items() if run['summary']['accepted_steps']==1000 and not run['contract']['adaptive']},
         adaptive_run_record=runs['adaptive_van_der_pol_prepared_remainder_replay']['summary'],adaptive_archive_equivalence=adaptive)
     return dict(timings_raw=rows,timing_summary=timing_summary,pairs=pairs,full=full,full_summaries=full_summaries,widths=widths,
                 archive_bridges=archive_bridges,result=result)

@@ -28,6 +28,8 @@ PYTHONPATH=src:. /srv/local/shengenli/miniforge3/envs/py11/bin/python \
 
 本轮完整 reference 科学提交是 `e2d00f1`，与最终修复 `0714e47` 的数值 src 完全相同。正式窗口、前缀及优化长跑使用 `f627d64`；它的数值 src 与完整矩阵测试过的 `ae6e21a` 完全相同。之后的比较器、绘图和 package 提交单独归属，不作为这些长跑的源码身份。
 
+初始完整优化运行开始时，宿主负载已从最初 reference 的约 1–2 升至约 40，未修改的 VDP/reference 路径也出现明显时间波动。因此在第一条完整优化结果产生之前，另行登记两套系统各一对相邻的完整复测：Brusselator reference→优化，VDP 优化→reference。`confirm --work-root ROOT --source CANDIDATE_SOURCE` 在原 45 条子运行结束后顺序执行这四条运行，仍使用干净 `f627d64`、CPU 3 和相同数学合同。这些相邻配对作为主要完整时间比较；最初的全部完整结果、负载和数值桥接仍保留并单独作图。复测数量预先固定，不按有利结果追加。
+
 已交付的包可以从任意包含本分支历史的 clone 进行有限复核，不会重新运行完整 ODE 长实验：
 
 ```bash
@@ -45,4 +47,4 @@ PYTHONPATH=src:. /srv/local/shengenli/miniforge3/envs/py11/bin/python \
 
 完整 verifier 先核对身份、配置、原始计时和逐步等价，再从 100 个真实步骤的输入重算 668 次 proposal 与两条独立 loop，并重新计算完整 reference 和自适应保存模型的端点 E 与上下界；优化固定运行的全模型与 reference 逐位相同。旧 Fraction/传递回归直接复用。`--structural-only` 仅供六种重新散列后的语义篡改测试使用，不能代替最终完整复核。
 
-`package --work-root ROOT --output ARTIFACT` 只接受已完成的 production 和 profile。`profile_windows.csv` 只汇总互斥的子 scope 扣除时间；`remaining_hotspots.csv` 使用另一轮 cProfile self time。初始化、数值 solve、导出和 whole process 单列；准备秒数是 solve 的内部子项。窗口恢复的 checkpoint 读取也单列。复用 Flow* 的共同 observer 宽度和历史时间均不构成本轮 fresh 性能分母。
+`package --work-root ROOT --output ARTIFACT` 只接受已完成的 production、确认复测和 profile。`profile_windows.csv` 只汇总互斥的子 scope 扣除时间；`remaining_hotspots.csv` 使用另一轮 cProfile self time。初始化、数值 solve、导出和 whole process 单列；准备秒数是 solve 的内部子项。窗口恢复的 checkpoint 读取也单列。复用 Flow* 的共同 observer 宽度和历史时间均不构成本轮 fresh 性能分母。
