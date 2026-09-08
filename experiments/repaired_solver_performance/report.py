@@ -88,11 +88,13 @@ def write_report(package):
         if rendered:rendered.append('\n' if item.startswith('|') and rendered[-1].endswith('|') else '\n\n')
         rendered.append(item)
     (docs/'REPORT_PLAIN_CHINESE.md').write_text(''.join(rendered)+'\n')
-    route=f"""本轮减少的是每次接受 attempt 内的固定多项式准备。动态 remainder、账本、包含检查、端点修正和跨步历史均保持原流程。Brusselator 完整实测 {b['speedup']:.3f}×；晚期剩余时间最大的分类为 `{late[0]['category']}`。这决定了下一步不能把局部 replay 的倍率直接当整个 solver 的潜力。
+    late_work=[r for r in work if r['window']=='brusselator_late' and r['mode']=='optimized']
+    replay_fraction=sum(float(r['all_replay_seconds']) for r in late_work)/sum(float(r['step_seconds']) for r in late_work)
+    route=f"""本轮减少的是每次接受 attempt 内的固定多项式准备。动态 remainder、账本、包含检查、端点修正和跨步历史均保持原流程。Brusselator 完整实测 {b['speedup']:.3f}×；优化后晚期最大分类为 `{late[0]['category']}`，占该窗口互斥 profile 时间的 {float(late[0]['fraction_of_profiled_step_time']):.1%}。剩余收紧阶段仅占 {replay_fraction:.1%}；即使只把它无限加快，同一 profile 窗口的总倍率上限也只有 {1/(1-replay_fraction):.3f}×。这项局部估计不是完整 T20 的预测。
 
 计划的固定多项式与动态区间张量有 B 维，局部不同 R 的 B2 检查已通过。当前 expression tape 仍由 Python 逐节点调度；完整 normal 重建、SR 队列以及 adaptive 调度仍是 B1。这个实现没有建立完整 batch 求解器。
 
-下一轮的一个主方向是：在该 prepared evaluator 上做有界的批量吞吐试验，同时计入完整边界/历史成本。理由是本轮已经区分固定准备和真正动态的计算，局部 B2 可以验证任务隔离，且新旧数值有可复现的逐轮对照。需要补的数据是：不同候选多项式的 B=1/2/8/32 准备内存、同批不同收敛轮数的调度成本、张量操作吞吐，以及纳入现有 B1 边界成本后的总时间。先用数据判定收益，不在本轮开展这个试验。
+下一轮的一个主方向是：在现有固定/动态分离基础上做有界的 batch 原型，优先纳入占时最大的边界重建与历史接口，并保留原有逐位对照。依据是本轮已找到实际成本大头，同时固定多项式和动态区间张量已有 B 维、局部 B2 已验证任务隔离。仅测更快的 replay 核不能回答总吞吐问题。需要补的数据是：不同候选多项式在 B=1/2/8/32 下的准备内存、同批不同收敛轮数的调度成本、边界/历史接口能够批量执行的份额，以及包含仍为 B1 部分的总时间。先用这些数据判定 batch 是否值得扩展，本轮不开展该原型。
 
 这次选择只是下一项测量方向，不是 GPU 后端选型结论。已保存严格 GPU 引擎仍是独立候选；它们的兼容/复用代价与当前计划的真实 GPU 算术保证、批量吞吐还缺同口径数据。即使 CPU 再减半也可能远慢于 Flow*，不能靠本轮局部成功宣布 GPU 路线完成。本轮没有同时进行 GPU 后端复评或 CUDA 开发。
 """
