@@ -3747,6 +3747,7 @@ def _dense_flowstar_raw_compat_image(
     raw_dependency_preserving_square: bool | None = None,
     joint_closure_coefficient_cache: _JointVDPCoefficientCache | None = None,
     refinement_static_cache: _VDPRefinementStaticCache | None = None,
+    prepared_replay: Any | None = None,
     record_evidence: bool = True,
 ) -> tuple[
     torch.Tensor,
@@ -3754,7 +3755,15 @@ def _dense_flowstar_raw_compat_image(
     Mapping[str, Any],
     DenseValidatedRemainderDecomposition,
 ]:
-    if refinement_static_cache is not None:
+    if prepared_replay is not None:
+        if raw_trace_recorder is not None or raw_rhs_evaluation != "ordered_terms" or raw_dependency_preserving_square:
+            raise ValueError("prepared replay requires the ordered, untraced raw evaluator")
+        prepared_replay.validate_binding(
+            rhs_fn, base_ext, candidate_poly, tau_index=tau_index, order=order,
+            cutoff_threshold=cutoff_threshold, validation_eps=validation_eps,
+        )
+        raw_rhs = prepared_replay.raw_rhs(candidate_with_target.rem_lo, candidate_with_target.rem_hi)
+    elif refinement_static_cache is not None:
         if raw_trace_recorder is not None or raw_rhs_evaluation != "canonical_factorized_joint_closure":
             raise ValueError("C2 static replay cache requires untraced canonical closure evaluation")
         raw_rhs = BatchedTaylorModel.concat(
@@ -3851,7 +3860,9 @@ def _dense_flowstar_raw_compat_image(
                 )
             )
 
-    if refinement_static_cache is None:
+    if prepared_replay is not None:
+        tmp_ledger, poly_diff, diff_lo, diff_hi = prepared_replay.polynomial_difference()
+    elif refinement_static_cache is None:
         regular_rhs = _call_dense_rhs_evaluation(
             rhs_fn,
             candidate_with_target,
@@ -4411,6 +4422,12 @@ def _post_accept_refine_raw_remainder(
             validation_eps=validation_eps,
         )
 
+    from .prepared_remainder_replay import PreparedRemainderReplay, is_enabled, supports
+
+    prepared_replay = None
+    use_prepared = (is_enabled() and raw_rhs_evaluation == "ordered_terms"
+                    and not raw_dependency_preserving_square and supports(rhs_fn))
+
     for iteration in range(1, replay_limit + 1):
         if counters is not None:
             counters.post_accept_replay_calls += 1
@@ -4422,6 +4439,11 @@ def _post_accept_refine_raw_remainder(
             category="initial_remainder",
         )
         try:
+            if use_prepared and prepared_replay is None:
+                prepared_replay = PreparedRemainderReplay(
+                    rhs_fn, base_ext, candidate, tau_index=tau_index, order=order,
+                    cutoff_threshold=cutoff_threshold, validation_eps=validation_eps,
+                )
             proposed_lo, proposed_hi, compat_extra, proposed_decomposition = (
                 _dense_flowstar_raw_compat_image(
                     rhs_fn,
@@ -4435,6 +4457,7 @@ def _post_accept_refine_raw_remainder(
                     raw_rhs_evaluation=raw_rhs_evaluation,
                     raw_dependency_preserving_square=raw_dependency_preserving_square,
                     refinement_static_cache=static_cache,
+                    prepared_replay=prepared_replay,
                     record_evidence=observer_mode == DENSE_OBSERVER_FULL,
                 )
             )
