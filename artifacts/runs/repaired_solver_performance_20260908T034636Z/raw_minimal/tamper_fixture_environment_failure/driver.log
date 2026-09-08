@@ -1,0 +1,13 @@
+{"test_group": "prepared_evidence", "pid": 2892567, "status": "RUNNING"}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/experiments/repaired_solver_performance/run_tests.py", line 126, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/experiments/repaired_solver_performance/run_tests.py", line 107, in main
+    run_group(args.output,'prepared_evidence',ROOT,sys.executable,
+  File "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/experiments/repaired_solver_performance/run_tests.py", line 73, in run_group
+    assert code==0 and record['source_clean_at_end'],f'{name} failed; see its actual log'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: prepared_evidence failed; see its actual log

@@ -9,7 +9,7 @@ from experiments.repaired_solver_performance.analyze import read_json,read_csv,F
 
 
 def write_report(package):
-    package=Path(package)
+    package=Path(package).resolve()
     result=read_json(package/'RESULT.json');full=read_json(package/'full_run_summaries.json')
     times={r['run']:r for r in read_csv(package/'timings_raw.csv')}
     work=read_csv(package/'replay_work_counts.csv');remaining=read_csv(package/'remaining_hotspots.csv')
@@ -22,6 +22,10 @@ def write_report(package):
     b=result['full_pairs']['brusselator'];v=result['full_pairs']['vdp']
     b_all=result['full_setup_plus_solve_seconds']['brusselator']
     v_all=result['full_setup_plus_solve_seconds']['vdp']
+    vdp_gate='通过' if result['vdp_no_more_than_10_percent_slowdown'] else '未通过'
+    memory_tradeoffs=[name for name,value in result['peak_rss_tradeoff'].items() if value]
+    memory_note=('峰值 RSS 超过 reference 的 1.5 倍、需要权衡时间与内存的系统为：'+', '.join(memory_tradeoffs)+'。'
+                 if memory_tradeoffs else '两系统峰值 RSS 均未超过 reference 的 1.5 倍。')
     descriptions={
         'REPAIRED_REFERENCE_PRESERVED__PREPARED_REPLAY_SPEED_TARGET_MET':'本次完整求解观察达到性能目标',
         'REPAIRED_REFERENCE_PRESERVED__USEFUL_SPEEDUP_BELOW_TARGET':'有实际提速，但未达到本轮完整性能目标',
@@ -44,7 +48,7 @@ def write_report(package):
         "| 100 步 prefix | 三个 reference/optimized 求解倍率 | median | min–max |\n|---|---|---:|---:|"]
     for plant,values in result['prefix100_speedups'].items():
         text.append(f"| {plant} | {', '.join(f'{x:.4f}' for x in values)} | {median(values):.4f} | {min(values):.4f}–{max(values):.4f} |")
-    text+=['',f"完整计时证据等级是 `{result['full_timing_confidence']}`。Brusselator 目标仍为 1.5×；VDP 的本次完整与重复 prefix 10% 减速门槛检查为 `{result['vdp_no_more_than_10_percent_slowdown']}`。峰值 RSS optimized/reference 分别为 Brusselator {b['peak_rss_ratio']:.4f}、VDP {v['peak_rss_ratio']:.4f}。超过 1.5 倍时按 time-memory tradeoff 报告；本次标记为 `{result['peak_rss_tradeoff']}`。原始重复值、median/min/max 见 [timings_raw.csv]({rel}/timings_raw.csv) 与 [timing_summary.csv]({rel}/timing_summary.csv)。",
+    text+=['',f"完整计时证据等级是 `{result['full_timing_confidence']}`。Brusselator 目标仍为 1.5×；VDP 的本次完整与重复 prefix 10% 减速门槛检查{vdp_gate}。峰值 RSS optimized/reference 分别为 Brusselator {b['peak_rss_ratio']:.4f}、VDP {v['peak_rss_ratio']:.4f}。{memory_note}原始重复值、median/min/max 见 [timings_raw.csv]({rel}/timings_raw.csv) 与 [timing_summary.csv]({rel}/timing_summary.csv)。",
         "**因果与剩余成本。** 下表固定工作时间来自独立嵌套函数计时。每个计时区间减去子区间，每个时间片只进入一个互斥分类，未相加 inclusive percentages。Python 对象/小张量检查是被测的一类，不把全部剩余成本归为 Python。阶段分类对候选构造、初次余项等扣除了已单列的多项式工作。",
         "| 20 步窗口 | ref/opt 固定多项式乘法次数 | ref/opt 固定工作秒 | ref/opt 收紧轮数 |\n|---|---:|---:|---:|"]
     for window in [r['window'] for r in predictions]:

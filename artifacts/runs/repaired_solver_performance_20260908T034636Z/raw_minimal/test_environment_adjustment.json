@@ -1,0 +1,20 @@
+{
+  "classification": "historical_test_subprocess_environment_failure",
+  "failed_test": "tests/test_s1_prefix_evidence_package.py::test_historical_package_rebuild_fails_closed_on_missing_l0_commit_semantics",
+  "observed_error": "FileNotFoundError: no executable named python in inherited PATH",
+  "root_counts": {
+    "passed": 1028,
+    "skipped": 2,
+    "failed": 1
+  },
+  "source_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+  "failure_records_retained": "evidence/tests/finalpackage_v3",
+  "planned_fix": "prepend the selected existing interpreter directory to each test subprocess PATH",
+  "numerical_source_or_assertions_changed": false,
+  "scientific_full_runs_started": 0,
+  "recorded_unix": 1788845233.0363195,
+  "fixed_launcher_commit": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+  "single_historical_test_recheck": "PASSED",
+  "corrected_matrix_directory": "evidence/tests/finalpackage_v4",
+  "science_directory": "evidence/formal_v3"
+}

@@ -1,0 +1,25 @@
+{
+  "reason": "Actual new admission bug: arbitrary Delete nodes admitted impure RHS; fix gate before any full run.",
+  "scope": "frozen two-system numerical formulas unaffected; restart clean formal matrix rather than mix implementation versions",
+  "old_scientific_sha": "e3e69138c1cf91018f301d180c5f9f5223720131",
+  "completed_full_1000_runs": 0,
+  "coordinator": {
+    "pid": 2709528,
+    "start_ticks": "227608466",
+    "confirmed_not_running": true
+  },
+  "child": {
+    "name": "brusselator_prefix100_pair3_optimized",
+    "pid": 2739026,
+    "proc_start_ticks": "227809388",
+    "confirmed_not_running": true
+  },
+  "old_measurements_retained": "evidence/formal",
+  "new_measurements_planned": "evidence/formal_final",
+  "stop_requested_at_unix": 1788842976.545321,
+  "coordinator_exit_code": 143,
+  "new_scientific_sha": "513cc6a1925f52bac38600cdd5e5759fba48bc6a",
+  "new_runtime_sha": "513cc6a1925f52bac38600cdd5e5759fba48bc6a",
+  "only_admission_guard_changed": true,
+  "measured_frozen_rhs_arithmetic_unchanged": true
+}

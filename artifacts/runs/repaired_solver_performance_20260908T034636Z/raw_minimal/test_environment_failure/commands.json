@@ -1,0 +1,90 @@
+[
+  {
+    "name": "targeted",
+    "source_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_prepared_remainder_replay.py",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "tests/test_brusselator_c4_generic_refinement.py",
+      "tests/test_vdp_c2_post_accept_refinement.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v3/targeted.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": false,
+    "log": "tests/targeted.log",
+    "xml": "tests/targeted.xml",
+    "exit": "tests/targeted.exit",
+    "pid": 2763002,
+    "proc_start_ticks": "227960683",
+    "exit_code": 0,
+    "seconds": 104.44868359295651,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "root",
+    "source_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--ignore=tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v3/root.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/root.log",
+    "xml": "tests/root.xml",
+    "exit": "tests/root.exit",
+    "pid": 2764759,
+    "proc_start_ticks": "227971331",
+    "exit_code": 1,
+    "seconds": 533.1171945556998,
+    "source_clean_at_end": true
+  }
+]

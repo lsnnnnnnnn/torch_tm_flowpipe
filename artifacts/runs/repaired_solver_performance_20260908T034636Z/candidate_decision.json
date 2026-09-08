@@ -1,0 +1,78 @@
+{
+  "mechanism": "attempt_local_prepared_polynomial_replay",
+  "fallback_hotspot_used": false,
+  "selection_evidence": "raw_minimal/prototype_candidate_decision.json",
+  "same_workload_predictions": [
+    {
+      "window": "brusselator_early",
+      "selected_fraction": 0.31994820785546724,
+      "local_speedup_including_preparation_and_checks": 4.791361113520323,
+      "predicted_total_speedup": 1.3389966640094841,
+      "max_possible_speedup": 1.4704762365915034,
+      "same_light_workload_measured_total": 1.3437109353551013,
+      "unprofiled_three_pair_speedup_median": 1.3699711092353721,
+      "unprofiled_three_pair_speedup_min": 1.3459757787155653,
+      "unprofiled_three_pair_speedup_max": 1.3730744414489164,
+      "light_reference_seconds": 34.33083834592253,
+      "light_optimized_seconds": 25.549273614306003,
+      "prediction_scope": "this_same_20_step_workload; not a claimed full-horizon Amdahl bound"
+    },
+    {
+      "window": "brusselator_middle",
+      "selected_fraction": 0.3625990926682342,
+      "local_speedup_including_preparation_and_checks": 5.040034223715614,
+      "predicted_total_speedup": 1.4097518789572132,
+      "max_possible_speedup": 1.5688713155212095,
+      "same_light_workload_measured_total": 1.43165238740471,
+      "unprofiled_three_pair_speedup_median": 1.4531876905868695,
+      "unprofiled_three_pair_speedup_min": 1.415065366702003,
+      "unprofiled_three_pair_speedup_max": 1.456618033284601,
+      "light_reference_seconds": 36.960033658891916,
+      "light_optimized_seconds": 25.81634619133547,
+      "prediction_scope": "this_same_20_step_workload; not a claimed full-horizon Amdahl bound"
+    },
+    {
+      "window": "brusselator_late",
+      "selected_fraction": 0.32603808053419303,
+      "local_speedup_including_preparation_and_checks": 5.305003576910469,
+      "predicted_total_speedup": 1.3597662516657816,
+      "max_possible_speedup": 1.4837633568267716,
+      "same_light_workload_measured_total": 1.358597218912217,
+      "unprofiled_three_pair_speedup_median": 1.3384977400301212,
+      "unprofiled_three_pair_speedup_min": 1.3131933791406387,
+      "unprofiled_three_pair_speedup_max": 1.3599188332650902,
+      "light_reference_seconds": 41.99428625917062,
+      "light_optimized_seconds": 30.910034022293985,
+      "prediction_scope": "this_same_20_step_workload; not a claimed full-horizon Amdahl bound"
+    },
+    {
+      "window": "vdp_early",
+      "selected_fraction": 0.16990284146005216,
+      "local_speedup_including_preparation_and_checks": 0.9943527693433072,
+      "predicted_total_speedup": 0.9990360004761624,
+      "max_possible_speedup": 1.2046782593002645,
+      "same_light_workload_measured_total": 0.9894407657983544,
+      "unprofiled_three_pair_speedup_median": 1.0269384729001898,
+      "unprofiled_three_pair_speedup_min": 1.0107461135876878,
+      "unprofiled_three_pair_speedup_max": 1.028436816879099,
+      "light_reference_seconds": 12.613254746887833,
+      "light_optimized_seconds": 12.747862411662936,
+      "prediction_scope": "this_same_20_step_workload; not a claimed full-horizon Amdahl bound"
+    },
+    {
+      "window": "vdp_boundary",
+      "selected_fraction": 0.1561279084095445,
+      "local_speedup_including_preparation_and_checks": 0.9972464724957192,
+      "predicted_total_speedup": 0.9995690962512791,
+      "max_possible_speedup": 1.1850137123450646,
+      "same_light_workload_measured_total": 0.9930041624141616,
+      "unprofiled_three_pair_speedup_median": 1.003167782712688,
+      "unprofiled_three_pair_speedup_min": 0.9674163561420215,
+      "unprofiled_three_pair_speedup_max": 1.0103922624964607,
+      "light_reference_seconds": 13.751559893134981,
+      "light_optimized_seconds": 13.848441339563578,
+      "prediction_scope": "this_same_20_step_workload; not a claimed full-horizon Amdahl bound"
+    }
+  ],
+  "full_horizon_predictions_extrapolated_from_single_window": false
+}

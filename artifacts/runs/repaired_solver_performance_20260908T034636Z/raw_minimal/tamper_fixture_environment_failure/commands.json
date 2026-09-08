@@ -1,0 +1,45 @@
+[
+  {
+    "name": "prepared_evidence",
+    "source_sha": "f7424e4bc66925386592638b945fbdaa99a2b9e7",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/repaired_solver_performance/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/prepared_evidence.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu",
+      "PREPARED_REPLAY_EVIDENCE": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/prepared_evidence.log",
+    "xml": "tests/prepared_evidence.xml",
+    "exit": "tests/prepared_evidence.exit",
+    "pid": 2892567,
+    "proc_start_ticks": "228994257",
+    "exit_code": 1,
+    "seconds": 2.628708891104907,
+    "source_clean_at_end": true
+  }
+]

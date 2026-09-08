@@ -1,0 +1,78 @@
+{
+  "status": "REPAIRED_REFERENCE_PRESERVED__USEFUL_SPEEDUP_BELOW_TARGET",
+  "scientific_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+  "runtime_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+  "default_reference_preserved": true,
+  "all_fixed_endpoint_components_compared": 4000,
+  "all_fixed_tube_components_compared": 4000,
+  "common_and_published_views_compared": true,
+  "full_pairs": {
+    "brusselator": {
+      "reference": "brusselator_full_reference",
+      "optimized": "brusselator_full_optimized",
+      "all_steps_bitwise_equal": true,
+      "accepted_steps": 1000,
+      "rejected_attempts": 0,
+      "mathematical_hashes": {
+        "models.jsonl.gz": "3d03c04676e8f92ad7a19ecb3d414af55f5fb2038fc611cf669b9fbec8ec0304",
+        "bounds.csv": "498537c882b3c86158ecc4d7d8e1af60e94bb6f6bbe731d6f3e7a2b3c14f06d2",
+        "endpoint_audit.jsonl": "2fddec894b2c6b02020b8cfff30cc35f802018f55c04caa9fdc2209cd9e794cc"
+      },
+      "reference_solve_seconds": 1991.9435554370284,
+      "optimized_solve_seconds": 1454.6610955600627,
+      "speedup": 1.3693523264744392,
+      "peak_rss_ratio": 0.9983196272627747
+    },
+    "vdp": {
+      "reference": "vdp_full_reference",
+      "optimized": "vdp_full_optimized",
+      "all_steps_bitwise_equal": true,
+      "accepted_steps": 1000,
+      "rejected_attempts": 0,
+      "mathematical_hashes": {
+        "models.jsonl.gz": "16f214c7fe4bc2a7bd2939828693b5fbd08b0f16526c2359382ad17c83149ae8",
+        "bounds.csv": "54cdbe08afcd94607341def95699dc5e0c8906b02b620814fbfcaf83cd084c5d",
+        "endpoint_audit.jsonl": "1f00d1d1dfc9ad25d2b35fab9338f877031e2f008621151c5ea22eca8f3293a9"
+      },
+      "reference_solve_seconds": 711.3774532219395,
+      "optimized_solve_seconds": 693.6573464274406,
+      "speedup": 1.0255459080564246,
+      "peak_rss_ratio": 1.00007904999473
+    }
+  },
+  "prefix100_speedups": {
+    "brusselator": [
+      1.3392103979533827,
+      1.3324002694143988,
+      1.3144559282576196
+    ],
+    "van_der_pol": [
+      0.9836675720099145,
+      0.9861211288544288,
+      1.0160752562333297
+    ]
+  },
+  "full_setup_plus_solve_seconds": {
+    "brusselator": {
+      "reference": 1991.9510618792847,
+      "optimized": 1454.6687518861145,
+      "speedup": 1.3693502794340864
+    },
+    "vdp": {
+      "reference": 711.3859086278826,
+      "optimized": 693.6648031375371,
+      "speedup": 1.0255470731831724
+    }
+  },
+  "brusselator_target_speedup": 1.5,
+  "vdp_no_more_than_10_percent_slowdown": true,
+  "full_timing_repeats_per_mode": 1,
+  "full_timing_confidence": "borderline_single_pair",
+  "peak_rss_tradeoff": {
+    "brusselator": false,
+    "vdp": false
+  },
+  "adaptive_speed_claim": false,
+  "whole_solver_formally_proved": false,
+  "gpu_backend_choice": "undecided"
+}

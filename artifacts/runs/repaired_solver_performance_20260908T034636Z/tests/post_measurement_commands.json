@@ -1,0 +1,119 @@
+[
+  {
+    "name": "build_driver_v4",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.build",
+      "--work-root",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "f7424e4bc66925386592638b945fbdaa99a2b9e7",
+    "log": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/build_driver_v4.log",
+    "source_clean_at_start": true,
+    "pid": 2890880,
+    "proc_start_ticks": "228982506",
+    "exit_code": 0,
+    "seconds": 25.204206582624465
+  },
+  {
+    "name": "baseline_evidence_verifier_v4",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.verify",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "f7424e4bc66925386592638b945fbdaa99a2b9e7",
+    "log": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/baseline_evidence_verifier_v4.log",
+    "source_clean_at_start": true,
+    "pid": 2891115,
+    "proc_start_ticks": "228985090",
+    "exit_code": 0,
+    "seconds": 89.98896676907316
+  },
+  {
+    "name": "tamper_driver_v4",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run_tests",
+      "--phase",
+      "evidence",
+      "--cpu",
+      "5",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4",
+      "--artifact",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "f7424e4bc66925386592638b945fbdaa99a2b9e7",
+    "log": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/tamper_driver_v4.log",
+    "source_clean_at_start": true,
+    "pid": 2892537,
+    "proc_start_ticks": "228994089",
+    "exit_code": 1,
+    "seconds": 4.651472209952772
+  },
+  {
+    "name": "tamper_retry_driver_v5",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run_tests",
+      "--phase",
+      "evidence",
+      "--cpu",
+      "5",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v5",
+      "--artifact",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "5bf2d5af47ce9a8cb07eedb069d537f42221d977",
+    "log": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/tamper_retry_driver_v5.log",
+    "source_clean_at_start": true,
+    "pid": 2896167,
+    "proc_start_ticks": "229020902",
+    "exit_code": 0,
+    "seconds": 11.99216390401125
+  },
+  {
+    "name": "final_evidence_verifier_v5",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.verify",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "5bf2d5af47ce9a8cb07eedb069d537f42221d977",
+    "log": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/final_evidence_verifier_v5.log",
+    "source_clean_at_start": true,
+    "pid": 2896682,
+    "proc_start_ticks": "229022116",
+    "exit_code": 0,
+    "seconds": 90.43904213793576
+  }
+]

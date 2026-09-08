@@ -1,0 +1,23 @@
+{
+  "selection": "one_attempt_local_prepared_polynomial_replay",
+  "fallback_hotspot_used": false,
+  "workload": "Brusselator101-103 from repaired checkpoint100, same CPU3 single-thread production-no-observer with light nested phase timers",
+  "values": {
+    "reference": {
+      "total_seconds": 5.50230860337615,
+      "replay_seconds": 1.9957955395802855
+    },
+    "optimized": {
+      "total_seconds": 3.941649361513555,
+      "replay_seconds": 0.38596739154309034
+    }
+  },
+  "selected_fraction": 0.362719666133537,
+  "local_speedup_including_plan_and_checks": 5.170891591647504,
+  "predicted_total_speedup": 1.4135738551568429,
+  "max_possible_speedup": 1.5691681460384466,
+  "observed_total_speedup": 1.3959406580151303,
+  "decision": "proceed to finite full measurements; useful predicted gain, 1.5x full target unproven",
+  "scientific_source": "dc93b8ea5db3a8c64926167447768d756f583b2a",
+  "performance_denominator": "fresh same-workload reference only; never old runtime archive"
+}

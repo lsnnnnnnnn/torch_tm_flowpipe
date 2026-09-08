@@ -1,0 +1,633 @@
+[
+  {
+    "name": "targeted",
+    "source_sha": "1551ab57aef7324f91882beeba9d368f36b3cdd5",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_prepared_remainder_replay.py",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "tests/test_brusselator_c4_generic_refinement.py",
+      "tests/test_vdp_c2_post_accept_refinement.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v3/targeted.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": false,
+    "log": "tests/targeted.log",
+    "xml": "tests/targeted.xml",
+    "exit": "tests/targeted.exit",
+    "pid": 2763002,
+    "proc_start_ticks": "227960683",
+    "exit_code": 0,
+    "seconds": 104.44868359295651,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "historical_python_environment_check",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_s1_prefix_evidence_package.py::test_historical_package_rebuild_fails_closed_on_missing_l0_commit_semantics",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/historical_python_environment_check.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": false,
+    "log": "tests/historical_python_environment_check.log",
+    "xml": "tests/historical_python_environment_check.xml",
+    "exit": "tests/historical_python_environment_check.exit",
+    "pid": 2774982,
+    "proc_start_ticks": "228056322",
+    "exit_code": 0,
+    "seconds": 2.404902250971645,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "root",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--ignore=tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/root.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/root.log",
+    "xml": "tests/root.xml",
+    "exit": "tests/root.exit",
+    "pid": 2777484,
+    "proc_start_ticks": "228078443",
+    "exit_code": 0,
+    "seconds": 534.1146233552136,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "old_stop_snapshot",
+    "source_sha": "73c3b48a3dadd81cd03ecc827bde1228ef7f6ac8",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/old_stop_snapshot.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/old_stop_snapshot.log",
+    "xml": "tests/old_stop_snapshot.xml",
+    "exit": "tests/old_stop_snapshot.exit",
+    "pid": 2784181,
+    "proc_start_ticks": "228131860",
+    "exit_code": 0,
+    "seconds": 1.2719974732026458,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "torch_basis",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_followup/tests/test_torch_basis.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/torch_basis.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/torch_basis.log",
+    "xml": "tests/torch_basis.xml",
+    "exit": "tests/torch_basis.exit",
+    "pid": 2784477,
+    "proc_start_ticks": "228131992",
+    "exit_code": 0,
+    "seconds": 2.8347599990665913,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "diffreach_followup",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_followup/tests/test_diffreach_projection.py",
+      "experiments/first_order_followup/tests/test_diffreach_parity.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/diffreach_followup.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/diffreach312/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/diffreach_followup.log",
+    "xml": "tests/diffreach_followup.xml",
+    "exit": "tests/diffreach_followup.exit",
+    "pid": 2784557,
+    "proc_start_ticks": "228132280",
+    "exit_code": 0,
+    "seconds": 10.313307248055935,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "first_order_three_way",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_three_way/tests/test_benchmark.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/first_order_three_way.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/first_order_three_way.log",
+    "xml": "tests/first_order_three_way.xml",
+    "exit": "tests/first_order_three_way.exit",
+    "pid": 2784730,
+    "proc_start_ticks": "228133317",
+    "exit_code": 0,
+    "seconds": 2.3156997868791223,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "diffreach_support",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_three_way/tests/test_diffreach_support.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/diffreach_support.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/diffreach312/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/diffreach_support.log",
+    "xml": "tests/diffreach_support.xml",
+    "exit": "tests/diffreach_support.exit",
+    "pid": 2784851,
+    "proc_start_ticks": "228133553",
+    "exit_code": 0,
+    "seconds": 4.6743306131102145,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "common_contract",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_way_common_contract/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/common_contract.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/common_contract.log",
+    "xml": "tests/common_contract.xml",
+    "exit": "tests/common_contract.exit",
+    "pid": 2784933,
+    "proc_start_ticks": "228134026",
+    "exit_code": 0,
+    "seconds": 0.43135357461869717,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "comparison_repair",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_way_comparison_repair/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/comparison_repair.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/comparison_repair.log",
+    "xml": "tests/comparison_repair.xml",
+    "exit": "tests/comparison_repair.exit",
+    "pid": 2784990,
+    "proc_start_ticks": "228134074",
+    "exit_code": 0,
+    "seconds": 4.718240086920559,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "deep_study",
+    "source_sha": "b32719d3dd8e09f3ba1894d52f9be4e83141f006",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_tool_deep_study/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/deep_study.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/deep_study.log",
+    "xml": "tests/deep_study.xml",
+    "exit": "tests/deep_study.exit",
+    "pid": 2785137,
+    "proc_start_ticks": "228134550",
+    "exit_code": 0,
+    "seconds": 2.7648592297919095,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "repaired_parent_evidence",
+    "source_sha": "7e41f33f515f5315b0dec7003a5b06ed0a79afd5",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/endpoint_roundoff_repair/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v4/repaired_parent_evidence.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/repaired_parent_evidence.log",
+    "xml": "tests/repaired_parent_evidence.xml",
+    "exit": "tests/repaired_parent_evidence.exit",
+    "pid": 2785198,
+    "proc_start_ticks": "228134832",
+    "exit_code": 0,
+    "seconds": 132.59106490714476,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "prepared_evidence",
+    "source_sha": "5bf2d5af47ce9a8cb07eedb069d537f42221d977",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/repaired_solver_performance/tests",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/finalpackage_v5/prepared_evidence.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/src:/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0C5oc5d:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "DIFFREACH_ROOT": "/srv/local/shengenli/DiffReach",
+      "JAX_PLATFORMS": "cpu",
+      "PREPARED_REPLAY_EVIDENCE": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    },
+    "affinity": [
+      5
+    ],
+    "count_in_final_matrix": true,
+    "log": "tests/prepared_evidence.log",
+    "xml": "tests/prepared_evidence.xml",
+    "exit": "tests/prepared_evidence.exit",
+    "pid": 2896200,
+    "proc_start_ticks": "229021070",
+    "exit_code": 0,
+    "seconds": 9.961749390233308,
+    "source_clean_at_end": true
+  },
+  {
+    "name": "parent_targeted",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/evidence/tests/parent/targeted.xml"
+    ],
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "source_sha": "7e41f33f515f5315b0dec7003a5b06ed0a79afd5",
+    "affinity": [
+      2
+    ],
+    "exit_code": 0,
+    "seconds": 14.328509012702852,
+    "count_in_final_matrix": false,
+    "log": "tests/parent_targeted.log",
+    "exit": "tests/parent_targeted.exit",
+    "xml": "tests/parent_targeted.xml"
+  },
+  {
+    "name": "parent_verifier",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.endpoint_roundoff_repair.verify",
+      "artifacts/runs/endpoint_roundoff_repair_20260908"
+    ],
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "source_sha": "7e41f33f515f5315b0dec7003a5b06ed0a79afd5",
+    "affinity": [
+      2
+    ],
+    "exit_code": 0,
+    "seconds": 161.28468116233125,
+    "count_in_final_matrix": false,
+    "log": "tests/parent_verifier.log",
+    "exit": "tests/parent_verifier.exit"
+  },
+  {
+    "name": "bounded_evidence_verifier",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.verify",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package/artifacts/runs/repaired_solver_performance_20260908T034636Z"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T034636Z/package",
+    "source_sha": "5bf2d5af47ce9a8cb07eedb069d537f42221d977",
+    "log": "tests/bounded_evidence_verifier.log",
+    "source_clean_at_start": true,
+    "pid": 2896682,
+    "proc_start_ticks": "229022116",
+    "exit_code": 0,
+    "seconds": 90.43904213793576,
+    "exit": "tests/bounded_evidence_verifier.exit",
+    "count_in_final_matrix": false,
+    "affinity": [
+      5
+    ],
+    "environment": {
+      "PYTHONPATH": "src:.",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  }
+]
