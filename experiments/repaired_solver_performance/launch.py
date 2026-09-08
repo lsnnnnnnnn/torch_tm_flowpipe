@@ -7,6 +7,8 @@ import subprocess
 import sys
 import time
 
+from experiments.repaired_solver_performance.compare import compare_pair, compare_repaired_archive
+
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -22,6 +24,10 @@ def main():
     env={**os.environ,'PYTHONPATH':str(root/'src')+':'+str(root),'PYTHONDONTWRITEBYTECODE':'1',
          'PYTHONNOUSERSITE':'1','OMP_NUM_THREADS':'1','MKL_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1'}
     old=root/'artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal'
+    def gate(name,reference,optimized):
+        result=compare_pair(args.output/reference,args.output/optimized)
+        (args.output/(name+'_equivalence.json')).write_text(json.dumps(result,indent=2)+'\n')
+        print(json.dumps({'gate':name,'bitwise_equal':True,'speedup':result['speedup']}),flush=True)
     def job(name,module,plant,*,mode=None,steps=20,checkpoint=None,adaptive=False,light=False,purpose):
         existing=next((r for r in commands if r['name']==name),None)
         if existing is not None:
@@ -72,6 +78,7 @@ def main():
             order=['reference','optimized'] if repeat%2==0 else ['optimized','reference']
             for mode in order:
                 job(f'{name}_pair{repeat+1}_{mode}','run',plant,mode=mode,checkpoint=checkpoint,purpose='representative_20_step_pair')
+            gate(f'{name}_pair{repeat+1}',f'{name}_pair{repeat+1}_reference',f'{name}_pair{repeat+1}_optimized')
         for mode in ['reference','optimized']:
             job(f'{name}_profile_{mode}','profile',plant,mode=mode,checkpoint=checkpoint,purpose='exclusive_profile_not_production_timing')
             job(f'{name}_light_{mode}','profile',plant,mode=mode,checkpoint=checkpoint,light=True,purpose='light_phase_timing_for_same_workload_Amdahl')
@@ -85,17 +92,24 @@ def main():
         for repeat in range(3):
             for mode in (['reference','optimized'] if repeat%2==0 else ['optimized','reference']):
                 job(f'{plant}_prefix100_pair{repeat+1}_{mode}','run',plant,mode=mode,steps=100,purpose='matched_100_step_prefix')
+            gate(f'{plant}_prefix100_pair{repeat+1}',f'{plant}_prefix100_pair{repeat+1}_reference',f'{plant}_prefix100_pair{repeat+1}_optimized')
     job('brusselator_full_reference','run','brusselator',mode='reference',steps=1000,purpose='fresh_fixed_1000')
     # No valid inherited boundary980 exists. The one full sequential reference
     # above supplies it; these windows never reinitialize from published boxes.
     window('brusselator_late','brusselator',args.output/'brusselator_full_reference/checkpoint_0980')
     job('brusselator_full_optimized','run','brusselator',mode='optimized',steps=1000,purpose='fresh_fixed_1000')
+    gate('brusselator_full','brusselator_full_reference','brusselator_full_optimized')
     for mode in ['reference','optimized']:
         job(f'vdp_full_{mode}','run','van_der_pol',mode=mode,steps=1000,purpose='fresh_fixed_1000')
+    gate('vdp_full','vdp_full_reference','vdp_full_optimized')
     job('vdp_adaptive_optimized','run','van_der_pol',mode='optimized',adaptive=True,purpose='fresh_adaptive_equivalence_no_speed_claim')
     job('vdp_adaptive_replay_initial','replay','van_der_pol',steps=3,adaptive=True,purpose='adaptive_representative_decisions')
     job('vdp_adaptive_replay_after99','replay','van_der_pol',steps=3,adaptive=True,
         checkpoint=old/'vdp_adaptive/checkpoint_0099',purpose='adaptive_representative_decisions')
+    archive_checks=[compare_repaired_archive(args.output/name,old/archive) for name,archive in
+                    [('brusselator_full_reference','brusselator_full'),('vdp_full_reference','vdp_full'),
+                     ('vdp_adaptive_optimized','vdp_adaptive')]]
+    (args.output/'repaired_archive_equivalence.json').write_text(json.dumps(archive_checks,indent=2)+'\n')
     (args.output/'SCHEDULE_COMPLETED.json').write_text(json.dumps({'source_sha':sha,'jobs':len(commands)},indent=2)+'\n')
 
 
