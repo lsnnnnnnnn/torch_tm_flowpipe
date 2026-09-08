@@ -13,7 +13,7 @@ def figures(root,data,diagnostics,flowstar):
     colors=['#5c7d9a','#dd923c']
 
     def save(fig,name):
-        fig.tight_layout();fig.savefig(out/f'{name}.png');fig.savefig(out/f'{name}.pdf');plt.close(fig)
+        fig.tight_layout();fig.savefig(out/f'{name}.png',bbox_inches='tight');fig.savefig(out/f'{name}.pdf',bbox_inches='tight');plt.close(fig)
 
     for plant in ('brusselator','van_der_pol'):
         for view in ('published','common'):
