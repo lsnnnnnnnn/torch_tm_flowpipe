@@ -1,0 +1,20 @@
+{
+  "cause": "Historical test explicitly launches python; initial shell PATH had no python command",
+  "source_sha": "ae6e21aefcfcebb20d616b19914a2240fca47e6a",
+  "argv": [
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_s1_prefix_evidence_package.py::test_historical_package_rebuild_fails_closed_on_missing_l0_commit_semantics",
+    "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/path_resolution.xml"
+  ],
+  "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+  "seconds": 2.5299629513174295,
+  "exit_code": 0,
+  "changed_expectations": false,
+  "environment_fix": "Prepend existing py11/bin to PATH",
+  "resolved_python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python"
+}

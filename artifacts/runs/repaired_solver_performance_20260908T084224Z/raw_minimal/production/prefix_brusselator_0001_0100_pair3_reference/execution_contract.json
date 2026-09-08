@@ -1,0 +1,85 @@
+{
+  "plant": "brusselator",
+  "adaptive": false,
+  "config": {
+    "plant": "brusselator",
+    "initial_decimal_box": [
+      [
+        "1.48",
+        "1.52"
+      ],
+      [
+        "2.98",
+        "3.02"
+      ]
+    ],
+    "order": 6,
+    "fixed_step": 0.02,
+    "requested_horizon": 20.0,
+    "target_remainder_radius": 0.0001,
+    "cutoff": 1e-10,
+    "validation_epsilon": 1e-12,
+    "accepted_boundary_sr_capacity": 1000,
+    "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_generic_sr",
+    "post_accept_refinement_mode": "flowstar_raw_remainder_compat_refined",
+    "right_map_range_mode": "standard",
+    "right_map_center_mode": "constant",
+    "range_policy": {
+      "method": "adaptive_subdivision",
+      "max_depth": 1,
+      "max_leaves": 4,
+      "split_vars": [
+        0,
+        1
+      ],
+      "trigger": "proactive_depth1_on_named_contexts",
+      "named_contexts": [
+        "polynomial_truncation"
+      ],
+      "variable_orders": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          1,
+          0,
+          2
+        ],
+        [
+          2,
+          0,
+          1
+        ]
+      ]
+    },
+    "step_policy": "fixed_no_retry",
+    "endpoint_repair": false,
+    "accepted_boundary_sr_enabled": true,
+    "generic_post_accept_raw_remainder_refinement_enabled": true,
+    "refinement_replay_limit": 491,
+    "stop_ratio": 0.99,
+    "subset_commit": "whole_vector_atomic",
+    "rhs_term_evaluation": "ordered_terms",
+    "authoritative_device": "cpu",
+    "authoritative_dtype": "float64",
+    "outward_rounding": "torch_nextafter_binary64",
+    "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+    "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+    "lane_name": "flowstar_like_polynomial_plant_reference",
+    "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+    "fixed_step_hex": "0x1.47ae147ae147bp-6",
+    "requested_horizon_hex": "0x1.4000000000000p+4",
+    "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+    "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+    "validation_epsilon_hex": "0x1.19799812dea11p-40",
+    "stop_ratio_hex": "0x1.fae147ae147aep-1"
+  },
+  "fixed_h_hex": "0x1.47ae147ae147bp-6",
+  "requested_steps": 100,
+  "requested_horizon_exact_nominal": "2",
+  "endpoint_ad_hoc_repair": false,
+  "endpoint_substitution_roundoff_required": true,
+  "matched_contracts_sha256": "a23390b6f84f99faf3fc61de6711a8607acf8358dfc30663d6baac1477352025"
+}

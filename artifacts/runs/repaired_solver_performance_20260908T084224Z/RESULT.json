@@ -1,0 +1,46 @@
+{
+  "status": "REPAIRED_REFERENCE_PRESERVED__USEFUL_SPEEDUP_BELOW_TARGET",
+  "brusselator_full_solve_speedup": 1.4260526391598038,
+  "brusselator_target": 1.5,
+  "primary_full_timing_set": "preregistered_adjacent_confirmation_pairs",
+  "initial_load_mismatched_full_speedups": {
+    "brusselator": 1.0800141812312871,
+    "van_der_pol": 1.030652759626891
+  },
+  "brusselator_confidence": "borderline_single_pair",
+  "van_der_pol_full_solve_speedup": 1.0118285833523137,
+  "van_der_pol_no_stable_slowdown_over_10_percent": true,
+  "all_fixed_steps_bit_identical": true,
+  "fixed_accepted_steps": {
+    "brusselator": 1000,
+    "van_der_pol": 1000
+  },
+  "fixed_rejections": {
+    "brusselator": 0,
+    "van_der_pol": 0
+  },
+  "width_rows": 16000,
+  "width_rows_per_view": 8000,
+  "adaptive": {
+    "archive_data_origin": "REUSED_ENDPOINT_REPAIRED",
+    "new_data_origin": "FRESH_OPTIMIZED",
+    "new_scientific_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+    "steps": 246,
+    "rejections": 35,
+    "actual_sum_h": "5764607523034236731/576460752303423488",
+    "scheduler_time_hex": "0x1.4000000000000p+3",
+    "all_h_bounds_models_E_normal_state_queue_replay_bit_identical": true,
+    "speed_claim": false
+  },
+  "peak_rss_ratios": {
+    "brusselator": 1.0009344206591912,
+    "van_der_pol": 1.0
+  },
+  "time_memory_tradeoff": false,
+  "mathematical_equivalence": "binary64 equality; no tolerance; all endpoint/tube models, E, state/queue hashes and replay decisions",
+  "preparation_in_solve": true,
+  "adaptive_speed_claim": false,
+  "flowstar_fresh_speed_claim": false,
+  "whole_solver_formally_proved": false,
+  "gpu_backend_decided": false
+}

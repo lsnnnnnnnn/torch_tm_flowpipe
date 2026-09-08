@@ -1,0 +1,58 @@
+[
+  {
+    "name": "brusselator_0001",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.replay_evidence",
+      "--plant",
+      "brusselator",
+      "--steps",
+      "20",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/replay_windows/brusselator_0001.jsonl.gz"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "seconds": 44.37542581092566,
+    "exit_code": 0,
+    "production_timing": false
+  },
+  {
+    "name": "brusselator_0101",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.replay_evidence",
+      "--plant",
+      "brusselator",
+      "--steps",
+      "20",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/replay_windows/brusselator_0101.jsonl.gz",
+      "--checkpoint",
+      "artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal/brusselator_full/checkpoint_0100"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "seconds": 47.475144347175956,
+    "exit_code": 0,
+    "production_timing": false
+  },
+  {
+    "name": "van_der_pol_0001",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.replay_evidence",
+      "--plant",
+      "van_der_pol",
+      "--steps",
+      "20",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/replay_windows/van_der_pol_0001.jsonl.gz"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "seconds": 19.7117572799325,
+    "exit_code": 0,
+    "production_timing": false
+  }
+]

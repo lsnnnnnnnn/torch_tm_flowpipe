@@ -1,0 +1,36 @@
+[
+  {
+    "name": "parent_local",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/startup/parent_local.xml"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/repo",
+    "source_sha": "7e41f33f515f5315b0dec7003a5b06ed0a79afd5",
+    "exit_code": 0,
+    "seconds": 14.10167383402586
+  },
+  {
+    "name": "parent_evidence_verifier",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.endpoint_roundoff_repair.verify",
+      "artifacts/runs/endpoint_roundoff_repair_20260908",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/startup/parent_verification.json"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/repo",
+    "source_sha": "7e41f33f515f5315b0dec7003a5b06ed0a79afd5",
+    "exit_code": 0,
+    "seconds": 159.90446147089824
+  }
+]

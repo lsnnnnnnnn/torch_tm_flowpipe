@@ -1,0 +1,36 @@
+{
+  "recorded_unix": 1788863340.985828,
+  "initial_full_result_not_yet_available": true,
+  "active_original_run": "full_brusselator_prepared_remainder_replay",
+  "load_average_at_registration": [
+    37.23046875,
+    35.26220703125,
+    22.59521484375
+  ],
+  "reason": "The initial fresh references ran under about1\u20132 load; machine activity rose to about40 during optimized full-run start, with strong timing changes also on unchanged VDP/reference paths. Adjacent full pairs are needed for a credible full speed comparison.",
+  "new_full_pairs": 2,
+  "plants": [
+    "brusselator",
+    "van_der_pol"
+  ],
+  "order": {
+    "brusselator": [
+      "reference",
+      "prepared_remainder_replay"
+    ],
+    "van_der_pol": [
+      "prepared_remainder_replay",
+      "reference"
+    ]
+  },
+  "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+  "threads": 1,
+  "affinity": [
+    3
+  ],
+  "dtype": "float64",
+  "steps_each": 1000,
+  "production_observer": "production_no_observer",
+  "selection": "The initial full measurements remain recorded and are numerically compared. The adjacent confirmation full pairs are the primary full timing comparison. Exactly one confirmation pair per system; no repetitions selected by favorable results.",
+  "start_condition": "Only after the original benchmark has terminal exit0 and COMPLETE.json exists; never overlap formal CPU3 tasks."
+}

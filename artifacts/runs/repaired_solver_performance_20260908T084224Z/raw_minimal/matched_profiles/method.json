@@ -1,0 +1,15 @@
+{
+  "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+  "source_root": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+  "driver_sha256": "07a4c7ea94629ae1075c47f1939a946034dca978fba3b1120f67d76383741438",
+  "affinity": [
+    6
+  ],
+  "threads": 1,
+  "dtype": "float64",
+  "production_denominator": false,
+  "exclusive_method": "Every nested wrapper subtracts measured child wall time; only exclusive_seconds may be summed. The residual closes each measured step total. cProfile self time is a different run.",
+  "classification": "stage is the enclosing selected operation. Polynomial calls during post_accept use fixed coefficients/domain. Python-object and small-tensor validation constructors are disjoint; their torch calls are inside constructor wall time, so this category is not pure Python. Unwrapped residual is not a claim that all remaining time is Python.",
+  "preparation": "The plan counter includes deep-copy binding, first fixed operation callbacks and fixed polynomial-difference setup. It is a subcomponent inside solve. Dispatch and binding checks execute during every replay and remain in solve.",
+  "export": "No serialization occurs inside measured step. Formal production export/checkpoint and whole-process times are recorded separately by run.py and benchmark.py."
+}

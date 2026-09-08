@@ -1,0 +1,95 @@
+{
+  "mechanisms_implemented": [
+    "prepared_remainder_replay"
+  ],
+  "preregistration": {
+    "status": "SELECTED_FOR_BOUNDED_PROTOTYPE",
+    "recorded_before_runtime_implementation": true,
+    "mechanism": "prepared_remainder_replay",
+    "workload": "Brusselator steps 1\u201320, final repaired frozen production-no-observer",
+    "timings": {
+      "production_seconds": 34.09059613151476,
+      "scoped_seconds": 34.25495875580236,
+      "fixed_seconds": 9.432849417906255,
+      "dynamic_seconds": 1.5538515988737345,
+      "other_seconds": 23.268257739022374
+    },
+    "replay_calls": 148,
+    "accepted_steps": 20,
+    "selected_fraction": 0.3207331556024419,
+    "preliminary_local_speedup_estimate_including_preparation": 3.6885936167707074,
+    "predicted_total_speedup": 1.3051089780798588,
+    "max_possible_speedup": 1.4721754907482645,
+    "overhead_allowance_seconds": 0.15,
+    "reason": "Measured fixed polynomial products/truncation/ranges repeat at each current R. Reusing these within one attempt has meaningful predicted benefit even though early-window Amdahl ceiling is below 1.5x. No additional optimization mechanism is selected.",
+    "uncertainty": "Estimate only. Scoped wall time subtracts child scopes. Final s must come from prototype including plan construction and guards; full horizon speed cannot be inferred from this early window.",
+    "mathematical_semantics": "All dynamic remainder products, ledger operations, containment checks, endpoint correction and SR history remain active in original order."
+  },
+  "measured_window_amdahl": [
+    {
+      "window": "brusselator_0001_0020",
+      "plant": "brusselator",
+      "selected_fraction": 0.31748151845037687,
+      "local_speedup_including_prepare_and_checks": 3.8558517475419523,
+      "predicted_total_speedup": 1.3074355353933098,
+      "max_possible_speedup": 1.4651617898017228,
+      "diagnostic_uninstrumented_total_speedup": 1.3177401234128823,
+      "scoped_overhead_reference": 0.02703106270135258,
+      "scoped_overhead_optimized": 0.04475621389073958,
+      "claim": "window diagnostic estimate, not a full-run prediction or formal speed denominator"
+    },
+    {
+      "window": "brusselator_0101_0120",
+      "plant": "brusselator",
+      "selected_fraction": 0.3618142950347627,
+      "local_speedup_including_prepare_and_checks": 4.226063724422335,
+      "predicted_total_speedup": 1.381595848715865,
+      "max_possible_speedup": 1.566942023645721,
+      "diagnostic_uninstrumented_total_speedup": 1.3901826823311048,
+      "scoped_overhead_reference": 0.03058262297031189,
+      "scoped_overhead_optimized": 0.034518131837078414,
+      "claim": "window diagnostic estimate, not a full-run prediction or formal speed denominator"
+    },
+    {
+      "window": "brusselator_0981_1000",
+      "plant": "brusselator",
+      "selected_fraction": 0.31767719245723025,
+      "local_speedup_including_prepare_and_checks": 4.328552268916779,
+      "predicted_total_speedup": 1.3232520880226024,
+      "max_possible_speedup": 1.465581963471619,
+      "diagnostic_uninstrumented_total_speedup": 1.3240875329864379,
+      "scoped_overhead_reference": 0.03496334720446881,
+      "scoped_overhead_optimized": 0.028015895920027623,
+      "claim": "window diagnostic estimate, not a full-run prediction or formal speed denominator"
+    },
+    {
+      "window": "van_der_pol_0001_0020",
+      "plant": "van_der_pol",
+      "selected_fraction": 0.16485940443834848,
+      "local_speedup_including_prepare_and_checks": 0.9999901134744554,
+      "predicted_total_speedup": 0.9999983700998292,
+      "max_possible_speedup": 1.197403174165515,
+      "diagnostic_uninstrumented_total_speedup": 0.99516015521565,
+      "scoped_overhead_reference": 0.03488584988613397,
+      "scoped_overhead_optimized": 0.021385982303310902,
+      "claim": "window diagnostic estimate, not a full-run prediction or formal speed denominator"
+    },
+    {
+      "window": "van_der_pol_0091_0110",
+      "plant": "van_der_pol",
+      "selected_fraction": 0.1514363806343576,
+      "local_speedup_including_prepare_and_checks": 1.015257393923368,
+      "predicted_total_speedup": 1.00228099279779,
+      "max_possible_speedup": 1.178462023563497,
+      "diagnostic_uninstrumented_total_speedup": 1.0066957355742363,
+      "scoped_overhead_reference": 0.024399180301377,
+      "scoped_overhead_optimized": 0.029514248189776104,
+      "claim": "window diagnostic estimate, not a full-run prediction or formal speed denominator"
+    }
+  ],
+  "full_observed_speedups": {
+    "brusselator": 1.4260526391598038,
+    "van_der_pol": 1.0118285833523137
+  },
+  "interpretation": "Amdahl estimates concern their exact windows. Full single-pair results and alternating repeats are reported separately. No second mechanism was added to chase1.5x."
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "plant": "brusselator",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "brusselator",
+      "--steps",
+      "1000",
+      "--mode",
+      "reference",
+      "--scientific-sha",
+      "e2d00f1b9e1824e8591f6655397bfc3762d6d0ed",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/fresh_reference/brusselator"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/reference_source",
+    "scientific_sha": "e2d00f1b9e1824e8591f6655397bfc3762d6d0ed",
+    "whole_process_seconds": 2077.948375817854,
+    "start_unix": 1788857648.3649874,
+    "finish_unix": 1788859726.3133636,
+    "load_before": [
+      0.24072265625,
+      0.71142578125,
+      0.669921875
+    ],
+    "load_after": [
+      1.1142578125,
+      1.4677734375,
+      1.64697265625
+    ],
+    "affinity": [
+      3
+    ],
+    "exit_code": 0,
+    "ordering_note": "The one fresh sequential reference run also captures missing full-state checkpoints at 90 and 980. It is run before the remaining window/prefix pairs to supply those states, as allowed by section 5.1. No bounds-based reinitialization."
+  },
+  {
+    "plant": "van_der_pol",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "van_der_pol",
+      "--steps",
+      "1000",
+      "--mode",
+      "reference",
+      "--scientific-sha",
+      "e2d00f1b9e1824e8591f6655397bfc3762d6d0ed",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/fresh_reference/van_der_pol"
+    ],
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/reference_source",
+    "scientific_sha": "e2d00f1b9e1824e8591f6655397bfc3762d6d0ed",
+    "whole_process_seconds": 729.4002378480509,
+    "start_unix": 1788859726.3138325,
+    "finish_unix": 1788860455.7140718,
+    "load_before": [
+      1.1142578125,
+      1.4677734375,
+      1.64697265625
+    ],
+    "load_after": [
+      2.1962890625,
+      1.98974609375,
+      1.74609375
+    ],
+    "affinity": [
+      3
+    ],
+    "exit_code": 0,
+    "ordering_note": "The one fresh sequential reference run also captures missing full-state checkpoints at 90 and 980. It is run before the remaining window/prefix pairs to supply those states, as allowed by section 5.1. No bounds-based reinitialization."
+  }
+]

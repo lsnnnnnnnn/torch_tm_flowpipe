@@ -1,0 +1,23 @@
+{
+  "status": "SELECTED_FOR_BOUNDED_PROTOTYPE",
+  "recorded_before_runtime_implementation": true,
+  "mechanism": "prepared_remainder_replay",
+  "workload": "Brusselator steps 1\u201320, final repaired frozen production-no-observer",
+  "timings": {
+    "production_seconds": 34.09059613151476,
+    "scoped_seconds": 34.25495875580236,
+    "fixed_seconds": 9.432849417906255,
+    "dynamic_seconds": 1.5538515988737345,
+    "other_seconds": 23.268257739022374
+  },
+  "replay_calls": 148,
+  "accepted_steps": 20,
+  "selected_fraction": 0.3207331556024419,
+  "preliminary_local_speedup_estimate_including_preparation": 3.6885936167707074,
+  "predicted_total_speedup": 1.3051089780798588,
+  "max_possible_speedup": 1.4721754907482645,
+  "overhead_allowance_seconds": 0.15,
+  "reason": "Measured fixed polynomial products/truncation/ranges repeat at each current R. Reusing these within one attempt has meaningful predicted benefit even though early-window Amdahl ceiling is below 1.5x. No additional optimization mechanism is selected.",
+  "uncertainty": "Estimate only. Scoped wall time subtracts child scopes. Final s must come from prototype including plan construction and guards; full horizon speed cannot be inferred from this early window.",
+  "mathematical_semantics": "All dynamic remainder products, ledger operations, containment checks, endpoint correction and SR history remain active in original order."
+}

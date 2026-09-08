@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "6",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "experiments/repaired_solver_performance/tests",
+    "--junitxml=/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/artifact_tests.xml"
+  ],
+  "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/repo",
+  "source_sha": "8b416f430afb186d92da0942fee5888180be4766",
+  "seconds": 36.93796905968338,
+  "exit_code": 0,
+  "source_clean_at_start": true,
+  "source_clean_at_end": true
+}

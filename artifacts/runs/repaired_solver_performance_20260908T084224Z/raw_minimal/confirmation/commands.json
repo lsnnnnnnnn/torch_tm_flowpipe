@@ -1,0 +1,162 @@
+[
+  {
+    "name": "confirm_full_brusselator_reference",
+    "stage": "confirmation_full",
+    "plant": "brusselator",
+    "mode": "reference",
+    "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "argv": [
+      "taskset",
+      "-c",
+      "3",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "brusselator",
+      "--steps",
+      "1000",
+      "--mode",
+      "reference",
+      "--scientific-sha",
+      "f627d6489155c775d4a7f3afde27c88982494ba2",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/confirmation/confirm_full_brusselator_reference"
+    ],
+    "start_unix": 1788865910.237636,
+    "finish_unix": 1788868054.4735425,
+    "whole_process_seconds": 2144.235908719711,
+    "load_before": [
+      1.95556640625,
+      2.80029296875,
+      8.2509765625
+    ],
+    "load_after": [
+      1.10791015625,
+      1.91845703125,
+      5.0908203125
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "confirm_full_brusselator_prepared_remainder_replay",
+    "stage": "confirmation_full",
+    "plant": "brusselator",
+    "mode": "prepared_remainder_replay",
+    "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "argv": [
+      "taskset",
+      "-c",
+      "3",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "brusselator",
+      "--steps",
+      "1000",
+      "--mode",
+      "prepared_remainder_replay",
+      "--scientific-sha",
+      "f627d6489155c775d4a7f3afde27c88982494ba2",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/confirmation/confirm_full_brusselator_prepared_remainder_replay"
+    ],
+    "start_unix": 1788868054.474415,
+    "finish_unix": 1788869583.4468603,
+    "whole_process_seconds": 1528.972447515931,
+    "load_before": [
+      1.10791015625,
+      1.91845703125,
+      5.0908203125
+    ],
+    "load_after": [
+      1.20947265625,
+      1.16943359375,
+      1.8955078125
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "confirm_full_van_der_pol_prepared_remainder_replay",
+    "stage": "confirmation_full",
+    "plant": "van_der_pol",
+    "mode": "prepared_remainder_replay",
+    "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "argv": [
+      "taskset",
+      "-c",
+      "3",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "van_der_pol",
+      "--steps",
+      "1000",
+      "--mode",
+      "prepared_remainder_replay",
+      "--scientific-sha",
+      "f627d6489155c775d4a7f3afde27c88982494ba2",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/confirmation/confirm_full_van_der_pol_prepared_remainder_replay"
+    ],
+    "start_unix": 1788869584.447339,
+    "finish_unix": 1788870296.1639879,
+    "whole_process_seconds": 711.7166524101049,
+    "load_before": [
+      1.20947265625,
+      1.16943359375,
+      1.8955078125
+    ],
+    "load_after": [
+      1.1884765625,
+      1.16455078125,
+      1.50048828125
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "confirm_full_van_der_pol_reference",
+    "stage": "confirmation_full",
+    "plant": "van_der_pol",
+    "mode": "reference",
+    "source_sha": "f627d6489155c775d4a7f3afde27c88982494ba2",
+    "cwd": "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/candidate_source",
+    "argv": [
+      "taskset",
+      "-c",
+      "3",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.repaired_solver_performance.run",
+      "--plant",
+      "van_der_pol",
+      "--steps",
+      "1000",
+      "--mode",
+      "reference",
+      "--scientific-sha",
+      "f627d6489155c775d4a7f3afde27c88982494ba2",
+      "--output",
+      "/srv/local/shengenli/repaired_solver_performance_20260908T084224Z/confirmation/confirm_full_van_der_pol_reference"
+    ],
+    "start_unix": 1788870296.1648924,
+    "finish_unix": 1788871015.9392247,
+    "whole_process_seconds": 719.774334743619,
+    "load_before": [
+      1.1884765625,
+      1.16455078125,
+      1.50048828125
+    ],
+    "load_after": [
+      1.0615234375,
+      1.13330078125,
+      1.30078125
+    ],
+    "exit_code": 0
+  }
+]

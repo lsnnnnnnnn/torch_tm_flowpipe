@@ -1,0 +1,95 @@
+{
+  "passed": true,
+  "verification_kind": "saved-evidence recomputation; no full ODE rerun",
+  "status": "ENDPOINT_REPAIR_CLOSED__FULL_HORIZONS_REVALIDATED",
+  "scientific_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+  "delivery_runtime_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36",
+  "exact_endpoint_component_checks": 4812,
+  "exact_coefficient_checks": 40402,
+  "production_endpoint_replays": 2406,
+  "width_rows_recomputed": 16000,
+  "test_matrix": {
+    "groups": [
+      {
+        "group": "root",
+        "passed": 1000,
+        "skipped": 2,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "old_stop_snapshot",
+        "passed": 6,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "73c3b48a3dadd81cd03ecc827bde1228ef7f6ac8"
+      },
+      {
+        "group": "torch_basis",
+        "passed": 9,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "diffreach_followup",
+        "passed": 8,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "first_order_three_way",
+        "passed": 6,
+        "skipped": 5,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "diffreach_support",
+        "passed": 2,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "common_contract",
+        "passed": 6,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "comparison_repair",
+        "passed": 16,
+        "skipped": 0,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      },
+      {
+        "group": "deep_study",
+        "passed": 13,
+        "skipped": 4,
+        "failed": 0,
+        "errors": 0,
+        "source_sha": "0714e475ed9e73bec31619c9c690d1fd63de3d36"
+      }
+    ],
+    "unique_totals": {
+      "passed": 1066,
+      "skipped": 11,
+      "failed": 0,
+      "errors": 0
+    },
+    "original_endpoint_tests_passed": 2,
+    "local_targeted_tests_added_again": false
+  }
+}
