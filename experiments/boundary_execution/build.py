@@ -117,7 +117,14 @@ def report(root, result, costs, remaining, accounting):
             ' | '.join(f"{100*values[c]['fraction']:.2f}%" for c in ['D', 'G', 'outside_boundary'])+' |')
     artifact = '../../artifacts/runs/'+RUN_NAME
     totals = accounting['unique_totals']
+    conclusion = {
+        'BOUNDARY_EXECUTION_PRESERVED__TARGET_SPEEDUP_OBSERVED': '完整配对观察到达标提速；结论范围限于保存的实际运行。',
+        'BOUNDARY_EXECUTION_PRESERVED__USEFUL_BELOW_TARGET': '完整配对观察到有用提速，未达到 1.5× 目标；保留默认关闭的可选路径。',
+        'BOUNDARY_EXECUTION_PRESERVED__NO_MATERIAL_SPEEDUP': '数值行为保持，但完整测量未支持有实质收益的结论。',
+    }[result['status']]
     text = f'''# 本步结果交给下一步：有序张量取范围
+
+{conclusion}
 
 正式状态：`{result['status']}`。新优化默认关闭，通过独立开关选择。本轮只改取范围这一条执行链。
 
@@ -153,9 +160,11 @@ def report(root, result, costs, remaining, accounting):
 
 这些是带观察器的代表步骤，不是全程精确份额。D 内独立项乘法已经张量化，变量幂仍调用标量区间路线，跨项累加仍是有序 Python 循环；稀疏输入打包和结果区间包装也仍存在。G 仍包含 Python 历史验证、pack/unpack 和已有张量传播。主积分与组合部分也仍混有 Python 稀疏项处理及既有稠密张量计算。此次未叠加历史重写或 prepared replay 第二项优化。
 
-8. **是否给批量/GPU 提供了可用接口？** 局部 RangePlan 接口接受系数 `[B, output, terms]` 和 domain `[B, variables]`，独立任务确实共用张量乘法，B2 用不同输入检查无混合。完整 solver 仍为 B1；接口目前限 CPU64。标量变量幂和逐项累加保留了经过检查的舍入语义，迁移设备前还需处理这些同步与执行成本，并在目标设备独立检查逐操作包含性。本轮没有 GPU 吞吐结论。
+8. **是否给批量/GPU 提供了可用接口？** 局部 RangePlan 接口接受系数 `[B, output, terms]` 和 domain `[B, variables]`，独立任务确实共用张量乘法，B2 用不同输入检查无混合。一个计划共享同一支持结构；完整批量接入还需按支持结构分组，处理各任务的步长、接受进度和历史状态，不能用补零重排改变运算链。完整 solver 仍为 B1；接口目前限 CPU64。标量变量幂和逐项累加保留了经过检查的舍入语义，迁移设备前还需处理这些同步与执行成本，并在目标设备独立检查逐操作包含性。CPU 不必先追平 Flow* 才考虑 GPU；本轮没有 GPU 吞吐结论。
 
 根测试、候选开启复查及本轮证据篡改测试按身份去重为 {totals.get('passed', 0)} passed / {totals.get('skipped', 0)} skipped；候选开启的 99 项和独立副本复查均不重复加总。父版本的 75 项及旧 verifier 结果单列复用。相关命令、JUnit、退出码和排除范围均可在证据包检查；新 verifier 只复核本轮变化及引用的父数值锚点，不重跑完整 ODE。
+
+两项既有跳过分别是未配置 FLOWSTAR_ROOT 的可选后端身份测试、未配置 DIFFREACH_PYTHON 的可选环境导入测试；本轮没有增加预期失败或跳过新路径断言。
 
 下一步只做一项：用真实独立输入测量 RangePlan 的局部批量扩展，包含打包和检查，确认收益能覆盖剩余成本后再决定设备迁移。
 

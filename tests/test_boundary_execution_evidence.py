@@ -65,7 +65,9 @@ def test_boundary_evidence_rejects_semantic_tampering_after_rehash(evidence, fie
     else:
         check = lambda: check_result(evidence)
         check()
-        change_json(evidence/'RESULT.json', lambda s: s.update(status='BOUNDARY_EXECUTION_UNSUPPORTED_PROMOTION'))
+        target = 'BOUNDARY_EXECUTION_PRESERVED__TARGET_SPEEDUP_OBSERVED'
+        alternate = 'BOUNDARY_EXECUTION_PRESERVED__NO_MATERIAL_SPEEDUP'
+        change_json(evidence/'RESULT.json', lambda s: s.update(status=alternate if s['status'] == target else target))
     write_manifest(evidence)
     manifest(evidence)  # Byte hashes pass: the semantic gate must still reject.
     with pytest.raises(AssertionError):
