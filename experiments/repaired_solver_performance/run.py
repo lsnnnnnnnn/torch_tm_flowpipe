@@ -48,6 +48,7 @@ def main():
     parser.add_argument('--steps',type=int,default=1000)
     parser.add_argument('--adaptive',action='store_true')
     parser.add_argument('--mode',choices=['reference','prepared_remainder_replay'],default='reference')
+    parser.add_argument('--checkpoint',type=Path)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
     if args.steps<1 or (args.adaptive and args.plant!='van_der_pol'):
@@ -64,15 +65,31 @@ def main():
     setup_started=time.perf_counter()
     config,current,state=setup(args.plant)
     setup_seconds=time.perf_counter()-setup_started
+    start_step=1
+    initial_total=F(0)
+    checkpoint_load_seconds=0.
+    if args.checkpoint is not None:
+        assert not args.adaptive, 'window restore is for the unchanged fixed schedule'
+        started=time.perf_counter()
+        restored=core.load_terminal_checkpoint(args.checkpoint,expected_dtype='float64')
+        assert restored.contract['plant']==args.plant
+        assert restored.contract['config']==config.as_dict()
+        current,state=restored.current,restored.normal_state
+        start_step=state.step_index+1
+        initial_total=F(restored.scheduler['time_exact'])
+        checkpoint_load_seconds=time.perf_counter()-started
     fixed_h=.02 if args.plant=='brusselator' else .01
     h=.1 if args.adaptive else fixed_h
-    requested=F(10) if args.adaptive else F(args.steps,50 if args.plant=='brusselator' else 100)
+    requested=F(10) if args.adaptive else F(start_step+args.steps-1,50 if args.plant=='brusselator' else 100)
     frozen_config={'plant':args.plant,'adaptive':args.adaptive,'config':config.as_dict(),
                    'fixed_h_hex':None if args.adaptive else fixed_h.hex(),
                    'requested_steps':None if args.adaptive else args.steps,
                    'requested_horizon_exact_nominal':str(requested),
                    'endpoint_ad_hoc_repair':False,'endpoint_substitution_roundoff_required':True,
                    'matched_contracts_sha256':MATCHED_SHA256}
+    if start_step!=1:
+        frozen_config['start_step']=start_step
+        frozen_config['initial_time_exact']=str(initial_total)
     config_digest=hashlib.sha256(json.dumps(frozen_config,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     provenance={'scientific_sha':args.scientific_sha,'source_clean_at_start':True,
                 'source_root':str(ROOT),'imported_package':core.__file__,
@@ -86,7 +103,7 @@ def main():
                                 for p in sorted((ROOT/'src/torch_tm_flowpipe').glob('*.py'))}}
     write_json(output/'execution_contract.json',frozen_config)
     write_json(output/'source.json',provenance)
-    total=F(0)
+    total=initial_total
     # Preserve the original native scheduler's binary64 clock and terminal
     # step rule. The independent rational clock below reports the actual sum.
     scheduler_time=0.
@@ -95,6 +112,7 @@ def main():
     failure=None
     rejections=0
     refinement_totals={}
+    execution_work_totals={}
     checkpoints={1,2,20,90,99,100,101,120,980,999,1000}
     if args.mode=='prepared_remainder_replay':
         from torch_tm_flowpipe.prepared_remainder_replay import prepared_remainder_replay
@@ -105,7 +123,7 @@ def main():
     step_times=[]
     with gzip.open(output/'models.jsonl.gz','wt') as models, (output/'bounds.csv').open('x') as bounds, (output/'endpoint_audit.jsonl').open('x') as audit:
         writer=None
-        for index in range(1,(10000 if args.adaptive else args.steps)+1):
+        for index in range(start_step,start_step+(10000 if args.adaptive else args.steps)):
             if args.adaptive and scheduler_time>=float(requested)-1e-12:
                 break
             before_current,before_state=current,state
@@ -135,6 +153,8 @@ def main():
             for name,value in (segment.backend_counters or {}).items():
                 if name.startswith('post_accept_') or name=='polynomial_picard_iterations':
                     refinement_totals[name]=refinement_totals.get(name,0)+value
+                if name.startswith('prepared_'):
+                    execution_work_totals[name]=execution_work_totals.get(name,0)+value
             if segment.status!='validated' or segment.reset_tm is None:
                 failure={'attempted_step':index,'status':segment.status,'message':segment.message,
                          'attempted_h_hex':attempted_h.hex(),'returned_h_hex':segment.h.hex(),
@@ -177,6 +197,7 @@ def main():
             bounds.flush()
             models.write(json.dumps(record,separators=(',',':'),allow_nan=False)+'\n')
             audit_row={'execution_mode':args.mode,'data_origin':provenance['data_origin'],
+                       'execution_work':{k:v for k,v in segment.backend_counters.items() if k.startswith('prepared_')},
                        'reset_tm_hashes':tmvector_hashes(segment.reset_tm),
                        'left_tm_hashes':tmvector_hashes(state.tmv_pre),
                        'right_tm_hashes':tmvector_hashes(state.tmv_right),
@@ -198,7 +219,7 @@ def main():
             rows.append(row)
             if args.adaptive and segment.next_h is not None:
                 h=segment.next_h
-            if index in checkpoints or (not args.adaptive and index==args.steps):
+            if index in checkpoints or (not args.adaptive and index==start_step+args.steps-1):
                 checkpoint(output/f'checkpoint_{index:04d}',current,state,total,h,frozen_config,provenance)
             export_seconds+=time.perf_counter()-export_start
             if index==1 or index%20==0:
@@ -218,9 +239,13 @@ def main():
              'accepted_horizon_exact':str(total),'fixed_step_hex':None if args.adaptive else fixed_h.hex(),
              'scheduler_time_hex':scheduler_time.hex(),
              'completed':completed,'failure':failure,'setup_seconds':setup_seconds,
+             'checkpoint_load_seconds':checkpoint_load_seconds,
+             'start_step':start_step,'initial_time_exact':str(initial_total),
+             'advanced_time_exact':str(total-initial_total),
              'plan_construction_in_solve':True,'numerical_with_setup_seconds':setup_seconds+solve_seconds,
              'solve_seconds':solve_seconds,'export_seconds':export_seconds,
              'inside_process_seconds':time.perf_counter()-process_start,'refinement_totals':refinement_totals,
+             'execution_work_totals':execution_work_totals,
              'peak_rss_bytes':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024,
              'final_queue_size':len(state.symbolic_queue.J) if state.symbolic_queue else None,
              'final_queue_reset_count':state.symbolic_queue.reset_count if state.symbolic_queue else None,

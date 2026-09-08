@@ -218,6 +218,10 @@ class DenseExecutionCounters:
     post_accept_fixed_point_count: int = 0
     post_accept_failure_count: int = 0
     post_accept_replay_cap_count: int = 0
+    prepared_plan_count: int = 0
+    prepared_operation_count: int = 0
+    prepared_operation_hits: int = 0
+    prepared_plan_setup_s: float = 0.0
     host_to_device_s: float = 0.0
     dense_kernel_s: float = 0.0
     device_to_host_s: float = 0.0
@@ -3748,13 +3752,18 @@ def _dense_flowstar_raw_compat_image(
     joint_closure_coefficient_cache: _JointVDPCoefficientCache | None = None,
     refinement_static_cache: _VDPRefinementStaticCache | None = None,
     record_evidence: bool = True,
+    prepared_replay: Any | None = None,
 ) -> tuple[
     torch.Tensor,
     torch.Tensor,
     Mapping[str, Any],
     DenseValidatedRemainderDecomposition,
 ]:
-    if refinement_static_cache is not None:
+    if prepared_replay is not None:
+        if refinement_static_cache is not None or raw_trace_recorder is not None or raw_rhs_evaluation != "ordered_terms":
+            raise ValueError("prepared replay requires an untraced ordered RHS")
+        raw_rhs = prepared_replay._raw_rhs(candidate_with_target)
+    elif refinement_static_cache is not None:
         if raw_trace_recorder is not None or raw_rhs_evaluation != "canonical_factorized_joint_closure":
             raise ValueError("C2 static replay cache requires untraced canonical closure evaluation")
         raw_rhs = BatchedTaylorModel.concat(
@@ -3852,20 +3861,24 @@ def _dense_flowstar_raw_compat_image(
             )
 
     if refinement_static_cache is None:
-        regular_rhs = _call_dense_rhs_evaluation(
-            rhs_fn,
-            candidate_with_target,
-            evaluation_mode=raw_rhs_evaluation,
-        )
-        tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
-        poly_diff = tmp.poly.sub(candidate_poly.poly)
-        diff_lo, diff_hi = poly_diff.range_bound(
-            candidate_poly.domain_lo,
-            candidate_poly.domain_hi,
-            policy=candidate_poly.range_policy,
-            context="raw_compat_poly_diff",
-            trace=candidate_poly.range_trace,
-        )
+        if prepared_replay is not None:
+            tmp = prepared_replay._regular_tmp(candidate_with_target)
+            poly_diff, diff_lo, diff_hi = prepared_replay._polynomial_difference(tmp)
+        else:
+            regular_rhs = _call_dense_rhs_evaluation(
+                rhs_fn,
+                candidate_with_target,
+                evaluation_mode=raw_rhs_evaluation,
+            )
+            tmp = base_ext.add(regular_rhs.integrate(tau_index)).apply_cutoff(cutoff_threshold)
+            poly_diff = tmp.poly.sub(candidate_poly.poly)
+            diff_lo, diff_hi = poly_diff.range_bound(
+                candidate_poly.domain_lo,
+                candidate_poly.domain_hi,
+                policy=candidate_poly.range_policy,
+                context="raw_compat_poly_diff",
+                trace=candidate_poly.range_trace,
+            )
         tmp_ledger = tmp.ledger
     else:
         poly_diff = refinement_static_cache.poly_diff
@@ -4411,6 +4424,10 @@ def _post_accept_refine_raw_remainder(
             validation_eps=validation_eps,
         )
 
+    from .prepared_remainder_replay import PreparedRemainderReplay, is_enabled
+
+    prepared = None
+    use_prepared = is_enabled() and raw_rhs_evaluation == "ordered_terms"
     for iteration in range(1, replay_limit + 1):
         if counters is not None:
             counters.post_accept_replay_calls += 1
@@ -4422,8 +4439,17 @@ def _post_accept_refine_raw_remainder(
             category="initial_remainder",
         )
         try:
-            proposed_lo, proposed_hi, compat_extra, proposed_decomposition = (
-                _dense_flowstar_raw_compat_image(
+            if use_prepared:
+                if prepared is None:
+                    prepared = PreparedRemainderReplay(
+                        rhs_fn, base_ext, candidate, tau_index=tau_index, order=order,
+                        cutoff_threshold=cutoff_threshold, validation_eps=validation_eps,
+                    )
+                proposed_lo, proposed_hi, compat_extra, proposed_decomposition = prepared.image(
+                    input_lo, input_hi, record_evidence=observer_mode == DENSE_OBSERVER_FULL,
+                )
+            else:
+                proposed_lo, proposed_hi, compat_extra, proposed_decomposition = _dense_flowstar_raw_compat_image(
                     rhs_fn,
                     base_ext,
                     candidate_with_remainder,
@@ -4437,7 +4463,6 @@ def _post_accept_refine_raw_remainder(
                     refinement_static_cache=static_cache,
                     record_evidence=observer_mode == DENSE_OBSERVER_FULL,
                 )
-            )
             commit, continue_refining, stop_reason, subsets, margins, ratios = (
                 _atomic_refinement_decision(input_lo, input_hi, proposed_lo, proposed_hi)
             )
@@ -4538,6 +4563,9 @@ def _post_accept_refine_raw_remainder(
             )
         if not commit or not continue_refining:
             break
+    if prepared is not None and counters is not None:
+        for name, value in prepared.work_counts().items():
+            setattr(counters, name, getattr(counters, name) + value)
     return final_lo, final_hi, final_decomposition, tuple(rows)
 
 
