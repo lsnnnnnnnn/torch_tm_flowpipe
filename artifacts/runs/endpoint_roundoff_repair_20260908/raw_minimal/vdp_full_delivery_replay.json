@@ -1,0 +1,90 @@
+{
+  "run": "vdp_full",
+  "scientific_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+  "steps": 1000,
+  "exact_horizon": "720575940379279375/72057594037927936",
+  "full_function_containment_checks": 2000,
+  "exact_coefficient_containment_checks": 12000,
+  "production_endpoint_replays": 1000,
+  "first_nonzero_substitution_error_step": [
+    1,
+    1
+  ],
+  "max_abs_substitution_error_by_component": [
+    [
+      1.7804769143619964e-15,
+      722
+    ],
+    [
+      2.3073473944738708e-15,
+      670
+    ]
+  ],
+  "checkpoint_checks": [
+    {
+      "step": 1,
+      "queue_size": 1,
+      "reset_count": 0,
+      "queue_sha256": "6471970842540138e3c9af69e20b95f35e4e30cb1cce99d795ec3f83e0b87f73",
+      "path": "checkpoint_0001"
+    },
+    {
+      "step": 2,
+      "queue_size": 2,
+      "reset_count": 0,
+      "queue_sha256": "a96d11c89cb6cef534c36e954e9000f9e2a49afff74ed83b7361c40e06fca9c0",
+      "path": "checkpoint_0002"
+    },
+    {
+      "step": 20,
+      "queue_size": 20,
+      "reset_count": 0,
+      "queue_sha256": "d84f99d458f83f0b4288b1bc59d8ef3c099e272ef5f17a1e73df802a85b57581",
+      "path": "checkpoint_0020"
+    },
+    {
+      "step": 99,
+      "queue_size": 99,
+      "reset_count": 0,
+      "queue_sha256": "f566a2567a966fa1e4441dfeafdf002b90e6d24600e6f5518692dba010208ed4",
+      "path": "checkpoint_0099"
+    },
+    {
+      "step": 100,
+      "queue_size": 0,
+      "reset_count": 1,
+      "queue_sha256": "f56704f7d0aff413d3d85c93f11d4f789395e2584d11fff033a1153e1a07d9f7",
+      "path": "checkpoint_0100"
+    },
+    {
+      "step": 101,
+      "queue_size": 1,
+      "reset_count": 1,
+      "queue_sha256": "41a3892327b73ef9a9f4ab04269dc142f522aa8b51f3dd8df0a8c5a55e227021",
+      "path": "checkpoint_0101"
+    },
+    {
+      "step": 120,
+      "queue_size": 20,
+      "reset_count": 1,
+      "queue_sha256": "f0ccdef388d4d11357ac4955b353d1d0dbfd7a84793f90a9c8160607a39ea951",
+      "path": "checkpoint_0120"
+    },
+    {
+      "step": 999,
+      "queue_size": 99,
+      "reset_count": 9,
+      "queue_sha256": "98fae0c68cf9b8395b50f5793e1b46f6ed8c1db44cc4e1b552a92198bb7b8424",
+      "path": "checkpoint_0999"
+    },
+    {
+      "step": 1000,
+      "queue_size": 0,
+      "reset_count": 10,
+      "queue_sha256": "1bf1fb7bcd2f5cbe75cf0092bfa9119d014695c1f47b58f62a4351eff43dd581",
+      "path": "checkpoint_1000"
+    }
+  ],
+  "partial_read": false,
+  "passed": true
+}

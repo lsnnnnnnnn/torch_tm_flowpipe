@@ -1,0 +1,45 @@
+{
+  "original_full_matrix_source": "196a50e9131336d68df07ad0af353deca0092d19",
+  "root_initial_failures": [
+    {
+      "test": "test_cuda_interval_smoke",
+      "reason": "New helper stacked CPU time-domain and CUDA state-domain tensors together. Existing generic device/precision alignment corrected; original smoke assertions unchanged."
+    },
+    {
+      "test": "test_c3_no_renormalization_fails_the_exact_domain_gate_without_commit",
+      "old_boundary": 11,
+      "repaired_boundary": 3,
+      "reason": "Required endpoint coefficient error changes consumed right maps and normalized domain margins; strict gate remains unchanged."
+    },
+    {
+      "test": "test_c3_off_preserves_frozen_c2_two_step_binary64_hashes",
+      "reason": "Required endpoint coefficient error changes both reset and consumed right-map coefficients/remainders. Two exact Fraction whole-function checks preceded the golden update."
+    }
+  ],
+  "old_c2_hash_pairs": [
+    [
+      "73571d915d6465897c4d820ce27e37107b0cd533a81942c8ac263adba6937c19",
+      "ff55d684753c3b8144e270ba6f573358f8b1bc4bbe14dcbbf1cb57b84f371ef4"
+    ],
+    [
+      "3c6b955985ea3b0610c32467626abc59e5c69c99a269ac482a7ded5c68a5c47a",
+      "6a7e4190f2a6f269c8e7921333866d6a1ddefd424369afdcf675b3ef11f3a957"
+    ]
+  ],
+  "new_c2_hash_pairs": [
+    [
+      "1974ff34a4021987de9aac9ad093f7a2701b713819de14ed9a5cdfe299bee286",
+      "cde8ccfa40595f42c93a6bcc1a1f87ba8b13124b3cb53405620b6d4441bc3eed"
+    ],
+    [
+      "adae79369750c454028a2a837992ce372ec9279a3209752484adbcd6645abf53",
+      "9d74cba1f120ca01f6cfa75352a5a4341dae608588f2665d9426965045cdd70f"
+    ]
+  ],
+  "independent_inclusion_proof": "raw_minimal/affected_golden_audit.json",
+  "isolated_initial_collection_errors": "DIFFREACH_ROOT and JAX_PLATFORMS were absent in the first isolated invocation; restored the known previous environment without source/test changes.",
+  "historical_fixture": "25 old files copied only from the known old worktree after each original hash matched; assertions unchanged.",
+  "final_inspection_fix": "Dense component concat now carries the new endpoint category if present. Original ordinary-validation category schema is unchanged.",
+  "old_raw_archives_modified": false,
+  "original_two_endpoint_safety_tests_modified": false
+}

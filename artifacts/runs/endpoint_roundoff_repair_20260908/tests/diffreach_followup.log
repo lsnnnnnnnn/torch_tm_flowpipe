@@ -1,0 +1,31 @@
+
+==================================== ERRORS ====================================
+_ ERROR collecting experiments/first_order_followup/tests/test_diffreach_projection.py _
+ImportError while importing test module '/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/experiments/first_order_followup/tests/test_diffreach_projection.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniforge3/envs/diffreach312/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+experiments/first_order_followup/tests/test_diffreach_projection.py:22: in <module>
+    from diffreach_projection import strict_affine_projection
+experiments/first_order_followup/diffreach_projection.py:30: in <module>
+    from src.interval import Interval
+E   ModuleNotFoundError: No module named 'src.interval'
+_ ERROR collecting experiments/first_order_followup/tests/test_diffreach_parity.py _
+ImportError while importing test module '/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/experiments/first_order_followup/tests/test_diffreach_parity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniforge3/envs/diffreach312/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+experiments/first_order_followup/tests/test_diffreach_parity.py:25: in <module>
+    from run_diffreach import (
+experiments/first_order_three_way/run_diffreach.py:39: in <module>
+    import src.settings as dr_settings
+E   ModuleNotFoundError: No module named 'src.settings'
+=========================== short test summary info ============================
+ERROR experiments/first_order_followup/tests/test_diffreach_projection.py
+ERROR experiments/first_order_followup/tests/test_diffreach_parity.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.52s

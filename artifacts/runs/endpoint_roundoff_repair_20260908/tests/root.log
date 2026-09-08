@@ -1,0 +1,85 @@
+........................................................................ [  7%]
+........................................................................ [ 14%]
+................................................................F....... [ 21%]
+........................................................................ [ 28%]
+........................................................................ [ 36%]
+......................ss................................................ [ 43%]
+........................................................................ [ 50%]
+........................................................................ [ 57%]
+........................................................................ [ 64%]
+........................................................................ [ 72%]
+........................................................................ [ 79%]
+..F..................................................................... [ 86%]
+.......................................................................F [ 93%]
+................................................................         [100%]
+=================================== FAILURES ===================================
+___________________________ test_cuda_interval_smoke ___________________________
+
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+    def test_cuda_interval_smoke():
+        device = torch.device("cuda")
+        seg = flowpipe_step(
+            scalar_quadratic_ode,
+            [Interval(torch.tensor(0.0, device=device), torch.tensor(0.1, device=device))],
+            h=0.01,
+            order=4,
+        )
+>       assert seg.status == "validated"
+E       AssertionError: assert 'failed' == 'validated'
+E         
+E         - validated
+E         + failed
+
+tests/test_cuda.py:17: AssertionError
+____ test_c3_no_renormalization_fails_the_exact_domain_gate_without_commit _____
+
+    def test_c3_no_renormalization_fails_the_exact_domain_gate_without_commit():
+        schedule = json.loads(SCHEDULE.read_text(encoding="utf-8"))
+        c3 = audit.replay_control("C3", schedule, max_attempt_index=12)
+        assert c3["status"] == "domain_gate_failure"
+>       assert c3["failure_boundary"] == 11
+E       assert 3 == 11
+
+tests/test_s1_carrier_parity.py:39: AssertionError
+___________ test_c3_off_preserves_frozen_c2_two_step_binary64_hashes ___________
+
+    def test_c3_off_preserves_frozen_c2_two_step_binary64_hashes():
+        current, state = _initial()
+        expected = (
+            (
+                "73571d915d6465897c4d820ce27e37107b0cd533a81942c8ac263adba6937c19",
+                "ff55d684753c3b8144e270ba6f573358f8b1bc4bbe14dcbbf1cb57b84f371ef4",
+            ),
+            (
+                "3c6b955985ea3b0610c32467626abc59e5c69c99a269ac482a7ded5c68a5c47a",
+                "6a7e4190f2a6f269c8e7921333866d6a1ddefd424369afdcf675b3ef11f3a957",
+            ),
+        )
+        for expected_pair in expected:
+            segment = flowpipe_step_flowstar_style_adaptive(
+                van_der_pol_ode,
+                current,
+                h=0.01,
+                h_min=0.01,
+                h_max=0.01,
+                order=4,
+                target_remainder_radius=1e-4,
+                cutoff_threshold=1e-10,
+                reset_mode=NORMALIZED_INSERTION_DEPENDENCY_PRESERVING,
+                flowstar_normal_state=state,
+            )
+            assert segment.status == "validated"
+            assert segment.flowstar_normal_state.symbolic_queue is None
+>           assert tmvector_hashes(segment.reset_tm)["tmvector_sha256"] == expected_pair[0]
+E           AssertionError: assert '1974ff34a402...cdfe299bee286' == '73571d915d64...63adba6937c19'
+E             
+E             - 73571d915d6465897c4d820ce27e37107b0cd533a81942c8ac263adba6937c19
+E             + 1974ff34a4021987de9aac9ad093f7a2701b713819de14ed9a5cdfe299bee286
+
+tests/test_vdp_c3_cross_step_queue.py:261: AssertionError
+- generated xml file: /srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/root.xml -
+=========================== short test summary info ============================
+FAILED tests/test_cuda.py::test_cuda_interval_smoke - AssertionError: assert ...
+FAILED tests/test_s1_carrier_parity.py::test_c3_no_renormalization_fails_the_exact_domain_gate_without_commit
+FAILED tests/test_vdp_c3_cross_step_queue.py::test_c3_off_preserves_frozen_c2_two_step_binary64_hashes
+3 failed, 995 passed, 2 skipped in 467.21s (0:07:47)

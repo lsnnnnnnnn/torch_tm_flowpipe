@@ -14,11 +14,11 @@
 
 账本按类别重新求和可能与实际余项的运算顺序不同。`covering_total` 每次补入缺少的向外 padding 后再次检查总和包含实际输入余项之和；若有限次对账仍不能建立包含则拒绝。该预算只用于拒绝无法表示的对账，不替代包含断言，不改变 ODE 验证预算。端点之后的 dense cutoff 也保持合计与返回余项完全一致。新增类别不进入普通验证器的固定完整类别表，避免对未执行端点代入的验证步骤制造一个额外零项。
 
-发布端点和内部端点分别从原 segment 计算。发布结果的余项被 normal 插入消费；内部结果不会再叠加到发布结果上。normal 左映射保留 segment，下一步实际输入使用新的 center/scales 和右映射。accepted-boundary SR 将端点本步余项经非线性分支记入 current owner，已传播历史由独立 linear queue 分支消费。具体两步、回滚及容量边界证据另存，完成前不宣称使用链已经验证。
+发布端点和内部端点分别从原 segment 计算。发布结果的余项被 normal 插入消费；内部结果不会再叠加到发布结果上。normal 左映射保留 segment，下一步实际输入使用新的 center/scales 和右映射。accepted-boundary SR 将端点本步余项经非线性分支记入 current owner，已传播历史由独立 linear queue 分支消费。七条实际两步路径、失败回滚和容量边界检查均已通过，结果保存在 two_step_carry_checks.json 与原始 checkpoint。
 
 直接调用图还包括 G1/G2 source lift 与 S1 structured typed-source 三类重建路径。它们刻意去掉端点普通余项，改用验证器的完整分解。`_endpoint_remainder_decomposition` 为这些消费者派生端点分解：原验证分解保留，本次 E 加入既有 roundoff_safeguard，端点 cutoff 移出项加入 cutoff，并检查合计包含完整发布余项。G1/G2 用它生成下一步 affine source，S1 用它生成 ordinary/structured 边界状态；不再另加完整端点 R，故不会重复加入原验证余项或历史。S1 发布整段的账本也保守保留这笔普通误差；这不是改变 ODE 求解公式。每次读取派生分解无状态修改。
 
-成本包括独立区间幂、系数组合和误差范围计算，计入求解时间。没有实现提速；正式成本待干净数值提交上的完整运行测量。
+成本包括独立区间幂、系数组合和误差范围计算，计入求解时间。没有实现提速；干净提交上的完整实测成本见 REPORT_PLAIN_CHINESE.md 和 timings.csv。
 
 
 兼容性与受影响预期：完整回归发现旧 CUDA smoke 的状态系数与时间 domain 位于不同设备。辅助函数现在将 domain 无损移动到系数设备，并提升混合 binary32/binary64 输入，避免向较窄系数数组赋值而丢失 enclosure。Python float 的实际 binary64 值在合法域检查前不被缩窄。冻结 CPU binary64 输入只经过恒等转换，幂、乘法、合并及误差范围的运算顺序均不变。这是现有入口的设备/类型兼容修正，没有 CUDA 后端开发。

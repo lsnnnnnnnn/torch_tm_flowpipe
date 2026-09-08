@@ -1,0 +1,283 @@
+[
+  {
+    "group": "root",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests",
+      "--ignore=tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/root.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/root.log",
+    "xml": "tests/root.xml",
+    "exit": "tests/root.exit",
+    "exit_code": 1
+  },
+  {
+    "group": "old_stop_snapshot",
+    "source_sha": "73c3b48a3dadd81cd03ecc827bde1228ef7f6ac8",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_our_solver_performance_evidence.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/old_stop_snapshot.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo/src:/srv/local/shengenli/our_solver_replay_performance_20260907T074937Z/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/old_stop_snapshot.log",
+    "xml": "tests/old_stop_snapshot.xml",
+    "exit": "tests/old_stop_snapshot.exit",
+    "exit_code": 0
+  },
+  {
+    "group": "torch_basis",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_followup/tests/test_torch_basis.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/torch_basis.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/torch_basis.log",
+    "xml": "tests/torch_basis.xml",
+    "exit": "tests/torch_basis.exit",
+    "exit_code": 0
+  },
+  {
+    "group": "diffreach_followup",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_followup/tests/test_diffreach_projection.py",
+      "experiments/first_order_followup/tests/test_diffreach_parity.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/diffreach_followup.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/diffreach_followup.log",
+    "xml": "tests/diffreach_followup.xml",
+    "exit": "tests/diffreach_followup.exit",
+    "exit_code": 2
+  },
+  {
+    "group": "first_order_three_way",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_three_way/tests/test_benchmark.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/first_order_three_way.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/first_order_three_way.log",
+    "xml": "tests/first_order_three_way.xml",
+    "exit": "tests/first_order_three_way.exit",
+    "exit_code": 0
+  },
+  {
+    "group": "diffreach_support",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/diffreach312/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/first_order_three_way/tests/test_diffreach_support.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/diffreach_support.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/diffreach_support.log",
+    "xml": "tests/diffreach_support.xml",
+    "exit": "tests/diffreach_support.exit",
+    "exit_code": 2
+  },
+  {
+    "group": "common_contract",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_way_common_contract/tests",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/common_contract.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/common_contract.log",
+    "xml": "tests/common_contract.xml",
+    "exit": "tests/common_contract.exit",
+    "exit_code": 0
+  },
+  {
+    "group": "comparison_repair",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_way_comparison_repair/tests",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/comparison_repair.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/comparison_repair.log",
+    "xml": "tests/comparison_repair.xml",
+    "exit": "tests/comparison_repair.exit",
+    "exit_code": 1
+  },
+  {
+    "group": "deep_study",
+    "source_sha": "196a50e9131336d68df07ad0af353deca0092d19",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "experiments/three_tool_deep_study/tests",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/deep_study.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/deep_study.log",
+    "xml": "tests/deep_study.xml",
+    "exit": "tests/deep_study.exit",
+    "exit_code": 0
+  }
+]

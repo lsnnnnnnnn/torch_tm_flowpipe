@@ -1,0 +1,46 @@
+[
+  {
+    "group": "local",
+    "source_sha": "ca330de4ac46e823fb8e36e8982762f0437f71be",
+    "source_clean_at_start": true,
+    "cwd": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+    "argv": [
+      "taskset",
+      "-c",
+      "5",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_endpoint_roundoff_repair.py",
+      "tests/test_endpoint_roundoff_carry.py",
+      "tests/test_our_reference_endpoint_containment.py",
+      "tests/test_taylor_model.py",
+      "tests/test_polynomial.py",
+      "tests/test_batched_dense_tm.py",
+      "tests/test_batched_dense_picard.py",
+      "tests/test_batched_dense_carry.py",
+      "tests/test_batched_dense_remainder_validation.py",
+      "tests/test_accepted_boundary_sr.py",
+      "tests/test_g2_shared_column.py",
+      "tests/test_bounded_source_ledger.py",
+      "tests/test_s1_total_delta_contract.py",
+      "tests/test_c4_observer_lanes.py",
+      "--junitxml=/srv/local/shengenli/endpoint_roundoff_repair_20260908/evidence/tests/local.xml"
+    ],
+    "environment": {
+      "PYTHONPATH": "/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/src:/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "log": "tests/local.log",
+    "xml": "tests/local.xml",
+    "exit": "tests/local.exit",
+    "exit_code": 0
+  }
+]

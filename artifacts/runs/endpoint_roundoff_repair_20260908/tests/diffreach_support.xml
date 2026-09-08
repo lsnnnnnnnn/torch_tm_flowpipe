@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.473" timestamp="2026-09-08T02:33:18.444865+00:00" hostname="huan-c4140-server-3"><testcase classname="" name="experiments.first_order_three_way.tests.test_diffreach_support" time="0.000"><error message="collection failure">ImportError while importing test module '/srv/local/shengenli/endpoint_roundoff_repair_20260908/repo/experiments/first_order_three_way/tests/test_diffreach_support.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniforge3/envs/diffreach312/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+experiments/first_order_three_way/tests/test_diffreach_support.py:21: in &lt;module&gt;
+    import src.settings as settings
+E   ModuleNotFoundError: No module named 'src.settings'</error></testcase></testsuite></testsuites>
