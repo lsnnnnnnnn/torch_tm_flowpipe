@@ -20,6 +20,8 @@ def write_report(package):
     rel='../../'+str(package.relative_to(ROOT))
     docs=ROOT/'docs/repaired_solver_performance';docs.mkdir(exist_ok=True)
     b=result['full_pairs']['brusselator'];v=result['full_pairs']['vdp']
+    b_all=result['full_setup_plus_solve_seconds']['brusselator']
+    v_all=result['full_setup_plus_solve_seconds']['vdp']
     descriptions={
         'REPAIRED_REFERENCE_PRESERVED__PREPARED_REPLAY_SPEED_TARGET_MET':'本次完整求解观察达到性能目标',
         'REPAIRED_REFERENCE_PRESERVED__USEFUL_SPEEDUP_BELOW_TARGET':'有实际提速，但未达到本轮完整性能目标',
@@ -35,7 +37,8 @@ def write_report(package):
     for name in FULL_NAMES:
         s=full[name];t=times[name]
         text.append(f"| {names[name]} | {s['accepted_steps']}/{s['rejected_attempts']} | {s['setup_seconds']:.3f} | {s['solve_seconds']:.3f} | {s['export_seconds']:.3f} | {float(t['whole_process_seconds']):.3f} | {s['peak_rss_bytes']/2**20:.1f} |")
-    text+=['',f"固定 VDP 实际 sum(h) 为 `{full['vdp_full_optimized']['accepted_horizon_exact']}`；Brusselator 为 `{full['brusselator_full_optimized']['accepted_horizon_exact']}`。两者分别完成固定 1000 步的名义 T10/T20，末步未裁剪来凑十进制终点。自适应的实际 sum(h) 为 `{full['vdp_adaptive_optimized']['accepted_horizon_exact']}`，调度时钟为 `{full['vdp_adaptive_optimized']['scheduler_time_hex']}`。自适应 h/接受拒绝/状态序列与修复档案逐项相同，没有手写目标接受数；本轮不主张自适应速度倍率。",
+    text+=['',f"初始化加求解的总时间为：Brusselator reference {b_all['reference']:.3f} 秒、optimized {b_all['optimized']:.3f} 秒，倍率 {b_all['speedup']:.3f}×；VDP reference {v_all['reference']:.3f} 秒、optimized {v_all['optimized']:.3f} 秒，倍率 {v_all['speedup']:.3f}×。导出另见上表，完整进程列还包括导入与最终元数据。",
+        f"固定 VDP 实际 sum(h) 为 `{full['vdp_full_optimized']['accepted_horizon_exact']}`；Brusselator 为 `{full['brusselator_full_optimized']['accepted_horizon_exact']}`。两者分别完成固定 1000 步的名义 T10/T20，末步未裁剪来凑十进制终点。自适应的实际 sum(h) 为 `{full['vdp_adaptive_optimized']['accepted_horizon_exact']}`，调度时钟为 `{full['vdp_adaptive_optimized']['scheduler_time_hex']}`。自适应 h/接受拒绝/状态序列与修复档案逐项相同，没有手写目标接受数；本轮不主张自适应速度倍率。",
         f"![完整求解、初始化和导出]({rel}/figures/full_solve_setup_export_times.png)",
         "**重复值与接纳边界。** 每个 20 步窗口及每个 100 步 prefix 都进行了至少三对交替顺序测量。完整每模式各一次，不能把这一对称作稳定完整倍率。",
         "| 100 步 prefix | 三个 reference/optimized 求解倍率 | median | min–max |\n|---|---|---:|---:|"]
@@ -68,7 +71,9 @@ def write_report(package):
         "| 系统/范围 | opt/Flow* P50 | P95 | 最大值 |\n|---|---:|---:|---:|"]
     for r in read_json(package/'reused_flowstar_width_summary.json'):
         text.append(f"| {r['plant']} {r['metric']} {r['component']} | {r['p50']:.4f} | {r['p95']:.4f} | {r['maximum']:.4f} |")
-    text+=['',"Flow* 历史同合同求解时间是 VDP 约 1.488 秒、Brusselator 约 13.570 秒。本次自研 CPU 完整运行仍明显更慢；本轮没有新 Flow* 配对计时，因此不提供本轮 Flow* 速度倍率。旧缺陷 CPU 和旧修复耗时都没有进入新性能分母。",
+    text+=['',f"![VDP 与复用 Flow* 的全程宽度]({rel}/figures/van_der_pol_reused_flowstar_widths.png)",
+        f"![Brusselator 与复用 Flow* 的全程宽度]({rel}/figures/brusselator_reused_flowstar_widths.png)",
+        "Flow* 历史同合同求解时间是 VDP 约 1.488 秒、Brusselator 约 13.570 秒。本次自研 CPU 完整运行仍明显更慢；本轮没有新 Flow* 配对计时，因此不提供本轮 Flow* 速度倍率。旧缺陷 CPU 和旧修复耗时都没有进入新性能分母。",
         f"**测试、版本与局限。** 去重完整测试记录为 {tests.get('passed',0)} passed / {tests.get('skipped',0)} skipped / {tests.get('failed',0)} failed。新证据验证器独立重算 {proof['independently_recomputed_proposal_rounds']} 个 proposal 回合、全程范围/时间和最终状态；六种语义篡改即使重算外层 hash 仍被拒绝。重复局部检查与独立 clone 检查不再加总。原始命令、退出码、XML 和日志均在 [tests]({rel}/tests/commands.json)。",
         f"父提交为 `7e41f33`，未优化数学语义来自最终修复 `0714e475`。本轮最终数值实现与干净科学提交均为 `{result['scientific_sha']}`。最终 package 提交单独记录，不能冒充长跑来源。独立 clone 实际运行相关局部测试并验证新证据，不声称重复全部长实验。",
         "首次预检曾只记录导出总时间，随后补充逐步起止事件再开始正式矩阵，旧短跑与未完成片段保留为预检，不混入正式重复计时。最终正式速度计时不带 profiler；profile、分析与导出成本单列。",
