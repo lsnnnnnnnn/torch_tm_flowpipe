@@ -174,17 +174,23 @@ def verify(root):
     names=[c['name'] for c in commands];assert len(names)==len(set(names))
     completion=read_json(raw/'SCHEDULE_COMPLETED.json')
     assert completion=={'source_sha':SCIENTIFIC_SHA,'jobs':len(commands)}
-    for window in WINDOWS:
+    for window,(plant,start) in WINDOWS.items():
         for repeat in [1,2,3]:
             expected=[f'{window}_pair{repeat}_{mode}' for mode in
                       (['reference','optimized'] if repeat%2 else ['optimized','reference'])]
             assert names.index(expected[0])<names.index(expected[1]),'pair order changed'
             compare_pair(raw/f'{window}_pair{repeat}_reference',raw/f'{window}_pair{repeat}_optimized')
+            for name in expected:
+                s=read_json(raw/name/'summary.json')
+                assert s['plant']==plant and s['accepted_steps']==20 and s['start_boundary']==start-1
     for plant in ['brusselator','van_der_pol']:
         for repeat in [1,2,3]:
             modes=['reference','optimized'] if repeat%2 else ['optimized','reference']
             assert names.index(f'{plant}_prefix100_pair{repeat}_{modes[0]}')<names.index(f'{plant}_prefix100_pair{repeat}_{modes[1]}')
             compare_pair(raw/f'{plant}_prefix100_pair{repeat}_reference',raw/f'{plant}_prefix100_pair{repeat}_optimized')
+            for mode in modes:
+                s=read_json(raw/f'{plant}_prefix100_pair{repeat}_{mode}'/'summary.json')
+                assert s['plant']==plant and s['accepted_steps']==100 and s['start_boundary']==0
     for prefix in ['brusselator','vdp']:compare_pair(raw/(prefix+'_full_reference'),raw/(prefix+'_full_optimized'))
     summaries={}
     for command in commands:

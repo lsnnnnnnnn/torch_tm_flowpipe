@@ -75,8 +75,13 @@ def verify_run(path,command=None,*,recompute_common=True):
     if command:
         assert command['exit_code']==0 and command['source_sha']==SCIENTIFIC_SHA
         assert command['mode']==summary['mode'] and command['affinity']==summary['affinity']
+        assert command['plant']==summary['plant']
         assert command['python']==summary['python'] and command['cwd']==summary['source_root']
         assert command['argv'][command['argv'].index('--mode')+1]==summary['mode']
+        assert command['argv'][command['argv'].index('--plant')+1]==summary['plant']
+        assert ('--adaptive' in command['argv'])==summary['adaptive']
+        if not summary['adaptive']:
+            assert int(command['argv'][command['argv'].index('--steps')+1])==summary['requested_steps']
         assert command['whole_process_seconds']>=summary['inside_process_seconds']
         assert command['whole_process_seconds']>=summary['solve_seconds']+summary['export_seconds']
     rows=read_csv(path/'bounds.csv')
