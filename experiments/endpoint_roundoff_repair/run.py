@@ -80,6 +80,9 @@ def main():
     write_json(output/'execution_contract.json',frozen_config)
     write_json(output/'source.json',provenance)
     total=F(0)
+    # Preserve the original native scheduler's binary64 clock and terminal
+    # step rule. The independent rational clock below reports the actual sum.
+    scheduler_time=0.
     solve_seconds=export_seconds=0.
     rows=[]
     failure=None
@@ -89,10 +92,20 @@ def main():
     with gzip.open(output/'models.jsonl.gz','wt') as models, (output/'bounds.csv').open('x') as bounds, (output/'endpoint_audit.jsonl').open('x') as audit:
         writer=None
         for index in range(1,(10000 if args.adaptive else args.steps)+1):
-            if args.adaptive and total>=requested:
+            if args.adaptive and scheduler_time>=float(requested)-1e-12:
                 break
-            attempted_h=min(h,float(requested-total)) if args.adaptive else fixed_h
             before_current,before_state=current,state
+            attempted_h=fixed_h
+            if args.adaptive:
+                remaining=float(requested)-scheduler_time
+                if remaining < .002-1e-15:
+                    failure={'attempted_step':index,'status':'failed',
+                             'message':'remaining horizon is below authoritative h_min; no clipped sub-minimum endpoint was published',
+                             'remaining_h_hex':remaining.hex()}
+                    break
+                attempted_h=min(h,.1,remaining)
+                if 0. < remaining-attempted_h < .002:
+                    attempted_h=remaining
             started=time.perf_counter()
             try:
                 segment=step(args.plant,current,state,index,h=attempted_h,adaptive=args.adaptive)
@@ -117,6 +130,7 @@ def main():
             current,state=segment.reset_tm,segment.flowstar_normal_state
             previous=total
             total+=F(segment.h)
+            scheduler_time=scheduler_time+segment.h if args.adaptive else index*fixed_h
             queue=state.symbolic_queue
             assert queue is not None
             core.validate_accepted_boundary_sr_queue(queue,expected_boundary_index=index)
@@ -125,6 +139,7 @@ def main():
             internal_errors=segment.dense_endpoint_ledger.entries['endpoint_substitution_roundoff']
             assert all(bool(torch.all(torch.isfinite(e))) for e in internal_errors)
             row={'step':index,'t_start':float(previous),'t_end':float(total),'h':segment.h,'h_hex':segment.h.hex(),
+                 'scheduler_time_hex':scheduler_time.hex(),
                  't_start_exact':str(previous),'t_end_exact':str(total),'safety_check_passed':True,
                  'queue_size':len(queue.J),'queue_reset_count':queue.reset_count}
             record={'step':index,'plant':args.plant,'t_start_exact':str(previous),'t_end_exact':str(total),'models':{}}
@@ -173,11 +188,12 @@ def main():
         checkpoint(output/'checkpoint_before_failure',before_current,before_state,total,h,frozen_config,provenance)
         write_json(output/'failure.json',failure)
         export_seconds+=time.perf_counter()-started
-    completed=failure is None and ((total>=requested) if args.adaptive else len(rows)==args.steps)
+    completed=failure is None and ((scheduler_time>=float(requested)-1e-12) if args.adaptive else len(rows)==args.steps)
     summary={**provenance,'schema':'endpoint_roundoff_repaired_run/1','plant':args.plant,
              'adaptive':args.adaptive,'requested_horizon':float(requested),'requested_steps':None if args.adaptive else args.steps,
              'accepted_steps':len(rows),'rejected_attempts':rejections,'accepted_horizon':float(total),
              'accepted_horizon_exact':str(total),'fixed_step_hex':None if args.adaptive else fixed_h.hex(),
+             'scheduler_time_hex':scheduler_time.hex(),
              'completed':completed,'failure':failure,'solve_seconds':solve_seconds,'export_seconds':export_seconds,
              'inside_process_seconds':time.perf_counter()-process_start,'refinement_totals':refinement_totals,
              'peak_rss_bytes':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024,
