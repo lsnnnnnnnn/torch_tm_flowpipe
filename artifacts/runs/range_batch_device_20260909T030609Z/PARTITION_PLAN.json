@@ -1,0 +1,2223 @@
+{
+  "benchmark_order": "alternating forward/reverse",
+  "benchmark_repetitions": 5,
+  "grid": [
+    8,
+    4
+  ],
+  "plants": {
+    "brusselator": {
+      "axes": [
+        [
+          {
+            "exact": [
+              "37/25",
+              "297/200"
+            ],
+            "outward_hex": [
+              "0x1.7ae147ae147aep+0",
+              "0x1.7c28f5c28f5c3p+0"
+            ]
+          },
+          {
+            "exact": [
+              "297/200",
+              "149/100"
+            ],
+            "outward_hex": [
+              "0x1.7c28f5c28f5c2p+0",
+              "0x1.7d70a3d70a3d8p+0"
+            ]
+          },
+          {
+            "exact": [
+              "149/100",
+              "299/200"
+            ],
+            "outward_hex": [
+              "0x1.7d70a3d70a3d7p+0",
+              "0x1.7eb851eb851ecp+0"
+            ]
+          },
+          {
+            "exact": [
+              "299/200",
+              "3/2"
+            ],
+            "outward_hex": [
+              "0x1.7eb851eb851ebp+0",
+              "0x1.8000000000000p+0"
+            ]
+          },
+          {
+            "exact": [
+              "3/2",
+              "301/200"
+            ],
+            "outward_hex": [
+              "0x1.8000000000000p+0",
+              "0x1.8147ae147ae15p+0"
+            ]
+          },
+          {
+            "exact": [
+              "301/200",
+              "151/100"
+            ],
+            "outward_hex": [
+              "0x1.8147ae147ae14p+0",
+              "0x1.828f5c28f5c29p+0"
+            ]
+          },
+          {
+            "exact": [
+              "151/100",
+              "303/200"
+            ],
+            "outward_hex": [
+              "0x1.828f5c28f5c28p+0",
+              "0x1.83d70a3d70a3ep+0"
+            ]
+          },
+          {
+            "exact": [
+              "303/200",
+              "38/25"
+            ],
+            "outward_hex": [
+              "0x1.83d70a3d70a3dp+0",
+              "0x1.851eb851eb852p+0"
+            ]
+          }
+        ],
+        [
+          {
+            "exact": [
+              "149/50",
+              "299/100"
+            ],
+            "outward_hex": [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          },
+          {
+            "exact": [
+              "299/100",
+              "3"
+            ],
+            "outward_hex": [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          },
+          {
+            "exact": [
+              "3",
+              "301/100"
+            ],
+            "outward_hex": [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          },
+          {
+            "exact": [
+              "301/100",
+              "151/50"
+            ],
+            "outward_hex": [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          }
+        ]
+      ],
+      "config": {
+        "accepted_boundary_sr_capacity": 1000,
+        "accepted_boundary_sr_enabled": true,
+        "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_generic_sr",
+        "authoritative_device": "cpu",
+        "authoritative_dtype": "float64",
+        "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+        "cutoff": 1e-10,
+        "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "endpoint_repair": false,
+        "fixed_step": 0.02,
+        "fixed_step_hex": "0x1.47ae147ae147bp-6",
+        "generic_post_accept_raw_remainder_refinement_enabled": true,
+        "initial_decimal_box": [
+          [
+            "1.48",
+            "1.52"
+          ],
+          [
+            "2.98",
+            "3.02"
+          ]
+        ],
+        "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+        "lane_name": "flowstar_like_polynomial_plant_reference",
+        "order": 6,
+        "outward_rounding": "torch_nextafter_binary64",
+        "plant": "brusselator",
+        "post_accept_refinement_mode": "flowstar_raw_remainder_compat_refined",
+        "range_policy": {
+          "max_depth": 1,
+          "max_leaves": 4,
+          "method": "adaptive_subdivision",
+          "named_contexts": [
+            "polynomial_truncation"
+          ],
+          "split_vars": [
+            0,
+            1
+          ],
+          "trigger": "proactive_depth1_on_named_contexts",
+          "variable_orders": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ]
+        },
+        "refinement_replay_limit": 491,
+        "requested_horizon": 20.0,
+        "requested_horizon_hex": "0x1.4000000000000p+4",
+        "rhs_term_evaluation": "ordered_terms",
+        "right_map_center_mode": "constant",
+        "right_map_range_mode": "standard",
+        "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+        "step_policy": "fixed_no_retry",
+        "stop_ratio": 0.99,
+        "stop_ratio_hex": "0x1.fae147ae147aep-1",
+        "subset_commit": "whole_vector_atomic",
+        "target_remainder_radius": 0.0001,
+        "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+        "validation_epsilon": 1e-12,
+        "validation_epsilon_hex": "0x1.19799812dea11p-40"
+      },
+      "original_exact": [
+        [
+          "37/25",
+          "38/25"
+        ],
+        [
+          "149/50",
+          "151/50"
+        ]
+      ],
+      "tasks": [
+        {
+          "axis_indices": [
+            0,
+            0
+          ],
+          "exact": [
+            [
+              "37/25",
+              "297/200"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7ae147ae147aep+0",
+              "0x1.7c28f5c28f5c3p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 0
+        },
+        {
+          "axis_indices": [
+            0,
+            1
+          ],
+          "exact": [
+            [
+              "37/25",
+              "297/200"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7ae147ae147aep+0",
+              "0x1.7c28f5c28f5c3p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 1
+        },
+        {
+          "axis_indices": [
+            0,
+            2
+          ],
+          "exact": [
+            [
+              "37/25",
+              "297/200"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7ae147ae147aep+0",
+              "0x1.7c28f5c28f5c3p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 2
+        },
+        {
+          "axis_indices": [
+            0,
+            3
+          ],
+          "exact": [
+            [
+              "37/25",
+              "297/200"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7ae147ae147aep+0",
+              "0x1.7c28f5c28f5c3p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 3
+        },
+        {
+          "axis_indices": [
+            1,
+            0
+          ],
+          "exact": [
+            [
+              "297/200",
+              "149/100"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7c28f5c28f5c2p+0",
+              "0x1.7d70a3d70a3d8p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 4
+        },
+        {
+          "axis_indices": [
+            1,
+            1
+          ],
+          "exact": [
+            [
+              "297/200",
+              "149/100"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7c28f5c28f5c2p+0",
+              "0x1.7d70a3d70a3d8p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 5
+        },
+        {
+          "axis_indices": [
+            1,
+            2
+          ],
+          "exact": [
+            [
+              "297/200",
+              "149/100"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7c28f5c28f5c2p+0",
+              "0x1.7d70a3d70a3d8p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 6
+        },
+        {
+          "axis_indices": [
+            1,
+            3
+          ],
+          "exact": [
+            [
+              "297/200",
+              "149/100"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7c28f5c28f5c2p+0",
+              "0x1.7d70a3d70a3d8p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 7
+        },
+        {
+          "axis_indices": [
+            2,
+            0
+          ],
+          "exact": [
+            [
+              "149/100",
+              "299/200"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7d70a3d70a3d7p+0",
+              "0x1.7eb851eb851ecp+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 8
+        },
+        {
+          "axis_indices": [
+            2,
+            1
+          ],
+          "exact": [
+            [
+              "149/100",
+              "299/200"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7d70a3d70a3d7p+0",
+              "0x1.7eb851eb851ecp+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 9
+        },
+        {
+          "axis_indices": [
+            2,
+            2
+          ],
+          "exact": [
+            [
+              "149/100",
+              "299/200"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7d70a3d70a3d7p+0",
+              "0x1.7eb851eb851ecp+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 10
+        },
+        {
+          "axis_indices": [
+            2,
+            3
+          ],
+          "exact": [
+            [
+              "149/100",
+              "299/200"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7d70a3d70a3d7p+0",
+              "0x1.7eb851eb851ecp+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 11
+        },
+        {
+          "axis_indices": [
+            3,
+            0
+          ],
+          "exact": [
+            [
+              "299/200",
+              "3/2"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7eb851eb851ebp+0",
+              "0x1.8000000000000p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 12
+        },
+        {
+          "axis_indices": [
+            3,
+            1
+          ],
+          "exact": [
+            [
+              "299/200",
+              "3/2"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7eb851eb851ebp+0",
+              "0x1.8000000000000p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 13
+        },
+        {
+          "axis_indices": [
+            3,
+            2
+          ],
+          "exact": [
+            [
+              "299/200",
+              "3/2"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7eb851eb851ebp+0",
+              "0x1.8000000000000p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 14
+        },
+        {
+          "axis_indices": [
+            3,
+            3
+          ],
+          "exact": [
+            [
+              "299/200",
+              "3/2"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.7eb851eb851ebp+0",
+              "0x1.8000000000000p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 15
+        },
+        {
+          "axis_indices": [
+            4,
+            0
+          ],
+          "exact": [
+            [
+              "3/2",
+              "301/200"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8000000000000p+0",
+              "0x1.8147ae147ae15p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 16
+        },
+        {
+          "axis_indices": [
+            4,
+            1
+          ],
+          "exact": [
+            [
+              "3/2",
+              "301/200"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8000000000000p+0",
+              "0x1.8147ae147ae15p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 17
+        },
+        {
+          "axis_indices": [
+            4,
+            2
+          ],
+          "exact": [
+            [
+              "3/2",
+              "301/200"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8000000000000p+0",
+              "0x1.8147ae147ae15p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 18
+        },
+        {
+          "axis_indices": [
+            4,
+            3
+          ],
+          "exact": [
+            [
+              "3/2",
+              "301/200"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8000000000000p+0",
+              "0x1.8147ae147ae15p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 19
+        },
+        {
+          "axis_indices": [
+            5,
+            0
+          ],
+          "exact": [
+            [
+              "301/200",
+              "151/100"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8147ae147ae14p+0",
+              "0x1.828f5c28f5c29p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 20
+        },
+        {
+          "axis_indices": [
+            5,
+            1
+          ],
+          "exact": [
+            [
+              "301/200",
+              "151/100"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8147ae147ae14p+0",
+              "0x1.828f5c28f5c29p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 21
+        },
+        {
+          "axis_indices": [
+            5,
+            2
+          ],
+          "exact": [
+            [
+              "301/200",
+              "151/100"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8147ae147ae14p+0",
+              "0x1.828f5c28f5c29p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 22
+        },
+        {
+          "axis_indices": [
+            5,
+            3
+          ],
+          "exact": [
+            [
+              "301/200",
+              "151/100"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.8147ae147ae14p+0",
+              "0x1.828f5c28f5c29p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 23
+        },
+        {
+          "axis_indices": [
+            6,
+            0
+          ],
+          "exact": [
+            [
+              "151/100",
+              "303/200"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.828f5c28f5c28p+0",
+              "0x1.83d70a3d70a3ep+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 24
+        },
+        {
+          "axis_indices": [
+            6,
+            1
+          ],
+          "exact": [
+            [
+              "151/100",
+              "303/200"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.828f5c28f5c28p+0",
+              "0x1.83d70a3d70a3ep+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 25
+        },
+        {
+          "axis_indices": [
+            6,
+            2
+          ],
+          "exact": [
+            [
+              "151/100",
+              "303/200"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.828f5c28f5c28p+0",
+              "0x1.83d70a3d70a3ep+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 26
+        },
+        {
+          "axis_indices": [
+            6,
+            3
+          ],
+          "exact": [
+            [
+              "151/100",
+              "303/200"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.828f5c28f5c28p+0",
+              "0x1.83d70a3d70a3ep+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 27
+        },
+        {
+          "axis_indices": [
+            7,
+            0
+          ],
+          "exact": [
+            [
+              "303/200",
+              "38/25"
+            ],
+            [
+              "149/50",
+              "299/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.83d70a3d70a3dp+0",
+              "0x1.851eb851eb852p+0"
+            ],
+            [
+              "0x1.7d70a3d70a3d7p+1",
+              "0x1.7eb851eb851ecp+1"
+            ]
+          ],
+          "task": 28
+        },
+        {
+          "axis_indices": [
+            7,
+            1
+          ],
+          "exact": [
+            [
+              "303/200",
+              "38/25"
+            ],
+            [
+              "299/100",
+              "3"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.83d70a3d70a3dp+0",
+              "0x1.851eb851eb852p+0"
+            ],
+            [
+              "0x1.7eb851eb851ebp+1",
+              "0x1.8000000000000p+1"
+            ]
+          ],
+          "task": 29
+        },
+        {
+          "axis_indices": [
+            7,
+            2
+          ],
+          "exact": [
+            [
+              "303/200",
+              "38/25"
+            ],
+            [
+              "3",
+              "301/100"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.83d70a3d70a3dp+0",
+              "0x1.851eb851eb852p+0"
+            ],
+            [
+              "0x1.8000000000000p+1",
+              "0x1.8147ae147ae15p+1"
+            ]
+          ],
+          "task": 30
+        },
+        {
+          "axis_indices": [
+            7,
+            3
+          ],
+          "exact": [
+            [
+              "303/200",
+              "38/25"
+            ],
+            [
+              "301/100",
+              "151/50"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.83d70a3d70a3dp+0",
+              "0x1.851eb851eb852p+0"
+            ],
+            [
+              "0x1.8147ae147ae14p+1",
+              "0x1.828f5c28f5c29p+1"
+            ]
+          ],
+          "task": 31
+        }
+      ]
+    },
+    "van_der_pol": {
+      "axes": [
+        [
+          {
+            "exact": [
+              "11/10",
+              "91/80"
+            ],
+            "outward_hex": [
+              "0x1.1999999999999p+0",
+              "0x1.2333333333334p+0"
+            ]
+          },
+          {
+            "exact": [
+              "91/80",
+              "47/40"
+            ],
+            "outward_hex": [
+              "0x1.2333333333333p+0",
+              "0x1.2cccccccccccdp+0"
+            ]
+          },
+          {
+            "exact": [
+              "47/40",
+              "97/80"
+            ],
+            "outward_hex": [
+              "0x1.2ccccccccccccp+0",
+              "0x1.3666666666667p+0"
+            ]
+          },
+          {
+            "exact": [
+              "97/80",
+              "5/4"
+            ],
+            "outward_hex": [
+              "0x1.3666666666666p+0",
+              "0x1.4000000000000p+0"
+            ]
+          },
+          {
+            "exact": [
+              "5/4",
+              "103/80"
+            ],
+            "outward_hex": [
+              "0x1.4000000000000p+0",
+              "0x1.499999999999ap+0"
+            ]
+          },
+          {
+            "exact": [
+              "103/80",
+              "53/40"
+            ],
+            "outward_hex": [
+              "0x1.4999999999999p+0",
+              "0x1.5333333333334p+0"
+            ]
+          },
+          {
+            "exact": [
+              "53/40",
+              "109/80"
+            ],
+            "outward_hex": [
+              "0x1.5333333333333p+0",
+              "0x1.5cccccccccccdp+0"
+            ]
+          },
+          {
+            "exact": [
+              "109/80",
+              "7/5"
+            ],
+            "outward_hex": [
+              "0x1.5ccccccccccccp+0",
+              "0x1.6666666666667p+0"
+            ]
+          }
+        ],
+        [
+          {
+            "exact": [
+              "47/20",
+              "19/8"
+            ],
+            "outward_hex": [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          },
+          {
+            "exact": [
+              "19/8",
+              "12/5"
+            ],
+            "outward_hex": [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          },
+          {
+            "exact": [
+              "12/5",
+              "97/40"
+            ],
+            "outward_hex": [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          },
+          {
+            "exact": [
+              "97/40",
+              "49/20"
+            ],
+            "outward_hex": [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          }
+        ]
+      ],
+      "config": {
+        "accepted_boundary_sr_capacity": 100,
+        "accepted_boundary_sr_enabled": true,
+        "accepted_boundary_sr_mode": "normalized_insertion_dependency_preserving_c3_sr100",
+        "authoritative_device": "cpu",
+        "authoritative_dtype": "float64",
+        "checkpoint_rollback_policy": "v5_full_queue_accept_commit_reject_immutable",
+        "cutoff": 1e-10,
+        "cutoff_hex": "0x1.b7cdfd9d7bdbbp-34",
+        "endpoint_repair": false,
+        "fixed_step": null,
+        "fixed_step_hex": null,
+        "generic_post_accept_raw_remainder_refinement_enabled": true,
+        "initial_decimal_box": [
+          [
+            "1.1",
+            "1.4"
+          ],
+          [
+            "2.35",
+            "2.45"
+          ]
+        ],
+        "insertion_reset_semantics": "normal_constant_centered_accepted_only_commit",
+        "lane_name": "flowstar_like_polynomial_plant_reference",
+        "order": 4,
+        "outward_rounding": "torch_nextafter_binary64",
+        "plant": "van_der_pol",
+        "post_accept_refinement_mode": "flowstar_raw_remainder_compat_factorized_joint_closure_refined",
+        "range_policy": {
+          "max_depth": 1,
+          "max_leaves": 4,
+          "method": "adaptive_subdivision",
+          "named_contexts": [
+            "polynomial_truncation"
+          ],
+          "split_vars": [
+            0,
+            1
+          ],
+          "trigger": "proactive_depth1_on_named_contexts",
+          "variable_orders": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ]
+        },
+        "refinement_replay_limit": 491,
+        "requested_horizon": 10.0,
+        "requested_horizon_hex": "0x1.4000000000000p+3",
+        "rhs_term_evaluation": "ordered_terms",
+        "right_map_center_mode": "constant",
+        "right_map_range_mode": "standard",
+        "schema": "torch_tm_flowpipe.polynomial_plant_reference/1",
+        "step_policy": "flowstar_compat_native_h_min_0.002_h_max_0.1",
+        "stop_ratio": 0.99,
+        "stop_ratio_hex": "0x1.fae147ae147aep-1",
+        "subset_commit": "whole_vector_atomic",
+        "target_remainder_radius": 0.0001,
+        "target_remainder_radius_hex": "0x1.a36e2eb1c432dp-14",
+        "validation_epsilon": 1e-12,
+        "validation_epsilon_hex": "0x1.19799812dea11p-40"
+      },
+      "original_exact": [
+        [
+          "11/10",
+          "7/5"
+        ],
+        [
+          "47/20",
+          "49/20"
+        ]
+      ],
+      "tasks": [
+        {
+          "axis_indices": [
+            0,
+            0
+          ],
+          "exact": [
+            [
+              "11/10",
+              "91/80"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.1999999999999p+0",
+              "0x1.2333333333334p+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 0
+        },
+        {
+          "axis_indices": [
+            0,
+            1
+          ],
+          "exact": [
+            [
+              "11/10",
+              "91/80"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.1999999999999p+0",
+              "0x1.2333333333334p+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 1
+        },
+        {
+          "axis_indices": [
+            0,
+            2
+          ],
+          "exact": [
+            [
+              "11/10",
+              "91/80"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.1999999999999p+0",
+              "0x1.2333333333334p+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 2
+        },
+        {
+          "axis_indices": [
+            0,
+            3
+          ],
+          "exact": [
+            [
+              "11/10",
+              "91/80"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.1999999999999p+0",
+              "0x1.2333333333334p+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 3
+        },
+        {
+          "axis_indices": [
+            1,
+            0
+          ],
+          "exact": [
+            [
+              "91/80",
+              "47/40"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2333333333333p+0",
+              "0x1.2cccccccccccdp+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 4
+        },
+        {
+          "axis_indices": [
+            1,
+            1
+          ],
+          "exact": [
+            [
+              "91/80",
+              "47/40"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2333333333333p+0",
+              "0x1.2cccccccccccdp+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 5
+        },
+        {
+          "axis_indices": [
+            1,
+            2
+          ],
+          "exact": [
+            [
+              "91/80",
+              "47/40"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2333333333333p+0",
+              "0x1.2cccccccccccdp+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 6
+        },
+        {
+          "axis_indices": [
+            1,
+            3
+          ],
+          "exact": [
+            [
+              "91/80",
+              "47/40"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2333333333333p+0",
+              "0x1.2cccccccccccdp+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 7
+        },
+        {
+          "axis_indices": [
+            2,
+            0
+          ],
+          "exact": [
+            [
+              "47/40",
+              "97/80"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2ccccccccccccp+0",
+              "0x1.3666666666667p+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 8
+        },
+        {
+          "axis_indices": [
+            2,
+            1
+          ],
+          "exact": [
+            [
+              "47/40",
+              "97/80"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2ccccccccccccp+0",
+              "0x1.3666666666667p+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 9
+        },
+        {
+          "axis_indices": [
+            2,
+            2
+          ],
+          "exact": [
+            [
+              "47/40",
+              "97/80"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2ccccccccccccp+0",
+              "0x1.3666666666667p+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 10
+        },
+        {
+          "axis_indices": [
+            2,
+            3
+          ],
+          "exact": [
+            [
+              "47/40",
+              "97/80"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.2ccccccccccccp+0",
+              "0x1.3666666666667p+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 11
+        },
+        {
+          "axis_indices": [
+            3,
+            0
+          ],
+          "exact": [
+            [
+              "97/80",
+              "5/4"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.3666666666666p+0",
+              "0x1.4000000000000p+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 12
+        },
+        {
+          "axis_indices": [
+            3,
+            1
+          ],
+          "exact": [
+            [
+              "97/80",
+              "5/4"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.3666666666666p+0",
+              "0x1.4000000000000p+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 13
+        },
+        {
+          "axis_indices": [
+            3,
+            2
+          ],
+          "exact": [
+            [
+              "97/80",
+              "5/4"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.3666666666666p+0",
+              "0x1.4000000000000p+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 14
+        },
+        {
+          "axis_indices": [
+            3,
+            3
+          ],
+          "exact": [
+            [
+              "97/80",
+              "5/4"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.3666666666666p+0",
+              "0x1.4000000000000p+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 15
+        },
+        {
+          "axis_indices": [
+            4,
+            0
+          ],
+          "exact": [
+            [
+              "5/4",
+              "103/80"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4000000000000p+0",
+              "0x1.499999999999ap+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 16
+        },
+        {
+          "axis_indices": [
+            4,
+            1
+          ],
+          "exact": [
+            [
+              "5/4",
+              "103/80"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4000000000000p+0",
+              "0x1.499999999999ap+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 17
+        },
+        {
+          "axis_indices": [
+            4,
+            2
+          ],
+          "exact": [
+            [
+              "5/4",
+              "103/80"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4000000000000p+0",
+              "0x1.499999999999ap+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 18
+        },
+        {
+          "axis_indices": [
+            4,
+            3
+          ],
+          "exact": [
+            [
+              "5/4",
+              "103/80"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4000000000000p+0",
+              "0x1.499999999999ap+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 19
+        },
+        {
+          "axis_indices": [
+            5,
+            0
+          ],
+          "exact": [
+            [
+              "103/80",
+              "53/40"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4999999999999p+0",
+              "0x1.5333333333334p+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 20
+        },
+        {
+          "axis_indices": [
+            5,
+            1
+          ],
+          "exact": [
+            [
+              "103/80",
+              "53/40"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4999999999999p+0",
+              "0x1.5333333333334p+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 21
+        },
+        {
+          "axis_indices": [
+            5,
+            2
+          ],
+          "exact": [
+            [
+              "103/80",
+              "53/40"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4999999999999p+0",
+              "0x1.5333333333334p+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 22
+        },
+        {
+          "axis_indices": [
+            5,
+            3
+          ],
+          "exact": [
+            [
+              "103/80",
+              "53/40"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.4999999999999p+0",
+              "0x1.5333333333334p+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 23
+        },
+        {
+          "axis_indices": [
+            6,
+            0
+          ],
+          "exact": [
+            [
+              "53/40",
+              "109/80"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5333333333333p+0",
+              "0x1.5cccccccccccdp+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 24
+        },
+        {
+          "axis_indices": [
+            6,
+            1
+          ],
+          "exact": [
+            [
+              "53/40",
+              "109/80"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5333333333333p+0",
+              "0x1.5cccccccccccdp+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 25
+        },
+        {
+          "axis_indices": [
+            6,
+            2
+          ],
+          "exact": [
+            [
+              "53/40",
+              "109/80"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5333333333333p+0",
+              "0x1.5cccccccccccdp+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 26
+        },
+        {
+          "axis_indices": [
+            6,
+            3
+          ],
+          "exact": [
+            [
+              "53/40",
+              "109/80"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5333333333333p+0",
+              "0x1.5cccccccccccdp+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 27
+        },
+        {
+          "axis_indices": [
+            7,
+            0
+          ],
+          "exact": [
+            [
+              "109/80",
+              "7/5"
+            ],
+            [
+              "47/20",
+              "19/8"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5ccccccccccccp+0",
+              "0x1.6666666666667p+0"
+            ],
+            [
+              "0x1.2ccccccccccccp+1",
+              "0x1.3000000000000p+1"
+            ]
+          ],
+          "task": 28
+        },
+        {
+          "axis_indices": [
+            7,
+            1
+          ],
+          "exact": [
+            [
+              "109/80",
+              "7/5"
+            ],
+            [
+              "19/8",
+              "12/5"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5ccccccccccccp+0",
+              "0x1.6666666666667p+0"
+            ],
+            [
+              "0x1.3000000000000p+1",
+              "0x1.3333333333334p+1"
+            ]
+          ],
+          "task": 29
+        },
+        {
+          "axis_indices": [
+            7,
+            2
+          ],
+          "exact": [
+            [
+              "109/80",
+              "7/5"
+            ],
+            [
+              "12/5",
+              "97/40"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5ccccccccccccp+0",
+              "0x1.6666666666667p+0"
+            ],
+            [
+              "0x1.3333333333333p+1",
+              "0x1.3666666666667p+1"
+            ]
+          ],
+          "task": 30
+        },
+        {
+          "axis_indices": [
+            7,
+            3
+          ],
+          "exact": [
+            [
+              "109/80",
+              "7/5"
+            ],
+            [
+              "97/40",
+              "49/20"
+            ]
+          ],
+          "outward_hex": [
+            [
+              "0x1.5ccccccccccccp+0",
+              "0x1.6666666666667p+0"
+            ],
+            [
+              "0x1.3666666666666p+1",
+              "0x1.399999999999ap+1"
+            ]
+          ],
+          "task": 31
+        }
+      ]
+    }
+  },
+  "purpose": "CONCURRENT_TASK_REQUEST_CAPTURE_AND_REPLAY",
+  "recorded_before_capture_utc": 1788923805.6869965,
+  "scheduler": "Barrier n consists of at most the nth range request from each independent task in the same nominal step. Per-task predecessors are never advanced across a barrier. No integrated scheduler implemented.",
+  "schema": "range-distinct-tasks-v1",
+  "steps_per_task": 2,
+  "subsets": {
+    "1": [
+      0
+    ],
+    "32": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "8": [
+      0,
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      28
+    ]
+  },
+  "timing_partition_tuning": false
+}
