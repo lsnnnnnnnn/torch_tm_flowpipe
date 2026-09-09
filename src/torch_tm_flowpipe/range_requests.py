@@ -343,18 +343,20 @@ def range_request_execution(backend="cpu"):
     """Opt-in real solver B1 adapter. Other solver work stays on the CPU."""
     if backend not in {"cpu", "cuda"}:
         raise ValueError("unknown range backend")
-    from .packed_boundary_range import _REQUEST_DISPATCH
+    from .packed_boundary_range import _REQUEST_DISPATCH, _TABLE_REQUEST_DISPATCH
 
-    def dispatch(exponents, cl, ch, dl, dh, states, time_variable, kind):
+    def dispatch(exponents, cl, ch, dl, dh, states, time_variable, kind, step_powers=None):
         request = RangeRequest("solver-call", exponents, cl[0], ch[0], dl[0], dh[0], kind,
-                               states or (), time_variable)
+                               states or (), time_variable, step_powers)
         result = evaluate_range_requests([request], backend=backend)[request.request_id]
         if not result.ok:
             raise FloatingPointError(result.message)
         return Interval(result.lo[0], result.hi[0])
 
     token = _REQUEST_DISPATCH.set(dispatch)
+    table_token = _TABLE_REQUEST_DISPATCH.set(dispatch)
     try:
         yield
     finally:
+        _TABLE_REQUEST_DISPATCH.reset(table_token)
         _REQUEST_DISPATCH.reset(token)

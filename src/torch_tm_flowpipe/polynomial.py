@@ -85,6 +85,17 @@ def evaluate_interval_normal(
     if not poly.terms:
         return Interval.zero()
 
+    if (_packed_boundary.is_enabled() and step_exp_table is not None
+            and _packed_boundary._TABLE_REQUEST_DISPATCH.get() is not None):
+        table = {int(p): value if isinstance(value, Interval) else _interval_point_like(value, next(iter(poly.terms.values())))
+                 for p, value in (step_exp_table.items() if isinstance(step_exp_table, Mapping)
+                                  else enumerate(step_exp_table))}
+        packed = _packed_boundary.evaluate_polynomial(
+            poly, domain_l, normal=True, state_variables=tuple(sorted(state_set)),
+            time_variable=time_var_index, step_powers=table)
+        if packed is not NotImplemented:
+            return packed
+
     if _packed_boundary.is_enabled() and step_exp_table is None:
         packed = _packed_boundary.evaluate_polynomial(
             poly, domain_l, normal=True, state_variables=tuple(sorted(state_set)),

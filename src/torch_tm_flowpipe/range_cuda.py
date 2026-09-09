@@ -163,12 +163,14 @@ def compute_cuda_group(group, *, diagnostics=False, timings=None):
     lo,hi,status,receipt=(x.cpu() for x in (lo,hi,status,receipt))
     if diagnostics: tl,th,pl,ph=(x.cpu() for x in (tl,th,pl,ph))
     else: tl=th=None
-    assert receipt.tolist()==[1,1,1,1], "missing actual device kernel execution"
+    receipt_values=receipt.tolist()
+    assert receipt_values==[1,1,1,1], "missing actual device kernel execution"
     active=status==0
     active &= (torch.isfinite(lo)&torch.isfinite(hi)&(lo<=hi)).all(dim=1)
     records=[[(v,p,float(pl[b,i]),float(ph[b,i]),False) for i,(v,p) in enumerate(resident.power_keys)]
              if diagnostics and active[b] else [] for b in range(len(status))]
     if timings is not None:
+        timings.setdefault("kernel_receipts", []).append(receipt_values)
         for key,value in dict(h2d_and_structure_s=transferred-start,kernel_and_sync_s=computed-transferred,
                               d2h_and_checks_s=time.perf_counter()-computed,actual_kernel_invocations=4).items():
             timings[key]=timings.get(key,0)+value

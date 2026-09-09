@@ -15,6 +15,7 @@ from .interval import Interval
 
 _ENABLED = ContextVar('packed_boundary_execution', default=False)
 _REQUEST_DISPATCH = ContextVar('range_request_dispatch', default=None)
+_TABLE_REQUEST_DISPATCH = ContextVar('range_table_request_dispatch', default=None)
 
 
 @contextmanager
@@ -134,7 +135,8 @@ def make_plan(exponents, n_vars, state_variables=None, time_variable=None):
     return RangePlan(exponents, n_vars, tuple(stages))
 
 
-def evaluate_polynomial(poly, domain, *, normal=False, state_variables=None, time_variable=None):
+def evaluate_polynomial(poly, domain, *, normal=False, state_variables=None, time_variable=None,
+                        step_powers=None):
     # The sparse adapter admits only the established scalar CPU64 lane. Other
     # dtypes/devices/shapes keep their original evaluator in production.
     if any(x.dtype != torch.float64 or x.device.type != 'cpu' or x.numel() != 1
@@ -146,8 +148,11 @@ def evaluate_polynomial(poly, domain, *, normal=False, state_variables=None, tim
     coeffs = torch.stack(list(poly.terms.values())).reshape(1, 1, -1)
     lo = torch.stack([x.lo for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
     hi = torch.stack([x.hi for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
-    dispatch = _REQUEST_DISPATCH.get()
+    dispatch = _TABLE_REQUEST_DISPATCH.get() if step_powers is not None else _REQUEST_DISPATCH.get()
     if dispatch is not None:
+        if step_powers is not None:
+            return dispatch(exponents, coeffs, coeffs, lo, hi, tuple(state_variables),
+                            time_variable, 'normal', step_powers)
         return dispatch(exponents, coeffs, coeffs, lo, hi,
                         tuple(state_variables) if normal else None, time_variable,
                         'normal' if normal else 'standard')
