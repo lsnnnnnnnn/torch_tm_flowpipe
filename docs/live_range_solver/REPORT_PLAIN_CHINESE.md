@@ -34,7 +34,13 @@ L 是原有最快 packed 逐任务路线，保留已知旧幂缺陷；S 是校�
 
 四个真实故障专项（两系统×CPU/CUDA）各有10个接受步骤、一次拒绝重试、一次异步取消和一次旧返回丢弃；失败后恢复的完整状态及健康任务后续步骤与独立执行一致。发现的checkpoint私有诊断字段/字典顺序丢失已用安全JSON sidecar修复，原失败记录保留。另有不同h的测试任务：真实收紧次数2/5、请求数137/215，CPU/CUDA都与各自独立运行一致；这组输入只用于状态机验收，未进入性能表。
 
-当前根测试按身份去重为1221 passed、2 optional skipped；完整遍历在`51cd57915e70`，最终科学源码28项受影响测试重验通过，已经包含在1221个身份内。父源码局部131项标为REUSED。原始值验证覆盖九类重新计算外层hash后的篡改，包括错任务返回、旧generation、取消后commit、范围端点、fallback、等待/传输遗漏、lane-step数和离线冒充在线。独立副本验收及最终推送/SHA核对尚待执行；本草稿不将其标为完成。
+当前根测试按身份去重为1221 passed、2 optional skipped；完整遍历在`51cd57915e70`，最终科学源码28项受影响测试重验通过，已经包含在1221个身份内。父源码局部131项标为REUSED。原始值验证覆盖九类重新计算外层hash后的篡改，包括错任务返回、旧generation、取消后commit、范围端点、fallback、等待/传输遗漏、lane-step数和离线冒充在线。
+
+本地和独立 git clone 均完成新 package verifier 的全包核验：各核验782个已冻结文件、170个保存的执行案例，并各自真实重跑两系统 S/Q/S_gpu/G 的 B2 两步，共32个新接受 lane-steps；每例四段完整状态及真实请求序列均一致。独立运行实际从 clone 导入代码，验收提交为 `feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08`，没有重跑完整性能矩阵或历史1000步。原始回执与日志见 [独立验收](../../artifacts/runs/live_range_solver_20260909T053007Z/INDEPENDENT_ACCEPTANCE.json) 和 [本地验收](../../artifacts/runs/live_range_solver_20260909T053007Z/acceptance/LOCAL_ACCEPTANCE_ORIGINAL.json)。
+
+包装核验曾把保存后的 JSON list 与新请求中的 tuple 误判为不同；逐值比较确认四段完整状态及请求值相同后，修复了表示归一化，仍保留全部操作数、顺序和任务/代际/attempt/counter/源状态身份检查。八种语义改动仍被拒绝，另有32步实际回归，随后本地和 clone 全包核验通过；这些补充不增加1221个去重测试身份。失败、修复与回归原件见 [REPAIR.json](../../artifacts/runs/live_range_solver_20260909T053007Z/development/package_acceptance_json_lists_01/REPAIR.json)。
+
+已按原授权推送自己的新分支 `codex/live-range-batching-solver-integration-20260909T053007Z`。验收包提交的 local/remote/clone 三方 SHA 相同且工作树干净，见 [实际推送回执](../../artifacts/runs/live_range_solver_20260909T053007Z/acceptance/VERIFIED_PACKAGE_PUSH.json)。此后的提交仅归档回执、关闭报告和更新清单，源码、原始实验和派生性能表保持原字节；检查范围见 [FINAL_METADATA_SCOPE.json](../../artifacts/runs/live_range_solver_20260909T053007Z/FINAL_METADATA_SCOPE.json)。最终元数据提交的三方 SHA 另记在工作区 `FINAL_DELIVERY.json` 和交付答复中，避免在提交内引用它自己的 SHA。
 
 ## 4. CPU/GPU的范围变化是什么，哪些不等于错误？
 
@@ -55,7 +61,7 @@ VDP连续120步覆盖SR100；历史99/100/101和Brusselator999/1000/1001来自�
 
 ## 5. 整个前缀实际快多少，分组CPU是否本来就更慢？
 
-以下墙钟包含建任务初始状态、worker/队列启动、全部非范围数学、必要检查、真实请求准备/等待/分组/传输/同步/回传和清理。S/Q/G每组三次顺序为S-Q-G、G-Q-S、Q-S-G；L每系统/批次一个有限同工作量样本。速度倍率按配对样本取中位数，>1表示G更快。
+以下墙钟包含建任务初始状态、worker/队列启动、全部非范围数学、必要检查、真实请求准备/等待/分组/传输/同步/回传和清理。S/Q/G的三组执行顺序依次为S-Q-G、G-Q-S、Q-S-G；L每系统/批次一个有限同工作量样本。S/G、Q/G、min(S,Q)/G 是三组各自配对倍率的中位数，不是表中两个耗时中位数相除；L/G 则是唯一一次 L 耗时除以三次 G 耗时的中位数，不代表三组独立 L 配对。所有倍率>1表示G更快。
 
 | 系统 | B | 每任务步数 | L秒(1次) | S秒中位 | Q秒中位 | G秒中位 | S/G | Q/G | min(S,Q)/G | L/G |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -72,6 +78,8 @@ VDP连续120步覆盖SR100；历史99/100/101和Brusselator999/1000/1001来自�
 | --- | --- | --- | --- | --- | --- | --- |
 | VDP | 1.106× | 1.157× | 1.034× | 3/3 | 1.106× | 达到 |
 | Brusselator | 1.168× | 1.113× | 0.975× | 2/3 | 1.113× | 达到 |
+
+B32两项中位数均接近1.10门槛，Brusselator第三组G较慢。这里的接纳仅适用于预注册的三个配对组、固定资源和20步前缀；本轮没有追加样本或据结果调参，也不能据此声称其他负载均有稳定收益。
 
 全部60次实测、min/max、吞吐和资源见 [timings_raw.csv](../../artifacts/runs/live_range_solver_20260909T053007Z/timings_raw.csv)、[end_to_end_summary.csv](../../artifacts/runs/live_range_solver_20260909T053007Z/end_to_end_summary.csv)、[resource_usage.csv](../../artifacts/runs/live_range_solver_20260909T053007Z/resource_usage.csv)。正式成功lane-steps按路线合计为 {"L": 1604, "S": 4812, "Q": 4812, "G": 4812}；失败/取消任务没有进入成功分子。B1只要求揭示开销，不要求GPU获胜。原未分区B1单列在 [original_b1_diagnostic.csv](../../artifacts/runs/live_range_solver_20260909T053007Z/original_b1_diagnostic.csv)，它带诊断成本，不能和子盒正式计时混用。
 

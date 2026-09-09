@@ -1,6 +1,6 @@
 # 目标逐条验收
 
-原目标 `goal_vdp_terminal.md`（摘要见SOURCE_MAP）保持全部范围。下列数值/测量项来自完整矩阵；独立副本和推送只有实际回执才能关闭。
+原目标 `goal_vdp_terminal.md`（摘要见SOURCE_MAP）保持全部范围。下列数值/测量项来自完整矩阵；独立副本和已验证包推送已用实际回执关闭。最终交付元数据提交的 SHA 核对另存工作区 FINAL_DELIVERY.json，报告提交不改变已验数值证据。
 
 | 要求 | 证据与状态 |
 | --- | --- |
@@ -38,7 +38,7 @@
 | §12 路线判断与机器字段 | REPORT第7项和RESULT明确最终路线；online/new full long horizon/formal solver proof/default enabled各自字段，速度不达标也完整交付 |
 | §13 原始证据与重算 | raw_minimal/INDEX引用全部实际压缩模型/队列/请求/回执/时钟；独立重算派生CSV/决策到临时目录比较，不覆盖被验文件；SHA256SUMS涵盖所有新证据 |
 | §13 篡改与测试身份 | 九类重新计算外层hash后的语义篡改被拒绝；根1221/2，最终28同身份不相加，父131 REUSED；三历史源码锁定模块留旧worktree，未弱化断言或加新skip |
-| §13 独立副本有界真实重跑 | PENDING：必须独立git clone运行新package verifier及两系统S/Q/S_gpu/G B2两步实际重跑；不能以本地验证代替 |
-| §13 最终分支推送与SHA | PENDING：按原授权推送自己的新分支，不强推/不改main；最后核对local/remote/独立副本SHA并保存实际回执 |
+| §13 独立副本有界真实重跑 | PASS：独立 git clone --no-hardlinks 于 feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08 完成全包新验证器；782文件、170保存案例及两系统S/Q/S_gpu/G B2两步共32个新接受lane-steps均通过，实际导入来自clone；未重跑完整性能或历史1000步。[回执](../../artifacts/runs/live_range_solver_20260909T053007Z/INDEPENDENT_ACCEPTANCE.json) |
+| §13 最终分支推送与SHA | PASS（已验证包）：按原授权推送自己的新分支，无强推/无main更新；local/remote/clone实际均为feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08且工作树干净。[实际回执](../../artifacts/runs/live_range_solver_20260909T053007Z/acceptance/VERIFIED_PACKAGE_PUSH.json)。随后仅报告/回执/RESULT/清单变更，[元数据范围](../../artifacts/runs/live_range_solver_20260909T053007Z/FINAL_METADATA_SCOPE.json)证明已验内容不变；最终元数据提交三方SHA另记外部FINAL_DELIVERY.json及交付答复 |
 
-测试身份和每项原始路径见测试provenance、实验README及完整报告。包装过程不重算或覆盖科学性能样本。
+测试身份和每项原始路径见测试provenance、实验README及完整报告。包装过程不重算或覆盖科学性能样本。包装器的JSON list/tuple表示误判已修复，保留失败与八类语义回归；之后本地和clone全包复验通过，未增加根测试身份计数。完整案例矩阵的逐项计数见 [FINAL_MATRIX_AUDIT.json](../../artifacts/runs/live_range_solver_20260909T053007Z/acceptance/FINAL_MATRIX_AUDIT.json)。

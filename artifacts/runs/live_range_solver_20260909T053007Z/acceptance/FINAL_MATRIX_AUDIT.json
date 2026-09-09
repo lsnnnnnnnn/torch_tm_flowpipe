@@ -1,0 +1,2542 @@
+{
+  "scope": "FINAL_COMPLETION_MATRIX_INSPECTION_NOT_NEW_SOLVER_EXECUTION",
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "package_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+  "matrix_source_sha256": "715295e098c8c16794e7da585ce0ce9276703d7d21d1a451c2e2ec9afbef2b06",
+  "results": {
+    "diagnostic": {
+      "cases": 110,
+      "accepted_lane_steps": 7096,
+      "accepted_by_route": {
+        "S": 2138,
+        "Q": 2226,
+        "S_gpu": 466,
+        "G": 2266
+      },
+      "exact_frozen_matrix_match": true,
+      "rows": [
+        {
+          "name": "small-b1-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-van_der_pol-S_gpu",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-brusselator-S_gpu",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b1-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "small-b2-van_der_pol-S",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-van_der_pol-Q",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-van_der_pol-S_gpu",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-van_der_pol-G",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-brusselator-S",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-brusselator-Q",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-brusselator-S_gpu",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "small-b2-brusselator-G",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "prefix-b8-van_der_pol-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-van_der_pol-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-van_der_pol-S_gpu",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-van_der_pol-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-brusselator-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-brusselator-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-brusselator-S_gpu",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b8-brusselator-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "prefix-b32-van_der_pol-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "prefix-b32-van_der_pol-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "prefix-b32-van_der_pol-S_gpu",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 64
+        },
+        {
+          "name": "prefix-b32-van_der_pol-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "prefix-b32-brusselator-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "prefix-b32-brusselator-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "prefix-b32-brusselator-S_gpu",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 64
+        },
+        {
+          "name": "prefix-b32-brusselator-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "long-b2-van_der_pol-S",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "long-b2-van_der_pol-Q",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "long-b2-van_der_pol-G",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "long-b2-brusselator-S",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "long-b2-brusselator-Q",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "long-b2-brusselator-G",
+          "ids": [
+            0,
+            31
+          ],
+          "steps": 120,
+          "accepted_lane_steps": 240
+        },
+        {
+          "name": "history-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-van_der_pol-S_gpu",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "original-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 20
+        },
+        {
+          "name": "original-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 20
+        },
+        {
+          "name": "history-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-brusselator-S_gpu",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "history-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 3,
+          "accepted_lane_steps": 3
+        },
+        {
+          "name": "original-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 20
+        },
+        {
+          "name": "original-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 20
+        },
+        {
+          "name": "split-4-part0-van_der_pol-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-4-part1-van_der_pol-Q",
+          "ids": [
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-2-part0-van_der_pol-Q",
+          "ids": [
+            0,
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part1-van_der_pol-Q",
+          "ids": [
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part2-van_der_pol-Q",
+          "ids": [
+            16,
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part3-van_der_pol-Q",
+          "ids": [
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-1-part0-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part1-van_der_pol-Q",
+          "ids": [
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part2-van_der_pol-Q",
+          "ids": [
+            8
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part3-van_der_pol-Q",
+          "ids": [
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part4-van_der_pol-Q",
+          "ids": [
+            16
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part5-van_der_pol-Q",
+          "ids": [
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part6-van_der_pol-Q",
+          "ids": [
+            24
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part7-van_der_pol-Q",
+          "ids": [
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "permuted-delayed-newest-van_der_pol-Q",
+          "ids": [
+            28,
+            24,
+            20,
+            16,
+            12,
+            8,
+            4,
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 16
+        },
+        {
+          "name": "split-4-part0-van_der_pol-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-4-part1-van_der_pol-G",
+          "ids": [
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-2-part0-van_der_pol-G",
+          "ids": [
+            0,
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part1-van_der_pol-G",
+          "ids": [
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part2-van_der_pol-G",
+          "ids": [
+            16,
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part3-van_der_pol-G",
+          "ids": [
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-1-part0-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part1-van_der_pol-G",
+          "ids": [
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part2-van_der_pol-G",
+          "ids": [
+            8
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part3-van_der_pol-G",
+          "ids": [
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part4-van_der_pol-G",
+          "ids": [
+            16
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part5-van_der_pol-G",
+          "ids": [
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part6-van_der_pol-G",
+          "ids": [
+            24
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part7-van_der_pol-G",
+          "ids": [
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "permuted-delayed-newest-van_der_pol-G",
+          "ids": [
+            28,
+            24,
+            20,
+            16,
+            12,
+            8,
+            4,
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 16
+        },
+        {
+          "name": "split-4-part0-brusselator-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-4-part1-brusselator-Q",
+          "ids": [
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-2-part0-brusselator-Q",
+          "ids": [
+            0,
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part1-brusselator-Q",
+          "ids": [
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part2-brusselator-Q",
+          "ids": [
+            16,
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part3-brusselator-Q",
+          "ids": [
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-1-part0-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part1-brusselator-Q",
+          "ids": [
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part2-brusselator-Q",
+          "ids": [
+            8
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part3-brusselator-Q",
+          "ids": [
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part4-brusselator-Q",
+          "ids": [
+            16
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part5-brusselator-Q",
+          "ids": [
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part6-brusselator-Q",
+          "ids": [
+            24
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part7-brusselator-Q",
+          "ids": [
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "permuted-delayed-newest-brusselator-Q",
+          "ids": [
+            28,
+            24,
+            20,
+            16,
+            12,
+            8,
+            4,
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 16
+        },
+        {
+          "name": "split-4-part0-brusselator-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-4-part1-brusselator-G",
+          "ids": [
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 8
+        },
+        {
+          "name": "split-2-part0-brusselator-G",
+          "ids": [
+            0,
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part1-brusselator-G",
+          "ids": [
+            8,
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part2-brusselator-G",
+          "ids": [
+            16,
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-2-part3-brusselator-G",
+          "ids": [
+            24,
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 4
+        },
+        {
+          "name": "split-1-part0-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part1-brusselator-G",
+          "ids": [
+            4
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part2-brusselator-G",
+          "ids": [
+            8
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part3-brusselator-G",
+          "ids": [
+            12
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part4-brusselator-G",
+          "ids": [
+            16
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part5-brusselator-G",
+          "ids": [
+            20
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part6-brusselator-G",
+          "ids": [
+            24
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "split-1-part7-brusselator-G",
+          "ids": [
+            28
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "permuted-delayed-newest-brusselator-G",
+          "ids": [
+            28,
+            24,
+            20,
+            16,
+            12,
+            8,
+            4,
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 16
+        }
+      ]
+    },
+    "formal": {
+      "cases": 60,
+      "accepted_lane_steps": 16040,
+      "accepted_by_route": {
+        "S": 4812,
+        "Q": 4812,
+        "G": 4812,
+        "L": 1604
+      },
+      "exact_frozen_matrix_match": true,
+      "rows": [
+        {
+          "name": "formal-b1-rep0-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep0-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep0-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep0-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep0-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep0-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep1-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-van_der_pol-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-van_der_pol-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-van_der_pol-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-brusselator-Q",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-brusselator-S",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b1-rep2-brusselator-G",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "legacy-b1-van_der_pol-L",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "legacy-b1-brusselator-L",
+          "ids": [
+            0
+          ],
+          "steps": 2,
+          "accepted_lane_steps": 2
+        },
+        {
+          "name": "formal-b8-rep0-van_der_pol-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep0-van_der_pol-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep0-van_der_pol-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep0-brusselator-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep0-brusselator-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep0-brusselator-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-van_der_pol-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-van_der_pol-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-van_der_pol-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-brusselator-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-brusselator-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep1-brusselator-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-van_der_pol-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-van_der_pol-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-van_der_pol-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-brusselator-Q",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-brusselator-S",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b8-rep2-brusselator-G",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "legacy-b8-van_der_pol-L",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "legacy-b8-brusselator-L",
+          "ids": [
+            0,
+            4,
+            8,
+            12,
+            16,
+            20,
+            24,
+            28
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 160
+        },
+        {
+          "name": "formal-b32-rep0-van_der_pol-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep0-van_der_pol-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep0-van_der_pol-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep0-brusselator-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep0-brusselator-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep0-brusselator-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-van_der_pol-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-van_der_pol-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-van_der_pol-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-brusselator-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-brusselator-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep1-brusselator-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-van_der_pol-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-van_der_pol-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-van_der_pol-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-brusselator-Q",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-brusselator-S",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "formal-b32-rep2-brusselator-G",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "legacy-b32-van_der_pol-L",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        },
+        {
+          "name": "legacy-b32-brusselator-L",
+          "ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "steps": 20,
+          "accepted_lane_steps": 640
+        }
+      ]
+    }
+  },
+  "independent_acceptance_required": true,
+  "final_push_and_three_sha_equality_required": true
+}

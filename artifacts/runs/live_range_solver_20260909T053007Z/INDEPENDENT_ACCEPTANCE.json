@@ -1,0 +1,170 @@
+{
+  "verified": true,
+  "independent_copy": true,
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "verified_package_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+  "scope": "Full saved-data verifier plus 8 fresh B2 two-step cases, 32 accepted lane-steps, at the recorded package SHA.",
+  "receipt": {
+    "verified": true,
+    "checked_files": 782,
+    "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+    "checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+    "tests": {
+      "current_unique": {
+        "passed": 1221,
+        "skipped": 2
+      },
+      "parent_reused": 131
+    },
+    "execution_cases_checked": 170,
+    "fault_cases": 4,
+    "probe_cases": 3,
+    "heterogeneous_cases": [
+      {
+        "accepted_steps": 4,
+        "post_accept_replay_counts": {
+          "2": 2,
+          "5": 2
+        },
+        "requests_by_task": {
+          "short": 137,
+          "regular": 215
+        },
+        "exact_successful_returns": 352
+      },
+      {
+        "accepted_steps": 4,
+        "post_accept_replay_counts": {
+          "2": 2,
+          "5": 2
+        },
+        "requests_by_task": {
+          "short": 137,
+          "regular": 215
+        },
+        "exact_successful_returns": 352
+      }
+    ],
+    "bounded_actual_replay": [
+      {
+        "reference": "small-b2-van_der_pol-S",
+        "candidate": "fresh-van_der_pol-S",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-Q",
+        "candidate": "fresh-van_der_pol-Q",
+        "task_ids": [
+          "31",
+          "0"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-S_gpu",
+        "candidate": "fresh-van_der_pol-S_gpu",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-G",
+        "candidate": "fresh-van_der_pol-G",
+        "task_ids": [
+          "31",
+          "0"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-S",
+        "candidate": "fresh-brusselator-S",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-Q",
+        "candidate": "fresh-brusselator-Q",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-S_gpu",
+        "candidate": "fresh-brusselator-S_gpu",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-G",
+        "candidate": "fresh-brusselator-G",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/independent/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+        "execution": "ONLINE_LIVE_SOLVE"
+      }
+    ],
+    "fresh_accepted_lane_steps": 32,
+    "historical_1000_repeated": false,
+    "full_performance_matrix_repeated": false,
+    "status": "LIVE_RANGE_SCHEDULER_VALIDATED__END_TO_END_PREFIX_SPEEDUP"
+  },
+  "original_receipt": "acceptance/INDEPENDENT_ACCEPTANCE_ORIGINAL.json",
+  "original_receipt_sha256": "df387a3d22d2abbfc98103e7b5c301cb5b7d252ba31398c4193bf868159ce4f7",
+  "log": "acceptance/independent_verification.log",
+  "log_sha256": "a961ca9139fc998f206692f1adb8c8765803b0d8529f6cad70a3aada28e94651",
+  "local_receipt": "acceptance/LOCAL_ACCEPTANCE_ORIGINAL.json",
+  "clone_preparation": "acceptance/CLONE_PREPARATION.json",
+  "verified_package_push": "acceptance/VERIFIED_PACKAGE_PUSH.json",
+  "original_receipt_flags_are_historical": "The unchanged original records the moment before report closure and push; the separate actual push receipt records subsequent delivery.",
+  "full_performance_matrix_repeated": false,
+  "historical_1000_repeated": false,
+  "metadata_only_descendant_rule": "Later docs/receipt/RESULT/manifest changes preserve all verified scientific, experiment, packaging, raw and derived bytes. FINAL_METADATA_SCOPE.json records this check; final descendant SHA equality is recorded outside this self-containing artifact in FINAL_DELIVERY.json."
+}

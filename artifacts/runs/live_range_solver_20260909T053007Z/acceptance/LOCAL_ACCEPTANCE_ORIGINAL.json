@@ -1,0 +1,165 @@
+{
+  "receipt": {
+    "verified": true,
+    "checked_files": 782,
+    "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+    "checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+    "tests": {
+      "current_unique": {
+        "passed": 1221,
+        "skipped": 2
+      },
+      "parent_reused": 131
+    },
+    "execution_cases_checked": 170,
+    "fault_cases": 4,
+    "probe_cases": 3,
+    "heterogeneous_cases": [
+      {
+        "accepted_steps": 4,
+        "post_accept_replay_counts": {
+          "2": 2,
+          "5": 2
+        },
+        "requests_by_task": {
+          "short": 137,
+          "regular": 215
+        },
+        "exact_successful_returns": 352
+      },
+      {
+        "accepted_steps": 4,
+        "post_accept_replay_counts": {
+          "2": 2,
+          "5": 2
+        },
+        "requests_by_task": {
+          "short": 137,
+          "regular": 215
+        },
+        "exact_successful_returns": 352
+      }
+    ],
+    "bounded_actual_replay": [
+      {
+        "reference": "small-b2-van_der_pol-S",
+        "candidate": "fresh-van_der_pol-S",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-Q",
+        "candidate": "fresh-van_der_pol-Q",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-S_gpu",
+        "candidate": "fresh-van_der_pol-S_gpu",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-van_der_pol-G",
+        "candidate": "fresh-van_der_pol-G",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-S",
+        "candidate": "fresh-brusselator-S",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-Q",
+        "candidate": "fresh-brusselator-Q",
+        "task_ids": [
+          "31",
+          "0"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "ONLINE_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-S_gpu",
+        "candidate": "fresh-brusselator-S_gpu",
+        "task_ids": [
+          "0",
+          "31"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "SERIAL_LIVE_SOLVE"
+      },
+      {
+        "reference": "small-b2-brusselator-G",
+        "candidate": "fresh-brusselator-G",
+        "task_ids": [
+          "31",
+          "0"
+        ],
+        "complete_segments_compared": 4,
+        "accepted_lane_steps": 4,
+        "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+        "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+        "execution": "ONLINE_LIVE_SOLVE"
+      }
+    ],
+    "fresh_accepted_lane_steps": 32,
+    "historical_1000_repeated": false,
+    "full_performance_matrix_repeated": false,
+    "status": "LIVE_RANGE_SCHEDULER_VALIDATED__END_TO_END_PREFIX_SPEEDUP"
+  },
+  "log": "/srv/local/shengenli/live_range_solver_20260909T053007Z/package_local_verification.log",
+  "log_sha256": "8e6feba97bd85aed8655896cabd5eb41be5bc4047b90db0564b1a4fb2a4bcc4f",
+  "verification_scope": "complete saved-data verification plus fresh 32 accepted lane-steps; local worktree only",
+  "installed_sources": {
+    "experiments/live_range_solver/verify_package.py": "7533f6ba8d4a606b78f466cca5461f6e388cebc8aeb99381bfcb6bb10ecf27a1",
+    "experiments/live_range_solver/heterogeneous_steps.py": "73848a4663eeb378180caf2d476bac360f1797c373d569e9eb3a5f9665bb708d",
+    "experiments/live_range_solver/enrich.py": "e04ce8f13222655fdcda1945efd90de3d300632896111d5993d22dd7a2263aec",
+    "experiments/live_range_solver/package_reports.py": "cc5b3f72fb23aafb684cbc4f75026b34f6a3860ab873d49d3eb214b764a35508"
+  },
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "independent_copy": false
+}

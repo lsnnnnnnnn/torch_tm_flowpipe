@@ -1,0 +1,59 @@
+{
+  "verified": true,
+  "scope": "INDEPENDENTLY_VERIFIED_PACKAGE_SNAPSHOT_PUSH_AND_THREE_WAY_SHA",
+  "utc": "2026-09-09T12:27:55.605678+00:00",
+  "branch": "codex/live-range-batching-solver-integration-20260909T053007Z",
+  "origin_url": "https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git",
+  "push_transport": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "verified_package_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+  "heads": {
+    "local": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+    "remote": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+    "independent_copy": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08"
+  },
+  "clean": {
+    "local": true,
+    "independent_copy": true
+  },
+  "push": {
+    "started_utc": "2026-09-09T12:27:17.447887+00:00",
+    "completed_utc": "2026-09-09T12:27:38.986948+00:00",
+    "command": [
+      "taskset",
+      "-c",
+      "3",
+      "git",
+      "-c",
+      "remote.origin.pushurl=git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+      "-c",
+      "core.sshCommand=ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15",
+      "push",
+      "--porcelain",
+      "--no-follow-tags",
+      "--set-upstream",
+      "origin",
+      "codex/live-range-batching-solver-integration-20260909T053007Z"
+    ],
+    "exit_code": 0,
+    "branch": "codex/live-range-batching-solver-integration-20260909T053007Z",
+    "expected_sha": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08",
+    "log": "/srv/local/shengenli/live_range_solver_20260909T053007Z/push_verified_package_ssh.log",
+    "log_sha256": "173e108c1c8defee30bd2103368531c33b0e814dd5fda69f28329bab3e6e1169"
+  },
+  "remote_read": {
+    "command": [
+      "git",
+      "ls-remote",
+      "--heads",
+      "origin",
+      "refs/heads/codex/live-range-batching-solver-integration-20260909T053007Z"
+    ],
+    "exit_code": 0,
+    "stdout": "feb7caa428a3fd2143bc8abf0b0eca0a9a5e9f08\trefs/heads/codex/live-range-batching-solver-integration-20260909T053007Z\n",
+    "stderr": ""
+  },
+  "no_force": true,
+  "main_not_updated": true,
+  "final_metadata_commit_sha_record": "Final metadata-only descendant is reconciled separately in external FINAL_DELIVERY.json; this receipt records the actual snapshot above."
+}
