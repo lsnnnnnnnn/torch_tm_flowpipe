@@ -260,7 +260,9 @@ class LiveRangeService:
         if self.trace is not None:
             self.trace(dict(event=event, ns=time.perf_counter_ns(), **asdict(pending.identity),
                 request_id=pending.identity.request_id, previous=pending.previous,
-                source_state=pending.state_digest, **extra))
+                source_state=pending.state_digest, submitted_ns=pending.submitted_ns,
+                dispatched_ns=pending.dispatched_ns, completed_ns=pending.completed_ns,
+                consumed_ns=pending.consumed_ns, **extra))
 
     def submit(self, task, request):
         # Ownership is established before enqueue; even views of caller tensors
@@ -386,6 +388,7 @@ class LiveRangeService:
                             continue
                     requests = [p.request for p in selected]
                     begin = time.perf_counter_ns()
+                    thread_begin = time.thread_time_ns()
                     timing, fallback_error = {}, None
                     try:
                         results = self.evaluator(requests, backend=self.backend,
@@ -409,6 +412,7 @@ class LiveRangeService:
                         completion.synchronize()
                     ended = time.perf_counter_ns()
                     group = dict(start_ns=begin, end_ns=ended, size=len(selected), reason=reason,
+                        thread_cpu_ns=time.thread_time_ns()-thread_begin,
                         request_ids=[p.identity.request_id for p in selected], timing=timing,
                         backend=self.backend, hardware_fallback=fallback_error,
                         completion_event=completion is not None,

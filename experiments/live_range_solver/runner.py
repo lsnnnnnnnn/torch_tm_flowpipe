@@ -132,6 +132,7 @@ class SerialTask:
             self._event("dispatch", request_id=request.request_id, previous=self.previous,
                         source_state=self.state_digest, group=len(self.groups), reason="serial")
             start = time.perf_counter_ns()
+            thread_start = time.thread_time_ns()
             timing = {}
             result = evaluate_range_requests([request], backend=self.backend,
                 diagnostics=self.diagnostic, timings=timing)[request.request_id]
@@ -139,6 +140,7 @@ class SerialTask:
             if result.request_id != request.request_id:
                 raise RuntimeError("serial backend identity mismatch")
             group = dict(start_ns=start, end_ns=end, size=1, reason="serial", backend=self.backend,
+                         thread_cpu_ns=time.thread_time_ns()-thread_start,
                          request_ids=[request.request_id], timing=timing, hardware_fallback=None,
                          completion_event=False, completion_confirmed=None)
             self.groups.append(group)
@@ -289,6 +291,7 @@ def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
         ids=ids, steps=steps, original=original, diagnostic=diagnostic,
         audit_steps=list(audit_steps) if diagnostic else [], task_steps=task_steps,
         max_group=max_group, max_wait_s=max_wait_s,
+        delays=delays, select_newest=select_newest,
         start_ns=start_ns, end_ns=end_ns, wall_s=(end_ns-start_ns)/1e9,
         cpu_start_ns=cpu_start_ns, cpu_end_ns=cpu_end_ns, cpu_s=(cpu_end_ns-cpu_start_ns)/1e9,
         successful_tasks=successful, accepted_lane_steps=accepted,
@@ -341,15 +344,27 @@ def main():
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--max-wait-s", type=float, default=.020)
     parser.add_argument("--max-group", type=int, default=32)
+    parser.add_argument("--delay-task")
+    parser.add_argument("--delay-s", type=float, default=.001)
+    parser.add_argument("--newest-first", action="store_true")
+    parser.add_argument("--warm", action="store_true", help="record cold CUDA startup separately before full timed run")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
     ids = ([int(x) for x in args.ids.split(",")] if args.ids else [0, 31] if args.batch == 2
            else read(PARTITION)["subsets"][str(args.batch)])
+    cold_startup = None
+    if args.warm and args.route in {"G", "S_gpu"}:
+        with LiveRangeService("cuda", run_id="separate-cold-startup") as warmup:
+            cold_startup = warmup.startup
+        torch.cuda.reset_peak_memory_stats(0)
     result, events, _ = run_case(args.plant, ids, args.steps, args.route, run_id=args.output.name,
         diagnostic=args.diagnostic, original=args.original, checkpoint=args.checkpoint,
-        max_wait_s=args.max_wait_s, max_group=args.max_group)
+        max_wait_s=args.max_wait_s, max_group=args.max_group,
+        delays={args.delay_task:args.delay_s} if args.delay_task else None,
+        select_newest=args.newest_first)
+    result["cold_startup_outside_timing"] = cold_startup
     summary = write_run(args.output, result, events)
     print(json.dumps(summary, indent=2), flush=True)
     if summary["successful_tasks"] != len(ids):

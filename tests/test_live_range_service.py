@@ -210,3 +210,18 @@ def test_second_outstanding_request_is_rejected():
         task.cancel()
         with pytest.raises(RangeCancelled):
             pending.future.result(timeout=5)
+
+
+def test_live_checkpoint_preserves_private_diagnostics_and_mapping_order(tmp_path):
+    from torch_tm_flowpipe.live_range_checkpoint import save_live_range_checkpoint, load_live_range_checkpoint
+    from experiments.live_range_solver.runner import initial
+    from experiments.boundary_execution.state_equivalence import canonical
+    current, state = initial("van_der_pol", 0)
+    state = replace(state, diagnostics={"z":.125, "_private":[("preserved", torch.tensor([.25], dtype=torch.float64))], "a":7})
+    with LiveRangeService() as service:
+        task = service.register("checkpoint", (current, state))
+        save_live_range_checkpoint(tmp_path/"state", task, scheduler={}, contract={"plant":"van_der_pol"}, provenance={})
+        resumed = load_live_range_checkpoint(tmp_path/"state", service)
+        assert canonical(resumed.accepted_state) == canonical((current, state))
+        assert resumed.epoch == task.epoch+1
+        assert resumed.accepted_state[1].diagnostics["_private"][0][1].data_ptr() != state.diagnostics["_private"][0][1].data_ptr()
