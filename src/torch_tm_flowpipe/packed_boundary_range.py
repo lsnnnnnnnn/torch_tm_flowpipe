@@ -14,6 +14,7 @@ from .interval import Interval
 
 
 _ENABLED = ContextVar('packed_boundary_execution', default=False)
+_REQUEST_DISPATCH = ContextVar('range_request_dispatch', default=None)
 
 
 @contextmanager
@@ -145,6 +146,11 @@ def evaluate_polynomial(poly, domain, *, normal=False, state_variables=None, tim
     coeffs = torch.stack(list(poly.terms.values())).reshape(1, 1, -1)
     lo = torch.stack([x.lo for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
     hi = torch.stack([x.hi for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
+    dispatch = _REQUEST_DISPATCH.get()
+    if dispatch is not None:
+        return dispatch(exponents, coeffs, coeffs, lo, hi,
+                        tuple(state_variables) if normal else None, time_variable,
+                        'normal' if normal else 'standard')
     plan = make_plan(exponents, poly.n_vars, tuple(state_variables) if normal else None, time_variable)
     result = plan.evaluate(coeffs, coeffs, lo, hi)
     return Interval(result[0][0, 0], result[1][0, 0])
@@ -161,5 +167,8 @@ def evaluate_interval_coefficients(coefficients, domain, *, reference):
     hi = torch.stack([coefficients[e].hi for e in exponents]).reshape(1, 1, -1)
     domain_lo = torch.stack([x.lo for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
     domain_hi = torch.stack([x.hi for x in domain]).reshape(1, -1) if domain else torch.empty((1, 0), dtype=torch.float64)
+    dispatch = _REQUEST_DISPATCH.get()
+    if dispatch is not None:
+        return dispatch(exponents, lo, hi, domain_lo, domain_hi, None, None, 'interval-coefficient')
     a, b = make_plan(exponents, len(domain)).evaluate(lo, hi, domain_lo, domain_hi)
     return Interval(a[0, 0], b[0, 0])
