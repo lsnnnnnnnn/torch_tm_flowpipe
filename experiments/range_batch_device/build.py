@@ -6,13 +6,13 @@ from statistics import median
 import shutil
 
 from .common import ROOT,RUN,PARENT,read,save,sha,head,numerical_sources,read_records
-from .derive import timing_summary,decision,projected,csv_write
+from .derive import timing_summary,decision,projected,csv_write,width_differences
 from .test_accounting import account
 from .verify import NUMERICAL_SHA,BASE,write_manifest
 
 
-def cost_rows():
-    rows=read(RUN/"raw/timing/costs.json");groups=defaultdict(list)
+def cost_rows(root=RUN):
+    rows=read(root/"raw/timing/costs.json");groups=defaultdict(list)
     for r in rows:groups[r["plant"],r["batch"],r["backend"]].append(r)
     out=[]
     for (plant,batch,backend),records in sorted(groups.items()):
@@ -25,6 +25,7 @@ def cost_rows():
 
 def report(summary,result,tests):
     cpu=read(RUN/"cpu_batch_equivalence.json");gpu=read(RUN/"cuda_arithmetic_checks.json")
+    widths=width_differences()
     table={(r["plant"],r["batch"],r["mode"]):r for r in summary}
     names={"van_der_pol":"VDP","brusselator":"Brusselator"}
     end_rows=[];pure_rows=[];group_rows=[]
@@ -76,6 +77,10 @@ def report(summary,result,tests):
    {cpu['terms']:,} 个项及全部总和。GPU 使用显式上下舍入加乘与有限次整数幂，
    关闭 FMA 合并/FTZ。GPU 有 {gpu.get('legacy_bitwise_different',0):,} 个结果与 CPU
    边界不同，全部通过自己的精确包含检查；不要求两个正确区间互相包含。
+   最大端点绝对差为 {widths['max_absolute_endpoint_difference']:.6g}；对 CPU 正宽区间，
+   GPU/CPU 宽度比中位数为 {widths['gpu_to_cpu_width_ratio_for_positive_cpu_width']['median']:.12g}，
+   min/max 为 {widths['gpu_to_cpu_width_ratio_for_positive_cpu_width']['min']:.6g} / {widths['gpu_to_cpu_width_ratio_for_positive_cpu_width']['max']:.6g}。
+   零宽与极小算术误差区间另记，不能把这些算术差异解释成新 tightness 算法。
    这证明的是声明范围内的算子合同，不是整个求解器的形式化证明。
 
 4. **三种现实的时间各是多少？** 以下秒数是同一任务集两步产生的全部范围请求
@@ -151,6 +156,7 @@ def main():
     tests,commands=account()
     result=decision()
     save(RUN/"RESULT.json",result);save(RUN/"PROJECTED_AMDAHL.json",projected())
+    save(RUN/"width_difference_summary.json",width_differences())
     csv_write(RUN/"timing_summary.csv",summary)
     columns=["plant","batch","block","position","mode","seconds","requests","valid_requests","terms","actual_kernel_invocations","peak_allocated_bytes"]
     csv_write(RUN/"timing_samples.csv",[{k:r[k] for k in columns} for r in samples])

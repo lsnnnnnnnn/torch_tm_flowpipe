@@ -107,7 +107,7 @@ def check_corpus(root):
     from .corpus import partition_plan
     expected=partition_plan();saved=read(root/"PARTITION_PLAN.json")
     expected.pop("recorded_before_capture_utc");actual=dict(saved);actual.pop("recorded_before_capture_utc")
-    assert expected==actual
+    assert digest(expected)==digest(actual)
     records=list(read_records(root/"raw/corpus/independent.jsonl.gz"))+list(read_records(root/"raw/corpus/offline.jsonl.gz"))
     ids=[r["request"]["request_id"] for r in records]
     assert len(ids)==len(set(ids))==corpus["requests"]
@@ -189,6 +189,10 @@ def check_timing(root,records,outputs):
     for r in read(root/"raw/timing/residency.json"):assert r["explicit_resident_reuses"]==6 and r["input_bytes"]>0
     costs=read(root/"raw/timing/costs.json")
     assert costs and all(r["scope"]=="SEPARATE_INSTRUMENTED_TRAVERSAL" and all(v>=0 for k,v in r.items() if k.endswith("_s")) for r in costs)
+    from .build import cost_rows
+    same_csv(root/"transfer_and_packing_costs.csv",cost_rows(root))
+    from .derive import width_differences
+    assert read(root/"width_difference_summary.json")==width_differences(root)
     return summary
 
 
@@ -212,7 +216,7 @@ def replay_requests(root,tasksteps):
             result=step(first["plant"],current,state,index)
         assert result.status=="validated" and state_digest((current,state))==before
         clean=lambda rows:[{k:v for k,v in r.items() if k!="observed_original_range_s"} for r in rows]
-        assert clean(actual)==clean(expected),f"real request replay differs: {case} {index}"
+        assert digest(clean(actual))==digest(clean(expected)),f"real request replay differs: {case} {index}"
         lane_states[case]=result.reset_tm,result.flowstar_normal_state
     return len(ordered)
 

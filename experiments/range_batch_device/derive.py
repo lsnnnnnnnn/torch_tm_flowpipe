@@ -3,6 +3,7 @@ from collections import Counter,defaultdict
 from statistics import median
 import csv
 import math
+from fractions import Fraction
 from .common import RUN,read,read_records,digest
 
 
@@ -108,3 +109,19 @@ def projected(root=RUN):
 def csv_write(path,rows):
     with path.open("w") as f:
         writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+
+
+def width_differences(root=RUN):
+    def bounds(record):
+        return tuple(Fraction(float.fromhex(record["result"][k]["values"][0])) for k in ("lo","hi"))
+    cpu={r["request_id"]:bounds(r) for r in read_records(root/"raw/operator_outputs/cpu.jsonl.gz")}
+    absolute=[];ratios=[];zero=0;changed=0
+    for record in read_records(root/"raw/operator_outputs/cuda.jsonl.gz"):
+        a,b=cpu[record["request_id"]];c,d=bounds(record)
+        changed+=int((a,b)!=(c,d));absolute.append(float(max(abs(c-a),abs(d-b))))
+        if b>a:ratios.append(float((d-c)/(b-a)))
+        else:zero+=1
+    return dict(requests=len(cpu),numerically_different_bounds=changed,max_absolute_endpoint_difference=max(absolute),
+        median_absolute_endpoint_difference=median(absolute),cpu_exact_zero_width_requests=zero,
+        gpu_to_cpu_width_ratio_for_positive_cpu_width=dict(min=min(ratios),median=median(ratios),max=max(ratios)),
+        interpretation="arithmetic enclosure differences only; no new tightness method or whole solver width claim")
