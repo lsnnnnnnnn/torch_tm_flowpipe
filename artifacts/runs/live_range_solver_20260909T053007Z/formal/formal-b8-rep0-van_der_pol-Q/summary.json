@@ -1,0 +1,81 @@
+{
+  "accepted_lane_steps": 160,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [],
+  "checkpoint": null,
+  "cold_startup_outside_timing": null,
+  "counts": {
+    "external_table_fallback_requests": 0,
+    "flush_all_waiting": 5801,
+    "flush_timeout": 5376,
+    "groups": 11177,
+    "returned": 17675,
+    "status_ok": 17675,
+    "submitted": 17675
+  },
+  "cpu_end_ns": 93841758567,
+  "cpu_s": 92.042170985,
+  "cpu_start_ns": 1799587582,
+  "delays": null,
+  "diagnostic": false,
+  "end_ns": 2376194856147602,
+  "execution": "ONLINE_LIVE_SOLVE",
+  "files": {
+    "run.json.gz": "8f62b204f01c1505f3dc46d186f0cd81cc6c7af5970671b6a16a136ac57fc6ac"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 0,
+  "peak_rss_kib": 482384,
+  "plant": "van_der_pol",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "Q",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "formal-b8-rep0-van_der_pol-Q",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "select_newest": false,
+  "serialization_s": 0.44471162278205156,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_ns": 2376102742288928,
+  "startup": {
+    "wall_s": 3.713e-06
+  },
+  "steps": 20,
+  "successful_lane_steps": 160,
+  "successful_tasks": 8,
+  "task_statuses": {
+    "0": "FINISHED",
+    "12": "FINISHED",
+    "16": "FINISHED",
+    "20": "FINISHED",
+    "24": "FINISHED",
+    "28": "FINISHED",
+    "4": "FINISHED",
+    "8": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.7369807573283378,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 92.113858674
+}

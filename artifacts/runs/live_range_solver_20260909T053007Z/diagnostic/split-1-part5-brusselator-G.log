@@ -1,0 +1,173 @@
+{
+  "schema": "live-range-solver-run-v1",
+  "run_id": "split-1-part5-brusselator-G",
+  "plant": "brusselator",
+  "route": "G",
+  "scope": "FIXED_PARTITION",
+  "execution": "ONLINE_LIVE_SOLVE",
+  "request_source": "CURRENT_WORKER_CALL",
+  "previous_answers_loaded": false,
+  "ids": [
+    20
+  ],
+  "steps": 2,
+  "original": false,
+  "diagnostic": true,
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "task_steps": null,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "delays": null,
+  "select_newest": false,
+  "start_ns": 2375096945922771,
+  "end_ns": 2375098691310627,
+  "wall_s": 1.745387856,
+  "cpu_start_ns": 2022408925,
+  "cpu_end_ns": 3766731923,
+  "cpu_s": 1.744322998,
+  "successful_tasks": 1,
+  "accepted_lane_steps": 2,
+  "successful_lane_steps": 2,
+  "task_statuses": {
+    "20": "FINISHED"
+  },
+  "counts": {
+    "submitted": 294,
+    "groups": 294,
+    "flush_all_waiting": 294,
+    "external_table_fallback_requests": 0,
+    "gpu_completed_requests": 294,
+    "returned": 294,
+    "status_ok": 294
+  },
+  "startup": {
+    "reused": true,
+    "build": {
+      "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "nvrtc_version": [
+        12,
+        1
+      ],
+      "flags": [
+        "--std=c++14",
+        "--gpu-architecture=compute_70",
+        "--fmad=false",
+        "--ftz=false",
+        "--prec-div=true",
+        "--prec-sqrt=true"
+      ],
+      "source_sha256": "30c64bbb8d4fc8569b553c8fcf7fdc677e4c4ee946b3714a8d6c75ba55d5d779",
+      "ptx_sha256": "1bd68940987154f246f36a6cb1eccdb5eaf9f855f00e9ebe3ee095e6c0c3cc90",
+      "compile_and_load_s": 0.14542560977861285,
+      "compiler_log": "",
+      "device": "cuda:0",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "capability": [
+        7,
+        0
+      ]
+    },
+    "stream": 132739603691824,
+    "wall_s": 0.000119006
+  },
+  "peak_rss_kib": 646932,
+  "rss_scope": "process lifetime high-water mark",
+  "affinity": [
+    2
+  ],
+  "torch_threads": 1,
+  "torch_interop_threads": 1,
+  "peak_gpu_allocated_bytes": 8192,
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "torch_version": "2.5.1+cu121",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "checkpoint": null,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "throughput": 1.145877114433183,
+  "cold_startup_outside_timing": {
+    "reused": false,
+    "build": {
+      "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "nvrtc_version": [
+        12,
+        1
+      ],
+      "flags": [
+        "--std=c++14",
+        "--gpu-architecture=compute_70",
+        "--fmad=false",
+        "--ftz=false",
+        "--prec-div=true",
+        "--prec-sqrt=true"
+      ],
+      "source_sha256": "30c64bbb8d4fc8569b553c8fcf7fdc677e4c4ee946b3714a8d6c75ba55d5d779",
+      "ptx_sha256": "1bd68940987154f246f36a6cb1eccdb5eaf9f855f00e9ebe3ee095e6c0c3cc90",
+      "compile_and_load_s": 0.14542560977861285,
+      "compiler_log": "",
+      "device": "cuda:0",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "capability": [
+        7,
+        0
+      ]
+    },
+    "primitive_bounds": [
+      [
+        "0x1.0000000000000p-1",
+        "0x1.0000000000001p-1",
+        "0x0.0p+0",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "0x1.fffffffffffffp-2",
+        "0x1.0000000000000p-1",
+        "-0x0.0000000000001p-1022",
+        "-0x0.0p+0"
+      ],
+      [
+        "0x1.67e9c127b6e74p-531",
+        "0x1.67e9c127b6e74p-531",
+        "0x0.00000000007e8p-1022",
+        "0x0.00000000007e9p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x0.00000000007e9p-1022",
+        "-0x0.00000000007e8p-1022"
+      ],
+      [
+        "0x1.0000000000000p+0",
+        "0x1.0000000000001p+0",
+        "0x0.0000000000001p-1022",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x1.3e9e4e4c2f345p+199",
+        "-0x1.3e9e4e4c2f344p+199"
+      ]
+    ],
+    "pow3_bounds": [
+      "0x1.a6c505176d241p+28",
+      "0x1.a6c505176d243p+28"
+    ],
+    "stream": 132739603691952,
+    "wall_s": 0.39488403
+  },
+  "serialization_s": 0.1100278040394187,
+  "files": {
+    "lifecycle.jsonl.gz": "0a0aa8b30ccb74b01c36d8c2667f2d5c570bd151634566c86f71bad9efe33c82",
+    "run.json.gz": "807a55b7d29716aaae8a6ee52f39d8c7e5bc0ee0913a50f5c3d89fcf0ac114db"
+  }
+}

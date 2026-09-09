@@ -1,0 +1,71 @@
+{
+  "raw_verification": {
+    "accepted_lane_steps": 640,
+    "arithmetic": {
+      "consumed": 70704,
+      "outputs": 6880,
+      "powers": 14848,
+      "raw_requests": 6880,
+      "returned": 70704,
+      "status_ok": 70704,
+      "terms": 24512
+    },
+    "run_id": "prefix-b32-van_der_pol-G",
+    "successful_tasks": 32,
+    "timing": {
+      "dispatched": 70704,
+      "gpu_dispatched": 70704,
+      "service_s": 260.6384200269984
+    }
+  },
+  "same_backend": {
+    "candidate": "prefix-b32-van_der_pol-S_gpu",
+    "complete_segments_compared": 64,
+    "reference": "prefix-b32-van_der_pol-G",
+    "task_ids": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31"
+    ]
+  },
+  "scope": "INCREMENTAL_DIAGNOSTIC_RECHECK_NOT_PERFORMANCE",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "verifier_cpu_affinity": [
+    3
+  ],
+  "widths": {
+    "max_abs_difference": 4.440892098500626e-16,
+    "max_width_ratio": 1.0000000000000042,
+    "warnings": [],
+    "width_rows": 2560
+  }
+}

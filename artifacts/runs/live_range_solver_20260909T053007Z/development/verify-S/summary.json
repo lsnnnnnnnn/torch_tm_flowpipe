@@ -1,0 +1,68 @@
+{
+  "accepted_lane_steps": 4,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "checkpoint": null,
+  "counts": {
+    "returned": 430,
+    "status_ok": 430,
+    "submitted": 430
+  },
+  "cpu_end_ns": 4060284330,
+  "cpu_s": 2.385147104,
+  "cpu_start_ns": 1675137226,
+  "diagnostic": true,
+  "end_ns": 2367727224611930,
+  "execution": "SERIAL_LIVE_SOLVE",
+  "files": {
+    "lifecycle.jsonl.gz": "8f4ac51d46aee25002c6308e361ea02cc9441cce5f4900ac9c5932aad3dde54d",
+    "run.json.gz": "fd9ce67584738b6f3fac949c61697075228e04673b3cfe8fab9bc1ef82552846"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0,
+    31
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 0,
+  "peak_rss_kib": 457192,
+  "plant": "van_der_pol",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "S",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "verify-S",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "serialization_s": 0.14449245342984796,
+  "source_sha": "b90bccd9e051e882c8e40d965891e6d6a30c9e24",
+  "start_ns": 2367724837770360,
+  "startup": {},
+  "steps": 2,
+  "successful_lane_steps": 4,
+  "successful_tasks": 2,
+  "task_statuses": {
+    "0": "FINISHED",
+    "31": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.6758548410902696,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 2.38684157
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "live-range-solver-run-v1",
+  "run_id": "split-2-part1-brusselator-Q",
+  "plant": "brusselator",
+  "route": "Q",
+  "scope": "FIXED_PARTITION",
+  "execution": "ONLINE_LIVE_SOLVE",
+  "request_source": "CURRENT_WORKER_CALL",
+  "previous_answers_loaded": false,
+  "ids": [
+    8,
+    12
+  ],
+  "steps": 2,
+  "original": false,
+  "diagnostic": true,
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "task_steps": null,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "delays": null,
+  "select_newest": false,
+  "start_ns": 2374965801765244,
+  "end_ns": 2374969580520456,
+  "wall_s": 3.778755212,
+  "cpu_start_ns": 1653196058,
+  "cpu_end_ns": 5427978913,
+  "cpu_s": 3.774782855,
+  "successful_tasks": 2,
+  "accepted_lane_steps": 4,
+  "successful_lane_steps": 4,
+  "task_statuses": {
+    "8": "FINISHED",
+    "12": "FINISHED"
+  },
+  "counts": {
+    "submitted": 588,
+    "groups": 570,
+    "flush_all_waiting": 564,
+    "external_table_fallback_requests": 0,
+    "returned": 588,
+    "status_ok": 588,
+    "flush_timeout": 6
+  },
+  "startup": {
+    "wall_s": 3.589e-06
+  },
+  "peak_rss_kib": 465152,
+  "rss_scope": "process lifetime high-water mark",
+  "affinity": [
+    2
+  ],
+  "torch_threads": 1,
+  "torch_interop_threads": 1,
+  "peak_gpu_allocated_bytes": 0,
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "torch_version": "2.5.1+cu121",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "checkpoint": null,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "throughput": 1.0585496481215306,
+  "cold_startup_outside_timing": null,
+  "serialization_s": 0.21240489091724157,
+  "files": {
+    "lifecycle.jsonl.gz": "65dbf90dbe9ae8cbeb5f22eefb2f9a3c50bd7f45538de8160d1bfa752249ea00",
+    "run.json.gz": "27d8681e1a4142e0829d4a23d4d137ca7b49020d314657983f5c52421b4f153a"
+  }
+}

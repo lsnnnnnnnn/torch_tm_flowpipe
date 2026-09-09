@@ -1,0 +1,83 @@
+{
+  "accepted_lane_steps": 160,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "checkpoint": null,
+  "cold_startup_outside_timing": null,
+  "counts": {
+    "returned": 17675,
+    "status_ok": 17675,
+    "submitted": 17675
+  },
+  "cpu_end_ns": 110735977015,
+  "cpu_s": 108.968667557,
+  "cpu_start_ns": 1767309458,
+  "delays": null,
+  "diagnostic": true,
+  "end_ns": 2369064244395328,
+  "execution": "SERIAL_LIVE_SOLVE",
+  "files": {
+    "lifecycle.jsonl.gz": "467369cc64d008c5fd93e62adedf38e631fe34ae0b0df43d81248711c1e65fc9",
+    "run.json.gz": "dc8c27d438cf31c6e5b72ee48618b11f5cda6275f084525a47c3a7dd1d030f11"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 0,
+  "peak_rss_kib": 705568,
+  "plant": "van_der_pol",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "S",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "prefix-b8-van_der_pol-S",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "select_newest": false,
+  "serialization_s": 5.733999762684107,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_ns": 2368955191315299,
+  "startup": {},
+  "steps": 20,
+  "successful_lane_steps": 160,
+  "successful_tasks": 8,
+  "task_statuses": {
+    "0": "FINISHED",
+    "12": "FINISHED",
+    "16": "FINISHED",
+    "20": "FINISHED",
+    "24": "FINISHED",
+    "28": "FINISHED",
+    "4": "FINISHED",
+    "8": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.4671754338112404,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 109.053080029
+}

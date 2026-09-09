@@ -50,3 +50,80 @@ evidence verifier and its 131 local tests were rerun there and are REUSED, not
 counted as fresh source tests. Do not weaken or skip their assertions to admit new
 source. Fresh root testing excludes the three historical identity-locked evidence
 modules and lists that scope explicitly.
+
+## Complete-package acceptance
+
+After installing the post-measurement packaging files, use the same environment
+and CPU2/GPU0 settings above:
+
+```bash
+taskset -c 2 python -m experiments.live_range_solver.verify_package \
+  artifacts/runs/live_range_solver_20260909T053007Z
+```
+
+The default command checks every saved diagnostic run and recomputes every
+captured request, validates source files against the frozen scientific git
+commit, reconstructs each diagnostic task's first state from the fixed partition
+or checkpoint, checks raw process/job identities, accepted generations and clock spans, and regenerates the
+derived tables in a temporary directory for comparison. It also verifies the
+fault, cancellation, heterogeneous-refinement and fallback evidence, and deduplicates
+test identities. Finally, it executes fresh B2 two-step S/Q/S_gpu/G solves for
+both plants from the fixed initial partition and compares their full state and
+current-call request sequences to the recorded diagnostic references. This is
+32 new accepted lane-steps. It does not repeat the full performance campaign or
+historical 1000-step trajectories.
+
+`--no-live-replay` and `--no-recompute` are partial diagnostic options. Their
+output has `verified: false`; neither is complete acceptance. The historical
+source-locked verifiers remain in the parent worktree.
+
+`enrich.py` and `package_reports.py` only read completed measured evidence and
+write tables/reports. They do not advance a solver or load answers into a worker.
+Do not replace missing formal runs with these tools. `package_reports.py` leaves
+independent-copy and final push/SHA acceptance pending until actual receipts exist.
+
+The fixed scientific commit is `ef4e2f0c17518a4c4989071a596cd8631235c5ea`.
+Later commits contain documentation, packaging and verification code; the
+scientific runtime and runner bytes remain checked against that commit.
+
+## Using the service in a caller
+
+The concrete continuous-solve example is `runner.run_case`, with `route="Q"`
+or `route="G"`. It creates all tasks, registers independent copies of their
+complete accepted states, starts a `ThreadPoolExecutor`, and calls the existing
+step function inside each task's `execution()` context. A successful step commits
+the complete `(reset_tm, flowstar_normal_state)` tuple; rejected or cancelled
+attempts do not become the next accepted state. Callers must use the solver's
+existing immutable-input discipline and never mutate a task's accepted state in
+place. Set Torch thread configuration before creating workers.
+
+For saved tasks, use `save_live_range_checkpoint` and
+`load_live_range_checkpoint` from `torch_tm_flowpipe.live_range_checkpoint`.
+The safe JSON sidecar preserves ordinary diagnostic metadata and ordering that
+the historical terminal writer intentionally omitted. Loading registers a new
+epoch, including when a fresh process reuses the old run ID. The real
+cancel/save/resume exercises and their reference comparisons are in `faults.py`.
+
+## Scope of the measurements
+
+The main workload uses the unchanged fixed 8×4 partition. `original-*` records
+are separate unpartitioned B1 diagnostics. `history-*` records are explicitly
+`RESUMED_LOCAL_WINDOW`. `heterogeneous/` uses test-only different h values to
+exercise different actual refinement and request counts. It is not a performance
+sample. Main parameters were never selected from formal outcomes.
+
+Formal timing excludes independent Fraction auditing, model/operand diagnostic
+capture and evidence serialization. Necessary CPU exact-power certification and
+correction remains inside the measured S/Q computation. CUDA compilation,
+module loading and primitive self-tests are recorded separately before a new
+timed service reuses the module. Group times are host-observed evaluator spans,
+including synchronization; worker step spans include waits. Overlapping task
+waiting seconds are never summed as wall time. GPU memory is the Torch allocation
+peak, excluding the driver context; RSS is the process lifetime high-water mark.
+
+The independent Fraction operand capture covers all requests in the first two
+steps of B32, B8, original B1 and each three-step history window; all two-step
+small/split/order tests; and steps 1/2/60/100/119/120 in the long runs. Fault
+boundaries, explicit numerical probes and heterogeneous-refinement examples
+have separate complete checks. Subsequent calls retain the unchanged local
+operator contract, without a claim that every later request was reaudited.

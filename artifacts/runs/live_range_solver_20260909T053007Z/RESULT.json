@@ -1,0 +1,66 @@
+{
+  "correctness_gate_passed": true,
+  "default_enabled": false,
+  "diagnostic_cases": 110,
+  "entire_solver_formally_proved": false,
+  "final_branch_push_and_sha_audit": "separate final receipt; never inferred from a generated report",
+  "final_targeted_tests": {
+    "already_in_full_identity_count": true,
+    "passed": 28,
+    "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea"
+  },
+  "formal_cases": 60,
+  "full_root_tests": {
+    "optional_skipped": 2,
+    "passed": 1221,
+    "source_sha": "51cd57915e7069bc2c497cbfa1fc5f184070b5f2"
+  },
+  "independent_copy_acceptance": null,
+  "measured_throughput_online": true,
+  "new_full_long_horizon_gpu": false,
+  "parent_local_tests": {
+    "label": "REUSED",
+    "passed": 131,
+    "source_sha": "b60a608a5d2b431aee0fe49a6cb7c3e18bcfdb3a"
+  },
+  "performance": {
+    "decisions": {
+      "brusselator": {
+        "marginal": true,
+        "median": 1.1133187386778973,
+        "paired_speedups": [
+          1.1676667467232278,
+          1.1133187386778973,
+          0.9747467670073932
+        ],
+        "practical": true,
+        "wins": 2
+      },
+      "van_der_pol": {
+        "marginal": true,
+        "median": 1.1055661911342973,
+        "paired_speedups": [
+          1.1055661911342973,
+          1.1567793847521426,
+          1.0340969357669554
+        ],
+        "practical": true,
+        "wins": 3
+      }
+    },
+    "default_enabled": false,
+    "entire_solver_formally_proved": false,
+    "formal_samples": 60,
+    "measured_throughput_online": true,
+    "new_full_long_horizon_gpu": false,
+    "numerical_scope": "existing ordered range operator only",
+    "scalar_legacy_unconditionally_safe": false,
+    "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+    "status": "LIVE_RANGE_SCHEDULER_VALIDATED__END_TO_END_PREFIX_SPEEDUP"
+  },
+  "scalar_legacy_unconditionally_safe": false,
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "status": "LIVE_RANGE_SCHEDULER_VALIDATED__END_TO_END_PREFIX_SPEEDUP",
+  "width_warning_count": 0,
+  "width_warning_investigation_complete": true
+}

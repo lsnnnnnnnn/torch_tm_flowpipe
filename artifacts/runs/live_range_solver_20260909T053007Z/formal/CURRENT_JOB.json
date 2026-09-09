@@ -1,0 +1,31 @@
+{
+  "case": "legacy-b32-brusselator-L",
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.live_range_solver.runner",
+    "--plant",
+    "brusselator",
+    "--route",
+    "L",
+    "--batch",
+    "32",
+    "--steps",
+    "20",
+    "--output",
+    "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/artifacts/runs/live_range_solver_20260909T053007Z/formal/legacy-b32-brusselator-L",
+    "--max-wait-s",
+    ".020",
+    "--warm"
+  ],
+  "end_epoch": 1788951927.904218,
+  "exit_code": 0,
+  "log_sha256": "09f60534c21a3f952a371378379c663ebbf5a9752cf233510509889db66fca4d",
+  "pid": 4075385,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_epoch": 1788951393.010611,
+  "status": "COMPLETED"
+}

@@ -1,0 +1,173 @@
+{
+  "accepted_lane_steps": 3,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "checkpoint": "artifacts/runs/boundary_execution_20260908T172756Z/raw_minimal/state_inputs/brusselator_before0999",
+  "cold_startup_outside_timing": {
+    "build": {
+      "capability": [
+        7,
+        0
+      ],
+      "compile_and_load_s": 0.14595568226650357,
+      "compiler_log": "",
+      "device": "cuda:0",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "flags": [
+        "--std=c++14",
+        "--gpu-architecture=compute_70",
+        "--fmad=false",
+        "--ftz=false",
+        "--prec-div=true",
+        "--prec-sqrt=true"
+      ],
+      "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "nvrtc_version": [
+        12,
+        1
+      ],
+      "ptx_sha256": "1bd68940987154f246f36a6cb1eccdb5eaf9f855f00e9ebe3ee095e6c0c3cc90",
+      "source_sha256": "30c64bbb8d4fc8569b553c8fcf7fdc677e4c4ee946b3714a8d6c75ba55d5d779"
+    },
+    "pow3_bounds": [
+      "0x1.a6c505176d241p+28",
+      "0x1.a6c505176d243p+28"
+    ],
+    "primitive_bounds": [
+      [
+        "0x1.0000000000000p-1",
+        "0x1.0000000000001p-1",
+        "0x0.0p+0",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "0x1.fffffffffffffp-2",
+        "0x1.0000000000000p-1",
+        "-0x0.0000000000001p-1022",
+        "-0x0.0p+0"
+      ],
+      [
+        "0x1.67e9c127b6e74p-531",
+        "0x1.67e9c127b6e74p-531",
+        "0x0.00000000007e8p-1022",
+        "0x0.00000000007e9p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x0.00000000007e9p-1022",
+        "-0x0.00000000007e8p-1022"
+      ],
+      [
+        "0x1.0000000000000p+0",
+        "0x1.0000000000001p+0",
+        "0x0.0000000000001p-1022",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x1.3e9e4e4c2f345p+199",
+        "-0x1.3e9e4e4c2f344p+199"
+      ]
+    ],
+    "reused": false,
+    "stream": 131679887621104,
+    "wall_s": 0.398520653
+  },
+  "counts": {
+    "external_table_fallback_requests": 0,
+    "flush_all_waiting": 424,
+    "gpu_completed_requests": 424,
+    "groups": 424,
+    "returned": 424,
+    "status_ok": 424,
+    "submitted": 424
+  },
+  "cpu_end_ns": 8262398046,
+  "cpu_s": 6.22760561,
+  "cpu_start_ns": 2034792436,
+  "delays": null,
+  "diagnostic": true,
+  "end_ns": 2374735352677482,
+  "execution": "ONLINE_LIVE_SOLVE",
+  "files": {
+    "lifecycle.jsonl.gz": "29b2f839795b63e1e34280bf72e566f1e39b67e2d786488cf8d3f27389468d6e",
+    "run.json.gz": "6d29adc22b87347e858e5f729095f31cb230b69557c626c8377d3226e1e0d542"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 8192,
+  "peak_rss_kib": 724092,
+  "plant": "brusselator",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "G",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "history-brusselator-G",
+  "schema": "live-range-solver-run-v1",
+  "scope": "RESUMED_LOCAL_WINDOW",
+  "select_newest": false,
+  "serialization_s": 0.7821739409118891,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_ns": 2374729120024802,
+  "startup": {
+    "build": {
+      "capability": [
+        7,
+        0
+      ],
+      "compile_and_load_s": 0.14595568226650357,
+      "compiler_log": "",
+      "device": "cuda:0",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "flags": [
+        "--std=c++14",
+        "--gpu-architecture=compute_70",
+        "--fmad=false",
+        "--ftz=false",
+        "--prec-div=true",
+        "--prec-sqrt=true"
+      ],
+      "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "nvrtc_version": [
+        12,
+        1
+      ],
+      "ptx_sha256": "1bd68940987154f246f36a6cb1eccdb5eaf9f855f00e9ebe3ee095e6c0c3cc90",
+      "source_sha256": "30c64bbb8d4fc8569b553c8fcf7fdc677e4c4ee946b3714a8d6c75ba55d5d779"
+    },
+    "reused": true,
+    "stream": 131679887620912,
+    "wall_s": 0.000141718
+  },
+  "steps": 3,
+  "successful_lane_steps": 3,
+  "successful_tasks": 1,
+  "task_statuses": {
+    "0": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 0.4813359822899677,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 6.23265268
+}

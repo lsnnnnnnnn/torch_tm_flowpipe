@@ -1,0 +1,74 @@
+{
+  "schema": "live-range-solver-run-v1",
+  "run_id": "history-brusselator-Q",
+  "plant": "brusselator",
+  "route": "Q",
+  "scope": "RESUMED_LOCAL_WINDOW",
+  "execution": "ONLINE_LIVE_SOLVE",
+  "request_source": "CURRENT_WORKER_CALL",
+  "previous_answers_loaded": false,
+  "ids": [
+    0
+  ],
+  "steps": 3,
+  "original": false,
+  "diagnostic": true,
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "task_steps": null,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "delays": null,
+  "select_newest": false,
+  "start_ns": 2374709711222552,
+  "end_ns": 2374716947092491,
+  "wall_s": 7.235869939,
+  "cpu_start_ns": 1643547954,
+  "cpu_end_ns": 8872945257,
+  "cpu_s": 7.229397303,
+  "successful_tasks": 1,
+  "accepted_lane_steps": 3,
+  "successful_lane_steps": 3,
+  "task_statuses": {
+    "0": "FINISHED"
+  },
+  "counts": {
+    "submitted": 424,
+    "groups": 424,
+    "flush_all_waiting": 424,
+    "external_table_fallback_requests": 0,
+    "returned": 424,
+    "status_ok": 424
+  },
+  "startup": {
+    "wall_s": 3.957e-06
+  },
+  "peak_rss_kib": 532764,
+  "rss_scope": "process lifetime high-water mark",
+  "affinity": [
+    2
+  ],
+  "torch_threads": 1,
+  "torch_interop_threads": 1,
+  "peak_gpu_allocated_bytes": 0,
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "torch_version": "2.5.1+cu121",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "checkpoint": "artifacts/runs/boundary_execution_20260908T172756Z/raw_minimal/state_inputs/brusselator_before0999",
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "throughput": 0.4146011502819523,
+  "cold_startup_outside_timing": null,
+  "serialization_s": 0.773769237101078,
+  "files": {
+    "lifecycle.jsonl.gz": "2702cb71fcadef1d6b83b2296ac39855733533db38915f366d0c9b25b250a35a",
+    "run.json.gz": "6fd8309f39e2d3134f1857b8f8d6ded55955ed720a4bf60f0c27d2db028b6e2e"
+  }
+}

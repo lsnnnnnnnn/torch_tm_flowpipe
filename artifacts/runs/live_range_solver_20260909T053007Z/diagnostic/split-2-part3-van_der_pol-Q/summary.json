@@ -1,0 +1,77 @@
+{
+  "accepted_lane_steps": 4,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "checkpoint": null,
+  "cold_startup_outside_timing": null,
+  "counts": {
+    "external_table_fallback_requests": 0,
+    "flush_all_waiting": 410,
+    "flush_timeout": 6,
+    "groups": 416,
+    "returned": 430,
+    "status_ok": 430,
+    "submitted": 430
+  },
+  "cpu_end_ns": 4160010751,
+  "cpu_s": 2.491322633,
+  "cpu_start_ns": 1668688118,
+  "delays": null,
+  "diagnostic": true,
+  "end_ns": 2374826331839699,
+  "execution": "ONLINE_LIVE_SOLVE",
+  "files": {
+    "lifecycle.jsonl.gz": "e5f88d4c8c2a5c51f1ca9c59174fea2f813c4713104cb410ea46c6740641a4f9",
+    "run.json.gz": "853cfe58bc7d91ee3d75433865c531d0ce352fb30ac8daec415efdc64a1e60ca"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    24,
+    28
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 0,
+  "peak_rss_kib": 459128,
+  "plant": "van_der_pol",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "Q",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "split-2-part3-van_der_pol-Q",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "select_newest": false,
+  "serialization_s": 0.15406677080318332,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_ns": 2374823837765686,
+  "startup": {
+    "wall_s": 4.049e-06
+  },
+  "steps": 2,
+  "successful_lane_steps": 4,
+  "successful_tasks": 2,
+  "task_statuses": {
+    "24": "FINISHED",
+    "28": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.6038016430749764,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 2.494074013
+}

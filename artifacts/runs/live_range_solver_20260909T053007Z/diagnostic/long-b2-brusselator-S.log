@@ -1,0 +1,71 @@
+{
+  "schema": "live-range-solver-run-v1",
+  "run_id": "long-b2-brusselator-S",
+  "plant": "brusselator",
+  "route": "S",
+  "scope": "FIXED_PARTITION",
+  "execution": "SERIAL_LIVE_SOLVE",
+  "request_source": "CURRENT_WORKER_CALL",
+  "previous_answers_loaded": false,
+  "ids": [
+    0,
+    31
+  ],
+  "steps": 120,
+  "original": false,
+  "diagnostic": true,
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "task_steps": null,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "delays": null,
+  "select_newest": false,
+  "start_ns": 2373832075785095,
+  "end_ns": 2374097536894426,
+  "wall_s": 265.461109331,
+  "cpu_start_ns": 1663131336,
+  "cpu_end_ns": 266924642563,
+  "cpu_s": 265.261511227,
+  "successful_tasks": 2,
+  "accepted_lane_steps": 240,
+  "successful_lane_steps": 240,
+  "task_statuses": {
+    "0": "FINISHED",
+    "31": "FINISHED"
+  },
+  "counts": {
+    "submitted": 35122,
+    "returned": 35122,
+    "status_ok": 35122
+  },
+  "startup": {},
+  "peak_rss_kib": 1176860,
+  "rss_scope": "process lifetime high-water mark",
+  "affinity": [
+    2
+  ],
+  "torch_threads": 1,
+  "torch_interop_threads": 1,
+  "peak_gpu_allocated_bytes": 0,
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "torch_version": "2.5.1+cu121",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "checkpoint": null,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "throughput": 0.9040872337376814,
+  "cold_startup_outside_timing": null,
+  "serialization_s": 16.29028022289276,
+  "files": {
+    "lifecycle.jsonl.gz": "5328249aa7c8f5b7dc3b3d6dcd14f5c60abdc04cebe3191d23e1e165fafa65d0",
+    "run.json.gz": "b7b349ebec27eeffbad7071aa678e717fab20157c1ca26df84f70ec6fc6e5588"
+  }
+}

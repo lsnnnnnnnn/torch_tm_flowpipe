@@ -1,0 +1,123 @@
+{"native_json_equivalence": true, "semantic_mutations_rejected": ["task", "generation", "attempt", "counter", "source_state", "coefficient", "domain", "support_order"]}
+{
+  "scope": "PACKAGE_VERIFIER_REGRESSION_ONLY_NOT_FORMAL_PERFORMANCE",
+  "native_json_equivalence": true,
+  "semantic_mutations_rejected": [
+    "task",
+    "generation",
+    "attempt",
+    "counter",
+    "source_state",
+    "coefficient",
+    "domain",
+    "support_order"
+  ],
+  "bounded_actual_replay": [
+    {
+      "reference": "small-b2-van_der_pol-S",
+      "candidate": "fresh-van_der_pol-S",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "SERIAL_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-van_der_pol-Q",
+      "candidate": "fresh-van_der_pol-Q",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "ONLINE_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-van_der_pol-S_gpu",
+      "candidate": "fresh-van_der_pol-S_gpu",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "SERIAL_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-van_der_pol-G",
+      "candidate": "fresh-van_der_pol-G",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "ONLINE_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-brusselator-S",
+      "candidate": "fresh-brusselator-S",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "SERIAL_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-brusselator-Q",
+      "candidate": "fresh-brusselator-Q",
+      "task_ids": [
+        "31",
+        "0"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "ONLINE_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-brusselator-S_gpu",
+      "candidate": "fresh-brusselator-S_gpu",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "SERIAL_LIVE_SOLVE"
+    },
+    {
+      "reference": "small-b2-brusselator-G",
+      "candidate": "fresh-brusselator-G",
+      "task_ids": [
+        "0",
+        "31"
+      ],
+      "complete_segments_compared": 4,
+      "accepted_lane_steps": 4,
+      "actual_imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+      "actual_checkout_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+      "execution": "ONLINE_LIVE_SOLVE"
+    }
+  ],
+  "fresh_accepted_lane_steps": 32,
+  "counted_as_additional_root_test_identities": false
+}

@@ -1,0 +1,78 @@
+{
+  "accepted_lane_steps": 16,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [],
+  "checkpoint": null,
+  "counts": {
+    "external_table_fallback_requests": 0,
+    "flush_all_waiting": 11,
+    "flush_timeout": 969,
+    "groups": 980,
+    "returned": 2352,
+    "status_ok": 2352,
+    "submitted": 2352
+  },
+  "cpu_end_ns": 67552978645,
+  "cpu_s": 11.456940628,
+  "cpu_start_ns": 56096038017,
+  "diagnostic": false,
+  "end_ns": 2367604489847674,
+  "execution": "ONLINE_LIVE_SOLVE",
+  "files": {
+    "run.json.gz": "a361793b6cd516139406c087cde985dd78b74402fe3af4799fd052891c83be8c"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.002,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 8192,
+  "peak_rss_kib": 686120,
+  "plant": "brusselator",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "Q",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "pilot-brusselator-Q-0.002",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "serialization_s": 0.03956888383254409,
+  "source_sha": "b90bccd9e051e882c8e40d965891e6d6a30c9e24",
+  "start_ns": 2367593024360636,
+  "startup": {
+    "wall_s": 5.259e-06
+  },
+  "steps": 2,
+  "successful_lane_steps": 16,
+  "successful_tasks": 8,
+  "task_statuses": {
+    "0": "FINISHED",
+    "12": "FINISHED",
+    "16": "FINISHED",
+    "20": "FINISHED",
+    "24": "FINISHED",
+    "28": "FINISHED",
+    "4": "FINISHED",
+    "8": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.3954923979218057,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 11.465487038
+}

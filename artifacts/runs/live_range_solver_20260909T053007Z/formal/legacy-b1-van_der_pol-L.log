@@ -1,0 +1,57 @@
+{
+  "schema": "live-range-solver-run-v1",
+  "run_id": "legacy-b1-van_der_pol-L",
+  "plant": "van_der_pol",
+  "route": "L",
+  "scope": "FIXED_PARTITION",
+  "execution": "SERIAL_LIVE_SOLVE",
+  "request_source": "CURRENT_WORKER_CALL",
+  "previous_answers_loaded": false,
+  "ids": [
+    0
+  ],
+  "steps": 2,
+  "original": false,
+  "diagnostic": false,
+  "audit_steps": [],
+  "task_steps": null,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "delays": null,
+  "select_newest": false,
+  "start_ns": 2375996554218455,
+  "end_ns": 2375997432598796,
+  "wall_s": 0.878380341,
+  "cpu_start_ns": 1654002387,
+  "cpu_end_ns": 2531567301,
+  "cpu_s": 0.877564914,
+  "successful_tasks": 1,
+  "accepted_lane_steps": 2,
+  "successful_lane_steps": 2,
+  "task_statuses": {
+    "0": "FINISHED"
+  },
+  "counts": {},
+  "startup": {},
+  "peak_rss_kib": 449192,
+  "rss_scope": "process lifetime high-water mark",
+  "affinity": [
+    2
+  ],
+  "torch_threads": 1,
+  "torch_interop_threads": 1,
+  "peak_gpu_allocated_bytes": 0,
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "torch_version": "2.5.1+cu121",
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "checkpoint": null,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "throughput": 2.2769179894475804,
+  "cold_startup_outside_timing": null,
+  "serialization_s": 0.00034204917028546333,
+  "files": {
+    "run.json.gz": "c5dccd6be0b4ed0757ce5decd25d8f774e2139a5196c39bcf24df03eaecf63ff"
+  }
+}

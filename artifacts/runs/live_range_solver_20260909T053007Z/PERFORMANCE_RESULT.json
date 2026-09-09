@@ -1,0 +1,35 @@
+{
+  "decisions": {
+    "brusselator": {
+      "marginal": true,
+      "median": 1.1133187386778973,
+      "paired_speedups": [
+        1.1676667467232278,
+        1.1133187386778973,
+        0.9747467670073932
+      ],
+      "practical": true,
+      "wins": 2
+    },
+    "van_der_pol": {
+      "marginal": true,
+      "median": 1.1055661911342973,
+      "paired_speedups": [
+        1.1055661911342973,
+        1.1567793847521426,
+        1.0340969357669554
+      ],
+      "practical": true,
+      "wins": 3
+    }
+  },
+  "default_enabled": false,
+  "entire_solver_formally_proved": false,
+  "formal_samples": 60,
+  "measured_throughput_online": true,
+  "new_full_long_horizon_gpu": false,
+  "numerical_scope": "existing ordered range operator only",
+  "scalar_legacy_unconditionally_safe": false,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "status": "LIVE_RANGE_SCHEDULER_VALIDATED__END_TO_END_PREFIX_SPEEDUP"
+}

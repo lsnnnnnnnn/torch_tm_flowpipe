@@ -1,0 +1,50 @@
+{
+  "additional_complete_scopes": [
+    "all successful fault/retry/cancel-boundary returns",
+    "synthetic correction/table/overflow/subnormal/order probes",
+    "heterogeneous actual refinement cases"
+  ],
+  "by_route": {
+    "G": {
+      "consumed": 309528,
+      "outputs": 42204,
+      "powers": 97073,
+      "raw_requests": 42204,
+      "returned": 309528,
+      "status_ok": 309528,
+      "terms": 171991
+    },
+    "Q": {
+      "consumed": 302337,
+      "outputs": 41536,
+      "powers": 95256,
+      "raw_requests": 41536,
+      "returned": 302337,
+      "status_ok": 302337,
+      "terms": 168516
+    },
+    "S": {
+      "consumed": 293240,
+      "outputs": 25916,
+      "powers": 62001,
+      "raw_requests": 25916,
+      "returned": 293240,
+      "status_ok": 293240,
+      "terms": 110295
+    },
+    "S_gpu": {
+      "consumed": 62937,
+      "outputs": 22387,
+      "powers": 50212,
+      "raw_requests": 22387,
+      "returned": 62937,
+      "status_ok": 62937,
+      "terms": 89158
+    }
+  },
+  "complete_scope": "all captured requests: full B32 first two steps, all small and split/order tests, first two of each three-step history window, original B1 first two, B8 first two, long120 steps 1/2/60/100/119/120",
+  "every_later_request_reaudited": false,
+  "formal_independent_fraction_audits": 0,
+  "necessary_cpu_exact_power_correction_inside_formal_timer": true,
+  "unchanged_local_operator_contract": "docs/range_batch_device/OPERATOR_CONTRACT.md"
+}

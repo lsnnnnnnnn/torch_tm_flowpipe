@@ -1,0 +1,25 @@
+{
+  "phase": "STOPPED_VERIFY_LOCAL_PACKAGE",
+  "pid": 3835909,
+  "child_pid": 4082261,
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.live_range_solver.verify_package",
+    "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/artifacts/runs/live_range_solver_20260909T053007Z"
+  ],
+  "log": "/srv/local/shengenli/live_range_solver_20260909T053007Z/package_local_verification.log",
+  "installed_sources": {
+    "experiments/live_range_solver/verify_package.py": "1e71f6d1e1245c6e26a4c22ae489948faae9fdb46162271dd05ee566762dabbd",
+    "experiments/live_range_solver/heterogeneous_steps.py": "73848a4663eeb378180caf2d476bac360f1797c373d569e9eb3a5f9665bb708d",
+    "experiments/live_range_solver/enrich.py": "e04ce8f13222655fdcda1945efd90de3d300632896111d5993d22dd7a2263aec",
+    "experiments/live_range_solver/package_reports.py": "cc5b3f72fb23aafb684cbc4f75026b34f6a3860ab873d49d3eb214b764a35508"
+  },
+  "start_epoch": 1788952061.30265,
+  "scientific_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "exit_code": 1,
+  "end_epoch": 1788953320.3943164
+}

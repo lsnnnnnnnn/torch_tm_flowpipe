@@ -1,0 +1,89 @@
+{
+  "accepted_lane_steps": 160,
+  "affinity": [
+    2
+  ],
+  "audit_steps": [
+    1,
+    2,
+    60,
+    100,
+    119,
+    120
+  ],
+  "checkpoint": null,
+  "cold_startup_outside_timing": null,
+  "counts": {
+    "external_table_fallback_requests": 0,
+    "flush_all_waiting": 9392,
+    "flush_timeout": 3328,
+    "groups": 12720,
+    "returned": 26685,
+    "status_ok": 26685,
+    "submitted": 26685
+  },
+  "cpu_end_ns": 154118066405,
+  "cpu_s": 152.438100754,
+  "cpu_start_ns": 1679965651,
+  "delays": null,
+  "diagnostic": true,
+  "end_ns": 2369710352258473,
+  "execution": "ONLINE_LIVE_SOLVE",
+  "files": {
+    "lifecycle.jsonl.gz": "3a24e66795dd3d9cf827610d573cc179f0b1ec409358d9cca1d5c9be82c93241",
+    "run.json.gz": "6720fe6e47c7b87a2b284b99ef693d8188bf7bb2f54830ae5aa261bf45bfbab6"
+  },
+  "gpu_memory_scope": "process lifetime Torch allocator high-water mark",
+  "ids": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24,
+    28
+  ],
+  "imported_core": "/srv/local/shengenli/live_range_solver_20260909T053007Z/repo/src/torch_tm_flowpipe/__init__.py",
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "original": false,
+  "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+  "peak_gpu_allocated_bytes": 0,
+  "peak_rss_kib": 830268,
+  "plant": "brusselator",
+  "previous_answers_loaded": false,
+  "python": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "request_source": "CURRENT_WORKER_CALL",
+  "route": "Q",
+  "rss_scope": "process lifetime high-water mark",
+  "run_id": "prefix-b8-brusselator-Q",
+  "schema": "live-range-solver-run-v1",
+  "scope": "FIXED_PARTITION",
+  "select_newest": false,
+  "serialization_s": 8.028479233849794,
+  "source_sha": "ef4e2f0c17518a4c4989071a596cd8631235c5ea",
+  "start_ns": 2369557793538024,
+  "startup": {
+    "wall_s": 4.311e-06
+  },
+  "steps": 20,
+  "successful_lane_steps": 160,
+  "successful_tasks": 8,
+  "task_statuses": {
+    "0": "FINISHED",
+    "12": "FINISHED",
+    "16": "FINISHED",
+    "20": "FINISHED",
+    "24": "FINISHED",
+    "28": "FINISHED",
+    "4": "FINISHED",
+    "8": "FINISHED"
+  },
+  "task_steps": null,
+  "throughput": 1.0487764942515208,
+  "torch_interop_threads": 1,
+  "torch_threads": 1,
+  "torch_version": "2.5.1+cu121",
+  "wall_s": 152.558720449
+}
