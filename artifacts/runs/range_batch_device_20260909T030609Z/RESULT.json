@@ -1,0 +1,61 @@
+{
+  "correctness": {
+    "cpu_legacy_pow_counterexample_fixed_only_in_new_api": true,
+    "cpu_real_requests_bitwise_preserved": true,
+    "cuda_exact_operator_containment": true,
+    "whole_solver_formal_proof": false
+  },
+  "local_throughput": {
+    "gates": {
+      "brusselator": {
+        "full_roundtrip_ratios": [
+          4.34373554860442,
+          4.3010169879262445,
+          4.317877424262358,
+          4.3387318447874055,
+          4.342822362621585
+        ],
+        "offload_useful": true,
+        "resident_ratios": [
+          61.493414397831565,
+          57.16453649874272,
+          58.212424865225785,
+          58.875408743674136,
+          58.40025027819968
+        ],
+        "resident_useful": true,
+        "singleton_request_fraction": 0.0
+      },
+      "van_der_pol": {
+        "full_roundtrip_ratios": [
+          2.8459180994954196,
+          4.3339046401104335,
+          4.215047029408586,
+          4.361098124803922,
+          4.742602146731559
+        ],
+        "offload_useful": true,
+        "resident_ratios": [
+          55.38772171190626,
+          57.349264358104406,
+          56.40246195509502,
+          57.44747265276224,
+          57.452216795575175
+        ],
+        "resident_useful": true,
+        "singleton_request_fraction": 0.0
+      }
+    },
+    "policy": "Both plants must meet each threshold in all five paired blocks; resident compares prepacked grouped CPU.",
+    "scope": "CONCURRENT_TASK_REQUEST_CAPTURE_AND_REPLAY"
+  },
+  "solver_integration": {
+    "cpu_complete_state_and_reset_windows": true,
+    "cuda_B1_range_only_steps_per_plant": 20,
+    "integrated_multi_task_solver": false,
+    "measured_solver_speedup": false,
+    "new_full_1000_step_runs": 0,
+    "old_full_runs": "REUSED"
+  },
+  "status": "RANGE_BATCH_CPU_CLOSED__CUDA_LOCAL_PILOT_USEFUL"
+}

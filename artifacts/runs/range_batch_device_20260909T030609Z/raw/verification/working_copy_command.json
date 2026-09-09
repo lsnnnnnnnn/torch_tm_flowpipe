@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.range_batch_device.verify"
+  ],
+  "cwd": "/srv/local/shengenli/range_batch_device_20260909T030609Z/repo",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "src:.:tests"
+  },
+  "exit_code": 0,
+  "scope": "all raw math, 140 captured steps and CPU/GPU integration; no full long run",
+  "source_sha": "252e2a6a08bbd834437fd1f04f1bf678ab921223"
+}

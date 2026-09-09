@@ -1,0 +1,36 @@
+{
+  "all_requests_finite": true,
+  "arithmetic": "directed binary64 add/multiply and finite integer powers",
+  "build": {
+    "capability": [
+      7,
+      0
+    ],
+    "compile_and_load_s": 0.2843949059024453,
+    "compiler_log": "",
+    "device": "cuda:0",
+    "device_name": "Tesla V100-SXM2-16GB",
+    "flags": [
+      "--std=c++14",
+      "--gpu-architecture=compute_70",
+      "--fmad=false",
+      "--ftz=false",
+      "--prec-div=true",
+      "--prec-sqrt=true"
+    ],
+    "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+    "nvrtc_version": [
+      12,
+      1
+    ],
+    "ptx_sha256": "1bd68940987154f246f36a6cb1eccdb5eaf9f855f00e9ebe3ee095e6c0c3cc90",
+    "source_sha256": "30c64bbb8d4fc8569b553c8fcf7fdc677e4c4ee946b3714a8d6c75ba55d5d779"
+  },
+  "legacy_bitwise_different": 17939,
+  "legacy_bitwise_equal": 1869,
+  "ok": 19808,
+  "outputs": 19808,
+  "powers": 44333,
+  "requests": 19808,
+  "terms": 80696
+}

@@ -1,0 +1,23 @@
+{
+  "count_in_current_totals": false,
+  "cwd": "/srv/local/shengenli/boundary_execution_20260908T172756Z/package",
+  "scope": "source-locked parent README verifier and six local regression modules",
+  "source_sha": "ec6abec2bed30f0b7b52acb6b5b56723cea6918e",
+  "tests": [
+    "test_boundary_range_plan.py",
+    "test_boundary_execution_evidence.py",
+    "test_prepared_remainder_replay.py",
+    "test_our_reference_endpoint_containment.py",
+    "test_endpoint_roundoff_repair.py",
+    "test_endpoint_roundoff_carry.py"
+  ],
+  "verifier_argv": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.boundary_execution.verify",
+    "artifacts/runs/boundary_execution_20260908T172756Z"
+  ]
+}
