@@ -18,9 +18,9 @@
 - [x] 完整状态 CPU B1 及独立任务适配，两个 reset 窗口与失败/恢复。
 - [x] CUDA 通过后有限 B1 offload 诊断（可选）；不声称完整 GPU solver。
 - [x] 从原始记录重算的新 verifier 和针对性篡改测试。
-- [ ] 当前根测试、新局部测试、独立副本复核；旧验证留在旧快照。
+- [x] 当前根测试、新局部测试、独立副本复核；旧验证留在旧快照。
 - [x] 分开的数值/测试/封装 SHA、中文报告、设备结论、PROJECTED Amdahl。
-- [ ] 推送本轮新分支并核对远端；不动 main。
+- [x] 推送本轮新分支并核对远端；不动 main。
 
 首次父验证进程：工具 session 56192，CPU2，父 package checkout。输出在工作根
 `parent_checks/`。未结束前不得另起重复验证。
@@ -40,4 +40,4 @@ CPU 全部与父 B1 逐位相同。GPU 边界 17,939 个不同，最大端点差
 当前测试按身份去重 1201 passed / 2 原有 optional skipped；PATH 环境失败与成功补测均保留。
 五区块正式局部计时完成，B32 完整 GPU 往返相对分组 CPU：VDP 4.275×，Brusselator 4.329×。
 完整新 verifier 已成功重放 140 个采集步骤以及 CPU reset/恢复/失败与两系统 GPU20 步诊断。
-尚待：独立 clone 的 verifier/131 项局部复核、远端 push 与逐项完成核对。
+独立 clone 的完整 verifier 与 131 项局部复核已通过。逐项证据索引见 COMPLETION_AUDIT.json；最终交付核对远端分支 SHA，不移动 main。

@@ -1,0 +1,67 @@
+[
+  {
+    "name": "verify",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.range_batch_device.verify"
+    ],
+    "cwd": "/srv/local/shengenli/range_batch_device_20260909T030609Z/independent",
+    "source_sha": "c301f4f905159734921da1e494f58f8606f329d6",
+    "started_utc": 1788925206.2616603,
+    "affinity": [
+      2
+    ],
+    "environment": {
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0AglEgL:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "PYTHONPATH": "src:.:tests",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    "count_in_unique_tests": false,
+    "log": "verify.log",
+    "exit": "verify.exit",
+    "pid": 3729702,
+    "proc_start_ticks": "236046178",
+    "exit_code": 0,
+    "finished_utc": 1788925402.7120323
+  },
+  {
+    "name": "local",
+    "argv": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_range_requests.py",
+      "tests/test_range_cuda.py",
+      "tests/test_range_device_evidence.py",
+      "--junitxml=/srv/local/shengenli/range_batch_device_20260909T030609Z/independent_checks/local.xml"
+    ],
+    "cwd": "/srv/local/shengenli/range_batch_device_20260909T030609Z/independent",
+    "source_sha": "c301f4f905159734921da1e494f58f8606f329d6",
+    "started_utc": 1788925402.7143865,
+    "affinity": [
+      2
+    ],
+    "environment": {
+      "PATH": "/srv/local/shengenli/miniforge3/envs/py11/bin:/srv/local/shengenli/miniforge3/envs/codex/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/codex-path:/home/shengenli/.codex/tmp/arg0/codex-arg0AglEgL:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/srv/local/shengenli/.vscode-server/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/srv/local/shengenli/.vscode-server/.vscode-server/cli/servers/Stable-a44adf7f53e00964ab890f9f8758a334f1fc15bc/server/bin/remote-cli:/srv/local/shengenli/miniforge3/envs/codex/bin:/srv/local/shengenli/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "PYTHONPATH": "src:.:tests",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    "count_in_unique_tests": false,
+    "log": "local.log",
+    "exit": "local.exit",
+    "pid": 3731643,
+    "proc_start_ticks": "236065823",
+    "exit_code": 0,
+    "finished_utc": 1788925415.442916
+  }
+]

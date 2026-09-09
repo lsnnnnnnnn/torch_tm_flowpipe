@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "files": 73,
+  "numerical_sha": "440714afc3acc250903c5ec98fb0011905671944",
+  "evidence_code_sha": "252e2a6a08bbd834437fd1f04f1bf678ab921223",
+  "checkout_sha": "c301f4f905159734921da1e494f58f8606f329d6",
+  "math": {
+    "cpu": {
+      "powers": 44333,
+      "terms": 80696,
+      "outputs": 19808,
+      "requests": 19808,
+      "ok": 19808,
+      "legacy_bitwise_equal": 19808
+    },
+    "cuda": {
+      "powers": 44333,
+      "terms": 80696,
+      "outputs": 19808,
+      "requests": 19808,
+      "ok": 19808,
+      "legacy_bitwise_different": 17939,
+      "legacy_bitwise_equal": 1869
+    }
+  },
+  "tests": {
+    "passed": 1201,
+    "skipped": 2
+  },
+  "request_stages_replayed": 140,
+  "integration_replayed": true,
+  "status": "RANGE_BATCH_CPU_CLOSED__CUDA_LOCAL_PILOT_USEFUL",
+  "full_long_runs_repeated": false,
+  "measured_solver_speedup": false
+}

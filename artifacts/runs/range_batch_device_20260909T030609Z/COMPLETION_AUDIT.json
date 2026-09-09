@@ -1,0 +1,121 @@
+{
+  "delivery": "New branch only; final remote SHA is checked at delivery and recorded outside the self-hashed package.",
+  "independent_captured_steps_replayed": 140,
+  "independent_local_tests": 131,
+  "requirements": {
+    "01_fixed_source_and_worktree": {
+      "evidence": [
+        "SOURCE_MAP.json",
+        "parent_checks/REFERENCE.json"
+      ],
+      "status": "verified"
+    },
+    "02_parent_readme_checks": {
+      "evidence": [
+        "parent_checks/verify.log",
+        "parent_checks/local.xml"
+      ],
+      "status": "verified"
+    },
+    "03_preserved_solver_scope": {
+      "evidence": [
+        "SOURCE_MAP.json",
+        "integration_checks.json"
+      ],
+      "status": "verified"
+    },
+    "04_two_real_corpora_and_outward_cover": {
+      "evidence": [
+        "PARTITION_PLAN.json",
+        "REQUEST_CORPUS_MANIFEST.json",
+        "raw/corpus/events.json",
+        "tests/independent/verify.log"
+      ],
+      "status": "verified"
+    },
+    "05_grouped_cpu_semantics_ownership_isolation": {
+      "evidence": [
+        "cpu_batch_equivalence.json",
+        "tests/root.xml",
+        "tests/independent/local.xml"
+      ],
+      "status": "verified"
+    },
+    "06_exact_powers_terms_sums_and_counterexample": {
+      "evidence": [
+        "raw/pow_initial_counterexamples.json",
+        "cpu_batch_equivalence.json",
+        "raw/operator_outputs/cpu.jsonl.gz",
+        "tests/independent/local.xml"
+      ],
+      "status": "verified"
+    },
+    "07_complete_cpu_costs_five_blocks": {
+      "evidence": [
+        "raw/timing/samples.json",
+        "timing_summary.csv",
+        "transfer_and_packing_costs.csv"
+      ],
+      "status": "verified"
+    },
+    "08_real_cuda_directed_operator": {
+      "evidence": [
+        "cuda_arithmetic_checks.json",
+        "cuda_actual_invocations.json",
+        "tests/independent/local.xml"
+      ],
+      "status": "verified"
+    },
+    "09_three_timing_scopes_memory_compile_reuse_projection": {
+      "evidence": [
+        "raw/timing/environment.json",
+        "raw/timing/residency.json",
+        "raw/timing/samples.json",
+        "PROJECTED_AMDAHL.json"
+      ],
+      "status": "verified"
+    },
+    "10_complete_state_consumers_resets_rollback_resume": {
+      "evidence": [
+        "integration_checks.json",
+        "tests/independent/verify.log"
+      ],
+      "status": "verified"
+    },
+    "11_device_decision_and_next_step": {
+      "evidence": [
+        "RESULT.json"
+      ],
+      "status": "verified"
+    },
+    "12_source_test_evidence_reproducibility": {
+      "evidence": [
+        "SOURCE_MAP.json",
+        "tests/TEST_ACCOUNTING.json",
+        "tests/evidence.xml",
+        "REPRODUCIBILITY.json"
+      ],
+      "status": "verified"
+    },
+    "13_chinese_report": {
+      "evidence": [
+        "RESULT.json",
+        "timing_summary.csv"
+      ],
+      "status": "verified"
+    },
+    "14_installed_arithmetic_and_actual_evidence": {
+      "evidence": [
+        "cuda_arithmetic_checks.json",
+        "raw/hardware_nvidia_smi.txt"
+      ],
+      "status": "verified"
+    }
+  },
+  "result": "RANGE_BATCH_CPU_CLOSED__CUDA_LOCAL_PILOT_USEFUL",
+  "unchanged_numerical_source": "440714afc3acc250903c5ec98fb0011905671944",
+  "unique_tests": {
+    "passed": 1201,
+    "skipped": 2
+  }
+}
