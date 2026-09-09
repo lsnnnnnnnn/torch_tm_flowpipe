@@ -228,15 +228,17 @@ class LiveRangeService:
         self.startup = {}
         self.owner_thread = None
 
-    def register(self, task_id, accepted_state, *, generation=0):
+    def register(self, task_id, accepted_state, *, generation=0, minimum_epoch=0):
         if not isinstance(task_id, str) or not task_id:
             raise ValueError("nonempty task id required")
+        if any(type(v) is not int or v < 0 for v in (generation, minimum_epoch)):
+            raise ValueError("nonnegative integer generation and epoch required")
         with self._condition:
             if self._closing:
                 raise RuntimeError("service is closed")
             if task_id in self._tasks:
                 self._cancel_locked(self._tasks[task_id])
-            epoch = self._epochs.get(task_id, -1) + 1
+            epoch = max(self._epochs.get(task_id, -1) + 1, minimum_epoch)
             self._epochs[task_id] = epoch
             task = RangeTask(self, task_id, epoch, generation, deepcopy(accepted_state))
             self._tasks[task_id] = task

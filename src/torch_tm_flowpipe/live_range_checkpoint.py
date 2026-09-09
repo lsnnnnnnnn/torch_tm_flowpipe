@@ -82,6 +82,6 @@ def load_live_range_checkpoint(path, service):
     state = replace(loaded.normal_state, diagnostics=_decode(payload["diagnostics"]))
     if state.step_index != payload["generation"]:
         raise ValueError("live checkpoint accepted boundary version mismatch")
-    # register copies every mutable tensor and creates a new epoch in this run.
-    # In a fresh process the distinct run ID also invalidates every old response.
-    return service.register(payload["task"], (loaded.current, state), generation=payload["generation"])
+    # Advance even in a fresh process whose caller explicitly reused a run ID.
+    return service.register(payload["task"], (loaded.current, state), generation=payload["generation"],
+                            minimum_epoch=payload["previous_epoch"]+1)

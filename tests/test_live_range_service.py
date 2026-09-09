@@ -225,3 +225,7 @@ def test_live_checkpoint_preserves_private_diagnostics_and_mapping_order(tmp_pat
         assert canonical(resumed.accepted_state) == canonical((current, state))
         assert resumed.epoch == task.epoch+1
         assert resumed.accepted_state[1].diagnostics["_private"][0][1].data_ptr() != state.diagnostics["_private"][0][1].data_ptr()
+    with LiveRangeService(run_id=service.run_id) as fresh:
+        resumed = load_live_range_checkpoint(tmp_path/"state", fresh)
+        assert resumed.epoch > task.epoch
+        assert canonical(resumed.accepted_state) == canonical((current, state))

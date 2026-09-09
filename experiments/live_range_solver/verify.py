@@ -98,7 +98,13 @@ def check_timing(run):
             gpu += sum(groups)
     assert len(group_ids) == len(set(group_ids)), "request dispatched twice"
     assert fallback == run["counts"].get("hardware_fallback_requests", 0), "hardware fallback missing"
+    if run["successful_tasks"] == len(run["ids"]):
+        counts = run["counts"]
+        assert counts.get("returned",0) == counts.get("submitted",0), "successful task lost a range response"
+        assert sum(counts.get("status_"+status,0) for status in ("ok","corrected","fallback","fallback_corrected")) == counts.get("returned",0)
+        assert counts.get("gpu_completed_requests",0) == gpu, "GPU completion count differs from kernel work"
     if run["route"] in {"Q", "G"}:
+        assert run["counts"]["groups"] == len(run["groups"])
         assert len(run["wait_ns"]) == len(group_ids), "omitted queued waiting samples"
         assert all(v >= 0 for v in run["wait_ns"])
     else:
