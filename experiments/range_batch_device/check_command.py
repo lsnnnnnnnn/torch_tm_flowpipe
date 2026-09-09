@@ -12,7 +12,7 @@ def main():
     argv=a.argv[1:] if a.argv and a.argv[0]=="--" else a.argv
     output=RUN/"tests";output.mkdir(exist_ok=True)
     record=dict(name=a.name,argv=argv,cwd=str(ROOT),source_sha=head(),numerical_sources=numerical_sources(),
-        environment={k:os.environ.get(k) for k in ("PYTHONPATH","OMP_NUM_THREADS","MKL_NUM_THREADS","OPENBLAS_NUM_THREADS","CUDA_VISIBLE_DEVICES","DIFFREACH_ROOT","JAX_PLATFORMS")},
+        environment={k:os.environ.get(k) for k in ("PATH","PYTHONPATH","OMP_NUM_THREADS","MKL_NUM_THREADS","OPENBLAS_NUM_THREADS","CUDA_VISIBLE_DEVICES","DIFFREACH_ROOT","JAX_PLATFORMS")},
         started_utc=time.time(),affinity=sorted(os.sched_getaffinity(0)),
         log=f"tests/{a.name}.log",exit=f"tests/{a.name}.exit",xml=f"tests/{a.name}.xml")
     with (output/f"{a.name}.log").open("w") as log:

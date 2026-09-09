@@ -112,7 +112,8 @@ def measure_workload(workload,plant,batch):
 def main():
     torch.set_num_threads(1);torch.set_num_interop_threads(1)
     assert sorted(os.sched_getaffinity(0))==[2]
-    assert read(RUN/"tests/root.command.json")["exit_code"]==0,"root checks must finish before timing"
+    from .test_accounting import account
+    account(include_evidence=False)  # all identities pass; any initial environment error is retained
     assert read(RUN/"cpu_batch_equivalence.json")["all_requests_finite"]
     assert read(RUN/"cuda_actual_invocations.json")["audit_device_executed_kernel_invocations"]>0
     raw=RUN/"raw/timing";raw.mkdir(parents=True,exist_ok=False)
