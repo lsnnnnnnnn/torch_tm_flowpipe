@@ -175,8 +175,9 @@ def run_campaign(phase, output, *, resume=False):
             save(output / "CURRENT_JOB.json", live)
             print(json.dumps(live), flush=True)
             code = process.wait()
-        receipt = dict(**live, exit_code=code, end_epoch=time.time(),
-                       log_sha256=sha(log), status="COMPLETED" if code == 0 else "FAILED")
+        receipt = dict(live)
+        receipt.update(exit_code=code, end_epoch=time.time(), log_sha256=sha(log),
+                       status="COMPLETED" if code == 0 else "FAILED")
         receipts.append(receipt)
         save(output / "jobs.json", receipts)
         save(output / "CURRENT_JOB.json", receipt)

@@ -71,8 +71,9 @@ def run_campaign(artifact, *, resume=False):
             save(output / "CURRENT_JOB.json", current)
             print(json.dumps(current), flush=True)
             code = process.wait()
-        receipt = dict(**current, exit_code=code, end_epoch=time.time(),
-                       log_sha256=sha(log), status="COMPLETED" if code == 0 else "FAILED")
+        receipt = dict(current)
+        receipt.update(exit_code=code, end_epoch=time.time(), log_sha256=sha(log),
+                       status="COMPLETED" if code == 0 else "FAILED")
         receipts.append(receipt)
         save(output / "jobs.json", receipts)
         save(output / "CURRENT_JOB.json", receipt)
