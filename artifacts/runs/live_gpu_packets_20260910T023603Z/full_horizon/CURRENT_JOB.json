@@ -1,0 +1,26 @@
+{
+  "case": "brusselator-Gp",
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.live_gpu_packets.long_horizon",
+    "--plant",
+    "brusselator",
+    "--route",
+    "Gp",
+    "--steps",
+    "1000",
+    "--output",
+    "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/brusselator-Gp"
+  ],
+  "end_epoch": 1789036071.9387002,
+  "exit_code": 0,
+  "log_sha256": "fe67bd84f1bf03665cdea0af65da9f3d55609f950ef6a133db0fa97b3325e46a",
+  "pid": 622836,
+  "source_sha": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+  "start_epoch": 1789034701.6374876,
+  "status": "COMPLETED"
+}

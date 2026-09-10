@@ -1,0 +1,19 @@
+{
+  "schema": "live-gpu-packet-local-acceptance-attempts-v1",
+  "attempts": [
+    {
+      "exit_code": 1,
+      "stage": "final report text equality after all semantic recomputations",
+      "reason": "a native recomputation changed the process locale and pathlib attempted to decode the UTF-8 Chinese report as ASCII",
+      "evidence_or_math_failure": false,
+      "bounded_live_replay_started": false,
+      "remedy": "rerun the identical verifier with PYTHONUTF8=1"
+    },
+    {
+      "recorded_utc": "2026-09-10T11:14:10Z",
+      "exit_code": 0,
+      "verified": true,
+      "receipt": "local_full_verifier.json"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "complete_wall_includes_initial_state_service_workers_checks_and_cleanup": true,
+  "concurrent_task_waits_reported_as_interval_unions": true,
+  "cpu_affinity": [
+    2
+  ],
+  "cuda_visible_devices": "0",
+  "formal_compile_probe_outside_wall": true,
+  "formal_first_scratch_allocation_inside_wall": true,
+  "long_horizon_export_timing_separate": true,
+  "max_group": 32,
+  "max_wait_s": 0.02,
+  "packet_default_enabled": false,
+  "packet_limits": {
+    "max_coefficients": 262144,
+    "max_metadata_bytes": 67108864,
+    "max_numeric_bytes": 67108864,
+    "max_operations": 1048576,
+    "max_output_bytes": 134217728,
+    "max_outputs": 2048,
+    "max_packet_bytes": 134217728,
+    "max_powers": 131072,
+    "max_requests": 32,
+    "max_terms": 262144,
+    "max_variables": 2048
+  },
+  "schema": "live-gpu-packet-execution-contract-v1",
+  "torch_inter_op_threads": 1,
+  "torch_intra_op_threads": 1
+}

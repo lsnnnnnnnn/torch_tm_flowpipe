@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 364, in <module>
+    main()
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 358, in main
+    result = verify_package(args.root, fresh_execution=not args.no_fresh_execution,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 328, in verify_package
+    formal = check_campaign_receipts(root, "formal")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 190, in check_campaign_receipts
+    receipts.append(verify_run(run, events, recompute=False))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_range_solver/verify.py", line 330, in verify_run
+    timing = check_timing(run)
+             ^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_range_solver/verify.py", line 58, in check_timing
+    assert close(run["wall_s"], (run["end_ns"] - run["start_ns"])/1e9), "wall time omitted work"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: wall time omitted work

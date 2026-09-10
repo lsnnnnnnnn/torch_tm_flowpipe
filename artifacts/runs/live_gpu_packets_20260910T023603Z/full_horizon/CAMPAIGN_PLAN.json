@@ -1,0 +1,28 @@
+{
+  "cases": [
+    {
+      "name": "van_der_pol-Gp",
+      "plant": "van_der_pol",
+      "route": "Gp",
+      "steps": 1000,
+      "target": "T10"
+    },
+    {
+      "name": "brusselator-Gp",
+      "plant": "brusselator",
+      "route": "Gp",
+      "steps": 1000,
+      "target": "T20"
+    }
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "cpu_periodic_correction": false,
+  "cuda_visible_devices": "0",
+  "frozen_before_execution": true,
+  "original_unpartitioned_b1": true,
+  "previous_answers_loaded": false,
+  "schema": "live-gpu-packet-long-campaign-plan-v1",
+  "source_sha": "1d870939fcdb72bd999730cf09de0b14d1cd71c4"
+}

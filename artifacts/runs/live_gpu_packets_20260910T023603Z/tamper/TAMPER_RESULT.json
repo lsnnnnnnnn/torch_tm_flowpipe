@@ -1,0 +1,188 @@
+{
+  "checks": 9,
+  "outer_manifest_regenerated": true,
+  "passed": true,
+  "records": [
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/packet_offset",
+        "--no-fresh-execution",
+        "--focus",
+        "packet"
+      ],
+      "exit_code": 1,
+      "focus": "packet",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "1ec4056fa5eeb08dab1e1650ff738b7db77fb7c2d1be1008c679aee52d3254c3",
+      "scenario": "packet_offset"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/request_identity",
+        "--no-fresh-execution",
+        "--focus",
+        "packet"
+      ],
+      "exit_code": 1,
+      "focus": "packet",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "4e2188665f28052efa1da740db36bad4ab67340f924768a25130405d9979c4e0",
+      "scenario": "request_identity"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/generation",
+        "--no-fresh-execution",
+        "--focus",
+        "diagnostic"
+      ],
+      "exit_code": 1,
+      "focus": "diagnostic",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "96d3da836eb8c03948484e66f7ccaf2c415a91b1142aa68cb20aa2ebc5fc6b21",
+      "scenario": "generation"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/buffer_epoch",
+        "--no-fresh-execution",
+        "--focus",
+        "diagnostic"
+      ],
+      "exit_code": 1,
+      "focus": "diagnostic",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "b24a91f6e2a68a84a683a567529923b53aadd788f7a6e2fe64c17f5d6353445f",
+      "scenario": "buffer_epoch"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/result_endpoint",
+        "--no-fresh-execution",
+        "--focus",
+        "horizon"
+      ],
+      "exit_code": 1,
+      "focus": "horizon",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "5793645cbca06d0d1f956b79692303440d51e6737f7ab7a88236abded8a55192",
+      "scenario": "result_endpoint"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/gpu_receipt",
+        "--no-fresh-execution",
+        "--focus",
+        "packet"
+      ],
+      "exit_code": 1,
+      "focus": "packet",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "17ae4f40d01ed9dd6344775052281acd559f5f913cee36afe654c0e4d778bfb7",
+      "scenario": "gpu_receipt"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/timing_denominator",
+        "--no-fresh-execution",
+        "--focus",
+        "formal"
+      ],
+      "exit_code": 1,
+      "focus": "formal",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "feb5acf63281b3c4d8a10912ff690293a1e0e1135656f0932c6ed499bf792373",
+      "scenario": "timing_denominator"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/successful_lane_steps",
+        "--no-fresh-execution",
+        "--focus",
+        "formal"
+      ],
+      "exit_code": 1,
+      "focus": "formal",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "3b88e73e4d6669a57a81f3d6a2f1338358dfa18740944a2a0331cee7607ee292",
+      "scenario": "successful_lane_steps"
+    },
+    {
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+        "-m",
+        "experiments.live_gpu_packets.verify_package",
+        "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp/live-gpu-packet-tamper-26st9vlv/complete_horizon_flag",
+        "--no-fresh-execution",
+        "--focus",
+        "horizon"
+      ],
+      "exit_code": 1,
+      "focus": "horizon",
+      "immutable_manifest_regenerated_after_mutation": true,
+      "rejected": true,
+      "rejection_log_sha256": "355872c2c4a0fd1ed53442ae75cc6ddef44c0310a58548ab7405609884724e62",
+      "scenario": "complete_horizon_flag"
+    }
+  ],
+  "schema": "live-gpu-packet-tamper-result-v1"
+}

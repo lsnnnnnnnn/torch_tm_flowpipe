@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 364, in <module>
+    main()
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 358, in main
+    result = verify_package(args.root, fresh_execution=not args.no_fresh_execution,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 319, in verify_package
+    fixture = check_tests_and_fixture(root, fresh_execution=fresh_execution)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 147, in check_tests_and_fixture
+    return verify_fixture(root / "tests/device_packet_fixture.json", execute=fresh_execution)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/packet_fixture.py", line 70, in verify_fixture
+    assert tuple(row.request_id for row in rows) == (
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

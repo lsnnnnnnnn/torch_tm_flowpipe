@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 364, in <module>
+    main()
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 358, in main
+    result = verify_package(args.root, fresh_execution=not args.no_fresh_execution,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 333, in verify_package
+    horizons = check_long_horizons(root, recompute_comparison=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 260, in check_long_horizons
+    receipt = verify_long_horizon(campaign / case["name"], require_achieved=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_long_horizon.py", line 202, in verify_long_horizon
+    assert result["achieved"] == achieved
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

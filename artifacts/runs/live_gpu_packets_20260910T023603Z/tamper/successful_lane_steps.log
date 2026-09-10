@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 364, in <module>
+    main()
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 358, in main
+    result = verify_package(args.root, fresh_execution=not args.no_fresh_execution,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 328, in verify_package
+    formal = check_campaign_receipts(root, "formal")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 173, in check_campaign_receipts
+    check_case(run, case, plan, diagnostic=phase == "diagnostic")
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/analyze.py", line 176, in check_case
+    assert run["successful_lane_steps"] == len(run["ids"]) * case["steps"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

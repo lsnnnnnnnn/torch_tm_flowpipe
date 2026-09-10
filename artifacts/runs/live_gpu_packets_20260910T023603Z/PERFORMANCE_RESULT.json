@@ -1,0 +1,65 @@
+{
+  "decisions": {
+    "brusselator": {
+      "G0_over_Gp": [
+        1.0368809219448107,
+        1.0360084664147815,
+        1.0489927971838793,
+        1.0340127802976926,
+        1.0488213092893572
+      ],
+      "G0_over_Gp_median": 1.0368809219448107,
+      "Gp_faster_than_G0_wins": 5,
+      "Gp_faster_than_faster_cpu_wins": 5,
+      "faster_cpu_over_Gp": [
+        1.1849192950365146,
+        1.1639943933397372,
+        1.190000906212639,
+        1.2116103957094424,
+        1.1966269501192328
+      ],
+      "faster_cpu_over_Gp_median": 1.190000906212639,
+      "packet_target_met": false,
+      "peak_gpu_allocated_bytes_max": 62976,
+      "scratch_capacity_bytes_max": 49152,
+      "scratch_no_sustained_growth": true,
+      "stable_cpu_regression": false
+    },
+    "van_der_pol": {
+      "G0_over_Gp": [
+        1.1055232325406763,
+        1.0484387912443516,
+        1.0354809180944045,
+        1.0973535934025935,
+        1.0495176363027603
+      ],
+      "G0_over_Gp_median": 1.0495176363027603,
+      "Gp_faster_than_G0_wins": 5,
+      "Gp_faster_than_faster_cpu_wins": 5,
+      "faster_cpu_over_Gp": [
+        1.240309361917598,
+        1.202049174401904,
+        1.1589143623391867,
+        1.2015208815755045,
+        1.207312108593871
+      ],
+      "faster_cpu_over_Gp_median": 1.202049174401904,
+      "packet_target_met": false,
+      "peak_gpu_allocated_bytes_max": 62976,
+      "scratch_capacity_bytes_max": 49152,
+      "scratch_no_sustained_growth": true,
+      "stable_cpu_regression": false
+    }
+  },
+  "default_enabled": false,
+  "each_run_successful_lane_steps": 640,
+  "engineering_target_met": false,
+  "formal_blocks": 5,
+  "formal_runs": 40,
+  "full_gpu_engine": false,
+  "packet_correctness": "pass",
+  "packet_runtime_effect": "no_gain",
+  "schema": "live-gpu-packet-performance-result-v1",
+  "source_sha": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+  "whole_solver_formal_proof": false
+}

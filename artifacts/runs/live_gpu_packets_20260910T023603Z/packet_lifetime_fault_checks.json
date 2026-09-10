@@ -1,0 +1,66 @@
+{
+  "checks": {
+    "buffer_epoch_mask_cancel": [
+      "tests.test_range_packets::test_stale_buffer_epoch_and_masked_or_cancelled_rows_cannot_report_success"
+    ],
+    "cancel_completed_unconsumed": [
+      "tests.test_range_packets::test_cancel_completed_unconsumed_result_cannot_alias_next_packet"
+    ],
+    "cancel_inflight": [
+      "tests.test_range_packets::test_cancel_inflight_packet_does_not_stop_healthy_request"
+    ],
+    "cancel_queued": [
+      "tests.test_range_packets::test_cancel_queued_packet_request_never_enters_evaluator"
+    ],
+    "complete_checkpoint_stream": [
+      "tests.test_long_horizon_packet::test_original_b1_streaming_state_chain_and_checkpoint_are_independently_verified"
+    ],
+    "cross_key_online_selection": [
+      "tests.test_range_packets::test_packet_scheduler_collects_different_ready_keys_without_extra_wait"
+    ],
+    "cross_request_descriptor_ownership": [
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[cross-numeric]",
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[cross-operation]",
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[cross-power]",
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[power-owner]",
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[cell-owner]",
+      "tests.test_range_packets::test_cross_request_reference_is_rejected_without_polluting_owner[output-owner]"
+    ],
+    "descriptor_offset_length_overflow": [
+      "tests.test_range_packets::test_corrupt_descriptor_is_not_success_and_does_not_pollute_healthy_request[offset]",
+      "tests.test_range_packets::test_corrupt_descriptor_is_not_success_and_does_not_pollute_healthy_request[length-overflow]",
+      "tests.test_range_packets::test_corrupt_descriptor_is_not_success_and_does_not_pollute_healthy_request[power-index]"
+    ],
+    "external_power_table_fallback": [
+      "tests.test_range_packets::test_external_power_table_stays_on_cpu_while_healthy_packet_uses_gpu"
+    ],
+    "hardware_stop_and_cpu_fallback": [
+      "tests.test_range_packets::test_packet_service_hardware_failure_stops_or_explicitly_recomputes[False]",
+      "tests.test_range_packets::test_packet_service_hardware_failure_stops_or_explicitly_recomputes[True]"
+    ],
+    "heterogeneous_layout_and_order": [
+      "tests.test_range_packets::test_heterogeneous_packet_is_one_four_kernel_submission_and_bitwise_parent_equal"
+    ],
+    "identity_and_token": [
+      "tests.test_range_packets::test_wrong_request_identity_or_token_is_rejected_before_scatter"
+    ],
+    "input_output_ownership_and_scratch": [
+      "tests.test_range_packets::test_owned_input_private_output_alternating_packets_and_scratch_epochs"
+    ],
+    "new_epoch_stale_return": [
+      "tests.test_range_packets::test_new_epoch_invalidates_old_inflight_packet_return"
+    ],
+    "per_request_failure_isolation": [
+      "tests.test_range_packets::test_invalid_and_overflow_requests_are_isolated_inside_one_packet"
+    ],
+    "safe_packet_split_and_oversize": [
+      "tests.test_range_packets::test_fixed_request_cap_safely_splits_and_oversize_uses_explicit_parent_path"
+    ]
+  },
+  "evidence": "fresh affected JUnit testcases",
+  "junit_sha256": "f9bbb9a9f3ba8da8ab3bda6a62428d026b3b1eab237587569b216973e9118b1c",
+  "passed": true,
+  "schema": "live-gpu-packet-lifetime-fault-checks-v1",
+  "source_sha": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+  "writable_device_or_future_state_in_checkpoint": false
+}

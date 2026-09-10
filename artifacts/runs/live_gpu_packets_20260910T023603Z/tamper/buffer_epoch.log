@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 364, in <module>
+    main()
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 358, in main
+    result = verify_package(args.root, fresh_execution=not args.no_fresh_execution,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 323, in verify_package
+    diagnostic = check_campaign_receipts(root, "diagnostic")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_gpu_packets/verify_package.py", line 190, in check_campaign_receipts
+    receipts.append(verify_run(run, events, recompute=False))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_range_solver/verify.py", line 332, in verify_run
+    arithmetic = check_lifecycle(run, events, inputs, recompute=recompute) if run["diagnostic"] else {}
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/experiments/live_range_solver/verify.py", line 199, in check_lifecycle
+    assert owner in active
+           ^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,47 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/tests/affected.xml",
+    "tests/test_boundary_range_plan.py",
+    "tests/test_range_requests.py",
+    "tests/test_range_cuda.py",
+    "tests/test_live_range_service.py",
+    "tests/test_live_range_solver_integration.py",
+    "tests/test_live_range_evidence.py",
+    "tests/test_range_packets.py",
+    "tests/test_long_horizon_packet.py"
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "cwd": "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo",
+  "ended_utc": "2026-09-10T04:20:46.915092+00:00",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "src:.:tests"
+  },
+  "exit_code": 0,
+  "fixture_command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.live_gpu_packets.packet_fixture",
+    "--create",
+    "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/tests/device_packet_fixture.json"
+  ],
+  "fixture_exit_code": 0,
+  "started_utc": "2026-09-10T04:19:44.888050+00:00"
+}
