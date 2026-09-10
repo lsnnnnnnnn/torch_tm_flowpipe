@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 
 import torch
 
@@ -19,7 +21,7 @@ from experiments.range_batch_device.common import read, sha
 from .analyze import check_case, diagnostic_gate, formal_summary
 from .campaign import diagnostic_cases, formal_cases
 from .compare_horizons import compare_horizons
-from .long_campaign import CASES as LONG_CASES
+from .long_campaign import CASES as LONG_CASES, VERIFIER_AMENDMENT_CHANGED_FILES
 from .packet_fixture import verify_fixture
 from .package import (
     ALIASES, DYNAMIC_PREFIXES, combined_result, evidence_files, render_goal_audit,
@@ -61,16 +63,41 @@ def git_bytes(commit, relative):
     return subprocess.check_output(["git", "show", f"{commit}:{relative}"], cwd=ROOT)
 
 
+def bytes_sha(payload):
+    return hashlib.sha256(payload).hexdigest()
+
+
 def check_sources(root):
     plan = read(root / "PLAN_FROZEN.json")
     source = read(root / "SOURCE_MAP.json")
+    amendment = read(root / "full_horizon/VERIFIER_AMENDMENT.json")
     assert source["scientific_sha"] == plan["source_sha"]
+    assert amendment["runtime_source_sha"] == plan["source_sha"]
+    assert source["verification_sha"] == amendment["verification_source_sha"]
+    assert source["packaging_sha"] == source["verification_sha"]
+    assert source["amended_files"] == amendment["changed_files"]
+    assert set(amendment["changed_files"]) == set(VERIFIER_AMENDMENT_CHANGED_FILES)
     assert source["parent_delivery"] == plan["parent_delivery"]
     subprocess.run(["git", "merge-base", "--is-ancestor", source["packaging_sha"], "HEAD"],
                    cwd=ROOT, check=True)
     for relative, checksum in plan["scientific_sources"].items():
-        assert sha(ROOT / relative) == checksum, f"current scientific file changed: {relative}"
-        assert git_bytes(plan["source_sha"], relative) == (ROOT / relative).read_bytes()
+        frozen = git_bytes(plan["source_sha"], relative)
+        assert bytes_sha(frozen) == checksum
+        current = (ROOT / relative).read_bytes()
+        if relative in amendment["changed_files"]:
+            assert bytes_sha(current) == amendment["changed_files"][relative]["new_sha256"]
+        else:
+            assert bytes_sha(current) == checksum, f"unbridged scientific change: {relative}"
+        assert git_bytes(source["packaging_sha"], relative) == current
+    for relative, hashes in amendment["changed_files"].items():
+        assert bytes_sha(git_bytes(plan["source_sha"], relative)) == hashes["old_sha256"]
+        assert sha(ROOT / relative) == hashes["new_sha256"]
+        assert git_bytes(source["packaging_sha"], relative) == (ROOT / relative).read_bytes()
+    assert amendment["unchanged_frozen_scientific_files"] == \
+        len(plan["scientific_sources"]) - sum(
+            relative in plan["scientific_sources"] for relative in amendment["changed_files"])
+    assert amendment["frozen_plan_unchanged"] and amendment["runtime_outputs_reused"]
+    assert amendment["runtime_jobs_reexecuted"] == 0
     assert sha(root / "GOAL_SNAPSHOT.md") == plan["goal_sha256"]
     assert sha(ROOT / plan["partition_path"]) == plan["partition_sha256"]
     for relative, checksum in plan["parent_files"].items():
@@ -92,6 +119,15 @@ def check_tests_and_fixture(root, *, fresh_execution):
     assert tests["passed"] and tests["source_sha"] == read(root / "PLAN_FROZEN.json")["source_sha"]
     for name, checksum in tests["files"].items():
         assert sha(root / "tests" / name) == checksum
+    amendment = read(root / "full_horizon/VERIFIER_AMENDMENT.json")
+    amendment_test = amendment["amendment_test"]
+    xml_path = root / amendment_test["path"]
+    assert sha(xml_path) == amendment_test["sha256"]
+    suite = ET.parse(xml_path).getroot()
+    counts = {name: int(suite.attrib.get(name, 0))
+              for name in ("tests", "failures", "errors", "skipped")}
+    assert counts == amendment_test["counts"]
+    assert counts == {"tests": 2, "failures": 0, "errors": 0, "skipped": 0}
     lifetime = read(root / "packet_lifetime_fault_checks.json")
     assert lifetime["passed"] and all(lifetime["checks"].values())
     fixture = read(root / "tests/device_packet_fixture.json")
@@ -198,12 +234,19 @@ def check_opportunity(root, *, recompute):
 def check_long_horizons(root, *, recompute_comparison):
     campaign = root / "full_horizon"
     plan = read(campaign / "CAMPAIGN_PLAN.json")
+    amendment = read(campaign / "VERIFIER_AMENDMENT.json")
+    completed = read(campaign / "COMPLETED.json")
     assert plan["cases"] == list(LONG_CASES) and plan["original_unpartitioned_b1"]
+    assert plan["source_sha"] == amendment["runtime_source_sha"]
+    assert completed["source_sha"] == plan["source_sha"]
+    assert completed["verification_source_sha"] == amendment["verification_source_sha"]
+    assert completed["bridged_existing_runs"] and completed["runtime_jobs_reexecuted"] == 0
     jobs = read(campaign / "jobs.json")
-    assert len(jobs) == 2 and read(campaign / "COMPLETED.json")["cases"] == 2
+    assert len(jobs) == 2 and completed["cases"] == 2
     receipts = []
     for case, job in zip(LONG_CASES, jobs):
         assert job["case"] == case["name"] and job["status"] == "COMPLETED" and job["exit_code"] == 0
+        assert job["source_sha"] == plan["source_sha"]
         assert sha(campaign / f"{case['name']}.log") == job["log_sha256"]
         command = job["command"]
         assert command[:3] == ["taskset", "-c", "2"]

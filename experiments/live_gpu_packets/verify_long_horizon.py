@@ -16,6 +16,16 @@ from torch_tm_flowpipe.live_range_service import LiveRangeService
 from .long_horizon import checkpoint_steps, sha256, state_fingerprint
 
 
+QUEUE_OWNER_SCHEMAS = {
+    "van_der_pol": "c3_cross_step_sr_v1",
+    "brusselator": "accepted_boundary_sr_v1",
+}
+
+
+def expected_queue_owner_schema(plant):
+    return QUEUE_OWNER_SCHEMAS[plant]
+
+
 def percentile(values, fraction):
     values = sorted(values)
     return values[round((len(values)-1)*fraction)] if values else None
@@ -92,6 +102,7 @@ def verify_long_horizon(path, *, require_achieved=False):
 
     expected_h = float(.01 if result["plant"] == "van_der_pol" else .02)
     capacity = 100 if result["plant"] == "van_der_pol" else 1000
+    queue_owner_schema = expected_queue_owner_schema(result["plant"])
     rows, widths, step_hashes = [], [], {}
     previous_after = initial["state"]
     previous_end = metadata["start_ns"]
@@ -141,7 +152,7 @@ def verify_long_horizon(path, *, require_achieved=False):
             assert after_queue["owner_boundary_indices"] == expected_owners
             assert len(after_queue["scalars"]) == 2
             assert all(math.isfinite(float.fromhex(value)) for value in after_queue["scalars"])
-            assert after_queue["owner_schema"] == "c3_cross_step_sr_v1"
+            assert after_queue["owner_schema"] == queue_owner_schema
             assert after_queue["sha256"] == row["state_after"]["payload"]["symbolic_queue_sha256"]
             if before_queue is not None:
                 assert before_queue["sha256"] == row["state_before"]["payload"]["symbolic_queue_sha256"]
@@ -232,7 +243,8 @@ def verify_long_horizon(path, *, require_achieved=False):
     return dict(verified=True, achieved=achieved, plant=result["plant"], route=result["route"],
         steps=len(rows), requests=total_requests, groups=total_groups,
         packet_kernel_invocations=total_kernels, packets=total_packets,
-        exact_final_time=result["exact_final_time"], width_summary=summary)
+        exact_final_time=result["exact_final_time"], queue_owner_schema=queue_owner_schema,
+        width_summary=summary)
 
 
 def main():

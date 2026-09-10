@@ -33,17 +33,24 @@ def csv_records(path):
 
 def source_map(root):
     plan = read(root / "PLAN_FROZEN.json")
+    amendment = read(root / "full_horizon/VERIFIER_AMENDMENT.json")
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT,
                                    text=True).strip()
+    assert amendment["runtime_source_sha"] == plan["source_sha"]
+    assert amendment["verification_source_sha"] == head
     return dict(schema="live-gpu-packet-source-map-v1",
         scientific_sha=plan["source_sha"], packaging_sha=head,
+        verification_sha=amendment["verification_source_sha"],
         parent_delivery=plan["parent_delivery"], branch=subprocess.check_output(
             ["git", "branch", "--show-current"], cwd=ROOT, text=True).strip(),
         scientific_sources=plan["scientific_sources"],
+        verifier_amendment="full_horizon/VERIFIER_AMENDMENT.json",
+        amended_files=amendment["changed_files"],
         fixed_references=dict(parent_files=plan["parent_files"],
             reused_complete_object_sources=plan["reused_complete_object_sources"],
             partition_sha256=plan["partition_sha256"], goal_sha256=plan["goal_sha256"]),
         long_runs_belong_to_scientific_sha=True,
+        verification_fix_does_not_change_runtime_outputs=True,
         packaging_does_not_change_formal_samples=True,
         artifact_path=str(root.relative_to(ROOT)))
 
@@ -69,6 +76,9 @@ def combined_result(root):
             for plant, value in long.items()},
         full_horizon_comparison=horizon,
         source_sha=performance["source_sha"], default_enabled=False,
+        verification_source_sha=read(root / "full_horizon/VERIFIER_AMENDMENT.json")[
+            "verification_source_sha"],
+        verifier_amendment="full_horizon/VERIFIER_AMENDMENT.json",
         saved_answers_used_to_advance=False, cpu_periodic_correction=False,
         full_gpu_engine=False, whole_solver_formal_proof=False)
 
@@ -97,6 +107,7 @@ def raw_index(root):
         formal_runs=[f"formal/{row['name']}" for row in plan["formal_cases"]],
         full_horizon_runs=[f"full_horizon/{plant}-Gp" for plant in
                            ("van_der_pol", "brusselator")],
+        verifier_amendment="full_horizon/VERIFIER_AMENDMENT.json",
         device_packet_fixture="tests/device_packet_fixture.json",
         parent_opportunity_inputs="REUSED parent lifecycle files named in PARENT_OPPORTUNITY.json",
         width_reference_inputs="REUSED complete objects named in PLAN_FROZEN.json",
@@ -169,6 +180,12 @@ B32×20=640 个成功 lane-step 得出，没有看到结果后追加样本。逐
 endpoint/tube x/y、余项类别、接受与收紧、精确累计时间、历史 owner/清空、完整状态指纹
 和分项时间都在压缩原始流中；checkpoint 也被重新加载核对。
 
+长跑计算源码仍是上述科学 SHA。Brusselator 完成后，冻结离线验证器因把 VDP 的
+`c3_cross_step_sr_v1` owner schema 错用于两个系统而拒绝；Brusselator 的既有运行合同和
+测试明确使用 `accepted_boundary_sr_v1`。`full_horizon/VERIFIER_AMENDMENT.json` 保留原失败、
+两个计算进程的成功收据、逐文件旧/新哈希和零次重跑事实；修正版按 plant 显式映射后重新
+逐行验证两个既有完整流。求解器、CUDA kernel、packet 与 scheduler 运行时字节均未改变。
+
 ## 实现究竟改变了什么
 
 Gp 只改变范围请求的物理组织。一次取得派发资格后，它按提交时间从当时已就绪的不同
@@ -227,13 +244,13 @@ def render_goal_audit(root):
     result = combined_result(root)
     perf = read(root / "PERFORMANCE_RESULT.json")
     rows = [
-        ("冻结与版本", f"PASS：科学 SHA {result['source_sha']}；计划先于正式执行冻结"),
+        ("冻结与版本", f"PASS：运行科学 SHA {result['source_sha']}；计划先于正式执行冻结；离线验证器修正 SHA {result['verification_source_sha']} 有独立衔接收据"),
         ("真实异构 packet", "PASS：连续描述符、每请求私有链、一包四 kernel、2 H2D/2 D2H"),
         ("所有权/取消/epoch/cap", "PASS：设备所有权检查、私有 scatter、固定上限、安全切包与显式回退"),
         ("有限正确性矩阵", "PASS：B1/B2/B8/B32、B2×120、历史清空及独立 Fraction 捕获请求检查"),
         ("父碎片机会", "PASS：只读 REUSED 生命周期，区分 KEY_SPLIT/ARRIVAL_LIMITED，不作可加速声称"),
         ("五区块正式性能", f"PASS：40 次新鲜 run；效果 {perf['packet_runtime_effect']}；目标 {perf['engineering_target_met']}"),
-        ("原始 B1 长时域", "PASS：VDP T10 与 Brusselator T20 各 1000 步，无保存答案/CPU 周期纠偏"),
+        ("原始 B1 长时域", "PASS：VDP T10 与 Brusselator T20 各 1000 步，无保存答案/CPU 周期纠偏；Brussels owner-schema 验证器修正未重跑计算"),
         ("共同 observer", "PASS：当前严格 observer 重跑 REUSED CPU/Flow* 完整对象，近零及>1.10分列"),
         ("主张边界", "PASS：默认关闭；非全 GPU；非全求解器形式化证明；不声称全仓 pow_int 修复"),
         ("篡改与独立 clone", "由 tamper/ 与 acceptance/ 实际回执关闭；独立副本只做有界 B2×2 重跑"),
@@ -270,7 +287,8 @@ def package(root):
     required = ("PLAN_FROZEN.json", "diagnostic/CORRECTNESS_GATE.json",
         "formal/COMPLETED.json", "PERFORMANCE_RESULT.json",
         "horizon_comparison/FULL_HORIZON_COMPARISON_RESULT.json",
-        "full_horizon/COMPLETED.json", "tests/PACKET_TEST_RESULT.json")
+        "full_horizon/COMPLETED.json", "full_horizon/VERIFIER_AMENDMENT.json",
+        "tests/PACKET_TEST_RESULT.json", "tests/verifier_amendment.xml")
     for relative in required:
         if not (root / relative).exists():
             raise FileNotFoundError(relative)
