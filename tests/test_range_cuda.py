@@ -23,6 +23,10 @@ def test_device_exact_powers_terms_sums_and_execution(batch,n,order,kind):
     for r in rows: check(r,output[r.request_id])
     assert timing["actual_kernel_invocations"] >= 4
     assert all(s>0 for s in timing["group_sizes"])
+    assert timing["h2d_copy_operations"] == 8 * len(timing["group_sizes"])
+    assert timing["d2h_copy_operations"] == 8 * len(timing["group_sizes"])
+    assert timing["device_allocation_operations"] == 16 * len(timing["group_sizes"])
+    assert timing["metadata_h2d_bytes"] > 0 and timing["numeric_h2d_bytes"] > 0
     assert get_module().build["nvrtc_version"]==[12,1]
 
 

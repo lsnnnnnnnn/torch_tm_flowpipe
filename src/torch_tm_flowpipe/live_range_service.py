@@ -59,9 +59,22 @@ class _Pending:
     state_digest: str | None
     key: tuple
     diagnostic: bool
+    ownership_copy_ns: int = 0
+    submit_lock_wait_ns: int = 0
+    deliver_lock_wait_ns: int = 0
+    future_set_ns: int = 0
+    consume_lock_wait_ns: int = 0
+    future_wait_begin_ns: int = 0
+    future_wait_end_ns: int = 0
+    ownership_copy_begin_ns: int = 0
+    ownership_copy_end_ns: int = 0
+    submit_lock_begin_ns: int = 0
+    submit_lock_end_ns: int = 0
     dispatched_ns: int = 0
     completed_ns: int = 0
     consumed_ns: int = 0
+    group: dict | None = field(default=None, repr=False)
+    group_position: int = -1
 
 
 @dataclass
@@ -144,16 +157,39 @@ class RangeTask:
 
     def evaluate(self, request):
         pending = self.service.submit(self, request)
+        pending.future_wait_begin_ns = time.perf_counter_ns()
         try:
             result = pending.future.result()
         except BaseException:
+            consume_lock_begin = time.perf_counter_ns()
             with self.service._condition:
+                now = time.perf_counter_ns()
+                pending.consume_lock_wait_ns = now - consume_lock_begin
+                pending.future_wait_end_ns = now
+                future_wait_ns = now - pending.future_wait_begin_ns
+                if pending.group is not None:
+                    scheduler = pending.group["scheduler_costs"]
+                    scheduler["consume_lock_wait_sum_ns"] += pending.consume_lock_wait_ns
+                    scheduler["future_wait_sum_ns"] += future_wait_ns
+                    scheduler["future_wait_intervals_ns"][pending.group_position] = [
+                        pending.future_wait_begin_ns, pending.future_wait_end_ns]
                 if self.pending is pending:
                     self.pending = None
                     self.status = "RUNNABLE"
                     self.service._condition.notify_all()
             raise
+        consume_lock_begin = time.perf_counter_ns()
         with self.service._condition:
+            now = time.perf_counter_ns()
+            pending.consume_lock_wait_ns = now - consume_lock_begin
+            pending.future_wait_end_ns = now
+            future_wait_ns = now - pending.future_wait_begin_ns
+            if pending.group is not None:
+                scheduler = pending.group["scheduler_costs"]
+                scheduler["consume_lock_wait_sum_ns"] += pending.consume_lock_wait_ns
+                scheduler["future_wait_sum_ns"] += future_wait_ns
+                scheduler["future_wait_intervals_ns"][pending.group_position] = [
+                    pending.future_wait_begin_ns, pending.future_wait_end_ns]
             self.service._live(self)
             if (self.pending is not pending or pending.identity != self._identity()
                     or result.request_id != pending.identity.request_id):
@@ -162,7 +198,8 @@ class RangeTask:
             self.pending = None
             self.previous = pending.identity.request_id
             self.status = "RUNNABLE"
-            self.service._request_event("consume", pending, status=result.status)
+            self.service._request_event("consume", pending, status=result.status,
+                                        future_wait_ns=future_wait_ns)
             self.service._condition.notify_all()
         # Never expose the service's copy as mutable caller storage.
         return replace(result, lo=result.lo.clone() if result.lo is not None else None,
@@ -205,18 +242,31 @@ class LiveRangeService:
     """
     def __init__(self, backend="cpu", *, max_group=32, max_wait_s=.020,
                  run_id=None, trace=None, hardware_fallback=False,
-                 evaluator=None, select_newest=False):
+                 evaluator=None, select_newest=False, packet_mode=False,
+                 packet_limits=None, group_callback=None, retain_groups=True,
+                 retain_waits=True):
         if backend not in {"cpu", "cuda"}:
             raise ValueError("backend must be cpu or cuda")
         if type(max_group) is not int or max_group < 1:
             raise ValueError("max_group must be positive")
         if not math.isfinite(max_wait_s) or max_wait_s <= 0:
             raise ValueError("max_wait_s must be finite and positive")
+        if type(packet_mode) is not bool:
+            raise ValueError("packet_mode must be bool")
+        if type(retain_groups) is not bool or type(retain_waits) is not bool:
+            raise ValueError("retention controls must be bool")
+        if group_callback is not None and not callable(group_callback):
+            raise ValueError("group_callback must be callable")
+        if packet_mode and backend != "cuda" and evaluator is None:
+            raise ValueError("the production packet evaluator requires the CUDA backend")
         self.backend, self.max_group, self.max_wait_s = backend, max_group, max_wait_s
         self.run_id = run_id or uuid.uuid4().hex
         self.trace, self.hardware_fallback = trace, hardware_fallback
-        self.evaluator = evaluator or evaluate_range_requests
+        self.evaluator = evaluator
         self.select_newest = select_newest
+        self.packet_mode, self.packet_limits = packet_mode, packet_limits
+        self.group_callback = group_callback
+        self.retain_groups, self.retain_waits = retain_groups, retain_waits
         self._condition = threading.Condition(threading.RLock())
         self._tasks, self._epochs, self._queues = {}, {}, {}
         self._closing, self._started = False, False
@@ -227,6 +277,7 @@ class LiveRangeService:
         self.wait_ns = []
         self.startup = {}
         self.owner_thread = None
+        self.packet_executor = None
 
     def register(self, task_id, accepted_state, *, generation=0, minimum_epoch=0):
         if not isinstance(task_id, str) or not task_id:
@@ -264,16 +315,33 @@ class LiveRangeService:
                 request_id=pending.identity.request_id, previous=pending.previous,
                 source_state=pending.state_digest, submitted_ns=pending.submitted_ns,
                 dispatched_ns=pending.dispatched_ns, completed_ns=pending.completed_ns,
-                consumed_ns=pending.consumed_ns, **extra))
+                consumed_ns=pending.consumed_ns,
+                ownership_copy_ns=pending.ownership_copy_ns,
+                submit_lock_wait_ns=pending.submit_lock_wait_ns,
+                deliver_lock_wait_ns=pending.deliver_lock_wait_ns,
+                future_set_ns=pending.future_set_ns,
+                consume_lock_wait_ns=pending.consume_lock_wait_ns,
+                future_wait_begin_ns=pending.future_wait_begin_ns,
+                future_wait_end_ns=pending.future_wait_end_ns,
+                ownership_copy_begin_ns=pending.ownership_copy_begin_ns,
+                ownership_copy_end_ns=pending.ownership_copy_end_ns,
+                submit_lock_begin_ns=pending.submit_lock_begin_ns,
+                submit_lock_end_ns=pending.submit_lock_end_ns, **extra))
 
     def submit(self, task, request):
         # Ownership is established before enqueue; even views of caller tensors
         # and an external power table become independent storage.
+        copy_begin = time.perf_counter_ns()
         owned = replace(request, **{name: getattr(request, name).detach().clone() for name in
             ("coefficients_lo", "coefficients_hi", "domain_lo", "domain_hi")},
             step_powers=deepcopy(request.step_powers))
+        copy_end = time.perf_counter_ns()
+        ownership_copy_ns = copy_end - copy_begin
         key = structure_key(owned)
+        lock_begin = time.perf_counter_ns()
         with self._condition:
+            lock_end = time.perf_counter_ns()
+            submit_lock_wait_ns = lock_end - lock_begin
             self._live(task)
             if not self._started or not task.in_attempt or task.pending is not None:
                 raise RuntimeError("submission requires one active attempt and no outstanding request")
@@ -281,7 +349,13 @@ class LiveRangeService:
             identity = task._identity()
             owned = replace(owned, request_id=identity.request_id)
             pending = _Pending(identity, owned, Future(), time.perf_counter_ns(),
-                               task.previous, task.state_digest, key, task.diagnostic)
+                               task.previous, task.state_digest, key, task.diagnostic,
+                               ownership_copy_ns=ownership_copy_ns,
+                               submit_lock_wait_ns=submit_lock_wait_ns,
+                               ownership_copy_begin_ns=copy_begin,
+                               ownership_copy_end_ns=copy_end,
+                               submit_lock_begin_ns=lock_begin,
+                               submit_lock_end_ns=lock_end)
             task.pending, task.status = pending, "WAITING_RANGE"
             self._queues.setdefault(key, deque()).append(pending)
             self.counts["submitted"] += 1
@@ -297,7 +371,11 @@ class LiveRangeService:
         if task.pending is not None:
             pending, task.pending = task.pending, None
             if not pending.future.done():
+                future_begin = time.perf_counter_ns()
                 pending.future.set_exception(RangeCancelled("cancelled uncommitted attempt"))
+                pending.future_set_ns += time.perf_counter_ns() - future_begin
+                if pending.group is not None:
+                    pending.group["scheduler_costs"]["future_set_sum_ns"] += pending.future_set_ns
             self.counts["cancelled_requests"] += 1
         self._event("cancel", task)
         self._condition.notify_all()
@@ -308,7 +386,12 @@ class LiveRangeService:
 
     def deliver(self, pending, result):
         """Check envelope and returned ID at the only result delivery boundary."""
+        lock_begin = time.perf_counter_ns()
         with self._condition:
+            pending.deliver_lock_wait_ns = time.perf_counter_ns() - lock_begin
+            if pending.group is not None:
+                pending.group["scheduler_costs"]["deliver_lock_wait_sum_ns"] += \
+                    pending.deliver_lock_wait_ns
             task = self._tasks.get(pending.identity.task)
             if (task is None or task.pending is not pending or task._identity() != pending.identity
                     or task.status != "WAITING_RANGE" or pending.future.done()):
@@ -316,14 +399,22 @@ class LiveRangeService:
                 self._request_event("discard", pending, reason="inactive identity")
                 return False
             if result.request_id != pending.identity.request_id:
+                future_begin = time.perf_counter_ns()
                 pending.future.set_exception(StaleRangeResponse("backend returned a different request id"))
+                pending.future_set_ns += time.perf_counter_ns() - future_begin
+                if pending.group is not None:
+                    pending.group["scheduler_costs"]["future_set_sum_ns"] += pending.future_set_ns
                 self.counts["identity_errors"] += 1
                 self._request_event("identity_error", pending, returned_id=result.request_id)
                 return False
             pending.completed_ns = time.perf_counter_ns()
+            future_begin = time.perf_counter_ns()
+            pending.future.set_result(result)
+            pending.future_set_ns = time.perf_counter_ns() - future_begin
+            if pending.group is not None:
+                pending.group["scheduler_costs"]["future_set_sum_ns"] += pending.future_set_ns
             self._request_event("return", pending, result=result if pending.diagnostic else None,
                                 status=result.status)
-            pending.future.set_result(result)
             self.counts["returned"] += 1
             self.counts[f"status_{result.status}"] += 1
             return True
@@ -337,8 +428,10 @@ class LiveRangeService:
             if not self._queues[key]:
                 del self._queues[key]
         if not self._queues:
-            return None, None, None
+            return None, None, None, None
         now = time.perf_counter_ns()
+        ready_requests = sum(map(len, self._queues.values()))
+        ready_keys = len(self._queues)
         oldest = min(self._queues, key=lambda k: self._queues[k][0].submitted_ns)
         expired = now - self._queues[oldest][0].submitted_ns >= self.max_wait_s * 1e9
         full = [k for k, q in self._queues.items() if len(q) >= self.max_group]
@@ -355,34 +448,71 @@ class LiveRangeService:
                 key = max(self._queues, key=lambda k: self._queues[k][0].submitted_ns)
         else:
             remaining = self.max_wait_s - (now - self._queues[oldest][0].submitted_ns) / 1e9
-            return None, None, max(remaining, 1e-6)
-        queue = self._queues[key]
-        selected = [queue.popleft() for _ in range(min(self.max_group, len(queue)))]
-        if not queue:
-            del self._queues[key]
+            return None, None, max(remaining, 1e-6), None
+        if self.packet_mode:
+            all_ready = sorted((pending for queue in self._queues.values() for pending in queue),
+                               key=lambda pending: pending.submitted_ns)
+            selected = all_ready[:self.max_group]
+            take = Counter(pending.key for pending in selected)
+            for selected_key, count in take.items():
+                queue = self._queues[selected_key]
+                for _ in range(count):
+                    pending = queue.popleft()
+                    assert any(pending is choice for choice in selected)
+                if not queue:
+                    del self._queues[selected_key]
+        else:
+            queue = self._queues[key]
+            selected = [queue.popleft() for _ in range(min(self.max_group, len(queue)))]
+            if not queue:
+                del self._queues[key]
+        selected_key_sizes = Counter(pending.key for pending in selected)
+        selection = dict(packet_mode=self.packet_mode, ready_requests=ready_requests,
+            ready_keys=ready_keys, selected_requests=len(selected),
+            selected_keys=len(selected_key_sizes), remaining_ready=ready_requests-len(selected),
+            selected_key_sizes=sorted(selected_key_sizes.values(), reverse=True),
+            unavailable_tasks=len(self._tasks)-ready_requests)
         for pending in selected:
             pending.dispatched_ns = now
-            self.wait_ns.append(now - pending.submitted_ns)
-            self._request_event("dispatch", pending, group=len(self.groups), reason=reason)
-        return selected, reason, None
+            if self.retain_waits:
+                self.wait_ns.append(now - pending.submitted_ns)
+            self._request_event("dispatch", pending, group=self.counts["groups"], reason=reason)
+        return selected, reason, None, selection
 
     def _serve(self):
         self.owner_thread = threading.get_ident()
         try:
             start = time.perf_counter_ns()
             stream = None
+            evaluator = self.evaluator
             if self.backend == "cuda":
                 torch.cuda.set_device(0)
                 stream = torch.cuda.Stream(device=0)
             with torch.cuda.stream(stream) if stream is not None else nullcontext():
                 if self.backend == "cuda":
-                    self.startup = cuda_startup_check()
+                    if self.packet_mode and evaluator is None:
+                        from .range_packets import (
+                            DEFAULT_PACKET_LIMITS, RangePacketExecutor,
+                            packet_cuda_startup_check,
+                        )
+                        limits = self.packet_limits or DEFAULT_PACKET_LIMITS
+                        self.packet_executor = RangePacketExecutor(device="cuda:0", limits=limits)
+                        self.startup = packet_cuda_startup_check(self.packet_executor)
+                        evaluator = self.packet_executor.evaluate
+                    else:
+                        self.startup = cuda_startup_check()
                     self.startup["stream"] = stream.cuda_stream
+                if evaluator is None:
+                    evaluator = evaluate_range_requests
                 self.startup["wall_s"] = (time.perf_counter_ns() - start) / 1e9
                 self._ready.set_result(True)
                 while True:
                     with self._condition:
-                        selected, reason, wait = self._select()
+                        selection_begin = time.perf_counter_ns()
+                        selection_cpu_begin = time.thread_time_ns()
+                        selected, reason, wait, selection = self._select()
+                        selection_wall_ns = time.perf_counter_ns() - selection_begin
+                        selection_cpu_ns = time.thread_time_ns() - selection_cpu_begin
                         if selected is None:
                             if self._closing:
                                 break
@@ -393,7 +523,7 @@ class LiveRangeService:
                     thread_begin = time.thread_time_ns()
                     timing, fallback_error = {}, None
                     try:
-                        results = self.evaluator(requests, backend=self.backend,
+                        results = evaluator(requests, backend=self.backend,
                             diagnostics=any(p.diagnostic for p in selected), timings=timing)
                     except Exception as error:
                         if self.backend == "cuda" and self.hardware_fallback:
@@ -413,13 +543,41 @@ class LiveRangeService:
                         completion.record(stream)
                         completion.synchronize()
                     ended = time.perf_counter_ns()
+                    scheduler_costs = dict(
+                        ownership_copy_sum_ns=sum(p.ownership_copy_ns for p in selected),
+                        submit_lock_wait_sum_ns=sum(p.submit_lock_wait_ns for p in selected),
+                        deliver_lock_wait_sum_ns=sum(p.deliver_lock_wait_ns for p in selected),
+                        future_set_sum_ns=sum(p.future_set_ns for p in selected),
+                        consume_lock_wait_sum_ns=sum(p.consume_lock_wait_ns for p in selected),
+                        future_wait_sum_ns=sum(
+                            p.future_wait_end_ns-p.future_wait_begin_ns for p in selected
+                            if p.future_wait_begin_ns and p.future_wait_end_ns),
+                        ownership_copy_intervals_ns=[[p.ownership_copy_begin_ns,
+                            p.ownership_copy_end_ns] for p in selected],
+                        submit_lock_intervals_ns=[[p.submit_lock_begin_ns,
+                            p.submit_lock_end_ns] for p in selected],
+                        future_wait_intervals_ns=[
+                            [p.future_wait_begin_ns, p.future_wait_end_ns]
+                            if p.future_wait_begin_ns and p.future_wait_end_ns else [0, 0]
+                            for p in selected])
                     group = dict(start_ns=begin, end_ns=ended, size=len(selected), reason=reason,
                         thread_cpu_ns=time.thread_time_ns()-thread_begin,
                         request_ids=[p.identity.request_id for p in selected], timing=timing,
+                        request_generations=[p.identity.generation for p in selected],
+                        request_attempts=[p.identity.attempt for p in selected],
+                        request_wait_ns=[p.dispatched_ns-p.submitted_ns for p in selected],
                         backend=self.backend, hardware_fallback=fallback_error,
+                        packet_mode=self.packet_mode, selection=selection,
+                        selection_wall_ns=selection_wall_ns,
+                        selection_thread_cpu_ns=selection_cpu_ns,
+                        scheduler_costs=scheduler_costs,
                         completion_event=completion is not None,
                         completion_confirmed=bool(completion.query()) if completion is not None else None)
-                    self.groups.append(group)
+                    for position, pending in enumerate(selected):
+                        pending.group = group
+                        pending.group_position = position
+                    if self.retain_groups:
+                        self.groups.append(group)
                     self.counts["groups"] += 1
                     self.counts[f"flush_{reason}"] += 1
                     self.counts["external_table_fallback_requests"] += sum(r.step_powers is not None for r in requests)
@@ -428,6 +586,11 @@ class LiveRangeService:
                             result.ok and not result.status.startswith("fallback") for result in results.values())
                     if self.trace is not None:
                         self.trace(dict(event="group", group=group, ns=ended))
+                    # Publish the immutable group envelope before waking any
+                    # consumer. The callback retains the same dictionary, so
+                    # per-consumer wait/lock fields filled below remain visible.
+                    if self.group_callback is not None:
+                        self.group_callback(group)
                     for pending in selected:
                         result = results.get(pending.identity.request_id)
                         if result is None:

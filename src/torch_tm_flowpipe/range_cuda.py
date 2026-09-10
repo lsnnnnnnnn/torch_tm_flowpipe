@@ -160,6 +160,14 @@ def compute_cuda_group(group, *, diagnostics=False, timings=None):
     computed=time.perf_counter()
     # Copy the status and execution receipt on every call, not just in audits.
     lo,hi,tl,th,status,pl,ph,receipt=output
+    numeric_h2d_bytes=sum(x.numel()*x.element_size() for x in
+                          (group.coefficients_lo,group.coefficients_hi,
+                           group.domain_lo,group.domain_hi))
+    metadata_h2d_bytes=sum(x.numel()*x.element_size() for x in
+                           (resident.keys,resident.ops,resident.states,resident.mask))
+    numeric_outputs=(lo,hi)+((tl,th,pl,ph) if diagnostics else ())
+    copied_outputs=numeric_outputs+(status,receipt)
+    numeric_d2h_bytes=sum(x.numel()*x.element_size() for x in numeric_outputs)
     lo,hi,status,receipt=(x.cpu() for x in (lo,hi,status,receipt))
     if diagnostics: tl,th,pl,ph=(x.cpu() for x in (tl,th,pl,ph))
     else: tl=th=None
@@ -172,7 +180,16 @@ def compute_cuda_group(group, *, diagnostics=False, timings=None):
     if timings is not None:
         timings.setdefault("kernel_receipts", []).append(receipt_values)
         for key,value in dict(h2d_and_structure_s=transferred-start,kernel_and_sync_s=computed-transferred,
-                              d2h_and_checks_s=time.perf_counter()-computed,actual_kernel_invocations=4).items():
+                              d2h_and_checks_s=time.perf_counter()-computed,
+                              actual_kernel_invocations=4,
+                              h2d_copy_operations=8, d2h_copy_operations=len(copied_outputs),
+                              metadata_h2d_bytes=metadata_h2d_bytes,
+                              numeric_h2d_bytes=numeric_h2d_bytes,
+                              metadata_d2h_bytes=(status.numel()*status.element_size()
+                                                  + receipt.numel()*receipt.element_size()),
+                              numeric_d2h_bytes=numeric_d2h_bytes,
+                              device_allocation_operations=16,
+                              pinned_allocation_operations=0).items():
             timings[key]=timings.get(key,0)+value
     return lo,hi,tl,th,active,[False]*len(status),records
 

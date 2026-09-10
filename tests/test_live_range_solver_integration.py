@@ -44,3 +44,35 @@ def test_complete_two_step_same_backend_state_and_live_dependencies(plant, seria
             assert waiting.pop(event["task"]) == event["request_id"]
             consumed[event["task"]] = event["request_id"]
     assert not waiting and counts["terms"] > 0
+
+
+@pytest.mark.parametrize("plant", ["van_der_pol", "brusselator"])
+def test_packet_gpu_matches_parent_gpu_for_complete_state_under_two_legal_packet_orders(plant):
+    parent, _, _ = run_case(plant, [0, 31], 2, "G0", diagnostic=True,
+                            run_id="parent-gpu")
+    packet, events, _ = run_case(plant, [31, 0], 2, "Gp", diagnostic=True,
+        run_id="packet-gpu", delays={"31": .0001})
+    split, split_events, _ = run_case(plant, [0, 31], 2, "Gp", diagnostic=True,
+                                      run_id="packet-gpu-split", max_group=1)
+    for actual in (packet, split):
+        assert actual["successful_tasks"] == parent["successful_tasks"] == 2
+        assert actual["accepted_lane_steps"] == parent["accepted_lane_steps"] == 4
+        for task, rows in actual["records"].items():
+            expected = parent["records"][task]
+            assert [row["segment"] for row in rows] == [row["segment"] for row in expected]
+            assert rows[1]["before"] == rows[0]["after"]
+
+    def sequence(source):
+        values = {}
+        for event in source:
+            if event["event"] != "submit":
+                continue
+            request = dict(event["request"])
+            request.pop("request_id")
+            values.setdefault(event["task"], []).append((event["generation"], event["attempt"],
+                event["counter"], event["source_state"], request))
+        return values
+
+    assert sequence(events) == sequence(split_events)
+    assert any(group["selection"]["selected_keys"] > 1 for group in packet["groups"])
+    assert all(group["selection"]["selected_requests"] == 1 for group in split["groups"])

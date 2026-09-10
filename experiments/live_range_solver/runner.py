@@ -187,19 +187,25 @@ def core_range_cpu():
 def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
              max_group=32, diagnostic=False, audit_steps=AUDIT_STEPS, original=False,
              checkpoint=None, delays=None, task_steps=None, evaluator=None,
-             hardware_fallback=False, select_newest=False, on_step=None):
-    if route not in {"L", "S", "Q", "G", "S_gpu"}:
+             hardware_fallback=False, select_newest=False, on_step=None,
+             packet_limits=None, service_group_callback=None,
+             retain_service_groups=True, retain_service_waits=True):
+    if route not in {"L", "S", "Q", "G", "G0", "Gp", "S_gpu"}:
         raise ValueError("unknown route")
     if len(set(ids)) != len(ids) or not ids:
         raise ValueError("distinct nonempty task set required")
     trace = Trace() if diagnostic else None
-    backend = "cuda" if route in {"G", "S_gpu"} else "cpu"
+    backend = "cuda" if route in {"G", "G0", "Gp", "S_gpu"} else "cpu"
     start_ns, cpu_start_ns = time.perf_counter_ns(), time.process_time_ns()
     initial_states = {str(i): initial(plant, i, original=original, checkpoint=checkpoint) for i in ids}
+    initial_states_end_ns = time.perf_counter_ns()
     states, records = {}, {}
     service = (LiveRangeService(backend, max_wait_s=max_wait_s, max_group=max_group,
                 run_id=run_id, trace=trace, evaluator=evaluator, hardware_fallback=hardware_fallback,
-                select_newest=select_newest) if route in {"Q", "G"} else None)
+                select_newest=select_newest, packet_mode=route == "Gp",
+                packet_limits=packet_limits, group_callback=service_group_callback,
+                retain_groups=retain_service_groups,
+                retain_waits=retain_service_waits) if route in {"Q", "G", "G0", "Gp"} else None)
     tasks = {}
     startup = {}
     if route == "S_gpu":
@@ -257,7 +263,7 @@ def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
                     raise AssertionError("observer changed segment or history")
             history.append(row)
             if on_step is not None:
-                on_step(task, offset+1)
+                on_step(task, offset+1, current, state, segment, row)
         else:
             if task.status != "CANCELLED":
                 task.finish()
@@ -293,11 +299,15 @@ def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
         max_group=max_group, max_wait_s=max_wait_s,
         delays=delays, select_newest=select_newest,
         start_ns=start_ns, end_ns=end_ns, wall_s=(end_ns-start_ns)/1e9,
+        initial_state_s=(initial_states_end_ns-start_ns)/1e9,
         cpu_start_ns=cpu_start_ns, cpu_end_ns=cpu_end_ns, cpu_s=(cpu_end_ns-cpu_start_ns)/1e9,
         successful_tasks=successful, accepted_lane_steps=accepted,
         successful_lane_steps=sum(sum(r["accepted"] for r in records[k]) for k,t in tasks.items() if t.status=="FINISHED"),
         task_statuses={k:t.status for k,t in tasks.items()}, counts=dict(counts),
         groups=groups, wait_ns=wait, records=records, startup=service.startup if service else startup,
+        packet_mode=route == "Gp",
+        packet_limits=(service.packet_executor.limits.__dict__ if service and service.packet_executor
+                       else packet_limits.__dict__ if packet_limits is not None else None),
         peak_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         rss_scope="process lifetime high-water mark", affinity=sorted(os.sched_getaffinity(0)),
         torch_threads=torch.get_num_threads(), torch_interop_threads=torch.get_num_interop_threads(),
@@ -335,7 +345,7 @@ def write_run(output, result, events):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plant", choices=["van_der_pol", "brusselator"], required=True)
-    parser.add_argument("--route", choices=["L", "S", "Q", "G", "S_gpu"], required=True)
+    parser.add_argument("--route", choices=["L", "S", "Q", "G", "G0", "Gp", "S_gpu"], required=True)
     parser.add_argument("--batch", type=int, choices=[1, 2, 8, 32], default=1)
     parser.add_argument("--steps", type=int, default=2)
     parser.add_argument("--ids", help="comma-separated fixed partition task indices")
@@ -355,8 +365,9 @@ def main():
     ids = ([int(x) for x in args.ids.split(",")] if args.ids else [0, 31] if args.batch == 2
            else read(PARTITION)["subsets"][str(args.batch)])
     cold_startup = None
-    if args.warm and args.route in {"G", "S_gpu"}:
-        with LiveRangeService("cuda", run_id="separate-cold-startup") as warmup:
+    if args.warm and args.route in {"G", "G0", "Gp", "S_gpu"}:
+        with LiveRangeService("cuda", run_id="separate-cold-startup",
+                              packet_mode=args.route == "Gp") as warmup:
             cold_startup = warmup.startup
         torch.cuda.reset_peak_memory_stats(0)
     result, events, _ = run_case(args.plant, ids, args.steps, args.route, run_id=args.output.name,

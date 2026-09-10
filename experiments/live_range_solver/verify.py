@@ -72,6 +72,18 @@ def check_timing(run):
         assert 1 <= group["size"] <= run["max_group"]
         assert group["reason"] in {"max_group", "timeout", "all_waiting", "serial"}
         group_ids.extend(group["request_ids"])
+        scheduler = group.get("scheduler_costs")
+        if run["route"] in {"Q", "G", "G0", "Gp"}:
+            assert scheduler is not None
+            for name in ("ownership_copy_sum_ns", "submit_lock_wait_sum_ns",
+                         "deliver_lock_wait_sum_ns", "future_set_sum_ns",
+                         "consume_lock_wait_sum_ns", "future_wait_sum_ns"):
+                assert scheduler[name] >= 0
+            for name in ("ownership_copy_intervals_ns", "submit_lock_intervals_ns",
+                         "future_wait_intervals_ns"):
+                assert len(scheduler[name]) == group["size"]
+                assert all(run["start_ns"] <= begin <= end <= run["end_ns"]
+                           for begin, end in scheduler[name])
         timing = group["timing"]
         if not timing:
             continue  # Explicitly failed backend has no successful kernel timing.
@@ -93,7 +105,7 @@ def check_timing(run):
                 fields = ("h2d_and_structure_s", "kernel_and_sync_s", "d2h_and_checks_s")
                 assert all(timing[key] > 0 for key in fields), "missing transfer or completion time"
                 assert sum(timing[key] for key in fields) <= timing["compute_and_transfers_s"] + 1e-6
-            if run["route"] == "G":
+            if run["route"] in {"G", "G0", "Gp"}:
                 assert group["completion_event"] and group["completion_confirmed"]
             gpu += sum(groups)
     assert len(group_ids) == len(set(group_ids)), "request dispatched twice"
@@ -103,7 +115,7 @@ def check_timing(run):
         assert counts.get("returned",0) == counts.get("submitted",0), "successful task lost a range response"
         assert sum(counts.get("status_"+status,0) for status in ("ok","corrected","fallback","fallback_corrected")) == counts.get("returned",0)
         assert counts.get("gpu_completed_requests",0) == gpu, "GPU completion count differs from kernel work"
-    if run["route"] in {"Q", "G"}:
+    if run["route"] in {"Q", "G", "G0", "Gp"}:
         assert run["counts"]["groups"] == len(run["groups"])
         assert len(run["wait_ns"]) == len(group_ids), "omitted queued waiting samples"
         assert all(v >= 0 for v in run["wait_ns"])
@@ -281,15 +293,20 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
     for index, group in enumerate(groups):
         ids = group["request_ids"]
         assert len({(submitted[r]["task"], submitted[r]["epoch"]) for r in ids}) == len(ids)
-        assert len({digest(submitted[r]["structure"]) for r in ids}) == 1, "different semantics merged"
+        semantic_keys = {digest(submitted[r]["structure"]) for r in ids}
+        if run["route"] == "Gp":
+            assert group.get("packet_mode") is True
+            assert group["selection"]["selected_keys"] == len(semantic_keys)
+        else:
+            assert len(semantic_keys) == 1, "different semantics merged"
         expected_index = index
-        if run["route"] not in {"Q", "G"}:
+        if run["route"] not in {"Q", "G", "G0", "Gp"}:
             task = submitted[ids[0]]["task"]
             expected_index = serial_indices[task]
             serial_indices[task] += 1
         assert all(submitted[r]["group_index"] == expected_index for r in ids)
         assert all(submitted[r]["dispatch_ns"] <= group["start_ns"] for r in ids)
-        if run["route"] in {"Q", "G"}:
+        if run["route"] in {"Q", "G", "G0", "Gp"}:
             for rid in ids:
                 event = dispatches[rid]
                 waits.append(event["dispatched_ns"]-event["submitted_ns"])
@@ -301,13 +318,13 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
             for request in audited:
                 assert result_record(expected[request.request_id]) == returned[request.request_id]["result"], "range endpoint or arithmetic record changed"
     assert len(dispatched) == len(set(dispatched))
-    if run["route"] in {"Q", "G"}:
+    if run["route"] in {"Q", "G", "G0", "Gp"}:
         assert waits == run["wait_ns"], "wait durations disagree with request timeline"
     return dict(totals, raw_requests=len(raw_requests), consumed=len(consumed))
 
 
 def verify_run(run, events, *, recompute=True):
-    expected = "ONLINE_LIVE_SOLVE" if run["route"] in {"Q", "G"} else "SERIAL_LIVE_SOLVE"
+    expected = "ONLINE_LIVE_SOLVE" if run["route"] in {"Q", "G", "G0", "Gp"} else "SERIAL_LIVE_SOLVE"
     assert run["execution"] == expected, "offline replay mislabeled as online"
     assert run["request_source"] == "CURRENT_WORKER_CALL" and not run["previous_answers_loaded"]
     timing = check_timing(run)
