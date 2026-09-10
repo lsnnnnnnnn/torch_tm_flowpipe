@@ -67,6 +67,14 @@ def bytes_sha(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+def junit_counts(path):
+    root = ET.parse(path).getroot()
+    suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
+    assert suites
+    return {name: sum(int(suite.attrib.get(name, 0)) for suite in suites)
+            for name in ("tests", "failures", "errors", "skipped")}
+
+
 def check_sources(root):
     plan = read(root / "PLAN_FROZEN.json")
     source = read(root / "SOURCE_MAP.json")
@@ -123,9 +131,7 @@ def check_tests_and_fixture(root, *, fresh_execution):
     amendment_test = amendment["amendment_test"]
     xml_path = root / amendment_test["path"]
     assert sha(xml_path) == amendment_test["sha256"]
-    suite = ET.parse(xml_path).getroot()
-    counts = {name: int(suite.attrib.get(name, 0))
-              for name in ("tests", "failures", "errors", "skipped")}
+    counts = junit_counts(xml_path)
     assert counts == amendment_test["counts"]
     assert counts == {"tests": 2, "failures": 0, "errors": 0, "skipped": 0}
     lifetime = read(root / "packet_lifetime_fault_checks.json")

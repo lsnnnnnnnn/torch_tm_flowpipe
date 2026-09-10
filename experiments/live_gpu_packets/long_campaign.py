@@ -30,6 +30,7 @@ VERIFIER_AMENDMENT_CHANGED_FILES = (
     "experiments/live_gpu_packets/verify_package.py",
     "tests/test_long_horizon_packet.py",
 )
+INTERMEDIATE_VERIFIER_SHA = "391c33b7a3d40c092b074aa96e3c3fe09599316e"
 
 
 def _git_blob(commit, relative):
@@ -40,11 +41,21 @@ def _digest(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+def _junit_counts(path):
+    root = ET.parse(path).getroot()
+    suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
+    assert suites
+    return {name: sum(int(suite.attrib.get(name, 0)) for suite in suites)
+            for name in ("tests", "failures", "errors", "skipped")}
+
+
 def _bridge_identity(global_plan):
     runtime_sha = global_plan["source_sha"]
     verification_sha = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     assert verification_sha != runtime_sha
+    subprocess.run(["git", "merge-base", "--is-ancestor", INTERMEDIATE_VERIFIER_SHA,
+                    verification_sha], cwd=ROOT, check=True)
     assert not subprocess.check_output(["git", "status", "--porcelain"],
                                        cwd=ROOT, text=True)
     changed = tuple(subprocess.check_output(
@@ -81,9 +92,7 @@ def verify_existing_campaign(artifact):
     assert len(jobs) == len(CASES)
 
     xml_path = artifact / "tests/verifier_amendment.xml"
-    suite = ET.parse(xml_path).getroot()
-    test_counts = {name: int(suite.attrib.get(name, 0))
-                   for name in ("tests", "failures", "errors", "skipped")}
+    test_counts = _junit_counts(xml_path)
     assert test_counts["tests"] == 2
     assert test_counts["failures"] == test_counts["errors"] == test_counts["skipped"] == 0
 
@@ -111,6 +120,10 @@ def verify_existing_campaign(artifact):
             frozen_unconditional_expected_schema="c3_cross_step_sr_v1",
             observed_brusselator_schema="accepted_boundary_sr_v1",
             observed_brusselator_rows=1000),
+        intermediate_bridge_attempt=dict(verification_source_sha=INTERMEDIATE_VERIFIER_SHA,
+            stage="amendment JUnit receipt parsing", wrapper_exit_code=1,
+            reason="pytest emitted a testsuites root with counts on its child testsuite",
+            amendment_or_completion_written=False),
         corrected_queue_owner_schema_by_plant=QUEUE_OWNER_SCHEMAS,
         changed_files=changed_files,
         unchanged_frozen_scientific_files=unchanged,
