@@ -1,0 +1,63 @@
+{
+  "schema": "live-gpu-packet-independent-clone-acceptance-v1",
+  "recorded_utc": "2026-09-10T11:35:30Z",
+  "clone_source": "git@github.com:lsnnnnnnnn/torch_tm_flowpipe.git",
+  "clone_path": "/srv/local/shengenli/live_gpu_packets_20260910T023603Z/independent_clone",
+  "clone_method": "remote --no-hardlinks --depth 1, then deepened to four commits so both frozen source SHAs were locally reachable",
+  "checked_commit_sha": "a0a37bb2027e22956a9ec0a5174bd87ec7de9388",
+  "verification_source_sha": "0b0da13da2c563ddf287fa79731e2c8653d46852",
+  "runtime_scientific_sha": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+  "working_tree_clean_before": true,
+  "working_tree_clean_after": true,
+  "command": [
+    "env",
+    "PYTHONUTF8=1",
+    "PYTHONUNBUFFERED=1",
+    "PYTHONPATH=src:.:tests",
+    "OMP_NUM_THREADS=1",
+    "MKL_NUM_THREADS=1",
+    "OPENBLAS_NUM_THREADS=1",
+    "CUDA_VISIBLE_DEVICES=0",
+    "TMPDIR=/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp",
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "-m",
+    "experiments.live_gpu_packets.verify_package",
+    "artifacts/runs/live_gpu_packets_20260910T023603Z"
+  ],
+  "exit_code": 0,
+  "verified": true,
+  "manifest_files": 311,
+  "diagnostic_runs": 26,
+  "formal_runs": 40,
+  "long_horizons": 2,
+  "result_sha256": "b12690d95fd32223686e9ad1db4d33a2957292d5d71ee660b72191e1247f44fe",
+  "source_map_sha256": "5c652c17a24c126a96155e2111c48a4517cef7fba6d43b987d3022d0b5cc4ae0",
+  "immutable_manifest_sha256": "89d98bcc507d616dd9ff93167a1efb0afc2a575b8307469c73cc12af351447b2",
+  "verifier_amendment_sha256": "1d925582bd8a3857d7d445d1e197f01326593e51f76cecab7271a240d0771921",
+  "bounded_live_replay": {
+    "actual_live_runs": 4,
+    "successful_lane_steps": 16,
+    "full_1000_step_runs_repeated": 0,
+    "cases": [
+      {
+        "plant": "van_der_pol",
+        "G0_wall_s": 2.209412719,
+        "Gp_wall_s": 2.02892004,
+        "packet_count": 291,
+        "actual_kernel_invocations": 1164,
+        "complete_segments_compared": 4
+      },
+      {
+        "plant": "brusselator",
+        "G0_wall_s": 3.41674884,
+        "Gp_wall_s": 3.135046812,
+        "packet_count": 398,
+        "actual_kernel_invocations": 1592,
+        "complete_segments_compared": 4
+      }
+    ]
+  }
+}

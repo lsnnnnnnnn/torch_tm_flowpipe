@@ -1,0 +1,10 @@
+2026-09-10T11:35:30Z
+Clone: remote GitHub clone with --no-hardlinks; initially depth 1 and deepened to 4 commits to make both frozen source SHAs reachable.
+Checked commit: a0a37bb2027e22956a9ec0a5174bd87ec7de9388
+Command: env PYTHONUTF8=1 PYTHONUNBUFFERED=1 PYTHONPATH=src:.:tests OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=0 TMPDIR=/srv/local/shengenli/live_gpu_packets_20260910T023603Z/tmp taskset -c 2 /srv/local/shengenli/miniforge3/envs/py11/bin/python -m experiments.live_gpu_packets.verify_package artifacts/runs/live_gpu_packets_20260910T023603Z
+Exit code: 0
+Result: verified=true; manifest_files=311; diagnostic_runs=26; formal_runs=40; long_horizons=2.
+Bounded live replay: actual_live_runs=4; successful_lane_steps=16; full_1000_step_runs_repeated=0.
+VDP replay: G0_wall_s=2.209412719; Gp_wall_s=2.02892004; packet_count=291; actual_kernel_invocations=1164; complete_segments_compared=4.
+Brusselator replay: G0_wall_s=3.41674884; Gp_wall_s=3.135046812; packet_count=398; actual_kernel_invocations=1592; complete_segments_compared=4.
+Preflight history-depth failures before this successful run are preserved in independent_clone_attempts.json; neither reached manifest verification nor live GPU replay.

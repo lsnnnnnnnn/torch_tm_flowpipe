@@ -1,0 +1,30 @@
+{
+  "schema": "live-gpu-packet-independent-clone-attempts-v1",
+  "attempts": [
+    {
+      "exit_code": 1,
+      "stage": "source snapshot reachability before manifest hashing or live replay",
+      "reason": "the initial depth-one remote clone did not contain packaging SHA 0b0da13da2c563ddf287fa79731e2c8653d46852",
+      "evidence_or_math_failure": false,
+      "manifest_verification_started": false,
+      "bounded_live_replay_started": false,
+      "remedy": "deepen the same independent remote clone by one commit"
+    },
+    {
+      "exit_code": 1,
+      "stage": "runtime source snapshot loading before manifest hashing or live replay",
+      "reason": "the resulting depth-two clone did not yet contain runtime scientific SHA 1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+      "evidence_or_math_failure": false,
+      "manifest_verification_started": false,
+      "bounded_live_replay_started": false,
+      "remedy": "deepen the same independent remote clone by two more commits; confirm both frozen SHAs are ancestors and required source bytes exist"
+    },
+    {
+      "recorded_utc": "2026-09-10T11:35:30Z",
+      "clone_history_commit_count": 4,
+      "exit_code": 0,
+      "verified": true,
+      "receipt": "independent_clone_full_verifier.json"
+    }
+  ]
+}
