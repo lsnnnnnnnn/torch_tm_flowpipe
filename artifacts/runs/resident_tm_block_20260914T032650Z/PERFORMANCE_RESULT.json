@@ -1,0 +1,58 @@
+{
+  "cpu_Q_runs_per_plant": 3,
+  "cpu_S_runs_per_plant": 1,
+  "decisions": {
+    "brusselator": {
+      "Gp_over_Gr": [
+        1.16055327714959,
+        1.1480896308573012,
+        1.168292302777337,
+        1.1631678943129338,
+        1.155261575470176
+      ],
+      "Gr_faster_than_Gp_wins": 5,
+      "Q_median_wall_s": 485.911898572,
+      "Q_wall_s": [
+        481.20508673,
+        505.182086454,
+        485.911898572
+      ],
+      "S_single_wall_s": 578.233914682,
+      "end_to_end_target_met": false,
+      "median_Gp_over_Gr": 1.16055327714959,
+      "median_Q_over_Gr": 1.368085104162142,
+      "stable_strict_cpu_regression": false
+    },
+    "van_der_pol": {
+      "Gp_over_Gr": [
+        1.1282815309571306,
+        1.1466703649463752,
+        1.1312290262385094,
+        1.1376411384882839,
+        1.1523012680841795
+      ],
+      "Gr_faster_than_Gp_wins": 5,
+      "Q_median_wall_s": 336.347412554,
+      "Q_wall_s": [
+        339.905073799,
+        335.173233635,
+        336.347412554
+      ],
+      "S_single_wall_s": 389.746722074,
+      "end_to_end_target_met": false,
+      "median_Gp_over_Gr": 1.1376411384882839,
+      "median_Q_over_Gr": 1.3459793998766096,
+      "stable_strict_cpu_regression": false
+    }
+  },
+  "default_enabled": false,
+  "end_to_end_effect": "small_gain",
+  "engineering_target_met": false,
+  "entire_solver_formal_proof": false,
+  "formal_gpu_runs": 20,
+  "formal_pairs_per_plant": 5,
+  "full_gpu_engine": false,
+  "schema": "resident-tm-block-performance-result-v1",
+  "source_sha": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+  "successful_lane_steps_per_run": 640
+}

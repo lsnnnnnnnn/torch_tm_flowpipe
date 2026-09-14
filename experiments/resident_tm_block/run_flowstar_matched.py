@@ -188,10 +188,18 @@ def main() -> None:
     compiler_version = subprocess.check_output(
         [str(args.compiler.resolve()), "--version"], text=True
     ).splitlines()[0]
+    configured_remote = git(flowstar, "remote", "get-url", "origin")
+    configured_remote_path = Path(configured_remote)
+    canonical_remote = (
+        git(configured_remote_path, "remote", "get-url", "origin")
+        if configured_remote_path.is_dir()
+        else configured_remote
+    )
     identity = {
         "schema": "resident-tm-block-flowstar-identity-v1",
         "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
-        "upstream_remote": git(flowstar, "remote", "get-url", "origin"),
+        "configured_remote": configured_remote,
+        "canonical_upstream_remote": canonical_remote,
         "stock_base_sha": stock_base,
         "stock_base_is_ancestor": ancestor,
         "readonly_accessor_commit_sha": head,

@@ -1,0 +1,881 @@
+{
+  "route": "Gp",
+  "schema": "resident-tm-block-selection-profile-v1",
+  "source": "fresh live solver windows; no saved answers used to advance",
+  "timing_semantics": {
+    "cuda_events": "not used by this selection profiler",
+    "thread_cpu_sum_s": "thread CPU, excluding blocked Future wait",
+    "wall_interval_union_s": "mutually overlapping intervals are unioned",
+    "wall_span_sum_s": "per-call spans; not an additive wall-time claim"
+  },
+  "windows": [
+    {
+      "accepted_lane_steps": 48,
+      "checkpoint": null,
+      "counts": {
+        "composition_polynomial_mul_truncate": 440,
+        "composition_range_requests": 3779
+      },
+      "ids": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28
+      ],
+      "name": "selection-vdp-B8x6",
+      "plant": "van_der_pol",
+      "process_cpu_s": 20.651410109,
+      "scope": "FIXED_PARTITION",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.081055878,
+          "call_wall_p50_s": 0.038410990500000006,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.06159362292586983,
+          "thread_cpu_sum_s": 0.33174843,
+          "wall_interval_union_s": 1.273013304,
+          "wall_span_sum_s": 1.946767829
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 2.483734939,
+          "call_wall_p50_s": 0.5759590375000001,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.40702351339744663,
+          "thread_cpu_sum_s": 2.570753665,
+          "wall_interval_union_s": 8.41233756,
+          "wall_span_sum_s": 31.310538813000004
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 2.651262097,
+          "call_wall_p50_s": 0.9923215295000001,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.5389272059226592,
+          "thread_cpu_sum_s": 3.556793957,
+          "wall_interval_union_s": 11.138515165,
+          "wall_span_sum_s": 49.177297833999994
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.164783859,
+          "call_wall_p50_s": 0.005232988,
+          "calls": 3779,
+          "fraction_of_invocation_by_union": 0.3807759648473716,
+          "thread_cpu_sum_s": 0.349898088,
+          "wall_interval_union_s": 7.869854801,
+          "wall_span_sum_s": 26.422397283000045
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 2.600604318,
+          "call_wall_p50_s": 2.3350112905,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.8112708992778025,
+          "thread_cpu_sum_s": 14.81675749,
+          "wall_interval_union_s": 16.767298283,
+          "wall_span_sum_s": 109.47465221499999
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.037803773,
+          "call_wall_p50_s": 0.0019147934999999999,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.020994894201554763,
+          "thread_cpu_sum_s": 0.084274166,
+          "wall_interval_union_s": 0.433921214,
+          "wall_span_sum_s": 0.441531151
+        },
+        "normal_composition": {
+          "call_wall_max_s": 2.437091915,
+          "call_wall_p50_s": 0.496569202,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.38430740044005746,
+          "thread_cpu_sum_s": 1.907361367,
+          "wall_interval_union_s": 7.9428423,
+          "wall_span_sum_s": 28.124905106
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.053784492,
+          "call_wall_p50_s": 0.000186278,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.003973252338473402,
+          "thread_cpu_sum_s": 0.012895668,
+          "wall_interval_union_s": 0.082118941,
+          "wall_span_sum_s": 0.08450056699999997
+        }
+      },
+      "service": {
+        "groups": 1027,
+        "requests": 5187,
+        "service_interval_union_s": 1.103846175,
+        "service_span_sum_s": 1.103846175,
+        "service_thread_cpu_sum_s": 0.938625501
+      },
+      "steps": 6,
+      "successful_tasks": 8,
+      "wall_s": 20.667940016
+    },
+    {
+      "accepted_lane_steps": 48,
+      "checkpoint": null,
+      "counts": {
+        "composition_polynomial_mul_truncate": 672,
+        "composition_range_requests": 5712
+      },
+      "ids": [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28
+      ],
+      "name": "selection-bruss-B8x6",
+      "plant": "brusselator",
+      "process_cpu_s": 30.756118443,
+      "scope": "FIXED_PARTITION",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.069318967,
+          "call_wall_p50_s": 0.040790964,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.04060986446194407,
+          "thread_cpu_sum_s": 0.354406776,
+          "wall_interval_union_s": 1.250001296,
+          "wall_span_sum_s": 1.906187127
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 3.713212804,
+          "call_wall_p50_s": 0.852001263,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.392237426244651,
+          "thread_cpu_sum_s": 3.833549854,
+          "wall_interval_union_s": 12.073354532,
+          "wall_span_sum_s": 46.704163130000005
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 3.916457188,
+          "call_wall_p50_s": 1.2625767005,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.4713078000102742,
+          "thread_cpu_sum_s": 4.866164564,
+          "wall_interval_union_s": 14.507198402,
+          "wall_span_sum_s": 63.956306802000014
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.110336141,
+          "call_wall_p50_s": 0.0052825655,
+          "calls": 5712,
+          "fraction_of_invocation_by_union": 0.3706185087616464,
+          "thread_cpu_sum_s": 0.62921329,
+          "wall_interval_union_s": 11.407908458,
+          "wall_span_sum_s": 40.58583351099994
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 4.21766517,
+          "call_wall_p50_s": 3.8208604045000003,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.8371946785162461,
+          "thread_cpu_sum_s": 24.210775295,
+          "wall_interval_union_s": 25.769463824,
+          "wall_span_sum_s": 178.96085278599995
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.064648628,
+          "call_wall_p50_s": 0.021059605000000002,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.03177749969764054,
+          "thread_cpu_sum_s": 0.190616329,
+          "wall_interval_union_s": 0.978134656,
+          "wall_span_sum_s": 1.1362232150000002
+        },
+        "normal_composition": {
+          "call_wall_max_s": 3.601682882,
+          "call_wall_p50_s": 0.7619432155,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.37328118331531124,
+          "thread_cpu_sum_s": 3.111863639,
+          "wall_interval_union_s": 11.489867526,
+          "wall_span_sum_s": 43.20257991
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.039718785,
+          "call_wall_p50_s": 0.00018781149999999998,
+          "calls": 48,
+          "fraction_of_invocation_by_union": 0.0019973710462834037,
+          "thread_cpu_sum_s": 0.036832407,
+          "wall_interval_union_s": 0.06148054,
+          "wall_span_sum_s": 0.11068720900000002
+        }
+      },
+      "service": {
+        "groups": 1394,
+        "requests": 7216,
+        "service_interval_union_s": 1.605157047,
+        "service_span_sum_s": 1.605157047,
+        "service_thread_cpu_sum_s": 1.288996521
+      },
+      "steps": 6,
+      "successful_tasks": 8,
+      "wall_s": 30.780730558
+    },
+    {
+      "accepted_lane_steps": 128,
+      "checkpoint": null,
+      "counts": {
+        "composition_polynomial_mul_truncate": 1184,
+        "composition_range_requests": 10080
+      },
+      "ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "name": "selection-vdp-B32x4",
+      "plant": "van_der_pol",
+      "process_cpu_s": 54.232274404,
+      "scope": "FIXED_PARTITION",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.754018685,
+          "call_wall_p50_s": 0.1167274075,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.1963530083048804,
+          "thread_cpu_sum_s": 0.846038006,
+          "wall_interval_union_s": 10.65644673,
+          "wall_span_sum_s": 20.776477734
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 4.522242645,
+          "call_wall_p50_s": 2.4686442655,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.4458313193111831,
+          "thread_cpu_sum_s": 6.603295951,
+          "wall_interval_union_s": 24.196103466,
+          "wall_span_sum_s": 338.15699879900006
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 8.643102283,
+          "call_wall_p50_s": 3.9875044930000003,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.6751165784104682,
+          "thread_cpu_sum_s": 9.199582198,
+          "wall_interval_union_s": 36.63984533,
+          "wall_span_sum_s": 529.5560791869998
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.396026117,
+          "call_wall_p50_s": 0.023773647000000002,
+          "calls": 10080,
+          "fraction_of_invocation_by_union": 0.4157139250594224,
+          "thread_cpu_sum_s": 1.036797613,
+          "wall_interval_union_s": 22.561575886,
+          "wall_span_sum_s": 304.332231248
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 10.392608562,
+          "call_wall_p50_s": 8.9133659785,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.8755216577804792,
+          "thread_cpu_sum_s": 40.188498621,
+          "wall_interval_union_s": 47.516205571,
+          "wall_span_sum_s": 1109.58783999
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.300878019,
+          "call_wall_p50_s": 0.0234185775,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.09370317404166613,
+          "thread_cpu_sum_s": 0.227672622,
+          "wall_interval_union_s": 5.085447334,
+          "wall_span_sum_s": 6.129567753999998
+        },
+        "normal_composition": {
+          "call_wall_max_s": 4.298571617,
+          "call_wall_p50_s": 2.3291192785,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.41590722958787535,
+          "thread_cpu_sum_s": 5.073628687,
+          "wall_interval_union_s": 22.572066886,
+          "wall_span_sum_s": 310.9106490679999
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.078888699,
+          "call_wall_p50_s": 0.000184701,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.0025462337081570705,
+          "thread_cpu_sum_s": 0.023962339,
+          "wall_interval_union_s": 0.138188888,
+          "wall_span_sum_s": 0.138535044
+        }
+      },
+      "service": {
+        "groups": 851,
+        "requests": 13792,
+        "service_interval_union_s": 2.666209817,
+        "service_span_sum_s": 2.666209817,
+        "service_thread_cpu_sum_s": 1.460821183
+      },
+      "steps": 4,
+      "successful_tasks": 32,
+      "wall_s": 54.271879112
+    },
+    {
+      "accepted_lane_steps": 128,
+      "checkpoint": null,
+      "counts": {
+        "composition_polynomial_mul_truncate": 1792,
+        "composition_range_requests": 15168
+      },
+      "ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "name": "selection-bruss-B32x4",
+      "plant": "brusselator",
+      "process_cpu_s": 78.826541545,
+      "scope": "FIXED_PARTITION",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.521824368,
+          "call_wall_p50_s": 0.1281820475,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.10905591584149144,
+          "thread_cpu_sum_s": 0.904872137,
+          "wall_interval_union_s": 8.602531441,
+          "wall_span_sum_s": 19.789566457999996
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 6.688949238,
+          "call_wall_p50_s": 3.2569043974999996,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.3465685497713564,
+          "thread_cpu_sum_s": 9.431162254,
+          "wall_interval_union_s": 27.337965326,
+          "wall_span_sum_s": 427.43770617199993
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 7.448715882,
+          "call_wall_p50_s": 4.739509655,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.4579483994623934,
+          "thread_cpu_sum_s": 12.136138054,
+          "wall_interval_union_s": 36.123812948,
+          "wall_span_sum_s": 593.7659186380001
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.413602565,
+          "call_wall_p50_s": 0.02085858,
+          "calls": 15168,
+          "fraction_of_invocation_by_union": 0.3287846590465132,
+          "thread_cpu_sum_s": 1.43484531,
+          "wall_interval_union_s": 25.935139281,
+          "wall_span_sum_s": 390.8640651810023
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 15.999739302,
+          "call_wall_p50_s": 14.698237758,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.8776360078847009,
+          "thread_cpu_sum_s": 63.833214017,
+          "wall_interval_union_s": 69.229544251,
+          "wall_span_sum_s": 1874.1166763230003
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.513691033,
+          "call_wall_p50_s": 0.0680918075,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.10810217524915845,
+          "thread_cpu_sum_s": 0.606099566,
+          "wall_interval_union_s": 8.527298627,
+          "wall_span_sum_s": 11.883221899999999
+        },
+        "normal_composition": {
+          "call_wall_max_s": 6.567814616,
+          "call_wall_p50_s": 2.957389645,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.3291969214060607,
+          "thread_cpu_sum_s": 7.806097438,
+          "wall_interval_union_s": 25.967659295,
+          "wall_span_sum_s": 400.32967357700005
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.000238873,
+          "call_wall_p50_s": 0.00018014700000000002,
+          "calls": 128,
+          "fraction_of_invocation_by_union": 0.0002978498552656984,
+          "thread_cpu_sum_s": 0.02350971,
+          "wall_interval_union_s": 0.023494945,
+          "wall_span_sum_s": 0.02349494499999999
+        }
+      },
+      "service": {
+        "groups": 1085,
+        "requests": 19136,
+        "service_interval_union_s": 3.775259451,
+        "service_span_sum_s": 3.775259451,
+        "service_thread_cpu_sum_s": 1.946412935
+      },
+      "steps": 4,
+      "successful_tasks": 32,
+      "wall_s": 78.881841252
+    },
+    {
+      "accepted_lane_steps": 2,
+      "checkpoint": "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/van_der_pol-Gp/checkpoints/step_0099",
+      "counts": {
+        "composition_polynomial_mul_truncate": 19,
+        "composition_range_requests": 172
+      },
+      "ids": [
+        0
+      ],
+      "name": "selection-vdp-resume-step99-two",
+      "plant": "van_der_pol",
+      "process_cpu_s": 1.075549131,
+      "scope": "RESUMED_LOCAL_WINDOW",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.014086473,
+          "call_wall_p50_s": 0.01279571,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.0237790264744233,
+          "thread_cpu_sum_s": 0.022851158,
+          "wall_interval_union_s": 0.02559142,
+          "wall_span_sum_s": 0.02559142
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 0.159745536,
+          "call_wall_p50_s": 0.14243536099999998,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.2646960754903823,
+          "thread_cpu_sum_s": 0.164695308,
+          "wall_interval_union_s": 0.284870722,
+          "wall_span_sum_s": 0.28487072199999997
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 0.209968035,
+          "call_wall_p50_s": 0.18767589699999998,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.34876924558106903,
+          "thread_cpu_sum_s": 0.225269314,
+          "wall_interval_union_s": 0.375351794,
+          "wall_span_sum_s": 0.37535179399999996
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.000947675,
+          "call_wall_p50_s": 0.0007654725000000001,
+          "calls": 172,
+          "fraction_of_invocation_by_union": 0.12409453639071903,
+          "thread_cpu_sum_s": 0.016559899,
+          "wall_interval_union_s": 0.133552793,
+          "wall_span_sum_s": 0.13355279299999995
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 0.298457667,
+          "call_wall_p50_s": 0.293864204,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.5461052717513393,
+          "thread_cpu_sum_s": 0.583499244,
+          "wall_interval_union_s": 0.587728408,
+          "wall_span_sum_s": 0.587728408
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.00185471,
+          "call_wall_p50_s": 0.0017820265,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.0033116454906858546,
+          "thread_cpu_sum_s": 0.003530875,
+          "wall_interval_union_s": 0.003564053,
+          "wall_span_sum_s": 0.003564053
+        },
+        "normal_composition": {
+          "call_wall_max_s": 0.123460828,
+          "call_wall_p50_s": 0.114789742,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.21332058275861365,
+          "thread_cpu_sum_s": 0.112262032,
+          "wall_interval_union_s": 0.229579484,
+          "wall_span_sum_s": 0.229579484
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.00022261,
+          "call_wall_p50_s": 0.00020088849999999999,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.0003733230090324949,
+          "thread_cpu_sum_s": 0.000402225,
+          "wall_interval_union_s": 0.000401777,
+          "wall_span_sum_s": 0.00040177699999999997
+        }
+      },
+      "service": {
+        "groups": 228,
+        "requests": 228,
+        "service_interval_union_s": 0.135120066,
+        "service_span_sum_s": 0.135120066,
+        "service_thread_cpu_sum_s": 0.136236391
+      },
+      "steps": 2,
+      "successful_tasks": 1,
+      "wall_s": 1.076218155
+    },
+    {
+      "accepted_lane_steps": 2,
+      "checkpoint": "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/van_der_pol-Gp/checkpoints/step_0100",
+      "counts": {
+        "composition_polynomial_mul_truncate": 19,
+        "composition_range_requests": 172
+      },
+      "ids": [
+        0
+      ],
+      "name": "selection-vdp-resume-step100-two",
+      "plant": "van_der_pol",
+      "process_cpu_s": 0.963231118,
+      "scope": "RESUMED_LOCAL_WINDOW",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.011501673,
+          "call_wall_p50_s": 0.011330251999999999,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.023517043840249423,
+          "thread_cpu_sum_s": 0.019870929,
+          "wall_interval_union_s": 0.022660504,
+          "wall_span_sum_s": 0.022660503999999998
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 0.131708655,
+          "call_wall_p50_s": 0.1288332665,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.26740601853895546,
+          "thread_cpu_sum_s": 0.139380523,
+          "wall_interval_union_s": 0.257666533,
+          "wall_span_sum_s": 0.257666533
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 0.172244418,
+          "call_wall_p50_s": 0.1691160445,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.351016855811863,
+          "thread_cpu_sum_s": 0.190347122,
+          "wall_interval_union_s": 0.338232089,
+          "wall_span_sum_s": 0.338232089
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.000915166,
+          "call_wall_p50_s": 0.000760352,
+          "calls": 172,
+          "fraction_of_invocation_by_union": 0.13702288871063287,
+          "thread_cpu_sum_s": 0.016584267,
+          "wall_interval_union_s": 0.132032229,
+          "wall_span_sum_s": 0.13203222900000006
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 0.287191491,
+          "call_wall_p50_s": 0.28716452400000003,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.5960379963545698,
+          "thread_cpu_sum_s": 0.570535523,
+          "wall_interval_union_s": 0.574329048,
+          "wall_span_sum_s": 0.5743290480000001
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.001702594,
+          "call_wall_p50_s": 0.0016624525,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.0034505824164221812,
+          "thread_cpu_sum_s": 0.003323921,
+          "wall_interval_union_s": 0.003324905,
+          "wall_span_sum_s": 0.003324905
+        },
+        "normal_composition": {
+          "call_wall_max_s": 0.124288842,
+          "call_wall_p50_s": 0.11396040199999999,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.2365359367017122,
+          "thread_cpu_sum_s": 0.112411779,
+          "wall_interval_union_s": 0.227920804,
+          "wall_span_sum_s": 0.22792080399999998
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.000179728,
+          "call_wall_p50_s": 0.0001781115,
+          "calls": 2,
+          "fraction_of_invocation_by_union": 0.0003696878016440045,
+          "thread_cpu_sum_s": 0.000356528,
+          "wall_interval_union_s": 0.000356223,
+          "wall_span_sum_s": 0.000356223
+        }
+      },
+      "service": {
+        "groups": 228,
+        "requests": 228,
+        "service_interval_union_s": 0.132849834,
+        "service_span_sum_s": 0.132849834,
+        "service_thread_cpu_sum_s": 0.13406031
+      },
+      "steps": 2,
+      "successful_tasks": 1,
+      "wall_s": 0.963577912
+    },
+    {
+      "accepted_lane_steps": 1,
+      "checkpoint": "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/brusselator-Gp/checkpoints/step_0999",
+      "counts": {
+        "composition_polynomial_mul_truncate": 12,
+        "composition_range_requests": 108
+      },
+      "ids": [
+        0
+      ],
+      "name": "selection-bruss-resume-step999-one",
+      "plant": "brusselator",
+      "process_cpu_s": 1.814322388,
+      "scope": "RESUMED_LOCAL_WINDOW",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.047220287,
+          "call_wall_p50_s": 0.047220287,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.026008829219002168,
+          "thread_cpu_sum_s": 0.045721687,
+          "wall_interval_union_s": 0.047220287,
+          "wall_span_sum_s": 0.047220287
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 0.496283854,
+          "call_wall_p50_s": 0.496283854,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.27335204470134217,
+          "thread_cpu_sum_s": 0.418409513,
+          "wall_interval_union_s": 0.496283854,
+          "wall_span_sum_s": 0.496283854
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 0.648869443,
+          "call_wall_p50_s": 0.648869443,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.35739584828055077,
+          "thread_cpu_sum_s": 0.555340444,
+          "wall_interval_union_s": 0.648869443,
+          "wall_span_sum_s": 0.648869443
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.001202097,
+          "call_wall_p50_s": 0.0007678185,
+          "calls": 108,
+          "fraction_of_invocation_by_union": 0.04654227465407778,
+          "thread_cpu_sum_s": 0.010565454,
+          "wall_interval_union_s": 0.08449975,
+          "wall_span_sum_s": 0.08449975
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 0.467164863,
+          "call_wall_p50_s": 0.467164863,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.25731336912216446,
+          "thread_cpu_sum_s": 0.463046949,
+          "wall_interval_union_s": 0.467164863,
+          "wall_span_sum_s": 0.467164863
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.003506595,
+          "call_wall_p50_s": 0.003506595,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.001931424739015392,
+          "thread_cpu_sum_s": 0.003505971,
+          "wall_interval_union_s": 0.003506595,
+          "wall_span_sum_s": 0.003506595
+        },
+        "normal_composition": {
+          "call_wall_max_s": 0.148931834,
+          "call_wall_p50_s": 0.148931834,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.08203132343898674,
+          "thread_cpu_sum_s": 0.074939847,
+          "wall_interval_union_s": 0.148931834,
+          "wall_span_sum_s": 0.148931834
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.000228628,
+          "call_wall_p50_s": 0.000228628,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.00012592779469303158,
+          "thread_cpu_sum_s": 0.000228897,
+          "wall_interval_union_s": 0.000228628,
+          "wall_span_sum_s": 0.000228628
+        }
+      },
+      "service": {
+        "groups": 140,
+        "requests": 140,
+        "service_interval_union_s": 0.08487975,
+        "service_span_sum_s": 0.08487975,
+        "service_thread_cpu_sum_s": 0.085656439
+      },
+      "steps": 1,
+      "successful_tasks": 1,
+      "wall_s": 1.815548351
+    },
+    {
+      "accepted_lane_steps": 1,
+      "checkpoint": "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/brusselator-Gp/checkpoints/step_1000",
+      "counts": {
+        "composition_polynomial_mul_truncate": 12,
+        "composition_range_requests": 116
+      },
+      "ids": [
+        0
+      ],
+      "name": "selection-bruss-resume-step1000-one",
+      "plant": "brusselator",
+      "process_cpu_s": 0.699841168,
+      "scope": "RESUMED_LOCAL_WINDOW",
+      "sections": {
+        "accepted_boundary_commit": {
+          "call_wall_max_s": 0.017358954,
+          "call_wall_p50_s": 0.017358954,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.02478661086759646,
+          "thread_cpu_sum_s": 0.015733777,
+          "wall_interval_union_s": 0.017358954,
+          "wall_span_sum_s": 0.017358954
+        },
+        "accepted_boundary_prepare": {
+          "call_wall_max_s": 0.165466755,
+          "call_wall_p50_s": 0.165466755,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.23626769606676307,
+          "thread_cpu_sum_s": 0.086048259,
+          "wall_interval_union_s": 0.165466755,
+          "wall_span_sum_s": 0.165466755
+        },
+        "accepted_boundary_transition": {
+          "call_wall_max_s": 0.216172774,
+          "call_wall_p50_s": 0.216172774,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.30867012086712564,
+          "thread_cpu_sum_s": 0.121154103,
+          "wall_interval_union_s": 0.216172774,
+          "wall_span_sum_s": 0.216172774
+        },
+        "composition_range_future_wait_span": {
+          "call_wall_max_s": 0.001013124,
+          "call_wall_p50_s": 0.0007858425000000001,
+          "calls": 116,
+          "fraction_of_invocation_by_union": 0.12945772453257404,
+          "thread_cpu_sum_s": 0.01128934,
+          "wall_interval_union_s": 0.090663895,
+          "wall_span_sum_s": 0.09066389499999998
+        },
+        "dense_picard_validation": {
+          "call_wall_max_s": 0.465809662,
+          "call_wall_p50_s": 0.465809662,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.665123188318872,
+          "thread_cpu_sum_s": 0.462095224,
+          "wall_interval_union_s": 0.465809662,
+          "wall_span_sum_s": 0.465809662
+        },
+        "dense_to_sparse": {
+          "call_wall_max_s": 0.003504004,
+          "call_wall_p50_s": 0.003504004,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.005003318957265597,
+          "thread_cpu_sum_s": 0.003503318,
+          "wall_interval_union_s": 0.003504004,
+          "wall_span_sum_s": 0.003504004
+        },
+        "normal_composition": {
+          "call_wall_max_s": 0.163472385,
+          "call_wall_p50_s": 0.163472385,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.233419962665545,
+          "thread_cpu_sum_s": 0.08405463,
+          "wall_interval_union_s": 0.163472385,
+          "wall_span_sum_s": 0.163472385
+        },
+        "sparse_to_dense": {
+          "call_wall_max_s": 0.00020093,
+          "call_wall_p50_s": 0.00020093,
+          "calls": 1,
+          "fraction_of_invocation_by_union": 0.00028690517421880123,
+          "thread_cpu_sum_s": 0.000200996,
+          "wall_interval_union_s": 0.00020093,
+          "wall_span_sum_s": 0.00020093
+        }
+      },
+      "service": {
+        "groups": 144,
+        "requests": 144,
+        "service_interval_union_s": 0.086107514,
+        "service_span_sum_s": 0.086107514,
+        "service_thread_cpu_sum_s": 0.086864331
+      },
+      "steps": 1,
+      "successful_tasks": 1,
+      "wall_s": 0.700335923
+    }
+  ]
+}

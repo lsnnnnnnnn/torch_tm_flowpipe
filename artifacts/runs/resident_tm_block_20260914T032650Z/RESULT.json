@@ -1,0 +1,80 @@
+{
+  "schema": "resident-tm-block-final-result-v1",
+  "source_sha": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+  "truth_status": {
+    "block_numerical_contract": "pass",
+    "actual_device_residency": "measured",
+    "online_integration": "pass",
+    "local_speed_effect": "measured",
+    "end_to_end_effect": "small_gain",
+    "full_horizon_new_candidate": "not_run",
+    "matched_flowstar_gap": "measured",
+    "entire_solver_formal_proof": false,
+    "full_gpu_engine": false
+  },
+  "default_enabled": false,
+  "engineering_target_met": false,
+  "architecture_target_met": true,
+  "local_3x_target_met_both": true,
+  "online_correctness_gate_passed": true,
+  "formal_workload": {
+    "partition": [8, 4],
+    "tasks": 32,
+    "steps_per_task": 20,
+    "successful_lane_steps_per_run": 640,
+    "fixed_pairs_per_plant": 5,
+    "extra_pairs_added": 0
+  },
+  "local_block_speedups": {
+    "van_der_pol_cpu_over_resident_median": 42.31351633186492,
+    "brusselator_cpu_over_resident_median": 49.57266047874484,
+    "wins_each": 5,
+    "denominator_includes_request_pack_transfer_kernel_return_check_rebuild": true
+  },
+  "end_to_end": {
+    "van_der_pol": {
+      "paired_Gp_over_Gr_median": 1.1376411384882839,
+      "Gr_faster_wins": 5,
+      "Gp_wall_median_s": 282.683342714,
+      "Gr_wall_median_s": 249.890460868,
+      "Q_wall_median_s": 336.347412554,
+      "median_Q_over_Gr": 1.3459793998766096,
+      "target_met": false
+    },
+    "brusselator": {
+      "paired_Gp_over_Gr_median": 1.16055327714959,
+      "Gr_faster_wins": 5,
+      "Gp_wall_median_s": 410.321948376,
+      "Gr_wall_median_s": 355.176660497,
+      "Q_wall_median_s": 485.911898572,
+      "median_Q_over_Gr": 1.368085104162142,
+      "target_met": false
+    },
+    "required_paired_median": 1.2,
+    "required_wins": 4,
+    "stable_strict_cpu_regression": false
+  },
+  "online": {
+    "new_diagnostic_runs": 24,
+    "completed_route_lane_steps": 4208,
+    "same_device_comparisons": 12,
+    "same_device_width_rows": 8416,
+    "reused_parent_cpu_width_rows": 8368,
+    "width_ratio_over_1p10": 0,
+    "resident_structure_fallbacks": 0,
+    "hardware_fallbacks": 0,
+    "saved_answers_used_to_advance": false
+  },
+  "matched_flowstar": {
+    "same_workload_completed": true,
+    "van_der_pol_Gr_wall_over_flowstar_wall": 355.5096161951496,
+    "brusselator_Gr_wall_over_flowstar_wall": 44.26173643514204,
+    "exact_history_contract_supported": false,
+    "flowstar_is_floating_point_truth": false
+  },
+  "new_original_unpartitioned_1000_step_runs": 0,
+  "full_horizon_status": "NOT_RUN_PERFORMANCE_NOT_USEFUL",
+  "independent_clone_verification": "pending",
+  "performance_result": "PERFORMANCE_RESULT.json",
+  "source_map": "SOURCE_MAP.json"
+}

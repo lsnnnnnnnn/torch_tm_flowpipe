@@ -1,0 +1,35 @@
+{
+  "schema": "resident-tm-block-selection-v1",
+  "selected_block": "accepted_boundary_dependency_preserving_normal_composition",
+  "selected_call": "torch_tm_flowpipe.flowpipe.insert_ctrunc_normal_dependency_preserving",
+  "input_boundary": [
+    "current endpoint Taylor map without constants",
+    "previous accepted normalized right map",
+    "order, cutoff, output domain and truncation-split metadata"
+  ],
+  "output_boundary": "composed Taylor map with truncation, cutoff, coefficient-roundoff and remainder ownership",
+  "profile_source": "BLOCK_SELECTION_PROFILE.json",
+  "profile_windows": 8,
+  "total_profiled_solver_wall_s": 189.158071279,
+  "selected_block_wall_union_s": 68.742341,
+  "selected_block_weighted_wall_fraction": 0.363412,
+  "b32_wall_fractions": {
+    "van_der_pol": 0.415907,
+    "brusselator": 0.329197
+  },
+  "ideal_end_to_end_reduction_fraction": 0.363412,
+  "required_block_speedup_for_20_percent_end_to_end": 2.224,
+  "required_block_reduction_fraction_for_20_percent_end_to_end": 0.5504,
+  "rejected_candidate": {
+    "name": "dense_picard_validation",
+    "weighted_wall_fraction": 0.853136,
+    "reason": "The envelope includes fixed-point iteration, validation policy, the complete dense remainder ledger and the boundary transition; it is not one bounded reusable Taylor-model block."
+  },
+  "context_only_envelope": {
+    "name": "accepted_boundary_transition",
+    "weighted_wall_fraction": 0.528595,
+    "reason": "Queue propagation and atomic commit are state-ownership operations outside the selected numerical composition block."
+  },
+  "selection_frozen_before_implementation": true,
+  "saved_answers_used": false
+}

@@ -1,0 +1,138 @@
+{
+  "local_target_met_both": true,
+  "measurements": [
+    {
+      "batch": 32,
+      "captured_inputs_are_first_real_accepted_boundary_calls": true,
+      "captured_run": "artifacts/runs/resident_tm_block_20260914T032650Z/diagnostic/prefix-b32-van_der_pol-Gr",
+      "cold_compile_and_startup_outside_timing": true,
+      "cpu_input_tm_already_available_as_at_production_call": true,
+      "current_gpu_request_build_inside_timing": true,
+      "final_output_width_ratio_gpu_over_legacy_cpu_max": 1.0,
+      "gpu_timing_includes_pack_h2d_kernel_d2h_receipt_checks_and_object_rebuild": true,
+      "legacy_cpu_known_to_omit_retained_coefficient_roundoff": true,
+      "median_cpu_over_gpu": 42.31351633186492,
+      "pairs": [
+        {
+          "cpu_over_gpu": 42.31351633186492,
+          "cpu_thread_s": 1.596712441,
+          "cpu_wall_s": 1.597362703,
+          "gpu_thread_s": 0.037747539,
+          "gpu_wall_s": 0.037750649,
+          "order": "cpu/gpu",
+          "repetition": 0
+        },
+        {
+          "cpu_over_gpu": 42.687241632270364,
+          "cpu_thread_s": 1.605000793,
+          "cpu_wall_s": 1.605752522,
+          "gpu_thread_s": 0.037594095,
+          "gpu_wall_s": 0.037616685,
+          "order": "gpu/cpu",
+          "repetition": 1
+        },
+        {
+          "cpu_over_gpu": 41.57962943276414,
+          "cpu_thread_s": 1.593551982,
+          "cpu_wall_s": 1.594231682,
+          "gpu_thread_s": 0.038339139,
+          "gpu_wall_s": 0.038341652,
+          "order": "cpu/gpu",
+          "repetition": 2
+        },
+        {
+          "cpu_over_gpu": 43.90011345322701,
+          "cpu_thread_s": 1.648108262,
+          "cpu_wall_s": 1.649003104,
+          "gpu_thread_s": 0.037511966,
+          "gpu_wall_s": 0.037562616,
+          "order": "gpu/cpu",
+          "repetition": 3
+        },
+        {
+          "cpu_over_gpu": 41.213313766722834,
+          "cpu_thread_s": 1.604827735,
+          "cpu_wall_s": 1.605737099,
+          "gpu_thread_s": 0.038959302,
+          "gpu_wall_s": 0.038961611,
+          "order": "cpu/gpu",
+          "repetition": 4
+        }
+      ],
+      "plant": "van_der_pol",
+      "repeated_saved_answers_used_to_advance": false,
+      "target_3x_met": true,
+      "wins": 5
+    },
+    {
+      "batch": 32,
+      "captured_inputs_are_first_real_accepted_boundary_calls": true,
+      "captured_run": "artifacts/runs/resident_tm_block_20260914T032650Z/diagnostic/prefix-b32-brusselator-Gr",
+      "cold_compile_and_startup_outside_timing": true,
+      "cpu_input_tm_already_available_as_at_production_call": true,
+      "current_gpu_request_build_inside_timing": true,
+      "final_output_width_ratio_gpu_over_legacy_cpu_max": 1.0,
+      "gpu_timing_includes_pack_h2d_kernel_d2h_receipt_checks_and_object_rebuild": true,
+      "legacy_cpu_known_to_omit_retained_coefficient_roundoff": true,
+      "median_cpu_over_gpu": 49.57266047874484,
+      "pairs": [
+        {
+          "cpu_over_gpu": 46.77502451847395,
+          "cpu_thread_s": 2.491186019,
+          "cpu_wall_s": 2.492422664,
+          "gpu_thread_s": 0.053256264,
+          "gpu_wall_s": 0.053285331,
+          "order": "cpu/gpu",
+          "repetition": 0
+        },
+        {
+          "cpu_over_gpu": 49.57266047874484,
+          "cpu_thread_s": 2.487458912,
+          "cpu_wall_s": 2.488902645,
+          "gpu_thread_s": 0.050203673,
+          "gpu_wall_s": 0.050207163,
+          "order": "gpu/cpu",
+          "repetition": 1
+        },
+        {
+          "cpu_over_gpu": 46.44610902644525,
+          "cpu_thread_s": 2.499636545,
+          "cpu_wall_s": 2.501151907,
+          "gpu_thread_s": 0.053847169,
+          "gpu_wall_s": 0.053850623,
+          "order": "cpu/gpu",
+          "repetition": 2
+        },
+        {
+          "cpu_over_gpu": 51.053937962584165,
+          "cpu_thread_s": 2.490178962,
+          "cpu_wall_s": 2.491827279,
+          "gpu_thread_s": 0.048781876,
+          "gpu_wall_s": 0.048807739,
+          "order": "gpu/cpu",
+          "repetition": 3
+        },
+        {
+          "cpu_over_gpu": 50.21197315522929,
+          "cpu_thread_s": 2.511532053,
+          "cpu_wall_s": 2.512860908,
+          "gpu_thread_s": 0.050003614,
+          "gpu_wall_s": 0.050045054,
+          "order": "cpu/gpu",
+          "repetition": 4
+        }
+      ],
+      "plant": "brusselator",
+      "repeated_saved_answers_used_to_advance": false,
+      "target_3x_met": true,
+      "wins": 5
+    }
+  ],
+  "passed": true,
+  "schema": "resident-tm-block-local-real-b32-timing-v1",
+  "timing_semantics": {
+    "cpu": "32 legacy production block calls on captured current inputs",
+    "gpu": "32 request builds plus one resident group and complete returned objects",
+    "wall": "one logical CPU core; each pair alternates route order"
+  }
+}

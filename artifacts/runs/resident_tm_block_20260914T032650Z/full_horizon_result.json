@@ -1,0 +1,42 @@
+{
+  "schema": "resident-tm-block-full-horizon-result-v1",
+  "status": "NOT_RUN_PERFORMANCE_NOT_USEFUL",
+  "full_horizon_new_candidate": "not_run",
+  "eligibility_checks": {
+    "local_numerical_contract_passed": true,
+    "online_120_step_checks_passed": true,
+    "end_to_end_engineering_target_met": false,
+    "van_der_pol_median_Gp_over_Gr": 1.1376411384882839,
+    "brusselator_median_Gp_over_Gr": 1.16055327714959,
+    "required_median_speedup_each_plant": 1.2,
+    "required_wins_each_plant": 4,
+    "observed_wins_each_plant": 5
+  },
+  "reason": "The candidate was correct and produced a stable small gain, but neither plant reached the predeclared 1.20x end-to-end threshold; the goal requires stopping rather than spending two new 1000-step runs.",
+  "new_original_unpartitioned_1000_step_runs": 0,
+  "historical_parent_full_horizon_relabelled_as_new": false,
+  "historical_parent_evidence_reused_only": {
+    "source_commit": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+    "verification_commit": "0b0da13da2c563ddf287fa79731e2c8653d46852",
+    "van_der_pol": {
+      "scope": "ORIGINAL_UNPARTITIONED_B1",
+      "steps": 1000,
+      "target": "T10",
+      "achieved_by_parent_Gp": true
+    },
+    "brusselator": {
+      "scope": "ORIGINAL_UNPARTITIONED_B1",
+      "steps": 1000,
+      "target": "T20",
+      "achieved_by_parent_Gp": true
+    }
+  },
+  "current_candidate_longest_fresh_continuous_check": {
+    "tasks_per_plant": 2,
+    "steps_per_task": 120,
+    "scope": "FIXED_PARTITION_DIAGNOSTIC",
+    "not_a_full_horizon": true
+  },
+  "entire_solver_formal_proof": false,
+  "full_gpu_engine": false
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "resident-tm-block-source-map-v1",
+  "branch": "codex/resident-tm-block-20260914T032650Z",
+  "parent_delivery_commit": "372cede015105a3bcdf56b514b65f7dd0551fc43",
+  "implementation_commit": "3f6d1007e3de5712cfec2b01ffd14d7c7e92cf1b",
+  "actual_scientific_runtime_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+  "actual_scientific_runtime_tree_clean": true,
+  "matched_flowstar_measurement_harness_commit": "b2dfba335db70f4613177a63f40336031971b141",
+  "packaging_changes_after_scientific_runtime": true,
+  "packaging_changes_are_docs_evidence_verifier_and_flowstar_harness_only": true,
+  "scientific_runtime_sources": {
+    "src/torch_tm_flowpipe/resident_tm_block.py": "daa2bb484b6a8d28a40a7799f2343ad2a29d110b92a4fc7b425584c1b44eea32",
+    "src/torch_tm_flowpipe/resident_tm_cuda_kernel.cu": "7f163c0b9c662dbd19ef15f4f58745278c239c4625c198696111f00583f77b09",
+    "src/torch_tm_flowpipe/live_range_service.py": "cfa3f9b023afd29d15b826362c536ccaf73533bbd1c2499e7a4fa2f1244bbf41",
+    "src/torch_tm_flowpipe/flowpipe.py": "f95c1b67e4ec303618ad1943d409aabf0e84d95832b9afc133813543eec30ef4",
+    "experiments/live_range_solver/runner.py": "d8a1fdbfd369ffbd074013c42ef626a88859dfb910ea4791a2b2c0f85daf6a4c",
+    "experiments/live_range_solver/verify.py": "92d9aba0e5a8655a55835bc77bb3482a0cdf1c6e063bc1b904df3374b8404ab4",
+    "experiments/resident_tm_block/exact_oracle.py": "81bf2c82128521e0facea466a432fc99b3b40f0d2e610256c40609611a398519",
+    "experiments/resident_tm_block/local_exact_checks.py": "ed9d8d0cc8ba4ae99773357b058a841df201896e834df5b6b181e04ba470a11a",
+    "experiments/resident_tm_block/campaign.py": "083abb15844bb156e454a8f369fc467d8e86511057af1bf355fe756a62435aca",
+    "experiments/resident_tm_block/analyze.py": "6bcd2007dd5eae96b0c0765e8ce84d6466e34be16f11ed6cd4037fa578044d85",
+    "tests/test_resident_tm_block.py": "ad2b3e7d11117640f98df690eab92538530c5d96e1157177adf2547512474ce4"
+  },
+  "runtime_artifacts": {
+    "diagnostic_source_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+    "diagnostic_completion_utc": "2026-09-14T05:26:56.948988+00:00",
+    "formal_source_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+    "formal_completion_utc": "2026-09-14T08:22:12.756245+00:00",
+    "partition_sha256": "717897f2b615832ce61be0d60c1aa59833ea896bcf1cfbebfb3771ba539cd6d0",
+    "resident_cuda_source_sha256": "7f163c0b9c662dbd19ef15f4f58745278c239c4625c198696111f00583f77b09",
+    "resident_ptx_sha256": "3f3d9b92ebb814d991be2b47724fcdb0168685dad919ee4f8db79e63f82507e5",
+    "nvrtc_version": [12, 1],
+    "gpu": "Tesla V100-SXM2-16GB, compute capability 7.0"
+  },
+  "selection_profile": {
+    "solver_base_commit": "372cede015105a3bcdf56b514b65f7dd0551fc43",
+    "profiler_source_first_committed_in": "3f6d1007e3de5712cfec2b01ffd14d7c7e92cf1b",
+    "profile_records_git_commit": false,
+    "source_claim": "fresh live solver windows; no saved answers used to advance",
+    "authoritative_file": "BLOCK_SELECTION_PROFILE.json"
+  },
+  "verifier_amendment": {
+    "before_commit": "3f6d1007e3de5712cfec2b01ffd14d7c7e92cf1b",
+    "after_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+    "scope": "one schema-nullability expression in experiments/live_range_solver/verify.py",
+    "change": "e.get('request', {}).get(...) to (e.get('request') or {}).get(...)",
+    "mathematical_conditions_relaxed": false,
+    "pre_fix_run_completed_solver": true,
+    "pre_fix_verifier_failed": true,
+    "preserved_evidence": "raw_minimal/validator_amendment_before_fix/"
+  },
+  "flowstar": {
+    "canonical_upstream": "https://github.com/chenxin415/flowstar",
+    "license": "GPL-3.0",
+    "stock_base_commit": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+    "readonly_accessor_commit": "722a5611c0b33564b11916b13474d0d21d74bc0c",
+    "readonly_patch_sha256": "49d839fa88e35e8e84a7f994fcbc3d66f868166539fa1cd8bc3e273838daeb0e",
+    "static_archive_sha256": "274e9bd11c9de21e95d72e935d9e45fd4fe9479ebb986751dd7f90522e416e3e",
+    "driver_sha256_at_measurement": "a47c5576d552777186dd1b473d81b82eac21ca16a13c0fd29eed28907a9d264b",
+    "binary_sha256": "2cb9ed28787dffd69565aa2f496c186a15eb20d2552c9d6da338025142b7ae17",
+    "algorithm_modified_for_comparison": false,
+    "binary_or_flowstar_source_vendored": false,
+    "identity_file": "raw_minimal/matched_flowstar/flowstar_identity.json"
+  },
+  "reused_parent_evidence": {
+    "parent_gpu_scientific_commit": "1d870939fcdb72bd999730cf09de0b14d1cd71c4",
+    "parent_gpu_verification_commit": "0b0da13da2c563ddf287fa79731e2c8653d46852",
+    "prior_online_gpu_delivery": "e4d920aa710bd407666c60285632a4c294edb9da",
+    "parent_result_path": "artifacts/runs/live_gpu_packets_20260910T023603Z/RESULT.json",
+    "parent_result_sha256": "b12690d95fd32223686e9ad1db4d33a2957292d5d71ee660b72191e1247f44fe",
+    "parent_vdp_1000_step_stream_sha256": "9c2f6973dd5da58a9e21bf5733a1f53dbd65aa4f98a2638ba4580587a93bf7dc",
+    "parent_brusselator_1000_step_stream_sha256": "1a38465ed81ea3aa95b76e0ae4aca6427bc2bef561fb8ab57dd31c0df546b9b5",
+    "vdp_step99_checkpoint_sha256": "12249615341715d0fb1af1cd219388bf9263441c8b2e678d0ec81fd81b6db4cb",
+    "brusselator_step999_checkpoint_sha256": "57e17f78e974f61659eb5ea9b0642bae22c36f8da77f269b1374d4ed609dd11f",
+    "parent_cpu_diagnostic_gate_sha256": "f74775bd68b78e829c88d6e3687664eda3e745178dc360c3a7733f9ca4c72f1a",
+    "reused_as_new_candidate_full_horizon": false
+  }
+}

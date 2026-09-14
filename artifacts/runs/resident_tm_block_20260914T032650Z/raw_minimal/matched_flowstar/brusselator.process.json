@@ -1,0 +1,21 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/resident_tm_block_20260914T032650Z/matched_flowstar/raw_minimal/flowstar_matched_b32",
+    "brusselator",
+    "20",
+    "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/resident_tm_block_20260914T032650Z/matched_flowstar/raw_minimal/brusselator.tasks.jsonl",
+    "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/resident_tm_block_20260914T032650Z/matched_flowstar/raw_minimal/brusselator.summary.json"
+  ],
+  "environment": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "filesystem_cache_flushed": false,
+  "fresh_process_startup_included": true,
+  "returncode": 0,
+  "wall_seconds": 8.024462868
+}

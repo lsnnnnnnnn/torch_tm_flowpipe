@@ -1,0 +1,121 @@
+{
+  "schema": "resident-tm-block-test-commands-v1",
+  "scientific_runtime_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
+  "execution_environment": {
+    "python": "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+    "PYTHONPATH": "src:.:tests",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "CUDA_VISIBLE_DEVICES": "0",
+    "cpu_affinity": [2]
+  },
+  "affected_pytest": {
+    "command": [
+      "env",
+      "PYTHONPATH=src:.:tests",
+      "OMP_NUM_THREADS=1",
+      "MKL_NUM_THREADS=1",
+      "OPENBLAS_NUM_THREADS=1",
+      "CUDA_VISIBLE_DEVICES=0",
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_boundary_range_plan.py",
+      "tests/test_range_requests.py",
+      "tests/test_range_cuda.py",
+      "tests/test_live_range_service.py",
+      "tests/test_live_range_solver_integration.py",
+      "tests/test_live_range_evidence.py",
+      "tests/test_range_packets.py",
+      "tests/test_long_horizon_packet.py",
+      "tests/test_resident_tm_block.py",
+      "tests/test_dependency_preserving_insertion.py",
+      "tests/test_accepted_boundary_sr.py",
+      "tests/test_vdp_c3_cross_step_queue.py",
+      "tests/test_brusselator_c5_live_range.py",
+      "--junitxml=artifacts/runs/resident_tm_block_20260914T032650Z/tests/affected.xml"
+    ],
+    "scope": "affected test set, not the repository's all-history total",
+    "tests": 269,
+    "passed": 269,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 71.963,
+    "junit_timestamp": "2026-09-14T09:04:29.943305",
+    "junit": "affected.xml"
+  },
+  "independent_fraction_matrix": {
+    "command": [
+      "taskset", "-c", "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.local_exact_checks",
+      "--output",
+      "artifacts/runs/resident_tm_block_20260914T032650Z/local_exact_checks.json"
+    ],
+    "executed_before_formal_campaign": true,
+    "passed": true,
+    "point_coefficient_checks": 2752,
+    "coefficient_error_interval_checks": 2752,
+    "remainder_interval_checks": 128
+  },
+  "campaign_commands": {
+    "diagnostic": [
+      "taskset", "-c", "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.campaign",
+      "--phase", "diagnostic",
+      "--output", "artifacts/runs/resident_tm_block_20260914T032650Z/diagnostic"
+    ],
+    "formal": [
+      "taskset", "-c", "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.campaign",
+      "--phase", "formal",
+      "--output", "artifacts/runs/resident_tm_block_20260914T032650Z/formal"
+    ],
+    "exact_per_run_commands_and_timestamps": [
+      "raw_minimal/diagnostic/jobs.json",
+      "raw_minimal/formal/jobs.json"
+    ]
+  },
+  "analysis_commands": {
+    "diagnostic": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.analyze",
+      "diagnostic",
+      "artifacts/runs/resident_tm_block_20260914T032650Z/diagnostic"
+    ],
+    "formal": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.analyze",
+      "formal",
+      "artifacts/runs/resident_tm_block_20260914T032650Z/formal"
+    ]
+  },
+  "flowstar_command": {
+    "command": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m", "experiments.resident_tm_block.run_flowstar_matched",
+      "--flowstar-root", "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/flowstar_native",
+      "--readonly-patch", "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/flowstar_readonly_export.patch",
+      "--partition-plan", "artifacts/runs/range_batch_device_20260909T030609Z/PARTITION_PLAN.json",
+      "--paired-speedups", "artifacts/runs/resident_tm_block_20260914T032650Z/paired_speedups.csv",
+      "--artifact", "artifacts/runs/resident_tm_block_20260914T032650Z/matched_flowstar",
+      "--compiler", "/usr/bin/g++-15",
+      "--core", "2",
+      "--steps", "20"
+    ],
+    "passed": true,
+    "runs": 2,
+    "successful_lane_steps_each": 640
+  },
+  "new_full_1000_step_commands": [],
+  "new_full_1000_step_runs": 0,
+  "new_full_1000_step_status": "NOT_RUN_PERFORMANCE_NOT_USEFUL"
+}

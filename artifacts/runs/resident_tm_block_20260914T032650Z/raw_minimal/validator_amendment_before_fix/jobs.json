@@ -1,0 +1,36 @@
+[
+  {
+    "case": "small-b1-van_der_pol-Gp",
+    "command": [
+      "taskset",
+      "-c",
+      "2",
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.live_range_solver.runner",
+      "--plant",
+      "van_der_pol",
+      "--route",
+      "Gp",
+      "--batch",
+      "1",
+      "--steps",
+      "3",
+      "--output",
+      "/srv/local/shengenli/resident_tm_block_20260914T032650Z/repo/artifacts/runs/resident_tm_block_20260914T032650Z/diagnostic/small-b1-van_der_pol-Gp",
+      "--max-wait-s",
+      ".020",
+      "--max-group",
+      "32",
+      "--warm",
+      "--diagnostic"
+    ],
+    "end_epoch": 1789360445.1694255,
+    "exit_code": 0,
+    "log_sha256": "70ec5feea476f7def5f76a4632cf6d3ef9ce039bda4466b9783d68ff6a0eb8af",
+    "pid": 3222251,
+    "source_sha": "3f6d1007e3de5712cfec2b01ffd14d7c7e92cf1b",
+    "start_epoch": 1789360440.5683775,
+    "status": "COMPLETED"
+  }
+]

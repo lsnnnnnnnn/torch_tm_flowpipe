@@ -1,0 +1,18 @@
+{
+  "schema": "resident-tm-block-rejected-flowstar-attempt-v1",
+  "accepted_as_evidence": false,
+  "reason": "The first harness used one binary64 endpoint for both cells adjacent to an exact rational partition boundary. PARTITION_PLAN.json specifies a separately downward-rounded lower endpoint and upward-rounded upper endpoint, so the boxes were not bit-exact.",
+  "discovered_before_final_matched_result": true,
+  "scientific_candidate_changed": false,
+  "flowstar_algorithm_changed": false,
+  "fix": "Represent x_lo/x_hi and y_lo/y_hi for every cell separately and validate all 32 box_hex records against PARTITION_PLAN.json before accepting timing.",
+  "rejected_driver_sha256": "8fe5ae8a4b0d5918fc285a09d0b1f7c95748f43e7a33172fb7fe78d978906ce0",
+  "accepted_driver_sha256": "a47c5576d552777186dd1b473d81b82eac21ca16a13c0fd29eed28907a9d264b",
+  "preserved_files": [
+    "van_der_pol.summary.json",
+    "van_der_pol.time.json",
+    "brusselator.summary.json",
+    "brusselator.time.json",
+    "driver_sha256.txt"
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "failure_policy": {
+    "hidden_cpu_recompute": false,
+    "nonfinite_input": "nonfinite",
+    "wrong_fingerprint": "unsupported_structure"
+  },
+  "independence": {
+    "fraction_or_high_precision_in_hot_path": false,
+    "legacy_cpu_output_used_as_truth": false,
+    "oracle_numeric_type": "fractions.Fraction",
+    "random_trajectory_sampling_used": false
+  },
+  "matrix": [
+    {
+      "batch": 32,
+      "chunk_widths_bitwise": {
+        "1": true,
+        "2": true,
+        "32": true,
+        "8": true
+      },
+      "heterogeneous_interval_coefficients": true,
+      "heterogeneous_splits": true,
+      "heterogeneous_support": true,
+      "order": 4,
+      "task_reorder_bitwise": true,
+      "timing": {
+        "batch": 32,
+        "block_host_span_s": 0.046629337,
+        "d2h_checks_and_rebuild_s": 0.039351226010118485,
+        "d2h_copy_operations": 2,
+        "d2h_host_span_s": 0.0001275280101184842,
+        "h2d_copy_operations": 2,
+        "h2d_cuda_event_s": 8.169600367546081e-05,
+        "host_synchronizations": 1,
+        "kernel_cuda_event_s": 0.006385663986206055,
+        "kernel_invocations": 1,
+        "logical_device_local_intermediate_bytes": 116224,
+        "metadata_d2h_bytes": 16,
+        "metadata_h2d_bytes": 512,
+        "numeric_d2h_bytes": 29696,
+        "numeric_h2d_bytes": 49152,
+        "outputs": 2,
+        "packing_s": 0.000810751,
+        "receipt": [
+          5928236106041674827,
+          64
+        ],
+        "schema": "resident-tm-block-timing-v1",
+        "structure_cache_entries": 1,
+        "terms": 15
+      }
+    },
+    {
+      "batch": 32,
+      "chunk_widths_bitwise": {
+        "1": true,
+        "2": true,
+        "32": true,
+        "8": true
+      },
+      "heterogeneous_interval_coefficients": true,
+      "heterogeneous_splits": true,
+      "heterogeneous_support": true,
+      "order": 6,
+      "task_reorder_bitwise": true,
+      "timing": {
+        "batch": 32,
+        "block_host_span_s": 0.049379171,
+        "d2h_checks_and_rebuild_s": 0.04611527001244259,
+        "d2h_copy_operations": 2,
+        "d2h_host_span_s": 0.00016952901244258892,
+        "h2d_copy_operations": 2,
+        "h2d_cuda_event_s": 0.0001452160030603409,
+        "host_synchronizations": 1,
+        "kernel_cuda_event_s": 0.0022210559844970702,
+        "kernel_invocations": 1,
+        "logical_device_local_intermediate_bytes": 209920,
+        "metadata_d2h_bytes": 16,
+        "metadata_h2d_bytes": 512,
+        "numeric_d2h_bytes": 49664,
+        "numeric_h2d_bytes": 89088,
+        "outputs": 2,
+        "packing_s": 0.000897629,
+        "receipt": [
+          5928236106041674827,
+          64
+        ],
+        "schema": "resident-tm-block-timing-v1",
+        "structure_cache_entries": 2,
+        "terms": 28
+      }
+    }
+  ],
+  "passed": true,
+  "primitive_probe": [
+    [
+      "0x1.0000000000000p-1",
+      "0x1.0000000000001p-1",
+      "0x0.0p+0",
+      "0x0.0000000000001p-1022"
+    ],
+    [
+      "0x1.fffffffffffffp-2",
+      "0x1.0000000000000p-1",
+      "-0x0.0000000000001p-1022",
+      "-0x0.0p+0"
+    ],
+    [
+      "0x1.67e9c127b6e74p-531",
+      "0x1.67e9c127b6e74p-531",
+      "0x0.00000000007e8p-1022",
+      "0x0.00000000007e9p-1022"
+    ],
+    [
+      "-0x0.0p+0",
+      "0x0.0p+0",
+      "-0x0.00000000007e9p-1022",
+      "-0x0.00000000007e8p-1022"
+    ],
+    [
+      "0x1.0000000000000p+0",
+      "0x1.0000000000001p+0",
+      "0x0.0000000000001p-1022",
+      "0x0.0000000000001p-1022"
+    ],
+    [
+      "-0x0.0p+0",
+      "0x0.0p+0",
+      "-0x1.3e9e4e4c2f345p+199",
+      "-0x1.3e9e4e4c2f344p+199"
+    ]
+  ],
+  "retained_roundoff_witness": {
+    "exact_error_denominator": 5070602400912917605986812821504,
+    "exact_error_numerator": 45035996273705,
+    "left_input_hex": "0x1.199999999999ap+0",
+    "legacy_contains_exact_error": false,
+    "legacy_remainder": [
+      "-0x0.0000000000007p-1022",
+      "0x0.0000000000007p-1022"
+    ],
+    "resident_coefficient_error": [
+      "-0x0.0p+0",
+      "0x1.0000000000000p-52"
+    ],
+    "resident_contains_exact_error": true
+  },
+  "schema": "resident-tm-block-local-exact-checks-v1",
+  "startup": {
+    "build": {
+      "capability": [
+        7,
+        0
+      ],
+      "compile_and_load_s": 1.7522875717841089,
+      "compiler_log": "",
+      "device": "cuda:0",
+      "device_name": "Tesla V100-SXM2-16GB",
+      "flags": [
+        "--std=c++14",
+        "--gpu-architecture=compute_70",
+        "--fmad=false",
+        "--ftz=false",
+        "--prec-div=true",
+        "--prec-sqrt=true"
+      ],
+      "nvrtc_path": "/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib/libnvrtc.so.12",
+      "nvrtc_version": [
+        12,
+        1
+      ],
+      "ptx_sha256": "3f3d9b92ebb814d991be2b47724fcdb0168685dad919ee4f8db79e63f82507e5",
+      "source_sha256": "7f163c0b9c662dbd19ef15f4f58745278c239c4625c198696111f00583f77b09"
+    },
+    "primitive_bounds": [
+      [
+        "0x1.0000000000000p-1",
+        "0x1.0000000000001p-1",
+        "0x0.0p+0",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "0x1.fffffffffffffp-2",
+        "0x1.0000000000000p-1",
+        "-0x0.0000000000001p-1022",
+        "-0x0.0p+0"
+      ],
+      [
+        "0x1.67e9c127b6e74p-531",
+        "0x1.67e9c127b6e74p-531",
+        "0x0.00000000007e8p-1022",
+        "0x0.00000000007e9p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x0.00000000007e9p-1022",
+        "-0x0.00000000007e8p-1022"
+      ],
+      [
+        "0x1.0000000000000p+0",
+        "0x1.0000000000001p+0",
+        "0x0.0000000000001p-1022",
+        "0x0.0000000000001p-1022"
+      ],
+      [
+        "-0x0.0p+0",
+        "0x0.0p+0",
+        "-0x1.3e9e4e4c2f345p+199",
+        "-0x1.3e9e4e4c2f344p+199"
+      ]
+    ],
+    "reused": false
+  },
+  "totals": {
+    "coefficient_error_interval_checks": 2752,
+    "point_coefficient_checks": 2752,
+    "remainder_interval_checks": 128
+  }
+}
