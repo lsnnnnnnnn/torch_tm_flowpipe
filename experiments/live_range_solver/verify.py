@@ -313,7 +313,7 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
             assert count == run["counts"].get(name, 0)
     assert groups == run["groups"], "service timeline differs from lifecycle"
     fallbacks = sum(
-        e.get("request", {}).get("type") != "ResidentNormalCompositionRequest"
+        (e.get("request") or {}).get("type") != "ResidentNormalCompositionRequest"
         and e["structure"][5][0] == "external"
         for e in submitted.values()
     )
