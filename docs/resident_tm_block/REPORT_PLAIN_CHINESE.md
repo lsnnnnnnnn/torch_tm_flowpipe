@@ -94,6 +94,8 @@ Gp/Gr 的 12 组同设备比较中，接受决定、状态步、h、拒绝/验�
 
 Flow* 驱动第一次试跑又暴露出相邻数学分区边界各有独立向外舍入值，不能压成共享 binary64 边界。该试跑在正式结果前被拒绝，摘要和旧驱动哈希保存在 `raw_minimal/flowstar_shared_boundary_rejected/`；最终驱动逐盒对照 `PARTITION_PLAN.json` 的四个十六进制端点后才接受结果。
 
+最终验收从已推送分支新建独立克隆，在提交 `52eeb5dddd092e663c70dddb21ab83a21dfdfaae` 先重算当时 105 个封装文件的哈希与有限结论，再实际执行两系统各自 B2、两步的 Gp/Gr，共 4 个新运行、16 个成功 lane-step。四个原始事件流均重新通过生命周期和数值验证；两组比较的决定、ordered support、ledger 类别零差异，非零宽度比最大值均为 1.0，Gr 共消费 8 个 resident 请求。该验收明确没有重跑完整性能矩阵，也没有新增 1000 步。压缩原始流、命令、时间和副本收据保存在 `raw_minimal/independent_clone/`。
+
 ## 证据入口与复现
 
 主证据目录是 `artifacts/runs/resident_tm_block_20260914T032650Z/`。重点文件：
@@ -107,6 +109,7 @@ Flow* 驱动第一次试跑又暴露出相邻数学分区边界各有独立向�
 - `matched_flowstar.csv`：同工作量 Flow* 尺度与合同缺口；
 - `full_horizon_result.json`：为什么没有新增 1000 步；
 - `tests/affected.xml` 与 `tests/commands.json`：269 项受影响测试；
+- `raw_minimal/independent_clone/`：独立远端克隆的 B2×2 原始事件、复算结果与收据；
 - `SHA256SUMS`：交付内文件完整性。
 
 具体数值规则见 `NUMERICAL_CONTRACT.md`。候选实际科学运行提交是 `8953b5ea24e69d11ac5c2890a4cdb663305e9e79`；Flow* 测量驱动提交是 `b2dfba33...`。完整性能没有在封装后重跑。

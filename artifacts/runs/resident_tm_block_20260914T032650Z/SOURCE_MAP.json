@@ -6,8 +6,11 @@
   "actual_scientific_runtime_commit": "8953b5ea24e69d11ac5c2890a4cdb663305e9e79",
   "actual_scientific_runtime_tree_clean": true,
   "matched_flowstar_measurement_harness_commit": "b2dfba335db70f4613177a63f40336031971b141",
+  "evidence_package_commit": "491d3b9ba7b21e143a2aa1c9f2264b8cba1e5008",
+  "independent_smoke_harness_commit": "52eeb5dddd092e663c70dddb21ab83a21dfdfaae",
   "packaging_changes_after_scientific_runtime": true,
   "packaging_changes_are_docs_evidence_verifier_and_flowstar_harness_only": true,
+  "packaging_change_scope": "documentation, evidence, package verifier, matched Flowstar harness, and independent acceptance harness; no scientific runtime source changes",
   "scientific_runtime_sources": {
     "src/torch_tm_flowpipe/resident_tm_block.py": "daa2bb484b6a8d28a40a7799f2343ad2a29d110b92a4fc7b425584c1b44eea32",
     "src/torch_tm_flowpipe/resident_tm_cuda_kernel.cu": "7f163c0b9c662dbd19ef15f4f58745278c239c4625c198696111f00583f77b09",
@@ -31,6 +34,17 @@
     "resident_ptx_sha256": "3f3d9b92ebb814d991be2b47724fcdb0168685dad919ee4f8db79e63f82507e5",
     "nvrtc_version": [12, 1],
     "gpu": "Tesla V100-SXM2-16GB, compute capability 7.0"
+  },
+  "independent_clone": {
+    "remote": "https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git",
+    "branch": "codex/resident-tm-block-20260914T032650Z",
+    "execution_commit": "52eeb5dddd092e663c70dddb21ab83a21dfdfaae",
+    "package_manifest_files_verified_before_smoke": 105,
+    "fresh_runs": 4,
+    "successful_lane_steps_total": 16,
+    "complete_performance_matrix_reexecuted": false,
+    "full_1000_step_runs_reexecuted": 0,
+    "receipt": "raw_minimal/independent_clone/CLONE_RECEIPT.json"
   },
   "selection_profile": {
     "solver_base_commit": "372cede015105a3bcdf56b514b65f7dd0551fc43",

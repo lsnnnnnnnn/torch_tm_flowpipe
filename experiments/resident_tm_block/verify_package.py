@@ -9,6 +9,9 @@ from pathlib import Path
 import statistics
 import xml.etree.ElementTree as ET
 
+from experiments.live_range_solver.verify import load_run, verify_run
+from experiments.resident_tm_block.analyze import compare_online
+
 
 def load(path: Path):
     with path.open() as stream:
@@ -53,6 +56,10 @@ def main() -> None:
     horizon = load(root / "full_horizon_result.json")
     result = load(root / "RESULT.json")
     source_map = load(root / "SOURCE_MAP.json")
+    independent_root = root / "raw_minimal/independent_clone/fresh_b2x2"
+    independent = load(independent_root / "RESULT.json")
+    independent_jobs = load(independent_root / "jobs.json")
+    clone_receipt = load(root / "raw_minimal/independent_clone/CLONE_RECEIPT.json")
 
     assert local["passed"] is True
     assert local["totals"] == {
@@ -136,7 +143,58 @@ def main() -> None:
     assert result["truth_status"] == expected_truth
     assert result["default_enabled"] is False
     assert result["engineering_target_met"] is False
+    assert result["independent_clone_verification"] == "pass"
     assert source_map["actual_scientific_runtime_commit"] == performance["source_sha"]
+
+    assert independent["passed"] is True
+    assert independent["fresh_runs"] == 4
+    assert independent["successful_lane_steps_total"] == 16
+    assert independent["resident_requests_total"] == 8
+    assert independent["complete_performance_matrix_reexecuted"] is False
+    assert independent["full_1000_step_runs_reexecuted"] == 0
+    assert independent["saved_answers_used_to_advance"] is False
+    assert clone_receipt["passed"] is True
+    assert clone_receipt["independent_execution_commit"] == independent["clone_head"]
+    assert source_map["independent_clone"]["execution_commit"] == independent["clone_head"]
+    assert clone_receipt["package_verification_before_smoke"]["passed"] is True
+    assert clone_receipt["package_verification_before_smoke"]["manifest_files_checked"] == 105
+    assert len(independent_jobs) == 4
+    assert [job["name"] for job in independent_jobs] == [
+        "van_der_pol-Gp",
+        "van_der_pol-Gr",
+        "brusselator-Gp",
+        "brusselator-Gr",
+    ]
+    assert all(job["returncode"] == 0 for job in independent_jobs)
+
+    independent_runs = {}
+    for plant in ("van_der_pol", "brusselator"):
+        for route in ("Gp", "Gr"):
+            name = f"{plant}-{route}"
+            run, events = load_run(independent_root / name)
+            verify_run(run, events, recompute=True)
+            assert run["source_sha"] == independent["clone_head"]
+            assert run["ids"] == [0, 31]
+            assert run["steps"] == 2
+            assert run["successful_lane_steps"] == 4
+            if route == "Gr":
+                assert run["counts"]["resident_requests"] == 4
+                assert run["counts"].get("resident_structure_fallbacks", 0) == 0
+            independent_runs[name] = run
+
+    independent_comparisons = []
+    for plant in ("van_der_pol", "brusselator"):
+        comparison, _ = compare_online(
+            independent_runs[f"{plant}-Gp"],
+            independent_runs[f"{plant}-Gr"],
+            "INDEPENDENT_CLONE_B2X2",
+        )
+        assert not comparison["decision_mismatches"]
+        assert not comparison["ordered_support_mismatches"]
+        assert not comparison["ledger_category_mismatches"]
+        assert comparison["width_over_1p10"] == 0
+        independent_comparisons.append(comparison)
+    assert independent_comparisons == independent["comparisons"]
 
     suites = ET.parse(root / "tests/affected.xml").getroot()
     suite = suites.find("testsuite")
@@ -155,6 +213,8 @@ def main() -> None:
         "formal_resident_runs_checked": len(resident_rows),
         "online_comparisons_checked": len(online["comparisons"]),
         "flowstar_workloads_checked": len(flowstar["rows"]),
+        "independent_clone_runs_recomputed": len(independent_runs),
+        "independent_clone_comparisons_recomputed": len(independent_comparisons),
         "full_1000_step_runs_reexecuted": 0,
     }
     print(json.dumps(receipt, indent=2, sort_keys=True))

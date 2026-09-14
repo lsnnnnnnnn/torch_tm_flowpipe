@@ -115,6 +115,43 @@
     "runs": 2,
     "successful_lane_steps_each": 640
   },
+  "independent_clone_acceptance": {
+    "clone_command": [
+      "git",
+      "clone",
+      "--branch",
+      "codex/resident-tm-block-20260914T032650Z",
+      "--single-branch",
+      "https://github.com/lsnnnnnnnn/torch_tm_flowpipe.git",
+      "/tmp/resident-tm-independent-xG6nvX/repo"
+    ],
+    "execution_commit": "52eeb5dddd092e663c70dddb21ab83a21dfdfaae",
+    "package_verification_command": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.resident_tm_block.verify_package",
+      "--artifact",
+      "artifacts/runs/resident_tm_block_20260914T032650Z"
+    ],
+    "package_verification_before_smoke_passed": true,
+    "package_manifest_files_checked_before_smoke": 105,
+    "smoke_command": [
+      "/srv/local/shengenli/miniforge3/envs/py11/bin/python",
+      "-m",
+      "experiments.resident_tm_block.independent_smoke",
+      "--output",
+      "artifacts/runs/resident_tm_block_20260914T032650Z/independent_clone/fresh_b2x2",
+      "--core",
+      "2"
+    ],
+    "passed": true,
+    "fresh_runs": 4,
+    "successful_lane_steps_total": 16,
+    "complete_performance_matrix_reexecuted": false,
+    "full_1000_step_runs_reexecuted": 0,
+    "saved_answers_used_to_advance": false,
+    "receipt": "../raw_minimal/independent_clone/CLONE_RECEIPT.json"
+  },
   "new_full_1000_step_commands": [],
   "new_full_1000_step_runs": 0,
   "new_full_1000_step_status": "NOT_RUN_PERFORMANCE_NOT_USEFUL"
