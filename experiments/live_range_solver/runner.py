@@ -23,6 +23,10 @@ import time
 
 import torch
 import torch_tm_flowpipe as core
+from torch_tm_flowpipe.resident_tm_block import (
+    ResidentNormalCompositionRequest,
+    ResidentNormalCompositionResult,
+)
 from torch_tm_flowpipe.live_range_service import (
     LiveRangeService, RangeCancelled, RequestIdentity, cuda_startup_check,
 )
@@ -66,10 +70,18 @@ class Trace:
     def __call__(self, record):
         record = dict(record)
         if record.get("request") is not None:
-            record["request"] = request_record(record["request"])
+            record["request"] = (
+                canonical(record["request"])
+                if isinstance(record["request"], ResidentNormalCompositionRequest)
+                else request_record(record["request"])
+            )
             record["input_digest"] = digest(record["request"])
         if record.get("result") is not None:
-            record["result"] = result_record(record["result"])
+            record["result"] = (
+                canonical(record["result"])
+                if isinstance(record["result"], ResidentNormalCompositionResult)
+                else result_record(record["result"])
+            )
             record["output_digest"] = digest(record["result"])
         with self.lock:
             self.events.append(record)
@@ -190,22 +202,24 @@ def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
              hardware_fallback=False, select_newest=False, on_step=None,
              packet_limits=None, service_group_callback=None,
              retain_service_groups=True, retain_service_waits=True):
-    if route not in {"L", "S", "Q", "G", "G0", "Gp", "S_gpu"}:
+    if route not in {"L", "S", "Q", "G", "G0", "Gp", "Gr", "S_gpu"}:
         raise ValueError("unknown route")
     if len(set(ids)) != len(ids) or not ids:
         raise ValueError("distinct nonempty task set required")
     trace = Trace() if diagnostic else None
-    backend = "cuda" if route in {"G", "G0", "Gp", "S_gpu"} else "cpu"
+    backend = "cuda" if route in {"G", "G0", "Gp", "Gr", "S_gpu"} else "cpu"
     start_ns, cpu_start_ns = time.perf_counter_ns(), time.process_time_ns()
     initial_states = {str(i): initial(plant, i, original=original, checkpoint=checkpoint) for i in ids}
     initial_states_end_ns = time.perf_counter_ns()
     states, records = {}, {}
     service = (LiveRangeService(backend, max_wait_s=max_wait_s, max_group=max_group,
                 run_id=run_id, trace=trace, evaluator=evaluator, hardware_fallback=hardware_fallback,
-                select_newest=select_newest, packet_mode=route == "Gp",
+                select_newest=select_newest, packet_mode=route in {"Gp", "Gr"},
                 packet_limits=packet_limits, group_callback=service_group_callback,
                 retain_groups=retain_service_groups,
-                retain_waits=retain_service_waits) if route in {"Q", "G", "G0", "Gp"} else None)
+                retain_waits=retain_service_waits,
+                resident_tm_block=route == "Gr")
+               if route in {"Q", "G", "G0", "Gp", "Gr"} else None)
     tasks = {}
     startup = {}
     if route == "S_gpu":
@@ -305,7 +319,8 @@ def run_case(plant, ids, steps, route, *, run_id="development", max_wait_s=.020,
         successful_lane_steps=sum(sum(r["accepted"] for r in records[k]) for k,t in tasks.items() if t.status=="FINISHED"),
         task_statuses={k:t.status for k,t in tasks.items()}, counts=dict(counts),
         groups=groups, wait_ns=wait, records=records, startup=service.startup if service else startup,
-        packet_mode=route == "Gp",
+        packet_mode=route in {"Gp", "Gr"}, resident_tm_block=route == "Gr",
+        resident_host_costs=(dict(service.resident_host_costs) if service else {}),
         packet_limits=(service.packet_executor.limits.__dict__ if service and service.packet_executor
                        else packet_limits.__dict__ if packet_limits is not None else None),
         peak_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
@@ -345,7 +360,7 @@ def write_run(output, result, events):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plant", choices=["van_der_pol", "brusselator"], required=True)
-    parser.add_argument("--route", choices=["L", "S", "Q", "G", "G0", "Gp", "S_gpu"], required=True)
+    parser.add_argument("--route", choices=["L", "S", "Q", "G", "G0", "Gp", "Gr", "S_gpu"], required=True)
     parser.add_argument("--batch", type=int, choices=[1, 2, 8, 32], default=1)
     parser.add_argument("--steps", type=int, default=2)
     parser.add_argument("--ids", help="comma-separated fixed partition task indices")
@@ -365,9 +380,10 @@ def main():
     ids = ([int(x) for x in args.ids.split(",")] if args.ids else [0, 31] if args.batch == 2
            else read(PARTITION)["subsets"][str(args.batch)])
     cold_startup = None
-    if args.warm and args.route in {"G", "G0", "Gp", "S_gpu"}:
+    if args.warm and args.route in {"G", "G0", "Gp", "Gr", "S_gpu"}:
         with LiveRangeService("cuda", run_id="separate-cold-startup",
-                              packet_mode=args.route == "Gp") as warmup:
+                              packet_mode=args.route in {"Gp", "Gr"},
+                              resident_tm_block=args.route == "Gr") as warmup:
             cold_startup = warmup.startup
         torch.cuda.reset_peak_memory_stats(0)
     result, events, _ = run_case(args.plant, ids, args.steps, args.route, run_id=args.output.name,

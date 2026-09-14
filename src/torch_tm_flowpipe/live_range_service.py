@@ -23,6 +23,15 @@ from .interval import Interval
 from .packed_boundary_range import _REQUEST_DISPATCH, packed_boundary_execution
 from .prepared_remainder_replay import prepared_remainder_replay
 from .range_requests import RangeRequest, RangeResult, evaluate_range_requests, structure_key
+from .resident_tm_block import (
+    ResidentNormalCompositionRequest,
+    ResidentNormalCompositionResult,
+    ResidentTMBlockExecutor,
+    _DISPATCH as _RESIDENT_TM_DISPATCH,
+    apply_result_diagnostics,
+    request_from_taylor_models,
+    resident_cuda_startup_check,
+)
 
 
 class RangeCancelled(RuntimeError):
@@ -52,7 +61,7 @@ class RequestIdentity:
 @dataclass
 class _Pending:
     identity: RequestIdentity
-    request: RangeRequest
+    request: RangeRequest | ResidentNormalCompositionRequest
     future: Future
     submitted_ns: int
     previous: str | None
@@ -155,8 +164,7 @@ class RangeTask:
             self.service._event("checkpoint", self)
             return deepcopy(self.accepted_state)
 
-    def evaluate(self, request):
-        pending = self.service.submit(self, request)
+    def _await_pending(self, pending):
         pending.future_wait_begin_ns = time.perf_counter_ns()
         try:
             result = pending.future.result()
@@ -201,11 +209,29 @@ class RangeTask:
             self.service._request_event("consume", pending, status=result.status,
                                         future_wait_ns=future_wait_ns)
             self.service._condition.notify_all()
+        return result
+
+    def evaluate(self, request):
+        pending = self.service.submit(self, request)
+        result = self._await_pending(pending)
         # Never expose the service's copy as mutable caller storage.
         return replace(result, lo=result.lo.clone() if result.lo is not None else None,
                        hi=result.hi.clone() if result.hi is not None else None,
                        terms_lo=result.terms_lo.clone() if result.terms_lo is not None else None,
                        terms_hi=result.terms_hi.clone() if result.terms_hi is not None else None)
+
+    def evaluate_resident(self, request):
+        pending = self.service.submit_resident(self, request)
+        result = self._await_pending(pending)
+        if not isinstance(result, ResidentNormalCompositionResult):
+            raise TypeError("resident service returned the wrong result type")
+        copy_begin = time.perf_counter_ns()
+        copy_cpu_begin = time.thread_time_ns()
+        copied = result.caller_copy()
+        self.service._record_resident_host_cost(
+            "result_caller_copy", copy_begin, copy_cpu_begin
+        )
+        return copied
 
     def _identity(self):
         return RequestIdentity(self.service.run_id, self.task_id, self.epoch,
@@ -221,13 +247,51 @@ class RangeTask:
                 raise FloatingPointError(f"range {result.status}: {result.message}")
             return Interval(result.lo[0], result.hi[0])
 
+        def resident_dispatch(outer, inner, order, cutoff, domain, diagnostics):
+            build_begin = time.perf_counter_ns()
+            build_cpu_begin = time.thread_time_ns()
+            request = request_from_taylor_models(
+                "assigned-at-submit", outer, inner, order, cutoff, domain
+            )
+            self.service._record_resident_host_cost(
+                "request_build", build_begin, build_cpu_begin
+            )
+            if request is None:
+                with self.service._condition:
+                    self.service.counts["resident_structure_fallbacks"] += 1
+                return NotImplemented
+            result = self.evaluate_resident(request)
+            if result.status == "unsupported_structure":
+                with self.service._condition:
+                    self.service.counts["resident_structure_fallbacks"] += 1
+                return NotImplemented
+            if not result.ok or result.output is None:
+                raise FloatingPointError(
+                    f"resident Taylor-model block {result.status}: {result.message}"
+                )
+            consume_begin = time.perf_counter_ns()
+            consume_cpu_begin = time.thread_time_ns()
+            apply_result_diagnostics(diagnostics, result)
+            output = result.output
+            self.service._record_resident_host_cost(
+                "result_apply_and_return", consume_begin, consume_cpu_begin
+            )
+            return output
+
         from .packed_boundary_range import _TABLE_REQUEST_DISPATCH
         with prepared_remainder_replay(True), packed_boundary_execution(True):
             token = _REQUEST_DISPATCH.set(dispatch)
             table_token = _TABLE_REQUEST_DISPATCH.set(dispatch)
+            resident_token = (
+                _RESIDENT_TM_DISPATCH.set(resident_dispatch)
+                if self.service.resident_tm_block
+                else None
+            )
             try:
                 yield
             finally:
+                if resident_token is not None:
+                    _RESIDENT_TM_DISPATCH.reset(resident_token)
                 _TABLE_REQUEST_DISPATCH.reset(table_token)
                 _REQUEST_DISPATCH.reset(token)
 
@@ -244,7 +308,7 @@ class LiveRangeService:
                  run_id=None, trace=None, hardware_fallback=False,
                  evaluator=None, select_newest=False, packet_mode=False,
                  packet_limits=None, group_callback=None, retain_groups=True,
-                 retain_waits=True):
+                 retain_waits=True, resident_tm_block=False):
         if backend not in {"cpu", "cuda"}:
             raise ValueError("backend must be cpu or cuda")
         if type(max_group) is not int or max_group < 1:
@@ -253,18 +317,23 @@ class LiveRangeService:
             raise ValueError("max_wait_s must be finite and positive")
         if type(packet_mode) is not bool:
             raise ValueError("packet_mode must be bool")
+        if type(resident_tm_block) is not bool:
+            raise ValueError("resident_tm_block must be bool")
         if type(retain_groups) is not bool or type(retain_waits) is not bool:
             raise ValueError("retention controls must be bool")
         if group_callback is not None and not callable(group_callback):
             raise ValueError("group_callback must be callable")
         if packet_mode and backend != "cuda" and evaluator is None:
             raise ValueError("the production packet evaluator requires the CUDA backend")
+        if resident_tm_block and backend != "cuda":
+            raise ValueError("the resident Taylor-model block requires the CUDA backend")
         self.backend, self.max_group, self.max_wait_s = backend, max_group, max_wait_s
         self.run_id = run_id or uuid.uuid4().hex
         self.trace, self.hardware_fallback = trace, hardware_fallback
         self.evaluator = evaluator
         self.select_newest = select_newest
         self.packet_mode, self.packet_limits = packet_mode, packet_limits
+        self.resident_tm_block = resident_tm_block
         self.group_callback = group_callback
         self.retain_groups, self.retain_waits = retain_groups, retain_waits
         self._condition = threading.Condition(threading.RLock())
@@ -275,9 +344,22 @@ class LiveRangeService:
         self.counts = Counter()
         self.groups = []
         self.wait_ns = []
+        # These are sums of per-call worker spans, not a mutually exclusive
+        # critical-path total.  Thread CPU is retained separately so reports do
+        # not mistake concurrent Future waits or worker overlap for wall time.
+        self.resident_host_costs = Counter()
         self.startup = {}
         self.owner_thread = None
         self.packet_executor = None
+        self.resident_executor = None
+
+    def _record_resident_host_cost(self, name, wall_begin_ns, thread_cpu_begin_ns):
+        wall_ns = time.perf_counter_ns() - wall_begin_ns
+        thread_cpu_ns = time.thread_time_ns() - thread_cpu_begin_ns
+        with self._condition:
+            self.resident_host_costs[f"{name}_calls"] += 1
+            self.resident_host_costs[f"{name}_wall_span_sum_ns"] += wall_ns
+            self.resident_host_costs[f"{name}_thread_cpu_sum_ns"] += thread_cpu_ns
 
     def register(self, task_id, accepted_state, *, generation=0, minimum_epoch=0):
         if not isinstance(task_id, str) or not task_id:
@@ -328,16 +410,8 @@ class LiveRangeService:
                 submit_lock_begin_ns=pending.submit_lock_begin_ns,
                 submit_lock_end_ns=pending.submit_lock_end_ns, **extra))
 
-    def submit(self, task, request):
-        # Ownership is established before enqueue; even views of caller tensors
-        # and an external power table become independent storage.
-        copy_begin = time.perf_counter_ns()
-        owned = replace(request, **{name: getattr(request, name).detach().clone() for name in
-            ("coefficients_lo", "coefficients_hi", "domain_lo", "domain_hi")},
-            step_powers=deepcopy(request.step_powers))
-        copy_end = time.perf_counter_ns()
+    def _submit_owned(self, task, owned, key, copy_begin, copy_end):
         ownership_copy_ns = copy_end - copy_begin
-        key = structure_key(owned)
         lock_begin = time.perf_counter_ns()
         with self._condition:
             lock_end = time.perf_counter_ns()
@@ -363,6 +437,26 @@ class LiveRangeService:
                                 structure=key)
             self._condition.notify_all()
             return pending
+
+    def submit(self, task, request):
+        # Ownership is established before enqueue; even views of caller tensors
+        # and an external power table become independent storage.
+        copy_begin = time.perf_counter_ns()
+        owned = replace(request, **{name: getattr(request, name).detach().clone() for name in
+            ("coefficients_lo", "coefficients_hi", "domain_lo", "domain_hi")},
+            step_powers=deepcopy(request.step_powers))
+        copy_end = time.perf_counter_ns()
+        return self._submit_owned(task, owned, structure_key(owned), copy_begin, copy_end)
+
+    def submit_resident(self, task, request):
+        if not self.resident_tm_block:
+            raise RuntimeError("resident Taylor-model execution is not enabled")
+        if not isinstance(request, ResidentNormalCompositionRequest):
+            raise TypeError("submit_resident requires a ResidentNormalCompositionRequest")
+        copy_begin = time.perf_counter_ns()
+        owned = request.owned_copy()
+        copy_end = time.perf_counter_ns()
+        return self._submit_owned(task, owned, owned.structure_key, copy_begin, copy_end)
 
     def _cancel_locked(self, task):
         if task.status in {"CANCELLED", "FINISHED", "FAILED"}:
@@ -449,9 +543,24 @@ class LiveRangeService:
         else:
             remaining = self.max_wait_s - (now - self._queues[oldest][0].submitted_ns) / 1e9
             return None, None, max(remaining, 1e-6), None
-        if self.packet_mode:
-            all_ready = sorted((pending for queue in self._queues.values() for pending in queue),
-                               key=lambda pending: pending.submitted_ns)
+        resident_selection = isinstance(
+            self._queues[key][0].request, ResidentNormalCompositionRequest
+        )
+        if self.packet_mode and not resident_selection:
+            # Packet range requests may mix their own structural keys.  A
+            # resident composition is a different execution graph and is never
+            # co-dispatched with range packets.
+            all_ready = sorted(
+                (
+                    pending
+                    for queue in self._queues.values()
+                    for pending in queue
+                    if not isinstance(
+                        pending.request, ResidentNormalCompositionRequest
+                    )
+                ),
+                key=lambda pending: pending.submitted_ns,
+            )
             selected = all_ready[:self.max_group]
             take = Counter(pending.key for pending in selected)
             for selected_key, count in take.items():
@@ -467,7 +576,9 @@ class LiveRangeService:
             if not queue:
                 del self._queues[key]
         selected_key_sizes = Counter(pending.key for pending in selected)
-        selection = dict(packet_mode=self.packet_mode, ready_requests=ready_requests,
+        selection = dict(packet_mode=self.packet_mode and not resident_selection,
+            operation="resident_tm_block" if resident_selection else "range",
+            ready_requests=ready_requests,
             ready_keys=ready_keys, selected_requests=len(selected),
             selected_keys=len(selected_key_sizes), remaining_ready=ready_requests-len(selected),
             selected_key_sizes=sorted(selected_key_sizes.values(), reverse=True),
@@ -501,6 +612,11 @@ class LiveRangeService:
                         evaluator = self.packet_executor.evaluate
                     else:
                         self.startup = cuda_startup_check()
+                    if self.resident_tm_block:
+                        self.resident_executor = ResidentTMBlockExecutor(device="cuda:0")
+                        self.startup["resident_tm_block"] = resident_cuda_startup_check(
+                            "cuda:0"
+                        )
                     self.startup["stream"] = stream.cuda_stream
                 if evaluator is None:
                     evaluator = evaluate_range_requests
@@ -519,14 +635,36 @@ class LiveRangeService:
                             self._condition.wait(wait)
                             continue
                     requests = [p.request for p in selected]
+                    resident_group = all(
+                        isinstance(request, ResidentNormalCompositionRequest)
+                        for request in requests
+                    )
+                    if resident_group and self.resident_executor is None:
+                        raise RuntimeError("resident request reached an uninitialized executor")
+                    if not resident_group and any(
+                        isinstance(request, ResidentNormalCompositionRequest)
+                        for request in requests
+                    ):
+                        raise RuntimeError("range and resident requests were mixed in one group")
                     begin = time.perf_counter_ns()
                     thread_begin = time.thread_time_ns()
                     timing, fallback_error = {}, None
                     try:
-                        results = evaluator(requests, backend=self.backend,
-                            diagnostics=any(p.diagnostic for p in selected), timings=timing)
+                        selected_evaluator = (
+                            self.resident_executor.evaluate if resident_group else evaluator
+                        )
+                        results = selected_evaluator(
+                            requests,
+                            backend=self.backend,
+                            diagnostics=any(p.diagnostic for p in selected),
+                            timings=timing,
+                        )
                     except Exception as error:
-                        if self.backend == "cuda" and self.hardware_fallback:
+                        if (
+                            not resident_group
+                            and self.backend == "cuda"
+                            and self.hardware_fallback
+                        ):
                             fallback_error = repr(error)
                             timing["failed_cuda_s"] = (time.perf_counter_ns() - begin) / 1e9
                             self.counts["hardware_fallback_requests"] += len(selected)
@@ -535,10 +673,21 @@ class LiveRangeService:
                                 diagnostics=any(p.diagnostic for p in selected), timings=cpu_timing)
                             timing["cpu_recompute"] = cpu_timing
                         else:
-                            results = {r.request_id: RangeResult(r.request_id, "backend_error", message=repr(error))
-                                       for r in requests}
+                            result_type = (
+                                ResidentNormalCompositionResult
+                                if resident_group
+                                else RangeResult
+                            )
+                            results = {
+                                request.request_id: result_type(
+                                    request.request_id,
+                                    "backend_error",
+                                    message=repr(error),
+                                )
+                                for request in requests
+                            }
                     completion = None
-                    if stream is not None and fallback_error is None:
+                    if stream is not None and fallback_error is None and not resident_group:
                         completion = torch.cuda.Event()
                         completion.record(stream)
                         completion.synchronize()
@@ -567,12 +716,24 @@ class LiveRangeService:
                         request_attempts=[p.identity.attempt for p in selected],
                         request_wait_ns=[p.dispatched_ns-p.submitted_ns for p in selected],
                         backend=self.backend, hardware_fallback=fallback_error,
-                        packet_mode=self.packet_mode, selection=selection,
+                        operation="resident_tm_block" if resident_group else "range",
+                        packet_mode=self.packet_mode and not resident_group, selection=selection,
                         selection_wall_ns=selection_wall_ns,
                         selection_thread_cpu_ns=selection_cpu_ns,
                         scheduler_costs=scheduler_costs,
                         completion_event=completion is not None,
-                        completion_confirmed=bool(completion.query()) if completion is not None else None)
+                        completion_confirmed=(
+                            bool(completion.query())
+                            if completion is not None
+                            else bool(resident_group and timing.get("receipt"))
+                        ),
+                        completion_confirmation=(
+                            "cuda_event"
+                            if completion is not None
+                            else "blocking_final_d2h_and_kernel_receipt"
+                            if resident_group
+                            else None
+                        ))
                     for position, pending in enumerate(selected):
                         pending.group = group
                         pending.group_position = position
@@ -580,7 +741,14 @@ class LiveRangeService:
                         self.groups.append(group)
                     self.counts["groups"] += 1
                     self.counts[f"flush_{reason}"] += 1
-                    self.counts["external_table_fallback_requests"] += sum(r.step_powers is not None for r in requests)
+                    self.counts["external_table_fallback_requests"] += sum(
+                        getattr(request, "step_powers", None) is not None
+                        for request in requests
+                    )
+                    if resident_group:
+                        self.counts["resident_groups"] += 1
+                        self.counts["resident_requests"] += len(requests)
+                        self.counts["resident_lane_outputs"] += len(requests) * requests[0].output_dim
                     if self.backend == "cuda" and fallback_error is None:
                         self.counts["gpu_completed_requests"] += sum(
                             result.ok and not result.status.startswith("fallback") for result in results.values())
@@ -594,7 +762,18 @@ class LiveRangeService:
                     for pending in selected:
                         result = results.get(pending.identity.request_id)
                         if result is None:
-                            result = RangeResult(pending.identity.request_id, "backend_error", message="backend omitted request")
+                            result_type = (
+                                ResidentNormalCompositionResult
+                                if isinstance(
+                                    pending.request, ResidentNormalCompositionRequest
+                                )
+                                else RangeResult
+                            )
+                            result = result_type(
+                                pending.identity.request_id,
+                                "backend_error",
+                                message="backend omitted request",
+                            )
                         self.deliver(pending, result)
         except BaseException as error:
             if not self._ready.done():

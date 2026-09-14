@@ -1251,6 +1251,25 @@ def insert_ctrunc_normal_dependency_preserving(
     outward interval operations at every multiplication stage.
     """
 
+    # Default execution remains the independent sparse CPU implementation.
+    # A live task installs this dispatcher only for the explicit resident route.
+    from .resident_tm_block import active_dispatch
+
+    dispatcher = active_dispatch()
+    if dispatcher is not None:
+        dispatched = dispatcher(
+            outer,
+            inner,
+            int(order),
+            cutoff_threshold,
+            domain,
+            diagnostics,
+        )
+        if dispatched is not NotImplemented:
+            return dispatched
+        if diagnostics is not None:
+            diagnostics["insertion_resident_structure_fallback"] = True
+
     canonical_order = tuple(range(len(inner)))
     stage_rows: list[dict[str, Any]] = []
     top_components: list[dict[str, Any]] = []

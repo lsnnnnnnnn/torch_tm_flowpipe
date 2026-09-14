@@ -73,7 +73,7 @@ def check_timing(run):
         assert group["reason"] in {"max_group", "timeout", "all_waiting", "serial"}
         group_ids.extend(group["request_ids"])
         scheduler = group.get("scheduler_costs")
-        if run["route"] in {"Q", "G", "G0", "Gp"}:
+        if run["route"] in {"Q", "G", "G0", "Gp", "Gr"}:
             assert scheduler is not None
             for name in ("ownership_copy_sum_ns", "submit_lock_wait_sum_ns",
                          "deliver_lock_wait_sum_ns", "future_set_sum_ns",
@@ -93,11 +93,29 @@ def check_timing(run):
             inner = timing["cpu_recompute"]
             assert timing["failed_cuda_s"] + inner["total_s"] <= elapsed + 1e-6
             continue
-        required = ("grouping_and_packing_s", "compute_and_transfers_s", "scatter_and_wrap_s", "fallback_s")
-        assert all(timing[key] >= 0 for key in required)
-        assert sum(timing[key] for key in required) <= timing["total_s"] + 1e-6
-        assert timing["total_s"] <= elapsed + 1e-6
-        if group["backend"] == "cuda":
+        resident = group.get("operation") == "resident_tm_block"
+        if resident:
+            assert timing["schema"] == "resident-tm-block-timing-v1"
+            assert timing["batch"] == group["size"]
+            assert timing["kernel_invocations"] == 1
+            assert timing["h2d_copy_operations"] == timing["d2h_copy_operations"] == 2
+            assert timing["host_synchronizations"] == 1
+            assert timing["receipt"][1] == timing["batch"] * timing["outputs"]
+            for name in (
+                "packing_s", "h2d_cuda_event_s", "kernel_cuda_event_s",
+                "transfer_and_sync_host_span_s", "post_d2h_checks_and_rebuild_s",
+                "block_host_span_s",
+            ):
+                assert timing[name] >= 0
+            assert timing["block_host_span_s"] <= elapsed + 1e-6
+            assert not group["completion_event"] and group["completion_confirmed"]
+            gpu += group["size"]
+        else:
+            required = ("grouping_and_packing_s", "compute_and_transfers_s", "scatter_and_wrap_s", "fallback_s")
+            assert all(timing[key] >= 0 for key in required)
+            assert sum(timing[key] for key in required) <= timing["total_s"] + 1e-6
+            assert timing["total_s"] <= elapsed + 1e-6
+        if group["backend"] == "cuda" and not resident:
             groups = timing["group_sizes"]
             assert timing.get("actual_kernel_invocations", 0) == 4*len(groups)
             assert timing.get("kernel_receipts", []) == [[1, 1, 1, 1]]*len(groups)
@@ -105,7 +123,7 @@ def check_timing(run):
                 fields = ("h2d_and_structure_s", "kernel_and_sync_s", "d2h_and_checks_s")
                 assert all(timing[key] > 0 for key in fields), "missing transfer or completion time"
                 assert sum(timing[key] for key in fields) <= timing["compute_and_transfers_s"] + 1e-6
-            if run["route"] in {"G", "G0", "Gp"}:
+            if run["route"] in {"G", "G0", "Gp", "Gr"}:
                 assert group["completion_event"] and group["completion_confirmed"]
             gpu += sum(groups)
     assert len(group_ids) == len(set(group_ids)), "request dispatched twice"
@@ -115,7 +133,7 @@ def check_timing(run):
         assert counts.get("returned",0) == counts.get("submitted",0), "successful task lost a range response"
         assert sum(counts.get("status_"+status,0) for status in ("ok","corrected","fallback","fallback_corrected")) == counts.get("returned",0)
         assert counts.get("gpu_completed_requests",0) == gpu, "GPU completion count differs from kernel work"
-    if run["route"] in {"Q", "G", "G0", "Gp"}:
+    if run["route"] in {"Q", "G", "G0", "Gp", "Gr"}:
         assert run["counts"]["groups"] == len(run["groups"])
         assert len(run["wait_ns"]) == len(group_ids), "omitted queued waiting samples"
         assert all(v >= 0 for v in run["wait_ns"])
@@ -221,11 +239,15 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
             pending[owner] = rid
             submitted[rid] = event
             if event.get("request"):
-                request = request_from_record(event["request"])
-                assert request.request_id == rid
                 assert digest(event["request"]) == event["input_digest"]
-                assert digest(structure_key(request)) == digest(event["structure"])
-                raw_requests[rid] = request
+                if event["request"].get("type") == "ResidentNormalCompositionRequest":
+                    assert event["request"]["fields"]["request_id"] == rid
+                    assert event["structure"][0] == "resident-normal-composition-v1"
+                else:
+                    request = request_from_record(event["request"])
+                    assert request.request_id == rid
+                    assert digest(structure_key(request)) == digest(event["structure"])
+                    raw_requests[rid] = request
             status["state"] = "WAITING_RANGE"
         elif kind == "dispatch":
             rid = event["request_id"]
@@ -245,12 +267,16 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
             totals[f"status_{event['status']}"] += 1
             if event.get("result"):
                 assert digest(event["result"]) == event["output_digest"]
-                output = result_from_record(event["result"])
-                assert output.request_id == rid
-                if output.ok:
-                    request = raw_requests[rid]
-                    fallback = request.step_powers is not None
-                    totals.update(check(request, output, require_terms=not fallback, require_powers=not fallback))
+                if event["result"].get("type") == "ResidentNormalCompositionResult":
+                    fields = event["result"]["fields"]
+                    assert fields["request_id"] == rid and fields["status"] == event["status"]
+                else:
+                    output = result_from_record(event["result"])
+                    assert output.request_id == rid
+                    if output.ok:
+                        request = raw_requests[rid]
+                        fallback = request.step_powers is not None
+                        totals.update(check(request, output, require_terms=not fallback, require_powers=not fallback))
         elif kind == "consume":
             rid = event["request_id"]
             assert pending.pop(owner) == rid and rid in returned and rid not in consumed
@@ -286,7 +312,11 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
         if name.startswith("status_") or name == "returned":
             assert count == run["counts"].get(name, 0)
     assert groups == run["groups"], "service timeline differs from lifecycle"
-    fallbacks = sum(e["structure"][5][0] == "external" for e in submitted.values())
+    fallbacks = sum(
+        e.get("request", {}).get("type") != "ResidentNormalCompositionRequest"
+        and e["structure"][5][0] == "external"
+        for e in submitted.values()
+    )
     assert fallbacks == run["counts"].get("external_table_fallback_requests", 0), "CPU fallback omitted"
     dispatched, waits = [], []
     serial_indices = Counter()
@@ -294,19 +324,19 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
         ids = group["request_ids"]
         assert len({(submitted[r]["task"], submitted[r]["epoch"]) for r in ids}) == len(ids)
         semantic_keys = {digest(submitted[r]["structure"]) for r in ids}
-        if run["route"] == "Gp":
+        if run["route"] in {"Gp", "Gr"} and group.get("operation") != "resident_tm_block":
             assert group.get("packet_mode") is True
             assert group["selection"]["selected_keys"] == len(semantic_keys)
         else:
             assert len(semantic_keys) == 1, "different semantics merged"
         expected_index = index
-        if run["route"] not in {"Q", "G", "G0", "Gp"}:
+        if run["route"] not in {"Q", "G", "G0", "Gp", "Gr"}:
             task = submitted[ids[0]]["task"]
             expected_index = serial_indices[task]
             serial_indices[task] += 1
         assert all(submitted[r]["group_index"] == expected_index for r in ids)
         assert all(submitted[r]["dispatch_ns"] <= group["start_ns"] for r in ids)
-        if run["route"] in {"Q", "G", "G0", "Gp"}:
+        if run["route"] in {"Q", "G", "G0", "Gp", "Gr"}:
             for rid in ids:
                 event = dispatches[rid]
                 waits.append(event["dispatched_ns"]-event["submitted_ns"])
@@ -318,13 +348,13 @@ def check_lifecycle(run, events, attempt_inputs, *, recompute=True):
             for request in audited:
                 assert result_record(expected[request.request_id]) == returned[request.request_id]["result"], "range endpoint or arithmetic record changed"
     assert len(dispatched) == len(set(dispatched))
-    if run["route"] in {"Q", "G", "G0", "Gp"}:
+    if run["route"] in {"Q", "G", "G0", "Gp", "Gr"}:
         assert waits == run["wait_ns"], "wait durations disagree with request timeline"
     return dict(totals, raw_requests=len(raw_requests), consumed=len(consumed))
 
 
 def verify_run(run, events, *, recompute=True):
-    expected = "ONLINE_LIVE_SOLVE" if run["route"] in {"Q", "G", "G0", "Gp"} else "SERIAL_LIVE_SOLVE"
+    expected = "ONLINE_LIVE_SOLVE" if run["route"] in {"Q", "G", "G0", "Gp", "Gr"} else "SERIAL_LIVE_SOLVE"
     assert run["execution"] == expected, "offline replay mislabeled as online"
     assert run["request_source"] == "CURRENT_WORKER_CALL" and not run["previous_answers_loaded"]
     timing = check_timing(run)
