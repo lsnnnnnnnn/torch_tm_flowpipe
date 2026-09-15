@@ -136,9 +136,12 @@ consistency comparison, but CUDA is slower and no speedup is claimed.
 
 ## Reproducibility locations
 
-The complete 36-request compressed raw matrix is stored at
-`outputs/vdp_g2_shared_column_raw_matrix_20260815/20260815T120000Z`.  All 36
-command records name clean implementation checkpoint
+The complete 36-request compressed raw matrix was stored at
+`outputs/vdp_g2_shared_column_raw_matrix_20260815/20260815T120000Z`.
+This large diagnostic matrix was removed from the current review tree; [the
+exact parent/path recovery entry](../archive/index.csv) preserves it without
+relabeling the historical result as a new main experiment.
+All 36 command records name clean implementation checkpoint
 `aa85e51df5af5a73c2d80f0dd3e26923e4dc04b9` and the empty tracked-diff SHA256
 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
 The self-contained verifier package is at

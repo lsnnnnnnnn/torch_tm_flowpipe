@@ -7,6 +7,9 @@ allowed_use: provenance only
 
 The detailed design evidence is
 `audits/repository_consolidation/20260730T083258Z/04_design/TARGET_ARCHITECTURE.md`.
+That July audit path is recoverable at the exact parent commit through
+[the archive index](../../archive/index.csv); this historical design is not
+the current review entrypoint.
 
 The implemented decision keeps one mathematical package, one canonical
 benchmark source, one supported runner, one versioned schema/eligibility

@@ -6,6 +6,8 @@ The current original-box fixed contracts both complete 1,000 accepted steps: Van
 
 The central [bounds and width-ratio figures](results/review/figures/) come from 24,000 normalized lower/upper curve rows and 24,000 relationship rows, recalculated from immutable complete saved records. On the current saved VDP comparison, the GPU-range route's median four-channel width ratios against Flow* are roughly 1.17–1.20; against the CPU reference they are at roundoff scale. Brusselator's relationship to Flow* changes by channel and time, so a single "tightest" rank is unwarranted. The numerical reference has scoped repairs and known retained-coefficient limitations; neither completion nor a local strict observer is a whole-solver formal proof. The [provenance map](results/review/provenance.json) names each source and observer.
 
+The separate [fresh confirmation table](results/review/fresh_confirmations.csv) reports completed new fixed-source CPU and GPU-range horizons and the default-off resident small scopes, with each raw-run path, accepted step count and exact old/new bound comparison. These single reruns verify that the organized branch still executes; the main figures and historical paired performance decisions retain their original saved scientific sources.
+
 Read in this order:
 
 1. [English project review for Xiangru and Huan](docs/PROJECT_REVIEW.md), then the [Chinese reporting version](docs/PROJECT_REVIEW_ZH.md).
