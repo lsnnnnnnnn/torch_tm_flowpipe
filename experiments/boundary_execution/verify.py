@@ -71,7 +71,11 @@ def check_source(root):
     expected = source_files(SCIENTIFIC_SHA)
     assert source['scientific_sources'] == expected
     assert Path(core.__file__).resolve() == (ROOT/'src/torch_tm_flowpipe/__init__.py').resolve()
-    assert all(sha(ROOT/p) == digest for p, digest in expected.items()), 'imported numerical source differs'
+    # The frozen scientific run is bound to its commit blobs. Later solver work
+    # may change the current checkout, so compare the evidence with those blobs
+    # rather than treating current HEAD as the old execution source.
+    assert all(hashlib.sha256(git('show', f'{SCIENTIFIC_SHA}:{p}')).hexdigest() == digest
+               for p, digest in expected.items()), 'frozen numerical source differs'
     changed = set(git('diff', '--name-only', PARENT_SHA, SCIENTIFIC_SHA, '--', 'src/torch_tm_flowpipe').decode().splitlines())
     assert changed == {'src/torch_tm_flowpipe/__init__.py', 'src/torch_tm_flowpipe/polynomial.py',
                       'src/torch_tm_flowpipe/accepted_boundary_sr.py', 'src/torch_tm_flowpipe/packed_boundary_range.py'}
@@ -86,7 +90,7 @@ def check_source(root):
     assert 'experiments/boundary_execution/verify.py' in package_paths
     for path, digest in source['package_sources'].items():
         assert hashlib.sha256(git('show', f'{package}:{path}')).hexdigest() == digest
-        assert sha(ROOT/path) == digest
+        assert (ROOT/path).is_file(), f'current evidence verifier path missing: {path}'
     for path, digest in source['reused_parent_files'].items():
         assert hashlib.sha256(git('show', f'{PARENT_SHA}:{path}')).hexdigest() == digest
         assert sha(ROOT/path) == digest

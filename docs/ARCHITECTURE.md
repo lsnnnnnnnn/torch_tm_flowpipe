@@ -1,65 +1,11 @@
-# Architecture
+# Architecture and evidence boundaries
 
-The repository has one active implementation per numerical abstraction and
-keeps comparison protocol code outside the numerical core.
+There is one numerical package: `src/torch_tm_flowpipe`. Its interval and polynomial/Taylor-model modules feed `flowpipe.py`; `accepted_boundary_sr.py` and `symbolic_remainder.py` retain cross-step error relations; the dense path handles complete polynomial propagation. The current original-box CPU reference uses the frozen Van der Pol and Brusselator contracts in `plant_reference.py` and the endpoint-repair runner. It is a research reference with scoped repairs, not a semantic oracle for every retained-coefficient floating-point operation.
 
-```text
-src/torch_tm_flowpipe/
-  interval.py                 canonical interval arithmetic
-  polynomial.py               canonical sparse total-degree polynomial
-  batched_dense_tm.py         canonical batched tensor TM/Picard core
-  polynomial_ode.py           ordered config-driven polynomial RHS
-  taylor_model.py, tm_vector.py
-  flowpipe.py                 one- and multi-step propagation
-  symbolic_remainder.py       diagnostic symbolic-remainder support
-  protocol/
-    schema.py, config.py, eligibility.py, runtime.py, pareto.py
-    provenance.py, backend_identity.py
-benchmarks/
-  canonical.yaml              unique benchmark-system source
-  smoke.yaml, formal.yaml     versioned selection profiles
-  cross_tool_gates.yaml       fail-closed comparison gate state
-experiments/consolidated_study/cli.py
-                               canonical comparison orchestration
-experiments/flowstar_step_trace_compare.py
-                               supported order-2 diagnostic
-analysis/independent_audit.py  artifact acceptance checks
-tests/                         unit, protocol, regression, integration
-```
+The accepted step follows: normalized initial Taylor models → polynomial candidate/Picard iterations → remainder self-map validation → post-accept refinement → endpoint time substitution and whole-segment tube → normal-coordinate insertion and symbolic history commit → next step. A rejected attempt does not publish an endpoint or commit its candidate history. [The method map](METHOD_AND_CODE_MAP.md) names the actual functions and range objects.
 
-## Boundaries
+Optional CUDA routes live beside the CPU-led solver. `range_cuda_kernel.cu` and `range_packet_cuda_kernel.cu` serve range requests; the packet route completed the saved original B1 1,000-step horizons. `resident_tm_cuda_kernel.cu` evaluates an optional normal-composition block while intermediate quantities reside on device. The resident block is disabled by default and has measured B32×20/continuous-prefix work, not original-box full T10/T20. CPU installation has no CUDA compilation requirement; CUDA kernels compile on first use.
 
-- Experiments import `src/torch_tm_flowpipe`; output directories are never
-  import sources.
-- Benchmark parameters have one active source. Historical result-local YAML
-  files are frozen provenance, not alternate definitions.
-- Reports consume an explicit run directory and never discover a “latest”
-  output implicitly.
-- Supported runners reject non-empty outputs.
-- Flowstar identity is resolved before an output directory is created.
-  Primary execution rejects audit-named roots, enabled audit behavior
-  variables, and unknown tracked modifications.
-- `official-program`, `generated-stock`, and `patched-audit` are distinct
-  backend objects. Patched audit is always diagnostic-only and
-  `primary_eligible=false`.
-- Endpoint, accepted-segment, and full-tube bounds are separate from the
-  raw-versus-tightened refinement dimension.
-- Requested order, effective retained degree, basis, remainder policy, step
-  policy, requested horizon, and successful horizon are explicit fields.
+The supported review command is `python -m experiments.review_suite.cli`. It reads `benchmarks/review/fixed_profiles.json` and `experiments/review_suite/registry.yaml`, delegates actual solves to the preserved established runners, and writes derived tables and SVG figures under a caller-specified result root. Original run packages remain immutable in `artifacts/runs/`. The current [experiment map](EXPERIMENTS.md) is generated from the one registry. Older `consolidated_study`, cross-tool protocols, and dated scripts are recoverable support or historical evidence, not competing canonical entrypoints.
 
-Historical experiment directories remain recoverable scientific lineage.
-They are not supported orchestration entrypoints and may not publish a current
-winner/Pareto claim.
-
-The dense flowpipe selector has two identities. `sparse_reference` stays the
-semantic oracle. `hybrid_dense_core` converts once on entry and once on exit of
-each attempted segment, runs all Picard and remainder validation on dense
-tensors, and reuses sparse normalized insertion/right-map carry. Full-dense is
-not claimed until that boundary path is replaced and T=10 completes.
-
-The evidence chain is:
-
-```text
-branch → commit → code → config → backend identity → raw artifact
-       → summary → figure → bounded claim
-```
+The evidence chain is source commit → exact config → original accepted-state run/model → current observer and derived table → reproducible figure → bounded claim. Saved native Flow* objects are re-observed through the current strict CPU range path for a common four-channel comparison, while Flow*'s own internal validation and history algorithm remain distinct. Local CUDA kernel containment or request throughput never implies a whole-solver proof or speedup.

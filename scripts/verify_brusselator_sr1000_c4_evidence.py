@@ -99,6 +99,8 @@ def _expected_core_patch() -> bytes:
     return subprocess.run(
         [
             "git",
+            "-c",
+            "core.abbrev=7",
             "diff",
             "--binary",
             BASELINE_COMMIT,

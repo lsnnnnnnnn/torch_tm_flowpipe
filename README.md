@@ -1,184 +1,43 @@
 # torch-tm-flowpipe
 
-`torch-tm-flowpipe` is a PyTorch-native Taylor-model flowpipe research backend
-for polynomial ODEs. The main research line compares three explicit design
-points rather than treating one ambiguous `order` as a common algorithm:
+This branch is a research review of plant-only polynomial ODE Taylor-model flowpipes. The sole numerical package, `src/torch_tm_flowpipe`, implements CPU-led validated propagation and optional CUDA range services. The two primary systems are Van der Pol and Brusselator. This branch organizes complete accepted horizons, all-step enclosure curves, mechanism tests, numerical repair boundaries, and actual timing; it does not introduce a new solver algorithm.
 
-- stock Flow*: mature complete high-order polynomials, normalization,
-  preconditioning, and symbolic remainder;
-- upstream DiffReach: restricted fixed support, fixed Picard/DR-RP, JAX/JIT,
-  and large batch throughput;
-- Torch TM: one architecture with a configurable DiffReach-like fixed-support
-  lane and a Flow*-like complete-total-degree lane.
+The current original-box fixed contracts both complete 1,000 accepted steps: Van der Pol with binary64 `h=0.01` reaches nominal T10; Brusselator with binary64 `h=0.02` reaches nominal T20. The endpoint-repaired CPU path and packet GPU range service have complete saved four-channel data. Native Flow* complete objects have been re-observed under the same current strict CPU range observer for the comparison. The packet route is a CPU-led solver that consumes real CUDA range results; a whole GPU engine has not been implemented. The optional resident composition block has measured B32×20 and continuous-prefix evidence, but no new original-box 1,000-step horizon and remains disabled by default.
 
-The latest full-horizon round produces two pairwise outcomes, not a three-tool
-ranking. Flow*/Torch complete-O4 at fixed `h=0.01` is
-`FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`: Flow* completes 1,000
-steps/T10, while Torch accepts 632 steps and rejects candidate 633. The
-explicit-float64 B64 DiffReach/Torch DR7 comparison is
-`DIFFREACH_TORCH_DR7_FULL_HORIZON_DIVERGED`: all masks agree through 1,000
-steps, but operator state diverges by one ULP at step 1 and J/Phi plus
-endpoint/tube equality do not close. The complete-O4 carry diagnosis selects
-C4 `CARRY_MISSING_SYMBOLIC_SEMANTICS`; dense cross-step CNI parity is
-`DENSE_CNI_PARITY_NOT_EXPRESSIBLE`, so the implementation decision is
-`NO_FIX_AUTHORIZED`. The preceding bridge and S1 results remain historical,
-not current full-horizon claims. Evidence-integrity corrections are documented in
-[`docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md`](docs/EVIDENCE_INTEGRITY_CORRECTIONS_20260811.md).
-The frozen
-TORA complete-Q3 work is a stress-test reference, not the project objective.
-Adaptive DEF-CERT, obsolete winner/Pareto tables, and prior TORA-specific
-comparisons remain historical or rejected.
+The central [bounds and width-ratio figures](results/review/figures/) come from 24,000 normalized lower/upper curve rows and 24,000 relationship rows, recalculated from immutable complete saved records. On the current saved VDP comparison, the GPU-range route's median four-channel width ratios against Flow* are roughly 1.17–1.20; against the CPU reference they are at roundoff scale. Brusselator's relationship to Flow* changes by channel and time, so a single "tightest" rank is unwarranted. The numerical reference has scoped repairs and known retained-coefficient limitations; neither completion nor a local strict observer is a whole-solver formal proof. The [provenance map](results/review/provenance.json) names each source and observer.
 
-## Current result
+Read in this order:
 
-The fixed seven-slot Torch lane now has a cached immutable kernel plan and a
-26-tensor functional state. Object and functional eager are bit-exact on the
-full preregistered CPU/CUDA matrix. B64 T10 completes in the compiled lane with
-zero graph breaks and no solver-core synchronization, but Inductor changes
-floating-point arithmetic. Its 5.038 s CPU and 6.927 s V100 stable warm times
-are performance-only empirical observations, not same-semantics speedups.
+1. [English project review for Xiangru and Huan](docs/PROJECT_REVIEW.md), then the [Chinese reporting version](docs/PROJECT_REVIEW_ZH.md).
+2. [Experiment map](docs/EXPERIMENTS.md) and [method-to-code map](docs/METHOD_AND_CODE_MAP.md).
+3. [Reproduction guide](docs/REPRODUCING.md) and [numerical/external-code scope](docs/NUMERICAL_SCOPE_AND_EXTERNAL_CODE.md).
 
-The separate CPU outward reference passes an independent 11-family exact
-oracle and one-step containment, but fails closed before T1 (B1 step 33; B64
-first failure step 90). Its result is
-`FIXED_SUPPORT_FORMAL_SOUNDNESS_NOT_CLOSED`.
-
-The complete-O4 Torch baseline is formally outward by its declared interval
-path but stops at `t=6.397083942944808`, while stock Flow* completes its native
-T10 request and upstream DiffReach completes its different native B64 T10
-request. These native rows are not ranked: representations, validators, carry,
-partitions, output objects, timing, and numerical qualification differ. The
-stock Flow* build is itself ineligible for a primary formal claim after a
-scalar-affine MPFR counterexample.
-
-Machine reports separate mathematical-contract knowledge, requested-horizon
-completion, certificate semantics, finite output, numerical class/scope,
-formal-claim eligibility, performance eligibility, and cross-tool-ranking
-eligibility. Native (N), matched-contract (M), and in-framework factorial (F)
-rows remain separate.
-
-The first Flow*/Torch schedule split is now causally observed at
-`t=0.18187433604506256`: their transformed polynomial coefficients agree at
-roundoff scale, but the raw candidate Picard remainder already makes Flow*'s y
-subset fail while Torch passes. Polynomial, endpoint, and right-map swaps
-preserve the receiving validator's decision.
-
-The boundary-164 audit now explains that negative result. Diagnostic-only
-typed ledgers and exact carrier split/remerge are bit-exact to the baseline;
-the first causal inflation is the post-hoc `base=range(Q+R_o), perturbation=Z`
-image decomposition. Coefficient/scale drift first appears at boundary 5,
-physical-hull and margin drift at boundary/attempt 8, and outward
-renormalization at boundary 12. K16 fill/eviction is not the primary cause.
-
-Exactly one corrected carry was implemented:
-`normalized_insertion_structured_total_delta_k16`. It evaluates
-`P(Q + (R_o+Z)) - P(Q)` so all ordinary, structured, and mixed nonlinear
-routes enter `N_total` once. It accepts all 307 historical accepted steps in
-the corrected fixed-step replay and its boundary-307 checkpoint round-trips
-exactly. It still rejects the frozen historical terminal step at
-`t=6.397083942944808`, with y margin `-1.9999591170254726e-5`. The primary
-outcome is `S1_REACHES_TERMINAL_BUT_DOES_NOT_CLOSE_IT`; fresh horizons and a
-second system are `not_run_after_stop`. The primitive image is outward for
-given binary64 coefficients, while the full prefix remains a
-`safeguarded_binary64_interval_shell` conditional on retained coefficient
-arithmetic and is not end-to-end formal.
-
-Start with:
-
-- [research direction](docs/RESEARCH_DIRECTION_20260810.md);
-- [three-lane contract](docs/THREE_LANE_ALGORITHM_CONTRACT_20260810.md);
-- [native baselines](docs/NATIVE_FLOWSTAR_DIFFREACH_TORCH_BASELINE_20260810.md);
-- [fixed-support equivalence](docs/TORCH_DIFFREACH_FIXED_BASIS_EQUIVALENCE_20260810.md);
-- [causal divergence](docs/VDP_FLOWSTAR_TORCH_CAUSAL_DIVERGENCE_20260810.md);
-- [candidate result](docs/GENERIC_TORCH_TM_IMPROVEMENT_RESULT_20260810.md);
-- [compiled fixed core](docs/FIXED_SUPPORT_COMPILED_CORE_20260810.md);
-- [fixed soundness](docs/FIXED_SUPPORT_SOUNDNESS_20260810.md);
-- [structured S1 result](docs/STRUCTURED_REMAINDER_RESULT_20260810.md);
-- [S1 complete-O4 prefix result](docs/S1_PREFIX_INTEGRATION_RESULT_20260810.md);
-- [S1 terminal causal gate](docs/S1_TERMINAL_CAUSAL_GATE_20260810.md);
-- [S1 boundary-164 causal attribution](docs/S1_BOUNDARY164_CAUSAL_ATTRIBUTION_20260811.md);
-- [S1 corrected carry result](docs/S1_CORRECTED_CARRY_RESULT_20260811.md);
-- [three-tool pairwise result](docs/THREE_TOOL_PAIRWISE_COMPARISON_20260811.md);
-- [full-horizon pairwise status](docs/THREE_TOOL_PAIRWISE_STATUS_20260811.md);
-- [Flow*/Torch fixed-schedule common prefix](docs/FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_20260811.md);
-- [DiffReach/Torch DR7 full horizon](docs/DIFFREACH_TORCH_DR7_FULL_HORIZON_CLOSURE_20260811.md);
-- [complete-O4 carry root cause](docs/COMPLETE_O4_CARRY_SEMANTICS_ROOT_CAUSE_20260811.md);
-- [tracked evidence closure](docs/EVIDENCE_PACKAGE_TRACKED_CLOSURE_20260811.md);
-- [Flow*/Torch O4 matched result](docs/FLOWSTAR_TORCH_O4_MATCHED_COMPARISON_20260811.md);
-- [DiffReach/Torch DR7 matched result](docs/DIFFREACH_TORCH_DR7_MATCHED_COMPARISON_20260811.md);
-- [raw-remainder root cause](docs/VDP_RAW_REMAINDER_ROOT_CAUSE_20260811.md);
-- [schedule/validator causality](docs/VDP_SCHEDULE_VALIDATOR_CAUSALITY_20260811.md);
-- [fixed-support bridge](docs/TORCH_FIXED_SUPPORT_DESCRIPTOR_BRIDGE_20260811.md);
-- [single-improvement decision](docs/TORCH_SINGLE_IMPROVEMENT_RESULT_20260811.md);
-- [second-system generality](docs/SECOND_SYSTEM_GENERALITY_20260810.md);
-- [handoff](handoff.md).
+The frozen [review configuration](benchmarks/review/fixed_profiles.json) records equations through the referenced source contracts, exact decimal initial boxes, actual outward binary64 initial ranges, retained orders, binary64 steps, remainder budgets, cutoff, validation mode, queue capacity, and observer boundary. The [single registry](experiments/review_suite/registry.yaml) assigns source versions and evidence levels. Historical mechanism and withdrawn result packages remain versioned and recoverable; see [reorganization notes](docs/maintenance/REORGANIZATION.md).
 
 ## Quick start
 
+Use a Python environment with PyTorch, PyYAML and matplotlib. CUDA is optional for CPU reading and reruns. The working environment for this review is Python 3.11, PyTorch 2.5.1+cu121, with V100 CUDA available.
+
 ```bash
-conda run -n py11 python -m pip install -e ".[test]"
-conda run -n py11 pytest -q
-conda run -n py11 python examples/scalar_quadratic.py
+python -m pip install -e .
+python -m experiments.review_suite.cli list
+python -m experiments.review_suite.cli smoke --backend cpu
+python -m experiments.review_suite.cli plot --all --out results/review/figures
 ```
 
-The canonical package is `src/torch_tm_flowpipe`. It implements interval
-arithmetic, sparse and dense complete bases, configurable fixed support,
-Taylor models `p + R`, validated Picard propagation, explicit endpoint/tube
-semantics, and fail-closed multi-step runners.
+To re-observe the selected complete raw models and regenerate all managed tables before plotting:
 
-```python
-from torch_tm_flowpipe import Interval, flowpipe_multi_step
-from torch_tm_flowpipe.ode_examples import scalar_quadratic_ode
-
-result = flowpipe_multi_step(
-    scalar_quadratic_ode,
-    [Interval(0.0, 0.1)],
-    h=0.01,
-    steps=5,
-    order=4,
-    mode="dependency_preserving",
-)
-print(result.status, result.final_tm.range_box())
+```bash
+python -m experiments.review_suite.cli summarize --all --out results/review
 ```
 
-The previous-round evidence is committed under the
-[canonical run](outputs/mainline_realignment_20260810/20260810T025910Z/).
-Raw output is kept separate from derived summaries, large text traces use
-deterministic gzip storage, and the repository-root-prefixed `SHA256SUMS`
-covers the complete stored tree.
+A new 1,000-step run needs a clean source checkout and a new output directory outside it; the runner records the source HEAD and refuses an existing directory. For example:
 
-The current closure package is the
-[structured/compiled run](outputs/structured_remainder_compiled_fixed_support_20260810/20260810T070908Z/).
-It keeps sanitized public raw evidence separate from derived tables and
-figures; ignored compiler caches and source-mixed exploratory timings are not
-part of the manifest.
+```bash
+mkdir -p ../review_runs
+python -m experiments.review_suite.cli run --experiment vdp-fixed-full --backend cpu --out ../review_runs/vdp_cpu_001
+```
 
-The current prefix-integration package is
-[S1 complete-O4 run](outputs/s1_prefix_integrated_complete_o4_20260810/20260810T095423Z/).
-Its tables distinguish the sound 164-boundary common prefix from the discarded
-off-schedule half-step and mark every prohibited later experiment explicitly
-as `not_run_after_stop`.
+The equivalent supported Brusselator fixed, adaptive VDP, and GPU-range commands are in [REPRODUCING.md](docs/REPRODUCING.md). The GPU-range and resident smoke commands report clearly when CUDA is unavailable. Flow* is required only for a new native Flow* rerun, not for reading or plotting the saved comparison.
 
-The current boundary-attribution and corrected-carry package is
-[S1 boundary-164 run](outputs/s1_boundary164_causal_guarded_carry_20260811/20260811T033447Z/).
-Its 234-entry `SHA256SUMS` is repository-root-relative. Machine tables retain
-the causal ladder, A0--B16 ledger, component substitutions, corrected
-307-step gate, terminal rejection, independent claim fields, and explicit
-stop rows for every unauthorized later stage.
-
-The three-tool pairwise/raw-root-cause/descriptor round refers to the
-`20260811T100304Z` evidence run. Its server-local 71,770,882-byte original was
-located and all 534 entries in its original `SHA256SUMS` were verified. A
-compact audited recovery is now tracked at
-`outputs/three_tool_matched_divergence_fixed_support_20260811/20260811T100304Z/`:
-it preserves all 36 command envelopes, the original verification, scientific
-summaries, and small raw tables while excluding binaries, NPZ, and large
-JSONL/bridge arrays. The archived original manifest's broad full-horizon and
-`14_fresh_clone` labels remain quarantined as historical overclaims. At
-recovery time the defensible claim was one-step operator closure only; that
-status is now superseded by the explicit-f64 full-horizon divergence above.
-
-The superseding full-horizon package target is
-`outputs/three_tool_full_horizon_pairwise_carry_closure_20260811/20260811T191549Z/`.
-It is intentionally not called tracked until H2 and the subsequent H2/H3 true
-remote-clone audits complete.
+This branch does not run the deferred whole-engine feasibility/adoption task. The old August common-prefix, DiffReach fixed-support, S1, TORA, and withdrawn "fastest/tightest" statements are historical context, not the current main result.

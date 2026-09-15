@@ -1,5 +1,9 @@
 # Status
 
+Historical August status, superseded as the current project status by
+[the research review](PROJECT_REVIEW.md). The preserved decisions below are
+version-specific and do not describe the later fixed B1 complete runs.
+
 ## Current full-horizon pairwise/carry round
 
 Date: 2026-08-11

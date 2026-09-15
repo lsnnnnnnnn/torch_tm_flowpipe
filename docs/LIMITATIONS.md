@@ -1,5 +1,9 @@
 # Limitations
 
+Historical August limitations, superseded as the current project scope by
+[the numerical and external-code review](NUMERICAL_SCOPE_AND_EXTERNAL_CODE.md).
+The preserved qualifications below apply to their frozen earlier experiments.
+
 Current full-horizon pairwise/carry qualification:
 
 - Flow*/Torch is `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`. Torch has

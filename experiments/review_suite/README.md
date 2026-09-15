@@ -1,0 +1,5 @@
+# Review suite
+
+`python -m experiments.review_suite.cli --help` is the supported entrypoint. The registry is the source of experiment identities and provenance; `docs/EXPERIMENTS.md` is generated from it. `summarize` re-observes complete saved CPU and Flow* Taylor-model objects with the current strict CPU range observer and reads the GPU run's recorded accepted bounds. It does not solve an ODE. `plot` reads the resulting normalized curves and source JSON. `run` delegates to the established solver runners after checking the frozen review profile and creating a new output directory.
+
+The legacy scripts in sibling directories are retained where current code or tests import them. Their frozen original output packages are never overwritten by review commands.

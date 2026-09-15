@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 from pathlib import Path
 
@@ -16,18 +17,36 @@ CURRENT_FIX = "NO_FIX_AUTHORIZED"
 
 
 def test_canonical_documents_share_current_full_horizon_outcomes():
-    for relative in (
-        "README.md",
-        "docs/RESULTS.md",
-        "docs/RESULTS_STATUS.md",
-        "docs/STATUS.md",
-        "docs/LIMITATIONS.md",
-        "handoff.md",
-    ):
+    for relative in ("README.md", "docs/PROJECT_REVIEW.md", "docs/PROJECT_REVIEW_ZH.md"):
         text = (ROOT / relative).read_text(encoding="utf-8")
-        headline = "\n".join(text.splitlines()[:45])
+        assert "Van der Pol" in text and "Brusselator" in text, relative
+        assert "1,000" in text and "T10" in text and "T20" in text, relative
+        assert "Flow*" in text and "resident" in text, relative
+    handoff = (ROOT / "handoff.md").read_text(encoding="utf-8")
+    assert "docs/PROJECT_REVIEW.md" in handoff and "docs/PROJECT_REVIEW_ZH.md" in handoff
+    with (ROOT / "results/review/summary.csv").open(newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    assert len(rows) == 24
+    assert {(r["plant"], r["lane"], r["view"], r["coordinate"]) for r in rows} == {
+        (plant, lane, view, coordinate)
+        for plant in ("van_der_pol", "brusselator")
+        for lane in ("cpu", "gpu-range", "flowstar")
+        for view in ("endpoint", "tube")
+        for coordinate in ("x", "y")
+    }
+    assert all(int(r["accepted_steps"]) == 1000 for r in rows)
+
+
+def test_earlier_status_documents_are_versioned_history():
+    for relative in ("docs/RESULTS.md", "docs/RESULTS_STATUS.md", "docs/STATUS.md",
+                     "docs/LIMITATIONS.md"):
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert "Historical August" in "\n".join(text.splitlines()[:9]), relative
+        assert "PROJECT_REVIEW.md" in text[:500] or "NUMERICAL_SCOPE_AND_EXTERNAL_CODE.md" in text[:500]
+    for relative in ("docs/RESULTS.md", "docs/RESULTS_STATUS.md", "docs/STATUS.md"):
+        text = (ROOT / relative).read_text(encoding="utf-8")
         for outcome in (CURRENT_FLOW, CURRENT_DIFF, CURRENT_CARRY, CURRENT_FIX):
-            assert outcome in headline, (relative, outcome)
+            assert outcome in text, (relative, outcome)
 
 
 def test_previous_bridge_and_s1_claims_are_historical_or_superseded():

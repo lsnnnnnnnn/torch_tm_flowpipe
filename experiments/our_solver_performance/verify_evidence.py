@@ -89,8 +89,9 @@ def verify(root, check_hashes=True, check_tests=True):
         payload = (REPO / relative).read_bytes()
         require(payload == blob(BASE, relative), "reused evidence differs from base: " + relative)
         require(hashlib.sha256(payload).hexdigest() == digest, "reused digest")
-    require(subprocess.call(["git", "-C", str(REPO), "diff", "--quiet", BASE, "--", "src"]) == 0,
-            "solver source changed after stop")
+    require(subprocess.call(["git", "-C", str(REPO), "diff", "--quiet", BASE, DRIVER,
+                             "--", "src"]) == 0,
+            "solver source changed during frozen stop experiment")
     raw = read(root / "raw_minimal/endpoint_reference.json")
     require(raw["source_sha"] == DRIVER and raw["numerical_base_sha"] == BASE and raw["source_clean"], "witness source")
     require(raw["imported_package"] == raw["source_root"] + "/src/torch_tm_flowpipe/__init__.py", "import identity")

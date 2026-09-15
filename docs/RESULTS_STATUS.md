@@ -1,5 +1,9 @@
 # Results status
 
+Historical August status, superseded as the current project status by
+[the research review](PROJECT_REVIEW.md). The statements below remain tied to
+their original versions and must not be read as the later fixed B1 result.
+
 ## Current status (2026-08-11)
 
 The current Flow*/Torch result is

@@ -1,5 +1,10 @@
 # Results
 
+Historical August results, superseded as the repository's current headline by
+[the research review](PROJECT_REVIEW.md). The frozen observations below retain
+their original versions and scopes; see the review for the later complete B1
+Van der Pol and Brusselator horizons.
+
 ## Current full-horizon pairwise/carry result
 
 Flow*/Torch is `FLOWSTAR_TORCH_FIXED_SCHEDULE_COMMON_PREFIX_ONLY`: Flow*

@@ -1,0 +1,163 @@
+{
+  "auxiliary_rows": {
+    "cpu_pairings.csv": 4,
+    "gpu_route.csv": 8,
+    "matched_flowstar.csv": 2,
+    "mechanisms.csv": 15
+  },
+  "curve_rows": 24000,
+  "generated_from": "selected complete immutable registered run records",
+  "gpu_bounds": "from GPU run's each accepted step, without CPU correction",
+  "numerical_source_parent": "8ca0bb034f597db3e16bce83ad974422a9b74bba",
+  "observer": "current strict corrected CPU range re-executed on saved CPU and Flow* complete models",
+  "profile_sha256": "7d0fffc1de8b6a806cb9dd650202672a0e49f93d2bcf79a0eebf845ac81214b0",
+  "ratio_rows": 24000,
+  "registry_sha256": "033102b718b38a6b0b8aff11a2ebf0b6730132229ef05deb26a9e3c06a5452f8",
+  "resident_full_1000_steps": false,
+  "schema": "research_review_provenance/1",
+  "sources": [
+    {
+      "accepted_steps": 1000,
+      "code_refs": {
+        "cpu": "196a50e9131336d68df07ad0af353deca0092d19",
+        "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "gpu-range": "1d870939fcdb72bd999730cf09de0b14d1cd71c4"
+      },
+      "final_exact_time": "720575940379279375/72057594037927936",
+      "gpu_verification": {
+        "achieved": true,
+        "exact_final_time": "720575940379279375/72057594037927936",
+        "groups": 109062,
+        "packet_kernel_invocations": 436248,
+        "packets": 109062,
+        "plant": "van_der_pol",
+        "queue_owner_schema": "c3_cross_step_sr_v1",
+        "requests": 109062,
+        "route": "Gp",
+        "steps": 1000,
+        "verified": true,
+        "width_summary": [
+          {
+            "coordinate": "x",
+            "samples": 1000,
+            "view": "endpoint",
+            "width_max": 0.30447743639718805,
+            "width_max_step": 7,
+            "width_p50": 0.09139089815229923,
+            "width_p95": 0.24007093225099785
+          },
+          {
+            "coordinate": "y",
+            "samples": 1000,
+            "view": "endpoint",
+            "width_max": 0.4819290987987882,
+            "width_max_step": 32,
+            "width_p50": 0.10786362742514904,
+            "width_p95": 0.3517800698396496
+          },
+          {
+            "coordinate": "x",
+            "samples": 1000,
+            "view": "tube",
+            "width_max": 0.3273546272262575,
+            "width_max_step": 5,
+            "width_p50": 0.10150888054199475,
+            "width_p95": 0.2644165659304356
+          },
+          {
+            "coordinate": "y",
+            "samples": 1000,
+            "view": "tube",
+            "width_max": 0.549228766708063,
+            "width_max_step": 32,
+            "width_p50": 0.12278328433418673,
+            "width_p95": 0.4125893306972821
+          }
+        ]
+      },
+      "plant": "van_der_pol",
+      "raw_sha256": {
+        "cpu": "903b0d20f9ce7df940e54de38fd6fe72a62d5291556d212f4e3dc1aa01b3753f",
+        "flowstar": "f6faff57a40d342efb355d12d3f3850342443634977849a02535ae64dccf79db",
+        "gpu-range": "9c2f6973dd5da58a9e21bf5733a1f53dbd65aa4f98a2638ba4580587a93bf7dc"
+      },
+      "source_paths": {
+        "cpu": "artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal/vdp_full/models.jsonl.gz",
+        "flowstar": "artifacts/runs/xiangru_adoption_20260907T032448Z/raw_minimal/native_vdp/models.jsonl.gz",
+        "gpu-range": "artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/van_der_pol-Gp/full_horizon_steps.jsonl.gz"
+      }
+    },
+    {
+      "accepted_steps": 1000,
+      "code_refs": {
+        "cpu": "196a50e9131336d68df07ad0af353deca0092d19",
+        "flowstar": "b85a3211748cb77b736fe4ad42ee02d8d2b81148",
+        "gpu-range": "1d870939fcdb72bd999730cf09de0b14d1cd71c4"
+      },
+      "final_exact_time": "720575940379279375/36028797018963968",
+      "gpu_verification": {
+        "achieved": true,
+        "exact_final_time": "720575940379279375/36028797018963968",
+        "groups": 161982,
+        "packet_kernel_invocations": 647928,
+        "packets": 161982,
+        "plant": "brusselator",
+        "queue_owner_schema": "accepted_boundary_sr_v1",
+        "requests": 161982,
+        "route": "Gp",
+        "steps": 1000,
+        "verified": true,
+        "width_summary": [
+          {
+            "coordinate": "x",
+            "samples": 1000,
+            "view": "endpoint",
+            "width_max": 0.25820881047134847,
+            "width_max_step": 719,
+            "width_p50": 0.006116752395534636,
+            "width_p95": 0.13221469745443626
+          },
+          {
+            "coordinate": "y",
+            "samples": 1000,
+            "view": "endpoint",
+            "width_max": 0.2241055160003631,
+            "width_max_step": 718,
+            "width_p50": 0.014642630022598135,
+            "width_p95": 0.10780214939346955
+          },
+          {
+            "coordinate": "x",
+            "samples": 1000,
+            "view": "tube",
+            "width_max": 0.43814046027089226,
+            "width_max_step": 719,
+            "width_p50": 0.011439626057658303,
+            "width_p95": 0.17931661116832331
+          },
+          {
+            "coordinate": "y",
+            "samples": 1000,
+            "view": "tube",
+            "width_max": 0.5190414757801709,
+            "width_max_step": 719,
+            "width_p50": 0.02878920806345997,
+            "width_p95": 0.19816525150510222
+          }
+        ]
+      },
+      "plant": "brusselator",
+      "raw_sha256": {
+        "cpu": "9200690b324ca3ecefe49e5535645b954cd27a4eeac37dbbfc15a2ab11304819",
+        "flowstar": "03874f5131b5dc29ea54e4f316c673f721d2abb3acf30e938871cecd568ea718",
+        "gpu-range": "1a38465ed81ea3aa95b76e0ae4aca6427bc2bef561fb8ab57dd31c0df546b9b5"
+      },
+      "source_paths": {
+        "cpu": "artifacts/runs/endpoint_roundoff_repair_20260908/raw_minimal/brusselator_full/models.jsonl.gz",
+        "flowstar": "artifacts/runs/xiangru_adoption_20260907T032448Z/raw_minimal/native_brusselator/models.jsonl.gz",
+        "gpu-range": "artifacts/runs/live_gpu_packets_20260910T023603Z/full_horizon/brusselator-Gp/full_horizon_steps.jsonl.gz"
+      }
+    }
+  ],
+  "whole_solver_formal_proof": false
+}
