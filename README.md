@@ -1,5 +1,7 @@
 # torch-tm-flowpipe
 
+This working branch also contains the completed whole-engine feasibility experiment: see the [adapter run guide](experiments/whole_engine_feasibility/README.md) and [2026-09-21 execution report](docs/WHOLE_ENGINE_EXECUTION_20260921.md). The original review below retains its saved sources; the new complete-engine experiment has separate versions, outputs, and CPU/CUDA performance conclusions.
+
 This branch is a research review of plant-only polynomial ODE Taylor-model flowpipes. The sole numerical package, `src/torch_tm_flowpipe`, implements CPU-led validated propagation and optional CUDA range services. The two primary systems are Van der Pol and Brusselator. This branch organizes complete accepted horizons, all-step enclosure curves, mechanism tests, numerical repair boundaries, and actual timing; it does not introduce a new solver algorithm.
 
 The current original-box fixed contracts both complete 1,000 accepted steps: Van der Pol with binary64 `h=0.01` reaches nominal T10; Brusselator with binary64 `h=0.02` reaches nominal T20. The endpoint-repaired CPU path and packet GPU range service have complete saved four-channel data. Native Flow* complete objects have been re-observed under the same current strict CPU range observer for the comparison. The packet route is a CPU-led solver that consumes real CUDA range results; a whole GPU engine has not been implemented. The optional resident composition block has measured B32×20 and continuous-prefix evidence, but no new original-box 1,000-step horizon and remains disabled by default.
@@ -42,4 +44,4 @@ python -m experiments.review_suite.cli run --experiment vdp-fixed-full --backend
 
 The equivalent supported Brusselator fixed, adaptive VDP, and GPU-range commands are in [REPRODUCING.md](docs/REPRODUCING.md). The GPU-range and resident smoke commands report clearly when CUDA is unavailable. Flow* is required only for a new native Flow* rerun, not for reading or plotting the saved comparison.
 
-This branch does not run the deferred whole-engine feasibility/adoption task. The old August common-prefix, DiffReach fixed-support, S1, TORA, and withdrawn "fastest/tightest" statements are historical context, not the current main result.
+The original review did not run the then-deferred whole-engine feasibility/adoption task; the separate experiment linked above now records its results. The old August common-prefix, DiffReach fixed-support, S1, TORA, and withdrawn "fastest/tightest" statements are historical context, not the current main result.

@@ -63,7 +63,16 @@ def advance_transaction(state, sr, code, eng, sched, settings, rem):
 
 
 def run(args):
+    if args.engine_root is not None:
+        engine_src = args.engine_root.resolve() / 'src'
+        if not (engine_src / 'flowstar_gpu' / '__init__.py').is_file():
+            raise FileNotFoundError(f'flowstar_gpu source is missing from {engine_src}')
+        sys.path.insert(0, str(engine_src))
     import flowstar_gpu
+    if args.engine_root is not None:
+        actual = Path(flowstar_gpu.__file__).resolve()
+        if not actual.is_relative_to(engine_src):
+            raise RuntimeError(f'wrong flowstar_gpu import: {actual}')
     from flowstar_gpu.config import Settings
     from flowstar_gpu.determinism import enable_determinism
     from flowstar_gpu.monomials import build_tables
@@ -192,6 +201,8 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--plant', choices=['van_der_pol', 'brusselator'], required=True)
+    parser.add_argument('--engine-root', type=Path,
+                        help='explicit external engine checkout; recorded and checked after import')
     parser.add_argument('--batch', type=int, choices=[1, 2, 32], required=True)
     parser.add_argument('--steps', type=int, required=True)
     parser.add_argument('--device', choices=['cpu', 'cuda'], default='cuda')

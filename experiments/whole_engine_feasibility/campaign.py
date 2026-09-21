@@ -15,10 +15,11 @@ def gpu_snapshot():
         ('processes', ['nvidia-smi', '--query-compute-apps=pid,gpu_uuid,used_gpu_memory', '--format=csv,noheader']))}
 
 
-def environment(run_root, gpu):
+def environment(run_root, gpu, engine_root=None):
     compiler = Path('/srv/local/shengenli/.huan-audit-gxx13/bin')
+    engine_root = Path(engine_root).resolve() if engine_root else run_root / 'engine'
     return dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu),
-                PYTHONPATH=f'{run_root}/engine/src:{ROOT}/src:{ROOT}',
+                PYTHONPATH=f'{engine_root}/src:{ROOT}/src:{ROOT}',
                 OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1',
                 PYTHONDONTWRITEBYTECODE='1', CUDA_HOME='/usr/local/cuda-12.6',
                 TORCH_EXTENSIONS_DIR=str(run_root / 'cache/py311_torch251_cu126_gcc13'),
@@ -69,9 +70,11 @@ def main():
     parser.add_argument('--phase', choices=['continuity', 'horizon', 'timing', 'flowstar'], required=True)
     parser.add_argument('--gpu', type=int, required=True)
     parser.add_argument('--run-root', type=Path, required=True)
+    parser.add_argument('--engine-root', type=Path,
+                        help='external engine checkout; defaults to the original experiment engine')
     args = parser.parse_args()
     root = args.run_root.resolve()
-    env = environment(root, args.gpu)
+    env = environment(root, args.gpu, args.engine_root)
     plants = ['van_der_pol', 'brusselator']
     if args.phase in ('continuity', 'horizon'):
         batch, steps = (2, 120) if args.phase == 'continuity' else (1, 1000)
