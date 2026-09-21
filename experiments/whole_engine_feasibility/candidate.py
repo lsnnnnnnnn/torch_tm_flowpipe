@@ -97,11 +97,16 @@ def run(args):
         from flowstar_gpu import sr_kernels
     except ImportError:
         sr_kernels = None  # Older explicitly selected baseline checkouts.
+    try:
+        from flowstar_gpu import sr_sum_kernels
+    except ImportError:
+        sr_sum_kernels = None
     algorithms = {'composition': getattr(sparse_exec, 'COMPOSITION_MODE', 'monomial'),
                   'glue': glue.GLUE_MODE,
                   'support_policy': getattr(sparse_exec, 'SUPPORT_POLICY', 'measured'),
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
-                  'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval'}
+                  'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
+                  'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
     for option in ('composition', 'glue', 'support_policy'):
         requested = getattr(args, option, None)
         if requested is not None and algorithms[option] != requested:
@@ -130,6 +135,8 @@ def run(args):
                       'validation': tape_kernels.valid_available()}
         if sr_kernels is not None:
             extensions['sr_interval'] = sr_kernels.available()
+        if sr_sum_kernels is not None:
+            extensions['sr_history_sum'] = sr_sum_kernels.available()
         if not all(extensions.values()):
             raise RuntimeError(f'candidate CUDA extensions unavailable: {extensions}')
     sync()
