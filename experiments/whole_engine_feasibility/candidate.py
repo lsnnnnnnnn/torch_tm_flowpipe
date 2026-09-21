@@ -6,7 +6,6 @@ operation on complete saved factored models, never part of a timing-only run.
 from __future__ import annotations
 
 import argparse
-import copy
 from dataclasses import asdict
 import gzip
 import hashlib
@@ -47,6 +46,17 @@ def save_factored(state, tab, *, step, h, lane_ids, accepted):
             'tmv_rem': state.tmv_rem.detach().cpu().tolist()}
 
 
+def _copy_symbolic_remainder(sr):
+    """Copy every allocated SR entry for an independent speculative transaction."""
+    return type(sr)(
+        scalars=sr.scalars.clone(), max_size=sr.max_size,
+        phi_buf=sr.phi_buf.clone(), j_buf=sr.j_buf.clone(),
+        phi_iv_buf=None if sr.phi_iv_buf is None else sr.phi_iv_buf.clone(),
+        scalars_iv=None if sr.scalars_iv is None else sr.scalars_iv.clone(),
+        qlen=sr.qlen, jlen=sr.jlen,
+    )
+
+
 def advance_transaction(state, sr, code, eng, sched, settings, rem):
     """Commit the whole batch only if every lane validates; otherwise retain inputs.
 
@@ -55,7 +65,7 @@ def advance_transaction(state, sr, code, eng, sched, settings, rem):
     of solve time. There is no retry, lane revival or hidden step-size change.
     """
     from flowstar_gpu.sparse_exec import advance_sparse, prune_state
-    pending_sr = copy.deepcopy(sr)
+    pending_sr = _copy_symbolic_remainder(sr)
     pending, ok = advance_sparse(state, code, eng, sched, settings, rem, pending_sr)
     accepted = ok.detach().cpu().tolist()
     if not all(accepted):

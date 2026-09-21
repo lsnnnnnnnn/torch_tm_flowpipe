@@ -152,5 +152,97 @@ class CandidateLifecycleTests(unittest.TestCase):
         self.assertEqual(resets, [2, 4])
 
 
+class SymbolicRemainderCopyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        torch.set_num_threads(1)
+
+    def fixture(self, phi_present=True, scalars_present=True):
+        sr = make_symbolic_remainder(2, 3, 1000, "cpu")
+        sr.reserve(40)
+        sr.qlen, sr.jlen = 3, 2  # Deliberately between Phi push and J append.
+        if phi_present:
+            sr.phi_iv_buf = torch.empty(*sr.phi_buf.shape, 2, dtype=torch.float64)
+        if scalars_present:
+            sr.scalars_iv = torch.empty(*sr.scalars.shape, 2, dtype=torch.float64)
+        for field in fields(sr):
+            value = getattr(sr, field.name)
+            if isinstance(value, torch.Tensor):
+                # Nonzero sentinels throughout unused capacity catch a live-only
+                # copy that would pass an ordinary short solver comparison.
+                value.copy_(torch.arange(value.numel(), dtype=value.dtype).reshape(value.shape) + 0.25)
+        return sr
+
+    def assert_same(self, left, right):
+        self.assertIs(type(left), type(right))
+        for field in fields(left):
+            a, b = getattr(left, field.name), getattr(right, field.name)
+            if isinstance(a, torch.Tensor):
+                self.assertEqual((a.shape, a.dtype, a.device), (b.shape, b.dtype, b.device))
+                self.assertTrue(torch.equal(a, b), field.name)
+            else:
+                self.assertEqual(a, b, field.name)
+
+    def test_copy_preserves_all_capacity_and_optional_fields_without_aliasing(self):
+        from .candidate import _copy_symbolic_remainder
+        for phi_present, scalars_present in [(False, False), (True, False), (False, True), (True, True)]:
+            with self.subTest(phi=phi_present, scalars=scalars_present):
+                sr = self.fixture(phi_present, scalars_present)
+                # Make future schema additions fail loudly until the copy is
+                # extended; silently omitting a new strict field is unsafe.
+                self.assertEqual({f.name for f in fields(sr)},
+                                 {"scalars", "max_size", "phi_buf", "j_buf", "phi_iv_buf", "scalars_iv", "qlen", "jlen"})
+                original = copy.deepcopy(sr)
+                pending = _copy_symbolic_remainder(sr)
+                self.assert_same(pending, original)
+                for field in fields(sr):
+                    value = getattr(pending, field.name)
+                    if isinstance(value, torch.Tensor):
+                        self.assertNotEqual(value.data_ptr(), getattr(sr, field.name).data_ptr(), field.name)
+                        value.fill_(-13.0)
+                pending.qlen, pending.jlen, pending.max_size = 7, 6, 71
+                self.assert_same(sr, original)
+
+    def test_failed_batch_discards_mutation_of_every_pending_field(self):
+        from unittest.mock import patch
+        sr = self.fixture()
+        saved = copy.deepcopy(sr)
+        state = SimpleNamespace(status=torch.tensor([ACTIVE, ACTIVE]))
+
+        def destructive_failure(state, code, eng, sched, settings, rem, pending):
+            self.assertIsNot(pending, sr)
+            pending.reserve(80)
+            for field in fields(pending):
+                value = getattr(pending, field.name)
+                if isinstance(value, torch.Tensor):
+                    value.fill_(-19.0)
+            pending.qlen, pending.jlen, pending.max_size = 8, 7, 81
+            return SimpleNamespace(status=torch.tensor([ACTIVE, FAILED_CONTRACTION])), torch.tensor([True, False])
+
+        with patch("flowstar_gpu.sparse_exec.advance_sparse", destructive_failure), \
+             patch("flowstar_gpu.sparse_exec.prune_state", side_effect=AssertionError("failed batch must not commit")):
+            out, out_sr, accepted, statuses, reset = advance_transaction(state, sr, None, None, None, None, None)
+        self.assertIs(out, state)
+        self.assertIs(out_sr, sr)
+        self.assertEqual(accepted, [True, False])
+        self.assertEqual(statuses, [ACTIVE, FAILED_CONTRACTION])
+        self.assertFalse(reset)
+        self.assert_same(sr, saved)
+
+    def test_clone_and_deepcopy_match_through_growth_and_reset(self):
+        from unittest.mock import patch
+        original, cloned = make_case(capacity=18), make_case(capacity=18)
+        for step in range(1, 20):
+            with patch("experiments.whole_engine_feasibility.candidate._copy_symbolic_remainder", copy.deepcopy):
+                old_result = advance(original)
+            new_result = advance(cloned)
+            self.assertEqual(old_result, new_result, step)
+            self.assertEqual(new_result[0], [True, True])
+            self.assert_same(original.state, cloned.state)
+            self.assert_same(original.sr, cloned.sr)
+        self.assertEqual(cloned.sr.queue_len, 1)
+        self.assertEqual(cloned.sr.phi_buf.shape[0], 18)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
