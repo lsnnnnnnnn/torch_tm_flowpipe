@@ -22,7 +22,7 @@ def environment(run_root, gpu, engine_root=None):
                 PYTHONPATH=f'{engine_root}/src:{ROOT}/src:{ROOT}',
                 OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1',
                 PYTHONDONTWRITEBYTECODE='1', CUDA_HOME='/usr/local/cuda-12.6',
-                TORCH_EXTENSIONS_DIR=str(run_root / 'cache/py311_torch251_cu126_gcc13'),
+                TORCH_EXTENSIONS_DIR=str((run_root / 'cache/py311_torch251_cu126_gcc13').resolve()),
                 CXX=str(compiler / 'x86_64-conda-linux-gnu-g++'),
                 CC=str(compiler / 'x86_64-conda-linux-gnu-gcc'),
                 TORCH_CUDA_ARCH_LIST='7.0', MAX_JOBS='2')
@@ -82,6 +82,14 @@ def main():
             output = root / 'runs' / f'{args.phase}_{plant}'
             execute(candidate_command(plant, batch, steps, output, True), env, output)
     elif args.phase == 'timing':
+        # Separate cold builds and one-time warmup from the fixed three pairs.
+        for plant in plants:
+            output = root / 'runs' / f'warmup_{plant}'
+            execute(candidate_command(plant, 32, 2, output, False), env, output, formal=True)
+            result = json.loads((output / 'summary.json').read_text())
+            if (result['accepted_steps'] != [2] * 32 or not result['completed']
+                    or result['failure'] is not None or not all(result['extensions'].values())):
+                raise RuntimeError(f'candidate warmup did not complete: {output}')
         for plant in plants:
             for pair in range(1, 4):
                 order = ['Gr', 'candidate'] if pair % 2 else ['candidate', 'Gr']

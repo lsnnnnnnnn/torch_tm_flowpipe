@@ -94,9 +94,11 @@ def run(args):
     sync = (lambda: torch.cuda.synchronize()) if args.device == 'cuda' else (lambda: None)
     cold = time.perf_counter()
     enable_determinism(args.device)
-    extensions = {'interval': False, 'tape': False}
+    extensions = {'interval': False, 'tape': False, 'validation': False}
     if args.device == 'cuda':
-        extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available()}
+        # Validation has a separate lazy extension; compile it before the solve timer.
+        extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available(),
+                      'validation': tape_kernels.valid_available()}
         if not all(extensions.values()):
             raise RuntimeError(f'candidate CUDA extensions unavailable: {extensions}')
     sync()

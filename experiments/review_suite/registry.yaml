@@ -80,7 +80,17 @@
           "fresh_or_reused": "fresh_run",
           "observed_scope": "original B1 fixed 1000-step T10 GPU-range confirmation"
         }
-      ]
+      ],
+      "additional_rerun_routes": {
+        "whole-engine": {
+          "implementation_role": "full sparse strict external PyTorch engine; explicit CPU/CUDA device",
+          "engine_code_ref": "280abb400610f56210a7a5be61d5f98be3e27251",
+          "run_command": "python -m experiments.review_suite.cli run --experiment vdp-fixed-full --backend whole-engine --engine-root <engine_checkout> --device cuda --out <new_dir>",
+          "scope": "original B1 fixed 1000 steps; saves complete factored states; run review-suite observe for physical bounds",
+          "guide": "experiments/whole_engine_feasibility/README.md",
+          "evidence_note": "Additional rerun route; immutable variants above remain their original scientific sources."
+        }
+      }
     },
     {
       "id": "brusselator-fixed-full",
@@ -159,7 +169,17 @@
           "fresh_or_reused": "fresh_run",
           "observed_scope": "original B1 fixed 1000-step T20 GPU-range confirmation"
         }
-      ]
+      ],
+      "additional_rerun_routes": {
+        "whole-engine": {
+          "implementation_role": "full sparse strict external PyTorch engine; explicit CPU/CUDA device",
+          "engine_code_ref": "280abb400610f56210a7a5be61d5f98be3e27251",
+          "run_command": "python -m experiments.review_suite.cli run --experiment brusselator-fixed-full --backend whole-engine --engine-root <engine_checkout> --device cuda --out <new_dir>",
+          "scope": "original B1 fixed 1000 steps; saves complete factored states; run review-suite observe for physical bounds",
+          "guide": "experiments/whole_engine_feasibility/README.md",
+          "evidence_note": "Additional rerun route; immutable variants above remain their original scientific sources."
+        }
+      }
     },
     {
       "id": "vdp-adaptive",

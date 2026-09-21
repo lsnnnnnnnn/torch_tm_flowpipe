@@ -1,5 +1,10 @@
 # Complete PyTorch engine experiment
 
+The supported user entrypoint is now `python -m experiments.review_suite.cli`:
+see [complete-engine commands](../../docs/REPRODUCING.md#complete-pytorch-engine).
+The direct candidate and campaign commands below also remain available for
+frozen research replay.
+
 This adapter runs Huan's sparse engine through every accepted step. It does not
 call the old CPU range-service solver. The supported tasks are the frozen Van
 der Pol and Brusselator plants, with B1 original boxes, B2 partition lanes 0/31,
@@ -61,7 +66,7 @@ rejection is recorded without changing the fixed step or returning a fabricated
 model. A batch is committed atomically, and speculative SR copies provide real
 rollback. The copy cost is included in solve time.
 
-`campaign.py` reproduces the finite experiment phases. Its historical default
+`campaign.py` reproduces the finite experiment phases. Timing campaigns first save a separate B32×2 warmup for each plant. All three CUDA extensions (including the lazily loaded validation extension) are checked before the solve timer; cold builds remain in startup/process time. The extension-cache path is resolved to avoid rebuilding identical sources merely because a new run directory uses a symlink. Its historical default
 engine directory is `../engine`; pass `--engine-root ../engine_cutoff_aligned`
 for the final variant. The 2026-09-21 old-Gr paired measurements used cff8758,
 whereas the separate same-engine CPU/CUDA measurements used 280abb4.

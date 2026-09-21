@@ -31,7 +31,7 @@ python -m experiments.review_suite.cli smoke --backend gpu-range
 python -m experiments.review_suite.cli smoke --backend resident
 ```
 
-CPU smoke runs two real accepted steps on both systems; GPU-range smoke uses the packet route inside the actual solver chain; resident smoke explicitly enables the otherwise disabled composition prototype. CUDA smoke requires a device/NVRTC; a missing dependency yields a nonzero exit and a diagnostic, never a fabricated PASS. Temporary smoke evidence is discarded. Use the `run` prefix commands below for retained resident evidence.
+CPU smoke runs two real accepted steps on both systems; GPU-range smoke uses the packet route inside the actual solver chain; resident smoke explicitly enables the otherwise disabled composition prototype. CUDA smoke requires a device/NVRTC; a missing dependency yields a nonzero exit and a diagnostic, never a fabricated PASS. Successful smoke evidence is discarded; failed whole-engine smoke evidence is retained at the printed path. Use the `run` prefix commands below for retained resident evidence.
 
 ## New complete experiments
 
@@ -59,6 +59,32 @@ python -m experiments.review_suite.cli run --experiment vdp-resident-b2 --backen
 python -m experiments.review_suite.cli run --experiment brusselator-resident-b2 --backend resident --out ../review_runs/bruss_resident_b2
 ```
 
-The first two commands are continuous 20-step original-box B1 prefixes, not T10/T20. The next two request two distinct fixed 8×4 partition subboxes with two steps each (B2), not the original box or a full horizon. The frozen new runs and their semantic verifier outcome are in [the confirmation table](../results/review/fresh_confirmations.csv); these small runs did not save an all-step physical four-channel range table and cannot be substituted for a complete resident horizon. The resident block is default-off; it is explicitly enabled only in this route. The saved B32×20 performance pairs and matched Flow* scale are reused/recomputed in this branch; they are not rerun by summarize or plot. The deferred complete-device-engine feasibility/adoption goal was not executed here.
+The first two commands are continuous 20-step original-box B1 prefixes, not T10/T20. The next two request two distinct fixed 8×4 partition subboxes with two steps each (B2), not the original box or a full horizon. The frozen new runs and their semantic verifier outcome are in [the confirmation table](../results/review/fresh_confirmations.csv); these small runs did not save an all-step physical four-channel range table and cannot be substituted for a complete resident horizon. The resident block is default-off; it is explicitly enabled only in this route. The saved B32×20 performance pairs and matched Flow* scale are reused/recomputed in this branch; they are not rerun by summarize or plot. That saved review did not execute the complete-device-engine task; the later whole-engine route below has separate source revisions and results.
 
 Historical mechanism runs require their original fixed source checkout and environment as documented in their packages. Do not silently import a historical numerical package into the current review process. [The recovery map](../archive/index.csv) identifies archived old current-tree material by exact commit and path.
+
+## Complete PyTorch engine
+
+The supported entrypoint exposes the strict external engine as an explicit
+`whole-engine` backend for the same two `*-fixed-full` experiment IDs. It
+requires a clean external checkout at
+`280abb400610f56210a7a5be61d5f98be3e27251` and an explicit CPU/CUDA device.
+The [adapter guide](../experiments/whole_engine_feasibility/README.md) gives
+the tested compiler, CUDA, extension cache and Python environment. Configure
+those first, and select an available GPU with `CUDA_VISIBLE_DEVICES`.
+
+```bash
+python -m experiments.review_suite.cli smoke --backend whole-engine --engine-root ../engine_cutoff_aligned --device cpu
+python -m experiments.review_suite.cli smoke --backend whole-engine --engine-root ../engine_cutoff_aligned --device cuda
+python -m experiments.review_suite.cli run --experiment vdp-fixed-full --backend whole-engine --engine-root ../engine_cutoff_aligned --device cuda --out ../review_runs/vdp_whole_001
+python -m experiments.review_suite.cli run --experiment brusselator-fixed-full --backend whole-engine --engine-root ../engine_cutoff_aligned --device cuda --out ../review_runs/bruss_whole_001
+python -m experiments.review_suite.cli observe --input ../review_runs/vdp_whole_001/factored.jsonl.gz --out ../review_runs/vdp_whole_001_observed
+```
+
+`run` retains every complete accepted factored model and refuses to report
+success if numerical completion or the engine source identity check fails.
+Any failed run keeps its actual prefix and diagnostic. `observe` applies the
+common exact observer to every accepted endpoint/tube x/y model; its potentially
+large export/observation cost is reported separately from solver time. Neither
+command replaces the older saved comparison selected by `summarize --all`.
+No adaptive task or additional plant is supported by this route.
