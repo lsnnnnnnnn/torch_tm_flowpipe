@@ -82,6 +82,8 @@ def run(args):
         value = getattr(args, option, None)
         if value is not None:
             os.environ[variable] = value
+    if getattr(args, 'injective_maps', None) is not None:
+        os.environ['FLOWSTAR_INJECTIVE_MAPS'] = '1' if args.injective_maps == 'on' else '0'
     if args.engine_root is not None:
         engine_src = args.engine_root.resolve() / 'src'
         if not (engine_src / 'flowstar_gpu' / '__init__.py').is_file():
@@ -111,14 +113,19 @@ def run(args):
         from flowstar_gpu import sr_sum_kernels
     except ImportError:
         sr_sum_kernels = None
+    try:
+        from flowstar_gpu import injective_index
+    except ImportError:
+        injective_index = None
     algorithms = {'composition': getattr(sparse_exec, 'COMPOSITION_MODE', 'monomial'),
                   'glue': glue.GLUE_MODE,
                   'support_policy': getattr(sparse_exec, 'SUPPORT_POLICY', 'measured'),
                   'validation_policy': getattr(sparse_exec, 'VALIDATION_POLICY', 'truncated'),
+                  'injective_maps': 'on' if injective_index is not None and injective_index.ENABLED else 'off',
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
                   'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
                   'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
-    for option in ('composition', 'glue', 'support_policy', 'validation_policy'):
+    for option in ('composition', 'glue', 'support_policy', 'validation_policy', 'injective_maps'):
         requested = getattr(args, option, None)
         if requested is not None and algorithms[option] != requested:
             raise RuntimeError(f'engine already imported with a different {option}: {algorithms[option]}')
@@ -149,6 +156,8 @@ def run(args):
             extensions['sr_interval'] = sr_kernels.available()
         if sr_sum_kernels is not None:
             extensions['sr_history_sum'] = sr_sum_kernels.available()
+        if algorithms['injective_maps'] == 'on':
+            extensions['injective_index'] = injective_index.available()
         if not all(extensions.values()):
             raise RuntimeError(f'candidate CUDA extensions unavailable: {extensions}')
         loaded = [cuda_kernels._ext, tape_kernels._ext, tape_kernels._vext]
@@ -156,6 +165,8 @@ def run(args):
             loaded.append(sr_kernels._ext)
         if sr_sum_kernels is not None:
             loaded.append(sr_sum_kernels._ext)
+        if algorithms['injective_maps'] == 'on':
+            loaded.append(injective_index._ext)
         for module in loaded:
             path = Path(module.__file__).resolve()
             extension_binaries[module.__name__] = {
@@ -277,6 +288,7 @@ def main():
     parser.add_argument('--glue', choices=['eager', 'compile', 'graph'])
     parser.add_argument('--support-policy', choices=['measured', 'structural'])
     parser.add_argument('--validation-policy', choices=['truncated', 'defer_polynomial'])
+    parser.add_argument('--injective-maps', choices=['off', 'on'])
     parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
