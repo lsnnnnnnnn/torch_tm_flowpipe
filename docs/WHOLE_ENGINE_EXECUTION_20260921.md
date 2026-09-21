@@ -2,6 +2,8 @@
 
 三个仓库已经在服务器核实并读取。当前已形成可运行的完整 PyTorch/CUDA 求解路径；经过跨步误差修复和内部截断阈值对齐，VDP、Brusselator 都已在 CPU 和 CUDA 上完成原始单盒 1000 步。旧目录、未提交修改、原始实验数据和 main 均保留。
 
+**接入更新。** `445218b` 已将该引擎接入支持入口 `experiments.review_suite.cli`，作为显式 `whole-engine` 后端，要求指定引擎目录和 CPU/CUDA。两设备均通过两系统真实两步冒烟；统一 `run` 和 `observe` 命令另完成 VDP 原盒1000步和4000行范围。最终引擎与 Gr 的预热后三组配对正在独立目录执行，完成前不以旧版本倍率代替。
+
 整体迁移与 GPU 本身的收益需要分开看。同一新引擎的 B32×20 对照中，VDP 使用 CPU 更快；Brusselator 的预热 GPU 求解约快 1.35 倍。相对旧 Gr 路线的巨大差距不能全部归为 GPU 加速。
 
 本次根目录为 `/srv/local/shengenli/whole_engine_feasibility_20260921T120109Z`。下文中的相对路径都相对于这个目录。
@@ -60,3 +62,15 @@
 当前路线判断：完整张量化引擎的可行性里程碑通过，推荐以具有跨步修复、且 strict 截断服从配置的 `280abb4` 继续接入，保留 CPU 与 CUDA 两种执行方式。小批量 VDP 优先采用已测更快的 CPU；GPU 的进一步收益需要针对实际批量验证。现有 CPU/Gr 参考和旧结果继续保留。工程默认路径没有被自动替换，也没有宣称整个长期项目已经结束。
 
 详细原始记录留在服务器 `runs/` 中，本地同步的图表位于本报告旁。原始失败版本的图表在 `quality_comparison/`，不会以新版本结果覆盖。
+
+## 支持入口、统计和最终版本计时的补齐
+
+实现提交为 `445218b757ea4e8cd17a488ec0bff13529e59d6f`。统一入口增加 `--backend whole-engine --engine-root <checkout> --device cpu|cuda`，只支持原有 `vdp-fixed-full` 和 `brusselator-fixed-full`。启动和完成后核实严格引擎版本及干净状态，并检查实际数值完成情况。正式运行或冒烟失败均保留真实前缀和诊断。`observe --input <factored.jsonl.gz> --out <new_dir>` 复用同一精确公共观察器；旧默认路径和旧冻结对照没有改变。
+
+四项入口回归、新后端CPU/CUDA两系统冒烟和旧CPU兼容检查均通过。保存日志位于 `runs/supported_entry_validation/`。统一入口的一次CPU完整VDP确认完成1000步，进程21.924秒；随后观察完成1000模型/4000行，55.362秒。这是入口验证，不作为新性能配对。CUDA冒烟核实三个扩展均可用，含初次重编译耗时183秒；所有辅助计算已于13:45:56Z结束。
+
+新增 `quality_comparison_complete_metrics/` 补齐16个通道比较的p95、最坏步/时刻和上下界绝对差，无需重跑或更换输入。相对Flow*的四通道宽度比p95：VDP为1.346–1.421，Brusselator为1.189–1.565；最坏值分别在VDP endpoint y第982步（名义t=9.82）和Brusselator endpoint x第898步（t=17.96）。p95使用 `(n−1)×0.95` 线性插值；任一宽度不超过 `64×ulp(max(1,|lo|,|hi|))` 时比值记空并保留绝对差，实际触发0条。15992行逐步数据保留有符号边界差，大CSV留在服务器该新目录，脚本/汇总/16行比较表已同步本地。CPU仍用1000步，Flow*仍只用实际匹配的999步。
+
+补做最终版本计时时发现验证扩展懒编译落入首轮solve时间。第一次尝试 `/srv/local/shengenli/whole_engine_final_timing_20260921T132402Z` 已因违反预热契约停止，保留4个完成summary和3个完整receipt：首候选solve61.498秒/process183.238秒，包括约60.5秒验证扩展构建，随后缓存样本solve0.984秒。没有删除慢样本或相减推测纯求解时间。
+
+修复后，三个CUDA扩展均在solve计时前检查，缓存使用稳定真实路径，正式配对前分别记录两系统B32×2预热。新目录 `/srv/local/shengenli/whole_engine_final_warm_timing_20260921T134430Z` 预先固定同样每系统三组、GPU3/core2、交替顺序。13:47:37Z启动后，两次预热各64 lane-steps全部接受，三个扩展和实际来源检查通过。最终12次样本仍在运行，预计14:20–14:22Z结束；完整结果核验前不作新的倍率结论。
