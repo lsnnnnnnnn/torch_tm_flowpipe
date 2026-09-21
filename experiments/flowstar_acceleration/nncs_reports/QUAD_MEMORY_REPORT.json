@@ -1,0 +1,2948 @@
+{
+  "known_post_run_gap": "A later Airplane audit identified FULL/spatial support-ID mixing in the public endpoint helper. These frozen NNCS runs are historical observations pending that repair and rerun; they are not final strict qualification.",
+  "final": {
+    "status": "plant_numerical_rejection_controller_unqualified",
+    "scope": "full",
+    "engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+    "runner_sha256": "2536e606d6b07bd8e4e0cb941ca99b9944444e91c7ed2ccc31549624ab01aa0e",
+    "config_sha256": "29f4e7f8920ff8f73b4d9b1e5fba8f367dfca162398160cd07a2391a972323c7",
+    "attempted_steps": 597,
+    "expected_steps": 1000,
+    "accepted_steps_all_lanes": 594,
+    "accepted_lane_steps": 609861,
+    "all_steps_accepted": false,
+    "configured_horizon_completed": false,
+    "timing": {
+      "extension_cached_load_s": 0.435579604934901,
+      "controller_setup_s": 1.412319710943848,
+      "controller_bound_s": 2.4117849045433104,
+      "plant_advance_s": 32.12608390906826,
+      "observer_s": 30.532037244644016,
+      "trace_io_s": 96.33423289237544,
+      "sr_initialization_s": 0.020123504102230072,
+      "snapshot_s": 0.0,
+      "child_wall_s": 167.0503168767318,
+      "unattributed_setup_bookkeeping_s": 3.7781551061198115
+    },
+    "sr_allocation": "preallocated_full_capacity",
+    "sr_initialization": {
+      "qlen": 0,
+      "jlen": 0,
+      "capacity": 1000,
+      "interval_history_initially_absent": true,
+      "memory": {
+        "rss_bytes": 1170923520,
+        "cuda_allocated_bytes": 2403961344,
+        "cuda_reserved_bytes": 2455764992,
+        "cuda_peak_allocated_bytes": 2408155648,
+        "cuda_peak_reserved_bytes": 2455764992
+      },
+      "included_in_child_and_process_wall": true
+    },
+    "sr_kernel_dispatches": 595,
+    "sr_sum_dispatches": 596,
+    "extension_dispatch_counts": {
+      "interval": {
+        "iv_mul": 1146,
+        "seg_dot_pt_iv": 1328,
+        "iv_addsub": 2312,
+        "iv_dot_point_iv": 138,
+        "iv_sum": 219,
+        "seg_mul_pt": 96,
+        "seg_mul_iv": 96,
+        "iv_mul_point": 18
+      },
+      "tape": {
+        "refine_tape": 597
+      },
+      "validation": {
+        "point_tape": 1194,
+        "valid_tape": 597
+      },
+      "sr_phi": {
+        "sr_left_multiply_": 595
+      },
+      "sr_j_sum": {
+        "sr_j_sum": 596
+      }
+    },
+    "extension_binary_sha256": {
+      "interval": {
+        "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+        "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+      },
+      "tape": {
+        "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+        "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+      },
+      "validation": {
+        "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+        "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+      },
+      "sr_phi": {
+        "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+        "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+      },
+      "sr_j_sum": {
+        "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+        "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+      }
+    },
+    "engine_files_unchanged": true,
+    "process": {
+      "argv": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+        "--expected-engine-sha",
+        "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+        "--engine",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_preallocated",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_full.yaml",
+        "--benchmark",
+        "quad_submit_native",
+        "--scope",
+        "full",
+        "--reserve-sr-full"
+      ],
+      "pid": 2046138,
+      "returncode": 0,
+      "status": "completed",
+      "timeout_s": 600.0,
+      "process_wall_s": 170.29925373522565,
+      "peak_tree_rss_bytes": 1429991424,
+      "peak_owned_gpu_bytes": 11507073024,
+      "rss_gpu_guard_bytes": 12348030976.0,
+      "hard_budget_bytes": 12884901888,
+      "poll_s": 0.1
+    },
+    "driver_summary": {
+      "B": 1024,
+      "order": 2,
+      "steps": 50,
+      "substeps": 20,
+      "broken": 1024,
+      "elapsed_s": 164.7245112201199
+    },
+    "final_graph": {
+      "enabled": true,
+      "hits": 4775,
+      "captures": 19,
+      "segments": 19
+    },
+    "first_rejected_step": 595,
+    "success_step_cleanup": {
+      "count": 7,
+      "seconds": 0.07404298987239599,
+      "all_allocated_unchanged": true
+    },
+    "growth_events": [
+      {
+        "ode_step": 1,
+        "qlen": 0,
+        "old_capacity": 16,
+        "needed": 1000,
+        "before": {
+          "rss_bytes": 1170649088,
+          "cuda_allocated_bytes": 82414080,
+          "cuda_reserved_bytes": 96468992,
+          "cuda_peak_allocated_bytes": 82414080,
+          "cuda_peak_reserved_bytes": 96468992
+        },
+        "cleanup_s": 0.00023182015866041183,
+        "after_cleanup": {
+          "rss_bytes": 1170833408,
+          "cuda_allocated_bytes": 82414080,
+          "cuda_reserved_bytes": 96468992,
+          "cuda_peak_allocated_bytes": 82414080,
+          "cuda_peak_reserved_bytes": 96468992
+        },
+        "after_reserve": {
+          "rss_bytes": 1170903040,
+          "cuda_allocated_bytes": 2403961344,
+          "cuda_reserved_bytes": 2455764992,
+          "cuda_peak_allocated_bytes": 2408155648,
+          "cuda_peak_reserved_bytes": 2455764992
+        },
+        "new_capacity": 1000,
+        "reserve_s": 0.013741299044340849
+      }
+    ],
+    "trace": {
+      "verifier_version": 2,
+      "streamed_one_step_at_a_time": true,
+      "records": 597,
+      "all_records_finite_ordered_intervals": true,
+      "accepted_lane_steps": 609861,
+      "trace_gzip_bytes": 346749351,
+      "trace_sha256": "3a90c25eca3291a66f43d76c1eb7514b66c3c623f56f2e38385cd81bb28d120a",
+      "observer_checked_state_immutability": true
+    },
+    "protocol_messages": []
+  },
+  "engine_chain": [
+    "5d1bac0 five CUDA extensions",
+    "be1ef6e strict point-history chunk workspace",
+    "97dcd0d cherry-picked graph-output ownership",
+    "15e527e largest interval buffer grows first"
+  ],
+  "fixed_engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+  "engine_status": "",
+  "source_hashes_match_start": true,
+  "five_extension_binaries_equal_validated_build": true,
+  "policy": {
+    "composition": "horner",
+    "glue": "graph",
+    "support": "measured",
+    "validation": "original truncated polynomial validation; no deferred policy",
+    "allocator_cap_GiB": 9,
+    "observed_RSS_GPU_guard_GiB": 11.5,
+    "hard_budget_GiB": 12,
+    "timeout_s": 600,
+    "GPU": 3,
+    "CPU_core": 9,
+    "threads": 1,
+    "sr_allocation": "preallocated_full_capacity",
+    "success_step_inactive_cache_threshold_GiB": 2,
+    "timing_boundary": "upfront SR reservation/cleanup included in SR initialization and child/process totals; source driver loop timer starts later; success-step cleanup included in plant/driver/process totals"
+  },
+  "contract": {
+    "name": "QUAD native submit/CROWN-Reach/archcomp/Quadrotor extra case",
+    "original_inventory_QUAD": "unchanged invalid: h=.01 > controller period=.005",
+    "B": 1024,
+    "n_extended": 16,
+    "order": 2,
+    "h": 0.005,
+    "control_period": 0.1,
+    "control_updates": 50,
+    "ode_steps": 1000,
+    "horizon": 5.0,
+    "cutoff": 1e-06,
+    "remainder": [
+      -0.1,
+      0.1
+    ],
+    "sr_queue": 1000,
+    "state_splits": [
+      8,
+      8,
+      8,
+      2,
+      1,
+      1
+    ],
+    "target_at_T5": "x3 in [.94,1.06]",
+    "period1_target_message": "not a full-horizon property result"
+  },
+  "qualification": "plant runtime requested strict mode; final plant qualification is pending the endpoint repair. Native-f64 CROWN affine/bias arithmetic lacks proved outward roundoff accounting, so controller_unqualified and no strict NNCS certificate",
+  "certificate": false,
+  "speed_claim": false,
+  "first_failure_diagnosis": {
+    "status": "passed",
+    "engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+    "mathematical_config_unchanged": true,
+    "sr_allocation": "preallocated_full_capacity",
+    "scope": "diagnostic replay through first rejected step595, not full horizon",
+    "production_refinement_dispatch_preserved": true,
+    "all_595_accepted_counts_equal_formal_run": true,
+    "endpoint_tube_status_checks": [
+      {
+        "step": 594,
+        "endpoint_matches": true,
+        "tube_matches": true,
+        "status_matches": true,
+        "status_counts": {
+          "0": 1024
+        }
+      },
+      {
+        "step": 595,
+        "endpoint_matches": true,
+        "tube_matches": true,
+        "status_matches": true,
+        "status_counts": {
+          "0": 960,
+          "1": 64
+        }
+      }
+    ],
+    "rows": [
+      {
+        "step": 594,
+        "initial_selfmap_failed_lanes": 0,
+        "nonfinite_or_domain_lanes": [],
+        "post_refinement_bad_lanes": [],
+        "violation_count": 0,
+        "violating_coordinates": {},
+        "worst_proposal": {
+          "lane": 1009,
+          "coordinate": "x6",
+          "dimension_zero_based": 5,
+          "input_remainder": [
+            -0.1,
+            0.1
+          ],
+          "proposal": [
+            -0.09079484830116022,
+            0.08157452539602716
+          ],
+          "max_absolute_proposal_ratio_to_positive_guess": 0.9079484830116021,
+          "exact_ratio_numerator": 3271229159810127,
+          "exact_ratio_denominator": 3602879701896397
+        },
+        "violations": []
+      },
+      {
+        "step": 595,
+        "initial_selfmap_failed_lanes": 64,
+        "nonfinite_or_domain_lanes": [],
+        "post_refinement_bad_lanes": [],
+        "violation_count": 86,
+        "violating_coordinates": {
+          "x6": 64,
+          "x5": 22
+        },
+        "worst_proposal": {
+          "lane": 1009,
+          "coordinate": "x6",
+          "dimension_zero_based": 5,
+          "input_remainder": [
+            -0.1,
+            0.1
+          ],
+          "proposal": [
+            -0.10361963064283031,
+            0.09383972255773969
+          ],
+          "max_absolute_proposal_ratio_to_positive_guess": 1.036196306428303,
+          "exact_ratio_numerator": 3733290639610552,
+          "exact_ratio_denominator": 3602879701896397
+        },
+        "violations": [
+          {
+            "lane": 1,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10137491283561909,
+              0.09177858918207334
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0137491283561908,
+            "exact_ratio_numerator": 3652416157369685,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 17,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10155060143177992,
+              0.09194025069693053
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0155060143177992,
+            "exact_ratio_numerator": 7317492012278621,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 33,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10174665190217311,
+              0.09212074194449894
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.017466519021731,
+            "exact_ratio_numerator": 3665809468742579,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 49,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1019467738594393,
+              0.09230442892138348
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0194677385943929,
+            "exact_ratio_numerator": 7346039244239921,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 65,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10209992453662635,
+              0.09244570760064108
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0209992453662635,
+            "exact_ratio_numerator": 7357074913563299,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 81,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10232847643881078,
+              0.09265514825955119
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0232847643881078,
+            "exact_ratio_numerator": 567195677980577,
+            "exact_ratio_denominator": 554289184907138
+          },
+          {
+            "lane": 97,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10248786408801136,
+              0.09280210392258748
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0248786408801136,
+            "exact_ratio_numerator": 3692514452134128,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 113,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10268504525941997,
+              0.09298341148151118
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0268504525941997,
+            "exact_ratio_numerator": 7399237305069541,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 129,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10149845495367305,
+              0.09189199501772029
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0149845495367305,
+            "exact_ratio_numerator": 3656867231264344,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 145,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10168630740683207,
+              0.09206504534471567
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0168630740683207,
+            "exact_ratio_numerator": 3663635329168725,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 161,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10183438601588668,
+              0.09220135218883366
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0183438601588668,
+            "exact_ratio_numerator": 3668970423317204,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 177,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10206991023306808,
+              0.09241750718819161
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0206991023306806,
+            "exact_ratio_numerator": 3677456077531083,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 193,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1022591579861261,
+              0.09259135596701851
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.022591579861261,
+            "exact_ratio_numerator": 7368548892824611,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 209,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10247806634517581,
+              0.09279254910515432
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.024780663451758,
+            "exact_ratio_numerator": 3692161451246262,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 225,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10264178698212136,
+              0.09294326414313467
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0264178698212134,
+            "exact_ratio_numerator": 7396120217685177,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 241,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10011694570522607,
+              0.10009075163851869
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0011694570522607,
+            "exact_ratio_numerator": 7214186229944453,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 241,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10284265717634133,
+              0.09312799512637254
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0284265717634133,
+            "exact_ratio_numerator": 3705297220297300,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 257,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10162771379367429,
+              0.09201105086019735
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0162771379367428,
+            "exact_ratio_numerator": 7323048543547311,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 273,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10179970046753685,
+              0.09216903608559994
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0179970046753684,
+            "exact_ratio_numerator": 7335441489472433,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 289,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10200776360260408,
+              0.09236046867842351
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0200776360260406,
+            "exact_ratio_numerator": 3675217009196683,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 305,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10222222518790314,
+              0.0925567934149885
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0222222518790314,
+            "exact_ratio_numerator": 3682943802121788,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 321,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10239967999423204,
+              0.09272014985118447
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0239967999423203,
+            "exact_ratio_numerator": 7378674570638103,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 337,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10262160626594809,
+              0.0929240381197414
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0262160626594807,
+            "exact_ratio_numerator": 7394666043831769,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 353,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10004833668844945,
+              0.10002226420307805
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0004833668844944,
+            "exact_ratio_numerator": 3604621214633111,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 353,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10278180882850146,
+              0.09307145214695867
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0278180882850145,
+            "exact_ratio_numerator": 3703104927524038,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 369,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10024982804026743,
+              0.10022368140462184
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0024982804026743,
+            "exact_ratio_numerator": 7223761411297675,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 369,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10295642474322038,
+              0.09323252419567352
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0295642474322038,
+            "exact_ratio_numerator": 7418792257743453,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 385,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10175312033257132,
+              0.09212609021561376
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0175312033257131,
+            "exact_ratio_numerator": 198164460459915,
+            "exact_ratio_denominator": 194750254156562
+          },
+          {
+            "lane": 401,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10195601731372557,
+              0.09231228176317909
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0195601731372557,
+            "exact_ratio_numerator": 7346705305316389,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 417,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10212726973481817,
+              0.09247006612664313
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0212726973481816,
+            "exact_ratio_numerator": 99446558685858,
+            "exact_ratio_denominator": 97375127078281
+          },
+          {
+            "lane": 433,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1023698453237124,
+              0.09269238873169638
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.023698453237124,
+            "exact_ratio_numerator": 3688262378030772,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 449,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10251315644516769,
+              0.09282450390190278
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0251315644516767,
+            "exact_ratio_numerator": 7386851410672489,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 465,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10000196769087293,
+              0.09997602710523337
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0000196769087293,
+            "exact_ratio_numerator": 554300091604839,
+            "exact_ratio_denominator": 554289184907138
+          },
+          {
+            "lane": 465,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10274775636020378,
+              0.09304004372560473
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0274775636020377,
+            "exact_ratio_numerator": 3701878058055746,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 481,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10016898542061979,
+              0.10014296190448393
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0016898542061978,
+            "exact_ratio_numerator": 7217936086630143,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 481,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10288770487191143,
+              0.09316886236762392
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0288770487191141,
+            "exact_ratio_numerator": 3706920234577167,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 497,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10039894221538624,
+              0.10037287157898497
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0039894221538623,
+            "exact_ratio_numerator": 7234506219993687,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 497,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10308496522781915,
+              0.09334958799287776
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0308496522781914,
+            "exact_ratio_numerator": 3714027287900055,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 513,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1018852552711475,
+              0.09224739994558738
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.018852552711475,
+            "exact_ratio_numerator": 3670803181389502,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 529,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10205282431162106,
+              0.09240179089512131
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0205282431162106,
+            "exact_ratio_numerator": 7353680984670773,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 545,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10227323268772649,
+              0.09260385676219911
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0227323268772648,
+            "exact_ratio_numerator": 7369563081958737,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 561,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10246938934624787,
+              0.09278407188927103
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0246938934624787,
+            "exact_ratio_numerator": 567976742986639,
+            "exact_ratio_denominator": 554289184907138
+          },
+          {
+            "lane": 577,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10263233052819866,
+              0.0929342028736494
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0263233052819865,
+            "exact_ratio_numerator": 7395438808367377,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 593,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10012668247050258,
+              0.1001007826490788
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0012668247050256,
+            "exact_ratio_numerator": 3607443918911995,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 593,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10285384897767641,
+              0.09313730451396586
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.028538489776764,
+            "exact_ratio_numerator": 3705700447435878,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 609,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10034779086546183,
+              0.10032184748380099
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0034779086546182,
+            "exact_ratio_numerator": 3615410188393171,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 609,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10304402149329113,
+              0.09331161020272825
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0304402149329113,
+            "exact_ratio_numerator": 7425104268799093,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 625,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10054384674829703,
+              0.10051781951085724
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0054384674829702,
+            "exact_ratio_numerator": 3622473846000214,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 625,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10321011111853948,
+              0.09346445678851069
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0321011111853946,
+            "exact_ratio_numerator": 3718536143794575,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 641,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1020184478655762,
+              0.09236965087704456
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.020184478655762,
+            "exact_ratio_numerator": 3675601950338603,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 657,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10219913432663187,
+              0.0925354836694018
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0219913432663186,
+            "exact_ratio_numerator": 7364223732336105,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 673,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10240884972790237,
+              0.09272835988327527
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0240884972790236,
+            "exact_ratio_numerator": 33850162016442,
+            "exact_ratio_denominator": 33053942219233
+          },
+          {
+            "lane": 689,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10260077467180674,
+              0.0929047881728601
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0260077467180673,
+            "exact_ratio_numerator": 7393164969277969,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 705,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10002887467198521,
+              0.10000311485877873
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.000288746719852,
+            "exact_ratio_numerator": 3603920021592341,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 705,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10277181126703637,
+              0.09306210594436667
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0277181126703636,
+            "exact_ratio_numerator": 7405489454822655,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 721,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10028830245914114,
+              0.100262454945015
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0028830245914113,
+            "exact_ratio_numerator": 3613266892676861,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 721,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10299835710615356,
+              0.09327033578327441
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0299835710615355,
+            "exact_ratio_numerator": 7421813802928743,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 737,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1004988568870531,
+              0.10047295497931678
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.004988568870531,
+            "exact_ratio_numerator": 3620852915421545,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 737,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1031781306905694,
+              0.09343496655128573
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.031781306905694,
+            "exact_ratio_numerator": 7434767854893323,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 753,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10068394129201841,
+              0.10065795841154904
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.006839412920184,
+            "exact_ratio_numerator": 3627521283879416,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 753,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10333292646372463,
+              0.09357724728870535
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0333292646372463,
+            "exact_ratio_numerator": 3722961032937065,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 769,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10214960831235319,
+              0.09248998765043231
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0214960831235318,
+            "exact_ratio_numerator": 7360655006904895,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 785,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1023386244173393,
+              0.09266352604268117
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.023386244173393,
+            "exact_ratio_numerator": 7374275052664615,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 801,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10250963751370255,
+              0.09282109867623452
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0250963751370255,
+            "exact_ratio_numerator": 7386597844937527,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 817,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10273444519844346,
+              0.09302738622660821
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0273444519844346,
+            "exact_ratio_numerator": 3701398472910597,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 833,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10016840827255045,
+              0.10014269372498928
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0016840827255045,
+            "exact_ratio_numerator": 7217894498728863,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 833,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10289461625373067,
+              0.09317495132825607
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0289461625373066,
+            "exact_ratio_numerator": 3707169243349853,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 849,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10044905566467685,
+              0.10042328453302891
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0044905566467683,
+            "exact_ratio_numerator": 3619058637289255,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 849,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10313830912089943,
+              0.093397943060475
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0313830912089943,
+            "exact_ratio_numerator": 7431898408392091,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 865,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10058188579499083,
+              0.10055604580300394
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0058188579499083,
+            "exact_ratio_numerator": 3623844347092340,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 865,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10324785319055467,
+              0.0934993586181035
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0324785319055467,
+            "exact_ratio_numerator": 7439791890492571,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 881,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10084678248590513,
+              0.10082077620122848
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0084678248590513,
+            "exact_ratio_numerator": 7266776512400573,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 881,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10347698228824996,
+              0.09370946588093781
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0347698228824995,
+            "exact_ratio_numerator": 7456302381996575,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 897,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10231599814495985,
+              0.0926420822043227
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0231599814495984,
+            "exact_ratio_numerator": 7372644657914905,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 913,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10246830247427899,
+              0.09278280284907281
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0246830247427898,
+            "exact_ratio_numerator": 3691809670723601,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 929,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10264106209209478,
+              0.0929419749544084
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0264106209209478,
+            "exact_ratio_numerator": 3698033991926960,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 945,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10012590842838637,
+              0.10010031869983958
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0012590842838636,
+            "exact_ratio_numerator": 3607416031105706,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 945,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1028611579426059,
+              0.09314380916954955
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.028611579426059,
+            "exact_ratio_numerator": 7411927561299483,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 961,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.1003696601942593,
+              0.10034401495765692
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.003696601942593,
+            "exact_ratio_numerator": 278169085692412,
+            "exact_ratio_denominator": 277144592453569
+          },
+          {
+            "lane": 961,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10306830361822404,
+              0.09333321465542663
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0306830361822403,
+            "exact_ratio_numerator": 7426853980299887,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 977,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10053073270660406,
+              0.1005050125596489
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0053073270660406,
+            "exact_ratio_numerator": 3622001362853960,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 977,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10320328580577727,
+              0.09345777248070514
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0320328580577727,
+            "exact_ratio_numerator": 7436580471972949,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 993,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10078966305470605,
+              0.1007638507047593
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0078966305470605,
+            "exact_ratio_numerator": 3631330311807776,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 993,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10343074969217439,
+              0.09366673806264449
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.0343074969217438,
+            "exact_ratio_numerator": 3726485486178621,
+            "exact_ratio_denominator": 3602879701896397
+          },
+          {
+            "lane": 1009,
+            "coordinate": "x5",
+            "dimension_zero_based": 4,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10101281756734072,
+              0.10098677242838451
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.010128175673407,
+            "exact_ratio_numerator": 7278740600894713,
+            "exact_ratio_denominator": 7205759403792794
+          },
+          {
+            "lane": 1009,
+            "coordinate": "x6",
+            "dimension_zero_based": 5,
+            "input_remainder": [
+              -0.1,
+              0.1
+            ],
+            "proposal": [
+              -0.10361963064283031,
+              0.09383972255773969
+            ],
+            "max_absolute_proposal_ratio_to_positive_guess": 1.036196306428303,
+            "exact_ratio_numerator": 3733290639610552,
+            "exact_ratio_denominator": 3602879701896397
+          }
+        ]
+      }
+    ],
+    "wall_s_excluding_reference_trace_read": 37.0155462869443,
+    "config_sha256": "29f4e7f8920ff8f73b4d9b1e5fba8f367dfca162398160cd07a2391a972323c7"
+  },
+  "preallocation_comparison": {
+    "status": "passed",
+    "checkpoints": [
+      {
+        "step": 1,
+        "lazy_capacity": 16,
+        "preallocated_capacity": 1000,
+        "qlen": 1,
+        "jlen": 1,
+        "all_active_state_and_history_bytes_identical": true
+      },
+      {
+        "step": 2,
+        "lazy_capacity": 16,
+        "preallocated_capacity": 1000,
+        "qlen": 2,
+        "jlen": 2,
+        "all_active_state_and_history_bytes_identical": true
+      },
+      {
+        "step": 16,
+        "lazy_capacity": 16,
+        "preallocated_capacity": 1000,
+        "qlen": 16,
+        "jlen": 16,
+        "all_active_state_and_history_bytes_identical": true
+      },
+      {
+        "step": 17,
+        "lazy_capacity": 32,
+        "preallocated_capacity": 1000,
+        "qlen": 17,
+        "jlen": 17,
+        "all_active_state_and_history_bytes_identical": true
+      },
+      {
+        "step": 20,
+        "lazy_capacity": 32,
+        "preallocated_capacity": 1000,
+        "qlen": 20,
+        "jlen": 20,
+        "all_active_state_and_history_bytes_identical": true
+      }
+    ],
+    "tensor_comparisons": 50,
+    "tensor_elements_compared": 49730560,
+    "method": "direct equality of contiguous uint8 views, including signed-zero bit patterns; support and all scalar metadata equal except explicitly compared capacities",
+    "wall_s": 0.7749679200351238,
+    "qualification": "real QUAD B1024/order2/h.005 same original control period; controller remains unqualified"
+  },
+  "prefix_comparison": {
+    "largest_first15e_vs_preallocated": {
+      "records": 512,
+      "all_serialized_records_equal": true,
+      "first_nonidentical_record": null,
+      "first_numeric_field_differences": [],
+      "left": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_largest_first/quad_submit_native_trace.jsonl.gz",
+      "right": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_preallocated/quad_submit_native_trace.jsonl.gz"
+    },
+    "5d_vs_preallocated": {
+      "records": 512,
+      "all_serialized_records_equal": true,
+      "first_nonidentical_record": null,
+      "first_numeric_field_differences": [],
+      "left": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad5_20260922/quad_full/quad_submit_native_trace.jsonl.gz",
+      "right": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_preallocated/quad_submit_native_trace.jsonl.gz"
+    },
+    "chunked97d_vs_preallocated": {
+      "records": 512,
+      "all_serialized_records_equal": true,
+      "first_nonidentical_record": null,
+      "first_numeric_field_differences": [],
+      "left": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_chunked/quad_submit_native_trace.jsonl.gz",
+      "right": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_preallocated/quad_submit_native_trace.jsonl.gz"
+    },
+    "wall_s": 19.93462069518864
+  },
+  "earlier_attempts": {
+    "quad_full": {
+      "status": "error",
+      "scope": "full",
+      "engine_sha": "97dcd0de800e103b042ab81750ecc426f25385d2",
+      "runner_sha256": "3ab69101f9565d6d293bf572328c141d79831082afed8a1d2f9d2fb343687680",
+      "config_sha256": "29f4e7f8920ff8f73b4d9b1e5fba8f367dfca162398160cd07a2391a972323c7",
+      "attempted_steps": 0,
+      "expected_steps": 1000,
+      "accepted_steps_all_lanes": 0,
+      "accepted_lane_steps": 0,
+      "all_steps_accepted": true,
+      "error": "NotSupportedError(  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py\", line 91\ndef counted_einsum(equation,*args,**kw):\n                                   ~~~ <--- HERE\n if equation=='bij,qbjk->qbik':\n  key='x'.join(str(x) for x in args[1].shape)\n, \"Compiled functions can't take variable number of arguments or use keyword-only arguments with defaults\")",
+      "timing": {
+        "extension_cached_load_s": 0.4425990120507777,
+        "controller_setup_s": 0.004746012855321169,
+        "controller_bound_s": 0.0,
+        "plant_advance_s": 0.0,
+        "observer_s": 0.0,
+        "trace_io_s": 0.0,
+        "child_wall_s": 0.6283757709898055,
+        "unattributed_setup_bookkeeping_s": 0.18103074608370662
+      },
+      "sr_kernel_dispatches": 0,
+      "sr_sum_dispatches": 0,
+      "extension_dispatch_counts": {
+        "interval": {},
+        "tape": {},
+        "validation": {},
+        "sr_phi": {},
+        "sr_j_sum": {}
+      },
+      "extension_binary_sha256": {
+        "interval": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+          "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+        },
+        "tape": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+          "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+        },
+        "validation": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+          "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+        },
+        "sr_phi": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+          "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+        },
+        "sr_j_sum": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+          "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+        }
+      },
+      "engine_files_unchanged": true,
+      "process": {
+        "argv": [
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+          "--expected-engine-sha",
+          "97dcd0de800e103b042ab81750ecc426f25385d2",
+          "--engine",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+          "--output",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full",
+          "--config",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_full.yaml",
+          "--benchmark",
+          "quad_submit_native",
+          "--scope",
+          "full"
+        ],
+        "pid": 2032246,
+        "returncode": 1,
+        "status": "error",
+        "timeout_s": 600.0,
+        "process_wall_s": 3.338652838021517,
+        "peak_tree_rss_bytes": 579768320,
+        "peak_owned_gpu_bytes": 322961408,
+        "rss_gpu_guard_bytes": 12348030976.0,
+        "hard_budget_bytes": 12884901888,
+        "poll_s": 0.1
+      },
+      "driver_summary": null,
+      "final_graph": null,
+      "first_rejected_step": null,
+      "success_step_cleanup": {
+        "count": 0,
+        "seconds": 0.0,
+        "all_allocated_unchanged": true
+      },
+      "growth_events": [],
+      "trace": null,
+      "protocol_messages": []
+    },
+    "quad_full_chunked": {
+      "status": "error",
+      "scope": "full",
+      "engine_sha": "97dcd0de800e103b042ab81750ecc426f25385d2",
+      "runner_sha256": "eef33475068843d97070fba0f8d70f6afcea5f49e941822f10a4a6f65ed6758b",
+      "config_sha256": "29f4e7f8920ff8f73b4d9b1e5fba8f367dfca162398160cd07a2391a972323c7",
+      "attempted_steps": 512,
+      "expected_steps": 1000,
+      "accepted_steps_all_lanes": 512,
+      "accepted_lane_steps": 524288,
+      "all_steps_accepted": true,
+      "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.91 GiB. GPU 0 has a total capacity of 15.77 GiB of which 7.07 GiB is free. Including non-PyTorch memory, this process has 8.69 GiB memory in use. 9.00 GiB allowed; Of the allocated memory 5.56 GiB is allocated by PyTorch, with 701.85 MiB allocated in private pools (e.g., CUDA Graphs), and 1.25 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+      "timing": {
+        "extension_cached_load_s": 0.4395277979783714,
+        "controller_setup_s": 1.3963069110177457,
+        "controller_bound_s": 2.142294889781624,
+        "plant_advance_s": 25.95658031431958,
+        "observer_s": 26.597179390024394,
+        "trace_io_s": 83.95283932704479,
+        "child_wall_s": 144.6721370248124,
+        "unattributed_setup_bookkeeping_s": 4.1874083946458995
+      },
+      "sr_kernel_dispatches": 510,
+      "sr_sum_dispatches": 511,
+      "extension_dispatch_counts": {
+        "interval": {
+          "iv_mul": 1062,
+          "seg_dot_pt_iv": 1152,
+          "iv_addsub": 2132,
+          "iv_dot_point_iv": 134,
+          "iv_sum": 219,
+          "seg_mul_pt": 96,
+          "seg_mul_iv": 96,
+          "iv_mul_point": 18
+        },
+        "tape": {
+          "refine_tape": 512
+        },
+        "validation": {
+          "point_tape": 1024,
+          "valid_tape": 512
+        },
+        "sr_phi": {
+          "sr_left_multiply_": 510
+        },
+        "sr_j_sum": {
+          "sr_j_sum": 511
+        }
+      },
+      "extension_binary_sha256": {
+        "interval": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+          "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+        },
+        "tape": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+          "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+        },
+        "validation": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+          "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+        },
+        "sr_phi": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+          "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+        },
+        "sr_j_sum": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+          "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+        }
+      },
+      "engine_files_unchanged": true,
+      "process": {
+        "argv": [
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+          "--expected-engine-sha",
+          "97dcd0de800e103b042ab81750ecc426f25385d2",
+          "--engine",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+          "--output",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_chunked",
+          "--config",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_full.yaml",
+          "--benchmark",
+          "quad_submit_native",
+          "--scope",
+          "full"
+        ],
+        "pid": 2033619,
+        "returncode": 1,
+        "status": "error",
+        "timeout_s": 600.0,
+        "process_wall_s": 147.71556398831308,
+        "peak_tree_rss_bytes": 1416179712,
+        "peak_owned_gpu_bytes": 9330229248,
+        "rss_gpu_guard_bytes": 12348030976.0,
+        "hard_budget_bytes": 12884901888,
+        "poll_s": 0.1
+      },
+      "driver_summary": null,
+      "final_graph": {
+        "enabled": true,
+        "hits": 4095,
+        "captures": 19,
+        "segments": 19
+      },
+      "first_rejected_step": null,
+      "success_step_cleanup": {
+        "count": 2,
+        "seconds": 0.015869414899498224,
+        "all_allocated_unchanged": true
+      },
+      "growth_events": [
+        {
+          "ode_step": 17,
+          "qlen": 16,
+          "old_capacity": 16,
+          "needed": 17,
+          "before": {
+            "rss_bytes": 1401856000,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1868562432,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "cleanup_s": 0.00726044736802578,
+          "after_cleanup": {
+            "rss_bytes": 1401921536,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1440743424,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "reserve_s": 0.0020867669954895973,
+          "after_reserve": {
+            "rss_bytes": 1401921536,
+            "cuda_allocated_bytes": 880770048,
+            "cuda_reserved_bytes": 1642070016,
+            "cuda_peak_allocated_bytes": 947878912,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "new_capacity": 32
+        },
+        {
+          "ode_step": 33,
+          "qlen": 32,
+          "old_capacity": 32,
+          "needed": 33,
+          "before": {
+            "rss_bytes": 1402556416,
+            "cuda_allocated_bytes": 904190464,
+            "cuda_reserved_bytes": 1738539008,
+            "cuda_peak_allocated_bytes": 912579072,
+            "cuda_peak_reserved_bytes": 1738539008
+          },
+          "cleanup_s": 0.001284866128116846,
+          "after_cleanup": {
+            "rss_bytes": 1402556416,
+            "cuda_allocated_bytes": 904190464,
+            "cuda_reserved_bytes": 1610612736,
+            "cuda_peak_allocated_bytes": 912579072,
+            "cuda_peak_reserved_bytes": 1738539008
+          },
+          "reserve_s": 0.0032568699680268764,
+          "after_reserve": {
+            "rss_bytes": 1402556416,
+            "cuda_allocated_bytes": 1113889280,
+            "cuda_reserved_bytes": 2013265920,
+            "cuda_peak_allocated_bytes": 1248107008,
+            "cuda_peak_reserved_bytes": 2013265920
+          },
+          "new_capacity": 64
+        },
+        {
+          "ode_step": 65,
+          "qlen": 64,
+          "old_capacity": 64,
+          "needed": 65,
+          "before": {
+            "rss_bytes": 1405079552,
+            "cuda_allocated_bytes": 1144013312,
+            "cuda_reserved_bytes": 2394947584,
+            "cuda_peak_allocated_bytes": 1152418304,
+            "cuda_peak_reserved_bytes": 2394947584
+          },
+          "cleanup_s": 0.006253653671592474,
+          "after_cleanup": {
+            "rss_bytes": 1405079552,
+            "cuda_allocated_bytes": 1144013312,
+            "cuda_reserved_bytes": 1971322880,
+            "cuda_peak_allocated_bytes": 1152418304,
+            "cuda_peak_reserved_bytes": 2394947584
+          },
+          "reserve_s": 0.006248531863093376,
+          "after_reserve": {
+            "rss_bytes": 1405079552,
+            "cuda_allocated_bytes": 1563443712,
+            "cuda_reserved_bytes": 2776629248,
+            "cuda_peak_allocated_bytes": 1831879168,
+            "cuda_peak_reserved_bytes": 2776629248
+          },
+          "new_capacity": 128
+        },
+        {
+          "ode_step": 129,
+          "qlen": 128,
+          "old_capacity": 128,
+          "needed": 129,
+          "before": {
+            "rss_bytes": 1404428288,
+            "cuda_allocated_bytes": 1563922944,
+            "cuda_reserved_bytes": 2791309312,
+            "cuda_peak_allocated_bytes": 1572311552,
+            "cuda_peak_reserved_bytes": 2791309312
+          },
+          "cleanup_s": 0.0038170968182384968,
+          "after_cleanup": {
+            "rss_bytes": 1404428288,
+            "cuda_allocated_bytes": 1563922944,
+            "cuda_reserved_bytes": 2608857088,
+            "cuda_peak_allocated_bytes": 1572311552,
+            "cuda_peak_reserved_bytes": 2791309312
+          },
+          "reserve_s": 0.011393112130463123,
+          "after_reserve": {
+            "rss_bytes": 1404428288,
+            "cuda_allocated_bytes": 2402783744,
+            "cuda_reserved_bytes": 4219469824,
+            "cuda_peak_allocated_bytes": 2939654656,
+            "cuda_peak_reserved_bytes": 4219469824
+          },
+          "new_capacity": 256
+        },
+        {
+          "ode_step": 257,
+          "qlen": 256,
+          "old_capacity": 256,
+          "needed": 257,
+          "before": {
+            "rss_bytes": 1405468672,
+            "cuda_allocated_bytes": 2403094528,
+            "cuda_reserved_bytes": 4234149888,
+            "cuda_peak_allocated_bytes": 2411483136,
+            "cuda_peak_reserved_bytes": 4234149888
+          },
+          "cleanup_s": 0.020887870341539383,
+          "after_cleanup": {
+            "rss_bytes": 1405468672,
+            "cuda_allocated_bytes": 2403094528,
+            "cuda_reserved_bytes": 3680501760,
+            "cuda_peak_allocated_bytes": 2411483136,
+            "cuda_peak_reserved_bytes": 4234149888
+          },
+          "reserve_s": 0.024139948189258575,
+          "after_reserve": {
+            "rss_bytes": 1405468672,
+            "cuda_allocated_bytes": 4080816128,
+            "cuda_reserved_bytes": 6901727232,
+            "cuda_peak_allocated_bytes": 5154557952,
+            "cuda_peak_reserved_bytes": 6901727232
+          },
+          "new_capacity": 512
+        }
+      ],
+      "trace": {
+        "verifier_version": 2,
+        "streamed_one_step_at_a_time": true,
+        "records": 512,
+        "all_records_finite_ordered_intervals": true,
+        "accepted_lane_steps": 524288,
+        "trace_gzip_bytes": 297752911,
+        "trace_sha256": "50f6ddbab3291e479bf2ac165d8b8c1861478bb268a6d055e1f737ab46650b00",
+        "observer_checked_state_immutability": true
+      },
+      "protocol_messages": []
+    },
+    "quad_full_largest_first": {
+      "status": "error",
+      "scope": "full",
+      "engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+      "runner_sha256": "ec6a0deeef7cbc710aa7aacdc818f61d134f7b5d367416c2f08fde1b456701b4",
+      "config_sha256": "29f4e7f8920ff8f73b4d9b1e5fba8f367dfca162398160cd07a2391a972323c7",
+      "attempted_steps": 512,
+      "expected_steps": 1000,
+      "accepted_steps_all_lanes": 512,
+      "accepted_lane_steps": 524288,
+      "all_steps_accepted": true,
+      "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.91 GiB. GPU 0 has a total capacity of 15.77 GiB of which 8.70 GiB is free. Including non-PyTorch memory, this process has 7.06 GiB memory in use. 9.00 GiB allowed; Of the allocated memory 4.48 GiB is allocated by PyTorch, with 701.85 MiB allocated in private pools (e.g., CUDA Graphs), and 711.18 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+      "timing": {
+        "extension_cached_load_s": 0.43835867987945676,
+        "controller_setup_s": 1.3838659492321312,
+        "controller_bound_s": 2.1522299046628177,
+        "plant_advance_s": 25.82910417439416,
+        "observer_s": 26.132993248291314,
+        "trace_io_s": 81.89621130283922,
+        "child_wall_s": 142.1152743487619,
+        "unattributed_setup_bookkeeping_s": 4.282511089462787
+      },
+      "sr_kernel_dispatches": 510,
+      "sr_sum_dispatches": 511,
+      "extension_dispatch_counts": {
+        "interval": {
+          "iv_mul": 1062,
+          "seg_dot_pt_iv": 1152,
+          "iv_addsub": 2132,
+          "iv_dot_point_iv": 134,
+          "iv_sum": 219,
+          "seg_mul_pt": 96,
+          "seg_mul_iv": 96,
+          "iv_mul_point": 18
+        },
+        "tape": {
+          "refine_tape": 512
+        },
+        "validation": {
+          "point_tape": 1024,
+          "valid_tape": 512
+        },
+        "sr_phi": {
+          "sr_left_multiply_": 510
+        },
+        "sr_j_sum": {
+          "sr_j_sum": 511
+        }
+      },
+      "extension_binary_sha256": {
+        "interval": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+          "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+        },
+        "tape": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+          "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+        },
+        "validation": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+          "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+        },
+        "sr_phi": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+          "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+        },
+        "sr_j_sum": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+          "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+        }
+      },
+      "engine_files_unchanged": true,
+      "process": {
+        "argv": [
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+          "--expected-engine-sha",
+          "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+          "--engine",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+          "--output",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/quad_full_largest_first",
+          "--config",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_full.yaml",
+          "--benchmark",
+          "quad_submit_native",
+          "--scope",
+          "full"
+        ],
+        "pid": 2039602,
+        "returncode": 1,
+        "status": "error",
+        "timeout_s": 600.0,
+        "process_wall_s": 145.25578335579485,
+        "peak_tree_rss_bytes": 1416765440,
+        "peak_owned_gpu_bytes": 7696547840,
+        "rss_gpu_guard_bytes": 12348030976.0,
+        "hard_budget_bytes": 12884901888,
+        "poll_s": 0.1
+      },
+      "driver_summary": null,
+      "final_graph": {
+        "enabled": true,
+        "hits": 4095,
+        "captures": 19,
+        "segments": 19
+      },
+      "first_rejected_step": null,
+      "success_step_cleanup": {
+        "count": 1,
+        "seconds": 0.012694960925728083,
+        "all_allocated_unchanged": true
+      },
+      "growth_events": [
+        {
+          "ode_step": 17,
+          "qlen": 16,
+          "old_capacity": 16,
+          "needed": 17,
+          "before": {
+            "rss_bytes": 1402896384,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1868562432,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "cleanup_s": 0.00737416697666049,
+          "after_cleanup": {
+            "rss_bytes": 1402896384,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1440743424,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "after_reserve": {
+            "rss_bytes": 1402896384,
+            "cuda_allocated_bytes": 880770048,
+            "cuda_reserved_bytes": 1574961152,
+            "cuda_peak_allocated_bytes": 910113792,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "new_capacity": 32,
+          "reserve_s": 0.0036211651749908924
+        },
+        {
+          "ode_step": 33,
+          "qlen": 32,
+          "old_capacity": 32,
+          "needed": 33,
+          "before": {
+            "rss_bytes": 1402458112,
+            "cuda_allocated_bytes": 905091584,
+            "cuda_reserved_bytes": 1742733312,
+            "cuda_peak_allocated_bytes": 913480192,
+            "cuda_peak_reserved_bytes": 1742733312
+          },
+          "cleanup_s": 0.0013480978086590767,
+          "after_cleanup": {
+            "rss_bytes": 1402458112,
+            "cuda_allocated_bytes": 905091584,
+            "cuda_reserved_bytes": 1614807040,
+            "cuda_peak_allocated_bytes": 913480192,
+            "cuda_peak_reserved_bytes": 1742733312
+          },
+          "after_reserve": {
+            "rss_bytes": 1402458112,
+            "cuda_allocated_bytes": 1114790400,
+            "cuda_reserved_bytes": 1883242496,
+            "cuda_peak_allocated_bytes": 1173527040,
+            "cuda_peak_reserved_bytes": 1883242496
+          },
+          "new_capacity": 64,
+          "reserve_s": 0.007694464176893234
+        },
+        {
+          "ode_step": 65,
+          "qlen": 64,
+          "old_capacity": 64,
+          "needed": 65,
+          "before": {
+            "rss_bytes": 1405067264,
+            "cuda_allocated_bytes": 1143112192,
+            "cuda_reserved_bytes": 2497708032,
+            "cuda_peak_allocated_bytes": 1151500800,
+            "cuda_peak_reserved_bytes": 2497708032
+          },
+          "cleanup_s": 0.007090347819030285,
+          "after_cleanup": {
+            "rss_bytes": 1404035072,
+            "cuda_allocated_bytes": 1143112192,
+            "cuda_reserved_bytes": 1973420032,
+            "cuda_peak_allocated_bytes": 1151500800,
+            "cuda_peak_reserved_bytes": 2497708032
+          },
+          "after_reserve": {
+            "rss_bytes": 1404035072,
+            "cuda_allocated_bytes": 1562542592,
+            "cuda_reserved_bytes": 2510290944,
+            "cuda_peak_allocated_bytes": 1679983104,
+            "cuda_peak_reserved_bytes": 2510290944
+          },
+          "new_capacity": 128,
+          "reserve_s": 0.00811157189309597
+        },
+        {
+          "ode_step": 129,
+          "qlen": 128,
+          "old_capacity": 128,
+          "needed": 129,
+          "before": {
+            "rss_bytes": 1405431808,
+            "cuda_allocated_bytes": 1562350080,
+            "cuda_reserved_bytes": 2860515328,
+            "cuda_peak_allocated_bytes": 1570738688,
+            "cuda_peak_reserved_bytes": 2860515328
+          },
+          "cleanup_s": 0.006114763207733631,
+          "after_cleanup": {
+            "rss_bytes": 1405431808,
+            "cuda_allocated_bytes": 1562350080,
+            "cuda_reserved_bytes": 2401239040,
+            "cuda_peak_allocated_bytes": 1570738688,
+            "cuda_peak_reserved_bytes": 2860515328
+          },
+          "after_reserve": {
+            "rss_bytes": 1405431808,
+            "cuda_allocated_bytes": 2401210880,
+            "cuda_reserved_bytes": 3474980864,
+            "cuda_peak_allocated_bytes": 2636091904,
+            "cuda_peak_reserved_bytes": 3474980864
+          },
+          "new_capacity": 256,
+          "reserve_s": 0.013834197074174881
+        },
+        {
+          "ode_step": 257,
+          "qlen": 256,
+          "old_capacity": 256,
+          "needed": 257,
+          "before": {
+            "rss_bytes": 1407434752,
+            "cuda_allocated_bytes": 2402455552,
+            "cuda_reserved_bytes": 3661627392,
+            "cuda_peak_allocated_bytes": 2410844160,
+            "cuda_peak_reserved_bytes": 3661627392
+          },
+          "cleanup_s": 0.007104814052581787,
+          "after_cleanup": {
+            "rss_bytes": 1407434752,
+            "cuda_allocated_bytes": 2402455552,
+            "cuda_reserved_bytes": 3510632448,
+            "cuda_peak_allocated_bytes": 2410844160,
+            "cuda_peak_reserved_bytes": 3661627392
+          },
+          "after_reserve": {
+            "rss_bytes": 1407434752,
+            "cuda_allocated_bytes": 4080177152,
+            "cuda_reserved_bytes": 5658116096,
+            "cuda_peak_allocated_bytes": 4549939200,
+            "cuda_peak_reserved_bytes": 5658116096
+          },
+          "new_capacity": 512,
+          "reserve_s": 0.03202803386375308
+        },
+        {
+          "ode_step": 513,
+          "qlen": 512,
+          "old_capacity": 512,
+          "needed": 513,
+          "before": {
+            "rss_bytes": 1411219456,
+            "cuda_allocated_bytes": 4077881856,
+            "cuda_reserved_bytes": 5676990464,
+            "cuda_peak_allocated_bytes": 4086270464,
+            "cuda_peak_reserved_bytes": 5676990464
+          },
+          "cleanup_s": 0.006941561587154865,
+          "after_cleanup": {
+            "rss_bytes": 1411219456,
+            "cuda_allocated_bytes": 4077881856,
+            "cuda_reserved_bytes": 5559549952,
+            "cuda_peak_allocated_bytes": 4086270464,
+            "cuda_peak_reserved_bytes": 5676990464
+          },
+          "error": "OutOfMemoryError('CUDA out of memory. Tried to allocate 3.91 GiB. GPU 0 has a total capacity of 15.77 GiB of which 8.70 GiB is free. Including non-PyTorch memory, this process has 7.06 GiB memory in use. 9.00 GiB allowed; Of the allocated memory 4.48 GiB is allocated by PyTorch, with 701.85 MiB allocated in private pools (e.g., CUDA Graphs), and 711.18 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)')",
+          "after_failure": {
+            "rss_bytes": 1415532544,
+            "cuda_allocated_bytes": 4077881856,
+            "cuda_reserved_bytes": 5559549952,
+            "cuda_peak_allocated_bytes": 4086270464,
+            "cuda_peak_reserved_bytes": 5676990464
+          },
+          "reserve_s": 0.0039507499895989895
+        }
+      ],
+      "trace": {
+        "verifier_version": 2,
+        "streamed_one_step_at_a_time": true,
+        "records": 512,
+        "all_records_finite_ordered_intervals": true,
+        "accepted_lane_steps": 524288,
+        "trace_gzip_bytes": 297752911,
+        "trace_sha256": "c732c7eb3a629b94b50c2aaca52529de43771133bf572cf37baab3262f008bfc",
+        "observer_checked_state_immutability": true
+      },
+      "protocol_messages": []
+    }
+  },
+  "period1_runs": {
+    "lazy_period1_state": {
+      "status": "plant_period1_accepted_controller_unqualified",
+      "scope": "period1",
+      "engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+      "runner_sha256": "2536e606d6b07bd8e4e0cb941ca99b9944444e91c7ed2ccc31549624ab01aa0e",
+      "config_sha256": "d85959b49329b60e3af7ddcd4a742732f2c75325ca466e702c48351b698923ae",
+      "attempted_steps": 20,
+      "expected_steps": 20,
+      "accepted_steps_all_lanes": 20,
+      "accepted_lane_steps": 20480,
+      "all_steps_accepted": true,
+      "configured_horizon_completed": true,
+      "timing": {
+        "extension_cached_load_s": 0.43883409490808845,
+        "controller_setup_s": 1.3970092884264886,
+        "controller_bound_s": 0.28672649804502726,
+        "plant_advance_s": 1.8053337121382356,
+        "observer_s": 0.7838109824806452,
+        "trace_io_s": 3.187182328198105,
+        "sr_initialization_s": 0.0008170879445970058,
+        "snapshot_s": 0.9411566508933902,
+        "child_wall_s": 9.40414615906775,
+        "unattributed_setup_bookkeeping_s": 0.5632755160331726
+      },
+      "sr_allocation": "lazy_growth",
+      "sr_kernel_dispatches": 18,
+      "sr_sum_dispatches": 19,
+      "extension_dispatch_counts": {
+        "interval": {
+          "iv_mul": 563,
+          "seg_dot_pt_iv": 146,
+          "iv_addsub": 1097,
+          "iv_dot_point_iv": 109,
+          "iv_sum": 216,
+          "seg_mul_pt": 96,
+          "seg_mul_iv": 96,
+          "iv_mul_point": 18,
+          "iv_neg": 1
+        },
+        "tape": {
+          "refine_tape": 20
+        },
+        "validation": {
+          "point_tape": 40,
+          "valid_tape": 20
+        },
+        "sr_phi": {
+          "sr_left_multiply_": 18
+        },
+        "sr_j_sum": {
+          "sr_j_sum": 19
+        }
+      },
+      "extension_binary_sha256": {
+        "interval": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+          "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+        },
+        "tape": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+          "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+        },
+        "validation": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+          "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+        },
+        "sr_phi": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+          "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+        },
+        "sr_j_sum": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+          "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+        }
+      },
+      "engine_files_unchanged": true,
+      "process": {
+        "argv": [
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+          "--expected-engine-sha",
+          "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+          "--engine",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+          "--output",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/lazy_period1_state",
+          "--config",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_period1.yaml",
+          "--benchmark",
+          "quad_submit_native",
+          "--scope",
+          "period1",
+          "--snapshot-dir",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/lazy_period1_state/snapshots"
+        ],
+        "pid": 2044510,
+        "returncode": 0,
+        "status": "completed",
+        "timeout_s": 180.0,
+        "process_wall_s": 12.389921736903489,
+        "peak_tree_rss_bytes": 1582698496,
+        "peak_owned_gpu_bytes": 3881828352,
+        "rss_gpu_guard_bytes": 12348030976.0,
+        "hard_budget_bytes": 12884901888,
+        "poll_s": 0.1
+      },
+      "driver_summary": {
+        "B": 1024,
+        "order": 2,
+        "steps": 1,
+        "substeps": 20,
+        "broken": 0,
+        "elapsed_s": 7.121888125315309,
+        "final_hull": {
+          "x1": [
+            -0.4400494702770084,
+            0.44003907111133594
+          ],
+          "x2": [
+            -0.440085645479353,
+            0.4400721564947782
+          ],
+          "x3": [
+            -0.38730359886320626,
+            0.4584740081563479
+          ],
+          "x4": [
+            -0.40038959197374385,
+            0.40024622452757297
+          ],
+          "x5": [
+            -0.4022245137274853,
+            0.40146581433609607
+          ],
+          "x6": [
+            -1.3237305769237084,
+            -0.09941663841667053
+          ],
+          "x7": [
+            -0.0006307913799736911,
+            0.001547294418240598
+          ],
+          "x8": [
+            -0.0006760161367055037,
+            0.001110731902476235
+          ],
+          "x9": [
+            -7.858890687695969e-07,
+            8.543575013034586e-07
+          ],
+          "x10": [
+            -0.01165062079437372,
+            0.030092079452244562
+          ],
+          "x11": [
+            -0.012726874041004197,
+            0.021384299966585828
+          ],
+          "x12": [
+            -2.2250738585072014e-308,
+            2.2250738585072014e-308
+          ],
+          "t": [
+            0.09999999999999933,
+            0.10000000000000071
+          ],
+          "u1": [
+            4.736347696308005,
+            15.189057893357958
+          ],
+          "u2": [
+            -0.006291335228961784,
+            0.016249722904212064
+          ],
+          "u3": [
+            -0.006872511982142282,
+            0.01154752198195636
+          ]
+        },
+        "final_hull_width_sum_mean": 5.983610974303642
+      },
+      "final_graph": {
+        "enabled": true,
+        "hits": 159,
+        "captures": 16,
+        "segments": 16
+      },
+      "first_rejected_step": null,
+      "success_step_cleanup": {
+        "count": 0,
+        "seconds": 0.0,
+        "all_allocated_unchanged": true
+      },
+      "growth_events": [
+        {
+          "ode_step": 17,
+          "qlen": 16,
+          "old_capacity": 16,
+          "needed": 17,
+          "before": {
+            "rss_bytes": 1416994816,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1868562432,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "cleanup_s": 0.011953811161220074,
+          "after_cleanup": {
+            "rss_bytes": 1417060352,
+            "cuda_allocated_bytes": 775896064,
+            "cuda_reserved_bytes": 1440743424,
+            "cuda_peak_allocated_bytes": 784301056,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "after_reserve": {
+            "rss_bytes": 1417060352,
+            "cuda_allocated_bytes": 880770048,
+            "cuda_reserved_bytes": 1574961152,
+            "cuda_peak_allocated_bytes": 910113792,
+            "cuda_peak_reserved_bytes": 1868562432
+          },
+          "new_capacity": 32,
+          "reserve_s": 0.0035339808091521263
+        }
+      ],
+      "trace": null,
+      "protocol_messages": [
+        "FALSIFIED"
+      ]
+    },
+    "preallocated_period1_state": {
+      "status": "plant_period1_accepted_controller_unqualified",
+      "scope": "period1",
+      "engine_sha": "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+      "runner_sha256": "2536e606d6b07bd8e4e0cb941ca99b9944444e91c7ed2ccc31549624ab01aa0e",
+      "config_sha256": "d85959b49329b60e3af7ddcd4a742732f2c75325ca466e702c48351b698923ae",
+      "attempted_steps": 20,
+      "expected_steps": 20,
+      "accepted_steps_all_lanes": 20,
+      "accepted_lane_steps": 20480,
+      "all_steps_accepted": true,
+      "configured_horizon_completed": true,
+      "timing": {
+        "extension_cached_load_s": 0.4384546559303999,
+        "controller_setup_s": 1.3896310939453542,
+        "controller_bound_s": 0.2886818740516901,
+        "plant_advance_s": 1.7456455188803375,
+        "observer_s": 0.6710677309893072,
+        "trace_io_s": 3.381967445835471,
+        "sr_initialization_s": 0.018849540036171675,
+        "snapshot_s": 0.91868636617437,
+        "child_wall_s": 9.415877465158701,
+        "unattributed_setup_bookkeeping_s": 0.5628932393155992
+      },
+      "sr_allocation": "preallocated_full_capacity",
+      "sr_initialization": {
+        "qlen": 0,
+        "jlen": 0,
+        "capacity": 1000,
+        "interval_history_initially_absent": true,
+        "memory": {
+          "rss_bytes": 1152663552,
+          "cuda_allocated_bytes": 2403961344,
+          "cuda_reserved_bytes": 2455764992,
+          "cuda_peak_allocated_bytes": 2408155648,
+          "cuda_peak_reserved_bytes": 2455764992
+        },
+        "included_in_child_and_process_wall": true
+      },
+      "sr_kernel_dispatches": 18,
+      "sr_sum_dispatches": 19,
+      "extension_dispatch_counts": {
+        "interval": {
+          "iv_mul": 563,
+          "seg_dot_pt_iv": 146,
+          "iv_addsub": 1097,
+          "iv_dot_point_iv": 109,
+          "iv_sum": 216,
+          "seg_mul_pt": 96,
+          "seg_mul_iv": 96,
+          "iv_mul_point": 18,
+          "iv_neg": 1
+        },
+        "tape": {
+          "refine_tape": 20
+        },
+        "validation": {
+          "point_tape": 40,
+          "valid_tape": 20
+        },
+        "sr_phi": {
+          "sr_left_multiply_": 18
+        },
+        "sr_j_sum": {
+          "sr_j_sum": 19
+        }
+      },
+      "extension_binary_sha256": {
+        "interval": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+          "sha256": "7b2809f89fe7443681980b236cfae3598929519f537d4fc9f1a11322c417370c"
+        },
+        "tape": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+          "sha256": "11d1adb73c52a8a27c86ed455c8b2f44cda0f255e4cc6c6d81b54d282d78ab79"
+        },
+        "validation": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+          "sha256": "ad1c189c757196b406ffc39228a132441eb44fc4461db30cfddba4482eca748a"
+        },
+        "sr_phi": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+          "sha256": "9309194de0e6530d2e089e872ae6bd9c6490a867bacac1bf2a7fa9961083c6aa"
+        },
+        "sr_j_sum": {
+          "binary": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_endpoint_graph/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+          "sha256": "7d587d7391ec93a373e7073b67d20b4cb8b98d682eadd3df6e99aaf16cddd88c"
+        }
+      },
+      "engine_files_unchanged": true,
+      "process": {
+        "argv": [
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/nncs_quad_memory.py",
+          "--expected-engine-sha",
+          "15e527e9dd281e71897c8b23bc4a917dbbf9bb3b",
+          "--engine",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_sr_memory",
+          "--output",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/preallocated_period1_state",
+          "--config",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo/experiments/flowstar_acceleration/configs_nncs/quad_submit_native_period1.yaml",
+          "--benchmark",
+          "quad_submit_native",
+          "--scope",
+          "period1",
+          "--reserve-sr-full",
+          "--snapshot-dir",
+          "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad_memory_20260922/preallocated_period1_state/snapshots"
+        ],
+        "pid": 2045135,
+        "returncode": 0,
+        "status": "completed",
+        "timeout_s": 180.0,
+        "process_wall_s": 12.522553282324225,
+        "peak_tree_rss_bytes": 1586405376,
+        "peak_owned_gpu_bytes": 10603200512,
+        "rss_gpu_guard_bytes": 12348030976.0,
+        "hard_budget_bytes": 12884901888,
+        "poll_s": 0.1
+      },
+      "driver_summary": {
+        "B": 1024,
+        "order": 2,
+        "steps": 1,
+        "substeps": 20,
+        "broken": 0,
+        "elapsed_s": 7.126540417317301,
+        "final_hull": {
+          "x1": [
+            -0.4400494702770084,
+            0.44003907111133594
+          ],
+          "x2": [
+            -0.440085645479353,
+            0.4400721564947782
+          ],
+          "x3": [
+            -0.38730359886320626,
+            0.4584740081563479
+          ],
+          "x4": [
+            -0.40038959197374385,
+            0.40024622452757297
+          ],
+          "x5": [
+            -0.4022245137274853,
+            0.40146581433609607
+          ],
+          "x6": [
+            -1.3237305769237084,
+            -0.09941663841667053
+          ],
+          "x7": [
+            -0.0006307913799736911,
+            0.001547294418240598
+          ],
+          "x8": [
+            -0.0006760161367055037,
+            0.001110731902476235
+          ],
+          "x9": [
+            -7.858890687695969e-07,
+            8.543575013034586e-07
+          ],
+          "x10": [
+            -0.01165062079437372,
+            0.030092079452244562
+          ],
+          "x11": [
+            -0.012726874041004197,
+            0.021384299966585828
+          ],
+          "x12": [
+            -2.2250738585072014e-308,
+            2.2250738585072014e-308
+          ],
+          "t": [
+            0.09999999999999933,
+            0.10000000000000071
+          ],
+          "u1": [
+            4.736347696308005,
+            15.189057893357958
+          ],
+          "u2": [
+            -0.006291335228961784,
+            0.016249722904212064
+          ],
+          "u3": [
+            -0.006872511982142282,
+            0.01154752198195636
+          ]
+        },
+        "final_hull_width_sum_mean": 5.983610974303642
+      },
+      "final_graph": {
+        "enabled": true,
+        "hits": 159,
+        "captures": 16,
+        "segments": 16
+      },
+      "first_rejected_step": null,
+      "success_step_cleanup": {
+        "count": 0,
+        "seconds": 0.0,
+        "all_allocated_unchanged": true
+      },
+      "growth_events": [
+        {
+          "ode_step": 1,
+          "qlen": 0,
+          "old_capacity": 16,
+          "needed": 1000,
+          "before": {
+            "rss_bytes": 1152385024,
+            "cuda_allocated_bytes": 82414080,
+            "cuda_reserved_bytes": 96468992,
+            "cuda_peak_allocated_bytes": 82414080,
+            "cuda_peak_reserved_bytes": 96468992
+          },
+          "cleanup_s": 0.00022479519248008728,
+          "after_cleanup": {
+            "rss_bytes": 1152569344,
+            "cuda_allocated_bytes": 82414080,
+            "cuda_reserved_bytes": 96468992,
+            "cuda_peak_allocated_bytes": 82414080,
+            "cuda_peak_reserved_bytes": 96468992
+          },
+          "after_reserve": {
+            "rss_bytes": 1152643072,
+            "cuda_allocated_bytes": 2403961344,
+            "cuda_reserved_bytes": 2455764992,
+            "cuda_peak_allocated_bytes": 2408155648,
+            "cuda_peak_reserved_bytes": 2455764992
+          },
+          "new_capacity": 1000,
+          "reserve_s": 0.013725361786782742
+        }
+      ],
+      "trace": null,
+      "protocol_messages": [
+        "FALSIFIED"
+      ]
+    }
+  },
+  "original_5d_guard_failure": {
+    "report": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_quad5_20260922/QUAD5_REPORT.json",
+    "completed_all_lane_steps": 512,
+    "accepted_lane_steps": 524288,
+    "owned_GPU_peak_GiB": 12.59765625,
+    "overshoot_above_12GiB": 0.59765625,
+    "scope": "prefix resource failure, never a complete result"
+  }
+}

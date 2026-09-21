@@ -1,0 +1,85 @@
+steps: 1
+step_size: 0.1
+ode_step_size: 0.1
+ode_order: 3
+initial_set:
+- name: x_lead
+  interval:
+  - 90.0
+  - 110.0
+- name: v_lead
+  interval:
+  - 32.0
+  - 32.2
+- name: a_lead
+  interval:
+  - 0.0
+  - 0.0
+- name: x_ego
+  interval:
+  - 10.0
+  - 11.0
+- name: v_ego
+  interval:
+  - 30.0
+  - 30.2
+- name: a_ego
+  interval:
+  - 0.0
+  - 0.0
+- name: t
+  interval:
+  - 0.0
+  - 0.0
+- name: u1
+  interval:
+  - 0.0
+  - 0.0
+controller: ACC/controller_5_20.onnx
+controller_input:
+- '30'
+- '1.4'
+- v_ego
+- x_lead-x_ego
+- v_lead-v_ego
+property: x_lead-x_ego-1.4*v_ego-10 >= 0
+run_attack: false
+num_vars: 8
+num_nn_input: 5
+num_nn_output: 1
+cut_off_threshold: 1.0e-06
+remainder_estimation:
+- -0.1
+- 0.1
+split_vars: []
+sr_queue: 50
+dynamics_expressions:
+- v_lead
+- a_lead
+- -2*a_lead - 4 - 0.0001*v_lead^2
+- v_ego
+- a_ego
+- -2*a_ego + 2*u1 - 0.0001*v_ego^2
+- '1'
+- '0'
+constraints_safe:
+- -x_lead+x_ego+1.4*v_ego+10
+model_dir: /srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/ARCH-COMP2024/benchmarks/ACC/controller_5_20.onnx
+input_shape:
+- -1
+- 1
+- 1
+- 5
+output_T_shape:
+- -1
+- 1
+- 5
+output_c_shape:
+- -1
+- 1
+output_scale: 1
+output_offset: 0
+bound_opts:
+  activation_bound_option: same-slope
+  conv_mode: matrix
+adapter: acc_exact_feature_tm

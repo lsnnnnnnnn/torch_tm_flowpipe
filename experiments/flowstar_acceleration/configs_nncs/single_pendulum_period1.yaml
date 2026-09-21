@@ -1,0 +1,54 @@
+run_attack: false
+num_vars: 4
+num_nn_input: 2
+num_nn_output: 1
+steps: 1
+step_size: 0.05
+ode_step_size: 0.01
+ode_order: 2
+cut_off_threshold: 1.0e-06
+remainder_estimation:
+- -0.01
+- 0.01
+initial_set:
+- name: x1
+  interval:
+  - 1.0
+  - 1.175
+- name: x2
+  interval:
+  - 0.0
+  - 0.2
+- name: t
+  interval:
+  - 0.0
+  - 0.0
+- name: u1
+  interval:
+  - 0.0
+  - 0.0
+dynamics_expressions:
+- x2
+- 2 * sin(x1) + 8 * u1
+- '1'
+- '0'
+constraints_unsafe:
+- -t + 0.5
+- x1
+- -x1 + 1
+model_dir: /srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/ARCH-COMP2024/benchmarks/Single_Pendulum/controller_single_pendulum.onnx
+input_shape:
+- -1
+- 1
+- 2
+output_T_shape:
+- -1
+- 1
+- 2
+output_c_shape:
+- -1
+- 1
+output_scale: 1
+output_offset: 0
+bound_opts:
+  activation_bound_option: same-slope

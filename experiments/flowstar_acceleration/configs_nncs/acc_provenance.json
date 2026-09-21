@@ -1,0 +1,26 @@
+{
+  "source_sha": "1c16d4ef2cb91cc94b1c784f7383e1eba135d8d3",
+  "sources_sha256": {
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/experiments/reachability/benchmarks/acc.json": "a0f29d132aad4c034db9ae452e39d85fa4eebdafd2be953fbf0f1414b9201a85",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/submit/CROWN-Reach/archcomp/ACC/acc.cpp": "ef9b0c890a1dcbb6f62477fc3c88ab54907f8aac75f7400717c796303c39c5c6",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/submit/CROWN-Reach/archcomp/ACC/crown.py": "d28c60e84579b1fd845ffddd3d2cbc548c83784125f615de9db7ba688e99b0b4",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/ARCH-COMP2024/benchmarks/ACC/controller_5_20.onnx": "8dbc1a56cd77b264b46ce8eb226add9098896f393ae2a63538598775bfbcec1b"
+  },
+  "contract": {
+    "h": 0.1,
+    "order": 3,
+    "B": 1,
+    "period": 0.1,
+    "updates": 50,
+    "T": 5.0,
+    "queue": 50,
+    "feature_mapping": [
+      "30",
+      "1.4",
+      "v_ego",
+      "x_lead-x_ego",
+      "v_lead-v_ego"
+    ]
+  },
+  "controller_gap": "Source C++ converts CROWN outputs with asFloat. This experiment uses native-f64 CROWN and retains controller_unqualified; no arithmetic parity or NNCS strict certificate."
+}
