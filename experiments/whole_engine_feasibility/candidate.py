@@ -9,6 +9,7 @@ import argparse
 import copy
 from dataclasses import asdict
 import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -27,7 +28,9 @@ def source_identity(path):
     def git(*args):
         return subprocess.check_output(['git', '-C', str(root), *args], text=True).strip()
     return {'root': str(root), 'head': git('rev-parse', 'HEAD'),
-            'status': git('status', '--porcelain'), 'diff': git('diff', '--stat')}
+            'status': git('status', '--porcelain'), 'diff': git('diff', '--stat'),
+            'python_sha256': {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                              for p in sorted((root / 'src/flowstar_gpu').glob('*.py'))}}
 
 
 def save_factored(state, tab, *, step, h, lane_ids, accepted):
@@ -63,6 +66,12 @@ def advance_transaction(state, sr, code, eng, sched, settings, rem):
 
 
 def run(args):
+    # Select before importing the engine; importing a differently configured
+    # engine in the same process is rejected below rather than misreported.
+    for option, variable in [('composition', 'FLOWSTAR_COMPOSITION'), ('glue', 'FLOWSTAR_GLUE')]:
+        value = getattr(args, option, None)
+        if value is not None:
+            os.environ[variable] = value
     if args.engine_root is not None:
         engine_src = args.engine_root.resolve() / 'src'
         if not (engine_src / 'flowstar_gpu' / '__init__.py').is_file():
@@ -83,12 +92,31 @@ def run(args):
     from flowstar_gpu.support import SparseEngine
     from flowstar_gpu.sparse_exec import initial_sparse_state
     from flowstar_gpu.symbolic_remainder import make_symbolic_remainder
-    from flowstar_gpu import cuda_kernels, tape_kernels
+    from flowstar_gpu import cuda_kernels, tape_kernels, sparse_exec, glue
+    try:
+        from flowstar_gpu import sr_kernels
+    except ImportError:
+        sr_kernels = None  # Older explicitly selected baseline checkouts.
+    algorithms = {'composition': getattr(sparse_exec, 'COMPOSITION_MODE', 'monomial'),
+                  'glue': glue.GLUE_MODE,
+                  'rhs_form': getattr(args, 'rhs_form', 'original'),
+                  'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval'}
+    for option in ('composition', 'glue'):
+        requested = getattr(args, option, None)
+        if requested is not None and algorithms[option] != requested:
+            raise RuntimeError(f'engine already imported with a different {option}: {algorithms[option]}')
 
     args.output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
     case = frozen_case(args.plant, args.batch)
+    rhs = list(case['rhs_expression_strings'])
+    if algorithms['rhs_form'] == 'regrouped':
+        if args.plant != 'van_der_pol':
+            raise ValueError('regrouped RHS currently qualified only for van_der_pol')
+        rhs = ['y', '(1-x*x)*y-x']
+    algorithms['rhs_executed'] = rhs
+    algorithms['rhs_contract'] = case['rhs_expression_strings']
     # This compatibility normalization accepts the explicit helper contract.
     h = float(case['h'])
     sync = (lambda: torch.cuda.synchronize()) if args.device == 'cuda' else (lambda: None)
@@ -99,6 +127,8 @@ def run(args):
         # Validation has a separate lazy extension; compile it before the solve timer.
         extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available(),
                       'validation': tape_kernels.valid_available()}
+        if sr_kernels is not None:
+            extensions['sr_interval'] = sr_kernels.available()
         if not all(extensions.values()):
             raise RuntimeError(f'candidate CUDA extensions unavailable: {extensions}')
     sync()
@@ -111,7 +141,7 @@ def run(args):
     tab = build_tables(2, settings.order).to(args.device)
     table_step = build_step_tables(tab, h)
     sched = build_schedule(2, settings.order, args.device)
-    code = compile_ode(case['rhs_expression_strings'], ['x', 'y'], order=settings.order - 1)
+    code = compile_ode(rhs, ['x', 'y'], order=settings.order - 1)
     boxes = torch.tensor(case['boxes'], dtype=torch.float64, device=args.device)
     eng = SparseEngine(tab, table_step, args.device)
     state = initial_sparse_state(boxes, eng, sched)
@@ -176,7 +206,7 @@ def run(args):
               'batch': args.batch, 'requested_steps': args.steps, 'accepted_steps': counts,
               'accepted_lane_steps': sum(counts), 'completed': min(counts) == args.steps,
               'failure': failure, 'engine_status': statuses, 'settings': asdict(settings),
-              'case': case, 'route': 'Huan_sparse_strict', 'device': args.device,
+              'case': case, 'algorithms': algorithms, 'route': 'Huan_sparse_strict', 'device': args.device,
               'solve_wall_s': wall_s, 'wall_s': wall_s, 'cold_startup_s': cold_s,
               'initial_state_and_plan_s': initial_s, 'recording_s': excluded_s,
               'timing_only': not args.record, 'sr_reset_steps': reset_steps,
@@ -209,6 +239,9 @@ def main():
     parser.add_argument('--steps', type=int, required=True)
     parser.add_argument('--device', choices=['cpu', 'cuda'], default='cuda')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--composition', choices=['monomial', 'horner'])
+    parser.add_argument('--glue', choices=['eager', 'compile', 'graph'])
+    parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
     parser.add_argument('--timeout-s', type=float, default=3600)
