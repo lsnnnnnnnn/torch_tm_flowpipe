@@ -68,8 +68,7 @@ rollback. The copy cost is included in solve time.
 
 `campaign.py` reproduces the finite experiment phases. Timing campaigns first save a separate B32×2 warmup for each plant. All three CUDA extensions (including the lazily loaded validation extension) are checked before the solve timer; cold builds remain in startup/process time. The extension-cache path is resolved to avoid rebuilding identical sources merely because a new run directory uses a symlink. Its historical default
 engine directory is `../engine`; pass `--engine-root ../engine_cutoff_aligned`
-for the final variant. The 2026-09-21 old-Gr paired measurements used cff8758,
-whereas the separate same-engine CPU/CUDA measurements used 280abb4.
+for the final variant. The first 2026-09-21 Gr comparison used cff8758. The final, separately warmed three-pair comparison uses adapter 445218b and engine 280abb4; all twelve B32 x 20 runs completed. Its complete samples and timing boundaries are in docs/WHOLE_ENGINE_EXECUTION_20260921.md and /srv/local/shengenli/whole_engine_final_warm_timing_20260921T134430Z. The independent CPU/CUDA device comparison also uses engine 280abb4, with the earlier db727a1 adapter.
 
 The two Python backends were tested with Python 3.11.15 and PyTorch 2.5.1+cu121.
 The external package declares a newer deployment environment; the tested older
