@@ -216,7 +216,11 @@ def run(args):
                 print(json.dumps({'plant': args.plant, 'batch': args.batch, 'step': index,
                                   'solve_s': time.perf_counter() - started - excluded_s}), flush=True)
                 excluded_s += time.perf_counter() - log_start
-            if args.device == 'cuda' and torch.cuda.memory_allocated() > args.max_gpu_gib * 2**30:
+            # Read the same allocator counter without flattening/sorting every statistic.
+            allocated = (torch.cuda.memory.memory_stats_as_nested_dict()
+                         .get('allocated_bytes', {}).get('all', {}).get('current', 0)
+                         if args.device == 'cuda' else 0)
+            if args.device == 'cuda' and allocated > args.max_gpu_gib * 2**30:
                 failure = {'step': index, 'reason': 'gpu_memory_budget'}
                 break
             if resource.getrusage(resource.RUSAGE_SELF).ru_maxrss > args.max_cpu_gib * 2**20:
