@@ -78,7 +78,7 @@ def advance_transaction(state, sr, code, eng, sched, settings, rem):
 def run(args):
     # Select before importing the engine; importing a differently configured
     # engine in the same process is rejected below rather than misreported.
-    for option, variable in [('composition', 'FLOWSTAR_COMPOSITION'), ('glue', 'FLOWSTAR_GLUE'), ('support_policy', 'FLOWSTAR_SUPPORT_POLICY')]:
+    for option, variable in [('composition', 'FLOWSTAR_COMPOSITION'), ('glue', 'FLOWSTAR_GLUE'), ('support_policy', 'FLOWSTAR_SUPPORT_POLICY'), ('validation_policy', 'FLOWSTAR_VALIDATION_POLICY')]:
         value = getattr(args, option, None)
         if value is not None:
             os.environ[variable] = value
@@ -114,10 +114,11 @@ def run(args):
     algorithms = {'composition': getattr(sparse_exec, 'COMPOSITION_MODE', 'monomial'),
                   'glue': glue.GLUE_MODE,
                   'support_policy': getattr(sparse_exec, 'SUPPORT_POLICY', 'measured'),
+                  'validation_policy': getattr(sparse_exec, 'VALIDATION_POLICY', 'truncated'),
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
                   'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
                   'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
-    for option in ('composition', 'glue', 'support_policy'):
+    for option in ('composition', 'glue', 'support_policy', 'validation_policy'):
         requested = getattr(args, option, None)
         if requested is not None and algorithms[option] != requested:
             raise RuntimeError(f'engine already imported with a different {option}: {algorithms[option]}')
@@ -260,6 +261,7 @@ def main():
     parser.add_argument('--composition', choices=['monomial', 'horner'])
     parser.add_argument('--glue', choices=['eager', 'compile', 'graph'])
     parser.add_argument('--support-policy', choices=['measured', 'structural'])
+    parser.add_argument('--validation-policy', choices=['truncated', 'defer_polynomial'])
     parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
