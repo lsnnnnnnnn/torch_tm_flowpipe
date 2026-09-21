@@ -140,6 +140,7 @@ def run(args):
     cold = time.perf_counter()
     enable_determinism(args.device)
     extensions = {'interval': False, 'tape': False, 'validation': False}
+    extension_binaries = {}
     if args.device == 'cuda':
         # Validation has a separate lazy extension; compile it before the solve timer.
         extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available(),
@@ -150,6 +151,15 @@ def run(args):
             extensions['sr_history_sum'] = sr_sum_kernels.available()
         if not all(extensions.values()):
             raise RuntimeError(f'candidate CUDA extensions unavailable: {extensions}')
+        loaded = [cuda_kernels._ext, tape_kernels._ext, tape_kernels._vext]
+        if sr_kernels is not None:
+            loaded.append(sr_kernels._ext)
+        if sr_sum_kernels is not None:
+            loaded.append(sr_sum_kernels._ext)
+        for module in loaded:
+            path = Path(module.__file__).resolve()
+            extension_binaries[module.__name__] = {
+                'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     sync()
     cold_s = time.perf_counter() - cold
     started = time.perf_counter()
@@ -234,6 +244,7 @@ def run(args):
               'observer': 'none during solve; complete factored states saved when --record',
               'python': sys.version, 'executable': sys.executable, 'torch': torch.__version__,
               'cuda_build': torch.version.cuda, 'extensions': extensions,
+              'extension_binaries': extension_binaries,
               'engine_source': source_identity(engine_root),
               'adapter_source': source_identity(Path(__file__).resolve().parents[2]),
               'affinity': sorted(os.sched_getaffinity(0)), 'torch_threads': torch.get_num_threads(),
