@@ -2,7 +2,7 @@
 
 The original-box VDP and Brusselator routes use strict Horner composition,
 structural Picard supports, polynomial deferred-leaf validation, directed SR
-kernels and atomic batch transactions. The numerical contracts (initial box,
+kernels, certified injective CUDA writes and atomic batch transactions. The numerical contracts (initial box,
 h, order, cutoff, remainder estimate, refinement and SR reset) remain frozen.
 VDP explicitly uses the equivalent RHS `(1-x*x)*y-x`.
 
@@ -18,16 +18,20 @@ that pin before the entry accepts it.
 ```sh
 run_root=/srv/local/shengenli/flowstar_acceleration_20260921T153643Z
 python_bin=/srv/local/shengenli/miniforge3/envs/py11/bin/python
-cd "$run_root/repo"
-export PYTHONPATH="$run_root/repo/src:$run_root/repo"
+cd "$run_root/review_release"
+export PYTHONPATH="$run_root/review_release/src:$run_root/review_release"
 export PATH="/srv/local/shengenli/miniforge3/envs/py11/bin:$PATH"
 export CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 export CXX=/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-g++
 export CC=/srv/local/shengenli/.huan-audit-gxx13/bin/x86_64-conda-linux-gnu-gcc
 export CUDA_HOME=/usr/local/cuda-12.6 TORCH_CUDA_ARCH_LIST=7.0 MAX_JOBS=2
-export TORCH_EXTENSIONS_DIR="$run_root/cache_endpoint_graph/py311_torch251_cu126_gcc13"
-export PYTHONDONTWRITEBYTECODE=1
+export TORCH_EXTENSIONS_DIR="$run_root/cache_qualified_six/py311_torch251_cu126_gcc13"
+export PYTHONDONTWRITEBYTECODE=1 CUBLAS_WORKSPACE_CONFIG=:4096:8
 ```
+
+The review_release worktree is a clean, committed copy of the supported adapter.
+The development repo retains separate untracked benchmark experiments; the
+supported run command intentionally requires a clean source checkout.
 
 ## Run and observe a complete original-box trajectory
 
@@ -63,6 +67,7 @@ algorithm choice are recorded in `summary.json`.
   --plant van_der_pol --batch 32 --steps 20 --device cuda \
   --engine-root "$run_root/engine_accelerated" --composition horner --glue graph \
   --support-policy structural --validation-policy defer_polynomial --rhs-form regrouped \
+  --injective-maps on --injective-glue on \
   --record --output "$run_root/runs/vdp_b32_user_run"
 ```
 
@@ -73,12 +78,17 @@ full observation.
 
 ## Evidence and remaining work
 
-At the combined 627733e checkpoint both original-box 1000-step runs and both
-B32x20 runs completed. All eight original-box width channels met p95<=1.10 and
-max<=1.25 against Flow* on the 999 shared valid segments; each final segment was
-checked separately in its own legal time domain. This is numerical evidence,
-not a formal proof of the entire implementation. Later storage-only SR growth
-changes retain every tensor value and have separate growth/regression tests.
+The pinned engine is 1a27bf58fdadcc8d429044304f19d725c8386cab. It includes the
+endpoint FULL-to-spatial support correction and both injective-write stages.
+Four complete qualification tasks (3280 lane-steps) match the corrected 29db74a
+checkpoint byte for byte after decompressing their factored records. All 16
+width channels meet p95<=1.10 and max<=1.25 against fixed-count native Flow*
+over identical full local domains, including step 1000. There are 72 independent
+Fraction bound checks; 75 focused CPU/CUDA regressions pass on the final engine.
+Worst original-box p95/max are 1.0995047211/1.2127639702 for VDP and
+1.0122278389/1.0383255462 for Brusselator. Evidence lives under
+runs/qualified_six_endpoint_002 and runs/qualified_final_glue. These finite
+checks are numerical evidence, not a formal proof of the entire implementation.
 
 The overall acceleration goal remains active: VDP timing is still above the
 target. Single recorded-run timings are diagnostics, not five-pair performance
@@ -90,5 +100,5 @@ Actual loaded extension paths and binary hashes are recorded.
 Expanded NNCS runs, original configuration failures and resource-limited runs
 are reported separately. Their CROWN controller bounds are still marked
 `controller_unqualified`; successful plant propagation alone does not establish
-strict end-to-end NNCS verification. Airplane sparse metadata and adaptive+SR
-remain separate engineering work.
+strict end-to-end NNCS verification. Airplane has completed one original plant step with sparse metadata; its full
+controller loop and adaptive+SR remain separate engineering work.
