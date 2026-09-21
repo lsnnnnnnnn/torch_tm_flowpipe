@@ -84,6 +84,8 @@ def run(args):
             os.environ[variable] = value
     if getattr(args, 'injective_maps', None) is not None:
         os.environ['FLOWSTAR_INJECTIVE_MAPS'] = '1' if args.injective_maps == 'on' else '0'
+    if getattr(args, 'injective_glue', None) is not None:
+        os.environ['FLOWSTAR_INJECTIVE_GLUE'] = '1' if args.injective_glue == 'on' else '0'
     if args.engine_root is not None:
         engine_src = args.engine_root.resolve() / 'src'
         if not (engine_src / 'flowstar_gpu' / '__init__.py').is_file():
@@ -122,13 +124,17 @@ def run(args):
                   'support_policy': getattr(sparse_exec, 'SUPPORT_POLICY', 'measured'),
                   'validation_policy': getattr(sparse_exec, 'VALIDATION_POLICY', 'truncated'),
                   'injective_maps': 'on' if injective_index is not None and injective_index.ENABLED else 'off',
+                  'injective_glue': 'on' if getattr(sparse_exec, 'INJECTIVE_GLUE', False) else 'off',
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
                   'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
                   'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
-    for option in ('composition', 'glue', 'support_policy', 'validation_policy', 'injective_maps'):
+    for option in ('composition', 'glue', 'support_policy', 'validation_policy', 'injective_maps', 'injective_glue'):
         requested = getattr(args, option, None)
         if requested is not None and algorithms[option] != requested:
             raise RuntimeError(f'engine already imported with a different {option}: {algorithms[option]}')
+
+    if algorithms['injective_glue'] == 'on' and (args.device != 'cuda' or algorithms['glue'] == 'compile' or algorithms['injective_maps'] != 'on'):
+        raise ValueError('injective glue requires CUDA eager/graph and injective maps enabled')
 
     args.output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(1)
@@ -289,6 +295,7 @@ def main():
     parser.add_argument('--support-policy', choices=['measured', 'structural'])
     parser.add_argument('--validation-policy', choices=['truncated', 'defer_polynomial'])
     parser.add_argument('--injective-maps', choices=['off', 'on'])
+    parser.add_argument('--injective-glue', choices=['off', 'on'])
     parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
