@@ -46,6 +46,32 @@ class WholeEngineEntryTests(unittest.TestCase):
                     cli.whole_engine_smoke("cpu", scratch)
             self.assertTrue(evidence.is_file())
 
+    def test_accelerated_route_rejects_baseline_engine(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            source = Path(scratch) / "src/flowstar_gpu"
+            source.mkdir(parents=True)
+            (source / "__init__.py").touch()
+            with patch.object(cli.subprocess, "check_output", side_effect=[cli.WHOLE_ENGINE_REVISION, ""]):
+                with self.assertRaisesRegex(ValueError, "requires clean"):
+                    cli.checked_engine_root(scratch, revision=cli.ACCELERATED_ENGINE_REVISION)
+
+    def test_accelerated_summary_must_report_selected_algorithms(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            output = Path(scratch) / "run"
+            def wrong_policy(command, **kwargs):
+                self.assertIn("--validation-policy", command)
+                self.assertIn("defer_polynomial", command)
+                output.mkdir()
+                (output / "summary.json").write_text(json.dumps({
+                    "completed": True, "failure": None, "accepted_steps": [2],
+                    "engine_source": {"head": cli.ACCELERATED_ENGINE_REVISION, "status": "", "root": scratch},
+                    "algorithms": {"validation_policy": "truncated"}}))
+            with patch.object(cli, "checked_engine_root", return_value=Path(scratch)), \
+                    patch.object(cli, "execute", side_effect=wrong_policy):
+                with self.assertRaisesRegex(RuntimeError, "algorithm contract changed"):
+                    cli.whole_engine_run("van_der_pol", "cuda", scratch, output, steps=2, accelerated=True)
+            self.assertTrue((output / "summary.json").is_file())
+
     def test_adaptive_is_not_silently_run_as_fixed(self):
         with tempfile.TemporaryDirectory() as scratch, \
                 patch.object(cli, "profile_check"), \

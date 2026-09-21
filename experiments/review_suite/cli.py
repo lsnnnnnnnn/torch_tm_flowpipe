@@ -13,9 +13,10 @@ import tempfile
 from .data import ROOT, experiment, load_registry, profile_check, summarize
 
 WHOLE_ENGINE_REVISION = "280abb400610f56210a7a5be61d5f98be3e27251"
+ACCELERATED_ENGINE_REVISION = "f0ddc6e49b048e217b8cefbf1f889c91ba8aa99e"
 
 
-def checked_engine_root(engine_root):
+def checked_engine_root(engine_root, *, revision=WHOLE_ENGINE_REVISION):
     """Bind the supported route to the complete-horizon, strict repair version."""
     if engine_root is None:
         raise ValueError("whole-engine requires --engine-root")
@@ -27,39 +28,49 @@ def checked_engine_root(engine_root):
         dirty = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain"], text=True).strip()
     except subprocess.CalledProcessError as error:
         raise RuntimeError(f"cannot verify external engine checkout: {root}") from error
-    if head != WHOLE_ENGINE_REVISION or dirty:
-        raise ValueError(f"supported whole-engine requires clean {WHOLE_ENGINE_REVISION}; "
+    if head != revision or dirty:
+        raise ValueError(f"supported whole-engine requires clean {revision}; "
                          f"found {head}, dirty={bool(dirty)} at {root}")
     return root
 
 
-def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=False):
+def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=False, accelerated=False):
     if device not in ("cpu", "cuda"):
         raise ValueError("whole-engine requires explicit --device cpu or --device cuda")
-    engine_root = checked_engine_root(engine_root)
+    revision = ACCELERATED_ENGINE_REVISION if accelerated else WHOLE_ENGINE_REVISION
+    engine_root = checked_engine_root(engine_root, revision=revision)
     command = [sys.executable, "-m", "experiments.whole_engine_feasibility.candidate",
                "--engine-root", str(engine_root), "--plant", plant,
                "--batch", "1", "--steps", str(steps), "--device", device,
                "--record", "--output", str(output)]
+    algorithms = {"composition": "horner", "glue": "graph", "support_policy": "structural",
+                  "validation_policy": "defer_polynomial",
+                  "rhs_form": "regrouped" if plant == "van_der_pol" else "original"}
+    if accelerated:
+        for option, value in algorithms.items():
+            command.extend(["--" + option.replace("_", "-"), value])
     execute(command, output=output, quiet=quiet)
     result = json.loads((Path(output) / "summary.json").read_text())
     if (result.get("completed") is not True or result.get("failure") is not None
             or result.get("accepted_steps") != [steps]):
         raise RuntimeError(f"{plant} whole-engine did not complete; preserved output: {output}")
-    if (result["engine_source"]["head"] != WHOLE_ENGINE_REVISION
+    if (result["engine_source"]["head"] != revision
             or result["engine_source"]["status"]
             or Path(result["engine_source"]["root"]).resolve() != engine_root):
         raise RuntimeError(f"whole-engine source identity changed; inspect output: {output}")
+    if accelerated and any(result.get("algorithms", {}).get(key) != value
+                           for key, value in algorithms.items()):
+        raise RuntimeError(f"accelerated algorithm contract changed; inspect output: {output}")
     return result
 
 
-def whole_engine_smoke(device, engine_root):
+def whole_engine_smoke(device, engine_root, *, accelerated=False):
     scratch = Path(tempfile.mkdtemp(prefix="review-whole-engine-smoke-"))
     try:
         cases = []
         for plant in ("van_der_pol", "brusselator"):
             result = whole_engine_run(plant, device, engine_root, Path(scratch) / plant,
-                                      steps=2, quiet=True)
+                                      steps=2, quiet=True, accelerated=accelerated)
             cases.append({key: result[key] for key in
                           ("plant", "accepted_steps", "engine_source", "device", "extensions")})
     except BaseException:
@@ -67,7 +78,8 @@ def whole_engine_smoke(device, engine_root):
         raise
     else:
         shutil.rmtree(scratch)
-    print(json.dumps({"backend": "whole-engine", "cases": cases, "status": "accepted"}, indent=2))
+    print(json.dumps({"backend": "whole-engine-accelerated" if accelerated else "whole-engine",
+                      "cases": cases, "status": "accepted"}, indent=2))
 
 
 def execute(command, *, output=None, quiet=False):
@@ -140,11 +152,12 @@ def run_experiment(experiment_id, backend, output, *, engine_root=None, device=N
         raise FileExistsError(f"output directory already exists: {output}")
     if not output.parent.is_dir():
         raise FileNotFoundError(f"output parent does not exist: {output.parent}")
-    if backend == "whole-engine":
+    if backend in ("whole-engine", "whole-engine-accelerated"):
         if experiment_id not in ("vdp-fixed-full", "brusselator-fixed-full"):
             raise ValueError("whole-engine supports only the two fixed original-box horizons")
         plant = "van_der_pol" if experiment_id == "vdp-fixed-full" else "brusselator"
-        whole_engine_run(plant, device, engine_root, output)
+        whole_engine_run(plant, device, engine_root, output,
+                         accelerated=backend == "whole-engine-accelerated")
         return output
     if experiment_id in ("vdp-fixed-full", "brusselator-fixed-full", "vdp-adaptive"):
         if backend == "resident":
@@ -196,20 +209,21 @@ def main(argv=None):
     plots.add_argument("--all", action="store_true", required=True)
     plots.add_argument("--out", type=Path, required=True)
     smoke = subs.add_parser("smoke", help="two accepted steps on each system")
-    smoke.add_argument("--backend", choices=("cpu","gpu-range","resident","whole-engine"), required=True)
+    smoke.add_argument("--backend", choices=("cpu","gpu-range","resident","whole-engine","whole-engine-accelerated"), required=True)
     run = subs.add_parser("run", help="new full reference/GPU-range run or resident prefix")
     run.add_argument("--experiment", required=True)
-    run.add_argument("--backend", choices=("cpu","gpu-range","resident","whole-engine"), required=True)
+    run.add_argument("--backend", choices=("cpu","gpu-range","resident","whole-engine","whole-engine-accelerated"), required=True)
     run.add_argument("--out", type=Path, required=True)
     for action in (smoke, run):
         action.add_argument("--engine-root", type=Path, help="clean external engine checkout; whole-engine only")
         action.add_argument("--device", choices=("cpu", "cuda"), help="explicit device; whole-engine only")
-    observe = subs.add_parser("observe", help="exact physical bounds from complete whole-engine factored models")
+    observe = subs.add_parser("observe", help="physical bounds from complete whole-engine factored models")
     observe.add_argument("--input", type=Path, required=True, help="factored.jsonl.gz with adjacent summary.json")
     observe.add_argument("--out", type=Path, required=True)
+    observe.add_argument("--arithmetic", choices=("fraction", "outward"), default="fraction")
     args = parser.parse_args(argv)
     if args.action in ("smoke", "run"):
-        if args.backend == "whole-engine":
+        if args.backend in ("whole-engine", "whole-engine-accelerated"):
             if args.engine_root is None or args.device is None:
                 parser.error("whole-engine requires --engine-root and --device")
         elif args.engine_root is not None or args.device is not None:
@@ -228,8 +242,9 @@ def main(argv=None):
         return 0
     if args.action == "smoke":
         profile_check()
-        if args.backend == "whole-engine":
-            whole_engine_smoke(args.device, args.engine_root)
+        if args.backend in ("whole-engine", "whole-engine-accelerated"):
+            whole_engine_smoke(args.device, args.engine_root,
+                               accelerated=args.backend == "whole-engine-accelerated")
         elif args.backend == "cpu":
             cpu_smoke()
         else:
@@ -240,9 +255,12 @@ def main(argv=None):
                        engine_root=args.engine_root, device=args.device)
         return 0
     if args.action == "observe":
-        execute([sys.executable, "-m", "experiments.whole_engine_feasibility.observe_saved",
-                 "--input", str(args.input.resolve()), "--output", str(args.out.resolve())],
-                output=args.out)
+        module = ("experiments.flowstar_acceleration.observe_outward" if args.arithmetic == "outward"
+                  else "experiments.whole_engine_feasibility.observe_saved")
+        options = (["--export-backend", "outward_binary64", "--range-backend", "outward_binary64"]
+                   if args.arithmetic == "outward" else [])
+        execute([sys.executable, "-m", module, "--input", str(args.input.resolve()),
+                 "--output", str(args.out.resolve()), *options], output=args.out)
         return 0
     return 2
 
