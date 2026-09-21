@@ -105,7 +105,7 @@ def run(input_path, output, backend, range_backend='fraction'):
 
     checkpoint()
     try:
-        with gzip.open(input_path, 'rt') as snapshots, gzip.open(output / 'models.jsonl.gz', 'wt') as model_file, \
+        with gzip.open(input_path, 'rt') as snapshots, gzip.open(output / 'models.jsonl.gz', 'wt', compresslevel=1) as model_file, \
                 (output / 'bounds.csv').open('w', newline='') as bound_file:
             writer = csv.DictWriter(bound_file, fieldnames=_FIELDS + ['export_backend', 'range_backend'])
             writer.writeheader()

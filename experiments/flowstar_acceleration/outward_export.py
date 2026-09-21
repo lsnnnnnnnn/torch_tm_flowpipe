@@ -10,6 +10,7 @@ If an intermediate or outward endpoint overflows, export fails explicitly.
 This is an independent exporter; it does not replace the Fraction reference.
 """
 import math
+from functools import lru_cache
 
 _ZERO = (0.0, 0.0)
 _ONE = (1.0, 1.0)
@@ -75,11 +76,17 @@ def _accumulate(out, degrees, coefficient):
         out[degrees] = value
 
 
+@lru_cache(maxsize=16384)
+def _sum_degrees(a, b):
+    """Cache only immutable integer support metadata, never coefficients."""
+    return tuple(x + y for x, y in zip(a, b))
+
+
 def _product(left, right):
     out = {}
     for a, av in left.items():
         for b, bv in right.items():
-            degrees = tuple(x + y for x, y in zip(a, b))
+            degrees = _sum_degrees(a, b)
             _accumulate(out, degrees, _multiply(av, bv))
     return out
 
