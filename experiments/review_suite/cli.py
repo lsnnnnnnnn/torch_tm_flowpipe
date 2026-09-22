@@ -14,6 +14,7 @@ from .data import ROOT, experiment, load_registry, profile_check, summarize
 
 WHOLE_ENGINE_REVISION = "280abb400610f56210a7a5be61d5f98be3e27251"
 ACCELERATED_ENGINE_REVISION = "a99d614f04c1fe9d9d26e35952b936fa98e7ae80"
+HORNER_EDGE_ENGINE_REVISION = "1ed1a750e14e5b34793aa6df3f350c395985fedf"
 
 
 def checked_engine_root(engine_root, *, revision=WHOLE_ENGINE_REVISION):
@@ -34,10 +35,13 @@ def checked_engine_root(engine_root, *, revision=WHOLE_ENGINE_REVISION):
     return root
 
 
-def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=False, accelerated=False):
+def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=False, accelerated=False, horner_edge="off"):
     if device not in ("cpu", "cuda"):
         raise ValueError("whole-engine requires explicit --device cpu or --device cuda")
-    revision = ACCELERATED_ENGINE_REVISION if accelerated else WHOLE_ENGINE_REVISION
+    if horner_edge not in ("off", "on") or (horner_edge == "on" and (not accelerated or device != "cuda")):
+        raise ValueError("horner-edge on requires whole-engine-accelerated and CUDA")
+    revision = (HORNER_EDGE_ENGINE_REVISION if horner_edge == "on" else
+                ACCELERATED_ENGINE_REVISION if accelerated else WHOLE_ENGINE_REVISION)
     engine_root = checked_engine_root(engine_root, revision=revision)
     command = [sys.executable, "-m", "experiments.whole_engine_feasibility.candidate",
                "--engine-root", str(engine_root), "--plant", plant,
@@ -48,6 +52,7 @@ def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=Fa
                   "injective_maps": "on" if device == "cuda" else "off",
                   "injective_glue": "on" if device == "cuda" else "off",
                   "private_output": "on" if device == "cuda" else "off",
+                  "horner_edge": horner_edge,
                   "rhs_form": "regrouped" if plant == "van_der_pol" else "original"}
     if accelerated:
         for option, value in algorithms.items():
@@ -67,13 +72,13 @@ def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=Fa
     return result
 
 
-def whole_engine_smoke(device, engine_root, *, accelerated=False):
+def whole_engine_smoke(device, engine_root, *, accelerated=False, horner_edge="off"):
     scratch = Path(tempfile.mkdtemp(prefix="review-whole-engine-smoke-"))
     try:
         cases = []
         for plant in ("van_der_pol", "brusselator"):
             result = whole_engine_run(plant, device, engine_root, Path(scratch) / plant,
-                                      steps=2, quiet=True, accelerated=accelerated)
+                                      steps=2, quiet=True, accelerated=accelerated, horner_edge=horner_edge)
             cases.append({key: result[key] for key in
                           ("plant", "accepted_steps", "engine_source", "device", "extensions")})
     except BaseException:
@@ -142,7 +147,7 @@ def gpu_smoke(backend):
                       "accepted_steps_per_plant":2,"status":"accepted"},indent=2))
 
 
-def run_experiment(experiment_id, backend, output, *, engine_root=None, device=None):
+def run_experiment(experiment_id, backend, output, *, engine_root=None, device=None, horner_edge="off"):
     registry = load_registry()
     item = experiment(registry, experiment_id)
     if item is None:
@@ -160,7 +165,7 @@ def run_experiment(experiment_id, backend, output, *, engine_root=None, device=N
             raise ValueError("whole-engine supports only the two fixed original-box horizons")
         plant = "van_der_pol" if experiment_id == "vdp-fixed-full" else "brusselator"
         whole_engine_run(plant, device, engine_root, output,
-                         accelerated=backend == "whole-engine-accelerated")
+                         accelerated=backend == "whole-engine-accelerated", horner_edge=horner_edge)
         return output
     if experiment_id in ("vdp-fixed-full", "brusselator-fixed-full", "vdp-adaptive"):
         if backend == "resident":
@@ -219,6 +224,8 @@ def main(argv=None):
     run.add_argument("--out", type=Path, required=True)
     for action in (smoke, run):
         action.add_argument("--engine-root", type=Path, help="clean external engine checkout; whole-engine only")
+        action.add_argument("--horner-edge", choices=("off", "on"), default="off",
+                            help="explicit CUDA Horner fusion for accelerated engine")
         action.add_argument("--device", choices=("cpu", "cuda"), help="explicit device; whole-engine only")
     observe = subs.add_parser("observe", help="physical bounds from complete whole-engine factored models")
     observe.add_argument("--input", type=Path, required=True, help="factored.jsonl.gz with adjacent summary.json")
@@ -226,6 +233,8 @@ def main(argv=None):
     observe.add_argument("--arithmetic", choices=("fraction", "outward"), default="fraction")
     args = parser.parse_args(argv)
     if args.action in ("smoke", "run"):
+        if args.horner_edge == "on" and (args.backend != "whole-engine-accelerated" or args.device != "cuda"):
+            parser.error("--horner-edge on requires whole-engine-accelerated and --device cuda")
         if args.backend in ("whole-engine", "whole-engine-accelerated"):
             if args.engine_root is None or args.device is None:
                 parser.error("whole-engine requires --engine-root and --device")
@@ -247,7 +256,7 @@ def main(argv=None):
         profile_check()
         if args.backend in ("whole-engine", "whole-engine-accelerated"):
             whole_engine_smoke(args.device, args.engine_root,
-                               accelerated=args.backend == "whole-engine-accelerated")
+                               accelerated=args.backend == "whole-engine-accelerated", horner_edge=args.horner_edge)
         elif args.backend == "cpu":
             cpu_smoke()
         else:
@@ -255,7 +264,7 @@ def main(argv=None):
         return 0
     if args.action == "run":
         run_experiment(args.experiment, args.backend, args.out,
-                       engine_root=args.engine_root, device=args.device)
+                       engine_root=args.engine_root, device=args.device, horner_edge=args.horner_edge)
         return 0
     if args.action == "observe":
         module = ("experiments.flowstar_acceleration.observe_outward" if args.arithmetic == "outward"

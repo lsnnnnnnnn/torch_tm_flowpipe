@@ -119,6 +119,32 @@ def _select_private_output(requested, device, cuda_kernels):
     return info
 
 
+_HORNER_EDGE_SOURCE_SHA256 = "a429471855a9c2c3da512cb38a6f63e43737d204f0e8d309a845ea89ea9620ef"
+
+
+def _select_horner_edge(requested, device, composition):
+    info = {'requested': requested, 'enabled': False}
+    if requested == 'off':
+        return None, info
+    if requested != 'on' or device != 'cuda' or composition != 'horner':
+        raise ValueError('horner-edge on requires CUDA and Horner composition')
+    from flowstar_gpu import horner_edge_kernels as edge
+    source = Path(edge.__file__).resolve()
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    if source_sha != _HORNER_EDGE_SOURCE_SHA256:
+        raise RuntimeError('Horner edge source changed; qualification required')
+    module = edge.load()
+    if module.__name__ != edge.NAME:
+        raise RuntimeError('unexpected Horner edge extension')
+    binary = Path(module.__file__).resolve()
+    info.update(enabled=True, extension_name=edge.NAME,
+                source={'path': str(source), 'sha256': source_sha},
+                cpp_sha256=hashlib.sha256(edge.CPP.encode()).hexdigest(),
+                cuda_sha256=hashlib.sha256(edge.CUDA.encode()).hexdigest(),
+                binary={'path': str(binary), 'sha256': hashlib.sha256(binary.read_bytes()).hexdigest()})
+    return module, info
+
+
 def run(args):
     # Select before importing the engine; importing a differently configured
     # engine in the same process is rejected below rather than misreported.
@@ -170,6 +196,7 @@ def run(args):
                   'injective_maps': 'on' if injective_index is not None and injective_index.ENABLED else 'off',
                   'injective_glue': 'on' if getattr(sparse_exec, 'INJECTIVE_GLUE', False) else 'off',
                   'private_output': getattr(args, 'private_output', 'off'),
+                  'horner_edge': getattr(args, 'horner_edge', 'off'),
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
                   'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
                   'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
@@ -185,6 +212,11 @@ def run(args):
         raise ValueError('private_output must be off or on')
     if algorithms['private_output'] == 'on' and args.device != 'cuda':
         raise ValueError('private-output on requires CUDA')
+
+    if algorithms['horner_edge'] not in ('off', 'on'):
+        raise ValueError('horner_edge must be off or on')
+    if algorithms['horner_edge'] == 'on' and (args.device != 'cuda' or algorithms['composition'] != 'horner'):
+        raise ValueError('horner-edge on requires CUDA and Horner composition')
 
     args.output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(1)
@@ -205,6 +237,8 @@ def run(args):
     extensions = {'interval': False, 'tape': False, 'validation': False}
     extension_binaries = {}
     private_output = {'requested': algorithms['private_output'], 'enabled': False}
+    horner_module = None
+    horner_edge = {'requested': algorithms['horner_edge'], 'enabled': False}
     if args.device == 'cuda':
         # Validation has a separate lazy extension; compile it before the solve timer.
         extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available(),
@@ -228,6 +262,10 @@ def run(args):
         if private_output['enabled']:
             extensions['private_output'] = True
             loaded.append(cuda_kernels._ext)
+        horner_module, horner_edge = _select_horner_edge(algorithms['horner_edge'], args.device, algorithms['composition'])
+        if horner_module is not None:
+            extensions['horner_edge'] = True
+            loaded.append(horner_module)
         for module in loaded:
             path = Path(module.__file__).resolve()
             extension_binaries[module.__name__] = {
@@ -245,6 +283,8 @@ def run(args):
     code = compile_ode(rhs, ['x', 'y'], order=settings.order - 1)
     boxes = torch.tensor(case['boxes'], dtype=torch.float64, device=args.device)
     eng = SparseEngine(tab, table_step, args.device)
+    if horner_module is not None:
+        eng.horner_edge_kernel = horner_module.horner_edge
     state = initial_sparse_state(boxes, eng, sched)
     sr = make_symbolic_remainder(args.batch, 2, settings.sr_queue, args.device)
     rem = build_rem_est(settings, 2, args.batch)
@@ -321,7 +361,7 @@ def run(args):
               'python': sys.version, 'executable': sys.executable, 'torch': torch.__version__,
               'cuda_build': torch.version.cuda, 'extensions': extensions,
               'extension_binaries': extension_binaries,
-              'private_output': private_output,
+              'private_output': private_output, 'horner_edge': horner_edge,
               'engine_source': source_identity(engine_root),
               'adapter_source': source_identity(Path(__file__).resolve().parents[2]),
               'affinity': sorted(os.sched_getaffinity(0)), 'torch_threads': torch.get_num_threads(),
@@ -354,6 +394,8 @@ def main():
     parser.add_argument('--injective-glue', choices=['off', 'on'])
     parser.add_argument('--private-output', choices=['off', 'on'], default='off',
                         help='explicit qualified CUDA allocation optimization; preload failures are fatal')
+    parser.add_argument('--horner-edge', choices=['off', 'on'], default='off',
+                        help='explicit CUDA Horner remainder fusion; preload included in startup')
     parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
