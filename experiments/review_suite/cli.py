@@ -14,7 +14,7 @@ from .data import ROOT, experiment, load_registry, profile_check, summarize
 
 WHOLE_ENGINE_REVISION = "280abb400610f56210a7a5be61d5f98be3e27251"
 ACCELERATED_ENGINE_REVISION = "a99d614f04c1fe9d9d26e35952b936fa98e7ae80"
-HORNER_EDGE_ENGINE_REVISION = "0c7c67d77485caa92e22533f048e479cc8919f91"
+HORNER_EDGE_ENGINE_REVISION = "204cf58768c5b761f4109815d89ef71ff45043b0"
 
 
 def checked_engine_root(engine_root, *, revision=WHOLE_ENGINE_REVISION):
