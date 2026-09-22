@@ -1,0 +1,130 @@
+{
+  "terminal": true,
+  "rows": [
+    {
+      "arm": "native",
+      "returncode": 0,
+      "process_wall_s": 8.933418435044587,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_native.py",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/native",
+        "cartpole"
+      ],
+      "status": "process_completed",
+      "accepted_lane_steps": null,
+      "attempted_steps": null,
+      "error": null
+    },
+    {
+      "arm": "ours_strict",
+      "returncode": 1,
+      "process_wall_s": 18.14220122806728,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_gpu.py",
+        "--backend",
+        "ours",
+        "--mode",
+        "strict",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/cartpole_full.yaml",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/ours_strict",
+        "--record"
+      ],
+      "status": "incomplete",
+      "accepted_lane_steps": 156,
+      "attempted_steps": 157,
+      "error": null
+    },
+    {
+      "arm": "huan_strict",
+      "returncode": 1,
+      "process_wall_s": 19.24919841112569,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_gpu.py",
+        "--backend",
+        "huan",
+        "--mode",
+        "strict",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/cartpole_full.yaml",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/huan_strict",
+        "--record"
+      ],
+      "status": "incomplete",
+      "accepted_lane_steps": 156,
+      "attempted_steps": 157,
+      "error": null
+    },
+    {
+      "arm": "xiangru_strict",
+      "returncode": 1,
+      "process_wall_s": 19.192211342044175,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_gpu.py",
+        "--backend",
+        "xiangru",
+        "--mode",
+        "strict",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/cartpole_full.yaml",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/xiangru_strict",
+        "--record"
+      ],
+      "status": "incomplete",
+      "accepted_lane_steps": 156,
+      "attempted_steps": 157,
+      "error": null
+    },
+    {
+      "arm": "huan_parity",
+      "returncode": 1,
+      "process_wall_s": 19.24785377830267,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_gpu.py",
+        "--backend",
+        "huan",
+        "--mode",
+        "parity",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/cartpole_full.yaml",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/huan_parity",
+        "--record"
+      ],
+      "status": "incomplete",
+      "accepted_lane_steps": 156,
+      "attempted_steps": 157,
+      "error": null
+    },
+    {
+      "arm": "xiangru_parity",
+      "returncode": 1,
+      "process_wall_s": 19.213907287921757,
+      "command": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/run_gpu.py",
+        "--backend",
+        "xiangru",
+        "--mode",
+        "parity",
+        "--config",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/cartpole_full.yaml",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/cartpole_matched_v1/xiangru_parity",
+        "--record"
+      ],
+      "status": "incomplete",
+      "accepted_lane_steps": 156,
+      "attempted_steps": 157,
+      "error": null
+    }
+  ]
+}

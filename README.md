@@ -1,5 +1,8 @@
 # torch-tm-flowpipe
 
+**2026-09-23 progress report:** [中文详细报告](docs/progress_review_20260923/REPORT.md) · [Report PDF](docs/progress_review_20260923/report.pdf) · [Beamer slides](docs/progress_review_20260923/slides.pdf) · [LaTeX sources and evidence](docs/progress_review_20260923/README.md). This newer review records matched timing, full-trajectory widths, exact configurations and incomplete cases for our engine, Huan, Xiangru and native Flow*. Work is paused after this requested reporting delivery; the overall acceleration goal is not complete.
+
+
 This working branch also contains the completed whole-engine feasibility experiment: see the [adapter run guide](experiments/whole_engine_feasibility/README.md) and [2026-09-21 execution report](docs/WHOLE_ENGINE_EXECUTION_20260921.md). The original review below retains its saved sources; the new complete-engine experiment has separate versions, outputs, and CPU/CUDA performance conclusions.
 
 This branch is a research review of plant-only polynomial ODE Taylor-model flowpipes. The sole numerical package, `src/torch_tm_flowpipe`, implements CPU-led validated propagation and optional CUDA range services. The two primary systems are Van der Pol and Brusselator. This branch organizes complete accepted horizons, all-step enclosure curves, mechanism tests, numerical repair boundaries, and actual timing; it does not introduce a new solver algorithm.

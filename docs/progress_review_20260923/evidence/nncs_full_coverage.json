@@ -1,0 +1,1415 @@
+{
+  "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+  "scope": "original full-horizon configs; native-f64 CROWN; strict plant only; no strict NNCS certificate",
+  "rows": [
+    {
+      "id": "acc",
+      "B": 1,
+      "full_ODE_steps": 50,
+      "full_horizon": 5.0,
+      "config_sha256": "b61a6fa4a71956a1b832ac9125fc13bc87a6423fea67af93be5dd8a2bc754dca",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/acc",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 10.072489287238568,
+      "peak_RSS_GiB": 1.2714500427246094,
+      "peak_GPU_GiB": 1.892578125,
+      "attempted_steps": 50,
+      "accepted_steps_all_lanes": 50,
+      "accepted_lane_steps": 50,
+      "timing": {
+        "extension_cached_load_s": 0.40319565683603287,
+        "controller_setup_s": 1.2390030529350042,
+        "controller_bound_s": 3.7246088488027453,
+        "plant_advance_s": 1.0400772443972528,
+        "observer_s": 0.08224340947344899,
+        "trace_io_s": 0.014106634072959423,
+        "child_wall_s": 7.213260151911527,
+        "unattributed_setup_bookkeeping_s": 0.7100253053940833
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 50,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 48,
+      "broken": 0,
+      "final_hull": {
+        "x_lead": [
+          229.03713723127262,
+          250.04918866763208
+        ],
+        "v_lead": [
+          22.81673419452574,
+          23.018472896873117
+        ],
+        "a_lead": [
+          -2.0288549074291886,
+          -2.028339885811907
+        ],
+        "x_ego": [
+          154.10459861571698,
+          159.60294065106865
+        ],
+        "v_ego": [
+          27.192795810269047,
+          29.192414242969388
+        ],
+        "a_ego": [
+          -0.9476404915189074,
+          -0.1205425644411513
+        ],
+        "t": [
+          4.9999999999999565,
+          5.00000000000004
+        ],
+        "u1": [
+          -1.0098853823146288,
+          -0.06974946826830347
+        ]
+      },
+      "driver_protocol_lines": []
+    },
+    {
+      "id": "single_pendulum",
+      "B": 1,
+      "full_ODE_steps": 100,
+      "full_horizon": 1.0,
+      "config_sha256": "10ff9b9e8a88342e44210e996d9d99fe8bb02f7a8a84674573026c267b6472cc",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/single_pendulum",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 8.006410296075046,
+      "peak_RSS_GiB": 1.2690887451171875,
+      "peak_GPU_GiB": 1.880859375,
+      "attempted_steps": 100,
+      "accepted_steps_all_lanes": 100,
+      "accepted_lane_steps": 100,
+      "timing": {
+        "extension_cached_load_s": 0.4035799792036414,
+        "controller_setup_s": 1.217243473045528,
+        "controller_bound_s": 1.116107582114637,
+        "plant_advance_s": 1.517661907710135,
+        "observer_s": 0.15655146352946758,
+        "trace_io_s": 0.008425349369645119,
+        "child_wall_s": 5.0317522548139095,
+        "unattributed_setup_bookkeeping_s": 0.6121824998408556
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 100,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 98,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.5618990375059876,
+          0.7101607141895022
+        ],
+        "x2": [
+          -0.5652853753676442,
+          -0.4101116866575152
+        ],
+        "t": [
+          0.9999999999999692,
+          1.0000000000000322
+        ],
+        "u1": [
+          -0.15286746017649747,
+          -0.08173858555822332
+        ]
+      },
+      "driver_protocol_lines": []
+    },
+    {
+      "id": "tora_homogeneous",
+      "B": 12,
+      "full_ODE_steps": 200,
+      "full_horizon": 20.0,
+      "config_sha256": "0aa364239342dbca5bead0dfc4178a51298ff1a3a20e4f604e425a545307d935",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/tora_homogeneous_source_matrix",
+      "status": "plant_numerical_rejection_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 11.805059273727238,
+      "peak_RSS_GiB": 1.3864173889160156,
+      "peak_GPU_GiB": 2.11328125,
+      "attempted_steps": 200,
+      "accepted_steps_all_lanes": 188,
+      "accepted_lane_steps": 2354,
+      "timing": {
+        "extension_cached_load_s": 0.4510837928391993,
+        "controller_setup_s": 1.488810374867171,
+        "controller_bound_s": 1.5559987961314619,
+        "plant_advance_s": 3.4609673023223877,
+        "observer_s": 0.3655902366153896,
+        "trace_io_s": 0.11242351587861776,
+        "child_wall_s": 8.70761405210942,
+        "unattributed_setup_bookkeeping_s": 1.272740033455193
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 200,
+        "captures": 8,
+        "segments": 8
+      },
+      "sr_kernel_dispatches": 198,
+      "first_rejected_step": 189,
+      "first_rejected_status": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "broken": 6,
+      "final_hull": {
+        "x1": [
+          -0.16931043675083607,
+          0.034038045573773316
+        ],
+        "x2": [
+          -0.35114550883851325,
+          -0.09187839491327011
+        ],
+        "x3": [
+          -0.43898287322214996,
+          1.5671509233619414
+        ],
+        "x4": [
+          -1.470995079194388,
+          1.0537768626982886
+        ],
+        "t": [
+          19.999999999998238,
+          20.00000000000179
+        ],
+        "u1": [
+          7.85670183580924,
+          11.09497723191383
+        ]
+      },
+      "driver_protocol_lines": [
+        "Flow* terminated.",
+        "Broken branch: 2",
+        "Flow* terminated.",
+        "Broken branch: 1",
+        "Flow* terminated.",
+        "Broken branch: 0",
+        "Flow* terminated.",
+        "Broken branch: 5",
+        "Flow* terminated.",
+        "Broken branch: 4",
+        "Flow* terminated.",
+        "Broken branch: 3",
+        "Unknown."
+      ],
+      "source_mode_correction": {
+        "conv_mode": "matrix",
+        "source": "submit/CROWN-Reach/archcomp/TORA/crown.py:44",
+        "initial_generic_default_error": "RuntimeError(\"shape '[12, 100, 1, 1]' is invalid for input of size 1440000\")",
+        "first_run": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/tora_homogeneous",
+        "replay": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/tora_controller_replay/tora_replay.json"
+      }
+    },
+    {
+      "id": "attitude_control",
+      "B": 1,
+      "full_ODE_steps": 60,
+      "full_horizon": 3.0,
+      "config_sha256": "325dc7929a1b877ca2fa7a9634a678070592fe3d76043a5f8ba61653d704e18b",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/attitude_control",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 10.059063826687634,
+      "peak_RSS_GiB": 1.34625244140625,
+      "peak_GPU_GiB": 2.0,
+      "attempted_steps": 60,
+      "accepted_steps_all_lanes": 60,
+      "accepted_lane_steps": 60,
+      "timing": {
+        "extension_cached_load_s": 0.40290146181359887,
+        "controller_setup_s": 1.424310402944684,
+        "controller_bound_s": 2.598482120782137,
+        "plant_advance_s": 1.9728847960941494,
+        "observer_s": 0.10168064991012216,
+        "trace_io_s": 0.008727517910301685,
+        "child_wall_s": 7.142773457802832,
+        "unattributed_setup_bookkeeping_s": 0.6337865083478391
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 60,
+        "captures": 4,
+        "segments": 4
+      },
+      "sr_kernel_dispatches": 58,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.16547048190028096,
+          0.1698685571805838
+        ],
+        "x2": [
+          -0.27656777877611816,
+          -0.27026965771667466
+        ],
+        "x3": [
+          -0.0063726497975279605,
+          0.00018057752202950796
+        ],
+        "x4": [
+          -0.7438663899894039,
+          -0.7100309452094671
+        ],
+        "x5": [
+          0.5049942029495781,
+          0.523365016201446
+        ],
+        "x6": [
+          -0.061527544368974105,
+          -0.04182218074513256
+        ],
+        "t": [
+          2.99999999999994,
+          3.0000000000000546
+        ],
+        "u1": [
+          0.15756498331588195,
+          0.16295096909058862
+        ],
+        "u2": [
+          0.1177390969657224,
+          0.12362805065684601
+        ],
+        "u3": [
+          0.03401726075365041,
+          0.03842328572498366
+        ]
+      },
+      "driver_protocol_lines": []
+    },
+    {
+      "id": "cartpole",
+      "B": 1,
+      "full_ODE_steps": 200,
+      "full_horizon": 1.0,
+      "config_sha256": "58b01a478f39a44c18e66159aaa0616059bcc58b5d525b321f05ac116dc3d71b",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/cartpole",
+      "status": "plant_numerical_rejection_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 15.292242385912687,
+      "peak_RSS_GiB": 1.6519317626953125,
+      "peak_GPU_GiB": 2.2890625,
+      "attempted_steps": 157,
+      "accepted_steps_all_lanes": 156,
+      "accepted_lane_steps": 156,
+      "timing": {
+        "extension_cached_load_s": 0.4040627949871123,
+        "controller_setup_s": 1.4356313641183078,
+        "controller_bound_s": 2.6436726176179945,
+        "plant_advance_s": 5.834580377209932,
+        "observer_s": 0.29913952900096774,
+        "trace_io_s": 0.020213845651596785,
+        "child_wall_s": 12.107874296139926,
+        "unattributed_setup_bookkeeping_s": 1.470573767554015
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": false,
+      "final_graph": {
+        "enabled": true,
+        "hits": 157,
+        "captures": 14,
+        "segments": 14
+      },
+      "sr_kernel_dispatches": 155,
+      "first_rejected_step": 157,
+      "first_rejected_status": [
+        1
+      ],
+      "broken": 1,
+      "final_hull": null,
+      "driver_protocol_lines": [
+        "Flow* terminated.",
+        "Broken branch: 0"
+      ]
+    },
+    {
+      "id": "double_pendulum_less_robust",
+      "B": 225,
+      "full_ODE_steps": 100,
+      "full_horizon": 1.0,
+      "config_sha256": "37fbb11986a0bf929459254b04d223cbc5a5636d8374afbeaa9e354150e4a528",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/double_pendulum_less_robust",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 15.0378622780554,
+      "peak_RSS_GiB": 1.5301361083984375,
+      "peak_GPU_GiB": 3.154296875,
+      "attempted_steps": 100,
+      "accepted_steps_all_lanes": 100,
+      "accepted_lane_steps": 22500,
+      "timing": {
+        "extension_cached_load_s": 0.40377146378159523,
+        "controller_setup_s": 1.2960128081031144,
+        "controller_bound_s": 0.6359628126956522,
+        "plant_advance_s": 6.803306447342038,
+        "observer_s": 0.460182957816869,
+        "trace_io_s": 1.351301378570497,
+        "child_wall_s": 11.869393970817327,
+        "unattributed_setup_bookkeeping_s": 0.9188561025075614
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 100,
+        "captures": 7,
+        "segments": 7
+      },
+      "sr_kernel_dispatches": 98,
+      "broken": 0,
+      "final_hull": {
+        "th1": [
+          1.289695533054761,
+          1.7785564895886483
+        ],
+        "th2": [
+          -0.12669048682608391,
+          0.4456416724787238
+        ],
+        "u1": [
+          -0.8604968070005303,
+          -0.021862993514041872
+        ],
+        "u2": [
+          -1.6520652202916186,
+          -0.566241452727428
+        ],
+        "t": [
+          0.9999999999999517,
+          1.0000000000000497
+        ],
+        "T1": [
+          -0.840150263733442,
+          -0.18521254613013188
+        ],
+        "T2": [
+          -0.48539404262406743,
+          0.3849521745150418
+        ]
+      },
+      "driver_protocol_lines": []
+    },
+    {
+      "id": "double_pendulum_more_robust",
+      "B": 1,
+      "full_ODE_steps": 80,
+      "full_horizon": 0.4,
+      "config_sha256": "e75f682248a207f3336d58896b81856dcab6482e3d4670200c054c724cdf7444",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/double_pendulum_more_robust",
+      "status": "driver_early_stop_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 8.167041863780469,
+      "peak_RSS_GiB": 1.2786407470703125,
+      "peak_GPU_GiB": 1.912109375,
+      "attempted_steps": 66,
+      "accepted_steps_all_lanes": 66,
+      "accepted_lane_steps": 66,
+      "timing": {
+        "extension_cached_load_s": 0.4034992060624063,
+        "controller_setup_s": 1.2805660208687186,
+        "controller_bound_s": 0.7919031246565282,
+        "plant_advance_s": 1.8709643296897411,
+        "observer_s": 0.10681747039780021,
+        "trace_io_s": 0.007053352892398834,
+        "child_wall_s": 5.1901040729135275,
+        "unattributed_setup_bookkeeping_s": 0.7293005683459342
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": false,
+      "final_graph": {
+        "enabled": true,
+        "hits": 66,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 64,
+      "broken": 0,
+      "final_hull": {
+        "th1": [
+          1.2253123813308493,
+          1.2328600448826723
+        ],
+        "th2": [
+          1.0487166261052274,
+          1.0554566442867235
+        ],
+        "u1": [
+          -1.5174779191578616,
+          -1.501479442258286
+        ],
+        "u2": [
+          -1.3520055368597639,
+          -1.3438699163332435
+        ],
+        "t": [
+          0.32499999999998985,
+          0.3300000000000105
+        ],
+        "T1": [
+          -1.4296178765616816,
+          -1.429616030986158
+        ],
+        "T2": [
+          -0.8627450099867865,
+          -0.8627437870348816
+        ]
+      },
+      "driver_protocol_lines": [
+        "Unsafe."
+      ]
+    },
+    {
+      "id": "tora_relu_tanh",
+      "B": 1,
+      "full_ODE_steps": 500,
+      "full_horizon": 5.0,
+      "config_sha256": "4238e2e4f1df7f631fa702b94ae7147c92dce8be1afede00551686a54258ddb6",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/tora_relu_tanh",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 17.65642587142065,
+      "peak_RSS_GiB": 1.4293861389160156,
+      "peak_GPU_GiB": 1.962890625,
+      "attempted_steps": 500,
+      "accepted_steps_all_lanes": 500,
+      "accepted_lane_steps": 500,
+      "timing": {
+        "extension_cached_load_s": 0.4055923721753061,
+        "controller_setup_s": 1.3992133890278637,
+        "controller_bound_s": 1.0663254857063293,
+        "plant_advance_s": 8.826741619501263,
+        "observer_s": 0.8211803799495101,
+        "trace_io_s": 0.062381063122302294,
+        "child_wall_s": 14.570717025082558,
+        "unattributed_setup_bookkeeping_s": 1.989282715599984
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 500,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 498,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.06791884734257259,
+          0.09301601233643646
+        ],
+        "x2": [
+          -0.8033753087548169,
+          -0.7759868884487283
+        ],
+        "x3": [
+          0.06169891535763721,
+          0.08371275482916525
+        ],
+        "x4": [
+          0.36000462870460104,
+          0.38165696886544254
+        ],
+        "t": [
+          4.99999999999795,
+          5.000000000001926
+        ],
+        "u1": [
+          -0.2829039554933529,
+          -0.26574386394083327
+        ]
+      },
+      "driver_protocol_lines": [
+        "VERIFIED"
+      ]
+    },
+    {
+      "id": "tora_sigmoid",
+      "B": 1,
+      "full_ODE_steps": 500,
+      "full_horizon": 5.0,
+      "config_sha256": "25b5d7cb03e23b023c2d311a3fe7912eda721f2877903eb253ce99e4bc164192",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/tora_sigmoid",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 17.961671087890863,
+      "peak_RSS_GiB": 1.4001312255859375,
+      "peak_GPU_GiB": 1.966796875,
+      "attempted_steps": 500,
+      "accepted_steps_all_lanes": 500,
+      "accepted_lane_steps": 500,
+      "timing": {
+        "extension_cached_load_s": 0.4000409711152315,
+        "controller_setup_s": 1.4677496571093798,
+        "controller_bound_s": 1.2856000200845301,
+        "plant_advance_s": 8.898457946721464,
+        "observer_s": 0.7943451493047178,
+        "trace_io_s": 0.05902990885078907,
+        "child_wall_s": 14.867973332758993,
+        "unattributed_setup_bookkeeping_s": 1.9627496795728803
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 500,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 498,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.057164763546665685,
+          0.08206001524708104
+        ],
+        "x2": [
+          -0.765913902904188,
+          -0.7396289546323245
+        ],
+        "x3": [
+          0.19935732554263427,
+          0.22544260831985505
+        ],
+        "x4": [
+          0.4828667416516515,
+          0.51091047019003
+        ],
+        "t": [
+          4.99999999999795,
+          5.000000000001926
+        ],
+        "u1": [
+          -0.4870042418073373,
+          -0.4598170912904232
+        ]
+      },
+      "driver_protocol_lines": [
+        "VERIFIED"
+      ]
+    },
+    {
+      "id": "unicycle",
+      "B": 1,
+      "full_ODE_steps": 500,
+      "full_horizon": 10.0,
+      "config_sha256": "f5b39f3aff89e82d3861bfb42a53949947b1d6e7b1d46edcab925b53b9bed539",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/unicycle",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 15.775117920711637,
+      "peak_RSS_GiB": 1.331939697265625,
+      "peak_GPU_GiB": 1.892578125,
+      "attempted_steps": 500,
+      "accepted_steps_all_lanes": 500,
+      "accepted_lane_steps": 500,
+      "timing": {
+        "extension_cached_load_s": 0.4091225452721119,
+        "controller_setup_s": 1.4170589670538902,
+        "controller_bound_s": 1.4498363160528243,
+        "plant_advance_s": 7.118697496596724,
+        "observer_s": 0.7901761094108224,
+        "trace_io_s": 0.06240919418632984,
+        "child_wall_s": 12.524660216178745,
+        "unattributed_setup_bookkeeping_s": 1.2773595876060426
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 500,
+        "captures": 2,
+        "segments": 2
+      },
+      "sr_kernel_dispatches": 498,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.43327248738435337,
+          0.5299657523030337
+        ],
+        "x2": [
+          -0.18894316494127095,
+          -0.04605390406942071
+        ],
+        "x3": [
+          -0.11077855251135613,
+          0.022992149514013925
+        ],
+        "x4": [
+          -0.32826618459991574,
+          -0.2050522673997939
+        ],
+        "w": [
+          -0.00010000000000011519,
+          0.00010000000000011519
+        ],
+        "t": [
+          9.999999999998131,
+          10.00000000000162
+        ],
+        "u1": [
+          19.87056039677492,
+          20.336881349844823
+        ],
+        "u2": [
+          19.920961475912996,
+          20.08643745519776
+        ]
+      },
+      "driver_protocol_lines": [
+        "UNKNOWN"
+      ]
+    },
+    {
+      "id": "nav_robust",
+      "B": 25,
+      "full_ODE_steps": 600,
+      "full_horizon": 6.0,
+      "config_sha256": "0669e0e2e6255a4ddeb821fc6a69b630e5915d843ad83ad74c4952e4edb9b04c",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/nav_robust",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 21.4370494261384,
+      "peak_RSS_GiB": 1.4309883117675781,
+      "peak_GPU_GiB": 2.15625,
+      "attempted_steps": 600,
+      "accepted_steps_all_lanes": 600,
+      "accepted_lane_steps": 15000,
+      "timing": {
+        "extension_cached_load_s": 0.39956198865547776,
+        "controller_setup_s": 1.4005007147789001,
+        "controller_bound_s": 1.505655666347593,
+        "plant_advance_s": 11.132104870863259,
+        "observer_s": 0.9446564032696187,
+        "trace_io_s": 0.8003299427218735,
+        "child_wall_s": 18.287111016456038,
+        "unattributed_setup_bookkeeping_s": 2.1043014298193157
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 600,
+        "captures": 12,
+        "segments": 12
+      },
+      "sr_kernel_dispatches": 598,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          0.10687880333987336,
+          0.19822250149910198
+        ],
+        "x2": [
+          -0.06339458770065003,
+          -0.04827832966212676
+        ],
+        "x3": [
+          0.048798807922738406,
+          0.07375006737054086
+        ],
+        "x4": [
+          0.932297835654307,
+          1.2270838156298638
+        ],
+        "t": [
+          5.999999999997887,
+          6.000000000001946
+        ],
+        "u1": [
+          0.09178543304165857,
+          0.13206400310094188
+        ],
+        "u2": [
+          -0.3008724595460733,
+          -0.2496393934853539
+        ]
+      },
+      "driver_protocol_lines": [
+        "VERIFIED"
+      ]
+    },
+    {
+      "id": "nav_standard",
+      "B": 640,
+      "full_ODE_steps": 600,
+      "full_horizon": 6.0,
+      "config_sha256": "97564550b87579d662c2b28f57aa35487d45c0809764b057ff006240d1e629b0",
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/nav_standard_cache_budget",
+      "status": "plant_full_accepted_controller_unqualified",
+      "controller_strict_qualified": false,
+      "process_wall_s": 57.81170169310644,
+      "peak_RSS_GiB": 1.4130668640136719,
+      "peak_GPU_GiB": 5.138671875,
+      "attempted_steps": 600,
+      "accepted_steps_all_lanes": 600,
+      "accepted_lane_steps": 384000,
+      "timing": {
+        "extension_cached_load_s": 0.4034477537497878,
+        "controller_setup_s": 1.4271827773191035,
+        "controller_bound_s": 1.6866507027298212,
+        "plant_advance_s": 15.735032767057419,
+        "observer_s": 5.6848609508015215,
+        "trace_io_s": 26.983768673613667,
+        "child_wall_s": 54.57896672002971,
+        "unattributed_setup_bookkeeping_s": 2.6580230947583914
+      },
+      "engine_sha": "9d83162d64d8bd2e022323fb7d2146b47a2e9216",
+      "configured_horizon_completed": true,
+      "final_graph": {
+        "enabled": true,
+        "hits": 600,
+        "captures": 10,
+        "segments": 10
+      },
+      "sr_kernel_dispatches": 598,
+      "broken": 0,
+      "final_hull": {
+        "x1": [
+          -0.09119324561612771,
+          -0.00497084137291868
+        ],
+        "x2": [
+          0.08837945294644294,
+          0.35436699699426694
+        ],
+        "x3": [
+          -0.14859088369030413,
+          0.013726320560857277
+        ],
+        "x4": [
+          -0.09842617857377793,
+          0.610507821488749
+        ],
+        "t": [
+          5.999999999997887,
+          6.000000000001946
+        ],
+        "u1": [
+          -0.3938243053721485,
+          0.3392534384847799
+        ],
+        "u2": [
+          0.03891431918032123,
+          0.637756398843637
+        ]
+      },
+      "driver_protocol_lines": [
+        "VERIFIED"
+      ],
+      "cache_cleanup": {
+        "policy": "after successful step, if reserved minus allocated exceeds2GiB, empty_cache; do not touch live tensors or graph objects",
+        "threshold_bytes": 2147483648,
+        "cleanup_time_included_in_outer_plant_advance_and_process_wall": true,
+        "events": [
+          {
+            "ode_step": 106,
+            "allocated_before": 170092544,
+            "allocated_after": 170092544,
+            "reserved_before": 2386558976,
+            "reserved_after": 295698432,
+            "elapsed_s": 0.021870492957532406,
+            "graph_captures_unchanged": 3,
+            "graph_segments_unchanged": 3
+          },
+          {
+            "ode_step": 144,
+            "allocated_before": 281837056,
+            "allocated_after": 281837056,
+            "reserved_before": 2457862144,
+            "reserved_after": 434110464,
+            "elapsed_s": 0.02534104185178876,
+            "graph_captures_unchanged": 4,
+            "graph_segments_unchanged": 4
+          },
+          {
+            "ode_step": 173,
+            "allocated_before": 281225216,
+            "allocated_after": 281225216,
+            "reserved_before": 2449473536,
+            "reserved_after": 434110464,
+            "elapsed_s": 0.009015471208840609,
+            "graph_captures_unchanged": 4,
+            "graph_segments_unchanged": 4
+          },
+          {
+            "ode_step": 198,
+            "allocated_before": 281552896,
+            "allocated_after": 281552896,
+            "reserved_before": 2703228928,
+            "reserved_after": 536870912,
+            "elapsed_s": 0.013076039031147957,
+            "graph_captures_unchanged": 7,
+            "graph_segments_unchanged": 7
+          },
+          {
+            "ode_step": 219,
+            "allocated_before": 289036800,
+            "allocated_after": 289036800,
+            "reserved_before": 2671771648,
+            "reserved_after": 599785472,
+            "elapsed_s": 0.017069232650101185,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 236,
+            "allocated_before": 289470976,
+            "allocated_after": 289470976,
+            "reserved_before": 2447376384,
+            "reserved_after": 599785472,
+            "elapsed_s": 0.006534988060593605,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 252,
+            "allocated_before": 284783104,
+            "allocated_after": 284783104,
+            "reserved_before": 2581594112,
+            "reserved_after": 597688320,
+            "elapsed_s": 0.0068059200420975685,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 269,
+            "allocated_before": 501053440,
+            "allocated_after": 501053440,
+            "reserved_before": 2973761536,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.00699085695669055,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 286,
+            "allocated_before": 504389632,
+            "allocated_after": 504389632,
+            "reserved_before": 3080716288,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.006615694146603346,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 298,
+            "allocated_before": 504389632,
+            "allocated_after": 504389632,
+            "reserved_before": 2755657728,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.013173886109143496,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 311,
+            "allocated_before": 504752128,
+            "allocated_after": 504752128,
+            "reserved_before": 2835349504,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.005625247023999691,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 323,
+            "allocated_before": 504415232,
+            "allocated_after": 504415232,
+            "reserved_before": 2919235584,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.01286504790186882,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 336,
+            "allocated_before": 504912896,
+            "allocated_after": 504912896,
+            "reserved_before": 2998927360,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.01075162598863244,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 348,
+            "allocated_before": 506182656,
+            "allocated_after": 506182656,
+            "reserved_before": 3082813440,
+            "reserved_after": 830472192,
+            "elapsed_s": 0.005684152711182833,
+            "graph_captures_unchanged": 9,
+            "graph_segments_unchanged": 9
+          },
+          {
+            "ode_step": 360,
+            "allocated_before": 508148736,
+            "allocated_after": 508148736,
+            "reserved_before": 2675965952,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.006696956232190132,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 369,
+            "allocated_before": 507433472,
+            "allocated_after": 507433472,
+            "reserved_before": 2711617536,
+            "reserved_after": 859832320,
+            "elapsed_s": 0.0061578890308737755,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 378,
+            "allocated_before": 507689472,
+            "allocated_after": 507689472,
+            "reserved_before": 2753560576,
+            "reserved_after": 859832320,
+            "elapsed_s": 0.005012479145079851,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 386,
+            "allocated_before": 506952192,
+            "allocated_after": 506952192,
+            "reserved_before": 2795503616,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.004628838039934635,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 394,
+            "allocated_before": 506952192,
+            "allocated_after": 506952192,
+            "reserved_before": 2835349504,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.010558891110122204,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 403,
+            "allocated_before": 507457024,
+            "allocated_after": 507457024,
+            "reserved_before": 2879389696,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.004721603821963072,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 411,
+            "allocated_before": 507457024,
+            "allocated_after": 507457024,
+            "reserved_before": 2919235584,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.0047316658310592175,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 419,
+            "allocated_before": 507457024,
+            "allocated_after": 507457024,
+            "reserved_before": 2961178624,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.004617619793862104,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 428,
+            "allocated_before": 506416640,
+            "allocated_after": 506416640,
+            "reserved_before": 3005218816,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.008681329898536205,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 436,
+            "allocated_before": 506416640,
+            "allocated_after": 506416640,
+            "reserved_before": 3047161856,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.004859587177634239,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 445,
+            "allocated_before": 506560512,
+            "allocated_after": 506560512,
+            "reserved_before": 3091202048,
+            "reserved_after": 859832320,
+            "elapsed_s": 0.005359546281397343,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 453,
+            "allocated_before": 506560512,
+            "allocated_after": 506560512,
+            "reserved_before": 3133145088,
+            "reserved_after": 859832320,
+            "elapsed_s": 0.010999059304594994,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 461,
+            "allocated_before": 507139072,
+            "allocated_after": 507139072,
+            "reserved_before": 3175088128,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.005102203693240881,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 470,
+            "allocated_before": 507672576,
+            "allocated_after": 507672576,
+            "reserved_before": 3217031168,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.005159866996109486,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 478,
+            "allocated_before": 507672576,
+            "allocated_after": 507672576,
+            "reserved_before": 3256877056,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.004812746308743954,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 486,
+            "allocated_before": 508926976,
+            "allocated_after": 508926976,
+            "reserved_before": 3300917248,
+            "reserved_after": 864026624,
+            "elapsed_s": 0.007509951014071703,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 495,
+            "allocated_before": 509317120,
+            "allocated_after": 509317120,
+            "reserved_before": 3342860288,
+            "reserved_after": 864026624,
+            "elapsed_s": 0.005667755845934153,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 503,
+            "allocated_before": 510320640,
+            "allocated_after": 510320640,
+            "reserved_before": 3384803328,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.005154659040272236,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 511,
+            "allocated_before": 510320640,
+            "allocated_after": 510320640,
+            "reserved_before": 3426746368,
+            "reserved_after": 861929472,
+            "elapsed_s": 0.0052682189270854,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 516,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3185573888,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.00401174696162343,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 520,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3198156800,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.004134570248425007,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 524,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3217031168,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.004614388104528189,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 528,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3227516928,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.004030922427773476,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 532,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3244294144,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.004158239345997572,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 536,
+            "allocated_before": 911913984,
+            "allocated_after": 911913984,
+            "reserved_before": 3256877056,
+            "reserved_after": 1365245952,
+            "elapsed_s": 0.011096086353063583,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 541,
+            "allocated_before": 910449152,
+            "allocated_after": 910449152,
+            "reserved_before": 3273654272,
+            "reserved_after": 1302331392,
+            "elapsed_s": 0.004128111992031336,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 545,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3221225472,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.0040706186555325985,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 549,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3238002688,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.011079445946961641,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 553,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3250585600,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.011516229249536991,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 557,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3267362816,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.005233963020145893,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 562,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3279945728,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.004164853133261204,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 566,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3296722944,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.005425742361694574,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 570,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3309305856,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.004249460995197296,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 574,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3326083072,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.004314225632697344,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 578,
+            "allocated_before": 911217152,
+            "allocated_after": 911217152,
+            "reserved_before": 3338665984,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.0040366798639297485,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 582,
+            "allocated_before": 913307648,
+            "allocated_after": 913307648,
+            "reserved_before": 3355443200,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.008178546093404293,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 587,
+            "allocated_before": 914089984,
+            "allocated_after": 914089984,
+            "reserved_before": 3365928960,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.003926795907318592,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 591,
+            "allocated_before": 914089984,
+            "allocated_after": 914089984,
+            "reserved_before": 3382706176,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.003878355026245117,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 595,
+            "allocated_before": 914089984,
+            "allocated_after": 914089984,
+            "reserved_before": 3395289088,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.0038535636849701405,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          },
+          {
+            "ode_step": 599,
+            "allocated_before": 914089984,
+            "allocated_after": 914089984,
+            "reserved_before": 3412066304,
+            "reserved_after": 1300234240,
+            "elapsed_s": 0.00863637076690793,
+            "graph_captures_unchanged": 10,
+            "graph_segments_unchanged": 10
+          }
+        ],
+        "total_cleanup_s": 0.3958594799041748
+      },
+      "initial_resource_stopped_run": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/nncs_full_20260922/nav_standard",
+      "original_prefix_verification": {
+        "complete_records": 228,
+        "accepted_lane_steps": 145920,
+        "all_complete_record_intervals_finite_ordered": true,
+        "gzip_footer_present": false,
+        "trailing_unparsed_bytes": 0,
+        "original_trace_sha256": "c42b8e1317ed30dc307dcd9b0af4196f97b00de13e70ab2950ccdc8cc80b01e7",
+        "original_trace_bytes": 30578362,
+        "scope": "watchdog-killed original stream; only complete flushed JSON lines counted, original artifact retained unchanged"
+      }
+    }
+  ],
+  "original14_remaining_blockers": [
+    {
+      "id": "quad",
+      "status": "invalid_original_contract",
+      "reason": "original h=.01 exceeds controller period=.005; not replaced by native extra"
+    },
+    {
+      "id": "airplane",
+      "status": "preflight_resource_and_radix_block",
+      "reason": "n19/order6, full degree12 exponent array alone225792840\u00d720\u00d78 bytes (~33.65GiB), 13^20 and14^20 radix overflow int64"
+    }
+  ],
+  "native_quad_extra": "one native .1 controller period, B1024\u00d720 accepted; native full1000 still blocked pending J temporary memory optimization",
+  "all_accepted_full_horizon_cases": [
+    "acc",
+    "single_pendulum",
+    "attitude_control",
+    "double_pendulum_less_robust",
+    "tora_relu_tanh",
+    "tora_sigmoid",
+    "unicycle",
+    "nav_robust",
+    "nav_standard"
+  ]
+}

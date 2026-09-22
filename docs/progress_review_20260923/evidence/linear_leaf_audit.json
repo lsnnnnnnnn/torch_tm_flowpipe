@@ -1,0 +1,156 @@
+{
+  "status": "passed",
+  "files": 87,
+  "head": "fff9d0f5742ebfa4e0652bbbf79b31bdd59ab3e3",
+  "counts": {
+    "valid_lane_steps": 2500,
+    "invalid_lane_steps": 0,
+    "physical_bounds_recomputed": 19600,
+    "all_rows": 19600
+  },
+  "fraction_oracles_locally_repeated": 4,
+  "comparison": [
+    {
+      "case": "tora",
+      "old_accepted": 2354,
+      "new_accepted": 2400,
+      "requested": 2400,
+      "old_first_failure": 189,
+      "new_first_failure": null,
+      "old_p95": 2.5555276504640956,
+      "old_max": 8.85465275526067,
+      "new_common_p95": 1.3837029539097871,
+      "new_common_max": 1.8842529887691966,
+      "common_steps": 188
+    },
+    {
+      "case": "single_pendulum",
+      "old_accepted": 100,
+      "new_accepted": 100,
+      "requested": 100,
+      "old_first_failure": null,
+      "new_first_failure": null,
+      "old_p95": 1.0673933048279332,
+      "old_max": 1.0754496761029229,
+      "new_common_p95": 1.0367307150294776,
+      "new_common_max": 1.0409360671586774,
+      "common_steps": 100
+    }
+  ],
+  "v1_comparison": [
+    {
+      "case": "tora",
+      "common_steps": 196,
+      "old_accepted": 2393,
+      "new_accepted": 2400,
+      "channels": [
+        {
+          "view": "tube",
+          "coordinate": "x4",
+          "old_p95": 1.9920097920279556,
+          "old_max": 6.35545941572752,
+          "new_p95": 1.4061132433927308,
+          "new_max": 2.4722122472956
+        },
+        {
+          "view": "tube",
+          "coordinate": "x1",
+          "old_p95": 1.4108422207039346,
+          "old_max": 2.0852284525897575,
+          "new_p95": 1.203983269949422,
+          "new_max": 1.4224546060248777
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x2",
+          "old_p95": 1.5788503540830046,
+          "old_max": 2.7810281687861393,
+          "new_p95": 1.2895552128540566,
+          "new_max": 1.5718835890011462
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x4",
+          "old_p95": 2.1536741955238616,
+          "old_max": 6.35545941572752,
+          "new_p95": 1.4796563055736254,
+          "new_max": 2.4852507180697363
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x1",
+          "old_p95": 1.4895267485481392,
+          "old_max": 2.3368427742752296,
+          "new_p95": 1.2465952137546557,
+          "new_max": 1.533849900852836
+        },
+        {
+          "view": "tube",
+          "coordinate": "x3",
+          "old_p95": 1.8257588417713866,
+          "old_max": 4.034640801473164,
+          "new_p95": 1.37378105472562,
+          "new_max": 2.1036444128098375
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x3",
+          "old_p95": 1.9308367902820698,
+          "old_max": 4.034640801473164,
+          "new_p95": 1.4179151588297576,
+          "new_max": 2.1055062064688674
+        },
+        {
+          "view": "tube",
+          "coordinate": "x2",
+          "old_p95": 1.457429600233605,
+          "old_max": 2.762789178615866,
+          "new_p95": 1.2224265762017439,
+          "new_max": 1.5649506575947691
+        }
+      ]
+    },
+    {
+      "case": "single_pendulum",
+      "common_steps": 100,
+      "old_accepted": 100,
+      "new_accepted": 100,
+      "channels": [
+        {
+          "view": "tube",
+          "coordinate": "x1",
+          "old_p95": 1.0300573129483548,
+          "old_max": 1.0325225229189814,
+          "new_p95": 1.0300573129483548,
+          "new_max": 1.0325225229189814
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x2",
+          "old_p95": 1.0367307150294776,
+          "old_max": 1.0409360671586774,
+          "new_p95": 1.0367307150294776,
+          "new_max": 1.0409360671586774
+        },
+        {
+          "view": "tube",
+          "coordinate": "x2",
+          "old_p95": 1.0351124719523244,
+          "old_max": 1.0391672554318192,
+          "new_p95": 1.0351124719523244,
+          "new_max": 1.0391672554318192
+        },
+        {
+          "view": "endpoint",
+          "coordinate": "x1",
+          "old_p95": 1.0312768216667743,
+          "old_max": 1.0338440869543406,
+          "new_p95": 1.0312768216667743,
+          "new_max": 1.0338440869543406
+        }
+      ]
+    }
+  ],
+  "single_pendulum_full_payload_equal_to_v1": true,
+  "scope": "Full new NNCS models downloaded; all valid physical bounds recomputed; invalid bounds blank. Fixed polynomial model equality ran on server with historical references SHA-checked locally. No full strict NNCS certificate or matched performance claim."
+}

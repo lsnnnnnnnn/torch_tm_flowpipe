@@ -1,0 +1,200 @@
+{
+  "backend": "ours",
+  "mode": "strict",
+  "engine": {
+    "root": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2",
+    "head": "fff9d0f5742ebfa4e0652bbbf79b31bdd59ab3e3",
+    "status": "",
+    "diff": "",
+    "python_sha256": {
+      "src/flowstar_gpu/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/flowstar_gpu/composition.py": "dda4786c38eca3bd0c58d0497d12d3e2cbdb01d1590da8a04a2d82c5204d627b",
+      "src/flowstar_gpu/config.py": "14ff634b9767e0e4b889e59f918a7de2f6112e2e200a07c3a13015b9ee4a2a47",
+      "src/flowstar_gpu/cuda_kernels.py": "cdfbc847e3255dc3675af4f70e1a08d8647ebf3a165e3413742763916446cf9c",
+      "src/flowstar_gpu/determinism.py": "68d7e1a219dba59be9966dfbc0e24c32fa18a32009cf41e891157586b7557a76",
+      "src/flowstar_gpu/elementary.py": "3e9d7766761c7fe5188da53269346b009072553c7e8fb8480dfa29c87ca4a9b1",
+      "src/flowstar_gpu/expr_parser.py": "036932eafa5df441d21039e57db4dc44b77310269eebf7e517396a05d5a71cbc",
+      "src/flowstar_gpu/flowpipe.py": "d79716aa3347aae21300cb823b2dd69acac8fe0dd922e3a45d6e82cb07d31548",
+      "src/flowstar_gpu/glue.py": "282ca99d586523d9e35834d180f26a82d828d056811e53bb5d6060416b16586f",
+      "src/flowstar_gpu/graphing.py": "62f1b07f581b4c996525e5fa1b17796eee6aba0d39bf67de55dfb3e1ae69f4d4",
+      "src/flowstar_gpu/horner_edge_kernels.py": "a429471855a9c2c3da512cb38a6f63e43737d204f0e8d309a845ea89ea9620ef",
+      "src/flowstar_gpu/injective_index.py": "37e26dbd0ae174a22889f81f1892734bddf1ff839aa89a9b4729055ddb78ac65",
+      "src/flowstar_gpu/interval.py": "1556ba4764898b948376cf5934f8e2a2b2c07fa3a902750d8b9f57cc9695a6e6",
+      "src/flowstar_gpu/monomials.py": "2df9bddcc4b40d6a2d53bfdfe9b97874a889c540f015583e1d9f5128a89da9a6",
+      "src/flowstar_gpu/nn_act_kinds.py": "b90c9cc5cef9798b0d6086cf91d49abbeef0c90e0c4830a4538e20e6ec266d3a",
+      "src/flowstar_gpu/nn_alpha.py": "74a525210aa66636c27999a8ddcbe42c85086318d3d27efec48777c15c8ea906",
+      "src/flowstar_gpu/nn_clip.py": "be236972a5352d8772ba99eecff071b49d2d998ea07914a0daa4df6e0a50543f",
+      "src/flowstar_gpu/nn_coupling.py": "86773f9b7049ab786a904c0fcd282590a21a1caab55480161d01af8a2a6a82fa",
+      "src/flowstar_gpu/nn_sidecar.py": "bcddc1bc798293eafd74f879f15e11b506e315dc703e552966de9ff58c1fa63c",
+      "src/flowstar_gpu/nn_tm.py": "323293226cf8cd1c15bc72e4d9f378723ad31703265d216106d29f03d2438bca",
+      "src/flowstar_gpu/nn_tm_sparse.py": "4ad235ac6751bd363c32136f9ba1e2823338567fbe95119f940c5b67028b8aed",
+      "src/flowstar_gpu/nncs.py": "3feca93a0d8ebe5b404ab2033e35ea032eefae802f30ed7840ea70c1e85db054",
+      "src/flowstar_gpu/ode_compiler.py": "95b2e367e655a3a8b1506e9a90c51ce4dd9a414e32b978694525925edb4295e6",
+      "src/flowstar_gpu/polynomial.py": "2c7976eb9faa34ea268875246a822d81017f56fd31e82a05daa78e9b040bfee3",
+      "src/flowstar_gpu/private_output_kernels.py": "d68373c89a0e9036aed6573f232d81dcae170ac65733396005cd86bded3e39c7",
+      "src/flowstar_gpu/rounding.py": "d38b17034ddd1bfa5cf02162f96a8166aeb937183da450e4dd0e5f641c4be730",
+      "src/flowstar_gpu/safety.py": "834285569d5ca84115392c891ecc53b7eed867c8e3af25fe4fc10d50263a22bf",
+      "src/flowstar_gpu/sparse_exec.py": "cbb596e3d02bec29d44580020ff34cbfd446ef51c6097c34e210eb1b8ae7fc4e",
+      "src/flowstar_gpu/sparse_horner.py": "d090e314f710d1d4763ea299336e0dba4dbada642b43700f09fec7c238977f4f",
+      "src/flowstar_gpu/sr_kernels.py": "69bb07257ad8cba029a611f9099e015c5175bbba72a0f86bf8f54549dc29dfc2",
+      "src/flowstar_gpu/sr_sum_kernels.py": "de76dc539c109065779292751a5650f330b8dddbade8248d1bbd23050737bd3b",
+      "src/flowstar_gpu/support.py": "414c274973c585894e545d7d9e70f6a6f6365d7085ae18bd51d6ffbc4bfa4c50",
+      "src/flowstar_gpu/symbolic_remainder.py": "ea124b5ab72c80a25181cf4673cd835ee171e1b1266b9500ef19362469754972",
+      "src/flowstar_gpu/tape_kernels.py": "d39264a7c9db965acc2cb31761b05d1295d66c7fd1080404bad192db532683fb",
+      "src/flowstar_gpu/transcendental.py": "0f97fc90ca9506c703c8255f99e52544abf10a4bc9b1635b95b0dec1100bbf22"
+    }
+  },
+  "driver_path": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "driver_sha256": "1bc3aeea0e9216fe8432ae78f18c9592d19658c23cdde02b90a54d0b14c08a31",
+  "runner_sha256": "73f9c20eb8714b1536344e927cc0d2858d9a02da94890e56a8f750ae10f9f394",
+  "config": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/configs/single_pendulum.yaml",
+  "config_sha256": "e7a8cc75384565e1fa8552f0828c07900ea6bb9bd8ccb67634846021cc082174",
+  "model": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/ARCH-COMP2024/benchmarks/Single_Pendulum/controller_single_pendulum.onnx",
+  "model_sha256": "f855ee789c5f360bb1ba8722ded4226d955876a422b61ba3aca8d71eaa621227",
+  "cuda_visible_devices": "3",
+  "affinity": [
+    6
+  ],
+  "torch_version": "2.5.1+cu121",
+  "timing_scope": "Fresh process; existing extension caches; no model records or per-period metrics; driver-reported time excludes final GPU verdict but native includes it, so not an identical core timing boundary",
+  "controller": "shared Xiangru box/same-slope/flat/rpc-float32; RN injection and controller unqualified",
+  "end_to_end_strict_certificate": false,
+  "metrics_compatibility": "Missing final-report field labeled not_declared_by_engine",
+  "expected_steps": 100,
+  "B": 1,
+  "extensions": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "sha256": "a70749911578252c1e24a2badcdfb35ac5f98b8cf95c3ddd23c486ffb37f124d"
+    },
+    "flowstar_tape_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_tape_kernels/flowstar_tape_kernels.so",
+      "sha256": "83128a2d89334fbf8e4b935f995b3e700f3ed0ee00f942159615ad2cd03b0eff"
+    },
+    "flowstar_valid_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_valid_kernels/flowstar_valid_kernels.so",
+      "sha256": "e976569173db6a73fe4cd6b63c8e2d91583db3f99d094be098f020dcd9c11eba"
+    },
+    "flowstar_sr_interval_matmul": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+      "sha256": "5642aae250b379b311c75976237190b09030274d929f69697b98cc036fbb1673"
+    },
+    "flowstar_sr_history_sum": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+      "sha256": "52dc50ae676f3cbac7d6e5ff8581a17ef99a23e436ed1b36755f19ca04ab7531"
+    },
+    "flowstar_injective_index_v2": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_injective_index_v2/flowstar_injective_index_v2.so",
+      "sha256": "5a9ab508b018c85723bace78cb2ff7f30b741a52f5957713fac9e75b7715b58e"
+    },
+    "flowstar_seg_private_output_v1": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_private_output_v1/flowstar_seg_private_output_v1.so",
+      "sha256": "8b11fee1674fbd7a8425514b5ea16740fc83d5c927e790bbfdfd25545631e6c2"
+    },
+    "horner_edge_1312fa8b2aed": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry/horner_edge_1312fa8b2aed/horner_edge_1312fa8b2aed.so",
+      "sha256": "e42c2085546b07842ff63b32f1f0aa3f4ca13ddc2160ca9323e14759ef93989f"
+    }
+  },
+  "status": "completed",
+  "private_output": {
+    "requested": "on",
+    "enabled": true,
+    "extension_name": "flowstar_seg_private_output_v1",
+    "binary": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_private_output_v1/flowstar_seg_private_output_v1.so",
+      "sha256": "8b11fee1674fbd7a8425514b5ea16740fc83d5c927e790bbfdfd25545631e6c2"
+    },
+    "generator_source": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2/src/flowstar_gpu/private_output_kernels.py",
+      "sha256": "d68373c89a0e9036aed6573f232d81dcae170ac65733396005cd86bded3e39c7"
+    },
+    "base_cuda_sha256": "27b3c4081ab83aebdef98b72f55f694975affb3918643a0ec26ca02a0f53d81d",
+    "cpp_source_sha256": "03cd0694fa16556813721e07ca12195025e36017c4ae495d7ea19d625d3ee01e",
+    "cuda_source_sha256": "b330eb2c32f4925fbc653b803e1cd91cbdcebca925949d214ae713617c030e52"
+  },
+  "horner_edge": {
+    "requested": "on",
+    "enabled": true,
+    "extension_name": "horner_edge_1312fa8b2aed",
+    "source": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2/src/flowstar_gpu/horner_edge_kernels.py",
+      "sha256": "a429471855a9c2c3da512cb38a6f63e43737d204f0e8d309a845ea89ea9620ef"
+    },
+    "cpp_sha256": "4b38d859d72bc8a10e6e739e47778678934df4351828deced3fa6725ac37dec3",
+    "cuda_sha256": "19d4294eb6bbdd7137d6e9614a1ea315b1f5c5367421ab2722acce6b5b392bea",
+    "binary": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry/horner_edge_1312fa8b2aed/horner_edge_1312fa8b2aed.so",
+      "sha256": "e42c2085546b07842ff63b32f1f0aa3f4ca13ddc2160ca9323e14759ef93989f"
+    }
+  },
+  "endpoint_driver": {
+    "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2/integrations/crown_reach/gpu_driver.py",
+    "sha256": "e4856f16f67d277ccf70e9fdcf9f62361ae7a410dbff1f1c56315c5f8e6bfe6b"
+  },
+  "environment": {
+    "TORCH_EXTENSIONS_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "OMP_NUM_THREADS": "1",
+    "FLOWSTAR_COMPOSITION": "horner",
+    "FLOWSTAR_GLUE": "graph",
+    "FLOWSTAR_SUPPORT_POLICY": "structural",
+    "FLOWSTAR_VALIDATION_POLICY": "defer_linear_leaves",
+    "FLOWSTAR_INJECTIVE_MAPS": "1",
+    "FLOWSTAR_INJECTIVE_GLUE": "1",
+    "FLOWSTAR_HORNER_EDGE_CACHE": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry"
+  },
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/configs/single_pendulum.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "flat",
+    "--print-final-hull",
+    "--strict"
+  ],
+  "returncode": 0,
+  "protocol_lines": [
+    "Step 0",
+    "Step 1",
+    "Step 2",
+    "Step 3",
+    "Step 4",
+    "Step 5",
+    "Step 6",
+    "Step 7",
+    "Step 8",
+    "Step 9",
+    "Step 10",
+    "Step 11",
+    "Step 12",
+    "Step 13",
+    "Step 14",
+    "Step 15",
+    "Step 16",
+    "Step 17",
+    "Step 18",
+    "Step 19",
+    "HULL x1 0.564062974534 0.707937198328",
+    "HULL x2 -0.563024801131 -0.412760038722",
+    "HULL t 1 1",
+    "HULL u1 -0.150845999638 -0.0839138743185",
+    "time cost: 1.284599"
+  ],
+  "completed_control_periods": 20,
+  "termination_lines": [],
+  "complete": true,
+  "author_reported_s": 1.284599,
+  "driver_wall_s": 2.432472520042211,
+  "source_unchanged": true,
+  "binaries_unchanged": true
+}

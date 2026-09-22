@@ -1,0 +1,415 @@
+{
+  "terminal": true,
+  "eligible": 120,
+  "expected": 120,
+  "table": [
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "native",
+      "mode": null,
+      "n": 5,
+      "core_median": 1.447976569,
+      "process_median": 1.5063292388804257,
+      "paired_over_native": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "paired_ratio_median": 1.0
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "ours",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 2.9214870943687856,
+      "process_median": 5.7124991081655025,
+      "paired_over_native": [
+        1.9995982313290495,
+        2.0176342331191313,
+        2.0150414222746544,
+        2.013310668858146,
+        2.0260795755674867
+      ],
+      "paired_ratio_median": 2.0150414222746544
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "huan",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 12.552073157392442,
+      "process_median": 15.224907966330647,
+      "paired_over_native": [
+        8.539942182022717,
+        8.611399795421349,
+        8.658155203596811,
+        8.712814558596035,
+        8.771243816227875
+      ],
+      "paired_ratio_median": 8.658155203596811
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "xiangru",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 12.60297908168286,
+      "process_median": 15.22498570010066,
+      "paired_over_native": [
+        8.644198617712835,
+        8.703855677987052,
+        8.542262020080896,
+        8.745077404428976,
+        8.740937481245448
+      ],
+      "paired_ratio_median": 8.703855677987052
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "huan",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 12.06864028563723,
+      "process_median": 14.824659842066467,
+      "paired_over_native": [
+        8.305967055716032,
+        8.334831201013191,
+        8.232587833227353,
+        8.526691338483845,
+        8.38986312672936
+      ],
+      "paired_ratio_median": 8.334831201013191
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 1,
+      "implementation": "xiangru",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 11.98347716126591,
+      "process_median": 14.624321146402508,
+      "paired_over_native": [
+        8.237099114899125,
+        8.25942812359445,
+        8.236242059451053,
+        8.338373232874774,
+        8.327810712829566
+      ],
+      "paired_ratio_median": 8.25942812359445
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "native",
+      "mode": null,
+      "n": 5,
+      "core_median": 0.6828797179999999,
+      "process_median": 0.7049996159039438,
+      "paired_over_native": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "paired_ratio_median": 1.0
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "ours",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.7696540118195117,
+      "process_median": 3.5087327058427036,
+      "paired_over_native": [
+        1.1304123962468864,
+        1.134242314922464,
+        1.090828119883755,
+        1.1287835913966902,
+        1.1283397520056186
+      ],
+      "paired_ratio_median": 1.1287835913966902
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "huan",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.840224735904485,
+      "process_median": 3.408975664060563,
+      "paired_over_native": [
+        1.229511891302256,
+        1.2525500067058164,
+        1.2017629739755458,
+        1.2190024360259928,
+        1.2199995203328295
+      ],
+      "paired_ratio_median": 1.2199995203328295
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "xiangru",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.8374608960002661,
+      "process_median": 3.5089179021306336,
+      "paired_over_native": [
+        1.2300022655280156,
+        1.2277730436745578,
+        1.1953615564942186,
+        1.1971605331968553,
+        1.217831300067584
+      ],
+      "paired_ratio_median": 1.217831300067584
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "huan",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 0.8180157109163702,
+      "process_median": 3.408847412094474,
+      "paired_over_native": [
+        1.1850183038850877,
+        1.1978913553211874,
+        1.1705970703139748,
+        1.1856237651664507,
+        1.2040843526580578
+      ],
+      "paired_ratio_median": 1.1856237651664507
+    },
+    {
+      "plant": "van_der_pol",
+      "batch": 32,
+      "implementation": "xiangru",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 0.8179714167490602,
+      "process_median": 3.408661707304418,
+      "paired_over_native": [
+        1.1872143914351068,
+        1.2082092791503705,
+        1.1814422626822139,
+        1.174333786557303,
+        1.199999016419826
+      ],
+      "paired_ratio_median": 1.1872143914351068
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "native",
+      "mode": null,
+      "n": 5,
+      "core_median": 13.847314548,
+      "process_median": 13.921360763255507,
+      "paired_over_native": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "paired_ratio_median": 1.0
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "ours",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 4.4564897725358605,
+      "process_median": 7.414298107847571,
+      "paired_over_native": [
+        0.3208993905393868,
+        0.323167021387276,
+        0.3218306161160701,
+        0.3235834520203889,
+        0.3209726056528259
+      ],
+      "paired_ratio_median": 0.3218306161160701
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "huan",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 16.867329911328852,
+      "process_median": 19.630325294099748,
+      "paired_over_native": [
+        1.2238632863239904,
+        1.2226499601867853,
+        1.2124288504696268,
+        1.2184360616404821,
+        1.2202162008222546
+      ],
+      "paired_ratio_median": 1.2202162008222546
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "xiangru",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 16.73708723532036,
+      "process_median": 19.431739825289696,
+      "paired_over_native": [
+        1.2024564250858674,
+        1.2101583786521513,
+        1.2246735407630147,
+        1.2118626074892689,
+        1.209236319987208
+      ],
+      "paired_ratio_median": 1.2101583786521513
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "huan",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 16.412346655968577,
+      "process_median": 19.130795977078378,
+      "paired_over_native": [
+        1.1798902328081877,
+        1.1813753201797192,
+        1.1912564530641299,
+        1.1883494979668225,
+        1.1897325242151078
+      ],
+      "paired_ratio_median": 1.1883494979668225
+    },
+    {
+      "plant": "brusselator",
+      "batch": 1,
+      "implementation": "xiangru",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 16.4768500989303,
+      "process_median": 19.131369082722813,
+      "paired_over_native": [
+        1.1887846309229098,
+        1.193531487753317,
+        1.1898949822953282,
+        1.1963849830827926,
+        1.1834900715285797
+      ],
+      "paired_ratio_median": 1.1898949822953282
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "native",
+      "mode": null,
+      "n": 5,
+      "core_median": 8.053288557,
+      "process_median": 8.115558648016304,
+      "paired_over_native": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "paired_ratio_median": 1.0
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "ours",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.8979728501290083,
+      "process_median": 3.709419840015471,
+      "paired_over_native": [
+        0.10951549271801334,
+        0.11198860441410466,
+        0.1092750574506512,
+        0.11111098673330629,
+        0.11138828765041056
+      ],
+      "paired_ratio_median": 0.11111098673330629
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "huan",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.9293442158959806,
+      "process_median": 3.5090756150893867,
+      "paired_over_native": [
+        0.11475415387570892,
+        0.11539934392245081,
+        0.11556137216122382,
+        0.11492041382243535,
+        0.1165801219862994
+      ],
+      "paired_ratio_median": 0.11539934392245081
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "xiangru",
+      "mode": "strict",
+      "n": 5,
+      "core_median": 0.9354461207985878,
+      "process_median": 3.6094093741849065,
+      "paired_over_native": [
+        0.11580264889980886,
+        0.11615703500223999,
+        0.11688622287822725,
+        0.11467946830377047,
+        0.11830055295313686
+      ],
+      "paired_ratio_median": 0.11615703500223999
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "huan",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 0.9070681501179934,
+      "process_median": 3.5085680158808827,
+      "paired_over_native": [
+        0.11368957048345374,
+        0.11422028385477562,
+        0.11250387243378726,
+        0.11181466310441332,
+        0.11212225493653259
+      ],
+      "paired_ratio_median": 0.11250387243378726
+    },
+    {
+      "plant": "brusselator",
+      "batch": 32,
+      "implementation": "xiangru",
+      "mode": "parity",
+      "n": 5,
+      "core_median": 0.9128156979568303,
+      "process_median": 3.5094151510857046,
+      "paired_over_native": [
+        0.1140749427190228,
+        0.11588839484186966,
+        0.1131818840163204,
+        0.11252316568516477,
+        0.11304094383803483
+      ],
+      "paired_ratio_median": 0.1131818840163204
+    }
+  ]
+}

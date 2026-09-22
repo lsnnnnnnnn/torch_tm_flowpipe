@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "files": 66,
+  "model_refs": 6,
+  "controller_weights_downloaded": false,
+  "native_accepted": 141,
+  "gpu_accepted_each": 156,
+  "requested_each": 200,
+  "all_rows": 9600,
+  "bounds_recomputed": 7368,
+  "fraction_oracles_repeated": 12,
+  "comparisons": [
+    {
+      "arm": "ours_strict",
+      "accepted": 156,
+      "rejected": 1,
+      "unattempted": 43,
+      "common_steps": 141,
+      "p95": 1.0001184317391987,
+      "maximum": 1.0001341897015381
+    },
+    {
+      "arm": "huan_strict",
+      "accepted": 156,
+      "rejected": 1,
+      "unattempted": 43,
+      "common_steps": 141,
+      "p95": 0.9999999926817142,
+      "maximum": 1.000032320487297
+    },
+    {
+      "arm": "xiangru_strict",
+      "accepted": 156,
+      "rejected": 1,
+      "unattempted": 43,
+      "common_steps": 141,
+      "p95": 0.9999999926817142,
+      "maximum": 1.000032320487297
+    },
+    {
+      "arm": "huan_parity",
+      "accepted": 156,
+      "rejected": 1,
+      "unattempted": 43,
+      "common_steps": 141,
+      "p95": 0.9999999926772494,
+      "maximum": 1.00003226180523
+    },
+    {
+      "arm": "xiangru_parity",
+      "accepted": 156,
+      "rejected": 1,
+      "unattempted": 43,
+      "common_steps": 141,
+      "p95": 0.9999999926772494,
+      "maximum": 1.00003226180523
+    }
+  ],
+  "huan_xiangru_same_mode_full_payload_equal": true,
+  "scope": "All six incomplete; only common141-step ratios. No full-horizon or five-repeat speed claim, no controller qualification. If controller weights are server-retained, their hash is checked against recorded prior/current identities, not a locally downloaded model."
+}
