@@ -13,7 +13,7 @@ import tempfile
 from .data import ROOT, experiment, load_registry, profile_check, summarize
 
 WHOLE_ENGINE_REVISION = "280abb400610f56210a7a5be61d5f98be3e27251"
-ACCELERATED_ENGINE_REVISION = "1a27bf58fdadcc8d429044304f19d725c8386cab"
+ACCELERATED_ENGINE_REVISION = "a99d614f04c1fe9d9d26e35952b936fa98e7ae80"
 
 
 def checked_engine_root(engine_root, *, revision=WHOLE_ENGINE_REVISION):
@@ -47,6 +47,7 @@ def whole_engine_run(plant, device, engine_root, output, *, steps=1000, quiet=Fa
                   "validation_policy": "defer_polynomial",
                   "injective_maps": "on" if device == "cuda" else "off",
                   "injective_glue": "on" if device == "cuda" else "off",
+                  "private_output": "on" if device == "cuda" else "off",
                   "rhs_form": "regrouped" if plant == "van_der_pol" else "original"}
     if accelerated:
         for option, value in algorithms.items():
