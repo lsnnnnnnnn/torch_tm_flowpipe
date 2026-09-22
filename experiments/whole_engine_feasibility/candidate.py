@@ -75,6 +75,50 @@ def advance_transaction(state, sr, code, eng, sched, settings, rem):
     return pending, pending_sr, accepted, pending.status.detach().cpu().tolist(), reset
 
 
+# Qualified generator only; this does not pin or change a public engine revision.
+_PRIVATE_OUTPUT_SOURCE_SHA256 = "d68373c89a0e9036aed6573f232d81dcae170ac65733396005cd86bded3e39c7"
+
+
+def _select_private_output(requested, device, cuda_kernels):
+    """Select only before fresh engines/graphs are built, inside cold startup."""
+    if requested not in ('off', 'on'):
+        raise ValueError('private_output must be off or on')
+    if requested == 'on':
+        if device != 'cuda':
+            raise ValueError('private-output on requires CUDA')
+        if torch.__version__.split('+')[0] != '2.5.1':
+            raise RuntimeError('private-output on requires PyTorch2.5.1')
+    if getattr(cuda_kernels._ext, '__name__', None) != 'flowstar_seg_kernels':
+        raise RuntimeError('private-output selection requires the original interval extension; use a fresh process')
+    if requested == 'off':
+        return {'requested': 'off', 'enabled': False}
+    from flowstar_gpu import private_output_kernels as private
+    source_path = Path(private.__file__).resolve()
+    source_sha = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    if source_sha != _PRIVATE_OUTPUT_SOURCE_SHA256:
+        raise RuntimeError('private-output generator source changed; qualification is required')
+    base_sha = hashlib.sha256(cuda_kernels._CUDA_SRC.encode()).hexdigest()
+    if not private.SUPPORTED or base_sha != private.AUDITED_CUDA_SHA256:
+        raise RuntimeError('private-output source/version is outside the qualified scope')
+    cpp, cuda = private.sources()
+    if not private.available():
+        raise RuntimeError('private-output preload failed; no silent fallback')
+    module = private._ext
+    if module is None or module.__name__ != private.NAME:
+        raise RuntimeError('unexpected private-output extension; test-poison builds are forbidden')
+    binary = Path(module.__file__).resolve()
+    info = {'requested': 'on', 'enabled': True, 'extension_name': module.__name__,
+            'binary': {'path': str(binary), 'sha256': hashlib.sha256(binary.read_bytes()).hexdigest()},
+            'generator_source': {'path': str(source_path), 'sha256': source_sha},
+            'base_cuda_sha256': base_sha,
+            'cpp_source_sha256': hashlib.sha256(cpp.encode()).hexdigest(),
+            'cuda_source_sha256': hashlib.sha256(cuda.encode()).hexdigest()}
+    # base.available() already succeeded: _tried stays true, and public wrapper
+    # validation/device guards continue to call the selected extension.
+    cuda_kernels._ext = module
+    return info
+
+
 def run(args):
     # Select before importing the engine; importing a differently configured
     # engine in the same process is rejected below rather than misreported.
@@ -125,6 +169,7 @@ def run(args):
                   'validation_policy': getattr(sparse_exec, 'VALIDATION_POLICY', 'truncated'),
                   'injective_maps': 'on' if injective_index is not None and injective_index.ENABLED else 'off',
                   'injective_glue': 'on' if getattr(sparse_exec, 'INJECTIVE_GLUE', False) else 'off',
+                  'private_output': getattr(args, 'private_output', 'off'),
                   'rhs_form': getattr(args, 'rhs_form', 'original'),
                   'sr_interval_update': 'cuda_directed_if_supported' if sr_kernels else 'broadcast_interval',
                   'sr_history_sum': 'cuda_directed_if_supported' if sr_sum_kernels else 'broadcast_interval'}
@@ -135,6 +180,11 @@ def run(args):
 
     if algorithms['injective_glue'] == 'on' and (args.device != 'cuda' or algorithms['glue'] == 'compile' or algorithms['injective_maps'] != 'on'):
         raise ValueError('injective glue requires CUDA eager/graph and injective maps enabled')
+
+    if algorithms['private_output'] not in ('off', 'on'):
+        raise ValueError('private_output must be off or on')
+    if algorithms['private_output'] == 'on' and args.device != 'cuda':
+        raise ValueError('private-output on requires CUDA')
 
     args.output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(1)
@@ -154,6 +204,7 @@ def run(args):
     enable_determinism(args.device)
     extensions = {'interval': False, 'tape': False, 'validation': False}
     extension_binaries = {}
+    private_output = {'requested': algorithms['private_output'], 'enabled': False}
     if args.device == 'cuda':
         # Validation has a separate lazy extension; compile it before the solve timer.
         extensions = {'interval': cuda_kernels.available(), 'tape': tape_kernels.available(),
@@ -173,6 +224,10 @@ def run(args):
             loaded.append(sr_sum_kernels._ext)
         if algorithms['injective_maps'] == 'on':
             loaded.append(injective_index._ext)
+        private_output = _select_private_output(algorithms['private_output'], args.device, cuda_kernels)
+        if private_output['enabled']:
+            extensions['private_output'] = True
+            loaded.append(cuda_kernels._ext)
         for module in loaded:
             path = Path(module.__file__).resolve()
             extension_binaries[module.__name__] = {
@@ -266,6 +321,7 @@ def run(args):
               'python': sys.version, 'executable': sys.executable, 'torch': torch.__version__,
               'cuda_build': torch.version.cuda, 'extensions': extensions,
               'extension_binaries': extension_binaries,
+              'private_output': private_output,
               'engine_source': source_identity(engine_root),
               'adapter_source': source_identity(Path(__file__).resolve().parents[2]),
               'affinity': sorted(os.sched_getaffinity(0)), 'torch_threads': torch.get_num_threads(),
@@ -296,6 +352,8 @@ def main():
     parser.add_argument('--validation-policy', choices=['truncated', 'defer_polynomial'])
     parser.add_argument('--injective-maps', choices=['off', 'on'])
     parser.add_argument('--injective-glue', choices=['off', 'on'])
+    parser.add_argument('--private-output', choices=['off', 'on'], default='off',
+                        help='explicit qualified CUDA allocation optimization; preload failures are fatal')
     parser.add_argument('--rhs-form', choices=['original', 'regrouped'], default='original')
     parser.add_argument('--record', action='store_true')
     parser.add_argument('--progress-every', type=int, default=100)
