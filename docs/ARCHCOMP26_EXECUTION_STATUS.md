@@ -20,8 +20,8 @@
 | `contract_audits` | `benchmarks/archcomp26/evidence/contract_audits_20261001.json` | `63ad3c7d6f120f799475a6fcaaec0e9a9036bcc8bf20e6c30aa70944d26be5e6` |
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
 | `p3_audit` | `research/gpu_verified_20260930/report/evidence/quad_trig_audit.json` | `517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2` |
-| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `5ab3ba17da3965ad5c51451ae8f6110f0b87d41b954ce05a7d71b2823c19b36e` |
-| `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `79e0caf03cab764062fb5c43f9af706610c3c76b083f8d001a3011950a5b9e86` |
+| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `6aec7a6d6ad494e89b59048721978048d01c706ba429425666d63d5ccb71ae53` |
+| `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `9044a96b0214bad07e39d6b262fa71fac323eaf60d3c745c79d6e96411919424` |
 | `native_recheck` | `docs/evidence/remote_native_quad_recheck_20261001.json` | `2655c3ec43f52e00d944810812ff02c3ed3b8187212dc98e9467120668293062` |
 
 ## Contract audit coverage
@@ -84,9 +84,9 @@ The Huan/P3 contracts differ in order, validation, arithmetic guarantees, instru
 - Saved artifact sets checked: 5.
 - Independent geometry check: `passed`.
 - Experiments started by plotting validation: `false`.
-- Plot-contract accounting: materialized v2=8; materialized v3=1; axis-aligned content ready=0; fail-closed blocked=7.
+- Plot-contract accounting: materialized v2=8; materialized v3=1; materialized v4=1; axis-aligned content ready=0; fail-closed blocked=6.
 - MATLAB: `not found`; Octave: `not found`. Generated `.m` files have static checks only.
-- Saved-artifact evidence covers axis-aligned QUAD projections; targeted tests also cover the declared ACC affine interval image. Neither establishes native octagon/support-direction parity.
+- Saved-artifact evidence covers axis-aligned QUAD projections; targeted tests also cover the declared ACC affine and Docking radial-speed interval images. None establishes native octagon/support-direction parity or a Docking numerical result.
 - Plot content status does not resolve any method's execution contract.
 
 | Instance | Plot content status | Content blockers |
@@ -96,7 +96,7 @@ The Huan/P3 contracts differ in order, validation, arithmetic guarantees, instru
 | `airplane-discrete` | `blocked_fail_closed` | 2 |
 | `attitude-control-avoid` | `blocked_fail_closed` | 1 |
 | `balancing-reach` | `blocked_fail_closed` | 2 |
-| `docking-constraint` | `blocked_fail_closed` | 1 |
+| `docking-constraint` | `materialized_v4_content_contract` | 0 |
 | `double-pendulum-less-robust` | `materialized_v2_content_contract` | 0 |
 | `double-pendulum-more-robust` | `materialized_v2_content_contract` | 0 |
 | `nav-standard` | `materialized_v2_content_contract` | 0 |

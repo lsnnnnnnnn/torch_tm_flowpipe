@@ -3,7 +3,7 @@
 The exporter was validated only against already-saved artifacts; no solver or
 GPU experiment was started. The local artifact directory is:
 
-`/Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v5_affine_20261001`
+`/Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v6_radial_20261001`
 
 The machine-readable receipt is
 `docs/evidence/flowpipe_plot_validation_20261001.json`; it binds the exact
@@ -12,11 +12,12 @@ all output hashes.
 
 ## Results
 
-- Focused unit/contract suite: 26 tests passed (23 plotting tests and 3
+- Focused unit/contract suite: 28 tests passed (25 plotting tests and 3
   ARCH-COMP plot/source-audit contract tests). The plotting suite includes the
   canonical state-state route for time-scoped regions, rejects boolean
   `expected_steps`, and independently recomputes ACC's outward affine interval
-  image while rejecting altered transforms or raw boxes.
+  image and Docking's outward radial-speed margin while rejecting altered
+  transforms, canonical Docking constants, or raw boxes.
 - Independent raw-to-geometry check: PASS for all displayed frames.
   - native root1-B2: 1000 frames reconstructed from 2000 binary records;
   - P2 time-state: 40 frames/40 union-hull boxes;
@@ -33,8 +34,9 @@ all output hashes.
 - MATLAB/Octave executables were not available. `.m` generation and static
   contract tests passed, but this is not a MATLAB runtime claim.
 - The five saved artifact sets below remain archived QUAD projections. ACC v3
-  has no identity-bound numerical series yet, so its affine-threshold support
-  is test-verified but is not presented as an ACC execution result.
+  and Docking v4 have no identity-bound numerical series yet, so their derived
+  interval support is test-verified but is not presented as an ACC or Docking
+  execution result, width/time comparison, or property verdict.
 
 ## Artifact SHA-256
 
@@ -42,11 +44,11 @@ Each row lists geometry, MATLAB, PNG, and PDF hashes in that order.
 
 | Artifact stem | Geometry | MATLAB | PNG | PDF |
 |---|---|---|---|---|
-| `native_root1_b2_t_x3_tube` | `c2d39e4d44104eeb6423512b5a13a8b6393b9737a7d8e412cea870a5c22702df` | `b1516249d9573bc471f3962c5bdfd4bf3f72c207462b68c185500926ed3f11d2` | `5b3986f907ac30f94af4f727bd947bea7849389b9347a439280d36d796a56fad` | `c98f222ba65a614f738e1b4927a3624aab443e0fe898a1f9bed155bd1f06a4fd` |
-| `p2_40_t_x3_tube` | `a0b11b58baa8540f03afa0911d8e730eff34bb88bb27144f52a06c9a9196f5b9` | `1f1d8123d8e34475a0280dcd77828b7a978ef573646d5f1c5037e8d20b9dd7c5` | `8a1134f07d49425757019bd493d153546273056147b8b7972dae09aad9ce29ce` | `5eda9191715d031bd2b8cc8c4487e5902f60587c9e59bf839716ecb0735d26d5` |
-| `p2_x1_x2_endpoint` | `3d76f212d12fabfb0f2a479546a0d3dbcb33f35b54d234a3b1d28a655a01d6c1` | `f0398c0b6de318c461952259b9eff435c3c3e3ffa77bd2cb4ae7f4e58d5477c6` | `dec69a1fb12aaea36bab073bb76a9ac859ddc6a2259c27d64d6a350007ba3903` | `b8e92583c961229d99809a677a00155595d4ef27e8e2b41993b5d73e8aa0abfc` |
-| `p3_sparse_t_x3_endpoint` | `9dcbd35a72d1fdddd5b141d2fa4d3b926240ce2fab6cbd705c63557b636d8e89` | `3fff47bcb38983849372074301919e02e748044c3aaa6228f5f7727e0b345c00` | `5d21b760306a6cadf326472bf301246b703f6bb158f8d90b1566dac7c665de68` | `8ec08b76fe9a7f7c75ff48dcece1e329b2d086bef41db46795a618baa5b6fd41` |
-| `p3_sparse_x1_x2_endpoint` | `8b6eeaf268b5e1eee1de78b64f109c90e454bd43198bcab763e369b771ea70e7` | `c11663ab910fa92c279643d27220567d1d8cb3b34f5528e4f318df1217ba05a6` | `972517fd0e267e7333a6226c442a89a2f1e161a1ec60fa9b765a72b7d78636b3` | `ac2059daeba920f016c1e22da3539a8c703532793f7dd23992b7a23fb5e593cf` |
+| `native_root1_b2_t_x3_tube` | `be51f18d391b9e4e256a372bd1e007260f90c2ba18a755b9eb49f826aa7d93bf` | `b1516249d9573bc471f3962c5bdfd4bf3f72c207462b68c185500926ed3f11d2` | `5b3986f907ac30f94af4f727bd947bea7849389b9347a439280d36d796a56fad` | `5291d3f70869671e6fd78a1e2e8212ce383e4dc58628e7cdcc1ce9b22b1ee1ed` |
+| `p2_40_t_x3_tube` | `a8e743a29293c47a0fd2d423b9dc35c6219c7c4ccc9fbe8f444068edd4ae0c7e` | `1f1d8123d8e34475a0280dcd77828b7a978ef573646d5f1c5037e8d20b9dd7c5` | `8a1134f07d49425757019bd493d153546273056147b8b7972dae09aad9ce29ce` | `92eda19775bc995e16d8831e97f6b7a8e2668d24d0fc465b2bf2a22d95f7c79e` |
+| `p2_x1_x2_endpoint` | `9e604b0fb3848849c3d152045700ad0c9e2a54639bc3b21c2a18b717c212528c` | `f0398c0b6de318c461952259b9eff435c3c3e3ffa77bd2cb4ae7f4e58d5477c6` | `dec69a1fb12aaea36bab073bb76a9ac859ddc6a2259c27d64d6a350007ba3903` | `c4349beb5ce384e9c13f5e366f1bc89af33a9ad4ed72b750f91076013be8dd2f` |
+| `p3_sparse_t_x3_endpoint` | `630abe0e49c80b15d88faeca964dae1f500f957e78b0411bc2600be3e2b84141` | `3fff47bcb38983849372074301919e02e748044c3aaa6228f5f7727e0b345c00` | `5d21b760306a6cadf326472bf301246b703f6bb158f8d90b1566dac7c665de68` | `e68aec3d92609a7b9890bebc891ab462c2af00af9fdfd8d29b6b8a95729875de` |
+| `p3_sparse_x1_x2_endpoint` | `f4724f79350f0c5e1ae3a0c90921a27e3993d94e0294b439cace6d4571056570` | `c11663ab910fa92c279643d27220567d1d8cb3b34f5528e4f318df1217ba05a6` | `972517fd0e267e7333a6226c442a89a2f1e161a1ec60fa9b765a72b7d78636b3` | `1e8bbdb526356b43c7240d461cf711730242f0f753347a9450621abe0f05872a` |
 
 ## Evidence interpretation
 
@@ -69,6 +71,8 @@ Each row lists geometry, MATLAB, PNG, and PDF hashes in that order.
   records exist per step. It does not claim lane acceptance or full-1024
   completion; `original_full1024_completed=false` remains visible.
 - Raw state projections remain axis-aligned boxes. V3 can map those boxes to
-  one explicitly declared affine interval coordinate, but it still cannot
-  recover source-coordinate correlation or preserve Flow* octagonal support
-  directions; native-octagon parity remains an unfinished Stage B extension.
+  one explicitly declared affine interval coordinate; the Docking-only v4 can
+  map each lane box to its fixed radial-speed margin before taking the lane
+  hull. Neither recovers source-coordinate correlation, an exact nonlinear
+  reachable image, or Flow* octagonal support directions; native-octagon
+  parity remains an unfinished Stage B extension.
