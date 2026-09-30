@@ -17,19 +17,53 @@ common-prefix/endpoint widths. Every instance explicitly has all four method
 cells and every current cell is `not_started`; an empty override is not a
 missing result.
 
+Run the read-only structural check with:
+
+```bash
+PYTHONPATH=src python -m torch_tm_flowpipe.archcomp26_preflight
+```
+
+To inspect one future cell without launching it, add
+`--preflight <instance> <method>`. The command contains no launcher. It rejects
+the current matrix because experiments are paused and contracts, support,
+commands, identities, and runtime budgets are not yet resolved. Nested cell
+overrides must be complete objects, so a partial `run` or `metrics` update
+cannot silently discard default fields.
+
 On 2026-10-01, `refs/heads/main` still resolved to the pinned
 `d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26` commit. All 50 inventory
 references (41 unique files) were independently re-hashed from a detached
 checkout with zero mismatches. The exact audit is bound to the inventory in
 `evidence/official_assets_audit_20261001.json`. Portable tests verify that
 receipt and its counts; they do not fetch or re-hash the external repository.
-This source audit also confirmed that the
-repository itself does not settle several execution questions:
+This source audit also confirmed that the repository itself does not settle
+several execution questions. The report/source conflict ledger in
+`evidence/contract_audits_20261001.json` freezes the evidence without choosing
+an unsupported interpretation:
 
-- the top-level Airplane row says continuous `t in [0,20]`, while its own
-  specification file says 20 control steps = 2 seconds;
-- QUAD contains two distinct ONNX candidates and the published MATLAB
-  dynamics still differs from the archived CROWN-Reach implementation;
+- Airplane continuous is fixed to two seconds because the report and instance
+  specification agree; the top-level `[0,20]` row is conflicting metadata.
+  For discrete time, report page 89 gives forward Euler, the Airplane step is
+  0.1 seconds, and the index set is `0..20`; however, no executable transition
+  source or exact control-application ordering is selected, so the continuous
+  ODE cannot be substituted;
+- QUAD contains two distinct ONNX candidates. The report and pinned MATLAB /
+  historical-author contracts are both preserved, with exact `x2`, `x4`, and
+  `x5` differences. No new matched run may start until one dynamics and one
+  controller identity are explicitly selected;
+- Single Pendulum has a two-state report/specification but its repository
+  dynamics returns the extra derivative `dx(3)=1` without the clock state's
+  initial value or interface role;
+- TORA requires an explicit raw-versus-post-processed controller boundary so
+  the remain offset is applied exactly once. Its two heterogeneous controller
+  activation descriptions conflict, and their reach-checker semantics remain
+  unresolved;
+- Unicycle includes a bounded disturbance in the report, while the repository
+  dynamics omits it and carries a malformed disturbance comment;
+- NAV's report state order is `[x,y,theta,nu]`, while the repository dynamics
+  implements its first derivatives as `x3*cos(x4), x3*sin(x4)`, implying the
+  swapped order `[x,y,nu,theta]` and corresponding swapped control-output
+  semantics. Both controller input/output contracts remain unresolved;
 - Attitude Control also contains two distinct ONNX candidates;
 - heterogeneous TORA supplies text/MAT controller artifacts but no ONNX file.
 

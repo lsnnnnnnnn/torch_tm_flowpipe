@@ -1,0 +1,281 @@
+{
+  "schema_version": "archcomp26-contract-audits-v1",
+  "audited_at": "2026-10-01",
+  "experiments_started": false,
+  "sources": {
+    "report": {
+      "title": "ARCH-COMP26 Category Report: Artificial Intelligence and Neural Network Control Systems (AINNCS) for Continuous and Hybrid Systems Plants",
+      "doi": "10.29007/637n",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e",
+      "general_discretization_printed_page": 89,
+      "contract_printed_pages": {
+        "single_pendulum": [93],
+        "tora": [90, 91],
+        "unicycle": [91, 118, 119],
+        "navigation": [98, 99]
+      },
+      "airplane_printed_pages": [95, 96],
+      "quadrotor_printed_pages": [97, 98],
+      "review": "The Airplane and quadrotor pages were rendered from the saved PDF and visually inspected. The other cited facts were checked against extracted report text and the pinned repository; no equation was inferred from OCR alone."
+    },
+    "benchmark_repository": {
+      "url": "https://github.com/Kiguli/ARCH-COMP2026",
+      "commit": "d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26",
+      "readme_sha256": "562e01d42ccdf033e0dcd29a1ab60821cdcf35a17e94b3dac43ee3885675cbd2"
+    },
+    "historical_quad_contract": {
+      "path": "research/gpu_verified_20260930/source/benchmark/quad_author_resolved.yaml",
+      "sha256": "940cb0b6188c3b127eee28df5d34fbda6d072f9e8b09cee8f251bd6b098f9144"
+    }
+  },
+  "audits": {
+    "airplane": {
+      "status": "continuous_time_semantics_resolved; discrete_transition_unresolved",
+      "source_files": {
+        "specification": {
+          "path": "benchmarks/Airplane/specifications.txt",
+          "sha256": "2ea86582e50e1a108fbe05ddfdf12b852fafeddada2831e82c63a7daa9b24c09"
+        },
+        "continuous_dynamics": {
+          "path": "benchmarks/Airplane/dynamics.m",
+          "sha256": "987e96779d8e114870ee9016560a570f1fdad32a3f349f8803739e49dde0055c"
+        },
+        "controller": {
+          "path": "benchmarks/Airplane/controller_airplane.onnx",
+          "sha256": "655ba1e82d676373b2c1b10acaf97a722207130ae1b60d1dcc140f2f5c96b4e6"
+        }
+      },
+      "shared_contract": {
+        "state_order": ["sx", "sy", "sz", "vx", "vy", "vz", "phi", "theta", "psi", "r", "p", "q"],
+        "controller_and_discrete_model_step_s": 0.1,
+        "initial_set": {
+          "fixed_zero": ["sx", "sy", "sz", "r", "p", "q"],
+          "unit_intervals": ["vx", "vy", "vz", "phi", "theta", "psi"]
+        },
+        "property": {
+          "sy": [-1.0, 1.0],
+          "phi": [-1.0, 1.0],
+          "theta": [-1.0, 1.0],
+          "psi": [-1.0, 1.0]
+        }
+      },
+      "continuous": {
+        "horizon_s": 2.0,
+        "property_time_semantics": "for_all_t_in_closed_interval_0_2",
+        "resolution": "The report and instance specification agree on 2 seconds; the repository top-level table's [0,20] continuous entry is not selected."
+      },
+      "discrete": {
+        "index_set": {"start": 0, "end": 20, "inclusive": true},
+        "transition_count": 20,
+        "report_transition_rule": {
+          "source": "report printed page 89",
+          "method": "forward_euler",
+          "state_update": "x[k+1] = x[k] + f(x[k]) * delta_t",
+          "delta_t_s": 0.1,
+          "evidence_scope": "mathematical rule only; not a selected executable transition implementation"
+        },
+        "transition_source": null,
+        "control_application_order": null,
+        "status": "unresolved",
+        "reason": "The report defines forward Euler and a 0.1 s step, but the pinned repository exposes no selected discrete transition implementation or exact control-application ordering. The continuous dynamics file is not itself the discrete transition source."
+      },
+      "source_conflict": {
+        "repository_top_level_readme": "continuous t in [0,20]",
+        "report": "continuous t in [0,2]; discrete k in [0,20]",
+        "instance_specification": "20 control steps = 2 seconds; control step = 0.1",
+        "decision": "Freeze the continuous horizon at 2 seconds. Keep the discrete transition unresolved."
+      }
+    },
+    "navigation": {
+      "status": "time_and_property_semantics_known; state_order_and_controller_input_contract_unresolved",
+      "source_files": {
+        "specification": {
+          "path": "benchmarks/NAV/README.md",
+          "sha256": "a9bb671d83ff2901ddc981d01c9f7fca7b1af8a0d89cc7f949ba92725b8b8873"
+        },
+        "repository_dynamics": {
+          "path": "benchmarks/NAV/dynamics.m",
+          "sha256": "565594f1c8fbfe1fb6c5dc0a500ca0fd697312452a2e586cbe81d5f12ae75d3e"
+        },
+        "controllers": {
+          "standard": {
+            "path": "benchmarks/NAV/networks/nn-nav-point.onnx",
+            "sha256": "cc356922a0842e5fe716930df5a5069ec92b6bb14517b6d5f0f31ffa96485b6d"
+          },
+          "robust": {
+            "path": "benchmarks/NAV/networks/nn-nav-set.onnx",
+            "sha256": "d8220afa931b3e3b9370d6cf03c10e73601a401c2b2266f0e5580bd932436230"
+          }
+        }
+      },
+      "shared_facts": {
+        "initial_set": {"x": [2.9, 3.1], "y": [2.9, 3.1], "third_state": [0.0, 0.0], "fourth_state": [0.0, 0.0]},
+        "controller_period_s": 0.2,
+        "horizon_s": 6.0,
+        "property": "avoid x in [1,2], y in [1,2] throughout [0,6] and be in x,y in [-0.5,0.5]^2 at t=6"
+      },
+      "state_order_conflict": {
+        "report": ["x", "y", "theta", "nu"],
+        "report_first_two_derivatives": ["nu*cos(theta)", "nu*sin(theta)"],
+        "report_control_derivatives": ["theta_dot = u1", "nu_dot = u2"],
+        "repository_dynamics_effective_order": ["x", "y", "nu", "theta"],
+        "repository_first_two_derivatives": ["x3*cos(x4)", "x3*sin(x4)"],
+        "repository_control_derivatives_under_effective_order": ["nu_dot = u1", "theta_dot = u2"],
+        "resolution": "unresolved; the two initially-zero coordinates do not disambiguate the controller input order, and the corresponding control-output semantics are swapped"
+      },
+      "execution_rule": "Do not run either NAV controller until the state and controller input/output order are selected from additional authoritative execution evidence."
+    },
+    "single_pendulum": {
+      "status": "two_state_physical_contract_known; repository_clock_augmentation_unresolved",
+      "source_files": {
+        "specification": {
+          "path": "benchmarks/Single_Pendulum/specifications.txt",
+          "sha256": "524e0e513fade0a4f5fb2f3e2873d2fb3cfac5de9f92c1c3c914b4fb69a08e19"
+        },
+        "repository_dynamics": {
+          "path": "benchmarks/Single_Pendulum/dynamics_sp.m",
+          "sha256": "6d65c56317a9e68d1125b855131bd366ce558186bd056735decdfb63dfaca09e"
+        },
+        "controller": {
+          "path": "benchmarks/Single_Pendulum/controller_single_pendulum.onnx",
+          "sha256": "f855ee789c5f360bb1ba8722ded4226d955876a422b61ba3aca8d71eaa621227"
+        }
+      },
+      "report_contract": {
+        "physical_state_order": ["theta", "theta_dot"],
+        "initial_set": {"theta": [1.0, 1.175], "theta_dot": [0.0, 0.2]},
+        "controller_period_s": 0.05,
+        "property_time_semantics": "for_all_t_in_closed_interval_0.5_1",
+        "discrete_property_index_set": {"start": 10, "end": 20, "inclusive": true},
+        "property": "theta in [0,1]"
+      },
+      "repository_conflict": {
+        "specification_state_count": 2,
+        "dynamics_return_count": 3,
+        "extra_derivative": "dx(3) = 1",
+        "missing_fields": ["third_state_initial_value", "third_state_controller_input_role", "third_state_property_role"],
+        "resolution": "unresolved; do not silently promote the extra derivative to a physical state"
+      }
+    },
+    "tora": {
+      "status": "variants_identified; controller_boundary_activation_and_reach_checker_details_unresolved",
+      "source_files": {
+        "remain": {
+          "specification": {"path": "benchmarks/Benchmark9-Tora/Specifications.txt", "sha256": "2cd324a536ca94fc99a5ee59bbbc54d90ab1a0b70917c83414bcaebe2058aa44"},
+          "dynamics": {"path": "benchmarks/Benchmark9-Tora/dynamics9.m", "sha256": "e82087d006474e9dfbbe1f09e9f4e64de7c9768108423135d81d7a04d24fd706"},
+          "controller": {"path": "benchmarks/Benchmark9-Tora/controllerTora.onnx", "sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418"}
+        },
+        "reach": {
+          "specification": {"path": "benchmarks/Tora_Heterogeneous/Specifications.txt", "sha256": "6dd7efd3ca8267229913d59bebd26918931efeba4b80d934df17fad13c167267"},
+          "dynamics": {"path": "benchmarks/Tora_Heterogeneous/dynamicsTora.m", "sha256": "6d00916b13ca071a23a6e5eee0addf0b3f363430e2cbcbec3e4b03456535f7d6"},
+          "sigmoid_controller": {"path": "benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.txt", "sha256": "9bce280442ebe2a194ad4c5e15343ed517c083c78237f348cc797f21a217c9ab"},
+          "relu_tanh_controller": {"path": "benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.txt", "sha256": "90bfe153eda08416caeefe759525ffc08df88c7162c4210f06fd65bf868e224f"}
+        }
+      },
+      "remain_controller_boundary": {
+        "report": "plant input u; controller post-processing u = f(x) - 10",
+        "repository_dynamics": "dx4 = u(1) - 10",
+        "resolution": "unresolved interface naming; subtract 10 exactly once"
+      },
+      "reach_controllers": {
+        "common": {"hidden_layer_count": 3, "hidden_width": 20, "output_scale": 11.0, "controller_period_s": 0.5},
+        "report_prose": "describes the other two controllers as sigmoid hidden layers with a tanh output",
+        "activation_metadata_sources": {
+          "sigmoid": {"path": "benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.mat", "sha256": "9ade5c0a51fa23095d93bd30b4b96d6ba511d7fb67d388c50a635a641b45323a"},
+          "relu_tanh": {"path": "benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.mat", "sha256": "97fd73dd8cb00c128d93e3fae72586475cd6698d896d42fc6387b1d1a032300b"}
+        },
+        "repository_sigmoid_mat_activations": ["sigmoid", "sigmoid", "sigmoid", "sigmoid"],
+        "repository_relu_tanh_mat_activations": ["relu", "relu", "relu", "tanh"],
+        "resolution": "freeze a specific serialized controller and activation sequence before execution"
+      },
+      "reach_property": {
+        "horizon_s": 5.0,
+        "transition_count": 10,
+        "target": {"x1": [-0.1, 0.2], "x2": [-0.9, -0.6]},
+        "report_wording": "reaches the set within a time window of 5 s",
+        "checker_semantics_status": "unresolved"
+      }
+    },
+    "unicycle": {
+      "status": "nominal_state_controller_contract_known; disturbance_and_reach_checker_semantics_unresolved",
+      "source_files": {
+        "specification": {"path": "benchmarks/Benchmark10-Unicycle/Specifications.txt", "sha256": "50a11502915d92268d6977a2214530641a34baf5cd6cf91c487924a3368afab3"},
+        "repository_dynamics": {"path": "benchmarks/Benchmark10-Unicycle/dynamics10.m", "sha256": "8931ebdb817fa2538f3a0aab9fcb94ac847ff69160adf392237c838b8e83a816"},
+        "controller": {"path": "benchmarks/Benchmark10-Unicycle/controllerB.onnx", "sha256": "9c9796ec74c0b11c0fe6aa5e0eb3814094dd62538de8c6707ec7e917e718a846"}
+      },
+      "report_contract": {
+        "state_order": ["x", "y", "yaw", "velocity"],
+        "disturbance_interval": [-0.0001, 0.0001],
+        "disturbance_equation": "velocity_dot = u1 + w",
+        "controller_period_s": 0.2,
+        "horizon_s": 10.0,
+        "controller_post_processing": "u_i = f_i(x) - 20"
+      },
+      "repository_conflict": {
+        "disturbance_implemented": false,
+        "commented_range": "(-10^-4, 10^4)",
+        "resolution": "unresolved; the no-disturbance repository dynamics is not silently equivalent to the report"
+      },
+      "property_semantics": {
+        "report_wording": "reach the target within a time window of 10 s",
+        "juliareach_evidence": "evaluates the last reach set at t=10 (report printed pages 118-119)",
+        "shared_checker_status": "unresolved"
+      }
+    },
+    "quadrotor": {
+      "status": "dual_dynamics_contracts_frozen; selection_unresolved",
+      "source_files": {
+        "specification": {
+          "path": "benchmarks/QUAD/Specifications.txt",
+          "sha256": "75d19a03debcd1abbb01a139e830506ecb8e6ef28d41811f201aeaba20dc53cd"
+        },
+        "repository_dynamics": {
+          "path": "benchmarks/QUAD/dynamics.m",
+          "sha256": "fd82593dd58d1fff42e766dabbc948d28bf7b339ad2a94fd96890e24b47c7f68"
+        },
+        "controller_candidates": [
+          {
+            "path": "benchmarks/QUAD/model.onnx",
+            "sha256": "10e511efa754e128d9e915f9bc62d63ae2c3d292e1a634a14dde3124fc37224a"
+          },
+          {
+            "path": "benchmarks/QUAD/quad_controller_3_64_torch.onnx",
+            "sha256": "fabd84e411f4b0ebe0d6b996be6e4bd2adc48cf1118ab99c82180563b95532dd"
+          }
+        ]
+      },
+      "shared_contract": {
+        "state_order": ["x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12"],
+        "initial_set": {
+          "box_intervals": {"x1": [-0.4, 0.4], "x2": [-0.4, 0.4], "x3": [-0.4, 0.4], "x4": [-0.4, 0.4], "x5": [-0.4, 0.4], "x6": [-0.4, 0.4]},
+          "fixed_zero": ["x7", "x8", "x9", "x10", "x11", "x12"]
+        },
+        "controller_period_s": 0.1,
+        "horizon_s": 5.0,
+        "controller_updates": 50,
+        "property": {"state": "x3", "interval": [0.94, 1.06]},
+        "property_wording": "stabilize x3 to the goal region and remain within these bounds with a 5 s horizon"
+      },
+      "dynamics_variants": {
+        "archcomp26_report": {
+          "source": "report printed page 97",
+          "x2": "cos(x8)*sin(x9)*x4 + (sin(x7)*sin(x8)*sin(x9) + cos(x7)*cos(x9))*x5 + (cos(x7)*sin(x8)*sin(x9) - sin(x7)*cos(x9))*x6",
+          "x4": "x12*x5 - x11*x6 - g*sin(x8)",
+          "x5": "x10*x6 - x12*x4 + g*cos(x8)*sin(x7)"
+        },
+        "pinned_repository_and_historical_author": {
+          "source": "benchmarks/QUAD/dynamics.m; the saved historical author YAML carries the same three expressions",
+          "x2": "cos(x8)*sin(x9)*x4 + (sin(x7)*sin(x8)*sin(x9) - cos(x7)*cos(x9))*x5 + (cos(x7)*sin(x8)*sin(x9) + sin(x7)*cos(x9))*x6",
+          "x4": "x12*x5*x11*x6 - g*sin(x8)",
+          "x5": "x10*x6 - x11*x6 - g*sin(x8)"
+        }
+      },
+      "differences": [
+        {"state": "x2", "kind": "two sign differences in the x5/x6 yaw terms"},
+        {"state": "x4", "kind": "report subtraction versus repository multiplication of the two velocity-rate products"},
+        {"state": "x5", "kind": "different second product and gravity/attitude term"}
+      ],
+      "execution_rule": "Keep historical Huan/P3 results attached to the pinned repository-and-author contract. Do not label a new QUAD result as matched ARCH-COMP26 until a dynamics variant and one controller candidate are explicitly selected and hashed; do not silently rewrite historical results."
+    }
+  }
+}

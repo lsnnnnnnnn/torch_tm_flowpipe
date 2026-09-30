@@ -165,3 +165,174 @@ def test_official_asset_inventory_and_detached_audit_receipt_are_bound():
     assert verification["missing_count"] == verification["mismatch_count"] == 0
     assert verification["result"] == "passed"
     assert "do not fetch or re-hash" in receipt["scope_limit"]
+
+
+def test_contract_audits_fail_closed():
+    manifest = load("benchmarks/archcomp26/manifest.json")
+    audit_link = manifest["contract_audits"]
+    audits = load(audit_link["path"])
+    assert audits["schema_version"] == audit_link["schema_version"]
+    assert audits["experiments_started"] is False
+    assert audits["sources"]["report"]["sha256"] == manifest[
+        "official_sources"
+    ]["report"]["pdf_sha256"]
+    assert audits["sources"]["benchmark_repository"]["commit"] == manifest[
+        "official_sources"
+    ]["benchmark_repository"]["commit"]
+    historical = audits["sources"]["historical_quad_contract"]
+    assert historical["sha256"] == hashlib.sha256(
+        (ROOT / historical["path"]).read_bytes()
+    ).hexdigest()
+    assets = load("benchmarks/archcomp26/official_assets.json")
+    assets_by_id = {row["id"]: row for row in assets["instances"]}
+
+    by_id = {row["id"]: row for row in manifest["instances"]}
+    airplane = audits["audits"][by_id["airplane-continuous"]["contract_audit"]]
+    airplane_assets = assets_by_id["airplane-continuous"]
+    assert airplane["source_files"] == {
+        "specification": airplane_assets["specification"],
+        "continuous_dynamics": airplane_assets["dynamics"],
+        "controller": airplane_assets["controller_candidates"][0],
+    }
+    assert airplane["continuous"]["horizon_s"] == 2.0
+    assert airplane["continuous"]["property_time_semantics"].startswith(
+        "for_all_t"
+    )
+    assert airplane["discrete"]["index_set"] == {
+        "start": 0, "end": 20, "inclusive": True,
+    }
+    assert airplane["discrete"]["transition_count"] == 20
+    assert airplane["discrete"]["report_transition_rule"] == {
+        "source": "report printed page 89",
+        "method": "forward_euler",
+        "state_update": "x[k+1] = x[k] + f(x[k]) * delta_t",
+        "delta_t_s": 0.1,
+        "evidence_scope": (
+            "mathematical rule only; not a selected executable transition "
+            "implementation"
+        ),
+    }
+    assert airplane["discrete"]["transition_source"] is None
+    assert airplane["discrete"]["control_application_order"] is None
+    assert airplane["discrete"]["status"] == "unresolved"
+    assert by_id["airplane-discrete"]["contract"]["status"] == "unresolved"
+
+    linked = {
+        "nav-standard": "navigation",
+        "nav-robust": "navigation",
+        "single-pendulum-reach": "single_pendulum",
+        "tora-remain": "tora",
+        "tora-reach-sigmoid": "tora",
+        "tora-reach-tanh": "tora",
+        "unicycle-reach": "unicycle",
+    }
+    for instance_id, audit_name in linked.items():
+        assert by_id[instance_id]["contract_audit"] == audit_name
+        assert by_id[instance_id]["contract"]["status"] == "unresolved"
+
+    navigation = audits["audits"]["navigation"]
+    nav_standard_assets = assets_by_id["nav-standard"]
+    nav_robust_assets = assets_by_id["nav-robust"]
+    assert navigation["source_files"]["specification"] == nav_standard_assets[
+        "specification"
+    ]
+    assert navigation["source_files"]["repository_dynamics"] == (
+        nav_standard_assets["dynamics"]
+    )
+    assert navigation["source_files"]["controllers"]["standard"] == (
+        nav_standard_assets["controller_candidates"][0]
+    )
+    assert navigation["source_files"]["controllers"]["robust"] == (
+        nav_robust_assets["controller_candidates"][0]
+    )
+    assert navigation["state_order_conflict"]["report"] == [
+        "x", "y", "theta", "nu",
+    ]
+    assert navigation["state_order_conflict"][
+        "repository_dynamics_effective_order"
+    ] == ["x", "y", "nu", "theta"]
+    assert navigation["state_order_conflict"]["report_control_derivatives"] != (
+        navigation["state_order_conflict"][
+            "repository_control_derivatives_under_effective_order"
+        ]
+    )
+    assert navigation["state_order_conflict"]["resolution"].startswith(
+        "unresolved"
+    )
+
+    pendulum = audits["audits"]["single_pendulum"]
+    pendulum_assets = assets_by_id["single-pendulum-reach"]
+    assert pendulum["source_files"] == {
+        "specification": pendulum_assets["specification"],
+        "repository_dynamics": pendulum_assets["dynamics"],
+        "controller": pendulum_assets["controller_candidates"][0],
+    }
+    assert pendulum["repository_conflict"]["specification_state_count"] == 2
+    assert pendulum["repository_conflict"]["dynamics_return_count"] == 3
+    assert pendulum["repository_conflict"]["extra_derivative"] == "dx(3) = 1"
+    assert pendulum["repository_conflict"]["resolution"].startswith(
+        "unresolved"
+    )
+
+    tora = audits["audits"]["tora"]
+    remain_assets = assets_by_id["tora-remain"]
+    sigmoid_assets = assets_by_id["tora-reach-sigmoid"]
+    tanh_assets = assets_by_id["tora-reach-tanh"]
+    assert tora["source_files"]["remain"] == {
+        "specification": remain_assets["specification"],
+        "dynamics": remain_assets["dynamics"],
+        "controller": remain_assets["controller_candidates"][0],
+    }
+    assert tora["source_files"]["reach"] == {
+        "specification": sigmoid_assets["specification"],
+        "dynamics": sigmoid_assets["dynamics"],
+        "sigmoid_controller": sigmoid_assets["controller_candidates"][0],
+        "relu_tanh_controller": tanh_assets["controller_candidates"][0],
+    }
+    assert tora["remain_controller_boundary"]["resolution"].startswith(
+        "unresolved"
+    )
+    assert tora["reach_controllers"][
+        "repository_sigmoid_mat_activations"
+    ] == ["sigmoid"] * 4
+    assert tora["reach_controllers"][
+        "repository_relu_tanh_mat_activations"
+    ] == ["relu", "relu", "relu", "tanh"]
+    for source in tora["reach_controllers"][
+        "activation_metadata_sources"
+    ].values():
+        assert source["path"].endswith(".mat")
+        assert len(source["sha256"]) == 64
+        int(source["sha256"], 16)
+    assert tora["reach_property"]["checker_semantics_status"] == "unresolved"
+
+    unicycle = audits["audits"]["unicycle"]
+    unicycle_assets = assets_by_id["unicycle-reach"]
+    assert unicycle["source_files"] == {
+        "specification": unicycle_assets["specification"],
+        "repository_dynamics": unicycle_assets["dynamics"],
+        "controller": unicycle_assets["controller_candidates"][0],
+    }
+    assert unicycle["report_contract"]["disturbance_interval"] == [
+        -0.0001, 0.0001,
+    ]
+    assert unicycle["repository_conflict"]["disturbance_implemented"] is False
+    assert unicycle["property_semantics"]["shared_checker_status"] == "unresolved"
+
+    quad = audits["audits"][by_id["quad-reach"]["contract_audit"]]
+    quad_assets = assets_by_id["quad-reach"]
+    assert quad["source_files"] == {
+        "specification": quad_assets["specification"],
+        "repository_dynamics": quad_assets["dynamics"],
+        "controller_candidates": quad_assets["controller_candidates"],
+    }
+    assert quad["status"].endswith("selection_unresolved")
+    assert {row["state"] for row in quad["differences"]} == {"x2", "x4", "x5"}
+    report = quad["dynamics_variants"]["archcomp26_report"]
+    author = quad["dynamics_variants"][
+        "pinned_repository_and_historical_author"
+    ]
+    assert all(report[state] != author[state] for state in ("x2", "x4", "x5"))
+    assert len(quad["source_files"]["controller_candidates"]) == 2
+    assert "Do not label" in quad["execution_rule"]
+    assert by_id["quad-reach"]["contract"]["status"] == "unresolved"

@@ -38,6 +38,16 @@
     "schema_version": "archcomp26-execution-matrix-v1",
     "status": "all_cells_not_started"
   },
+  "preflight": {
+    "module": "torch_tm_flowpipe.archcomp26_preflight",
+    "mode": "read_only_fail_closed",
+    "contains_launcher": false
+  },
+  "contract_audits": {
+    "path": "benchmarks/archcomp26/evidence/contract_audits_20261001.json",
+    "schema_version": "archcomp26-contract-audits-v1",
+    "status": "evidence-backed conflict ledger expanded; all linked execution contracts remain unresolved"
+  },
   "unresolved_field_profiles": {
     "full_execution_contract_v1": [
       "dynamics.source",
@@ -129,11 +139,12 @@
       "id": "airplane-continuous",
       "benchmark": "Airplane",
       "instance": "continuous",
-      "specification": "t in [0,20] in repository README",
+      "specification": "for all t in [0,2] in the report and instance specification",
       "network": "relu",
       "visualization": "states 2 and 7",
       "legacy_candidate": {"config_id": "airplane", "status": "candidate_only"},
-      "known_issues": ["The frozen older contract uses horizon 2 while the repository README says [0,20]; the report distinguishes continuous [0,2] and discrete 0..20. Resolve before execution."],
+      "known_issues": ["The repository top-level table says continuous [0,20], but the report and instance specification agree on a 2-second continuous horizon. Method-specific integration settings remain unresolved."],
+      "contract_audit": "airplane",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -144,7 +155,8 @@
       "network": "relu",
       "visualization": "states 2 and 7",
       "legacy_candidate": {"config_id": null, "status": "missing_from_legacy_14"},
-      "known_issues": ["Must use the actual discrete model/property; a continuous ODE result is not a substitute."],
+      "known_issues": ["The report defines forward Euler with delta_t=0.1 and k=0..20, but the pinned repository has no selected executable discrete transition or exact control-application ordering. A continuous ODE result is not a substitute."],
+      "contract_audit": "airplane",
       "contract": {
         "status": "unresolved",
         "model_kind": "discrete_time",
@@ -223,7 +235,8 @@
       "network": "nn-nav-point",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "nav_standard", "status": "candidate_only"},
-      "known_issues": ["The old native run timed out; small-denominator width ratios require absolute widths."],
+      "known_issues": ["The old native run timed out; small-denominator width ratios require absolute widths.", "The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution."],
+      "contract_audit": "navigation",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -234,7 +247,8 @@
       "network": "nn-nav-set",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "nav_robust", "status": "candidate_only"},
-      "known_issues": ["Legacy acceleration results are regression references only, not latest-version reruns."],
+      "known_issues": ["Legacy acceleration results are regression references only, not latest-version reruns.", "The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution."],
+      "contract_audit": "navigation",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -246,6 +260,7 @@
       "visualization": "state 3 over time",
       "legacy_candidate": {"config_id": "quad", "status": "dynamics_mismatch_unresolved"},
       "known_issues": ["The 2026 report equations and the saved CROWN-Reach quad.cpp differ in x2 signs, x4 multiplication versus subtraction, and the x5 formula.", "The original native 1024-lane job ended by six-hour timeout after 600 complete steps; it has no T=5 time or width."],
+      "contract_audit": "quadrotor",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -256,7 +271,8 @@
       "network": "relu",
       "visualization": "state 1 over time",
       "legacy_candidate": {"config_id": "single_pendulum", "status": "candidate_only"},
-      "known_issues": [],
+      "known_issues": ["The report and specification define two physical states, but the repository dynamics also returns dx(3)=1 without defining that clock state's initial value or controller/property role."],
+      "contract_audit": "single_pendulum",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -267,7 +283,8 @@
       "network": "relu",
       "visualization": "states 1 and 2; states 3 and 4",
       "legacy_candidate": {"config_id": "tora_homogeneous", "status": "candidate_name_mapping_only"},
-      "known_issues": ["Confirm official naming, remain/safety property, and horizon before promoting the legacy homogeneous contract."],
+      "known_issues": ["The report places u=f(x)-10 at the controller boundary, while the repository dynamics subtracts 10 inside dx4. Freeze whether the plant function receives raw or post-processed controller output so the offset is applied exactly once."],
+      "contract_audit": "tora",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -278,7 +295,8 @@
       "network": "sigmoid",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "tora_sigmoid", "status": "candidate_only"},
-      "known_issues": [],
+      "known_issues": ["The report's grouped activation prose conflicts with the pinned sigmoid MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics."],
+      "contract_audit": "tora",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -289,7 +307,8 @@
       "network": "tanh",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "tora_relu_tanh", "status": "candidate_name_mapping_only"},
-      "known_issues": ["Confirm whether the saved legacy 'relu_tanh' controller is the 2026 reach-tanh controller."],
+      "known_issues": ["Confirm whether the saved legacy 'relu_tanh' controller is the 2026 reach-tanh controller.", "The report's grouped activation prose conflicts with the pinned ReLU/tanh MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics."],
+      "contract_audit": "tora",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -300,7 +319,8 @@
       "network": "relu",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "unicycle", "status": "candidate_only"},
-      "known_issues": ["The latest GPU diagnostic stopped at extension loading before plant advance; frozen shared objects load directly, while Ninja is absent. Restore/qualify the loader without rewriting the failed record."],
+      "known_issues": ["The latest GPU diagnostic stopped at extension loading before plant advance; frozen shared objects load directly, while Ninja is absent. Restore/qualify the loader without rewriting the failed record.", "The report includes w in [-1e-4,1e-4] in velocity_dot, while the repository dynamics omits w and its comment gives a malformed range. Disturbance temporal semantics and the shared reach checker remain unresolved."],
+      "contract_audit": "unicycle",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     }
   ]
