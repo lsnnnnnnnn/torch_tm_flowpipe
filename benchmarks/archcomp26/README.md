@@ -25,8 +25,19 @@ the timing boundary and phase times, requested versus validated extent,
 accepted/rejected work and NN calls, first failure, property and certificate
 outcomes, eligibility flags, endpoint/last-segment/full-tube absolute bounds,
 union versus per-partition width summaries, and artifact hashes. A `completed`
-cell is rejected unless all planned samples and all three width views are
-complete and the requested extent has been validated.
+cell is rejected unless its executable plan is complete, its requested extent
+matches the resolved continuous horizon or discrete transition count, every
+planned sample covers that same extent and work counts, and all three width
+views bind the contract variable order and exact endpoint/last/full domains.
+`accepted_steps` means scheduled plant advances along the validated prefix
+(not lane-expanded work), while `nn_calls` binds the contract's declared total;
+every cold/steady sample must repeat those same workload counts. Lane-expanded
+diagnostics belong in bound artifacts with their own explicit label.
+Eligibility flags must agree with the run, certificate, finiteness, soundness
+class, and soundness scope; empirical, one-step, unknown, or demonstrated
+unsound evidence cannot opt itself into cross-tool ranking. A genuinely
+unsupported method remains representable as an evidence-backed `skipped`
+terminal cell rather than a fabricated executable run.
 
 Changing an instance's manifest status to `resolved` is not enough to open the
 gate. It must bind an `archcomp26-instance-contract-v1` record conforming to
@@ -59,6 +70,26 @@ cell as `not_started`. Check it without rewriting it with:
 PYTHONPATH=src python -m torch_tm_flowpipe.archcomp26_status_report \
   --check docs/ARCHCOMP26_EXECUTION_STATUS.md
 ```
+
+`docs/ARCHCOMP26_FINAL_REPORT_DRAFT.md` is the deterministic Chinese report
+skeleton for the final 16-by-4 delivery. It reads only the current manifest,
+resolved instance contracts, and hash-bound result records; archived Huan, P3,
+and native timings never enter its current-result tables. The draft keeps one
+section per benchmark and reserves separate full-horizon timing, absolute
+endpoint/tube width, reproduction, plot, failure, and unresolved-contract
+sections. Check it with:
+
+```bash
+PYTHONPATH=src python -m torch_tm_flowpipe.archcomp26_final_report \
+  --check docs/ARCHCOMP26_FINAL_REPORT_DRAFT.md
+```
+
+Passing `--final` is deliberately fail-closed. It refuses output while
+experiments are paused, an instance contract is unresolved, the matrix is not
+terminal, any support state remains unassessed, or a supported/unsupported run
+state is inconsistent. Failed, timed-out, and evidence-backed unsupported
+cells remain visible final outcomes; they are not silently deleted. DOCX/PDF
+generation is deferred until this shared final gate passes.
 
 On 2026-10-01, `refs/heads/main` still resolved to the pinned
 `d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26` commit. All 50 inventory

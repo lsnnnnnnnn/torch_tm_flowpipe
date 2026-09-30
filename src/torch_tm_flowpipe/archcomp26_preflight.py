@@ -198,7 +198,9 @@ def _contract_type_errors(
             )
     nn_path = (
         "controller_update.nn_calls"
-        if profile in {"full_execution_contract_v1", "discrete_execution_contract_v1"}
+        if isinstance(profile, str) and profile in {
+            "full_execution_contract_v1", "discrete_execution_contract_v1"
+        }
         else None
     )
     if nn_path is not None:
@@ -330,14 +332,14 @@ def _validate_contracts(
         status = contract.get("status")
         if status == "unresolved":
             profile = contract.get("unresolved_field_profile")
-            if profile not in profiles:
+            if not isinstance(profile, str) or profile not in profiles:
                 errors.append(f"{instance}: unknown unresolved contract profile {profile!r}")
             continue
         if status != "resolved":
             errors.append(f"{instance}: invalid contract status {status!r}")
             continue
         profile = contract.get("unresolved_field_profile")
-        required = profiles.get(profile)
+        required = profiles.get(profile) if isinstance(profile, str) else None
         if not isinstance(required, list) or not required:
             errors.append(f"{instance}: resolved contract has no known field profile")
             continue
@@ -437,10 +439,14 @@ def _validate_extent(value: Any, label: str) -> list[str]:
         return errors
     kind = value["kind"]
     extent = value["value"]
-    if kind not in {"time_s", "steps"}:
+    if not isinstance(kind, str) or kind not in {"time_s", "steps"}:
         errors.append(f"{label}.kind: expected time_s or steps")
     if not _is_finite_number(extent):
         errors.append(f"{label}.value: expected a finite non-negative number")
+    elif kind == "steps" and (
+        isinstance(extent, bool) or not isinstance(extent, int)
+    ):
+        errors.append(f"{label}.value: step extent must be an integer")
     elif kind == "steps" and not isinstance(extent, int):
         errors.append(f"{label}.value: step extent must be an integer")
     return errors
@@ -480,11 +486,18 @@ def _validate_failure(value: Any, label: str) -> list[str]:
 def _validate_artifact(
     value: Any, root: Path, label: str, *, role_required: bool = False
 ) -> list[str]:
-    expected = {"path", "sha256", "role"} if role_required else {"path", "sha256"}
-    errors = _exact_keys(value, expected, label)
-    if errors:
-        return errors
-    if role_required and (
+    if not isinstance(value, dict):
+        return [f"{label}: expected an object"]
+    required = {"path", "sha256"} | ({"role"} if role_required else set())
+    allowed = {"path", "sha256", "role"}
+    missing = required - set(value)
+    extra = set(value) - allowed
+    if missing or extra:
+        return [
+            f"{label}: fields differ missing={sorted(missing)} extra={sorted(extra)}"
+        ]
+    errors: list[str] = []
+    if "role" in value and (
         not isinstance(value["role"], str) or not value["role"].strip()
     ):
         errors.append(f"{label}.role: expected a non-empty string")
@@ -503,13 +516,13 @@ def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
     if errors:
         return errors
     role = value["role"]
-    if role not in {"cold", "steady", "diagnostic"}:
+    if not isinstance(role, str) or role not in {"cold", "steady", "diagnostic"}:
         errors.append(f"{label}.role: invalid sample role {role!r}")
     if isinstance(value["index"], bool) or not isinstance(value["index"], int) \
             or value["index"] < 0:
         errors.append(f"{label}.index: expected a non-negative integer")
     outcome = value["outcome"]
-    if outcome not in CANONICAL_OUTCOMES:
+    if not isinstance(outcome, str) or outcome not in CANONICAL_OUTCOMES:
         errors.append(f"{label}.outcome: invalid canonical outcome {outcome!r}")
     timing_keys = {
         "process_total", "driver_total", "solver_core", "compile",
@@ -560,23 +573,24 @@ def _validate_width_measurement(
     if errors:
         return errors
     status = value["status"]
-    if status not in {"complete", "unavailable"}:
+    if not isinstance(status, str) or status not in {"complete", "unavailable"}:
         errors.append(f"{label}.status: invalid width status {status!r}")
-        return errors
-    if status == "unavailable":
-        if value["per_coordinate"] != [] or value["artifact"] is not None:
-            errors.append(f"{label}: unavailable width must have no values or artifact")
         return errors
     domain = value["domain"]
     domain_errors = _exact_keys(domain, {"kind", "start", "end"}, f"{label}.domain")
     errors.extend(domain_errors)
     if not domain_errors:
-        if domain["kind"] not in {"time_s", "steps"}:
+        if not isinstance(domain["kind"], str) \
+                or domain["kind"] not in {"time_s", "steps"}:
             errors.append(f"{label}.domain.kind: invalid domain kind")
         if not _is_finite_number(domain["start"]) or not _is_finite_number(domain["end"]):
             errors.append(f"{label}.domain: bounds must be finite and non-negative")
         elif domain["end"] < domain["start"]:
             errors.append(f"{label}.domain: end precedes start")
+    if status == "unavailable":
+        if value["per_coordinate"] != [] or value["artifact"] is not None:
+            errors.append(f"{label}: unavailable width must have no values or artifact")
+        return errors
     rows = value["per_coordinate"]
     if not isinstance(rows, list) or [
         row.get("coordinate") if isinstance(row, dict) else None for row in rows
@@ -594,6 +608,7 @@ def _validate_width_measurement(
             union = row["union"]
             union_errors = _exact_keys(union, {"lo", "hi", "width"}, f"{row_label}.union")
             errors.extend(union_errors)
+            union_width = union.get("width") if isinstance(union, Mapping) else None
             if not union_errors:
                 lo, hi, width = union["lo"], union["hi"], union["width"]
                 if not all(_is_finite_number(number) for number in (width,)) \
@@ -616,6 +631,13 @@ def _validate_width_measurement(
                 if not _is_finite_number(mean) or not _is_finite_number(maximum) \
                         or mean > maximum:
                     errors.append(f"{row_label}.per_partition_width: invalid mean/max")
+                elif _is_finite_number(union_width) \
+                        and maximum > union_width and not math.isclose(
+                    maximum, union_width, rel_tol=1e-12, abs_tol=1e-12
+                ):
+                    errors.append(
+                        f"{row_label}.per_partition_width: max exceeds union width"
+                    )
     if value["artifact"] is None:
         errors.append(f"{label}: complete width lacks artifact")
     else:
@@ -633,7 +655,8 @@ def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
     if errors:
         return errors
     status = value["status"]
-    if status not in {"complete", "partial", "unavailable"}:
+    if not isinstance(status, str) \
+            or status not in {"complete", "partial", "unavailable"}:
         errors.append(f"{label}.status: invalid width status {status!r}")
     errors.extend(_validate_extent(value["common_prefix"], f"{label}.common_prefix"))
     coordinates = value["coordinate_order"]
@@ -664,6 +687,137 @@ def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
             value["trajectory_artifact"], root, f"{label}.trajectory_artifact"
         ))
     return errors
+
+
+def _resolved_contract_record(
+    instance_row: Mapping[str, Any], root: Path
+) -> Mapping[str, Any] | None:
+    link = _dotted(instance_row, "contract.record")
+    if not isinstance(link, Mapping):
+        return None
+    path, _ = _bound_file(
+        root, link.get("path"), link.get("sha256"), "resolved instance contract"
+    )
+    if path is None:
+        return None
+    try:
+        return _load(path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
+
+
+def _contract_extent(contract: Mapping[str, Any]) -> dict[str, Any] | None:
+    profile = contract.get("profile")
+    fields = contract.get("fields")
+    if not isinstance(fields, Mapping):
+        return None
+    if profile == "full_execution_contract_v1":
+        return {"kind": "time_s", "value": _dotted(fields, "integration.horizon")}
+    if profile == "discrete_execution_contract_v1":
+        return {"kind": "steps", "value": _dotted(fields, "discrete.transition_count")}
+    return None
+
+
+def _contract_work_counts(
+    contract: Mapping[str, Any]
+) -> tuple[int | None, int | None]:
+    fields = contract.get("fields")
+    if not isinstance(fields, Mapping):
+        return None, None
+    nn_calls = _dotted(fields, "controller_update.nn_calls")
+    if isinstance(nn_calls, bool) or not isinstance(nn_calls, int) or nn_calls < 0:
+        nn_calls = None
+    profile = contract.get("profile")
+    if profile == "discrete_execution_contract_v1":
+        accepted = _dotted(fields, "discrete.transition_count")
+        if isinstance(accepted, bool) or not isinstance(accepted, int) \
+                or accepted < 0:
+            accepted = None
+        return accepted, nn_calls
+    if profile != "full_execution_contract_v1":
+        return None, nn_calls
+    horizon = _dotted(fields, "integration.horizon")
+    step = _dotted(fields, "integration.step_size")
+    if not _is_finite_number(horizon, positive=True) \
+            or not _is_finite_number(step, positive=True):
+        return None, nn_calls
+    ratio = horizon / step
+    nearest = round(ratio)
+    accepted = nearest if math.isclose(
+        ratio, nearest, rel_tol=1e-12, abs_tol=1e-12
+    ) else math.ceil(ratio)
+    return accepted, nn_calls
+
+
+def _accepted_steps_for_extent(
+    contract: Mapping[str, Any], extent: Any
+) -> int | None:
+    if not isinstance(extent, Mapping):
+        return None
+    value = extent.get("value")
+    profile = contract.get("profile")
+    if profile == "discrete_execution_contract_v1":
+        if extent.get("kind") != "steps" or isinstance(value, bool) \
+                or not isinstance(value, int) or value < 0:
+            return None
+        return value
+    if profile != "full_execution_contract_v1" \
+            or extent.get("kind") != "time_s" or not _is_finite_number(value):
+        return None
+    step = _dotted(contract, "fields.integration.step_size")
+    if not _is_finite_number(step, positive=True):
+        return None
+    if value == 0:
+        return 0
+    ratio = value / step
+    nearest = round(ratio)
+    return nearest if math.isclose(
+        ratio, nearest, rel_tol=1e-12, abs_tol=1e-12
+    ) else math.ceil(ratio)
+
+
+def _extent_is_prefix(value: Any, requested: Any) -> bool:
+    if not isinstance(value, Mapping) or not isinstance(requested, Mapping):
+        return False
+    if value.get("kind") != requested.get("kind"):
+        return False
+    prefix = value.get("value")
+    end = requested.get("value")
+    return _is_finite_number(prefix) and _is_finite_number(end) and prefix <= end
+
+
+def _last_segment_start(contract: Mapping[str, Any], end: Any) -> float | int | None:
+    if not _is_finite_number(end):
+        return None
+    if end == 0:
+        return 0
+    if contract.get("profile") == "discrete_execution_contract_v1":
+        return max(0, end - 1)
+    step = _dotted(contract, "fields.integration.step_size")
+    if not _is_finite_number(step, positive=True):
+        return None
+    ratio = end / step
+    nearest = round(ratio)
+    count = nearest if math.isclose(
+        ratio, nearest, rel_tol=1e-12, abs_tol=1e-12
+    ) else math.ceil(ratio)
+    return max(0.0, (count - 1) * step)
+
+
+def _same_domain(actual: Any, expected: Mapping[str, Any]) -> bool:
+    if not isinstance(actual, Mapping) or set(actual) != {"kind", "start", "end"}:
+        return False
+    if actual.get("kind") != expected.get("kind"):
+        return False
+    return all(
+        _is_finite_number(actual.get(name))
+        and _is_finite_number(expected.get(name))
+        and math.isclose(
+            float(actual[name]), float(expected[name]),
+            rel_tol=1e-12, abs_tol=1e-12,
+        )
+        for name in ("start", "end")
+    )
 
 
 def _validate_result_record(
@@ -703,6 +857,15 @@ def _validate_result_record(
     if record["measurement_plan"] != cell["measurement_plan"]:
         errors.append(f"{prefix}.result_record: measurement plan mismatch")
 
+    contract = _resolved_contract_record(instance_row, root)
+    expected_extent = _contract_extent(contract) if contract is not None else None
+    contract_variables = (
+        _dotted(contract, "fields.variable_order") if contract is not None else None
+    )
+    expected_accepted, expected_nn_calls = (
+        _contract_work_counts(contract) if contract is not None else (None, None)
+    )
+
     run_value = record["run"]
     run = run_value if isinstance(run_value, dict) else {}
     run_keys = {
@@ -715,7 +878,10 @@ def _validate_result_record(
     if not run_errors:
         if run["status"] != cell["run"]["status"]:
             errors.append(f"{prefix}.result_record: run status mismatch")
-        if run["outcome"] not in CANONICAL_OUTCOMES:
+        if not isinstance(run["status"], str) or run["status"] not in TERMINAL_STATUSES:
+            errors.append(f"{prefix}.result_record: run status is not terminal")
+        if not isinstance(run["outcome"], str) \
+                or run["outcome"] not in CANONICAL_OUTCOMES:
             errors.append(f"{prefix}.result_record: invalid canonical outcome")
         errors.extend(_validate_extent(
             run["requested_extent"], f"{prefix}.result_record.run.requested_extent"
@@ -729,6 +895,31 @@ def _validate_result_record(
                 errors.append(f"{prefix}.result_record.run.{name}: invalid count")
         if not isinstance(run["requested_horizon_completed"], bool):
             errors.append(f"{prefix}.result_record.run: completion flag must be Boolean")
+        if expected_extent is None:
+            errors.append(
+                f"{prefix}.result_record: cannot bind resolved contract extent"
+            )
+        elif run["requested_extent"] != expected_extent:
+            errors.append(
+                f"{prefix}.result_record: requested extent does not match "
+                "resolved instance contract"
+            )
+        if not _extent_is_prefix(run["validated_extent"], run["requested_extent"]):
+            errors.append(
+                f"{prefix}.result_record: validated extent is outside requested extent"
+            )
+        expected_prefix_steps = (
+            _accepted_steps_for_extent(contract, run["validated_extent"])
+            if contract is not None else None
+        )
+        if expected_prefix_steps is None:
+            errors.append(
+                f"{prefix}.result_record: cannot derive validated prefix work"
+            )
+        elif run["accepted_steps"] != expected_prefix_steps:
+            errors.append(
+                f"{prefix}.result_record: accepted steps disagree with validated extent"
+            )
         if run["status"] == "completed":
             if run["outcome"] != "completed" or not run["requested_horizon_completed"]:
                 errors.append(f"{prefix}.result_record: completed run lacks completed outcome/horizon")
@@ -736,14 +927,52 @@ def _validate_result_record(
                 errors.append(f"{prefix}.result_record: completed run has partial validated extent")
             if run["first_failure"] is not None:
                 errors.append(f"{prefix}.result_record: completed run carries first failure")
+            if run["accepted_steps"] != expected_accepted:
+                errors.append(
+                    f"{prefix}.result_record: accepted steps do not match contract"
+                )
+            if run["nn_calls"] != expected_nn_calls:
+                errors.append(
+                    f"{prefix}.result_record: NN calls do not match contract"
+                )
         elif run["outcome"] != cell["run"]["failure_category"]:
             errors.append(f"{prefix}.result_record: outcome/failure category mismatch")
+        if run["status"] != "completed" and run["requested_horizon_completed"] is not False:
+            errors.append(
+                f"{prefix}.result_record: non-completed run claims completed horizon"
+            )
+        if run["status"] == "skipped" and any(
+            run[name] != 0 for name in ("accepted_steps", "rejected_steps", "nn_calls")
+        ):
+            errors.append(f"{prefix}.result_record: skipped run must have zero work counts")
+        if isinstance(run["status"], str) \
+                and run["status"] not in {"completed", "skipped"}:
+            if expected_accepted is not None \
+                    and isinstance(run["accepted_steps"], int) \
+                    and not isinstance(run["accepted_steps"], bool) \
+                    and run["accepted_steps"] > expected_accepted:
+                errors.append(
+                    f"{prefix}.result_record: accepted steps exceed contract"
+                )
+            if expected_nn_calls is not None \
+                    and isinstance(run["nn_calls"], int) \
+                    and not isinstance(run["nn_calls"], bool) \
+                    and run["nn_calls"] > expected_nn_calls:
+                errors.append(f"{prefix}.result_record: NN calls exceed contract")
         if run["status"] != "completed" and not isinstance(run["first_failure"], dict):
             errors.append(f"{prefix}.result_record: terminal non-completion lacks first failure")
         elif run["status"] != "completed":
             errors.extend(_validate_failure(
                 run["first_failure"], f"{prefix}.result_record.run.first_failure"
             ))
+            if run["first_failure"].get("reason_code") != run["outcome"]:
+                errors.append(
+                    f"{prefix}.result_record: first failure reason disagrees with outcome"
+                )
+            if run["first_failure"].get("detail") != cell["run"]["failure_detail"]:
+                errors.append(
+                    f"{prefix}.result_record: first failure detail disagrees with cell"
+                )
 
     property_raw = record["property"]
     property_value = property_raw if isinstance(property_raw, dict) else {}
@@ -755,9 +984,10 @@ def _validate_result_record(
     )
     errors.extend(property_errors)
     if not property_errors:
-        if property_value["status"] not in {
+        if not isinstance(property_value["status"], str) or property_value["status"] not in {
             "passed", "failed", "not_applicable", "not_checked"
-        } or property_value["certificate_status"] not in {
+        } or not isinstance(property_value["certificate_status"], str) \
+                or property_value["certificate_status"] not in {
             "passed", "failed", "not_applicable", "not_checked"
         }:
             errors.append(f"{prefix}.result_record.property: invalid status")
@@ -769,6 +999,13 @@ def _validate_result_record(
             or property_value["artifact"] is None
         ):
             errors.append(f"{prefix}.result_record: completed run lacks explicit property/certificate")
+        if run.get("status") == "skipped" and (
+            property_value["status"] != "not_checked"
+            or property_value["certificate_status"] != "not_checked"
+        ):
+            errors.append(
+                f"{prefix}.result_record: skipped run cannot claim property evidence"
+            )
         if property_value["artifact"] is not None:
             errors.extend(_validate_artifact(
                 property_value["artifact"], root,
@@ -791,14 +1028,35 @@ def _validate_result_record(
         for name in eligibility_keys - {"numerical_soundness_class", "soundness_scope"}:
             if not isinstance(eligibility[name], bool):
                 errors.append(f"{prefix}.result_record.eligibility.{name}: expected Boolean")
-        if eligibility["numerical_soundness_class"] not in SOUNDNESS_CLASSES:
+        if not isinstance(eligibility["numerical_soundness_class"], str) \
+                or eligibility["numerical_soundness_class"] not in SOUNDNESS_CLASSES:
             errors.append(f"{prefix}.result_record.eligibility: invalid soundness class")
-        if eligibility["soundness_scope"] not in SOUNDNESS_SCOPES:
+        if not isinstance(eligibility["soundness_scope"], str) \
+                or eligibility["soundness_scope"] not in SOUNDNESS_SCOPES:
             errors.append(f"{prefix}.result_record.eligibility: invalid soundness scope")
         if eligibility["requested_horizon_completed"] != run.get(
             "requested_horizon_completed"
         ):
             errors.append(f"{prefix}.result_record: horizon eligibility disagrees with run")
+        certificate_passed = property_value.get("certificate_status") == "passed"
+        if eligibility["certificate_semantics_passed"] is not certificate_passed:
+            errors.append(
+                f"{prefix}.result_record: certificate eligibility disagrees with property"
+            )
+        if eligibility["mathematical_contract_known"] is not True:
+            errors.append(
+                f"{prefix}.result_record: bound resolved contract must be marked known"
+            )
+        if run.get("status") == "completed" \
+                and eligibility["finite_outputs"] is not True:
+            errors.append(
+                f"{prefix}.result_record: completed run must have finite outputs"
+            )
+        if run.get("outcome") == "nonfinite" \
+                and eligibility["finite_outputs"] is not False:
+            errors.append(
+                f"{prefix}.result_record: nonfinite outcome cannot claim finite outputs"
+            )
 
     samples = record["samples"]
     if not isinstance(samples, list):
@@ -811,15 +1069,30 @@ def _validate_result_record(
         ))
         if isinstance(sample, dict):
             key = (sample.get("role"), sample.get("index"))
-            if key in sample_keys:
-                errors.append(f"{prefix}.result_record.samples: duplicate role/index {key!r}")
-            sample_keys.add(key)
+            if isinstance(key[0], str) and isinstance(key[1], int) \
+                    and not isinstance(key[1], bool):
+                if key in sample_keys:
+                    errors.append(
+                        f"{prefix}.result_record.samples: duplicate role/index {key!r}"
+                    )
+                sample_keys.add(key)
     if run.get("status") == "completed":
         plan = cell["measurement_plan"]
-        expected_keys = {
-            *(("cold", index) for index in range(plan["cold_runs"])),
-            *(("steady", index) for index in range(plan["steady_runs"])),
-        }
+        cold_runs = plan.get("cold_runs") if isinstance(plan, Mapping) else None
+        steady_runs = plan.get("steady_runs") if isinstance(plan, Mapping) else None
+        if any(
+            isinstance(count, bool) or not isinstance(count, int) or count < 0
+            for count in (cold_runs, steady_runs)
+        ):
+            errors.append(
+                f"{prefix}.result_record: invalid planned sample counts"
+            )
+            expected_keys: set[tuple[str, int]] = set()
+        else:
+            expected_keys = {
+                *(("cold", index) for index in range(cold_runs)),
+                *(("steady", index) for index in range(steady_runs)),
+            }
         if sample_keys != expected_keys or len(samples) != len(expected_keys):
             errors.append(f"{prefix}.result_record: completed run lacks every planned sample")
         if any(
@@ -827,13 +1100,78 @@ def _validate_result_record(
             for sample in samples
         ):
             errors.append(f"{prefix}.result_record: completed run has non-completed sample")
+        for index, sample in enumerate(samples):
+            if not isinstance(sample, dict):
+                continue
+            key = (sample.get("role"), sample.get("index"))
+            if not isinstance(key[0], str) or not isinstance(key[1], int) \
+                    or isinstance(key[1], bool) or key not in expected_keys:
+                continue
+            label = f"{prefix}.result_record.samples[{index}]"
+            if sample.get("validated_extent") != run.get("requested_extent"):
+                errors.append(f"{label}: extent disagrees with completed run")
+            for name in ("accepted_steps", "rejected_steps", "nn_calls"):
+                if sample.get(name) != run.get(name):
+                    errors.append(f"{label}.{name}: disagrees with run summary")
 
+    widths = record["widths"]
     errors.extend(_validate_widths(
-        record["widths"], root, f"{prefix}.result_record.widths"
+        widths, root, f"{prefix}.result_record.widths"
     ))
-    if run.get("status") == "completed" and isinstance(record["widths"], dict) \
-            and record["widths"].get("status") != "complete":
-        errors.append(f"{prefix}.result_record: completed run lacks complete widths")
+    if isinstance(widths, dict):
+        completed = run.get("status") == "completed"
+        if completed and widths.get("status") != "complete":
+            errors.append(
+                f"{prefix}.result_record: completed run lacks complete widths"
+            )
+        if run.get("status") == "skipped" and (
+            widths.get("status") != "unavailable"
+            or any(
+                not isinstance(widths.get(name), dict)
+                or widths[name].get("status") != "unavailable"
+                for name in ("endpoint", "last_segment_tube", "full_horizon_tube")
+            )
+        ):
+            errors.append(
+                f"{prefix}.result_record: skipped run must have unavailable widths"
+            )
+        if widths.get("coordinate_order") != contract_variables:
+            errors.append(
+                f"{prefix}.result_record.widths: coordinate order does not match contract"
+            )
+        common_prefix = widths.get("common_prefix")
+        if common_prefix != run.get("validated_extent"):
+            errors.append(
+                f"{prefix}.result_record.widths: common prefix disagrees with validated extent"
+            )
+        if completed and (not isinstance(common_prefix, dict) or not _is_finite_number(
+            common_prefix.get("value"), positive=True
+        )):
+            errors.append(
+                f"{prefix}.result_record.widths: completed common prefix must be positive"
+            )
+        validated = run.get("validated_extent")
+        if isinstance(validated, dict) and set(validated) == {"kind", "value"} \
+                and contract is not None:
+            kind, end = validated["kind"], validated["value"]
+            expected_domains = {
+                "endpoint": {"kind": kind, "start": end, "end": end},
+                "last_segment_tube": {
+                    "kind": kind,
+                    "start": _last_segment_start(contract, end),
+                    "end": end,
+                },
+                "full_horizon_tube": {"kind": kind, "start": 0, "end": end},
+            }
+            for name, expected_domain in expected_domains.items():
+                view = widths.get(name)
+                domain = view.get("domain") if isinstance(view, dict) else None
+                if not _same_domain(domain, expected_domain):
+                    scope = "completed run" if completed else "validated prefix"
+                    errors.append(
+                        f"{prefix}.result_record.widths.{name}: domain disagrees "
+                        f"with {scope}"
+                    )
 
     artifacts = record["artifacts"]
     if not isinstance(artifacts, list):
@@ -850,34 +1188,119 @@ def _validate_result_record(
     if not {"command", "run_log", "result"} <= roles:
         errors.append(f"{prefix}.result_record: command/run_log/result artifacts are required")
 
-    if isinstance(eligibility, dict) and eligibility.get("cross_tool_ranking_eligible"):
-        prerequisites = (
-            eligibility.get("mathematical_contract_known"),
-            eligibility.get("requested_horizon_completed"),
-            eligibility.get("certificate_semantics_passed"),
-            eligibility.get("finite_outputs"),
-            eligibility.get("performance_measurement_eligible"),
+    if isinstance(eligibility, dict) \
+            and eligibility.get("performance_measurement_eligible") is True:
+        performance_prerequisites = (
             run.get("status") == "completed",
+            run.get("requested_horizon_completed") is True,
+            eligibility.get("finite_outputs") is True,
+            sample_keys == expected_keys if run.get("status") == "completed" else False,
+            all(
+                isinstance(sample, dict) and sample.get("outcome") == "completed"
+                for sample in samples
+            ),
+        )
+        if not all(performance_prerequisites):
+            errors.append(
+                f"{prefix}.result_record: performance eligibility lacks prerequisites"
+            )
+    if isinstance(eligibility, dict) \
+            and eligibility.get("cross_tool_ranking_eligible") is True:
+        soundness = eligibility.get("numerical_soundness_class")
+        scope = eligibility.get("soundness_scope")
+        prerequisites = (
+            eligibility.get("mathematical_contract_known") is True,
+            eligibility.get("requested_horizon_completed") is True,
+            eligibility.get("certificate_semantics_passed") is True,
+            eligibility.get("finite_outputs") is True,
+            eligibility.get("performance_measurement_eligible") is True,
+            run.get("status") == "completed",
+            property_value.get("certificate_status") == "passed",
+            isinstance(soundness, str) and soundness not in {
+                "empirically sampled only", "unknown",
+                "unsound/ineligible on a demonstrated counterexample",
+            },
+            isinstance(scope, str)
+            and scope in {"fixed workload", "multi-step lane", "native build"},
             isinstance(record["widths"], dict)
             and record["widths"].get("status") == "complete",
         )
         if not all(prerequisites):
             errors.append(f"{prefix}.result_record: ranking eligibility lacks prerequisites")
-    if isinstance(eligibility, dict) and eligibility.get("formal_claim_eligible"):
+    if isinstance(eligibility, dict) \
+            and eligibility.get("formal_claim_eligible") is True:
+        soundness = eligibility.get("numerical_soundness_class")
+        scope = eligibility.get("soundness_scope")
         formal_prerequisites = (
-            eligibility.get("mathematical_contract_known"),
-            eligibility.get("requested_horizon_completed"),
-            eligibility.get("certificate_semantics_passed"),
-            eligibility.get("finite_outputs"),
-            eligibility.get("numerical_soundness_class") not in {
+            eligibility.get("mathematical_contract_known") is True,
+            eligibility.get("requested_horizon_completed") is True,
+            eligibility.get("certificate_semantics_passed") is True,
+            eligibility.get("finite_outputs") is True,
+            isinstance(soundness, str) and soundness not in {
                 "empirically sampled only", "unknown",
                 "unsound/ineligible on a demonstrated counterexample",
             },
+            isinstance(scope, str)
+            and scope in {"fixed workload", "multi-step lane", "native build"},
             run.get("status") == "completed",
+            property_value.get("certificate_status") == "passed",
         )
         if not all(formal_prerequisites):
             errors.append(f"{prefix}.result_record: formal eligibility lacks prerequisites")
     return errors
+
+
+def _execution_plan_reasons(cell: Mapping[str, Any]) -> list[str]:
+    reasons: list[str] = []
+    if _dotted(cell, "support.status") != "supported":
+        reasons.append("support_not_supported")
+    blockers = _dotted(cell, "support.blockers")
+    if blockers != []:
+        reasons.append("support_blocked")
+    argv = _dotted(cell, "command.argv")
+    if not isinstance(argv, list) or not argv \
+            or not all(isinstance(item, str) and item for item in argv):
+        reasons.append("command_argv_missing")
+    cwd = _dotted(cell, "command.cwd")
+    if not isinstance(cwd, str) or not cwd.strip():
+        reasons.append("command_cwd_missing")
+    source = cell.get("source_identity")
+    if not isinstance(source, Mapping) or not all(
+        isinstance(source.get(key), str) and source[key].strip()
+        for key in ("kind", "locator")
+    ):
+        reasons.append("source_identity_missing")
+    if not isinstance(source, Mapping) or not any((
+        isinstance(source.get("revision"), str) and source["revision"].strip(),
+        _is_sha256(source.get("sha256")),
+    )):
+        reasons.append("source_revision_or_sha_missing")
+    binary = cell.get("binary_identity")
+    if not isinstance(binary, Mapping) or not (
+        isinstance(binary.get("path"), str) and binary["path"].strip()
+        and _is_sha256(binary.get("sha256"))
+    ):
+        reasons.append("binary_identity_missing")
+    runtime = cell.get("runtime")
+    timeout = runtime.get("timeout_s") if isinstance(runtime, Mapping) else None
+    if not _is_finite_number(timeout, positive=True):
+        reasons.append("runtime_timeout_missing")
+    if not isinstance(runtime, Mapping) or not _nonempty(runtime.get("hardware")) \
+            or not _nonempty(runtime.get("resource_limits")):
+        reasons.append("runtime_budget_missing")
+    if not isinstance(runtime, Mapping) or not _nonempty(runtime.get("gpu")):
+        reasons.append("runtime_gpu_missing")
+    threads = runtime.get("cpu_threads") if isinstance(runtime, Mapping) else None
+    if isinstance(threads, bool) or not isinstance(threads, int) or threads <= 0:
+        reasons.append("runtime_cpu_threads_missing")
+    arithmetic = cell.get("arithmetic")
+    if not isinstance(arithmetic, Mapping):
+        reasons.append("arithmetic_missing")
+    else:
+        for name, value in arithmetic.items():
+            if not _nonempty(value):
+                reasons.append(f"arithmetic_{name}_missing")
+    return reasons
 
 
 def _validate_cell_types(
@@ -1009,7 +1432,11 @@ def validate_matrix(
                 ("run.status", resolved["run"]["status"]),
                 ("run.failure_category", resolved["run"]["failure_category"]),
             ):
-                if value not in enums.get(dotted, []):
+                is_string_enum = dotted != "run.failure_category"
+                if (is_string_enum and not isinstance(value, str)) or (
+                    not is_string_enum and value is not None
+                    and not isinstance(value, str)
+                ) or value not in enums.get(dotted, []):
                     errors.append(f"{prefix}: invalid {dotted}={value!r}")
             errors.extend(_validate_cell_types(resolved, prefix))
             status = resolved["run"]["status"]
@@ -1017,7 +1444,8 @@ def validate_matrix(
             detail = resolved["run"]["failure_detail"]
             if status == "not_started" and (category is not None or detail is not None):
                 errors.append(f"{prefix}: not_started cell carries failure data")
-            if status in {"failed", "timeout", "interrupted", "skipped"} and (
+            if isinstance(status, str) \
+                    and status in {"failed", "timeout", "interrupted", "skipped"} and (
                 category is None or not isinstance(detail, str) or not detail.strip()
             ):
                 errors.append(f"{prefix}: terminal failure lacks category/detail")
@@ -1034,17 +1462,29 @@ def validate_matrix(
             if resolved["support"]["status"] == "unsupported" \
                     and status == "completed":
                 errors.append(f"{prefix}: unsupported cell cannot be completed")
+            if status == "skipped":
+                if resolved["support"]["status"] != "unsupported" \
+                        or not resolved["support"]["blockers"]:
+                    errors.append(
+                        f"{prefix}: skipped cell requires unsupported status and blockers"
+                    )
+            elif isinstance(status, str) and status in TERMINAL_STATUSES:
+                plan_reasons = _execution_plan_reasons(resolved)
+                if plan_reasons:
+                    errors.append(
+                        f"{prefix}: terminal cell lacks executable plan "
+                        f"({', '.join(plan_reasons)})"
+                    )
             link = resolved["result_record"]
             has_link = all(link[name] is not None for name in (
                 "schema_version", "path", "sha256"
             ))
             if status == "not_started" and has_link:
                 errors.append(f"{prefix}: not_started cell carries a result record")
-            if status in TERMINAL_STATUSES and not has_link:
+            if isinstance(status, str) and status in TERMINAL_STATUSES and not has_link:
                 errors.append(f"{prefix}: terminal cell lacks a result record")
-            if status in TERMINAL_STATUSES and instances_by_id[instance]["contract"].get(
-                "status"
-            ) != "resolved":
+            if isinstance(status, str) and status in TERMINAL_STATUSES \
+                    and instances_by_id[instance]["contract"].get("status") != "resolved":
                 errors.append(f"{prefix}: terminal cell has unresolved instance contract")
             if has_link:
                 record_path, bound_errors = _bound_file(
@@ -1062,7 +1502,7 @@ def validate_matrix(
                             resolved,
                         ))
     statuses = [
-        resolve_cell(matrix, instance, method)["run"]["status"]
+        _dotted(resolve_cell(matrix, instance, method), "run.status")
         for instance in instance_ids
         for method in methods
         if instance in matrix.get("cells", {})
@@ -1073,7 +1513,10 @@ def validate_matrix(
             expected_status = "not_started"
         elif any(status == "running" for status in statuses):
             expected_status = "running"
-        elif all(status in TERMINAL_STATUSES for status in statuses):
+        elif all(
+            isinstance(status, str) and status in TERMINAL_STATUSES
+            for status in statuses
+        ):
             expected_status = "terminal"
         else:
             expected_status = "in_progress"
@@ -1110,38 +1553,7 @@ def preflight_reasons(
     ):
         reasons.append("contract_invalid")
     cell = resolve_cell(matrix, instance, method)
-    if cell["support"]["status"] != "supported":
-        reasons.append("support_not_supported")
-    command = cell["command"]
-    if not isinstance(command["argv"], list) or not command["argv"]:
-        reasons.append("command_argv_missing")
-    if not isinstance(command["cwd"], str) or not command["cwd"].strip():
-        reasons.append("command_cwd_missing")
-    source = cell["source_identity"]
-    if not all(isinstance(source[key], str) and source[key].strip()
-               for key in ("kind", "locator")):
-        reasons.append("source_identity_missing")
-    if not any(isinstance(source[key], str) and source[key].strip()
-               for key in ("revision", "sha256")):
-        reasons.append("source_revision_or_sha_missing")
-    binary = cell["binary_identity"]
-    if not all(isinstance(binary[key], str) and binary[key].strip()
-               for key in ("path", "sha256")):
-        reasons.append("binary_identity_missing")
-    runtime = cell["runtime"]
-    timeout = runtime["timeout_s"]
-    if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) \
-            or not math.isfinite(timeout) or timeout <= 0:
-        reasons.append("runtime_timeout_missing")
-    if runtime["hardware"] is None or runtime["resource_limits"] is None:
-        reasons.append("runtime_budget_missing")
-    if isinstance(runtime["cpu_threads"], bool) or not isinstance(
-        runtime["cpu_threads"], int
-    ) or runtime["cpu_threads"] <= 0:
-        reasons.append("runtime_cpu_threads_missing")
-    for name, value in cell["arithmetic"].items():
-        if not _nonempty(value):
-            reasons.append(f"arithmetic_{name}_missing")
+    reasons.extend(_execution_plan_reasons(cell))
     if cell["run"]["status"] != "not_started":
         reasons.append("cell_not_not_started")
     return list(dict.fromkeys(reasons))
