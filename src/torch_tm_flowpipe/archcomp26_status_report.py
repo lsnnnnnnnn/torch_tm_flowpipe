@@ -42,6 +42,36 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _verify_bound_file(
+    root: Path,
+    record: Mapping[str, Any],
+    *,
+    path_key: str,
+    sha_key: str,
+    label: str,
+) -> Path:
+    raw_path = record.get(path_key)
+    if not isinstance(raw_path, str) or not raw_path:
+        raise ValueError(f"plot receipt {label} path is missing")
+    relative = Path(raw_path)
+    if relative.is_absolute():
+        raise ValueError(f"plot receipt {label} path must be repository-relative")
+    resolved_root = root.resolve()
+    candidate = (resolved_root / relative).resolve()
+    try:
+        candidate.relative_to(resolved_root)
+    except ValueError as error:
+        raise ValueError(
+            f"plot receipt {label} path escapes the repository"
+        ) from error
+    if not candidate.is_file():
+        raise ValueError(f"plot receipt {label} file is missing")
+    expected_sha = record.get(sha_key)
+    if not isinstance(expected_sha, str) or _sha256(candidate) != expected_sha:
+        raise ValueError(f"plot receipt {label} SHA-256 does not match current source")
+    return candidate
+
+
 def summarize_matrix(
     manifest: Mapping[str, Any], matrix: Mapping[str, Any]
 ) -> tuple[list[dict[str, Any]], Counter[str], Counter[str]]:
@@ -66,6 +96,25 @@ def summarize_matrix(
 def collect_status(root: Path = ROOT) -> dict[str, Any]:
     paths = {name: root / relative for name, relative in INPUTS.items()}
     payload = {name: _load(path) for name, path in paths.items()}
+    plot_receipt = payload["plot_receipt"]
+    generator = plot_receipt.get("generator")
+    geometry_check = plot_receipt.get("independent_geometry_check")
+    if not isinstance(generator, Mapping) or not isinstance(geometry_check, Mapping):
+        raise ValueError("plot receipt source identities are missing")
+    _verify_bound_file(
+        root,
+        generator,
+        path_key="path",
+        sha_key="sha256",
+        label="generator",
+    )
+    _verify_bound_file(
+        root,
+        geometry_check,
+        path_key="verifier_path",
+        sha_key="verifier_sha256",
+        label="verifier",
+    )
     manifest = payload["manifest"]
     rows, run_counts, support_counts = summarize_matrix(
         manifest, payload["matrix"]

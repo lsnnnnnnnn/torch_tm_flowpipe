@@ -304,6 +304,16 @@ class FlowpipePlotTests(unittest.TestCase):
                 "demo", "demo-continuous", ["x1", "x2", "x3"], 1.0, 1
             ))
 
+            bad_identity = plot_identity(
+                "demo", "demo-continuous", ["x1", "x2", "x3"], 1.0, True
+            )
+            sidecar(root, 1, bad_identity)
+            with self.assertRaisesRegex(ValueError, "expected_steps"):
+                export_geometry(**arguments)
+            sidecar(root, 1, plot_identity(
+                "demo", "demo-continuous", ["x1", "x2", "x3"], 1.0, 1
+            ))
+
             tampered = json.loads(json.dumps(geometry))
             tampered["instance_id"] = "other"
             with self.assertRaisesRegex(ValueError, "instance_id does not match"):
@@ -743,7 +753,7 @@ class FlowpipePlotTests(unittest.TestCase):
                         expected_steps=1000,
                     )
 
-    def test_matlab_uses_patches_units_and_rejects_timed_state_region(self):
+    def test_matlab_uses_patches_units_and_labels_timed_state_region(self):
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)
             observer(root, 1)
@@ -764,17 +774,19 @@ class FlowpipePlotTests(unittest.TestCase):
             self.assertIn("h_region_1 = patch", text)
             self.assertIn("xlabel('x1 [m]')", text)
             self.assertIn("Legacy informational plot spec; not identity-bound.", text)
-            with self.assertRaisesRegex(ValueError, "time-scoped regions"):
-                export_geometry(
-                    [("candidate", root)],
-                    benchmark="demo",
-                    coordinate_names=["x1", "x2", "x3"],
-                    projection_text="x1,x2",
-                    view="endpoint",
-                    step_size=.5,
-                    expected_steps=1,
-                    spec=legacy_spec(timed_state_region=True),
-                )
+            timed = export_geometry(
+                [("candidate", root)],
+                benchmark="demo",
+                coordinate_names=["x1", "x2", "x3"],
+                projection_text="x1,x2",
+                view="endpoint",
+                step_size=.5,
+                expected_steps=1,
+                spec=legacy_spec(timed_state_region=True),
+            )
+            timed_script = root / "timed.m"
+            write_matlab(timed, timed_script)
+            self.assertIn("Safe region [endpoint t=0.5]", timed_script.read_text(encoding="utf-8"))
 
     def test_footer_discloses_hidden_partial_unprojected_region_and_empty_legend(self):
         with tempfile.TemporaryDirectory() as scratch:

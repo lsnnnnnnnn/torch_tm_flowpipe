@@ -1309,7 +1309,12 @@ def _validate_plot_series_binding(
             )
         ):
             raise ValueError("series source_identity step_size does not match geometry")
-        if identity.get("expected_steps") != expected_steps:
+        identity_expected_steps = identity.get("expected_steps")
+        if (
+            not isinstance(identity_expected_steps, int)
+            or isinstance(identity_expected_steps, bool)
+            or identity_expected_steps != expected_steps
+        ):
             raise ValueError("series source_identity expected_steps does not match geometry")
     return {
         **spec_binding,
@@ -1347,7 +1352,11 @@ def export_geometry(
         raise ValueError("coordinate names must be nonempty and unique")
     for name in coordinate_names:
         _plain_text(name, "coordinate name")
-    if expected_steps is None or expected_steps < 1:
+    if (
+        not isinstance(expected_steps, int)
+        or isinstance(expected_steps, bool)
+        or expected_steps < 1
+    ):
         raise ValueError("expected_steps is required and must be positive")
     if display_steps is not None and not display_steps:
         raise ValueError("display step selection is empty")
@@ -1866,10 +1875,6 @@ def _region_boxes(geometry: dict[str, Any]) -> list[dict[str, Any]]:
             if projection["x"] not in bounds or projection["y"] not in bounds:
                 continue
             timing = region.get("time", {"kind": "all"})
-            if timing.get("kind", "all") != "all":
-                raise ValueError(
-                    "time-scoped regions cannot be overlaid on a multi-time state-state plot"
-                )
             xlo, xhi = bounds[projection["x"]]
             ylo, yhi = bounds[projection["y"]]
         else:
@@ -1890,7 +1895,23 @@ def _region_boxes(geometry: dict[str, Any]) -> list[dict[str, Any]]:
             horizon = geometry["expected_steps"] * geometry["step_size"]
             if xlo < 0.0 or xhi < xlo or xhi > horizon:
                 raise ValueError("time-state region lies outside the numerical horizon")
-        regions.append({**region, "box": [float(xlo), float(xhi), float(ylo), float(yhi)]})
+        timing = region.get("time", {"kind": "all"})
+        kind = timing.get("kind", "all")
+        label = str(region.get("label", "Region"))
+        if kind == "endpoint":
+            display_label = f"{label} [endpoint t={float(timing['at']):.17g}]"
+        elif kind == "interval":
+            display_label = (
+                f"{label} [t in [{float(timing['lo']):.17g},"
+                f" {float(timing['hi']):.17g}]]"
+            )
+        else:
+            display_label = label
+        regions.append({
+            **region,
+            "display_label": display_label,
+            "box": [float(xlo), float(xhi), float(ylo), float(yhi)],
+        })
     return regions
 
 
@@ -2181,7 +2202,7 @@ def write_matlab(geometry: dict[str, Any], path: Path) -> None:
         )
         lines.append("end")
         legend_handles.append(f"h_region_{index}")
-        legend_labels.append(region.get("label", f"Region {index}"))
+        legend_labels.append(region.get("display_label", region.get("label", f"Region {index}")))
     projection = geometry["projection"]
     units = geometry.get("spec", {}).get("units", {})
     x_label = projection["x"] + (f" [{units[projection['x']]}]" if projection["x"] in units else "")
@@ -2302,8 +2323,13 @@ def render_matplotlib(geometry: dict[str, Any], prefix: Path) -> tuple[Path, Pat
             axis.add_patch(Rectangle((xlo, ylo), xhi - xlo, yhi - ylo,
                                      facecolor=face_color, edgecolor=edge_color, alpha=.12,
                                      linestyle=line_style, linewidth=1.0))
-        handles.append(Patch(facecolor=face_color, edgecolor=edge_color, alpha=.2,
-                             linestyle=line_style, label=region.get("label", "Region")))
+        handles.append(Patch(
+            facecolor=face_color,
+            edgecolor=edge_color,
+            alpha=.2,
+            linestyle=line_style,
+            label=region.get("display_label", region.get("label", "Region")),
+        ))
     projection = geometry["projection"]
     units = geometry.get("spec", {}).get("units", {})
     x_unit = units.get(projection["x"], "")

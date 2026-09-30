@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 from pathlib import Path
 from statistics import median
@@ -6,6 +7,7 @@ from statistics import median
 import pytest
 
 from torch_tm_flowpipe.archcomp26_status_report import (
+    _verify_bound_file,
     collect_status,
     render_markdown,
     summarize_matrix,
@@ -17,6 +19,38 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def load(relative: str):
     return json.loads((ROOT / relative).read_text(encoding="utf-8"))
+
+
+def test_plot_receipt_file_binding_is_relative_and_exact(tmp_path):
+    source = tmp_path / "generator.py"
+    source.write_text("print('bound')\n", encoding="utf-8")
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    record = {"path": "generator.py", "sha256": digest}
+    assert _verify_bound_file(
+        tmp_path,
+        record,
+        path_key="path",
+        sha_key="sha256",
+        label="generator",
+    ) == source.resolve()
+
+    for bad_path in (str(source.resolve()), "../generator.py"):
+        with pytest.raises(ValueError, match="repository-relative|escapes"):
+            _verify_bound_file(
+                tmp_path,
+                {**record, "path": bad_path},
+                path_key="path",
+                sha_key="sha256",
+                label="generator",
+            )
+    with pytest.raises(ValueError, match="SHA-256"):
+        _verify_bound_file(
+            tmp_path,
+            {**record, "sha256": "0" * 64},
+            path_key="path",
+            sha_key="sha256",
+            label="generator",
+        )
 
 
 def test_current_status_report_is_deterministic_and_fail_closed():
