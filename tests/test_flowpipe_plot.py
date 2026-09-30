@@ -4,17 +4,23 @@ from pathlib import Path
 import struct
 import tempfile
 import unittest
+from copy import deepcopy
 from unittest.mock import patch
 
 import torch
 
 from torch_tm_flowpipe.flowpipe_plot import (
     SCHEMA,
+    _initial_box,
     export_geometry,
     main,
     render_matplotlib,
     validate_geometry,
     write_matlab,
+)
+from tools.verify_flowpipe_plot_artifacts import (
+    _verify_affine_projection_contract,
+    _verify_observer,
 )
 
 
@@ -154,6 +160,52 @@ def official_spec():
     }
 
 
+def official_affine_spec():
+    return {
+        "schema": "torch-tm-flowpipe-plot-spec-v3",
+        "benchmark": "demo",
+        "instance_id": "demo-affine",
+        "contract_status": "official affine content frozen; execution contract unresolved",
+        "identity_binding": "official_contract_sources_hash_declared",
+        "run_binding": "series_source_identity_plot_contract_required",
+        "warning": "Instance-bound affine content only; no matched solver claim.",
+        "model_domain": "continuous_time",
+        "source_refs": [
+            {"path": "benchmarks/demo/Specifications.txt", "sha256": "a" * 64},
+        ],
+        "horizon": {"kind": "continuous_time", "start": 0.0, "end": 1.0},
+        "property_quantifier": "all_times",
+        "coordinate_names": ["x1", "x2", "x3"],
+        "units": {"t": "s", "margin": "m"},
+        "derived_coordinates": {
+            "margin": {
+                "kind": "affine",
+                "offset": -1.0,
+                "coefficients": {"x1": 1.0, "x2": -2.0},
+            },
+        },
+        "initial_set": {
+            "label": "Official initial set",
+            "bounds": {
+                "x1": [0.0, 2.0],
+                "x2": [1.0, 3.0],
+                "x3": [0.0, 0.0],
+            },
+        },
+        "regions": [{
+            "label": "Official affine safety boundary",
+            "role": "safe",
+            "constraint": {
+                "kind": "threshold",
+                "coordinate": "margin",
+                "operator": ">=",
+                "value": 0.0,
+            },
+            "time": {"kind": "all"},
+        }],
+    }
+
+
 def source_assets(value) -> set[tuple[str, str]]:
     assets: set[tuple[str, str]] = set()
     if isinstance(value, dict):
@@ -187,7 +239,7 @@ class FlowpipePlotTests(unittest.TestCase):
             manifest["official_sources"]["report"]["pdf_sha256"],
         )
         materialized = [row for row in status["instances"] if row["plot_spec"]]
-        self.assertEqual(len(materialized), 8)
+        self.assertEqual(len(materialized), 9)
         for row in materialized:
             spec = json.loads((repo_root / row["plot_spec"]).read_text(encoding="utf-8"))
             manifest_row = manifest_by_id[row["instance_id"]]
@@ -203,7 +255,12 @@ class FlowpipePlotTests(unittest.TestCase):
 
             coordinates = spec["coordinate_names"]
             horizon = float(spec["horizon"]["end"])
-            projection_coordinate = next(iter(spec["regions"][0]["bounds"]))
+            region = spec["regions"][0]
+            projection_coordinate = (
+                region["constraint"]["coordinate"]
+                if "constraint" in region
+                else next(iter(region["bounds"]))
+            )
             with tempfile.TemporaryDirectory() as scratch:
                 root = Path(scratch)
                 observer(root, 1, state_count=len(coordinates))
@@ -226,6 +283,15 @@ class FlowpipePlotTests(unittest.TestCase):
                     geometry["spec_binding"]["status"],
                     "official_content_series_plot_contract_binding_verified",
                 )
+                if row["instance_id"] == "acc-safe-distance":
+                    initial = _initial_box(geometry)
+                    self.assertIsNotNone(initial)
+                    assert initial is not None
+                    self.assertEqual(initial[:2], [0.0, 0.0])
+                    self.assertLessEqual(initial[2], 26.72)
+                    self.assertGreaterEqual(initial[3], 48.0)
+                    self.assertGreater(initial[2], 26.719999999999)
+                    self.assertLess(initial[3], 48.000000000001)
 
     def test_v2_spec_requires_series_instance_binding_without_claiming_full_contract(self):
         with tempfile.TemporaryDirectory() as scratch:
@@ -318,6 +384,124 @@ class FlowpipePlotTests(unittest.TestCase):
             tampered["instance_id"] = "other"
             with self.assertRaisesRegex(ValueError, "instance_id does not match"):
                 validate_geometry(tampered)
+
+    def test_v3_affine_projection_is_outward_rendered_and_independently_verified(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            observer(root, 1)
+            sidecar(root, 1, plot_identity(
+                "demo", "demo-affine", ["x1", "x2", "x3"], 1.0, 1
+            ))
+            geometry = export_geometry(
+                [("candidate", root)],
+                benchmark="demo",
+                instance_id="demo-affine",
+                coordinate_names=["x1", "x2", "x3"],
+                projection_text="t,margin",
+                view="tube",
+                step_size=1.0,
+                expected_steps=1,
+                spec=official_affine_spec(),
+            )
+            self.assertEqual(
+                geometry["projection"]["y_transform"]["terms"],
+                [
+                    {"coordinate": "x1", "index": 0, "coefficient": 1.0},
+                    {"coordinate": "x2", "index": 1, "coefficient": -2.0},
+                ],
+            )
+            xlo, xhi, ylo, yhi = geometry["series"][0]["frames"][0]["boxes"][0]
+            self.assertEqual((xlo, xhi), (0.0, 1.0))
+            self.assertLessEqual(ylo, -18.0)
+            self.assertGreaterEqual(yhi, -10.0)
+            self.assertGreater(ylo, -18.000000000001)
+            self.assertLess(yhi, -9.999999999999)
+            self.assertIn("correlations unavailable", geometry["geometry_class"])
+
+            script = root / "affine.m"
+            write_matlab(geometry, script)
+            script_text = script.read_text(encoding="utf-8")
+            self.assertIn("h_threshold_1 = plot([0 1], [0 0]", script_text)
+            self.assertIn("margin >= 0; all t in [0, 1]", script_text)
+            self.assertIn("source-coordinate correlations are unavailable", script_text)
+            png, pdf = render_matplotlib(geometry, root / "affine")
+            self.assertTrue(png.is_file())
+            self.assertTrue(pdf.is_file())
+
+            _verify_observer(geometry, geometry["series"][0])
+            tampered = deepcopy(geometry)
+            tampered["series"][0]["frames"][0]["boxes"][0][2] += 1.0
+            with self.assertRaisesRegex(ValueError, "geometry mismatch"):
+                _verify_observer(tampered, tampered["series"][0])
+            tampered = deepcopy(geometry)
+            tampered["projection"]["y_transform"]["offset"] = 0.0
+            with self.assertRaisesRegex(ValueError, "does not match the plot spec"):
+                _verify_affine_projection_contract(tampered)
+
+    def test_v3_affine_schema_rejects_unknown_nonfinite_and_generic_expressions(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            observer(root, 1)
+            sidecar(root, 1, plot_identity(
+                "demo", "demo-affine", ["x1", "x2", "x3"], 1.0, 1
+            ))
+            arguments = dict(
+                series=[("candidate", root)],
+                benchmark="demo",
+                instance_id="demo-affine",
+                coordinate_names=["x1", "x2", "x3"],
+                projection_text="t,margin",
+                view="tube",
+                step_size=1.0,
+                expected_steps=1,
+            )
+
+            bad = official_affine_spec()
+            bad["derived_coordinates"]["margin"]["coefficients"] = {"x4": 1.0}
+            with self.assertRaisesRegex(ValueError, "unknown coordinate"):
+                export_geometry(**arguments, spec=bad)
+
+            for coefficient in (True, 0.0, float("nan")):
+                bad = official_affine_spec()
+                bad["derived_coordinates"]["margin"]["coefficients"]["x1"] = coefficient
+                with self.subTest(coefficient=coefficient):
+                    with self.assertRaisesRegex(ValueError, "finite and nonzero"):
+                        export_geometry(**arguments, spec=bad)
+
+            bad = official_affine_spec()
+            bad["derived_coordinates"]["margin"] = {
+                "kind": "expression", "offset": 0.0, "coefficients": {"x1": 1.0}
+            }
+            with self.assertRaisesRegex(ValueError, "one affine transform"):
+                export_geometry(**arguments, spec=bad)
+
+            bad = official_affine_spec()
+            bad["derived_coordinates"]["other_margin"] = {
+                "kind": "affine", "offset": 0.0, "coefficients": {"x3": 1.0}
+            }
+            with self.assertRaisesRegex(ValueError, "exactly one derived coordinate"):
+                export_geometry(**arguments, spec=bad)
+
+            bad = official_affine_spec()
+            bad["regions"][0]["bounds"] = {"x1": [0.0, 1.0]}
+            with self.assertRaisesRegex(ValueError, "exactly one of bounds or constraint"):
+                export_geometry(**arguments, spec=bad)
+
+            bad = official_affine_spec()
+            bad["regions"].append(deepcopy(bad["regions"][0]))
+            with self.assertRaisesRegex(ValueError, "exactly one affine threshold"):
+                export_geometry(**arguments, spec=bad)
+
+            bad = official_affine_spec()
+            bad["schema"] = "torch-tm-flowpipe-plot-spec-v2"
+            with self.assertRaisesRegex(ValueError, "require plot spec v3"):
+                export_geometry(**arguments, spec=bad)
+
+            with self.assertRaisesRegex(ValueError, "only as the y axis"):
+                export_geometry(
+                    **{**arguments, "projection_text": "margin,x1"},
+                    spec=official_affine_spec(),
+                )
 
     def test_time_tube_uses_tube_columns_and_separates_projection_gaps(self):
         with tempfile.TemporaryDirectory() as scratch:

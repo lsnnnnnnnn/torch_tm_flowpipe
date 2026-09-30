@@ -10,12 +10,30 @@ repository commit. It deliberately leaves multiple official controller files,
 continuous/discrete semantics, non-ONNX ingestion, and every execution-policy
 field unresolved instead of guessing.
 
-`execution_matrix.json` is the machine-readable 16-by-4 result scaffold. Its
+`execution_matrix.json` is the machine-readable 16-by-4 result index. Its
 complete default cell records support/blockers, commands, source and binary
-identity, arithmetic, runtime/hardware, run/failure state, timing/memory, and
-common-prefix/endpoint widths. Every instance explicitly has all four method
-cells and every current cell is `not_started`; an empty override is not a
-missing result.
+identity, arithmetic, runtime/hardware, the frozen one-cold/ten-steady
+measurement plan, run/failure state, and a hash-bound external result-record
+pointer. Every instance explicitly has all four method cells and every current
+cell is `not_started`; an empty override is not a missing result.
+
+The v2 matrix deliberately keeps timing, property, certificate, width, and raw
+sample evidence out of the 64-cell index. A terminal cell must instead bind an
+`archcomp26-cell-result-v1` record conforming to
+`result_record.schema.json`. That record preserves every cold/steady sample,
+the timing boundary and phase times, requested versus validated extent,
+accepted/rejected work and NN calls, first failure, property and certificate
+outcomes, eligibility flags, endpoint/last-segment/full-tube absolute bounds,
+union versus per-partition width summaries, and artifact hashes. A `completed`
+cell is rejected unless all planned samples and all three width views are
+complete and the requested extent has been validated.
+
+Changing an instance's manifest status to `resolved` is not enough to open the
+gate. It must bind an `archcomp26-instance-contract-v1` record conforming to
+`instance_contract.schema.json`. The record supplies the shared mathematical
+contract and repository-bound evidence coverage; method-specific arithmetic,
+runtime, command, source, and binary identities stay in the corresponding
+matrix cell. No current instance has such a resolved record.
 
 Run the read-only structural check with:
 
@@ -27,8 +45,10 @@ To inspect one future cell without launching it, add
 `--preflight <instance> <method>`. The command contains no launcher. It rejects
 the current matrix because experiments are paused and contracts, support,
 commands, identities, and runtime budgets are not yet resolved. Nested cell
-overrides must be complete objects, so a partial `run` or `metrics` update
-cannot silently discard default fields.
+overrides must be complete objects, so a partial `run`, plan, or result pointer
+cannot silently discard default fields. The check also verifies schema,
+contract, result, and referenced artifact bytes without a launcher or a
+third-party schema runtime.
 
 `docs/ARCHCOMP26_EXECUTION_STATUS.md` is a deterministic, generated status
 report rather than the final experiment report. It resolves all cell defaults,

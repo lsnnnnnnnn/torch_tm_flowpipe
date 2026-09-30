@@ -315,6 +315,7 @@ def render_markdown(status: Mapping[str, Any]) -> str:
         f"`{str(status['plot']['experiments_started']).lower()}`.",
         "- Plot-contract accounting: "
         f"materialized v2={plot_contracts['counts']['materialized_v2_content_contract']}; "
+        f"materialized v3={plot_contracts['counts'].get('materialized_v3_content_contract', 0)}; "
         "axis-aligned content ready="
         f"{plot_contracts['counts']['axis_aligned_content_ready_not_materialized']}; "
         f"fail-closed blocked={plot_contracts['counts']['blocked_fail_closed']}.",

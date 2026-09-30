@@ -16,12 +16,25 @@ result.
 
 V2 export requires `--instance-id` and fails closed on an instance or horizon
 mismatch. The current renderer accepts only continuous-time v2 specs and only
-axis-aligned property regions. Discrete index sets, halfspaces, and nonlinear
-coupled constraints require explicit future schema/renderer support; they must
-not be approximated as boxes.
+axis-aligned property regions. Linear halfspaces require the explicit v3
+affine-threshold form below. Discrete index sets and nonlinear coupled
+constraints still require future schema/renderer support; none may be
+approximated as boxes.
+
+`acc_safe_distance_archcomp26_content.json` is the narrowly scoped v3
+extension. V3 retains the v2 source/run binding and continuous-time rules, and
+adds exactly one affine coordinate of the declared raw coordinates plus one
+scalar threshold property region. ACC uses
+`safe_distance_margin = x1 - x4 - 1.4*x5 - 10` and the audited all-times
+condition `safe_distance_margin >= 0`. Saved raw-coordinate boxes are mapped
+with outward binary64 interval arithmetic; correlations between source
+coordinates remain unavailable and are disclosed in every rendered artifact.
+V3 is not an arbitrary expression language and does not support nonlinear
+derived coordinates or state-state projections of a derived coordinate.
 
 `archcomp26_status.json` accounts for all 16 non-VCAS instances without
 claiming that an execution contract is resolved. Eight source-audited,
-axis-aligned continuous-time content contracts are materialized as v2 specs.
-The other eight stay fail-closed because the current renderer cannot express
-the property or authoritative temporal semantics still conflict.
+axis-aligned continuous-time content contracts are materialized as v2 specs,
+and ACC is materialized as the single affine-threshold v3 spec. The other
+seven stay fail-closed because the current renderer cannot express the
+property or authoritative temporal semantics still conflict.

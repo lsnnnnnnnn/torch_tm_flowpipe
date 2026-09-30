@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import struct
 from typing import Any
@@ -11,8 +12,70 @@ from typing import Any
 import torch
 
 
+def _affine_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    """Independent binary64-outward affine image for artifact verification."""
+    lower = float(transform["offset"])
+    upper = float(transform["offset"])
+    for term in transform["terms"]:
+        coefficient = float(term["coefficient"])
+        index = int(term["index"])
+        raw_lo = float(bounds[index][lo_column])
+        raw_hi = float(bounds[index][hi_column])
+        selected_lo, selected_hi = (
+            (raw_lo, raw_hi) if coefficient > 0.0 else (raw_hi, raw_lo)
+        )
+        lower = math.nextafter(
+            lower + math.nextafter(coefficient * selected_lo, -math.inf),
+            -math.inf,
+        )
+        upper = math.nextafter(
+            upper + math.nextafter(coefficient * selected_hi, math.inf),
+            math.inf,
+        )
+    if not math.isfinite(lower) or not math.isfinite(upper):
+        raise ValueError("affine derived-coordinate interval is nonfinite")
+    return lower, upper
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _verify_affine_projection_contract(geometry: dict[str, Any]) -> None:
+    projection = geometry["projection"]
+    transform = projection.get("y_transform")
+    if transform is None:
+        return
+    spec = geometry.get("spec", {})
+    name = projection.get("y")
+    declared = spec.get("derived_coordinates", {}).get(name)
+    coordinate_names = geometry["coordinate_names"]
+    if (
+        spec.get("schema") != "torch-tm-flowpipe-plot-spec-v3"
+        or not isinstance(declared, dict)
+    ):
+        raise ValueError("derived projection is absent from the plot spec")
+    expected = {
+        "kind": "affine",
+        "name": name,
+        "offset": float(declared["offset"]),
+        "terms": [
+            {
+                "coordinate": coordinate,
+                "index": coordinate_names.index(coordinate),
+                "coefficient": float(declared["coefficients"][coordinate]),
+            }
+            for coordinate in coordinate_names
+            if coordinate in declared["coefficients"]
+        ],
+    }
+    if transform != expected:
+        raise ValueError("derived projection metadata does not match the plot spec")
 
 
 def _observer_boxes(
@@ -24,7 +87,6 @@ def _observer_boxes(
     lo_col, hi_col = (0, 1) if geometry["view"] == "tube" else (2, 3)
     projection = geometry["projection"]
     if projection["kind"] == "time-state":
-        index = projection["y_index"]
         boxes = []
         if chosen.shape[0]:
             if geometry["view"] == "tube":
@@ -32,8 +94,18 @@ def _observer_boxes(
                 xhi = frame["step"] * geometry["step_size"]
             else:
                 xlo = xhi = frame["step"] * geometry["step_size"]
-            boxes = [[xlo, xhi, float(chosen[:, index, lo_col].amin()),
-                      float(chosen[:, index, hi_col].amax())]]
+            if "y_transform" in projection:
+                intervals = [
+                    _affine_interval(row, lo_col, hi_col, projection["y_transform"])
+                    for row in chosen
+                ]
+                ylo = min(interval[0] for interval in intervals)
+                yhi = max(interval[1] for interval in intervals)
+            else:
+                index = projection["y_index"]
+                ylo = float(chosen[:, index, lo_col].amin())
+                yhi = float(chosen[:, index, hi_col].amax())
+            boxes = [[xlo, xhi, ylo, yhi]]
         lane_ids = None
     else:
         x_index, y_index = projection["x_index"], projection["y_index"]
@@ -89,13 +161,26 @@ def _verify_native(geometry: dict[str, Any], series: dict[str, Any]) -> None:
     for frame in series["frames"]:
         rows = by_step[frame["step"]]
         if projection["kind"] == "time-state":
-            state = projection["y_index"]
-            boxes = [[
-                (frame["step"] - 1) * geometry["step_size"],
-                frame["step"] * geometry["step_size"],
-                min(bounds[state][lo_col] for _, bounds, _ in rows),
-                max(bounds[state][hi_col] for _, bounds, _ in rows),
-            ]]
+            if "y_transform" in projection:
+                intervals = [
+                    _affine_interval(
+                        bounds, lo_col, hi_col, projection["y_transform"]
+                    )
+                    for _, bounds, _ in rows
+                ]
+                ylo = min(interval[0] for interval in intervals)
+                yhi = max(interval[1] for interval in intervals)
+            else:
+                state = projection["y_index"]
+                ylo = min(bounds[state][lo_col] for _, bounds, _ in rows)
+                yhi = max(bounds[state][hi_col] for _, bounds, _ in rows)
+            end = frame["step"] * geometry["step_size"]
+            start = (
+                (frame["step"] - 1) * geometry["step_size"]
+                if geometry["view"] == "tube"
+                else end
+            )
+            boxes = [[start, end, ylo, yhi]]
         else:
             x_index, y_index = projection["x_index"], projection["y_index"]
             boxes = [[bounds[x_index][lo_col], bounds[x_index][hi_col],
@@ -108,6 +193,7 @@ def _verify_native(geometry: dict[str, Any], series: dict[str, Any]) -> None:
 def verify_artifact(root: Path, stem: str) -> dict[str, Any]:
     geometry = json.loads((root / f"{stem}.geometry.json").read_text())
     receipt = json.loads((root / f"{stem}.render.json").read_text())
+    _verify_affine_projection_contract(geometry)
     for name, entry in receipt["artifacts"].items():
         if entry is not None:
             path = Path(entry["path"])

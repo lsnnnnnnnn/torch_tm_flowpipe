@@ -1,0 +1,101 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v3",
+  "benchmark": "ACC",
+  "instance_id": "acc-safe-distance",
+  "contract_status": "official initial, affine safe-distance property, and five-second horizon content frozen; relative-velocity sign and method execution contracts unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "Content contract only. The report does not define the controller input v_rel sign convention; no run is matched until that transform and the remaining execution contract are frozen.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/ACC/Specifications.txt",
+      "sha256": "decb62879f7af779e44e3165d9c11425559be63e1c2265e12d26fdf498fa4f01"
+    },
+    {
+      "path": "benchmarks/ACC/dynamicsACC.m",
+      "sha256": "7addd66be8a8b9b730e30e4581cfa77abf7a8f38c35eb55fd706a9f159672fcc"
+    },
+    {
+      "path": "benchmarks/ACC/controller_5_20.onnx",
+      "sha256": "8dbc1a56cd77b264b46ce8eb226add9098896f393ae2a63538598775bfbcec1b"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 5.0
+  },
+  "property_quantifier": "all_times",
+  "coordinate_names": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "x5",
+    "x6"
+  ],
+  "units": {
+    "t": "s",
+    "safe_distance_margin": "m"
+  },
+  "derived_coordinates": {
+    "safe_distance_margin": {
+      "kind": "affine",
+      "offset": -10.0,
+      "coefficients": {
+        "x1": 1.0,
+        "x4": -1.0,
+        "x5": -1.4
+      }
+    }
+  },
+  "initial_set": {
+    "label": "Official ACC initial set",
+    "bounds": {
+      "x1": [
+        90.0,
+        110.0
+      ],
+      "x2": [
+        32.0,
+        32.2
+      ],
+      "x3": [
+        0.0,
+        0.0
+      ],
+      "x4": [
+        10.0,
+        11.0
+      ],
+      "x5": [
+        30.0,
+        30.2
+      ],
+      "x6": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "regions": [
+    {
+      "label": "Official ACC safe-distance boundary",
+      "role": "safe",
+      "constraint": {
+        "kind": "threshold",
+        "coordinate": "safe_distance_margin",
+        "operator": ">=",
+        "value": 0.0
+      },
+      "time": {
+        "kind": "all"
+      }
+    }
+  ]
+}

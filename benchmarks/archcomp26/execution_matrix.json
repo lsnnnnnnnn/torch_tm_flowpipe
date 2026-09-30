@@ -1,8 +1,13 @@
 {
-  "schema_version": "archcomp26-execution-matrix-v1",
+  "schema_version": "archcomp26-execution-matrix-v2",
   "source_manifest": "benchmarks/archcomp26/manifest.json",
   "merge_semantics": "shallow_override_of_complete_cell_defaults",
   "status": "not_started",
+  "result_record_contract": {
+    "path": "benchmarks/archcomp26/result_record.schema.json",
+    "schema_version": "archcomp26-cell-result-v1",
+    "sha256": "afca8360e9504af902a01f233acfe51c13e3436f3b2213632bdcf6561b79e044"
+  },
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "required_cell_fields": [
     "support",
@@ -11,15 +16,14 @@
     "binary_identity",
     "arithmetic",
     "runtime",
+    "measurement_plan",
     "run",
-    "metrics",
-    "widths"
+    "result_record"
   ],
   "enums": {
     "support.status": ["unassessed", "supported", "unsupported"],
     "run.status": ["not_started", "running", "completed", "failed", "timeout", "interrupted", "skipped"],
-    "run.failure_category": [null, "unsupported", "contract_unresolved", "dependency_missing", "build_failed", "runtime_error", "numerical_validation_failed", "timeout", "out_of_memory", "interrupted", "other"],
-    "widths.status": ["not_measured", "partial", "complete", "unavailable"]
+    "run.failure_category": [null, "validation_rejected", "nonfinite", "timeout", "process_error", "compile_error", "missing_dependency", "trajectory_sanity_failed", "analytic_containment_failed", "schema_invalid", "incomplete_unknown"]
   },
   "cell_defaults": {
     "support": {"status": "unassessed", "blockers": []},
@@ -28,17 +32,9 @@
     "binary_identity": {"path": null, "sha256": null},
     "arithmetic": {"mode": null, "controller_domain": null, "relaxation": null, "dtype": null, "transport": null},
     "runtime": {"hardware": null, "cpu_threads": null, "gpu": null, "resource_limits": null, "timeout_s": null},
+    "measurement_plan": {"cold_runs": 1, "steady_runs": 10, "fresh_process_per_run": true, "timing_boundary_version": "total_configuration_v1"},
     "run": {"status": "not_started", "failure_category": null, "failure_detail": null},
-    "metrics": {
-      "timing_s": {"process": null, "driver": null, "solver": null},
-      "peak_memory_bytes": {"host": null, "device": null}
-    },
-    "widths": {
-      "status": "not_measured",
-      "common_prefix": {"steps": null, "time": null},
-      "endpoint": {"time": null, "per_state": null},
-      "artifact": {"path": null, "sha256": null}
-    }
+    "result_record": {"schema_version": null, "path": null, "sha256": null}
   },
   "cells": {
     "acc-safe-distance": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},

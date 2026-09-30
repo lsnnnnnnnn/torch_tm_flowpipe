@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "archcomp26-cell-result-v1",
+  "title": "ARCH-COMP26 four-way cell result",
+  "description": "Authoritative per-cell evidence record. Cross-field and file-hash checks are enforced by torch_tm_flowpipe.archcomp26_preflight without a third-party schema dependency.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "instance_id",
+    "method",
+    "contract_identity",
+    "measurement_plan",
+    "run",
+    "property",
+    "eligibility",
+    "samples",
+    "widths",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "archcomp26-cell-result-v1"},
+    "instance_id": {"type": "string", "minLength": 1},
+    "method": {
+      "enum": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"]
+    },
+    "contract_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instance_contract_sha256", "cell_plan_sha256"],
+      "properties": {
+        "instance_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "cell_plan_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "measurement_plan": {"$ref": "#/$defs/measurement_plan"},
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "outcome",
+        "requested_extent",
+        "validated_extent",
+        "requested_horizon_completed",
+        "accepted_steps",
+        "rejected_steps",
+        "nn_calls",
+        "first_failure"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["completed", "failed", "timeout", "interrupted", "skipped"]
+        },
+        "outcome": {"$ref": "#/$defs/outcome"},
+        "requested_extent": {"$ref": "#/$defs/extent"},
+        "validated_extent": {"$ref": "#/$defs/extent"},
+        "requested_horizon_completed": {"type": "boolean"},
+        "accepted_steps": {"type": "integer", "minimum": 0},
+        "rejected_steps": {"type": "integer", "minimum": 0},
+        "nn_calls": {"type": "integer", "minimum": 0},
+        "first_failure": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/failure"}
+          ]
+        }
+      }
+    },
+    "property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checker",
+        "certificate_status",
+        "certificate_semantics",
+        "artifact"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["passed", "failed", "not_applicable", "not_checked"]
+        },
+        "checker": {"type": ["string", "null"]},
+        "certificate_status": {
+          "enum": ["passed", "failed", "not_applicable", "not_checked"]
+        },
+        "certificate_semantics": {"type": ["string", "null"]},
+        "artifact": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact"}
+          ]
+        }
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mathematical_contract_known",
+        "requested_horizon_completed",
+        "certificate_semantics_passed",
+        "finite_outputs",
+        "numerical_soundness_class",
+        "soundness_scope",
+        "formal_claim_eligible",
+        "performance_measurement_eligible",
+        "cross_tool_ranking_eligible"
+      ],
+      "properties": {
+        "mathematical_contract_known": {"type": "boolean"},
+        "requested_horizon_completed": {"type": "boolean"},
+        "certificate_semantics_passed": {"type": "boolean"},
+        "finite_outputs": {"type": "boolean"},
+        "numerical_soundness_class": {
+          "enum": [
+            "formally outward by construction",
+            "safeguarded outward under declared IEEE/backend assumptions",
+            "independently outward replayed for exact benchmark workload",
+            "empirically sampled only",
+            "unsound/ineligible on a demonstrated counterexample",
+            "unknown"
+          ]
+        },
+        "soundness_scope": {
+          "enum": ["primitive", "one step", "fixed workload", "multi-step lane", "native build"]
+        },
+        "formal_claim_eligible": {"type": "boolean"},
+        "performance_measurement_eligible": {"type": "boolean"},
+        "cross_tool_ranking_eligible": {"type": "boolean"}
+      }
+    },
+    "samples": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/sample"}
+    },
+    "widths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "common_prefix",
+        "coordinate_order",
+        "coordinate_units",
+        "aggregation_semantics",
+        "endpoint",
+        "last_segment_tube",
+        "full_horizon_tube",
+        "trajectory_artifact"
+      ],
+      "properties": {
+        "status": {"enum": ["complete", "partial", "unavailable"]},
+        "common_prefix": {"$ref": "#/$defs/extent"},
+        "coordinate_order": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "coordinate_units": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "aggregation_semantics": {"const": "union_and_per_partition"},
+        "endpoint": {"$ref": "#/$defs/width_measurement"},
+        "last_segment_tube": {"$ref": "#/$defs/width_measurement"},
+        "full_horizon_tube": {"$ref": "#/$defs/width_measurement"},
+        "trajectory_artifact": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact"}
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/artifact"},
+          {
+            "type": "object",
+            "required": ["role"],
+            "properties": {"role": {"type": "string", "minLength": 1}}
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "outcome": {
+      "enum": [
+        "completed",
+        "validation_rejected",
+        "nonfinite",
+        "timeout",
+        "process_error",
+        "compile_error",
+        "missing_dependency",
+        "trajectory_sanity_failed",
+        "analytic_containment_failed",
+        "schema_invalid",
+        "incomplete_unknown"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "role": {"type": "string", "minLength": 1}
+      }
+    },
+    "measurement_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cold_runs",
+        "steady_runs",
+        "fresh_process_per_run",
+        "timing_boundary_version"
+      ],
+      "properties": {
+        "cold_runs": {"type": "integer", "minimum": 0},
+        "steady_runs": {"type": "integer", "minimum": 1},
+        "fresh_process_per_run": {"type": "boolean"},
+        "timing_boundary_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "extent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"enum": ["time_s", "steps"]},
+        "value": {"type": "number", "minimum": 0}
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "reason_code",
+        "step",
+        "time_s",
+        "detail",
+        "exit_code",
+        "signal"
+      ],
+      "properties": {
+        "stage": {"type": "string", "minLength": 1},
+        "reason_code": {"type": "string", "minLength": 1},
+        "step": {"type": ["integer", "null"], "minimum": 0},
+        "time_s": {"type": ["number", "null"], "minimum": 0},
+        "detail": {"type": "string", "minLength": 1},
+        "exit_code": {"type": ["integer", "null"]},
+        "signal": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "process_total",
+        "driver_total",
+        "solver_core",
+        "compile",
+        "validation",
+        "observer_output",
+        "plot_report"
+      ],
+      "properties": {
+        "process_total": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "driver_total": {"type": ["number", "null"], "minimum": 0},
+        "solver_core": {"type": ["number", "null"], "minimum": 0},
+        "compile": {"type": ["number", "null"], "minimum": 0},
+        "validation": {"type": ["number", "null"], "minimum": 0},
+        "observer_output": {"type": ["number", "null"], "minimum": 0},
+        "plot_report": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "index",
+        "outcome",
+        "timing_s",
+        "peak_memory_bytes",
+        "validated_extent",
+        "accepted_steps",
+        "rejected_steps",
+        "nn_calls",
+        "failure",
+        "artifact"
+      ],
+      "properties": {
+        "role": {"enum": ["cold", "steady", "diagnostic"]},
+        "index": {"type": "integer", "minimum": 0},
+        "outcome": {"$ref": "#/$defs/outcome"},
+        "timing_s": {"$ref": "#/$defs/timing"},
+        "peak_memory_bytes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["host", "device"],
+          "properties": {
+            "host": {"type": ["integer", "null"], "minimum": 0},
+            "device": {"type": ["integer", "null"], "minimum": 0}
+          }
+        },
+        "validated_extent": {"$ref": "#/$defs/extent"},
+        "accepted_steps": {"type": "integer", "minimum": 0},
+        "rejected_steps": {"type": "integer", "minimum": 0},
+        "nn_calls": {"type": "integer", "minimum": 0},
+        "failure": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/failure"}
+          ]
+        },
+        "artifact": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lo", "hi", "width"],
+      "properties": {
+        "lo": {"type": "number"},
+        "hi": {"type": "number"},
+        "width": {"type": "number", "minimum": 0}
+      }
+    },
+    "coordinate_width": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coordinate", "union", "per_partition_width"],
+      "properties": {
+        "coordinate": {"type": "string", "minLength": 1},
+        "union": {"$ref": "#/$defs/interval"},
+        "per_partition_width": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mean", "max"],
+          "properties": {
+            "mean": {"type": "number", "minimum": 0},
+            "max": {"type": "number", "minimum": 0}
+          }
+        }
+      }
+    },
+    "width_measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "domain", "per_coordinate", "artifact"],
+      "properties": {
+        "status": {"enum": ["complete", "unavailable"]},
+        "domain": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "start", "end"],
+          "properties": {
+            "kind": {"enum": ["time_s", "steps"]},
+            "start": {"type": "number", "minimum": 0},
+            "end": {"type": "number", "minimum": 0}
+          }
+        },
+        "per_coordinate": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/coordinate_width"}
+        },
+        "artifact": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact"}
+          ]
+        }
+      }
+    }
+  }
+}

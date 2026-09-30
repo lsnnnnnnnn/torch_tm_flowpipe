@@ -45,9 +45,15 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
     assert tuple(manifest["methods"]) == METHODS
     assert manifest["execution_matrix"] == {
         "path": "benchmarks/archcomp26/execution_matrix.json",
-        "schema_version": "archcomp26-execution-matrix-v1",
+        "schema_version": "archcomp26-execution-matrix-v2",
         "status": "all_cells_not_started",
     }
+    contract_schema = manifest["instance_contract_record"]
+    contract_schema_path = ROOT / contract_schema["path"]
+    assert contract_schema["schema_version"] == "archcomp26-instance-contract-v1"
+    assert hashlib.sha256(contract_schema_path.read_bytes()).hexdigest() == (
+        contract_schema["sha256"]
+    )
 
     instances = manifest["instances"]
     assert tuple(row["id"] for row in instances) == EXPECTED_IDS
@@ -95,7 +101,19 @@ def test_execution_matrix_explicitly_has_all_64_not_started_cells():
     required = set(matrix["required_cell_fields"])
     assert set(matrix["cell_defaults"]) == required
     assert matrix["cell_defaults"]["run"]["status"] == "not_started"
-    assert matrix["cell_defaults"]["widths"]["status"] == "not_measured"
+    assert matrix["cell_defaults"]["measurement_plan"] == {
+        "cold_runs": 1,
+        "steady_runs": 10,
+        "fresh_process_per_run": True,
+        "timing_boundary_version": "total_configuration_v1",
+    }
+    assert set(matrix["cell_defaults"]["result_record"].values()) == {None}
+    result_schema = matrix["result_record_contract"]
+    result_schema_path = ROOT / result_schema["path"]
+    assert result_schema["schema_version"] == "archcomp26-cell-result-v1"
+    assert hashlib.sha256(result_schema_path.read_bytes()).hexdigest() == (
+        result_schema["sha256"]
+    )
     count = 0
     for methods in matrix["cells"].values():
         assert tuple(methods) == METHODS
@@ -141,6 +159,7 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         assert (row["benchmark"], row["contract_audit"]) == expected[row["instance_id"]]
         assert row["status"] in {
             "materialized_v2_content_contract",
+            "materialized_v3_content_contract",
             "axis_aligned_content_ready_not_materialized",
             "blocked_fail_closed",
         }
@@ -154,13 +173,14 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         label: sum(row["status"] == label for row in rows)
         for label in (
             "materialized_v2_content_contract",
+            "materialized_v3_content_contract",
             "axis_aligned_content_ready_not_materialized",
             "blocked_fail_closed",
         )
     }
     assert status["counts"] == {"instances": 16, **counts}
     materialized = [row for row in rows if row["plot_spec"] is not None]
-    assert len(materialized) == 8
+    assert len(materialized) == 9
     for row in materialized:
         spec = load(row["plot_spec"])
         assert spec["instance_id"] == row["instance_id"]
@@ -168,6 +188,24 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         assert "execution contract" in spec["contract_status"]
 
     specs = {row["instance_id"]: load(row["plot_spec"]) for row in materialized}
+    acc = specs["acc-safe-distance"]
+    assert acc["schema"] == "torch-tm-flowpipe-plot-spec-v3"
+    assert acc["horizon"]["end"] == 5.0
+    assert acc["derived_coordinates"] == {
+        "safe_distance_margin": {
+            "kind": "affine",
+            "offset": -10.0,
+            "coefficients": {"x1": 1.0, "x4": -1.0, "x5": -1.4},
+        }
+    }
+    assert acc["regions"][0]["constraint"] == {
+        "kind": "threshold",
+        "coordinate": "safe_distance_margin",
+        "operator": ">=",
+        "value": 0.0,
+    }
+    assert acc["regions"][0]["time"] == {"kind": "all"}
+
     airplane = specs["airplane-continuous"]
     assert airplane["horizon"]["end"] == 2.0
     assert airplane["initial_set"]["bounds"]["x4"] == [0.0, 1.0]

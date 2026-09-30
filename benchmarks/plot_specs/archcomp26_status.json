@@ -7,11 +7,10 @@
   "execution_contracts_resolved": false,
   "renderer_scope": {
     "model_domain": "continuous_time",
-    "property_geometry": "axis_aligned_boxes",
+    "property_geometry": "axis_aligned_boxes_and_declared_affine_thresholds",
     "series_identity": "benchmark_instance_coordinates_step_size_and_expected_steps_verified_across_all_observer_sidecars",
     "unsupported": [
       "discrete_index_sets",
-      "linear_halfspaces",
       "nonlinear_coupled_constraints",
       "unresolved_property_quantifiers"
     ]
@@ -19,20 +18,19 @@
   "counts": {
     "instances": 16,
     "materialized_v2_content_contract": 8,
+    "materialized_v3_content_contract": 1,
     "axis_aligned_content_ready_not_materialized": 0,
-    "blocked_fail_closed": 8
+    "blocked_fail_closed": 7
   },
   "instances": [
     {
       "instance_id": "acc-safe-distance",
       "benchmark": "ACC",
       "contract_audit": "acc",
-      "status": "blocked_fail_closed",
-      "plot_spec": null,
-      "content_blockers": [
-        "property_is_a_linear_halfspace_not_an_axis_aligned_box"
-      ],
-      "scope_note": "The full initial box is known, but the safety halfspace must not be approximated as a rectangle."
+      "status": "materialized_v3_content_contract",
+      "plot_spec": "benchmarks/plot_specs/acc_safe_distance_archcomp26_content.json",
+      "content_blockers": [],
+      "scope_note": "The audited halfspace is represented as a declared affine margin threshold without rectangular approximation; derived flowpipe intervals remain box images without source-coordinate correlation."
     },
     {
       "instance_id": "airplane-continuous",

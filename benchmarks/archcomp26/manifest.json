@@ -35,7 +35,7 @@
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "execution_matrix": {
     "path": "benchmarks/archcomp26/execution_matrix.json",
-    "schema_version": "archcomp26-execution-matrix-v1",
+    "schema_version": "archcomp26-execution-matrix-v2",
     "status": "all_cells_not_started"
   },
   "preflight": {
@@ -47,6 +47,11 @@
     "path": "benchmarks/archcomp26/evidence/contract_audits_20261001.json",
     "schema_version": "archcomp26-contract-audits-v1",
     "status": "all 16 rows linked to evidence-backed audits; every execution contract remains unresolved"
+  },
+  "instance_contract_record": {
+    "path": "benchmarks/archcomp26/instance_contract.schema.json",
+    "schema_version": "archcomp26-instance-contract-v1",
+    "sha256": "41d697d78a9f142e5e05e4c22d56be2ac891af560a904037e7e6dca411ab4b23"
   },
   "unresolved_field_profiles": {
     "full_execution_contract_v1": [

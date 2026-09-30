@@ -1,9 +1,11 @@
-"""Export honest box projections from saved flowpipe observers and render them.
+"""Export honest box/affine-interval projections from saved observers.
 
 The QUAD observer contract is ``bounds[B, state, 4]`` with columns
 ``tube_lo, tube_hi, endpoint_lo, endpoint_hi``.  This module deliberately
 calls the resulting geometry a box projection: it does not claim the
-coordinate correlation of Flow*'s octagon projection.
+coordinate correlation of Flow*'s octagon projection.  Plot-spec v3 can form
+one declared affine coordinate from those boxes; it discloses that source
+coordinate correlations remain unavailable.
 """
 from __future__ import annotations
 
@@ -21,8 +23,10 @@ from typing import Any, Iterable
 SCHEMA = "torch-tm-flowpipe-projection-v2"
 PLOT_SPEC_SCHEMA = "torch-tm-flowpipe-plot-spec-v1"
 PLOT_SPEC_SCHEMA_V2 = "torch-tm-flowpipe-plot-spec-v2"
+PLOT_SPEC_SCHEMA_V3 = "torch-tm-flowpipe-plot-spec-v3"
 OBSERVER_RE = re.compile(r"observer_(\d+)\.pt$")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
+DERIVED_COORDINATE_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 VIEW_COLUMNS = {"tube": (0, 1), "endpoint": (2, 3)}
 MAX_STATE_STATE_BOXES = 100_000
 RESULT_SUMMARY_KEYS = (
@@ -146,7 +150,33 @@ def _parse_display_steps(value: str | None, expected_steps: int) -> set[int] | N
     return selected
 
 
-def _parse_projection(value: str, coordinate_names: list[str]) -> dict[str, Any]:
+def _canonical_affine_transform(
+    name: str,
+    transform: dict[str, Any],
+    coordinate_names: list[str],
+) -> dict[str, Any]:
+    return {
+        "kind": "affine",
+        "name": name,
+        "offset": float(transform["offset"]),
+        "terms": [
+            {
+                "coordinate": coordinate,
+                "index": coordinate_names.index(coordinate),
+                "coefficient": float(transform["coefficients"][coordinate]),
+            }
+            for coordinate in coordinate_names
+            if coordinate in transform["coefficients"]
+        ],
+    }
+
+
+def _parse_projection(
+    value: str,
+    coordinate_names: list[str],
+    derived_coordinates: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    derived_coordinates = derived_coordinates or {}
     axes = [part.strip() for part in value.split(",")]
     if len(axes) != 2 or any(not axis for axis in axes):
         raise ValueError("projection must contain exactly two coordinates, e.g. t,x3")
@@ -156,17 +186,31 @@ def _parse_projection(value: str, coordinate_names: list[str]) -> dict[str, Any]
     if time_axes:
         if time_axes != [0]:
             raise ValueError("time-state projection must use time as the first coordinate")
-        if axes[1] not in coordinate_names:
+        if axes[1] not in coordinate_names and axes[1] not in derived_coordinates:
             raise ValueError(f"unknown state coordinate {axes[1]!r}")
-        return {
+        projection = {
             "kind": "time-state",
             "x": "t",
             "y": axes[1],
-            "y_index": coordinate_names.index(axes[1]),
         }
-    unknown = [axis for axis in axes if axis not in coordinate_names]
+        if axes[1] in derived_coordinates:
+            projection["y_transform"] = _canonical_affine_transform(
+                axes[1], derived_coordinates[axes[1]], coordinate_names
+            )
+        else:
+            projection["y_index"] = coordinate_names.index(axes[1])
+        return projection
+    unknown = [
+        axis for axis in axes
+        if axis not in coordinate_names and axis not in derived_coordinates
+    ]
     if unknown:
         raise ValueError(f"unknown state coordinates: {unknown}")
+    if any(axis in derived_coordinates for axis in axes):
+        raise ValueError(
+            "affine derived coordinates are supported only as the y axis of "
+            "a time-state projection"
+        )
     if axes[0] == axes[1]:
         raise ValueError("state-state projection requires two distinct coordinates")
     return {
@@ -176,6 +220,32 @@ def _parse_projection(value: str, coordinate_names: list[str]) -> dict[str, Any]
         "x_index": coordinate_names.index(axes[0]),
         "y_index": coordinate_names.index(axes[1]),
     }
+
+
+def _affine_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    """Return a binary64-outward interval image of one saved state box."""
+    lower = float(transform["offset"])
+    upper = float(transform["offset"])
+    for term in transform["terms"]:
+        coefficient = float(term["coefficient"])
+        index = int(term["index"])
+        raw_lo = float(bounds[index][lo_column])
+        raw_hi = float(bounds[index][hi_column])
+        selected_lo, selected_hi = (
+            (raw_lo, raw_hi) if coefficient > 0.0 else (raw_hi, raw_lo)
+        )
+        product_lo = math.nextafter(coefficient * selected_lo, -math.inf)
+        product_hi = math.nextafter(coefficient * selected_hi, math.inf)
+        lower = math.nextafter(lower + product_lo, -math.inf)
+        upper = math.nextafter(upper + product_hi, math.inf)
+    if not math.isfinite(lower) or not math.isfinite(upper):
+        raise ValueError("affine derived-coordinate interval is nonfinite")
+    return lower, upper
 
 
 def _load_observer(path: Path, state_count: int) -> tuple[Any, Any, Any]:
@@ -676,10 +746,18 @@ def _frame_geometry(
     chosen = bounds[accepted]
     accepted_lane_ids = accepted.nonzero(as_tuple=False).flatten().tolist()
     if projection["kind"] == "time-state":
-        state = projection["y_index"]
         if accepted_count:
-            lo = float(chosen[:, state, lo_column].amin().item())
-            hi = float(chosen[:, state, hi_column].amax().item())
+            if "y_transform" in projection:
+                intervals = [
+                    _affine_interval(row, lo_column, hi_column, projection["y_transform"])
+                    for row in chosen
+                ]
+                lo = min(interval[0] for interval in intervals)
+                hi = max(interval[1] for interval in intervals)
+            else:
+                state = projection["y_index"]
+                lo = float(chosen[:, state, lo_column].amin().item())
+                hi = float(chosen[:, state, hi_column].amax().item())
             if view == "tube":
                 xlo, xhi = (step - 1) * step_size, step * step_size
             else:
@@ -981,16 +1059,22 @@ def _native_frames(
                         "select explicit --display-steps without changing the numerical run"
                     )
                 if projection["kind"] == "time-state":
-                    state = projection["y_index"]
                     if view == "tube":
                         xlo, xhi = (step - 1) * step_size, step * step_size
                     else:
                         xlo = xhi = step * step_size
+                    if "y_transform" in projection:
+                        ylo, yhi = _affine_interval(
+                            bounds, lo_column, hi_column, projection["y_transform"]
+                        )
+                    else:
+                        state = projection["y_index"]
+                        ylo, yhi = bounds[state][lo_column], bounds[state][hi_column]
                     box = [
                         xlo,
                         xhi,
-                        bounds[state][lo_column],
-                        bounds[state][hi_column],
+                        ylo,
+                        yhi,
                     ]
                 else:
                     x_index, y_index = projection["x_index"], projection["y_index"]
@@ -1050,19 +1134,22 @@ def _validate_plot_spec(
     if not isinstance(spec, dict):
         raise ValueError("plot spec must be an object")
     schema = spec.get("schema")
-    if schema not in {PLOT_SPEC_SCHEMA, PLOT_SPEC_SCHEMA_V2}:
+    if schema not in {PLOT_SPEC_SCHEMA, PLOT_SPEC_SCHEMA_V2, PLOT_SPEC_SCHEMA_V3}:
         raise ValueError(
-            f"plot spec must use schema {PLOT_SPEC_SCHEMA} or {PLOT_SPEC_SCHEMA_V2}"
+            "plot spec must use schema "
+            f"{PLOT_SPEC_SCHEMA}, {PLOT_SPEC_SCHEMA_V2}, or {PLOT_SPEC_SCHEMA_V3}"
         )
     if spec.get("benchmark") != benchmark:
         raise ValueError("plot spec benchmark does not match --benchmark")
     if spec.get("coordinate_names") not in (None, coordinate_names):
         raise ValueError("spec coordinate_names do not match the exporter coordinates")
     _plain_text(spec.get("contract_status"), "plot spec contract_status")
+    official = schema in {PLOT_SPEC_SCHEMA_V2, PLOT_SPEC_SCHEMA_V3}
+    version = "v2" if schema == PLOT_SPEC_SCHEMA_V2 else "v3"
     warning = _plain_text(
         spec.get("warning"),
         "plot spec warning",
-        required=spec.get("schema") == PLOT_SPEC_SCHEMA_V2,
+        required=official,
     )
     binding = spec.get("identity_binding")
     if schema == PLOT_SPEC_SCHEMA:
@@ -1075,34 +1162,39 @@ def _validate_plot_spec(
         }
     else:
         if not instance_id:
-            raise ValueError("v2 plot spec requires an explicit --instance-id")
+            raise ValueError(f"{version} plot spec requires an explicit --instance-id")
         _plain_text(instance_id, "instance id")
         if spec.get("instance_id") != instance_id:
             raise ValueError("plot spec instance_id does not match --instance-id")
         if spec.get("coordinate_names") != coordinate_names:
-            raise ValueError("v2 plot spec must declare the exact exporter coordinates")
+            raise ValueError(
+                f"{version} plot spec must declare the exact exporter coordinates"
+            )
         if spec.get("model_domain") != "continuous_time":
-            raise ValueError("v2 plot spec renderer currently supports only continuous_time")
+            raise ValueError(
+                f"{version} plot spec renderer currently supports only continuous_time"
+            )
         if binding != "official_contract_sources_hash_declared":
             raise ValueError(
-                "v2 plot spec must declare official_contract_sources_hash_declared"
+                f"{version} plot spec must declare "
+                "official_contract_sources_hash_declared"
             )
         if spec.get("run_binding") != "series_source_identity_plot_contract_required":
             raise ValueError(
-                "v2 plot spec must declare "
+                f"{version} plot spec must declare "
                 "run_binding=series_source_identity_plot_contract_required"
             )
         source_refs = spec.get("source_refs")
         if not isinstance(source_refs, list) or not source_refs:
-            raise ValueError("v2 plot spec source_refs must be a nonempty list")
+            raise ValueError(f"{version} plot spec source_refs must be a nonempty list")
         seen_source_paths: set[str] = set()
         for index, source_ref in enumerate(source_refs, 1):
             if not isinstance(source_ref, dict) or set(source_ref) != {"path", "sha256"}:
                 raise ValueError(
-                    f"v2 plot spec source_ref {index} must contain only path and sha256"
+                    f"{version} plot spec source_ref {index} must contain only path and sha256"
                 )
             path = _plain_text(
-                source_ref.get("path"), f"v2 plot spec source_ref {index} path"
+                source_ref.get("path"), f"{version} plot spec source_ref {index} path"
             )
             assert path is not None
             path_parts = Path(path).parts
@@ -1115,21 +1207,25 @@ def _validate_plot_spec(
                 or "/".join(path_parts) != path
             ):
                 raise ValueError(
-                    f"v2 plot spec source_ref {index} path must be a safe relative path"
+                    f"{version} plot spec source_ref {index} path must be a safe relative path"
                 )
             digest = source_ref.get("sha256")
             if not isinstance(digest, str) or SHA256_RE.fullmatch(digest) is None:
                 raise ValueError(
-                    f"v2 plot spec source_ref {index} sha256 must be lowercase hexadecimal"
+                    f"{version} plot spec source_ref {index} sha256 must be lowercase hexadecimal"
                 )
             if path in seen_source_paths:
-                raise ValueError("v2 plot spec source_ref paths must be unique")
+                raise ValueError(f"{version} plot spec source_ref paths must be unique")
             seen_source_paths.add(path)
         horizon = spec.get("horizon")
         if not isinstance(horizon, dict) or set(horizon) != {"kind", "start", "end"}:
-            raise ValueError("v2 plot spec horizon must contain kind, start, and end")
+            raise ValueError(
+                f"{version} plot spec horizon must contain kind, start, and end"
+            )
         if horizon.get("kind") != "continuous_time":
-            raise ValueError("v2 plot spec horizon kind must be continuous_time")
+            raise ValueError(
+                f"{version} plot spec horizon kind must be continuous_time"
+            )
         start, end = horizon.get("start"), horizon.get("end")
         if (
             not isinstance(start, (int, float))
@@ -1141,15 +1237,19 @@ def _validate_plot_spec(
             or float(start) != 0.0
             or end <= start
         ):
-            raise ValueError("v2 plot spec horizon must be a finite positive interval from 0")
+            raise ValueError(
+                f"{version} plot spec horizon must be a finite positive interval from 0"
+            )
         if numerical_horizon is not None and not math.isclose(
             float(end), numerical_horizon, rel_tol=0.0, abs_tol=1e-12
         ):
-            raise ValueError("v2 plot spec horizon does not match the numerical horizon")
+            raise ValueError(
+                f"{version} plot spec horizon does not match the numerical horizon"
+            )
         quantifier = spec.get("property_quantifier")
         if quantifier not in PROPERTY_QUANTIFIERS:
             raise ValueError(
-                f"v2 plot spec property_quantifier must be one of "
+                f"{version} plot spec property_quantifier must be one of "
                 f"{sorted(PROPERTY_QUANTIFIERS)}"
             )
         binding_result = {
@@ -1161,31 +1261,81 @@ def _validate_plot_spec(
             "source_ref_count": len(source_refs),
             "warning": warning,
         }
+
+    derived_coordinates = spec.get("derived_coordinates", {})
+    if schema != PLOT_SPEC_SCHEMA_V3 and derived_coordinates:
+        raise ValueError("affine derived coordinates require plot spec v3")
+    if not isinstance(derived_coordinates, dict):
+        raise ValueError("plot spec derived_coordinates must be an object")
+    if schema == PLOT_SPEC_SCHEMA_V3 and len(derived_coordinates) != 1:
+        raise ValueError("v3 plot spec requires exactly one derived coordinate")
+    for name, transform in derived_coordinates.items():
+        if (
+            not isinstance(name, str)
+            or DERIVED_COORDINATE_RE.fullmatch(name) is None
+            or name in {"t", "time", *coordinate_names}
+        ):
+            raise ValueError(f"invalid or conflicting derived coordinate name {name!r}")
+        if (
+            not isinstance(transform, dict)
+            or set(transform) != {"kind", "offset", "coefficients"}
+            or transform.get("kind") != "affine"
+        ):
+            raise ValueError(
+                f"derived coordinate {name!r} must be one affine transform"
+            )
+        offset = transform.get("offset")
+        coefficients = transform.get("coefficients")
+        if (
+            not isinstance(offset, (int, float))
+            or isinstance(offset, bool)
+            or not math.isfinite(offset)
+        ):
+            raise ValueError(f"derived coordinate {name!r} offset must be finite")
+        if not isinstance(coefficients, dict) or not coefficients:
+            raise ValueError(
+                f"derived coordinate {name!r} coefficients must be nonempty"
+            )
+        for coordinate, coefficient in coefficients.items():
+            if coordinate not in coordinate_names:
+                raise ValueError(
+                    f"derived coordinate {name!r} uses unknown coordinate {coordinate!r}"
+                )
+            if (
+                not isinstance(coefficient, (int, float))
+                or isinstance(coefficient, bool)
+                or not math.isfinite(coefficient)
+                or coefficient == 0
+            ):
+                raise ValueError(
+                    f"derived coordinate {name!r} coefficients must be finite and nonzero"
+                )
+
     initial_set = spec.get("initial_set", {})
     regions = spec.get("regions", [])
     if not isinstance(initial_set, dict):
         raise ValueError("plot spec initial_set must be an object")
     if not isinstance(regions, list) or any(not isinstance(region, dict) for region in regions):
         raise ValueError("plot spec regions must be a list of objects")
-    if schema == PLOT_SPEC_SCHEMA_V2 and (not initial_set or not regions):
-        raise ValueError("v2 plot spec requires nonempty initial_set and regions")
+    if official and (not initial_set or not regions):
+        raise ValueError(f"{version} plot spec requires nonempty initial_set and regions")
     units = spec.get("units", {})
     if (
         not isinstance(units, dict)
-        or any(key not in {"t", *coordinate_names} for key in units)
+        or any(key not in {"t", *coordinate_names, *derived_coordinates} for key in units)
         or any(not isinstance(unit, str) or any(ord(char) < 32 for char in unit)
                for unit in units.values())
     ):
         raise ValueError("plot spec units must map known coordinates to strings")
     if initial_set:
         _plain_text(initial_set.get("label", "Initial set"), "plot spec initial_set label")
-    for owner, bounds in [
-        ("initial_set", initial_set.get("bounds", {})),
-        *[
-            (f"region {index}", region.get("bounds", {}))
-            for index, region in enumerate(regions, 1)
-        ],
-    ]:
+    bounded_owners = [("initial_set", initial_set.get("bounds", {}))]
+    bounded_owners.extend(
+        (f"region {index}", region["bounds"])
+        for index, region in enumerate(regions, 1)
+        if "bounds" in region
+    )
+    for owner, bounds in bounded_owners:
         if not isinstance(bounds, dict):
             raise ValueError(f"plot spec {owner} bounds must be an object")
         for coordinate, interval in bounds.items():
@@ -1210,6 +1360,37 @@ def _validate_plot_spec(
             raise ValueError(
                 f"plot spec region {index} role must be one of {sorted(REGION_ROLES)}"
             )
+        has_bounds = "bounds" in region
+        has_constraint = "constraint" in region
+        if schema == PLOT_SPEC_SCHEMA_V3:
+            if has_bounds == has_constraint:
+                raise ValueError(
+                    f"v3 plot spec region {index} must contain exactly one of "
+                    "bounds or constraint"
+                )
+            if has_constraint:
+                constraint = region["constraint"]
+                if (
+                    not isinstance(constraint, dict)
+                    or set(constraint) != {"kind", "coordinate", "operator", "value"}
+                    or constraint.get("kind") != "threshold"
+                    or constraint.get("coordinate") not in derived_coordinates
+                    or constraint.get("operator") not in {">=", "<="}
+                ):
+                    raise ValueError(
+                        f"v3 plot spec region {index} has an invalid affine threshold"
+                    )
+                threshold = constraint.get("value")
+                if (
+                    not isinstance(threshold, (int, float))
+                    or isinstance(threshold, bool)
+                    or not math.isfinite(threshold)
+                ):
+                    raise ValueError(
+                        f"v3 plot spec region {index} threshold must be finite"
+                    )
+        elif has_constraint:
+            raise ValueError("affine threshold regions require plot spec v3")
         timing = region.get("time", {"kind": "all"})
         if not isinstance(timing, dict):
             raise ValueError(f"plot spec region {index} time must be an object")
@@ -1231,19 +1412,33 @@ def _validate_plot_spec(
             raise ValueError(f"plot spec region {index} has invalid time bounds")
         if kind == "interval" and values[0] > values[1]:
             raise ValueError(f"plot spec region {index} has reversed time bounds")
-    if schema == PLOT_SPEC_SCHEMA_V2:
+    if official:
         if set(initial_set.get("bounds", {})) != set(coordinate_names):
-            raise ValueError("v2 plot spec initial_set must bound every coordinate")
+            raise ValueError(
+                f"{version} plot spec initial_set must bound every coordinate"
+            )
         property_regions = [
             region for region in regions if region.get("role", "informational") != "informational"
         ]
-        if not property_regions or any(not region.get("bounds") for region in property_regions):
+        if not property_regions:
+            raise ValueError(f"{version} plot spec requires property regions")
+        if schema == PLOT_SPEC_SCHEMA_V2 and any(
+            not region.get("bounds") for region in property_regions
+        ):
             raise ValueError("v2 plot spec requires nonempty property-region bounds")
+        if schema == PLOT_SPEC_SCHEMA_V3 and (
+            len(property_regions) != 1 or "constraint" not in property_regions[0]
+        ):
+            raise ValueError(
+                "v3 plot spec requires exactly one affine threshold property region"
+            )
         horizon = spec["horizon"]
         quantifier = spec["property_quantifier"]
         for region in property_regions:
             if "time" not in region:
-                raise ValueError("v2 property regions must declare time explicitly")
+                raise ValueError(
+                    f"{version} property regions must declare time explicitly"
+                )
             timing = region.get("time", {"kind": "all"})
             kind = timing.get("kind", "all")
             if quantifier == "endpoint" and (
@@ -1254,18 +1449,20 @@ def _validate_plot_spec(
                 )
             ):
                 raise ValueError(
-                    "v2 endpoint property regions must be at the horizon endpoint"
+                    f"{version} endpoint property regions must be at the horizon endpoint"
                 )
             if quantifier == "all_times" and kind not in {"all", "interval"}:
                 raise ValueError(
-                    "v2 all_times property regions must use all or an interval"
+                    f"{version} all_times property regions must use all or an interval"
                 )
             if quantifier == "eventually" and kind != "interval":
                 raise ValueError(
-                    "v2 eventually property regions must use an explicit interval"
+                    f"{version} eventually property regions must use an explicit interval"
                 )
         if quantifier == "conjunction" and len(property_regions) < 2:
-            raise ValueError("v2 conjunction requires at least two property regions")
+            raise ValueError(
+                f"{version} conjunction requires at least two property regions"
+            )
     return binding_result
 
 
@@ -1290,7 +1487,7 @@ def _validate_plot_series_binding(
             or not isinstance(identity_record.get("source_identity"), dict)
         ):
             raise ValueError(
-                "v2 plot spec requires every series to have one source_identity "
+                "official plot spec requires every series to have one source_identity "
                 "verified across all observer sidecars"
             )
         identity = identity_record["source_identity"]
@@ -1371,7 +1568,12 @@ def export_geometry(
         instance_id=instance_id,
         numerical_horizon=expected_steps * step_size,
     )
-    projection = _parse_projection(projection_text, coordinate_names)
+    derived_coordinates = (
+        spec.get("derived_coordinates", {}) if isinstance(spec, dict) else {}
+    )
+    projection = _parse_projection(
+        projection_text, coordinate_names, derived_coordinates
+    )
     if expected_lanes is not None and expected_lanes < 1:
         raise ValueError("expected_lanes must be positive when provided")
     exported = []
@@ -1558,7 +1760,12 @@ def export_geometry(
         "expected_steps": expected_steps,
         "partial_policy": partial_policy,
         "interpolation": "none",
-        "geometry_class": "axis-aligned box projection; not a Flow* octagon",
+        "geometry_class": (
+            "axis-aligned interval image of a declared affine coordinate; "
+            "source-coordinate correlations unavailable; not a Flow* octagon"
+            if "y_transform" in projection
+            else "axis-aligned box projection; not a Flow* octagon"
+        ),
         "semantics": (
             "tube bounds cover one local integration step"
             if view == "tube"
@@ -1608,6 +1815,14 @@ def validate_geometry(value: Any) -> dict[str, Any]:
     expected_steps = value.get("expected_steps")
     if not isinstance(expected_steps, int) or isinstance(expected_steps, bool) or expected_steps < 1:
         raise ValueError("geometry expected_steps must be a positive integer")
+    spec = value.get("spec")
+    if not isinstance(spec, dict):
+        raise ValueError("geometry spec must be a JSON object")
+    derived_coordinates = (
+        spec.get("derived_coordinates", {})
+        if spec.get("schema") == PLOT_SPEC_SCHEMA_V3
+        else {}
+    )
     projection = value.get("projection")
     if not isinstance(projection, dict) or projection.get("kind") not in {
         "time-state", "state-state"
@@ -1615,7 +1830,9 @@ def validate_geometry(value: Any) -> dict[str, Any]:
         raise ValueError("geometry has an invalid projection")
     try:
         canonical_projection = _parse_projection(
-            f"{projection['x']},{projection['y']}", coordinate_names
+            f"{projection['x']},{projection['y']}",
+            coordinate_names,
+            derived_coordinates,
         )
     except (KeyError, TypeError, ValueError) as exc:
         raise ValueError("geometry projection coordinates are invalid") from exc
@@ -1834,9 +2051,6 @@ def validate_geometry(value: Any) -> dict[str, Any]:
             raise ValueError("observer_lane_count does not match displayed frames")
     if projection["kind"] == "state-state" and total_boxes > MAX_STATE_STATE_BOXES:
         raise ValueError(f"geometry exceeds the {MAX_STATE_STATE_BOXES}-box render guard")
-    spec = value.get("spec")
-    if not isinstance(spec, dict):
-        raise ValueError("geometry spec must be a JSON object")
     binding = _validate_plot_spec(
         spec,
         benchmark,
@@ -1862,6 +2076,7 @@ def validate_geometry(value: Any) -> dict[str, Any]:
         if lo < 0.0 or hi > horizon:
             raise ValueError("plot spec region lies outside the numerical horizon")
     _region_boxes(value)
+    _region_thresholds(value)
     return value
 
 
@@ -1915,10 +2130,57 @@ def _region_boxes(geometry: dict[str, Any]) -> list[dict[str, Any]]:
     return regions
 
 
+def _region_thresholds(geometry: dict[str, Any]) -> list[dict[str, Any]]:
+    projection = geometry["projection"]
+    if projection["kind"] != "time-state":
+        return []
+    horizon = geometry["expected_steps"] * geometry["step_size"]
+    thresholds = []
+    for region in geometry.get("spec", {}).get("regions", []):
+        constraint = region.get("constraint")
+        if not isinstance(constraint, dict) or constraint.get("coordinate") != projection["y"]:
+            continue
+        timing = region.get("time", {"kind": "all"})
+        kind = timing.get("kind", "all")
+        if kind == "endpoint":
+            xlo = xhi = float(timing["at"])
+            time_label = f"endpoint t={xlo:.17g}"
+        elif kind == "interval":
+            xlo, xhi = float(timing["lo"]), float(timing["hi"])
+            time_label = f"t in [{xlo:.17g}, {xhi:.17g}]"
+        else:
+            xlo, xhi = 0.0, horizon
+            time_label = f"all t in [0, {horizon:.17g}]"
+        value = float(constraint["value"])
+        inequality = (
+            f"{constraint['coordinate']} {constraint['operator']} {value:.17g}"
+        )
+        thresholds.append({
+            **region,
+            "display_label": (
+                f"{region.get('label', 'Region')} [{inequality}; {time_label}]"
+            ),
+            "line": [xlo, xhi, value, value],
+        })
+    return thresholds
+
+
 def _unprojected_region_labels(geometry: dict[str, Any]) -> list[str]:
     projection = geometry["projection"]
     labels = []
     for index, region in enumerate(geometry.get("spec", {}).get("regions", []), 1):
+        constraint = region.get("constraint")
+        if isinstance(constraint, dict):
+            represented = (
+                projection["kind"] == "time-state"
+                and projection["y"] == constraint.get("coordinate")
+            )
+            if not represented:
+                labels.append(
+                    f"{region.get('label', f'Region {index}')} "
+                    f"(derived coordinate {constraint.get('coordinate')} is not plotted)"
+                )
+            continue
         bounds = region.get("bounds", {})
         represented = (
             projection["x"] in bounds and projection["y"] in bounds
@@ -1941,6 +2203,17 @@ def _initial_box(geometry: dict[str, Any]) -> list[float] | None:
     projection = geometry["projection"]
     bounds = geometry.get("spec", {}).get("initial_set", {}).get("bounds", {})
     if projection["kind"] == "time-state":
+        if "y_transform" in projection:
+            coordinate_names = geometry["coordinate_names"]
+            if set(bounds) != set(coordinate_names):
+                return None
+            ylo, yhi = _affine_interval(
+                [bounds[name] for name in coordinate_names],
+                0,
+                1,
+                projection["y_transform"],
+            )
+            return [0.0, 0.0, ylo, yhi]
         if projection["y"] not in bounds:
             return None
         ylo, yhi = bounds[projection["y"]]
@@ -1989,6 +2262,11 @@ def _run_evidence_note(item: dict[str, Any]) -> str:
 
 def _coverage_lines(geometry: dict[str, Any]) -> list[str]:
     lines = ["No interpolation; missing projection steps are not inferred as solver failures."]
+    if "y_transform" in geometry["projection"]:
+        lines.append(
+            "Derived affine intervals are outward images of saved coordinate boxes; "
+            "source-coordinate correlations are unavailable."
+        )
     for item in geometry["series"]:
         displayed_partial_count = _range_count(item["displayed_partial_step_ranges"])
         projection_ranges = item["projection_partial_step_ranges"]
@@ -2088,9 +2366,15 @@ def _matlab_quote(value: str) -> str:
 def write_matlab(geometry: dict[str, Any], path: Path) -> None:
     """Write a self-contained MATLAB script; MATLAB execution is a separate check."""
     geometry = validate_geometry(geometry)
+    derived_projection = "y_transform" in geometry["projection"]
     lines = [
         "% Generated by torch_tm_flowpipe.flowpipe_plot",
-        "% Axis-aligned box projection; this is not a Flow* octagon.",
+        (
+            "% Axis-aligned interval image of a declared affine coordinate; "
+            "source-coordinate correlations are unavailable."
+            if derived_projection
+            else "% Axis-aligned box projection; this is not a Flow* octagon."
+        ),
         "% Missing observer steps are not interpolated.",
         "figure('Color','w'); hold on; box on; grid on;",
     ]
@@ -2203,6 +2487,24 @@ def write_matlab(geometry: dict[str, Any], path: Path) -> None:
         lines.append("end")
         legend_handles.append(f"h_region_{index}")
         legend_labels.append(region.get("display_label", region.get("label", f"Region {index}")))
+    for index, region in enumerate(_region_thresholds(geometry), 1):
+        xlo, xhi, ylo, yhi = region["line"]
+        _, edge_color, line_style = _region_style(
+            region.get("role", "informational")
+        )
+        if xlo == xhi:
+            lines.append(
+                f"h_threshold_{index} = plot({xlo:.17g}, {ylo:.17g}, 'o', "
+                f"'Color', [{edge_color}], 'MarkerSize', 5);"
+            )
+        else:
+            lines.append(
+                f"h_threshold_{index} = plot([{xlo:.17g} {xhi:.17g}], "
+                f"[{ylo:.17g} {yhi:.17g}], '{line_style}', "
+                f"'Color', [{edge_color}], 'LineWidth', 2);"
+            )
+        legend_handles.append(f"h_threshold_{index}")
+        legend_labels.append(region["display_label"])
     projection = geometry["projection"]
     units = geometry.get("spec", {}).get("units", {})
     x_label = projection["x"] + (f" [{units[projection['x']]}]" if projection["x"] in units else "")
@@ -2211,7 +2513,8 @@ def write_matlab(geometry: dict[str, Any], path: Path) -> None:
         f"xlabel('{_matlab_quote(x_label)}');",
         f"ylabel('{_matlab_quote(y_label)}');",
         f"title('{_matlab_quote(geometry['benchmark'])}: "
-        f"{_matlab_quote(geometry['view'])} box projection');",
+        f"{_matlab_quote(geometry['view'])} "
+        f"{_matlab_quote('affine interval projection' if derived_projection else 'box projection')}');",
     ])
     if legend_handles:
         lines.append(
@@ -2330,19 +2633,45 @@ def render_matplotlib(geometry: dict[str, Any], prefix: Path) -> tuple[Path, Pat
             linestyle=line_style,
             label=region.get("display_label", region.get("label", "Region")),
         ))
+    for region in _region_thresholds(geometry):
+        xlo, xhi, ylo, yhi = region["line"]
+        _, edge_color, line_style = _region_mpl_style(
+            region.get("role", "informational")
+        )
+        if xlo == xhi:
+            axis.plot(xlo, ylo, "o", color=edge_color, markersize=5)
+        else:
+            axis.plot([xlo, xhi], [ylo, yhi], color=edge_color,
+                      linestyle=line_style, linewidth=2)
+        handles.append(Patch(
+            fill=False,
+            edgecolor=edge_color,
+            linestyle=line_style,
+            label=region["display_label"],
+        ))
     projection = geometry["projection"]
     units = geometry.get("spec", {}).get("units", {})
     x_unit = units.get(projection["x"], "")
     y_unit = units.get(projection["y"], "")
     axis.set_xlabel(projection["x"] + (f" [{x_unit}]" if x_unit else ""))
     axis.set_ylabel(projection["y"] + (f" [{y_unit}]" if y_unit else ""))
-    axis.set_title(f"{geometry['benchmark']}: {geometry['view']} box projection")
+    projection_label = (
+        "affine interval projection"
+        if "y_transform" in projection
+        else "box projection"
+    )
+    axis.set_title(f"{geometry['benchmark']}: {geometry['view']} {projection_label}")
     axis.grid(alpha=.2)
     axis.autoscale()
     if handles:
         axis.legend(handles=handles, loc="best", fontsize=8)
     coverage_lines = [
-        "Axis-aligned box projection (not octagon).",
+        (
+            "Axis-aligned interval image of a declared affine coordinate; "
+            "source-coordinate correlations unavailable."
+            if "y_transform" in projection
+            else "Axis-aligned box projection (not octagon)."
+        ),
         *_coverage_lines(geometry),
     ]
     fig.text(
@@ -2431,7 +2760,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--benchmark", default="unknown")
     parser.add_argument(
         "--instance-id",
-        help="exact benchmark instance id (required by v2 official-contract plot specs)",
+        help="exact benchmark instance id (required by v2/v3 official plot specs)",
     )
     parser.add_argument("--projection", default="t,x1")
     parser.add_argument("--view", choices=sorted(VIEW_COLUMNS), default="tube")
