@@ -1,0 +1,31 @@
+{
+  "status": "descriptive_common40_width_statistics",
+  "B": 1024,
+  "time_s": 0.2,
+  "rows": 72,
+  "files": {
+    "results/quad_targeted_recovery_20260927/native_full1024_preparation_20260929/evidence_short_cover/short40_v1/WIDTHS_SELECTED.json": "d56368fc71fa2c2e434b12442db466dc52114abadc04411bd18a7367bdaa10bb",
+    "results/quad_targeted_recovery_20260927/native_full1024_preparation_20260929/evidence_short_cover/short40_v1/CPU_AUDIT.json": "9a57fe1f1661449be054f06fe68f21aa5163c01aa69f230fb9517ba69c44ef30",
+    "results/quad_targeted_recovery_20260927/evidence_phase_profile_gpu14_40_20260929/run/RESULT.json": "520d2a9e643c8c1ca71d9e543a0658a9c4b3e70d82e6c2b052303ee3a7578c4f",
+    "results/quad_targeted_recovery_20260927/evidence_phase_profile_gpu14_40_20260929/run/observer_40.json": "87a5edd4ef001b6e46dd6a243b5d44dc57e72ed89f489ce506be8e10b3aca94d",
+    "results/quad_targeted_recovery_20260927/evidence_phase_profile_gpu14_40_20260929/run/observer_40.pt": "8dbd0397362d837da8d60eab5be41122af36a8c30f619d7c0dd862bf6c088f05",
+    "results/quad_targeted_recovery_20260927/evidence_phase_profile_gpu14_40_20260929/watch/process.json": "033ae265ee75e921cfc6f746e40e8e6cd420d8e44750696f0e4ea6d0dcb5996d",
+    "results/quad_targeted_recovery_20260927/native_full1024_preparation_20260929/evidence_short_cover/short40_v1_watch/process.json": "ed4eb9cc868cc79a9d98fd35a23ffc76cddaa750cf23889dce8f85b2bb16c55e"
+  },
+  "script_sha256": "be17d3b6042c956a69861afb95119fd422391b4a0266a5dd934704445fcd6c78",
+  "timings": {
+    "our_P3_profile40": {
+      "wall_s": 155.45191384712234,
+      "peak_GPU_GiB": 11.31640625,
+      "peak_RSS_GiB": 5.948600769042969
+    },
+    "native_P2_initial_cover40": {
+      "wall_s": 171.13823082204908,
+      "peak_GPU_GiB": 1.068359375,
+      "peak_RSS_GiB": 4.2902069091796875
+    }
+  },
+  "widths_sha256": "65ecb45faf3e786e2faf45ef8ae5f3480d0240a3920a41ef05510b7a2f21ad9f",
+  "native_per_partition_read_locally": false,
+  "scope": "GPU actual observer40 tensors vs SHA-bound native actual-ranges reduction. Different P3/point2/validation4 vs native P2 and initial affine construction; same requested boxes, not identical actual NN domains or per-lane equality. Single short qualification runs with different instrumentation, not formal speedup or full-T5 results."
+}

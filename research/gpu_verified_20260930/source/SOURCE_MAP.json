@@ -1,0 +1,1756 @@
+{
+  "schema_version": 1,
+  "scope": "Byte-exact research source snapshot; not a portable clean-machine runtime qualification",
+  "engine_commit": "a3fb2e94ba976aaf498c4a9cb3f98165cddcc272",
+  "INPUT_local_source": "output/flowstar_progress_since_slides_20260930_english/evidence/quad_trig_INPUT.json",
+  "INPUT_sha256": "45b7ba4babb6129067b51e23092383574a943dfc3d05e25e21fd4bd188f05546",
+  "COMMAND_local_source": "output/flowstar_progress_since_slides_20260930_english/evidence/quad_trig_COMMAND.json",
+  "COMMAND_sha256": "9d44c14d9c9d40fcd45f8282aac70e7998853f1d499d31b4eebb4b5ad7b9d4f8",
+  "engine_python_files": 36,
+  "adapter_source_files": 96,
+  "numerical_sources_modified": false,
+  "import_closure_method": "Frozen INPUT/COMMAND source digests, recursively pinned source digests, resolvable .py literals and same-directory imports; does not prove dynamic runtime closure",
+  "files": [
+    {
+      "path": "engine/src/flowstar_gpu/__init__.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/__init__.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/__init__.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/composition.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "dda4786c38eca3bd0c58d0497d12d3e2cbdb01d1590da8a04a2d82c5204d627b",
+      "bytes": 12090,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/composition.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/composition.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/config.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "14ff634b9767e0e4b889e59f918a7de2f6112e2e200a07c3a13015b9ee4a2a47",
+      "bytes": 6385,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/config.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/config.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/cuda_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "cdfbc847e3255dc3675af4f70e1a08d8647ebf3a165e3413742763916446cf9c",
+      "bytes": 36478,
+      "local_source": "results/flowstar_acceleration_20260921/cuda_kernels_private_base.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/cuda_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/determinism.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "68d7e1a219dba59be9966dfbc0e24c32fa18a32009cf41e891157586b7557a76",
+      "bytes": 4201,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/determinism.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/determinism.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/elementary.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "3e9d7766761c7fe5188da53269346b009072553c7e8fb8480dfa29c87ca4a9b1",
+      "bytes": 62249,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/elementary.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/elementary.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/expr_parser.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "036932eafa5df441d21039e57db4dc44b77310269eebf7e517396a05d5a71cbc",
+      "bytes": 8000,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/expr_parser.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/expr_parser.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/flowpipe.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "d79716aa3347aae21300cb823b2dd69acac8fe0dd922e3a45d6e82cb07d31548",
+      "bytes": 46571,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/flowpipe.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/flowpipe.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/glue.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "282ca99d586523d9e35834d180f26a82d828d056811e53bb5d6060416b16586f",
+      "bytes": 7001,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/glue.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/glue.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/graphing.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "62f1b07f581b4c996525e5fa1b17796eee6aba0d39bf67de55dfb3e1ae69f4d4",
+      "bytes": 6922,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/graphing.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/graphing.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/horner_edge_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "a429471855a9c2c3da512cb38a6f63e43737d204f0e8d309a845ea89ea9620ef",
+      "bytes": 5150,
+      "local_source": "development/horner_entry_v1/horner_edge_kernels.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/horner_edge_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/injective_index.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "37e26dbd0ae174a22889f81f1892734bddf1ff839aa89a9b4729055ddb78ac65",
+      "bytes": 5008,
+      "local_source": "results/flowstar_acceleration_20260921/injective_index.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/injective_index.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/interval.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "815a5e60d561fe508c64f2b34e6a5eec0a995a6165d4738437b18c770286dc5b",
+      "bytes": 17981,
+      "local_source": "development/quad_weighted_validation_20260923/interval.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/interval.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/monomials.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "2df9bddcc4b40d6a2d53bfdfe9b97874a889c540f015583e1d9f5128a89da9a6",
+      "bytes": 19292,
+      "local_source": "results/flowstar_acceleration_20260921/monomials_source_9d83162.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/monomials.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_act_kinds.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "b90c9cc5cef9798b0d6086cf91d49abbeef0c90e0c4830a4538e20e6ec266d3a",
+      "bytes": 6734,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_act_kinds.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_act_kinds.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_alpha.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "74a525210aa66636c27999a8ddcbe42c85086318d3d27efec48777c15c8ea906",
+      "bytes": 6544,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_alpha.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_alpha.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_clip.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "be236972a5352d8772ba99eecff071b49d2d998ea07914a0daa4df6e0a50543f",
+      "bytes": 8504,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_clip.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_clip.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_coupling.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "86773f9b7049ab786a904c0fcd282590a21a1caab55480161d01af8a2a6a82fa",
+      "bytes": 15260,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_coupling.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_coupling.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_sidecar.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "bcddc1bc798293eafd74f879f15e11b506e315dc703e552966de9ff58c1fa63c",
+      "bytes": 5404,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_sidecar.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_sidecar.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_tm.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "323293226cf8cd1c15bc72e4d9f378723ad31703265d216106d29f03d2438bca",
+      "bytes": 24946,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_tm.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_tm.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nn_tm_sparse.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "4ad235ac6751bd363c32136f9ba1e2823338567fbe95119f940c5b67028b8aed",
+      "bytes": 13580,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/nn_tm_sparse.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nn_tm_sparse.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/nncs.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "3feca93a0d8ebe5b404ab2033e35ea032eefae802f30ed7840ea70c1e85db054",
+      "bytes": 11883,
+      "local_source": "results/flowstar_acceleration_20260921/endpoint_fix/nncs.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/nncs.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/ode_compiler.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "95b2e367e655a3a8b1506e9a90c51ce4dd9a414e32b978694525925edb4295e6",
+      "bytes": 31918,
+      "local_source": "results/quad_recovery_plan_review_20260925/source_reconstruction/ode_compiler.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/ode_compiler.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/polynomial.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "2c7976eb9faa34ea268875246a822d81017f56fd31e82a05daa78e9b040bfee3",
+      "bytes": 29225,
+      "local_source": "results/flowstar_acceleration_20260921/endpoint_fix/polynomial.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/polynomial.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/private_output_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "d68373c89a0e9036aed6573f232d81dcae170ac65733396005cd86bded3e39c7",
+      "bytes": 5053,
+      "local_source": "results/flowstar_acceleration_20260921/private_output_kernels.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/private_output_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/rounding.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "d38b17034ddd1bfa5cf02162f96a8166aeb937183da450e4dd0e5f641c4be730",
+      "bytes": 8087,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/rounding.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/rounding.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/safety.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "834285569d5ca84115392c891ecc53b7eed867c8e3af25fe4fc10d50263a22bf",
+      "bytes": 42308,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/safety.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/safety.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/sparse_exec.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "56e590796dbae42685b0331c7f41b53b62a3f73ed9be74e22738493820353ddf",
+      "bytes": 98727,
+      "local_source": "results/quad_recovery_plan_review_20260925/source_reconstruction/sparse_exec.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/sparse_horner.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "d090e314f710d1d4763ea299336e0dba4dbada642b43700f09fec7c238977f4f",
+      "bytes": 4255,
+      "local_source": "development/horner_fusion_v1/sparse_horner.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_horner.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/sr_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "69bb07257ad8cba029a611f9099e015c5175bbba72a0f86bf8f54549dc29dfc2",
+      "bytes": 5965,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/sr_kernels.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sr_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/sr_sum_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "de76dc539c109065779292751a5650f330b8dddbade8248d1bbd23050737bd3b",
+      "bytes": 5480,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/sr_sum_kernels.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sr_sum_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/support.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "414c274973c585894e545d7d9e70f6a6f6365d7085ae18bd51d6ffbc4bfa4c50",
+      "bytes": 37745,
+      "local_source": "development/endpoint_batched_v1/support.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/support.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/symbolic_remainder.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "ea124b5ab72c80a25181cf4673cd835ee171e1b1266b9500ef19362469754972",
+      "bytes": 17318,
+      "local_source": "results/quad_recovery_plan_review_20260925/source_reconstruction/symbolic_remainder.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/symbolic_remainder.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/tape_kernels.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "d39264a7c9db965acc2cb31761b05d1295d66c7fd1080404bad192db532683fb",
+      "bytes": 100989,
+      "local_source": "results/unicycle_first_gap_20260929/gpu_preparation_v1/ours_failure_v1/tape_kernels.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/tape_kernels.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/transcendental.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "0f97fc90ca9506c703c8255f99e52544abf10a4bc9b1635b95b0dec1100bbf22",
+      "bytes": 16865,
+      "local_source": "results/flowstar_acceleration_20260921/direct_leaf_validation_v1/sources/engine/transcendental.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/transcendental.py"
+    },
+    {
+      "path": "engine/src/flowstar_gpu/weighted_validation.py",
+      "role": "frozen_engine_runtime",
+      "sha256": "8460ab06bba4beb42e07eb3f968a647a4ba492f267bdde806a96e1ded5466299",
+      "bytes": 15205,
+      "local_source": "development/quad_memory_boundary_20260924/weighted_validation.py",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/weighted_validation.py"
+    },
+    {
+      "path": "adapters/author_nncs_v1/xiangru_driver_reference.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "1bc3aeea0e9216fe8432ae78f18c9592d19658c23cdde02b90a54d0b14c08a31",
+      "bytes": 85073,
+      "local_source": "development/author_nncs_v1/xiangru_driver_reference.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_control_transfer_20260927/check_injection.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py"
+      ]
+    },
+    {
+      "path": "adapters/endpoint_batched_v1/support.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "414c274973c585894e545d7d9e70f6a6f6365d7085ae18bd51d6ffbc4bfa4c50",
+      "bytes": 37745,
+      "local_source": "development/endpoint_batched_v1/support.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/trig_direct_reuse.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py"
+      ]
+    },
+    {
+      "path": "adapters/horner_entry_v1/horner_edge_kernels.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "a429471855a9c2c3da512cb38a6f63e43737d204f0e8d309a845ea89ea9620ef",
+      "bytes": 5150,
+      "local_source": "development/horner_entry_v1/horner_edge_kernels.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash"
+      ]
+    },
+    {
+      "path": "adapters/horner_fusion_v1/sparse_horner.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "d090e314f710d1d4763ea299336e0dba4dbada642b43700f09fec7c238977f4f",
+      "bytes": 4255,
+      "local_source": "development/horner_fusion_v1/sparse_horner.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/capture_compose_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/horner_closure_cleanup.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_control_transfer_20260927/check_injection.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "ff35186cf01de2f63fbd5f9d344d743d86021dd9f135918daa0381f5738c5e4a",
+      "bytes": 17082,
+      "local_source": "development/quad_control_transfer_20260927/check_injection.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py",
+        "source_digest_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "unique_literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_control_transfer_20260927/run_quad_transfer.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "c16302e3b1a3cbdaa949f6379a7c1e806699c564a45bf4c0012d9a8477905a08",
+      "bytes": 10909,
+      "local_source": "development/quad_control_transfer_20260927/run_quad_transfer.py",
+      "reasons": [
+        "literal_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+        "source_digest_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_control_transfer_20260927/strict_injection.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "a79b19ad1bd97ae87b40f81239352a8b9859621757bd044df6fd615630c64310",
+      "bytes": 4649,
+      "local_source": "development/quad_control_transfer_20260927/strict_injection.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_control_transfer_20260927/check_injection.py",
+        "literal_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/check_boundaries.py",
+        "source_digest_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/check_boundaries.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/strict_injection_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/audit_weighted_capture.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "649acec83bca42979c92bf412a67617461f8e4eab9ac0e4d2a96806e1ba3846c",
+      "bytes": 8816,
+      "local_source": "development/quad_fullbatch_p3_20260928/audit_weighted_capture.py",
+      "reasons": [
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/capture_compose_inputs.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "f693ac64f93787389b40d755a3647359ba4e7e535c7e87f70d5264544efc7aea",
+      "bytes": 7176,
+      "local_source": "development/quad_fullbatch_p3_20260928/capture_compose_inputs.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/capture_observer_inputs.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "0d4062b47996a4e5ae814c92f3274f6b441109969138b3ebfbc27b7edbd2749e",
+      "bytes": 8334,
+      "local_source": "development/quad_fullbatch_p3_20260928/capture_observer_inputs.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/capture_valid_inputs.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "43fbb6e07a20040a0292150af74dc3403a2b11c4fe2e0a854b74c6aadfcad80d",
+      "bytes": 11335,
+      "local_source": "development/quad_fullbatch_p3_20260928/capture_valid_inputs.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_valid_chunk128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_valid_chunk128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/capture_weighted_input.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "91cb4b9fcf1a7531cf5a2d89eba4ff02018140b6f8b83e7ad52d5f84ea17d4b5",
+      "bytes": 7407,
+      "local_source": "development/quad_fullbatch_p3_20260928/capture_weighted_input.py",
+      "reasons": [
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/audit_weighted_capture.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/capture_workspace_release.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "259c479a113bb1c905da7c49ae888ba50002ec84c06acfbb253bd9b45edfd5ee",
+      "bytes": 4839,
+      "local_source": "development/quad_fullbatch_p3_20260928/capture_workspace_release.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/working_eager_segments.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "cc02df2edd0b2002e1607ea1a17264308931399b1de184547145e4d33e8c160a",
+      "bytes": 7311,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_horner_cleanup_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "2d9c99f0962c16c15f6ae219e9b2998d924915e48ff5d418b3d8db2958735a8a",
+      "bytes": 8051,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_horner_cleanup_cpu.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "dcda3d41f27007448fb43e263bbb6050cb1fa24e6567c754e0947f8b2c614777",
+      "bytes": 15141,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_hybrid_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "f8b3140d1f90e839455a676cb1f886af88281464520fcd125f53fb8c9127a560",
+      "bytes": 5802,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_hybrid_cpu.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "a552d130ef4dacd69801af002c52080cc2ebcb7df86d08b55c0c1fc0d290b037",
+      "bytes": 14310,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "42d1eb24c1a59f03ad208eb44a5615b87e2ccd456b8af1c9f59c0a823740de61",
+      "bytes": 13070,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_phase_profile_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "86a21df970bc7bf29c3816b52f9a7edd593a6bfa662faa6dcf8c16b3f29bc025",
+      "bytes": 9378,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_phase_profile_cpu.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "266c7f98f11e472df05b05d24f7e6dafdd55d011f10328833658d30456eade77",
+      "bytes": 9571,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "5911aeb6917f0094702fa1282b023cd646539fba12d0a2218f3716dbb958a505",
+      "bytes": 9757,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_selective_prune_audit_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "ad78926c489429d44ef74391b1cd4411ab842d85c077778064f9404f5fa22fe1",
+      "bytes": 7946,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_selective_prune_audit_cpu.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_snapshot_p3.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "0937f765a5d9c05c53b5744846f98785981e437c9008882a436886682f24c839",
+      "bytes": 11079,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_snapshot_p3.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "4bdc24bf2adf8ad3d79ddb9efe1f9e015a607bbf40c118b4ed6444174042bbee",
+      "bytes": 6441,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "9a9429011384b3138f2c80c619152efb099221b9de41c61bdb659cb1dc65e808",
+      "bytes": 14236,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_valid_chunk128.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "30a49eea8ff44be2c8bf7d3f41c60f4ffbfc09a5cecd84108b0e77d4c999fd28",
+      "bytes": 11088,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_valid_chunk128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "2e81fdd59833fb395521836ccc831e4822f6d98842dc8bfab32bc50b6bc46aa0",
+      "bytes": 18224,
+      "local_source": "development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_capture_workspace_release.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/horner_closure_cleanup.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "f98958be75a46d49444d98b5c196ecef997ce6f63b70bfd2e541ab4e62ff0ad0",
+      "bytes": 2461,
+      "local_source": "development/quad_fullbatch_p3_20260928/horner_closure_cleanup.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_horner_cleanup_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/hybrid_metadata.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "7fd6080c4268478696dc92aac4e397027c7fe0830ba22b3297927e985f8d0dd8",
+      "bytes": 5155,
+      "local_source": "development/quad_fullbatch_p3_20260928/hybrid_metadata.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "3f056cc5dd3e3bdd6d1cb594402b7c3659271e97dc9600ab741ab2092c5d1b87",
+      "bytes": 21092,
+      "local_source": "development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/nncs_watchdog_gpu14.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "4298689de9ccf8a97c0007334dcdbe6aedeb246b8acead81a4b1873941a56350",
+      "bytes": 2256,
+      "local_source": "development/quad_fullbatch_p3_20260928/nncs_watchdog_gpu14.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "d8d87a51a7db600685a79ff19193a56986dab6e84b4825a30570caaf157c8872",
+      "bytes": 2448,
+      "local_source": "development/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_observer_endpoint64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/phase_profile.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "0398dc1bb032fe85c7ef0a192e5667a12890934d85a71d5ab717adf360023166",
+      "bytes": 10611,
+      "local_source": "development/quad_fullbatch_p3_20260928/phase_profile.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "01e454d3e88f2f4dfc09e27be513c153f947eb5a690f27919bb3d8eecce9da82",
+      "bytes": 10646,
+      "local_source": "development/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "54d51b192ecc312d184cb78aaef7aa2afc2098e20688cb556bd43c869ed7610c",
+      "bytes": 11741,
+      "local_source": "development/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "22f4dda16dcfd30563e6652ec8af82034b3b138a7505dbf31714a8bd55820a72",
+      "bytes": 17661,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/capture_weighted_input.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/audit_weighted_capture.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/capture_weighted_input.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "6e74c716ac3ec9da791c6e968f73df0cc400030d218857152629976109213674",
+      "bytes": 13659,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/capture_valid_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/capture_valid_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "9d39ffdc78e37b108fa6518a39ed38ee58ad722ced84fffcc086f719aa6a38e9",
+      "bytes": 9934,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "b89c5710f5faa9dc1b363eba96d27cbbc7bc2a7006df9aa2d305f39cf202b2e7",
+      "bytes": 16032,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/capture_observer_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/capture_observer_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "171dd167496895b15fd1373de16986d30118b3338c4140a4f5c91b98eee353c9",
+      "bytes": 17565,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_observer64.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "b4d9927d89b61b2829de0733c00344b70282645c6254d6d2db61fde65927498d",
+      "bytes": 11490,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "780240cbaf08f02fc7f0a6967bfa7f00218395e5419a630ab075e78121775e7e",
+      "bytes": 11250,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile_gpu14.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_gpu14_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "660c75cf22346e71d5044a60b5bbd62320ed38e542727cbcb6805fad909095e0",
+      "bytes": 25700,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "49da2756eb7637e1d3feeae27927bacd78f93511aa61bc802b863d2b3e1fec46",
+      "bytes": 19469,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_gpu14.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+      "role": "latest_completed_run_entry",
+      "sha256": "fa3b227110e53f56d53d4c1ab4f8422f48cccd1f667722d332d586b5d24a6287",
+      "bytes": 25356,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_continue_cpu.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "1bbf4e7a8a81b2efb453da6cf9e3f6f8b3bc56a08eda1958088998361d2c4ee9",
+      "bytes": 12541,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "60df1ef31d6491e4d436a2724b3f9ef529c1432baeae0e4de071da2b5a4b8b31",
+      "bytes": 12806,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "2c6e334b7b46d25aabfbeb1f105b7ba5a85e78e2dbaa850117287e69f4579385",
+      "bytes": 12150,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_cache_release.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "e16c197e8338c7798a98509ade44804ca119278a26334aaa47d1a2ac6d38316a",
+      "bytes": 20831,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "3efc0a39166856042ad22a4d1085ee780f11ba06c84889cf0a80ac4fd9dc7366",
+      "bytes": 14457,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "b37cbdc4be1d7f4c2e84b096404913a84ead85c47995687511b66242a8eb3f09",
+      "bytes": 18021,
+      "local_source": "development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/capture_compose_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/capture_compose_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_horner_cleanup.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/selective_prune_audit.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "3658f1fced8b47a601b06e261b9a86fa193339dd1df55be64db9a418c558c9e7",
+      "bytes": 2945,
+      "local_source": "development/quad_fullbatch_p3_20260928/selective_prune_audit.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_selective_prune_audit_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/snapshot_p3.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "9b3f89a7975c84691a7724029270af37ad5e8f3a9f6a6699aac2a339b593bf97",
+      "bytes": 5408,
+      "local_source": "development/quad_fullbatch_p3_20260928/snapshot_p3.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_snapshot_p3.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/trig_continue_cold_sequence.diff",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "7fe06153d11931e9008af69a12e3fa2e4aa301bb0363adb2d38d973d999be214",
+      "bytes": 2619,
+      "local_source": "development/quad_fullbatch_p3_20260928/trig_continue_cold_sequence.diff",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/trig_direct_reuse.py",
+      "role": "latest_completed_run_optimization",
+      "sha256": "304ebc9c783fde32c8c1b4f6117ba83548198e9d38820398928e25533a1f0f07",
+      "bytes": 7331,
+      "local_source": "development/quad_fullbatch_p3_20260928/trig_direct_reuse.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_continue.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_trig_reuse40.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/valid_chunk128.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "6b97a9ed19b8433b79be15f97381241bc9a79c071b90fa4a81f12c4d216dcc40",
+      "bytes": 6721,
+      "local_source": "development/quad_fullbatch_p3_20260928/valid_chunk128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_valid_chunk128.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_valid_chunk128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_valid128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/weighted_chunk128.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "ae343c546e2253896142f88c39e1df5e43561498aaf7540e722a1bb6d66d409b",
+      "bytes": 4991,
+      "local_source": "development/quad_fullbatch_p3_20260928/weighted_chunk128.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_trig_direct_reuse.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_weighted_chunk128.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/kernel_profile_fixed_inputs.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_weighted128.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/working_eager_segments.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "c4fb7b098a10ab98d9e9250fc88460ade130225ef710ea5734522df03ca0453b",
+      "bytes": 5674,
+      "local_source": "development/quad_fullbatch_p3_20260928/working_eager_segments.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/probe_working_eager_segments.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/working_graph_prune.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "3a174e02724ee3166eff9f1b330c137e0c1a4b51f64a6162ea2a6ed96814e21f",
+      "bytes": 4742,
+      "local_source": "development/quad_fullbatch_p3_20260928/working_graph_prune.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_selective_prune_audit_cpu.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/probe_working_graph_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_prune.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/selective_prune_audit.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/working_eager_segments.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/bootstrap.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "1a49b0384371cdb4101aa32fec64f846aa724336725a02b35447e7968b558435",
+      "bytes": 11614,
+      "local_source": "development/quad_fullbatch_sr_20260928/bootstrap.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/capture_799_800.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "d7a1109b808f6845afbe94c5555f7e3be16583b979f2c10f46d274c66f61664a",
+      "bytes": 12617,
+      "local_source": "development/quad_fullbatch_sr_20260928/capture_799_800.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/cold_799_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/cold_799_800.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/check_boundaries.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "10b750e009daf17a183a957d6fc8ee06c535f8d00bab248c71b9bd9b13e87ddb",
+      "bytes": 10169,
+      "local_source": "development/quad_fullbatch_sr_20260928/check_boundaries.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/check_snapshot_cpu.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "4280022f30e0f0fd089702a327bcffcb2e043eee99ea0db643a80840214cf382",
+      "bytes": 10557,
+      "local_source": "development/quad_fullbatch_sr_20260928/check_snapshot_cpu.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/cold_799_800.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "d7284d93b7944ed21d3b1246aa41e2313d8bee132df908b19c0b0db7886b056e",
+      "bytes": 13910,
+      "local_source": "development/quad_fullbatch_sr_20260928/cold_799_800.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/trace_799_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/decompose_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/trace_799_800.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/decompose_800.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "e80a5a7568e3703b1c43fb5b662c4cc9dfbe738e64be5cb6ec69426dcef03cc2",
+      "bytes": 14139,
+      "local_source": "development/quad_fullbatch_sr_20260928/decompose_800.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/probe_cubic800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/probe_cubic800.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/probe_cubic800.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "9994a46f0e3ef1b0d1e78c85760f8b50b0416b9cfb16bb7ae3d4cd5e5246f65b",
+      "bytes": 16499,
+      "local_source": "development/quad_fullbatch_sr_20260928/probe_cubic800.py",
+      "reasons": [
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/run_fullbatch.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "002e38983c0b5a5c54313a96a61bee0e65f4ccff9e9823f9296de5010c21f304",
+      "bytes": 29437,
+      "local_source": "development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch_long.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/run_fullbatch_long.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "7b465c72046b4c23497ace95f4b3d74cba8fd556cbb48a5454ae0af1b3772c98",
+      "bytes": 15835,
+      "local_source": "development/quad_fullbatch_sr_20260928/run_fullbatch_long.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/capture_799_800.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/cold_799_800.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/decompose_800.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_hybrid_cubic800.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_selective_audit_long.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/capture_799_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/cold_799_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/decompose_800.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/snapshot.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "6adc9a430c236e37749a8b175e19925c5c68dedef7c01b3cb47b168f11010da2",
+      "bytes": 5392,
+      "local_source": "development/quad_fullbatch_sr_20260928/snapshot.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/capture_799_800.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/check_snapshot_cpu.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/cold_799_800.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/strict_endpoint_fullbatch.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "864e949d425803f1f17b36d453970bbb32f6f47c2c547b382ee36cf591e7a33e",
+      "bytes": 3157,
+      "local_source": "development/quad_fullbatch_sr_20260928/strict_endpoint_fullbatch.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/strict_injection_fullbatch.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "652a678e667553fede0fbead4ec435028ec830c461620d486617c250d0ad9276",
+      "bytes": 5157,
+      "local_source": "development/quad_fullbatch_sr_20260928/strict_injection_fullbatch.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_sr_20260928/trace_799_800.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "2661587779647c1abb46ab5288bae5ec9a930e1e943b92f094cba7ba5c7cfe5a",
+      "bytes": 15055,
+      "local_source": "development/quad_fullbatch_sr_20260928/trace_799_800.py",
+      "reasons": [
+        "literal_dependency:development/quad_fullbatch_sr_20260928/decompose_800.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/decompose_800.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_memory_boundary_20260924/weighted_validation.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "8460ab06bba4beb42e07eb3f968a647a4ba492f267bdde806a96e1ded5466299",
+      "bytes": 15205,
+      "local_source": "development/quad_memory_boundary_20260924/weighted_validation.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/weighted_chunk128.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_reciprocal_20260928/run_quad_reciprocal.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "eb5147e4074269f7b568838e0575849a97436295b45cf4c3082be1315d5cf32e",
+      "bytes": 12097,
+      "local_source": "development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/check_backend.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "7a4677083946bc96e9a56f3e442027b416eb52bbf548a449d0c2b2c288ef5408",
+      "bytes": 17589,
+      "local_source": "development/quad_sparse_metadata_20260927/check_backend.py",
+      "reasons": [
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/compare_p3.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "f730233d4af0b2a7b79385832968d45ab47889eaa055c504e97565b9c2c3e450",
+      "bytes": 7559,
+      "local_source": "development/quad_sparse_metadata_20260927/compare_p3.py",
+      "reasons": [
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/graded_lex.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "5181161bf78c16273b6b5725e1e6a449d7d3617c59b05a9db7656fe3eb551cd3",
+      "bytes": 2535,
+      "local_source": "development/quad_sparse_metadata_20260927/graded_lex.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py",
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+        "local_import:development/quad_sparse_metadata_20260927/legacy_sparse_metadata.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/audit_weighted_capture.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/hybrid_metadata.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py",
+        "unique_literal_dependency:development/quad_fullbatch_p3_20260928/hybrid_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/legacy_sparse_metadata.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "67ebe12629e12617cfe56bbaafae5337ba41a9f54802d7cfa86bc2abafd822f2",
+      "bytes": 14982,
+      "local_source": "development/quad_sparse_metadata_20260927/legacy_sparse_metadata.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py",
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/hybrid_metadata.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/metadata_backend.py",
+        "unique_literal_dependency:development/quad_fullbatch_p3_20260928/hybrid_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/metadata_backend.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "3140024445ebac6845d037c6399e2ad8658ae63281eb066c1e87356c99bd990b",
+      "bytes": 14900,
+      "local_source": "development/quad_sparse_metadata_20260927/metadata_backend.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_sparse_metadata_20260927/check_backend.py",
+        "literal_dependency:development/quad_sparse_metadata_20260927/compare_p3.py",
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+        "source_digest_dependency:development/quad_control_transfer_20260927/check_injection.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/hybrid_metadata.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sparse_metadata_20260927/run_quad_metadata.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "a6e06bf73aa88e182f61c0e9666c30e2bc2cadbef8f4c1f0dc9ea5363a4043fe",
+      "bytes": 14417,
+      "local_source": "development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+      "reasons": [
+        "literal_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py",
+        "literal_dependency:development/quad_sparse_metadata_20260927/compare_p3.py",
+        "source_digest_dependency:development/quad_control_transfer_20260927/run_quad_transfer.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_split_multistep_20260927/continuation.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "1c85e04988028f7ac95d945eeff9ef3e0936ee306c1f0a80650bb06d8073d985",
+      "bytes": 13864,
+      "local_source": "development/quad_split_multistep_20260927/continuation.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_split_multistep_20260927/root_from_zero.py",
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+        "source_digest_dependency:development/quad_control_transfer_20260927/check_injection.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/check_boundaries.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/check_backend.py",
+        "source_digest_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/check_order4.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/check_strict_endpoint.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "source_digest_dependency:development/reciprocal_geometric_20260928/check_paths.py",
+        "source_digest_dependency:development/reciprocal_geometric_20260928/preflight.py",
+        "unique_literal_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_split_multistep_20260927/root_from_zero.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "faf2e9c2a893e66bb7fed68bd1e813ff40a156111dcb9fc41a5860952977dcc2",
+      "bytes": 19095,
+      "local_source": "development/quad_split_multistep_20260927/root_from_zero.py",
+      "reasons": [
+        "literal_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "unique_literal_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sr_reassociate_20260928/check_host_ledger.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "514b39c74fa77ea54754dadb3d2394cf5f49b55d78d169b3517159fbedec6833",
+      "bytes": 17007,
+      "local_source": "development/quad_sr_reassociate_20260928/check_host_ledger.py",
+      "reasons": [
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+        "source_digest_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "5b58ee21c98e2c945743dfdc5664baac4f37fcfa9eca246b1ee908152f8e2070",
+      "bytes": 18636,
+      "local_source": "development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sr_reassociate_20260928/host_ledger.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "1a7d9bbf0f16a4f3726b75a27ff938ff87b918141a5f0fe1504f26198dc4035b",
+      "bytes": 19608,
+      "local_source": "development/quad_sr_reassociate_20260928/host_ledger.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_p3_20260928/check_snapshot_p3.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/check_snapshot_cpu.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger.py",
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/check_snapshot_p3.py",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/phase_profile.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/check_snapshot_cpu.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/run_fullbatch.py",
+        "source_digest_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_sr_reassociate_20260928/periodic_sr.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "17ac3a69f934fb6943df0f2dab8072d84cb327b2ce00bd58573bfdae64fcfe86",
+      "bytes": 11298,
+      "local_source": "development/quad_sr_reassociate_20260928/periodic_sr.py",
+      "reasons": [
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger.py",
+        "literal_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py",
+        "source_digest_dependency:development/quad_sr_reassociate_20260928/check_host_ledger.py",
+        "source_digest_dependency:development/quad_sr_reassociate_20260928/check_host_ledger_cuda.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_targeted_recovery_20260927/check_order4.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "6a3579b48ce3243e79607ca520ca94554b53c181e3beada3465489c81bece41f",
+      "bytes": 11430,
+      "local_source": "development/quad_targeted_recovery_20260927/check_order4.py",
+      "reasons": [
+        "literal_dependency:development/quad_sparse_metadata_20260927/check_backend.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/check_backend.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_targeted_recovery_20260927/check_strict_endpoint.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "7eb2c1a217238eadcea04d8a373eb00c4eb48b219de9fac2bf3d8cb5db69d188",
+      "bytes": 13194,
+      "local_source": "development/quad_targeted_recovery_20260927/check_strict_endpoint.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "unique_literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_targeted_recovery_20260927/run_order_from_zero.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "8775959155cebf4b7314ff828bb846f1754f9e53cd5bd41907ee7d7c8c6efc0d",
+      "bytes": 24665,
+      "local_source": "development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+      "reasons": [
+        "literal_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/compare_p3.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/run_quad_metadata.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_targeted_recovery_20260927/strict_endpoint.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "f4310a1b0484fd344ae894641302e146fcd232a8c7b296546a0fcdc94b0cd326",
+      "bytes": 2595,
+      "local_source": "development/quad_targeted_recovery_20260927/strict_endpoint.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "literal_dependency:development/quad_fullbatch_sr_20260928/check_boundaries.py",
+        "literal_dependency:development/quad_targeted_recovery_20260927/check_order4.py",
+        "literal_dependency:development/quad_targeted_recovery_20260927/check_strict_endpoint.py",
+        "literal_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/check_boundaries.py",
+        "source_digest_dependency:development/quad_fullbatch_sr_20260928/strict_endpoint_fullbatch.py",
+        "source_digest_dependency:development/quad_sparse_metadata_20260927/check_backend.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/check_order4.py",
+        "source_digest_dependency:development/quad_targeted_recovery_20260927/run_order_from_zero.py",
+        "unique_literal_dependency:development/quad_sparse_metadata_20260927/check_backend.py"
+      ]
+    },
+    {
+      "path": "adapters/quad_weighted_validation_20260923/interval.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "815a5e60d561fe508c64f2b34e6a5eec0a995a6165d4738437b18c770286dc5b",
+      "bytes": 17981,
+      "local_source": "development/quad_weighted_validation_20260923/interval.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "source_digest_dependency:development/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+        "unique_literal_dependency:development/quad_fullbatch_p3_20260928/observer_endpoint64.py"
+      ]
+    },
+    {
+      "path": "adapters/reciprocal_geometric_20260928/check_paths.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "81dd23abb3c463b929ef913b8ffb433bd363dac13e4e117742b30369ab6c30fc",
+      "bytes": 16549,
+      "local_source": "development/reciprocal_geometric_20260928/check_paths.py",
+      "reasons": [
+        "source_digest_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+        "unique_literal_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py"
+      ]
+    },
+    {
+      "path": "adapters/reciprocal_geometric_20260928/core.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "765660877a93aaf12ef2e3dc6f565c5e01358f645b3dcb54ce9d3f09c957233e",
+      "bytes": 5494,
+      "local_source": "development/reciprocal_geometric_20260928/core.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/reciprocal_geometric_20260928/check_paths.py",
+        "literal_dependency:development/reciprocal_geometric_20260928/install.py",
+        "source_digest_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+        "unique_literal_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py"
+      ]
+    },
+    {
+      "path": "adapters/reciprocal_geometric_20260928/install.py",
+      "role": "retained_pinned_or_transitive_source",
+      "sha256": "99193a654708e8aab4402d90553c01387bf47a871d982313abc094421502c8ac",
+      "bytes": 8086,
+      "local_source": "development/reciprocal_geometric_20260928/install.py",
+      "reasons": [
+        "latest_INPUT_or_COMMAND_hash",
+        "literal_dependency:development/reciprocal_geometric_20260928/check_paths.py",
+        "literal_dependency:development/reciprocal_geometric_20260928/preflight.py",
+        "source_digest_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+        "unique_literal_dependency:development/quad_fullbatch_sr_20260928/bootstrap.py",
+        "unique_literal_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py"
+      ]
+    },
+    {
+      "path": "adapters/reciprocal_geometric_20260928/preflight.py",
+      "role": "qualification_or_diagnostic_source",
+      "sha256": "c7e3ab9bf370fda257261750f9cde8c7d3cd65e328e2d4ec838cd2bf91211543",
+      "bytes": 2523,
+      "local_source": "development/reciprocal_geometric_20260928/preflight.py",
+      "reasons": [
+        "source_digest_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py",
+        "unique_literal_dependency:development/quad_reciprocal_20260928/run_quad_reciprocal.py"
+      ]
+    },
+    {
+      "path": "integration/crown_reach.py",
+      "role": "frozen_driver",
+      "sha256": "1bc3aeea0e9216fe8432ae78f18c9592d19658c23cdde02b90a54d0b14c08a31",
+      "bytes": 85073,
+      "local_source": "development/author_nncs_v1/xiangru_driver_reference.py",
+      "recorded_source": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py"
+    },
+    {
+      "path": "benchmark/quad_author_resolved.yaml",
+      "role": "frozen_config",
+      "sha256": "940cb0b6188c3b127eee28df5d34fbda6d072f9e8b09cee8f251bd6b098f9144",
+      "bytes": 2085,
+      "local_source": "results/quad_split_probe_20260925/quad_author_resolved.yaml",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_failure_20260923/quad_author_resolved.yaml"
+    },
+    {
+      "path": "benchmark/quad_boxes.json",
+      "role": "frozen_boxes",
+      "sha256": "8dd18155d7d63b311fece5732251758a4984c0abb428377c135e68c244cedd30",
+      "bytes": 265345,
+      "local_source": "development/native_quad_matched_20260929/boxes.json",
+      "recorded_source": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_failure_20260923/huan_box_parity_preload/boxes.json"
+    },
+    {
+      "path": "generated/reciprocal/tape_candidate.py",
+      "role": "qualified_generated_reciprocal_source",
+      "sha256": "328c1a58126e27f1bcea683ba01963d048ba609f64a7339dc517071bbd35570d",
+      "bytes": 102322,
+      "local_source": "results/quad_targeted_recovery_20260927/reciprocal_five_route_sources_v1_20260928/tape_candidate.py"
+    },
+    {
+      "path": "generated/reciprocal/replay.cu",
+      "role": "qualified_generated_reciprocal_source",
+      "sha256": "fca567e5168d6eb5e7d9df299bbc7f47e2de053cb8aa81a02782816c62b821f4",
+      "bytes": 23927,
+      "local_source": "results/quad_targeted_recovery_20260927/reciprocal_five_route_sources_v1_20260928/replay.cu"
+    },
+    {
+      "path": "generated/reciprocal/valid.cu",
+      "role": "qualified_generated_reciprocal_source",
+      "sha256": "3bf7764c10e07709fe7c58faf1b8b23e63b47f0a4cd998633d0ef7161faa9a5a",
+      "bytes": 25241,
+      "local_source": "results/quad_targeted_recovery_20260927/reciprocal_five_route_sources_v1_20260928/valid.cu"
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/full1024_p3_phase_profile_gpu14_40_v1_COMMAND.json",
+      "role": "frozen_prerequisite_command",
+      "sha256": "3705e932fbe1c1c54a47f10694fd0dcf5281f682ee4ba657c3295b6f51137e01",
+      "bytes": 9385,
+      "local_source": "development/quad_fullbatch_p3_20260928/full1024_p3_phase_profile_gpu14_40_v1_COMMAND.json",
+      "reasons": [
+        "latest_COMMAND_direct_source_hash"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/full1024_p3_gpu14_1000_v1_COMMAND.json",
+      "role": "frozen_prerequisite_command",
+      "sha256": "959a4254cabcf5bc1cb2dd35841210ab2b3576881fdd64a76da511efaa4b11c9",
+      "bytes": 8667,
+      "local_source": "development/quad_fullbatch_p3_20260928/full1024_p3_gpu14_1000_v1_COMMAND.json",
+      "reasons": [
+        "latest_COMMAND_direct_source_hash"
+      ]
+    },
+    {
+      "path": "adapters/quad_fullbatch_p3_20260928/full1024_p3_trig_gpu14_1000_v1_COMMAND.json",
+      "role": "latest_completed_run_frozen_command",
+      "sha256": "9d44c14d9c9d40fcd45f8282aac70e7998853f1d499d31b4eebb4b5ad7b9d4f8",
+      "bytes": 8888,
+      "local_source": "development/quad_fullbatch_p3_20260928/full1024_p3_trig_gpu14_1000_v1_COMMAND.json",
+      "reasons": [
+        "latest_completed_run_COMMAND"
+      ]
+    }
+  ],
+  "dynamic_literal_notes": [
+    {
+      "referencing_source": "development/quad_fullbatch_p3_20260928/check_horner_cleanup_cpu.py",
+      "literal": "src/flowstar_gpu/sparse_exec.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_p3_20260928/check_phase_profile_entry_cpu.py",
+      "literal": "entry.py",
+      "status": "test_fixture_output",
+      "explanation": "check_phase_profile_entry_cpu creates a temporary entry.py fixture."
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_p3_20260928/check_selective_prune_audit_cpu.py",
+      "literal": "/private/tmp/quad_endpoint_a3fb_cpu_src/src/flowstar_gpu/graphing.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/graphing.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+      "literal": "cuda_kernels.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/cuda_kernels.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_p3_20260928/observer_endpoint64.py",
+      "literal": "safety.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/safety.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_sr_20260928/capture_799_800.py",
+      "literal": "src/flowstar_gpu/sparse_exec.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_sr_20260928/check_boundaries.py",
+      "literal": "_fullbatch.py",
+      "status": "filename_suffix",
+      "explanation": "check_boundaries constructs strict_endpoint_fullbatch.py / strict_injection_fullbatch.py, both included."
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_sr_20260928/cold_799_800.py",
+      "literal": "src/flowstar_gpu/sparse_exec.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "referencing_source": "development/quad_fullbatch_sr_20260928/trace_799_800.py",
+      "literal": "src/flowstar_gpu/sparse_exec.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "referencing_source": "development/quad_sparse_metadata_20260927/metadata_backend.py",
+      "literal": "src/flowstar_gpu/sparse_exec.py",
+      "status": "included_in_engine",
+      "staged_path": "engine/src/flowstar_gpu/sparse_exec.py"
+    },
+    {
+      "referencing_source": "development/reciprocal_geometric_20260928/install.py",
+      "literal": "generated_tape_candidate.py",
+      "status": "generated_at_runtime",
+      "explanation": "Installer emits/loads a generated tape module; frozen qualified generated output is generated/reciprocal/tape_candidate.py."
+    },
+    {
+      "referencing_source": "development/reciprocal_geometric_20260928/install.py",
+      "literal": "replay.cu",
+      "status": "included_generated_source",
+      "staged_path": "generated/reciprocal/replay.cu"
+    },
+    {
+      "referencing_source": "development/reciprocal_geometric_20260928/install.py",
+      "literal": "tape_candidate.py",
+      "status": "included_generated_source",
+      "staged_path": "generated/reciprocal/tape_candidate.py"
+    },
+    {
+      "referencing_source": "development/reciprocal_geometric_20260928/install.py",
+      "literal": "valid.cu",
+      "status": "included_generated_source",
+      "staged_path": "generated/reciprocal/valid.cu"
+    }
+  ],
+  "packaging_verification": {
+    "all_python_files_parse": true,
+    "runtime_or_experiments_executed": false,
+    "engine_source_hashes_match_latest_INPUT_36_of_36": true,
+    "COMMAND_direct_source_hashes_match": 26,
+    "all_copied_files_match_recorded_sha256": true,
+    "copied_file_count": 141
+  }
+}

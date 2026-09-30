@@ -1,0 +1,38 @@
+{
+  "status": "root_review_passed",
+  "review_unix": 1790684974.089183,
+  "local_audit_files_sha256": {
+    "RESULT.json": "517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2",
+    "REMOTE_FILE_INDEX.json": "b0523da32fc0d200b4c3b08d970576af081cd9e3d38d510166331565945744ef"
+  },
+  "review_scope": "Local actual audit JSON and file index consistency; CPU remote audit read the actual tensors. This root review did not download or reread candidate PT/SR tensors.",
+  "indexed_files": 4530,
+  "observer_pairs": 1000,
+  "controller_transfer_terminal_pairs": 101,
+  "all_pairs_actual_file_sha_equal_and_linked_to_index": true,
+  "final_snapshot_review": {
+    "committed_1000": {
+      "component_count": 14,
+      "raw_component_signatures_and_progress_equal": true
+    },
+    "after_endpoint_1000": {
+      "component_count": 14,
+      "raw_component_signatures_and_progress_equal": true
+    }
+  },
+  "watch_baseline_s": 3153.4494564835913,
+  "watch_candidate_s": 1533.7520515201613,
+  "single_run_watch_speedup": 2.0560360153116566,
+  "wall_time_reduction_percent": 51.36271969202745,
+  "fullbatch_qualification": false,
+  "end_to_end_strict_certificate": false,
+  "goal_complete": false,
+  "complete_archive_downloaded_locally": false,
+  "local_actual_run_json_sha256": {
+    "RESULT.json": "310bb9acb6780845c2d336e96de344e25bfbb2916cd9b721362296fc75c8ae98",
+    "INPUT.json": "45b7ba4babb6129067b51e23092383574a943dfc3d05e25e21fd4bd188f05546",
+    "TRIG_CONTINUE_RUN.json": "32626f1044201572fbc0c9cfb7721acdaad042792fd4685e8856f7dd3ed32eb9"
+  },
+  "local_actual_run_json_identity_and_counts_reviewed": true,
+  "candidate_internal_process_s": 1531.3951929416507
+}

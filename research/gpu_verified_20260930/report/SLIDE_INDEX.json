@@ -1,0 +1,254 @@
+[
+  {
+    "page": 1,
+    "title": "PyTorch / GPU Reachability",
+    "appendix": false,
+    "source": "S00; latest native QUAD snapshot: September 29, 20:19:53 China time."
+  },
+  {
+    "page": 2,
+    "title": "Main results from this phase",
+    "appendix": false,
+    "source": "S01, S03\u2013S06, S11\u2013S12. The new QUAD candidate has not yet passed a full benchmark regression."
+  },
+  {
+    "page": 3,
+    "title": "What the project computes",
+    "appendix": false,
+    "source": "S01; the main comparisons include the closed-loop NN. Offline replays and one-step diagnostics are labeled separately."
+  },
+  {
+    "page": 4,
+    "title": "Frozen revisions and explicit entry points",
+    "appendix": false,
+    "source": "S01. These comparisons do not characterize every author branch or later revision; exact repository identities are in the data bundle."
+  },
+  {
+    "page": 5,
+    "title": "How to read runtime and width",
+    "appendix": false,
+    "source": "S01; runs shared a V100 node rather than an exclusive machine."
+  },
+  {
+    "page": 6,
+    "title": "Coverage of the 14 official configurations",
+    "appendix": false,
+    "source": "S01, S11. Completion of a run does not by itself establish a full rigorous NNCS proof."
+  },
+  {
+    "page": 7,
+    "title": "Seven complete cases: four-way runtime",
+    "appendix": false,
+    "source": "S01. The old native ACC* reference was later shown to miss reachable states; it cannot certify accuracy against a correct reference."
+  },
+  {
+    "page": 8,
+    "title": "Complete cases: worst width ratio over time",
+    "appendix": false,
+    "source": "S01. Local means per partition; global means the union hull. Old ACC ratios are corrected separately and excluded from the accuracy ranking."
+  },
+  {
+    "page": 9,
+    "title": "Unicycle: faster, but a wider final range",
+    "appendix": false,
+    "source": "S01. B1, h=.02, solution order 2, 500 steps; endpoint global hull widths are shown."
+  },
+  {
+    "page": 10,
+    "title": "Unicycle: narrowing down the first divergence",
+    "appendix": false,
+    "source": "S12. The 1-ULP initial gap alone cannot explain the final 3.5-fold width difference."
+  },
+  {
+    "page": 11,
+    "title": "NAV: global width is close; standard native run remains incomplete",
+    "appendix": false,
+    "source": "S01. Robust timings are five-run medians; standard results are single observed diagnostics and must not be pooled with them."
+  },
+  {
+    "page": 12,
+    "title": "Airplane: from build failure to a real NN closed loop",
+    "appendix": false,
+    "source": "S01, S11. Huan/Xiangru are the main-suite strict entries, not replacements using our sparse port."
+  },
+  {
+    "page": 13,
+    "title": "Airplane: a concrete witness for stopping and width",
+    "appendix": false,
+    "source": "S11. The range prefix is byte-identical; this case does not establish identical stopping semantics on every system."
+  },
+  {
+    "page": 14,
+    "title": "ACC: the narrower native reference needs correction",
+    "appendix": false,
+    "source": "S04. This finding concerns the archived library, not every Flow* revision; disabling refinement is not presented as the repair."
+  },
+  {
+    "page": 15,
+    "title": "ACC: widths against the repaired reference",
+    "appendix": false,
+    "source": "S04. These single observed diagnostics do not establish a speed gain; the candidate is not the suite-wide default."
+  },
+  {
+    "page": 16,
+    "title": "QUAD: fixed task and explicit algorithm variants",
+    "appendix": false,
+    "source": "S02\u2013S03, S05. Partition grid: 8\u00d78\u00d78\u00d72\u00d71\u00d71; the official physical-model expressions are retained."
+  },
+  {
+    "page": 17,
+    "title": "Huan's fast QUAD result was reproduced",
+    "appendix": false,
+    "source": "S02\u2013S06. Completion, timing boundaries, and modes differ across rows; no speedup is computed across this table."
+  },
+  {
+    "page": 18,
+    "title": "QUAD: where completion gains came from",
+    "appendix": false,
+    "source": "S03, S05\u2013S06, S13. P2 rejection at step 800 and the old P3 GPU-memory guard are distinct problems."
+  },
+  {
+    "page": 19,
+    "title": "QUAD at step 580: widths on the same initial boxes",
+    "appendix": false,
+    "source": "S07. Only Huan mean/max are available, not a global hull; corresponding new-trig widths equal P3 widths."
+  },
+  {
+    "page": 20,
+    "title": "QUAD at step 799: width across P2/P3 variants",
+    "appendix": false,
+    "source": "S03, S05. Partitions surviving P2 after step 800 cannot represent the full original initial set."
+  },
+  {
+    "page": 21,
+    "title": "Full QUAD P3: 52.56 down to 25.56 minutes",
+    "appendix": false,
+    "source": "S06. Includes initialization, graph setup, logging, and checks; a native job was also running on other GPU/CPU resources."
+  },
+  {
+    "page": 22,
+    "title": "QUAD speedup preserved every saved numerical output",
+    "appendix": false,
+    "source": "S06. Actual remote CPU data were checked and key JSON records archived locally; these provide evidence of output equivalence for the recorded runs."
+  },
+  {
+    "page": 23,
+    "title": "QUAD at T=5: mode differences still matter",
+    "appendix": false,
+    "source": "S02, S05\u2013S06. Absolute values are juxtaposed as observed; a narrower enclosure alone does not prove correct coverage."
+  },
+  {
+    "page": 24,
+    "title": "QUAD versus the new native entry: common 40 steps",
+    "appendix": false,
+    "source": "S08, S10. Our time here is the pre-optimization P3 diagnostic, not the full trig-reuse time or a 40-step benchmark timing."
+  },
+  {
+    "page": 25,
+    "title": "Native QUAD: initial-coverage repair and 400-step snapshot",
+    "appendix": false,
+    "source": "S10. This report reads a local saved snapshot without reconnecting to the server; 400 steps is not a live status."
+  },
+  {
+    "page": 26,
+    "title": "What the correctness checks support",
+    "appendix": false,
+    "source": "S01, S04, S06, S10, S12\u2013S13."
+  },
+  {
+    "page": 27,
+    "title": "Current progress and next priorities",
+    "appendix": false,
+    "source": "Numbers are current through the saved evidence; the listed future work has not yet been carried out."
+  },
+  {
+    "page": 28,
+    "title": "Appendix: Attempts without four complete results",
+    "appendix": true,
+    "source": "S01. Full step counts, outcomes, and resources: arch\\_diagnostic\\_attempts.csv."
+  },
+  {
+    "page": 29,
+    "title": "Appendix: Official benchmark settings (1/2)",
+    "appendix": true,
+    "source": "S01. Exact initial boxes, splits, model/box hashes, and configuration files: data/arch\\_configurations.csv."
+  },
+  {
+    "page": 30,
+    "title": "Appendix: Official benchmark settings (2/2)",
+    "appendix": true,
+    "source": "S01. Exact initial boxes, splits, model/box hashes, and configuration files: data/arch\\_configurations.csv."
+  },
+  {
+    "page": 31,
+    "title": "Appendix: Runtime sample ranges (1/2)",
+    "appendix": true,
+    "source": "S01. The 140 counted runs and 28 excluded warmups: arch\\_timing\\_samples.csv; see main slides for the ACC correction."
+  },
+  {
+    "page": 32,
+    "title": "Appendix: Runtime sample ranges (2/2)",
+    "appendix": true,
+    "source": "S01. The 140 counted runs and 28 excluded warmups: arch\\_timing\\_samples.csv; see main slides for the ACC correction."
+  },
+  {
+    "page": 33,
+    "title": "Appendix: Endpoint widths \u2014 Attitude and Pendulum",
+    "appendix": true,
+    "source": "S01. CSV retains full precision and per-state statistics over time; see S04 for the corrected ACC reference."
+  },
+  {
+    "page": 34,
+    "title": "Appendix: Endpoint widths \u2014 two heterogeneous TORA cases",
+    "appendix": true,
+    "source": "S01. CSV retains full precision and per-state statistics over time; see S04 for the corrected ACC reference."
+  },
+  {
+    "page": 35,
+    "title": "Appendix: Endpoint widths \u2014 NAV robust and Unicycle",
+    "appendix": true,
+    "source": "S01. CSV retains full precision and per-state statistics over time; see S04 for the corrected ACC reference."
+  },
+  {
+    "page": 36,
+    "title": "Appendix: Endpoint widths \u2014 historical ACC output",
+    "appendix": true,
+    "source": "S01. CSV retains full precision and per-state statistics over time; see S04 for the corrected ACC reference."
+  },
+  {
+    "page": 37,
+    "title": "Appendix: QUAD widths at T=5, states 1\u20136",
+    "appendix": true,
+    "source": "S02, S05\u2013S06. Complete T=5 widths are unavailable for strict Huan, strict Xiangru, and Flow*; no values were imputed."
+  },
+  {
+    "page": 38,
+    "title": "Appendix: QUAD widths at T=5, states 7\u201312",
+    "appendix": true,
+    "source": "S02, S05\u2013S06. Complete T=5 widths are unavailable for strict Huan, strict Xiangru, and Flow*; no values were imputed."
+  },
+  {
+    "page": 39,
+    "title": "Appendix: QUAD four-way reference at t=0.5, states 1\u20136",
+    "appendix": true,
+    "source": "S09. The named CSV and RESULT files give all state widths, contract differences, and provenance."
+  },
+  {
+    "page": 40,
+    "title": "Appendix: QUAD four-way reference at t=0.5, states 7\u201311",
+    "appendix": true,
+    "source": "S09. The named CSV and RESULT files give all state widths, contract differences, and provenance."
+  },
+  {
+    "page": 41,
+    "title": "Appendix: Fixed-plant baselines reported previously",
+    "appendix": true,
+    "source": "S00. Original VDP with one box remains slower than native Flow*; current work centers on official NNCS cases and QUAD."
+  },
+  {
+    "page": 42,
+    "title": "Appendix: Evidence index and version scope",
+    "appendix": true,
+    "source": "Sources and URLs: SOURCES.md. Large PT/SR files, weights, and environments remain on the server."
+  }
+]

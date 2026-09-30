@@ -1,0 +1,66 @@
+{
+  "scientific": {
+    "B": 1024,
+    "dimensions": 16,
+    "physical": 12,
+    "h": 0.005,
+    "order": 2,
+    "cutoff": 1e-06,
+    "cap": [
+      -0.1,
+      0.1
+    ],
+    "sr_capacity": 1000,
+    "period": 0.1,
+    "target_periods": 50,
+    "target_steps": 1000,
+    "native_workers": 4,
+    "controller": "official box/same-slope/native-f64",
+    "boxes_sha256": "8dd18155d7d63b311fece5732251758a4984c0abb428377c135e68c244cedd30",
+    "model_sha256": "fabd84e411f4b0ebe0d6b996be6e4bd2adc48cf1118ab99c82180563b95532dd",
+    "binary_sha256": "559456e5c4727a1df9235ade95c51cd8fe684ef1b482d006626ab92842a8043c",
+    "source_pin_sha256": "a9529c4fb958ea98c457ef3b965be4b7511ac2f2887b680fe9e4b165cda275ac",
+    "library_sha256": "274e9bd11c9de21e95d72e935d9e45fd4fe9479ebb986751dd7f90522e416e3e",
+    "server_sha256": "4d0798a8106f3229ad75267d87c14b1f242343d6aaa34f585b281c435e3929df",
+    "initialization_variant": "initial_affine_max_outward_distance",
+    "initial_affine_probe_gate_sha256": "8f66c3eb85821cd6c3a6a5c9af93ead905852351d63aa0a9e302ae92f2bf133b"
+  },
+  "requested_periods": 50,
+  "affinity": [
+    6,
+    7,
+    8,
+    9
+  ],
+  "gpu": "GPU-698a9283-60ee-cc64-7d87-4e33f6fabc82",
+  "python_executable": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+  "python_version": "3.11.15 | packaged by conda-forge | (main, Mar  5 2026, 16:45:40) [GCC 14.3.0]",
+  "environment_paths": {
+    "PYTHONPATH": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/rpc_deps",
+    "LD_LIBRARY_PATH": null,
+    "CUDA_HOME": null
+  },
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "numerical_variant": "independent initial-affine-cover variant; original-library native P2/f64 otherwise",
+  "constructor_probe_qualification": {
+    "status": "actual_initial_affine_coverage_passed",
+    "coordinates": 16384,
+    "changed_radii": 384,
+    "receipt_sha256": "8f66c3eb85821cd6c3a6a5c9af93ead905852351d63aa0a9e302ae92f2bf133b"
+  },
+  "initialization": "same requested binary64 boxes; actual native affine observations/NN domains separately logged",
+  "history_policy": "export actual accepted flowpipes, preserve endpoints and full SR, clear exported flowpipes",
+  "observer": "original 12-dimensional local-pre tube and endpoint",
+  "fullbatch_qualification": false,
+  "end_to_end_strict_certificate": false,
+  "unqualified": [
+    "CROWN bounds",
+    "original Real RN injection and endpoint",
+    "original VAR tail/refinement"
+  ],
+  "timeout_s": 21600.0,
+  "short_gate": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/short40_v1"
+}

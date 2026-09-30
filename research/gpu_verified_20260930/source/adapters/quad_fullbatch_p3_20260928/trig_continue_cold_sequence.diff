@@ -1,0 +1,29 @@
+--- frozen_run_fullbatch_p3.py:cold
++++ run_fullbatch_p3_trig_continue.py:cold
+@@ -1,13 +1,14 @@
+ def cold(runtime,source):
+     x=runtime;ctx=x.ctx;d=x.d;source=Path(source)
+-    binding=own40_gate(source,ctx.identity)
++    binding=ctx.trig_source_binding;source_identity=ctx.trig_source_identity
++    assert source.resolve()==Path(binding['source40_path']).resolve()
+     # Original factory sequence except initial state/SR: restore exactly one SR.
+     cfg=ctx.cfg;names=[e['name'] for e in cfg['initial_set']]
+     settings=d.Settings(step=.005,order=3,cutoff=1e-6,remainder_estimation=d.parse_rem_est(cfg['remainder_estimation'],16),mode='strict',device='cuda:0')
+     model=d.build_crown(cfg,'cuda:0',relax='same-slope',input_layout='native')
+     code=d.compile_ode(cfg['dynamics_expressions'],names,order=2)
+     tables=d.build_tables(16,3).to('cuda:0');step=d.poly.build_step_tables(tables,.005);sched=d.build_schedule(16,3,'cuda:0');eng=d.SparseEngine(tables,step,'cuda:0')
+-    st,sr,ledger,cap,progress=ctx.snapshot.restore(source/'committed_20',eng,metadata=ctx.identity,host=x.h,raw_factory=x.raw['make_symbolic_remainder'])
++    st,sr,ledger,cap,progress=ctx.snapshot.restore(source/'committed_20',eng,metadata=source_identity,host=x.h,raw_factory=x.raw['make_symbolic_remainder'])
+     assert progress['completed_step']==20 and progress['phase']=='committed_before_endpoint_handoff' and progress['held_controller_step']==0
+     assert sr.max_size==len(sr.phi_buf)==1000 and ledger.length==20 and ledger.epoch==0
+     expected_cap=x.raw['build_rem_est'](settings,16,1024,'cuda:0')
+@@ -24,7 +25,7 @@
+     st,ok=d.advance_sparse(st,code,eng,sched,settings,cap,sr);st=d.prune_state(st,eng)
+     assert bool(ok.all()) and not bool(x.broken.any());assert sr.reset_if_full() is False
+     x.save('committed_21')
+-    checks={name:compare_snapshot(x,source/name,x.args.output/name) for name in ['committed_20','after_endpoint_20','after_controller_20','committed_21']}
+-    for name in ['endpoint_20','controller_20','transfer_20','observer_21']:checks[name]=compare_artifact(x,source/(name+'.pt'),x.args.output/(name+'.pt'))
++    checks={name:compare_snapshot(x,source/name,x.args.output/name,source_identity) for name in ['committed_20','after_endpoint_20','after_controller_20','committed_21']}
++    for name in ['endpoint_20','controller_20','transfer_20','observer_21']:checks[name]=compare_artifact(x,source/(name+'.pt'),x.args.output/(name+'.pt'),source_identity)
+     assert x.controller_calls==1 and x.controller_steps==[20]
+     return dict(status='passed',mode='cold20_to21',checks=checks,**binding)

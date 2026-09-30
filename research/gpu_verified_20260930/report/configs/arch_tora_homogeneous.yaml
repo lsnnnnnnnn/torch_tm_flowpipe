@@ -1,0 +1,78 @@
+run_attack: false
+num_vars: 6
+num_nn_input: 4
+num_nn_output: 1
+steps: 20
+step_size: 1.0
+ode_step_size: 0.1
+ode_order: 3
+cut_off_threshold: 1.0e-06
+remainder_estimation:
+- -0.01
+- 0.01
+symbolic_remainder_queue: 1000
+initial_set:
+- name: x1
+  interval:
+  - 0.6
+  - 0.7
+  splits: 4
+- name: x2
+  interval:
+  - -0.7
+  - -0.6
+  splits: 3
+- name: x3
+  interval:
+  - -0.4
+  - -0.3
+- name: x4
+  interval:
+  - 0.5
+  - 0.6
+- name: t
+  interval:
+  - 0.0
+  - 0.0
+- name: u1
+  interval:
+  - 0.0
+  - 0.0
+split_vars:
+- x1
+- x2
+dynamics_expressions:
+- x2
+- -x1 + 0.1 * sin(x3)
+- x4
+- u1 - 10
+- '1'
+- '0'
+constraints_safe:
+- -x1 - 2
+- x1 - 2
+- -x2 - 2
+- x2 - 2
+- -x3 - 2
+- x3 - 2
+- -x4 - 2
+- x4 - 2
+model_dir: /srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Benchmark9-Tora/controllerTora.onnx
+input_shape:
+- -1
+- 1
+- 1
+- 4
+output_T_shape:
+- -1
+- 1
+- 4
+output_c_shape:
+- -1
+- 1
+output_scale: 1
+output_offset: 0
+bound_opts:
+  activation_bound_option: same-slope
+  conv_mode: matrix
+sr_queue: 1000

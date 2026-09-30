@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+.pytest_cache/
+.ruff_cache/
+
+# Oracle ground-truth dumps: large, regenerable via `make oracle-data`
+# (committed golden slices live in tests/golden/ instead)
+oracle_data/
+
+# Benchmark results: regenerable; curated results live in bench/results/published/
+bench/results/*
+!bench/results/published/
+
+# C++ oracle build artifacts
+tools/oracle/*.o
+tools/oracle/oracle_dump
+
+# Editor/OS noise
+.DS_Store
+*.swp

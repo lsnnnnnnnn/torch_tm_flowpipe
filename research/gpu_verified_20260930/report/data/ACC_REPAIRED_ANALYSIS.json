@@ -1,0 +1,385 @@
+{
+  "status": "full50_completed_and_early_witnesses_passed",
+  "native_result": {
+    "case": "acc",
+    "fixed_steps": true,
+    "actual_binary_sha256": "31de6acfc9ecdffa8792eb87bfead536c41a4ec2e5dbea5ef371d31084695105",
+    "actual_source_sha256": "4315c50abb6da9c9279d0f0d1bb1630709e9aeb1d5475f8232a6bba02621a3cc",
+    "status": "completed",
+    "original_build": {
+      "source": "/srv/local/shengenli/CROWN-Reach/submit/CROWN-Reach/archcomp/ACC/acc.cpp",
+      "source_sha256": "ef9b0c890a1dcbb6f62477fc3c88ab54907f8aac75f7400717c796303c39c5c6",
+      "server": "/srv/local/shengenli/CROWN-Reach/submit/CROWN-Reach/archcomp/ACC/crown.py",
+      "server_sha256": "d28c60e84579b1fd845ffddd3d2cbc548c83784125f615de9db7ba688e99b0b4",
+      "physical": 6,
+      "command": [
+        "taskset",
+        "-c",
+        "10",
+        "/usr/bin/g++-15",
+        "-O3",
+        "-std=c++11",
+        "-fpermissive",
+        "-Wno-template-body",
+        "-fopenmp",
+        "-I",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include",
+        "-I",
+        "/usr/include/jsoncpp",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/archcomp/acc/observed.cpp",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/flowstar/flowstar-toolbox/libflowstar.a",
+        "-lmpfr",
+        "-lgmp",
+        "-lgsl",
+        "-lgslcblas",
+        "-lm",
+        "-lglpk",
+        "-lcolamd",
+        "-lamd",
+        "-lz",
+        "-lltdl",
+        "-ljsoncpp",
+        "-lcurl",
+        "-ljsonrpccpp-common",
+        "-ljsonrpccpp-client",
+        "-l:libboost_thread.so.1.90.0",
+        "-o",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/archcomp/acc/observed"
+      ],
+      "returncode": 0,
+      "build_s": 0.8073316770605743,
+      "workdir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/archcomp/acc",
+      "failed_build_preserved": "observed_failed.cpp + build.log",
+      "binary_sha256": "5fbc4d5dd1e44c2c51a3dc2ef8d2bbd6941390d0716a5177a91a8f941a230b63",
+      "observed_source_sha256": "156aee1f736a08c6e362ebc6aa312c0646d8f3e52669de1557e1e73abebf8cfa",
+      "observed_server_sha256": "8cc7887e3a011c07dba194b930231dd8cb16fde0f6db06ec9b9e2e028a08c57c",
+      "boxes_sha256": "df594a51860e16a72ea4a77ef5d29b8804be98d78e3489662ab19a4655a3aea9",
+      "B": 1
+    },
+    "variant_build": {
+      "command": [
+        "taskset",
+        "-c",
+        "10",
+        "/usr/bin/g++-15",
+        "-O3",
+        "-g",
+        "-std=c++11",
+        "-fpermissive",
+        "-Wno-template-body",
+        "-fopenmp",
+        "-I",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/author_nncs_reproduction_v1/native_build/deps/extracted/usr/include",
+        "-I",
+        "/usr/include/jsoncpp",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_residual_memory_20260923/native_var_tail_fix/acc_matched.cpp",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_residual_memory_20260923/native_var_tail_fix/flowstar/libflowstar.a",
+        "-lmpfr",
+        "-lgmp",
+        "-lgsl",
+        "-lgslcblas",
+        "-lm",
+        "-lglpk",
+        "-lcolamd",
+        "-lamd",
+        "-lz",
+        "-lltdl",
+        "-ljsoncpp",
+        "-lcurl",
+        "-ljsonrpccpp-common",
+        "-ljsonrpccpp-client",
+        "-l:libboost_thread.so.1.90.0",
+        "-o",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_residual_memory_20260923/native_var_tail_fix/acc_matched"
+      ],
+      "source_sha256": "4315c50abb6da9c9279d0f0d1bb1630709e9aeb1d5475f8232a6bba02621a3cc",
+      "binary_sha256": "31de6acfc9ecdffa8792eb87bfead536c41a4ec2e5dbea5ef371d31084695105",
+      "library_sha256": "73a23102bbdeaabd29ab714d00eec312d0d53fa089071778d0c6e74054de43b4",
+      "original_source_sha256": "c9c76d4fb3e6628fb52f32ee2c45a969dbc91491ed1690b5076dce6dba1c2ecf",
+      "server_sha256": "8cc7887e3a011c07dba194b930231dd8cb16fde0f6db06ec9b9e2e028a08c57c",
+      "variant": "native_var_tail_cache_fix",
+      "scope": "Same matched full50-step ACC source; only header/library point to isolated cache-tail repair"
+    },
+    "variant": "native_var_tail_cache_fix",
+    "affinity": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "gpu": "2",
+    "observation": true,
+    "timeout_s": 300.0,
+    "end_to_end_strict_certificate": false,
+    "server_pid": 3894587,
+    "server_startup_s": 2.911163047887385,
+    "native_process_wall_s": 5.027495343703777,
+    "returncode": 0,
+    "protocol_lines": [
+      "Step 0",
+      "Step 1",
+      "Step 2",
+      "Step 3",
+      "Step 4",
+      "Step 5",
+      "Step 6",
+      "Step 7",
+      "Step 8",
+      "Step 9",
+      "Step 10",
+      "Step 11",
+      "Step 12",
+      "Step 13",
+      "Step 14",
+      "Step 15",
+      "Step 16",
+      "Step 17",
+      "Step 18",
+      "Step 19",
+      "Step 20",
+      "Step 21",
+      "Step 22",
+      "Step 23",
+      "Step 24",
+      "Step 25",
+      "Step 26",
+      "Step 27",
+      "Step 28",
+      "Step 29",
+      "Step 30",
+      "Step 31",
+      "Step 32",
+      "Step 33",
+      "Step 34",
+      "Step 35",
+      "Step 36",
+      "Step 37",
+      "Step 38",
+      "Step 39",
+      "Step 40",
+      "Step 41",
+      "Step 42",
+      "Step 43",
+      "Step 44",
+      "Step 45",
+      "Step 46",
+      "Step 47",
+      "Step 48",
+      "Step 49",
+      "VERIFIED",
+      "time cost: 4.976000"
+    ],
+    "control_periods_started": 50,
+    "numerical_failure_reported": false,
+    "complete": true,
+    "server_returncode": -15,
+    "supervisor_wall_s": 8.103070226032287,
+    "ranges_bytes": 10800,
+    "range_records": 50
+  },
+  "native_process": {
+    "argv": [
+      "taskset",
+      "-c",
+      "6-9",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_residual_memory_20260923/native_var_tail_fix/run_acc.py",
+      "--case",
+      "acc",
+      "--fixed-steps",
+      "--timeout",
+      "300",
+      "--output",
+      "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_residual_memory_20260923/acc_native_tail_fix"
+    ],
+    "pid": 3894583,
+    "returncode": 0,
+    "status": "completed",
+    "timeout_s": 330.0,
+    "process_wall_s": 8.296836939174682,
+    "peak_tree_rss_bytes": 1055248384,
+    "peak_owned_gpu_bytes": 455081984,
+    "rss_gpu_guard_bytes": 12348030976.0,
+    "hard_budget_bytes": 12884901888,
+    "poll_s": 0.1
+  },
+  "early_analytic_checks": [
+    {
+      "step": 1,
+      "v0": 32.0,
+      "endpoint": [
+        -0.37219209221578753,
+        -0.3713626666931529
+      ],
+      "analytic": [
+        -0.37181947928644365,
+        -0.37180758487648696
+      ],
+      "contains": true
+    },
+    {
+      "step": 1,
+      "v0": 32.1,
+      "endpoint": [
+        -0.37219209221578753,
+        -0.3713626666931529
+      ],
+      "analytic": [
+        -0.37187757608008215,
+        -0.37186564262446226
+      ],
+      "contains": true
+    },
+    {
+      "step": 1,
+      "v0": 32.2,
+      "endpoint": [
+        -0.37219209221578753,
+        -0.3713626666931529
+      ],
+      "analytic": [
+        -0.3719358541429676,
+        -0.3719238816242321
+      ],
+      "contains": true
+    },
+    {
+      "step": 2,
+      "v0": 32.0,
+      "endpoint": [
+        -0.6774685506732895,
+        -0.6752211962820723
+      ],
+      "analytic": [
+        -0.6762395215716968,
+        -0.6761530738811359
+      ],
+      "contains": true
+    },
+    {
+      "step": 2,
+      "v0": 32.1,
+      "endpoint": [
+        -0.6774685506732895,
+        -0.6752211962820723
+      ],
+      "analytic": [
+        -0.6763451839969423,
+        -0.6762584522781977
+      ],
+      "contains": true
+    },
+    {
+      "step": 2,
+      "v0": 32.2,
+      "endpoint": [
+        -0.6774685506732895,
+        -0.6752211962820723
+      ],
+      "analytic": [
+        -0.6764511761021419,
+        -0.6763641602283345
+      ],
+      "contains": true
+    }
+  ],
+  "widths": {
+    "native_original": {
+      "step2_a_lead_endpoint_width": 0.00028282614978181186,
+      "max_endpoint_ratio_to_repaired": 0.9999914160707138,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 1,
+      "max_tube_ratio_to_repaired": 0.9999925990324029,
+      "final_endpoint_widths": [
+        20.993933124395255,
+        0.19757233068455093,
+        0.0006846514464546871,
+        5.028368774414957,
+        1.7956321398941633,
+        1.0636998516755862
+      ],
+      "ranges_sha256": "1d06bc651535aa19432df268ab0b4338ca98f38f97ced9e0bad44fc900ec8465"
+    },
+    "native_tail_fix": {
+      "step2_a_lead_endpoint_width": 0.002247354391217149,
+      "max_endpoint_ratio_to_repaired": 1.0,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 1,
+      "max_tube_ratio_to_repaired": 1.0,
+      "final_endpoint_widths": [
+        21.01205143634982,
+        0.20175842635252295,
+        0.0007425444315312113,
+        5.497998802447029,
+        2.0155283077957584,
+        1.1811239101972355
+      ],
+      "ranges_sha256": "764be42e310c5e4bcc650f22b52cbcab0c32a834b16e89e5e29cd4471b4678cf"
+    },
+    "huan": {
+      "step2_a_lead_endpoint_width": 0.0022470088317284587,
+      "max_endpoint_ratio_to_repaired": 1.0000000000034808,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 6,
+      "max_tube_ratio_to_repaired": 1.420454121085717,
+      "final_endpoint_widths": [
+        21.012040961970598,
+        0.2017538905540981,
+        0.0007410763491990657,
+        5.497975787460462,
+        2.015510730280848,
+        1.1811061829727711
+      ],
+      "ranges_sha256": "b3f7fd10cfdd272500ba2059a4858e8ab2b8041a278c9639a75fc0d81bedc720"
+    },
+    "xiangru": {
+      "step2_a_lead_endpoint_width": 0.0022470088317284587,
+      "max_endpoint_ratio_to_repaired": 1.0000000000034808,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 6,
+      "max_tube_ratio_to_repaired": 1.420454121085717,
+      "final_endpoint_widths": [
+        21.012040961970598,
+        0.2017538905540981,
+        0.0007410763491990657,
+        5.497975787460462,
+        2.015510730280848,
+        1.1811061829727711
+      ],
+      "ranges_sha256": "b3f7fd10cfdd272500ba2059a4858e8ab2b8041a278c9639a75fc0d81bedc720"
+    },
+    "ours_control": {
+      "step2_a_lead_endpoint_width": 0.002245562328254458,
+      "max_endpoint_ratio_to_repaired": 0.9999938223696995,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 1,
+      "max_tube_ratio_to_repaired": 1.4204438330975624,
+      "final_endpoint_widths": [
+        21.0104550457053,
+        0.2016286635150415,
+        0.0007376997796026963,
+        5.333353383439686,
+        1.9486559353511979,
+        1.159430454746392
+      ],
+      "ranges_sha256": "b0687d645fffa09b1ea2f34463393a37694ab795e4feb2daa699a533b267fe65"
+    },
+    "ours_candidate": {
+      "step2_a_lead_endpoint_width": 0.0007721378347164132,
+      "max_endpoint_ratio_to_repaired": 0.9999935647516422,
+      "max_endpoint_step": 1,
+      "max_endpoint_dimension": 1,
+      "max_tube_ratio_to_repaired": 1.4099253717240527,
+      "final_endpoint_widths": [
+        20.998386167870308,
+        0.19860561719706382,
+        0.0007008106964807581,
+        5.179963101761473,
+        1.8659256929152477,
+        1.1011081433372294
+      ],
+      "ranges_sha256": "8767050e7a99fd6960f66ae308b7670d84b6f3a428799bb21cfff7b31fc46dae"
+    }
+  },
+  "scope": "Experimental native cache-tail fix, not original author baseline; early witnesses and full numerical acceptance do not certify every bound/NN injection. Single observed run, no formal speed claim."
+}

@@ -1,0 +1,157 @@
+{
+  "read_only": true,
+  "query_utc": "2026-09-29T12:19:53.788367+00:00",
+  "query_unix": 1790684393.7883973,
+  "run": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1",
+  "boot_id": "4ae45a5b-a5fd-4ac4-9471-3383381d26fb",
+  "processes": {
+    "1359708": {
+      "exists": true,
+      "state": "S",
+      "ppid": 1,
+      "pgrp": 1359708,
+      "session": 1359708,
+      "start_ticks": 410988434,
+      "cpu_ticks_user": 28543,
+      "cpu_ticks_system": 54355,
+      "affinity": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "rss": "16444 kB",
+      "threads": "1",
+      "argv": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/nncs_watchdog_rss128_gpu14.py",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1_watch",
+        "--timeout",
+        "21660",
+        "--",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/run.py",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1",
+        "--periods",
+        "50",
+        "--timeout",
+        "21600",
+        "--short-gate",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/short40_v1"
+      ]
+    },
+    "1359709": {
+      "exists": true,
+      "state": "S",
+      "ppid": 1359708,
+      "pgrp": 1359709,
+      "session": 1359709,
+      "start_ticks": 410988438,
+      "cpu_ticks_user": 341,
+      "cpu_ticks_system": 114,
+      "affinity": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "rss": "36088 kB",
+      "threads": "1",
+      "argv": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/run.py",
+        "--output",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1",
+        "--periods",
+        "50",
+        "--timeout",
+        "21600",
+        "--short-gate",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/short40_v1"
+      ]
+    },
+    "1359714": {
+      "exists": true,
+      "state": "S",
+      "ppid": 1359709,
+      "pgrp": 1359709,
+      "session": 1359709,
+      "start_ticks": 410988459,
+      "cpu_ticks_user": 646,
+      "cpu_ticks_system": 291,
+      "affinity": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "rss": "1126560 kB",
+      "threads": "3",
+      "argv": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+        "-u",
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/native_build/archcomp/Quadrotor/crown.py"
+      ]
+    },
+    "1359789": {
+      "exists": true,
+      "state": "S",
+      "ppid": 1359709,
+      "pgrp": 1359709,
+      "session": 1359709,
+      "start_ticks": 410988770,
+      "cpu_ticks_user": 3355667,
+      "cpu_ticks_system": 92898,
+      "affinity": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "rss": "25451896 kB",
+      "threads": "5",
+      "argv": [
+        "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/native_quad_matched_20260929/initial_affine_cover_variant/quad"
+      ]
+    }
+  },
+  "watch_terminal": {
+    "exists": false
+  },
+  "result": {
+    "exists": false
+  },
+  "periods": {
+    "observed_bytes": 2084154,
+    "observed_sha256": "52fb378a5e3a1301dc9b63a1c61e233e583ddacef451586d67dde87f46f5c33f",
+    "complete_json_rows": 20,
+    "trailing_partial_bytes": 0,
+    "all_recorded_rows_all_lanes_completed": true,
+    "accepted_lane_steps": 409600,
+    "last_complete": {
+      "period": 19,
+      "all_lanes_completed": true,
+      "lane_count": 1024,
+      "min_accepted_this_period": 20,
+      "max_accepted_this_period": 20,
+      "status_counts": {
+        "2": 1024
+      },
+      "min_sr_J_size": 400,
+      "max_sr_J_size": 400
+    },
+    "completed_common_steps_from_full_period_rows": 400
+  },
+  "native_log_tail": [
+    "Flow* finished.",
+    "Step 20",
+    "Constructing input.",
+    "Calling CROWN.",
+    "Unpacking output from CROWN.",
+    "Flow* started."
+  ],
+  "input_sha256": "c2823266ae9a1c7574f9754d2e03a344fbc5a97f3c8c040d9989d27f69ab4ef4",
+  "end_query_unix": 1790684393.8274202
+}

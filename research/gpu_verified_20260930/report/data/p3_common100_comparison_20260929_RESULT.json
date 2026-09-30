@@ -1,0 +1,85 @@
+{
+  "status": "passed_comparison",
+  "script_sha256": "0d280bc31481a2ff5ad80476de160b8926c85910d18db094cfe088df88972bcb",
+  "files": {
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/MANIFEST.json": {
+      "sha256": "c6652ebced3ad7a54f45db2663a52552c6058e2c9ddc84795a28558d454574ae",
+      "bytes": 1821
+    },
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/INPUT.json": {
+      "sha256": "3561a146297cd94dca1c86ea26fb1fb3429a9a6ac72391b5199aeaa5425445d5",
+      "bytes": 2754303
+    },
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/observer_100.pt": {
+      "sha256": "27a7f006c93350a163bb66d57b0b1907fe49215404ff91388a3dd0dfe5b4e67c",
+      "bytes": 397047
+    },
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/observer_100.json": {
+      "sha256": "bba25fc7c7557b2f83d4a14a19eb3f3d48acb73ff8157e097e819f793bbfd4f5",
+      "bytes": 2754055
+    },
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/steps_prefix100.jsonl": {
+      "sha256": "1ab7e748c92b1f97bf6e273d83d424ef3b694f2ea020aefc8ddc30634e6f74bb",
+      "bytes": 936440
+    },
+    "results/quad_targeted_recovery_20260927/evidence_working_eager_long_prefix100_20260929/PREFIX_SUMMARY.json": {
+      "sha256": "eef1265fc7fa0b400225ee7a2cf3dead8c3c1f66e59e6235412ae947c1ac70b1",
+      "bytes": 1589
+    },
+    "results/quad_targeted_recovery_20260927/fullbatch_baseline_review_20260928/RESULT.json": {
+      "sha256": "71c122d0ced5a5445a7b043dc3c4c16d77368c3abced7373f645b794432ddfe4",
+      "bytes": 34513
+    },
+    "results/archcomp_review_20260923/evidence_v2/width_trajectory_quad_matched.csv.gz": {
+      "sha256": "4d25513ddbb7044d625f72dfcb6351fbec4c598caf20bd7a8a665ddb36567778",
+      "bytes": 567296
+    },
+    "results/quad_targeted_recovery_20260927/fullbatch_oldlong_comparison_20260928/COMMON_WIDTHS.csv": {
+      "sha256": "0810bdcca59642087dcd77b622dedba331e07c5f75c39a94e87f75bb052763f4",
+      "bytes": 3978997
+    },
+    "results/archcomp_failure_20260923/evidence/huan_box_strict_chunk/metrics.json": {
+      "sha256": "7a2763923ac82b46f6b052d50f1a1ea7f922ee944d9652c776c1791426e07376",
+      "bytes": 32295
+    },
+    "results/quad_targeted_recovery_20260927/fullbatch_oldlong_comparison_20260928/RESULT.json": {
+      "sha256": "d83ca08280e32083438332e4b8eb2d219db7f616b78d58736d61faeed22e485c",
+      "bytes": 23480
+    },
+    "results/quad_targeted_recovery_20260927/evidence_fullbatch_long_logs_20260928/full1024_p2_1000_v1/INPUT.json": {
+      "sha256": "c28c24a5313d1aa03a2ca972e34f34d6090f2ad2e9a73774befcf11630f9542f",
+      "bytes": 33142
+    }
+  },
+  "rows": 12,
+  "current_prefix_complete_steps": 100,
+  "whole_horizon_complete": false,
+  "matching_time_s": 0.5,
+  "uniform_algorithm_contract": false,
+  "speed_ratio": null,
+  "timing": {
+    "status": "prefix100_verified",
+    "source_run": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_fullbatch_p3_20260928/full1024_p3_working_eager_1000_v1",
+    "source_entry_sha256": "3efc0a39166856042ad22a4d1085ee780f11ba06c84889cf0a80ac4fd9dc7366",
+    "source_script_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_fullbatch_p3_20260928/run_fullbatch_p3_working_eager_long.py",
+    "source_input_sha256": "3561a146297cd94dca1c86ea26fb1fb3429a9a6ac72391b5199aeaa5425445d5",
+    "observer100_sha256": "27a7f006c93350a163bb66d57b0b1907fe49215404ff91388a3dd0dfe5b4e67c",
+    "source_steps_prefix100_sha256": "1ab7e748c92b1f97bf6e273d83d424ef3b694f2ea020aefc8ddc30634e6f74bb",
+    "source_prune_prefix200_sha256": "1faf3e8389fc005e17c87cf2e3748a12a5b57118ee083f2a7a7d10c8794d1a6b",
+    "last_included_step": 100,
+    "physical_time": 0.5,
+    "batch": 1024,
+    "accepted_lane_steps": 102400,
+    "all100_steps_all1024_accepted": true,
+    "all100_completed_postprune_invariance_gates_passed": true,
+    "observer100_zip_schema_signature_finite_ordered_passed": true,
+    "sum_advance_s": 279.3617320144549,
+    "sum_prune_instrumentation_s": 264.15079407254234,
+    "sum_first20_advance_s": 61.154045870527625,
+    "sum_later21_100_advance_s": 218.20768614392728,
+    "cpu_audit_elapsed_s": 0.25341923208907247,
+    "scope": "Verified immutable common prefix while source long run may remain active. No synthesized RESULT; no completion claim, SR/state download or timing benchmark. Prune prefix is hashed and checked on server; only observer and steps prefix archived."
+  },
+  "widths_sha256": "27b454cc97c5d2442d58240b26c2df9ea5940322812f02404bdbeb792bcf5be1",
+  "report_sha256": "b1fa0f2d3b81e54c740a4e3e50b23d67a8d21b5eb42ca9fdb7ebd05ce7cea331"
+}

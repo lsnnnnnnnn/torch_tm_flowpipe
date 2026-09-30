@@ -1,0 +1,776 @@
+{
+  "attitude_control": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/attitude_control.yaml",
+    "config_sha256": "64d22a5d1fd5308104ec51363f4487629c9b825c8f770a32e59118446ed38a6d",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/attitude_control_boxes.json",
+    "boxes_sha256": "5b63ca454d935aef0b4f0612046e57b540b4f9f4d159f7f37e7673ae57556cbc",
+    "B": 1,
+    "physical": 6,
+    "source_cpp_sha256": "0cdb09f4b78539f9faba0d20b221f45086ec55c0793080181ce392797babbc7e",
+    "source_server_sha256": "757518ec64b33d1b98919f0b0d2f74d62afe0369d706b266927f2f9063cce748",
+    "model_sha256": "585f321599d9e7cce4da09760628a47febf7043dd04e421ea332abba340d036d",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "t",
+      "u1",
+      "u2",
+      "u3"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "t",
+      "u1",
+      "u2",
+      "u3"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "input_shape": {
+        "previous": [
+          -1,
+          1,
+          6
+        ],
+        "official": [
+          -1,
+          6
+        ]
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Attitude-Control/attitude_control_3_64_torch.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Attitude-Control/attitude_control_3_64_torch.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 60
+  },
+  "double_pendulum_more_robust": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/double_pendulum_more_robust.yaml",
+    "config_sha256": "93af01decea3babddb05aa48163a70a816f0dee769bed79c82c0c054ea5e4b7c",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/double_pendulum_more_robust_boxes.json",
+    "boxes_sha256": "4a0f1769dfb7da99b63008cc15159e3709e92144954ccc50ef43a0299c1c1e10",
+    "B": 1,
+    "physical": 4,
+    "source_cpp_sha256": "4c0f8c0732195f2b2947f6e6801f74c5c63c6f98fb579c43f9c3a1bee651a1ed",
+    "source_server_sha256": "84df74263253147248c745d9685042bbf613a5d590724b0cb0c04d53d5177dab",
+    "model_sha256": "97a65bdbe5e449d66d7d36a39d83288b7fc276978f24eec6267bd8583794d3ec",
+    "native_variable_order": [
+      "th1",
+      "th2",
+      "u1",
+      "u2",
+      "t",
+      "T1",
+      "T2"
+    ],
+    "gpu_variable_order": [
+      "th1",
+      "th2",
+      "u1",
+      "u2",
+      "t",
+      "T1",
+      "T2"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Double_Pendulum/controller_double_pendulum_less_robust.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Double_Pendulum/controller_double_pendulum_less_robust.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 80
+  },
+  "double_pendulum_less_robust": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/double_pendulum_less_robust.yaml",
+    "config_sha256": "dc350bbcf9ad85085d3d0d06fdfe5fa93a7f9a92833ba97d0f2aabaca326f1cc",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/double_pendulum_less_robust_boxes.json",
+    "boxes_sha256": "9ba9a078ec3b00b38db3c8ee6b9e8895765c71a038587473e600dbafbbf534d7",
+    "B": 225,
+    "physical": 4,
+    "source_cpp_sha256": "95432b14c2fe2871355612ff2b91931c363f6b667bd7d859f76b0d1fdb553d94",
+    "source_server_sha256": "22d4bb720069f7d8b701f693b2a636b5e373edb4a21217aff44d75137b522b6b",
+    "model_sha256": "97a65bdbe5e449d66d7d36a39d83288b7fc276978f24eec6267bd8583794d3ec",
+    "native_variable_order": [
+      "th1",
+      "th2",
+      "u1",
+      "u2",
+      "t",
+      "T1",
+      "T2"
+    ],
+    "gpu_variable_order": [
+      "th1",
+      "th2",
+      "u1",
+      "u2",
+      "t",
+      "T1",
+      "T2"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Double_Pendulum/controller_double_pendulum_less_robust.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Double_Pendulum/controller_double_pendulum_less_robust.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 100
+  },
+  "nav_robust": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust.yaml",
+    "config_sha256": "fdeded9929c6568aeff1d557738ce786da365e6418415352282b5aa27f08b186",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust_boxes.json",
+    "boxes_sha256": "cebf9ad4df284c962baae5868a5a08fad06aa54f3882d8cbc8a245041586abdb",
+    "B": 25,
+    "physical": 4,
+    "source_cpp_sha256": "a754cb64f6de83b381aef2c0216d8805acb329db99af5989c4a53e7107d9b571",
+    "source_server_sha256": "0c12274312c06511d3065788b466f27ef4c37b640832ad659ccaac97e7441c14",
+    "model_sha256": "d8220afa931b3e3b9370d6cf03c10e73601a401c2b2266f0e5580bd932436230",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1",
+      "u2"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1",
+      "u2"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/NAV/networks/nn-nav-set.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/NAV/networks/nn-nav-set.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 600
+  },
+  "nav_standard": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_standard.yaml",
+    "config_sha256": "6f609b4c6aac1d731a5befa4fc1c424c30bc092de316ce46679f41df687fd92b",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_standard_boxes.json",
+    "boxes_sha256": "02785204f05b3ab1a184fba2999ef3c68aea371a1c06a2359ef0e57c9cd059f9",
+    "B": 640,
+    "physical": 4,
+    "source_cpp_sha256": "fd3400ab24e2067b1d9862b55d1f14e874fb4bb75527773d7d8b6089c3d5ca96",
+    "source_server_sha256": "f2287114a922b72c2f9cfe96a7421000438cafa4fd66a873bf34a1a59674f945",
+    "model_sha256": "cc356922a0842e5fe716930df5a5069ec92b6bb14517b6d5f0f31ffa96485b6d",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1",
+      "u2"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1",
+      "u2"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/NAV/networks/nn-nav-point.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/NAV/networks/nn-nav-point.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 600
+  },
+  "unicycle": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/unicycle.yaml",
+    "config_sha256": "8e09435ff3a9186243bf92be37e1122e419e8a348c1d4619f004d9f2e3328343",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/unicycle_boxes.json",
+    "boxes_sha256": "d225f3d566fd2204f5f30d991790da9dc14b977888fa776274ec14ea7b9d81fb",
+    "B": 1,
+    "physical": 4,
+    "source_cpp_sha256": "e079d382940ef1781eb77baf787cc507ef0208598e4f73eddaab849deefdf0f2",
+    "source_server_sha256": "4bb5d04c36b3546626f3ff8b79bf306d34b6aff4d94c1b8db21df339cbd15a36",
+    "model_sha256": "9c9796ec74c0b11c0fe6aa5e0eb3814094dd62538de8c6707ec7e917e718a846",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1",
+      "u2",
+      "w"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "w",
+      "t",
+      "u1",
+      "u2"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      7,
+      4,
+      5,
+      6
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Benchmark10-Unicycle/controllerB.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Benchmark10-Unicycle/controllerB.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 500
+  },
+  "tora_relu_tanh": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_relu_tanh.yaml",
+    "config_sha256": "75e523d0be0bc8dfdf4814d823e280506f4ebe33b1fd938d85d950335e502390",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_relu_tanh_boxes.json",
+    "boxes_sha256": "f4044e2a7b8e5eb64137496a3048e592f66758ca805459f51e7462b86f63768c",
+    "B": 1,
+    "physical": 4,
+    "source_cpp_sha256": "f6ade05e32415a24c20d54b58417b480b8d8d9b5d6bcae3c733af293945ba5d0",
+    "source_server_sha256": "3717a1c382873d4417025a925b5db5373ee6634323b6193048b9b35f231d93ea",
+    "model_sha256": "50ff552dab5e8c9547c77ec933dcf26f2fd0557b5757ed5b42ddf87538ff2846",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 500
+  },
+  "tora_sigmoid": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_sigmoid.yaml",
+    "config_sha256": "4dbfb31806f76129400bfbe6b5cf869fc663cca12e56274918960307ca4b42f8",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_sigmoid_boxes.json",
+    "boxes_sha256": "f4044e2a7b8e5eb64137496a3048e592f66758ca805459f51e7462b86f63768c",
+    "B": 1,
+    "physical": 4,
+    "source_cpp_sha256": "b478396afdf15133baf2b87d704f31291951c3a37ea8e983e7792ab4d4ecc47f",
+    "source_server_sha256": "c13ca858f6fd6ffa17764890e3979143501180f569554bdf9c6956b4a7c3557d",
+    "model_sha256": "7dbef52d62e34e8437ac48f9235271e570f631e6165c69165d2e0a47f340a4e7",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 500
+  },
+  "cartpole": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/cartpole.yaml",
+    "config_sha256": "b53c80f490f20f13aa033df1db2bacf28aeeb554f5a6db9420826539d254444d",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/cartpole_boxes.json",
+    "boxes_sha256": "ef3b3f572b4ea9ec3c5864f71eb390c23befd1606b2f2ed055fc77f0c93e3b0f",
+    "B": 1,
+    "physical": 4,
+    "source_cpp_sha256": "df61b754935356433f5797d39918bd2dc304bafec63c7e3eec01d6d13ee9cbe5",
+    "source_server_sha256": "21e4aeacc9dd8f70371a7102e486c43a01a2060d12b629542206ecc51a611103",
+    "model_sha256": "ac10c817c994e8ee84dbf44ceffcf7380b7878ea467d2d17ff9fa38eee249529",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "f"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "corrected_from_yaml": {
+      "ode_step_size": {
+        "previous": 0.05,
+        "official": 0.005
+      },
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/CartPole/model.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/CartPole/model.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 200
+  },
+  "airplane": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/airplane.yaml",
+    "config_sha256": "53fd1692ed7fed6f472686357537099cb520ccfd3ebf7073f02c8fe1dfd25b46",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/airplane_boxes.json",
+    "boxes_sha256": "dbfd61756dcebe029f0911e0ef843ee4cf57c767d70b59217184f5b5ce2a11d7",
+    "B": 1,
+    "physical": 12,
+    "source_cpp_sha256": "1a714665ac034c2d358d65213244d3049b74df8e72c6741178a231afb7b364f3",
+    "source_server_sha256": "d0fe53716c725cd15704163a2daf1339c3c9520e96e2b62facef7da45885ae34",
+    "model_sha256": "655ba1e82d676373b2c1b10acaf97a722207130ae1b60d1dcc140f2f5c96b4e6",
+    "native_variable_order": [
+      "x",
+      "y",
+      "z",
+      "u",
+      "v",
+      "w",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q",
+      "t",
+      "Fx",
+      "Fy",
+      "Fz",
+      "Mx",
+      "My",
+      "Mz"
+    ],
+    "gpu_variable_order": [
+      "x",
+      "y",
+      "z",
+      "u",
+      "v",
+      "w",
+      "phi",
+      "theta",
+      "psi",
+      "r",
+      "p",
+      "q",
+      "t",
+      "Fx",
+      "Fy",
+      "Fz",
+      "Mx",
+      "My",
+      "Mz"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "input_shape": {
+        "previous": [
+          -1,
+          1,
+          12
+        ],
+        "official": [
+          -1,
+          12
+        ]
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Airplane/controller_airplane.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Airplane/controller_airplane.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 200
+  },
+  "single_pendulum": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/single_pendulum.yaml",
+    "config_sha256": "7cca3fb427f1c6b5fd968d528e93cd51706dbdbcd606594683f6cd6d9cc4452c",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/single_pendulum_boxes.json",
+    "boxes_sha256": "5f1c11ff588b2bcd32a5992c29ac8e1a02a6fbcaabde7c19fbf582a0b89c959b",
+    "B": 1,
+    "physical": 2,
+    "source_cpp_sha256": "5466a14fab56e2777256a3ec7281e72697fb4aba204a0f66ac85a804d9fc27a2",
+    "source_server_sha256": "0bcc014972b136b99fb70f237cd84a5c0fcfe1bfa3cb3d5ab5aa7519d58c9b32",
+    "model_sha256": "f855ee789c5f360bb1ba8722ded4226d955876a422b61ba3aca8d71eaa621227",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "t",
+      "u"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "corrected_from_yaml": {
+      "cut_off_threshold": {
+        "previous": "1e-6",
+        "official": 1e-06
+      },
+      "input_shape": {
+        "previous": [
+          -1,
+          1,
+          2
+        ],
+        "official": [
+          -1,
+          2
+        ]
+      },
+      "model_dir": {
+        "previous": "../ARCH-COMP2024/benchmarks/Single_Pendulum/controller_single_pendulum.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Single_Pendulum/controller_single_pendulum.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 100
+  },
+  "tora_homogeneous": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous.yaml",
+    "config_sha256": "ca627a8a3341ec295c6d3953fe05b426ed7627bd213843cf28b4b1e75a4e706d",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous_boxes.json",
+    "boxes_sha256": "32b47799f5d992ebc4fcae9a016f7b3416f2bc48c054faa606ad9867944f4aaf",
+    "B": 12,
+    "physical": 4,
+    "source_cpp_sha256": "3e8124b429f087cd12037104578452569be03706dd28780215f2185e204b09e8",
+    "source_server_sha256": "48758adec510c67677fe19461d8a9f10d15a8784a1fdc0ad7665394cd0298de5",
+    "model_sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418",
+    "native_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u"
+    ],
+    "gpu_variable_order": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "corrected_from_yaml": {
+      "model_dir": {
+        "previous": "../../ARCH-COMP2024/benchmarks/Benchmark9-Tora/controllerTora.onnx",
+        "official": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Benchmark9-Tora/controllerTora.onnx"
+      },
+      "sr_queue": {
+        "previous": null,
+        "official": 1000
+      },
+      "bound_opts": {
+        "previous": {
+          "activation_bound_option": "same-slope"
+        },
+        "official": {
+          "activation_bound_option": "same-slope",
+          "conv_mode": "matrix"
+        }
+      }
+    },
+    "property_status": "YAML verdict not yet independently audited; widths/completion only, no verification claim",
+    "controller_layout": "native",
+    "expected_steps": 200
+  },
+  "acc": {
+    "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/acc.yaml",
+    "config_sha256": "a5b1d1a21a28c10fcbc333778adcd4e2b9921a511b308df2e7eddd04f2b7af3c",
+    "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/acc_boxes.json",
+    "boxes_sha256": "df594a51860e16a72ea4a77ef5d29b8804be98d78e3489662ab19a4655a3aea9",
+    "B": 1,
+    "physical": 6,
+    "expected_steps": 50,
+    "source_cpp_sha256": "ef9b0c890a1dcbb6f62477fc3c88ab54907f8aac75f7400717c796303c39c5c6",
+    "source_server_sha256": "d28c60e84579b1fd845ffddd3d2cbc548c83784125f615de9db7ba688e99b0b4",
+    "model_sha256": "8dbc1a56cd77b264b46ce8eb226add9098896f393ae2a63538598775bfbcec1b",
+    "native_variable_order": [
+      "x_lead",
+      "v_lead",
+      "a_lead",
+      "x_ego",
+      "v_ego",
+      "a_ego",
+      "t",
+      "a_c_ego"
+    ],
+    "gpu_variable_order": [
+      "x_lead",
+      "v_lead",
+      "a_lead",
+      "x_ego",
+      "v_ego",
+      "a_ego",
+      "t",
+      "u1"
+    ],
+    "native_to_gpu_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "controller_layout": "native",
+    "adapter": "Shared explicit feature TMs with directed affine rounding, original native features and RPC-f32; independent original GPU entry does not implement this adapter.",
+    "adapter_sha256": "ef8f8156bc4e6c1726781a8d40643c6cda1853a6a8b0e5a8613bc74cdb21929b"
+  }
+}

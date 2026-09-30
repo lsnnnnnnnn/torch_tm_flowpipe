@@ -1,4 +1,8 @@
-# Research review branch
+# Current GPU checkpoint and earlier review
+
+The current 2026-09-30 GPU research checkpoint is `research/gpu_verified_20260930`. Read its README, STATUS, SOURCE_MAP and next-stage goal before continuing QUAD/ARCH work. Preserve byte-pinned numerical sources and evidence; do not silently rewrite them during packaging. The snapshot still requires the saved server environment, compiled extensions and qualification assets. The older supported CPU entry remains below; its former plant-only scope does not describe the newer NNCS research snapshot.
+
+# Earlier research review
 
 The supported project scope is plant-only polynomial ODE flowpipes for Van der Pol and Brusselator. Start with `README.md`, `docs/PROJECT_REVIEW.md`, and `experiments/review_suite/registry.yaml`. The sole numerical package is `src/torch_tm_flowpipe`.
 

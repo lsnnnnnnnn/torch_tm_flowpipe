@@ -1,0 +1,75 @@
+[project]
+name = "flowstar-gpu"
+version = "0.1.0"
+description = "GPU-accelerated batched Taylor-model reachability analysis (a PyTorch reimplementation of Flow*)"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "GPL-3.0-only" }
+authors = [{ name = "Huan Zhang", email = "huanz@illinois.edu" }]
+dependencies = [
+    # torch comes from the PyTorch cu126 wheel index (see [tool.uv.sources]).
+    # IMPORTANT: the V100 GPUs on this machine are sm_70 (Volta); CUDA 13.x wheels
+    # drop Volta support, so cu126 is a hard requirement, not a preference.
+    "torch==2.13.0",
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "mpmath>=1.3",
+    "sympy>=1.13",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "hypothesis>=6.115",
+    "matplotlib>=3.9",
+    "ruff>=0.8",
+]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu126" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flowstar_gpu"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# -p no:cacheprovider keeps the repo clean on shared storage; markers below let a
+# CPU-only machine skip CUDA-dependent tests (the coverage gate requires CUDA).
+markers = [
+    "cuda: tests that require a CUDA device",
+    "slow: long-running tests excluded from the fast dev loop (soak/nightly)",
+]
+
+[tool.coverage.run]
+source = ["flowstar_gpu"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+# Strict pragma policy: 'pragma: no cover' is allowed ONLY on defensive
+# internal-invariant guards, must carry an inline reason, and is budgeted by
+# tests/unit/test_pragma_budget.py. Do not add exclusions here to dodge tests.
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+# E501 long lines allowed in comments documenting tensor shapes / Flow* references
+ignore = ["E501", "SIM108"]
