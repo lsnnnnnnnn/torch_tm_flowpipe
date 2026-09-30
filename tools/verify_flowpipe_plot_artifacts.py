@@ -12,6 +12,15 @@ from typing import Any
 import torch
 
 
+DOCKING_COORDINATES = ["sx", "sy", "sx_dot", "sy_dot"]
+DOCKING_INITIAL_BOUNDS = {
+    "sx": [70.0, 106.0],
+    "sy": [70.0, 106.0],
+    "sx_dot": [-0.28, 0.28],
+    "sy_dot": [-0.28, 0.28],
+}
+
+
 def _affine_interval(
     bounds: Any,
     lo_column: int,
@@ -42,6 +51,123 @@ def _affine_interval(
     return lower, upper
 
 
+def _finite_outward(value: float, direction: float, label: str) -> float:
+    if not math.isfinite(value):
+        raise ValueError(f"{label} is nonfinite")
+    widened = math.nextafter(value, direction)
+    if not math.isfinite(widened):
+        raise ValueError(f"{label} overflows binary64")
+    return widened
+
+
+def _radial_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    terms: list[dict[str, Any]],
+) -> tuple[float, float]:
+    if len(terms) != 2:
+        raise ValueError("radial interval requires exactly two coordinates")
+    absolute_bounds: list[tuple[float, float]] = []
+    for term in terms:
+        lo = float(bounds[int(term["index"])][lo_column])
+        hi = float(bounds[int(term["index"])][hi_column])
+        if not math.isfinite(lo) or not math.isfinite(hi) or lo > hi:
+            raise ValueError("radial coordinate bounds must be finite and ordered")
+        absolute_bounds.append((
+            0.0 if lo <= 0.0 <= hi else min(abs(lo), abs(hi)),
+            max(abs(lo), abs(hi)),
+        ))
+
+    square_lowers: list[float] = []
+    square_uppers: list[float] = []
+    for absolute_lo, absolute_hi in absolute_bounds:
+        raw_lower = absolute_lo * absolute_lo
+        raw_upper = absolute_hi * absolute_hi
+        if not math.isfinite(raw_lower) or not math.isfinite(raw_upper):
+            raise ValueError("radial square overflows binary64")
+        square_lowers.append(
+            0.0
+            if absolute_lo == 0.0
+            else max(0.0, _finite_outward(raw_lower, -math.inf, "radial square lower"))
+        )
+        square_uppers.append(
+            0.0
+            if absolute_hi == 0.0
+            else _finite_outward(raw_upper, math.inf, "radial square upper")
+        )
+
+    raw_sum_lower = square_lowers[0] + square_lowers[1]
+    raw_sum_upper = square_uppers[0] + square_uppers[1]
+    if not math.isfinite(raw_sum_lower) or not math.isfinite(raw_sum_upper):
+        raise ValueError("radial square sum overflows binary64")
+    sum_lower = (
+        0.0
+        if raw_sum_lower == 0.0
+        else max(0.0, _finite_outward(raw_sum_lower, -math.inf, "radial sum lower"))
+    )
+    sum_upper = (
+        0.0
+        if raw_sum_upper == 0.0
+        else _finite_outward(raw_sum_upper, math.inf, "radial sum upper")
+    )
+    raw_lower = math.sqrt(sum_lower)
+    raw_upper = math.sqrt(sum_upper)
+    return (
+        0.0
+        if raw_lower == 0.0
+        else max(0.0, _finite_outward(raw_lower, -math.inf, "radial sqrt lower")),
+        0.0
+        if raw_upper == 0.0
+        else _finite_outward(raw_upper, math.inf, "radial sqrt upper"),
+    )
+
+
+def _radial_speed_margin_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    position_lo, position_hi = _radial_interval(
+        bounds, lo_column, hi_column, transform["position_terms"]
+    )
+    velocity_lo, velocity_hi = _radial_interval(
+        bounds, lo_column, hi_column, transform["velocity_terms"]
+    )
+    offset = float(transform["offset"])
+    gain = float(transform["radial_gain"])
+    lower_product = (
+        0.0
+        if position_lo == 0.0
+        else _finite_outward(gain * position_lo, -math.inf, "radial gain lower")
+    )
+    upper_product = (
+        0.0
+        if position_hi == 0.0
+        else _finite_outward(gain * position_hi, math.inf, "radial gain upper")
+    )
+    lower_sum = _finite_outward(offset + lower_product, -math.inf, "margin sum lower")
+    upper_sum = _finite_outward(offset + upper_product, math.inf, "margin sum upper")
+    return (
+        _finite_outward(lower_sum - velocity_hi, -math.inf, "margin lower"),
+        _finite_outward(upper_sum - velocity_lo, math.inf, "margin upper"),
+    )
+
+
+def _derived_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    if transform.get("kind") == "affine":
+        return _affine_interval(bounds, lo_column, hi_column, transform)
+    if transform.get("kind") == "radial_speed_margin":
+        return _radial_speed_margin_interval(bounds, lo_column, hi_column, transform)
+    raise ValueError("unsupported derived projection kind")
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -55,25 +181,78 @@ def _verify_affine_projection_contract(geometry: dict[str, Any]) -> None:
     name = projection.get("y")
     declared = spec.get("derived_coordinates", {}).get(name)
     coordinate_names = geometry["coordinate_names"]
-    if (
-        spec.get("schema") != "torch-tm-flowpipe-plot-spec-v3"
-        or not isinstance(declared, dict)
-    ):
+    schema = spec.get("schema")
+    if schema not in {
+        "torch-tm-flowpipe-plot-spec-v3",
+        "torch-tm-flowpipe-plot-spec-v4",
+    } or not isinstance(declared, dict):
         raise ValueError("derived projection is absent from the plot spec")
-    expected = {
-        "kind": "affine",
-        "name": name,
-        "offset": float(declared["offset"]),
-        "terms": [
-            {
-                "coordinate": coordinate,
-                "index": coordinate_names.index(coordinate),
-                "coefficient": float(declared["coefficients"][coordinate]),
+    if schema == "torch-tm-flowpipe-plot-spec-v3":
+        expected = {
+            "kind": "affine",
+            "name": name,
+            "offset": float(declared["offset"]),
+            "terms": [
+                {
+                    "coordinate": coordinate,
+                    "index": coordinate_names.index(coordinate),
+                    "coefficient": float(declared["coefficients"][coordinate]),
+                }
+                for coordinate in coordinate_names
+                if coordinate in declared["coefficients"]
+            ],
+        }
+    else:
+        regions = spec.get("regions")
+        if (
+            geometry.get("benchmark") != "Docking"
+            or geometry.get("instance_id") != "docking-constraint"
+            or coordinate_names != DOCKING_COORDINATES
+            or name != "docking_safety_margin"
+            or set(declared) != {
+                "kind", "offset", "radial_gain",
+                "position_coordinates", "velocity_coordinates",
             }
-            for coordinate in coordinate_names
-            if coordinate in declared["coefficients"]
-        ],
-    }
+            or declared.get("kind") != "radial_speed_margin"
+            or not isinstance(declared.get("offset"), (int, float))
+            or isinstance(declared.get("offset"), bool)
+            or float(declared["offset"]).hex() != float(0.2).hex()
+            or not isinstance(declared.get("radial_gain"), (int, float))
+            or isinstance(declared.get("radial_gain"), bool)
+            or float(declared["radial_gain"]).hex() != float(0.002054).hex()
+            or declared.get("position_coordinates") != DOCKING_COORDINATES[:2]
+            or declared.get("velocity_coordinates") != DOCKING_COORDINATES[2:]
+            or spec.get("horizon") != {
+                "kind": "continuous_time", "start": 0.0, "end": 40.0
+            }
+            or spec.get("property_quantifier") != "all_times"
+            or spec.get("initial_set", {}).get("bounds") != DOCKING_INITIAL_BOUNDS
+            or not isinstance(regions, list)
+            or len(regions) != 1
+            or regions[0].get("role") != "safe"
+            or regions[0].get("constraint") != {
+                "kind": "threshold", "coordinate": "docking_safety_margin",
+                "operator": ">=", "value": 0.0,
+            }
+            or regions[0].get("time") != {"kind": "all"}
+        ):
+            raise ValueError("v4 projection is not the canonical Docking contract")
+
+        def indexed(coordinates: list[str]) -> list[dict[str, Any]]:
+            return [
+                {"coordinate": coordinate,
+                 "index": coordinate_names.index(coordinate)}
+                for coordinate in coordinates
+            ]
+
+        expected = {
+            "kind": "radial_speed_margin",
+            "name": name,
+            "offset": float(declared["offset"]),
+            "radial_gain": float(declared["radial_gain"]),
+            "position_terms": indexed(declared["position_coordinates"]),
+            "velocity_terms": indexed(declared["velocity_coordinates"]),
+        }
     if transform != expected:
         raise ValueError("derived projection metadata does not match the plot spec")
 
@@ -96,7 +275,7 @@ def _observer_boxes(
                 xlo = xhi = frame["step"] * geometry["step_size"]
             if "y_transform" in projection:
                 intervals = [
-                    _affine_interval(row, lo_col, hi_col, projection["y_transform"])
+                    _derived_interval(row, lo_col, hi_col, projection["y_transform"])
                     for row in chosen
                 ]
                 ylo = min(interval[0] for interval in intervals)
@@ -163,7 +342,7 @@ def _verify_native(geometry: dict[str, Any], series: dict[str, Any]) -> None:
         if projection["kind"] == "time-state":
             if "y_transform" in projection:
                 intervals = [
-                    _affine_interval(
+                    _derived_interval(
                         bounds, lo_col, hi_col, projection["y_transform"]
                     )
                     for _, bounds, _ in rows

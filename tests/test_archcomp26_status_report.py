@@ -78,8 +78,9 @@ def test_current_status_report_is_deterministic_and_fail_closed():
         "instances": 16,
         "materialized_v2_content_contract": 8,
         "materialized_v3_content_contract": 1,
+        "materialized_v4_content_contract": 1,
         "axis_aligned_content_ready_not_materialized": 0,
-        "blocked_fail_closed": 7,
+        "blocked_fail_closed": 6,
     }
 
     report = render_markdown(status)
@@ -89,7 +90,8 @@ def test_current_status_report_is_deterministic_and_fail_closed():
     assert "Experiments paused: **yes**" in report
     assert "not a same-contract speedup ratio" in report
     assert "materialized v3=1" in report
-    assert "fail-closed blocked=7" in report
+    assert "materialized v4=1" in report
+    assert "fail-closed blocked=6" in report
     assert "Plot content status does not resolve" in report
     assert "/Users/" not in report
     assert "/srv/" not in report

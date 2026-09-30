@@ -1,0 +1,94 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v4",
+  "benchmark": "Docking",
+  "instance_id": "docking-constraint",
+  "contract_status": "official initial set, nonlinear radial-speed property, and 40-second horizon content frozen; method execution contract unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "Content contract only. The one-second controller period is not an integration step, and no Docking numerical series or property verdict is available until the remaining execution contract is frozen and run identity is matched.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/Docking/specification.txt",
+      "sha256": "3542ea2d5cb6a61c4162b4520a61ca141e136f187e441acd7b6bf84bd0070fdf"
+    },
+    {
+      "path": "benchmarks/Docking/dynamics.m",
+      "sha256": "fdfa1cad73e34e056cba033d25d01da2ada42b1f0f03f842ed8033971f4327a1"
+    },
+    {
+      "path": "benchmarks/Docking/model.onnx",
+      "sha256": "cc46c45e5ee7a0a5df433d31b19089cebe2ae64aeb6a0dc7ec47e51818368bf7"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 40.0
+  },
+  "property_quantifier": "all_times",
+  "coordinate_names": [
+    "sx",
+    "sy",
+    "sx_dot",
+    "sy_dot"
+  ],
+  "units": {
+    "t": "s"
+  },
+  "derived_coordinates": {
+    "docking_safety_margin": {
+      "kind": "radial_speed_margin",
+      "offset": 0.2,
+      "radial_gain": 0.002054,
+      "position_coordinates": [
+        "sx",
+        "sy"
+      ],
+      "velocity_coordinates": [
+        "sx_dot",
+        "sy_dot"
+      ]
+    }
+  },
+  "initial_set": {
+    "label": "Official Docking initial set",
+    "bounds": {
+      "sx": [
+        70.0,
+        106.0
+      ],
+      "sy": [
+        70.0,
+        106.0
+      ],
+      "sx_dot": [
+        -0.28,
+        0.28
+      ],
+      "sy_dot": [
+        -0.28,
+        0.28
+      ]
+    }
+  },
+  "regions": [
+    {
+      "label": "Official Docking radial-speed safety boundary",
+      "role": "safe",
+      "constraint": {
+        "kind": "threshold",
+        "coordinate": "docking_safety_margin",
+        "operator": ">=",
+        "value": 0.0
+      },
+      "time": {
+        "kind": "all"
+      }
+    }
+  ]
+}

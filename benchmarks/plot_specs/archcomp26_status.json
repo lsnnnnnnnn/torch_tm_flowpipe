@@ -7,11 +7,11 @@
   "execution_contracts_resolved": false,
   "renderer_scope": {
     "model_domain": "continuous_time",
-    "property_geometry": "axis_aligned_boxes_and_declared_affine_thresholds",
+    "property_geometry": "axis_aligned_boxes_declared_affine_thresholds_and_docking_radial_speed_margin",
     "series_identity": "benchmark_instance_coordinates_step_size_and_expected_steps_verified_across_all_observer_sidecars",
     "unsupported": [
       "discrete_index_sets",
-      "nonlinear_coupled_constraints",
+      "nonlinear_coupled_constraints_other_than_the_fixed_docking_radial_speed_margin",
       "unresolved_property_quantifiers"
     ]
   },
@@ -19,8 +19,9 @@
     "instances": 16,
     "materialized_v2_content_contract": 8,
     "materialized_v3_content_contract": 1,
+    "materialized_v4_content_contract": 1,
     "axis_aligned_content_ready_not_materialized": 0,
-    "blocked_fail_closed": 7
+    "blocked_fail_closed": 6
   },
   "instances": [
     {
@@ -80,12 +81,10 @@
       "instance_id": "docking-constraint",
       "benchmark": "Docking",
       "contract_audit": "docking",
-      "status": "blocked_fail_closed",
-      "plot_spec": null,
-      "content_blockers": [
-        "property_is_a_nonlinear_coupled_constraint_not_an_axis_aligned_box"
-      ],
-      "scope_note": "The full initial box and 40-second horizon are known; the coupled property requires a dedicated renderer."
+      "status": "materialized_v4_content_contract",
+      "plot_spec": "benchmarks/plot_specs/docking_constraint_archcomp26_content.json",
+      "content_blockers": [],
+      "scope_note": "The audited nonlinear inequality is represented by the fixed radial-speed margin interval extension; source-coordinate correlations remain unavailable, and this is not a numerical result or property certificate."
     },
     {
       "instance_id": "double-pendulum-less-robust",

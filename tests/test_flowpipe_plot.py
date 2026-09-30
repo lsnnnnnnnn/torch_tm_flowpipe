@@ -1,5 +1,6 @@
 import hashlib
 import json
+import math
 from pathlib import Path
 import struct
 import tempfile
@@ -12,6 +13,8 @@ import torch
 from torch_tm_flowpipe.flowpipe_plot import (
     SCHEMA,
     _initial_box,
+    _radial_speed_margin_interval,
+    _validate_plot_spec,
     export_geometry,
     main,
     render_matplotlib,
@@ -206,6 +209,55 @@ def official_affine_spec():
     }
 
 
+def official_radial_spec():
+    return {
+        "schema": "torch-tm-flowpipe-plot-spec-v4",
+        "benchmark": "Docking",
+        "instance_id": "docking-constraint",
+        "contract_status": "official radial content frozen; execution contract unresolved",
+        "identity_binding": "official_contract_sources_hash_declared",
+        "run_binding": "series_source_identity_plot_contract_required",
+        "warning": "Content only; no matched numerical run or property verdict.",
+        "model_domain": "continuous_time",
+        "source_refs": [
+            {"path": "benchmarks/Docking/specification.txt", "sha256": "a" * 64},
+        ],
+        "horizon": {"kind": "continuous_time", "start": 0.0, "end": 40.0},
+        "property_quantifier": "all_times",
+        "coordinate_names": ["sx", "sy", "sx_dot", "sy_dot"],
+        "units": {"t": "s"},
+        "derived_coordinates": {
+            "docking_safety_margin": {
+                "kind": "radial_speed_margin",
+                "offset": 0.2,
+                "radial_gain": 0.002054,
+                "position_coordinates": ["sx", "sy"],
+                "velocity_coordinates": ["sx_dot", "sy_dot"],
+            },
+        },
+        "initial_set": {
+            "label": "Official Docking initial set",
+            "bounds": {
+                "sx": [70.0, 106.0],
+                "sy": [70.0, 106.0],
+                "sx_dot": [-0.28, 0.28],
+                "sy_dot": [-0.28, 0.28],
+            },
+        },
+        "regions": [{
+            "label": "Official Docking radial-speed safety boundary",
+            "role": "safe",
+            "constraint": {
+                "kind": "threshold",
+                "coordinate": "docking_safety_margin",
+                "operator": ">=",
+                "value": 0.0,
+            },
+            "time": {"kind": "all"},
+        }],
+    }
+
+
 def source_assets(value) -> set[tuple[str, str]]:
     assets: set[tuple[str, str]] = set()
     if isinstance(value, dict):
@@ -239,7 +291,7 @@ class FlowpipePlotTests(unittest.TestCase):
             manifest["official_sources"]["report"]["pdf_sha256"],
         )
         materialized = [row for row in status["instances"] if row["plot_spec"]]
-        self.assertEqual(len(materialized), 9)
+        self.assertEqual(len(materialized), 10)
         for row in materialized:
             spec = json.loads((repo_root / row["plot_spec"]).read_text(encoding="utf-8"))
             manifest_row = manifest_by_id[row["instance_id"]]
@@ -292,6 +344,14 @@ class FlowpipePlotTests(unittest.TestCase):
                     self.assertGreaterEqual(initial[3], 48.0)
                     self.assertGreater(initial[2], 26.719999999999)
                     self.assertLess(initial[3], 48.000000000001)
+                if row["instance_id"] == "docking-constraint":
+                    initial = _initial_box(geometry)
+                    self.assertIsNotNone(initial)
+                    assert initial is not None
+                    self.assertEqual(initial[:2], [0.0, 0.0])
+                    self.assertGreater(initial[2], 0.0)
+                    self.assertLessEqual(initial[2], 0.0073558286)
+                    self.assertGreaterEqual(initial[3], 0.5079082336)
 
     def test_v2_spec_requires_series_instance_binding_without_claiming_full_contract(self):
         with tempfile.TemporaryDirectory() as scratch:
@@ -433,6 +493,34 @@ class FlowpipePlotTests(unittest.TestCase):
             tampered["series"][0]["frames"][0]["boxes"][0][2] += 1.0
             with self.assertRaisesRegex(ValueError, "geometry mismatch"):
                 _verify_observer(tampered, tampered["series"][0])
+
+            lane_points = torch.tensor([
+                [[3.0] * 4, [4.0] * 4, [0.0] * 4, [0.0] * 4],
+                [[-3.0] * 4, [-4.0] * 4, [0.0] * 4, [0.0] * 4],
+            ], dtype=torch.float64)
+            torch.save({
+                "bounds": lane_points,
+                "accepted": torch.tensor([True, True]),
+                "status": torch.tensor([0, 0], dtype=torch.int8),
+            }, root / "observer_1.pt")
+            sidecar(root, 1, plot_identity(
+                "Docking", "docking-constraint",
+                ["sx", "sy", "sx_dot", "sy_dot"], 40.0, 1,
+            ))
+            per_lane = export_geometry(
+                [("two point lanes", root)],
+                benchmark="Docking",
+                instance_id="docking-constraint",
+                coordinate_names=["sx", "sy", "sx_dot", "sy_dot"],
+                projection_text="t,docking_safety_margin",
+                view="tube",
+                step_size=40.0,
+                expected_steps=1,
+                spec=official_radial_spec(),
+            )
+            margin_box = per_lane["series"][0]["frames"][0]["boxes"][0]
+            self.assertGreater(margin_box[2], 0.210269999999)
+            self.assertLess(margin_box[3], 0.210270000001)
             tampered = deepcopy(geometry)
             tampered["projection"]["y_transform"]["offset"] = 0.0
             with self.assertRaisesRegex(ValueError, "does not match the plot spec"):
@@ -502,6 +590,237 @@ class FlowpipePlotTests(unittest.TestCase):
                     **{**arguments, "projection_text": "margin,x1"},
                     spec=official_affine_spec(),
                 )
+
+    def test_v4_radial_speed_margin_is_outward_and_independently_verified(self):
+        transform = {
+            "kind": "radial_speed_margin",
+            "name": "docking_safety_margin",
+            "offset": 0.2,
+            "radial_gain": 0.002054,
+            "position_terms": [
+                {"coordinate": "sx", "index": 0},
+                {"coordinate": "sy", "index": 1},
+            ],
+            "velocity_terms": [
+                {"coordinate": "sx_dot", "index": 2},
+                {"coordinate": "sy_dot", "index": 3},
+            ],
+        }
+        initial = [
+            [70.0, 106.0], [70.0, 106.0],
+            [-0.28, 0.28], [-0.28, 0.28],
+        ]
+        lower, upper = _radial_speed_margin_interval(initial, 0, 1, transform)
+        exact_lower = 0.2 + 0.002054 * math.sqrt(2.0 * 70.0 ** 2) \
+            - math.sqrt(2.0 * 0.28 ** 2)
+        exact_upper = 0.2 + 0.002054 * math.sqrt(2.0 * 106.0 ** 2)
+        self.assertLessEqual(lower, exact_lower)
+        self.assertGreaterEqual(upper, exact_upper)
+        self.assertGreater(lower, 0.0)
+
+        crossing = [
+            [-3.0, 4.0], [-12.0, 5.0], [-0.28, 0.28], [0.0, 0.0]
+        ]
+        crossing_lower, crossing_upper = _radial_speed_margin_interval(
+            crossing, 0, 1, transform
+        )
+        self.assertLessEqual(crossing_lower, -0.08)
+        self.assertGreaterEqual(
+            crossing_upper, 0.2 + 0.002054 * math.sqrt(160.0)
+        )
+
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            bounds = torch.tensor(
+                [[[lo, hi, lo, hi] for lo, hi in initial]], dtype=torch.float64
+            )
+            torch.save({
+                "bounds": bounds,
+                "accepted": torch.tensor([True]),
+                "status": torch.tensor([0], dtype=torch.int8),
+            }, root / "observer_1.pt")
+            sidecar(root, 1, plot_identity(
+                "Docking", "docking-constraint",
+                ["sx", "sy", "sx_dot", "sy_dot"], 40.0, 1,
+            ))
+            geometry = export_geometry(
+                [("instance-bound test series", root)],
+                benchmark="Docking",
+                instance_id="docking-constraint",
+                coordinate_names=["sx", "sy", "sx_dot", "sy_dot"],
+                projection_text="t,docking_safety_margin",
+                view="tube",
+                step_size=40.0,
+                expected_steps=1,
+                spec=official_radial_spec(),
+            )
+            frame = geometry["series"][0]["frames"][0]["boxes"][0]
+            self.assertEqual(frame[:2], [0.0, 40.0])
+            self.assertLessEqual(frame[2], exact_lower)
+            self.assertGreaterEqual(frame[3], exact_upper)
+            self.assertIn("not an exact nonlinear reachable image", geometry["geometry_class"])
+            _verify_observer(geometry, geometry["series"][0])
+
+            script = root / "radial.m"
+            write_matlab(geometry, script)
+            script_text = script.read_text(encoding="utf-8")
+            self.assertIn("radial-speed interval projection", script_text)
+            self.assertIn("not an exact nonlinear reachable image", script_text)
+            png, pdf = render_matplotlib(geometry, root / "radial")
+            self.assertTrue(png.is_file())
+            self.assertTrue(pdf.is_file())
+
+            tampered = deepcopy(geometry)
+            tampered["projection"]["y_transform"]["radial_gain"] = 1.0
+            with self.assertRaisesRegex(ValueError, "does not match the plot spec"):
+                _verify_affine_projection_contract(tampered)
+            tampered["spec"]["derived_coordinates"]["docking_safety_margin"][
+                "radial_gain"
+            ] = 1.0
+            with self.assertRaisesRegex(ValueError, "canonical Docking contract"):
+                _verify_affine_projection_contract(tampered)
+            tampered = deepcopy(geometry)
+            tampered["series"][0]["frames"][0]["boxes"][0][2] += 1.0
+            with self.assertRaisesRegex(ValueError, "geometry mismatch"):
+                _verify_observer(tampered, tampered["series"][0])
+
+    def test_v4_schema_is_narrow_and_fail_closed(self):
+        canonical = official_radial_spec()
+        cases = []
+        bad = deepcopy(canonical)
+        bad["benchmark"] = "Other"
+        cases.append((bad, "Other", "docking-constraint",
+                      ["sx", "sy", "sx_dot", "sy_dot"], 40.0, "benchmark identity"))
+        bad = deepcopy(canonical)
+        bad["instance_id"] = "other"
+        cases.append((bad, "Docking", "other",
+                      ["sx", "sy", "sx_dot", "sy_dot"], 40.0, "benchmark identity"))
+        bad = deepcopy(canonical)
+        bad["coordinate_names"] = ["sy", "sx", "sx_dot", "sy_dot"]
+        cases.append((bad, "Docking", "docking-constraint",
+                      bad["coordinate_names"], 40.0, "benchmark identity"))
+        bad = deepcopy(canonical)
+        transform = bad["derived_coordinates"].pop("docking_safety_margin")
+        bad["derived_coordinates"]["other_margin"] = transform
+        bad["regions"][0]["constraint"]["coordinate"] = "other_margin"
+        cases.append((bad, "Docking", "docking-constraint",
+                      ["sx", "sy", "sx_dot", "sy_dot"], 40.0, "benchmark identity"))
+        for field, value in (
+            ("offset", 0.3),
+            ("radial_gain", 0.003),
+            ("position_coordinates", ["sy", "sx"]),
+            ("velocity_coordinates", ["sy_dot", "sx_dot"]),
+        ):
+            bad = deepcopy(canonical)
+            bad["derived_coordinates"]["docking_safety_margin"][field] = value
+            cases.append((bad, "Docking", "docking-constraint",
+                          ["sx", "sy", "sx_dot", "sy_dot"], 40.0,
+                          "canonical Docking radial-speed transform"))
+        bad = deepcopy(canonical)
+        bad["horizon"]["end"] = 41.0
+        cases.append((bad, "Docking", "docking-constraint",
+                      ["sx", "sy", "sx_dot", "sy_dot"], 41.0,
+                      "canonical Docking initial set"))
+        bad = deepcopy(canonical)
+        bad["initial_set"]["bounds"]["sx"] = [70.0, 105.0]
+        cases.append((bad, "Docking", "docking-constraint",
+                      ["sx", "sy", "sx_dot", "sy_dot"], 40.0,
+                      "canonical Docking initial set"))
+        for spec, benchmark, instance, coordinates, horizon, message in cases:
+            with self.subTest(message=message, spec=spec):
+                with self.assertRaisesRegex(ValueError, message):
+                    _validate_plot_spec(
+                        spec, benchmark, coordinates,
+                        instance_id=instance, numerical_horizon=horizon,
+                    )
+
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            observer(root, 1, state_count=4)
+            sidecar(root, 1, plot_identity(
+                "Docking", "docking-constraint",
+                ["sx", "sy", "sx_dot", "sy_dot"], 40.0, 1,
+            ))
+            arguments = dict(
+                series=[("candidate", root)],
+                benchmark="Docking",
+                instance_id="docking-constraint",
+                coordinate_names=["sx", "sy", "sx_dot", "sy_dot"],
+                projection_text="t,docking_safety_margin",
+                view="tube",
+                step_size=40.0,
+                expected_steps=1,
+            )
+            for gain in (True, 0.0, -1.0, float("nan"), float("inf")):
+                bad = official_radial_spec()
+                bad["derived_coordinates"]["docking_safety_margin"]["radial_gain"] = gain
+                with self.subTest(gain=gain):
+                    with self.assertRaisesRegex(ValueError, "finite and positive"):
+                        export_geometry(**arguments, spec=bad)
+
+            bad = official_radial_spec()
+            bad["derived_coordinates"]["docking_safety_margin"][
+                "position_coordinates"
+            ] = ["sx"]
+            with self.assertRaisesRegex(ValueError, "must contain two names"):
+                export_geometry(**arguments, spec=bad)
+            bad = official_radial_spec()
+            bad["derived_coordinates"]["docking_safety_margin"][
+                "velocity_coordinates"
+            ] = ["sx", "sy_dot"]
+            with self.assertRaisesRegex(ValueError, "must be unique"):
+                export_geometry(**arguments, spec=bad)
+            bad = official_radial_spec()
+            bad["derived_coordinates"]["docking_safety_margin"][
+                "position_coordinates"
+            ] = ["sx", "unknown"]
+            with self.assertRaisesRegex(ValueError, "unknown coordinates"):
+                export_geometry(**arguments, spec=bad)
+            bad = official_radial_spec()
+            bad["derived_coordinates"]["docking_safety_margin"]["kind"] = "expression"
+            with self.assertRaisesRegex(ValueError, "one radial_speed_margin"):
+                export_geometry(**arguments, spec=bad)
+
+            for key, value in (
+                ("role", "unsafe"),
+                ("operator", "<="),
+                ("value", 1.0),
+                ("time", {"kind": "interval", "lo": 0.0, "hi": 40.0}),
+            ):
+                bad = official_radial_spec()
+                if key in {"operator", "value"}:
+                    bad["regions"][0]["constraint"][key] = value
+                else:
+                    bad["regions"][0][key] = value
+                with self.subTest(key=key):
+                    with self.assertRaisesRegex(ValueError, "safe margin >= 0"):
+                        export_geometry(**arguments, spec=bad)
+
+            with self.assertRaisesRegex(ValueError, "only as the y axis"):
+                export_geometry(
+                    **{**arguments, "projection_text": "docking_safety_margin,sx"},
+                    spec=official_radial_spec(),
+                )
+
+        transform = {
+            "kind": "radial_speed_margin", "name": "margin",
+            "offset": 0.2, "radial_gain": 0.002054,
+            "position_terms": [{"coordinate": "x", "index": 0},
+                               {"coordinate": "y", "index": 1}],
+            "velocity_terms": [{"coordinate": "vx", "index": 2},
+                               {"coordinate": "vy", "index": 3}],
+        }
+        with self.assertRaisesRegex(ValueError, "finite and ordered"):
+            _radial_speed_margin_interval(
+                [[0.0, 1.0], [0.0, 1.0], [float("nan"), 0.0], [0.0, 0.0]],
+                0, 1, transform,
+            )
+        with self.assertRaisesRegex(ValueError, "overflows"):
+            _radial_speed_margin_interval(
+                [[float.fromhex("0x1.fffffffffffffp+1023")] * 2,
+                 [1.0, 1.0], [0.0, 0.0], [0.0, 0.0]],
+                0, 1, transform,
+            )
 
     def test_time_tube_uses_tube_columns_and_separates_projection_gaps(self):
         with tempfile.TemporaryDirectory() as scratch:

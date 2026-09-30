@@ -1,11 +1,13 @@
-"""Export honest box/affine-interval projections from saved observers.
+"""Export honest box/derived-interval projections from saved observers.
 
 The QUAD observer contract is ``bounds[B, state, 4]`` with columns
 ``tube_lo, tube_hi, endpoint_lo, endpoint_hi``.  This module deliberately
 calls the resulting geometry a box projection: it does not claim the
 coordinate correlation of Flow*'s octagon projection.  Plot-spec v3 can form
-one declared affine coordinate from those boxes; it discloses that source
-coordinate correlations remain unavailable.
+one declared affine coordinate from those boxes.  Plot-spec v4 adds only the
+fixed radial-speed margin needed by Docking; it is not a generic expression
+language.  Both disclose that source-coordinate correlations remain
+unavailable.
 """
 from __future__ import annotations
 
@@ -24,6 +26,18 @@ SCHEMA = "torch-tm-flowpipe-projection-v2"
 PLOT_SPEC_SCHEMA = "torch-tm-flowpipe-plot-spec-v1"
 PLOT_SPEC_SCHEMA_V2 = "torch-tm-flowpipe-plot-spec-v2"
 PLOT_SPEC_SCHEMA_V3 = "torch-tm-flowpipe-plot-spec-v3"
+PLOT_SPEC_SCHEMA_V4 = "torch-tm-flowpipe-plot-spec-v4"
+DOCKING_V4_INSTANCE = "docking-constraint"
+DOCKING_V4_COORDINATES = ["sx", "sy", "sx_dot", "sy_dot"]
+DOCKING_V4_INITIAL_BOUNDS = {
+    "sx": [70.0, 106.0],
+    "sy": [70.0, 106.0],
+    "sx_dot": [-0.28, 0.28],
+    "sy_dot": [-0.28, 0.28],
+}
+DOCKING_V4_DERIVED_NAME = "docking_safety_margin"
+DOCKING_V4_OFFSET = 0.2
+DOCKING_V4_RADIAL_GAIN = 0.002054
 OBSERVER_RE = re.compile(r"observer_(\d+)\.pt$")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 DERIVED_COORDINATE_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
@@ -171,6 +185,39 @@ def _canonical_affine_transform(
     }
 
 
+def _canonical_radial_speed_transform(
+    name: str,
+    transform: dict[str, Any],
+    coordinate_names: list[str],
+) -> dict[str, Any]:
+    def indexed(coordinates: list[str]) -> list[dict[str, Any]]:
+        return [
+            {"coordinate": coordinate, "index": coordinate_names.index(coordinate)}
+            for coordinate in coordinates
+        ]
+
+    return {
+        "kind": "radial_speed_margin",
+        "name": name,
+        "offset": float(transform["offset"]),
+        "radial_gain": float(transform["radial_gain"]),
+        "position_terms": indexed(transform["position_coordinates"]),
+        "velocity_terms": indexed(transform["velocity_coordinates"]),
+    }
+
+
+def _canonical_derived_transform(
+    name: str,
+    transform: dict[str, Any],
+    coordinate_names: list[str],
+) -> dict[str, Any]:
+    if transform.get("kind") == "affine":
+        return _canonical_affine_transform(name, transform, coordinate_names)
+    if transform.get("kind") == "radial_speed_margin":
+        return _canonical_radial_speed_transform(name, transform, coordinate_names)
+    raise ValueError(f"unsupported derived coordinate kind {transform.get('kind')!r}")
+
+
 def _parse_projection(
     value: str,
     coordinate_names: list[str],
@@ -194,7 +241,7 @@ def _parse_projection(
             "y": axes[1],
         }
         if axes[1] in derived_coordinates:
-            projection["y_transform"] = _canonical_affine_transform(
+            projection["y_transform"] = _canonical_derived_transform(
                 axes[1], derived_coordinates[axes[1]], coordinate_names
             )
         else:
@@ -208,7 +255,7 @@ def _parse_projection(
         raise ValueError(f"unknown state coordinates: {unknown}")
     if any(axis in derived_coordinates for axis in axes):
         raise ValueError(
-            "affine derived coordinates are supported only as the y axis of "
+            "derived coordinates are supported only as the y axis of "
             "a time-state projection"
         )
     if axes[0] == axes[1]:
@@ -246,6 +293,164 @@ def _affine_interval(
     if not math.isfinite(lower) or not math.isfinite(upper):
         raise ValueError("affine derived-coordinate interval is nonfinite")
     return lower, upper
+
+
+def _finite_outward(value: float, direction: float, label: str) -> float:
+    if not math.isfinite(value):
+        raise ValueError(f"{label} is nonfinite")
+    widened = math.nextafter(value, direction)
+    if not math.isfinite(widened):
+        raise ValueError(f"{label} overflows binary64")
+    return widened
+
+
+def _radial_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    terms: list[dict[str, Any]],
+) -> tuple[float, float]:
+    """Return an outward interval for hypot of exactly two box coordinates."""
+    if len(terms) != 2:
+        raise ValueError("radial interval requires exactly two coordinates")
+    absolute_bounds: list[tuple[float, float]] = []
+    for term in terms:
+        index = int(term["index"])
+        raw_lo = bounds[index][lo_column]
+        raw_hi = bounds[index][hi_column]
+        if isinstance(raw_lo, bool) or isinstance(raw_hi, bool):
+            raise ValueError("radial coordinate bounds must be real binary64 values")
+        try:
+            lo, hi = float(raw_lo), float(raw_hi)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError(
+                "radial coordinate bounds must be real binary64 values"
+            ) from exc
+        if not math.isfinite(lo) or not math.isfinite(hi) or lo > hi:
+            raise ValueError("radial coordinate bounds must be finite and ordered")
+        absolute_bounds.append((
+            0.0 if lo <= 0.0 <= hi else min(abs(lo), abs(hi)),
+            max(abs(lo), abs(hi)),
+        ))
+
+    square_lowers: list[float] = []
+    square_uppers: list[float] = []
+    for absolute_lo, absolute_hi in absolute_bounds:
+        raw_lower = absolute_lo * absolute_lo
+        raw_upper = absolute_hi * absolute_hi
+        if not math.isfinite(raw_lower) or not math.isfinite(raw_upper):
+            raise ValueError("radial square overflows binary64")
+        square_lowers.append(
+            0.0
+            if absolute_lo == 0.0
+            else max(0.0, _finite_outward(raw_lower, -math.inf, "radial square lower"))
+        )
+        square_uppers.append(
+            0.0
+            if absolute_hi == 0.0
+            else _finite_outward(raw_upper, math.inf, "radial square upper")
+        )
+
+    raw_sum_lower = square_lowers[0] + square_lowers[1]
+    raw_sum_upper = square_uppers[0] + square_uppers[1]
+    if not math.isfinite(raw_sum_lower) or not math.isfinite(raw_sum_upper):
+        raise ValueError("radial square sum overflows binary64")
+    sum_lower = (
+        0.0
+        if raw_sum_lower == 0.0
+        else max(0.0, _finite_outward(raw_sum_lower, -math.inf, "radial sum lower"))
+    )
+    sum_upper = (
+        0.0
+        if raw_sum_upper == 0.0
+        else _finite_outward(raw_sum_upper, math.inf, "radial sum upper")
+    )
+    raw_lower = math.sqrt(sum_lower)
+    raw_upper = math.sqrt(sum_upper)
+    lower = (
+        0.0
+        if raw_lower == 0.0
+        else max(0.0, _finite_outward(raw_lower, -math.inf, "radial sqrt lower"))
+    )
+    upper = (
+        0.0
+        if raw_upper == 0.0
+        else _finite_outward(raw_upper, math.inf, "radial sqrt upper")
+    )
+    return lower, upper
+
+
+def _radial_speed_margin_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    position_lo, position_hi = _radial_interval(
+        bounds, lo_column, hi_column, transform["position_terms"]
+    )
+    velocity_lo, velocity_hi = _radial_interval(
+        bounds, lo_column, hi_column, transform["velocity_terms"]
+    )
+    offset = float(transform["offset"])
+    gain = float(transform["radial_gain"])
+    lower_product = (
+        0.0
+        if position_lo == 0.0
+        else _finite_outward(gain * position_lo, -math.inf, "radial gain lower")
+    )
+    upper_product = (
+        0.0
+        if position_hi == 0.0
+        else _finite_outward(gain * position_hi, math.inf, "radial gain upper")
+    )
+    lower_sum = _finite_outward(offset + lower_product, -math.inf, "margin sum lower")
+    upper_sum = _finite_outward(offset + upper_product, math.inf, "margin sum upper")
+    lower = _finite_outward(lower_sum - velocity_hi, -math.inf, "margin lower")
+    upper = _finite_outward(upper_sum - velocity_lo, math.inf, "margin upper")
+    return lower, upper
+
+
+def _derived_interval(
+    bounds: Any,
+    lo_column: int,
+    hi_column: int,
+    transform: dict[str, Any],
+) -> tuple[float, float]:
+    if transform.get("kind") == "affine":
+        return _affine_interval(bounds, lo_column, hi_column, transform)
+    if transform.get("kind") == "radial_speed_margin":
+        return _radial_speed_margin_interval(bounds, lo_column, hi_column, transform)
+    raise ValueError(f"unsupported derived interval kind {transform.get('kind')!r}")
+
+
+def _projection_label(projection: dict[str, Any]) -> str:
+    transform = projection.get("y_transform")
+    if not isinstance(transform, dict):
+        return "box projection"
+    if transform.get("kind") == "affine":
+        return "affine interval projection"
+    if transform.get("kind") == "radial_speed_margin":
+        return "radial-speed interval projection"
+    raise ValueError("projection has an unsupported derived transform")
+
+
+def _projection_disclosure(projection: dict[str, Any]) -> str:
+    transform = projection.get("y_transform")
+    if not isinstance(transform, dict):
+        return "Axis-aligned box projection (not octagon)."
+    if transform.get("kind") == "affine":
+        return (
+            "Axis-aligned interval image of a declared affine coordinate; "
+            "source-coordinate correlations unavailable."
+        )
+    if transform.get("kind") == "radial_speed_margin":
+        return (
+            "Outward nonlinear interval extension of a declared radial-speed "
+            "margin over each source box; source-coordinate correlations "
+            "unavailable; not an exact nonlinear reachable image or property certificate."
+        )
+    raise ValueError("projection has an unsupported derived transform")
 
 
 def _load_observer(path: Path, state_count: int) -> tuple[Any, Any, Any]:
@@ -749,7 +954,7 @@ def _frame_geometry(
         if accepted_count:
             if "y_transform" in projection:
                 intervals = [
-                    _affine_interval(row, lo_column, hi_column, projection["y_transform"])
+                    _derived_interval(row, lo_column, hi_column, projection["y_transform"])
                     for row in chosen
                 ]
                 lo = min(interval[0] for interval in intervals)
@@ -1064,7 +1269,7 @@ def _native_frames(
                     else:
                         xlo = xhi = step * step_size
                     if "y_transform" in projection:
-                        ylo, yhi = _affine_interval(
+                        ylo, yhi = _derived_interval(
                             bounds, lo_column, hi_column, projection["y_transform"]
                         )
                     else:
@@ -1134,18 +1339,31 @@ def _validate_plot_spec(
     if not isinstance(spec, dict):
         raise ValueError("plot spec must be an object")
     schema = spec.get("schema")
-    if schema not in {PLOT_SPEC_SCHEMA, PLOT_SPEC_SCHEMA_V2, PLOT_SPEC_SCHEMA_V3}:
+    if schema not in {
+        PLOT_SPEC_SCHEMA,
+        PLOT_SPEC_SCHEMA_V2,
+        PLOT_SPEC_SCHEMA_V3,
+        PLOT_SPEC_SCHEMA_V4,
+    }:
         raise ValueError(
             "plot spec must use schema "
-            f"{PLOT_SPEC_SCHEMA}, {PLOT_SPEC_SCHEMA_V2}, or {PLOT_SPEC_SCHEMA_V3}"
+            f"{PLOT_SPEC_SCHEMA}, {PLOT_SPEC_SCHEMA_V2}, "
+            f"{PLOT_SPEC_SCHEMA_V3}, or {PLOT_SPEC_SCHEMA_V4}"
         )
     if spec.get("benchmark") != benchmark:
         raise ValueError("plot spec benchmark does not match --benchmark")
     if spec.get("coordinate_names") not in (None, coordinate_names):
         raise ValueError("spec coordinate_names do not match the exporter coordinates")
     _plain_text(spec.get("contract_status"), "plot spec contract_status")
-    official = schema in {PLOT_SPEC_SCHEMA_V2, PLOT_SPEC_SCHEMA_V3}
-    version = "v2" if schema == PLOT_SPEC_SCHEMA_V2 else "v3"
+    official = schema in {
+        PLOT_SPEC_SCHEMA_V2, PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4
+    }
+    version = {
+        PLOT_SPEC_SCHEMA: "v1",
+        PLOT_SPEC_SCHEMA_V2: "v2",
+        PLOT_SPEC_SCHEMA_V3: "v3",
+        PLOT_SPEC_SCHEMA_V4: "v4",
+    }[schema]
     warning = _plain_text(
         spec.get("warning"),
         "plot spec warning",
@@ -1263,12 +1481,13 @@ def _validate_plot_spec(
         }
 
     derived_coordinates = spec.get("derived_coordinates", {})
-    if schema != PLOT_SPEC_SCHEMA_V3 and derived_coordinates:
-        raise ValueError("affine derived coordinates require plot spec v3")
+    if schema not in {PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4} and derived_coordinates:
+        raise ValueError("derived coordinates require plot spec v3 or v4")
     if not isinstance(derived_coordinates, dict):
         raise ValueError("plot spec derived_coordinates must be an object")
-    if schema == PLOT_SPEC_SCHEMA_V3 and len(derived_coordinates) != 1:
-        raise ValueError("v3 plot spec requires exactly one derived coordinate")
+    if schema in {PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4} \
+            and len(derived_coordinates) != 1:
+        raise ValueError(f"{version} plot spec requires exactly one derived coordinate")
     for name, transform in derived_coordinates.items():
         if (
             not isinstance(name, str)
@@ -1276,39 +1495,105 @@ def _validate_plot_spec(
             or name in {"t", "time", *coordinate_names}
         ):
             raise ValueError(f"invalid or conflicting derived coordinate name {name!r}")
-        if (
-            not isinstance(transform, dict)
-            or set(transform) != {"kind", "offset", "coefficients"}
-            or transform.get("kind") != "affine"
-        ):
-            raise ValueError(
-                f"derived coordinate {name!r} must be one affine transform"
-            )
+        if not isinstance(transform, dict):
+            raise ValueError(f"derived coordinate {name!r} must be an object")
         offset = transform.get("offset")
-        coefficients = transform.get("coefficients")
         if (
             not isinstance(offset, (int, float))
             or isinstance(offset, bool)
             or not math.isfinite(offset)
         ):
             raise ValueError(f"derived coordinate {name!r} offset must be finite")
-        if not isinstance(coefficients, dict) or not coefficients:
-            raise ValueError(
-                f"derived coordinate {name!r} coefficients must be nonempty"
-            )
-        for coordinate, coefficient in coefficients.items():
-            if coordinate not in coordinate_names:
-                raise ValueError(
-                    f"derived coordinate {name!r} uses unknown coordinate {coordinate!r}"
-                )
+        if schema == PLOT_SPEC_SCHEMA_V3:
             if (
-                not isinstance(coefficient, (int, float))
-                or isinstance(coefficient, bool)
-                or not math.isfinite(coefficient)
-                or coefficient == 0
+                set(transform) != {"kind", "offset", "coefficients"}
+                or transform.get("kind") != "affine"
             ):
                 raise ValueError(
-                    f"derived coordinate {name!r} coefficients must be finite and nonzero"
+                    f"derived coordinate {name!r} must be one affine transform"
+                )
+            coefficients = transform.get("coefficients")
+            if not isinstance(coefficients, dict) or not coefficients:
+                raise ValueError(
+                    f"derived coordinate {name!r} coefficients must be nonempty"
+                )
+            for coordinate, coefficient in coefficients.items():
+                if coordinate not in coordinate_names:
+                    raise ValueError(
+                        f"derived coordinate {name!r} uses unknown coordinate {coordinate!r}"
+                    )
+                if (
+                    not isinstance(coefficient, (int, float))
+                    or isinstance(coefficient, bool)
+                    or not math.isfinite(coefficient)
+                    or coefficient == 0
+                ):
+                    raise ValueError(
+                        f"derived coordinate {name!r} coefficients must be finite and nonzero"
+                    )
+        elif schema == PLOT_SPEC_SCHEMA_V4:
+            if (
+                benchmark != "Docking"
+                or instance_id != DOCKING_V4_INSTANCE
+                or coordinate_names != DOCKING_V4_COORDINATES
+                or name != DOCKING_V4_DERIVED_NAME
+            ):
+                raise ValueError(
+                    "v4 is restricted to the canonical Docking benchmark identity"
+                )
+            if (
+                set(transform) != {
+                    "kind", "offset", "radial_gain",
+                    "position_coordinates", "velocity_coordinates",
+                }
+                or transform.get("kind") != "radial_speed_margin"
+            ):
+                raise ValueError(
+                    f"derived coordinate {name!r} must be one radial_speed_margin"
+                )
+            gain = transform.get("radial_gain")
+            if (
+                not isinstance(gain, (int, float))
+                or isinstance(gain, bool)
+                or not math.isfinite(gain)
+                or gain <= 0.0
+            ):
+                raise ValueError(
+                    f"derived coordinate {name!r} radial_gain must be finite and positive"
+                )
+            position = transform.get("position_coordinates")
+            velocity = transform.get("velocity_coordinates")
+            for label, coordinates in (
+                ("position_coordinates", position),
+                ("velocity_coordinates", velocity),
+            ):
+                if (
+                    not isinstance(coordinates, list)
+                    or len(coordinates) != 2
+                    or any(not isinstance(value, str) for value in coordinates)
+                ):
+                    raise ValueError(
+                        f"derived coordinate {name!r} {label} must contain two names"
+                    )
+            coordinates = [*position, *velocity]
+            if len(set(coordinates)) != 4:
+                raise ValueError(
+                    f"derived coordinate {name!r} radial coordinates must be unique"
+                )
+            unknown = [coordinate for coordinate in coordinates
+                       if coordinate not in coordinate_names]
+            if unknown:
+                raise ValueError(
+                    f"derived coordinate {name!r} uses unknown coordinates {unknown}"
+                )
+            if (
+                float(offset).hex() != DOCKING_V4_OFFSET.hex()
+                or float(gain).hex() != DOCKING_V4_RADIAL_GAIN.hex()
+                or position != DOCKING_V4_COORDINATES[:2]
+                or velocity != DOCKING_V4_COORDINATES[2:]
+            ):
+                raise ValueError(
+                    "v4 must use the canonical Docking radial-speed transform"
                 )
 
     initial_set = spec.get("initial_set", {})
@@ -1362,10 +1647,10 @@ def _validate_plot_spec(
             )
         has_bounds = "bounds" in region
         has_constraint = "constraint" in region
-        if schema == PLOT_SPEC_SCHEMA_V3:
+        if schema in {PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4}:
             if has_bounds == has_constraint:
                 raise ValueError(
-                    f"v3 plot spec region {index} must contain exactly one of "
+                    f"{version} plot spec region {index} must contain exactly one of "
                     "bounds or constraint"
                 )
             if has_constraint:
@@ -1378,7 +1663,7 @@ def _validate_plot_spec(
                     or constraint.get("operator") not in {">=", "<="}
                 ):
                     raise ValueError(
-                        f"v3 plot spec region {index} has an invalid affine threshold"
+                        f"{version} plot spec region {index} has an invalid threshold"
                     )
                 threshold = constraint.get("value")
                 if (
@@ -1387,10 +1672,10 @@ def _validate_plot_spec(
                     or not math.isfinite(threshold)
                 ):
                     raise ValueError(
-                        f"v3 plot spec region {index} threshold must be finite"
+                        f"{version} plot spec region {index} threshold must be finite"
                     )
         elif has_constraint:
-            raise ValueError("affine threshold regions require plot spec v3")
+            raise ValueError("threshold regions require plot spec v3 or v4")
         timing = region.get("time", {"kind": "all"})
         if not isinstance(timing, dict):
             raise ValueError(f"plot spec region {index} time must be an object")
@@ -1426,12 +1711,30 @@ def _validate_plot_spec(
             not region.get("bounds") for region in property_regions
         ):
             raise ValueError("v2 plot spec requires nonempty property-region bounds")
-        if schema == PLOT_SPEC_SCHEMA_V3 and (
+        if schema in {PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4} and (
             len(property_regions) != 1 or "constraint" not in property_regions[0]
         ):
             raise ValueError(
                 "v3 plot spec requires exactly one affine threshold property region"
+                if schema == PLOT_SPEC_SCHEMA_V3
+                else "v4 plot spec requires exactly one threshold property region"
             )
+        if schema == PLOT_SPEC_SCHEMA_V4:
+            region = property_regions[0]
+            constraint = region["constraint"]
+            if (
+                float(spec["horizon"]["end"]).hex() != float(40.0).hex()
+                or initial_set.get("bounds") != DOCKING_V4_INITIAL_BOUNDS
+                or spec.get("property_quantifier") != "all_times"
+                or region.get("role") != "safe"
+                or constraint.get("operator") != ">="
+                or float(constraint.get("value")) != 0.0
+                or region.get("time") != {"kind": "all"}
+            ):
+                raise ValueError(
+                    "v4 must use the canonical Docking initial set, 40-second horizon, "
+                    "and one safe margin >= 0 for all times"
+                )
         horizon = spec["horizon"]
         quantifier = spec["property_quantifier"]
         for region in property_regions:
@@ -1760,12 +2063,7 @@ def export_geometry(
         "expected_steps": expected_steps,
         "partial_policy": partial_policy,
         "interpolation": "none",
-        "geometry_class": (
-            "axis-aligned interval image of a declared affine coordinate; "
-            "source-coordinate correlations unavailable; not a Flow* octagon"
-            if "y_transform" in projection
-            else "axis-aligned box projection; not a Flow* octagon"
-        ),
+        "geometry_class": _projection_disclosure(projection),
         "semantics": (
             "tube bounds cover one local integration step"
             if view == "tube"
@@ -1820,7 +2118,7 @@ def validate_geometry(value: Any) -> dict[str, Any]:
         raise ValueError("geometry spec must be a JSON object")
     derived_coordinates = (
         spec.get("derived_coordinates", {})
-        if spec.get("schema") == PLOT_SPEC_SCHEMA_V3
+        if spec.get("schema") in {PLOT_SPEC_SCHEMA_V3, PLOT_SPEC_SCHEMA_V4}
         else {}
     )
     projection = value.get("projection")
@@ -2207,7 +2505,7 @@ def _initial_box(geometry: dict[str, Any]) -> list[float] | None:
             coordinate_names = geometry["coordinate_names"]
             if set(bounds) != set(coordinate_names):
                 return None
-            ylo, yhi = _affine_interval(
+            ylo, yhi = _derived_interval(
                 [bounds[name] for name in coordinate_names],
                 0,
                 1,
@@ -2370,8 +2668,7 @@ def write_matlab(geometry: dict[str, Any], path: Path) -> None:
     lines = [
         "% Generated by torch_tm_flowpipe.flowpipe_plot",
         (
-            "% Axis-aligned interval image of a declared affine coordinate; "
-            "source-coordinate correlations are unavailable."
+            "% " + _projection_disclosure(geometry["projection"])
             if derived_projection
             else "% Axis-aligned box projection; this is not a Flow* octagon."
         ),
@@ -2514,7 +2811,7 @@ def write_matlab(geometry: dict[str, Any], path: Path) -> None:
         f"ylabel('{_matlab_quote(y_label)}');",
         f"title('{_matlab_quote(geometry['benchmark'])}: "
         f"{_matlab_quote(geometry['view'])} "
-        f"{_matlab_quote('affine interval projection' if derived_projection else 'box projection')}');",
+        f"{_matlab_quote(_projection_label(geometry['projection']))}');",
     ])
     if legend_handles:
         lines.append(
@@ -2655,25 +2952,13 @@ def render_matplotlib(geometry: dict[str, Any], prefix: Path) -> tuple[Path, Pat
     y_unit = units.get(projection["y"], "")
     axis.set_xlabel(projection["x"] + (f" [{x_unit}]" if x_unit else ""))
     axis.set_ylabel(projection["y"] + (f" [{y_unit}]" if y_unit else ""))
-    projection_label = (
-        "affine interval projection"
-        if "y_transform" in projection
-        else "box projection"
-    )
+    projection_label = _projection_label(projection)
     axis.set_title(f"{geometry['benchmark']}: {geometry['view']} {projection_label}")
     axis.grid(alpha=.2)
     axis.autoscale()
     if handles:
         axis.legend(handles=handles, loc="best", fontsize=8)
-    coverage_lines = [
-        (
-            "Axis-aligned interval image of a declared affine coordinate; "
-            "source-coordinate correlations unavailable."
-            if "y_transform" in projection
-            else "Axis-aligned box projection (not octagon)."
-        ),
-        *_coverage_lines(geometry),
-    ]
+    coverage_lines = [_projection_disclosure(projection), *_coverage_lines(geometry)]
     fig.text(
         .01,
         .01,
@@ -2760,7 +3045,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--benchmark", default="unknown")
     parser.add_argument(
         "--instance-id",
-        help="exact benchmark instance id (required by v2/v3 official plot specs)",
+        help="exact benchmark instance id (required by v2/v3/v4 official plot specs)",
     )
     parser.add_argument("--projection", default="t,x1")
     parser.add_argument("--view", choices=sorted(VIEW_COLUMNS), default="tube")

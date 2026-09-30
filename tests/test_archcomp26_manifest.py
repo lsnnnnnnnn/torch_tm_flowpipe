@@ -160,6 +160,7 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         assert row["status"] in {
             "materialized_v2_content_contract",
             "materialized_v3_content_contract",
+            "materialized_v4_content_contract",
             "axis_aligned_content_ready_not_materialized",
             "blocked_fail_closed",
         }
@@ -174,13 +175,14 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         for label in (
             "materialized_v2_content_contract",
             "materialized_v3_content_contract",
+            "materialized_v4_content_contract",
             "axis_aligned_content_ready_not_materialized",
             "blocked_fail_closed",
         )
     }
     assert status["counts"] == {"instances": 16, **counts}
     materialized = [row for row in rows if row["plot_spec"] is not None]
-    assert len(materialized) == 9
+    assert len(materialized) == 10
     for row in materialized:
         spec = load(row["plot_spec"])
         assert spec["instance_id"] == row["instance_id"]
@@ -205,6 +207,27 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
         "value": 0.0,
     }
     assert acc["regions"][0]["time"] == {"kind": "all"}
+
+    docking = specs["docking-constraint"]
+    assert docking["schema"] == "torch-tm-flowpipe-plot-spec-v4"
+    assert docking["horizon"]["end"] == 40.0
+    assert docking["units"] == {"t": "s"}
+    assert docking["derived_coordinates"] == {
+        "docking_safety_margin": {
+            "kind": "radial_speed_margin",
+            "offset": 0.2,
+            "radial_gain": 0.002054,
+            "position_coordinates": ["sx", "sy"],
+            "velocity_coordinates": ["sx_dot", "sy_dot"],
+        }
+    }
+    assert docking["regions"][0]["constraint"] == {
+        "kind": "threshold",
+        "coordinate": "docking_safety_margin",
+        "operator": ">=",
+        "value": 0.0,
+    }
+    assert docking["regions"][0]["time"] == {"kind": "all"}
 
     airplane = specs["airplane-continuous"]
     assert airplane["horizon"]["end"] == 2.0

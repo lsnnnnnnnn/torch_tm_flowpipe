@@ -316,6 +316,7 @@ def render_markdown(status: Mapping[str, Any]) -> str:
         "- Plot-contract accounting: "
         f"materialized v2={plot_contracts['counts']['materialized_v2_content_contract']}; "
         f"materialized v3={plot_contracts['counts'].get('materialized_v3_content_contract', 0)}; "
+        f"materialized v4={plot_contracts['counts'].get('materialized_v4_content_contract', 0)}; "
         "axis-aligned content ready="
         f"{plot_contracts['counts']['axis_aligned_content_ready_not_materialized']}; "
         f"fail-closed blocked={plot_contracts['counts']['blocked_fail_closed']}.",
@@ -323,8 +324,9 @@ def render_markdown(status: Mapping[str, Any]) -> str:
         f"`{status['plot']['environment']['octave']}`. Generated `.m` files have "
         "static checks only.",
         "- Saved-artifact evidence covers axis-aligned QUAD projections; targeted "
-        "tests also cover the declared ACC affine interval image. Neither establishes "
-        "native octagon/support-direction parity.",
+        "tests also cover the declared ACC affine and Docking radial-speed interval "
+        "images. None establishes native octagon/support-direction parity or a "
+        "Docking numerical result.",
         "- Plot content status does not resolve any method's execution contract.",
         "",
         "| Instance | Plot content status | Content blockers |",
