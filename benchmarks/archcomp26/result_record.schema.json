@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "archcomp26-cell-result-v1",
+  "$id": "archcomp26-cell-result-v2",
   "title": "ARCH-COMP26 four-way cell result",
   "description": "Authoritative per-cell evidence record. Cross-field and file-hash checks are enforced by torch_tm_flowpipe.archcomp26_preflight without a third-party schema dependency.",
   "type": "object",
@@ -19,7 +19,7 @@
     "artifacts"
   ],
   "properties": {
-    "schema_version": {"const": "archcomp26-cell-result-v1"},
+    "schema_version": {"const": "archcomp26-cell-result-v2"},
     "instance_id": {"type": "string", "minLength": 1},
     "method": {
       "enum": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"]
@@ -223,13 +223,17 @@
       "additionalProperties": false,
       "required": [
         "cold_runs",
+        "target_steady_runs",
         "steady_runs",
+        "shortfall_reason",
         "fresh_process_per_run",
         "timing_boundary_version"
       ],
       "properties": {
         "cold_runs": {"type": "integer", "minimum": 0},
-        "steady_runs": {"type": "integer", "minimum": 1},
+        "target_steady_runs": {"const": 5},
+        "steady_runs": {"type": "integer", "minimum": 1, "maximum": 5},
+        "shortfall_reason": {"type": ["string", "null"]},
         "fresh_process_per_run": {"type": "boolean"},
         "timing_boundary_version": {"type": "string", "minLength": 1}
       }

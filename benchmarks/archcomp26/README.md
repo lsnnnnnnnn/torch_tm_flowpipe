@@ -16,25 +16,31 @@ support a resolved contract.
 
 `execution_matrix.json` is the machine-readable 16-by-4 result index. Its
 complete default cell records support/blockers, commands, source and binary
-identity, arithmetic, runtime/hardware, the frozen one-cold/ten-steady
+identity, arithmetic, per-method numerical integration/remainder settings,
+logical versus actual controller-call accounting, property-checker and
+early-stop policy, runtime/hardware, the frozen one-cold/five-steady target
 measurement plan, run/failure state, and a hash-bound external result-record
-pointer. Every instance explicitly has all four method cells and every current
-cell is `not_started`; an empty override is not a missing result.
+pointer. A long task may predeclare one to four steady runs only with a non-empty
+shortfall reason; it remains reportable but is ineligible for stable ranking.
+Every instance explicitly has all four method cells and every current cell is
+`not_started`; an empty override resolves to explicit `unresolved` tags rather
+than a missing result or an invented configuration.
 
-The v2 matrix deliberately keeps timing, property, certificate, width, and raw
+The v3 matrix deliberately keeps timing, property, certificate, width, and raw
 sample evidence out of the 64-cell index. A terminal cell must instead bind an
-`archcomp26-cell-result-v1` record conforming to
+`archcomp26-cell-result-v2` record conforming to
 `result_record.schema.json`. That record preserves every cold/steady sample,
 the timing boundary and phase times, requested versus validated extent,
 accepted/rejected work and NN calls, first failure, property and certificate
 outcomes, eligibility flags, endpoint/last-segment/full-tube absolute bounds,
 union versus per-partition width summaries, and artifact hashes. A `completed`
-cell is rejected unless its executable plan is complete, its requested extent
+cell is rejected unless its hash-bound executable plan is complete, its requested extent
 matches the resolved continuous horizon or discrete transition count, every
 planned sample covers that same extent and work counts, and all three width
 views bind the contract variable order and exact endpoint/last/full domains.
 `accepted_steps` means scheduled plant advances along the validated prefix
-(not lane-expanded work), while `nn_calls` binds the contract's declared total;
+(not lane-expanded work), while `nn_calls` binds the method cell's declared
+actual backend-call total rather than the shared logical update count;
 every cold/steady sample must repeat those same workload counts. Lane-expanded
 diagnostics belong in bound artifacts with their own explicit label.
 Eligibility flags must agree with the run, certificate, finiteness, soundness
@@ -46,9 +52,15 @@ terminal cell rather than a fabricated executable run.
 Changing an instance's manifest status to `resolved` is not enough to open the
 gate. It must bind an `archcomp26-instance-contract-v1` record conforming to
 `instance_contract.schema.json`. The record supplies the shared mathematical
-contract and repository-bound evidence coverage; method-specific arithmetic,
-runtime, command, source, and binary identities stay in the corresponding
-matrix cell. No current instance has such a resolved record.
+contract and repository-bound evidence coverage. It binds model/controller
+semantics, initial set, disturbance, horizon/transition count, logical control
+schedule, and property/pass semantics. Method-specific step size, working,
+point, and validation orders,
+remainder/SR, actual NN calls, checker, arithmetic, runtime, command, source,
+and binary identities stay in the corresponding matrix cell. Thus different
+Huan, PyTorch/GPU, Xiangru, and Flow* numerical strategies can share one
+mathematical contract without being mislabeled as matched numerics. No current
+instance has such a resolved record.
 
 Run the read-only structural check with:
 
@@ -64,6 +76,15 @@ overrides must be complete objects, so a partial `run`, plan, or result pointer
 cannot silently discard default fields. The check also verifies schema,
 contract, result, and referenced artifact bytes without a launcher or a
 third-party schema runtime.
+
+Every method-specific applicability decision is tagged. Discrete cells must
+mark ODE integration and remainder fields `not_applicable`; bare nulls never
+mean N/A. The v3 structure can record `adaptive` step/call modes, but launch and
+terminal validation remain fail-closed for them until a reproducible adaptive
+policy/result contract is added. Likewise, executable cells currently require
+`early_stop_policy=never`; other policies are representable but blocked until
+the result taxonomy can distinguish a property decision from an incomplete
+flowpipe.
 
 `docs/ARCHCOMP26_EXECUTION_STATUS.md` is a deterministic, generated status
 report rather than the final experiment report. It resolves all cell defaults,

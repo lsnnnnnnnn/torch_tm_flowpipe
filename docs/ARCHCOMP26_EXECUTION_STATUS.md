@@ -15,8 +15,8 @@
 
 | Input | Repository-relative path | SHA-256 |
 |---|---|---|
-| `manifest` | `benchmarks/archcomp26/manifest.json` | `fa4ea7a9f62566c080697f32af28a39312a14a30f59794725b43ba1b6615560a` |
-| `matrix` | `benchmarks/archcomp26/execution_matrix.json` | `ab61dd16f8919596d968b226831a52a5c4f5d02cd5d8a5daa89d72935cbdbce4` |
+| `manifest` | `benchmarks/archcomp26/manifest.json` | `ea3cc4531beed8d6c58062e88afd3c3c639d6b4ab622a99e99a2a0bb001f9cbb` |
+| `matrix` | `benchmarks/archcomp26/execution_matrix.json` | `018d9781ea3e9f11aaafc8f877cf067959b2a37548ee6811e8f3623f6ff8fc7b` |
 | `contract_audits` | `benchmarks/archcomp26/evidence/contract_audits_20261001.json` | `63ad3c7d6f120f799475a6fcaaec0e9a9036bcc8bf20e6c30aa70944d26be5e6` |
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
 | `p3_audit` | `research/gpu_verified_20260930/report/evidence/quad_trig_audit.json` | `517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2` |

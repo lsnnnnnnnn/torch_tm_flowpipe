@@ -1,12 +1,12 @@
 {
-  "schema_version": "archcomp26-execution-matrix-v2",
+  "schema_version": "archcomp26-execution-matrix-v3",
   "source_manifest": "benchmarks/archcomp26/manifest.json",
   "merge_semantics": "shallow_override_of_complete_cell_defaults",
   "status": "not_started",
   "result_record_contract": {
     "path": "benchmarks/archcomp26/result_record.schema.json",
-    "schema_version": "archcomp26-cell-result-v1",
-    "sha256": "afca8360e9504af902a01f233acfe51c13e3436f3b2213632bdcf6561b79e044"
+    "schema_version": "archcomp26-cell-result-v2",
+    "sha256": "67c99a1956cce6a0332514b86b1972095c560ceb9dd93899ac68e1caee64b945"
   },
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "required_cell_fields": [
@@ -15,6 +15,9 @@
     "source_identity",
     "binary_identity",
     "arithmetic",
+    "numerics",
+    "controller_execution",
+    "property_checker",
     "runtime",
     "measurement_plan",
     "run",
@@ -31,8 +34,42 @@
     "source_identity": {"kind": null, "locator": null, "revision": null, "sha256": null},
     "binary_identity": {"path": null, "sha256": null},
     "arithmetic": {"mode": null, "controller_domain": null, "relaxation": null, "dtype": null, "transport": null},
+    "numerics": {
+      "integration": {
+        "step_size": {"mode": "unresolved", "value": null},
+        "solution_order": {"mode": "unresolved", "value": null},
+        "point_order": {"mode": "unresolved", "value": null},
+        "validation_order": {"mode": "unresolved", "value": null},
+        "semantics": null
+      },
+      "remainder": {
+        "cutoff": {"mode": "unresolved", "value": null},
+        "cap": {"mode": "unresolved", "value": null},
+        "symbolic_queue": {"mode": "unresolved", "value": null},
+        "semantics": null
+      }
+    },
+    "controller_execution": {
+      "scheduled_updates": null,
+      "nn_calls": {"mode": "unresolved", "value": null},
+      "nn_call_semantics": null
+    },
+    "property_checker": {
+      "mode": "unresolved",
+      "identity": null,
+      "semantics": null,
+      "certificate_semantics": null,
+      "early_stop_policy": null
+    },
     "runtime": {"hardware": null, "cpu_threads": null, "gpu": null, "resource_limits": null, "timeout_s": null},
-    "measurement_plan": {"cold_runs": 1, "steady_runs": 10, "fresh_process_per_run": true, "timing_boundary_version": "total_configuration_v1"},
+    "measurement_plan": {
+      "cold_runs": 1,
+      "target_steady_runs": 5,
+      "steady_runs": 5,
+      "shortfall_reason": null,
+      "fresh_process_per_run": true,
+      "timing_boundary_version": "total_configuration_v1"
+    },
     "run": {"status": "not_started", "failure_category": null, "failure_detail": null},
     "result_record": {"schema_version": null, "path": null, "sha256": null}
   },

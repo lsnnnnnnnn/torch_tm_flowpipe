@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from torch_tm_flowpipe.archcomp26_final_report import (
+    _contract_lines,
     collect_report,
     render_markdown,
     timing_summary,
@@ -49,6 +50,16 @@ def test_current_draft_is_deterministic_and_final_gate_refuses():
     assert "不可作为最终成绩" in text
     assert text.count("(`") >= 16
     assert text.count("### 完整性、性质与结果资格") == 16
+    assert text.count("h / work / point / validation") == 16
+    assert text.count("cutoff / cap / SR") == 16
+    assert text.count("updates / NN") == 16
+    assert text.count("checker / early-stop") == 16
+    assert text.count("source / binary identity") == 16
+    assert '"revision":null' in text
+    assert (
+        "h=unresolved; work=unresolved; point=unresolved; "
+        "validation=unresolved"
+    ) in text
     assert "旧 14 项到 2026 manifest 的差异索引" in text
     assert "75.250099" not in text
     assert "1533.752052" not in text
@@ -132,3 +143,50 @@ def test_mapping_key_order_does_not_change_rendered_bytes():
         return value
 
     assert render_markdown(report) == render_markdown(reversed_mappings(report))
+
+
+def test_resolved_contract_section_exposes_complete_shared_configuration():
+    sha = "a" * 64
+    row = {
+        "instance": {
+            "visualization": "x over time",
+            "contract": {
+                "record": {"path": "contracts/synthetic.json", "sha256": sha},
+            },
+        },
+        "contract_record": {
+            "profile": "full_execution_contract_v1",
+            "fields": {
+                "dynamics": {
+                    "source": "model.py", "sha256": sha,
+                    "equations": ["x'=u"],
+                },
+                "controller": {
+                    "source": "controller.onnx", "sha256": sha,
+                    "input_output_order": ["x", "u"],
+                },
+                "variable_order": ["x"],
+                "initial_set": {
+                    "source": "initial.json", "sha256": sha,
+                    "partitions": [{"x": [0, 1]}], "boxes_sha256": sha,
+                },
+                "disturbance": {"x": [0, 0]},
+                "integration": {"horizon": 5.0},
+                "controller_update": {
+                    "period": 0.1, "scheduled_updates": 50,
+                    "schedule_semantics": "update at each left endpoint",
+                },
+                "property": {
+                    "formula": "x <= 2", "time_semantics": "all t in [0,5]",
+                    "pass_condition": "upper(x) <= 2",
+                },
+            },
+        },
+    }
+    text = "\n".join(_contract_lines(row))
+    for expected in (
+        "contracts/synthetic.json", "model.py", "x'=u", "controller.onnx",
+        "I/O 顺序", "initial.json", '"x":[0,1]', "扰动",
+        "all t in [0,5]", "upper(x) <= 2", "update at each left endpoint",
+    ):
+        assert expected in text

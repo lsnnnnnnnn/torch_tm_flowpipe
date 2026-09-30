@@ -45,7 +45,7 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
     assert tuple(manifest["methods"]) == METHODS
     assert manifest["execution_matrix"] == {
         "path": "benchmarks/archcomp26/execution_matrix.json",
-        "schema_version": "archcomp26-execution-matrix-v2",
+        "schema_version": "archcomp26-execution-matrix-v3",
         "status": "all_cells_not_started",
     }
     contract_schema = manifest["instance_contract_record"]
@@ -66,11 +66,7 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
     assert discrete["status"] == "unresolved"
     assert discrete["model_kind"] == "discrete_time"
     assert discrete["unresolved_field_profile"] == "discrete_execution_contract_v1"
-    assert set(discrete["not_applicable"]) == {
-        "integration.step_size", "integration.solution_order",
-        "integration.validation_order", "integration.horizon",
-        "remainder.cutoff", "remainder.cap", "remainder.symbolic_queue",
-    }
+    assert set(discrete["not_applicable"]) == {"integration.horizon"}
     for instance_id, row in by_id.items():
         if instance_id != "airplane-discrete":
             assert row["contract"] == {
@@ -88,6 +84,19 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
             "discrete.transition_count"} <= set(
                 profiles["discrete_execution_contract_v1"]
             )
+    method_specific = {
+        "integration.step_size", "integration.solution_order",
+        "integration.point_order", "integration.validation_order",
+        "controller_update.nn_calls",
+        "remainder.cutoff", "remainder.cap", "remainder.symbolic_queue",
+        "property.checker",
+    }
+    assert method_specific.isdisjoint(profiles["full_execution_contract_v1"])
+    assert method_specific.isdisjoint(profiles["discrete_execution_contract_v1"])
+    for profile in profiles.values():
+        assert "controller_update.scheduled_updates" in profile
+        assert "controller_update.schedule_semantics" in profile
+        assert "property.pass_condition" in profile
 
 
 def test_execution_matrix_explicitly_has_all_64_not_started_cells():
@@ -103,14 +112,26 @@ def test_execution_matrix_explicitly_has_all_64_not_started_cells():
     assert matrix["cell_defaults"]["run"]["status"] == "not_started"
     assert matrix["cell_defaults"]["measurement_plan"] == {
         "cold_runs": 1,
-        "steady_runs": 10,
+        "target_steady_runs": 5,
+        "steady_runs": 5,
+        "shortfall_reason": None,
         "fresh_process_per_run": True,
         "timing_boundary_version": "total_configuration_v1",
     }
     assert set(matrix["cell_defaults"]["result_record"].values()) == {None}
+    assert {
+        "numerics", "controller_execution", "property_checker"
+    } <= required
+    assert matrix["cell_defaults"]["numerics"]["integration"]["step_size"] == {
+        "mode": "unresolved", "value": None,
+    }
+    assert matrix["cell_defaults"]["controller_execution"]["nn_calls"] == {
+        "mode": "unresolved", "value": None,
+    }
+    assert matrix["cell_defaults"]["property_checker"]["mode"] == "unresolved"
     result_schema = matrix["result_record_contract"]
     result_schema_path = ROOT / result_schema["path"]
-    assert result_schema["schema_version"] == "archcomp26-cell-result-v1"
+    assert result_schema["schema_version"] == "archcomp26-cell-result-v2"
     assert hashlib.sha256(result_schema_path.read_bytes()).hexdigest() == (
         result_schema["sha256"]
     )

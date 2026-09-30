@@ -41,7 +41,7 @@
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "execution_matrix": {
     "path": "benchmarks/archcomp26/execution_matrix.json",
-    "schema_version": "archcomp26-execution-matrix-v2",
+    "schema_version": "archcomp26-execution-matrix-v3",
     "status": "all_cells_not_started"
   },
   "preflight": {
@@ -57,7 +57,7 @@
   "instance_contract_record": {
     "path": "benchmarks/archcomp26/instance_contract.schema.json",
     "schema_version": "archcomp26-instance-contract-v1",
-    "sha256": "41d697d78a9f142e5e05e4c22d56be2ac891af560a904037e7e6dca411ab4b23"
+    "sha256": "3c0fec09c58200372257d8cea273620d6581388d4ae3298071efa20c0ee3b8ba"
   },
   "unresolved_field_profiles": {
     "full_execution_contract_v1": [
@@ -73,15 +73,10 @@
       "initial_set.partitions",
       "initial_set.boxes_sha256",
       "disturbance",
-      "integration.step_size",
-      "integration.solution_order",
-      "integration.validation_order",
       "integration.horizon",
       "controller_update.period",
-      "controller_update.nn_calls",
-      "remainder.cutoff",
-      "remainder.cap",
-      "remainder.symbolic_queue",
+      "controller_update.scheduled_updates",
+      "controller_update.schedule_semantics",
       "arithmetic.mode",
       "arithmetic.controller_domain",
       "arithmetic.relaxation",
@@ -89,7 +84,7 @@
       "arithmetic.transport",
       "property.formula",
       "property.time_semantics",
-      "property.checker",
+      "property.pass_condition",
       "runtime.hardware",
       "runtime.cpu_threads",
       "runtime.resource_limits",
@@ -116,7 +111,8 @@
       "discrete.transition_count",
       "discrete.sample_period",
       "controller_update.period_steps",
-      "controller_update.nn_calls",
+      "controller_update.scheduled_updates",
+      "controller_update.schedule_semantics",
       "arithmetic.mode",
       "arithmetic.controller_domain",
       "arithmetic.relaxation",
@@ -124,7 +120,7 @@
       "arithmetic.transport",
       "property.formula",
       "property.step_semantics",
-      "property.checker",
+      "property.pass_condition",
       "runtime.hardware",
       "runtime.cpu_threads",
       "runtime.resource_limits",
@@ -174,13 +170,7 @@
         "model_kind": "discrete_time",
         "unresolved_field_profile": "discrete_execution_contract_v1",
         "not_applicable": [
-          "integration.step_size",
-          "integration.solution_order",
-          "integration.validation_order",
-          "integration.horizon",
-          "remainder.cutoff",
-          "remainder.cap",
-          "remainder.symbolic_queue"
+          "integration.horizon"
         ]
       }
     },

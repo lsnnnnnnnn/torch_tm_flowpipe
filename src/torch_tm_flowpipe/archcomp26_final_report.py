@@ -221,20 +221,43 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
         ]
     fields = record["fields"]
     model = fields.get("dynamics", fields.get("transition", {}))
+    model_semantics = {
+        name: value for name, value in model.items()
+        if name not in {"source", "sha256"}
+    }
     horizon = fields.get("integration", {}).get("horizon")
     if horizon is None:
         horizon = fields.get("discrete", {}).get("transition_count")
+    controller_update = fields["controller_update"]
+    period = controller_update.get(
+        "period", controller_update.get("period_steps")
+    )
+    property_value = fields["property"]
+    property_semantics = property_value.get(
+        "time_semantics", property_value.get("step_semantics")
+    )
+    record_link = instance["contract"]["record"]
     return [
-        f"- 执行合同：`resolved`；记录 SHA-256 "
-        f"`{instance['contract']['record']['sha256']}`。",
-        f"- 模型：`{model.get('source')}`；SHA-256 `{model.get('sha256')}`。",
+        f"- 执行合同：`resolved`；记录 `{record_link['path']}`；"
+        f"SHA-256 `{record_link['sha256']}`；profile `{record['profile']}`。",
+        f"- 模型/转移：`{model.get('source')}`；SHA-256 "
+        f"`{model.get('sha256')}`；语义 `{_json_cell(model_semantics)}`。",
         f"- 控制器：`{fields['controller']['source']}`；SHA-256 "
-        f"`{fields['controller']['sha256']}`。",
+        f"`{fields['controller']['sha256']}`；I/O 顺序 "
+        f"`{_json_cell(fields['controller']['input_output_order'])}`。",
         f"- 变量顺序：`{json.dumps(fields['variable_order'], ensure_ascii=False)}`。",
-        f"- 初始分区数：{len(fields['initial_set']['partitions'])}；boxes SHA-256 "
+        f"- 初始集：`{fields['initial_set']['source']}`；SHA-256 "
+        f"`{fields['initial_set']['sha256']}`；分区 "
+        f"`{_json_cell(fields['initial_set']['partitions'])}`；boxes SHA-256 "
         f"`{fields['initial_set']['boxes_sha256']}`。",
+        f"- 扰动：`{_json_cell(fields['disturbance'])}`。",
         f"- 请求时域/步数：`{horizon}`；性质："
-        f"`{fields['property']['formula']}`。",
+        f"`{property_value['formula']}`；时间/步语义："
+        f"`{_md_cell(property_semantics)}`；通过条件："
+        f"`{property_value['pass_condition']}`。",
+        f"- 逻辑控制日程：周期 `{period}`；更新次数 "
+        f"`{controller_update['scheduled_updates']}`；"
+        f"`{controller_update['schedule_semantics']}`。",
         f"- 计划可视化：{instance['visualization']}。",
     ]
 
@@ -242,6 +265,52 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
 def _command_text(cell: Mapping[str, Any]) -> str:
     argv = cell["command"]["argv"]
     return "—" if argv is None else f"`{_md_cell(shlex.join(argv))}`"
+
+
+def _tagged_text(value: Mapping[str, Any]) -> str:
+    mode = value.get("mode", "unresolved")
+    raw = value.get("value")
+    return str(mode) if raw is None else f"{mode}:{_fmt_number(raw)}"
+
+
+def _json_cell(value: Any) -> str:
+    return _md_cell(json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ))
+
+
+def _method_configuration(cell: Mapping[str, Any]) -> dict[str, str]:
+    integration = cell["numerics"]["integration"]
+    remainder = cell["numerics"]["remainder"]
+    controller = cell["controller_execution"]
+    checker = cell["property_checker"]
+    return {
+        "integration": "; ".join((
+            f"h={_tagged_text(integration['step_size'])}",
+            f"work={_tagged_text(integration['solution_order'])}",
+            f"point={_tagged_text(integration['point_order'])}",
+            f"validation={_tagged_text(integration['validation_order'])}",
+            f"semantics={integration['semantics'] or '—'}",
+        )),
+        "remainder": "; ".join((
+            f"cutoff={_tagged_text(remainder['cutoff'])}",
+            f"cap={_tagged_text(remainder['cap'])}",
+            f"SR={_tagged_text(remainder['symbolic_queue'])}",
+            f"semantics={remainder['semantics'] or '—'}",
+        )),
+        "controller": "; ".join((
+            f"updates={controller['scheduled_updates'] if controller['scheduled_updates'] is not None else '—'}",
+            f"NN={_tagged_text(controller['nn_calls'])}",
+            f"semantics={controller['nn_call_semantics'] or '—'}",
+        )),
+        "checker": "; ".join((
+            f"mode={checker['mode']}",
+            f"id={checker['identity'] or '—'}",
+            f"early-stop={checker['early_stop_policy'] or '—'}",
+            f"semantics={checker['semantics'] or '—'}",
+            f"certificate={checker['certificate_semantics'] or '—'}",
+        )),
+    }
 
 
 def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
@@ -274,7 +343,8 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
         "",
         "## 比较规则",
         "",
-        "- 正式计划为 1 次冷启动和 10 次独立进程 steady；冷启动不进入 steady 中位数。",
+        "- 正式目标为 1 次冷启动和 5 次独立进程 steady；冷启动不进入 steady 中位数。"
+        "长任务可预先声明较少 steady 次数并写明原因，但不得据此取得稳定排名资格。",
         "- 只报告完整请求时域且明确允许性能测量的时间；失败前缀不外推完成时间。",
         "- 宽度始终给绝对上下界、union width 和每分区 mean/max；本报告不计算宽度比。",
         "- 不同共同前缀、domain、变量顺序或单位不会合并为同一比较域。",
@@ -323,19 +393,30 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             "",
             "### 完整配置、状态与复现入口",
             "",
-            "| 方法 | support | run | 命令 | cwd | source/binary SHA | 结果记录 |",
-            "|---|---|---|---|---|---|---|",
+            "| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | "
+            "updates / NN | arithmetic | hardware / runtime | checker / early-stop | "
+            "命令 / cwd | source / binary identity | 结果记录 |",
+            "|---|---|---|---|---|---|---|---|---|---|---|",
         ])
         for method in methods:
             cell = row["cells"][method]["cell"]
-            source_sha = cell["source_identity"]["sha256"] or "—"
-            binary_sha = cell["binary_identity"]["sha256"] or "—"
+            config = _method_configuration(cell)
+            source_binary = {
+                "source": cell["source_identity"],
+                "binary": cell["binary_identity"],
+            }
             result_path = cell["result_record"]["path"] or "—"
             lines.append(
-                f"| {METHOD_LABELS[method]} | `{cell['support']['status']}` | "
-                f"`{cell['run']['status']}` | {_command_text(cell)} | "
-                f"`{_md_cell(cell['command']['cwd'] or '—')}` | `{source_sha}` / "
-                f"`{binary_sha}` | `{result_path}` |"
+                f"| {METHOD_LABELS[method]} | `{cell['support']['status']}` / "
+                f"`{cell['run']['status']}` | `{_md_cell(config['integration'])}` | "
+                f"`{_md_cell(config['remainder'])}` | "
+                f"`{_md_cell(config['controller'])}` | "
+                f"`{_json_cell(cell['arithmetic'])}` | "
+                f"`{_json_cell(cell['runtime'])}` | "
+                f"`{_md_cell(config['checker'])}` | {_command_text(cell)} / "
+                f"`{_md_cell(cell['command']['cwd'] or '—')}` | "
+                f"`{_json_cell(source_binary)}` | "
+                f"`{result_path}` |"
             )
 
         lines.extend([

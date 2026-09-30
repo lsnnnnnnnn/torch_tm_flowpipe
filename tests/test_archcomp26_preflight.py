@@ -3,8 +3,9 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
+
 from torch_tm_flowpipe.archcomp26_preflight import (
-    _contract_type_errors,
     preflight_reasons,
     validate_matrix,
 )
@@ -12,6 +13,14 @@ from torch_tm_flowpipe.archcomp26_preflight import (
 
 ROOT = Path(__file__).resolve().parents[1]
 METHOD_FIELDS = {
+    "integration.step_size",
+    "integration.solution_order",
+    "integration.point_order",
+    "integration.validation_order",
+    "controller_update.nn_calls",
+    "remainder.cutoff",
+    "remainder.cap",
+    "remainder.symbolic_queue",
     "arithmetic.mode",
     "arithmetic.controller_domain",
     "arithmetic.relaxation",
@@ -24,6 +33,7 @@ METHOD_FIELDS = {
     "commands",
     "source_identity",
     "binary_identity",
+    "property.checker",
 }
 
 
@@ -86,15 +96,9 @@ def synthetic_inputs(tmp_path: Path, instance_id: str, profile: str):
             value = ["x"]
         elif dotted == "initial_set.partitions":
             value = [{"x": [0.0, 1.0]}]
-        elif dotted == "remainder.cutoff":
-            value = 1e-6
-        elif dotted == "remainder.cap":
-            value = 0.1
         elif dotted in {
-            "integration.step_size", "integration.solution_order",
-            "integration.validation_order", "integration.horizon",
-            "controller_update.period", "controller_update.nn_calls",
-            "remainder.symbolic_queue",
+            "integration.horizon", "controller_update.period",
+            "controller_update.scheduled_updates",
             "discrete.transition_count", "discrete.sample_period",
             "controller_update.period_steps",
         }:
@@ -149,6 +153,50 @@ def synthetic_inputs(tmp_path: Path, instance_id: str, profile: str):
         "dtype": "float64",
         "transport": "synthetic",
     }
+    if profile == "full_execution_contract_v1":
+        cell["numerics"] = {
+            "integration": {
+                "step_size": {"mode": "fixed", "value": 1.0},
+                "solution_order": {"mode": "configured", "value": 2},
+                "point_order": {"mode": "configured", "value": 1},
+                "validation_order": {"mode": "configured", "value": 3},
+                "semantics": "fixed plant step; configured method orders",
+            },
+            "remainder": {
+                "cutoff": {"mode": "configured", "value": 1e-6},
+                "cap": {"mode": "configured", "value": 0.1},
+                "symbolic_queue": {"mode": "configured", "value": 1},
+                "semantics": "synthetic remainder and symbolic-remainder policy",
+            },
+        }
+    else:
+        cell["numerics"] = {
+            "integration": {
+                "step_size": {"mode": "not_applicable", "value": None},
+                "solution_order": {"mode": "not_applicable", "value": None},
+                "point_order": {"mode": "not_applicable", "value": None},
+                "validation_order": {"mode": "not_applicable", "value": None},
+                "semantics": "discrete transition; ODE integration is not applicable",
+            },
+            "remainder": {
+                "cutoff": {"mode": "not_applicable", "value": None},
+                "cap": {"mode": "not_applicable", "value": None},
+                "symbolic_queue": {"mode": "not_applicable", "value": None},
+                "semantics": "discrete transition; ODE remainder is not applicable",
+            },
+        }
+    cell["controller_execution"] = {
+        "scheduled_updates": 1,
+        "nn_calls": {"mode": "exact", "value": 1},
+        "nn_call_semantics": "one bound evaluation per scheduled update",
+    }
+    cell["property_checker"] = {
+        "mode": "configured",
+        "identity": "synthetic-checker",
+        "semantics": "evaluate the shared property after the full run",
+        "certificate_semantics": "synthetic explicit non-certificate",
+        "early_stop_policy": "never",
+    }
     cell["runtime"] = {
         "hardware": "synthetic",
         "cpu_threads": 1,
@@ -160,7 +208,9 @@ def synthetic_inputs(tmp_path: Path, instance_id: str, profile: str):
     return manifest, matrix, record, cell, evidence_sha
 
 
-def completed_result_record(manifest, cell, instance_id, evidence_sha):
+def completed_result_record(
+    manifest, cell, instance_id, evidence_sha, method="pytorch_gpu"
+):
     row = next(row for row in manifest["instances"] if row["id"] == instance_id)
     extent_kind = (
         "time_s"
@@ -168,6 +218,19 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
         else "steps"
     )
     extent = {"kind": extent_kind, "value": 1}
+    if extent_kind == "time_s":
+        step = cell["numerics"]["integration"]["step_size"]["value"]
+        if isinstance(step, (int, float)) and not isinstance(step, bool) and step > 0:
+            accepted_steps = round(1 / step)
+            last_segment_start = (accepted_steps - 1) * step
+        else:
+            accepted_steps = 0
+            last_segment_start = 0
+    else:
+        accepted_steps = 1
+        last_segment_start = 0
+    nn_plan = cell["controller_execution"]["nn_calls"]
+    nn_calls = nn_plan["value"] if isinstance(nn_plan["value"], int) else 0
     artifact = {"path": "evidence.txt", "sha256": evidence_sha}
     timing = {
         "process_total": 1.0,
@@ -191,9 +254,9 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
                 "timing_s": timing,
                 "peak_memory_bytes": {"host": 1, "device": 0},
                 "validated_extent": copy.deepcopy(extent),
-                "accepted_steps": 1,
+                "accepted_steps": accepted_steps,
                 "rejected_steps": 0,
-                "nn_calls": 1,
+                "nn_calls": nn_calls,
                 "failure": None,
                 "artifact": artifact,
             })
@@ -209,12 +272,13 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
     }
     plan_fields = (
         "support", "command", "source_identity", "binary_identity",
-        "arithmetic", "runtime", "measurement_plan",
+        "arithmetic", "numerics", "controller_execution", "property_checker",
+        "runtime", "measurement_plan",
     )
     return {
-        "schema_version": "archcomp26-cell-result-v1",
+        "schema_version": "archcomp26-cell-result-v2",
         "instance_id": instance_id,
-        "method": "pytorch_gpu",
+        "method": method,
         "contract_identity": {
             "instance_contract_sha256": row["contract"]["record"]["sha256"],
             "cell_plan_sha256": canonical_sha256({
@@ -228,14 +292,14 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
             "requested_extent": copy.deepcopy(extent),
             "validated_extent": copy.deepcopy(extent),
             "requested_horizon_completed": True,
-            "accepted_steps": 1,
+            "accepted_steps": accepted_steps,
             "rejected_steps": 0,
-            "nn_calls": 1,
+            "nn_calls": nn_calls,
             "first_failure": None,
         },
         "property": {
             "status": "passed",
-            "checker": "synthetic-checker",
+            "checker": cell["property_checker"]["identity"],
             "certificate_status": "not_applicable",
             "certificate_semantics": "synthetic explicit non-certificate",
             "artifact": artifact,
@@ -262,7 +326,14 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
                 **copy.deepcopy(width),
                 "domain": {"kind": extent_kind, "start": 1, "end": 1},
             },
-            "last_segment_tube": copy.deepcopy(width),
+            "last_segment_tube": {
+                **copy.deepcopy(width),
+                "domain": {
+                    "kind": extent_kind,
+                    "start": last_segment_start,
+                    "end": 1,
+                },
+            },
             "full_horizon_tube": copy.deepcopy(width),
             "trajectory_artifact": artifact,
         },
@@ -273,14 +344,16 @@ def completed_result_record(manifest, cell, instance_id, evidence_sha):
     }
 
 
-def bind_completed_result(tmp_path, matrix, cell, instance_id, result):
-    result_path = Path("results") / f"{instance_id}-pytorch-gpu.json"
+def bind_completed_result(
+    tmp_path, matrix, cell, instance_id, result, method="pytorch_gpu"
+):
+    result_path = Path("results") / f"{instance_id}-{method}.json"
     cell["result_record"] = {
-        "schema_version": "archcomp26-cell-result-v1",
+        "schema_version": "archcomp26-cell-result-v2",
         "path": result_path.as_posix(),
         "sha256": write_json(tmp_path / result_path, result),
     }
-    matrix["cells"][instance_id]["pytorch_gpu"] = cell
+    matrix["cells"][instance_id][method] = cell
     matrix["status"] = "in_progress"
     return result_path
 
@@ -311,6 +384,37 @@ def test_partial_nested_override_is_rejected():
     }
     errors = validate_matrix(manifest, broken)
     assert any("incomplete override" in error for error in errors)
+
+
+def test_v3_default_shape_cannot_be_weakened_or_crash_validation():
+    manifest, matrix = inputs()
+    broken = copy.deepcopy(matrix)
+    broken["required_cell_fields"].remove("numerics")
+    broken["cell_defaults"].pop("numerics")
+    errors = validate_matrix(manifest, broken)
+    assert "required_cell_fields do not match the v3 cell contract" in errors
+
+    broken = copy.deepcopy(matrix)
+    broken["cell_defaults"]["numerics"]["integration"].pop("step_size")
+    errors = validate_matrix(manifest, broken)
+    assert any(
+        "cell_defaults.numerics.integration: incomplete override" in error
+        for error in errors
+    )
+
+
+def test_non_string_applicability_tags_fail_closed_without_exceptions():
+    manifest, matrix = inputs()
+    broken = copy.deepcopy(matrix)
+    numerics = copy.deepcopy(matrix["cell_defaults"]["numerics"])
+    numerics["integration"]["step_size"]["mode"] = []
+    broken["cells"]["quad-reach"]["pytorch_gpu"] = {"numerics": numerics}
+    errors = validate_matrix(manifest, broken)
+    assert any("invalid applicability tag" in error for error in errors)
+    reasons = preflight_reasons(
+        manifest, broken, "quad-reach", "pytorch_gpu"
+    )
+    assert any("invalid applicability tag" in reason for reason in reasons)
 
 
 def test_preflight_does_not_treat_unknown_targets_as_launchable():
@@ -395,36 +499,54 @@ def test_contract_evidence_supports_reject_duplicates(tmp_path):
     assert any("supports: duplicate fields" in error for error in errors)
 
 
-def test_fractional_remainder_contract_values_and_invalid_boundaries(tmp_path):
+def test_resolved_contract_rejects_duplicate_method_field_ownership(tmp_path):
     manifest, matrix, record, _, _ = synthetic_inputs(
         tmp_path, "acc-safe-distance", "full_execution_contract_v1"
     )
-    assert record["fields"]["remainder"] == {
-        "cutoff": 1e-6, "cap": 0.1, "symbolic_queue": 1,
+    row = next(row for row in manifest["instances"] if row["id"] == "acc-safe-distance")
+    record["fields"]["integration"]["step_size"] = 999.0
+    record_path = tmp_path / row["contract"]["record"]["path"]
+    row["contract"]["record"]["sha256"] = write_json(record_path, record)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any(
+        "method-specific field integration.step_size must live in the execution cell"
+        in error for error in errors
+    )
+
+
+def test_fractional_remainder_cell_values_and_invalid_boundaries(tmp_path):
+    manifest, matrix, _, cell, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    assert cell["numerics"]["remainder"] == {
+        "cutoff": {"mode": "configured", "value": 1e-6},
+        "cap": {"mode": "configured", "value": 0.1},
+        "symbolic_queue": {"mode": "configured", "value": 1},
+        "semantics": "synthetic remainder and symbolic-remainder policy",
     }
     assert validate_matrix(manifest, matrix, root=tmp_path) == []
-    zero_remainder = copy.deepcopy(record["fields"])
-    zero_remainder["remainder"].update({"cutoff": 0.0, "cap": 0.0})
-    assert _contract_type_errors(
-        zero_remainder, "full_execution_contract_v1", "acc-safe-distance"
-    ) == []
+    cell["numerics"]["remainder"]["cutoff"]["value"] = 0.0
+    cell["numerics"]["remainder"]["cap"]["value"] = 0.0
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
     for dotted, invalid in (
-        ("remainder.cutoff", True),
-        ("remainder.cutoff", -1e-6),
-        ("remainder.cutoff", float("nan")),
-        ("remainder.cap", True),
-        ("remainder.cap", -0.1),
-        ("remainder.cap", float("inf")),
-        ("remainder.symbolic_queue", 1.5),
-        ("remainder.symbolic_queue", True),
-        ("remainder.symbolic_queue", -1),
+        ("cutoff", True),
+        ("cutoff", -1e-6),
+        ("cutoff", float("nan")),
+        ("cap", True),
+        ("cap", -0.1),
+        ("cap", float("inf")),
+        ("symbolic_queue", 1.5),
+        ("symbolic_queue", True),
+        ("symbolic_queue", -1),
     ):
-        broken = copy.deepcopy(record)
-        set_dotted(broken["fields"], dotted, invalid)
-        errors = _contract_type_errors(
-            broken["fields"], "full_execution_contract_v1", "acc-safe-distance"
+        broken = copy.deepcopy(matrix)
+        broken["cells"]["acc-safe-distance"]["pytorch_gpu"]["numerics"][
+            "remainder"
+        ][dotted]["value"] = invalid
+        errors = validate_matrix(manifest, broken, root=tmp_path)
+        assert any(f"remainder.{dotted}.value" in error for error in errors), (
+            dotted, invalid,
         )
-        assert any(dotted in error for error in errors), (dotted, invalid)
 
 
 def test_synthetic_continuous_contract_and_cell_complete_full_profile(tmp_path):
@@ -449,6 +571,106 @@ def test_synthetic_discrete_contract_and_cell_complete_full_profile(tmp_path):
     ) == []
 
 
+def test_discrete_numerics_are_explicit_na_and_schedule_matches_contract(tmp_path):
+    manifest, matrix, _, cell, _ = synthetic_inputs(
+        tmp_path, "airplane-discrete", "discrete_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    assert preflight_reasons(
+        manifest, matrix, "airplane-discrete", "pytorch_gpu", root=tmp_path
+    ) == []
+
+    cell["numerics"]["integration"]["step_size"]["mode"] = "unresolved"
+    reasons = preflight_reasons(
+        manifest, matrix, "airplane-discrete", "pytorch_gpu", root=tmp_path
+    )
+    assert "numerics_step_size_not_marked_not_applicable" in reasons
+    cell["numerics"]["integration"]["step_size"]["mode"] = "not_applicable"
+
+    cell["controller_execution"]["scheduled_updates"] = 2
+    reasons = preflight_reasons(
+        manifest, matrix, "airplane-discrete", "pytorch_gpu", root=tmp_path
+    )
+    assert "controller_scheduled_updates_contract_mismatch" in reasons
+
+
+def test_tagged_na_cannot_carry_a_hidden_value(tmp_path):
+    manifest, matrix, _, cell, _ = synthetic_inputs(
+        tmp_path, "airplane-discrete", "discrete_execution_contract_v1"
+    )
+    cell["numerics"]["remainder"]["cap"]["value"] = 0.1
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any(
+        "numerics.remainder.cap.value: must be null" in error
+        for error in errors
+    )
+
+
+def test_adaptive_and_early_stop_modes_are_representable_but_fail_closed(tmp_path):
+    manifest, matrix, _, cell, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    cell["numerics"]["integration"]["step_size"] = {
+        "mode": "adaptive", "value": None,
+    }
+    cell["controller_execution"]["nn_calls"] = {
+        "mode": "adaptive", "value": None,
+    }
+    cell["property_checker"]["early_stop_policy"] = "on_decisive"
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
+    reasons = preflight_reasons(
+        manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path
+    )
+    assert {
+        "adaptive_step_policy_not_executable",
+        "adaptive_nn_call_policy_not_executable",
+        "property_early_stop_not_executable",
+    } <= set(reasons)
+
+
+def test_supported_nncs_cell_cannot_mark_nn_calls_or_checker_na(tmp_path):
+    manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    cell["controller_execution"]["nn_calls"] = {
+        "mode": "not_applicable", "value": None,
+    }
+    cell["property_checker"] = copy.deepcopy(
+        matrix["cell_defaults"]["property_checker"]
+    )
+    cell["property_checker"]["mode"] = "not_applicable"
+    reasons = preflight_reasons(
+        manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path
+    )
+    assert {
+        "controller_nn_calls_not_applicable",
+        "property_checker_not_applicable",
+    } <= set(reasons)
+
+    cell["property_checker"] = {
+        "mode": "configured",
+        "identity": "synthetic-checker",
+        "semantics": "evaluate the shared property after the full run",
+        "certificate_semantics": "synthetic explicit non-certificate",
+        "early_stop_policy": "never",
+    }
+    cell["run"] = {
+        "status": "completed", "failure_category": None, "failure_detail": None,
+    }
+    result = completed_result_record(
+        manifest, cell, "acc-safe-distance", evidence_sha
+    )
+    bind_completed_result(tmp_path, matrix, cell, "acc-safe-distance", result)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any(
+        "terminal cell lacks executable plan" in error
+        and "controller_nn_calls_not_applicable" in error
+        for error in errors
+    )
+
+
 def test_every_shared_contract_field_is_fail_closed(tmp_path):
     manifest, matrix, record, _, _ = synthetic_inputs(
         tmp_path, "acc-safe-distance", "full_execution_contract_v1"
@@ -465,6 +687,50 @@ def test_every_shared_contract_field_is_fail_closed(tmp_path):
         row["contract"]["record"]["sha256"] = write_json(record_path, broken)
         errors = validate_matrix(manifest, matrix, root=tmp_path)
         assert any(dotted in error and "missing" in error for error in errors), dotted
+
+
+@pytest.mark.parametrize(
+    ("profile", "instance_id", "dotted", "bad_value"),
+    (
+        (
+            "full_execution_contract_v1",
+            "acc-safe-distance",
+            "controller_update.schedule_semantics",
+            ["not text"],
+        ),
+        (
+            "full_execution_contract_v1",
+            "acc-safe-distance",
+            "property.time_semantics",
+            {"not": "text"},
+        ),
+        (
+            "discrete_execution_contract_v1",
+            "airplane-discrete",
+            "property.step_semantics",
+            ["not text"],
+        ),
+        (
+            "discrete_execution_contract_v1",
+            "airplane-discrete",
+            "property.pass_condition",
+            {"not": "text"},
+        ),
+    ),
+)
+def test_contract_semantics_fields_require_text(
+    tmp_path, profile, instance_id, dotted, bad_value
+):
+    manifest, matrix, record, _, _ = synthetic_inputs(
+        tmp_path, instance_id, profile
+    )
+    row = next(row for row in manifest["instances"] if row["id"] == instance_id)
+    record_path = tmp_path / row["contract"]["record"]["path"]
+    set_dotted(record["fields"], dotted, bad_value)
+    row["contract"]["record"]["sha256"] = write_json(record_path, record)
+
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any(dotted in error and "non-empty text" in error for error in errors)
 
 
 def test_terminal_cell_without_result_record_is_rejected(tmp_path):
@@ -493,7 +759,7 @@ def test_hash_bound_completed_result_requires_full_samples_and_widths(tmp_path):
     result_path = Path("results/acc-pytorch-gpu.json")
     result_sha = write_json(tmp_path / result_path, result)
     cell["result_record"] = {
-        "schema_version": "archcomp26-cell-result-v1",
+        "schema_version": "archcomp26-cell-result-v2",
         "path": result_path.as_posix(),
         "sha256": result_sha,
     }
@@ -585,6 +851,40 @@ def test_completed_samples_match_run_extent_and_counts(tmp_path):
         assert any(message in error for error in errors), field
 
 
+def test_long_run_shortfall_is_reportable_but_not_ranking_eligible(tmp_path):
+    manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    cell["measurement_plan"]["steady_runs"] = 2
+    cell["measurement_plan"]["shortfall_reason"] = (
+        "predeclared long-run wall-time budget"
+    )
+    cell["run"] = {
+        "status": "completed", "failure_category": None, "failure_detail": None,
+    }
+    result = completed_result_record(
+        manifest, cell, "acc-safe-distance", evidence_sha
+    )
+    result_path = bind_completed_result(
+        tmp_path, matrix, cell, "acc-safe-distance", result
+    )
+    assert len(result["samples"]) == 3
+    assert result["eligibility"]["performance_measurement_eligible"] is True
+    assert result["eligibility"]["cross_tool_ranking_eligible"] is False
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
+
+    result["property"]["certificate_status"] = "passed"
+    result["eligibility"].update({
+        "certificate_semantics_passed": True,
+        "numerical_soundness_class": "formally outward by construction",
+        "soundness_scope": "fixed workload",
+        "cross_tool_ranking_eligible": True,
+    })
+    cell["result_record"]["sha256"] = write_json(tmp_path / result_path, result)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("ranking eligibility lacks prerequisites" in error for error in errors)
+
+
 def test_completed_work_counts_are_bound_to_resolved_contract(tmp_path):
     cases = (
         (
@@ -616,6 +916,106 @@ def test_completed_work_counts_are_bound_to_resolved_contract(tmp_path):
         bind_completed_result(tmp_path, matrix, cell, instance_id, result)
         errors = validate_matrix(manifest, matrix, root=tmp_path)
         assert any(message in error for error in errors), instance_id
+
+
+def test_two_methods_bind_distinct_numerical_cell_plans(tmp_path):
+    manifest, matrix, _, base_cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    cells = {
+        "pytorch_gpu": copy.deepcopy(base_cell),
+        "huan": copy.deepcopy(base_cell),
+    }
+    huan = cells["huan"]
+    huan["numerics"]["integration"]["step_size"]["value"] = 0.5
+    huan["numerics"]["integration"]["solution_order"]["value"] = 3
+    huan["numerics"]["integration"]["point_order"]["value"] = 2
+    huan["numerics"]["integration"]["validation_order"]["value"] = 4
+    huan["numerics"]["remainder"]["symbolic_queue"]["value"] = 2
+    huan["controller_execution"]["nn_calls"]["value"] = 2
+    huan["controller_execution"]["nn_call_semantics"] = (
+        "two bound evaluations across the shared update schedule"
+    )
+    huan["property_checker"]["identity"] = "synthetic-huan-checker"
+
+    results = {}
+    for method, cell in cells.items():
+        cell["run"] = {
+            "status": "completed", "failure_category": None,
+            "failure_detail": None,
+        }
+        result = completed_result_record(
+            manifest, cell, "acc-safe-distance", evidence_sha, method
+        )
+        bind_completed_result(
+            tmp_path, matrix, cell, "acc-safe-distance", result, method
+        )
+        results[method] = result
+
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
+    pytorch_identity = results["pytorch_gpu"]["contract_identity"]
+    huan_identity = results["huan"]["contract_identity"]
+    assert (
+        pytorch_identity["instance_contract_sha256"]
+        == huan_identity["instance_contract_sha256"]
+    )
+    assert (
+        pytorch_identity["cell_plan_sha256"]
+        != huan_identity["cell_plan_sha256"]
+    )
+
+    matrix["cells"]["acc-safe-distance"]["huan"]["numerics"][
+        "integration"
+    ]["step_size"]["value"] = 0.25
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("cell plan identity mismatch" in error for error in errors)
+
+    matrix["cells"]["acc-safe-distance"]["huan"]["numerics"][
+        "integration"
+    ]["step_size"]["value"] = 0.5
+    original_nn_semantics = matrix["cells"]["acc-safe-distance"]["huan"][
+        "controller_execution"
+    ]["nn_call_semantics"]
+    matrix["cells"]["acc-safe-distance"]["huan"]["controller_execution"][
+        "nn_call_semantics"
+    ] = "tampered call semantics"
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("cell plan identity mismatch" in error for error in errors)
+    matrix["cells"]["acc-safe-distance"]["huan"]["controller_execution"][
+        "nn_call_semantics"
+    ] = original_nn_semantics
+    original_checker_semantics = matrix["cells"]["acc-safe-distance"]["huan"][
+        "property_checker"
+    ]["semantics"]
+    matrix["cells"]["acc-safe-distance"]["huan"]["property_checker"][
+        "semantics"
+    ] = "tampered checker semantics"
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("cell plan identity mismatch" in error for error in errors)
+    matrix["cells"]["acc-safe-distance"]["huan"]["property_checker"][
+        "semantics"
+    ] = original_checker_semantics
+    huan_result = results["huan"]
+    path = tmp_path / matrix["cells"]["acc-safe-distance"]["huan"][
+        "result_record"
+    ]["path"]
+    huan_result["property"]["certificate_semantics"] = "tampered certificate"
+    matrix["cells"]["acc-safe-distance"]["huan"]["result_record"][
+        "sha256"
+    ] = write_json(path, huan_result)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("certificate semantics disagree" in error for error in errors)
+    huan_result["property"]["certificate_semantics"] = (
+        "synthetic explicit non-certificate"
+    )
+    huan_result["run"]["accepted_steps"] = 3
+    for sample in huan_result["samples"]:
+        sample["accepted_steps"] = 3
+    matrix["cells"]["acc-safe-distance"]["huan"]["result_record"][
+        "sha256"
+    ] = write_json(path, huan_result)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("accepted steps disagree" in error for error in errors)
 
 
 def test_completed_widths_are_bound_to_contract_and_full_run(tmp_path):
@@ -681,6 +1081,15 @@ def test_eligibility_is_constrained_by_certificate_run_and_finiteness(tmp_path):
         tmp_path, matrix, cell, "acc-safe-distance", original
     )
     assert validate_matrix(manifest, matrix, root=tmp_path) == []
+
+    result = copy.deepcopy(original)
+    result["property"]["status"] = "not_applicable"
+    cell["result_record"]["sha256"] = write_json(tmp_path / result_path, result)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any(
+        "completed run lacks explicit property/certificate" in error
+        for error in errors
+    )
 
     result = copy.deepcopy(original)
     result["property"]["status"] = "failed"
@@ -776,7 +1185,10 @@ def test_evidence_backed_unsupported_skip_does_not_require_executable_plan(tmp_p
         "status": "unsupported",
         "blockers": ["implementation is unavailable; see the bound result record"],
     }
-    for name in ("command", "source_identity", "binary_identity", "arithmetic", "runtime"):
+    for name in (
+        "command", "source_identity", "binary_identity", "arithmetic",
+        "numerics", "controller_execution", "property_checker", "runtime",
+    ):
         cell[name] = copy.deepcopy(matrix["cell_defaults"][name])
     cell["run"] = {
         "status": "skipped",
@@ -823,6 +1235,7 @@ def test_evidence_backed_unsupported_skip_does_not_require_executable_plan(tmp_p
         "performance_measurement_eligible": False,
         "cross_tool_ranking_eligible": False,
     }
+    completed_sample = copy.deepcopy(result["samples"][0])
     result["samples"] = []
     unavailable = {
         "status": "unavailable",
@@ -885,6 +1298,10 @@ def test_evidence_backed_unsupported_skip_does_not_require_executable_plan(tmp_p
         (
             lambda value: value["run"].__setitem__("accepted_steps", 1),
             "skipped run must have zero work counts",
+        ),
+        (
+            lambda value: value.__setitem__("samples", [completed_sample]),
+            "skipped run must have no samples",
         ),
     )
     for mutate, message in mutations:

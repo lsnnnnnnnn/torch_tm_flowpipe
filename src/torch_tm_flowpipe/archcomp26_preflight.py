@@ -12,8 +12,8 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "benchmarks/archcomp26/manifest.json"
-MATRIX_SCHEMA = "archcomp26-execution-matrix-v2"
-RESULT_SCHEMA = "archcomp26-cell-result-v1"
+MATRIX_SCHEMA = "archcomp26-execution-matrix-v3"
+RESULT_SCHEMA = "archcomp26-cell-result-v2"
 INSTANCE_SCHEMA = "archcomp26-instance-contract-v1"
 OFFICIAL_ASSETS_SCHEMA = "archcomp26-official-assets-v1"
 OFFICIAL_ASSETS_AUDIT_SCHEMA = "archcomp26-official-assets-audit-v1"
@@ -49,10 +49,21 @@ PLAN_FIELDS = (
     "source_identity",
     "binary_identity",
     "arithmetic",
+    "numerics",
+    "controller_execution",
+    "property_checker",
     "runtime",
     "measurement_plan",
 )
 METHOD_PROFILE_FIELDS = {
+    "integration.step_size",
+    "integration.solution_order",
+    "integration.point_order",
+    "integration.validation_order",
+    "controller_update.nn_calls",
+    "remainder.cutoff",
+    "remainder.cap",
+    "remainder.symbolic_queue",
     "arithmetic.mode",
     "arithmetic.controller_domain",
     "arithmetic.relaxation",
@@ -65,6 +76,56 @@ METHOD_PROFILE_FIELDS = {
     "commands",
     "source_identity",
     "binary_identity",
+    "property.checker",
+}
+CELL_DEFAULT_SHAPE = {
+    "support": {"status": None, "blockers": None},
+    "command": {"argv": None, "cwd": None},
+    "source_identity": {
+        "kind": None, "locator": None, "revision": None, "sha256": None,
+    },
+    "binary_identity": {"path": None, "sha256": None},
+    "arithmetic": {
+        "mode": None, "controller_domain": None, "relaxation": None,
+        "dtype": None, "transport": None,
+    },
+    "numerics": {
+        "integration": {
+            "step_size": {"mode": None, "value": None},
+            "solution_order": {"mode": None, "value": None},
+            "point_order": {"mode": None, "value": None},
+            "validation_order": {"mode": None, "value": None},
+            "semantics": None,
+        },
+        "remainder": {
+            "cutoff": {"mode": None, "value": None},
+            "cap": {"mode": None, "value": None},
+            "symbolic_queue": {"mode": None, "value": None},
+            "semantics": None,
+        },
+    },
+    "controller_execution": {
+        "scheduled_updates": None,
+        "nn_calls": {"mode": None, "value": None},
+        "nn_call_semantics": None,
+    },
+    "property_checker": {
+        "mode": None, "identity": None, "semantics": None,
+        "certificate_semantics": None, "early_stop_policy": None,
+    },
+    "runtime": {
+        "hardware": None, "cpu_threads": None, "gpu": None,
+        "resource_limits": None, "timeout_s": None,
+    },
+    "measurement_plan": {
+        "cold_runs": None, "target_steady_runs": None, "steady_runs": None,
+        "shortfall_reason": None,
+        "fresh_process_per_run": None, "timing_boundary_version": None,
+    },
+    "run": {
+        "status": None, "failure_category": None, "failure_detail": None,
+    },
+    "result_record": {"schema_version": None, "path": None, "sha256": None},
 }
 
 
@@ -158,6 +219,59 @@ def _dotted(value: Mapping[str, Any], path: str) -> Any:
     return current
 
 
+def _has_dotted(value: Mapping[str, Any], path: str) -> bool:
+    current: Any = value
+    for part in path.split("."):
+        if not isinstance(current, Mapping) or part not in current:
+            return False
+        current = current[part]
+    return True
+
+
+def _is_non_negative_int(value: Any) -> bool:
+    return not isinstance(value, bool) and isinstance(value, int) and value >= 0
+
+
+def _mode_is(value: Any, *allowed: str) -> bool:
+    return isinstance(value, str) and value in allowed
+
+
+def _tagged_value_errors(
+    value: Any,
+    label: str,
+    *,
+    configured_mode: str,
+    integer: bool = False,
+    positive: bool = False,
+    allow_adaptive: bool = False,
+) -> list[str]:
+    errors = _exact_keys(value, {"mode", "value"}, label)
+    if errors:
+        return errors
+    allowed = {"unresolved", configured_mode, "not_applicable"}
+    if allow_adaptive:
+        allowed.add("adaptive")
+    mode = value["mode"]
+    raw = value["value"]
+    if not _mode_is(mode, *allowed):
+        return [f"{label}.mode: invalid applicability tag {mode!r}"]
+    if mode != configured_mode:
+        if raw is not None:
+            errors.append(f"{label}.value: must be null when mode is {mode!r}")
+        return errors
+    if integer:
+        valid = _is_non_negative_int(raw) and (not positive or raw > 0)
+        expected = "positive integer" if positive else "non-negative integer"
+    else:
+        valid = _is_finite_number(raw, positive=positive)
+        expected = (
+            "finite positive number" if positive else "finite non-negative number"
+        )
+    if not valid:
+        errors.append(f"{label}.value: expected a {expected}")
+    return errors
+
+
 def _contract_type_errors(
     fields: Mapping[str, Any], profile: str, instance: str
 ) -> list[str]:
@@ -176,8 +290,7 @@ def _contract_type_errors(
         )
     positive_numbers = {
         "full_execution_contract_v1": (
-            "integration.step_size", "integration.horizon",
-            "controller_update.period",
+            "integration.horizon", "controller_update.period",
         ),
         "discrete_execution_contract_v1": ("discrete.sample_period",),
     }.get(profile, ())
@@ -185,9 +298,7 @@ def _contract_type_errors(
         if not _is_finite_number(_dotted(fields, dotted), positive=True):
             errors.append(f"{instance}: resolved contract field {dotted} must be positive")
     positive_integers = {
-        "full_execution_contract_v1": (
-            "integration.solution_order", "integration.validation_order",
-        ),
+        "full_execution_contract_v1": (),
         "discrete_execution_contract_v1": (
             "discrete.transition_count", "controller_update.period_steps",
         ),
@@ -198,34 +309,38 @@ def _contract_type_errors(
             errors.append(
                 f"{instance}: resolved contract field {dotted} must be a positive integer"
             )
-    nn_path = (
-        "controller_update.nn_calls"
+    updates_path = (
+        "controller_update.scheduled_updates"
         if isinstance(profile, str) and profile in {
             "full_execution_contract_v1", "discrete_execution_contract_v1"
         }
         else None
     )
-    if nn_path is not None:
-        value = _dotted(fields, nn_path)
+    if updates_path is not None:
+        value = _dotted(fields, updates_path)
         if isinstance(value, bool) or not isinstance(value, int) or value < 0:
             errors.append(
-                f"{instance}: resolved contract field {nn_path} must be a non-negative integer"
-            )
-    if profile == "full_execution_contract_v1":
-        for dotted in ("remainder.cutoff", "remainder.cap"):
-            if not _is_finite_number(_dotted(fields, dotted)):
-                errors.append(
-                    f"{instance}: resolved contract field {dotted} "
-                    "must be a finite non-negative number"
-                )
-        dotted = "remainder.symbolic_queue"
-        value = _dotted(fields, dotted)
-        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-            errors.append(
-                f"{instance}: resolved contract field {dotted} "
+                f"{instance}: resolved contract field {updates_path} "
                 "must be a non-negative integer"
             )
-    elif profile == "discrete_execution_contract_v1":
+    text_fields = [
+        "controller_update.schedule_semantics",
+        "property.formula",
+        "property.pass_condition",
+        (
+            "property.time_semantics"
+            if profile == "full_execution_contract_v1"
+            else "property.step_semantics"
+        ),
+    ]
+    for dotted in text_fields:
+        value = _dotted(fields, dotted)
+        if not isinstance(value, str) or not value.strip():
+            errors.append(
+                f"{instance}: resolved contract field {dotted} "
+                "must be non-empty text"
+            )
+    if profile == "discrete_execution_contract_v1":
         index_set = _dotted(fields, "discrete.index_set")
         transitions = _dotted(fields, "discrete.transition_count")
         if not isinstance(index_set, list) or not index_set or any(
@@ -459,6 +574,12 @@ def _validate_contracts(
         if not isinstance(fields, Mapping):
             errors.append(f"{instance}.contract.record.fields: expected an object")
             continue
+        for dotted in sorted(METHOD_PROFILE_FIELDS):
+            if _has_dotted(fields, dotted):
+                errors.append(
+                    f"{instance}: method-specific field {dotted} must live in "
+                    "the execution cell"
+                )
         shared_required = [
             dotted for dotted in required if dotted not in METHOD_PROFILE_FIELDS
         ]
@@ -803,13 +924,16 @@ def _contract_extent(contract: Mapping[str, Any]) -> dict[str, Any] | None:
 
 
 def _contract_work_counts(
-    contract: Mapping[str, Any]
+    contract: Mapping[str, Any], cell: Mapping[str, Any]
 ) -> tuple[int | None, int | None]:
     fields = contract.get("fields")
     if not isinstance(fields, Mapping):
         return None, None
-    nn_calls = _dotted(fields, "controller_update.nn_calls")
-    if isinstance(nn_calls, bool) or not isinstance(nn_calls, int) or nn_calls < 0:
+    nn_mode = _dotted(cell, "controller_execution.nn_calls.mode")
+    nn_calls = _dotted(cell, "controller_execution.nn_calls.value")
+    if nn_mode == "not_applicable":
+        nn_calls = 0
+    elif nn_mode != "exact" or not _is_non_negative_int(nn_calls):
         nn_calls = None
     profile = contract.get("profile")
     if profile == "discrete_execution_contract_v1":
@@ -821,9 +945,10 @@ def _contract_work_counts(
     if profile != "full_execution_contract_v1":
         return None, nn_calls
     horizon = _dotted(fields, "integration.horizon")
-    step = _dotted(fields, "integration.step_size")
+    step_mode = _dotted(cell, "numerics.integration.step_size.mode")
+    step = _dotted(cell, "numerics.integration.step_size.value")
     if not _is_finite_number(horizon, positive=True) \
-            or not _is_finite_number(step, positive=True):
+            or step_mode != "fixed" or not _is_finite_number(step, positive=True):
         return None, nn_calls
     ratio = horizon / step
     nearest = round(ratio)
@@ -834,7 +959,7 @@ def _contract_work_counts(
 
 
 def _accepted_steps_for_extent(
-    contract: Mapping[str, Any], extent: Any
+    contract: Mapping[str, Any], cell: Mapping[str, Any], extent: Any
 ) -> int | None:
     if not isinstance(extent, Mapping):
         return None
@@ -848,11 +973,12 @@ def _accepted_steps_for_extent(
     if profile != "full_execution_contract_v1" \
             or extent.get("kind") != "time_s" or not _is_finite_number(value):
         return None
-    step = _dotted(contract, "fields.integration.step_size")
-    if not _is_finite_number(step, positive=True):
-        return None
     if value == 0:
         return 0
+    step_mode = _dotted(cell, "numerics.integration.step_size.mode")
+    step = _dotted(cell, "numerics.integration.step_size.value")
+    if step_mode != "fixed" or not _is_finite_number(step, positive=True):
+        return None
     ratio = value / step
     nearest = round(ratio)
     return nearest if math.isclose(
@@ -870,15 +996,18 @@ def _extent_is_prefix(value: Any, requested: Any) -> bool:
     return _is_finite_number(prefix) and _is_finite_number(end) and prefix <= end
 
 
-def _last_segment_start(contract: Mapping[str, Any], end: Any) -> float | int | None:
+def _last_segment_start(
+    contract: Mapping[str, Any], cell: Mapping[str, Any], end: Any
+) -> float | int | None:
     if not _is_finite_number(end):
         return None
     if end == 0:
         return 0
     if contract.get("profile") == "discrete_execution_contract_v1":
         return max(0, end - 1)
-    step = _dotted(contract, "fields.integration.step_size")
-    if not _is_finite_number(step, positive=True):
+    step_mode = _dotted(cell, "numerics.integration.step_size.mode")
+    step = _dotted(cell, "numerics.integration.step_size.value")
+    if step_mode != "fixed" or not _is_finite_number(step, positive=True):
         return None
     ratio = end / step
     nearest = round(ratio)
@@ -947,7 +1076,8 @@ def _validate_result_record(
         _dotted(contract, "fields.variable_order") if contract is not None else None
     )
     expected_accepted, expected_nn_calls = (
-        _contract_work_counts(contract) if contract is not None else (None, None)
+        _contract_work_counts(contract, cell)
+        if contract is not None else (None, None)
     )
 
     run_value = record["run"]
@@ -993,14 +1123,20 @@ def _validate_result_record(
                 f"{prefix}.result_record: validated extent is outside requested extent"
             )
         expected_prefix_steps = (
-            _accepted_steps_for_extent(contract, run["validated_extent"])
+            _accepted_steps_for_extent(contract, cell, run["validated_extent"])
             if contract is not None else None
         )
-        if expected_prefix_steps is None:
+        adaptive_steps = (
+            contract is not None
+            and contract.get("profile") == "full_execution_contract_v1"
+            and _dotted(cell, "numerics.integration.step_size.mode") == "adaptive"
+        )
+        if expected_prefix_steps is None and not adaptive_steps:
             errors.append(
                 f"{prefix}.result_record: cannot derive validated prefix work"
             )
-        elif run["accepted_steps"] != expected_prefix_steps:
+        elif expected_prefix_steps is not None \
+                and run["accepted_steps"] != expected_prefix_steps:
             errors.append(
                 f"{prefix}.result_record: accepted steps disagree with validated extent"
             )
@@ -1011,11 +1147,13 @@ def _validate_result_record(
                 errors.append(f"{prefix}.result_record: completed run has partial validated extent")
             if run["first_failure"] is not None:
                 errors.append(f"{prefix}.result_record: completed run carries first failure")
-            if run["accepted_steps"] != expected_accepted:
+            if expected_accepted is not None \
+                    and run["accepted_steps"] != expected_accepted:
                 errors.append(
                     f"{prefix}.result_record: accepted steps do not match contract"
                 )
-            if run["nn_calls"] != expected_nn_calls:
+            if expected_nn_calls is not None \
+                    and run["nn_calls"] != expected_nn_calls:
                 errors.append(
                     f"{prefix}.result_record: NN calls do not match contract"
                 )
@@ -1075,14 +1213,30 @@ def _validate_result_record(
             "passed", "failed", "not_applicable", "not_checked"
         }:
             errors.append(f"{prefix}.result_record.property: invalid status")
-        if run.get("status") == "completed" and (
-            property_value["status"] == "not_checked"
+        checker_mode = _dotted(cell, "property_checker.mode")
+        if run.get("status") == "completed" and checker_mode == "configured" and (
+            not _mode_is(property_value["status"], "passed", "failed")
             or property_value["certificate_status"] == "not_checked"
             or not _nonempty(property_value["checker"])
             or not _nonempty(property_value["certificate_semantics"])
             or property_value["artifact"] is None
         ):
-            errors.append(f"{prefix}.result_record: completed run lacks explicit property/certificate")
+            errors.append(
+                f"{prefix}.result_record: completed run lacks explicit "
+                "property/certificate"
+            )
+        if run.get("status") == "completed" \
+                and checker_mode == "not_applicable" and (
+            property_value["status"] != "not_applicable"
+            or property_value["checker"] is not None
+            or property_value["certificate_status"] != "not_applicable"
+            or property_value["certificate_semantics"] is not None
+            or property_value["artifact"] is not None
+        ):
+            errors.append(
+                f"{prefix}.result_record: not-applicable property checker "
+                "has property evidence"
+            )
         if run.get("status") == "skipped" and (
             property_value["status"] != "not_checked"
             or property_value["certificate_status"] != "not_checked"
@@ -1095,6 +1249,21 @@ def _validate_result_record(
                 property_value["artifact"], root,
                 f"{prefix}.result_record.property.artifact",
             ))
+        planned_checker = _dotted(cell, "property_checker.identity")
+        if checker_mode == "configured" \
+                and property_value["checker"] is not None \
+                and property_value["checker"] != planned_checker:
+            errors.append(
+                f"{prefix}.result_record: property checker disagrees with cell plan"
+            )
+        if checker_mode == "configured" \
+                and property_value["certificate_semantics"] != _dotted(
+                    cell, "property_checker.certificate_semantics"
+                ):
+            errors.append(
+                f"{prefix}.result_record: certificate semantics disagree with "
+                "cell plan"
+            )
 
     eligibility_raw = record["eligibility"]
     eligibility = eligibility_raw if isinstance(eligibility_raw, dict) else {}
@@ -1160,23 +1329,59 @@ def _validate_result_record(
                         f"{prefix}.result_record.samples: duplicate role/index {key!r}"
                     )
                 sample_keys.add(key)
+    plan = cell["measurement_plan"]
+    cold_runs = plan.get("cold_runs") if isinstance(plan, Mapping) else None
+    steady_runs = plan.get("steady_runs") if isinstance(plan, Mapping) else None
+    if any(
+        isinstance(count, bool) or not isinstance(count, int) or count < 0
+        for count in (cold_runs, steady_runs)
+    ):
+        errors.append(f"{prefix}.result_record: invalid planned sample counts")
+        expected_keys: set[tuple[str, int]] = set()
+    else:
+        expected_keys = {
+            *(("cold", index) for index in range(cold_runs)),
+            *(("steady", index) for index in range(steady_runs)),
+        }
+    unexpected_formal = sorted(
+        key for key in sample_keys
+        if key[0] in {"cold", "steady"} and key not in expected_keys
+    )
+    if unexpected_formal:
+        errors.append(
+            f"{prefix}.result_record.samples: formal samples outside plan "
+            f"{unexpected_formal}"
+        )
+    for index, sample in enumerate(samples):
+        if not isinstance(sample, dict):
+            continue
+        label = f"{prefix}.result_record.samples[{index}]"
+        sample_extent = sample.get("validated_extent")
+        if not _extent_is_prefix(sample_extent, run.get("requested_extent")):
+            errors.append(f"{label}: validated extent is outside requested extent")
+        sample_steps = (
+            _accepted_steps_for_extent(contract, cell, sample_extent)
+            if contract is not None else None
+        )
+        if sample_steps is not None and sample.get("accepted_steps") != sample_steps:
+            errors.append(f"{label}.accepted_steps: disagrees with validated extent")
+        if expected_nn_calls is not None and isinstance(sample.get("nn_calls"), int) \
+                and not isinstance(sample.get("nn_calls"), bool) \
+                and sample["nn_calls"] > expected_nn_calls:
+            errors.append(f"{label}.nn_calls: exceeds cell plan")
+        if sample.get("outcome") == "completed":
+            if sample_extent != run.get("requested_extent"):
+                errors.append(f"{label}: completed sample has partial extent")
+            if expected_accepted is not None \
+                    and sample.get("accepted_steps") != expected_accepted:
+                errors.append(f"{label}.accepted_steps: disagrees with cell plan")
+            if expected_nn_calls is not None \
+                    and sample.get("nn_calls") != expected_nn_calls:
+                errors.append(f"{label}.nn_calls: disagrees with cell plan")
+        elif isinstance(sample.get("failure"), Mapping) \
+                and sample["failure"].get("reason_code") != sample.get("outcome"):
+            errors.append(f"{label}: failure reason disagrees with outcome")
     if run.get("status") == "completed":
-        plan = cell["measurement_plan"]
-        cold_runs = plan.get("cold_runs") if isinstance(plan, Mapping) else None
-        steady_runs = plan.get("steady_runs") if isinstance(plan, Mapping) else None
-        if any(
-            isinstance(count, bool) or not isinstance(count, int) or count < 0
-            for count in (cold_runs, steady_runs)
-        ):
-            errors.append(
-                f"{prefix}.result_record: invalid planned sample counts"
-            )
-            expected_keys: set[tuple[str, int]] = set()
-        else:
-            expected_keys = {
-                *(("cold", index) for index in range(cold_runs)),
-                *(("steady", index) for index in range(steady_runs)),
-            }
         if sample_keys != expected_keys or len(samples) != len(expected_keys):
             errors.append(f"{prefix}.result_record: completed run lacks every planned sample")
         if any(
@@ -1197,6 +1402,24 @@ def _validate_result_record(
             for name in ("accepted_steps", "rejected_steps", "nn_calls"):
                 if sample.get(name) != run.get(name):
                     errors.append(f"{label}.{name}: disagrees with run summary")
+    elif run.get("status") == "skipped":
+        if samples:
+            errors.append(f"{prefix}.result_record: skipped run must have no samples")
+    elif samples:
+        matching_failure = any(
+            isinstance(sample, Mapping)
+            and sample.get("outcome") == run.get("outcome")
+            and sample.get("validated_extent") == run.get("validated_extent")
+            and sample.get("accepted_steps") == run.get("accepted_steps")
+            and sample.get("rejected_steps") == run.get("rejected_steps")
+            and sample.get("nn_calls") == run.get("nn_calls")
+            and sample.get("failure") == run.get("first_failure")
+            for sample in samples
+        )
+        if not matching_failure:
+            errors.append(
+                f"{prefix}.result_record: terminal failure has no matching sample"
+            )
 
     widths = record["widths"]
     errors.extend(_validate_widths(
@@ -1242,7 +1465,7 @@ def _validate_result_record(
                 "endpoint": {"kind": kind, "start": end, "end": end},
                 "last_segment_tube": {
                     "kind": kind,
-                    "start": _last_segment_start(contract, end),
+                    "start": _last_segment_start(contract, cell, end),
                     "end": end,
                 },
                 "full_horizon_tube": {"kind": kind, "start": 0, "end": end},
@@ -1250,7 +1473,27 @@ def _validate_result_record(
             for name, expected_domain in expected_domains.items():
                 view = widths.get(name)
                 domain = view.get("domain") if isinstance(view, dict) else None
-                if not _same_domain(domain, expected_domain):
+                adaptive_last_segment = (
+                    name == "last_segment_tube"
+                    and _dotted(cell, "numerics.integration.step_size.mode")
+                    == "adaptive"
+                )
+                if adaptive_last_segment:
+                    domain_matches = (
+                        isinstance(domain, Mapping)
+                        and set(domain) == {"kind", "start", "end"}
+                        and domain.get("kind") == kind
+                        and _is_finite_number(domain.get("start"))
+                        and _is_finite_number(domain.get("end"))
+                        and 0 <= domain["start"] <= domain["end"]
+                        and math.isclose(
+                            float(domain["end"]), float(end),
+                            rel_tol=1e-12, abs_tol=1e-12,
+                        )
+                    )
+                else:
+                    domain_matches = _same_domain(domain, expected_domain)
+                if not domain_matches:
                     scope = "completed run" if completed else "validated prefix"
                     errors.append(
                         f"{prefix}.result_record.widths.{name}: domain disagrees "
@@ -1298,6 +1541,8 @@ def _validate_result_record(
             eligibility.get("certificate_semantics_passed") is True,
             eligibility.get("finite_outputs") is True,
             eligibility.get("performance_measurement_eligible") is True,
+            _dotted(cell, "measurement_plan.steady_runs")
+            == _dotted(cell, "measurement_plan.target_steady_runs"),
             run.get("status") == "completed",
             property_value.get("certificate_status") == "passed",
             isinstance(soundness, str) and soundness not in {
@@ -1334,7 +1579,11 @@ def _validate_result_record(
     return errors
 
 
-def _execution_plan_reasons(cell: Mapping[str, Any]) -> list[str]:
+def _execution_plan_reasons(
+    cell: Mapping[str, Any],
+    profile: str | None,
+    contract: Mapping[str, Any] | None = None,
+) -> list[str]:
     reasons: list[str] = []
     if _dotted(cell, "support.status") != "supported":
         reasons.append("support_not_supported")
@@ -1384,6 +1633,77 @@ def _execution_plan_reasons(cell: Mapping[str, Any]) -> list[str]:
         for name, value in arithmetic.items():
             if not _nonempty(value):
                 reasons.append(f"arithmetic_{name}_missing")
+    integration = _dotted(cell, "numerics.integration")
+    remainder = _dotted(cell, "numerics.remainder")
+    if profile == "full_execution_contract_v1":
+        if not _mode_is(
+            _dotted(integration, "step_size.mode"), "fixed", "adaptive"
+        ):
+            reasons.append("numerics_step_size_unresolved")
+        elif _dotted(integration, "step_size.mode") == "adaptive":
+            reasons.append("adaptive_step_policy_not_executable")
+        for name in ("solution_order", "point_order", "validation_order"):
+            if not _mode_is(
+                _dotted(integration, f"{name}.mode"),
+                "configured", "not_applicable",
+            ):
+                reasons.append(f"numerics_{name}_unresolved")
+        for name in ("cutoff", "cap", "symbolic_queue"):
+            if not _mode_is(
+                _dotted(remainder, f"{name}.mode"),
+                "configured", "not_applicable",
+            ):
+                reasons.append(f"remainder_{name}_unresolved")
+    elif profile == "discrete_execution_contract_v1":
+        for name in (
+            "step_size", "solution_order", "point_order", "validation_order",
+        ):
+            if _dotted(integration, f"{name}.mode") != "not_applicable":
+                reasons.append(f"numerics_{name}_not_marked_not_applicable")
+        for name in ("cutoff", "cap", "symbolic_queue"):
+            if _dotted(remainder, f"{name}.mode") != "not_applicable":
+                reasons.append(f"remainder_{name}_not_marked_not_applicable")
+    else:
+        reasons.append("numerics_profile_unknown")
+    if not _nonempty(_dotted(integration, "semantics")):
+        reasons.append("integration_semantics_missing")
+    if not _nonempty(_dotted(remainder, "semantics")):
+        reasons.append("remainder_semantics_missing")
+    controller_execution = cell.get("controller_execution")
+    scheduled_updates = _dotted(controller_execution, "scheduled_updates")
+    nn_calls_mode = _dotted(controller_execution, "nn_calls.mode")
+    if not _is_non_negative_int(scheduled_updates):
+        reasons.append("controller_scheduled_updates_missing")
+    if not _mode_is(nn_calls_mode, "exact", "adaptive", "not_applicable"):
+        reasons.append("controller_nn_calls_missing")
+    elif nn_calls_mode == "adaptive":
+        reasons.append("adaptive_nn_call_policy_not_executable")
+    elif nn_calls_mode == "not_applicable":
+        reasons.append("controller_nn_calls_not_applicable")
+    if not _nonempty(_dotted(controller_execution, "nn_call_semantics")):
+        reasons.append("controller_nn_call_semantics_missing")
+    expected_updates = (
+        _dotted(contract, "fields.controller_update.scheduled_updates")
+        if isinstance(contract, Mapping) else None
+    )
+    if _is_non_negative_int(expected_updates) \
+            and scheduled_updates != expected_updates:
+        reasons.append("controller_scheduled_updates_contract_mismatch")
+    property_checker = cell.get("property_checker")
+    checker_mode = _dotted(property_checker, "mode")
+    if not _mode_is(checker_mode, "configured", "not_applicable"):
+        reasons.append("property_checker_mode_unresolved")
+    elif checker_mode == "not_applicable":
+        reasons.append("property_checker_not_applicable")
+    else:
+        for name in (
+            "identity", "semantics", "certificate_semantics",
+            "early_stop_policy",
+        ):
+            if not _nonempty(_dotted(property_checker, name)):
+                reasons.append(f"property_checker_{name}_missing")
+        if _dotted(property_checker, "early_stop_policy") != "never":
+            reasons.append("property_early_stop_not_executable")
     return reasons
 
 
@@ -1413,6 +1733,85 @@ def _validate_cell_types(
         sha = cell[group].get("sha256")
         if sha is not None and not _is_sha256(sha):
             errors.append(f"{prefix}.{group}.sha256: invalid SHA-256")
+    integration = cell["numerics"]["integration"]
+    errors.extend(_tagged_value_errors(
+        integration["step_size"], f"{prefix}.numerics.integration.step_size",
+        configured_mode="fixed", positive=True, allow_adaptive=True,
+    ))
+    for name in ("solution_order", "point_order", "validation_order"):
+        errors.extend(_tagged_value_errors(
+            integration[name], f"{prefix}.numerics.integration.{name}",
+            configured_mode="configured", integer=True, positive=True,
+        ))
+    integration_semantics = integration["semantics"]
+    if integration_semantics is not None and not (
+        isinstance(integration_semantics, str) and integration_semantics.strip()
+    ):
+        errors.append(f"{prefix}.numerics.integration.semantics: empty value")
+    remainder = cell["numerics"]["remainder"]
+    for name in ("cutoff", "cap"):
+        errors.extend(_tagged_value_errors(
+            remainder[name], f"{prefix}.numerics.remainder.{name}",
+            configured_mode="configured",
+        ))
+    errors.extend(_tagged_value_errors(
+        remainder["symbolic_queue"],
+        f"{prefix}.numerics.remainder.symbolic_queue",
+        configured_mode="configured", integer=True,
+    ))
+    if remainder["semantics"] is not None and not (
+        isinstance(remainder["semantics"], str)
+        and remainder["semantics"].strip()
+    ):
+        errors.append(f"{prefix}.numerics.remainder.semantics: empty value")
+    controller_execution = cell["controller_execution"]
+    scheduled_updates = controller_execution["scheduled_updates"]
+    if scheduled_updates is not None and not _is_non_negative_int(
+        scheduled_updates
+    ):
+        errors.append(
+            f"{prefix}.controller_execution.scheduled_updates: expected null or a "
+            "non-negative integer"
+        )
+    errors.extend(_tagged_value_errors(
+        controller_execution["nn_calls"],
+        f"{prefix}.controller_execution.nn_calls",
+        configured_mode="exact", integer=True, allow_adaptive=True,
+    ))
+    semantics = controller_execution["nn_call_semantics"]
+    if semantics is not None and not (
+        isinstance(semantics, str) and semantics.strip()
+    ):
+        errors.append(f"{prefix}.controller_execution.nn_call_semantics: empty value")
+    property_checker = cell["property_checker"]
+    checker_mode = property_checker["mode"]
+    if not _mode_is(
+        checker_mode, "unresolved", "configured", "not_applicable"
+    ):
+        errors.append(
+            f"{prefix}.property_checker.mode: invalid applicability tag "
+            f"{checker_mode!r}"
+        )
+    for name in (
+        "identity", "semantics", "certificate_semantics",
+        "early_stop_policy",
+    ):
+        value = property_checker[name]
+        if checker_mode == "configured":
+            if not (isinstance(value, str) and value.strip()):
+                errors.append(f"{prefix}.property_checker.{name}: expected text")
+        elif value is not None:
+            errors.append(
+                f"{prefix}.property_checker.{name}: must be null when mode is "
+                f"{checker_mode!r}"
+            )
+    policy = property_checker["early_stop_policy"]
+    if checker_mode == "configured" and not _mode_is(
+        policy, "never", "on_pass", "on_fail", "on_decisive"
+    ):
+        errors.append(
+            f"{prefix}.property_checker.early_stop_policy: invalid policy"
+        )
     threads = cell["runtime"]["cpu_threads"]
     if threads is not None and (
         isinstance(threads, bool) or not isinstance(threads, int) or threads <= 0
@@ -1422,16 +1821,35 @@ def _validate_cell_types(
     if timeout is not None and not _is_finite_number(timeout, positive=True):
         errors.append(f"{prefix}.runtime.timeout_s: expected a finite positive number")
     plan = cell["measurement_plan"]
-    expected_plan = {
+    fixed_plan = {
         "cold_runs": 1,
-        "steady_runs": 10,
+        "target_steady_runs": 5,
         "fresh_process_per_run": True,
         "timing_boundary_version": "total_configuration_v1",
     }
-    if plan != expected_plan:
+    if any(plan.get(name) != value for name, value in fixed_plan.items()):
         errors.append(
-            f"{prefix}.measurement_plan: expected the frozen 1-cold/10-steady plan"
+            f"{prefix}.measurement_plan: expected one cold run, a five-steady "
+            "target, fresh processes, and the frozen timing boundary"
         )
+    steady_runs = plan.get("steady_runs")
+    if isinstance(steady_runs, bool) or not isinstance(steady_runs, int) \
+            or not 1 <= steady_runs <= 5:
+        errors.append(
+            f"{prefix}.measurement_plan.steady_runs: expected an integer from 1 to 5"
+        )
+    shortfall = plan.get("shortfall_reason")
+    if isinstance(steady_runs, int) and not isinstance(steady_runs, bool):
+        if steady_runs < 5 and not (
+            isinstance(shortfall, str) and shortfall.strip()
+        ):
+            errors.append(
+                f"{prefix}.measurement_plan.shortfall_reason: required below target"
+            )
+        if steady_runs == 5 and shortfall is not None:
+            errors.append(
+                f"{prefix}.measurement_plan.shortfall_reason: must be null at target"
+            )
     link = cell["result_record"]
     values = (link["schema_version"], link["path"], link["sha256"])
     if any(value is None for value in values) and any(value is not None for value in values):
@@ -1451,7 +1869,7 @@ def validate_matrix(
     manifest_matrix = manifest.get("execution_matrix", {})
     if matrix.get("schema_version") != MATRIX_SCHEMA \
             or manifest_matrix.get("schema_version") != MATRIX_SCHEMA:
-        errors.append("matrix schema_version does not match the v2 contract")
+        errors.append("matrix schema_version does not match the v3 contract")
     if matrix.get("source_manifest") != "benchmarks/archcomp26/manifest.json":
         errors.append("matrix source_manifest is not the canonical manifest")
     result_contract = matrix.get("result_record_contract")
@@ -1483,8 +1901,15 @@ def validate_matrix(
         errors.append("matrix instance order does not match manifest")
     defaults = matrix.get("cell_defaults")
     required = matrix.get("required_cell_fields")
-    if not isinstance(defaults, dict) or set(defaults) != set(required or []):
-        errors.append("cell_defaults do not match required_cell_fields")
+    expected_required = list(CELL_DEFAULT_SHAPE)
+    if not isinstance(required, list) or required != expected_required:
+        errors.append("required_cell_fields do not match the v3 cell contract")
+        return errors
+    default_shape_errors = _shape_errors(
+        defaults, CELL_DEFAULT_SHAPE, "cell_defaults"
+    )
+    if default_shape_errors:
+        errors.extend(default_shape_errors)
         return errors
 
     enums = matrix.get("enums", {})
@@ -1539,6 +1964,8 @@ def validate_matrix(
                 errors.append(f"{prefix}: completed cell carries failure detail")
             if status == "timeout" and category != "timeout":
                 errors.append(f"{prefix}: timeout status must use timeout category")
+            if category == "timeout" and status != "timeout":
+                errors.append(f"{prefix}: timeout category must use timeout status")
             if status == "interrupted" and category != "incomplete_unknown":
                 errors.append(
                     f"{prefix}: interrupted status must use incomplete_unknown category"
@@ -1553,7 +1980,18 @@ def validate_matrix(
                         f"{prefix}: skipped cell requires unsupported status and blockers"
                     )
             elif isinstance(status, str) and status in TERMINAL_STATUSES:
-                plan_reasons = _execution_plan_reasons(resolved)
+                instance_row = instances_by_id[instance]
+                profile = _dotted(
+                    instance_row, "contract.unresolved_field_profile"
+                )
+                contract_record = (
+                    _resolved_contract_record(instance_row, root)
+                    if instance_row["contract"].get("status") == "resolved"
+                    else None
+                )
+                plan_reasons = _execution_plan_reasons(
+                    resolved, profile, contract_record
+                )
                 if plan_reasons:
                     errors.append(
                         f"{prefix}: terminal cell lacks executable plan "
@@ -1637,7 +2075,13 @@ def preflight_reasons(
     ):
         reasons.append("contract_invalid")
     cell = resolve_cell(matrix, instance, method)
-    reasons.extend(_execution_plan_reasons(cell))
+    contract_record = (
+        _resolved_contract_record(by_id[instance], root)
+        if contract["status"] == "resolved" else None
+    )
+    reasons.extend(_execution_plan_reasons(
+        cell, contract.get("unresolved_field_profile"), contract_record
+    ))
     if cell["run"]["status"] != "not_started":
         reasons.append("cell_not_not_started")
     return list(dict.fromkeys(reasons))
