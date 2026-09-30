@@ -322,8 +322,9 @@ def render_markdown(status: Mapping[str, Any]) -> str:
         f"- MATLAB: `{status['plot']['environment']['matlab']}`; Octave: "
         f"`{status['plot']['environment']['octave']}`. Generated `.m` files have "
         "static checks only.",
-        "- Current exporter evidence covers axis-aligned box projections; it does "
-        "not establish native octagon/support-direction parity.",
+        "- Saved-artifact evidence covers axis-aligned QUAD projections; targeted "
+        "tests also cover the declared ACC affine interval image. Neither establishes "
+        "native octagon/support-direction parity.",
         "- Plot content status does not resolve any method's execution contract.",
         "",
         "| Instance | Plot content status | Content blockers |",

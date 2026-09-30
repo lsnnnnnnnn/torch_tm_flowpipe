@@ -15,13 +15,13 @@
 
 | Input | Repository-relative path | SHA-256 |
 |---|---|---|
-| `manifest` | `benchmarks/archcomp26/manifest.json` | `2d197fa4e96cc0b58cca9222c35cdec29a14ea0544b2bc48e21e97760c8c6724` |
-| `matrix` | `benchmarks/archcomp26/execution_matrix.json` | `0dca29ad226b3575778a8f799cbbffbbf3b72fcdb25d11f81d21b7387a626bd8` |
+| `manifest` | `benchmarks/archcomp26/manifest.json` | `6396a82a282aba1ffba97aae7ebcf6af3313df5141f575363ae3efad9a330c2b` |
+| `matrix` | `benchmarks/archcomp26/execution_matrix.json` | `ab61dd16f8919596d968b226831a52a5c4f5d02cd5d8a5daa89d72935cbdbce4` |
 | `contract_audits` | `benchmarks/archcomp26/evidence/contract_audits_20261001.json` | `63ad3c7d6f120f799475a6fcaaec0e9a9036bcc8bf20e6c30aa70944d26be5e6` |
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
 | `p3_audit` | `research/gpu_verified_20260930/report/evidence/quad_trig_audit.json` | `517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2` |
-| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `8b8a799c7031ef521479090676c006d7b4f79341da7c2b531817285566e8c075` |
-| `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `1fe3db31683aac962196b64437caadd6900e90fd57b21defdcf067b601be9514` |
+| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `5ab3ba17da3965ad5c51451ae8f6110f0b87d41b954ce05a7d71b2823c19b36e` |
+| `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `79e0caf03cab764062fb5c43f9af706610c3c76b083f8d001a3011950a5b9e86` |
 | `native_recheck` | `docs/evidence/remote_native_quad_recheck_20261001.json` | `2655c3ec43f52e00d944810812ff02c3ed3b8187212dc98e9467120668293062` |
 
 ## Contract audit coverage
@@ -84,14 +84,14 @@ The Huan/P3 contracts differ in order, validation, arithmetic guarantees, instru
 - Saved artifact sets checked: 5.
 - Independent geometry check: `passed`.
 - Experiments started by plotting validation: `false`.
-- Plot-contract accounting: materialized v2=8; axis-aligned content ready=0; fail-closed blocked=8.
+- Plot-contract accounting: materialized v2=8; materialized v3=1; axis-aligned content ready=0; fail-closed blocked=7.
 - MATLAB: `not found`; Octave: `not found`. Generated `.m` files have static checks only.
-- Current exporter evidence covers axis-aligned box projections; it does not establish native octagon/support-direction parity.
+- Saved-artifact evidence covers axis-aligned QUAD projections; targeted tests also cover the declared ACC affine interval image. Neither establishes native octagon/support-direction parity.
 - Plot content status does not resolve any method's execution contract.
 
 | Instance | Plot content status | Content blockers |
 |---|---|---:|
-| `acc-safe-distance` | `blocked_fail_closed` | 1 |
+| `acc-safe-distance` | `materialized_v3_content_contract` | 0 |
 | `airplane-continuous` | `materialized_v2_content_contract` | 0 |
 | `airplane-discrete` | `blocked_fail_closed` | 2 |
 | `attitude-control-avoid` | `blocked_fail_closed` | 1 |
