@@ -20,7 +20,7 @@
 | `contract_audits` | `benchmarks/archcomp26/evidence/contract_audits_20261001.json` | `63ad3c7d6f120f799475a6fcaaec0e9a9036bcc8bf20e6c30aa70944d26be5e6` |
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
 | `p3_audit` | `research/gpu_verified_20260930/report/evidence/quad_trig_audit.json` | `517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2` |
-| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `f84edd7174a0e88de6124df7ec4c35440e5647238efe0fd4d7bf5f5ffc120a6d` |
+| `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `8b8a799c7031ef521479090676c006d7b4f79341da7c2b531817285566e8c075` |
 | `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `1fe3db31683aac962196b64437caadd6900e90fd57b21defdcf067b601be9514` |
 | `native_recheck` | `docs/evidence/remote_native_quad_recheck_20261001.json` | `2655c3ec43f52e00d944810812ff02c3ed3b8187212dc98e9467120668293062` |
 

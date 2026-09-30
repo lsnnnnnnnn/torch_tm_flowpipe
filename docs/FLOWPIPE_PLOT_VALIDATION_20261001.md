@@ -3,7 +3,7 @@
 The exporter was validated only against already-saved artifacts; no solver or
 GPU experiment was started. The local artifact directory is:
 
-`/Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v2_20261001`
+`/Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v4_head_20261001`
 
 The machine-readable receipt is
 `docs/evidence/flowpipe_plot_validation_20261001.json`; it binds the exact
@@ -12,8 +12,10 @@ all output hashes.
 
 ## Results
 
-- Unit/contract suite: 23 tests passed (19 plotting tests and 4 ARCH-COMP
-  manifest/source-inventory contract tests).
+- Unit/contract suite: 27 tests passed (21 plotting tests and 6 ARCH-COMP
+  manifest/source-inventory contract tests). The plotting suite includes the
+  canonical state-state route for time-scoped regions with explicit timing
+  labels, and rejects boolean `expected_steps` values.
 - Independent raw-to-geometry check: PASS for all displayed frames.
   - native root1-B2: 1000 frames reconstructed from 2000 binary records;
   - P2 time-state: 40 frames/40 union-hull boxes;
@@ -24,9 +26,9 @@ all output hashes.
   artifacts successfully.
 - Visual inspection covered the P3 `t,x3` endpoint plot, P3 `x1,x2` endpoint
   plot, and native root1-B2 `t,x3` tube plot. Their footers remained visible,
-  the endpoint-only target was drawn at `t=5`, the unprojectable target was
-  disclosed on the state-state plot, and native acceptance was labelled
-  unknown.
+  the endpoint-only target was drawn at `t=5` with its time scope in the
+  legend, the unprojectable target was disclosed on the state-state plot, and
+  native acceptance was labelled unknown.
 - MATLAB/Octave executables were not available. `.m` generation and static
   contract tests passed, but this is not a MATLAB runtime claim.
 
@@ -36,11 +38,11 @@ Each row lists geometry, MATLAB, PNG, and PDF hashes in that order.
 
 | Artifact stem | Geometry | MATLAB | PNG | PDF |
 |---|---|---|---|---|
-| `native_root1_b2_t_x3_tube` | `c2d39e4d44104eeb6423512b5a13a8b6393b9737a7d8e412cea870a5c22702df` | `46cc565be9ca8e6ced3727c246ad0affb651038c6206ec8bf86c39cecd77bcfb` | `8dfac6d2acff3157156d021b2b83af84f290aab7f3dc9724ed52d817ae797bf0` | `59931020b4f98684180f533c557608b97340386d9caea507ec0c8de40b6a064b` |
-| `p2_40_t_x3_tube` | `a0b11b58baa8540f03afa0911d8e730eff34bb88bb27144f52a06c9a9196f5b9` | `1f1d8123d8e34475a0280dcd77828b7a978ef573646d5f1c5037e8d20b9dd7c5` | `8a1134f07d49425757019bd493d153546273056147b8b7972dae09aad9ce29ce` | `477dc1276827d7aad676b8611d4ce21206cddb568e16b4b5ed497c8ab013fd29` |
-| `p2_x1_x2_endpoint` | `3d76f212d12fabfb0f2a479546a0d3dbcb33f35b54d234a3b1d28a655a01d6c1` | `f0398c0b6de318c461952259b9eff435c3c3e3ffa77bd2cb4ae7f4e58d5477c6` | `dec69a1fb12aaea36bab073bb76a9ac859ddc6a2259c27d64d6a350007ba3903` | `ca3f8e16de7adcfcead699876dc03f603a8e796246634cc0114e3692abfd861c` |
-| `p3_sparse_t_x3_endpoint` | `9dcbd35a72d1fdddd5b141d2fa4d3b926240ce2fab6cbd705c63557b636d8e89` | `7517afefb688968d0b11265579299ab92c66cf3d9c202b0633affe0396c94ef4` | `d0315fd62dedbd6539cffc81f0ce6997347662318409abcf300add6ef7abae58` | `e6f9dde94bd0adeeac7f7bf5ac1d7f19682d743e93922a35d3817d1578cf0586` |
-| `p3_sparse_x1_x2_endpoint` | `8b6eeaf268b5e1eee1de78b64f109c90e454bd43198bcab763e369b771ea70e7` | `2b56999b43b20bb87a5f24691924d8653ed3a64e8177adb79e10d27364709641` | `b0a884fee21d3c96f3bc3262bb54d1725c00a705097061e55cfebd155760c61f` | `a62316c1fff439308c453169f8f8bf2187250b0453bfc8729ef79f80738652f8` |
+| `native_root1_b2_t_x3_tube` | `c2d39e4d44104eeb6423512b5a13a8b6393b9737a7d8e412cea870a5c22702df` | `b1516249d9573bc471f3962c5bdfd4bf3f72c207462b68c185500926ed3f11d2` | `5b3986f907ac30f94af4f727bd947bea7849389b9347a439280d36d796a56fad` | `d815bd5b5112fa4441766aa8260f0a67ed64f2b0759b8069be8f902a12f89e59` |
+| `p2_40_t_x3_tube` | `a0b11b58baa8540f03afa0911d8e730eff34bb88bb27144f52a06c9a9196f5b9` | `1f1d8123d8e34475a0280dcd77828b7a978ef573646d5f1c5037e8d20b9dd7c5` | `8a1134f07d49425757019bd493d153546273056147b8b7972dae09aad9ce29ce` | `fd0ce817981396425433c80ac5e9b85afe480a1a457839fe2abb6189f6107954` |
+| `p2_x1_x2_endpoint` | `3d76f212d12fabfb0f2a479546a0d3dbcb33f35b54d234a3b1d28a655a01d6c1` | `f0398c0b6de318c461952259b9eff435c3c3e3ffa77bd2cb4ae7f4e58d5477c6` | `dec69a1fb12aaea36bab073bb76a9ac859ddc6a2259c27d64d6a350007ba3903` | `c7ffffa4938012140326942b93be9ac0e23de2c604038537690f1d0973b00c95` |
+| `p3_sparse_t_x3_endpoint` | `9dcbd35a72d1fdddd5b141d2fa4d3b926240ce2fab6cbd705c63557b636d8e89` | `3fff47bcb38983849372074301919e02e748044c3aaa6228f5f7727e0b345c00` | `5d21b760306a6cadf326472bf301246b703f6bb158f8d90b1566dac7c665de68` | `22d2fad59ca5cfd6d30372f954eff5ceeac332764462623f280ad6044fb99ed3` |
+| `p3_sparse_x1_x2_endpoint` | `8b6eeaf268b5e1eee1de78b64f109c90e454bd43198bcab763e369b771ea70e7` | `c11663ab910fa92c279643d27220567d1d8cb3b34f5528e4f318df1217ba05a6` | `972517fd0e267e7333a6226c442a89a2f1e161a1ec60fa9b765a72b7d78636b3` | `fa5620250405ad71620ebdbccaf490cf5010e2f646db20c7e0470577afbbaba7` |
 
 ## Evidence interpretation
 

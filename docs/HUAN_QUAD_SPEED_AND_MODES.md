@@ -22,9 +22,10 @@ current completed PyTorch route uses working order 3, point order 2,
 validation order 4, and the repaired strict arithmetic/dataflow. Its single
 completion run took 1,533.752052 s; 1,234.852041 s was in advance, while range
 observation took 75.132491 s, the working-prune timed region took 192.952505 s,
-and NN bounds took 3.533022 s. That working-prune region mixes diagnostic
-hashing with required graph eviction, so 192.952505 s is only an upper bound
-on removable diagnostic overhead. Dividing
+and NN bounds took 3.533022 s. That region includes both diagnostic hashing
+and required graph eviction; it does not isolate diagnostic cost. The
+192.952505 s is the duration of the mixed region, not a measured removable
+overhead; it only bounds any removable subset from above. Dividing
 1,533.752052 by 75.250099 gives about 20.38, but that ratio mixes algorithmic
 order, numerical guarantee, implementation, instrumentation, and timing
 boundaries. It is not an eligible same-contract speedup claim.
@@ -99,9 +100,11 @@ mean parity.
 The archived Huan patch is present in the evidence workspace as
 `results/archcomp_failure_20260923/evidence/source_evidence/huan_sr_chunk.patch`
 (SHA-256 `065f577a26e137f86f4986086e2aec1093ee71ea165a6e8d1c0ac28a8b719ef0`).
-It changes only the non-strict point-Phi history image: `dot_point_iv` is run
-on independent blocks of 128 lanes, the complete `[B,Q,n,2]` terms tensor is
-still retained, and the original Q-axis reduction is unchanged. At
+It changes only the clean Huan point-Phi history image—the arithmetically
+non-certified point-Phi path retained even under Huan's CLI `--strict` mode:
+`dot_point_iv` is run on independent blocks of 128 lanes, the complete
+`[B,Q,n,2]` terms tensor is still retained, and the original Q-axis reduction
+is unchanged. At
 `B=1024,Q=999,n=16,float64`, that terms tensor is about 250 MiB; the patch's
 purpose is to avoid the much larger broadcast temporary inside the dot.
 
@@ -206,7 +209,7 @@ The current PyTorch full-run breakdown is concrete:
 |---|---:|---|
 | Advance | 1,234.852041 | Dominant solver work; about 80.6% of the 1,531.395193 s internal process time |
 | Observer | 75.132491 | Saved tube/endpoint bounds; already comparable in magnitude to an entire Huan parity process |
-| Working-prune timed region | 192.952505 | About 12.6% of internal process time and larger than observer cost; includes diagnostic hashing plus required graph eviction, so it is an upper bound rather than a measured removable overhead |
+| Working-prune timed region | 192.952505 | About 12.6% of internal process time and larger than observer cost; includes diagnostic hashing plus required graph eviction; the region total only bounds any removable subset from above and is not itself a removable-overhead estimate |
 | NN bounds | 3.533022 | Not the dominant gap |
 | Boundary | 8.830551 | Strict endpoint/control boundary work |
 | Checkpoint | 0.312904 | Not the dominant gap |
