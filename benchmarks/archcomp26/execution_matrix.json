@@ -1,0 +1,61 @@
+{
+  "schema_version": "archcomp26-execution-matrix-v1",
+  "source_manifest": "benchmarks/archcomp26/manifest.json",
+  "merge_semantics": "shallow_override_of_complete_cell_defaults",
+  "status": "not_started",
+  "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
+  "required_cell_fields": [
+    "support",
+    "command",
+    "source_identity",
+    "binary_identity",
+    "arithmetic",
+    "runtime",
+    "run",
+    "metrics",
+    "widths"
+  ],
+  "enums": {
+    "support.status": ["unassessed", "supported", "unsupported"],
+    "run.status": ["not_started", "running", "completed", "failed", "timeout", "interrupted", "skipped"],
+    "run.failure_category": [null, "unsupported", "contract_unresolved", "dependency_missing", "build_failed", "runtime_error", "numerical_validation_failed", "timeout", "out_of_memory", "interrupted", "other"],
+    "widths.status": ["not_measured", "partial", "complete", "unavailable"]
+  },
+  "cell_defaults": {
+    "support": {"status": "unassessed", "blockers": []},
+    "command": {"argv": null, "cwd": null},
+    "source_identity": {"kind": null, "locator": null, "revision": null, "sha256": null},
+    "binary_identity": {"path": null, "sha256": null},
+    "arithmetic": {"mode": null, "controller_domain": null, "relaxation": null, "dtype": null, "transport": null},
+    "runtime": {"hardware": null, "cpu_threads": null, "gpu": null, "resource_limits": null, "timeout_s": null},
+    "run": {"status": "not_started", "failure_category": null, "failure_detail": null},
+    "metrics": {
+      "timing_s": {"process": null, "driver": null, "solver": null},
+      "peak_memory_bytes": {"host": null, "device": null}
+    },
+    "widths": {
+      "status": "not_measured",
+      "common_prefix": {"steps": null, "time": null},
+      "endpoint": {"time": null, "per_state": null},
+      "artifact": {"path": null, "sha256": null}
+    }
+  },
+  "cells": {
+    "acc-safe-distance": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "airplane-continuous": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "airplane-discrete": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "attitude-control-avoid": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "balancing-reach": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "docking-constraint": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "double-pendulum-less-robust": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "double-pendulum-more-robust": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "nav-standard": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "nav-robust": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "quad-reach": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "single-pendulum-reach": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "tora-remain": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "tora-reach-sigmoid": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "tora-reach-tanh": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}},
+    "unicycle-reach": {"pytorch_gpu": {}, "huan": {}, "xiangru": {}, "flowstar_native": {}}
+  }
+}

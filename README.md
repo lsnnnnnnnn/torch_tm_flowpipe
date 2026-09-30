@@ -4,6 +4,8 @@
 
 This branch collects the exact source associated with the completed 1024-box QUAD P3/trig experiment, its model/configuration, and the latest reporting evidence. It preserves the earlier project below and keeps external CUDA/environment/checkpoint dependencies explicit. The native QUAD six-hour run is now known to have timed out with 600 steps recorded in complete periods; this supersedes the older 400-step observation. Publication did not rerun the solver.
 
+Current next-stage work is tracked in the [Huan QUAD mode/speed audit](docs/HUAN_QUAD_SPEED_AND_MODES.md), the [flowpipe plotting guide](docs/flowpipe_plotting.md), its [archived-data validation](docs/FLOWPIPE_PLOT_VALIDATION_20261001.md), and the [ARCH-COMP26 non-VCAS contract scaffold](benchmarks/archcomp26/README.md). The [2026-10-01 remote recheck](docs/REMOTE_READONLY_RECHECK_20261001.md) records the unchanged native terminal state. Experiments remain paused: no solver/GPU experiment was launched; plotting used saved numerical artifacts and the server checks were read-only observations.
+
 ## Earlier supported CPU and whole-engine review
 
 **2026-09-23 progress report:** [中文详细报告](docs/progress_review_20260923/REPORT.md) · [Report PDF](docs/progress_review_20260923/report.pdf) · [Beamer slides](docs/progress_review_20260923/slides.pdf) · [LaTeX sources and evidence](docs/progress_review_20260923/README.md). This newer review records matched timing, full-trajectory widths, exact configurations and incomplete cases for our engine, Huan, Xiangru and native Flow*. Work is paused after this requested reporting delivery; the overall acceleration goal is not complete.

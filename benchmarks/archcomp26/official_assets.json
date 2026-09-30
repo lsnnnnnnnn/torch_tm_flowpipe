@@ -1,0 +1,129 @@
+{
+  "schema_version": "archcomp26-official-assets-v1",
+  "source_repository": "https://github.com/Kiguli/ARCH-COMP2026",
+  "source_commit": "d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26",
+  "audited_at": "2026-10-01",
+  "scope": "all 16 non-VCAS rows in manifest.json",
+  "interpretation": "File identity inventory only. A listed controller candidate is not selected unless selection_status says single_official_onnx. This file does not resolve integration, partition, arithmetic, or runtime contracts.",
+  "instances": [
+    {
+      "id": "acc-safe-distance",
+      "specification": {"path": "benchmarks/ACC/Specifications.txt", "sha256": "decb62879f7af779e44e3165d9c11425559be63e1c2265e12d26fdf498fa4f01"},
+      "dynamics": {"path": "benchmarks/ACC/dynamicsACC.m", "sha256": "7addd66be8a8b9b730e30e4581cfa77abf7a8f38c35eb55fd706a9f159672fcc"},
+      "controller_candidates": [{"path": "benchmarks/ACC/controller_5_20.onnx", "sha256": "8dbc1a56cd77b264b46ce8eb226add9098896f393ae2a63538598775bfbcec1b"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "airplane-continuous",
+      "specification": {"path": "benchmarks/Airplane/specifications.txt", "sha256": "2ea86582e50e1a108fbe05ddfdf12b852fafeddada2831e82c63a7daa9b24c09"},
+      "dynamics": {"path": "benchmarks/Airplane/dynamics.m", "sha256": "987e96779d8e114870ee9016560a570f1fdad32a3f349f8803739e49dde0055c"},
+      "controller_candidates": [{"path": "benchmarks/Airplane/controller_airplane.onnx", "sha256": "655ba1e82d676373b2c1b10acaf97a722207130ae1b60d1dcc140f2f5c96b4e6"}],
+      "selection_status": "single_official_onnx; continuous/discrete execution semantics unresolved"
+    },
+    {
+      "id": "airplane-discrete",
+      "specification": {"path": "benchmarks/Airplane/specifications.txt", "sha256": "2ea86582e50e1a108fbe05ddfdf12b852fafeddada2831e82c63a7daa9b24c09"},
+      "continuous_dynamics_candidate": {"path": "benchmarks/Airplane/dynamics.m", "sha256": "987e96779d8e114870ee9016560a570f1fdad32a3f349f8803739e49dde0055c"},
+      "controller_candidates": [{"path": "benchmarks/Airplane/controller_airplane.onnx", "sha256": "655ba1e82d676373b2c1b10acaf97a722207130ae1b60d1dcc140f2f5c96b4e6"}],
+      "selection_status": "single_official_onnx",
+      "model_selection_status": "discrete_transition_source_unresolved; continuous_dynamics_candidate_not_selected"
+    },
+    {
+      "id": "attitude-control-avoid",
+      "specification": {"path": "benchmarks/Attitude-Control/Specifications.txt", "sha256": "e5c98a30e1f7deec6aac542e817205c93a80993c95e924f39843ac33511825a1"},
+      "dynamics": {"path": "benchmarks/Attitude-Control/dynamics.m", "sha256": "086c7b5d065269c02f020d7ec64c83faf941c302dd7e177e4443ce23709dc7d1"},
+      "controller_candidates": [
+        {"path": "benchmarks/Attitude-Control/attitude_control_3_64_torch.onnx", "sha256": "585f321599d9e7cce4da09760628a47febf7043dd04e421ea332abba340d036d"},
+        {"path": "benchmarks/Attitude-Control/model.onnx", "sha256": "5d819b007f6d68071d25fa96cf41c81e4ffe10e9a3fb93de01fbd239232b9600"}
+      ],
+      "selection_status": "multiple_official_onnx_candidates_unresolved"
+    },
+    {
+      "id": "balancing-reach",
+      "specification": {"path": "benchmarks/CartPole/specifications.txt", "sha256": "523ad5f601ee4a2d005e9e770c7279e35840d1c27cfd4d64492ee5d5ba8d0d53"},
+      "dynamics": {"path": "benchmarks/CartPole/dynamics.m", "sha256": "673fef4f76455475c25f300e948f4c034d0ca5a52f09a8f54960b1c16900cfb2"},
+      "controller_candidates": [{"path": "benchmarks/CartPole/model.onnx", "sha256": "ac10c817c994e8ee84dbf44ceffcf7380b7878ea467d2d17ff9fa38eee249529"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "docking-constraint",
+      "specification": {"path": "benchmarks/Docking/specification.txt", "sha256": "3542ea2d5cb6a61c4162b4520a61ca141e136f187e441acd7b6bf84bd0070fdf"},
+      "dynamics": {"path": "benchmarks/Docking/dynamics.m", "sha256": "fdfa1cad73e34e056cba033d25d01da2ada42b1f0f03f842ed8033971f4327a1"},
+      "controller_candidates": [{"path": "benchmarks/Docking/model.onnx", "sha256": "cc46c45e5ee7a0a5df433d31b19089cebe2ae64aeb6a0dc7ec47e51818368bf7"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "double-pendulum-less-robust",
+      "specification": {"path": "benchmarks/Double_Pendulum/Specifications.txt", "sha256": "f94acdf791e46ae3b153c3de8362ab73e1105cb45a558ba775d6e6d48c7e7d7b"},
+      "dynamics": {"path": "benchmarks/Double_Pendulum/dynamics_dp.m", "sha256": "31f0a26a11d205c23ad974f404a1c3b7da7dda4e95c2d6a8306f2b47b7c8ee28"},
+      "controller_candidates": [{"path": "benchmarks/Double_Pendulum/controller_double_pendulum_less_robust.onnx", "sha256": "97a65bdbe5e449d66d7d36a39d83288b7fc276978f24eec6267bd8583794d3ec"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "double-pendulum-more-robust",
+      "specification": {"path": "benchmarks/Double_Pendulum/Specifications.txt", "sha256": "f94acdf791e46ae3b153c3de8362ab73e1105cb45a558ba775d6e6d48c7e7d7b"},
+      "dynamics": {"path": "benchmarks/Double_Pendulum/dynamics_dp.m", "sha256": "31f0a26a11d205c23ad974f404a1c3b7da7dda4e95c2d6a8306f2b47b7c8ee28"},
+      "controller_candidates": [{"path": "benchmarks/Double_Pendulum/controller_double_pendulum_more_robust.onnx", "sha256": "23ce3c4b3d2066cc6fc213bea416d1c84fc9b06f534e2bad25757d133fb4bece"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "nav-standard",
+      "specification": {"path": "benchmarks/NAV/README.md", "sha256": "a9bb671d83ff2901ddc981d01c9f7fca7b1af8a0d89cc7f949ba92725b8b8873"},
+      "dynamics": {"path": "benchmarks/NAV/dynamics.m", "sha256": "565594f1c8fbfe1fb6c5dc0a500ca0fd697312452a2e586cbe81d5f12ae75d3e"},
+      "controller_candidates": [{"path": "benchmarks/NAV/networks/nn-nav-point.onnx", "sha256": "cc356922a0842e5fe716930df5a5069ec92b6bb14517b6d5f0f31ffa96485b6d"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "nav-robust",
+      "specification": {"path": "benchmarks/NAV/README.md", "sha256": "a9bb671d83ff2901ddc981d01c9f7fca7b1af8a0d89cc7f949ba92725b8b8873"},
+      "dynamics": {"path": "benchmarks/NAV/dynamics.m", "sha256": "565594f1c8fbfe1fb6c5dc0a500ca0fd697312452a2e586cbe81d5f12ae75d3e"},
+      "controller_candidates": [{"path": "benchmarks/NAV/networks/nn-nav-set.onnx", "sha256": "d8220afa931b3e3b9370d6cf03c10e73601a401c2b2266f0e5580bd932436230"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "quad-reach",
+      "specification": {"path": "benchmarks/QUAD/Specifications.txt", "sha256": "75d19a03debcd1abbb01a139e830506ecb8e6ef28d41811f201aeaba20dc53cd"},
+      "dynamics": {"path": "benchmarks/QUAD/dynamics.m", "sha256": "fd82593dd58d1fff42e766dabbc948d28bf7b339ad2a94fd96890e24b47c7f68"},
+      "controller_candidates": [
+        {"path": "benchmarks/QUAD/model.onnx", "sha256": "10e511efa754e128d9e915f9bc62d63ae2c3d292e1a634a14dde3124fc37224a"},
+        {"path": "benchmarks/QUAD/quad_controller_3_64_torch.onnx", "sha256": "fabd84e411f4b0ebe0d6b996be6e4bd2adc48cf1118ab99c82180563b95532dd"}
+      ],
+      "selection_status": "multiple_official_onnx_candidates_unresolved"
+    },
+    {
+      "id": "single-pendulum-reach",
+      "specification": {"path": "benchmarks/Single_Pendulum/specifications.txt", "sha256": "524e0e513fade0a4f5fb2f3e2873d2fb3cfac5de9f92c1c3c914b4fb69a08e19"},
+      "dynamics": {"path": "benchmarks/Single_Pendulum/dynamics_sp.m", "sha256": "6d65c56317a9e68d1125b855131bd366ce558186bd056735decdfb63dfaca09e"},
+      "controller_candidates": [{"path": "benchmarks/Single_Pendulum/controller_single_pendulum.onnx", "sha256": "f855ee789c5f360bb1ba8722ded4226d955876a422b61ba3aca8d71eaa621227"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "tora-remain",
+      "specification": {"path": "benchmarks/Benchmark9-Tora/Specifications.txt", "sha256": "2cd324a536ca94fc99a5ee59bbbc54d90ab1a0b70917c83414bcaebe2058aa44"},
+      "dynamics": {"path": "benchmarks/Benchmark9-Tora/dynamics9.m", "sha256": "e82087d006474e9dfbbe1f09e9f4e64de7c9768108423135d81d7a04d24fd706"},
+      "controller_candidates": [{"path": "benchmarks/Benchmark9-Tora/controllerTora.onnx", "sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418"}],
+      "selection_status": "single_official_onnx"
+    },
+    {
+      "id": "tora-reach-sigmoid",
+      "specification": {"path": "benchmarks/Tora_Heterogeneous/Specifications.txt", "sha256": "6dd7efd3ca8267229913d59bebd26918931efeba4b80d934df17fad13c167267"},
+      "dynamics": {"path": "benchmarks/Tora_Heterogeneous/dynamicsTora.m", "sha256": "6d00916b13ca071a23a6e5eee0addf0b3f363430e2cbcbec3e4b03456535f7d6"},
+      "controller_candidates": [{"path": "benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.txt", "sha256": "9bce280442ebe2a194ad4c5e15343ed517c083c78237f348cc797f21a217c9ab"}],
+      "selection_status": "official_non_onnx_text_controller; ingestion_unresolved"
+    },
+    {
+      "id": "tora-reach-tanh",
+      "specification": {"path": "benchmarks/Tora_Heterogeneous/Specifications.txt", "sha256": "6dd7efd3ca8267229913d59bebd26918931efeba4b80d934df17fad13c167267"},
+      "dynamics": {"path": "benchmarks/Tora_Heterogeneous/dynamicsTora.m", "sha256": "6d00916b13ca071a23a6e5eee0addf0b3f363430e2cbcbec3e4b03456535f7d6"},
+      "controller_candidates": [{"path": "benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.txt", "sha256": "90bfe153eda08416caeefe759525ffc08df88c7162c4210f06fd65bf868e224f"}],
+      "selection_status": "official_non_onnx_text_controller; ingestion_unresolved"
+    },
+    {
+      "id": "unicycle-reach",
+      "specification": {"path": "benchmarks/Benchmark10-Unicycle/Specifications.txt", "sha256": "50a11502915d92268d6977a2214530641a34baf5cd6cf91c487924a3368afab3"},
+      "dynamics": {"path": "benchmarks/Benchmark10-Unicycle/dynamics10.m", "sha256": "8931ebdb817fa2538f3a0aab9fcb94ac847ff69160adf392237c838b8e83a816"},
+      "controller_candidates": [{"path": "benchmarks/Benchmark10-Unicycle/controllerB.onnx", "sha256": "9c9796ec74c0b11c0fe6aa5e0eb3814094dd62538de8c6707ec7e917e718a846"}],
+      "selection_status": "single_official_onnx"
+    }
+  ]
+}

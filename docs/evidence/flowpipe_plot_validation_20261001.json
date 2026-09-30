@@ -1,0 +1,98 @@
+{
+  "schema_version": "flowpipe-plot-validation-receipt-v1",
+  "validated_at": "2026-10-01",
+  "experiments_started": false,
+  "artifact_root": "/Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v2_20261001",
+  "generator": {
+    "path": "src/torch_tm_flowpipe/flowpipe_plot.py",
+    "sha256": "f74c2cc5cb1a5f88e0afc99c1b7895ea1d7eff0cc412c327ac35104f32030359",
+    "branch": "codex/huan-plot-archcomp-execution-20260930",
+    "git_head_at_generation": "4094047d6e4ffc2cb3f79a4d1b90f9f58f65af82",
+    "git_state_at_generation": "generator changes were uncommitted; source SHA-256 is the exact binding"
+  },
+  "environment": {
+    "python": "3.12.2",
+    "pytorch": "2.2.2",
+    "matplotlib": "3.8.4",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "matlab": "not found",
+    "octave": "not found"
+  },
+  "tests": {
+    "command": "MPLCONFIGDIR=/private/tmp/codex-mpl-cache PYTHONPATH=src /opt/anaconda3/bin/python -m pytest -q tests/test_flowpipe_plot.py tests/test_archcomp26_manifest.py",
+    "result": "23 passed",
+    "plot_tests": 19,
+    "manifest_tests": 4
+  },
+  "independent_geometry_check": {
+    "command": "/opt/anaconda3/bin/python tools/verify_flowpipe_plot_artifacts.py /Users/shengenli/Documents/ChatGPT/verification/output/flowpipe_plot_validation_20260930/v2_20261001",
+    "verifier_path": "tools/verify_flowpipe_plot_artifacts.py",
+    "verifier_sha256": "c30702904d604bc65824be8c94ab90cc85ea1478913b336e495574116a53eee5",
+    "result": "passed",
+    "counts": {
+      "native_root1_b2_t_x3_tube": {"frames": 1000, "boxes": 1000},
+      "p2_40_t_x3_tube": {"frames": 40, "boxes": 40},
+      "p2_x1_x2_endpoint": {"frames": 3, "boxes": 3072},
+      "p3_sparse_t_x3_endpoint": {"frames": 8, "boxes": 8},
+      "p3_sparse_x1_x2_endpoint": {"frames": 8, "boxes": 8192}
+    }
+  },
+  "raw_sources": {
+    "p2_observers": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/quad_targeted_recovery_20260927/evidence_fullbatch_short_20260928/full1024_p2_40_v2",
+      "observer_files": 40,
+      "identity_status": "verified_equal_across_all_observer_sidecars",
+      "source_identity_sha256": "c4f04192942dd171f230b1f550a76d2505d3957e40c83a49bcb96bfe78ebab35",
+      "canonical_files_manifest_sha256": "7a5e83791ef6cd3295a403350ce061ab7b51f13427321d5eff355a6714d49e2a"
+    },
+    "p3_observers": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/quad_targeted_recovery_20260927/evidence_gpu14_terminal_20260929/full1024_p3_gpu14_1000_v1",
+      "observer_files": 8,
+      "identity_status": "unavailable",
+      "canonical_files_manifest_sha256": "e8fa03d7fe822a6d10e605ef38cad7e1d04b789a9af2eadbf9869a962e23bdd2"
+    },
+    "native_ranges": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/quad_native_matched_20260928/evidence_long/native/order3_1000/ranges.bin",
+      "sha256": "f6514e3e0cf1afb018262505a6f780870ba51c7afcab9d4c06c50b21a716c0ed",
+      "record_size": 408
+    }
+  },
+  "artifacts": {
+    "native_root1_b2_t_x3_tube": {
+      "geometry": "c2d39e4d44104eeb6423512b5a13a8b6393b9737a7d8e412cea870a5c22702df",
+      "matlab": "46cc565be9ca8e6ced3727c246ad0affb651038c6206ec8bf86c39cecd77bcfb",
+      "png": "8dfac6d2acff3157156d021b2b83af84f290aab7f3dc9724ed52d817ae797bf0",
+      "pdf": "59931020b4f98684180f533c557608b97340386d9caea507ec0c8de40b6a064b",
+      "render_receipt": "efd26c36a3e9ebdc923eabb482fc1b23a160d98d1b2f767b7b3f792d6249b4f5"
+    },
+    "p2_40_t_x3_tube": {
+      "geometry": "a0b11b58baa8540f03afa0911d8e730eff34bb88bb27144f52a06c9a9196f5b9",
+      "matlab": "1f1d8123d8e34475a0280dcd77828b7a978ef573646d5f1c5037e8d20b9dd7c5",
+      "png": "8a1134f07d49425757019bd493d153546273056147b8b7972dae09aad9ce29ce",
+      "pdf": "477dc1276827d7aad676b8611d4ce21206cddb568e16b4b5ed497c8ab013fd29",
+      "render_receipt": "5ec3ddfa2f8fc2fa5cad9bdc192d7ba997905b1de035ad566124e7becf0a616f"
+    },
+    "p2_x1_x2_endpoint": {
+      "geometry": "3d76f212d12fabfb0f2a479546a0d3dbcb33f35b54d234a3b1d28a655a01d6c1",
+      "matlab": "f0398c0b6de318c461952259b9eff435c3c3e3ffa77bd2cb4ae7f4e58d5477c6",
+      "png": "dec69a1fb12aaea36bab073bb76a9ac859ddc6a2259c27d64d6a350007ba3903",
+      "pdf": "ca3f8e16de7adcfcead699876dc03f603a8e796246634cc0114e3692abfd861c",
+      "render_receipt": "9748d618da10044045808559633c7f1df6ed4ec2b7cb591b4268f0cec36233ac"
+    },
+    "p3_sparse_t_x3_endpoint": {
+      "geometry": "9dcbd35a72d1fdddd5b141d2fa4d3b926240ce2fab6cbd705c63557b636d8e89",
+      "matlab": "7517afefb688968d0b11265579299ab92c66cf3d9c202b0633affe0396c94ef4",
+      "png": "d0315fd62dedbd6539cffc81f0ce6997347662318409abcf300add6ef7abae58",
+      "pdf": "e6f9dde94bd0adeeac7f7bf5ac1d7f19682d743e93922a35d3817d1578cf0586",
+      "render_receipt": "f7f1f0c5e21dc35c82931040a32fe7afb534973136d698e740fb8f3cc3880e68"
+    },
+    "p3_sparse_x1_x2_endpoint": {
+      "geometry": "8b6eeaf268b5e1eee1de78b64f109c90e454bd43198bcab763e369b771ea70e7",
+      "matlab": "2b56999b43b20bb87a5f24691924d8653ed3a64e8177adb79e10d27364709641",
+      "png": "b0a884fee21d3c96f3bc3262bb54d1725c00a705097061e55cfebd155760c61f",
+      "pdf": "a62316c1fff439308c453169f8f8bf2187250b0453bfc8729ef79f80738652f8",
+      "render_receipt": "b68111720517e2f9a89aa912bac0a8d72ac3837b1355efecc45f968e1c27e7d6"
+    }
+  },
+  "scope_limit": "Artifacts live outside the Git repository and are bound here by SHA-256. MATLAB scripts were generated and statically tested but not executed because neither MATLAB nor Octave was available."
+}

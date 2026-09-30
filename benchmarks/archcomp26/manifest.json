@@ -1,0 +1,307 @@
+{
+  "schema_version": "archcomp26-four-way-manifest-v1",
+  "as_of": "2026-09-30",
+  "status": "contract_audit_in_progress",
+  "execution_policy": {
+    "experiments_paused": true,
+    "run_status": "not_started",
+    "resume_gate": "Explicit user authorization is required. Before any launch, read-only recheck the original native QUAD job's actual terminal state and do not duplicate it."
+  },
+  "official_sources": {
+    "report": {
+      "title": "ARCH-COMP26 Category Report: Artificial Intelligence and Neural Network Control Systems (AINNCS) for Continuous and Hybrid Systems Plants",
+      "doi": "10.29007/637n",
+      "published": "2026-07-03",
+      "pdf_sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    },
+    "benchmark_repository": {
+      "url": "https://github.com/Kiguli/ARCH-COMP2026",
+      "branch": "main",
+      "commit": "d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26",
+      "readme_sha256": "562e01d42ccdf033e0dcd29a1ab60821cdcf35a17e94b3dac43ee3885675cbd2"
+    },
+    "local_reference": "research/gpu_verified_20260930/reference/ARCH_COMP_2026_REFERENCE.json",
+    "asset_inventory": {
+      "path": "benchmarks/archcomp26/official_assets.json",
+      "schema_version": "archcomp26-official-assets-v1",
+      "status": "source_specification_and_controller_files_hashed; execution contracts remain unresolved"
+    }
+  },
+  "scope": {
+    "excluded": ["VCAS"],
+    "expected_instance_count": 16,
+    "note": "The 16 rows come from the frozen 2026 reference. Discovery of an additional non-VCAS instance must add a row rather than silently preserve this count."
+  },
+  "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
+  "execution_matrix": {
+    "path": "benchmarks/archcomp26/execution_matrix.json",
+    "schema_version": "archcomp26-execution-matrix-v1",
+    "status": "all_cells_not_started"
+  },
+  "unresolved_field_profiles": {
+    "full_execution_contract_v1": [
+      "dynamics.source",
+      "dynamics.sha256",
+      "dynamics.equations",
+      "variable_order",
+      "controller.source",
+      "controller.sha256",
+      "controller.input_output_order",
+      "initial_set.source",
+      "initial_set.sha256",
+      "initial_set.partitions",
+      "initial_set.boxes_sha256",
+      "disturbance",
+      "integration.step_size",
+      "integration.solution_order",
+      "integration.validation_order",
+      "integration.horizon",
+      "controller_update.period",
+      "controller_update.nn_calls",
+      "remainder.cutoff",
+      "remainder.cap",
+      "remainder.symbolic_queue",
+      "arithmetic.mode",
+      "arithmetic.controller_domain",
+      "arithmetic.relaxation",
+      "arithmetic.dtype",
+      "arithmetic.transport",
+      "property.formula",
+      "property.time_semantics",
+      "property.checker",
+      "runtime.hardware",
+      "runtime.cpu_threads",
+      "runtime.resource_limits",
+      "runtime.timeout",
+      "commands",
+      "source_identity",
+      "binary_identity"
+    ],
+    "discrete_execution_contract_v1": [
+      "transition.source",
+      "transition.sha256",
+      "transition.state_update",
+      "transition.control_application_order",
+      "variable_order",
+      "controller.source",
+      "controller.sha256",
+      "controller.input_output_order",
+      "initial_set.source",
+      "initial_set.sha256",
+      "initial_set.partitions",
+      "initial_set.boxes_sha256",
+      "disturbance",
+      "discrete.index_set",
+      "discrete.transition_count",
+      "discrete.sample_period",
+      "controller_update.period_steps",
+      "controller_update.nn_calls",
+      "arithmetic.mode",
+      "arithmetic.controller_domain",
+      "arithmetic.relaxation",
+      "arithmetic.dtype",
+      "arithmetic.transport",
+      "property.formula",
+      "property.step_semantics",
+      "property.checker",
+      "runtime.hardware",
+      "runtime.cpu_threads",
+      "runtime.resource_limits",
+      "runtime.timeout",
+      "commands",
+      "source_identity",
+      "binary_identity"
+    ]
+  },
+  "instances": [
+    {
+      "id": "acc-safe-distance",
+      "benchmark": "ACC",
+      "instance": "safe-distance",
+      "specification": "default",
+      "network": "relu",
+      "visualization": "distance over time",
+      "legacy_candidate": {"config_id": "acc", "status": "candidate_only"},
+      "known_issues": ["Historical native result required the VAR-tail correction; old completion/width cannot be promoted without the corrected latest contract."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "airplane-continuous",
+      "benchmark": "Airplane",
+      "instance": "continuous",
+      "specification": "t in [0,20] in repository README",
+      "network": "relu",
+      "visualization": "states 2 and 7",
+      "legacy_candidate": {"config_id": "airplane", "status": "candidate_only"},
+      "known_issues": ["The frozen older contract uses horizon 2 while the repository README says [0,20]; the report distinguishes continuous [0,2] and discrete 0..20. Resolve before execution."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "airplane-discrete",
+      "benchmark": "Airplane",
+      "instance": "discrete",
+      "specification": "k in {0,1,...,20}",
+      "network": "relu",
+      "visualization": "states 2 and 7",
+      "legacy_candidate": {"config_id": null, "status": "missing_from_legacy_14"},
+      "known_issues": ["Must use the actual discrete model/property; a continuous ODE result is not a substitute."],
+      "contract": {
+        "status": "unresolved",
+        "model_kind": "discrete_time",
+        "unresolved_field_profile": "discrete_execution_contract_v1",
+        "not_applicable": [
+          "integration.step_size",
+          "integration.solution_order",
+          "integration.validation_order",
+          "integration.horizon",
+          "remainder.cutoff",
+          "remainder.cap",
+          "remainder.symbolic_queue"
+        ]
+      }
+    },
+    {
+      "id": "attitude-control-avoid",
+      "benchmark": "Attitude Control",
+      "instance": "avoid",
+      "specification": "default",
+      "network": "sigmoid",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "attitude_control", "status": "candidate_only"},
+      "known_issues": ["The legacy property verdict was not independently audited."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "balancing-reach",
+      "benchmark": "Balancing",
+      "instance": "reach",
+      "specification": "default",
+      "network": "tanh",
+      "visualization": "states 1 and 3",
+      "legacy_candidate": {"config_id": "cartpole", "status": "candidate_name_mapping_only"},
+      "known_issues": ["Confirm that the 2026 Balancing instance is exactly the legacy CartPole contract and controller."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "docking-constraint",
+      "benchmark": "Docking",
+      "instance": "constraint",
+      "specification": "default",
+      "network": "tanh",
+      "visualization": "state 1 over time",
+      "legacy_candidate": {"config_id": null, "status": "missing_from_legacy_14"},
+      "known_issues": ["No legacy four-way configuration is present."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "double-pendulum-less-robust",
+      "benchmark": "Double Pendulum",
+      "instance": "less-robust",
+      "specification": "Specification 1",
+      "network": "less robust",
+      "visualization": "states 3 and 4",
+      "legacy_candidate": {"config_id": "double_pendulum_less_robust", "status": "candidate_only"},
+      "known_issues": ["The old native run timed out; timeout is not a complete runtime."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "double-pendulum-more-robust",
+      "benchmark": "Double Pendulum",
+      "instance": "more-robust",
+      "specification": "Specification 2",
+      "network": "more robust",
+      "visualization": "states 3 and 4",
+      "legacy_candidate": {"config_id": "double_pendulum_more_robust", "status": "suspect_controller_mapping"},
+      "known_issues": ["The legacy config audit maps both variants to the same saved model SHA/path naming; resolve the actual controller before execution."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "nav-standard",
+      "benchmark": "NAV",
+      "instance": "standard",
+      "specification": "default",
+      "network": "nn-nav-point",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "nav_standard", "status": "candidate_only"},
+      "known_issues": ["The old native run timed out; small-denominator width ratios require absolute widths."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "nav-robust",
+      "benchmark": "NAV",
+      "instance": "robust",
+      "specification": "default",
+      "network": "nn-nav-set",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "nav_robust", "status": "candidate_only"},
+      "known_issues": ["Legacy acceleration results are regression references only, not latest-version reruns."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "quad-reach",
+      "benchmark": "QUAD",
+      "instance": "reach",
+      "specification": "default",
+      "network": "sigmoid",
+      "visualization": "state 3 over time",
+      "legacy_candidate": {"config_id": "quad", "status": "dynamics_mismatch_unresolved"},
+      "known_issues": ["The 2026 report equations and the saved CROWN-Reach quad.cpp differ in x2 signs, x4 multiplication versus subtraction, and the x5 formula.", "The original native 1024-lane job ended by six-hour timeout after 600 complete steps; it has no T=5 time or width."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "single-pendulum-reach",
+      "benchmark": "Single Pendulum",
+      "instance": "reach",
+      "specification": "default",
+      "network": "relu",
+      "visualization": "state 1 over time",
+      "legacy_candidate": {"config_id": "single_pendulum", "status": "candidate_only"},
+      "known_issues": [],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "tora-remain",
+      "benchmark": "TORA",
+      "instance": "remain",
+      "specification": "Specification 1",
+      "network": "relu",
+      "visualization": "states 1 and 2; states 3 and 4",
+      "legacy_candidate": {"config_id": "tora_homogeneous", "status": "candidate_name_mapping_only"},
+      "known_issues": ["Confirm official naming, remain/safety property, and horizon before promoting the legacy homogeneous contract."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "tora-reach-sigmoid",
+      "benchmark": "TORA",
+      "instance": "reach-sigmoid",
+      "specification": "Specification 2",
+      "network": "sigmoid",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "tora_sigmoid", "status": "candidate_only"},
+      "known_issues": [],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "tora-reach-tanh",
+      "benchmark": "TORA",
+      "instance": "reach-tanh",
+      "specification": "Specification 2",
+      "network": "tanh",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "tora_relu_tanh", "status": "candidate_name_mapping_only"},
+      "known_issues": ["Confirm whether the saved legacy 'relu_tanh' controller is the 2026 reach-tanh controller."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    },
+    {
+      "id": "unicycle-reach",
+      "benchmark": "Unicycle",
+      "instance": "reach",
+      "specification": "default",
+      "network": "relu",
+      "visualization": "states 1 and 2",
+      "legacy_candidate": {"config_id": "unicycle", "status": "candidate_only"},
+      "known_issues": ["The latest GPU diagnostic stopped at extension loading before plant advance; frozen shared objects load directly, while Ninja is absent. Restore/qualify the loader without rewriting the failed record."],
+      "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
+    }
+  ]
+}

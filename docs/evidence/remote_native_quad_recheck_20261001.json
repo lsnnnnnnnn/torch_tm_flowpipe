@@ -1,0 +1,58 @@
+{
+  "schema_version": "remote-native-quad-readonly-recheck-v1",
+  "audited_at": "2026-10-01T02:28:17+08:00",
+  "connection": {
+    "transport": "ssh_controlmaster",
+    "endpoint": "shengenli@localhost:2252",
+    "control_socket": "/tmp/codex-huan-2252-20261001.sock"
+  },
+  "research_root": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z",
+  "run": "runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1",
+  "watch": "runs/native_quad_matched_20260929/initial_affine_cover_variant/full1000_v1_watch",
+  "checks": [
+    "read INPUT.json, RESULT.json, processes.json, periods.jsonl, and watch process.json",
+    "hash the five terminal-state files without modifying them",
+    "verify recorded watchdog/supervisor/server/solver PIDs are absent",
+    "list sibling run directories to detect a replacement run",
+    "observe nvidia-smi process/memory state without changing allocations",
+    "test existence of all 47 EXTERNAL_ASSETS.json paths"
+  ],
+  "terminal_state": {
+    "status": "timeout",
+    "solver_timeout_s": 21600,
+    "supervisor_elapsed_s": 21609.3083,
+    "watch_elapsed_s": 21609.612654,
+    "returncode": -15,
+    "complete_periods": 30,
+    "period_index_range": [0, 29],
+    "lanes_per_period": 1024,
+    "steps_per_period": 20,
+    "complete_integration_steps": 600,
+    "accepted_lane_steps": 614400,
+    "symbolic_remainder_size": 600,
+    "symbolic_remainder_capacity": 1000,
+    "full_T5_completed": false,
+    "complete_endpoint_width_available": false
+  },
+  "recorded_pids_absent": [1359708, 1359709, 1359714, 1359789],
+  "replacement_24h_run_present": false,
+  "file_sha256": {
+    "INPUT.json": "c2823266ae9a1c7574f9754d2e03a344fbc5a97f3c8c040d9989d27f69ab4ef4",
+    "RESULT.json": "036943cd0b2a0e040017e30c0ac82d0b41f6eb645d924d2294dfe70e2bde97f2",
+    "processes.json": "ab023941166c46d6841ea04192bcbf8ddb3e27bd6ea84c98a13dcaa124759fff",
+    "periods.jsonl": "4a0c4d4a78a0144afa535d46465908c3338ebe38e4ad78e645a3e2326a6d0a26",
+    "watch/process.json": "387dfdd8a801f7de55b4908ad548db5dc4983cbe2b39a6bf0c71918f4376071b"
+  },
+  "external_assets": {
+    "listed_paths": 47,
+    "present": 47,
+    "missing": 0,
+    "scope": "existence_only; no recursive content hash or ABI qualification"
+  },
+  "gpu_observation": {
+    "gpu0": "other-user VLLM process, approximately 13.3 GiB",
+    "gpu1_gpu2_gpu3": "no compute process observed"
+  },
+  "observation_limit": "PID absence, sibling directories, and GPU occupancy are transient live observations and are not implied by the file hashes.",
+  "mutation": "none; no process, allocation, run directory, or solver state was changed"
+}
