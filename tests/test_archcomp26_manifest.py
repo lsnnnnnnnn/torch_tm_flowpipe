@@ -187,6 +187,10 @@ def test_contract_audits_fail_closed():
     assets_by_id = {row["id"]: row for row in assets["instances"]}
 
     by_id = {row["id"]: row for row in manifest["instances"]}
+    assert all("contract_audit" in row for row in manifest["instances"])
+    assert {row["contract_audit"] for row in manifest["instances"]} == set(
+        audits["audits"]
+    )
     airplane = audits["audits"][by_id["airplane-continuous"]["contract_audit"]]
     airplane_assets = assets_by_id["airplane-continuous"]
     assert airplane["source_files"] == {
@@ -218,6 +222,12 @@ def test_contract_audits_fail_closed():
     assert by_id["airplane-discrete"]["contract"]["status"] == "unresolved"
 
     linked = {
+        "acc-safe-distance": "acc",
+        "attitude-control-avoid": "attitude_control",
+        "balancing-reach": "balancing",
+        "docking-constraint": "docking",
+        "double-pendulum-less-robust": "double_pendulum",
+        "double-pendulum-more-robust": "double_pendulum",
         "nav-standard": "navigation",
         "nav-robust": "navigation",
         "single-pendulum-reach": "single_pendulum",
@@ -229,6 +239,76 @@ def test_contract_audits_fail_closed():
     for instance_id, audit_name in linked.items():
         assert by_id[instance_id]["contract_audit"] == audit_name
         assert by_id[instance_id]["contract"]["status"] == "unresolved"
+
+    acc = audits["audits"]["acc"]
+    acc_assets = assets_by_id["acc-safe-distance"]
+    assert acc["source_files"] == {
+        "specification": acc_assets["specification"],
+        "dynamics": acc_assets["dynamics"],
+        "controller": acc_assets["controller_candidates"][0],
+    }
+    assert acc["shared_contract"]["controller_updates"] == 50
+    assert acc["shared_contract"]["property"]["kind"] == "linear_halfspace"
+    assert acc["unresolved_fields"]["v_rel_sign_definition"] is None
+
+    attitude = audits["audits"]["attitude_control"]
+    attitude_assets = assets_by_id["attitude-control-avoid"]
+    assert attitude["source_files"] == {
+        "specification": attitude_assets["specification"],
+        "dynamics": attitude_assets["dynamics"],
+        "controller_candidates": attitude_assets["controller_candidates"],
+    }
+    assert len(attitude["source_files"]["controller_candidates"]) == 2
+    assert "does not hold" in attitude["source_conflicts"]["property_polarity"]
+
+    balancing = audits["audits"]["balancing"]
+    balancing_assets = assets_by_id["balancing-reach"]
+    assert balancing["source_files"] == {
+        "specification": balancing_assets["specification"],
+        "dynamics": balancing_assets["dynamics"],
+        "controller": balancing_assets["controller_candidates"][0],
+    }
+    assert balancing["shared_contract"]["controller_updates"] == 500
+    assert "five-feature" in balancing["source_conflicts"]["controller_input"]
+    assert "[8,10]" in balancing["source_conflicts"]["property_time"]
+
+    docking = audits["audits"]["docking"]
+    docking_assets = assets_by_id["docking-constraint"]
+    assert docking["source_files"] == {
+        "specification": docking_assets["specification"],
+        "dynamics": docking_assets["dynamics"],
+        "controller": docking_assets["controller_candidates"][0],
+    }
+    assert docking["shared_contract"]["horizon_s"] == 40.0
+    assert docking["shared_contract"]["property"]["kind"] == (
+        "nonlinear_coupled_inequality"
+    )
+
+    double_pendulum = audits["audits"]["double_pendulum"]
+    less_assets = assets_by_id["double-pendulum-less-robust"]
+    more_assets = assets_by_id["double-pendulum-more-robust"]
+    assert double_pendulum["source_files"] == {
+        "specification": less_assets["specification"],
+        "dynamics": less_assets["dynamics"],
+        "controllers": {
+            "less_robust": less_assets["controller_candidates"][0],
+            "more_robust": more_assets["controller_candidates"][0],
+        },
+    }
+    assert double_pendulum["source_files"]["controllers"][
+        "less_robust"
+    ]["sha256"] != double_pendulum["source_files"]["controllers"][
+        "more_robust"
+    ]["sha256"]
+    legacy = double_pendulum["legacy_more_robust_conflict"]
+    assert legacy["controller_sha256_used"] == less_assets[
+        "controller_candidates"
+    ][0]["sha256"]
+    assert legacy["initial_set_used"] == [[1.3, 1.3]] * 4
+    for identity in (legacy["config"], legacy["boxes"]):
+        assert identity["sha256"] == hashlib.sha256(
+            (ROOT / identity["path"]).read_bytes()
+        ).hexdigest()
 
     navigation = audits["audits"]["navigation"]
     nav_standard_assets = assets_by_id["nav-standard"]

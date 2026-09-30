@@ -46,7 +46,7 @@
   "contract_audits": {
     "path": "benchmarks/archcomp26/evidence/contract_audits_20261001.json",
     "schema_version": "archcomp26-contract-audits-v1",
-    "status": "evidence-backed conflict ledger expanded; all linked execution contracts remain unresolved"
+    "status": "all 16 rows linked to evidence-backed audits; every execution contract remains unresolved"
   },
   "unresolved_field_profiles": {
     "full_execution_contract_v1": [
@@ -132,7 +132,8 @@
       "network": "relu",
       "visualization": "distance over time",
       "legacy_candidate": {"config_id": "acc", "status": "candidate_only"},
-      "known_issues": ["Historical native result required the VAR-tail correction; old completion/width cannot be promoted without the corrected latest contract."],
+      "known_issues": ["Historical native result required the VAR-tail correction; old completion/width cannot be promoted without the corrected latest contract.", "The report names v_rel as a controller input but does not define its sign convention; the input transform must be frozen from authoritative execution code.", "The safety property is a linear halfspace, not an axis-aligned box."],
+      "contract_audit": "acc",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -180,7 +181,8 @@
       "network": "sigmoid",
       "visualization": "states 1 and 2",
       "legacy_candidate": {"config_id": "attitude_control", "status": "candidate_only"},
-      "known_issues": ["The legacy property verdict was not independently audited."],
+      "known_issues": ["The legacy property verdict was not independently audited.", "Two distinct official ONNX candidates are present without a repository-level selection.", "The report says both that the unsafe set should be avoided and that the goal is to show the specification does not hold; freeze checker polarity before execution."],
+      "contract_audit": "attitude_control",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -191,7 +193,8 @@
       "network": "tanh",
       "visualization": "states 1 and 3",
       "legacy_candidate": {"config_id": "cartpole", "status": "candidate_name_mapping_only"},
-      "known_issues": ["Confirm that the 2026 Balancing instance is exactly the legacy CartPole contract and controller."],
+      "known_issues": ["Balancing is the top-level name for the CartPole folder.", "The report writes a five-feature controller expression using sin/cos of the pole angle, while the repository dynamics comment and ONNX graph use four raw state inputs.", "The report uses the closed property interval [8,10], while the repository specification says t > 8."],
+      "contract_audit": "balancing",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -202,7 +205,8 @@
       "network": "tanh",
       "visualization": "state 1 over time",
       "legacy_candidate": {"config_id": null, "status": "missing_from_legacy_14"},
-      "known_issues": ["No legacy four-way configuration is present."],
+      "known_issues": ["No legacy four-way configuration is present.", "The instance file omits the 40-second horizon supplied by the report.", "The coupled nonlinear safety inequality cannot be represented as an axis-aligned property box."],
+      "contract_audit": "docking",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -214,6 +218,7 @@
       "visualization": "states 3 and 4",
       "legacy_candidate": {"config_id": "double_pendulum_less_robust", "status": "candidate_only"},
       "known_issues": ["The old native run timed out; timeout is not a complete runtime."],
+      "contract_audit": "double_pendulum",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {
@@ -223,8 +228,9 @@
       "specification": "Specification 2",
       "network": "more robust",
       "visualization": "states 3 and 4",
-      "legacy_candidate": {"config_id": "double_pendulum_more_robust", "status": "suspect_controller_mapping"},
-      "known_issues": ["The legacy config audit maps both variants to the same saved model SHA/path naming; resolve the actual controller before execution."],
+      "legacy_candidate": {"config_id": "double_pendulum_more_robust", "status": "wrong_controller_and_initial_set"},
+      "known_issues": ["The legacy more-robust config uses the official less-robust controller SHA and the singleton corner {1.3}^4 instead of the official more-robust controller and full [1,1.3]^4 initial set; its time, widths, and verdict are not promotable."],
+      "contract_audit": "double_pendulum",
       "contract": {"status": "unresolved", "unresolved_field_profile": "full_execution_contract_v1"}
     },
     {

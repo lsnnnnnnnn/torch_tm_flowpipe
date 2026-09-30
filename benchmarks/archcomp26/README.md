@@ -39,8 +39,12 @@ receipt and its counts; they do not fetch or re-hash the external repository.
 This source audit also confirmed that the repository itself does not settle
 several execution questions. The report/source conflict ledger in
 `evidence/contract_audits_20261001.json` freezes the evidence without choosing
-an unsupported interpretation:
+an unsupported interpretation. It now links every one of the 16 manifest rows
+to one of 11 evidence audits:
 
+- ACC's six-state, five-second safety contract is known, but the sign
+  convention for the controller input `v_rel` is not stated and the property
+  is a halfspace rather than a plot box;
 - Airplane continuous is fixed to two seconds because the report and instance
   specification agree; the top-level `[0,20]` row is conflicting metadata.
   For discrete time, report page 89 gives forward Euler, the Airplane step is
@@ -64,7 +68,21 @@ an unsupported interpretation:
   implements its first derivatives as `x3*cos(x4), x3*sin(x4)`, implying the
   swapped order `[x,y,nu,theta]` and corresponding swapped control-output
   semantics. Both controller input/output contracts remain unresolved;
-- Attitude Control also contains two distinct ONNX candidates;
+- Attitude Control contains two distinct ONNX candidates. The report first
+  defines avoidance of an unsafe box, then says the goal is to show that the
+  specification does not hold, so both controller identity and checker
+  polarity remain unresolved;
+- Balancing is the repository's CartPole instance. Its report uses a
+  five-feature trigonometric controller expression and a closed `[8,10]`
+  property interval, while the repository comment/ONNX use four raw inputs and
+  the specification says `t > 8`;
+- Docking's report supplies the 40-second horizon missing from the instance
+  file. Its coupled nonlinear velocity/position constraint is not an
+  axis-aligned box;
+- Double Pendulum's two official controllers and properties are distinct. The
+  legacy more-robust row used the less-robust controller and only the singleton
+  corner `{1.3}^4`, so its old result cannot populate the official
+  more-robust cell;
 - heterogeneous TORA supplies text/MAT controller artifacts but no ONNX file.
 
 Every row is `unresolved`. Continuous/hybrid rows refer to the complete ODE
@@ -79,7 +97,8 @@ a 2026 run. In particular:
 - Airplane discrete and Docking have no legacy row;
 - Airplane's time semantics and QUAD's equations have unresolved source
   conflicts;
-- the Double Pendulum more-robust controller mapping is suspect;
+- the legacy Double Pendulum more-robust mapping is known wrong and remains
+  excluded from the 2026 execution cell;
 - old completed/timed results remain regression references, not new reruns.
 
 Experiments are marked paused. Before any launch after explicit user
