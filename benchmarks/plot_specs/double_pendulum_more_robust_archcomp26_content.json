@@ -1,0 +1,62 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v2",
+  "benchmark": "Double Pendulum",
+  "instance_id": "double-pendulum-more-robust",
+  "contract_status": "official more-robust initial/property content frozen; method execution contracts unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "Content contract only. The legacy row used the less-robust controller and singleton initial corner and cannot populate this instance.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/Double_Pendulum/Specifications.txt",
+      "sha256": "f94acdf791e46ae3b153c3de8362ab73e1105cb45a558ba775d6e6d48c7e7d7b"
+    },
+    {
+      "path": "benchmarks/Double_Pendulum/dynamics_dp.m",
+      "sha256": "31f0a26a11d205c23ad974f404a1c3b7da7dda4e95c2d6a8306f2b47b7c8ee28"
+    },
+    {
+      "path": "benchmarks/Double_Pendulum/controller_double_pendulum_more_robust.onnx",
+      "sha256": "23ce3c4b3d2066cc6fc213bea416d1c84fc9b06f534e2bad25757d133fb4bece"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 0.4
+  },
+  "property_quantifier": "all_times",
+  "coordinate_names": ["x1", "x2", "x3", "x4"],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Official Double Pendulum initial set",
+    "bounds": {
+      "x1": [1.0, 1.3],
+      "x2": [1.0, 1.3],
+      "x3": [1.0, 1.3],
+      "x4": [1.0, 1.3]
+    }
+  },
+  "regions": [
+    {
+      "label": "Specification 2 safe box",
+      "role": "safe",
+      "bounds": {
+        "x1": [-1.5, 1.5],
+        "x2": [-1.5, 1.5],
+        "x3": [-1.5, 1.5],
+        "x4": [-1.5, 1.5]
+      },
+      "time": {
+        "kind": "all"
+      }
+    }
+  ]
+}

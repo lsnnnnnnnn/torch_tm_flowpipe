@@ -1,0 +1,59 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v2",
+  "benchmark": "Single Pendulum",
+  "instance_id": "single-pendulum-reach",
+  "contract_status": "official two-physical-state initial/property content frozen; repository clock augmentation and method execution contracts unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "This contract has exactly two physical coordinates. The repository dynamics' extra dx(3)=1 clock state is unresolved and must not be silently added to a plotted series.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/Single_Pendulum/specifications.txt",
+      "sha256": "524e0e513fade0a4f5fb2f3e2873d2fb3cfac5de9f92c1c3c914b4fb69a08e19"
+    },
+    {
+      "path": "benchmarks/Single_Pendulum/dynamics_sp.m",
+      "sha256": "6d65c56317a9e68d1125b855131bd366ce558186bd056735decdfb63dfaca09e"
+    },
+    {
+      "path": "benchmarks/Single_Pendulum/controller_single_pendulum.onnx",
+      "sha256": "f855ee789c5f360bb1ba8722ded4226d955876a422b61ba3aca8d71eaa621227"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 1.0
+  },
+  "property_quantifier": "all_times",
+  "coordinate_names": ["x1", "x2"],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Official two-state initial set",
+    "bounds": {
+      "x1": [1.0, 1.175],
+      "x2": [0.0, 0.2]
+    }
+  },
+  "regions": [
+    {
+      "label": "Angle safe interval for 0.5 <= t <= 1",
+      "role": "safe",
+      "bounds": {
+        "x1": [0.0, 1.0]
+      },
+      "time": {
+        "kind": "interval",
+        "lo": 0.5,
+        "hi": 1.0
+      }
+    }
+  ]
+}

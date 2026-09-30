@@ -8,7 +8,7 @@
   "renderer_scope": {
     "model_domain": "continuous_time",
     "property_geometry": "axis_aligned_boxes",
-    "series_identity": "benchmark_and_instance_id_verified_across_all_observer_sidecars",
+    "series_identity": "benchmark_instance_coordinates_step_size_and_expected_steps_verified_across_all_observer_sidecars",
     "unsupported": [
       "discrete_index_sets",
       "linear_halfspaces",
@@ -18,8 +18,8 @@
   },
   "counts": {
     "instances": 16,
-    "materialized_v2_content_contract": 1,
-    "axis_aligned_content_ready_not_materialized": 7,
+    "materialized_v2_content_contract": 8,
+    "axis_aligned_content_ready_not_materialized": 0,
     "blocked_fail_closed": 8
   },
   "instances": [
@@ -38,8 +38,8 @@
       "instance_id": "airplane-continuous",
       "benchmark": "Airplane",
       "contract_audit": "airplane",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/airplane_continuous_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "The two-second continuous-time initial/property geometry is source-audited; method execution fields remain unresolved."
     },
@@ -93,8 +93,8 @@
       "instance_id": "double-pendulum-less-robust",
       "benchmark": "Double Pendulum",
       "contract_audit": "double_pendulum",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/double_pendulum_less_robust_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "Specification 1 has a source-audited full initial box, horizon, and all-times property box."
     },
@@ -102,8 +102,8 @@
       "instance_id": "double-pendulum-more-robust",
       "benchmark": "Double Pendulum",
       "contract_audit": "double_pendulum",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/double_pendulum_more_robust_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "Specification 2 content is known; the incorrect legacy controller and singleton initial set cannot populate it."
     },
@@ -111,8 +111,8 @@
       "instance_id": "nav-standard",
       "benchmark": "NAV",
       "contract_audit": "navigation",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/nav_standard_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "The x/y initial, avoid, and endpoint target geometry is known; state/controller order remains an execution blocker."
     },
@@ -120,8 +120,8 @@
       "instance_id": "nav-robust",
       "benchmark": "NAV",
       "contract_audit": "navigation",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/nav_robust_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "The x/y initial, avoid, and endpoint target geometry is known; state/controller order remains an execution blocker."
     },
@@ -138,8 +138,8 @@
       "instance_id": "single-pendulum-reach",
       "benchmark": "Single Pendulum",
       "contract_audit": "single_pendulum",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/single_pendulum_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "The two physical-state content is known; the repository's extra clock derivative remains an execution blocker."
     },
@@ -147,8 +147,8 @@
       "instance_id": "tora-remain",
       "benchmark": "TORA",
       "contract_audit": "tora",
-      "status": "axis_aligned_content_ready_not_materialized",
-      "plot_spec": null,
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/tora_remain_archcomp26_content.json",
       "content_blockers": [],
       "scope_note": "The remain property geometry is known; controller offset placement remains an execution blocker."
     },

@@ -6,9 +6,10 @@ saved artifacts.
 
 `quad_archcomp26_shared_content.json` is a v2 content contract. It binds the
 benchmark instance, horizon, coordinates, and declared official source hashes,
-and requires every plotted observer file to carry a matching instance identity
-through its verified sidecar. This prevents an unbound historical series from
-being relabelled as the official instance. The official QUAD
+and requires every plotted observer file to carry matching benchmark,
+instance, coordinate-order, step-size, and expected-step identities through
+its verified sidecar. This prevents an unbound historical series from being
+relabelled or placed on a fabricated axis. The official QUAD
 dynamics/controller selection and the complete execution contract nevertheless
 remain unresolved, so an instance-bound plot alone is not an ARCH-COMP 2026
 result.
@@ -20,7 +21,7 @@ coupled constraints require explicit future schema/renderer support; they must
 not be approximated as boxes.
 
 `archcomp26_status.json` accounts for all 16 non-VCAS instances without
-claiming that an execution contract is resolved. It separates materialized or
-extractable axis-aligned content from eight fail-closed cases where the current
-renderer cannot express the property or authoritative temporal semantics still
-conflict.
+claiming that an execution contract is resolved. Eight source-audited,
+axis-aligned continuous-time content contracts are materialized as v2 specs.
+The other eight stay fail-closed because the current renderer cannot express
+the property or authoritative temporal semantics still conflict.

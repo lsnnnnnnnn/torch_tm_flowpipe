@@ -1,0 +1,62 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v2",
+  "benchmark": "TORA",
+  "instance_id": "tora-remain",
+  "contract_status": "official remain initial/property content frozen; controller-boundary offset and method execution contracts unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "Content contract only. The controller-versus-plant boundary for subtracting 10 remains unresolved and must be applied exactly once in any future run.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/Benchmark9-Tora/Specifications.txt",
+      "sha256": "2cd324a536ca94fc99a5ee59bbbc54d90ab1a0b70917c83414bcaebe2058aa44"
+    },
+    {
+      "path": "benchmarks/Benchmark9-Tora/dynamics9.m",
+      "sha256": "e82087d006474e9dfbbe1f09e9f4e64de7c9768108423135d81d7a04d24fd706"
+    },
+    {
+      "path": "benchmarks/Benchmark9-Tora/controllerTora.onnx",
+      "sha256": "52a50c6bc6b1b45b89319edc809cd4d3baca06c32f9fd2ddceb2e95007414418"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 20.0
+  },
+  "property_quantifier": "all_times",
+  "coordinate_names": ["x1", "x2", "x3", "x4"],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Official TORA remain initial set",
+    "bounds": {
+      "x1": [0.6, 0.7],
+      "x2": [-0.7, -0.6],
+      "x3": [-0.4, -0.3],
+      "x4": [0.5, 0.6]
+    }
+  },
+  "regions": [
+    {
+      "label": "Specification 1 remain box",
+      "role": "safe",
+      "bounds": {
+        "x1": [-2.0, 2.0],
+        "x2": [-2.0, 2.0],
+        "x3": [-2.0, 2.0],
+        "x4": [-2.0, 2.0]
+      },
+      "time": {
+        "kind": "all"
+      }
+    }
+  ]
+}

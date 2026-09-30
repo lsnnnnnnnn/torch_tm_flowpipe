@@ -66,6 +66,22 @@ def run_evidence(path: Path, identity: dict, *, budget=2, status="completed") ->
     }), encoding="utf-8")
 
 
+def plot_identity(
+    benchmark: str,
+    instance_id: str,
+    coordinate_names: list[str],
+    step_size: float,
+    expected_steps: int,
+) -> dict:
+    return {
+        "benchmark": benchmark,
+        "instance_id": instance_id,
+        "coordinate_names": coordinate_names,
+        "step_size": step_size,
+        "expected_steps": expected_steps,
+    }
+
+
 def native_ranges(
     path: Path,
     *,
@@ -111,7 +127,7 @@ def official_spec():
         "instance_id": "demo-continuous",
         "contract_status": "official content frozen; execution contract unresolved",
         "identity_binding": "official_contract_sources_hash_declared",
-        "run_binding": "series_source_identity_instance_required",
+        "run_binding": "series_source_identity_plot_contract_required",
         "warning": "Instance-bound only; do not claim a matched official solver run.",
         "model_domain": "continuous_time",
         "source_refs": [
@@ -138,13 +154,21 @@ def official_spec():
     }
 
 
+def source_assets(value) -> set[tuple[str, str]]:
+    assets: set[tuple[str, str]] = set()
+    if isinstance(value, dict):
+        if isinstance(value.get("path"), str) and isinstance(value.get("sha256"), str):
+            assets.add((value["path"], value["sha256"]))
+        for child in value.values():
+            assets.update(source_assets(child))
+    elif isinstance(value, list):
+        for child in value:
+            assets.update(source_assets(child))
+    return assets
+
+
 class FlowpipePlotTests(unittest.TestCase):
-    def test_checked_in_quad_v2_spec_is_content_only_and_valid(self):
-        spec_path = (
-            Path(__file__).resolve().parents[1]
-            / "benchmarks/plot_specs/quad_archcomp26_shared_content.json"
-        )
-        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    def test_all_materialized_archcomp_v2_specs_are_audited_and_valid(self):
         repo_root = Path(__file__).resolve().parents[1]
         manifest = json.loads(
             (repo_root / "benchmarks/archcomp26/manifest.json").read_text(encoding="utf-8")
@@ -153,42 +177,55 @@ class FlowpipePlotTests(unittest.TestCase):
             (repo_root / "benchmarks/archcomp26/evidence/contract_audits_20261001.json")
             .read_text(encoding="utf-8")
         )
-        sources = {item["path"]: item["sha256"] for item in spec["source_refs"]}
-        matching_instances = [
-            item for item in manifest["instances"]
-            if item["id"] == spec["instance_id"]
-            and item["benchmark"] == spec["benchmark"]
-        ]
-        self.assertEqual(len(matching_instances), 1)
-        self.assertEqual(
-            sources["reference/ARCH_COMP26_AINNCS.pdf"],
+        status = json.loads(
+            (repo_root / "benchmarks/plot_specs/archcomp26_status.json")
+            .read_text(encoding="utf-8")
+        )
+        manifest_by_id = {row["id"]: row for row in manifest["instances"]}
+        report_asset = (
+            "reference/ARCH_COMP26_AINNCS.pdf",
             manifest["official_sources"]["report"]["pdf_sha256"],
         )
-        self.assertEqual(
-            sources["benchmarks/QUAD/Specifications.txt"],
-            audits["audits"]["quadrotor"]["source_files"]["specification"]["sha256"],
-        )
-        self.assertEqual(spec["instance_id"], "quad-reach")
-        self.assertIn("full execution contract unresolved", spec["contract_status"])
-        with tempfile.TemporaryDirectory() as scratch:
-            root = Path(scratch)
-            observer(root, 1, state_count=12)
-            sidecar(root, 1, {"benchmark": "QUAD", "instance_id": "quad-reach"})
-            geometry = export_geometry(
-                [("instance-bound test series", root)],
-                benchmark="QUAD",
-                instance_id="quad-reach",
-                coordinate_names=[f"x{index}" for index in range(1, 13)],
-                projection_text="t,x3",
-                view="endpoint",
-                step_size=5.0,
-                expected_steps=1,
-                spec=spec,
+        materialized = [row for row in status["instances"] if row["plot_spec"]]
+        self.assertEqual(len(materialized), 8)
+        for row in materialized:
+            spec = json.loads((repo_root / row["plot_spec"]).read_text(encoding="utf-8"))
+            manifest_row = manifest_by_id[row["instance_id"]]
+            self.assertEqual(spec["instance_id"], manifest_row["id"])
+            self.assertEqual(spec["benchmark"], manifest_row["benchmark"])
+            audited_assets = source_assets(
+                audits["audits"][manifest_row["contract_audit"]]["source_files"]
+            ) | {report_asset}
+            self.assertTrue(
+                {(item["path"], item["sha256"]) for item in spec["source_refs"]}
+                <= audited_assets
             )
-            self.assertEqual(
-                geometry["spec_binding"]["run_binding"],
-                "series_source_identity_instance_required",
-            )
+
+            coordinates = spec["coordinate_names"]
+            horizon = float(spec["horizon"]["end"])
+            projection_coordinate = next(iter(spec["regions"][0]["bounds"]))
+            with tempfile.TemporaryDirectory() as scratch:
+                root = Path(scratch)
+                observer(root, 1, state_count=len(coordinates))
+                sidecar(root, 1, plot_identity(
+                    spec["benchmark"], spec["instance_id"],
+                    coordinates, horizon, 1,
+                ))
+                geometry = export_geometry(
+                    [("instance-bound test series", root)],
+                    benchmark=spec["benchmark"],
+                    instance_id=spec["instance_id"],
+                    coordinate_names=coordinates,
+                    projection_text=f"t,{projection_coordinate}",
+                    view="tube",
+                    step_size=horizon,
+                    expected_steps=1,
+                    spec=spec,
+                )
+                self.assertEqual(
+                    geometry["spec_binding"]["status"],
+                    "official_content_series_plot_contract_binding_verified",
+                )
 
     def test_v2_spec_requires_series_instance_binding_without_claiming_full_contract(self):
         with tempfile.TemporaryDirectory() as scratch:
@@ -207,22 +244,21 @@ class FlowpipePlotTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "verified across all observer sidecars"):
                 export_geometry(**arguments)
-            sidecar(root, 1, {
-                "benchmark": "demo",
-                "instance_id": "demo-continuous",
-            })
+            sidecar(root, 1, plot_identity(
+                "demo", "demo-continuous", ["x1", "x2", "x3"], 1.0, 1
+            ))
             geometry = export_geometry(**arguments)
             self.assertEqual(geometry["instance_id"], "demo-continuous")
             self.assertEqual(
                 geometry["spec_binding"]["status"],
-                "official_content_series_instance_binding_verified",
+                "official_content_series_plot_contract_binding_verified",
             )
             self.assertEqual(geometry["spec_binding"]["source_ref_count"], 1)
             script = root / "official.m"
             write_matlab(geometry, script)
             script_text = script.read_text(encoding="utf-8")
             self.assertIn("official source hashes declared", script_text)
-            self.assertIn("series instance identity verified", script_text)
+            self.assertIn("series benchmark, instance, coordinates", script_text)
             self.assertIn("do not claim a matched official solver run", script_text)
             with self.assertRaisesRegex(ValueError, "explicit --instance-id"):
                 export_geometry(**{**arguments, "instance_id": None})
@@ -258,13 +294,15 @@ class FlowpipePlotTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "only continuous_time"):
                 export_geometry(**{**arguments, "spec": bad})
 
-            bad_identity = {"benchmark": "demo", "instance_id": "other"}
+            bad_identity = plot_identity(
+                "demo", "other", ["x1", "x2", "x3"], 1.0, 1
+            )
             sidecar(root, 1, bad_identity)
             with self.assertRaisesRegex(ValueError, "source_identity instance_id"):
                 export_geometry(**arguments)
-            sidecar(root, 1, {
-                "benchmark": "demo", "instance_id": "demo-continuous"
-            })
+            sidecar(root, 1, plot_identity(
+                "demo", "demo-continuous", ["x1", "x2", "x3"], 1.0, 1
+            ))
 
             tampered = json.loads(json.dumps(geometry))
             tampered["instance_id"] = "other"
@@ -911,9 +949,9 @@ class FlowpipePlotTests(unittest.TestCase):
                 ])
 
             for step in (1, 2):
-                sidecar(root, step, {
-                    "benchmark": "demo", "instance_id": "demo-continuous"
-                })
+                sidecar(root, step, plot_identity(
+                    "demo", "demo-continuous", ["x1", "x2", "x3"], .5, 2
+                ))
             v2_spec_path = root / "v2.json"
             v2_spec_path.write_text(json.dumps(official_spec()), encoding="utf-8")
             v2_output = root / "v2-cli"

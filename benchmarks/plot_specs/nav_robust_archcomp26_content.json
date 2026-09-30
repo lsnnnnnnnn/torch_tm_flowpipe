@@ -1,0 +1,72 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v2",
+  "benchmark": "NAV",
+  "instance_id": "nav-robust",
+  "contract_status": "official x/y initial, obstacle, and endpoint-goal content frozen; state/controller order and method execution contracts unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_plot_contract_required",
+  "warning": "Content contract only. The report and repository disagree on the third/fourth state and controller input/output order; no run is matched until that interface is selected from authoritative evidence.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/NAV/README.md",
+      "sha256": "a9bb671d83ff2901ddc981d01c9f7fca7b1af8a0d89cc7f949ba92725b8b8873"
+    },
+    {
+      "path": "benchmarks/NAV/dynamics.m",
+      "sha256": "565594f1c8fbfe1fb6c5dc0a500ca0fd697312452a2e586cbe81d5f12ae75d3e"
+    },
+    {
+      "path": "benchmarks/NAV/networks/nn-nav-set.onnx",
+      "sha256": "d8220afa931b3e3b9370d6cf03c10e73601a401c2b2266f0e5580bd932436230"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 6.0
+  },
+  "property_quantifier": "conjunction",
+  "coordinate_names": ["x1", "x2", "x3", "x4"],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Official NAV initial set",
+    "bounds": {
+      "x1": [2.9, 3.1],
+      "x2": [2.9, 3.1],
+      "x3": [0.0, 0.0],
+      "x4": [0.0, 0.0]
+    }
+  },
+  "regions": [
+    {
+      "label": "Obstacle to avoid throughout the horizon",
+      "role": "unsafe",
+      "bounds": {
+        "x1": [1.0, 2.0],
+        "x2": [1.0, 2.0]
+      },
+      "time": {
+        "kind": "all"
+      }
+    },
+    {
+      "label": "Goal region at t=6 s",
+      "role": "target",
+      "bounds": {
+        "x1": [-0.5, 0.5],
+        "x2": [-0.5, 0.5]
+      },
+      "time": {
+        "kind": "endpoint",
+        "at": 6.0
+      }
+    }
+  ]
+}

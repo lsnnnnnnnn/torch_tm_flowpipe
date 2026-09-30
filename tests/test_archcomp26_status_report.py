@@ -42,8 +42,8 @@ def test_current_status_report_is_deterministic_and_fail_closed():
     assert status["plot"]["experiments_started"] is False
     assert status["plot_contracts"]["counts"] == {
         "instances": 16,
-        "materialized_v2_content_contract": 1,
-        "axis_aligned_content_ready_not_materialized": 7,
+        "materialized_v2_content_contract": 8,
+        "axis_aligned_content_ready_not_materialized": 0,
         "blocked_fail_closed": 8,
     }
 

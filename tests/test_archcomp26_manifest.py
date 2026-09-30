@@ -160,11 +160,69 @@ def test_plot_contract_status_accounts_for_every_instance_without_promotion():
     }
     assert status["counts"] == {"instances": 16, **counts}
     materialized = [row for row in rows if row["plot_spec"] is not None]
-    assert len(materialized) == 1
-    spec = load(materialized[0]["plot_spec"])
-    assert spec["instance_id"] == materialized[0]["instance_id"]
-    assert spec["benchmark"] == materialized[0]["benchmark"]
-    assert "execution contract unresolved" in spec["contract_status"]
+    assert len(materialized) == 8
+    for row in materialized:
+        spec = load(row["plot_spec"])
+        assert spec["instance_id"] == row["instance_id"]
+        assert spec["benchmark"] == row["benchmark"]
+        assert "execution contract" in spec["contract_status"]
+
+    specs = {row["instance_id"]: load(row["plot_spec"]) for row in materialized}
+    airplane = specs["airplane-continuous"]
+    assert airplane["horizon"]["end"] == 2.0
+    assert airplane["initial_set"]["bounds"]["x4"] == [0.0, 1.0]
+    assert airplane["regions"][0]["bounds"] == {
+        "x2": [-1.0, 1.0], "x7": [-1.0, 1.0],
+        "x8": [-1.0, 1.0], "x9": [-1.0, 1.0],
+    }
+
+    less = specs["double-pendulum-less-robust"]
+    more = specs["double-pendulum-more-robust"]
+    assert less["horizon"]["end"] == 1.0
+    assert more["horizon"]["end"] == 0.4
+    assert set(tuple(value) for value in less["initial_set"]["bounds"].values()) == {
+        (1.0, 1.3)
+    }
+    assert set(tuple(value) for value in less["regions"][0]["bounds"].values()) == {
+        (-1.7, 2.0)
+    }
+    assert set(tuple(value) for value in more["regions"][0]["bounds"].values()) == {
+        (-1.5, 1.5)
+    }
+
+    standard = specs["nav-standard"]
+    robust = specs["nav-robust"]
+    assert standard["horizon"]["end"] == robust["horizon"]["end"] == 6.0
+    assert standard["property_quantifier"] == robust["property_quantifier"] == (
+        "conjunction"
+    )
+    assert standard["initial_set"] == robust["initial_set"]
+    assert standard["regions"] == robust["regions"]
+    assert standard["source_refs"][2]["path"].endswith("nn-nav-point.onnx")
+    assert robust["source_refs"][2]["path"].endswith("nn-nav-set.onnx")
+
+    single = specs["single-pendulum-reach"]
+    assert single["coordinate_names"] == ["x1", "x2"]
+    assert single["initial_set"]["bounds"] == {
+        "x1": [1.0, 1.175], "x2": [0.0, 0.2],
+    }
+    assert single["regions"][0]["time"] == {
+        "kind": "interval", "lo": 0.5, "hi": 1.0,
+    }
+
+    tora = specs["tora-remain"]
+    assert tora["horizon"]["end"] == 20.0
+    assert tora["initial_set"]["bounds"] == {
+        "x1": [0.6, 0.7], "x2": [-0.7, -0.6],
+        "x3": [-0.4, -0.3], "x4": [0.5, 0.6],
+    }
+    assert set(tuple(value) for value in tora["regions"][0]["bounds"].values()) == {
+        (-2.0, 2.0)
+    }
+
+    quad = specs["quad-reach"]
+    assert quad["horizon"]["end"] == 5.0
+    assert quad["regions"][0]["bounds"] == {"x3": [0.94, 1.06]}
 
 
 def test_official_asset_inventory_and_detached_audit_receipt_are_bound():

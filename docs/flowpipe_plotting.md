@@ -84,13 +84,14 @@ different numerical horizon, unsafe source paths, malformed hashes, and the
 currently unsupported discrete-time domain. The checked-in
 `quad_archcomp26_shared_content.json` freezes only the QUAD initial-set and
 endpoint-goal content shared by the official sources. It deliberately says
-`run_binding=series_source_identity_instance_required`: every plotted observer
-must have the same benchmark and instance ID in a source identity verified
-across all observer sidecars. Old unbound data and native `ranges.bin` are
-therefore rejected by v2 instead of being relabelled after the fact. This
-instance binding still does not resolve the official dynamics/controller
-selection and is not evidence of a matched ARCH-COMP 2026 run; that warning is
-emitted into every generated figure footer.
+`run_binding=series_source_identity_plot_contract_required`: every plotted
+observer must have the same benchmark, instance ID, coordinate order, step
+size, and expected step count in a source identity verified across all
+observer sidecars. Old unbound data and native `ranges.bin` are therefore
+rejected by v2 instead of being relabelled after the fact. This plot-contract
+binding still does not resolve the official dynamics/controller selection and
+is not evidence of a matched ARCH-COMP 2026 run; that warning is emitted into
+every generated figure footer.
 
 The v2 source hashes are declarations copied from the independently audited
 official-source ledger. The exporter validates their shape and preserves them
@@ -100,7 +101,9 @@ The QUAD spec test cross-checks those declarations against
 `benchmarks/archcomp26/evidence/contract_audits_20261001.json`.
 V2 additionally requires a full-coordinate initial box, nonempty property
 regions, explicit region timing, and agreement between endpoint/all-times/
-eventually quantifiers and the declared horizon.
+eventually quantifiers and the declared horizon. A conjunction may combine
+multiple regions with distinct time scopes, such as NAV's all-time obstacle
+avoidance and endpoint goal.
 An explicitly supplied spec must decode to a JSON object; `null`, arrays, and
 other JSON types fail closed rather than being treated as no spec.
 Safe, Target, Unsafe, and informational regions have distinct stable styles.

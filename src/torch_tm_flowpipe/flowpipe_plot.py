@@ -37,7 +37,7 @@ RESULT_SUMMARY_KEYS = (
 )
 RESULT_TIMING_KEYS = {"process_s", "native_process_s", "supervisor_process_s"}
 REGION_ROLES = {"safe", "target", "unsafe", "informational"}
-PROPERTY_QUANTIFIERS = {"all_times", "endpoint", "eventually"}
+PROPERTY_QUANTIFIERS = {"all_times", "endpoint", "eventually", "conjunction"}
 RESULT_IDENTITY_BOUND = {
     "verified_equal_to_observer_sidecars_direct",
     "verified_to_observer_sidecars_via_hashed_INPUT",
@@ -1087,10 +1087,10 @@ def _validate_plot_spec(
             raise ValueError(
                 "v2 plot spec must declare official_contract_sources_hash_declared"
             )
-        if spec.get("run_binding") != "series_source_identity_instance_required":
+        if spec.get("run_binding") != "series_source_identity_plot_contract_required":
             raise ValueError(
                 "v2 plot spec must declare "
-                "run_binding=series_source_identity_instance_required"
+                "run_binding=series_source_identity_plot_contract_required"
             )
         source_refs = spec.get("source_refs")
         if not isinstance(source_refs, list) or not source_refs:
@@ -1256,27 +1256,16 @@ def _validate_plot_spec(
                 raise ValueError(
                     "v2 endpoint property regions must be at the horizon endpoint"
                 )
-            if quantifier == "all_times" and not (
-                kind == "all"
-                or (
-                    kind == "interval"
-                    and math.isclose(
-                        float(timing["lo"]), float(horizon["start"]),
-                        rel_tol=0.0, abs_tol=1e-12,
-                    )
-                    and math.isclose(
-                        float(timing["hi"]), float(horizon["end"]),
-                        rel_tol=0.0, abs_tol=1e-12,
-                    )
-                )
-            ):
+            if quantifier == "all_times" and kind not in {"all", "interval"}:
                 raise ValueError(
-                    "v2 all_times property regions must cover the full horizon"
+                    "v2 all_times property regions must use all or an interval"
                 )
             if quantifier == "eventually" and kind != "interval":
                 raise ValueError(
                     "v2 eventually property regions must use an explicit interval"
                 )
+        if quantifier == "conjunction" and len(property_regions) < 2:
+            raise ValueError("v2 conjunction requires at least two property regions")
     return binding_result
 
 
@@ -1284,9 +1273,12 @@ def _validate_plot_series_binding(
     spec_binding: dict[str, Any],
     benchmark: str,
     instance_id: str | None,
+    coordinate_names: list[str],
+    step_size: float,
+    expected_steps: int,
     series: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    if spec_binding.get("run_binding") != "series_source_identity_instance_required":
+    if spec_binding.get("run_binding") != "series_source_identity_plot_contract_required":
         return spec_binding
     for item in series:
         identity_record = item.get("source_identity")
@@ -1306,9 +1298,22 @@ def _validate_plot_series_binding(
             raise ValueError("series source_identity benchmark does not match plot spec")
         if identity.get("instance_id") != instance_id:
             raise ValueError("series source_identity instance_id does not match plot spec")
+        if identity.get("coordinate_names") != coordinate_names:
+            raise ValueError("series source_identity coordinate_names do not match plot spec")
+        identity_step_size = identity.get("step_size")
+        if (
+            not isinstance(identity_step_size, (int, float))
+            or isinstance(identity_step_size, bool)
+            or not math.isclose(
+                float(identity_step_size), step_size, rel_tol=0.0, abs_tol=1e-15
+            )
+        ):
+            raise ValueError("series source_identity step_size does not match geometry")
+        if identity.get("expected_steps") != expected_steps:
+            raise ValueError("series source_identity expected_steps does not match geometry")
     return {
         **spec_binding,
-        "status": "official_content_series_instance_binding_verified",
+        "status": "official_content_series_plot_contract_binding_verified",
     }
 
 
@@ -1529,7 +1534,8 @@ def export_geometry(
             }
         )
     spec_binding = _validate_plot_series_binding(
-        spec_binding, benchmark, instance_id, exported
+        spec_binding, benchmark, instance_id, coordinate_names,
+        step_size, expected_steps, exported,
     )
     geometry = {
         "schema": SCHEMA,
@@ -1830,7 +1836,8 @@ def validate_geometry(value: Any) -> dict[str, Any]:
         numerical_horizon=expected_steps * step_size,
     )
     binding = _validate_plot_series_binding(
-        binding, benchmark, instance_id, value["series"]
+        binding, benchmark, instance_id, coordinate_names,
+        step_size, expected_steps, value["series"],
     )
     if value.get("spec_binding") != binding:
         raise ValueError("geometry spec_binding is inconsistent with its plot spec")
@@ -2010,8 +2017,8 @@ def _coverage_lines(geometry: dict[str, Any]) -> list[str]:
     elif binding == "official_contract_sources_hash_declared":
         lines.append(
             f"Plot contract content: instance={geometry['instance_id']}; "
-            "official source hashes declared; series instance identity verified from all "
-            "observer sidecars."
+            "official source hashes declared; series benchmark, instance, coordinates, "
+            "step size, and horizon identity verified from all observer sidecars."
         )
         lines.append(geometry["spec_binding"]["warning"])
     return lines

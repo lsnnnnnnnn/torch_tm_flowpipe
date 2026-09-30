@@ -93,9 +93,19 @@ def collect_status(root: Path = ROOT) -> dict[str, Any]:
     ):
         raise ValueError("plot contract status does not match the 16-instance manifest")
     plot_counts = Counter(row.get("status") for row in plot_rows)
-    if plot_contracts.get("counts") != {
-        "instances": len(plot_rows), **dict(plot_counts)
-    }:
+    declared_plot_counts = plot_contracts.get("counts", {})
+    expected_plot_counts = {
+        "instances": len(plot_rows),
+        **{
+            label: plot_counts.get(label, 0)
+            for label in declared_plot_counts
+            if label != "instances"
+        },
+    }
+    if (
+        set(plot_counts) - (set(declared_plot_counts) - {"instances"})
+        or declared_plot_counts != expected_plot_counts
+    ):
         raise ValueError("plot contract status counts are inconsistent")
 
     huan = payload["huan_parity"]
