@@ -120,6 +120,53 @@ def test_legacy_14_mapping_does_not_hide_new_instances():
     assert any("report equations" in issue for issue in quad["known_issues"])
 
 
+def test_plot_contract_status_accounts_for_every_instance_without_promotion():
+    manifest = load("benchmarks/archcomp26/manifest.json")
+    status = load("benchmarks/plot_specs/archcomp26_status.json")
+    assert status["schema_version"] == "archcomp26-plot-contract-status-v1"
+    assert status["experiments_started"] is False
+    assert status["execution_contracts_resolved"] is False
+    assert status["source_manifest"] == "benchmarks/archcomp26/manifest.json"
+    assert status["source_contract_audits"] == manifest["contract_audits"]["path"]
+
+    expected = {
+        row["id"]: (row["benchmark"], row["contract_audit"])
+        for row in manifest["instances"]
+    }
+    rows = status["instances"]
+    assert len(rows) == len(expected) == 16
+    assert {row["instance_id"] for row in rows} == set(expected)
+    assert len({row["instance_id"] for row in rows}) == len(rows)
+    for row in rows:
+        assert (row["benchmark"], row["contract_audit"]) == expected[row["instance_id"]]
+        assert row["status"] in {
+            "materialized_v2_content_contract",
+            "axis_aligned_content_ready_not_materialized",
+            "blocked_fail_closed",
+        }
+        assert isinstance(row["content_blockers"], list)
+        if row["status"] == "blocked_fail_closed":
+            assert row["content_blockers"]
+        else:
+            assert row["content_blockers"] == []
+
+    counts = {
+        label: sum(row["status"] == label for row in rows)
+        for label in (
+            "materialized_v2_content_contract",
+            "axis_aligned_content_ready_not_materialized",
+            "blocked_fail_closed",
+        )
+    }
+    assert status["counts"] == {"instances": 16, **counts}
+    materialized = [row for row in rows if row["plot_spec"] is not None]
+    assert len(materialized) == 1
+    spec = load(materialized[0]["plot_spec"])
+    assert spec["instance_id"] == materialized[0]["instance_id"]
+    assert spec["benchmark"] == materialized[0]["benchmark"]
+    assert "execution contract unresolved" in spec["contract_status"]
+
+
 def test_official_asset_inventory_and_detached_audit_receipt_are_bound():
     manifest = load("benchmarks/archcomp26/manifest.json")
     inventory_path = ROOT / "benchmarks/archcomp26/official_assets.json"

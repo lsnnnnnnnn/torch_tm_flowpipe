@@ -40,6 +40,12 @@ def test_current_status_report_is_deterministic_and_fail_closed():
     assert status["p3"]["fullbatch_qualification"] is False
     assert status["p3"]["end_to_end_strict_certificate"] is False
     assert status["plot"]["experiments_started"] is False
+    assert status["plot_contracts"]["counts"] == {
+        "instances": 16,
+        "materialized_v2_content_contract": 1,
+        "axis_aligned_content_ready_not_materialized": 7,
+        "blocked_fail_closed": 8,
+    }
 
     report = render_markdown(status)
     assert report == render_markdown(collect_status())
@@ -47,6 +53,8 @@ def test_current_status_report_is_deterministic_and_fail_closed():
     assert "not the final experiment report" in report
     assert "Experiments paused: **yes**" in report
     assert "not a same-contract speedup ratio" in report
+    assert "fail-closed blocked=8" in report
+    assert "Plot content status does not resolve" in report
     assert "/Users/" not in report
     assert "/srv/" not in report
     assert report == (ROOT / "docs/ARCHCOMP26_EXECUTION_STATUS.md").read_text(

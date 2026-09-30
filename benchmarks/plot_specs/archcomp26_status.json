@@ -1,0 +1,190 @@
+{
+  "schema_version": "archcomp26-plot-contract-status-v1",
+  "as_of": "2026-10-01",
+  "source_manifest": "benchmarks/archcomp26/manifest.json",
+  "source_contract_audits": "benchmarks/archcomp26/evidence/contract_audits_20261001.json",
+  "experiments_started": false,
+  "execution_contracts_resolved": false,
+  "renderer_scope": {
+    "model_domain": "continuous_time",
+    "property_geometry": "axis_aligned_boxes",
+    "series_identity": "benchmark_and_instance_id_verified_across_all_observer_sidecars",
+    "unsupported": [
+      "discrete_index_sets",
+      "linear_halfspaces",
+      "nonlinear_coupled_constraints",
+      "unresolved_property_quantifiers"
+    ]
+  },
+  "counts": {
+    "instances": 16,
+    "materialized_v2_content_contract": 1,
+    "axis_aligned_content_ready_not_materialized": 7,
+    "blocked_fail_closed": 8
+  },
+  "instances": [
+    {
+      "instance_id": "acc-safe-distance",
+      "benchmark": "ACC",
+      "contract_audit": "acc",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "property_is_a_linear_halfspace_not_an_axis_aligned_box"
+      ],
+      "scope_note": "The full initial box is known, but the safety halfspace must not be approximated as a rectangle."
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "benchmark": "Airplane",
+      "contract_audit": "airplane",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "The two-second continuous-time initial/property geometry is source-audited; method execution fields remain unresolved."
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "benchmark": "Airplane",
+      "contract_audit": "airplane",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "discrete_index_set_not_supported_by_plot_spec_v2",
+        "discrete_transition_and_control_application_order_unresolved"
+      ],
+      "scope_note": "A continuous-time plot is not a substitute for k=0..20 discrete semantics."
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "benchmark": "Attitude Control",
+      "contract_audit": "attitude_control",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "report_checker_polarity_conflicts_with_avoidance_wording"
+      ],
+      "scope_note": "The initial and unsafe boxes are known, but v2 will not choose whether the property is avoidance or its negation."
+    },
+    {
+      "instance_id": "balancing-reach",
+      "benchmark": "Balancing",
+      "contract_audit": "balancing",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "property_time_boundary_conflict_closed_8_10_vs_t_greater_than_8",
+        "controller_input_contract_conflict_five_features_vs_four_raw_states"
+      ],
+      "scope_note": "Neither the t=8 boundary nor controller input semantics is guessed."
+    },
+    {
+      "instance_id": "docking-constraint",
+      "benchmark": "Docking",
+      "contract_audit": "docking",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "property_is_a_nonlinear_coupled_constraint_not_an_axis_aligned_box"
+      ],
+      "scope_note": "The full initial box and 40-second horizon are known; the coupled property requires a dedicated renderer."
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "benchmark": "Double Pendulum",
+      "contract_audit": "double_pendulum",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "Specification 1 has a source-audited full initial box, horizon, and all-times property box."
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "benchmark": "Double Pendulum",
+      "contract_audit": "double_pendulum",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "Specification 2 content is known; the incorrect legacy controller and singleton initial set cannot populate it."
+    },
+    {
+      "instance_id": "nav-standard",
+      "benchmark": "NAV",
+      "contract_audit": "navigation",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "The x/y initial, avoid, and endpoint target geometry is known; state/controller order remains an execution blocker."
+    },
+    {
+      "instance_id": "nav-robust",
+      "benchmark": "NAV",
+      "contract_audit": "navigation",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "The x/y initial, avoid, and endpoint target geometry is known; state/controller order remains an execution blocker."
+    },
+    {
+      "instance_id": "quad-reach",
+      "benchmark": "QUAD",
+      "contract_audit": "quadrotor",
+      "status": "materialized_v2_content_contract",
+      "plot_spec": "benchmarks/plot_specs/quad_archcomp26_shared_content.json",
+      "content_blockers": [],
+      "scope_note": "Only shared initial and endpoint-goal content is materialized; dynamics/controller selection remains unresolved."
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "benchmark": "Single Pendulum",
+      "contract_audit": "single_pendulum",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "The two physical-state content is known; the repository's extra clock derivative remains an execution blocker."
+    },
+    {
+      "instance_id": "tora-remain",
+      "benchmark": "TORA",
+      "contract_audit": "tora",
+      "status": "axis_aligned_content_ready_not_materialized",
+      "plot_spec": null,
+      "content_blockers": [],
+      "scope_note": "The remain property geometry is known; controller offset placement remains an execution blocker."
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "benchmark": "TORA",
+      "contract_audit": "tora",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "within_five_seconds_checker_quantifier_unresolved"
+      ],
+      "scope_note": "The target box is known, but v2 will not choose eventually versus terminal semantics."
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "benchmark": "TORA",
+      "contract_audit": "tora",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "within_five_seconds_checker_quantifier_unresolved"
+      ],
+      "scope_note": "The target box is known, but v2 will not choose eventually versus terminal semantics."
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "benchmark": "Unicycle",
+      "contract_audit": "unicycle",
+      "status": "blocked_fail_closed",
+      "plot_spec": null,
+      "content_blockers": [
+        "within_ten_seconds_checker_quantifier_unresolved",
+        "report_disturbance_missing_from_repository_dynamics"
+      ],
+      "scope_note": "Neither the temporal checker nor disturbed-versus-nominal contract is guessed."
+    }
+  ]
+}

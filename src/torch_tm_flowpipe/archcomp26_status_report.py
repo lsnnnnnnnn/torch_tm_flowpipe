@@ -26,6 +26,7 @@ INPUTS = {
         "research/gpu_verified_20260930/report/evidence/quad_trig_audit.json"
     ),
     "plot_receipt": Path("docs/evidence/flowpipe_plot_validation_20261001.json"),
+    "plot_contract_status": Path("benchmarks/plot_specs/archcomp26_status.json"),
     "native_recheck": Path("docs/evidence/remote_native_quad_recheck_20261001.json"),
 }
 
@@ -77,6 +78,25 @@ def collect_status(root: Path = ROOT) -> dict[str, Any]:
     })
     if missing_audits:
         raise ValueError(f"missing contract audits: {missing_audits}")
+    plot_contracts = payload["plot_contract_status"]
+    plot_rows = plot_contracts.get("instances", [])
+    expected_plot_instances = {
+        row["instance"]["id"]: row["instance"]["benchmark"] for row in rows
+    }
+    observed_plot_instances = {
+        row.get("instance_id"): row.get("benchmark")
+        for row in plot_rows
+    }
+    if (
+        len(plot_rows) != len(observed_plot_instances)
+        or observed_plot_instances != expected_plot_instances
+    ):
+        raise ValueError("plot contract status does not match the 16-instance manifest")
+    plot_counts = Counter(row.get("status") for row in plot_rows)
+    if plot_contracts.get("counts") != {
+        "instances": len(plot_rows), **dict(plot_counts)
+    }:
+        raise ValueError("plot contract status counts are inconsistent")
 
     huan = payload["huan_parity"]
     huan_rows = huan.get("rows")
@@ -110,6 +130,7 @@ def collect_status(root: Path = ROOT) -> dict[str, Any]:
         },
         "p3": payload["p3_audit"],
         "plot": payload["plot_receipt"],
+        "plot_contracts": plot_contracts,
         "native": payload["native_recheck"],
         "input_identities": {
             name: {"path": str(INPUTS[name]), "sha256": _sha256(path)}
@@ -196,6 +217,7 @@ def render_markdown(status: Mapping[str, Any]) -> str:
     huan = status["huan"]
     p3 = status["p3"]
     native = status["native"]["terminal_state"]
+    plot_contracts = status["plot_contracts"]
     lines.extend([
         "",
         "## Archived reference evidence (not matrix results)",
@@ -232,11 +254,27 @@ def render_markdown(status: Mapping[str, Any]) -> str:
         f"`{status['plot']['independent_geometry_check']['result']}`.",
         f"- Experiments started by plotting validation: "
         f"`{str(status['plot']['experiments_started']).lower()}`.",
+        "- Plot-contract accounting: "
+        f"materialized v2={plot_contracts['counts']['materialized_v2_content_contract']}; "
+        "axis-aligned content ready="
+        f"{plot_contracts['counts']['axis_aligned_content_ready_not_materialized']}; "
+        f"fail-closed blocked={plot_contracts['counts']['blocked_fail_closed']}.",
         f"- MATLAB: `{status['plot']['environment']['matlab']}`; Octave: "
         f"`{status['plot']['environment']['octave']}`. Generated `.m` files have "
         "static checks only.",
         "- Current exporter evidence covers axis-aligned box projections; it does "
         "not establish native octagon/support-direction parity.",
+        "- Plot content status does not resolve any method's execution contract.",
+        "",
+        "| Instance | Plot content status | Content blockers |",
+        "|---|---|---:|",
+    ])
+    for row in plot_contracts["instances"]:
+        lines.append(
+            f"| `{row['instance_id']}` | `{row['status']}` | "
+            f"{len(row['content_blockers'])} |"
+        )
+    lines.extend([
         "",
         "## Next gate",
         "",

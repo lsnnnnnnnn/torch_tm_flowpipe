@@ -21,6 +21,7 @@
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
 | `p3_audit` | `research/gpu_verified_20260930/report/evidence/quad_trig_audit.json` | `517bd183820d43af794d92b64434d84e05e9fb4fa120927f2e9bf3c41968add2` |
 | `plot_receipt` | `docs/evidence/flowpipe_plot_validation_20261001.json` | `f84edd7174a0e88de6124df7ec4c35440e5647238efe0fd4d7bf5f5ffc120a6d` |
+| `plot_contract_status` | `benchmarks/plot_specs/archcomp26_status.json` | `e007b04f1249f2b7a72c6403b34e65b0e0cc0ff0e67529680008f68af6d96d40` |
 | `native_recheck` | `docs/evidence/remote_native_quad_recheck_20261001.json` | `2655c3ec43f52e00d944810812ff02c3ed3b8187212dc98e9467120668293062` |
 
 ## Contract audit coverage
@@ -83,8 +84,29 @@ The Huan/P3 contracts differ in order, validation, arithmetic guarantees, instru
 - Saved artifact sets checked: 5.
 - Independent geometry check: `passed`.
 - Experiments started by plotting validation: `false`.
+- Plot-contract accounting: materialized v2=1; axis-aligned content ready=7; fail-closed blocked=8.
 - MATLAB: `not found`; Octave: `not found`. Generated `.m` files have static checks only.
 - Current exporter evidence covers axis-aligned box projections; it does not establish native octagon/support-direction parity.
+- Plot content status does not resolve any method's execution contract.
+
+| Instance | Plot content status | Content blockers |
+|---|---|---:|
+| `acc-safe-distance` | `blocked_fail_closed` | 1 |
+| `airplane-continuous` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `airplane-discrete` | `blocked_fail_closed` | 2 |
+| `attitude-control-avoid` | `blocked_fail_closed` | 1 |
+| `balancing-reach` | `blocked_fail_closed` | 2 |
+| `docking-constraint` | `blocked_fail_closed` | 1 |
+| `double-pendulum-less-robust` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `double-pendulum-more-robust` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `nav-standard` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `nav-robust` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `quad-reach` | `materialized_v2_content_contract` | 0 |
+| `single-pendulum-reach` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `tora-remain` | `axis_aligned_content_ready_not_materialized` | 0 |
+| `tora-reach-sigmoid` | `blocked_fail_closed` | 1 |
+| `tora-reach-tanh` | `blocked_fail_closed` | 1 |
+| `unicycle-reach` | `blocked_fail_closed` | 2 |
 
 ## Next gate
 

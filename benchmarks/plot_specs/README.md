@@ -18,3 +18,9 @@ mismatch. The current renderer accepts only continuous-time v2 specs and only
 axis-aligned property regions. Discrete index sets, halfspaces, and nonlinear
 coupled constraints require explicit future schema/renderer support; they must
 not be approximated as boxes.
+
+`archcomp26_status.json` accounts for all 16 non-VCAS instances without
+claiming that an execution contract is resolved. It separates materialized or
+extractable axis-aligned content from eight fail-closed cases where the current
+renderer cannot express the property or authoritative temporal semantics still
+conflict.
