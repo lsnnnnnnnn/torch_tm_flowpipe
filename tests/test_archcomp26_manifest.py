@@ -292,13 +292,23 @@ def test_official_asset_inventory_and_detached_audit_receipt_are_bound():
     assets = json.loads(inventory_path.read_text(encoding="utf-8"))
     receipt = load("benchmarks/archcomp26/evidence/official_assets_audit_20261001.json")
     commit = manifest["official_sources"]["benchmark_repository"]["commit"]
+    inventory_link = manifest["official_sources"]["asset_inventory"]
     assert assets["schema_version"] == "archcomp26-official-assets-v1"
     assert assets["source_commit"] == commit
-    assert receipt["remote_ref_observed_commit"] == commit
-    assert receipt["detached_checkout_commit"] == commit
-    assert receipt["inventory"]["sha256"] == hashlib.sha256(
+    assert inventory_link["sha256"] == hashlib.sha256(
         inventory_path.read_bytes()
     ).hexdigest()
+    audit_link = inventory_link["audit_receipt"]
+    audit_path = ROOT / audit_link["path"]
+    assert audit_link["sha256"] == hashlib.sha256(audit_path.read_bytes()).hexdigest()
+    assert audit_link["schema_version"] == receipt["schema_version"]
+    assert receipt["remote_ref_observed_commit"] == commit
+    assert receipt["detached_checkout_commit"] == commit
+    assert receipt["inventory"] == {
+        "path": inventory_link["path"],
+        "schema_version": inventory_link["schema_version"],
+        "sha256": inventory_link["sha256"],
+    }
     assert receipt["inventory"]["schema_version"] == assets["schema_version"]
 
     rows = assets["instances"]

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from torch_tm_flowpipe.archcomp26_preflight import (
+    _contract_type_errors,
     preflight_reasons,
     validate_matrix,
 )
@@ -60,10 +61,9 @@ def synthetic_inputs(tmp_path: Path, instance_id: str, profile: str):
     manifest, matrix = inputs()
     manifest = copy.deepcopy(manifest)
     matrix = copy.deepcopy(matrix)
-    inventory = load("benchmarks/archcomp26/official_assets.json")
-    manifest["official_sources"]["asset_inventory"]["path"] = "official_assets.json"
-    write_json(tmp_path / "official_assets.json", inventory)
     for link in (
+        manifest["official_sources"]["asset_inventory"],
+        manifest["official_sources"]["asset_inventory"]["audit_receipt"],
         manifest["instance_contract_record"], matrix["result_record_contract"]
     ):
         source = ROOT / link["path"]
@@ -86,11 +86,15 @@ def synthetic_inputs(tmp_path: Path, instance_id: str, profile: str):
             value = ["x"]
         elif dotted == "initial_set.partitions":
             value = [{"x": [0.0, 1.0]}]
+        elif dotted == "remainder.cutoff":
+            value = 1e-6
+        elif dotted == "remainder.cap":
+            value = 0.1
         elif dotted in {
             "integration.step_size", "integration.solution_order",
             "integration.validation_order", "integration.horizon",
             "controller_update.period", "controller_update.nn_calls",
-            "remainder.cutoff", "remainder.cap", "remainder.symbolic_queue",
+            "remainder.symbolic_queue",
             "discrete.transition_count", "discrete.sample_period",
             "controller_update.period_steps",
         }:
@@ -330,6 +334,97 @@ def test_status_flip_without_bound_contract_record_is_rejected():
     assert "contract_invalid" in preflight_reasons(
         broken, matrix, "quad-reach", "pytorch_gpu"
     )
+
+
+def test_missing_contract_record_is_the_only_launch_gate_in_valid_fixture(tmp_path):
+    manifest, matrix, _, _, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    assert preflight_reasons(
+        manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path
+    ) == []
+    row = next(row for row in manifest["instances"] if row["id"] == "acc-safe-distance")
+    row["contract"].pop("record")
+    reasons = preflight_reasons(
+        manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path
+    )
+    assert "contract_invalid" in reasons
+    assert "experiments_paused" not in reasons
+    assert "contract_unresolved" not in reasons
+    assert not any(reason.endswith("_missing") for reason in reasons)
+
+
+def test_official_asset_inventory_and_receipt_are_hash_bound(tmp_path):
+    manifest, matrix, _, _, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    inventory = manifest["official_sources"]["asset_inventory"]
+    for link, label in (
+        (inventory, "official_sources.asset_inventory"),
+        (inventory["audit_receipt"], "official_sources.asset_inventory.audit_receipt"),
+    ):
+        path = tmp_path / link["path"]
+        original = path.read_bytes()
+        path.write_bytes(original + b"\n")
+        errors = validate_matrix(manifest, matrix, root=tmp_path)
+        assert any(label in error and "SHA-256" in error for error in errors)
+        path.write_bytes(original)
+
+    broken = copy.deepcopy(manifest)
+    broken["official_sources"]["asset_inventory"]["schema_version"] = "wrong"
+    assert any("inventory has the wrong schema_version" in error for error in
+               validate_matrix(broken, matrix, root=tmp_path))
+    broken = copy.deepcopy(manifest)
+    broken["official_sources"]["asset_inventory"]["audit_receipt"][
+        "schema_version"
+    ] = "wrong"
+    assert any("audit receipt has the wrong schema_version" in error for error in
+               validate_matrix(broken, matrix, root=tmp_path))
+
+
+def test_contract_evidence_supports_reject_duplicates(tmp_path):
+    manifest, matrix, record, _, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    row = next(row for row in manifest["instances"] if row["id"] == "acc-safe-distance")
+    record_path = tmp_path / row["contract"]["record"]["path"]
+    record["evidence"][0]["supports"].append(record["evidence"][0]["supports"][0])
+    row["contract"]["record"]["sha256"] = write_json(record_path, record)
+    errors = validate_matrix(manifest, matrix, root=tmp_path)
+    assert any("supports: duplicate fields" in error for error in errors)
+
+
+def test_fractional_remainder_contract_values_and_invalid_boundaries(tmp_path):
+    manifest, matrix, record, _, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    assert record["fields"]["remainder"] == {
+        "cutoff": 1e-6, "cap": 0.1, "symbolic_queue": 1,
+    }
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
+    zero_remainder = copy.deepcopy(record["fields"])
+    zero_remainder["remainder"].update({"cutoff": 0.0, "cap": 0.0})
+    assert _contract_type_errors(
+        zero_remainder, "full_execution_contract_v1", "acc-safe-distance"
+    ) == []
+    for dotted, invalid in (
+        ("remainder.cutoff", True),
+        ("remainder.cutoff", -1e-6),
+        ("remainder.cutoff", float("nan")),
+        ("remainder.cap", True),
+        ("remainder.cap", -0.1),
+        ("remainder.cap", float("inf")),
+        ("remainder.symbolic_queue", 1.5),
+        ("remainder.symbolic_queue", True),
+        ("remainder.symbolic_queue", -1),
+    ):
+        broken = copy.deepcopy(record)
+        set_dotted(broken["fields"], dotted, invalid)
+        errors = _contract_type_errors(
+            broken["fields"], "full_execution_contract_v1", "acc-safe-distance"
+        )
+        assert any(dotted in error for error in errors), (dotted, invalid)
 
 
 def test_synthetic_continuous_contract_and_cell_complete_full_profile(tmp_path):

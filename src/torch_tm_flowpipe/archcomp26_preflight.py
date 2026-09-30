@@ -15,6 +15,8 @@ DEFAULT_MANIFEST = ROOT / "benchmarks/archcomp26/manifest.json"
 MATRIX_SCHEMA = "archcomp26-execution-matrix-v2"
 RESULT_SCHEMA = "archcomp26-cell-result-v1"
 INSTANCE_SCHEMA = "archcomp26-instance-contract-v1"
+OFFICIAL_ASSETS_SCHEMA = "archcomp26-official-assets-v1"
+OFFICIAL_ASSETS_AUDIT_SCHEMA = "archcomp26-official-assets-audit-v1"
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 TERMINAL_STATUSES = {"completed", "failed", "timeout", "interrupted", "skipped"}
 CANONICAL_OUTCOMES = {
@@ -210,12 +212,19 @@ def _contract_type_errors(
                 f"{instance}: resolved contract field {nn_path} must be a non-negative integer"
             )
     if profile == "full_execution_contract_v1":
-        for dotted in ("remainder.cutoff", "remainder.cap", "remainder.symbolic_queue"):
-            value = _dotted(fields, dotted)
-            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        for dotted in ("remainder.cutoff", "remainder.cap"):
+            if not _is_finite_number(_dotted(fields, dotted)):
                 errors.append(
-                    f"{instance}: resolved contract field {dotted} must be a non-negative integer"
+                    f"{instance}: resolved contract field {dotted} "
+                    "must be a finite non-negative number"
                 )
+        dotted = "remainder.symbolic_queue"
+        value = _dotted(fields, dotted)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            errors.append(
+                f"{instance}: resolved contract field {dotted} "
+                "must be a non-negative integer"
+            )
     elif profile == "discrete_execution_contract_v1":
         index_set = _dotted(fields, "discrete.index_set")
         transitions = _dotted(fields, "discrete.transition_count")
@@ -277,11 +286,84 @@ def _validate_contracts(
         )
         errors.extend(bound_errors)
 
-    inventory_path = _dotted(manifest, "official_sources.asset_inventory.path")
     inventory_by_id: dict[str, Any] = {}
-    if isinstance(inventory_path, str):
+    inventory_link = _dotted(manifest, "official_sources.asset_inventory")
+    inventory_errors = _exact_keys(
+        inventory_link,
+        {"path", "schema_version", "sha256", "audit_receipt", "status"},
+        "official_sources.asset_inventory",
+    )
+    errors.extend(inventory_errors)
+    inventory_path: Path | None = None
+    if not inventory_errors:
+        if inventory_link["schema_version"] != OFFICIAL_ASSETS_SCHEMA:
+            errors.append("official asset inventory has the wrong schema_version")
+        inventory_path, bound_errors = _bound_file(
+            root,
+            inventory_link["path"],
+            inventory_link["sha256"],
+            "official_sources.asset_inventory",
+        )
+        errors.extend(bound_errors)
+        audit_link = inventory_link["audit_receipt"]
+        audit_errors = _exact_keys(
+            audit_link, {"path", "schema_version", "sha256"},
+            "official_sources.asset_inventory.audit_receipt",
+        )
+        errors.extend(audit_errors)
+        audit_path: Path | None = None
+        if not audit_errors:
+            if audit_link["schema_version"] != OFFICIAL_ASSETS_AUDIT_SCHEMA:
+                errors.append("official asset audit receipt has the wrong schema_version")
+            audit_path, audit_bound_errors = _bound_file(
+                root, audit_link["path"], audit_link["sha256"],
+                "official_sources.asset_inventory.audit_receipt",
+            )
+            errors.extend(audit_bound_errors)
+        if audit_path is not None:
+            try:
+                audit = _load(audit_path)
+            except (OSError, ValueError, json.JSONDecodeError) as error:
+                errors.append(f"official asset audit receipt cannot be loaded: {error}")
+            else:
+                pinned_repository = _dotted(
+                    manifest, "official_sources.benchmark_repository"
+                )
+                expected_inventory = {
+                    "path": inventory_link["path"],
+                    "schema_version": inventory_link["schema_version"],
+                    "sha256": inventory_link["sha256"],
+                }
+                if audit.get("schema_version") != audit_link["schema_version"]:
+                    errors.append("official asset audit receipt schema mismatch")
+                if audit.get("inventory") != expected_inventory:
+                    errors.append("official asset audit receipt inventory binding mismatch")
+                if not isinstance(pinned_repository, Mapping) or (
+                    audit.get("source_repository") != pinned_repository.get("url")
+                    or audit.get("remote_ref_observed_commit")
+                    != pinned_repository.get("commit")
+                    or audit.get("detached_checkout_commit")
+                    != pinned_repository.get("commit")
+                ):
+                    errors.append("official asset audit receipt repository identity mismatch")
+                verification = audit.get("verification")
+                if not isinstance(verification, Mapping) or (
+                    verification.get("result") != "passed"
+                    or verification.get("missing_count") != 0
+                    or verification.get("mismatch_count") != 0
+                ):
+                    errors.append("official asset audit receipt did not pass")
+    if inventory_path is not None:
         try:
-            inventory = _load(root / inventory_path)
+            inventory = _load(inventory_path)
+            pinned_repository = _dotted(manifest, "official_sources.benchmark_repository")
+            if (
+                inventory.get("schema_version") != inventory_link["schema_version"]
+                or not isinstance(pinned_repository, Mapping)
+                or inventory.get("source_repository") != pinned_repository.get("url")
+                or inventory.get("source_commit") != pinned_repository.get("commit")
+            ):
+                errors.append("official asset inventory repository identity mismatch")
             inventory_by_id = {
                 row["id"]: row for row in inventory.get("instances", [])
                 if isinstance(row, dict) and "id" in row
@@ -414,9 +496,11 @@ def _validate_contracts(
                 continue
             supports = item["supports"]
             if not isinstance(supports, list) or not supports \
-                    or not all(isinstance(name, str) for name in supports):
+                    or not all(isinstance(name, str) and name for name in supports):
                 errors.append(f"{label}.supports: expected non-empty string array")
             else:
+                if len(supports) != len(set(supports)):
+                    errors.append(f"{label}.supports: duplicate fields are not allowed")
                 unknown = sorted(set(supports) - set(shared_required))
                 if unknown:
                     errors.append(f"{label}.supports: unknown shared fields {unknown}")

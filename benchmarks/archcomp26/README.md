@@ -9,6 +9,10 @@ specification, dynamics, and controller file candidate(s) at the pinned
 repository commit. It deliberately leaves multiple official controller files,
 continuous/discrete semantics, non-ONNX ingestion, and every execution-policy
 field unresolved instead of guessing.
+`manifest.json` hash-binds both this inventory and its detached-checkout audit
+receipt; preflight also requires their repository URL, commit, schema, and
+zero-mismatch receipt fields to agree before an external source identity can
+support a resolved contract.
 
 `execution_matrix.json` is the machine-readable 16-by-4 result index. Its
 complete default cell records support/blockers, commands, source and binary

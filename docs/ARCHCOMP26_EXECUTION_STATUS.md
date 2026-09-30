@@ -15,7 +15,7 @@
 
 | Input | Repository-relative path | SHA-256 |
 |---|---|---|
-| `manifest` | `benchmarks/archcomp26/manifest.json` | `6396a82a282aba1ffba97aae7ebcf6af3313df5141f575363ae3efad9a330c2b` |
+| `manifest` | `benchmarks/archcomp26/manifest.json` | `fa4ea7a9f62566c080697f32af28a39312a14a30f59794725b43ba1b6615560a` |
 | `matrix` | `benchmarks/archcomp26/execution_matrix.json` | `ab61dd16f8919596d968b226831a52a5c4f5d02cd5d8a5daa89d72935cbdbce4` |
 | `contract_audits` | `benchmarks/archcomp26/evidence/contract_audits_20261001.json` | `63ad3c7d6f120f799475a6fcaaec0e9a9036bcc8bf20e6c30aa70944d26be5e6` |
 | `huan_parity` | `research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json` | `8651b97943518f6d16e6d73787df624292b3b903ddb9001c5d578cb823144947` |
