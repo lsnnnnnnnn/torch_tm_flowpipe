@@ -21,8 +21,10 @@ result. Huan used working order 2 and validation level 1 in parity mode. The
 current completed PyTorch route uses working order 3, point order 2,
 validation order 4, and the repaired strict arithmetic/dataflow. Its single
 completion run took 1,533.752052 s; 1,234.852041 s was in advance, while range
-observation took 75.132491 s, working-prune instrumentation took 192.952505 s,
-and NN bounds took 3.533022 s. Dividing
+observation took 75.132491 s, the working-prune timed region took 192.952505 s,
+and NN bounds took 3.533022 s. That working-prune region mixes diagnostic
+hashing with required graph eviction, so 192.952505 s is only an upper bound
+on removable diagnostic overhead. Dividing
 1,533.752052 by 75.250099 gives about 20.38, but that ratio mixes algorithmic
 order, numerical guarantee, implementation, instrumentation, and timing
 boundaries. It is not an eligible same-contract speedup claim.
@@ -86,11 +88,42 @@ mode, not evidence that every author result is invalid.
 | Point-coefficient trust boundary | clean Huan `polynomial.py`, `sparse_exec.py`, `symbolic_remainder.py` | Both modes retain point-coefficient/Phi paths. Clean strict adds selected final-contraction and replay charges but still leaves named point/Phi roundoff gaps. | Therefore clean `--strict` is not an end-to-end certificate, while parity deliberately omits still more charges. | Exact-rational witness and proof-closure report identify the gap; no claim that every point operation explains step 597. |
 | Reciprocal and remainder routes | clean Huan `interval.py:188-230`, compiled replay/VAR paths | Base interval reciprocal/division is shared; the strict-dependent difference in the qualified replay is the addition of saved VAR truncation tails, not a wholly different reciprocal algorithm. | Reciprocal/domain handling and strict remainder replay must be classified separately. | Five-route reciprocal qualification belongs to the repaired current engine; it must not be retroactively attributed to the clean Huan run. |
 | Endpoint and controller injection | Huan driver `_inject_core[_s]`, `inject_controls[_s]`; endpoint publication paths | Same-slope CROWN injection and endpoint publication run in both modes; their point-weighted coefficients/remainders inherit the surrounding arithmetic limitations. | `box`, `hybrid`, transfer dtype, endpoint handling, and strict/parity are distinct axes. | The saved parity and strict runs share same-slope/native-f64 but diverge in plant-mode accounting. |
-| Current P3 K20 interval-SR route (not clean Huan) | frozen current source `sr_kernels.py`, interval-Phi/coefficient repair paths | Current P3 propagates interval-valued SR/Phi accounting with a bounded K20 working route; clean Huan stores point Phi matrices plus interval J columns. | Huan's proven batch-only chunking idea may be portable, but its point-SR implementation cannot be copied as if representation-equivalent. | Port only after real-input output and full-state equivalence qualification. |
+| Current P3 K20 interval-SR route (not clean Huan) | frozen current `symbolic_remainder.py:300-350`, `sr_kernels.py`, `sr_sum_kernels.py`, and `quad_sr_reassociate_20260928/host_ledger.py:39-128` | Current P3 propagates interval-valued SR/Phi accounting. Its CUDA matrix update avoids the `Q*B*n^3` broadcast, its history image uses a `Q*B*n*2` workspace, and K20 reconstruction chunks only independent lanes while retaining the full original Phi/J queues and Q reduction. | This already applies the portable principle at the strict representation's actual cost centers. Huan's point-SR patch is not a drop-in strict-P3 optimization. | Frozen RESULT records both CUDA extensions, K20, and lane chunk 16; no extra Huan-style patch is justified without a profile showing a remaining SR bottleneck. |
 
 `box`, `hybrid`, `same-slope`, transfer dtype, plant mode, and P2/P3 are
 separate axes. In particular, box does not mean strict, and hybrid does not
 mean parity.
+
+### B-axis SR portability decision
+
+The archived Huan patch is present in the evidence workspace as
+`results/archcomp_failure_20260923/evidence/source_evidence/huan_sr_chunk.patch`
+(SHA-256 `065f577a26e137f86f4986086e2aec1093ee71ea165a6e8d1c0ac28a8b719ef0`).
+It changes only the non-strict point-Phi history image: `dot_point_iv` is run
+on independent blocks of 128 lanes, the complete `[B,Q,n,2]` terms tensor is
+still retained, and the original Q-axis reduction is unchanged. At
+`B=1024,Q=999,n=16,float64`, that terms tensor is about 250 MiB; the patch's
+purpose is to avoid the much larger broadcast temporary inside the dot.
+
+That exact operation is not the completed P3 strict path. The frozen P3 source
+uses a directed-rounding interval-matrix kernel for Phi history updates and a
+two-stage directed history-sum kernel whose only large scratch has shape
+`[Q,B,n,2]`. The K20 host-factor adapter separately reconstructs eligible
+lanes in blocks of 16 while preserving the full-B Phi/J storage and original
+Q reduction. The completed RESULT binds `sr_kernels.py` to
+`69bb07257ad8cba029a611f9099e015c5175bbba72a0f86bf8f54549dc29dfc2`,
+`sr_sum_kernels.py` to
+`de76dc539c109065779292751a5650f330b8dddbade8248d1bbd23050737bd3b`,
+the host adapter to
+`1a7d9bbf0f16a4f3726b75a27ff938ff87b918141a5f0fe1504f26198dc4035b`,
+and records both loaded extension paths, K20, and lane chunk 16.
+
+Therefore the Huan patch is classified as an already-consumed design lesson,
+not as an unimplemented P3 code change. A new SR implementation is warranted
+only if a matched profile of the completed strict route shows SR is still a
+material bottleneck. The present full-run profile instead places the dominant
+cost in advance/validation, so the next bounded optimization study should
+start there.
 
 ## Completed and failed results
 
@@ -173,7 +206,7 @@ The current PyTorch full-run breakdown is concrete:
 |---|---:|---|
 | Advance | 1,234.852041 | Dominant solver work; about 80.6% of the 1,531.395193 s internal process time |
 | Observer | 75.132491 | Saved tube/endpoint bounds; already comparable in magnitude to an entire Huan parity process |
-| Working-prune instrumentation | 192.952505 | About 12.6% of internal process time and larger than observer cost; diagnostic instrumentation, not Huan-matched work |
+| Working-prune timed region | 192.952505 | About 12.6% of internal process time and larger than observer cost; includes diagnostic hashing plus required graph eviction, so it is an upper bound rather than a measured removable overhead |
 | NN bounds | 3.533022 | Not the dominant gap |
 | Boundary | 8.830551 | Strict endpoint/control boundary work |
 | Checkpoint | 0.312904 | Not the dominant gap |
@@ -196,7 +229,7 @@ allocator behavior.
 
 | Candidate | Correctness condition | Evidence now | Current disposition |
 |---|---|---|---|
-| Independent B-axis SR chunking | Preserve full terms/history, Q summation order, and per-lane state | Covered qualification outputs/full SR state are bitwise equal; saved strict metrics differ only in elapsed time; completed chunked parity repeats agree with each other | Worth adapting only after mapping the current interval-SR dataflow; do not copy the old point-Phi implementation blindly |
+| Independent B-axis SR chunking | Preserve full terms/history, Q summation order, interval-Phi enclosure, and per-lane state | Huan point-Phi qualification is bitwise equal over the covered matrix; current strict P3 already uses no-cubic-broadcast interval kernels plus lane-chunked K20 reconstruction, with exact source/extension identities in the completed RESULT | Design lesson already consumed; do not transplant the point-Phi patch. Reopen only if a matched strict-P3 profile identifies a remaining SR bottleneck |
 | Direct trig reuse within one immutable validation plan | Reused entry must have identical operation, source slot, order, tables, and owner generation | 1,000 observer and 101 controller/transfer/terminal PT files are byte-identical; final plant/SR snapshots audit equal; about 2.056x wall improvement over prior P3 | Implemented and retained |
 | Kernel preload | Same kernels/build identity; no fallback hidden by preload | Availability present, benefit not isolated | Profile/ablate later; no speed claim now |
 | Cache release policy | Never release live tensors; numerical state signatures unchanged | Huan runner asserts allocated bytes unchanged | Low-priority allocator experiment after matched profile |
@@ -209,17 +242,25 @@ allocator behavior.
 Experiments remain paused. When the user explicitly resumes them, the first
 action is a read-only recheck of the native matched initial-cover QUAD job's
 terminal state; no old job is restarted. After that gate, the smallest interpretable Huan/P3
-study is:
+study is a pair of fresh-process 40-step diagnostic arms, not another full
+1,000-step launch and not evidence that may be extrapolated to a full run:
 
-1. Profile the same saved-input stage and use matching timing boundaries.
-2. Separate algorithm variants (P2/P3 and validation level) from
+1. Run a qualification/profile arm on the same saved-input stage with the
+   existing detailed instrumentation, matching timing boundaries, and the
+   existing full output/plant/SR/host-state equivalence checks.
+2. Run a clean performance arm with reference hashing, comparison, and log I/O
+   outside the timed solver window, while retaining real pruning and graph
+   eviction. Compare it only with the matched qualification arm.
+3. Separate algorithm variants (P2/P3 and validation level) from
    implementation-equivalent changes.
-3. For Huan strict diagnostics, toggle one existing charge at a time only in a
+4. For Huan strict diagnostics, toggle one existing charge at a time only in a
    labelled non-certifying ablation and compare the common accepted prefix;
    never report an incomplete failure time as a full-run speed.
-4. Port B-axis SR chunking only after a real-input output/state equivalence
-   gate for the repaired interval-SR route.
-5. Measure preload/cache behavior in fresh processes with frozen source,
+5. Do not port the old point-Phi B-axis patch into strict P3. First measure the
+   frozen interval-SR kernels on the same saved-input stage; only a material SR
+   bottleneck may justify a new representation-correct candidate, followed by
+   real-input output/full-state equivalence gates.
+6. Measure preload/cache behavior in fresh processes with frozen source,
    extension, model, box, and hardware identity.
 
 ## Unresolved items
