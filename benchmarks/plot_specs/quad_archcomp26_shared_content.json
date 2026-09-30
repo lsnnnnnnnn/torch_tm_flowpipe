@@ -1,0 +1,64 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v2",
+  "benchmark": "QUAD",
+  "instance_id": "quad-reach",
+  "contract_status": "official shared initial/property content frozen; dynamics, controller selection, and full execution contract unresolved",
+  "identity_binding": "official_contract_sources_hash_declared",
+  "run_binding": "series_source_identity_instance_required",
+  "warning": "The plotted series is bound only to its declared QUAD instance identity. Do not present it as a matched ARCH-COMP 2026 QUAD run unless the run separately selects and binds the official dynamics and controller identities.",
+  "model_domain": "continuous_time",
+  "source_refs": [
+    {
+      "path": "benchmarks/QUAD/Specifications.txt",
+      "sha256": "75d19a03debcd1abbb01a139e830506ecb8e6ef28d41811f201aeaba20dc53cd"
+    },
+    {
+      "path": "reference/ARCH_COMP26_AINNCS.pdf",
+      "sha256": "964326d7d418eeb9ecc258c655f358e1764fdb08fdc1d97e0a12432cc3c7fb3e"
+    }
+  ],
+  "horizon": {
+    "kind": "continuous_time",
+    "start": 0.0,
+    "end": 5.0
+  },
+  "property_quantifier": "endpoint",
+  "coordinate_names": [
+    "x1", "x2", "x3", "x4", "x5", "x6",
+    "x7", "x8", "x9", "x10", "x11", "x12"
+  ],
+  "units": {
+    "t": "s"
+  },
+  "initial_set": {
+    "label": "Official shared QUAD initial set",
+    "bounds": {
+      "x1": [-0.4, 0.4],
+      "x2": [-0.4, 0.4],
+      "x3": [-0.4, 0.4],
+      "x4": [-0.4, 0.4],
+      "x5": [-0.4, 0.4],
+      "x6": [-0.4, 0.4],
+      "x7": [0.0, 0.0],
+      "x8": [0.0, 0.0],
+      "x9": [0.0, 0.0],
+      "x10": [0.0, 0.0],
+      "x11": [0.0, 0.0],
+      "x12": [0.0, 0.0]
+    }
+  },
+  "regions": [
+    {
+      "label": "Official shared endpoint goal at t=5 s",
+      "role": "target",
+      "bounds": {
+        "x3": [0.94, 1.06]
+      },
+      "time": {
+        "kind": "endpoint",
+        "at": 5.0
+      },
+      "interpretation": "Shared goal geometry only; dynamics/controller selection remains unresolved."
+    }
+  ]
+}

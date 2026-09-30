@@ -76,6 +76,31 @@ It encodes the archived author-reproduction initial set and
 `0.94 <= x3 <= 1.06` as a target only at `t=5 s`, not as a safety band over the
 take-off trajectory. It is explicitly unbound and must not be presented as
 the unresolved ARCH-COMP 2026 QUAD contract.
+
+Plot-spec v2 adds an exact `instance_id`, continuous-time horizon,
+property quantifier, and SHA-256 source references. Use it with the matching
+`--instance-id`; the exporter rejects a missing or different instance, a
+different numerical horizon, unsafe source paths, malformed hashes, and the
+currently unsupported discrete-time domain. The checked-in
+`quad_archcomp26_shared_content.json` freezes only the QUAD initial-set and
+endpoint-goal content shared by the official sources. It deliberately says
+`run_binding=series_source_identity_instance_required`: every plotted observer
+must have the same benchmark and instance ID in a source identity verified
+across all observer sidecars. Old unbound data and native `ranges.bin` are
+therefore rejected by v2 instead of being relabelled after the fact. This
+instance binding still does not resolve the official dynamics/controller
+selection and is not evidence of a matched ARCH-COMP 2026 run; that warning is
+emitted into every generated figure footer.
+
+The v2 source hashes are declarations copied from the independently audited
+official-source ledger. The exporter validates their shape and preserves them
+in geometry; it does not fetch or re-hash the external ARCH-COMP repository.
+The QUAD spec test cross-checks those declarations against
+`benchmarks/archcomp26/manifest.json` and
+`benchmarks/archcomp26/evidence/contract_audits_20261001.json`.
+V2 additionally requires a full-coordinate initial box, nonempty property
+regions, explicit region timing, and agreement between endpoint/all-times/
+eventually quantifiers and the declared horizon.
 An explicitly supplied spec must decode to a JSON object; `null`, arrays, and
 other JSON types fail closed rather than being treated as no spec.
 Safe, Target, Unsafe, and informational regions have distinct stable styles.

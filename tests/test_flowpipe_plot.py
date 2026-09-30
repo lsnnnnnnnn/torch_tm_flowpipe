@@ -18,10 +18,10 @@ from torch_tm_flowpipe.flowpipe_plot import (
 )
 
 
-def observer(path: Path, step: int, *, accepted=(True, True)) -> None:
-    bounds = torch.zeros((len(accepted), 3, 4), dtype=torch.float64)
+def observer(path: Path, step: int, *, accepted=(True, True), state_count=3) -> None:
+    bounds = torch.zeros((len(accepted), state_count, 4), dtype=torch.float64)
     for lane in range(len(accepted)):
-        for state in range(3):
+        for state in range(state_count):
             center = 10 * step + 2 * lane + state
             bounds[lane, state] = torch.tensor(
                 [center - 1, center + 1, center - .25, center + .25],
@@ -104,7 +104,173 @@ def legacy_spec(*, timed_state_region=False):
     }
 
 
+def official_spec():
+    return {
+        "schema": "torch-tm-flowpipe-plot-spec-v2",
+        "benchmark": "demo",
+        "instance_id": "demo-continuous",
+        "contract_status": "official content frozen; execution contract unresolved",
+        "identity_binding": "official_contract_sources_hash_declared",
+        "run_binding": "series_source_identity_instance_required",
+        "warning": "Instance-bound only; do not claim a matched official solver run.",
+        "model_domain": "continuous_time",
+        "source_refs": [
+            {"path": "benchmarks/demo/Specifications.txt", "sha256": "a" * 64},
+        ],
+        "horizon": {"kind": "continuous_time", "start": 0.0, "end": 1.0},
+        "property_quantifier": "endpoint",
+        "coordinate_names": ["x1", "x2", "x3"],
+        "units": {"t": "s", "x1": "m"},
+        "initial_set": {
+            "label": "Official initial set",
+            "bounds": {
+                "x1": [-1.0, 1.0],
+                "x2": [-2.0, 2.0],
+                "x3": [0.0, 0.0],
+            },
+        },
+        "regions": [{
+            "label": "Official endpoint target",
+            "role": "target",
+            "bounds": {"x1": [-0.5, 0.5]},
+            "time": {"kind": "endpoint", "at": 1.0},
+        }],
+    }
+
+
 class FlowpipePlotTests(unittest.TestCase):
+    def test_checked_in_quad_v2_spec_is_content_only_and_valid(self):
+        spec_path = (
+            Path(__file__).resolve().parents[1]
+            / "benchmarks/plot_specs/quad_archcomp26_shared_content.json"
+        )
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        repo_root = Path(__file__).resolve().parents[1]
+        manifest = json.loads(
+            (repo_root / "benchmarks/archcomp26/manifest.json").read_text(encoding="utf-8")
+        )
+        audits = json.loads(
+            (repo_root / "benchmarks/archcomp26/evidence/contract_audits_20261001.json")
+            .read_text(encoding="utf-8")
+        )
+        sources = {item["path"]: item["sha256"] for item in spec["source_refs"]}
+        matching_instances = [
+            item for item in manifest["instances"]
+            if item["id"] == spec["instance_id"]
+            and item["benchmark"] == spec["benchmark"]
+        ]
+        self.assertEqual(len(matching_instances), 1)
+        self.assertEqual(
+            sources["reference/ARCH_COMP26_AINNCS.pdf"],
+            manifest["official_sources"]["report"]["pdf_sha256"],
+        )
+        self.assertEqual(
+            sources["benchmarks/QUAD/Specifications.txt"],
+            audits["audits"]["quadrotor"]["source_files"]["specification"]["sha256"],
+        )
+        self.assertEqual(spec["instance_id"], "quad-reach")
+        self.assertIn("full execution contract unresolved", spec["contract_status"])
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            observer(root, 1, state_count=12)
+            sidecar(root, 1, {"benchmark": "QUAD", "instance_id": "quad-reach"})
+            geometry = export_geometry(
+                [("instance-bound test series", root)],
+                benchmark="QUAD",
+                instance_id="quad-reach",
+                coordinate_names=[f"x{index}" for index in range(1, 13)],
+                projection_text="t,x3",
+                view="endpoint",
+                step_size=5.0,
+                expected_steps=1,
+                spec=spec,
+            )
+            self.assertEqual(
+                geometry["spec_binding"]["run_binding"],
+                "series_source_identity_instance_required",
+            )
+
+    def test_v2_spec_requires_series_instance_binding_without_claiming_full_contract(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            observer(root, 1)
+            arguments = dict(
+                series=[("candidate", root)],
+                benchmark="demo",
+                instance_id="demo-continuous",
+                coordinate_names=["x1", "x2", "x3"],
+                projection_text="t,x1",
+                view="tube",
+                step_size=1.0,
+                expected_steps=1,
+                spec=official_spec(),
+            )
+            with self.assertRaisesRegex(ValueError, "verified across all observer sidecars"):
+                export_geometry(**arguments)
+            sidecar(root, 1, {
+                "benchmark": "demo",
+                "instance_id": "demo-continuous",
+            })
+            geometry = export_geometry(**arguments)
+            self.assertEqual(geometry["instance_id"], "demo-continuous")
+            self.assertEqual(
+                geometry["spec_binding"]["status"],
+                "official_content_series_instance_binding_verified",
+            )
+            self.assertEqual(geometry["spec_binding"]["source_ref_count"], 1)
+            script = root / "official.m"
+            write_matlab(geometry, script)
+            script_text = script.read_text(encoding="utf-8")
+            self.assertIn("official source hashes declared", script_text)
+            self.assertIn("series instance identity verified", script_text)
+            self.assertIn("do not claim a matched official solver run", script_text)
+            with self.assertRaisesRegex(ValueError, "explicit --instance-id"):
+                export_geometry(**{**arguments, "instance_id": None})
+            with self.assertRaisesRegex(ValueError, "instance_id does not match"):
+                export_geometry(**{**arguments, "instance_id": "other"})
+
+            bad = official_spec()
+            bad["source_refs"][0]["sha256"] = "A" * 64
+            with self.assertRaisesRegex(ValueError, "lowercase hexadecimal"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            bad["source_refs"][0]["path"] = "/absolute/source"
+            with self.assertRaisesRegex(ValueError, "safe relative path"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            bad["horizon"]["end"] = 2.0
+            with self.assertRaisesRegex(ValueError, "numerical horizon"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            del bad["initial_set"]["bounds"]["x3"]
+            with self.assertRaisesRegex(ValueError, "bound every coordinate"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            bad["regions"][0]["bounds"] = {}
+            with self.assertRaisesRegex(ValueError, "property-region bounds"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            bad["regions"][0]["time"] = {"kind": "all"}
+            with self.assertRaisesRegex(ValueError, "horizon endpoint"):
+                export_geometry(**{**arguments, "spec": bad})
+            bad = official_spec()
+            bad["model_domain"] = "discrete_time"
+            with self.assertRaisesRegex(ValueError, "only continuous_time"):
+                export_geometry(**{**arguments, "spec": bad})
+
+            bad_identity = {"benchmark": "demo", "instance_id": "other"}
+            sidecar(root, 1, bad_identity)
+            with self.assertRaisesRegex(ValueError, "source_identity instance_id"):
+                export_geometry(**arguments)
+            sidecar(root, 1, {
+                "benchmark": "demo", "instance_id": "demo-continuous"
+            })
+
+            tampered = json.loads(json.dumps(geometry))
+            tampered["instance_id"] = "other"
+            with self.assertRaisesRegex(ValueError, "instance_id does not match"):
+                validate_geometry(tampered)
+
     def test_time_tube_uses_tube_columns_and_separates_projection_gaps(self):
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)
@@ -723,6 +889,7 @@ class FlowpipePlotTests(unittest.TestCase):
             self.assertIsNotNone(receipt["timings_seconds"]["matlab_script_generation"])
             self.assertIsNone(receipt["timings_seconds"]["matplotlib_png_pdf_render"])
             geometry = json.loads(output.with_suffix(".geometry.json").read_text())
+            self.assertNotIn("instance_id", geometry)
             self.assertEqual(geometry["series"][0]["displayed_steps"], [2])
             self.assertEqual(geometry["series"][0]["display_omitted_observed_step_count"], 1)
 
@@ -734,6 +901,42 @@ class FlowpipePlotTests(unittest.TestCase):
                         "--expected-steps", "2", "--step-size", ".5",
                         "--spec", str(spec_path),
                     ])
+
+            with self.assertRaisesRegex(ValueError, "saved geometry"):
+                main([
+                    "--geometry", str(output.with_suffix(".geometry.json")),
+                    "--instance-id", "wrong-instance",
+                    "--output", str(root / "redraw"),
+                    "--no-render",
+                ])
+
+            for step in (1, 2):
+                sidecar(root, step, {
+                    "benchmark": "demo", "instance_id": "demo-continuous"
+                })
+            v2_spec_path = root / "v2.json"
+            v2_spec_path.write_text(json.dumps(official_spec()), encoding="utf-8")
+            v2_output = root / "v2-cli"
+            v2_args = [
+                "--series", f"candidate={root}",
+                "--benchmark", "demo",
+                "--state-count", "3",
+                "--projection", "t,x1",
+                "--output", str(v2_output),
+                "--no-render",
+                "--expected-steps", "2",
+                "--step-size", ".5",
+                "--spec", str(v2_spec_path),
+            ]
+            with self.assertRaisesRegex(ValueError, "explicit --instance-id"):
+                main(v2_args)
+            self.assertEqual(
+                main(v2_args + ["--instance-id", "demo-continuous"]), 0
+            )
+            v2_receipt = json.loads(
+                v2_output.with_suffix(".render.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(v2_receipt["instance_id"], "demo-continuous")
 
     def test_matlab_text_fields_reject_control_characters(self):
         with tempfile.TemporaryDirectory() as scratch:

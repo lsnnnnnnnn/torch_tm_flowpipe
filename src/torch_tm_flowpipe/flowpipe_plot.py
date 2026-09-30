@@ -20,7 +20,9 @@ from typing import Any, Iterable
 
 SCHEMA = "torch-tm-flowpipe-projection-v2"
 PLOT_SPEC_SCHEMA = "torch-tm-flowpipe-plot-spec-v1"
+PLOT_SPEC_SCHEMA_V2 = "torch-tm-flowpipe-plot-spec-v2"
 OBSERVER_RE = re.compile(r"observer_(\d+)\.pt$")
+SHA256_RE = re.compile(r"[0-9a-f]{64}")
 VIEW_COLUMNS = {"tube": (0, 1), "endpoint": (2, 3)}
 MAX_STATE_STATE_BOXES = 100_000
 RESULT_SUMMARY_KEYS = (
@@ -35,6 +37,7 @@ RESULT_SUMMARY_KEYS = (
 )
 RESULT_TIMING_KEYS = {"process_s", "native_process_s", "supervisor_process_s"}
 REGION_ROLES = {"safe", "target", "unsafe", "informational"}
+PROPERTY_QUANTIFIERS = {"all_times", "endpoint", "eventually"}
 RESULT_IDENTITY_BOUND = {
     "verified_equal_to_observer_sidecars_direct",
     "verified_to_observer_sidecars_via_hashed_INPUT",
@@ -1038,27 +1041,134 @@ def _validate_plot_spec(
     spec: dict[str, Any] | None,
     benchmark: str,
     coordinate_names: list[str],
+    *,
+    instance_id: str | None = None,
+    numerical_horizon: float | None = None,
 ) -> dict[str, Any]:
     if spec is None or spec == {}:
         return {"status": "no_plot_spec", "identity_binding": "none"}
     if not isinstance(spec, dict):
         raise ValueError("plot spec must be an object")
-    if spec.get("schema") != PLOT_SPEC_SCHEMA:
-        raise ValueError(f"plot spec must use schema {PLOT_SPEC_SCHEMA}")
+    schema = spec.get("schema")
+    if schema not in {PLOT_SPEC_SCHEMA, PLOT_SPEC_SCHEMA_V2}:
+        raise ValueError(
+            f"plot spec must use schema {PLOT_SPEC_SCHEMA} or {PLOT_SPEC_SCHEMA_V2}"
+        )
     if spec.get("benchmark") != benchmark:
         raise ValueError("plot spec benchmark does not match --benchmark")
     if spec.get("coordinate_names") not in (None, coordinate_names):
         raise ValueError("spec coordinate_names do not match the exporter coordinates")
     _plain_text(spec.get("contract_status"), "plot spec contract_status")
+    warning = _plain_text(
+        spec.get("warning"),
+        "plot spec warning",
+        required=spec.get("schema") == PLOT_SPEC_SCHEMA_V2,
+    )
     binding = spec.get("identity_binding")
-    if binding not in {"informational_legacy_unbound"}:
-        raise ValueError("plot spec must declare a supported identity_binding policy")
+    if schema == PLOT_SPEC_SCHEMA:
+        if binding != "informational_legacy_unbound":
+            raise ValueError("v1 plot spec must be informational_legacy_unbound")
+        binding_result = {
+            "status": "accepted_with_explicit_unbound_legacy_scope",
+            "identity_binding": binding,
+            "contract_status": spec["contract_status"],
+        }
+    else:
+        if not instance_id:
+            raise ValueError("v2 plot spec requires an explicit --instance-id")
+        _plain_text(instance_id, "instance id")
+        if spec.get("instance_id") != instance_id:
+            raise ValueError("plot spec instance_id does not match --instance-id")
+        if spec.get("coordinate_names") != coordinate_names:
+            raise ValueError("v2 plot spec must declare the exact exporter coordinates")
+        if spec.get("model_domain") != "continuous_time":
+            raise ValueError("v2 plot spec renderer currently supports only continuous_time")
+        if binding != "official_contract_sources_hash_declared":
+            raise ValueError(
+                "v2 plot spec must declare official_contract_sources_hash_declared"
+            )
+        if spec.get("run_binding") != "series_source_identity_instance_required":
+            raise ValueError(
+                "v2 plot spec must declare "
+                "run_binding=series_source_identity_instance_required"
+            )
+        source_refs = spec.get("source_refs")
+        if not isinstance(source_refs, list) or not source_refs:
+            raise ValueError("v2 plot spec source_refs must be a nonempty list")
+        seen_source_paths: set[str] = set()
+        for index, source_ref in enumerate(source_refs, 1):
+            if not isinstance(source_ref, dict) or set(source_ref) != {"path", "sha256"}:
+                raise ValueError(
+                    f"v2 plot spec source_ref {index} must contain only path and sha256"
+                )
+            path = _plain_text(
+                source_ref.get("path"), f"v2 plot spec source_ref {index} path"
+            )
+            assert path is not None
+            path_parts = Path(path).parts
+            if (
+                not path_parts
+                or path == "."
+                or Path(path).is_absolute()
+                or "\\" in path
+                or ".." in path_parts
+                or "/".join(path_parts) != path
+            ):
+                raise ValueError(
+                    f"v2 plot spec source_ref {index} path must be a safe relative path"
+                )
+            digest = source_ref.get("sha256")
+            if not isinstance(digest, str) or SHA256_RE.fullmatch(digest) is None:
+                raise ValueError(
+                    f"v2 plot spec source_ref {index} sha256 must be lowercase hexadecimal"
+                )
+            if path in seen_source_paths:
+                raise ValueError("v2 plot spec source_ref paths must be unique")
+            seen_source_paths.add(path)
+        horizon = spec.get("horizon")
+        if not isinstance(horizon, dict) or set(horizon) != {"kind", "start", "end"}:
+            raise ValueError("v2 plot spec horizon must contain kind, start, and end")
+        if horizon.get("kind") != "continuous_time":
+            raise ValueError("v2 plot spec horizon kind must be continuous_time")
+        start, end = horizon.get("start"), horizon.get("end")
+        if (
+            not isinstance(start, (int, float))
+            or isinstance(start, bool)
+            or not isinstance(end, (int, float))
+            or isinstance(end, bool)
+            or not math.isfinite(start)
+            or not math.isfinite(end)
+            or float(start) != 0.0
+            or end <= start
+        ):
+            raise ValueError("v2 plot spec horizon must be a finite positive interval from 0")
+        if numerical_horizon is not None and not math.isclose(
+            float(end), numerical_horizon, rel_tol=0.0, abs_tol=1e-12
+        ):
+            raise ValueError("v2 plot spec horizon does not match the numerical horizon")
+        quantifier = spec.get("property_quantifier")
+        if quantifier not in PROPERTY_QUANTIFIERS:
+            raise ValueError(
+                f"v2 plot spec property_quantifier must be one of "
+                f"{sorted(PROPERTY_QUANTIFIERS)}"
+            )
+        binding_result = {
+            "status": "official_content_requires_series_instance_binding",
+            "identity_binding": binding,
+            "run_binding": spec["run_binding"],
+            "instance_id": instance_id,
+            "contract_status": spec["contract_status"],
+            "source_ref_count": len(source_refs),
+            "warning": warning,
+        }
     initial_set = spec.get("initial_set", {})
     regions = spec.get("regions", [])
     if not isinstance(initial_set, dict):
         raise ValueError("plot spec initial_set must be an object")
     if not isinstance(regions, list) or any(not isinstance(region, dict) for region in regions):
         raise ValueError("plot spec regions must be a list of objects")
+    if schema == PLOT_SPEC_SCHEMA_V2 and (not initial_set or not regions):
+        raise ValueError("v2 plot spec requires nonempty initial_set and regions")
     units = spec.get("units", {})
     if (
         not isinstance(units, dict)
@@ -1121,10 +1231,84 @@ def _validate_plot_spec(
             raise ValueError(f"plot spec region {index} has invalid time bounds")
         if kind == "interval" and values[0] > values[1]:
             raise ValueError(f"plot spec region {index} has reversed time bounds")
+    if schema == PLOT_SPEC_SCHEMA_V2:
+        if set(initial_set.get("bounds", {})) != set(coordinate_names):
+            raise ValueError("v2 plot spec initial_set must bound every coordinate")
+        property_regions = [
+            region for region in regions if region.get("role", "informational") != "informational"
+        ]
+        if not property_regions or any(not region.get("bounds") for region in property_regions):
+            raise ValueError("v2 plot spec requires nonempty property-region bounds")
+        horizon = spec["horizon"]
+        quantifier = spec["property_quantifier"]
+        for region in property_regions:
+            if "time" not in region:
+                raise ValueError("v2 property regions must declare time explicitly")
+            timing = region.get("time", {"kind": "all"})
+            kind = timing.get("kind", "all")
+            if quantifier == "endpoint" and (
+                kind != "endpoint"
+                or not math.isclose(
+                    float(timing["at"]), float(horizon["end"]),
+                    rel_tol=0.0, abs_tol=1e-12,
+                )
+            ):
+                raise ValueError(
+                    "v2 endpoint property regions must be at the horizon endpoint"
+                )
+            if quantifier == "all_times" and not (
+                kind == "all"
+                or (
+                    kind == "interval"
+                    and math.isclose(
+                        float(timing["lo"]), float(horizon["start"]),
+                        rel_tol=0.0, abs_tol=1e-12,
+                    )
+                    and math.isclose(
+                        float(timing["hi"]), float(horizon["end"]),
+                        rel_tol=0.0, abs_tol=1e-12,
+                    )
+                )
+            ):
+                raise ValueError(
+                    "v2 all_times property regions must cover the full horizon"
+                )
+            if quantifier == "eventually" and kind != "interval":
+                raise ValueError(
+                    "v2 eventually property regions must use an explicit interval"
+                )
+    return binding_result
+
+
+def _validate_plot_series_binding(
+    spec_binding: dict[str, Any],
+    benchmark: str,
+    instance_id: str | None,
+    series: list[dict[str, Any]],
+) -> dict[str, Any]:
+    if spec_binding.get("run_binding") != "series_source_identity_instance_required":
+        return spec_binding
+    for item in series:
+        identity_record = item.get("source_identity")
+        if (
+            item.get("source_kind") != "torch-observer-pt-v1"
+            or not isinstance(identity_record, dict)
+            or identity_record.get("status")
+            != "verified_equal_across_all_observer_sidecars"
+            or not isinstance(identity_record.get("source_identity"), dict)
+        ):
+            raise ValueError(
+                "v2 plot spec requires every series to have one source_identity "
+                "verified across all observer sidecars"
+            )
+        identity = identity_record["source_identity"]
+        if identity.get("benchmark") != benchmark:
+            raise ValueError("series source_identity benchmark does not match plot spec")
+        if identity.get("instance_id") != instance_id:
+            raise ValueError("series source_identity instance_id does not match plot spec")
     return {
-        "status": "accepted_with_explicit_unbound_legacy_scope",
-        "identity_binding": binding,
-        "contract_status": spec["contract_status"],
+        **spec_binding,
+        "status": "official_content_series_instance_binding_verified",
     }
 
 
@@ -1132,6 +1316,7 @@ def export_geometry(
     series: list[tuple[str, Path]],
     *,
     benchmark: str,
+    instance_id: str | None = None,
     coordinate_names: list[str],
     projection_text: str,
     view: str,
@@ -1145,6 +1330,8 @@ def export_geometry(
     if not series:
         raise ValueError("at least one series is required")
     _plain_text(benchmark, "benchmark")
+    if instance_id is not None:
+        _plain_text(instance_id, "instance id")
     if not math.isfinite(step_size) or step_size <= 0:
         raise ValueError("step size must be a finite positive number")
     if view not in VIEW_COLUMNS:
@@ -1163,7 +1350,13 @@ def export_geometry(
         step < 1 or step > expected_steps for step in display_steps
     ):
         raise ValueError("display steps must lie inside the expected horizon")
-    spec_binding = _validate_plot_spec(spec, benchmark, coordinate_names)
+    spec_binding = _validate_plot_spec(
+        spec,
+        benchmark,
+        coordinate_names,
+        instance_id=instance_id,
+        numerical_horizon=expected_steps * step_size,
+    )
     projection = _parse_projection(projection_text, coordinate_names)
     if expected_lanes is not None and expected_lanes < 1:
         raise ValueError("expected_lanes must be positive when provided")
@@ -1335,6 +1528,9 @@ def export_geometry(
                 "frames": frames,
             }
         )
+    spec_binding = _validate_plot_series_binding(
+        spec_binding, benchmark, instance_id, exported
+    )
     geometry = {
         "schema": SCHEMA,
         "benchmark": benchmark,
@@ -1357,6 +1553,8 @@ def export_geometry(
         "spec": spec or {},
         "spec_binding": spec_binding,
     }
+    if instance_id is not None:
+        geometry["instance_id"] = instance_id
     return validate_geometry(geometry)
 
 
@@ -1364,8 +1562,11 @@ def validate_geometry(value: Any) -> dict[str, Any]:
     if not isinstance(value, dict) or value.get("schema") != SCHEMA:
         raise ValueError(f"geometry must use schema {SCHEMA}")
     benchmark = value.get("benchmark")
+    instance_id = value.get("instance_id")
     coordinate_names = value.get("coordinate_names")
     _plain_text(benchmark, "geometry benchmark")
+    if instance_id is not None:
+        _plain_text(instance_id, "geometry instance_id")
     if (
         not isinstance(coordinate_names, list)
         or not coordinate_names
@@ -1621,7 +1822,16 @@ def validate_geometry(value: Any) -> dict[str, Any]:
     spec = value.get("spec")
     if not isinstance(spec, dict):
         raise ValueError("geometry spec must be a JSON object")
-    binding = _validate_plot_spec(spec, benchmark, coordinate_names)
+    binding = _validate_plot_spec(
+        spec,
+        benchmark,
+        coordinate_names,
+        instance_id=instance_id,
+        numerical_horizon=expected_steps * step_size,
+    )
+    binding = _validate_plot_series_binding(
+        binding, benchmark, instance_id, value["series"]
+    )
     if value.get("spec_binding") != binding:
         raise ValueError("geometry spec_binding is inconsistent with its plot spec")
     horizon = expected_steps * step_size
@@ -1790,13 +2000,20 @@ def _coverage_lines(geometry: dict[str, Any]) -> list[str]:
         lines.append(
             "Plot-spec regions not drawn in this projection: " + "; ".join(unprojected) + "."
         )
-    warning = (
-        " Legacy informational plot spec; not identity-bound."
-        if geometry["spec_binding"]["identity_binding"] == "informational_legacy_unbound"
-        else ""
-    )
-    if warning:
-        lines.append(warning.strip())
+    binding = geometry["spec_binding"]["identity_binding"]
+    if binding == "informational_legacy_unbound":
+        lines.append(
+            geometry.get("spec", {}).get(
+                "warning", "Legacy informational plot spec; not identity-bound."
+            )
+        )
+    elif binding == "official_contract_sources_hash_declared":
+        lines.append(
+            f"Plot contract content: instance={geometry['instance_id']}; "
+            "official source hashes declared; series instance identity verified from all "
+            "observer sidecars."
+        )
+        lines.append(geometry["spec_binding"]["warning"])
     return lines
 
 
@@ -2179,6 +2396,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--series", action="append", default=[], metavar="LABEL=PATH")
     parser.add_argument("--geometry", type=Path, help="redraw an existing geometry JSON")
     parser.add_argument("--benchmark", default="unknown")
+    parser.add_argument(
+        "--instance-id",
+        help="exact benchmark instance id (required by v2 official-contract plot specs)",
+    )
     parser.add_argument("--projection", default="t,x1")
     parser.add_argument("--view", choices=sorted(VIEW_COLUMNS), default="tube")
     parser.add_argument("--step-size", type=float)
@@ -2215,6 +2436,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.series:
             raise ValueError("--geometry and --series are mutually exclusive")
         geometry = validate_geometry(json.loads(args.geometry.read_text(encoding="utf-8")))
+        if args.instance_id is not None and geometry.get("instance_id") != args.instance_id:
+            raise ValueError("--instance-id does not match the saved geometry")
         geometry_artifact = args.geometry
         mode = "geometry-redraw"
     else:
@@ -2239,6 +2462,7 @@ def main(argv: list[str] | None = None) -> int:
         geometry = export_geometry(
             _parse_series(args.series),
             benchmark=args.benchmark,
+            instance_id=args.instance_id,
             coordinate_names=names,
             projection_text=args.projection,
             view=args.view,
@@ -2273,7 +2497,7 @@ def main(argv: list[str] | None = None) -> int:
         artifacts["png"] = _artifact_receipt(rendered[0])
         artifacts["pdf"] = _artifact_receipt(rendered[1])
     receipt_path = args.output.with_suffix(".render.json")
-    _json_dump(receipt_path, {
+    receipt = {
         "schema": "torch-tm-flowpipe-render-receipt-v1",
         "mode": mode,
         "timings_seconds": {
@@ -2288,7 +2512,10 @@ def main(argv: list[str] | None = None) -> int:
             "status": "not_performed_by_generator",
             "note": "script generation is not a MATLAB/Octave execution claim",
         },
-    })
+    }
+    if geometry.get("instance_id") is not None:
+        receipt["instance_id"] = geometry["instance_id"]
+    _json_dump(receipt_path, receipt)
     return 0
 
 
