@@ -30,6 +30,16 @@ commands, identities, and runtime budgets are not yet resolved. Nested cell
 overrides must be complete objects, so a partial `run` or `metrics` update
 cannot silently discard default fields.
 
+`docs/ARCHCOMP26_EXECUTION_STATUS.md` is a deterministic, generated status
+report rather than the final experiment report. It resolves all cell defaults,
+keeps archived QUAD evidence outside the 2026 matrix, and exposes every empty
+cell as `not_started`. Check it without rewriting it with:
+
+```bash
+PYTHONPATH=src python -m torch_tm_flowpipe.archcomp26_status_report \
+  --check docs/ARCHCOMP26_EXECUTION_STATUS.md
+```
+
 On 2026-10-01, `refs/heads/main` still resolved to the pinned
 `d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26` commit. All 50 inventory
 references (41 unique files) were independently re-hashed from a detached

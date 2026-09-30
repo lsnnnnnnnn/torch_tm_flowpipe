@@ -1,0 +1,71 @@
+import copy
+import json
+from pathlib import Path
+from statistics import median
+
+import pytest
+
+from torch_tm_flowpipe.archcomp26_status_report import (
+    collect_status,
+    render_markdown,
+    summarize_matrix,
+)
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load(relative: str):
+    return json.loads((ROOT / relative).read_text(encoding="utf-8"))
+
+
+def test_current_status_report_is_deterministic_and_fail_closed():
+    status = collect_status()
+    assert len(status["rows"]) == 16
+    assert sum(status["run_counts"].values()) == 64
+    assert status["run_counts"] == {"not_started": 64}
+    assert status["support_counts"] == {"unassessed": 64}
+    assert all(
+        row["instance"]["contract"]["status"] == "unresolved"
+        for row in status["rows"]
+    )
+    assert len(status["audits"]) == 11
+
+    huan_rows = load(
+        "research/gpu_verified_20260930/report/evidence/huan_parity_campaign.json"
+    )["rows"]
+    assert status["huan"]["medians"]["process_wall_s"] == median(
+        row["process_wall_s"] for row in huan_rows
+    )
+    assert status["p3"]["fullbatch_qualification"] is False
+    assert status["p3"]["end_to_end_strict_certificate"] is False
+    assert status["plot"]["experiments_started"] is False
+
+    report = render_markdown(status)
+    assert report == render_markdown(collect_status())
+    assert report.count("`not_started`") == 64
+    assert "not the final experiment report" in report
+    assert "Experiments paused: **yes**" in report
+    assert "not a same-contract speedup ratio" in report
+    assert "/Users/" not in report
+    assert "/srv/" not in report
+    assert report == (ROOT / "docs/ARCHCOMP26_EXECUTION_STATUS.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_status_report_rejects_malformed_matrix():
+    manifest = load("benchmarks/archcomp26/manifest.json")
+    matrix = load("benchmarks/archcomp26/execution_matrix.json")
+
+    missing_method = copy.deepcopy(matrix)
+    missing_method["methods"].pop()
+    with pytest.raises(ValueError, match="matrix methods"):
+        summarize_matrix(manifest, missing_method)
+
+    partial_override = copy.deepcopy(matrix)
+    partial_override["cells"]["quad-reach"]["pytorch_gpu"] = {
+        "run": {"status": "completed"}
+    }
+    with pytest.raises(ValueError, match="incomplete override"):
+        summarize_matrix(manifest, partial_override)
