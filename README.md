@@ -1,6 +1,6 @@
 # torch-tm-flowpipe
 
-**Latest checkpoint — 2026-09-30:** [GPU/QUAD source and results](research/gpu_verified_20260930/README.md) · [current status](research/gpu_verified_20260930/STATUS.md) · [English slides](research/gpu_verified_20260930/report/slides.pdf) · [Chinese script](research/gpu_verified_20260930/report/chinese_verbatim_script.docx).
+**Latest checkpoint — 2026-09-30:** [GPU/QUAD source and results](research/gpu_verified_20260930/README.md) · [current status](research/gpu_verified_20260930/STATUS.md) · [next-stage goal](research/gpu_verified_20260930/GOAL_HUAN_QUAD_PLOTTING_ARCHCOMP_20260930.md) · [English slides](research/gpu_verified_20260930/report/slides.pdf) · [Chinese script](research/gpu_verified_20260930/report/chinese_verbatim_script.docx).
 
 This branch collects the exact source associated with the completed 1024-box QUAD P3/trig experiment, its model/configuration, and the latest reporting evidence. It preserves the earlier project below and keeps external CUDA/environment/checkpoint dependencies explicit. The native QUAD six-hour run is now known to have timed out with 600 steps recorded in complete periods; this supersedes the older 400-step observation. Publication did not rerun the solver.
 

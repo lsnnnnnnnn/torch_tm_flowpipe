@@ -2,7 +2,7 @@
 
 This is the latest organized source, evidence, and reporting checkpoint for the QUAD / ARCH-COMP GPU work. The numerical source bytes are preserved from the completed experiment. Large checkpoints, compiled CUDA binaries and environment caches remain on the research server. No solver or GPU experiment was run to produce this publication.
 
-Start with [current status](STATUS.md), [the source map](source/SOURCE_MAP.json), [the source snapshot guide](source/SOURCE_SNAPSHOT_README.md), and [the English report/slides bundle](report/README.md). The branch preserves the previous CPU/whole-engine review and Git history; this directory is the current entry point for the newer QUAD work.
+Start with the [next-stage goal](GOAL_HUAN_QUAD_PLOTTING_ARCHCOMP_20260930.md), [current status](STATUS.md), [the source map](source/SOURCE_MAP.json), [the source snapshot guide](source/SOURCE_SNAPSHOT_README.md), and [the English report/slides bundle](report/README.md). The branch preserves the previous CPU/whole-engine review and Git history; this directory is the current entry point for the newer QUAD work.
 
 | Path | Purpose |
 |---|---|
@@ -14,6 +14,7 @@ Start with [current status](STATUS.md), [the source map](source/SOURCE_MAP.json)
 | `source/upstream_metadata/` | Unmodified upstream metadata, retained for provenance; not the tested installation recipe |
 | `report/` | English 42-slide PDF/TeX, Chinese Word script, numerical tables, configurations and evidence copies |
 | `evidence/native_terminal_20260930/` | Newly collected terminal records: original native QUAD timed out after six hours |
+| `reference/` | Latest ARCH-COMP26 source index and the complete non-VCAS benchmark checklist; third-party PDF remains external |
 | `handoff/` | Prior comprehensive handoff; its old native-400 snapshot is superseded by `STATUS.md` |
 | `EXTERNAL_ASSETS.json` | Existing server assets required by frozen execution; files not silently replaced or bundled |
 | `PUBLICATION_MANIFEST.json` | Checksums for the publication payload |

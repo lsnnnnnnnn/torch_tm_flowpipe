@@ -1,5 +1,7 @@
 # English Beamer deck and Chinese verbatim script
 
+> Publication context (2026-09-30): this deck and its evidence remain a dated reporting snapshot. New terminal records establish a 600-step complete-period prefix and a six-hour native QUAD timeout; see [current status](../STATUS.md). The exact QUAD ONNX model is now included in [the source snapshot](../source/benchmark/), while compiled binaries and large PT/SR assets remain external. Slides and their historical numerical evidence were not rewritten during publication. Only this README context note and its checksum were updated.
+
 This bundle translates the September 29, 2026 progress deck into English. It preserves 42 slides: 27 presentation slides and 15 reference slides. The accompanying Chinese script follows slides 1–27 and includes optional Q&A prompts for slides 28–42. The English deck uses the same saved experimental evidence and numerical values; no experiments were rerun.
 
 ## Files
