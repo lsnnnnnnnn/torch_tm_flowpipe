@@ -32,11 +32,23 @@ has a validity window no longer than 24 hours, and must still be unexpired at
 launch as well as precede the first formal process. A running matrix has exactly
 one hash-bound active-run receipt and lock-acquisition artifact, and exclusive-host
 mode rejects multiple declared running cells. Those JSON objects are evidence,
-not mutual exclusion. The configured POSIX-flock launcher remains deliberately
-unbound (`wrapper_sha256=null`), so launch preflight returns
+not mutual exclusion. `torch_tm_flowpipe.archcomp26_launch` now supplies and
+tests only the non-blocking POSIX-flock primitive. It requires a pre-provisioned
+0600 file and a separately frozen device/inode identity, never creates or
+unlinks the lock, and opens every absolute-path component through verified
+directory descriptors without following symlinks. Real spawned-process tests
+show that a contender cannot reach audit/spawn while the lock is held and that
+the same lock can span child exit through terminal-file and directory fsync;
+adversarial tests reject lock-path replacement, a symlinked ancestor,
+group-writable directories, and a non-0600 lock.
+The command itself still refuses to launch because fresh audit, authoritative
+journal, process spawn, and durable terminal finalization are not integrated.
+The configured launcher therefore remains deliberately unbound
+(`wrapper_sha256=null`), so launch preflight returns
 `comparison_campaign_atomic_launcher_unavailable`; experiments must remain
-paused until a tested wrapper holds the fixed host lock from fresh audit through
-terminal journal/directory fsync. Its
+paused until the complete tested wrapper holds the fixed host lock across that
+entire scope and binds the pre-provisioned identity in its authoritative
+campaign receipt. Its
 complete default cell records
 support/blockers, commands, source and binary
 identity, arithmetic, per-method numerical integration/remainder settings,
