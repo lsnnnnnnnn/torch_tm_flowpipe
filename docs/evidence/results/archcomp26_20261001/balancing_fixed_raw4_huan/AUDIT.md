@@ -1,0 +1,18 @@
+# Balancing fixed-repository raw-four-state Huan attempt
+
+2026-10-02. This is the separately named `balancing-fixed-repo-raw4` profile. It uses the fixed repository CartPole equations, full physical initial box, raw `(x1,x2,x3,x4)` controller input, one force output held for each `0.02 s` period, and a `500`-period (`10 s`) intended horizon. It does **not** instantiate the paper's five-feature controller `f(x1,x2,sin(x3),cos(x3),x4)`.
+
+The run source is [`tools/archcomp26_balancing_raw4_huan_nohash.py`](../../../../../tools/archcomp26_balancing_raw4_huan_nohash.py). The separate server source directory is `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_v1/`. Raw attempts below were copied from distinct server run directories without changing their `RESULT.json` files. No content-digest check was performed.
+
+| Attempt | Result | Scope |
+| --- | --- | --- |
+| [`preflight_001`](balancing_fixed_raw4_huan_preflight_001/RESULT.json) | `cpu_preflight_complete`; model `[1,4]→[1,1]`, expected Gemm/Tanh graph, finite zero-state output `-0.0024986890484101345`, CUDA uninitialized | No numerical flowpipe |
+| [`smoke1_001`](balancing_fixed_raw4_huan_smoke1_001/RESULT.json) | Failed before a numerical step: driver rejected a safe window `[8,10]` disjoint from the `0.02 s` smoke horizon | 0 accepted of 0 attempted |
+| [`smoke1_002`](balancing_fixed_raw4_huan_smoke1_002/RESULT.json) | `completed_short_prefix`; 4 accepted of 4 attempted ODE substeps | One complete full-initial-box control period, `[0,0.02] s`; target window explicitly disabled |
+| [`full500_001`](balancing_fixed_raw4_huan_full500_001/RESULT.json) | `early_stopped`; 98 accepted of 99 attempted ODE substeps, versus 2000 planned | Last accepted interval `[0.485,0.49] s`; first rejected interval `[0.49,0.495] s` in period index 24; no `[8,10]` property checks |
+
+**Correction of preserved smoke raw output.** The original `smoke1_002/RESULT.json` says `all_saved_property_boxes_inside: true` and `property_verdict: VERIFIED_BY_SAVED_BOX_CHECKS`. Those two fields are a vacuous aggregation bug: the generated smoke config has no property, `property_checks.jsonl` is empty, and `expected_property_checks` is zero. The correct interpretation is **property not applicable to this short prefix**. The launcher was corrected before `full500_001`; the raw smoke result remains unchanged for audit.
+
+**First rejection and limit of attribution.** `full500_001/ranges.jsonl` records substep 99 as `accepted: false`; the console says `Flow* terminated.` and `Broken branch: 0`; `metrics.json` records `broken: 1`. The raw record does not include the solver's internal status code or a diagnostic reason for rejecting that substep. The preceding accepted tube at substep 98 has `x3∈[-1.8106534824,1.7832553166]` and `x4∈[-13.4371733868,13.2698236848]`; this widening is context, not an identified rejection cause or a physical counterexample. No rerun of these settings was made to guess the missing internal code.
+
+The full attempt used physical GPU 2, CPUs 10–13, a GPU allocation cap of 11 GiB, and a 3600 s process timeout. Its launcher wall time was `8.218303822912276 s`, and its saved peak GPU allocation was `110188544` bytes. The full-time fixed-spec property is `(8,10]`; the closed `[8,10]` window configured in the full attempt is mathematically equivalent for a continuous trajectory and a closed target box. Since integration stopped before `t=0.495`, the property verdict is **UNKNOWN/incomplete**, with zero checks. A `driver_return` of zero is not a completion signal here; the accepted-step ledger and `broken` count govern completion.

@@ -140,3 +140,23 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 - [Airplane discrete 执行门](ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md)核对论文的同步 forward Euler、12 态完整初盒、20 次 `0.1 s` 转移和 `k=0..20` 共 21 个安全检查索引。四方现有 Airplane 程序都推进连续 ODE，不能充当离散成绩。`x_k` 先取控制、再同步 Euler 可作为**新命名的四方共同比较合同**；若要求忠实复现 2026 参与者离散提交，仍缺离散转移及控制应用顺序的执行源码或等价权威记录。此审计未启动作业。
 - [TORA 两个 reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)直接逐元素核对了固定官方 `.txt` 和 `.mat` 的各 961 个控制器参数，并沿用此前 `.mat` 与旧 ONNX 的数值预检。模型文件已到位，问题是合同：sigmoid 的论文/官方/旧三种激活与缩放组合不同，tanh 的论文与官方激活不同；“5 秒内到达”也要确定用终点包含作为充分证据，还是要求完整时间窗判定。未选定前不把旧四方 500 步运行填为新版成绩。
 - [Balancing/CartPole 执行门](ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md)核对论文五特征 `f(x1,x2,sin x3,cos x3,x4)` 与固定仓库 ONNX 四原态输入 `[x1,x2,x3,x4]` 的冲突。论文忠实主合同仍缺五输入控制器或作者权威的五到四映射；固定仓库四输入版本已明确命名 `balancing-fixed-repo-raw4`，可单列准备四方入口与全初盒、10 秒性质窗检查，不能用旧一秒小盒诊断替代。
+
+## 10 月 2 日补记：Balancing 四输入仓库 profile 的实际尝试
+
+- 新隔离 [Huan raw4 入口](../tools/archcomp26_balancing_raw4_huan_nohash.py)先完成 CPU 模型预检：固定四输入、一输出 Gemm/Tanh 图可读取，未初始化 CUDA。第一次一期 smoke 的性质窗 `[8,10]` 与其 0.02 秒前缀不相交，驱动在 ODE 前明确失败；第二次一期 smoke 关闭不适用的性质检查，全初盒 4/4 小步接受。其原始收据把零次检查误标 `VERIFIED_BY_SAVED_BOX_CHECKS`，原文件保留，并在[审计勘误](evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md)明确改读为**性质不适用**。
+- 同一新命名 profile 的 500 期独立作业在第 99 个 ODE 内步拒绝，前 98/2000 计划小步接受，最后有效流管到 `t=0.49 s`；外层 wall 8.218304 s。`[8,10]` 性质窗未进入，0 次检查，结论 **UNKNOWN/incomplete**。原始记录没有内部拒绝状态码，不从流管变宽推测原因。论文五特征控制器仍缺，不把这次早停当作论文主合同成绩或完整性能样本。
+- 当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 **101 条**新尝试：64 格中 24 格完整数值时域、1 格原生论文方程 QUAD 运行中、6 格早停、5 格失败、2 格仅短前缀、26 格未尝试；两条旧 NAV 同合同全程证据仍单列在索引外。
+
+### 仍需外部材料或明确选择的字段
+
+| 实例 | 具体缺件或选择 | 在此之前可独立推进的工作 |
+| --- | --- | --- |
+| QUAD reach-and-remain | 2026 参与者实际运行的全时间窗 checker 源码或同等权威执行记录；当前只有终点包含检查可复核。 | 原生论文方程长作业继续跑；保存全时 tube，终点结果按其已证范围单列。 |
+| Single Pendulum 官方三态 | 第三状态的初值和三态 MATLAB 闭环执行入口；现有四方仅是明确命名的两物理态加辅助时钟合同。 | 保留两态 profile 的四方结果及图。 |
+| Airplane discrete | 参与者离散转移与控制更新次序的源码或权威记录。 | 可单列实施已明示的 `paper-Euler-controller-first` 四方比较约定。 |
+| Balancing 论文五特征 | 五输入控制器文件，或作者明确的五特征到固定四输入模型映射/执行源码。 | 可单列实施 `balancing-fixed-repo-raw4`。 |
+| TORA reach 两变体 | 各自选择论文字面或官方可执行激活、输出缩放，以及“5 秒内到达”的判定口径。 | 已核对模型参数与显式构造器；旧成绩保留为不同合同对照。 |
+| NAV standard/robust | 决定新版主表采用论文文字状态/层宽，还是已核实的官方模型加作者可执行顺序。 | 旧 Huan 全程同合同证据已复核，无需重跑；新首周期 smoke 已单列。 |
+| Unicycle | 扰动仅加速度还是沿旧代码同时加朝向，以及 `w` 是轨迹常值还是随时间变化；还需 reach 时间量词。 | 固定 ONNX 与旧模型已直接对比，可复用模型文件。 |
+
+这些来源冲突均未用旧实验或自拟默认值填补新版主表。其余未完成格仍需各方法实现、接受/失败记录、宽度和重复计时；这些是当前工程工作，不当作待用户提供的文件。

@@ -10,13 +10,13 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 98,
+  "attempt_count": 101,
   "status_counts": {
     "completed": 24,
     "running": 1,
-    "early_stopped": 5,
+    "early_stopped": 6,
     "failed": 5,
-    "not_attempted": 27,
+    "not_attempted": 26,
     "short_prefix_only": 2
   },
   "methods": [
@@ -632,17 +632,39 @@
     {
       "instance_id": "balancing-reach",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
+      "work_status": "early_stopped",
+      "attempt_count": 3,
+      "selected_attempt_number": 101,
+      "selected_attempt_status": "early_stopped_numerical_rejection",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_full500_001",
+      "selected_wall_s": 8.218303822912276,
+      "selected_property_verdict": "UNKNOWN/incomplete",
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 99,
+          "status": "failed_before_plant_advance",
+          "role": "full-initial-box one-period smoke; property-window guard failed before plant",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md"
+        },
+        {
+          "index": 100,
+          "status": "completed_short_prefix",
+          "role": "full-initial-box one-period smoke; property not applicable",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_smoke1_002",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md"
+        },
+        {
+          "index": 101,
+          "status": "early_stopped_numerical_rejection",
+          "role": "fixed-repository raw-four-state full-horizon attempt; numerical early stop",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_full500_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md"
+        }
+      ]
     },
     {
       "instance_id": "balancing-reach",

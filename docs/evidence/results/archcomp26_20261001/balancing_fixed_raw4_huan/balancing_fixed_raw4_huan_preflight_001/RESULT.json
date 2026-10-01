@@ -1,0 +1,27 @@
+{
+  "status": "cpu_preflight_complete",
+  "profile": "balancing-fixed-repo-raw4",
+  "method": "huan",
+  "mode": "preflight",
+  "model_info": {
+    "input_shape": [
+      1,
+      4
+    ],
+    "output_shape": [
+      1,
+      1
+    ],
+    "operators": [
+      "Gemm",
+      "Tanh",
+      "Gemm",
+      "Tanh",
+      "Gemm",
+      "Tanh"
+    ],
+    "zero_state_force": -0.0024986890484101345,
+    "cuda_initialized": false
+  },
+  "wall_s": 2.1326547358185053
+}

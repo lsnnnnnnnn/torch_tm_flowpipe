@@ -1,0 +1,14 @@
+{
+  "status": "failed",
+  "profile": "balancing-fixed-repo-raw4",
+  "method": "huan",
+  "mode": "smoke1",
+  "error_type": "ValueError",
+  "error": "constraints_safe window (8.0, 10.0) does not overlap the horizon [0, 0.02]: no step would ever be checked, and a silent run parses as VERIFIED",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/balancing_fixed_raw4_huan_v1/archcomp26_balancing_raw4_huan_nohash.py\", line 208, in run\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1060, in main\n    raise ValueError(\nValueError: constraints_safe window (8.0, 10.0) does not overlap the horizon [0, 0.02]: no step would ever be checked, and a silent run parses as VERIFIED\n",
+  "observed_substeps": 0,
+  "property_checks": 0,
+  "wall_s": 4.053605450317264,
+  "cuda_peak_allocated_bytes": 106503168,
+  "cuda_peak_reserved_bytes": 115343360
+}
