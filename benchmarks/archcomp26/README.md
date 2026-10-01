@@ -34,8 +34,9 @@ complete audit artifact pointer used for that attempt, so rotating the current
 audit cannot invalidate historical results. A running matrix has exactly
 one hash-bound active-run receipt and lock-acquisition artifact, and exclusive-host
 mode rejects multiple declared running cells. Those JSON objects are evidence,
-not mutual exclusion. `torch_tm_flowpipe.archcomp26_launch` now supplies and
-tests only the non-blocking POSIX-flock primitive. It requires a pre-provisioned
+not mutual exclusion. `torch_tm_flowpipe.archcomp26_launch` now supplies the
+non-blocking POSIX-flock primitive and an unintegrated durable journal primitive.
+The lock requires a pre-provisioned
 0600 file and a separately frozen device/inode/owner/mode/link identity in the
 campaign launch guard, never creates or
 unlinks the lock, and opens every absolute-path component through verified
@@ -44,8 +45,31 @@ show that a contender cannot reach audit/spawn while the lock is held and that
 the same lock can span child exit through terminal-file and directory fsync;
 adversarial tests reject lock-path replacement, a symlinked ancestor,
 group-writable directories, and a non-0600 lock.
-The command itself still refuses to launch because fresh audit, authoritative
-journal, process spawn, and durable terminal finalization are not integrated.
+The context never exposes its raw lock descriptor, preventing a caller from
+closing it and releasing exclusivity before the protected scope ends.
+The journal requires a pre-provisioned identity-bound 0700 directory. It writes
+canonical hash-chained 0400 entries through `O_EXCL`, file fsync, atomic
+no-clobber hard-link publication, directory fsync, pending-name cleanup, and a
+second directory fsync. It derives the head from contiguous filenames instead
+of trusting a mutable HEAD, blocks a new attempt while one is nonterminal, and
+recovers only a safely discardable temp-only or fully validated same-inode
+final+temp crash state;
+unknown files, gaps, noncanonical bytes, path changes, and unexpected hardlinks
+fail closed. An idempotent event retry returns `created=false`, which future
+launcher code must treat as no authority to spawn. Recovery can verify an
+externally persisted `(sequence, sha256)` anchored head, detecting deletion or
+rewriting of that prefix while allowing a valid suffix. The future launcher
+must durably fsync the `attempt_prepared` receipt into the active-run receipt
+before spawn, pass that anchor on every later journal operation, and bind the
+terminal head into the result/attempt ledger. This is append-only by trusted
+protocol and crash-consistent, not WORM storage against a malicious same-UID
+process; an unanchored tail is not protected against such deletion. Passing no
+external anchor is therefore a bootstrap-only operation; production recovery
+of a nonempty campaign must obtain the anchor from separately durable evidence,
+never recompute it from the journal being checked.
+The command itself still refuses to launch because fresh audit, journal event
+payload schemas, process spawn/identity recovery, and durable terminal/projected
+result finalization are not integrated.
 The configured launcher therefore remains deliberately unbound
 (`wrapper_sha256=null`), so launch preflight returns
 `comparison_campaign_atomic_launcher_unavailable`; experiments must remain
