@@ -31,6 +31,7 @@
 | 新 ACC participant-order，P3 / Huan / Xiangru / 原生 | 两份保存的参与者 C++ 源码指定 `v_rel=v_lead-v_ego`，而论文没有定义其符号；故按此明确命名的 profile 比较。四方均用完整单盒、固定 2026 ONNX、50 个 0.1 s 控制期，保存 tube 的安全半空间 `x_lead-x_ego-1.4*v_ego-10` 下界最小分别为 16.434859 / 16.165035 / 16.165035 / 16.254754，全部严格为正。最初各一次单独进程 wall 分别为 7.934 / 7.260 / 7.312 / 7.930 s；随后另开四方各 1 首轮+5 后续独立进程的轮换 campaign，均走完 50/50，详见下表。见[ACC 合同](ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md)、[四方证据汇总](evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md)、[24 次 campaign](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/SUMMARY.md)和[六态绝对端点/全时 tube CSV](evidence/results/archcomp26_20261001/acc_fourway_saved_ranges_20261001/README.md)。 | **四方全程数值结果及完整 5 次后续进程计时**；Huan/Xiangru 使用共享驱动且保存区间相同，VAR 修复只做了针对性单步验证。轮换同 GPU/CPU 的时间可描述，但另一块 GPU 同时跑 QUAD，冷定义并非重启主机，四方均缺独立端到端浮点 NN 证明，因此不宣称稳定速度排名。 |
 | 新 Attitude Control P3 / Huan / Xiangru / 原生，修正 unsafe | 固定 2026 规格的 unsafe 盒要求 `-0.7≤x4≤-0.6`；旧 checker 误写成 `x4≥-0.4` 与 `x4≤-0.6`，实际是空集。四个新隔离 profile 各完成 30/30 控制期、60/60 小段。单次 wall 依次为 13.017036 / 7.094217 / 6.933376 / 6.281498 s。原生显式打印 `VERIFIED`；三 GPU 入口的修正 checker 均未打印 Unsafe/Unknown。四方各自保存的全部 60 个六维 tube 盒均与官方危险集不相交；原生 `x4` 全时上界为 `-0.710800050132425`，低于危险下界 `-0.7`。见[合同与旧错误](ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md)、[原生扫描](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/SCAN.json)、[P3 全程记录](evidence/results/archcomp26_20261001/p3_attitude_avoid_v1/full30_001/payload/RESULT.json)和[Huan 全程记录](evidence/results/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001/payload/RESULT.json)。 | **修正后四方单次全程数值结果**。旧 `VERIFIED` 不能证明官方性质；Huan/Xiangru 共享驱动且保存区间相同，安全结论依赖作者边界与保存盒扫描；仍缺独立端到端证明与稳定计时。 |
 | 新 Docking P3 / Huan / Xiangru / Flow* native | 官方完整初盒 `[70,106]²×[-0.28,0.28]²`、原始四态输入/两力输出、40 个 1 s 控制期，四方各完成 400 个 0.1 s 数值小步；单次外层 wall 分别 17.412 / 12.699 / 12.668 / 9.139 s。非线性全时安全裕量 `q=√(vx²+vy²)-0.2-0.002054√(sx²+sy²)≤0` 的首个小步保守上界四方均约 `+0.016083`，全程 checker 均为 `UNKNOWN`。原生外层 `RESULT` 如实记录 `failed/exit 2`，同时保存 40/40 周期、400 tubes、40 RPC；末时绝对区间、原始记录和接口核对见[三方 GPU 摘要](evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md)与[原生摘要](evidence/results/archcomp26_20261001/native_docking_full40_001/SUMMARY.md)。 | **四方完整数值时域，性质未决**；q 盒与不安全侧相交不是实际轨迹反例，四条单次 wall 不能排名。原生退出码因性质未知，不能改写为作者 `VERIFIED`；没有独立端到端浮点 NNCS 证明。 |
+| 新 NAV standard / robust Huan 首盒首周期 | 固定官方 point/set ONNX、作者可执行状态顺序 `[x,y,speed,heading]` 与输出顺序 `[speed_rate,heading_rate]`；分别取 640/25 初始分块的首盒，仅运行 30 期中的首个 `0.2 s` 周期。两个新 ID 各 20/20 小步接受，保存 tube 均与障碍盒分离，进程 wall 4.142439 / 4.417727 s。见[NAV 执行合同与短程证据](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)。 | **仅短前缀**；未覆盖其余分块、`t=6` 终点到达或全程性质，不能给完整时间与四方宽度。论文状态文字和网络层宽与官方可执行材料仍须作为来源冲突注明。 |
 | Balancing/CartPole 来源审计 | Balancing 论文写五特征控制器而固定 ONNX/MATLAB 是四原态，论文闭窗 `[8,10]` 与实例规格 `8<t≤10` 不同。见[逐项审计](ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md)。 | **未启动新数值**；仓库四原态 profile 需单独命名，不能冒充未解决的论文五特征执行。 |
 | 旧 QUAD 作者合同 | Huan parity 5 次完整运行、旧 P3 完整一次、native 6 小时超时仅到 600 步；另有 40 步 parity/strict 新诊断，但使用旧模型。见[速度与模式分析](HUAN_QUAD_SPEED_AND_MODES.md)。 | **历史机制/回归证据**；合同与数值保证不同，不构成 2026 四方同合同对比。 |
 | 其余 2026 cell | 除上述新尝试外，更多共同合同和方法支持仍需逐项落实；旧 14 项成绩不能平移。 | **待运行或待预检**；保留全部行和变体，不用空白代替失败记录。 |
@@ -671,6 +672,8 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 
 ## 9. NAV — standard (`nav-standard`)
 
+**本轮新增、独立于下方旧冻结模板：** [作者执行合同审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)确定固定官方 point ONNX 的可执行输入 `[x,y,speed,heading]`；新 Huan 首盒首周期 [RESULT](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/RESULT.json) 为 20/20 小步接受、保存 tube 避开障碍。完整合同是 640 初盒 × 30 周期 × 20 小步；此短程结果没有检查 `t=6` 终点，也不填下方基线 cell。论文文字的状态顺序和 `64/64` 层宽与固定官方可执行材料冲突。
+
 ### 模型、控制器、初始集合与性质
 
 - 执行合同：**未冻结**；本节不得据此启动作业或填入成绩。
@@ -730,6 +733,8 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 - 未决：The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution.
 
 ## 10. NAV — robust (`nav-robust`)
+
+**本轮新增、独立于下方旧冻结模板：** 同一[作者执行合同审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)确定固定官方 set ONNX 与原序状态接口；新 Huan 首盒首周期 [RESULT](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) 为 20/20 小步接受、保存 tube 避开障碍。完整合同是 25 初盒 × 30 周期 × 20 小步；短程结果不检查 `t=6` 终点，也不填下方基线 cell。robust 指集合训练控制器，固定官方 plant 没有外加扰动。
 
 ### 模型、控制器、初始集合与性质
 
@@ -1107,7 +1112,7 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 
 ## 16. Unicycle — reach (`unicycle-reach`)
 
-**本轮来源冲突：** 该格尚未尝试；官方与旧入口的 `w` 时间语义差异见[专项审计](ARCHCOMP26_UNICYCLE_SOURCE_CONFLICT_20261001.md)。时间语义未定前不填新数值结果。下方表格仍是旧冻结模板。
+**本轮来源冲突：** 该格尚未尝试；[新执行门](ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md)逐式列出 2026 论文仅在速度导数加 `w`、官方 MATLAB 无 `w`、旧四方在朝向和速度两导数均加同一常值 `w`。论文没有冻结扰动随时间是否变化，以及“10 秒内到达”的检查语义；这些待明确前不填新数值结果。下方表格仍是旧冻结模板。
 
 ### 模型、控制器、初始集合与性质
 

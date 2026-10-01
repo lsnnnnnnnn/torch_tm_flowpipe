@@ -145,7 +145,7 @@ def main():
         f"来源：`{MANIFEST}` 与 `{ATTEMPTS}`。仅按路径归属，不做内容摘要；与历史冻结的 `benchmarks/archcomp26/execution_matrix.json` 独立。",
         "",
         f"16 个实例 × 4 种方法 = {len(cells)} 个单元；本轮索引 {len(source['attempts'])} 条尝试。"
-        + "；".join(f"{LABELS[key]} {counts[key]}" for key in ("completed", "running", "early_stopped", "failed", "not_attempted")) + "。",
+        + "；".join(f"{LABELS[key]} {counts[key]}" for key in ("completed", "running", "early_stopped", "failed", "short_prefix_only", "not_attempted")) + "。",
         "",
         "| 实例 | P3 GPU | Huan | Xiangru | FlowStar native |",
         "| --- | --- | --- | --- | --- |",
@@ -155,7 +155,7 @@ def main():
         lines.append("| " + " | ".join([instance] + [LABELS[by_key[instance, method]["work_status"]] for method in methods]) + " |")
     lines += [
         "",
-        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN 和 Huan/Xiangru DP more 的 checker Unsafe；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败。较早 smoke 和各尝试原始状态保存在 JSON。",
+        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN 和 Huan/Xiangru DP more 的 checker Unsafe；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败；“仅短前缀”不覆盖完整初集与时域。较早 smoke 和各尝试原始状态保存在 JSON。",
         "",
         "所有 64 个单元在本索引中均不具备四方法排名资格。重复次数按各条 attempt 计，不能从完成状态推断计时资格；保存的数值结果不构成端到端浮点 NNCS 证明。标为运行中的尝试尚无终点时间或宽度；DP more 早停没有完整 T=0.4 结果。",
         "",

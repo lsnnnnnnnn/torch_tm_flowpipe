@@ -1,0 +1,105 @@
+{
+  "schema": "archcomp26-nav-author-smoke-nohash-v1",
+  "run_id": "nav_author_robust_huan_smoke1_001",
+  "started_utc": "2026-10-01T20:30:29.474229+00:00",
+  "instance": "nav-robust",
+  "method": "huan",
+  "official_model_copy": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_prep_001/official_nn-nav-set.onnx",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust.yaml",
+  "source_box_ledger": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/nav_robust_boxes.json",
+  "source_box_count": 25,
+  "source_box_index": 0,
+  "first_box_exact": [
+    [
+      2.9,
+      2.94
+    ],
+    [
+      2.9,
+      2.94
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "smoke_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_huan_smoke1_001/config.yaml",
+  "state_and_nn_input_order": [
+    "x",
+    "y",
+    "speed",
+    "heading"
+  ],
+  "nn_output_order": [
+    "speed_rate",
+    "heading_rate"
+  ],
+  "horizon_scope": "first of 30 control periods, t in [0,0.2] only",
+  "full_contract_terminal_target": [
+    "-x1 - 0.5",
+    "x1 - 0.5",
+    "-x2 - 0.5",
+    "x2 - 0.5"
+  ],
+  "smoke_terminal_target_check": "disabled because the 6s target is not a 0.2s property",
+  "full_contract_obstacle": [
+    "-x1 + 1",
+    "x1 - 2",
+    "-x2 + 1",
+    "x2 - 2"
+  ],
+  "expected_ode_substeps": 20,
+  "gpu_visible": "2",
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "rpc_port": null,
+  "controller_transport": "in-process CROWN, rpc-float32 quantization mode",
+  "full_initial_set_covered": false,
+  "full_horizon_covered": false,
+  "formal_certificate": false,
+  "engine": "/srv/local/shengenli/flowstar-gpu",
+  "driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "cuda_cache": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_huan_smoke1_001/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_huan_smoke1_001/metrics.json"
+  ]
+}

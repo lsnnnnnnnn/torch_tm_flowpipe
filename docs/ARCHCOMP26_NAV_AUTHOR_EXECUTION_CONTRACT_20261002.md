@@ -1,6 +1,6 @@
 # ARCH-COMP 2026 NAV 作者执行合同补充审计
 
-审计日期：2026-10-02。本文件补充[先前的固定官方来源审计](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)，记录后来找到的控制器作者训练与执行源码，以及两次仅用 CPU 的首周期中心点诊断。没有重启历史长实验；诊断没有覆盖初始集合，也没有验证时域性质。
+审计日期：2026-10-02。本文件补充[先前的固定官方来源审计](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)，记录后来找到的控制器作者训练与执行源码、两次仅用 CPU 的首周期中心点诊断，以及两次 GPU 首盒首周期 smoke。没有重启历史长实验；新运行没有覆盖完整初始集合或完整时域性质。
 
 ## 新的一手来源与可确定的接口
 
@@ -25,7 +25,7 @@
 3. 标准配置用固定官方 `nn-nav-point.onnx`，robust 用固定官方 `nn-nav-set.onnx`。参考 CROWN-Reach 的已保存分块：标准 `40×16×1×1=640`，robust `5×5×1×1=25`；全盒最终成绩必须覆盖各自所有分块。已保存入口均用 Flow* 固定 ODE 步长 0.01、阶数 4，不能把历史性能直接写进新的结果格。
 4. 论文文字的 `(x,y,θ,v)` 顺序与 `64/64` 层宽作为来源冲突单列，不用它们悄悄重排固定官方网络输入，也不改写官方 ONNX。
 
-这套合同有明确的官方 plant 与作者闭环入口依据，可开始**新 run ID 的单分块完整时域 smoke**，但它只有单分块覆盖，不能作为完整 NAV 格成绩。若按保存分块顺序选择首盒，标准首盒是 `x∈[2.9,2.905], y∈[2.9,2.9125]`，robust 首盒是 `x,y∈[2.9,2.94]`，两者均有 `v=θ=0`。需要在实际执行入口中检查：原始固定官方网络文件、输入/输出原序、600/600 ODE 子步、全时域障碍、终点目标、完成时域 guard、数值 accepted/rejected 状态与原始区间轨迹。现有 Huan/Xiangru/原生旧入口可作为实现参考；PyTorch/GPU NAV 新入口尚需适配并审计。当前未占用 GPU，也未启动单分块完整时域作业。
+这套合同有明确的官方 plant 与作者闭环入口依据，可开始**新 run ID 的单分块完整时域 smoke**，但它只有单分块覆盖，不能作为完整 NAV 格成绩。若按保存分块顺序选择首盒，标准首盒是 `x∈[2.9,2.905], y∈[2.9,2.9125]`，robust 首盒是 `x,y∈[2.9,2.94]`，两者均有 `v=θ=0`。需要在实际执行入口中检查：原始固定官方网络文件、输入/输出原序、600/600 ODE 子步、全时域障碍、终点目标、完成时域 guard、数值 accepted/rejected 状态与原始区间轨迹。现有 Huan/Xiangru/原生旧入口可作为实现参考；PyTorch/GPU NAV 新入口尚需适配并审计。下述 GPU 作业只执行到 `t=0.2`，尚未启动单分块完整 6 秒作业。
 
 ## CPU 首周期中心点诊断
 
@@ -37,3 +37,16 @@
 | robust set | [`nav_author_cpu_step1_robust_001`](evidence/results/archcomp26_20261001/nav_author_cpu_step1_robust_001/RESULT.json)；[ONNX 参考求值](evidence/results/archcomp26_20261001/nav_author_cpu_step1_robust_001/REFERENCE_CHECK.json) | `(3,3,0,0)` | `(-0.9905992150306702, 0.9934086203575134)` | `(2.9803831040335997, 2.997386158101895, -0.1981198430061341, 0.1986817240715027)` |
 
 两份 `RESULT.json` 都明确标为 `complete_horizon=false`、`initial_set_covered=false`、`property_evaluated=false`、`formal_certificate=false`。不能从中心点轨迹推出避障、到达、任意一个分块的安全性，或四方法成绩。
+
+## Huan 首初盒首控制周期有限 smoke
+
+[独立运行档案与命令](evidence/results/archcomp26_20261001/nav_author_smoke_v1/README.md)记录了固定官方 ONNX、原始历史初盒台账、生成配置、GPU2/CPU10–13、300 秒上限与端口情况。两个新 run ID 均只选各自初始分区表的第 0 盒、首个 `0.2 s` 控制周期；端点目标只在 `t=6` 成立，因此短 smoke 不检查目标。CROWN 在进程内执行，没有 TCP RPC 端口。
+
+| 实例 | 新 run ID | 20 个 `0.01 s` 子步 | 末端 x、y 包络 | 进程 wall |
+| --- | --- | --- | --- | --- |
+| standard，point ONNX | [`nav_author_standard_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/RESULT.json) | 20/20 accepted；20 个保存 tube 均与障碍盒分离 | x `[2.8801981464,2.8851982812]`，y `[2.8973532532,2.9098525077]` | 4.1424 s |
+| robust，set ONNX | [`nav_author_robust_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) | 20/20 accepted；20 个保存 tube 均与障碍盒分离 | x `[2.8803819925,2.9203823466]`，y `[2.8973937349,2.9373917875]` | 4.4177 s |
+
+保存轨迹的[独立 standard 审计](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json)与[robust 审计](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json)逐行确认步号连续、每条区间有限且上下界有序、障碍投影分离。结果只支持**该两盒在已保存首周期 tube 上的数值观察**；完整 640/25 分块、30 周期与最终到达性质都未由新作业覆盖。
+
+成本评估：两次短 smoke 的进程时间包含 Python/CUDA/网络初始化，不可线性乘以 640/25 和 30 推算全盒用时。已有旧作者合同完整 Huan 记录分别完成标准 `640×600`、robust `25×600` lane-substeps；旧记录的 driver wall 分别约 14.72 s 和 11.66 s，见[先前审计的历史证据范围](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)。它们可用于判断这种配置在同类环境可执行，但不是本轮新主表成绩，也不能由短 smoke 推出当前完整作业时间或证明强度。若需新的全盒成绩，应以独立新 ID 执行并检查所有分块和性质；用户要求先核对既有状态，因此本次没有重复启动该历史全时域实验。

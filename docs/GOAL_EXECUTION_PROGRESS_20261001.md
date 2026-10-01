@@ -54,7 +54,7 @@ Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制�
 ## 继续推进：ACC 与未冻结的来源差异
 
 - **ACC participant-order / 修复 VAR 尾项的原生 Flow\***：固定 2026 ONNX 与保存的旧同名文件直接逐字节相同；保存的两份参与者源码均明确第 5 个 NN 特征为 `v_lead-v_ego`，论文没有定义相对速度符号，故新[合同](ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md)明确命名这一输入顺序。独立一期 smoke 后，隔离修复版完成全初盒 B=1、50 控制期、T=5，50 RPC、50 条范围、作者 checker `VERIFIED`，外层 wall **7.930 s**。独立读取保存 tube 后，安全半空间 `x_lead-x_ego-1.4*v_ego-10` 的保守下界最小 **16.25475375921129>0**。见[新原生摘要](evidence/results/archcomp26_20261001/acc_native_var_tail_full50_001/SUMMARY.md)。这只证明本次数值记录与作者 checker 一致，不提升旧 VAR 修复针对性单步测试为端到端控制器证明；Huan/Xiangru 新入口仍在准备。
-- [NAV 来源审计](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)发现论文状态文字 `(x,y,θ,ν)` 与固定官方 MATLAB/旧参与者的实际 `(x,y,ν,θ)` 顺序冲突；固定仓库无可判定 NN 轴语义的训练或执行代码，新 NAV 数值任务暂不启动，旧完整结果仅作参考。
+- [NAV 初次来源审计](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)发现论文状态文字 `(x,y,θ,ν)` 与固定官方 MATLAB 的 `(x,y,ν,θ)` 顺序冲突；当时新 NAV 数值任务尚未启动。后来找到控制器作者训练与闭环执行源码，后续合同及两次新短程尝试见[补充审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)。
 - [TORA reach 来源冲突](ARCHCOMP26_TORA_REACH_SOURCE_CONFLICT_20261001.md)涉及 sigmoid 最后一层和 plant 缩放；[无哈希网络预检](ARCHCOMP26_TORA_REACH_CONTROLLER_PREFLIGHT_NOHASH_20261001.md)已证实官方 2026 `.mat` 与旧 ONNX 的逐层参数、激活一致，并提供需显式选择缩放的构造器。用户的主合同选择未返回，reach 数值任务未启动。
 - [Unicycle 来源冲突](ARCHCOMP26_UNICYCLE_SOURCE_CONFLICT_20261001.md)涉及扰动加入 yaw/speed 的位置与 `w` 是否随时间变化；固定 2026 ONNX 与保存版直接字节相同，但不能替代 plant 选择。[Airplane 入口审计](ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md)亦已核出完整初盒和固定 ONNX，而离散更新顺序在官方目录没有执行程序；没有把旧单点连续任务或自拟 Euler 先后伪称官方离散复现。
 
@@ -126,3 +126,11 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 加入两个 Airplane P3 新 smoke 后，当时矩阵为 **93 条**新尝试：64 格中 **24 格**完整数值时域、1 格论文方程 QUAD 原生仍运行、5 格早停、**4 格失败**、**30 格未尝试**。P3 连续 Airplane 格归类为入口/首小步失败，旧单点成绩没有填入。
 
 再加入三次 Airplane Flow* native 完整初盒新 smoke 后，最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **96 条**新尝试：64 格中 **24 格**完整数值时域、1 格论文方程 QUAD 原生仍运行、5 格早停、**5 格失败**、**29 格未尝试**。Airplane continuous 四方方法单元均已有实际失败尝试，但均没有完整 T=2 数值流管或全时性质结论；上面的 93 条为此前快照。
+
+## 10 月 2 日补记：NAV 作者执行顺序与首周期 smoke
+
+- [NAV 作者执行合同补充审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)从控制器作者训练脚本和 CORA 闭环例确认：网络原序输入为 `[x,y,speed,heading]`，输出为 `[speed_rate,heading_rate]`；固定官方方程同此顺序。论文文字写 `[x,y,heading,speed]`，隐藏层也写 `64/64`，而固定官方 ONNX 为 `64/32`。新尝试按固定官方 ONNX 与作者可执行顺序显式命名；仍不声称作者仓库 Git LFS 模型与官方模型的内容身份已比对。
+- 新的 Huan standard 和 robust 各取历史分区台账**首盒**，用固定官方 point/set ONNX 跑首个 `0.2 s` 周期，GPU 2 / CPU 10–13、无 TCP RPC 端口。两个独立 ID [`nav_author_standard_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/RESULT.json) 和 [`nav_author_robust_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) 均接受 20/20 个 `0.01 s` 小步，保存 tube 与官方障碍盒分离，进程 wall 分别为 4.142439 s 与 4.417727 s。各自独立读回的区间检查与配置在[运行档案](evidence/results/archcomp26_20261001/nav_author_smoke_v1/README.md)；**未覆盖 640/25 全部分块、余下 29 期及 `t=6` 终点目标**。旧全程结果还需逐项核对合同后决定是否需要新全初集运行。
+- [Unicycle 执行门](ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md)明确了阻断：2026 论文只在速度导数加入 `w`，固定官方 MATLAB 右端没有 `w`，旧四方在朝向和速度两导数均加入同一个常值 `w`。论文未定 `w` 是轨迹常值还是可随时间变化，也未冻结“10 秒内到达”的检查语义；没有开启新 Unicycle 数值尝试，旧成绩不移入新格。
+
+当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **98 条**新尝试：24 格完整数值时域、1 格运行中、5 格早停、5 格失败、**2 格仅短前缀**、27 格未尝试。两条 NAV smoke 只使 Huan 两格变成“仅短前缀”，没有增加完整结果数。

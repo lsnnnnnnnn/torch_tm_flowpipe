@@ -10,14 +10,14 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 96,
+  "attempt_count": 98,
   "status_counts": {
     "completed": 24,
     "running": 1,
     "early_stopped": 5,
     "failed": 5,
-    "not_attempted": 29,
-    "short_prefix_only": 0
+    "not_attempted": 27,
+    "short_prefix_only": 2
   },
   "methods": [
     "pytorch_gpu",
@@ -1030,17 +1030,25 @@
     {
       "instance_id": "nav-standard",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 1,
+      "selected_attempt_number": 97,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_huan_smoke1_001",
+      "selected_wall_s": 4.14243892300874,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short plumbing prefix is recorded; no full-horizon result.",
+      "attempts": [
+        {
+          "index": 97,
+          "status": "completed_short_prefix",
+          "role": "fixed official 2026 point ONNX, author executable state order, first of 640 boxes and first of 30 control periods",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_standard_huan_smoke1_001",
+          "local_summary": "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+        }
+      ]
     },
     {
       "instance_id": "nav-standard",
@@ -1090,17 +1098,25 @@
     {
       "instance_id": "nav-robust",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 1,
+      "selected_attempt_number": 98,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_huan_smoke1_001",
+      "selected_wall_s": 4.417727241292596,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short plumbing prefix is recorded; no full-horizon result.",
+      "attempts": [
+        {
+          "index": 98,
+          "status": "completed_short_prefix",
+          "role": "fixed official 2026 set ONNX, author executable state order, first of 25 boxes and first of 30 control periods",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/nav_author_robust_huan_smoke1_001",
+          "local_summary": "docs/ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md"
+        }
+      ]
     },
     {
       "instance_id": "nav-robust",

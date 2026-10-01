@@ -1,0 +1,14 @@
+# NAV author-order Huan first-box smoke profile
+
+Executed on 2026-10-02 on server `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z`, using physical GPU 2 and CPU affinity 10–13. GPU 2 had 0 MiB used and no compute process immediately before launch. Each run used a distinct new directory and a 300 s supervisor limit. Neither run used a TCP RPC port: the controller driver executes CROWN in-process; `rpc-float32` names the value-transport quantization mode.
+
+The source snapshot here contains the deployed [NAV smoke script](archcomp26_nav_author_gpu_smoke_nohash.py) and its [shared CUDA preparation module](archcomp26_tora_remain_author_nohash.py). The tracked editable NAV source is [`tools/archcomp26_nav_author_gpu_smoke_nohash.py`](../../../../../tools/archcomp26_nav_author_gpu_smoke_nohash.py). The source config and exact first-box ledger were the saved historical `runs/archcomp_review_20260923/contracts/nav_{standard,robust}{,_boxes.json}` files. The new smoke configs in each result directory replace the controller path with the previously saved fixed-official 2026 ONNX copy, set one control period, and set `split_vars=[]` because the first ledger box is passed directly. The t=6 target test is disabled for this t≤0.2 smoke; the full source target is recorded in `START.json`.
+
+The launch for each instance used `timeout -s TERM -k 5s 300s taskset -c 10-13 env CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1` with `nncs_env/bin/python -B -u archcomp26_nav_author_gpu_smoke_nohash.py --instance <name> --output <new-run-dir>`. The script calls the existing sparse Huan engine in strict plant mode with box same-slope CROWN and stops at the first rejected substep.
+
+| Instance | Raw run | Console | Scope and result |
+| --- | --- | --- | --- |
+| `nav-standard` | [`nav_author_standard_huan_smoke1_001`](../nav_author_standard_huan_smoke1_001/RESULT.json) | [console](../nav_author_standard_huan_smoke1_001.console.log) | First of 640 boxes; 20/20 ODE substeps accepted; 4.1424 s process wall. |
+| `nav-robust` | [`nav_author_robust_huan_smoke1_001`](../nav_author_robust_huan_smoke1_001/RESULT.json) | [console](../nav_author_robust_huan_smoke1_001.console.log) | First of 25 boxes; 20/20 ODE substeps accepted; 4.4177 s process wall. |
+
+Each run directory has `START.json`, the exact generated `config.yaml`, `observations.jsonl`, `metrics.json`, `RESULT.json`, and an [independent saved-range audit](../nav_author_standard_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json) / [robust audit](../nav_author_robust_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json). The audits reread all 20 saved tubes and endpoints, check finite ordered intervals and the official obstacle exclusion in every saved tube. No result covers the full initial set or 6-second horizon; neither is a formal certificate.
