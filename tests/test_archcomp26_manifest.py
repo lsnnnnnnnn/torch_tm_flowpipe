@@ -45,7 +45,7 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
     assert tuple(manifest["methods"]) == METHODS
     assert manifest["execution_matrix"] == {
         "path": "benchmarks/archcomp26/execution_matrix.json",
-        "schema_version": "archcomp26-execution-matrix-v3",
+        "schema_version": "archcomp26-execution-matrix-v5",
         "status": "all_cells_not_started",
     }
     contract_schema = manifest["instance_contract_record"]
@@ -116,7 +116,7 @@ def test_execution_matrix_explicitly_has_all_64_not_started_cells():
         "steady_runs": 5,
         "shortfall_reason": None,
         "fresh_process_per_run": True,
-        "timing_boundary_version": "total_configuration_v1",
+            "timing_boundary_version": "total_configuration_v2",
     }
     assert set(matrix["cell_defaults"]["result_record"].values()) == {None}
     assert {
@@ -129,9 +129,16 @@ def test_execution_matrix_explicitly_has_all_64_not_started_cells():
         "mode": "unresolved", "value": None,
     }
     assert matrix["cell_defaults"]["property_checker"]["mode"] == "unresolved"
+    assert matrix["comparison_campaign"]["prelaunch_audit"] == {
+        "path": None, "sha256": None,
+    }
+    assert matrix["comparison_campaign"]["active_run_receipt"] == {
+        "path": None, "sha256": None,
+    }
+    assert matrix["comparison_campaign"]["timeout_s"] is None
     result_schema = matrix["result_record_contract"]
     result_schema_path = ROOT / result_schema["path"]
-    assert result_schema["schema_version"] == "archcomp26-cell-result-v2"
+    assert result_schema["schema_version"] == "archcomp26-cell-result-v4"
     assert hashlib.sha256(result_schema_path.read_bytes()).hexdigest() == (
         result_schema["sha256"]
     )

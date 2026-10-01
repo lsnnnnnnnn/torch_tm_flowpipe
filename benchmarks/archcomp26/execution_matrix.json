@@ -1,14 +1,46 @@
 {
-  "schema_version": "archcomp26-execution-matrix-v3",
+  "schema_version": "archcomp26-execution-matrix-v5",
   "source_manifest": "benchmarks/archcomp26/manifest.json",
   "merge_semantics": "shallow_override_of_complete_cell_defaults",
   "status": "not_started",
   "result_record_contract": {
     "path": "benchmarks/archcomp26/result_record.schema.json",
-    "schema_version": "archcomp26-cell-result-v2",
-    "sha256": "67c99a1956cce6a0332514b86b1972095c560ceb9dd93899ac68e1caee64b945"
+    "schema_version": "archcomp26-cell-result-v4",
+    "sha256": "b78f26c997fda7fa45f3804e07ea251ee0419109deb43f7c2fcafff745cb2751"
   },
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
+  "comparison_campaign": {
+    "schema_version": "archcomp26-comparison-campaign-v1",
+    "campaign_id": null,
+    "host_identity": null,
+    "hardware_identity": null,
+    "cpu_thread_budget": null,
+    "gpu_device_budget": null,
+    "timeout_s": null,
+    "resource_limits": null,
+    "prelaunch_audit": {"path": null, "sha256": null},
+    "active_run_receipt": {"path": null, "sha256": null},
+    "launch_guard": {
+      "schema_version": "archcomp26-atomic-launch-guard-v1",
+      "protocol": "posix-flock-exclusive-nonblocking-v1",
+      "lock_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/.archcomp26/launch.lock",
+      "hold_scope": "fresh_audit_through_terminal_fsync_v1",
+      "wrapper_module": "torch_tm_flowpipe.archcomp26_launch",
+      "wrapper_path": "src/torch_tm_flowpipe/archcomp26_launch.py",
+      "wrapper_sha256": null
+    },
+    "timing_boundary": {
+      "version": "total_configuration_v2",
+      "start_event": "immediately_before_fresh_process_spawn",
+      "stop_event": "after_result_and_width_artifacts_are_durable",
+      "phase_fields": ["driver_total", "compile", "controller_nn", "solver_core", "validation", "observer", "output", "plot_report"]
+    },
+    "rotation": {
+      "policy": "balanced_round_robin_by_instance_and_steady_round_v1",
+      "steady_rounds": 5,
+      "schedule_artifact": {"path": null, "sha256": null}
+    }
+  },
   "required_cell_fields": [
     "support",
     "command",
@@ -25,8 +57,8 @@
   ],
   "enums": {
     "support.status": ["unassessed", "supported", "unsupported"],
-    "run.status": ["not_started", "running", "completed", "failed", "timeout", "interrupted", "skipped"],
-    "run.failure_category": [null, "validation_rejected", "nonfinite", "timeout", "process_error", "compile_error", "missing_dependency", "trajectory_sanity_failed", "analytic_containment_failed", "schema_invalid", "incomplete_unknown"]
+    "run.status": ["not_started", "running", "completed", "failed", "timeout", "interrupted", "early_stopped", "skipped"],
+    "run.failure_category": [null, "validation_rejected", "nonfinite", "timeout", "process_error", "compile_error", "missing_dependency", "environment_error", "resource_guard", "out_of_memory", "property_early_stop", "trajectory_sanity_failed", "analytic_containment_failed", "schema_invalid", "incomplete_unknown"]
   },
   "cell_defaults": {
     "support": {"status": "unassessed", "blockers": []},
@@ -68,7 +100,7 @@
       "steady_runs": 5,
       "shortfall_reason": null,
       "fresh_process_per_run": true,
-      "timing_boundary_version": "total_configuration_v1"
+      "timing_boundary_version": "total_configuration_v2"
     },
     "run": {"status": "not_started", "failure_category": null, "failure_detail": null},
     "result_record": {"schema_version": null, "path": null, "sha256": null}

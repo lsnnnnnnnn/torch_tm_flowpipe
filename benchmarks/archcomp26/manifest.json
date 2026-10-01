@@ -41,7 +41,7 @@
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "execution_matrix": {
     "path": "benchmarks/archcomp26/execution_matrix.json",
-    "schema_version": "archcomp26-execution-matrix-v3",
+    "schema_version": "archcomp26-execution-matrix-v5",
     "status": "all_cells_not_started"
   },
   "preflight": {
@@ -76,22 +76,14 @@
       "integration.horizon",
       "controller_update.period",
       "controller_update.scheduled_updates",
+      "controller_update.schedule_points",
       "controller_update.schedule_semantics",
-      "arithmetic.mode",
-      "arithmetic.controller_domain",
-      "arithmetic.relaxation",
-      "arithmetic.dtype",
-      "arithmetic.transport",
       "property.formula",
       "property.time_semantics",
       "property.pass_condition",
-      "runtime.hardware",
-      "runtime.cpu_threads",
-      "runtime.resource_limits",
-      "runtime.timeout",
-      "commands",
-      "source_identity",
-      "binary_identity"
+      "width_comparison.coordinate_units",
+      "width_comparison.sample_points",
+      "width_comparison.aggregation_semantics"
     ],
     "discrete_execution_contract_v1": [
       "transition.source",
@@ -112,22 +104,14 @@
       "discrete.sample_period",
       "controller_update.period_steps",
       "controller_update.scheduled_updates",
+      "controller_update.schedule_points",
       "controller_update.schedule_semantics",
-      "arithmetic.mode",
-      "arithmetic.controller_domain",
-      "arithmetic.relaxation",
-      "arithmetic.dtype",
-      "arithmetic.transport",
       "property.formula",
       "property.step_semantics",
       "property.pass_condition",
-      "runtime.hardware",
-      "runtime.cpu_threads",
-      "runtime.resource_limits",
-      "runtime.timeout",
-      "commands",
-      "source_identity",
-      "binary_identity"
+      "width_comparison.coordinate_units",
+      "width_comparison.sample_points",
+      "width_comparison.aggregation_semantics"
     ]
   },
   "instances": [

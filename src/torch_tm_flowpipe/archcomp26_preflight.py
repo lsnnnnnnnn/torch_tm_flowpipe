@@ -2,23 +2,102 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
+import struct
 from typing import Any, Mapping
+import xml.etree.ElementTree as ET
+import zlib
 
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "benchmarks/archcomp26/manifest.json"
-MATRIX_SCHEMA = "archcomp26-execution-matrix-v3"
-RESULT_SCHEMA = "archcomp26-cell-result-v2"
+MATRIX_SCHEMA = "archcomp26-execution-matrix-v5"
+RESULT_SCHEMA = "archcomp26-cell-result-v4"
 INSTANCE_SCHEMA = "archcomp26-instance-contract-v1"
 OFFICIAL_ASSETS_SCHEMA = "archcomp26-official-assets-v1"
 OFFICIAL_ASSETS_AUDIT_SCHEMA = "archcomp26-official-assets-audit-v1"
+PARTITION_LEDGER_SCHEMA = "archcomp26-partition-ledger-v1"
+PRELAUNCH_AUDIT_SCHEMA = "archcomp26-prelaunch-audit-v1"
+NATIVE_LAUNCH_SCHEMA = "archcomp26-native-job-launch-v1"
+NATIVE_TERMINAL_SCHEMA = "archcomp26-native-job-terminal-v1"
+PROCESS_SCAN_SCHEMA = "archcomp26-process-scan-v1"
+ACTIVE_RUN_SCHEMA = "archcomp26-active-run-v1"
+CAMPAIGN_LOCK_SCHEMA = "archcomp26-campaign-lock-v1"
+ATTEMPT_LEDGER_SCHEMA = "archcomp26-attempt-ledger-v1"
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
-TERMINAL_STATUSES = {"completed", "failed", "timeout", "interrupted", "skipped"}
+EXPECTED_INSTANCE_IDS = (
+    "acc-safe-distance",
+    "airplane-continuous",
+    "airplane-discrete",
+    "attitude-control-avoid",
+    "balancing-reach",
+    "docking-constraint",
+    "double-pendulum-less-robust",
+    "double-pendulum-more-robust",
+    "nav-standard",
+    "nav-robust",
+    "quad-reach",
+    "single-pendulum-reach",
+    "tora-remain",
+    "tora-reach-sigmoid",
+    "tora-reach-tanh",
+    "unicycle-reach",
+)
+EXPECTED_PROFILE_BY_INSTANCE = {
+    instance_id: (
+        "discrete_execution_contract_v1"
+        if instance_id == "airplane-discrete"
+        else "full_execution_contract_v1"
+    )
+    for instance_id in EXPECTED_INSTANCE_IDS
+}
+EXPECTED_METHODS = ("pytorch_gpu", "huan", "xiangru", "flowstar_native")
+VIEWABLE_PLOT_ROLES = {
+    "plot_png": ".png",
+    "plot_pdf": ".pdf",
+}
+PLOT_ARTIFACT_ROLES = {
+    **VIEWABLE_PLOT_ROLES,
+    "plot_svg": ".svg",
+}
+SERVER_RESEARCH_ROOT = "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z"
+ORIGINAL_NATIVE_QUAD_IDENTITY = {
+    "job_id": "native-quad-matched-20260929-full1000-v1",
+    "run_directory": (
+        SERVER_RESEARCH_ROOT
+        + "/runs/native_quad_matched_20260929/initial_affine_cover_variant/"
+        "full1000_v1"
+    ),
+    "watch_directory": (
+        SERVER_RESEARCH_ROOT
+        + "/runs/native_quad_matched_20260929/initial_affine_cover_variant/"
+        "full1000_v1_watch"
+    ),
+    "command_sha256": (
+        "db3f45544bf0cd4da63f90cf3973a7b76347f585809121783b87d709d818c62e"
+    ),
+    "terminal_status": "timeout",
+    "result_sha256": (
+        "036943cd0b2a0e040017e30c0ac82d0b41f6eb645d924d2294dfe70e2bde97f2"
+    ),
+}
+# The handoff records that the prepared 24-hour replacement was never launched.
+# Any newly discovered or deliberately launched replacement must first be added
+# here as an independently reviewed identity instead of being self-declared by
+# a prelaunch receipt.
+EXPECTED_NATIVE_REPLACEMENTS: tuple[Mapping[str, str], ...] = ()
+RESOURCE_LIMIT_FIELDS = {
+    "exclusive_host", "exclusive_gpu_device",
+    "max_host_memory_bytes", "max_device_memory_bytes",
+}
+TERMINAL_STATUSES = {
+    "completed", "failed", "timeout", "interrupted", "early_stopped", "skipped"
+}
 CANONICAL_OUTCOMES = {
     "completed",
     "validation_rejected",
@@ -27,10 +106,19 @@ CANONICAL_OUTCOMES = {
     "process_error",
     "compile_error",
     "missing_dependency",
+    "environment_error",
+    "resource_guard",
+    "out_of_memory",
+    "property_early_stop_pass",
+    "property_early_stop_fail",
     "trajectory_sanity_failed",
     "analytic_containment_failed",
     "schema_invalid",
     "incomplete_unknown",
+}
+TIMING_FIELDS = {
+    "process_total", "driver_total", "compile", "controller_nn",
+    "solver_core", "validation", "observer", "output", "plot_report",
 }
 SOUNDNESS_CLASSES = {
     "formally outward by construction",
@@ -77,6 +165,38 @@ METHOD_PROFILE_FIELDS = {
     "source_identity",
     "binary_identity",
     "property.checker",
+}
+SHARED_PROFILE_FIELDS = {
+    "full_execution_contract_v1": (
+        "dynamics.source", "dynamics.sha256", "dynamics.equations",
+        "variable_order", "controller.source", "controller.sha256",
+        "controller.input_output_order", "initial_set.source",
+        "initial_set.sha256", "initial_set.partitions",
+        "initial_set.boxes_sha256", "disturbance", "integration.horizon",
+        "controller_update.period", "controller_update.scheduled_updates",
+        "controller_update.schedule_points",
+        "controller_update.schedule_semantics", "property.formula",
+        "property.time_semantics", "property.pass_condition",
+        "width_comparison.coordinate_units",
+        "width_comparison.sample_points",
+        "width_comparison.aggregation_semantics",
+    ),
+    "discrete_execution_contract_v1": (
+        "transition.source", "transition.sha256", "transition.state_update",
+        "transition.control_application_order", "variable_order",
+        "controller.source", "controller.sha256",
+        "controller.input_output_order", "initial_set.source",
+        "initial_set.sha256", "initial_set.partitions",
+        "initial_set.boxes_sha256", "disturbance", "discrete.index_set",
+        "discrete.transition_count", "discrete.sample_period",
+        "controller_update.period_steps", "controller_update.scheduled_updates",
+        "controller_update.schedule_points",
+        "controller_update.schedule_semantics", "property.formula",
+        "property.step_semantics", "property.pass_condition",
+        "width_comparison.coordinate_units",
+        "width_comparison.sample_points",
+        "width_comparison.aggregation_semantics",
+    ),
 }
 CELL_DEFAULT_SHAPE = {
     "support": {"status": None, "blockers": None},
@@ -127,6 +247,31 @@ CELL_DEFAULT_SHAPE = {
     },
     "result_record": {"schema_version": None, "path": None, "sha256": None},
 }
+CAMPAIGN_SHAPE = {
+    "schema_version": None,
+    "campaign_id": None,
+    "host_identity": None,
+    "hardware_identity": None,
+    "cpu_thread_budget": None,
+    "gpu_device_budget": None,
+    "timeout_s": None,
+    "resource_limits": None,
+    "prelaunch_audit": {"path": None, "sha256": None},
+    "active_run_receipt": {"path": None, "sha256": None},
+    "launch_guard": {
+        "schema_version": None, "protocol": None, "lock_path": None,
+        "hold_scope": None, "wrapper_module": None, "wrapper_path": None,
+        "wrapper_sha256": None,
+    },
+    "timing_boundary": {
+        "version": None, "start_event": None, "stop_event": None,
+        "phase_fields": None,
+    },
+    "rotation": {
+        "policy": None, "steady_rounds": None,
+        "schedule_artifact": {"path": None, "sha256": None},
+    },
+}
 
 
 def _reject_nonfinite(value: str) -> None:
@@ -155,6 +300,17 @@ def _canonical_sha256(value: Any) -> str:
 
 def _is_sha256(value: Any) -> bool:
     return isinstance(value, str) and SHA256_RE.fullmatch(value) is not None
+
+
+def _parse_utc(value: Any) -> datetime | None:
+    if not isinstance(value, str) or re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z", value
+    ) is None:
+        return None
+    try:
+        return datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError:
+        return None
 
 
 def _is_finite_number(value: Any, *, positive: bool = False) -> bool:
@@ -236,6 +392,14 @@ def _mode_is(value: Any, *allowed: str) -> bool:
     return isinstance(value, str) and value in allowed
 
 
+def _outcome_matches_category(outcome: Any, category: Any) -> bool:
+    if category == "property_early_stop":
+        return outcome in {
+            "property_early_stop_pass", "property_early_stop_fail"
+        }
+    return outcome == category
+
+
 def _tagged_value_errors(
     value: Any,
     label: str,
@@ -288,6 +452,96 @@ def _contract_type_errors(
         errors.append(
             f"{instance}: resolved contract field initial_set.partitions must be a non-empty array"
         )
+    variables = _dotted(fields, "variable_order")
+    if isinstance(partitions, list) and isinstance(variables, list):
+        for index, box in enumerate(partitions):
+            label = f"{instance}: initial_set.partitions[{index}]"
+            if not isinstance(box, dict) or list(box) != variables:
+                errors.append(f"{label} must contain variable_order exactly")
+                continue
+            for variable, bounds in box.items():
+                if not isinstance(bounds, list) or len(bounds) != 2 or not all(
+                    not isinstance(bound, bool)
+                    and isinstance(bound, (int, float))
+                    and math.isfinite(bound)
+                    for bound in bounds
+                ) or bounds[0] > bounds[1]:
+                    errors.append(
+                        f"{label}.{variable} must be a finite [lo, hi] interval"
+                    )
+    disturbance = _dotted(fields, "disturbance")
+    disturbance_errors = _exact_keys(
+        disturbance, {"mode", "bounds"}, f"{instance}: disturbance"
+    )
+    errors.extend(disturbance_errors)
+    if not disturbance_errors:
+        mode = disturbance["mode"]
+        bounds = disturbance["bounds"]
+        if not _mode_is(mode, "none", "box"):
+            errors.append(f"{instance}: disturbance.mode must be none or box")
+        if not isinstance(bounds, dict):
+            errors.append(f"{instance}: disturbance.bounds must be an object")
+        elif mode == "none" and bounds:
+            errors.append(f"{instance}: disturbance none mode must have empty bounds")
+        elif mode == "box":
+            if not isinstance(variables, list) or list(bounds) != variables:
+                errors.append(
+                    f"{instance}: disturbance box must contain variable_order exactly"
+                )
+            else:
+                for variable, interval in bounds.items():
+                    if not isinstance(interval, list) or len(interval) != 2 \
+                            or not all(
+                                not isinstance(bound, bool)
+                                and isinstance(bound, (int, float))
+                                and math.isfinite(bound)
+                                for bound in interval
+                            ) or interval[0] > interval[1]:
+                        errors.append(
+                            f"{instance}: disturbance.bounds.{variable} is invalid"
+                        )
+    if profile == "full_execution_contract_v1":
+        equations = _dotted(fields, "dynamics.equations")
+        if not isinstance(equations, list) or equations == [] \
+                or not isinstance(variables, list) \
+                or len(equations) != len(variables) or not all(
+                    isinstance(equation, str) and equation.strip()
+                    for equation in equations
+                ):
+            errors.append(
+                f"{instance}: dynamics.equations must align with variable_order"
+            )
+    if profile == "discrete_execution_contract_v1":
+        state_update = _dotted(fields, "transition.state_update")
+        if not isinstance(state_update, list) or state_update == [] \
+                or not isinstance(variables, list) \
+                or len(state_update) != len(variables) or not all(
+                    isinstance(update, str) and update.strip()
+                    for update in state_update
+                ):
+            errors.append(
+                f"{instance}: transition.state_update must align with variable_order"
+            )
+        control_order = _dotted(fields, "transition.control_application_order")
+        if not isinstance(control_order, str) or not control_order.strip():
+            errors.append(
+                f"{instance}: transition.control_application_order must be text"
+            )
+    units = _dotted(fields, "width_comparison.coordinate_units")
+    if not isinstance(units, list) or not isinstance(variables, list) \
+            or len(units) != len(variables) or not all(
+        isinstance(item, str) and item.strip() for item in units
+    ):
+        errors.append(
+            f"{instance}: resolved contract field "
+            "width_comparison.coordinate_units must align with variable_order"
+        )
+    if _dotted(fields, "width_comparison.aggregation_semantics") \
+            != "union_and_per_partition":
+        errors.append(
+            f"{instance}: resolved contract field "
+            "width_comparison.aggregation_semantics is unsupported"
+        )
     positive_numbers = {
         "full_execution_contract_v1": (
             "integration.horizon", "controller_update.period",
@@ -309,6 +563,28 @@ def _contract_type_errors(
             errors.append(
                 f"{instance}: resolved contract field {dotted} must be a positive integer"
             )
+    sample_points = _dotted(fields, "width_comparison.sample_points")
+    expected_end = (
+        _dotted(fields, "integration.horizon")
+        if profile == "full_execution_contract_v1"
+        else _dotted(fields, "discrete.transition_count")
+    )
+    points_are_numbers = isinstance(sample_points, list) and len(sample_points) >= 2 \
+        and all(_is_finite_number(point) for point in sample_points)
+    if profile == "discrete_execution_contract_v1" and points_are_numbers:
+        points_are_numbers = all(
+            isinstance(point, int) and not isinstance(point, bool)
+            for point in sample_points
+        )
+    if not points_are_numbers or sample_points[0] != 0 \
+            or sample_points[-1] != expected_end \
+            or any(left >= right for left, right in zip(
+                sample_points, sample_points[1:]
+            )):
+        errors.append(
+            f"{instance}: resolved contract field width_comparison.sample_points "
+            "must be a strictly increasing 0-to-horizon grid"
+        )
     updates_path = (
         "controller_update.scheduled_updates"
         if isinstance(profile, str) and profile in {
@@ -318,10 +594,33 @@ def _contract_type_errors(
     )
     if updates_path is not None:
         value = _dotted(fields, updates_path)
-        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
             errors.append(
                 f"{instance}: resolved contract field {updates_path} "
-                "must be a non-negative integer"
+                "must be a positive integer"
+            )
+        schedule_points = _dotted(fields, "controller_update.schedule_points")
+        extent_end = (
+            _dotted(fields, "integration.horizon")
+            if profile == "full_execution_contract_v1"
+            else _dotted(fields, "discrete.transition_count")
+        )
+        points_valid = isinstance(schedule_points, list) \
+            and len(schedule_points) == value \
+            and _is_finite_number(extent_end, positive=True) \
+            and all(_is_finite_number(point) for point in schedule_points)
+        if profile == "discrete_execution_contract_v1" and points_valid:
+            points_valid = all(
+                isinstance(point, int) and not isinstance(point, bool)
+                for point in schedule_points
+            )
+        if not points_valid or schedule_points[0] != 0 \
+                or any(left >= right for left, right in zip(
+                    schedule_points, schedule_points[1:]
+                )) or not all(point < extent_end for point in schedule_points):
+            errors.append(
+                f"{instance}: controller_update.schedule_points must bind every "
+                "scheduled update in order"
             )
     text_fields = [
         "controller_update.schedule_semantics",
@@ -373,6 +672,685 @@ def _shape_errors(
     return errors
 
 
+def _validate_prelaunch_audit(
+    campaign: Mapping[str, Any],
+    root: Path,
+    *,
+    require_fresh: bool = False,
+    now_utc: datetime | None = None,
+) -> list[str]:
+    link = campaign.get("prelaunch_audit")
+    if not isinstance(link, Mapping):
+        return ["comparison_campaign.prelaunch_audit: expected an object"]
+    values = (link.get("path"), link.get("sha256"))
+    if all(value is None for value in values):
+        return []
+    if any(value is None for value in values):
+        return ["comparison_campaign.prelaunch_audit: partial pointer"]
+    path, errors = _bound_file(
+        root, link.get("path"), link.get("sha256"),
+        "comparison_campaign.prelaunch_audit",
+    )
+    if path is None:
+        return errors
+    try:
+        receipt = _load(path)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return [*errors, f"comparison_campaign.prelaunch_audit: cannot load: {error}"]
+    expected = {
+        "schema_version", "campaign_id", "checked_at_utc", "valid_until_utc",
+        "server_research_root", "process_scan_artifact", "original_native_quad",
+        "replacement_jobs", "duplicate_launch_absent",
+    }
+    errors.extend(_exact_keys(
+        receipt, expected, "comparison_campaign.prelaunch_audit.receipt"
+    ))
+    if errors:
+        return errors
+    if receipt["schema_version"] != PRELAUNCH_AUDIT_SCHEMA:
+        errors.append("comparison_campaign.prelaunch_audit: wrong schema_version")
+    if receipt["campaign_id"] != campaign.get("campaign_id"):
+        errors.append("comparison_campaign.prelaunch_audit: campaign identity mismatch")
+    checked_at = _parse_utc(receipt["checked_at_utc"])
+    valid_until = _parse_utc(receipt["valid_until_utc"])
+    if checked_at is None:
+        errors.append("comparison_campaign.prelaunch_audit: invalid checked_at_utc")
+    if valid_until is None:
+        errors.append("comparison_campaign.prelaunch_audit: invalid valid_until_utc")
+    if checked_at is not None and valid_until is not None and not (
+        checked_at < valid_until <= checked_at + timedelta(hours=24)
+    ):
+        errors.append(
+            "comparison_campaign.prelaunch_audit: validity window must be positive "
+            "and no longer than 24 hours"
+        )
+    if require_fresh and checked_at is not None and valid_until is not None:
+        current = now_utc or datetime.now(timezone.utc)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=timezone.utc)
+        if not checked_at <= current < valid_until:
+            errors.append(
+                "comparison_campaign.prelaunch_audit: receipt is not fresh at launch"
+            )
+    server_root = receipt["server_research_root"]
+    expected_root = SERVER_RESEARCH_ROOT
+    if server_root != expected_root:
+        errors.append("comparison_campaign.prelaunch_audit: wrong server research root")
+    job_fields = {
+        "job_id", "run_directory", "watch_directory",
+        "launch_identity_artifact", "terminal_status",
+        "terminal_evidence_artifact",
+    }
+    terminal_statuses = {"completed", "failed", "timeout", "interrupted"}
+    original = receipt["original_native_quad"]
+    original_errors = _exact_keys(
+        original, job_fields,
+        "comparison_campaign.prelaunch_audit.original_native_quad",
+    )
+    errors.extend(original_errors)
+    jobs = [] if original_errors else [original]
+    replacements = receipt["replacement_jobs"]
+    if not isinstance(replacements, list):
+        errors.append("comparison_campaign.prelaunch_audit.replacement_jobs: expected array")
+    else:
+        for index, replacement in enumerate(replacements):
+            item_errors = _exact_keys(
+                replacement, job_fields,
+                f"comparison_campaign.prelaunch_audit.replacement_jobs[{index}]",
+            )
+            errors.extend(item_errors)
+            if not item_errors:
+                jobs.append(replacement)
+    if isinstance(replacements, list) and len(replacements) \
+            != len(EXPECTED_NATIVE_REPLACEMENTS):
+        errors.append(
+            "comparison_campaign.prelaunch_audit.replacement_jobs: does not match "
+            "the independently frozen replacement inventory"
+        )
+    observed_directories: list[str] = []
+    observed_job_ids: list[str] = []
+    for index, job in enumerate(jobs):
+        label = (
+            "original_native_quad" if index == 0 else f"replacement_jobs[{index - 1}]"
+        )
+        directory = job["run_directory"]
+        watch_directory = job["watch_directory"]
+        job_id = job["job_id"]
+        if not isinstance(job_id, str) or not job_id.strip():
+            errors.append(
+                f"comparison_campaign.prelaunch_audit.{label}: job_id is invalid"
+            )
+        else:
+            observed_job_ids.append(job_id)
+        for directory_name, candidate in (
+            ("run directory", directory), ("watch directory", watch_directory)
+        ):
+            directory_path = (
+                PurePosixPath(candidate) if isinstance(candidate, str) else None
+            )
+            if not isinstance(candidate, str) or directory_path is None \
+                    or not candidate.startswith(expected_root + "/") \
+                    or ".." in directory_path.parts \
+                    or "." in directory_path.parts \
+                    or str(directory_path) != candidate:
+                errors.append(
+                    f"comparison_campaign.prelaunch_audit.{label}: "
+                    f"{directory_name} is outside root"
+                )
+        if isinstance(directory, str):
+            observed_directories.append(directory)
+        expected_job = (
+            ORIGINAL_NATIVE_QUAD_IDENTITY
+            if index == 0 else EXPECTED_NATIVE_REPLACEMENTS[index - 1]
+        ) if index == 0 or index - 1 < len(EXPECTED_NATIVE_REPLACEMENTS) else None
+        if expected_job is not None and any(
+            job.get(name) != expected_job.get(name)
+            for name in (
+                "job_id", "run_directory", "watch_directory", "terminal_status",
+            )
+        ):
+            errors.append(
+                f"comparison_campaign.prelaunch_audit.{label}: identity does not "
+                "match the independently frozen job"
+            )
+        if job["terminal_status"] not in terminal_statuses:
+            errors.append(
+                f"comparison_campaign.prelaunch_audit.{label}: job is not terminal"
+            )
+        launch_label = (
+            f"comparison_campaign.prelaunch_audit.{label}.launch_identity_artifact"
+        )
+        launch_link = job["launch_identity_artifact"]
+        launch_artifact_errors = _validate_artifact(
+            launch_link, root, launch_label
+        )
+        errors.extend(launch_artifact_errors)
+        launch_path, launch_errors = _bound_file(
+            root,
+            launch_link.get("path") if isinstance(launch_link, Mapping) else None,
+            launch_link.get("sha256") if isinstance(launch_link, Mapping) else None,
+            launch_label,
+        )
+        errors.extend(error for error in launch_errors if error not in errors)
+        if launch_path is not None and not launch_artifact_errors:
+            try:
+                launch = _load(launch_path)
+            except (OSError, ValueError, json.JSONDecodeError) as error:
+                errors.append(f"{launch_label}: cannot load: {error}")
+            else:
+                launch_fields = {
+                    "schema_version", "server_research_root", "run_directory",
+                    "watch_directory", "job_id", "command_sha256",
+                    "created_at_utc",
+                }
+                launch_shape = _exact_keys(launch, launch_fields, launch_label)
+                errors.extend(launch_shape)
+                if not launch_shape:
+                    if launch["schema_version"] != NATIVE_LAUNCH_SCHEMA:
+                        errors.append(f"{launch_label}: wrong schema_version")
+                    if (
+                        launch["server_research_root"] != expected_root
+                        or launch["run_directory"] != directory
+                        or launch["watch_directory"] != watch_directory
+                        or launch["job_id"] != job["job_id"]
+                    ):
+                        errors.append(f"{launch_label}: job identity mismatch")
+                    expected_command = (
+                        expected_job.get("command_sha256")
+                        if expected_job is not None else None
+                    )
+                    if not _is_sha256(launch["command_sha256"]) \
+                            or launch["command_sha256"] != expected_command:
+                        errors.append(f"{launch_label}: command_sha256 is invalid")
+                    created = _parse_utc(launch["created_at_utc"])
+                    if created is None or (
+                        checked_at is not None and created > checked_at
+                    ):
+                        errors.append(f"{launch_label}: invalid creation time")
+
+        terminal_label = (
+            f"comparison_campaign.prelaunch_audit.{label}.terminal_evidence_artifact"
+        )
+        terminal_link = job["terminal_evidence_artifact"]
+        terminal_artifact_errors = _validate_artifact(
+            terminal_link, root, terminal_label
+        )
+        errors.extend(terminal_artifact_errors)
+        terminal_path, terminal_errors = _bound_file(
+            root,
+            terminal_link.get("path") if isinstance(terminal_link, Mapping) else None,
+            terminal_link.get("sha256") if isinstance(terminal_link, Mapping) else None,
+            terminal_label,
+        )
+        errors.extend(error for error in terminal_errors if error not in errors)
+        if terminal_path is not None and not terminal_artifact_errors:
+            try:
+                terminal = _load(terminal_path)
+            except (OSError, ValueError, json.JSONDecodeError) as error:
+                errors.append(f"{terminal_label}: cannot load: {error}")
+            else:
+                terminal_fields = {
+                    "schema_version", "server_research_root", "run_directory",
+                    "job_id", "terminal_status", "checked_at_utc",
+                    "result_artifact",
+                }
+                terminal_shape = _exact_keys(
+                    terminal, terminal_fields, terminal_label
+                )
+                errors.extend(terminal_shape)
+                if not terminal_shape:
+                    if terminal["schema_version"] != NATIVE_TERMINAL_SCHEMA:
+                        errors.append(f"{terminal_label}: wrong schema_version")
+                    if (
+                        terminal["server_research_root"] != expected_root
+                        or terminal["run_directory"] != directory
+                        or terminal["job_id"] != job["job_id"]
+                        or terminal["terminal_status"] != job["terminal_status"]
+                    ):
+                        errors.append(f"{terminal_label}: terminal identity mismatch")
+                    terminal_checked = _parse_utc(terminal["checked_at_utc"])
+                    if terminal_checked is None or (
+                        checked_at is not None and terminal_checked > checked_at
+                    ):
+                        errors.append(f"{terminal_label}: invalid terminal check time")
+                    errors.extend(_validate_artifact(
+                        terminal["result_artifact"], root,
+                        f"{terminal_label}.result_artifact",
+                    ))
+                    expected_result_sha = (
+                        expected_job.get("result_sha256")
+                        if expected_job is not None else None
+                    )
+                    if terminal["result_artifact"].get("sha256") \
+                            != expected_result_sha:
+                        errors.append(
+                            f"{terminal_label}: result identity does not match "
+                            "the independently frozen job"
+                        )
+
+    if len(observed_job_ids) != len(set(observed_job_ids)) \
+            or len(observed_directories) != len(set(observed_directories)):
+        errors.append(
+            "comparison_campaign.prelaunch_audit: duplicate job identity or run directory"
+        )
+
+    scan_label = "comparison_campaign.prelaunch_audit.process_scan_artifact"
+    scan_link = receipt["process_scan_artifact"]
+    scan_artifact_errors = _validate_artifact(scan_link, root, scan_label)
+    errors.extend(scan_artifact_errors)
+    scan_path, scan_errors = _bound_file(
+        root,
+        scan_link.get("path") if isinstance(scan_link, Mapping) else None,
+        scan_link.get("sha256") if isinstance(scan_link, Mapping) else None,
+        scan_label,
+    )
+    errors.extend(error for error in scan_errors if error not in errors)
+    if scan_path is not None and not scan_artifact_errors:
+        try:
+            scan = _load(scan_path)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            errors.append(f"{scan_label}: cannot load: {error}")
+        else:
+            scan_fields = {
+                "schema_version", "campaign_id", "server_research_root",
+                "checked_at_utc", "active_owned_processes",
+                "observed_run_directories",
+            }
+            scan_shape = _exact_keys(scan, scan_fields, scan_label)
+            errors.extend(scan_shape)
+            if not scan_shape:
+                if scan["schema_version"] != PROCESS_SCAN_SCHEMA:
+                    errors.append(f"{scan_label}: wrong schema_version")
+                if (
+                    scan["campaign_id"] != campaign.get("campaign_id")
+                    or scan["server_research_root"] != expected_root
+                    or scan["checked_at_utc"] != receipt["checked_at_utc"]
+                ):
+                    errors.append(f"{scan_label}: audit identity mismatch")
+                if scan["active_owned_processes"] != []:
+                    errors.append(f"{scan_label}: owned benchmark process is still active")
+                directories = scan["observed_run_directories"]
+                if not isinstance(directories, list) or len(directories) != len(
+                    set(directories)
+                ) or set(directories) != set(observed_directories):
+                    errors.append(f"{scan_label}: observed run directories mismatch")
+    if receipt["duplicate_launch_absent"] is not True:
+        errors.append(
+            "comparison_campaign.prelaunch_audit: duplicate launch absence is not confirmed"
+        )
+    return errors
+
+
+def _active_run_receipt(
+    campaign: Mapping[str, Any], root: Path
+) -> tuple[Mapping[str, Any] | None, list[str]]:
+    label = "comparison_campaign.active_run_receipt"
+    link = campaign.get("active_run_receipt")
+    if not isinstance(link, Mapping):
+        return None, [f"{label}: expected an object"]
+    values = (link.get("path"), link.get("sha256"))
+    if all(value is None for value in values):
+        return None, []
+    if any(value is None for value in values):
+        return None, [f"{label}: partial pointer"]
+    errors = _validate_artifact(link, root, label)
+    path, bound_errors = _bound_file(
+        root, link.get("path"), link.get("sha256"), label
+    )
+    errors.extend(error for error in bound_errors if error not in errors)
+    if path is None:
+        return None, errors
+    try:
+        receipt = _load(path)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return None, [*errors, f"{label}: cannot load: {error}"]
+    fields = {
+        "schema_version", "campaign_id", "instance_id", "method",
+        "role", "index", "attempt_index", "invocation_id", "pid",
+        "started_at_utc", "prelaunch_audit_sha256", "lock_artifact",
+    }
+    shape = _exact_keys(receipt, fields, label)
+    errors.extend(shape)
+    if shape:
+        return receipt, errors
+    if receipt["schema_version"] != ACTIVE_RUN_SCHEMA:
+        errors.append(f"{label}: wrong schema_version")
+    if receipt["campaign_id"] != campaign.get("campaign_id"):
+        errors.append(f"{label}: campaign identity mismatch")
+    if not isinstance(receipt["instance_id"], str) or not receipt["instance_id"]:
+        errors.append(f"{label}: instance_id is invalid")
+    if receipt["method"] not in EXPECTED_METHODS:
+        errors.append(f"{label}: method is invalid")
+    if receipt["role"] not in {"cold", "steady", "diagnostic"}:
+        errors.append(f"{label}: role is invalid")
+    for name in ("index", "attempt_index"):
+        if not _is_non_negative_int(receipt[name]):
+            errors.append(f"{label}.{name}: invalid index")
+    if not isinstance(receipt["invocation_id"], str) \
+            or not receipt["invocation_id"].strip():
+        errors.append(f"{label}: invocation_id is invalid")
+    if not isinstance(receipt["pid"], int) or isinstance(receipt["pid"], bool) \
+            or receipt["pid"] <= 0:
+        errors.append(f"{label}: pid is invalid")
+    if _parse_utc(receipt["started_at_utc"]) is None:
+        errors.append(f"{label}: started_at_utc is invalid")
+    audit_sha = _dotted(campaign, "prelaunch_audit.sha256")
+    if not _is_sha256(audit_sha) \
+            or receipt["prelaunch_audit_sha256"] != audit_sha:
+        errors.append(f"{label}: prelaunch audit identity mismatch")
+    lock_label = f"{label}.lock_artifact"
+    lock_link = receipt["lock_artifact"]
+    lock_errors = _validate_artifact(lock_link, root, lock_label)
+    errors.extend(lock_errors)
+    lock_path, _ = _bound_file(
+        root,
+        lock_link.get("path") if isinstance(lock_link, Mapping) else None,
+        lock_link.get("sha256") if isinstance(lock_link, Mapping) else None,
+        lock_label,
+    )
+    if lock_path is not None and not lock_errors:
+        try:
+            lock = _load(lock_path)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            errors.append(f"{lock_label}: cannot load: {error}")
+        else:
+            lock_fields = {
+                "schema_version", "campaign_id", "host_identity", "instance_id",
+                "method", "invocation_id", "acquired_at_utc", "lock_path",
+                "protocol", "wrapper_pid",
+            }
+            lock_shape = _exact_keys(lock, lock_fields, lock_label)
+            errors.extend(lock_shape)
+            if not lock_shape:
+                if lock["schema_version"] != CAMPAIGN_LOCK_SCHEMA:
+                    errors.append(f"{lock_label}: wrong schema_version")
+                expected_identity = {
+                    "campaign_id": campaign.get("campaign_id"),
+                    "host_identity": campaign.get("host_identity"),
+                    "instance_id": receipt["instance_id"],
+                    "method": receipt["method"],
+                    "invocation_id": receipt["invocation_id"],
+                    "lock_path": _dotted(campaign, "launch_guard.lock_path"),
+                    "protocol": _dotted(campaign, "launch_guard.protocol"),
+                }
+                if any(lock.get(name) != value for name, value in expected_identity.items()):
+                    errors.append(f"{lock_label}: lock identity mismatch")
+                acquired = _parse_utc(lock.get("acquired_at_utc"))
+                started = _parse_utc(receipt["started_at_utc"])
+                if acquired is None or started is None or acquired > started:
+                    errors.append(f"{lock_label}: lock was not acquired before spawn")
+                if not _is_non_negative_int(lock.get("wrapper_pid")) \
+                        or lock["wrapper_pid"] <= 0:
+                    errors.append(f"{lock_label}: wrapper_pid is invalid")
+    return receipt, errors
+
+
+def _validate_campaign_structure(
+    campaign: Any, root: Path
+) -> list[str]:
+    errors = _shape_errors(campaign, CAMPAIGN_SHAPE, "comparison_campaign")
+    if errors:
+        return errors
+    if campaign["schema_version"] != "archcomp26-comparison-campaign-v1":
+        errors.append("comparison_campaign: wrong schema_version")
+    for name in ("campaign_id", "host_identity", "hardware_identity"):
+        value = campaign[name]
+        if value is not None and not (
+            isinstance(value, str) and value.strip()
+        ):
+            errors.append(f"comparison_campaign.{name}: expected null or text")
+    threads = campaign["cpu_thread_budget"]
+    if threads is not None and (
+        isinstance(threads, bool) or not isinstance(threads, int) or threads <= 0
+    ):
+        errors.append(
+            "comparison_campaign.cpu_thread_budget: expected null or a positive integer"
+        )
+    timeout = campaign["timeout_s"]
+    if timeout is not None and not _is_finite_number(timeout, positive=True):
+        errors.append(
+            "comparison_campaign.timeout_s: expected null or a finite positive number"
+        )
+    gpu_budget = campaign["gpu_device_budget"]
+    if gpu_budget is not None and not _nonempty(gpu_budget):
+        errors.append("comparison_campaign.gpu_device_budget: empty value")
+    limits = campaign["resource_limits"]
+    if limits is not None:
+        limit_errors = _exact_keys(
+            limits, RESOURCE_LIMIT_FIELDS, "comparison_campaign.resource_limits"
+        )
+        errors.extend(limit_errors)
+        if not limit_errors:
+            for name in ("exclusive_host", "exclusive_gpu_device"):
+                if limits[name] is not True:
+                    errors.append(
+                        f"comparison_campaign.resource_limits.{name}: must be true"
+                    )
+            host_memory = limits["max_host_memory_bytes"]
+            device_memory = limits["max_device_memory_bytes"]
+            if not _is_non_negative_int(host_memory) or host_memory <= 0:
+                errors.append(
+                    "comparison_campaign.resource_limits.max_host_memory_bytes: "
+                    "expected a positive integer"
+                )
+            if device_memory is not None and not _is_non_negative_int(device_memory):
+                errors.append(
+                    "comparison_campaign.resource_limits.max_device_memory_bytes: "
+                    "expected null or a non-negative integer"
+                )
+    errors.extend(_validate_prelaunch_audit(campaign, root))
+    _, active_errors = _active_run_receipt(campaign, root)
+    errors.extend(active_errors)
+    guard = campaign["launch_guard"]
+    expected_guard = {
+        "schema_version": "archcomp26-atomic-launch-guard-v1",
+        "protocol": "posix-flock-exclusive-nonblocking-v1",
+        "lock_path": SERVER_RESEARCH_ROOT + "/.archcomp26/launch.lock",
+        "hold_scope": "fresh_audit_through_terminal_fsync_v1",
+        "wrapper_module": "torch_tm_flowpipe.archcomp26_launch",
+        "wrapper_path": "src/torch_tm_flowpipe/archcomp26_launch.py",
+    }
+    if any(guard.get(name) != value for name, value in expected_guard.items()):
+        errors.append(
+            "comparison_campaign.launch_guard: does not match the fixed atomic "
+            "launch protocol"
+        )
+    wrapper_sha = guard.get("wrapper_sha256")
+    if wrapper_sha is not None:
+        _, guard_errors = _bound_file(
+            root, guard.get("wrapper_path"), wrapper_sha,
+            "comparison_campaign.launch_guard.wrapper",
+        )
+        errors.extend(guard_errors)
+    boundary = campaign["timing_boundary"]
+    expected_boundary = {
+        "version": "total_configuration_v2",
+        "start_event": "immediately_before_fresh_process_spawn",
+        "stop_event": "after_result_and_width_artifacts_are_durable",
+        "phase_fields": [
+            "driver_total", "compile", "controller_nn", "solver_core",
+            "validation", "observer", "output", "plot_report",
+        ],
+    }
+    if boundary != expected_boundary:
+        errors.append(
+            "comparison_campaign.timing_boundary: does not match the frozen v2 boundary"
+        )
+    rotation = campaign["rotation"]
+    if rotation["policy"] \
+            != "balanced_round_robin_by_instance_and_steady_round_v1":
+        errors.append("comparison_campaign.rotation.policy: unsupported policy")
+    if rotation["steady_rounds"] != 5:
+        errors.append("comparison_campaign.rotation.steady_rounds: expected 5")
+    schedule = rotation["schedule_artifact"]
+    schedule_values = (schedule["path"], schedule["sha256"])
+    if any(value is None for value in schedule_values) \
+            and any(value is not None for value in schedule_values):
+        errors.append("comparison_campaign.rotation.schedule_artifact: partial pointer")
+    if all(value is not None for value in schedule_values):
+        _, bound_errors = _bound_file(
+            root, schedule["path"], schedule["sha256"],
+            "comparison_campaign.rotation.schedule_artifact",
+        )
+        errors.extend(bound_errors)
+    return errors
+
+
+def _campaign_reasons(
+    campaign: Any,
+    root: Path,
+    cell: Mapping[str, Any] | None = None,
+    *,
+    require_fresh_audit: bool = False,
+    now_utc: datetime | None = None,
+) -> list[str]:
+    if _validate_campaign_structure(campaign, root):
+        return ["comparison_campaign_invalid"]
+    reasons: list[str] = []
+    for name in (
+        "campaign_id", "host_identity", "hardware_identity",
+        "cpu_thread_budget", "gpu_device_budget", "timeout_s", "resource_limits",
+    ):
+        if not _nonempty(campaign[name]):
+            reasons.append(f"comparison_campaign_{name}_missing")
+    if not _is_sha256(_dotted(campaign, "launch_guard.wrapper_sha256")):
+        reasons.append("comparison_campaign_atomic_launcher_unavailable")
+    audit = campaign["prelaunch_audit"]
+    if audit["path"] is None or audit["sha256"] is None:
+        reasons.append("comparison_campaign_prelaunch_audit_missing")
+    elif require_fresh_audit and _validate_prelaunch_audit(
+        campaign, root, require_fresh=True, now_utc=now_utc
+    ):
+        reasons.append("comparison_campaign_prelaunch_audit_stale_or_invalid")
+    active = campaign["active_run_receipt"]
+    if require_fresh_audit and (
+        active["path"] is not None or active["sha256"] is not None
+    ):
+        reasons.append("comparison_campaign_active_run_exists")
+    schedule = campaign["rotation"]["schedule_artifact"]
+    if schedule["path"] is None or schedule["sha256"] is None:
+        reasons.append("comparison_campaign_schedule_missing")
+    if cell is not None:
+        runtime = cell.get("runtime")
+        if not isinstance(runtime, Mapping):
+            reasons.append("comparison_campaign_runtime_missing")
+        else:
+            matches = {
+                "hardware": "hardware_identity",
+                "cpu_threads": "cpu_thread_budget",
+                "gpu": "gpu_device_budget",
+                "timeout_s": "timeout_s",
+                "resource_limits": "resource_limits",
+            }
+            for runtime_name, campaign_name in matches.items():
+                if runtime.get(runtime_name) != campaign.get(campaign_name):
+                    reasons.append(
+                        f"comparison_campaign_{runtime_name}_mismatch"
+                    )
+        if _dotted(cell, "measurement_plan.timing_boundary_version") \
+                != _dotted(campaign, "timing_boundary.version"):
+            reasons.append("comparison_campaign_timing_boundary_mismatch")
+    return reasons
+
+
+def _campaign_schedule_entries(
+    campaign: Mapping[str, Any], root: Path
+) -> tuple[dict[tuple[str, str, str, int], Mapping[str, Any]], list[str]]:
+    link = _dotted(campaign, "rotation.schedule_artifact")
+    if not isinstance(link, Mapping):
+        return {}, ["comparison_campaign.schedule: missing artifact pointer"]
+    path, errors = _bound_file(
+        root, link.get("path"), link.get("sha256"),
+        "comparison_campaign.rotation.schedule_artifact",
+    )
+    if path is None:
+        return {}, errors
+    try:
+        payload = _load(path)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return {}, [f"comparison_campaign.schedule: cannot load: {error}"]
+    errors.extend(_exact_keys(
+        payload, {"schema_version", "campaign_id", "entries"},
+        "comparison_campaign.schedule",
+    ))
+    if errors:
+        return {}, errors
+    if payload["schema_version"] != "archcomp26-campaign-schedule-v1":
+        errors.append("comparison_campaign.schedule: wrong schema_version")
+    if payload["campaign_id"] != campaign.get("campaign_id"):
+        errors.append("comparison_campaign.schedule: campaign identity mismatch")
+    raw_entries = payload["entries"]
+    if not isinstance(raw_entries, list):
+        return {}, [*errors, "comparison_campaign.schedule.entries: expected an array"]
+    entries: dict[tuple[str, str, str, int], Mapping[str, Any]] = {}
+    fields = {
+        "instance_id", "method", "role", "index", "round_index",
+        "sequence_position",
+    }
+    for index, entry in enumerate(raw_entries):
+        label = f"comparison_campaign.schedule.entries[{index}]"
+        entry_errors = _exact_keys(entry, fields, label)
+        errors.extend(entry_errors)
+        if entry_errors:
+            continue
+        if not all(isinstance(entry[name], str) and entry[name] for name in (
+            "instance_id", "method", "role",
+        )) or not all(_is_non_negative_int(entry[name]) for name in (
+            "index", "round_index", "sequence_position",
+        )) or not _mode_is(entry["role"], "cold", "steady"):
+            errors.append(f"{label}: invalid schedule entry")
+            continue
+        key = (
+            entry["instance_id"], entry["method"], entry["role"], entry["index"]
+        )
+        if key in entries:
+            errors.append(f"{label}: duplicate formal sample key {key!r}")
+        entries[key] = entry
+    return entries, errors
+
+
+def _validate_campaign_schedule(
+    campaign: Mapping[str, Any],
+    root: Path,
+    instance_ids: list[str],
+    methods: list[str],
+) -> list[str]:
+    link = _dotted(campaign, "rotation.schedule_artifact")
+    if not isinstance(link, Mapping) or link.get("path") is None:
+        return []
+    entries, errors = _campaign_schedule_entries(campaign, root)
+    expected_keys = {
+        (instance, method, role, index)
+        for instance in instance_ids
+        for method in methods
+        for role, count in (("cold", 1), ("steady", 5))
+        for index in range(count)
+    }
+    if set(entries) != expected_keys:
+        errors.append(
+            "comparison_campaign.schedule: formal sample coverage does not match "
+            "the full 16-by-4 campaign"
+        )
+    method_count = len(methods)
+    for key, entry in entries.items():
+        instance, method, role, index = key
+        if instance not in instance_ids or method not in methods or method_count == 0:
+            continue
+        round_index = index if role == "steady" else 0
+        rotation_offset = (
+            instance_ids.index(instance) + round_index
+        ) % method_count
+        expected_position = (
+            methods.index(method) - rotation_offset
+        ) % method_count
+        if entry["round_index"] != round_index \
+                or entry["sequence_position"] != expected_position:
+            errors.append(
+                f"comparison_campaign.schedule: {key!r} violates balanced rotation"
+            )
+    return errors
+
+
 def resolve_cell(matrix: Mapping[str, Any], instance: str, method: str) -> dict[str, Any]:
     defaults = matrix["cell_defaults"]
     override = matrix["cells"][instance][method]
@@ -386,6 +1364,16 @@ def _validate_contracts(
     profiles = manifest.get("unresolved_field_profiles")
     if not isinstance(profiles, dict):
         return ["manifest unresolved_field_profiles must be an object"]
+    if set(profiles) != set(SHARED_PROFILE_FIELDS):
+        errors.append(
+            "manifest unresolved_field_profiles do not match the fixed shared profiles"
+        )
+    for profile, fixed_fields in SHARED_PROFILE_FIELDS.items():
+        if profiles.get(profile) != list(fixed_fields):
+            errors.append(
+                f"manifest unresolved_field_profiles.{profile} does not match "
+                "the code-fixed shared contract"
+            )
     schema_link = manifest.get("instance_contract_record")
     schema_errors = _exact_keys(
         schema_link, {"path", "schema_version", "sha256"},
@@ -527,17 +1515,23 @@ def _validate_contracts(
             errors.append(f"{instance}: contract must be an object")
             continue
         status = contract.get("status")
+        profile = contract.get("unresolved_field_profile")
+        expected_profile = EXPECTED_PROFILE_BY_INSTANCE.get(instance)
+        if expected_profile is not None and profile != expected_profile:
+            errors.append(
+                f"{instance}: contract profile {profile!r} does not match "
+                f"the fixed instance profile {expected_profile!r}"
+            )
         if status == "unresolved":
-            profile = contract.get("unresolved_field_profile")
             if not isinstance(profile, str) or profile not in profiles:
                 errors.append(f"{instance}: unknown unresolved contract profile {profile!r}")
             continue
         if status != "resolved":
             errors.append(f"{instance}: invalid contract status {status!r}")
             continue
-        profile = contract.get("unresolved_field_profile")
-        required = profiles.get(profile) if isinstance(profile, str) else None
-        if not isinstance(required, list) or not required:
+        required = SHARED_PROFILE_FIELDS.get(profile) \
+            if isinstance(profile, str) else None
+        if not isinstance(required, tuple) or not required:
             errors.append(f"{instance}: resolved contract has no known field profile")
             continue
         link = contract.get("record")
@@ -580,9 +1574,7 @@ def _validate_contracts(
                     f"{instance}: method-specific field {dotted} must live in "
                     "the execution cell"
                 )
-        shared_required = [
-            dotted for dotted in required if dotted not in METHOD_PROFILE_FIELDS
-        ]
+        shared_required = list(required)
         for dotted in shared_required:
             value = _dotted(fields, dotted)
             if not _nonempty(value):
@@ -711,11 +1703,433 @@ def _validate_artifact(
     return errors
 
 
-def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
+def _validate_typed_plot_artifact(
+    value: Mapping[str, Any], root: Path, label: str
+) -> list[str]:
+    role = value.get("role")
+    if role not in PLOT_ARTIFACT_ROLES and role != "matlab_script":
+        return []
+    path, errors = _bound_file(
+        root, value.get("path"), value.get("sha256"), label
+    )
+    if path is None:
+        return errors
+    expected_suffix = (
+        PLOT_ARTIFACT_ROLES[role] if role in PLOT_ARTIFACT_ROLES else ".m"
+    )
+    if path.suffix.lower() != expected_suffix:
+        errors.append(f"{label}: {role} must use a {expected_suffix} file")
+        return errors
+    payload = path.read_bytes()
+    if role == "plot_png":
+        png_error: str | None = None
+        ihdr: tuple[int, int, int, int, int, int, int] | None = None
+        idat_parts: list[bytes] = []
+        palette_seen = False
+        idat_started = False
+        idat_ended = False
+        if not payload.startswith(b"\x89PNG\r\n\x1a\n"):
+            png_error = "lacks a PNG signature"
+        else:
+            offset = 8
+            chunk_names: list[bytes] = []
+            while offset < len(payload):
+                if offset + 12 > len(payload):
+                    png_error = "has a truncated PNG chunk"
+                    break
+                length = struct.unpack(">I", payload[offset:offset + 4])[0]
+                chunk_end = offset + 12 + length
+                if chunk_end > len(payload):
+                    png_error = "has a truncated PNG chunk payload"
+                    break
+                name = payload[offset + 4:offset + 8]
+                data = payload[offset + 8:offset + 8 + length]
+                expected_crc = struct.unpack(">I", payload[offset + 8 + length:chunk_end])[0]
+                if zlib.crc32(name + data) & 0xFFFFFFFF != expected_crc:
+                    png_error = "has a PNG CRC mismatch"
+                    break
+                chunk_names.append(name)
+                if len(chunk_names) == 1:
+                    if name != b"IHDR" or length != 13:
+                        png_error = "has an invalid PNG IHDR"
+                        break
+                    ihdr = struct.unpack(">IIBBBBB", data)
+                    width, height, bit_depth, colour_type, compression, filtering, \
+                        interlace = ihdr
+                    valid_depths = {
+                        0: {1, 2, 4, 8, 16}, 2: {8, 16}, 3: {1, 2, 4, 8},
+                        4: {8, 16}, 6: {8, 16},
+                    }
+                    if width <= 0 or height <= 0 \
+                            or width * height > 100_000_000 \
+                            or bit_depth not in valid_depths.get(colour_type, set()) \
+                            or compression != 0 or filtering != 0 \
+                            or interlace not in {0, 1}:
+                        png_error = "has an invalid PNG IHDR"
+                        break
+                if name == b"PLTE":
+                    palette_seen = True
+                if name == b"IDAT":
+                    if idat_ended:
+                        png_error = "has non-contiguous PNG IDAT chunks"
+                        break
+                    idat_started = True
+                    idat_parts.append(data)
+                elif idat_started:
+                    idat_ended = True
+                if name == b"IEND" and length != 0:
+                    png_error = "has an invalid PNG IEND"
+                    break
+                offset = chunk_end
+                if name == b"IEND":
+                    break
+            if png_error is None and (
+                not chunk_names
+                or chunk_names[0] != b"IHDR"
+                or b"IDAT" not in chunk_names
+                or chunk_names[-1] != b"IEND"
+                or offset != len(payload)
+            ):
+                png_error = "is not a complete PNG image"
+        if png_error is None and ihdr is not None:
+            width, height, bit_depth, colour_type, _, _, interlace = ihdr
+            if colour_type == 3 and not palette_seen:
+                png_error = "has an indexed image without a palette"
+            else:
+                decoder = zlib.decompressobj()
+                try:
+                    decoded = decoder.decompress(b"".join(idat_parts)) + decoder.flush()
+                except zlib.error:
+                    decoded = b""
+                    png_error = "has an undecodable PNG IDAT stream"
+                if png_error is None and (
+                    not decoder.eof or decoder.unused_data or decoder.unconsumed_tail
+                ):
+                    png_error = "has an incomplete PNG IDAT stream"
+                if png_error is None:
+                    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[colour_type]
+                    bits_per_pixel = channels * bit_depth
+                    passes = (
+                        [(0, 0, 1, 1)] if interlace == 0 else [
+                            (0, 0, 8, 8), (4, 0, 8, 8), (0, 4, 4, 8),
+                            (2, 0, 4, 4), (0, 2, 2, 4), (1, 0, 2, 2),
+                            (0, 1, 1, 2),
+                        ]
+                    )
+                    cursor = 0
+                    for x0, y0, x_step, y_step in passes:
+                        pass_width = max(0, (width - x0 + x_step - 1) // x_step)
+                        pass_height = max(0, (height - y0 + y_step - 1) // y_step)
+                        if pass_width == 0 or pass_height == 0:
+                            continue
+                        row_size = (pass_width * bits_per_pixel + 7) // 8
+                        for _ in range(pass_height):
+                            if cursor + 1 + row_size > len(decoded) \
+                                    or decoded[cursor] > 4:
+                                png_error = "has invalid decoded PNG scanlines"
+                                break
+                            cursor += 1 + row_size
+                        if png_error is not None:
+                            break
+                    if png_error is None and cursor != len(decoded):
+                        png_error = "has an invalid decoded PNG byte count"
+        if png_error is not None:
+            errors.append(f"{label}: plot_png {png_error}")
+    elif role == "plot_pdf":
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(path, strict=True)
+            pages = list(reader.pages)
+            valid_pages = bool(pages) and all(
+                float(page.mediabox.width) > 0 and float(page.mediabox.height) > 0
+                for page in pages
+            )
+        except (ImportError, OSError, ValueError, TypeError, KeyError):
+            valid_pages = False
+        except Exception:  # pypdf exposes parser-specific exception subclasses.
+            valid_pages = False
+        if not valid_pages:
+            errors.append(f"{label}: plot_pdf is not a complete page-bearing PDF")
+    elif role == "plot_svg":
+        try:
+            root_element = ET.fromstring(payload)
+        except ET.ParseError:
+            root_element = None
+        root_name = (
+            root_element.tag.rsplit("}", 1)[-1].lower()
+            if root_element is not None and isinstance(root_element.tag, str)
+            else None
+        )
+        graphical = {
+            "circle", "ellipse", "image", "line", "path", "polygon",
+            "polyline", "rect", "text", "use",
+        }
+        has_graphics = root_element is not None and any(
+            isinstance(element.tag, str)
+            and element.tag.rsplit("}", 1)[-1].lower() in graphical
+            for element in root_element.iter()
+        )
+        if root_name != "svg" or not has_graphics:
+            errors.append(f"{label}: plot_svg is not a parseable SVG with graphics")
+    elif role == "matlab_script" and not payload.strip():
+        errors.append(f"{label}: matlab_script is empty")
+    return errors
+
+
+def _validate_partition_coverage(
+    value: Any,
+    root: Path,
+    label: str,
+    contract: Mapping[str, Any] | None,
+    *,
+    outcome: str,
+    ledger_scope: str,
+    invocation_id: str | None,
+) -> list[str]:
     expected = {
-        "role", "index", "outcome", "timing_s", "peak_memory_bytes",
-        "validated_extent", "accepted_steps", "rejected_steps", "nn_calls",
-        "failure", "artifact",
+        "requested_partitions", "completed_partitions", "failed_partitions",
+        "unattempted_partitions", "boxes_sha256", "ledger_artifact",
+    }
+    errors = _exact_keys(value, expected, label)
+    if errors:
+        return errors
+    counts = [
+        value[name] for name in (
+            "requested_partitions", "completed_partitions",
+            "failed_partitions", "unattempted_partitions",
+        )
+    ]
+    if any(not _is_non_negative_int(count) for count in counts) \
+            or value["requested_partitions"] <= 0:
+        errors.append(f"{label}: partition counts must be non-negative integers")
+    elif sum(counts[1:]) != counts[0]:
+        errors.append(f"{label}: completed/failed/unattempted do not cover requested")
+    partitions = (
+        _dotted(contract, "fields.initial_set.partitions")
+        if isinstance(contract, Mapping) else None
+    )
+    boxes_sha = (
+        _dotted(contract, "fields.initial_set.boxes_sha256")
+        if isinstance(contract, Mapping) else None
+    )
+    if not isinstance(partitions, list) or not partitions:
+        errors.append(f"{label}: cannot bind initial-set partition count")
+    elif value["requested_partitions"] != len(partitions):
+        errors.append(f"{label}: requested partition count disagrees with contract")
+    if value["boxes_sha256"] != boxes_sha:
+        errors.append(f"{label}: boxes SHA-256 disagrees with contract")
+    ledger = value["ledger_artifact"]
+    if outcome == "skipped":
+        if ledger is not None or counts[1:] != [0, 0, counts[0]]:
+            errors.append(f"{label}: skipped coverage must be wholly unattempted")
+    else:
+        if ledger is None:
+            errors.append(f"{label}: executed coverage lacks a partition ledger")
+        else:
+            artifact_errors = _validate_artifact(
+                ledger, root, f"{label}.ledger_artifact"
+            )
+            errors.extend(artifact_errors)
+            ledger_path, ledger_errors = _bound_file(
+                root, ledger.get("path") if isinstance(ledger, Mapping) else None,
+                ledger.get("sha256") if isinstance(ledger, Mapping) else None,
+                f"{label}.ledger_artifact",
+            )
+            if not artifact_errors:
+                errors.extend(ledger_errors)
+            if ledger_path is not None and not artifact_errors:
+                try:
+                    payload = _load(ledger_path)
+                except (OSError, ValueError, json.JSONDecodeError) as error:
+                    errors.append(f"{label}.ledger_artifact: cannot load: {error}")
+                else:
+                    ledger_fields = {
+                        "schema_version", "instance_id", "scope", "invocation_id",
+                        "boxes_sha256", "entries",
+                    }
+                    payload_errors = _exact_keys(
+                        payload, ledger_fields, f"{label}.ledger_artifact.payload"
+                    )
+                    errors.extend(payload_errors)
+                    if not payload_errors:
+                        if payload["schema_version"] != PARTITION_LEDGER_SCHEMA:
+                            errors.append(
+                                f"{label}.ledger_artifact: wrong schema_version"
+                            )
+                        expected_instance = (
+                            contract.get("instance_id")
+                            if isinstance(contract, Mapping) else None
+                        )
+                        if payload["instance_id"] != expected_instance:
+                            errors.append(
+                                f"{label}.ledger_artifact: instance identity mismatch"
+                            )
+                        if payload["scope"] != ledger_scope \
+                                or payload["invocation_id"] != invocation_id:
+                            errors.append(
+                                f"{label}.ledger_artifact: scope/invocation mismatch"
+                            )
+                        if payload["boxes_sha256"] != boxes_sha:
+                            errors.append(
+                                f"{label}.ledger_artifact: boxes SHA-256 mismatch"
+                            )
+                        entries = payload["entries"]
+                        expected_entry_fields = {"index", "box_sha256", "outcome"}
+                        entry_outcomes: list[str] = []
+                        if not isinstance(entries, list) or not isinstance(
+                            partitions, list
+                        ) or len(entries) != len(partitions):
+                            errors.append(
+                                f"{label}.ledger_artifact: entries do not cover every partition"
+                            )
+                        else:
+                            for index, (entry, partition) in enumerate(zip(
+                                entries, partitions
+                            )):
+                                entry_label = f"{label}.ledger_artifact.entries[{index}]"
+                                entry_errors = _exact_keys(
+                                    entry, expected_entry_fields, entry_label
+                                )
+                                errors.extend(entry_errors)
+                                if entry_errors:
+                                    continue
+                                if entry["index"] != index:
+                                    errors.append(
+                                        f"{entry_label}: index does not match contract order"
+                                    )
+                                if entry["box_sha256"] != _canonical_sha256(partition):
+                                    errors.append(
+                                        f"{entry_label}: box hash does not match contract"
+                                    )
+                                entry_outcome = entry["outcome"]
+                                if entry_outcome not in {
+                                    "completed", "failed", "unattempted"
+                                }:
+                                    errors.append(f"{entry_label}: invalid outcome")
+                                else:
+                                    entry_outcomes.append(entry_outcome)
+                            derived = [
+                                len(entries),
+                                entry_outcomes.count("completed"),
+                                entry_outcomes.count("failed"),
+                                entry_outcomes.count("unattempted"),
+                            ]
+                            if derived != counts:
+                                errors.append(
+                                    f"{label}: counts disagree with partition ledger"
+                                )
+    if outcome == "completed" and counts[1:] != [counts[0], 0, 0]:
+        errors.append(f"{label}: completed coverage does not include every partition")
+    return errors
+
+
+def _validate_controller_update_trace(
+    value: Any,
+    root: Path,
+    label: str,
+    contract: Mapping[str, Any] | None,
+    *,
+    observed_count: Any,
+    validated_extent: Any,
+    outcome: str,
+) -> list[str]:
+    errors = _exact_keys(
+        value, {"kind", "points", "boundary_update_status", "artifact"}, label
+    )
+    if errors:
+        return errors
+    expected_points = (
+        _dotted(contract, "fields.controller_update.schedule_points")
+        if isinstance(contract, Mapping) else None
+    )
+    expected_kind = (
+        "steps"
+        if isinstance(contract, Mapping)
+        and contract.get("profile") == "discrete_execution_contract_v1"
+        else "time_s"
+    )
+    points = value["points"]
+    if value["kind"] != expected_kind:
+        errors.append(f"{label}.kind: disagrees with contract profile")
+    if not isinstance(points, list) or not all(
+        _is_finite_number(point) for point in points
+    ) or any(left >= right for left, right in zip(points, points[1:])):
+        errors.append(f"{label}.points: expected strictly increasing finite points")
+        points = []
+    elif expected_kind == "steps" and any(
+        isinstance(point, bool) or not isinstance(point, int) for point in points
+    ):
+        errors.append(f"{label}.points: discrete update points must be integers")
+    if not _is_non_negative_int(observed_count) or len(points) != observed_count:
+        errors.append(f"{label}.points: count disagrees with observed updates")
+    if isinstance(expected_points, list) and points != expected_points[:len(points)]:
+        errors.append(f"{label}.points: not a prefix of the contract schedule")
+    extent_value = (
+        validated_extent.get("value")
+        if isinstance(validated_extent, Mapping) else None
+    )
+    if _is_finite_number(extent_value) and any(
+        point > extent_value for point in points
+    ):
+        errors.append(f"{label}.points: update lies beyond validated extent")
+    boundary_scheduled = (
+        isinstance(expected_points, list) and extent_value in expected_points
+    )
+    boundary_status = value["boundary_update_status"]
+    if boundary_scheduled:
+        if boundary_status not in {"executed", "not_executed"}:
+            errors.append(
+                f"{label}.boundary_update_status: scheduled boundary requires an "
+                "executed/not_executed decision"
+            )
+    elif boundary_status != "not_scheduled":
+        errors.append(
+            f"{label}.boundary_update_status: no update is scheduled at the boundary"
+        )
+    if outcome != "skipped" and isinstance(expected_points, list) \
+            and _is_finite_number(extent_value):
+        required_prefix = [
+            point for point in expected_points if point < extent_value
+        ]
+        if boundary_scheduled and boundary_status == "executed":
+            required_prefix.append(extent_value)
+        if points != required_prefix:
+            errors.append(
+                f"{label}.points: does not match scheduled updates before/at "
+                "the validated extent"
+            )
+    artifact = value["artifact"]
+    if outcome == "skipped":
+        expected_skipped_boundary = (
+            "not_executed" if boundary_scheduled else "not_scheduled"
+        )
+        if points or artifact is not None \
+                or boundary_status != expected_skipped_boundary:
+            errors.append(f"{label}: skipped run must have an empty update trace")
+    elif artifact is None:
+        errors.append(f"{label}: executed run lacks update-trace artifact")
+    else:
+        errors.extend(_validate_artifact(artifact, root, f"{label}.artifact"))
+    if outcome == "completed" and isinstance(expected_points, list) \
+            and points != expected_points:
+        errors.append(f"{label}: completed run did not observe the full schedule")
+    return errors
+
+
+def _validate_sample(
+    value: Any,
+    root: Path,
+    label: str,
+    contract: Mapping[str, Any] | None,
+    campaign: Mapping[str, Any],
+) -> list[str]:
+    expected = {
+        "role", "index", "attempt_index", "included_in_timing", "campaign",
+        "process_identity", "outcome",
+        "timing_s", "peak_memory_bytes",
+        "validated_extent", "accepted_steps", "rejected_steps",
+        "controller_updates", "controller_update_trace", "nn_calls",
+        "partition_coverage", "failure", "artifact",
     }
     errors = _exact_keys(value, expected, label)
     if errors:
@@ -726,13 +2140,63 @@ def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
     if isinstance(value["index"], bool) or not isinstance(value["index"], int) \
             or value["index"] < 0:
         errors.append(f"{label}.index: expected a non-negative integer")
+    if isinstance(value["attempt_index"], bool) \
+            or not isinstance(value["attempt_index"], int) \
+            or value["attempt_index"] < 0:
+        errors.append(f"{label}.attempt_index: expected a non-negative integer")
+    if not isinstance(value["included_in_timing"], bool):
+        errors.append(f"{label}.included_in_timing: expected Boolean")
+    if role == "diagnostic" and value["included_in_timing"] is not False:
+        errors.append(f"{label}: diagnostic attempt cannot enter timing statistics")
+    campaign_value = value["campaign"]
+    campaign_errors = _exact_keys(
+        campaign_value, {"campaign_id", "round_index", "sequence_position"},
+        f"{label}.campaign",
+    )
+    errors.extend(campaign_errors)
+    if not campaign_errors:
+        if campaign_value["campaign_id"] != campaign.get("campaign_id"):
+            errors.append(f"{label}.campaign_id: disagrees with comparison campaign")
+        for name in ("round_index", "sequence_position"):
+            item = campaign_value[name]
+            if item is not None and not _is_non_negative_int(item):
+                errors.append(f"{label}.campaign.{name}: invalid index")
+        if _mode_is(role, "cold", "steady") and (
+            campaign_value["round_index"] is None
+            or campaign_value["sequence_position"] is None
+        ):
+            errors.append(f"{label}.campaign: formal sample lacks rotation position")
+    process = value["process_identity"]
+    process_errors = _exact_keys(
+        process, {"invocation_id", "pid", "started_at_utc", "finished_at_utc"},
+        f"{label}.process_identity",
+    )
+    errors.extend(process_errors)
+    if not process_errors:
+        if not isinstance(process["invocation_id"], str) \
+                or not process["invocation_id"].strip():
+            errors.append(f"{label}.process_identity.invocation_id: expected text")
+        if not isinstance(process["pid"], int) or isinstance(process["pid"], bool) \
+                or process["pid"] <= 0:
+            errors.append(f"{label}.process_identity.pid: expected a positive integer")
+        started = _parse_utc(process["started_at_utc"])
+        finished = _parse_utc(process["finished_at_utc"])
+        if started is None:
+            errors.append(
+                f"{label}.process_identity.started_at_utc: expected UTC timestamp"
+            )
+        if finished is None:
+            errors.append(
+                f"{label}.process_identity.finished_at_utc: expected UTC timestamp"
+            )
+        if started is not None and finished is not None and finished <= started:
+            errors.append(
+                f"{label}.process_identity: finish must follow process start"
+            )
     outcome = value["outcome"]
     if not isinstance(outcome, str) or outcome not in CANONICAL_OUTCOMES:
         errors.append(f"{label}.outcome: invalid canonical outcome {outcome!r}")
-    timing_keys = {
-        "process_total", "driver_total", "solver_core", "compile",
-        "validation", "observer_output", "plot_report",
-    }
+    timing_keys = TIMING_FIELDS
     timing = value["timing_s"]
     timing_errors = _exact_keys(timing, timing_keys, f"{label}.timing_s")
     errors.extend(timing_errors)
@@ -742,10 +2206,21 @@ def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
                 seconds, positive=name == "process_total"
             ):
                 errors.append(f"{label}.timing_s.{name}: invalid duration")
-        if outcome == "completed" and not _is_finite_number(
-            timing["process_total"], positive=True
-        ):
-            errors.append(f"{label}: completed sample lacks positive process_total")
+        if not _is_finite_number(timing["process_total"], positive=True):
+            errors.append(f"{label}: executed sample lacks positive process_total")
+        elif not process_errors:
+            started = _parse_utc(process["started_at_utc"])
+            finished = _parse_utc(process["finished_at_utc"])
+            if started is not None and finished is not None:
+                receipt_wall = (finished - started).total_seconds()
+                tolerance = max(1.0, 0.02 * float(timing["process_total"]))
+                if not math.isclose(
+                    receipt_wall, float(timing["process_total"]),
+                    rel_tol=0.0, abs_tol=tolerance,
+                ):
+                    errors.append(
+                        f"{label}: process receipt wall disagrees with process_total"
+                    )
     memory = value["peak_memory_bytes"]
     memory_errors = _exact_keys(memory, {"host", "device"}, f"{label}.peak_memory_bytes")
     errors.extend(memory_errors)
@@ -756,10 +2231,25 @@ def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
             ):
                 errors.append(f"{label}.peak_memory_bytes.{name}: invalid byte count")
     errors.extend(_validate_extent(value["validated_extent"], f"{label}.validated_extent"))
-    for name in ("accepted_steps", "rejected_steps", "nn_calls"):
+    for name in (
+        "accepted_steps", "rejected_steps", "controller_updates", "nn_calls"
+    ):
         count = value[name]
         if isinstance(count, bool) or not isinstance(count, int) or count < 0:
             errors.append(f"{label}.{name}: expected a non-negative integer")
+    errors.extend(_validate_partition_coverage(
+        value["partition_coverage"], root, f"{label}.partition_coverage",
+        contract, outcome=outcome, ledger_scope="attempt",
+        invocation_id=(
+            process.get("invocation_id") if isinstance(process, Mapping) else None
+        ),
+    ))
+    errors.extend(_validate_controller_update_trace(
+        value["controller_update_trace"], root,
+        f"{label}.controller_update_trace", contract,
+        observed_count=value["controller_updates"],
+        validated_extent=value["validated_extent"], outcome=outcome,
+    ))
     failure = value["failure"]
     if outcome == "completed" and failure is not None:
         errors.append(f"{label}: completed sample carries a failure")
@@ -771,39 +2261,17 @@ def _validate_sample(value: Any, root: Path, label: str) -> list[str]:
     return errors
 
 
-def _validate_width_measurement(
-    value: Any, root: Path, label: str, coordinates: list[str]
+def _validate_coordinate_widths(
+    rows: Any, label: str, coordinates: list[str]
 ) -> list[str]:
-    errors = _exact_keys(value, {"status", "domain", "per_coordinate", "artifact"}, label)
-    if errors:
-        return errors
-    status = value["status"]
-    if not isinstance(status, str) or status not in {"complete", "unavailable"}:
-        errors.append(f"{label}.status: invalid width status {status!r}")
-        return errors
-    domain = value["domain"]
-    domain_errors = _exact_keys(domain, {"kind", "start", "end"}, f"{label}.domain")
-    errors.extend(domain_errors)
-    if not domain_errors:
-        if not isinstance(domain["kind"], str) \
-                or domain["kind"] not in {"time_s", "steps"}:
-            errors.append(f"{label}.domain.kind: invalid domain kind")
-        if not _is_finite_number(domain["start"]) or not _is_finite_number(domain["end"]):
-            errors.append(f"{label}.domain: bounds must be finite and non-negative")
-        elif domain["end"] < domain["start"]:
-            errors.append(f"{label}.domain: end precedes start")
-    if status == "unavailable":
-        if value["per_coordinate"] != [] or value["artifact"] is not None:
-            errors.append(f"{label}: unavailable width must have no values or artifact")
-        return errors
-    rows = value["per_coordinate"]
+    errors: list[str] = []
     if not isinstance(rows, list) or [
         row.get("coordinate") if isinstance(row, dict) else None for row in rows
     ] != coordinates:
-        errors.append(f"{label}.per_coordinate: coordinate order does not match")
+        errors.append(f"{label}: coordinate order does not match")
     else:
         for index, row in enumerate(rows):
-            row_label = f"{label}.per_coordinate[{index}]"
+            row_label = f"{label}[{index}]"
             row_errors = _exact_keys(
                 row, {"coordinate", "union", "per_partition_width"}, row_label
             )
@@ -843,6 +2311,37 @@ def _validate_width_measurement(
                     errors.append(
                         f"{row_label}.per_partition_width: max exceeds union width"
                     )
+    return errors
+
+
+def _validate_width_measurement(
+    value: Any, root: Path, label: str, coordinates: list[str]
+) -> list[str]:
+    errors = _exact_keys(value, {"status", "domain", "per_coordinate", "artifact"}, label)
+    if errors:
+        return errors
+    status = value["status"]
+    if not isinstance(status, str) or status not in {"complete", "unavailable"}:
+        errors.append(f"{label}.status: invalid width status {status!r}")
+        return errors
+    domain = value["domain"]
+    domain_errors = _exact_keys(domain, {"kind", "start", "end"}, f"{label}.domain")
+    errors.extend(domain_errors)
+    if not domain_errors:
+        if not isinstance(domain["kind"], str) \
+                or domain["kind"] not in {"time_s", "steps"}:
+            errors.append(f"{label}.domain.kind: invalid domain kind")
+        if not _is_finite_number(domain["start"]) or not _is_finite_number(domain["end"]):
+            errors.append(f"{label}.domain: bounds must be finite and non-negative")
+        elif domain["end"] < domain["start"]:
+            errors.append(f"{label}.domain: end precedes start")
+    if status == "unavailable":
+        if value["per_coordinate"] != [] or value["artifact"] is not None:
+            errors.append(f"{label}: unavailable width must have no values or artifact")
+        return errors
+    errors.extend(_validate_coordinate_widths(
+        value["per_coordinate"], f"{label}.per_coordinate", coordinates
+    ))
     if value["artifact"] is None:
         errors.append(f"{label}: complete width lacks artifact")
     else:
@@ -852,9 +2351,9 @@ def _validate_width_measurement(
 
 def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
     expected = {
-        "status", "common_prefix", "coordinate_order", "coordinate_units",
+        "status", "validated_prefix", "coordinate_order", "coordinate_units",
         "aggregation_semantics", "endpoint", "last_segment_tube",
-        "full_horizon_tube", "trajectory_artifact",
+        "full_horizon_tube", "series", "trajectory_artifact",
     }
     errors = _exact_keys(value, expected, label)
     if errors:
@@ -863,7 +2362,9 @@ def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
     if not isinstance(status, str) \
             or status not in {"complete", "partial", "unavailable"}:
         errors.append(f"{label}.status: invalid width status {status!r}")
-    errors.extend(_validate_extent(value["common_prefix"], f"{label}.common_prefix"))
+    errors.extend(_validate_extent(
+        value["validated_prefix"], f"{label}.validated_prefix"
+    ))
     coordinates = value["coordinate_order"]
     units = value["coordinate_units"]
     if not isinstance(coordinates, list) or not coordinates \
@@ -880,6 +2381,38 @@ def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
         errors.extend(_validate_width_measurement(
             value[name], root, f"{label}.{name}", coordinates
         ))
+    series = value["series"]
+    if not isinstance(series, list):
+        errors.append(f"{label}.series: expected an array")
+    else:
+        previous: tuple[str, float] | None = None
+        for index, observation in enumerate(series):
+            observation_label = f"{label}.series[{index}]"
+            observation_errors = _exact_keys(
+                observation, {"extent", "per_coordinate"}, observation_label
+            )
+            errors.extend(observation_errors)
+            if observation_errors:
+                continue
+            extent = observation["extent"]
+            errors.extend(_validate_extent(
+                extent, f"{observation_label}.extent"
+            ))
+            errors.extend(_validate_coordinate_widths(
+                observation["per_coordinate"],
+                f"{observation_label}.per_coordinate", coordinates,
+            ))
+            if isinstance(extent, Mapping) and _is_finite_number(
+                extent.get("value")
+            ):
+                current = (str(extent.get("kind")), float(extent["value"]))
+                if previous is not None and (
+                    current[0] != previous[0] or current[1] <= previous[1]
+                ):
+                    errors.append(
+                        f"{observation_label}.extent: series must be strictly ordered"
+                    )
+                previous = current
     if status == "complete":
         if any(value[name].get("status") != "complete" for name in (
             "endpoint", "last_segment_tube", "full_horizon_tube"
@@ -887,6 +2420,27 @@ def _validate_widths(value: Any, root: Path, label: str) -> list[str]:
             errors.append(f"{label}: complete widths require all three complete views")
         if value["trajectory_artifact"] is None:
             errors.append(f"{label}: complete widths lack trajectory artifact")
+        if not series:
+            errors.append(f"{label}: complete widths lack time-series observations")
+    if status == "partial" and not series and not any(
+        isinstance(value[name], Mapping)
+        and value[name].get("status") == "complete"
+        for name in ("endpoint", "last_segment_tube", "full_horizon_tube")
+    ):
+        errors.append(f"{label}: partial widths contain no measured evidence")
+    if status == "unavailable":
+        if series != []:
+            errors.append(f"{label}: unavailable widths must have an empty series")
+        if any(
+            isinstance(value[name], Mapping)
+            and value[name].get("status") != "unavailable"
+            for name in ("endpoint", "last_segment_tube", "full_horizon_tube")
+        ) or value["trajectory_artifact"] is not None:
+            errors.append(
+                f"{label}: unavailable widths cannot carry measured evidence"
+            )
+    if isinstance(series, list) and series and value["trajectory_artifact"] is None:
+        errors.append(f"{label}: width series lacks a trajectory artifact")
     if value["trajectory_artifact"] is not None:
         errors.extend(_validate_artifact(
             value["trajectory_artifact"], root, f"{label}.trajectory_artifact"
@@ -1033,6 +2587,175 @@ def _same_domain(actual: Any, expected: Mapping[str, Any]) -> bool:
     )
 
 
+def _validate_attempt_ledger(
+    link: Any,
+    samples: list[Any],
+    root: Path,
+    label: str,
+    *,
+    campaign_id: Any,
+    instance_id: str,
+    method: str,
+) -> list[str]:
+    errors = _validate_artifact(link, root, label)
+    path, _ = _bound_file(
+        root,
+        link.get("path") if isinstance(link, Mapping) else None,
+        link.get("sha256") if isinstance(link, Mapping) else None,
+        label,
+    )
+    if path is None or errors:
+        return errors
+    try:
+        ledger = _load(path)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return [*errors, f"{label}: cannot load: {error}"]
+    fields = {
+        "schema_version", "campaign_id", "instance_id", "method", "entries",
+        "head_sha256",
+    }
+    shape = _exact_keys(ledger, fields, label)
+    errors.extend(shape)
+    if shape:
+        return errors
+    if ledger["schema_version"] != ATTEMPT_LEDGER_SCHEMA:
+        errors.append(f"{label}: wrong schema_version")
+    if (
+        ledger["campaign_id"] != campaign_id
+        or ledger["instance_id"] != instance_id
+        or ledger["method"] != method
+    ):
+        errors.append(f"{label}: campaign/cell identity mismatch")
+    entries = ledger["entries"]
+    if not isinstance(entries, list):
+        errors.append(f"{label}.entries: expected an array")
+        return errors
+    entry_fields = {
+        "sequence", "previous_entry_sha256", "role", "index", "attempt_index",
+        "included_in_timing", "invocation_id", "outcome", "artifact",
+    }
+    ledger_by_invocation: dict[str, Mapping[str, Any]] = {}
+    previous_hash: str | None = None
+    for index, entry in enumerate(entries):
+        entry_label = f"{label}.entries[{index}]"
+        entry_shape = _exact_keys(entry, entry_fields, entry_label)
+        errors.extend(entry_shape)
+        if entry_shape:
+            continue
+        if entry["sequence"] != index:
+            errors.append(f"{entry_label}: non-contiguous sequence")
+        if entry["previous_entry_sha256"] != previous_hash:
+            errors.append(f"{entry_label}: hash-chain predecessor mismatch")
+        if entry["role"] not in {"cold", "steady", "diagnostic"}:
+            errors.append(f"{entry_label}: invalid role")
+        for name in ("index", "attempt_index"):
+            if not _is_non_negative_int(entry[name]):
+                errors.append(f"{entry_label}.{name}: invalid index")
+        if not isinstance(entry["included_in_timing"], bool):
+            errors.append(f"{entry_label}.included_in_timing: expected Boolean")
+        if entry["role"] == "diagnostic" and entry["included_in_timing"] is not False:
+            errors.append(f"{entry_label}: diagnostic cannot enter timing statistics")
+        invocation = entry["invocation_id"]
+        if not isinstance(invocation, str) or not invocation.strip():
+            errors.append(f"{entry_label}: invalid invocation_id")
+        elif invocation in ledger_by_invocation:
+            errors.append(f"{entry_label}: duplicate invocation_id")
+        else:
+            ledger_by_invocation[invocation] = entry
+        if entry["outcome"] not in CANONICAL_OUTCOMES:
+            errors.append(f"{entry_label}: invalid outcome")
+        errors.extend(_validate_artifact(
+            entry["artifact"], root, f"{entry_label}.artifact"
+        ))
+        previous_hash = _canonical_sha256(entry)
+    if ledger["head_sha256"] != previous_hash:
+        errors.append(f"{label}: head_sha256 does not bind the final entry")
+
+    samples_by_invocation: dict[str, Mapping[str, Any]] = {}
+    for sample in samples:
+        if not isinstance(sample, Mapping):
+            continue
+        invocation = _dotted(sample, "process_identity.invocation_id")
+        if isinstance(invocation, str):
+            samples_by_invocation[invocation] = sample
+    if set(samples_by_invocation) != set(ledger_by_invocation):
+        errors.append(f"{label}: entries do not exactly match result samples")
+    for invocation in set(samples_by_invocation) & set(ledger_by_invocation):
+        sample = samples_by_invocation[invocation]
+        entry = ledger_by_invocation[invocation]
+        expected = {
+            "role": sample.get("role"),
+            "index": sample.get("index"),
+            "attempt_index": sample.get("attempt_index"),
+            "included_in_timing": sample.get("included_in_timing"),
+            "outcome": sample.get("outcome"),
+            "artifact": sample.get("artifact"),
+        }
+        if any(entry.get(name) != value for name, value in expected.items()):
+            errors.append(
+                f"{label}: entry for invocation {invocation!r} disagrees with sample"
+            )
+    attempts_by_slot: dict[tuple[str, int], list[Mapping[str, Any]]] = {}
+    for entry in entries:
+        if not isinstance(entry, Mapping):
+            continue
+        role = entry.get("role")
+        slot_index = entry.get("index")
+        attempt_index = entry.get("attempt_index")
+        if isinstance(role, str) and _is_non_negative_int(slot_index) \
+                and _is_non_negative_int(attempt_index):
+            attempts_by_slot.setdefault((role, slot_index), []).append(entry)
+    for slot, attempts in attempts_by_slot.items():
+        ordered = sorted(attempts, key=lambda item: item["attempt_index"])
+        actual_indices = [item["attempt_index"] for item in ordered]
+        if actual_indices != list(range(len(ordered))):
+            errors.append(
+                f"{label}: slot {slot!r} attempt indices are not contiguous from zero"
+            )
+        if slot[0] not in {"cold", "steady"}:
+            continue
+        completed = [item for item in ordered if item.get("outcome") == "completed"]
+        included = [
+            item for item in ordered if item.get("included_in_timing") is True
+        ]
+        if len(completed) > 1:
+            errors.append(
+                f"{label}: slot {slot!r} has more than one completed formal attempt"
+            )
+        if completed:
+            winner = completed[0]
+            if winner is not ordered[-1]:
+                errors.append(
+                    f"{label}: slot {slot!r} has attempts after its first completion"
+                )
+            if included != [winner]:
+                errors.append(
+                    f"{label}: slot {slot!r} must include its sole first completed "
+                    "attempt and no other attempt"
+                )
+        elif included:
+            errors.append(
+                f"{label}: slot {slot!r} includes timing without a completed attempt"
+            )
+    previous_finished: datetime | None = None
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, Mapping):
+            continue
+        sample = samples_by_invocation.get(entry.get("invocation_id"))
+        started = _parse_utc(_dotted(sample, "process_identity.started_at_utc")) \
+            if isinstance(sample, Mapping) else None
+        finished = _parse_utc(_dotted(sample, "process_identity.finished_at_utc")) \
+            if isinstance(sample, Mapping) else None
+        if started is not None and previous_finished is not None \
+                and started < previous_finished:
+            errors.append(
+                f"{label}.entries[{index}]: append order disagrees with process time"
+            )
+        if finished is not None:
+            previous_finished = finished
+    return errors
+
+
 def _validate_result_record(
     record: Mapping[str, Any],
     root: Path,
@@ -1040,11 +2763,12 @@ def _validate_result_record(
     instance_row: Mapping[str, Any],
     method: str,
     cell: Mapping[str, Any],
+    campaign: Mapping[str, Any],
 ) -> list[str]:
     expected = {
         "schema_version", "instance_id", "method", "contract_identity",
         "measurement_plan", "run", "property", "eligibility", "samples",
-        "widths", "artifacts",
+        "widths", "artifacts", "attempt_ledger",
     }
     errors = _exact_keys(record, expected, f"{prefix}.result_record")
     if errors:
@@ -1055,7 +2779,9 @@ def _validate_result_record(
         errors.append(f"{prefix}.result_record: instance/method identity mismatch")
     identity = record["contract_identity"]
     identity_errors = _exact_keys(
-        identity, {"instance_contract_sha256", "cell_plan_sha256"},
+        identity, {
+            "instance_contract_sha256", "cell_plan_sha256", "campaign_sha256",
+        },
         f"{prefix}.result_record.contract_identity",
     )
     errors.extend(identity_errors)
@@ -1067,6 +2793,8 @@ def _validate_result_record(
             errors.append(f"{prefix}.result_record: instance contract identity mismatch")
         if identity["cell_plan_sha256"] != expected_plan:
             errors.append(f"{prefix}.result_record: cell plan identity mismatch")
+        if identity["campaign_sha256"] != _canonical_sha256(campaign):
+            errors.append(f"{prefix}.result_record: campaign identity mismatch")
     if record["measurement_plan"] != cell["measurement_plan"]:
         errors.append(f"{prefix}.result_record: measurement plan mismatch")
 
@@ -1075,9 +2803,25 @@ def _validate_result_record(
     contract_variables = (
         _dotted(contract, "fields.variable_order") if contract is not None else None
     )
+    contract_units = (
+        _dotted(contract, "fields.width_comparison.coordinate_units")
+        if contract is not None else None
+    )
+    contract_width_points = (
+        _dotted(contract, "fields.width_comparison.sample_points")
+        if contract is not None else None
+    )
+    contract_aggregation = (
+        _dotted(contract, "fields.width_comparison.aggregation_semantics")
+        if contract is not None else None
+    )
     expected_accepted, expected_nn_calls = (
         _contract_work_counts(contract, cell)
         if contract is not None else (None, None)
+    )
+    expected_controller_updates = (
+        _dotted(contract, "fields.controller_update.scheduled_updates")
+        if contract is not None else None
     )
 
     run_value = record["run"]
@@ -1085,7 +2829,8 @@ def _validate_result_record(
     run_keys = {
         "status", "outcome", "requested_extent", "validated_extent",
         "requested_horizon_completed", "accepted_steps", "rejected_steps",
-        "nn_calls", "first_failure",
+        "controller_updates", "controller_update_trace", "nn_calls",
+        "partition_coverage", "first_failure",
     }
     run_errors = _exact_keys(run, run_keys, f"{prefix}.result_record.run")
     errors.extend(run_errors)
@@ -1103,10 +2848,23 @@ def _validate_result_record(
         errors.extend(_validate_extent(
             run["validated_extent"], f"{prefix}.result_record.run.validated_extent"
         ))
-        for name in ("accepted_steps", "rejected_steps", "nn_calls"):
+        for name in (
+            "accepted_steps", "rejected_steps", "controller_updates", "nn_calls"
+        ):
             count = run[name]
             if isinstance(count, bool) or not isinstance(count, int) or count < 0:
                 errors.append(f"{prefix}.result_record.run.{name}: invalid count")
+        errors.extend(_validate_partition_coverage(
+            run["partition_coverage"], root,
+            f"{prefix}.result_record.run.partition_coverage", contract,
+            outcome=run["status"], ledger_scope="run_summary", invocation_id=None,
+        ))
+        errors.extend(_validate_controller_update_trace(
+            run["controller_update_trace"], root,
+            f"{prefix}.result_record.run.controller_update_trace", contract,
+            observed_count=run["controller_updates"],
+            validated_extent=run["validated_extent"], outcome=run["status"],
+        ))
         if not isinstance(run["requested_horizon_completed"], bool):
             errors.append(f"{prefix}.result_record.run: completion flag must be Boolean")
         if expected_extent is None:
@@ -1157,14 +2915,23 @@ def _validate_result_record(
                 errors.append(
                     f"{prefix}.result_record: NN calls do not match contract"
                 )
-        elif run["outcome"] != cell["run"]["failure_category"]:
+            if not _is_non_negative_int(expected_controller_updates) \
+                    or run["controller_updates"] != expected_controller_updates:
+                errors.append(
+                    f"{prefix}.result_record: controller updates do not match contract"
+                )
+        elif not _outcome_matches_category(
+            run["outcome"], cell["run"]["failure_category"]
+        ):
             errors.append(f"{prefix}.result_record: outcome/failure category mismatch")
         if run["status"] != "completed" and run["requested_horizon_completed"] is not False:
             errors.append(
                 f"{prefix}.result_record: non-completed run claims completed horizon"
             )
         if run["status"] == "skipped" and any(
-            run[name] != 0 for name in ("accepted_steps", "rejected_steps", "nn_calls")
+            run[name] != 0 for name in (
+                "accepted_steps", "rejected_steps", "controller_updates", "nn_calls"
+            )
         ):
             errors.append(f"{prefix}.result_record: skipped run must have zero work counts")
         if isinstance(run["status"], str) \
@@ -1181,6 +2948,13 @@ def _validate_result_record(
                     and not isinstance(run["nn_calls"], bool) \
                     and run["nn_calls"] > expected_nn_calls:
                 errors.append(f"{prefix}.result_record: NN calls exceed contract")
+            if _is_non_negative_int(expected_controller_updates) \
+                    and isinstance(run["controller_updates"], int) \
+                    and not isinstance(run["controller_updates"], bool) \
+                    and run["controller_updates"] > expected_controller_updates:
+                errors.append(
+                    f"{prefix}.result_record: controller updates exceed contract"
+                )
         if run["status"] != "completed" and not isinstance(run["first_failure"], dict):
             errors.append(f"{prefix}.result_record: terminal non-completion lacks first failure")
         elif run["status"] != "completed":
@@ -1264,6 +3038,51 @@ def _validate_result_record(
                 f"{prefix}.result_record: certificate semantics disagree with "
                 "cell plan"
             )
+        if run.get("status") == "early_stopped":
+            outcome = run.get("outcome")
+            expected_property = (
+                "passed" if outcome == "property_early_stop_pass"
+                else "failed" if outcome == "property_early_stop_fail"
+                else None
+            )
+            policy = _dotted(cell, "property_checker.early_stop_policy")
+            allowed_policies = {
+                "property_early_stop_pass": {"on_pass", "on_decisive"},
+                "property_early_stop_fail": {"on_fail", "on_decisive"},
+            }.get(outcome, set())
+            requested = run.get("requested_extent")
+            validated = run.get("validated_extent")
+            strict_prefix = (
+                isinstance(requested, Mapping)
+                and isinstance(validated, Mapping)
+                and requested.get("kind") == validated.get("kind")
+                and _is_finite_number(requested.get("value"), positive=True)
+                and _is_finite_number(validated.get("value"))
+                and validated["value"] < requested["value"]
+            )
+            if policy not in allowed_policies:
+                errors.append(
+                    f"{prefix}.result_record: early-stop outcome is forbidden by "
+                    "the configured policy"
+                )
+            if not strict_prefix:
+                errors.append(
+                    f"{prefix}.result_record: early stop must end before requested extent"
+                )
+            if (
+                checker_mode != "configured"
+                or property_value["status"] != expected_property
+                or property_value["certificate_status"] != "passed"
+                or property_value["checker"] != _dotted(
+                    cell, "property_checker.identity"
+                )
+                or not _nonempty(property_value["certificate_semantics"])
+                or property_value["artifact"] is None
+            ):
+                errors.append(
+                    f"{prefix}.result_record: early stop lacks matching property "
+                    "and certificate evidence"
+                )
 
     eligibility_raw = record["eligibility"]
     eligibility = eligibility_raw if isinstance(eligibility_raw, dict) else {}
@@ -1271,7 +3090,7 @@ def _validate_result_record(
         "mathematical_contract_known", "requested_horizon_completed",
         "certificate_semantics_passed", "finite_outputs",
         "numerical_soundness_class", "soundness_scope", "formal_claim_eligible",
-        "performance_measurement_eligible", "cross_tool_ranking_eligible",
+        "performance_measurement_eligible",
     }
     eligibility_errors = _exact_keys(
         eligibility, eligibility_keys, f"{prefix}.result_record.eligibility"
@@ -1315,21 +3134,96 @@ def _validate_result_record(
     if not isinstance(samples, list):
         errors.append(f"{prefix}.result_record.samples: expected an array")
         samples = []
-    sample_keys: set[tuple[Any, Any]] = set()
+    sample_keys: set[tuple[Any, Any, Any]] = set()
+    invocation_ids: set[str] = set()
+    formal_artifact_paths: set[str] = set()
+    formal_artifact_shas: set[str] = set()
+    schedule_entries, _ = _campaign_schedule_entries(campaign, root)
     for index, sample in enumerate(samples):
         errors.extend(_validate_sample(
-            sample, root, f"{prefix}.result_record.samples[{index}]"
+            sample, root, f"{prefix}.result_record.samples[{index}]",
+            contract, campaign,
         ))
         if isinstance(sample, dict):
-            key = (sample.get("role"), sample.get("index"))
-            if isinstance(key[0], str) and isinstance(key[1], int) \
-                    and not isinstance(key[1], bool):
+            key = (
+                sample.get("role"), sample.get("index"),
+                sample.get("attempt_index"),
+            )
+            if isinstance(key[0], str) and _is_non_negative_int(key[1]) \
+                    and _is_non_negative_int(key[2]):
                 if key in sample_keys:
                     errors.append(
-                        f"{prefix}.result_record.samples: duplicate role/index {key!r}"
+                        f"{prefix}.result_record.samples: duplicate "
+                        f"role/index/attempt_index {key!r}"
                     )
                 sample_keys.add(key)
+            process = sample.get("process_identity")
+            invocation_id = (
+                process.get("invocation_id")
+                if isinstance(process, Mapping) else None
+            )
+            if isinstance(invocation_id, str):
+                if invocation_id in invocation_ids:
+                    errors.append(
+                        f"{prefix}.result_record.samples: duplicate invocation_id "
+                        f"{invocation_id!r}"
+                    )
+                invocation_ids.add(invocation_id)
+            if _mode_is(key[0], "cold", "steady") \
+                    and _is_non_negative_int(key[1]):
+                scheduled = schedule_entries.get((
+                    instance_row["id"], method, key[0], key[1]
+                ))
+                campaign_value = sample.get("campaign")
+                if not isinstance(scheduled, Mapping) or not isinstance(
+                    campaign_value, Mapping
+                ) or campaign_value.get("round_index") != scheduled.get(
+                    "round_index"
+                ) or campaign_value.get("sequence_position") != scheduled.get(
+                    "sequence_position"
+                ):
+                    errors.append(
+                        f"{prefix}.result_record.samples[{index}]: campaign "
+                        "position disagrees with the frozen rotation schedule"
+                    )
+                artifact = sample.get("artifact")
+                path = artifact.get("path") if isinstance(artifact, Mapping) else None
+                sha = artifact.get("sha256") if isinstance(artifact, Mapping) else None
+                if isinstance(path, str):
+                    if path in formal_artifact_paths:
+                        errors.append(
+                            f"{prefix}.result_record.samples: formal samples reuse "
+                            "an artifact path"
+                        )
+                    formal_artifact_paths.add(path)
+                if isinstance(sha, str):
+                    if sha in formal_artifact_shas:
+                        errors.append(
+                            f"{prefix}.result_record.samples: formal samples reuse "
+                            "artifact bytes"
+                        )
+                    formal_artifact_shas.add(sha)
+    errors.extend(_validate_attempt_ledger(
+        record["attempt_ledger"], samples, root,
+        f"{prefix}.result_record.attempt_ledger",
+        campaign_id=campaign.get("campaign_id"),
+        instance_id=instance_row["id"], method=method,
+    ))
     plan = cell["measurement_plan"]
+    formal_slots = {
+        (key[0], key[1]) for key in sample_keys
+        if key[0] in {"cold", "steady"}
+    }
+    included_samples = [
+        sample for sample in samples
+        if isinstance(sample, Mapping)
+        and sample.get("included_in_timing") is True
+    ]
+    included_slots = {
+        (sample.get("role"), sample.get("index"))
+        for sample in included_samples
+        if _mode_is(sample.get("role"), "cold", "steady")
+    }
     cold_runs = plan.get("cold_runs") if isinstance(plan, Mapping) else None
     steady_runs = plan.get("steady_runs") if isinstance(plan, Mapping) else None
     if any(
@@ -1344,7 +3238,7 @@ def _validate_result_record(
             *(("steady", index) for index in range(steady_runs)),
         }
     unexpected_formal = sorted(
-        key for key in sample_keys
+        key for key in formal_slots
         if key[0] in {"cold", "steady"} and key not in expected_keys
     )
     if unexpected_formal:
@@ -1369,6 +3263,11 @@ def _validate_result_record(
                 and not isinstance(sample.get("nn_calls"), bool) \
                 and sample["nn_calls"] > expected_nn_calls:
             errors.append(f"{label}.nn_calls: exceeds cell plan")
+        if _is_non_negative_int(expected_controller_updates) \
+                and isinstance(sample.get("controller_updates"), int) \
+                and not isinstance(sample.get("controller_updates"), bool) \
+                and sample["controller_updates"] > expected_controller_updates:
+            errors.append(f"{label}.controller_updates: exceeds contract")
         if sample.get("outcome") == "completed":
             if sample_extent != run.get("requested_extent"):
                 errors.append(f"{label}: completed sample has partial extent")
@@ -1378,30 +3277,73 @@ def _validate_result_record(
             if expected_nn_calls is not None \
                     and sample.get("nn_calls") != expected_nn_calls:
                 errors.append(f"{label}.nn_calls: disagrees with cell plan")
+            if _is_non_negative_int(expected_controller_updates) \
+                    and sample.get("controller_updates") \
+                    != expected_controller_updates:
+                errors.append(
+                    f"{label}.controller_updates: disagrees with contract"
+                )
         elif isinstance(sample.get("failure"), Mapping) \
                 and sample["failure"].get("reason_code") != sample.get("outcome"):
             errors.append(f"{label}: failure reason disagrees with outcome")
     if run.get("status") == "completed":
-        if sample_keys != expected_keys or len(samples) != len(expected_keys):
-            errors.append(f"{prefix}.result_record: completed run lacks every planned sample")
+        if included_slots != expected_keys or len(included_samples) != len(expected_keys):
+            errors.append(
+                f"{prefix}.result_record: completed run lacks exactly one included "
+                "sample for every planned slot"
+            )
         if any(
             not isinstance(sample, dict) or sample.get("outcome") != "completed"
-            for sample in samples
+            for sample in included_samples
         ):
-            errors.append(f"{prefix}.result_record: completed run has non-completed sample")
+            errors.append(
+                f"{prefix}.result_record: included timing sample is not completed"
+            )
         for index, sample in enumerate(samples):
             if not isinstance(sample, dict):
                 continue
             key = (sample.get("role"), sample.get("index"))
             if not isinstance(key[0], str) or not isinstance(key[1], int) \
-                    or isinstance(key[1], bool) or key not in expected_keys:
+                    or isinstance(key[1], bool) or key not in expected_keys \
+                    or sample.get("included_in_timing") is not True:
                 continue
             label = f"{prefix}.result_record.samples[{index}]"
             if sample.get("validated_extent") != run.get("requested_extent"):
                 errors.append(f"{label}: extent disagrees with completed run")
-            for name in ("accepted_steps", "rejected_steps", "nn_calls"):
+            for name in (
+                "accepted_steps", "rejected_steps", "controller_updates", "nn_calls"
+            ):
                 if sample.get(name) != run.get(name):
                     errors.append(f"{label}.{name}: disagrees with run summary")
+            sample_coverage = sample.get("partition_coverage")
+            run_coverage = run.get("partition_coverage")
+            coverage_fields = (
+                "requested_partitions", "completed_partitions",
+                "failed_partitions", "unattempted_partitions", "boxes_sha256",
+            )
+            if not isinstance(sample_coverage, Mapping) or not isinstance(
+                run_coverage, Mapping
+            ) or any(
+                sample_coverage.get(name) != run_coverage.get(name)
+                for name in coverage_fields
+            ):
+                errors.append(
+                    f"{label}.partition_coverage: disagrees with run summary"
+                )
+            sample_trace = sample.get("controller_update_trace")
+            run_trace = run.get("controller_update_trace")
+            if not isinstance(sample_trace, Mapping) or not isinstance(
+                run_trace, Mapping
+            ) or (
+                sample_trace.get("kind"), sample_trace.get("points"),
+                sample_trace.get("boundary_update_status"),
+            ) != (
+                run_trace.get("kind"), run_trace.get("points"),
+                run_trace.get("boundary_update_status"),
+            ):
+                errors.append(
+                    f"{label}.controller_update_trace: disagrees with run summary"
+                )
     elif run.get("status") == "skipped":
         if samples:
             errors.append(f"{prefix}.result_record: skipped run must have no samples")
@@ -1412,7 +3354,26 @@ def _validate_result_record(
             and sample.get("validated_extent") == run.get("validated_extent")
             and sample.get("accepted_steps") == run.get("accepted_steps")
             and sample.get("rejected_steps") == run.get("rejected_steps")
+            and sample.get("controller_updates") == run.get("controller_updates")
+            and isinstance(sample.get("controller_update_trace"), Mapping)
+            and isinstance(run.get("controller_update_trace"), Mapping)
+            and sample["controller_update_trace"].get("kind")
+            == run["controller_update_trace"].get("kind")
+            and sample["controller_update_trace"].get("points")
+            == run["controller_update_trace"].get("points")
+            and sample["controller_update_trace"].get("boundary_update_status")
+            == run["controller_update_trace"].get("boundary_update_status")
             and sample.get("nn_calls") == run.get("nn_calls")
+            and isinstance(sample.get("partition_coverage"), Mapping)
+            and isinstance(run.get("partition_coverage"), Mapping)
+            and all(
+                sample["partition_coverage"].get(name)
+                == run["partition_coverage"].get(name)
+                for name in (
+                    "requested_partitions", "completed_partitions",
+                    "failed_partitions", "unattempted_partitions", "boxes_sha256",
+                )
+            )
             and sample.get("failure") == run.get("first_failure")
             for sample in samples
         )
@@ -1420,6 +3381,10 @@ def _validate_result_record(
             errors.append(
                 f"{prefix}.result_record: terminal failure has no matching sample"
             )
+    else:
+        errors.append(
+            f"{prefix}.result_record: terminal non-completion lacks a raw sample"
+        )
 
     widths = record["widths"]
     errors.extend(_validate_widths(
@@ -1446,16 +3411,51 @@ def _validate_result_record(
             errors.append(
                 f"{prefix}.result_record.widths: coordinate order does not match contract"
             )
-        common_prefix = widths.get("common_prefix")
-        if common_prefix != run.get("validated_extent"):
+        if widths.get("coordinate_units") != contract_units:
             errors.append(
-                f"{prefix}.result_record.widths: common prefix disagrees with validated extent"
+                f"{prefix}.result_record.widths: coordinate units do not match contract"
             )
-        if completed and (not isinstance(common_prefix, dict) or not _is_finite_number(
-            common_prefix.get("value"), positive=True
+        if widths.get("aggregation_semantics") != contract_aggregation:
+            errors.append(
+                f"{prefix}.result_record.widths: aggregation does not match contract"
+            )
+        validated_prefix = widths.get("validated_prefix")
+        if validated_prefix != run.get("validated_extent"):
+            errors.append(
+                f"{prefix}.result_record.widths: validated prefix disagrees with run"
+            )
+        if completed and (not isinstance(validated_prefix, dict) or not _is_finite_number(
+            validated_prefix.get("value"), positive=True
         )):
             errors.append(
-                f"{prefix}.result_record.widths: completed common prefix must be positive"
+                f"{prefix}.result_record.widths: completed prefix must be positive"
+            )
+        series = widths.get("series")
+        if widths.get("status") != "unavailable" \
+                and isinstance(series, list) and isinstance(contract_width_points, list) \
+                and isinstance(validated_prefix, Mapping):
+            kind = validated_prefix.get("kind")
+            end = validated_prefix.get("value")
+            expected_series_extents = [
+                {"kind": kind, "value": point}
+                for point in contract_width_points
+                if _is_finite_number(end) and point <= end
+            ]
+            actual_series_extents = [
+                observation.get("extent")
+                if isinstance(observation, Mapping) else None
+                for observation in series
+            ]
+            if actual_series_extents != expected_series_extents:
+                errors.append(
+                    f"{prefix}.result_record.widths.series: does not cover the "
+                    "contract grid through the validated prefix"
+                )
+        if not completed and isinstance(widths.get("endpoint"), Mapping) \
+                and widths["endpoint"].get("status") != "unavailable":
+            errors.append(
+                f"{prefix}.result_record.widths.endpoint: full endpoint is only "
+                "available after completed horizon"
             )
         validated = run.get("validated_extent")
         if isinstance(validated, dict) and set(validated) == {"kind", "value"} \
@@ -1506,12 +3506,16 @@ def _validate_result_record(
         artifacts = []
     roles: set[str] = set()
     for index, artifact in enumerate(artifacts):
+        artifact_label = f"{prefix}.result_record.artifacts[{index}]"
         errors.extend(_validate_artifact(
-            artifact, root, f"{prefix}.result_record.artifacts[{index}]",
+            artifact, root, artifact_label,
             role_required=True,
         ))
         if isinstance(artifact, dict) and isinstance(artifact.get("role"), str):
             roles.add(artifact["role"])
+            errors.extend(_validate_typed_plot_artifact(
+                artifact, root, artifact_label
+            ))
     if not {"command", "run_log", "result"} <= roles:
         errors.append(f"{prefix}.result_record: command/run_log/result artifacts are required")
 
@@ -1521,41 +3525,18 @@ def _validate_result_record(
             run.get("status") == "completed",
             run.get("requested_horizon_completed") is True,
             eligibility.get("finite_outputs") is True,
-            sample_keys == expected_keys if run.get("status") == "completed" else False,
+            included_slots == expected_keys
+            and len(included_samples) == len(expected_keys)
+            if run.get("status") == "completed" else False,
             all(
                 isinstance(sample, dict) and sample.get("outcome") == "completed"
-                for sample in samples
+                for sample in included_samples
             ),
         )
         if not all(performance_prerequisites):
             errors.append(
                 f"{prefix}.result_record: performance eligibility lacks prerequisites"
             )
-    if isinstance(eligibility, dict) \
-            and eligibility.get("cross_tool_ranking_eligible") is True:
-        soundness = eligibility.get("numerical_soundness_class")
-        scope = eligibility.get("soundness_scope")
-        prerequisites = (
-            eligibility.get("mathematical_contract_known") is True,
-            eligibility.get("requested_horizon_completed") is True,
-            eligibility.get("certificate_semantics_passed") is True,
-            eligibility.get("finite_outputs") is True,
-            eligibility.get("performance_measurement_eligible") is True,
-            _dotted(cell, "measurement_plan.steady_runs")
-            == _dotted(cell, "measurement_plan.target_steady_runs"),
-            run.get("status") == "completed",
-            property_value.get("certificate_status") == "passed",
-            isinstance(soundness, str) and soundness not in {
-                "empirically sampled only", "unknown",
-                "unsound/ineligible on a demonstrated counterexample",
-            },
-            isinstance(scope, str)
-            and scope in {"fixed workload", "multi-step lane", "native build"},
-            isinstance(record["widths"], dict)
-            and record["widths"].get("status") == "complete",
-        )
-        if not all(prerequisites):
-            errors.append(f"{prefix}.result_record: ranking eligibility lacks prerequisites")
     if isinstance(eligibility, dict) \
             and eligibility.get("formal_claim_eligible") is True:
         soundness = eligibility.get("numerical_soundness_class")
@@ -1680,6 +3661,10 @@ def _execution_plan_reasons(
         reasons.append("adaptive_nn_call_policy_not_executable")
     elif nn_calls_mode == "not_applicable":
         reasons.append("controller_nn_calls_not_applicable")
+    elif scheduled_updates and not _is_finite_number(
+        _dotted(controller_execution, "nn_calls.value"), positive=True
+    ):
+        reasons.append("controller_nn_calls_zero_for_scheduled_updates")
     if not _nonempty(_dotted(controller_execution, "nn_call_semantics")):
         reasons.append("controller_nn_call_semantics_missing")
     expected_updates = (
@@ -1702,8 +3687,6 @@ def _execution_plan_reasons(
         ):
             if not _nonempty(_dotted(property_checker, name)):
                 reasons.append(f"property_checker_{name}_missing")
-        if _dotted(property_checker, "early_stop_policy") != "never":
-            reasons.append("property_early_stop_not_executable")
     return reasons
 
 
@@ -1725,10 +3708,17 @@ def _validate_cell_types(
     cwd = cell["command"]["cwd"]
     if cwd is not None and (not isinstance(cwd, str) or not cwd.strip()):
         errors.append(f"{prefix}.command.cwd: expected null or non-empty string")
-    for group in ("source_identity", "binary_identity", "arithmetic"):
+    for group in ("source_identity", "binary_identity"):
         for name, value in cell[group].items():
-            if value is not None and not _nonempty(value):
-                errors.append(f"{prefix}.{group}.{name}: empty value")
+            if value is not None and not (
+                isinstance(value, str) and value.strip()
+            ):
+                errors.append(f"{prefix}.{group}.{name}: expected null or text")
+    for name, value in cell["arithmetic"].items():
+        if value is not None and not (
+            isinstance(value, str) and value.strip()
+        ):
+            errors.append(f"{prefix}.arithmetic.{name}: expected null or text")
     for group in ("source_identity", "binary_identity"):
         sha = cell[group].get("sha256")
         if sha is not None and not _is_sha256(sha):
@@ -1778,6 +3768,16 @@ def _validate_cell_types(
         f"{prefix}.controller_execution.nn_calls",
         configured_mode="exact", integer=True, allow_adaptive=True,
     ))
+    if _is_non_negative_int(scheduled_updates) and scheduled_updates > 0 \
+            and _dotted(controller_execution, "nn_calls.mode") == "exact" \
+            and not (
+                _is_non_negative_int(_dotted(controller_execution, "nn_calls.value"))
+                and _dotted(controller_execution, "nn_calls.value") > 0
+            ):
+        errors.append(
+            f"{prefix}.controller_execution.nn_calls.value: must be positive "
+            "when controller updates are scheduled"
+        )
     semantics = controller_execution["nn_call_semantics"]
     if semantics is not None and not (
         isinstance(semantics, str) and semantics.strip()
@@ -1817,6 +3817,38 @@ def _validate_cell_types(
         isinstance(threads, bool) or not isinstance(threads, int) or threads <= 0
     ):
         errors.append(f"{prefix}.runtime.cpu_threads: expected a positive integer")
+    for name in ("hardware", "gpu"):
+        value = cell["runtime"][name]
+        if value is not None and not (
+            isinstance(value, str) and value.strip()
+        ):
+            errors.append(f"{prefix}.runtime.{name}: expected null or text")
+    limits = cell["runtime"]["resource_limits"]
+    if limits is not None and not isinstance(limits, dict):
+        errors.append(f"{prefix}.runtime.resource_limits: expected null or object")
+    elif isinstance(limits, dict):
+        limit_errors = _exact_keys(
+            limits, RESOURCE_LIMIT_FIELDS, f"{prefix}.runtime.resource_limits"
+        )
+        errors.extend(limit_errors)
+        if not limit_errors:
+            for name in ("exclusive_host", "exclusive_gpu_device"):
+                if limits[name] is not True:
+                    errors.append(
+                        f"{prefix}.runtime.resource_limits.{name}: must be true"
+                    )
+            if not _is_non_negative_int(limits["max_host_memory_bytes"]) \
+                    or limits["max_host_memory_bytes"] <= 0:
+                errors.append(
+                    f"{prefix}.runtime.resource_limits.max_host_memory_bytes: "
+                    "expected a positive integer"
+                )
+            device_memory = limits["max_device_memory_bytes"]
+            if device_memory is not None and not _is_non_negative_int(device_memory):
+                errors.append(
+                    f"{prefix}.runtime.resource_limits.max_device_memory_bytes: "
+                    "expected null or a non-negative integer"
+                )
     timeout = cell["runtime"]["timeout_s"]
     if timeout is not None and not _is_finite_number(timeout, positive=True):
         errors.append(f"{prefix}.runtime.timeout_s: expected a finite positive number")
@@ -1825,7 +3857,7 @@ def _validate_cell_types(
         "cold_runs": 1,
         "target_steady_runs": 5,
         "fresh_process_per_run": True,
-        "timing_boundary_version": "total_configuration_v1",
+        "timing_boundary_version": "total_configuration_v2",
     }
     if any(plan.get(name) != value for name, value in fixed_plan.items()):
         errors.append(
@@ -1863,13 +3895,17 @@ def _validate_cell_types(
 
 
 def validate_matrix(
-    manifest: Mapping[str, Any], matrix: Mapping[str, Any], *, root: Path = ROOT
+    manifest: Mapping[str, Any],
+    matrix: Mapping[str, Any],
+    *,
+    root: Path = ROOT,
+    now_utc: datetime | None = None,
 ) -> list[str]:
     errors: list[str] = []
     manifest_matrix = manifest.get("execution_matrix", {})
     if matrix.get("schema_version") != MATRIX_SCHEMA \
             or manifest_matrix.get("schema_version") != MATRIX_SCHEMA:
-        errors.append("matrix schema_version does not match the v3 contract")
+        errors.append("matrix schema_version does not match the v5 contract")
     if matrix.get("source_manifest") != "benchmarks/archcomp26/manifest.json":
         errors.append("matrix source_manifest is not the canonical manifest")
     result_contract = matrix.get("result_record_contract")
@@ -1888,6 +3924,9 @@ def validate_matrix(
             "result_record_contract",
         )
         errors.extend(bound_errors)
+    errors.extend(_validate_campaign_structure(
+        matrix.get("comparison_campaign"), root
+    ))
     errors.extend(_validate_contracts(manifest, root))
     instance_ids = [row["id"] for row in manifest.get("instances", [])]
     instances_by_id = {
@@ -1895,6 +3934,21 @@ def validate_matrix(
         if isinstance(row, dict) and "id" in row
     }
     methods = list(manifest.get("methods", []))
+    scope_errors: list[str] = []
+    if instance_ids != list(EXPECTED_INSTANCE_IDS):
+        scope_errors.append(
+            "manifest instances do not match the frozen 16-instance ARCH-COMP scope"
+        )
+    if methods != list(EXPECTED_METHODS):
+        scope_errors.append(
+            "manifest methods do not match the frozen four-method comparison scope"
+        )
+    if scope_errors:
+        return [*errors, *scope_errors]
+    errors.extend(_validate_campaign_schedule(
+        matrix.get("comparison_campaign", {}), root,
+        list(EXPECTED_INSTANCE_IDS), list(EXPECTED_METHODS),
+    ))
     if list(matrix.get("methods", [])) != methods:
         errors.append("matrix methods do not match manifest methods")
     if list(matrix.get("cells", {})) != instance_ids:
@@ -1903,7 +3957,7 @@ def validate_matrix(
     required = matrix.get("required_cell_fields")
     expected_required = list(CELL_DEFAULT_SHAPE)
     if not isinstance(required, list) or required != expected_required:
-        errors.append("required_cell_fields do not match the v3 cell contract")
+        errors.append("required_cell_fields do not match the v5 cell contract")
         return errors
     default_shape_errors = _shape_errors(
         defaults, CELL_DEFAULT_SHAPE, "cell_defaults"
@@ -1913,6 +3967,14 @@ def validate_matrix(
         return errors
 
     enums = matrix.get("enums", {})
+    campaign_invocations: set[str] = set()
+    campaign_formal_paths: set[str] = set()
+    campaign_formal_shas: set[str] = set()
+    campaign_process_receipts: list[tuple[datetime, datetime, str]] = []
+    campaign_rotation_receipts: dict[
+        tuple[str, str, int], list[tuple[int, datetime, datetime, str]]
+    ] = {}
+    running_cells: list[tuple[str, str, Mapping[str, Any]]] = []
     for instance in instance_ids:
         method_cells = matrix.get("cells", {}).get(instance)
         if not isinstance(method_cells, dict) or list(method_cells) != methods:
@@ -1951,10 +4013,19 @@ def validate_matrix(
             status = resolved["run"]["status"]
             category = resolved["run"]["failure_category"]
             detail = resolved["run"]["failure_detail"]
+            if status == "running":
+                running_cells.append((instance, method, resolved))
             if status == "not_started" and (category is not None or detail is not None):
                 errors.append(f"{prefix}: not_started cell carries failure data")
+            if status == "running" and (category is not None or detail is not None):
+                errors.append(f"{prefix}: running cell carries terminal failure data")
+            if status == "running" \
+                    and manifest["execution_policy"]["experiments_paused"] is not False:
+                errors.append(f"{prefix}: running cell is forbidden while experiments are paused")
             if isinstance(status, str) \
-                    and status in {"failed", "timeout", "interrupted", "skipped"} and (
+                    and status in {
+                        "failed", "timeout", "interrupted", "early_stopped", "skipped"
+                    } and (
                 category is None or not isinstance(detail, str) or not detail.strip()
             ):
                 errors.append(f"{prefix}: terminal failure lacks category/detail")
@@ -1970,16 +4041,26 @@ def validate_matrix(
                 errors.append(
                     f"{prefix}: interrupted status must use incomplete_unknown category"
                 )
+            if status == "early_stopped" and category != "property_early_stop":
+                errors.append(
+                    f"{prefix}: early_stopped status must use property_early_stop category"
+                )
+            if category == "property_early_stop" and status != "early_stopped":
+                errors.append(
+                    f"{prefix}: property_early_stop category must use early_stopped status"
+                )
             if resolved["support"]["status"] == "unsupported" \
-                    and status == "completed":
-                errors.append(f"{prefix}: unsupported cell cannot be completed")
+                    and _mode_is(status, "running", "completed"):
+                errors.append(f"{prefix}: unsupported cell cannot run or complete")
             if status == "skipped":
                 if resolved["support"]["status"] != "unsupported" \
                         or not resolved["support"]["blockers"]:
                     errors.append(
                         f"{prefix}: skipped cell requires unsupported status and blockers"
                     )
-            elif isinstance(status, str) and status in TERMINAL_STATUSES:
+            elif isinstance(status, str) and (
+                status == "running" or status in TERMINAL_STATUSES
+            ):
                 instance_row = instances_by_id[instance]
                 profile = _dotted(
                     instance_row, "contract.unresolved_field_profile"
@@ -1992,22 +4073,28 @@ def validate_matrix(
                 plan_reasons = _execution_plan_reasons(
                     resolved, profile, contract_record
                 )
+                plan_reasons.extend(_campaign_reasons(
+                    matrix.get("comparison_campaign"), root, resolved
+                ))
                 if plan_reasons:
                     errors.append(
-                        f"{prefix}: terminal cell lacks executable plan "
+                        f"{prefix}: active/terminal cell lacks executable plan "
                         f"({', '.join(plan_reasons)})"
                     )
             link = resolved["result_record"]
             has_link = all(link[name] is not None for name in (
                 "schema_version", "path", "sha256"
             ))
-            if status == "not_started" and has_link:
-                errors.append(f"{prefix}: not_started cell carries a result record")
+            if _mode_is(status, "not_started", "running") and has_link:
+                errors.append(f"{prefix}: nonterminal cell carries a result record")
             if isinstance(status, str) and status in TERMINAL_STATUSES and not has_link:
                 errors.append(f"{prefix}: terminal cell lacks a result record")
             if isinstance(status, str) and status in TERMINAL_STATUSES \
                     and instances_by_id[instance]["contract"].get("status") != "resolved":
                 errors.append(f"{prefix}: terminal cell has unresolved instance contract")
+            if status == "running" \
+                    and instances_by_id[instance]["contract"].get("status") != "resolved":
+                errors.append(f"{prefix}: running cell has unresolved instance contract")
             if has_link:
                 record_path, bound_errors = _bound_file(
                     root, link["path"], link["sha256"], f"{prefix}.result_record"
@@ -2021,8 +4108,220 @@ def validate_matrix(
                     else:
                         errors.extend(_validate_result_record(
                             record, root, prefix, instances_by_id[instance], method,
-                            resolved,
+                            resolved, matrix["comparison_campaign"],
                         ))
+                        for sample in record.get("samples", []):
+                            if not isinstance(sample, Mapping):
+                                continue
+                            process = sample.get("process_identity")
+                            invocation = (
+                                process.get("invocation_id")
+                                if isinstance(process, Mapping) else None
+                            )
+                            if isinstance(invocation, str):
+                                if invocation in campaign_invocations:
+                                    errors.append(
+                                        f"{prefix}.result_record: campaign reuses "
+                                        f"invocation_id {invocation!r}"
+                                    )
+                                campaign_invocations.add(invocation)
+                            if isinstance(process, Mapping):
+                                started = _parse_utc(process.get("started_at_utc"))
+                                finished = _parse_utc(process.get("finished_at_utc"))
+                                if started is not None and finished is not None:
+                                    campaign_process_receipts.append((
+                                        started, finished,
+                                        f"{prefix}:{sample.get('role')}/{sample.get('index')}",
+                                    ))
+                            if not _mode_is(
+                                sample.get("role"), "cold", "steady"
+                            ) or sample.get("included_in_timing") is not True:
+                                continue
+                            campaign_value = sample.get("campaign")
+                            process_value = sample.get("process_identity")
+                            if isinstance(campaign_value, Mapping) and isinstance(
+                                process_value, Mapping
+                            ):
+                                round_index = campaign_value.get("round_index")
+                                position = campaign_value.get("sequence_position")
+                                started = _parse_utc(
+                                    process_value.get("started_at_utc")
+                                )
+                                finished = _parse_utc(
+                                    process_value.get("finished_at_utc")
+                                )
+                                if _is_non_negative_int(round_index) \
+                                        and _is_non_negative_int(position) \
+                                        and started is not None \
+                                        and finished is not None:
+                                    group = (
+                                        instance, str(sample.get("role")), round_index,
+                                    )
+                                    campaign_rotation_receipts.setdefault(
+                                        group, []
+                                    ).append((
+                                        position, started, finished, method,
+                                    ))
+                            artifact = sample.get("artifact")
+                            if not isinstance(artifact, Mapping):
+                                continue
+                            for name, seen in (
+                                ("path", campaign_formal_paths),
+                                ("sha256", campaign_formal_shas),
+                            ):
+                                value = artifact.get(name)
+                                if isinstance(value, str):
+                                    if value in seen:
+                                        errors.append(
+                                            f"{prefix}.result_record: campaign formal "
+                                            f"samples reuse artifact {name}"
+                                        )
+                                    seen.add(value)
+    active_receipt, _ = _active_run_receipt(
+        matrix.get("comparison_campaign", {}), root
+    )
+    if len(running_cells) > 1:
+        errors.append(
+            "comparison_campaign.resource_limits: exclusive_host permits at most "
+            "one running cell"
+        )
+    if not running_cells and active_receipt is not None:
+        errors.append(
+            "comparison_campaign.active_run_receipt: present without a running cell"
+        )
+    if running_cells and active_receipt is None:
+        errors.append(
+            "comparison_campaign.active_run_receipt: running cell lacks an active "
+            "lock receipt"
+        )
+    if len(running_cells) == 1 and active_receipt is not None:
+        instance, method, running_cell = running_cells[0]
+        if (
+            active_receipt.get("instance_id") != instance
+            or active_receipt.get("method") != method
+        ):
+            errors.append(
+                "comparison_campaign.active_run_receipt: running cell identity mismatch"
+            )
+        started = _parse_utc(active_receipt.get("started_at_utc"))
+        freshness_errors = _validate_prelaunch_audit(
+            matrix.get("comparison_campaign", {}), root,
+            require_fresh=True, now_utc=started or now_utc,
+        )
+        if freshness_errors:
+            errors.append(
+                "comparison_campaign.active_run_receipt: prelaunch audit was not "
+                "fresh when the active process started"
+            )
+        current = now_utc or datetime.now(timezone.utc)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=timezone.utc)
+        timeout = _dotted(running_cell, "runtime.timeout_s")
+        if started is not None and (
+            started > current
+            or not _is_finite_number(timeout, positive=True)
+            or current > started + timedelta(seconds=float(timeout) + 60.0)
+        ):
+            errors.append(
+                "comparison_campaign.active_run_receipt: active receipt is outside "
+                "the runtime timeout window"
+            )
+        audit_link = _dotted(
+            matrix.get("comparison_campaign", {}), "prelaunch_audit"
+        )
+        audit_path, _ = _bound_file(
+            root,
+            audit_link.get("path") if isinstance(audit_link, Mapping) else None,
+            audit_link.get("sha256") if isinstance(audit_link, Mapping) else None,
+            "comparison_campaign.prelaunch_audit",
+        )
+        if started is not None and audit_path is not None:
+            try:
+                audit_receipt = _load(audit_path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                audit_receipt = {}
+            checked_at = _parse_utc(audit_receipt.get("checked_at_utc"))
+            valid_until = _parse_utc(audit_receipt.get("valid_until_utc"))
+            if checked_at is None or valid_until is None \
+                    or not checked_at <= started < valid_until:
+                errors.append(
+                    "comparison_campaign.active_run_receipt: prelaunch audit did "
+                    "not precede the active process"
+                )
+    for group, receipts in campaign_rotation_receipts.items():
+        positions = [item[0] for item in receipts]
+        if len(set(positions)) != len(positions):
+            errors.append(
+                f"comparison_campaign.rotation: duplicate actual position in {group!r}"
+            )
+            continue
+        ordered = sorted(receipts)
+        for previous, current in zip(ordered, ordered[1:]):
+            if previous[2] > current[1]:
+                errors.append(
+                    "comparison_campaign.rotation: actual process receipts overlap "
+                    f"or violate sequence in {group!r} between "
+                    f"{previous[3]!r} and {current[3]!r}"
+                )
+    for instance in EXPECTED_INSTANCE_IDS:
+        round_windows: list[tuple[int, datetime, datetime, str]] = []
+        for (group_instance, role, round_index), receipts in (
+            campaign_rotation_receipts.items()
+        ):
+            if group_instance != instance or not receipts:
+                continue
+            campaign_round = 0 if role == "cold" else round_index + 1
+            round_windows.append((
+                campaign_round,
+                min(item[1] for item in receipts),
+                max(item[2] for item in receipts),
+                role,
+            ))
+        round_windows.sort()
+        for previous, current in zip(round_windows, round_windows[1:]):
+            if previous[2] > current[1]:
+                errors.append(
+                    "comparison_campaign.rotation: cold/steady rounds overlap "
+                    f"or run out of order for {instance!r} between "
+                    f"round {previous[0]} and {current[0]}"
+                )
+    limits = matrix.get("comparison_campaign", {}).get("resource_limits")
+    if isinstance(limits, Mapping) and limits.get("exclusive_host") is True:
+        ordered_receipts = sorted(campaign_process_receipts)
+        for previous, current in zip(ordered_receipts, ordered_receipts[1:]):
+            if previous[1] > current[0]:
+                errors.append(
+                    "comparison_campaign.resource_limits: process receipts overlap "
+                    f"despite exclusive_host between {previous[2]!r} and "
+                    f"{current[2]!r}"
+                )
+    formal_starts = [
+        item[1]
+        for receipts in campaign_rotation_receipts.values()
+        for item in receipts
+    ]
+    audit_link = matrix.get("comparison_campaign", {}).get("prelaunch_audit")
+    if formal_starts and isinstance(audit_link, Mapping):
+        audit_path, _ = _bound_file(
+            root, audit_link.get("path"), audit_link.get("sha256"),
+            "comparison_campaign.prelaunch_audit",
+        )
+        if audit_path is not None:
+            try:
+                audit_receipt = _load(audit_path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                audit_receipt = {}
+            checked_at = _parse_utc(audit_receipt.get("checked_at_utc"))
+            valid_until = _parse_utc(audit_receipt.get("valid_until_utc"))
+            first_formal_start = min(formal_starts)
+            if checked_at is not None:
+                audit_age = (first_formal_start - checked_at).total_seconds()
+                if audit_age <= 0 or audit_age > 24 * 60 * 60 \
+                        or valid_until is None or first_formal_start >= valid_until:
+                    errors.append(
+                        "comparison_campaign.prelaunch_audit: audit must precede "
+                        "the first formal launch by no more than 24 hours"
+                    )
     statuses = [
         _dotted(resolve_cell(matrix, instance, method), "run.status")
         for instance in instance_ids
@@ -2056,8 +4355,9 @@ def preflight_reasons(
     method: str,
     *,
     root: Path = ROOT,
+    now_utc: datetime | None = None,
 ) -> list[str]:
-    reasons = validate_matrix(manifest, matrix, root=root)
+    reasons = validate_matrix(manifest, matrix, root=root, now_utc=now_utc)
     by_id = {row["id"]: row for row in manifest.get("instances", [])}
     if instance not in by_id:
         return [*reasons, "unknown_instance"]
@@ -2081,6 +4381,10 @@ def preflight_reasons(
     )
     reasons.extend(_execution_plan_reasons(
         cell, contract.get("unresolved_field_profile"), contract_record
+    ))
+    reasons.extend(_campaign_reasons(
+        matrix.get("comparison_campaign"), root, cell,
+        require_fresh_audit=True, now_utc=now_utc,
     ))
     if cell["run"]["status"] != "not_started":
         reasons.append("cell_not_not_started")

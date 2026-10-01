@@ -10,7 +10,13 @@ from statistics import median
 import sys
 from typing import Any, Mapping
 
-from .archcomp26_preflight import TERMINAL_STATUSES, resolve_cell, validate_matrix
+from .archcomp26_preflight import (
+    PLOT_ARTIFACT_ROLES,
+    TERMINAL_STATUSES,
+    VIEWABLE_PLOT_ROLES,
+    resolve_cell,
+    validate_matrix,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,10 +30,12 @@ METHOD_LABELS = {
 TIMING_FIELDS = (
     "process_total",
     "driver_total",
-    "solver_core",
     "compile",
+    "controller_nn",
+    "solver_core",
     "validation",
-    "observer_output",
+    "observer",
+    "output",
     "plot_report",
 )
 WIDTH_VIEWS = ("endpoint", "last_segment_tube", "full_horizon_tube")
@@ -86,6 +94,8 @@ def timing_summary(record: Mapping[str, Any]) -> dict[str, Any] | None:
         sample for sample in record["samples"]
         if sample["outcome"] == "completed"
         and sample["validated_extent"] == requested
+        and sample["role"] in {"cold", "steady"}
+        and sample.get("included_in_timing", True) is True
     ]
     cold = [sample for sample in samples if sample["role"] == "cold"]
     steady = [sample for sample in samples if sample["role"] == "steady"]
@@ -102,22 +112,72 @@ def timing_summary(record: Mapping[str, Any]) -> dict[str, Any] | None:
         "steady_phase_medians_s": {
             field: _phase_median(steady, field) for field in TIMING_FIELDS
         },
+        "steady_peak_memory_max_bytes": {
+            device: max(
+                sample["peak_memory_bytes"][device]
+                for sample in steady
+                if sample["peak_memory_bytes"][device] is not None
+            ) if any(
+                sample["peak_memory_bytes"][device] is not None
+                for sample in steady
+            ) else None
+            for device in ("host", "device")
+        },
     }
 
 
-def width_rows(record: Mapping[str, Any]) -> list[dict[str, Any]]:
+def width_rows(
+    record: Mapping[str, Any],
+    comparison_extent: Mapping[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     """Return absolute widths with their explicit domains; never derive ratios."""
-    if record["run"]["status"] != "completed" \
-            or record["widths"]["status"] != "complete":
+    if record["widths"]["status"] == "unavailable":
         return []
     rows: list[dict[str, Any]] = []
+    units = dict(zip(
+        record["widths"]["coordinate_order"],
+        record["widths"]["coordinate_units"],
+    ))
     for view in WIDTH_VIEWS:
         measurement = record["widths"][view]
+        if measurement["status"] != "complete":
+            continue
         for coordinate in measurement["per_coordinate"]:
             rows.append({
                 "view": view,
                 "domain": measurement["domain"],
                 "coordinate": coordinate["coordinate"],
+                "unit": units[coordinate["coordinate"]],
+                "lo": coordinate["union"]["lo"],
+                "hi": coordinate["union"]["hi"],
+                "width": coordinate["union"]["width"],
+                "partition_mean": coordinate["per_partition_width"]["mean"],
+                "partition_max": coordinate["per_partition_width"]["max"],
+            })
+    series = record["widths"].get("series", [])
+    observation = None
+    view = "last_measured_series_point"
+    if comparison_extent is not None:
+        observation = next((
+            item for item in series if item["extent"] == comparison_extent
+        ), None)
+        if observation is not None:
+            view = "four_way_common_prefix_point"
+    if observation is None and series:
+        observation = series[-1]
+    if observation is not None:
+        extent = observation["extent"]
+        domain = {
+            "kind": extent["kind"],
+            "start": extent["value"],
+            "end": extent["value"],
+        }
+        for coordinate in observation["per_coordinate"]:
+            rows.append({
+                "view": view,
+                "domain": domain,
+                "coordinate": coordinate["coordinate"],
+                "unit": units[coordinate["coordinate"]],
                 "lo": coordinate["union"]["lo"],
                 "hi": coordinate["union"]["hi"],
                 "width": coordinate["union"]["width"],
@@ -125,6 +185,161 @@ def width_rows(record: Mapping[str, Any]) -> list[dict[str, Any]]:
                 "partition_max": coordinate["per_partition_width"]["max"],
             })
     return rows
+
+
+def attempt_rows(record: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Return every hash-bound attempt, including failed diagnostics."""
+    rows = []
+    for sample in record["samples"]:
+        failure = sample["failure"]
+        rows.append({
+            "role": sample["role"],
+            "index": sample["index"],
+            "attempt_index": sample.get("attempt_index", 0),
+            "included_in_timing": sample.get("included_in_timing", False),
+            "outcome": sample["outcome"],
+            "process_total": sample["timing_s"]["process_total"],
+            "validated_extent": sample["validated_extent"],
+            "host_memory": sample["peak_memory_bytes"]["host"],
+            "device_memory": sample["peak_memory_bytes"]["device"],
+            "reason": failure["reason_code"] if failure is not None else None,
+            "invocation_id": sample["process_identity"]["invocation_id"],
+            "artifact": sample["artifact"],
+        })
+    return rows
+
+
+def _cell_ranking_prerequisites(
+    record: Mapping[str, Any], cell: Mapping[str, Any]
+) -> bool:
+    eligibility = record["eligibility"]
+    soundness = eligibility["numerical_soundness_class"]
+    scope = eligibility["soundness_scope"]
+    coverage = record["run"]["partition_coverage"]
+    return all((
+        record["run"]["status"] == "completed",
+        record["run"]["requested_horizon_completed"] is True,
+        eligibility["mathematical_contract_known"] is True,
+        eligibility["certificate_semantics_passed"] is True,
+        eligibility["finite_outputs"] is True,
+        eligibility["performance_measurement_eligible"] is True,
+        record["property"]["certificate_status"] == "passed",
+        soundness not in {
+            "empirically sampled only", "unknown",
+            "unsound/ineligible on a demonstrated counterexample",
+        },
+        scope in {"fixed workload", "multi-step lane", "native build"},
+        record["widths"]["status"] == "complete",
+        cell["measurement_plan"]["steady_runs"]
+        == cell["measurement_plan"]["target_steady_runs"],
+        coverage["completed_partitions"] == coverage["requested_partitions"],
+        coverage["failed_partitions"] == 0,
+        coverage["unattempted_partitions"] == 0,
+    ))
+
+
+def comparison_assessment(
+    row: Mapping[str, Any], methods: list[str]
+) -> dict[str, Any]:
+    """Derive four-way comparability; never trust a per-cell ranking claim."""
+    reasons: list[str] = []
+    records = {
+        method: row["cells"][method]["result"] for method in methods
+    }
+    missing = [method for method, record in records.items() if record is None]
+    if missing:
+        reasons.append("missing_results=" + ",".join(missing))
+    available = {
+        method: record for method, record in records.items() if record is not None
+    }
+    cell_prerequisites = {
+        method: _cell_ranking_prerequisites(
+            record, row["cells"][method]["cell"]
+        )
+        for method, record in available.items()
+    }
+    runtimes = [
+        row["cells"][method]["cell"]["runtime"]
+        for method in methods if method in available
+    ]
+    same_runtime = len(runtimes) == len(methods) and all(
+        runtime == runtimes[0] for runtime in runtimes[1:]
+    )
+    if not same_runtime:
+        reasons.append("runtime_or_resource_budget_mismatch")
+    boundaries = [
+        row["cells"][method]["cell"]["measurement_plan"][
+            "timing_boundary_version"
+        ]
+        for method in methods if method in available
+    ]
+    same_boundary = len(boundaries) == len(methods) and len(set(boundaries)) == 1
+    if not same_boundary:
+        reasons.append("timing_boundary_mismatch")
+    time_comparable = (
+        not missing
+        and same_runtime
+        and same_boundary
+        and all(
+            record["run"]["status"] == "completed"
+            and record["eligibility"]["performance_measurement_eligible"]
+            for record in available.values()
+        )
+    )
+    if not time_comparable and not missing:
+        reasons.append("time_prerequisites_not_met")
+
+    width_records = list(available.values())
+    width_metadata = [(
+        record["widths"]["coordinate_order"],
+        record["widths"]["coordinate_units"],
+        record["widths"]["aggregation_semantics"],
+    ) for record in width_records]
+    same_width_metadata = len(width_metadata) == len(methods) and all(
+        metadata == width_metadata[0] for metadata in width_metadata[1:]
+    )
+    if not same_width_metadata:
+        reasons.append("width_order_units_or_aggregation_mismatch")
+    common_prefix = None
+    if len(width_records) == len(methods) and same_width_metadata:
+        extent_sets = [
+            {
+                (item["extent"]["kind"], float(item["extent"]["value"]))
+                for item in record["widths"]["series"]
+            }
+            for record in width_records
+        ]
+        shared = set.intersection(*extent_sets) if extent_sets else set()
+        kinds = {kind for kind, _ in shared}
+        if len(kinds) == 1 and shared:
+            kind = next(iter(kinds))
+            common_prefix = {"kind": kind, "value": max(value for _, value in shared)}
+    width_comparable = common_prefix is not None and common_prefix["value"] > 0
+    if not width_comparable and not missing:
+        reasons.append("no_positive_four_way_width_prefix")
+    requested = [
+        record["run"]["requested_extent"] for record in width_records
+    ]
+    full_common = bool(requested) and all(
+        extent == requested[0] for extent in requested
+    ) and common_prefix == requested[0]
+    ranking_eligible = (
+        time_comparable
+        and width_comparable
+        and full_common
+        and len(cell_prerequisites) == len(methods)
+        and all(cell_prerequisites.values())
+    )
+    if not ranking_eligible and not missing:
+        reasons.append("four_way_ranking_prerequisites_not_met")
+    return {
+        "time_comparable": time_comparable,
+        "width_comparable": width_comparable,
+        "common_width_prefix": common_prefix,
+        "ranking_eligible": ranking_eligible,
+        "cell_prerequisites": cell_prerequisites,
+        "reasons": list(dict.fromkeys(reasons)),
+    }
 
 
 def final_readiness_reasons(
@@ -196,17 +411,37 @@ def collect_report(root: Path = ROOT) -> dict[str, Any]:
                 "cell": cell,
                 "result": _linked_record(root, cell["result_record"]),
             }
-        rows.append({
+        row = {
             "instance": instance,
             "contract_record": contract_record,
             "cells": cells,
-        })
+        }
+        row["comparison"] = comparison_assessment(
+            row, list(manifest["methods"])
+        )
+        rows.append(row)
+    readiness = final_readiness_reasons(manifest, matrix)
+    missing_plots = 0
+    for row in rows:
+        records = [
+            item["result"] for item in row["cells"].values()
+            if item["result"] is not None
+        ]
+        has_plot = any(
+            artifact["role"] in VIEWABLE_PLOT_ROLES
+            for record in records
+            for artifact in record["artifacts"]
+        )
+        if not has_plot:
+            missing_plots += 1
+    if missing_plots:
+        readiness.append(f"missing_plot_artifacts={missing_plots}")
     return {
         "manifest": manifest,
         "matrix": matrix,
         "rows": rows,
         "run_counts": dict(sorted(run_counts.items())),
-        "final_readiness_reasons": final_readiness_reasons(manifest, matrix),
+        "final_readiness_reasons": readiness,
     }
 
 
@@ -229,6 +464,7 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
     if horizon is None:
         horizon = fields.get("discrete", {}).get("transition_count")
     controller_update = fields["controller_update"]
+    schedule_points = controller_update["schedule_points"]
     period = controller_update.get(
         "period", controller_update.get("period_steps")
     )
@@ -236,6 +472,14 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
     property_semantics = property_value.get(
         "time_semantics", property_value.get("step_semantics")
     )
+    partitions = fields["initial_set"]["partitions"]
+    hull = {
+        variable: [
+            min(box[variable][0] for box in partitions),
+            max(box[variable][1] for box in partitions),
+        ]
+        for variable in fields["variable_order"]
+    }
     record_link = instance["contract"]["record"]
     return [
         f"- 执行合同：`resolved`；记录 `{record_link['path']}`；"
@@ -247,8 +491,8 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
         f"`{_json_cell(fields['controller']['input_output_order'])}`。",
         f"- 变量顺序：`{json.dumps(fields['variable_order'], ensure_ascii=False)}`。",
         f"- 初始集：`{fields['initial_set']['source']}`；SHA-256 "
-        f"`{fields['initial_set']['sha256']}`；分区 "
-        f"`{_json_cell(fields['initial_set']['partitions'])}`；boxes SHA-256 "
+        f"`{fields['initial_set']['sha256']}`；分区数 `{len(partitions)}`；"
+        f"全局 hull `{_json_cell(hull)}`；boxes SHA-256 "
         f"`{fields['initial_set']['boxes_sha256']}`。",
         f"- 扰动：`{_json_cell(fields['disturbance'])}`。",
         f"- 请求时域/步数：`{horizon}`；性质："
@@ -256,8 +500,13 @@ def _contract_lines(row: Mapping[str, Any]) -> list[str]:
         f"`{_md_cell(property_semantics)}`；通过条件："
         f"`{property_value['pass_condition']}`。",
         f"- 逻辑控制日程：周期 `{period}`；更新次数 "
-        f"`{controller_update['scheduled_updates']}`；"
+        f"`{controller_update['scheduled_updates']}`；schedule points "
+        f"`{len(schedule_points)}`（`{schedule_points[0]}` … "
+        f"`{schedule_points[-1]}`）；"
         f"`{controller_update['schedule_semantics']}`。",
+        f"- 宽度比较合同：单位 `{_json_cell(fields['width_comparison']['coordinate_units'])}`；"
+        f"采样点数 `{len(fields['width_comparison']['sample_points'])}`；"
+        f"aggregation `{fields['width_comparison']['aggregation_semantics']}`。",
         f"- 计划可视化：{instance['visualization']}。",
     ]
 
@@ -277,6 +526,14 @@ def _json_cell(value: Any) -> str:
     return _md_cell(json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ))
+
+
+def _campaign_cell(value: Mapping[str, Any]) -> str:
+    safe = json.loads(json.dumps(value))
+    guard = safe.get("launch_guard")
+    if isinstance(guard, dict) and "lock_path" in guard:
+        guard["lock_path"] = "<fixed-server-lock>"
+    return _json_cell(safe)
 
 
 def _method_configuration(cell: Mapping[str, Any]) -> dict[str, str]:
@@ -347,8 +604,12 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
         "长任务可预先声明较少 steady 次数并写明原因，但不得据此取得稳定排名资格。",
         "- 只报告完整请求时域且明确允许性能测量的时间；失败前缀不外推完成时间。",
         "- 宽度始终给绝对上下界、union width 和每分区 mean/max；本报告不计算宽度比。",
-        "- 不同共同前缀、domain、变量顺序或单位不会合并为同一比较域。",
+        "- 四方共同前缀由合同采样网格上的逐时刻宽度序列交集派生；"
+        "不同 domain、变量顺序或单位不会合并。",
+        "- 排名资格由四方 campaign、轮换、运行资源、完整分区覆盖和证书共同派生，"
+        "结果 cell 不能自行声明。",
         "- `failed`、`timeout`、`interrupted` 与有证据的 `unsupported/skipped` 都保留。",
+        "- Campaign：`" + _campaign_cell(report["matrix"]["comparison_campaign"]) + "`。",
         "",
         "## 全部非 VCAS 配置覆盖矩阵",
         "",
@@ -395,8 +656,8 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             "",
             "| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | "
             "updates / NN | arithmetic | hardware / runtime | checker / early-stop | "
-            "命令 / cwd | source / binary identity | 结果记录 |",
-            "|---|---|---|---|---|---|---|---|---|---|---|",
+            "measurement plan | 命令 / cwd | source / binary identity | 结果记录 |",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|",
         ])
         for method in methods:
             cell = row["cells"][method]["cell"]
@@ -413,7 +674,9 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
                 f"`{_md_cell(config['controller'])}` | "
                 f"`{_json_cell(cell['arithmetic'])}` | "
                 f"`{_json_cell(cell['runtime'])}` | "
-                f"`{_md_cell(config['checker'])}` | {_command_text(cell)} / "
+                f"`{_md_cell(config['checker'])}` | "
+                f"`{_json_cell(cell['measurement_plan'])}` | "
+                f"{_command_text(cell)} / "
                 f"`{_md_cell(cell['command']['cwd'] or '—')}` | "
                 f"`{_json_cell(source_binary)}` | "
                 f"`{result_path}` |"
@@ -423,42 +686,66 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             "",
             "### 完整性、性质与结果资格",
             "",
-            "| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | "
-            "性质 / 证书 | soundness / scope | formal / performance / ranking |",
-            "|---|---|---|---:|---|---|---|",
+            "| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | "
+            "分区 completed / requested / failed / unattempted | 性质 / 证书 | "
+            "soundness / scope | formal / performance / cell-prereq |",
+            "|---|---|---|---:|---:|---|---|---|",
         ])
         for method in methods:
             record = row["cells"][method]["result"]
             if record is None:
                 lines.append(
-                    f"| {METHOD_LABELS[method]} | — | — | — | — | — | 无结果记录 |"
+                    f"| {METHOD_LABELS[method]} | — | — | — | — | — | — | 无结果记录 |"
                 )
                 continue
             run = record["run"]
             property_value = record["property"]
             eligibility = record["eligibility"]
+            coverage = run["partition_coverage"]
             lines.append(
                 f"| {METHOD_LABELS[method]} | "
                 f"`{_fmt_extent(run['requested_extent'])}` / "
                 f"`{_fmt_extent(run['validated_extent'])}` | "
                 f"`{str(run['requested_horizon_completed']).lower()}` | "
                 f"{run['accepted_steps']} / {run['rejected_steps']} / "
-                f"{run['nn_calls']} | `{property_value['status']}` / "
+                f"{run['controller_updates']} / {run['nn_calls']} | "
+                f"{coverage['completed_partitions']} / "
+                f"{coverage['requested_partitions']} / "
+                f"{coverage['failed_partitions']} / "
+                f"{coverage['unattempted_partitions']} | "
+                f"`{property_value['status']}` / "
                 f"`{property_value['certificate_status']}` | "
                 f"`{eligibility['numerical_soundness_class']}` / "
                 f"`{eligibility['soundness_scope']}` | "
                 f"`{str(eligibility['formal_claim_eligible']).lower()}` / "
                 f"`{str(eligibility['performance_measurement_eligible']).lower()}` / "
-                f"`{str(eligibility['cross_tool_ranking_eligible']).lower()}` |"
+                f"`{str(row['comparison']['cell_prerequisites'].get(method, False)).lower()}` |"
             )
+
+        comparison = row["comparison"]
+        common_prefix = comparison["common_width_prefix"]
+        lines.extend([
+            "",
+            "### 派生的四方可比性（非 cell 自报）",
+            "",
+            f"- 时间可比：`{str(comparison['time_comparable']).lower()}`。",
+            f"- 宽度可比：`{str(comparison['width_comparable']).lower()}`；"
+            f"四方共同前缀：`{_fmt_extent(common_prefix) if common_prefix else '—'}`。",
+            f"- 四方排名资格：`{str(comparison['ranking_eligible']).lower()}`。",
+            "- 原因：`" + (
+                ", ".join(comparison["reasons"])
+                if comparison["reasons"] else "passed"
+            ) + "`。",
+        ])
 
         lines.extend([
             "",
             "### 时间",
             "",
-            "| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | "
-            "driver / solver / validation / observer / plot median (s) | 排名资格 |",
-            "|---|---:|---:|---:|---:|---|",
+            "| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | "
+            "process median/min/max (s) | driver / compile / NN / solver / validation / "
+            "observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |",
+            "|---|---|---:|---:|---:|---:|---:|---|",
         ])
         time_rows = 0
         for method in methods:
@@ -467,50 +754,102 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             if summary is None:
                 continue
             phases = summary["steady_phase_medians_s"]
+            plan = record["measurement_plan"]
+            memory = summary["steady_peak_memory_max_bytes"]
             lines.append(
                 f"| {METHOD_LABELS[method]} | "
+                f"`{plan['timing_boundary_version']}` / "
+                f"`{_md_cell(plan['shortfall_reason'] or 'none')}` | "
                 f"{_fmt_number(summary['cold_process_s'])} | "
                 f"{summary['steady_n']} | "
                 f"{_fmt_number(summary['steady_process_median_s'])} / "
                 f"{_fmt_number(summary['steady_process_min_s'])} / "
                 f"{_fmt_number(summary['steady_process_max_s'])} | "
                 f"{_fmt_number(phases['driver_total'])} / "
+                f"{_fmt_number(phases['compile'])} / "
+                f"{_fmt_number(phases['controller_nn'])} / "
                 f"{_fmt_number(phases['solver_core'])} / "
                 f"{_fmt_number(phases['validation'])} / "
-                f"{_fmt_number(phases['observer_output'])} / "
+                f"{_fmt_number(phases['observer'])} / "
+                f"{_fmt_number(phases['output'])} / "
                 f"{_fmt_number(phases['plot_report'])} | "
-                f"`{str(record['eligibility']['cross_tool_ranking_eligible']).lower()}` |"
+                f"{_fmt_number(memory['host'])} / "
+                f"{_fmt_number(memory['device'])} | "
+                f"`{str(comparison['ranking_eligible']).lower()}` |"
             )
             time_rows += 1
         if not time_rows:
-            lines.append("| — | — | — | — | — | 当前无合格的完整时域时间样本 |")
+            lines.append("| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |")
+
+        lines.extend([
+            "",
+            "#### 全部原始 attempt（失败不删除、不外推）",
+            "",
+            "| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | "
+            "peak host/device bytes | reason | invocation | artifact |",
+            "|---|---|---|---|---:|---|---:|---|---|---|",
+        ])
+        attempt_count = 0
+        for method in methods:
+            record = row["cells"][method]["result"]
+            if record is None:
+                continue
+            for attempt in attempt_rows(record):
+                artifact = attempt["artifact"]
+                lines.append(
+                    f"| {METHOD_LABELS[method]} | `{attempt['role']}/"
+                    f"{attempt['index']}/{attempt['attempt_index']}` | "
+                    f"`{str(attempt['included_in_timing']).lower()}` | "
+                    f"`{attempt['outcome']}` | {_fmt_number(attempt['process_total'])} | "
+                    f"`{_fmt_extent(attempt['validated_extent'])}` | "
+                    f"{_fmt_number(attempt['host_memory'])} / "
+                    f"{_fmt_number(attempt['device_memory'])} | "
+                    f"`{_md_cell(attempt['reason'] or '—')}` | "
+                    f"`{_md_cell(attempt['invocation_id'])}` | "
+                    f"`{artifact['path']}` / `{artifact['sha256']}` |"
+                )
+                attempt_count += 1
+        if not attempt_count:
+            lines.append("| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |")
 
         lines.extend([
             "",
             "### 绝对宽度与共同前缀",
             "",
-            "| 方法 | view | domain | 坐标 | lo | hi | union width | "
+            "- 宽度记录状态：" + "; ".join(
+                f"{METHOD_LABELS[method]}=`"
+                + (
+                    f"{row['cells'][method]['result']['widths']['status']} / "
+                    f"{_fmt_extent(row['cells'][method]['result']['widths']['validated_prefix'])}"
+                    if row["cells"][method]["result"] is not None else "missing"
+                )
+                + "`"
+                for method in methods
+            ) + "。",
+            "",
+            "| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | "
             "partition mean | partition max | 排名资格 |",
-            "|---|---|---|---|---:|---:|---:|---:|---:|---|",
+            "|---|---|---|---|---|---:|---:|---:|---:|---:|---|",
         ])
         count = 0
         for method in methods:
             record = row["cells"][method]["result"]
             if record is None:
                 continue
-            for width in width_rows(record):
+            for width in width_rows(record, common_prefix):
                 lines.append(
                     f"| {METHOD_LABELS[method]} | `{width['view']}` | "
                     f"`{_fmt_domain(width['domain'])}` | "
-                    f"`{width['coordinate']}` | {_fmt_number(width['lo'])} | "
+                    f"`{width['coordinate']}` | `{_md_cell(width['unit'])}` | "
+                    f"{_fmt_number(width['lo'])} | "
                     f"{_fmt_number(width['hi'])} | {_fmt_number(width['width'])} | "
                     f"{_fmt_number(width['partition_mean'])} | "
                     f"{_fmt_number(width['partition_max'])} | "
-                    f"`{str(record['eligibility']['cross_tool_ranking_eligible']).lower()}` |"
+                    f"`{str(comparison['ranking_eligible']).lower()}` |"
                 )
                 count += 1
         if not count:
-            lines.append("| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |")
+            lines.append("| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |")
 
         unresolved = instance.get("known_issues", [])
         failure_rows = []
@@ -521,7 +860,7 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             if record is not None:
                 for artifact in record["artifacts"]:
                     role = artifact["role"]
-                    if any(token in role.lower() for token in ("plot", "figure", "matlab")):
+                    if role in PLOT_ARTIFACT_ROLES or role == "matlab_script":
                         plot_rows.append(
                             f"- {METHOD_LABELS[method]} `{role}`："
                             f"`{artifact['path']}`；SHA-256 `{artifact['sha256']}`。"
@@ -532,7 +871,9 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
                         f"- {METHOD_LABELS[method]} `trajectory`："
                         f"`{trajectory['path']}`；SHA-256 `{trajectory['sha256']}`。"
                     )
-            if cell["run"]["status"] in {"failed", "timeout", "interrupted", "skipped"}:
+            if cell["run"]["status"] in {
+                "failed", "timeout", "interrupted", "early_stopped", "skipped"
+            }:
                 failure_rows.append(
                     f"- {METHOD_LABELS[method]}：`{cell['run']['status']}` / "
                     f"`{cell['run']['failure_category']}` — {cell['run']['failure_detail']}"
@@ -541,7 +882,9 @@ def render_markdown(report: Mapping[str, Any], *, final: bool = False) -> str:
             "",
             "### Flowpipe 图、失败与未决项",
             "",
-            f"- 目标图：{instance['visualization']}；只接受结果记录中哈希绑定的图/轨迹。",
+            f"- 目标图：{instance['visualization']}；只接受结果记录中哈希绑定的图/轨迹；"
+            "最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；"
+            "`plot_svg` 仅作补充，不能单独开门。",
             *(plot_rows or ["- 当前无哈希绑定的图或轨迹记录。"]),
             *(f"- 未决：{issue}" for issue in unresolved),
             *failure_rows,

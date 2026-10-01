@@ -11,15 +11,17 @@
 - 实验暂停：**是**。
 - 覆盖：16 个实例 × 4 个方法 = 64 个 cell。
 - 当前 run 计数：`not_started=64`。
-- 最终发布门：`experiments_paused, unresolved_contracts=16, matrix_not_terminal=not_started, unassessed_support=64, nonterminal_cells=64`。
+- 最终发布门：`experiments_paused, unresolved_contracts=16, matrix_not_terminal=not_started, unassessed_support=64, nonterminal_cells=64, missing_plot_artifacts=16`。
 
 ## 比较规则
 
 - 正式目标为 1 次冷启动和 5 次独立进程 steady；冷启动不进入 steady 中位数。长任务可预先声明较少 steady 次数并写明原因，但不得据此取得稳定排名资格。
 - 只报告完整请求时域且明确允许性能测量的时间；失败前缀不外推完成时间。
 - 宽度始终给绝对上下界、union width 和每分区 mean/max；本报告不计算宽度比。
-- 不同共同前缀、domain、变量顺序或单位不会合并为同一比较域。
+- 四方共同前缀由合同采样网格上的逐时刻宽度序列交集派生；不同 domain、变量顺序或单位不会合并。
+- 排名资格由四方 campaign、轮换、运行资源、完整分区覆盖和证书共同派生，结果 cell 不能自行声明。
 - `failed`、`timeout`、`interrupted` 与有证据的 `unsupported/skipped` 都保留。
+- Campaign：`{"active_run_receipt":{"path":null,"sha256":null},"campaign_id":null,"cpu_thread_budget":null,"gpu_device_budget":null,"hardware_identity":null,"host_identity":null,"launch_guard":{"hold_scope":"fresh_audit_through_terminal_fsync_v1","lock_path":"<fixed-server-lock>","protocol":"posix-flock-exclusive-nonblocking-v1","schema_version":"archcomp26-atomic-launch-guard-v1","wrapper_module":"torch_tm_flowpipe.archcomp26_launch","wrapper_path":"src/torch_tm_flowpipe/archcomp26_launch.py","wrapper_sha256":null},"prelaunch_audit":{"path":null,"sha256":null},"resource_limits":null,"rotation":{"policy":"balanced_round_robin_by_instance_and_steady_round_v1","schedule_artifact":{"path":null,"sha256":null},"steady_rounds":5},"schema_version":"archcomp26-comparison-campaign-v1","timeout_s":null,"timing_boundary":{"phase_fields":["driver_total","compile","controller_nn","solver_core","validation","observer","output","plot_report"],"start_event":"immediately_before_fresh_process_spawn","stop_event":"after_result_and_width_artifacts_are_durable","version":"total_configuration_v2"}}`。
 
 ## 全部非 VCAS 配置覆盖矩阵
 
@@ -75,37 +77,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：distance over time；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：distance over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：Historical native result required the VAR-tail correction; old completion/width cannot be promoted without the corrected latest contract.
 - 未决：The report names v_rel as a controller input but does not define its sign convention; the input transform must be frozen from authoritative execution code.
@@ -121,37 +138,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The repository top-level table says continuous [0,20], but the report and instance specification agree on a 2-second continuous horizon. Method-specific integration settings remain unresolved.
 
@@ -165,37 +197,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 2 and 7；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The report defines forward Euler with delta_t=0.1 and k=0..20, but the pinned repository has no selected executable discrete transition or exact control-application ordering. A continuous ODE result is not a substitute.
 
@@ -209,37 +256,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The legacy property verdict was not independently audited.
 - 未决：Two distinct official ONNX candidates are present without a repository-level selection.
@@ -255,37 +317,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 3；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 3；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：Balancing is the top-level name for the CartPole folder.
 - 未决：The report writes a five-feature controller expression using sin/cos of the pole angle, while the repository dynamics comment and ONNX graph use four raw state inputs.
@@ -301,37 +378,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：No legacy four-way configuration is present.
 - 未决：The instance file omits the 40-second horizon supplied by the report.
@@ -347,37 +439,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The old native run timed out; timeout is not a complete runtime.
 
@@ -391,37 +498,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The legacy more-robust config uses the official less-robust controller SHA and the singleton corner {1.3}^4 instead of the official more-robust controller and full [1,1.3]^4 initial set; its time, widths, and verdict are not promotable.
 
@@ -435,37 +557,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The old native run timed out; small-denominator width ratios require absolute widths.
 - 未决：The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution.
@@ -480,37 +617,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：Legacy acceleration results are regression references only, not latest-version reruns.
 - 未决：The report orders the physical state as [x,y,theta,nu], while the pinned repository dynamics evaluates x3*cos(x4) and x3*sin(x4), implying [x,y,nu,theta] and swapped control-output semantics. Resolve the controller input/output order before execution.
@@ -525,37 +677,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：state 3 over time；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：state 3 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The 2026 report equations and the saved CROWN-Reach quad.cpp differ in x2 signs, x4 multiplication versus subtraction, and the x5 formula.
 - 未决：The original native 1024-lane job ended by six-hour timeout after 600 complete steps; it has no T=5 time or width.
@@ -570,37 +737,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：state 1 over time；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The report and specification define two physical states, but the repository dynamics also returns dx(3)=1 without defining that clock state's initial value or controller/property role.
 
@@ -614,37 +796,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2; states 3 and 4；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2; states 3 and 4；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The report places u=f(x)-10 at the controller boundary, while the repository dynamics subtracts 10 inside dx4. Freeze whether the plant function receives raw or post-processed controller output so the offset is applied exactly once.
 
@@ -658,37 +855,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The report's grouped activation prose conflicts with the pinned sigmoid MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics.
 
@@ -702,37 +914,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：Confirm whether the saved legacy 'relu_tanh' controller is the 2026 reach-tanh controller.
 - 未决：The report's grouped activation prose conflicts with the pinned ReLU/tanh MAT metadata, and 'within 5 s' does not by itself freeze the reach-property checker semantics.
@@ -747,37 +974,52 @@
 
 ### 完整配置、状态与复现入口
 
-| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | 命令 / cwd | source / binary identity | 结果记录 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
-| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| 方法 | support / run | h / work / point / validation | cutoff / cap / SR | updates / NN | arithmetic | hardware / runtime | checker / early-stop | measurement plan | 命令 / cwd | source / binary identity | 结果记录 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| PyTorch/GPU | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Huan | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Xiangru | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
+| Flow* native | `unassessed` / `not_started` | `h=unresolved; work=unresolved; point=unresolved; validation=unresolved; semantics=—` | `cutoff=unresolved; cap=unresolved; SR=unresolved; semantics=—` | `updates=—; NN=unresolved; semantics=—` | `{"controller_domain":null,"dtype":null,"mode":null,"relaxation":null,"transport":null}` | `{"cpu_threads":null,"gpu":null,"hardware":null,"resource_limits":null,"timeout_s":null}` | `mode=unresolved; id=—; early-stop=—; semantics=—; certificate=—` | `{"cold_runs":1,"fresh_process_per_run":true,"shortfall_reason":null,"steady_runs":5,"target_steady_runs":5,"timing_boundary_version":"total_configuration_v2"}` | — / `—` | `{"binary":{"path":null,"sha256":null},"source":{"kind":null,"locator":null,"revision":null,"sha256":null}}` | `—` |
 
 ### 完整性、性质与结果资格
 
-| 方法 | requested / validated | 完整时域 | accepted / rejected / NN | 性质 / 证书 | soundness / scope | formal / performance / ranking |
-|---|---|---|---:|---|---|---|
-| PyTorch/GPU | — | — | — | — | — | 无结果记录 |
-| Huan | — | — | — | — | — | 无结果记录 |
-| Xiangru | — | — | — | — | — | 无结果记录 |
-| Flow* native | — | — | — | — | — | 无结果记录 |
+| 方法 | requested / validated | 完整时域 | accepted / rejected / updates / NN | 分区 completed / requested / failed / unattempted | 性质 / 证书 | soundness / scope | formal / performance / cell-prereq |
+|---|---|---|---:|---:|---|---|---|
+| PyTorch/GPU | — | — | — | — | — | — | 无结果记录 |
+| Huan | — | — | — | — | — | — | 无结果记录 |
+| Xiangru | — | — | — | — | — | — | 无结果记录 |
+| Flow* native | — | — | — | — | — | — | 无结果记录 |
+
+### 派生的四方可比性（非 cell 自报）
+
+- 时间可比：`false`。
+- 宽度可比：`false`；四方共同前缀：`—`。
+- 四方排名资格：`false`。
+- 原因：`missing_results=pytorch_gpu,huan,xiangru,flowstar_native, runtime_or_resource_budget_mismatch, timing_boundary_mismatch, width_order_units_or_aggregation_mismatch`。
 
 ### 时间
 
-| 方法 | 冷启动 process (s) | steady n | process median/min/max (s) | driver / solver / validation / observer / plot median (s) | 排名资格 |
-|---|---:|---:|---:|---:|---|
-| — | — | — | — | — | 当前无合格的完整时域时间样本 |
+| 方法 | boundary / shortfall | 冷启动 process (s) | steady n | process median/min/max (s) | driver / compile / NN / solver / validation / observer / output / plot median (s) | peak host / device bytes | 四方排名资格 |
+|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | 当前无合格的完整时域时间样本 |
+
+#### 全部原始 attempt（失败不删除、不外推）
+
+| 方法 | role/index/attempt | timing | outcome | raw process (s) | validated | peak host/device bytes | reason | invocation | artifact |
+|---|---|---|---|---:|---|---:|---|---|---|
+| — | — | — | — | — | — | — | — | — | 当前无 attempt 记录 |
 
 ### 绝对宽度与共同前缀
 
-| 方法 | view | domain | 坐标 | lo | hi | union width | partition mean | partition max | 排名资格 |
-|---|---|---|---|---:|---:|---:|---:|---:|---|
-| — | — | — | — | — | — | — | — | — | 当前无完整宽度记录 |
+- 宽度记录状态：PyTorch/GPU=`missing`; Huan=`missing`; Xiangru=`missing`; Flow* native=`missing`。
+
+| 方法 | view | domain | 坐标 | 单位 | lo | hi | union width | partition mean | partition max | 排名资格 |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---|
+| — | — | — | — | — | — | — | — | — | — | 当前无可用宽度记录 |
 
 ### Flowpipe 图、失败与未决项
 
-- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹。
+- 目标图：states 1 and 2；只接受结果记录中哈希绑定的图/轨迹；最终门仅认可实际解码通过的 `plot_png` 或 `plot_pdf`；`plot_svg` 仅作补充，不能单独开门。
 - 当前无哈希绑定的图或轨迹记录。
 - 未决：The latest GPU diagnostic stopped at extension loading before plant advance; frozen shared objects load directly, while Ninja is absent. Restore/qualify the loader without rewriting the failed record.
 - 未决：The report includes w in [-1e-4,1e-4] in velocity_dot, while the repository dynamics omits w and its comment gives a malformed range. Disturbance temporal semantics and the shared reach checker remain unresolved.
@@ -802,3 +1044,4 @@
 - `matrix_not_terminal=not_started`
 - `unassessed_support=64`
 - `nonterminal_cells=64`
+- `missing_plot_artifacts=16`

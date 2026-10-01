@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "archcomp26-cell-result-v2",
+  "$id": "archcomp26-cell-result-v4",
   "title": "ARCH-COMP26 four-way cell result",
   "description": "Authoritative per-cell evidence record. Cross-field and file-hash checks are enforced by torch_tm_flowpipe.archcomp26_preflight without a third-party schema dependency.",
   "type": "object",
@@ -16,10 +16,11 @@
     "eligibility",
     "samples",
     "widths",
-    "artifacts"
+    "artifacts",
+    "attempt_ledger"
   ],
   "properties": {
-    "schema_version": {"const": "archcomp26-cell-result-v2"},
+    "schema_version": {"const": "archcomp26-cell-result-v4"},
     "instance_id": {"type": "string", "minLength": 1},
     "method": {
       "enum": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"]
@@ -27,10 +28,11 @@
     "contract_identity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["instance_contract_sha256", "cell_plan_sha256"],
+      "required": ["instance_contract_sha256", "cell_plan_sha256", "campaign_sha256"],
       "properties": {
         "instance_contract_sha256": {"$ref": "#/$defs/sha256"},
-        "cell_plan_sha256": {"$ref": "#/$defs/sha256"}
+        "cell_plan_sha256": {"$ref": "#/$defs/sha256"},
+        "campaign_sha256": {"$ref": "#/$defs/sha256"}
       }
     },
     "measurement_plan": {"$ref": "#/$defs/measurement_plan"},
@@ -45,12 +47,15 @@
         "requested_horizon_completed",
         "accepted_steps",
         "rejected_steps",
+        "controller_updates",
+        "controller_update_trace",
         "nn_calls",
+        "partition_coverage",
         "first_failure"
       ],
       "properties": {
         "status": {
-          "enum": ["completed", "failed", "timeout", "interrupted", "skipped"]
+          "enum": ["completed", "failed", "timeout", "interrupted", "early_stopped", "skipped"]
         },
         "outcome": {"$ref": "#/$defs/outcome"},
         "requested_extent": {"$ref": "#/$defs/extent"},
@@ -58,7 +63,10 @@
         "requested_horizon_completed": {"type": "boolean"},
         "accepted_steps": {"type": "integer", "minimum": 0},
         "rejected_steps": {"type": "integer", "minimum": 0},
+        "controller_updates": {"type": "integer", "minimum": 0},
+        "controller_update_trace": {"$ref": "#/$defs/controller_update_trace"},
         "nn_calls": {"type": "integer", "minimum": 0},
+        "partition_coverage": {"$ref": "#/$defs/partition_coverage"},
         "first_failure": {
           "oneOf": [
             {"type": "null"},
@@ -105,8 +113,7 @@
         "numerical_soundness_class",
         "soundness_scope",
         "formal_claim_eligible",
-        "performance_measurement_eligible",
-        "cross_tool_ranking_eligible"
+        "performance_measurement_eligible"
       ],
       "properties": {
         "mathematical_contract_known": {"type": "boolean"},
@@ -127,31 +134,32 @@
           "enum": ["primitive", "one step", "fixed workload", "multi-step lane", "native build"]
         },
         "formal_claim_eligible": {"type": "boolean"},
-        "performance_measurement_eligible": {"type": "boolean"},
-        "cross_tool_ranking_eligible": {"type": "boolean"}
+        "performance_measurement_eligible": {"type": "boolean"}
       }
     },
     "samples": {
       "type": "array",
       "items": {"$ref": "#/$defs/sample"}
     },
+    "attempt_ledger": {"$ref": "#/$defs/artifact"},
     "widths": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "status",
-        "common_prefix",
+        "validated_prefix",
         "coordinate_order",
         "coordinate_units",
         "aggregation_semantics",
         "endpoint",
         "last_segment_tube",
         "full_horizon_tube",
+        "series",
         "trajectory_artifact"
       ],
       "properties": {
         "status": {"enum": ["complete", "partial", "unavailable"]},
-        "common_prefix": {"$ref": "#/$defs/extent"},
+        "validated_prefix": {"$ref": "#/$defs/extent"},
         "coordinate_order": {
           "type": "array",
           "minItems": 1,
@@ -166,6 +174,10 @@
         "endpoint": {"$ref": "#/$defs/width_measurement"},
         "last_segment_tube": {"$ref": "#/$defs/width_measurement"},
         "full_horizon_tube": {"$ref": "#/$defs/width_measurement"},
+        "series": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/width_observation"}
+        },
         "trajectory_artifact": {
           "oneOf": [
             {"type": "null"},
@@ -202,6 +214,11 @@
         "process_error",
         "compile_error",
         "missing_dependency",
+        "environment_error",
+        "resource_guard",
+        "out_of_memory",
+        "property_early_stop_pass",
+        "property_early_stop_fail",
         "trajectory_sanity_failed",
         "analytic_containment_failed",
         "schema_invalid",
@@ -236,6 +253,53 @@
         "shortfall_reason": {"type": ["string", "null"]},
         "fresh_process_per_run": {"type": "boolean"},
         "timing_boundary_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "partition_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested_partitions",
+        "completed_partitions",
+        "failed_partitions",
+        "unattempted_partitions",
+        "boxes_sha256",
+        "ledger_artifact"
+      ],
+      "properties": {
+        "requested_partitions": {"type": "integer", "minimum": 1},
+        "completed_partitions": {"type": "integer", "minimum": 0},
+        "failed_partitions": {"type": "integer", "minimum": 0},
+        "unattempted_partitions": {"type": "integer", "minimum": 0},
+        "boxes_sha256": {"$ref": "#/$defs/sha256"},
+        "ledger_artifact": {
+          "description": "Hash-bound archcomp26-partition-ledger-v1 JSON. Preflight requires ordered index/box-hash/outcome entries to form an exact bijection with the resolved contract partitions and binds attempt ledgers to invocation_id.",
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact"}
+          ]
+        }
+      }
+    },
+    "controller_update_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "points", "boundary_update_status", "artifact"],
+      "properties": {
+        "kind": {"enum": ["time_s", "steps"]},
+        "points": {
+          "type": "array",
+          "items": {"type": "number", "minimum": 0}
+        },
+        "boundary_update_status": {
+          "enum": ["executed", "not_executed", "not_scheduled"]
+        },
+        "artifact": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/artifact"}
+          ]
+        }
       }
     },
     "extent": {
@@ -275,19 +339,23 @@
       "required": [
         "process_total",
         "driver_total",
-        "solver_core",
         "compile",
+        "controller_nn",
+        "solver_core",
         "validation",
-        "observer_output",
+        "observer",
+        "output",
         "plot_report"
       ],
       "properties": {
         "process_total": {"type": ["number", "null"], "exclusiveMinimum": 0},
         "driver_total": {"type": ["number", "null"], "minimum": 0},
-        "solver_core": {"type": ["number", "null"], "minimum": 0},
         "compile": {"type": ["number", "null"], "minimum": 0},
+        "controller_nn": {"type": ["number", "null"], "minimum": 0},
+        "solver_core": {"type": ["number", "null"], "minimum": 0},
         "validation": {"type": ["number", "null"], "minimum": 0},
-        "observer_output": {"type": ["number", "null"], "minimum": 0},
+        "observer": {"type": ["number", "null"], "minimum": 0},
+        "output": {"type": ["number", "null"], "minimum": 0},
         "plot_report": {"type": ["number", "null"], "minimum": 0}
       }
     },
@@ -297,19 +365,49 @@
       "required": [
         "role",
         "index",
+        "attempt_index",
+        "included_in_timing",
+        "campaign",
+        "process_identity",
         "outcome",
         "timing_s",
         "peak_memory_bytes",
         "validated_extent",
         "accepted_steps",
         "rejected_steps",
+        "controller_updates",
+        "controller_update_trace",
         "nn_calls",
+        "partition_coverage",
         "failure",
         "artifact"
       ],
       "properties": {
         "role": {"enum": ["cold", "steady", "diagnostic"]},
         "index": {"type": "integer", "minimum": 0},
+        "attempt_index": {"type": "integer", "minimum": 0},
+        "included_in_timing": {"type": "boolean"},
+        "campaign": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["campaign_id", "round_index", "sequence_position"],
+          "properties": {
+            "campaign_id": {"type": "string", "minLength": 1},
+            "round_index": {"type": ["integer", "null"], "minimum": 0},
+            "sequence_position": {"type": ["integer", "null"], "minimum": 0}
+          }
+        },
+        "process_identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["invocation_id", "pid", "started_at_utc", "finished_at_utc"],
+          "properties": {
+            "invocation_id": {"type": "string", "minLength": 1},
+            "pid": {"type": "integer", "minimum": 1},
+            "started_at_utc": {"type": "string", "minLength": 1},
+            "finished_at_utc": {"type": "string", "minLength": 1}
+          }
+        },
         "outcome": {"$ref": "#/$defs/outcome"},
         "timing_s": {"$ref": "#/$defs/timing"},
         "peak_memory_bytes": {
@@ -324,7 +422,10 @@
         "validated_extent": {"$ref": "#/$defs/extent"},
         "accepted_steps": {"type": "integer", "minimum": 0},
         "rejected_steps": {"type": "integer", "minimum": 0},
+        "controller_updates": {"type": "integer", "minimum": 0},
+        "controller_update_trace": {"$ref": "#/$defs/controller_update_trace"},
         "nn_calls": {"type": "integer", "minimum": 0},
+        "partition_coverage": {"$ref": "#/$defs/partition_coverage"},
         "failure": {
           "oneOf": [
             {"type": "null"},
@@ -359,6 +460,19 @@
             "mean": {"type": "number", "minimum": 0},
             "max": {"type": "number", "minimum": 0}
           }
+        }
+      }
+    },
+    "width_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["extent", "per_coordinate"],
+      "properties": {
+        "extent": {"$ref": "#/$defs/extent"},
+        "per_coordinate": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/coordinate_width"}
         }
       }
     },

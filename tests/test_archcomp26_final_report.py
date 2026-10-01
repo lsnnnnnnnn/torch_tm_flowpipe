@@ -5,6 +5,8 @@ import pytest
 
 from torch_tm_flowpipe.archcomp26_final_report import (
     _contract_lines,
+    attempt_rows,
+    comparison_assessment,
     collect_report,
     render_markdown,
     timing_summary,
@@ -24,12 +26,15 @@ def _sample(role, index, process_total):
         "timing_s": {
             "process_total": process_total,
             "driver_total": process_total - 1.0,
-            "solver_core": process_total - 2.0,
             "compile": 0.0,
+            "controller_nn": 0.25,
+            "solver_core": process_total - 2.0,
             "validation": 0.5,
-            "observer_output": 0.25,
+            "observer": 0.125,
+            "output": 0.125,
             "plot_report": 0.125,
         },
+        "peak_memory_bytes": {"host": 100, "device": 50},
     }
 
 
@@ -41,6 +46,7 @@ def test_current_draft_is_deterministic_and_final_gate_refuses():
         "matrix_not_terminal=not_started",
         "unassessed_support=64",
         "nonterminal_cells=64",
+        "missing_plot_artifacts=16",
     } <= set(report["final_readiness_reasons"])
     text = render_markdown(report)
     assert text == render_markdown(copy.deepcopy(report))
@@ -50,9 +56,10 @@ def test_current_draft_is_deterministic_and_final_gate_refuses():
     assert "不可作为最终成绩" in text
     assert text.count("(`") >= 16
     assert text.count("### 完整性、性质与结果资格") == 16
+    assert text.count("- 宽度记录状态：") == 16
     assert text.count("h / work / point / validation") == 16
     assert text.count("cutoff / cap / SR") == 16
-    assert text.count("updates / NN") == 16
+    assert text.count("updates / NN | arithmetic") == 16
     assert text.count("checker / early-stop") == 16
     assert text.count("source / binary identity") == 16
     assert '"revision":null' in text
@@ -103,15 +110,20 @@ def test_width_rows_are_absolute_and_keep_each_view_domain():
         "run": {"status": "completed"},
         "widths": {
             "status": "complete",
+            "coordinate_order": ["x"],
+            "coordinate_units": ["m"],
             "endpoint": {
+                "status": "complete",
                 "domain": {"kind": "time_s", "start": 5.0, "end": 5.0},
                 "per_coordinate": [coordinate],
             },
             "last_segment_tube": {
+                "status": "complete",
                 "domain": {"kind": "time_s", "start": 4.9, "end": 5.0},
                 "per_coordinate": [coordinate],
             },
             "full_horizon_tube": {
+                "status": "complete",
                 "domain": {"kind": "time_s", "start": 0.0, "end": 5.0},
                 "per_coordinate": [coordinate],
             },
@@ -127,6 +139,158 @@ def test_width_rows_are_absolute_and_keep_each_view_domain():
         {"kind": "time_s", "start": 0.0, "end": 5.0},
     ]
     assert all(row["width"] == 3.0 for row in rows)
+    assert all(row["unit"] == "m" for row in rows)
+
+
+def test_width_rows_keep_partial_views_and_common_series_point():
+    coordinate = {
+        "coordinate": "x",
+        "union": {"lo": -0.5, "hi": 1.5, "width": 2.0},
+        "per_partition_width": {"mean": 1.0, "max": 1.25},
+    }
+    unavailable = {
+        "status": "unavailable",
+        "domain": {"kind": "time_s", "start": 0.5, "end": 0.5},
+        "per_coordinate": [],
+    }
+    complete = {
+        "status": "complete",
+        "domain": {"kind": "time_s", "start": 0.0, "end": 0.5},
+        "per_coordinate": [coordinate],
+    }
+    record = {
+        "run": {"status": "timeout"},
+        "widths": {
+            "status": "partial",
+            "coordinate_order": ["x"],
+            "coordinate_units": ["m"],
+            "endpoint": unavailable,
+            "last_segment_tube": copy.deepcopy(complete),
+            "full_horizon_tube": copy.deepcopy(complete),
+            "series": [{
+                "extent": {"kind": "time_s", "value": 0.5},
+                "per_coordinate": [coordinate],
+            }],
+        },
+    }
+    rows = width_rows(record, {"kind": "time_s", "value": 0.5})
+    assert [row["view"] for row in rows] == [
+        "last_segment_tube",
+        "full_horizon_tube",
+        "four_way_common_prefix_point",
+    ]
+    assert all(row["unit"] == "m" for row in rows)
+
+    series_only = copy.deepcopy(record)
+    series_only["widths"]["last_segment_tube"] = copy.deepcopy(unavailable)
+    series_only["widths"]["full_horizon_tube"] = copy.deepcopy(unavailable)
+    rows = width_rows(series_only, {"kind": "time_s", "value": 0.25})
+    assert [row["view"] for row in rows] == ["last_measured_series_point"]
+    assert rows[0]["domain"] == {
+        "kind": "time_s", "start": 0.5, "end": 0.5,
+    }
+
+
+def _comparison_row():
+    methods = ["pytorch_gpu", "huan", "xiangru", "flowstar_native"]
+    record = {
+        "run": {
+            "status": "completed",
+            "requested_horizon_completed": True,
+            "requested_extent": {"kind": "time_s", "value": 1.0},
+            "partition_coverage": {
+                "requested_partitions": 2,
+                "completed_partitions": 2,
+                "failed_partitions": 0,
+                "unattempted_partitions": 0,
+            },
+        },
+        "property": {"certificate_status": "passed"},
+        "eligibility": {
+            "mathematical_contract_known": True,
+            "certificate_semantics_passed": True,
+            "finite_outputs": True,
+            "performance_measurement_eligible": True,
+            "numerical_soundness_class": "formally outward by construction",
+            "soundness_scope": "fixed workload",
+        },
+        "widths": {
+            "status": "complete",
+            "coordinate_order": ["x"],
+            "coordinate_units": ["m"],
+            "aggregation_semantics": "union_and_per_partition",
+            "series": [
+                {"extent": {"kind": "time_s", "value": 0.0}},
+                {"extent": {"kind": "time_s", "value": 1.0}},
+            ],
+        },
+    }
+    cell = {
+        "runtime": {
+            "hardware": "host-a", "cpu_threads": 1, "gpu": "gpu-0",
+            "resource_limits": {
+                "exclusive_host": True,
+                "exclusive_gpu_device": True,
+                "max_host_memory_bytes": 1_000_000_000,
+                "max_device_memory_bytes": 1_000_000_000,
+            },
+            "timeout_s": 10,
+        },
+        "measurement_plan": {
+            "target_steady_runs": 5,
+            "steady_runs": 5,
+            "timing_boundary_version": "total_configuration_v2",
+        },
+    }
+    return methods, {
+        "cells": {
+            method: {"cell": copy.deepcopy(cell), "result": copy.deepcopy(record)}
+            for method in methods
+        }
+    }
+
+
+def test_four_way_comparability_is_derived_and_fail_closed():
+    methods, row = _comparison_row()
+    assessment = comparison_assessment(row, methods)
+    assert assessment["time_comparable"] is True
+    assert assessment["width_comparable"] is True
+    assert assessment["common_width_prefix"] == {
+        "kind": "time_s", "value": 1.0,
+    }
+    assert assessment["ranking_eligible"] is True
+
+    mismatched = copy.deepcopy(row)
+    mismatched["cells"]["huan"]["result"]["widths"][
+        "coordinate_units"
+    ] = ["cm"]
+    assessment = comparison_assessment(mismatched, methods)
+    assert assessment["width_comparable"] is False
+    assert assessment["ranking_eligible"] is False
+    assert "width_order_units_or_aggregation_mismatch" in assessment["reasons"]
+
+    truncated = copy.deepcopy(row)
+    truncated["cells"]["xiangru"]["result"]["widths"]["series"].pop()
+    assessment = comparison_assessment(truncated, methods)
+    assert assessment["common_width_prefix"] == {
+        "kind": "time_s", "value": 0.0,
+    }
+    assert assessment["width_comparable"] is False
+
+
+def test_attempt_rows_keep_failed_raw_wall_and_receipt():
+    sample = _sample("diagnostic", 0, 7.5)
+    sample.update({
+        "outcome": "resource_guard",
+        "validated_extent": {"kind": "time_s", "value": 0.5},
+        "failure": {"reason_code": "resource_guard"},
+        "process_identity": {"invocation_id": "attempt-1"},
+        "artifact": {"path": "attempt-1.json", "sha256": "a" * 64},
+    })
+    row = attempt_rows({"samples": [sample]})[0]
+    assert row["process_total"] == 7.5
+    assert row["reason"] == "resource_guard"
+    assert row["invocation_id"] == "attempt-1"
 
 
 def test_mapping_key_order_does_not_change_rendered_bytes():
@@ -174,11 +338,17 @@ def test_resolved_contract_section_exposes_complete_shared_configuration():
                 "integration": {"horizon": 5.0},
                 "controller_update": {
                     "period": 0.1, "scheduled_updates": 50,
+                    "schedule_points": [0.1 * index for index in range(50)],
                     "schedule_semantics": "update at each left endpoint",
                 },
                 "property": {
                     "formula": "x <= 2", "time_semantics": "all t in [0,5]",
                     "pass_condition": "upper(x) <= 2",
+                },
+                "width_comparison": {
+                    "coordinate_units": ["m"],
+                    "sample_points": [0, 5],
+                    "aggregation_semantics": "union_and_per_partition",
                 },
             },
         },
