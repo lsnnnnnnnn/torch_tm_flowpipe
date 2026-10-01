@@ -1,0 +1,115 @@
+{
+  "schema": "archcomp26-acc-participant-p3-nohash-v1",
+  "started_utc": "2026-10-01T16:38:42.008683+00:00",
+  "mode": "full",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/acc_participant_vrel_lead_minus_ego.yaml",
+  "engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center",
+  "shared_driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "feature_adapter": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo_sr_prepare_entry/experiments/flowstar_acceleration/nncs_acc_adapter.py",
+  "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/official_acc_controller_5_20.onnx",
+  "controller_input": [
+    "30",
+    "1.4",
+    "v_ego",
+    "x_lead-x_ego",
+    "v_lead-v_ego"
+  ],
+  "method": "working-P3 core, validation-P4 flags, strict endpoint, ACC exact feature TM adapter",
+  "property": "x_lead-x_ego-1.4*v_ego-10 >= 0 for all t in [0,T]",
+  "physical_gpu": "2",
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "environment": {
+    "FLOWSTAR_WEIGHTED_VALIDATION": "0",
+    "FLOWSTAR_RECENTER_VALIDATION": "1",
+    "FLOWSTAR_SELF_MAP_RETRIES": "8",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "FLOWSTAR_GLUE": "graph",
+    "FLOWSTAR_INJECTIVE_MAPS": "1",
+    "FLOWSTAR_CENTER_NORMALIZATION": "1",
+    "FLOWSTAR_VALIDATION_POLICY": "solution_plus_one",
+    "FLOWSTAR_COMPOSITION": "horner",
+    "FLOWSTAR_INJECTIVE_GLUE": "1",
+    "FLOWSTAR_SUPPORT_POLICY": "structural",
+    "FLOWSTAR_EARLY_WEIGHTED": "1",
+    "FLOWSTAR_HORNER_EDGE_CACHE": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry",
+    "TORCH_EXTENSIONS_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "prebuilt_libraries": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790044995822392249
+    },
+    "flowstar_sr_interval_matmul": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_interval_matmul/flowstar_sr_interval_matmul.so",
+      "bytes": 1039048,
+      "mtime_ns": 1790045165604522166
+    },
+    "flowstar_sr_history_sum": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_sr_history_sum/flowstar_sr_history_sum.so",
+      "bytes": 1054888,
+      "mtime_ns": 1790045218041121176
+    },
+    "flowstar_injective_index_v2": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_injective_index_v2/flowstar_injective_index_v2.so",
+      "bytes": 1089688,
+      "mtime_ns": 1790045271185795654
+    },
+    "flowstar_seg_private_output_v1": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_private_entry/py311_torch251_cu126_gcc13/flowstar_seg_private_output_v1/flowstar_seg_private_output_v1.so",
+      "bytes": 1279928,
+      "mtime_ns": 1790045330956177433
+    },
+    "horner_edge_1312fa8b2aed": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_horner_entry/horner_edge_1312fa8b2aed/horner_edge_1312fa8b2aed.so",
+      "bytes": 1097456,
+      "mtime_ns": 1790051417194011392
+    },
+    "flowstar_recip_geom_replay_1f9efda6325c": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_reciprocal_geometric_20260928/flowstar_recip_geom_replay_1f9efda6325c/flowstar_recip_geom_replay_1f9efda6325c.so",
+      "bytes": 1442792,
+      "mtime_ns": 1790571497473136248
+    },
+    "flowstar_recip_geom_valid_1f9efda6325c": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_reciprocal_geometric_20260928/flowstar_recip_geom_valid_1f9efda6325c/flowstar_recip_geom_valid_1f9efda6325c.so",
+      "bytes": 1425496,
+      "mtime_ns": 1790571544408157282
+    }
+  },
+  "qualification": "new ACC P3 diagnostic; no independent floating-point neural-bound proof",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_ours_p3/data/config.yaml",
+  "expected_substeps": 50,
+  "cuda_memory_cap_bytes": 11811160064,
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_ours_p3/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--strict",
+    "--order",
+    "3",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--nn-mode",
+    "crown",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_ours_p3/data/metrics.json"
+  ]
+}

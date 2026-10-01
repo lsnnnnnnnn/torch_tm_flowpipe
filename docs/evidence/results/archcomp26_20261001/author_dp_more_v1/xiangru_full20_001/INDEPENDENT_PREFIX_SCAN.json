@@ -1,0 +1,70 @@
+{
+  "schema": "archcomp26-dp-four-state-range-scan-v1",
+  "source": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/author_dp_more_v1/xiangru_full20_001/payload/ranges.bin",
+  "source_bytes": 2462400,
+  "record_layout": "uint64 lane, uint64 1-based step, float64 h, 4*(tube_lo,tube_hi,endpoint_lo,endpoint_hi)",
+  "lanes": 225,
+  "steps": 72,
+  "records": 16200,
+  "ode_h": 0.005,
+  "all_records_finite_ordered": true,
+  "tube_inside_safe_box": false,
+  "endpoint_inside_safe_box": false,
+  "endpoint_below_tube_count": 14060,
+  "endpoint_above_tube_count": 89,
+  "endpoint_tube_gap_max": 4.6629367034256575e-15,
+  "all_time_tube_union": [
+    [
+      0.8949559461570785,
+      1.4082618093205566
+    ],
+    [
+      0.7466850486453441,
+      1.3234776007669204
+    ],
+    [
+      -1.6573371333264424,
+      1.4879933779716803
+    ],
+    [
+      -1.4832433828455516,
+      1.3352010633819917
+    ]
+  ],
+  "terminal_endpoint_union": [
+    [
+      0.8949559461570781,
+      1.1813240047642533
+    ],
+    [
+      0.7466850808782021,
+      1.0100478059376106
+    ],
+    [
+      -1.6573371325519373,
+      -1.2033549538909203
+    ],
+    [
+      -1.4832316594876307,
+      -1.0641855767458992
+    ]
+  ],
+  "terminal_endpoint_union_width": [
+    0.2863680586071752,
+    0.2633627250594085,
+    0.453982178661017,
+    0.4190460827417315
+  ],
+  "terminal_per_box_width_mean": [
+    0.07179105716755964,
+    0.06729917427654405,
+    0.15956133147421428,
+    0.1521213276386341
+  ],
+  "terminal_per_box_width_max": [
+    0.07841439749047363,
+    0.07364255181385171,
+    0.20035537196342879,
+    0.19137022590621822
+  ]
+}

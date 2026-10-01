@@ -1,0 +1,43 @@
+{
+  "schema": "archcomp26-tora-remain-cpu-preflight-nohash-v1",
+  "checked_utc": "2026-10-01T12:24:14.256010+00:00",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous.yaml",
+  "boxes": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/contracts/tora_homogeneous_boxes.json",
+  "controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_remain_prep_001/official_controllerTora_2026.onnx",
+  "state_order": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "t",
+    "u1"
+  ],
+  "box_count": 12,
+  "model": {
+    "dynamic_input": "input",
+    "input_shape": [
+      1,
+      1,
+      1,
+      4
+    ],
+    "output_shape": [
+      1,
+      1
+    ],
+    "output_tail_ops": [
+      "Conv",
+      "Relu",
+      "Flatten"
+    ],
+    "center_raw_f_value": 10.022441531381736,
+    "center_plant_u_value": 0.022441531381735658
+  },
+  "controller_boundary": "raw ONNX f(x) -> u1; plant dx4=u1-10 exactly once",
+  "horizon_s": 20,
+  "control_period_s": 1,
+  "ode_step_s": 0.1,
+  "safe_region": "all four physical states in [-2,2] for all t in [0,20]",
+  "gpu_initialized": false,
+  "content_digest_computed": false
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "torch-tm-flowpipe-plot-spec-v1",
+  "benchmark": "Double Pendulum",
+  "instance_id": "double-pendulum-less-robust",
+  "contract_status": "ARCH-COMP 2026 continuous less-robust mathematical content; native run identity unverified",
+  "identity_binding": "informational_legacy_unbound",
+  "warning": "Official 2026 content is an unbound plotting declaration here; range records alone do not prove run identity, acceptance, or safety.",
+  "horizon": {"kind": "continuous_time", "start": 0.0, "end": 1.0},
+  "property_quantifier": "all_times",
+  "coordinate_names": ["theta1", "theta2", "theta1_dot", "theta2_dot"],
+  "units": {"t": "s"},
+  "initial_set": {
+    "label": "Initial box [1,1.3]^4",
+    "bounds": {
+      "theta1": [1.0, 1.3],
+      "theta2": [1.0, 1.3],
+      "theta1_dot": [1.0, 1.3],
+      "theta2_dot": [1.0, 1.3]
+    }
+  },
+  "regions": [
+    {
+      "label": "Safe region for all continuous time t in [0,1]",
+      "role": "safe",
+      "bounds": {
+        "theta1": [-1.7, 2.0],
+        "theta2": [-1.7, 2.0],
+        "theta1_dot": [-1.7, 2.0],
+        "theta2_dot": [-1.7, 2.0]
+      },
+      "time": {"kind": "all"},
+      "interpretation": "Whole-tube safety band on every physical state, not an endpoint target."
+    }
+  ]
+}

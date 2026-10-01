@@ -1,0 +1,13 @@
+{
+  "status": "exception",
+  "mode": "smoke1",
+  "completed_substeps": 0,
+  "error_type": "AttributeError",
+  "error": "module 'flowstar_gpu.horner_edge_kernels' has no attribute 'horner_edge'",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py\", line 405, in execute\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1026, in main\n    eng = SparseEngine(tables, step, args.device)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/archcomp26_quad_paper_p3_nohash.py\", line 257, in sparse_engine\n    eng.horner_edge_kernel = horner_edge_kernels.horner_edge\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'flowstar_gpu.horner_edge_kernels' has no attribute 'horner_edge'\n",
+  "accepted_lane_substeps": 0,
+  "wall_s": 3.7013709554448724,
+  "cuda_peak_allocated_bytes": 100219904,
+  "cuda_peak_reserved_bytes": 121634816,
+  "peak_rss_kb": 1072228
+}

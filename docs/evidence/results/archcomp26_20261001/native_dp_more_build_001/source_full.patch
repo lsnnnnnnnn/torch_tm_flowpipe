@@ -1,0 +1,35 @@
+--- /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/archcomp/double_pendulum_less_robust/matched_threads4.cpp
++++ /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_build_001/archcomp/double_pendulum_more_robust/dp_more_full20.cpp
+@@ -54,7 +54,7 @@
+                         vars);
+     
+     Computational_Setting setting(vars);
+-    setting.setFixedStepsize(0.01, 4);
++    setting.setFixedStepsize(0.005, 4);
+     setting.setCutoffThreshold(1e-6);
+     setting.printOff();
+     Interval I(-0.01, 0.01);
+@@ -62,10 +62,10 @@
+     setting.setRemainderEstimation(remainder_estimation);
+ 
+     // Property
+-    vector<string> constraints = {"-th1 - 1.7", "th1 - 2",
+-                                "-th2 - 1.7", "th2 - 2",
+-                                "-u1 - 1.7", "u1 - 2",
+-                                "-u2 - 1.7", "u2 - 2"};
++    vector<string> constraints = {"-th1 - 1.5", "th1 - 1.5",
++                                "-th2 - 1.5", "th2 - 1.5",
++                                "-u1 - 1.5", "u1 - 1.5",
++                                "-u2 - 1.5", "u2 - 1.5"};
+ 
+     vector<Constraint> safeSet;
+     for (int i = 0; i < 8; i++)
+@@ -195,7 +195,7 @@
+         {
+             boost::asio::post(pool, [&, sub_iter] {
+                 // excute task
+-                author_matched::reach(dynamics, results[sub_iter], initial_sets[sub_iter], 0.05, setting, safeSet, symbolic_remainders[sub_iter]);
++                author_matched::reach(dynamics, results[sub_iter], initial_sets[sub_iter], 0.02, setting, safeSet, symbolic_remainders[sub_iter]);
+                 if (results[sub_iter].status == COMPLETED_UNSAFE)
+                 {
+                     cout << "Unsafe." << endl;

@@ -1,0 +1,1961 @@
+{
+  "benchmark": "Attitude Control",
+  "coordinate_names": [
+    "x1",
+    "x2",
+    "x3",
+    "x4",
+    "x5",
+    "x6"
+  ],
+  "expected_steps": 60,
+  "geometry_class": "Axis-aligned box projection (not octagon).",
+  "instance_id": "attitude-control-avoid",
+  "interpolation": "none",
+  "observer_columns": [
+    "tube_lo",
+    "tube_hi",
+    "endpoint_lo",
+    "endpoint_hi"
+  ],
+  "partial_policy": "reject",
+  "projection": {
+    "kind": "time-state",
+    "x": "t",
+    "y": "x4",
+    "y_index": 3
+  },
+  "schema": "torch-tm-flowpipe-projection-v2",
+  "semantics": "tube bounds cover one local integration step",
+  "series": [
+    {
+      "declared_origin_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_full30_001/ranges.bin",
+      "display_omitted_observed_step_count": 0,
+      "display_omitted_observed_step_ranges": [],
+      "display_selection": {
+        "policy": "all-observed",
+        "requested_steps": null
+      },
+      "displayed_partial_step_ranges": [],
+      "displayed_steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "expected_steps": 60,
+      "frames": [
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.0,
+              0.05,
+              -0.7713475798527675,
+              -0.7399747700041928
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 0,
+          "source_record_index_min": 0,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 1,
+          "time_end": 0.05,
+          "time_start": 0.0,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.05,
+              0.1,
+              -0.7867362320286336,
+              -0.7570224720037727
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 1,
+          "source_record_index_min": 1,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 2,
+          "time_end": 0.1,
+          "time_start": 0.05,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.1,
+              0.15000000000000002,
+              -0.7985041651533944,
+              -0.7703902946023836
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 2,
+          "source_record_index_min": 2,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 3,
+          "time_end": 0.15000000000000002,
+          "time_start": 0.1,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.15000000000000002,
+              0.2,
+              -0.8076667649541551,
+              -0.7806048248039457
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 3,
+          "source_record_index_min": 3,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 4,
+          "time_end": 0.2,
+          "time_start": 0.15000000000000002,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.2,
+              0.25,
+              -0.8142187116287055,
+              -0.7881646011954346
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 4,
+          "source_record_index_min": 4,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 5,
+          "time_end": 0.25,
+          "time_start": 0.2,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.25,
+              0.30000000000000004,
+              -0.8188990924406566,
+              -0.793471056926588
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 5,
+          "source_record_index_min": 5,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 6,
+          "time_end": 0.30000000000000004,
+          "time_start": 0.25,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.30000000000000004,
+              0.35000000000000003,
+              -0.8217332335080253,
+              -0.7969005221250092
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 6,
+          "source_record_index_min": 6,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 7,
+          "time_end": 0.35000000000000003,
+          "time_start": 0.30000000000000004,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.35000000000000003,
+              0.4,
+              -0.8232585175595176,
+              -0.7986034935933027
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 7,
+          "source_record_index_min": 7,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 8,
+          "time_end": 0.4,
+          "time_start": 0.35000000000000003,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.4,
+              0.45,
+              -0.8235137167865756,
+              -0.7980890791425651
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 8,
+          "source_record_index_min": 8,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 9,
+          "time_end": 0.45,
+          "time_start": 0.4,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.45,
+              0.5,
+              -0.8228897040800078,
+              -0.7967239296034515
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 9,
+          "source_record_index_min": 9,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 10,
+          "time_end": 0.5,
+          "time_start": 0.45,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.5,
+              0.55,
+              -0.8217612585209773,
+              -0.7946941073016152
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 10,
+          "source_record_index_min": 10,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 11,
+          "time_end": 0.55,
+          "time_start": 0.5,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.55,
+              0.6000000000000001,
+              -0.8203908704043607,
+              -0.7921433057813865
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 11,
+          "source_record_index_min": 11,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 12,
+          "time_end": 0.6000000000000001,
+          "time_start": 0.55,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.6000000000000001,
+              0.65,
+              -0.8184063145066764,
+              -0.7892079774566432
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 12,
+          "source_record_index_min": 12,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 13,
+          "time_end": 0.65,
+          "time_start": 0.6000000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.65,
+              0.7000000000000001,
+              -0.8159425469295233,
+              -0.7859922491306469
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 13,
+          "source_record_index_min": 13,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 14,
+          "time_end": 0.7000000000000001,
+          "time_start": 0.65,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.7000000000000001,
+              0.75,
+              -0.8131222707741487,
+              -0.782598667319239
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 14,
+          "source_record_index_min": 14,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 15,
+          "time_end": 0.75,
+          "time_start": 0.7000000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.75,
+              0.8,
+              -0.8100458215701853,
+              -0.779099040514704
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 15,
+          "source_record_index_min": 15,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 16,
+          "time_end": 0.8,
+          "time_start": 0.75,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.8,
+              0.8500000000000001,
+              -0.8068022873785335,
+              -0.775567388069208
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 16,
+          "source_record_index_min": 16,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 17,
+          "time_end": 0.8500000000000001,
+          "time_start": 0.8,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.8500000000000001,
+              0.9,
+              -0.8034638823936987,
+              -0.7720522109637337
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 17,
+          "source_record_index_min": 17,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 18,
+          "time_end": 0.9,
+          "time_start": 0.8500000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.9,
+              0.9500000000000001,
+              -0.8000937708994385,
+              -0.7686050563127073
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 18,
+          "source_record_index_min": 18,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 19,
+          "time_end": 0.9500000000000001,
+          "time_start": 0.9,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              0.9500000000000001,
+              1.0,
+              -0.7967419896000597,
+              -0.7652441309117403
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 19,
+          "source_record_index_min": 19,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 20,
+          "time_end": 1.0,
+          "time_start": 0.9500000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.0,
+              1.05,
+              -0.7934517020777321,
+              -0.7620134242785482
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 20,
+          "source_record_index_min": 20,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 21,
+          "time_end": 1.05,
+          "time_start": 1.0,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.05,
+              1.1,
+              -0.7902559459107448,
+              -0.7589304855086026
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 21,
+          "source_record_index_min": 21,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 22,
+          "time_end": 1.1,
+          "time_start": 1.05,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.1,
+              1.1500000000000001,
+              -0.7872255431643117,
+              -0.7559841748976025
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 22,
+          "source_record_index_min": 22,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 23,
+          "time_end": 1.1500000000000001,
+          "time_start": 1.1,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.1500000000000001,
+              1.2000000000000002,
+              -0.7843533274083186,
+              -0.7531900823555155
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 23,
+          "source_record_index_min": 23,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 24,
+          "time_end": 1.2000000000000002,
+          "time_start": 1.1500000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.2000000000000002,
+              1.25,
+              -0.7816353283348341,
+              -0.7505981882282331
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 24,
+          "source_record_index_min": 24,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 25,
+          "time_end": 1.25,
+          "time_start": 1.2000000000000002,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.25,
+              1.3,
+              -0.7790806502603219,
+              -0.7481858430140106
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 25,
+          "source_record_index_min": 25,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 26,
+          "time_end": 1.3,
+          "time_start": 1.25,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.3,
+              1.35,
+              -0.7766955250389114,
+              -0.745975905509307
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 26,
+          "source_record_index_min": 26,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 27,
+          "time_end": 1.35,
+          "time_start": 1.3,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.35,
+              1.4000000000000001,
+              -0.7744817479183425,
+              -0.7439369470235483
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 27,
+          "source_record_index_min": 27,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 28,
+          "time_end": 1.4000000000000001,
+          "time_start": 1.35,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.4000000000000001,
+              1.4500000000000002,
+              -0.772497042610405,
+              -0.742036638112198
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 28,
+          "source_record_index_min": 28,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 29,
+          "time_end": 1.4500000000000002,
+          "time_start": 1.4000000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.4500000000000002,
+              1.5,
+              -0.7707152747972219,
+              -0.7402589962636322
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 29,
+          "source_record_index_min": 29,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 30,
+          "time_end": 1.5,
+          "time_start": 1.4500000000000002,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.5,
+              1.55,
+              -0.7690974122328098,
+              -0.7386599536641244
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 30,
+          "source_record_index_min": 30,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 31,
+          "time_end": 1.55,
+          "time_start": 1.5,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.55,
+              1.6,
+              -0.7676381572048853,
+              -0.7371936393805255
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 31,
+          "source_record_index_min": 31,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 32,
+          "time_end": 1.6,
+          "time_start": 1.55,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.6,
+              1.6500000000000001,
+              -0.7663281374867587,
+              -0.7358811378825573
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 32,
+          "source_record_index_min": 32,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 33,
+          "time_end": 1.6500000000000001,
+          "time_start": 1.6,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.6500000000000001,
+              1.7000000000000002,
+              -0.7651557637815093,
+              -0.7346787514248596
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 33,
+          "source_record_index_min": 33,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 34,
+          "time_end": 1.7000000000000002,
+          "time_start": 1.6500000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.7000000000000002,
+              1.75,
+              -0.7641075463227984,
+              -0.7336014981138368
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 34,
+          "source_record_index_min": 34,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 35,
+          "time_end": 1.75,
+          "time_start": 1.7000000000000002,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.75,
+              1.8,
+              -0.7631713221325735,
+              -0.7326089933828966
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 35,
+          "source_record_index_min": 35,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 36,
+          "time_end": 1.8,
+          "time_start": 1.75,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.8,
+              1.85,
+              -0.7623338180564728,
+              -0.7317219435543966
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 36,
+          "source_record_index_min": 36,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 37,
+          "time_end": 1.85,
+          "time_start": 1.8,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.85,
+              1.9000000000000001,
+              -0.7615825171716462,
+              -0.7308985351437894
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 37,
+          "source_record_index_min": 37,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 38,
+          "time_end": 1.9000000000000001,
+          "time_start": 1.85,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.9000000000000001,
+              1.9500000000000002,
+              -0.760904177380776,
+              -0.730152437278702
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 38,
+          "source_record_index_min": 38,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 39,
+          "time_end": 1.9500000000000002,
+          "time_start": 1.9000000000000001,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              1.9500000000000002,
+              2.0,
+              -0.7602864019783503,
+              -0.7294446503768137
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 39,
+          "source_record_index_min": 39,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 40,
+          "time_end": 2.0,
+          "time_start": 1.9500000000000002,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.0,
+              2.0500000000000003,
+              -0.7597159807113489,
+              -0.7287892329572662
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 40,
+          "source_record_index_min": 40,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 41,
+          "time_end": 2.0500000000000003,
+          "time_start": 2.0,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.0500000000000003,
+              2.1,
+              -0.7591808948840666,
+              -0.7281497352733953
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 41,
+          "source_record_index_min": 41,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 42,
+          "time_end": 2.1,
+          "time_start": 2.0500000000000003,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.1,
+              2.15,
+              -0.7586686664910074,
+              -0.7275283402763351
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 42,
+          "source_record_index_min": 42,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 43,
+          "time_end": 2.15,
+          "time_start": 2.1,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.15,
+              2.2,
+              -0.7581680478875752,
+              -0.7269109552179004
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 43,
+          "source_record_index_min": 43,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 44,
+          "time_end": 2.2,
+          "time_start": 2.15,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.2,
+              2.25,
+              -0.7576675402508951,
+              -0.7262884727941574
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 44,
+          "source_record_index_min": 44,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 45,
+          "time_end": 2.25,
+          "time_start": 2.2,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.25,
+              2.3000000000000003,
+              -0.7571567595567915,
+              -0.7256490644205197
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 45,
+          "source_record_index_min": 45,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 46,
+          "time_end": 2.3000000000000003,
+          "time_start": 2.25,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.3000000000000003,
+              2.35,
+              -0.7566251972041352,
+              -0.724984700849695
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 46,
+          "source_record_index_min": 46,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 47,
+          "time_end": 2.35,
+          "time_start": 2.3000000000000003,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.35,
+              2.4000000000000004,
+              -0.7560636394171195,
+              -0.7242846569041809
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 47,
+          "source_record_index_min": 47,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 48,
+          "time_end": 2.4000000000000004,
+          "time_start": 2.35,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.4000000000000004,
+              2.45,
+              -0.7554627796312496,
+              -0.7235427568737639
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 48,
+          "source_record_index_min": 48,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 49,
+          "time_end": 2.45,
+          "time_start": 2.4000000000000004,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.45,
+              2.5,
+              -0.7548145038579941,
+              -0.7227515277744792
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 49,
+          "source_record_index_min": 49,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 50,
+          "time_end": 2.5,
+          "time_start": 2.45,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.5,
+              2.5500000000000003,
+              -0.7541105930521401,
+              -0.7219037430227591
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 50,
+          "source_record_index_min": 50,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 51,
+          "time_end": 2.5500000000000003,
+          "time_start": 2.5,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.5500000000000003,
+              2.6,
+              -0.7533440556049694,
+              -0.7209928075509439
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 51,
+          "source_record_index_min": 51,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 52,
+          "time_end": 2.6,
+          "time_start": 2.5500000000000003,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.6,
+              2.6500000000000004,
+              -0.7525078430469995,
+              -0.7200126452583829
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 52,
+          "source_record_index_min": 52,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 53,
+          "time_end": 2.6500000000000004,
+          "time_start": 2.6,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.6500000000000004,
+              2.7,
+              -0.7515960637560878,
+              -0.7189568724944209
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 53,
+          "source_record_index_min": 53,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 54,
+          "time_end": 2.7,
+          "time_start": 2.6500000000000004,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.7,
+              2.75,
+              -0.7506028306695657,
+              -0.7178209383823001
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 54,
+          "source_record_index_min": 54,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 55,
+          "time_end": 2.75,
+          "time_start": 2.7,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.75,
+              2.8000000000000003,
+              -0.7495232786385353,
+              -0.7166005377948246
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 55,
+          "source_record_index_min": 55,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 56,
+          "time_end": 2.8000000000000003,
+          "time_start": 2.75,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.8000000000000003,
+              2.85,
+              -0.7483526163277516,
+              -0.7152911984157556
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 56,
+          "source_record_index_min": 56,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 57,
+          "time_end": 2.85,
+          "time_start": 2.8000000000000003,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.85,
+              2.9000000000000004,
+              -0.7470869516736636,
+              -0.7138901298163016
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 57,
+          "source_record_index_min": 57,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 58,
+          "time_end": 2.9000000000000004,
+          "time_start": 2.85,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.9000000000000004,
+              2.95,
+              -0.7457224490746661,
+              -0.7123938502521524
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 58,
+          "source_record_index_min": 58,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 59,
+          "time_end": 2.95,
+          "time_start": 2.9000000000000004,
+          "total_lanes": 1
+        },
+        {
+          "acceptance_semantics": "record presence only; acceptance is not encoded in ranges.bin",
+          "accepted_lanes": null,
+          "aggregation": "all-recorded-lanes axis-aligned union hull",
+          "boxes": [
+            [
+              2.95,
+              3.0,
+              -0.7442560881469984,
+              -0.710800050132425
+            ]
+          ],
+          "complete": true,
+          "lane_ids": null,
+          "recorded_lanes": 1,
+          "source_record_count": 1,
+          "source_record_index_max": 59,
+          "source_record_index_min": 59,
+          "source_record_order": "not assumed contiguous",
+          "status_counts": {
+            "unavailable_in_ranges_bin": 1
+          },
+          "step": 60,
+          "time_end": 3.0,
+          "time_start": 2.95,
+          "total_lanes": 1
+        }
+      ],
+      "label": "new native Attitude, corrected unsafe",
+      "lane_universe_binding": "explicit_cli_expected_lanes; not verified against initial partition",
+      "observed_steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "origin_binding": "user-declared copy origin; byte identity not established by this plot",
+      "physical_state_count_from_explicit_coordinates": 6,
+      "projection_coverage_semantics": "record presence only; acceptance and certification unknown",
+      "projection_partial_coverage_semantics": "known record coverage for every observed step",
+      "projection_partial_step_ranges": [],
+      "projection_unobserved_reason": "no native range record; solver status is not inferred",
+      "projection_unobserved_step_count": 0,
+      "projection_unobserved_step_ranges": [],
+      "record_schema": "little-endian <lane:uint64,step:uint64,h:float64,24xfloat64>; tube_lo,tube_hi,endpoint_lo,endpoint_hi per physical state",
+      "record_size": 216,
+      "solver_run_evidence": {
+        "RESULT.json": {
+          "ended_utc": "2026-10-01T15:22:06.685195+00:00",
+          "exit_code": 0,
+          "failure": null,
+          "pid": 3330099,
+          "status": "completed",
+          "timed_out": false,
+          "wall_s": 6.281498343683779
+        },
+        "RESULT_binding": "adjacent file; unbound to ranges.bin",
+        "RESULT_path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/native_attitude_avoid_full30_001/RESULT.json",
+        "binding": {
+          "series": "adjacent run evidence unbound to ranges.bin"
+        },
+        "plot_contract_check": {
+          "expected_steps": "explicit_cli_unverified",
+          "lane_count": "explicit_cli_unverified",
+          "status": "explicit plotting declarations unbound to native records",
+          "step_size": "matched to each binary record h"
+        },
+        "run_configuration": {
+          "binding": "declared file; not identity-bound to ranges.bin",
+          "content": {
+            "argv": [
+              "bash",
+              "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/run_archcomp26_attitude_avoid_native_pair.sh"
+            ],
+            "contract_label": "attitude-avoid-2026-corrected-checker-full30",
+            "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control",
+            "environment_policy": "inherit with recorded selected variables and explicit overrides",
+            "host": {
+              "machine": "x86_64",
+              "name": "huan-c4140-server-3",
+              "release": "7.0.0-29-generic",
+              "system": "Linux"
+            },
+            "instance": "attitude-control-avoid",
+            "method": "flowstar_native",
+            "schema": "archcomp26-nohash-run-v1",
+            "selected_environment": {
+              "ATTITUDE_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control/attitude_avoid_full30",
+              "ATTITUDE_CPUSET": "14-17",
+              "ATTITUDE_MODEL": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/attitude_prep_001/official_attitude_control_3_64_torch.onnx",
+              "ATTITUDE_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+              "ATTITUDE_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_full30_001",
+              "ATTITUDE_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+              "ATTITUDE_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_build_001/archcomp/attitude_control",
+              "CUDA_VISIBLE_DEVICES": "3",
+              "OMP_NUM_THREADS": "1",
+              "OPENBLAS_NUM_THREADS": "1",
+              "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+            },
+            "started_utc": "2026-10-01T15:22:00.397502+00:00",
+            "timeout_s": 3600.0
+          },
+          "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/native_attitude_avoid_full30_001/START.json"
+        }
+      },
+      "source_bytes": 12960,
+      "source_kind": "native-ranges-bin-v1",
+      "source_path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/native_attitude_avoid_full30_001/ranges.bin"
+    }
+  ],
+  "spec": {
+    "benchmark": "Attitude Control",
+    "contract_status": "ARCH-COMP 2026 official nonempty unsafe box; plot declaration unbound to native range bytes",
+    "coordinate_names": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6"
+    ],
+    "horizon": {
+      "end": 3.0,
+      "kind": "continuous_time",
+      "start": 0.0
+    },
+    "identity_binding": "informational_legacy_unbound",
+    "initial_set": {
+      "bounds": {
+        "x1": [
+          -0.45,
+          -0.44
+        ],
+        "x2": [
+          -0.55,
+          -0.54
+        ],
+        "x3": [
+          0.65,
+          0.66
+        ],
+        "x4": [
+          -0.75,
+          -0.74
+        ],
+        "x5": [
+          0.85,
+          0.86
+        ],
+        "x6": [
+          -0.65,
+          -0.64
+        ]
+      },
+      "label": "Official Attitude Control initial box"
+    },
+    "instance_id": "attitude-control-avoid",
+    "property_quantifier": "all_times",
+    "regions": [
+      {
+        "bounds": {
+          "x1": [
+            -0.2,
+            0.0
+          ],
+          "x2": [
+            -0.5,
+            -0.4
+          ],
+          "x3": [
+            0.0,
+            0.2
+          ],
+          "x4": [
+            -0.7,
+            -0.6
+          ],
+          "x5": [
+            0.7,
+            0.8
+          ],
+          "x6": [
+            -0.4,
+            -0.2
+          ]
+        },
+        "interpretation": "The six-dimensional reachable set must avoid the full unsafe box at every t in [0,3].",
+        "label": "Official six-dimensional unsafe box; displayed as a projection",
+        "role": "unsafe",
+        "time": {
+          "kind": "all"
+        }
+      }
+    ],
+    "schema": "torch-tm-flowpipe-plot-spec-v1",
+    "units": {
+      "t": "s"
+    },
+    "warning": "The x4 projection of the unsafe box cannot by itself decide intersection with the full six-dimensional unsafe box; use the independent six-dimensional saved-box audit."
+  },
+  "spec_binding": {
+    "contract_status": "ARCH-COMP 2026 official nonempty unsafe box; plot declaration unbound to native range bytes",
+    "identity_binding": "informational_legacy_unbound",
+    "status": "accepted_with_explicit_unbound_legacy_scope"
+  },
+  "step_size": 0.05,
+  "step_size_hex": "0x1.999999999999ap-5",
+  "view": "tube"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "exception",
+  "backend": "huan",
+  "mode": "smoke1",
+  "error_type": "AttributeError",
+  "error": "module 'archcomp26_sp_two_state_huan_driver' has no attribute 'sparse_exec_module'",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/archcomp26_sp_two_state_gpu_nohash.py\", line 136, in run\n    torch, driver, engine, driver_path, binaries, memory_cap = prepare(args.backend)\n                                                               ^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/archcomp26_sp_two_state_gpu_nohash.py\", line 97, in prepare\n    if not hasattr(driver.sparse_exec_module, \"COMPOSE_PARENT_ASSEMBLY\"):\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'archcomp26_sp_two_state_huan_driver' has no attribute 'sparse_exec_module'\n",
+  "completed_substeps": 0,
+  "wall_s": 1.780291031114757
+}

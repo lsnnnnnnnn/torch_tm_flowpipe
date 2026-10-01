@@ -1,0 +1,50 @@
+{
+  "mode": "parity",
+  "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_full50_001/quad_paper.yaml",
+  "driver": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_full50_001/quad_paper.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_full50_001/parity/metrics.json"
+  ],
+  "cuda_visible_devices": "2",
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "modules": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790068022742403774
+    },
+    "flowstar_tape_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_tape_kernels/flowstar_tape_kernels.so",
+      "bytes": 1442736,
+      "mtime_ns": 1790068080138544285
+    },
+    "flowstar_valid_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_valid_kernels/flowstar_valid_kernels.so",
+      "bytes": 1421248,
+      "mtime_ns": 1790068137490679947
+    }
+  },
+  "start_utc": "2026-10-01T09:43:26.006767+00:00",
+  "end_utc": "2026-10-01T09:44:57.848265+00:00",
+  "driver_wall_s": 91.84142729267478,
+  "returncode": 0,
+  "cuda_peak_allocated_bytes": 6992032256,
+  "cuda_peak_reserved_bytes": 11806965760
+}

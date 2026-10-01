@@ -1,5 +1,7 @@
 # ARCH-COMP26 four-way execution status
 
+> Historical generated snapshot from before the user's 2026-10-01 resume instruction. Its `Experiments paused: yes` and authorization gate are superseded by the active [execution progress](GOAL_EXECUTION_PROGRESS_20261001.md); the 16×4 result cells below still describe the unmodified legacy matrix, not any new no-hash attempt.
+
 > Automatically generated status report; this is not the final experiment report.
 > Historical evidence is never promoted into an unexecuted 2026 matrix cell.
 

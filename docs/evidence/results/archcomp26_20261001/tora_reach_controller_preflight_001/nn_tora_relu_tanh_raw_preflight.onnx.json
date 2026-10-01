@@ -1,0 +1,21 @@
+{
+  "kind": "point_controller_export_only",
+  "mat_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_prep_001/nn_tora_relu_tanh.mat",
+  "model_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_controller_preflight_001/nn_tora_relu_tanh_raw_preflight.onnx",
+  "activations": [
+    "relu",
+    "relu",
+    "relu",
+    "tanh"
+  ],
+  "control_formula": "u = scale * network(x) + offset",
+  "scale": 1.0,
+  "offset": 0.0,
+  "forward": {
+    "points": 22,
+    "max_abs_error": 9.020562075079397e-17,
+    "center_mat": -0.047366557782876205,
+    "center_onnx": -0.047366557782876184
+  },
+  "execution_requirement": "Use ONNX output directly as plant u; disable all external control scaling."
+}

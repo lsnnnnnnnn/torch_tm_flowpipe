@@ -1,0 +1,76 @@
+{
+  "schema": "archcomp26-acc-participant-gpu-nohash-v1",
+  "started_utc": "2026-10-01T16:38:33.852501+00:00",
+  "backend": "xiangru",
+  "mode": "full",
+  "source_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/acc_participant_vrel_lead_minus_ego.yaml",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_xiangru/data/config.yaml",
+  "engine": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream",
+  "driver": "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+  "adapter": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/repo_sr_prepare_entry/experiments/flowstar_acceleration/nncs_acc_adapter.py",
+  "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/official_acc_controller_5_20.onnx",
+  "physical_box_count": 1,
+  "physical_states": [
+    "x_lead",
+    "v_lead",
+    "a_lead",
+    "x_ego",
+    "v_ego",
+    "a_ego"
+  ],
+  "controller_input": [
+    "30",
+    "1.4",
+    "v_ego",
+    "x_lead-x_ego",
+    "v_lead-v_ego"
+  ],
+  "property": "x_lead-x_ego-1.4*v_ego-10 >= 0 for all t in [0,T]",
+  "horizon_s": 5.0,
+  "cuda_visible_devices": "2",
+  "cpu_affinity": [
+    10,
+    11,
+    12,
+    13
+  ],
+  "cuda_memory_cap_bytes": 11811160064,
+  "preloaded_binaries": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/xiangru/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790068204833883884
+    },
+    "flowstar_tape_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/xiangru/flowstar_tape_kernels/flowstar_tape_kernels.so",
+      "bytes": 1442736,
+      "mtime_ns": 1790068262214021591
+    },
+    "flowstar_valid_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/xiangru/flowstar_valid_kernels/flowstar_valid_kernels.so",
+      "bytes": 1421248,
+      "mtime_ns": 1790068319593158825
+    }
+  },
+  "qualification": "author GPU checker plus recorded interval scan; no independent floating-point NN proof",
+  "driver_argv": [
+    "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_xiangru/data/config.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--crown-transport",
+    "rpc-float32",
+    "--crown-input-layout",
+    "native",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_xiangru/data/metrics.json",
+    "--strict"
+  ]
+}

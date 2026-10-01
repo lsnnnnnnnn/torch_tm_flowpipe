@@ -1,0 +1,51 @@
+{
+  "mode": "strict",
+  "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/huan_quad_stage_a_40_20261001/quad_40.yaml",
+  "driver": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/huan_quad_stage_a_40_20261001/quad_40.yaml",
+    "--device",
+    "cuda:0",
+    "--engine",
+    "sparse",
+    "--crown-domain",
+    "box",
+    "--crown-relax",
+    "same-slope",
+    "--print-final-hull",
+    "--metrics-json",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/huan_quad_stage_a_40_20261001/strict/metrics.json",
+    "--strict"
+  ],
+  "cuda_visible_devices": "3",
+  "cpu_affinity": [
+    14,
+    15,
+    16,
+    17
+  ],
+  "modules": {
+    "flowstar_seg_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_seg_kernels/flowstar_seg_kernels.so",
+      "bytes": 1279632,
+      "mtime_ns": 1790068022742403774
+    },
+    "flowstar_tape_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_tape_kernels/flowstar_tape_kernels.so",
+      "bytes": 1442736,
+      "mtime_ns": 1790068080138544285
+    },
+    "flowstar_valid_kernels": {
+      "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_valid_kernels/flowstar_valid_kernels.so",
+      "bytes": 1421248,
+      "mtime_ns": 1790068137490679947
+    }
+  },
+  "start_utc": "2026-10-01T06:12:25.440275+00:00",
+  "end_utc": "2026-10-01T06:12:28.411046+00:00",
+  "driver_wall_s": 2.9706748416647315,
+  "returncode": 0,
+  "cuda_peak_allocated_bytes": 3132646912,
+  "cuda_peak_reserved_bytes": 5779750912
+}

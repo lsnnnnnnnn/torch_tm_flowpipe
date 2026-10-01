@@ -1,0 +1,76 @@
+{
+  "schema": "archcomp26-acc-fourway-fresh-process-campaign-v1",
+  "started_utc": "2026-10-01T16:38:09.890190+00:00",
+  "contract": "named ACC participant v_rel=v_lead-v_ego",
+  "same_hardware": "physical GPU 2, CPU affinity 10-13, sequential processes",
+  "wall_boundary": "supervisor Popen(child) to child reap; native child includes RPC startup and solver; GPU child includes Python/NN/CUDA startup and driver",
+  "cold_definition": "first fresh process per method in this campaign; host and GPU were used earlier and were not rebooted",
+  "steady_definition": "five later independent fresh processes per method, not in-process repetitions",
+  "separation_s": 2,
+  "timeout_s_per_run": 120,
+  "fixed_model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/official_acc_controller_5_20.onnx",
+  "fixed_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_prep_001/acc_participant_vrel_lead_minus_ego.yaml",
+  "rounds": [
+    {
+      "round": 0,
+      "phase": "cold_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 1,
+      "phase": "steady_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    },
+    {
+      "round": 2,
+      "phase": "steady_process",
+      "order": [
+        "xiangru",
+        "ours_p3",
+        "native",
+        "huan"
+      ]
+    },
+    {
+      "round": 3,
+      "phase": "steady_process",
+      "order": [
+        "ours_p3",
+        "native",
+        "huan",
+        "xiangru"
+      ]
+    },
+    {
+      "round": 4,
+      "phase": "steady_process",
+      "order": [
+        "native",
+        "huan",
+        "xiangru",
+        "ours_p3"
+      ]
+    },
+    {
+      "round": 5,
+      "phase": "steady_process",
+      "order": [
+        "huan",
+        "xiangru",
+        "ours_p3",
+        "native"
+      ]
+    }
+  ],
+  "content_digest_performed": false
+}

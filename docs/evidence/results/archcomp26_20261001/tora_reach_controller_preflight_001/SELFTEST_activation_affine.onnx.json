@@ -1,0 +1,21 @@
+{
+  "kind": "point_controller_export_only",
+  "mat_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_prep_001/nn_tora_sigmoid.mat",
+  "model_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_controller_preflight_001/SELFTEST_activation_affine.onnx",
+  "activations": [
+    "sigmoid",
+    "sigmoid",
+    "sigmoid",
+    "tanh"
+  ],
+  "control_formula": "u = scale * network(x) + offset",
+  "scale": 2.0,
+  "offset": 3.0,
+  "forward": {
+    "points": 22,
+    "max_abs_error": 4.440892098500626e-16,
+    "center_mat": 2.694999219147924,
+    "center_onnx": 2.694999219147924
+  },
+  "execution_requirement": "Use ONNX output directly as plant u; disable all external control scaling."
+}

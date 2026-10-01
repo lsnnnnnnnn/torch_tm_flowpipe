@@ -1,0 +1,1570 @@
+{
+  "schema": "archcomp26-nohash-work-matrix-v1",
+  "date": "2026-10-01",
+  "source_paths": [
+    "benchmarks/archcomp26/manifest.json",
+    "docs/evidence/archcomp26_nohash_attempts_20261001.json"
+  ],
+  "source_binding": "Path attribution only; no content digest computed.",
+  "scope": "New 2026 no-hash attempts only; independent of the historical frozen matrix.",
+  "instance_count": 16,
+  "method_count": 4,
+  "cell_count": 64,
+  "attempt_count": 79,
+  "status_counts": {
+    "completed": 20,
+    "running": 1,
+    "early_stopped": 5,
+    "failed": 1,
+    "not_attempted": 37,
+    "short_prefix_only": 0
+  },
+  "methods": [
+    "pytorch_gpu",
+    "huan",
+    "xiangru",
+    "flowstar_native"
+  ],
+  "cells": [
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "pytorch_gpu",
+      "work_status": "completed",
+      "attempt_count": 8,
+      "selected_attempt_number": 76,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_ours_p3",
+      "selected_wall_s": 8.790101007558405,
+      "selected_property_verdict": "author_safe_and_saved_tube_safe",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 42,
+          "status": "completed_short_prefix",
+          "role": "participant-order fixed 2026 controller, P3 one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_p3_full50_001/SUMMARY.md"
+        },
+        {
+          "index": 43,
+          "status": "completed",
+          "role": "participant-order fixed 2026 controller, P3 full 50-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_p3_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_p3_full50_001/SUMMARY.md"
+        },
+        {
+          "index": 57,
+          "status": "completed",
+          "role": "participant-order full50 campaign cold_process round 0",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 60,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 1",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady01_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 63,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 2",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady02_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 66,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 3",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady03_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 73,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 4",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady04_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 76,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 5",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_ours_p3",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "huan",
+      "work_status": "completed",
+      "attempt_count": 8,
+      "selected_attempt_number": 74,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_huan",
+      "selected_wall_s": 8.237208264879882,
+      "selected_property_verdict": "author_safe_and_saved_tube_safe",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 38,
+          "status": "completed_short_prefix",
+          "role": "participant-order fixed 2026 controller, one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md"
+        },
+        {
+          "index": 39,
+          "status": "completed",
+          "role": "participant-order fixed 2026 controller, full 50-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_huan_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md"
+        },
+        {
+          "index": 55,
+          "status": "completed",
+          "role": "participant-order full50 campaign cold_process round 0",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 58,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 1",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady01_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 65,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 2",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady02_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 68,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 3",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady03_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 71,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 4",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady04_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 74,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 5",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_huan",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "xiangru",
+      "work_status": "completed",
+      "attempt_count": 8,
+      "selected_attempt_number": 75,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_xiangru",
+      "selected_wall_s": 7.987426559440792,
+      "selected_property_verdict": "author_safe_and_saved_tube_safe",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 40,
+          "status": "completed_short_prefix",
+          "role": "participant-order fixed 2026 controller, one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_xiangru_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md"
+        },
+        {
+          "index": 41,
+          "status": "completed",
+          "role": "participant-order fixed 2026 controller, full 50-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_xiangru_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md"
+        },
+        {
+          "index": 56,
+          "status": "completed",
+          "role": "participant-order full50 campaign cold_process round 0",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 59,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 1",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady01_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 62,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 2",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady02_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 69,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 3",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady03_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 72,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 4",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady04_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 75,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 5",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_xiangru",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "acc-safe-distance",
+      "method": "flowstar_native",
+      "work_status": "completed",
+      "attempt_count": 8,
+      "selected_attempt_number": 77,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_native",
+      "selected_wall_s": 7.786681476049125,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 36,
+          "status": "completed_short_prefix",
+          "role": "participant-order corrected VAR-tail one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_native_var_tail_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_native_var_tail_full50_001/SUMMARY.md"
+        },
+        {
+          "index": 37,
+          "status": "completed",
+          "role": "participant-order fixed 2026 controller, corrected VAR-tail full 50-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_native_var_tail_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_native_var_tail_full50_001/SUMMARY.md"
+        },
+        {
+          "index": 54,
+          "status": "completed",
+          "role": "participant-order full50 campaign cold_process round 0",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/cold00_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 61,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 1",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady01_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 64,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 2",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady02_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 67,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 3",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady03_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 70,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 4",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady04_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        },
+        {
+          "index": 77,
+          "status": "completed",
+          "role": "participant-order full50 campaign steady_process round 5",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/acc_fourway_campaign_001/steady05_native",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/acc_fourway_campaign_001/INDEPENDENT_AUDIT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-continuous",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "airplane-discrete",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "pytorch_gpu",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 53,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_attitude_avoid_v1/full30_001",
+      "selected_wall_s": 13.017036134377122,
+      "selected_property_verdict": "no Unsafe/Unknown printed by corrected author checker; 60 saved tube boxes disjoint from official unsafe box",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 52,
+          "status": "completed_short_prefix",
+          "role": "corrected official unsafe box, P3 one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_attitude_avoid_v1/smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/p3_attitude_avoid_v1/smoke1_001/payload/RESULT.json"
+        },
+        {
+          "index": 53,
+          "status": "completed",
+          "role": "corrected official unsafe box, P3 full 30-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_attitude_avoid_v1/full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/p3_attitude_avoid_v1/full30_001/payload/RESULT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "huan",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 47,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001",
+      "selected_wall_s": 7.09421706572175,
+      "selected_property_verdict": "no Unsafe/Unknown printed by corrected author checker; 60 saved tube boxes disjoint from official unsafe box",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 46,
+          "status": "completed_short_prefix",
+          "role": "corrected official unsafe box, one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_attitude_avoid_v1/huan_smoke1_001/payload/RESULT.json"
+        },
+        {
+          "index": 47,
+          "status": "completed",
+          "role": "corrected official unsafe box, full 30-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001/payload/RESULT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "xiangru",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 49,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/xiangru_full30_001",
+      "selected_wall_s": 6.933375640772283,
+      "selected_property_verdict": "no Unsafe/Unknown printed by corrected author checker; 60 saved tube boxes disjoint from official unsafe box",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 48,
+          "status": "completed_short_prefix",
+          "role": "corrected official unsafe box, one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/xiangru_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_attitude_avoid_v1/xiangru_smoke1_001/payload/RESULT.json"
+        },
+        {
+          "index": 49,
+          "status": "completed",
+          "role": "corrected official unsafe box, full 30-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_attitude_avoid_v1/xiangru_full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_attitude_avoid_v1/xiangru_full30_001/payload/RESULT.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "attitude-control-avoid",
+      "method": "flowstar_native",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 45,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_full30_001",
+      "selected_wall_s": 6.281498343683779,
+      "selected_property_verdict": "VERIFIED on corrected nonempty unsafe box",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 44,
+          "status": "completed_short_prefix",
+          "role": "corrected official unsafe box, one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/SCAN.json"
+        },
+        {
+          "index": 45,
+          "status": "completed",
+          "role": "corrected official unsafe box, full 30-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_attitude_avoid_full30_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/SCAN.json"
+        }
+      ]
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "balancing-reach",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "docking-constraint",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "pytorch_gpu",
+      "work_status": "failed",
+      "attempt_count": 4,
+      "selected_attempt_number": 10,
+      "selected_attempt_status": "incomplete_unknown_and_failed_contraction",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_v1/full225_001",
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "attempts": [
+        {
+          "index": 3,
+          "status": "failed_before_plant_advance",
+          "role": "one-box, one-period preflight",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_port_v1/smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 4,
+          "status": "failed_before_plant_advance",
+          "role": "one-box, one-period diagnostic retry",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_port_v1/smoke1_002",
+          "local_summary": null
+        },
+        {
+          "index": 9,
+          "status": "incomplete_failed_contraction",
+          "role": "full 225-box diagnostic with directed interval NN residual",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_port_v1/full225_001",
+          "local_summary": "../ARCHCOMP26_DP_P3_DIRECTED_DIAGNOSTIC_20261001.md"
+        },
+        {
+          "index": 10,
+          "status": "incomplete_unknown_and_failed_contraction",
+          "role": "full 225-box diagnostic with directed affine ReLU controller residual",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_v1/full225_001",
+          "local_summary": null
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "huan",
+      "work_status": "completed",
+      "attempt_count": 1,
+      "selected_attempt_number": 7,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_less_v1/huan_full20_001",
+      "selected_wall_s": 9.539174385368824,
+      "selected_property_verdict": null,
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 7,
+          "status": "completed",
+          "role": "full shared 225-box contract, one process",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_less_v1/huan_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_dp_less_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "xiangru",
+      "work_status": "completed",
+      "attempt_count": 1,
+      "selected_attempt_number": 8,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_less_v1/xiangru_full20_001",
+      "selected_wall_s": 8.387789958156645,
+      "selected_property_verdict": null,
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 8,
+          "status": "completed",
+          "role": "full shared 225-box contract, one process",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_less_v1/xiangru_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_dp_less_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-less-robust",
+      "method": "flowstar_native",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 2,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_full20_001",
+      "selected_wall_s": 1107.1274225767702,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 1,
+          "status": "completed_short_prefix",
+          "role": "one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 2,
+          "status": "completed",
+          "role": "full contract, one process",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_dp_less_full20_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "huan",
+      "work_status": "early_stopped",
+      "attempt_count": 1,
+      "selected_attempt_number": 13,
+      "selected_attempt_status": "early_stopped_checker_unsafe",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_more_v1/huan_full20_001",
+      "selected_wall_s": 11.685967257246375,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 13,
+          "status": "early_stopped_checker_unsafe",
+          "role": "full contract attempted; shared checker early Unsafe",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_more_v1/huan_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_dp_more_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "xiangru",
+      "work_status": "early_stopped",
+      "attempt_count": 1,
+      "selected_attempt_number": 14,
+      "selected_attempt_status": "early_stopped_checker_unsafe",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_more_v1/xiangru_full20_001",
+      "selected_wall_s": 11.724105501547456,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 14,
+          "status": "early_stopped_checker_unsafe",
+          "role": "full contract attempted; shared checker early Unsafe",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_dp_more_v1/xiangru_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_dp_more_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "double-pendulum-more-robust",
+      "method": "flowstar_native",
+      "work_status": "early_stopped",
+      "attempt_count": 2,
+      "selected_attempt_number": 12,
+      "selected_attempt_status": "incomplete_unknown",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_full20_001",
+      "selected_wall_s": 715.978257,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 11,
+          "status": "completed_short_prefix",
+          "role": "one-period 225-box smoke with fixed 2026 more ONNX",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 12,
+          "status": "incomplete_unknown",
+          "role": "full contract attempted; author checker early UNKNOWN",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_dp_more_full20_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-standard",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "nav-robust",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "pytorch_gpu",
+      "work_status": "completed",
+      "attempt_count": 5,
+      "selected_attempt_number": 35,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001",
+      "selected_wall_s": 1357.5549509264529,
+      "selected_property_verdict": "VERIFIED at T=5 endpoint",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 31,
+          "status": "failed_before_ode",
+          "role": "first isolated loader preflight failed before plant advance",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md"
+        },
+        {
+          "index": 32,
+          "status": "completed_short_prefix",
+          "role": "corrected one-box one-period P3 loader and math smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/smoke1_002",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md"
+        },
+        {
+          "index": 33,
+          "status": "completed_short_prefix",
+          "role": "full 1024-box one-period P3 preflight",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/batch1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md"
+        },
+        {
+          "index": 34,
+          "status": "completed_short_prefix",
+          "role": "full 1024-box two-period P3 and control refresh preflight",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/batch2_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md"
+        },
+        {
+          "index": 35,
+          "status": "completed",
+          "role": "2026 paper-equation full P3 strict numerical diagnostic",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_p3_nohash_v1/full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "huan",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 6,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_full50_001",
+      "selected_wall_s": 94.583,
+      "selected_property_verdict": "VERIFIED at T=5 endpoint",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 5,
+          "status": "completed_short_prefix",
+          "role": "paper equation, one-box one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 6,
+          "status": "completed",
+          "role": "paper equation, full parity run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "xiangru",
+      "work_status": "completed",
+      "attempt_count": 1,
+      "selected_attempt_number": 17,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_xiangru_v1/full50_001",
+      "selected_wall_s": 108.018,
+      "selected_property_verdict": "VERIFIED at T=5 endpoint",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 17,
+          "status": "completed",
+          "role": "paper equation, full parity run",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_xiangru_v1/full50_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "quad-reach",
+      "method": "flowstar_native",
+      "work_status": "running",
+      "attempt_count": 2,
+      "selected_attempt_number": 16,
+      "selected_attempt_status": "running",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_full50_001",
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Dated attempt index records an in-progress run; no final time, width, or verdict in this index.",
+      "attempts": [
+        {
+          "index": 15,
+          "status": "completed_short_prefix",
+          "role": "paper equation, one-period 1024-box plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 16,
+          "status": "running",
+          "role": "paper equation, full 1024-box 50-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_quad_paper_full50_001",
+          "local_summary": null
+        }
+      ]
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "pytorch_gpu",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 51,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_p3_full20_001",
+      "selected_wall_s": 6.58330516051501,
+      "selected_property_verdict": "all 50 window safety-event upper bounds nonpositive; no Unsafe/Unknown printed",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 50,
+          "status": "completed_short_prefix",
+          "role": "two-physical-state plus auxiliary-clock one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/single_pendulum_two_state_p3_full20_001/SUMMARY.md"
+        },
+        {
+          "index": 51,
+          "status": "completed",
+          "role": "two-physical-state plus auxiliary-clock full 20-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_p3_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/single_pendulum_two_state_p3_full20_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "huan",
+      "work_status": "completed",
+      "attempt_count": 3,
+      "selected_attempt_number": 22,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_huan_full20_001",
+      "selected_wall_s": 5.4307615756988525,
+      "selected_property_verdict": "silent safe-set success; no Unsafe./Unknown., 50 window substeps checked",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 20,
+          "status": "failed_before_ode",
+          "role": "first one-period launcher smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_huan_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 21,
+          "status": "completed_short_prefix",
+          "role": "one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_huan_smoke1_002",
+          "local_summary": null
+        },
+        {
+          "index": 22,
+          "status": "completed",
+          "role": "paper two-state full closed-window contract",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_huan_full20_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "xiangru",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 24,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_xiangru_full20_001",
+      "selected_wall_s": 5.528731092810631,
+      "selected_property_verdict": "silent safe-set success; no Unsafe./Unknown., 50 window substeps checked",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 23,
+          "status": "completed_short_prefix",
+          "role": "one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_xiangru_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 24,
+          "status": "completed",
+          "role": "paper two-state full closed-window contract",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_xiangru_full20_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "single-pendulum-reach",
+      "method": "flowstar_native",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 26,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_sp_two_state_full20_001",
+      "selected_wall_s": 4.726027176715434,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 25,
+          "status": "completed_short_prefix",
+          "role": "one-period plumbing smoke with isolated port-5101 pair",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_sp_two_state_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 26,
+          "status": "completed",
+          "role": "paper two-state full closed-window contract",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_sp_two_state_full20_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "pytorch_gpu",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 79,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_tora_remain_v1/full20_001",
+      "selected_wall_s": 10.411001097410917,
+      "selected_property_verdict": "no Unsafe/Unknown printed; saved tube inside [-2,2]^4",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 78,
+          "status": "completed_short_prefix",
+          "role": "one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_tora_remain_v1/smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 79,
+          "status": "completed",
+          "role": "full 20-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_tora_remain_v1/full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/p3_tora_remain_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "huan",
+      "work_status": "early_stopped",
+      "attempt_count": 2,
+      "selected_attempt_number": 29,
+      "selected_attempt_status": "incomplete_unknown",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/huan_full20_001",
+      "selected_wall_s": 8.371522742323577,
+      "selected_property_verdict": "Unknown. with six Flow* terminated. lines",
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 27,
+          "status": "completed_short_prefix",
+          "role": "new 2026 one-period 12-box plumbing smoke with raw ONNX output offset once in plant",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/huan_smoke1_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+        },
+        {
+          "index": 29,
+          "status": "incomplete_unknown",
+          "role": "new 2026 T20 full contract attempted; driver observed all steps but some lanes terminated",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/huan_full20_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "xiangru",
+      "work_status": "early_stopped",
+      "attempt_count": 2,
+      "selected_attempt_number": 30,
+      "selected_attempt_status": "incomplete_unknown",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001",
+      "selected_wall_s": 8.270158394239843,
+      "selected_property_verdict": "Unknown. with six Flow* terminated. lines",
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "Stopped before the requested horizon; no full-horizon time or width.",
+      "attempts": [
+        {
+          "index": 28,
+          "status": "completed_short_prefix",
+          "role": "new 2026 one-period 12-box plumbing smoke with raw ONNX output offset once in plant",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/xiangru_smoke1_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+        },
+        {
+          "index": 30,
+          "status": "incomplete_unknown",
+          "role": "new 2026 T20 full contract attempted; driver observed all steps but some lanes terminated",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001",
+          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "tora-remain",
+      "method": "flowstar_native",
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 19,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_remain_full20_001",
+      "selected_wall_s": 8.339151292108,
+      "selected_property_verdict": "VERIFIED",
+      "complete_numerical_run": true,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 18,
+          "status": "completed_short_prefix",
+          "role": "paper contract, 12-box one-period plumbing smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_remain_smoke1_001",
+          "local_summary": null
+        },
+        {
+          "index": 19,
+          "status": "completed",
+          "role": "paper contract, full 12-box 20-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_tora_remain_full20_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md"
+        }
+      ]
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-sigmoid",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "tora-reach-tanh",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "pytorch_gpu",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "huan",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "xiangru",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    },
+    {
+      "instance_id": "unicycle-reach",
+      "method": "flowstar_native",
+      "work_status": "not_attempted",
+      "attempt_count": 0,
+      "selected_attempt_number": null,
+      "selected_attempt_status": null,
+      "selected_run_dir": null,
+      "selected_wall_s": null,
+      "selected_property_verdict": null,
+      "complete_numerical_run": false,
+      "four_way_ranking_eligible": false,
+      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
+      "attempts": []
+    }
+  ]
+}

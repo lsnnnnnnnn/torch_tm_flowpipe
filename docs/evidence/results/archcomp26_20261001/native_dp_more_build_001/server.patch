@@ -1,0 +1,11 @@
+--- /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp_review_20260923/suite_build/archcomp/double_pendulum_less_robust/observed_server.py
++++ /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_build_001/archcomp/double_pendulum_more_robust/observed_server.py
+@@ -33,7 +33,7 @@
+ torch.backends.cudnn.allow_tf32 = False
+ 
+ benchmark_dir = "../../ARCH-COMP2024/benchmarks/Double_Pendulum/"
+-model_path = os.path.join(benchmark_dir, "controller_double_pendulum_less_robust.onnx")
++model_path = os.environ["DP_MODEL"]
+ input_shape = (-1, 4)
+ output_T_shape = (-1, 2, 4)
+ output_c_shape = (-1, 2)

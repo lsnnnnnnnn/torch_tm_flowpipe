@@ -1,0 +1,52 @@
+{
+  "schema": "archcomp26-saved-interval-render-v1",
+  "created_utc": "2026-10-01T15:26:21.592662+00:00",
+  "plot": "acc-three-method-tube-margin",
+  "content_digest_policy": "none computed",
+  "sources": [
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_native_var_tail_full50_001/ranges.bin",
+      "bytes": 10800
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_huan_full50_001/ranges.jsonl",
+      "bytes": 28973
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_xiangru_full50_001/ranges.jsonl",
+      "bytes": 28973
+    }
+  ],
+  "summary": {
+    "minimum_tube_margin_lower_by_method": {
+      "Native corrected VAR": 16.254753759211283,
+      "Huan": 16.165034707564207,
+      "Xiangru": 16.165034707564207
+    }
+  },
+  "plot_configuration": {
+    "step_size": 0.1,
+    "expected_steps": 50,
+    "view": "tube",
+    "qualification": "saved-box projection; adjacent run outcomes unbound; not an independent end-to-end NN certificate"
+  },
+  "artifacts": {
+    ".geometry.json": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_three_method_t_safe_distance_margin_tube.geometry.json",
+      "bytes": 15164
+    },
+    ".m": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_three_method_t_safe_distance_margin_tube.m",
+      "bytes": 8203
+    },
+    ".png": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_three_method_t_safe_distance_margin_tube.png",
+      "bytes": 115038
+    },
+    ".pdf": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_three_method_t_safe_distance_margin_tube.pdf",
+      "bytes": 26644
+    }
+  },
+  "matlab_runtime_check": "not performed"
+}

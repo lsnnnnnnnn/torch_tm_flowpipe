@@ -1,0 +1,110 @@
+{
+  "status": "numerical_candidate_only_not_a_certified_counterexample",
+  "started_utc": "2026-10-01T10:54:49.316094+00:00",
+  "ended_utc": "2026-10-01T10:54:49.891268+00:00",
+  "model_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_more_prep_001/controller_double_pendulum_more_robust.onnx",
+  "onnx_input": "sequential_1_input",
+  "onnx_output": "dense_3",
+  "onnx_ops": [
+    "MatMul",
+    "Add",
+    "Relu",
+    "MatMul",
+    "Add",
+    "Relu",
+    "MatMul",
+    "Add"
+  ],
+  "controller_evaluation": "ONNX graph MatMul/Add/Relu in float32 at each period start; sample and hold",
+  "plant": "official dynamics_dp.m, m=L=0.5, c=0, g=1; four-state continuous ODE",
+  "initial_state": [
+    1.3,
+    1.3,
+    1.3,
+    1.3
+  ],
+  "period_s": 0.02,
+  "periods": 20,
+  "integration": {
+    "methods": [
+      "DOP853",
+      "RK45"
+    ],
+    "rtol": 1e-12,
+    "atol": 1e-14,
+    "max_step_s": 0.0002,
+    "dense_samples_per_period": 101
+  },
+  "first_crossing_DOP853": {
+    "time": 0.32453650913459986,
+    "state": [
+      1.2335554728090898,
+      1.0560791976646158,
+      -1.5,
+      -1.3431506076257416
+    ],
+    "coordinate_side": "theta1_dot_lower",
+    "period": 16,
+    "control": [
+      -1.4296172857284546,
+      -0.8627445101737976
+    ],
+    "first_later_sample": {
+      "time": 0.3246,
+      "state": [
+        1.2334602300768203,
+        1.0559939166015024,
+        -1.5002026818181877,
+        -1.343253571048448
+      ]
+    }
+  },
+  "first_crossing_RK45": {
+    "time": 0.3245365091346001,
+    "state": [
+      1.2335554728090896,
+      1.0560791976646153,
+      -1.5000000000000002,
+      -1.343150607625744
+    ],
+    "coordinate_side": "theta1_dot_lower",
+    "period": 16,
+    "control": [
+      -1.4296172857284546,
+      -0.8627445101737976
+    ],
+    "first_later_sample": {
+      "time": 0.3246,
+      "state": [
+        1.2334602300768203,
+        1.0559939166015024,
+        -1.500202681818187,
+        -1.34325357104845
+      ]
+    }
+  },
+  "crossing_time_method_gap_s": 2.220446049250313e-16,
+  "max_boundary_state_method_gap": 2.220446049250313e-15,
+  "DOP853_sampled_min": [
+    1.1121765948194207,
+    0.9511287996229397,
+    -1.6975333206808423,
+    -1.4270206719117264
+  ],
+  "DOP853_sampled_max": [
+    1.4067856444021027,
+    1.322622871574697,
+    1.3444466129697927,
+    1.3
+  ],
+  "DOP853_final_state": [
+    1.1121765948194207,
+    0.9511287996229397,
+    -1.6975333206808423,
+    -1.4270206719117264
+  ],
+  "numpy_version": "2.4.4",
+  "scipy_version": "1.17.1",
+  "onnx_version": "1.22.0",
+  "content_digest": "not calculated"
+}

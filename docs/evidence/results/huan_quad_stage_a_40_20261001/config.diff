@@ -1,0 +1,20 @@
+--- original
++++ quad_40
+@@ -2,7 +2,7 @@
+ num_vars: 16
+ num_nn_input: 12
+ num_nn_output: 3
+-steps: 50
++steps: 2
+ step_size: 0.1
+ ode_step_size: 0.005
+ ode_order: 2
+@@ -121,7 +121,7 @@
+ constraints_target:
+ - -x3 + 0.94
+ - x3 - 1.06
+-model_dir: ../ARCH-COMP2024/benchmarks/QUAD/quad_controller_3_64_torch.onnx
++model_dir: /srv/local/shengenli/CROWN-Reach-GPU/ARCH-COMP2024/benchmarks/QUAD/quad_controller_3_64_torch.onnx
+ input_shape:
+ - -1
+ - 12

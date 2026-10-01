@@ -1,0 +1,107 @@
+# Huan QUAD / 绘图 / ARCH-COMP26 执行进度
+
+日期：2026-10-01。此页记录本次接续后的实际状态；完整目标仍在进行中。
+
+## 已核对的接续点
+
+- GitHub 交接分支为 `codex/gpu-verified-handoff-20260930`；本地已有后续执行分支 `codex/huan-plot-archcomp-execution-20260930`，包含 A 阶段报告草稿、绘图功能、16×4 新版矩阵和最终报告草稿。接续前的旧矩阵 64 个格子均未填入新实验结果；本轮新增尝试另见下方无哈希矩阵，旧成绩没有挪用。
+- 服务器旧 Huan parity QUAD 完成 1,024 盒 × 1,000 步；旧 strict 首次在第 597 步拒绝。当前 P3 和 trig 版均有 1,000 步完成记录。原生 QUAD 六小时作业自然超时，只记录 600 步共同完整前缀；旧进程已退出。没有重启这些原作业。
+- 用户要求本轮**不做任何哈希校验或 SHA-256**。本轮读取历史身份记录，但没有重新核验源码或预编译二进制的内容身份。一次读取远端 Git 提交号的请求被自动审批以此理由拒绝，此后未重试或变通。
+
+## 本轮新增结果
+
+1. 用全 1,024 初盒做了新的 Huan 40 步 parity / strict 两臂短程诊断，另做一次 parity 函数级计时。三次都是新目录、新进程，预载已有 CUDA 扩展并禁止 JIT。两臂均 `broken=0`。内部时间 parity 1.412598 s、strict 1.504988 s；进程时间 5.61 s、5.70 s。strict 的终点每盒 16 变量宽度和均值比 parity 高约 0.40%。阶段计时中，40 次 `advance_sparse` 共 1.051305 s，2 次 `crown_bounds` 共 0.316279 s。全部原始文件和计时边界见 [40 步诊断摘要](evidence/results/huan_quad_stage_a_40_20261001/SUMMARY.md)；分析见 [Huan 模式与速度报告](HUAN_QUAD_SPEED_AND_MODES.md)。这些数字不能外推为完整 5 秒的速度或性质结论。
+2. 用户选定 2026 论文方程为新版 QUAD 四方主合同。论文与官方仓库/旧作者代码在 `x2'`、`x4'`、`x5'` 三处不同；旧 Huan 约 80 秒结果仍按旧作者合同解释。逐式来源和未定控制器见 [QUAD 合同决策](ARCHCOMP26_QUAD_PAPER_CONTRACT_DECISION_20261001.md)。
+3. 已从论文、官方规格/动力学/控制器和旧入口核出 [Double Pendulum less-robust 的首个新版共同合同](ARCHCOMP26_DOUBLE_PENDULUM_LESS_CONTRACT_20261001.md)：四物理态、全初盒 `[1,1.3]^4`、225 子盒、20 个 0.05 s 控制期、全程四维安全带 `[-1.7,2]`。旧三套 GPU 结果只是回归线索，不能充当新版重跑。
+4. 已添加 [无哈希单格执行器](../tools/run_archcomp26_nohash.py)，可独占新目录、保存命令与原始日志、拒绝重复运行并在超时时清理进程组。假子进程自检通过。现有 ARCH-COMP 预检/矩阵/报告程序依赖哈希绑定，本轮不会把无哈希数据伪装成它们的合格结果。
+5. 对完成的 P3+trig 运行做了只读逐步计时审计：19 次非空图逐出步骤的混合计时合计 191.723381 s，其余 981 次合计 1.229124 s。前者包括全状态诊断签名和必要的 CUDA 同步/图逐出，不能当成净可省时间；调用链、候选改动和无哈希入口缺口见 [P3 优化审计](evidence/results/huan_quad_stage_a_40_20261001/P3_OPTIMIZATION_AUDIT_NOHASH.md)。没有改动旧数值源码或启动优化测速。
+
+## 绘图和剩余边界
+
+已有 QUAD 的时间—状态、状态—状态、原生保存范围的 box 投影，以及 MATLAB `.m`、PNG、PDF；见 [绘图说明](flowpipe_plotting.md) 和 [保存数据验证](FLOWPIPE_PLOT_VALIDATION_20261001.md)。本机与服务器 PATH 都没有 MATLAB/Octave，因此尚无 `.m` 实跑证据。保存的 P3 observer 只有逐坐标区间，无法恢复带相关性的 octagon；未来要在接受步保留的 Taylor 模型上导出八方向支持界，并单独验证。
+
+新增 [无哈希绘图入口](../src/torch_tm_flowpipe/flowpipe_plot_nohash.py) 可从 native `ranges.bin` 直接生成几何 JSON、MATLAB `.m`、PNG/PDF 与只记录路径/大小的收据。其调用链在 SHA 构造器拒绝测试下通过。新完成的 DP less 原生全程数据已另存本地小型数据包并生成 [t–θ₁ tube 图](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_t_theta1_tube.png) 和 [θ₁–θ₂ endpoint 图](evidence/results/archcomp26_20261001/native_dp_less_full20_001/plots/dp_less_native_225x100_theta1_theta2_endpoint.png) 等三组。图中初盒为 `[1,1.3]^4`，Safe region 是全时 `[-1.7,2]^4`；native 范围记录本身不含 accepted/status，图上仅声明记录覆盖。
+
+Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制请求端口是 5200，而同目录的 server/launcher 监听 5100；旧 5625 条范围记录不能作为已配对的四方结果。已从服务器旧离线轮包在新目录提取 `gevent`、`tinyrpc` 等 RPC 依赖并通过导入 smoke。端口一致的新 native **225 盒、1 控制期 plumbing smoke** 在独立目录 `.../runs/archcomp26_20261001/native_dp_less_smoke1_001` 完成：53.211 秒、1 次 RPC、1125 条范围记录（225 盒 × 5 个 0.01 s ODE 小步），服务与求解器正常退出。这不是完整 benchmark 成绩。
+
+随后另一新目录 `.../runs/archcomp26_20261001/native_dp_less_full20_001` 的原生 **225 盒 × 20 控制期**正式尝试已完成：进程 wall **1107.127423 s**（求解器自报 1100.101 s），20 次 RPC，22,500 条唯一且完整的 `(lane,step)` 范围记录（225 盒 × 100 小步），无超时或数值拒绝。作者 checker 报 `VERIFIED`；独立读取保存区间，四个物理态全时 tube 均位于官方 `[-1.7,2]` 安全带，未发现 NaN、逆序或 endpoint 越出 tube。完整 T=1 endpoint/tube 绝对区间、每盒宽度与计时边界见 [native DP less 摘要](evidence/results/archcomp26_20261001/native_dp_less_full20_001/SUMMARY.md)。这不构成独立的浮点 NN 证明，也不能单独填满四方比较。其它新版实例的模型、控制器和性质冲突仍需逐项冻结，不能猜测或删行。
+
+本轮新尝试的机器可读索引是 [无哈希 attempt 记录](evidence/archcomp26_nohash_attempts_20261001.json)，与旧版摘要绑定 16×4 矩阵分开，明确短程 smoke、完整单次结果和失败预检的不同资格。
+
+## 随后完成的新尝试
+
+- **论文方程 QUAD / Huan**：独立新 [配置](../benchmarks/archcomp26/configs/quad_paper_p2_huan.yaml) 下，1,024 盒 × 50 控制周期、1,000 ODE 小步全部完成，`broken=0`，进程 wall 94.583 s，driver 90.471 s。作者现有终点 checker 给出 `VERIFIED`，T=5 的 `x3` union `[0.967434441417146,1.015176258384569]` 位于论文目标内。旧约75秒用的是不同动力学，不能直接作速度变化。见 [新运行摘要](evidence/results/archcomp26_20261001/quad_paper_huan_full50_001/SUMMARY.md)；reach-and-remain 的完整时间语义与独立浮点 NN 证明仍未闭合。
+- **DP less / 四方实际尝试**：原生完整结果如上。新 Huan/Xiangru 共享驱动各完成 225 盒 × 20 周期、22,500 接受盒步，进程 wall 分别为 9.539174 s 和 8.387790 s；两份保存区间逐字节相同，独立扫描的 tube 与 endpoint 均在安全带内。它们共享驱动且各只有一个样本，不构成独立证明或稳定速度排名；保存 observer 的 endpoint 相对同小步 tube 有最多 `5.55e-15` 的微小越界，见 [两作者新结果](evidence/results/archcomp26_20261001/author_dp_less_v1/SUMMARY.md)。新版 P3 先用独立有向区间 NN residual 跑完整盒尝试，第 2 期首小步 225 盒全因收缩失败；更紧的有向仿射 ReLU residual 后已推进 60/100 小步，但从小步48起性质未决，并出现局部收缩失败。两者都保留为失败/部分前缀，见 [P3 诊断](ARCHCOMP26_DP_P3_DIRECTED_DIAGNOSTIC_20261001.md)。
+- **DP more / 正确独立 controller**：新原生 225 盒跑到第16个控制周期，进程 wall 715.978257 s，45盒 `UNKNOWN` 后停；共同安全前缀到 `T=0.3`，无 T=0.4 结果，见 [原生摘要](evidence/results/archcomp26_20261001/native_dp_more_full20_001/SUMMARY.md) 和 [状态图](evidence/results/archcomp26_20261001/native_dp_more_full20_001/plots/dp_more_native_theta1dot_status.png)。新 Huan/Xiangru 用相同 225 盒和固定2026 more ONNX，均在第18期后由共享 checker 输出 `Unsafe.` 并早停；进程 wall 11.685967 s、11.724106 s，保存区间逐字节相同。独立区间扫描显示 `T≤0.3` 安全，步61初见未决，步72有15盒的整个保存 `θ̇₁` tube 位于安全带下方；这尚不是独立端到端浮点 NN 反例证明。见 [两作者早停摘要](evidence/results/archcomp26_20261001/author_dp_more_v1/SUMMARY.md)。
+
+截至上节时，主要缺口是论文 QUAD 的其它三方法、新版其余 13 个非 VCAS 配置的逐项合同和四方运行、P3 严格控制器与更完整的可验证数值资格，以及正式多次计时。Single Pendulum 的第三时钟初值、Airplane 离散控制更新先后、QUAD reach-and-remain 检查的原始参与者执行源码仍未取得，已向用户具体询问；不由现有论文/README猜造执行语义。当时阶段性 DOCX/PDF 正在制作；旧哈希绑定 16×4 矩阵仍保留为恢复前快照，新数据以独立 [无哈希 attempt 索引](evidence/archcomp26_nohash_attempts_20261001.json)登记。
+
+## 后续新证据（12:30 UTC 左右）
+
+- **论文 QUAD / Xiangru**：另一独立新目录 `.../quad_paper_xiangru_v1/full50_001` 的 1,024 盒 × 1,000 步全部接受，进程 wall 108.018 s、driver 103.686 s，最终 16 维 hull 与新 Huan 论文合同 JSON 相同。两者共用作者数学核心和 P2 parity，不能充当彼此独立的正确性证明；各一次 wall 不能建立稳定排名。见 [Xiangru 摘要](evidence/results/archcomp26_20261001/quad_paper_xiangru_v1/SUMMARY.md)。原生论文 QUAD 在独立 `.../native_quad_paper_full50_001` 运行中；1,024 盒一期预检有 20,480 条完整范围记录，未重复启动旧六小时作业。
+- **Single Pendulum / 论文两物理态 profile**：新 [配置](../benchmarks/archcomp26/configs/single_pendulum_paper_two_state.yaml) 对完整单盒、`0.05×20`、全时 `t∈[0.5,1]` 的 `0≤x1≤1` 设闭时间窗。Huan 与 Xiangru 各有一份完整 100/100 小步、`broken=0` 的新运行，wall 5.431 s / 5.529 s；两份保存区间完全相同，窗口内 `x1` tube union `[0.5663832766836561,0.9925703395905962]`。见 [SP 两方摘要](evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md)。此 profile 把第三状态仅作辅助时钟；若要称为 2026 参与者 MATLAB 三态复现，仍缺第三初值/执行源码。新 native 仍在单独预检/正式运行。
+- **TORA remain / 原生**：逐字节确认选定的固定 2026 ONNX 与服务器已有旧同名模型相同；原生隔离 build 的 12 盒一期 plumbing smoke 完成。新的 12 盒 × 20 期、200 小步正式单次原生运行在 8.339151 s 完成，20 RPC、2,400 条唯一范围记录，作者 checker `VERIFIED`。独立 [范围扫描](evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md) 所见全时四态 tube 都在 `[-2,2]` 内，端点也未越出同小步 tube。四方 [合同](ARCHCOMP26_TORA_REMAIN_CONTRACT_20261001.md) 已冻结；截至本节写作时 Huan/Xiangru 尚待结果，其后续终态见下方补记。此单次时间不进入四方排名。
+
+无哈希 [16×4 工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md) 单独从新 attempt 索引重算，反映已尝试/运行中/早停/失败；旧冻结矩阵没有被改写。阶段性 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx) 与 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.pdf) 已生成，仍是**未完成全套实验的阶段稿**；下一版须纳入本节新增运行。
+
+## 21:55 本地补记：QUAD P3、SP 与 TORA 两方
+
+- **2026 论文方程 QUAD / P3**：独立新目录 `quad_paper_p3_nohash_v1/full50_001` 完成 1,024 盒 × 1,000 小步，1,024,000/1,024,000 盒步接受，50 次控制刷新、`broken=0`，外层进程 wall 1,357.555 s；`T=5` 的 `x3` endpoint union 为 `[0.9584732146312492,1.0256989633476477]`，在目标 `[0.94,1.06]` 内。驱动打印 `VERIFIED`，但明确记录 `end_to_end_strict_certificate=false`，不能把该诊断提升为独立端到端浮点 NNCS 证书。其终点宽 0.06722574871639841，比新 Huan/Xiangru P2 parity 的 0.04774181696742297 宽；各只有一次样本、设备与路线不同，不给速度排名。见[原始证据摘要](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)。论文方程 native 全程作业仍在运行，未填其终点或完成时间。
+- **Single Pendulum / 原生补完**：两物理态加辅助时钟的原生全程已完成 1 盒 × 100 小步，wall 4.726027 s；Huan/Xiangru 分别为 5.430762 / 5.528731 s。三方在性质要求的闭时间窗 `t∈[0.5,1]` 保存的 `x1` tube 均位于 `[0,1]`。见[原生摘要](evidence/results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md)和[两方摘要](evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md)。
+- **TORA remain / 作者两方新尝试**：原生已全程完成并由作者 checker 报 `VERIFIED`，进程 wall 8.339151 s、2,400/2,400 条范围，见[原生摘要](evidence/results/archcomp26_20261001/native_tora_remain_full20_001/SUMMARY.md)。Huan/Xiangru 各观察到 200 小步，但只接受 2357/2400 盒步，作者 checker 均报 `Unknown.`；首次保存 tube 出安全带在步185，首次拒绝在步190。两方全部盒接受且保存 tube 安全的共同前缀仅 `t≤18.4`。其失败进程 wall 8.371523 / 8.270158 s 不与原生完整时间排名，区间出带不是独立实际轨迹反例。见[两方摘要](evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md)。
+- 新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)当前由 35 条 attempt 重算：10 个方法格有单次完整时域数值记录、1 格运行中、5 格早停或未完成。它独立于旧哈希绑定矩阵，完成格也尚不构成四方同资源、多次测量或端到端证明。阶段 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx) 与 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.pdf) 已按这批事实更新并逐页检查，仍非最终完整报告。
+
+## 继续推进：ACC 与未冻结的来源差异
+
+- **ACC participant-order / 修复 VAR 尾项的原生 Flow\***：固定 2026 ONNX 与保存的旧同名文件直接逐字节相同；保存的两份参与者源码均明确第 5 个 NN 特征为 `v_lead-v_ego`，论文没有定义相对速度符号，故新[合同](ARCHCOMP26_ACC_PARTICIPANT_CONTRACT_20261001.md)明确命名这一输入顺序。独立一期 smoke 后，隔离修复版完成全初盒 B=1、50 控制期、T=5，50 RPC、50 条范围、作者 checker `VERIFIED`，外层 wall **7.930 s**。独立读取保存 tube 后，安全半空间 `x_lead-x_ego-1.4*v_ego-10` 的保守下界最小 **16.25475375921129>0**。见[新原生摘要](evidence/results/archcomp26_20261001/acc_native_var_tail_full50_001/SUMMARY.md)。这只证明本次数值记录与作者 checker 一致，不提升旧 VAR 修复针对性单步测试为端到端控制器证明；Huan/Xiangru 新入口仍在准备。
+- [NAV 来源审计](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)发现论文状态文字 `(x,y,θ,ν)` 与固定官方 MATLAB/旧参与者的实际 `(x,y,ν,θ)` 顺序冲突；固定仓库无可判定 NN 轴语义的训练或执行代码，新 NAV 数值任务暂不启动，旧完整结果仅作参考。
+- [TORA reach 来源冲突](ARCHCOMP26_TORA_REACH_SOURCE_CONFLICT_20261001.md)涉及 sigmoid 最后一层和 plant 缩放；[无哈希网络预检](ARCHCOMP26_TORA_REACH_CONTROLLER_PREFLIGHT_NOHASH_20261001.md)已证实官方 2026 `.mat` 与旧 ONNX 的逐层参数、激活一致，并提供需显式选择缩放的构造器。用户的主合同选择未返回，reach 数值任务未启动。
+- [Unicycle 来源冲突](ARCHCOMP26_UNICYCLE_SOURCE_CONFLICT_20261001.md)涉及扰动加入 yaw/speed 的位置与 `w` 是否随时间变化；固定 2026 ONNX 与保存版直接字节相同，但不能替代 plant 选择。[Airplane 入口审计](ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md)亦已核出完整初盒和固定 ONNX，而离散更新顺序在官方目录没有执行程序；没有把旧单点连续任务或自拟 Euler 先后伪称官方离散复现。
+
+当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)已收录 37 条新尝试：11 格单次完整数值时域、1 格仍运行的原生论文 QUAD、5 格早停、1 格失败。所有完整格的稳定多次比较和端到端浮点 NNCS 证明仍未完成。
+
+## 后续补记：ACC 三方、Attitude checker 与 QUAD 长作业
+
+- **ACC participant-order 三方全程**：Huan/Xiangru 各自在独立新目录完成一期 smoke 和全 50 期，均 50/50 小步接受，50 次安全评价，保存 tube 的半空间保守下界最小都是 `16.16503470756421>0`；两方全程区间记录和安全记录逐字节一致。进程 wall 分别为 7.259717 s、7.311630 s。与原生修复 VAR 尾项的 7.930 s 共同形成这个明确命名合同的三方单次完整数值记录；独立证书及稳定多次计时尚缺。见[三方证据汇总](evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md)。我方 P3 适配正在独立评估，未填完整结果。
+- **Attitude Control 来源错误**：旧 native/Xiangru checker 把官方危险盒的 `x4≥-0.7` 误写成 `x4≥-0.4`，而上界仍为 `x4≤-0.6`，所检危险集为空。旧 `VERIFIED` 不可沿用为 2026 正确规格结果；新隔离修正与预检继续进行。
+- **论文方程 QUAD / native**：只读确认独立新作业仍在运行，目前到第 26 个控制期；未启动第二份或重启旧六小时实验，完整 T=5 结果尚未产生。
+
+最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **41 条**新尝试重算：**13 格**有单次完整数值时域记录、1 格运行中、5 格早停、1 格失败，其余 44 格尚无尝试。上述先前“35 条”“37 条”是各阶段快照，不表示当前计数。
+
+## ACC 四方数值记录闭合
+
+- 我方 working-P3 ACC 最小适配在新独立目录先完成一期 smoke，再完成全单盒 50 期、50/50 小步接受，50 次控制特征构造/注入和 50 次安全事件。单次外层 wall **7.933729 s**，保存全时 tube 盒的安全半空间保守下界最小 **16.43485856971698>0**；见[P3 证据摘要](evidence/results/archcomp26_20261001/acc_p3_full50_001/SUMMARY.md)与[四方汇总](evidence/results/archcomp26_20261001/ACC_PARTICIPANT_PROFILE_20261001.md)。该入口复用 working-P3 数值核心与已有 CUDA 库，不能继承 QUAD 的全批次资格；用户要求的无摘要路径被保持。
+- ACC participant-order 是第一个四方法均完成完整时域的实例。其“参与者顺序”指 `v_rel=v_lead-v_ego`，论文未定义符号；四条单次 wall 仅作各自进程事实，不能据此排名。四方独立端到端浮点 NNCS 证明、统一多次计时和每维完整宽度对比仍待完成。
+
+当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **43 条**新尝试重算：**14 格**单次完整、1 格运行中、5 格早停、1 格失败，43 格尚未尝试。此前 41 条是上一阶段快照。
+
+## Attitude 官方 unsafe 修正后的原生全程
+
+旧 native/Xiangru 源码把 `x4` 的危险盒下界 `-0.7` 误写成 `-0.4`，结合上界 `-0.6` 形成空集；详见[合同和逐式来源](ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md)。在独立新构建和运行目录修正这条约束后，原生先完成一期 smoke，再完成全部 30 控制期、60 个 ODE 小段、30 RPC，进程 wall **6.281498 s**。作者 checker 给 `VERIFIED`；保存的 60 个六维 tube 盒均与官方真正的 unsafe 盒不相交，`x4` 全时上界为 `-0.710800050132425`，低于危险盒下界 `-0.7`。见[保存盒扫描](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/SCAN.json)和[危险盒独立判交](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/BOX_UNSAFE_AUDIT.json)。旧 `VERIFIED` 不纳入新成绩；新数值结果也不声称独立端到端浮点 NN 证明。Huan/Xiangru 的修正 profile 正在另立目录预检。
+
+目前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **45 条**新尝试重算：**15 格**单次完整、1 格运行中、5 格早停、1 格失败，42 格尚未尝试。此前 43 条是上一阶段快照。
+
+新增[已保存流管绘图汇总](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/SUMMARY.md)：[ACC 四方 t–安全距离裕量 PNG](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.png)直接从 50 期六态 tube 盒计算半空间保守像，并画安全阈值 0；[论文方程 QUAD P3 t–x3 PNG](evidence/results/archcomp26_20261001/plots/nohash_saved_20261001/quad_paper_p3_1024x1000_t_x3_pooled_tube.png)使用 1,000 行每步 1,024 盒 union，目标仅是 T=5 终点。两者另有 PDF、MATLAB `.m`、逐步几何 JSON 和不含内容摘要的出图收据；MATLAB 脚本仍未实跑，QUAD 图不冒充逐盒或 octagon。
+
+[Docking 与 Balancing/CartPole 来源审计](ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md)已完成。Docking 的固定官方附带说明可冻结四原态输入、两力输出、全初盒、1 秒×40 周期及非线性全时安全不等式；缺四方可执行入口与该不等式的流管 checker。Balancing 的论文五特征控制器与固定四输入 ONNX/MATLAB 不一致，闭时间窗 `[8,10]` 与规格 `8<t≤10` 也不同；可另立仓库四原态 profile，但不能冒充论文五特征主合同。这两格暂不填数值成绩。
+
+修正危险集的 **Attitude Huan/Xiangru** 也在各自独立 smoke 后完成 30/30 期、60/60 接受小段。进程 wall 分别为 7.094217 / 6.933376 s；两者新保存范围直接逐字节相同，各 60 个六维 tube 盒与官方真正的 unsafe 盒不相交，修正后的作者 checker 未输出 Unsafe/Unknown。原生显式 `VERIFIED` 和独立扫描如上；旧空集 checker 成绩不升格。两作者 [保存结果](evidence/results/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001/payload/RESULT.json) 仍缺 P3 同合同方法格及独立浮点 NN 证明。
+
+最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **49 条**新尝试重算：**17 格**单次完整、1 格运行中、5 格早停、1 格失败，40 格尚未尝试。先前 45 条是阶段快照。
+
+用于 GitHub 审阅的[本轮证据镜像](evidence/results/README.md)已开始放入分支，包含已完成的小运行收据、保存范围、图、CSV 和阶段报告；官方第三方控制器模型不重复发布，原生 QUAD 长作业的完整二进制范围仍保留服务器原路径。新短任务产生的后续收据继续同步，不借用历史数据填新结果。
+
+**Single Pendulum 两物理态 / P3** 在新独立 smoke 后完成全初盒一分区的 20 控制期、100/100 接受小步，外层 wall **6.583305 s**。闭窗 `[0.5,1]` 的 50 次作者安全事件全部满足，保存 tube 的 `x1` union 为 `[0.5645452654370386,0.9932406822927875]`；见[新 P3 证据摘要](evidence/results/archcomp26_20261001/single_pendulum_two_state_p3_full20_001/SUMMARY.md)。P3/Huan/Xiangru/native 现构成该**两物理态加辅助时钟**合同的四方单次完整数值记录，不能挪作缺第三初值的官方三态 MATLAB 复现或稳态速度排名。
+
+最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **51 条**新尝试重算：**18 格**单次完整、1 格运行中、5 格早停、1 格失败，39 格尚未尝试。先前 49 条是阶段快照。
+
+**Attitude ours/P3 修正 unsafe** 在独立新目录完成一期 smoke 后，全程完成 30 控制期、60/60 接受小段，外层 wall **13.017036 s**；修正后的作者 checker 未输出 Unsafe/Unknown，保存的 60 个六维 tube 盒逐段与官方非空 unsafe 盒分离。见[P3 保存结果](evidence/results/archcomp26_20261001/p3_attitude_avoid_v1/full30_001/payload/RESULT.json)及[合同与旧 checker 错误](ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md)。P3/Huan/Xiangru/native 因此均有该修正合同的单次完整数值记录；旧空集 `VERIFIED` 未借用，四方仍缺独立浮点 NN 证明和重复计时。
+
+最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **53 条**新尝试重算：**19 格**单次完整、1 格运行中、5 格早停、1 格失败，38 格尚未尝试。先前 51 条是阶段快照。
+
+## 10 月 2 日凌晨补记：ACC 重复计时与 TORA P3
+
+- **ACC 24 次独立进程 campaign**：在同一明确命名的 participant-order 合同下，四种方法各有 1 次本 campaign 首轮新进程和 5 次后续新进程；轮次轮换，共 24/24 全时域完整、已保存 tube 安全。统一外层 `Popen` 前至子进程回收 wall，GPU 2、CPU 10–13 顺序执行。后五次中位数分别为原生 **7.736304 s**、Huan **8.237208 s**、Xiangru **7.987532 s**、P3 **8.740510 s**；各自逐次 min/max、首轮时间、50 步/RPC/控制器调用和 24 个独立原始目录在[正式 campaign 摘要](evidence/results/archcomp26_20261001/acc_fourway_campaign_001/SUMMARY.md)。首轮不是重启主机后的冷机；GPU 1 同时运行 QUAD 长作业，且缺独立端到端浮点 NN 证明，这组时间只作当前资源条件下的描述，暂不宣称稳定速度排名。最初各方法的一次单独运行仍保留，没有混入这 24 个样本。
+- **TORA remain / P3**：独立一期 smoke 后，新全程尝试完成 12 初盒 × 20 控制期 × 10 小步 = 2400/2400 盒步接受，外层 wall **10.411001 s**。对保存的 2400 条范围独立扫描，四态全时 tube 均在 `[-2,2]^4`，无拒绝、首越界或终点超出同段 tube；作者 checker 无失败输出。末端四态绝对 `lo/hi/width` 与原始收据见[新 P3 摘要](evidence/results/archcomp26_20261001/p3_tora_remain_v1/SUMMARY.md)。原生也完整，Huan/Xiangru 仍是 `t≤18.4` 共同安全前缀；[四方绝对区间和空值表](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/SUMMARY.md)区分了这两类结局。失败进程 wall 不和完整时间排名；P3 的安全数值记录不等于独立端到端 NNCS 浮点证书。
+
+最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **79 条**新尝试重算：**20 格**记录完整数值时域、1 格论文方程 QUAD 原生仍在运行、5 格早停、1 格失败，37 格尚未尝试。先前 53 条是上一阶段快照。

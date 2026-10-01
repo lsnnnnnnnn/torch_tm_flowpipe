@@ -1,0 +1,33 @@
+# Single Pendulum paper two-state execution preflight
+
+No Single Pendulum numerical run was started in this preflight. No content digest was calculated.
+
+## Fixed benchmark contract
+
+The [2026 instance specification](https://github.com/Kiguli/ARCH-COMP2026/blob/d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26/benchmarks/Single_Pendulum/specifications.txt) gives one full physical initial box `x1∈[1,1.175], x2∈[0,0.2]`, a `0.05 s` control period, and `x1∈[0,1]` throughout the closed window `t∈[0.5,1]`. The paper's two physical equations and the first two derivatives in [official `dynamics_sp.m`](https://github.com/Kiguli/ARCH-COMP2026/blob/d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26/benchmarks/Single_Pendulum/dynamics_sp.m) are `x1'=x2`, `x2'=2 sin(x1)+8u`. The MATLAB file also returns `dx(3)=1`; the instance specification gives no third-state initial value. Our new profile explicitly treats `t(0)=0,t'=1` as an auxiliary checker clock and `u'=0` as the held control, never as a third physical state or NN input. It does not claim to reproduce an undocumented 2026 participant MATLAB state setup.
+
+The fixed 2026 `controller_single_pendulum.onnx` is available from the [fixed official repository](https://github.com/Kiguli/ARCH-COMP2026/blob/d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26/benchmarks/Single_Pendulum/controller_single_pendulum.onnx), with its experiment copy at `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx`. Direct ONNX graph inspection gives float32 `[N,2]→[N,1]`, nodes `MatMul, Add, Relu, MatMul, Add, Relu, MatMul, Add`, and no preprocessing node. Direct byte comparison on the server found the three same-name 2024 CROWN-Reach, CROWN-Reach-GPU, and CROWN-Reach_Development copies equal to this fixed official 2026 file; no digest was used.
+
+## New, separate GPU config
+
+[The paper two-state YAML](../../../../../benchmarks/archcomp26/configs/single_pendulum_paper_two_state.yaml) has one full initial box (also exactly the old four-variable ledger `[[1,1.175],[0,.2],[0,0],[0,0]]`), 20 periods, `0.01 s` ODE substeps/order 2, and `num_nn_input=2`. It uses `constraints_safe: [-x1, x1-1]` with `constraints_safe_from: 0.5`, `constraints_safe_until: 1.0`. This replaces the old YAML's ambiguous `constraints_unsafe: [-t+.5, x1, -x1+1]` for the new contract. The config is also copied to the remote preflight directory above.
+
+Server PyYAML accepted the new config; each actual Huan, Xiangru, and ours `compile_ode` accepted its four RHS and both safety expressions. Their actual `window_piece` functions were run over the 100 substep times: each selected exactly substeps 50–99 with zero partial substeps. The first covered flowpipe begins at `t=.5` and the last ends at `t=1`; source comments and code state the flowpipes are closed on their time domain. Source paths are `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py:616,1337`, `/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py:673,1464`, and `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_linear_leaf_v2/integrations/crown_reach/gpu_driver.py:616,1337`.
+
+**Readiness:** Huan, Xiangru, and ours statically accept the new paper-two-state contract. Huan and Xiangru have now completed separate full runs below. Ours has not run on this profile. The historical results used a different property encoding and cannot fill these cells.
+
+**Historical native gap and resolution:** The existing `.../runs/archcomp_review_20260923/suite_build/archcomp/single_pendulum/matched_threads4.cpp` calls port 5100, gives the NN only `x1,x2`, and integrates `0.05 s` ×20 with the correct full box. Its safe set is empty on every segment and it calls `unsafetyChecking` only once at the end with the old three inequalities; that binary and verdict are not usable for the new property. A separately built source now checks `-x1≤0` and `x1-1≤0` on periods 10–19, evaluates each segment status, and pairs a 5101 server explicitly with the fixed 2026 controller. Its [full run summary](../native_sp_two_state_full20_001/SUMMARY.md) and original evidence are separate from the historical result.
+
+## New Huan and Xiangru executions
+
+The isolated [runner](../../../../../tools/archcomp26_sp_two_state_gpu_nohash.py) blocked SHA-256 constructors and CUDA extension builds before loading either driver, and preloaded the saved GPU libraries. Both runs used physical GPU 2, CPUs 10–13, the same fixed official 2026 ONNX and one complete physical initial box. The 1-period smokes explicitly removed the safety property because `t=.05` has not reached its `[.5,1]` window. Every run used a new directory; no historical arm was restarted. The remote base is `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/`, and original logs and range rows were copied into the same named local directories without a checksum.
+
+| New run directory | Result | Outer wall | ODE substeps / accepted | Note |
+| --- | --- | ---: | ---: | --- |
+| `single_pendulum_two_state_huan_smoke1_001` | failed before ODE | 2.220 s | 0 | First launcher tried a Xiangru-only diagnostic attribute on Huan. Error and original launcher retained. |
+| `single_pendulum_two_state_huan_smoke1_002` | exit 0 | 4.474 s | 5 / 5 | Plumbing only; no window property. |
+| `single_pendulum_two_state_huan_full20_001` | exit 0 | 5.431 s | 100 / 100 | Full `[.5,1]` property checked. |
+| `single_pendulum_two_state_xiangru_smoke1_001` | exit 0 | 4.427 s | 5 / 5 | Plumbing only; no window property. |
+| `single_pendulum_two_state_xiangru_full20_001` | exit 0 | 5.529 s | 100 / 100 | Full `[.5,1]` property checked. |
+
+For **each** full run, `metrics_broken=0` and the driver printed `SPEC WINDOW safeset t in [0.5, 1]: checked on 50 of 100 substeps, 0 partial`. It printed neither `Unsafe.` nor `Unknown.`; the driver's safety-set verdict convention is silence on success (`gpu_driver.py:1413–1420`, Xiangru `crown_reach.py` analogous). An independent scan of each saved `ranges.jsonl` finds all 50 windowed `x1` tube enclosures inside `[0,1]`, with union `[0.5663832766836561,0.9925703395905962]`. The `t=.5` endpoint enclosure is `[0.8171712343025631,0.9929800549651607]`, and `T=1` endpoint is `[0.5663960766437697,0.7055354288423934]`. Mean/max `x1` endpoint width over the 50 checked substeps is `0.15598342757796202 / 0.1749893811382608`. The Huan and Xiangru JSON range rows were directly compared and are equal. These are two separate engine executions, not an independent floating-point NN proof.

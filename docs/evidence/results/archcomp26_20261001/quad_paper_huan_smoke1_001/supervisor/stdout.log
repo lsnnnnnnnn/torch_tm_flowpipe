@@ -1,0 +1,21 @@
+RUN_START {"argv": ["/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py", "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_smoke1_001/quad_paper.yaml", "--device", "cuda:0", "--engine", "sparse", "--crown-domain", "box", "--crown-relax", "same-slope", "--print-final-hull", "--metrics-json", "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_smoke1_001/parity/metrics.json"], "config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/quad_paper_huan_smoke1_001/quad_paper.yaml", "cpu_affinity": [10, 11, 12, 13], "cuda_visible_devices": "2", "driver": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_huan_sr_chunk/integrations/crown_reach/gpu_driver.py", "mode": "parity", "modules": {"flowstar_seg_kernels": {"bytes": 1279632, "mtime_ns": 1790068022742403774, "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_seg_kernels/flowstar_seg_kernels.so"}, "flowstar_tape_kernels": {"bytes": 1442736, "mtime_ns": 1790068080138544285, "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_tape_kernels/flowstar_tape_kernels.so"}, "flowstar_valid_kernels": {"bytes": 1421248, "mtime_ns": 1790068137490679947, "path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/cache_four_way_v1/huan/flowstar_valid_kernels/flowstar_valid_kernels.so"}}, "start_utc": "2026-10-01T09:41:25.183932+00:00"}
+Step 0
+FALSIFIED
+HULL x1 -0.44036814132 0.440363400112
+HULL x2 -0.44037366283 0.440389510005
+HULL x3 -0.391002595937 0.462163346769
+HULL x4 -0.40603329819 0.406082998615
+HULL x5 -0.406405730884 0.406239969386
+HULL x6 -1.34831280046 -0.0749100753669
+HULL x7 -0.00688118740692 0.00800781351325
+HULL x8 -0.00701800502246 0.0073555152468
+HULL x9 -2.76759196611e-05 2.77265827567e-05
+HULL x10 -0.14545735778 0.167989877612
+HULL x11 -0.147923641898 0.154673861746
+HULL x12 -0 0
+HULL t 0.1 0.1
+HULL u1 4.46491769188 15.4601717285
+HULL u2 -0.0785469732013 0.0907145339106
+HULL u3 -0.0798787666251 0.0835238853429
+time cost: 0.984120
+RUN_END {"mode": "parity", "end_utc": "2026-10-01T09:41:27.527391+00:00", "driver_wall_s": 2.3433686811476946, "returncode": 0, "cuda_peak_allocated_bytes": 46197248, "cuda_peak_reserved_bytes": 67108864}

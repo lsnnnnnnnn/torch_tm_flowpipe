@@ -1,0 +1,57 @@
+{
+  "schema": "archcomp26-saved-interval-render-v1",
+  "created_utc": "2026-10-01T15:32:01.141384+00:00",
+  "plot": "acc-four-method-tube-margin",
+  "content_digest_policy": "none computed",
+  "sources": [
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_native_var_tail_full50_001/ranges.bin",
+      "bytes": 10800
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_huan_full50_001/ranges.jsonl",
+      "bytes": 28973
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_xiangru_full50_001/ranges.jsonl",
+      "bytes": 28973
+    },
+    {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/acc_p3_full50_001/ranges.jsonl",
+      "bytes": 28931
+    }
+  ],
+  "summary": {
+    "minimum_tube_margin_lower_by_method": {
+      "Native corrected VAR": 16.254753759211283,
+      "Huan": 16.165034707564207,
+      "Xiangru": 16.165034707564207,
+      "ours/P3": 16.434858569716976
+    }
+  },
+  "plot_configuration": {
+    "step_size": 0.1,
+    "expected_steps": 50,
+    "view": "tube",
+    "qualification": "saved-box projection; adjacent run outcomes unbound; not an independent end-to-end NN certificate"
+  },
+  "artifacts": {
+    ".geometry.json": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.geometry.json",
+      "bytes": 19993
+    },
+    ".m": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.m",
+      "bytes": 10481
+    },
+    ".png": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.png",
+      "bytes": 115118
+    },
+    ".pdf": {
+      "path": "/Users/shengenli/Documents/ChatGPT/verification/results/archcomp26_20261001/plots/nohash_saved_20261001/acc_four_method_t_safe_distance_margin_tube.pdf",
+      "bytes": 28257
+    }
+  },
+  "matlab_runtime_check": "not performed"
+}

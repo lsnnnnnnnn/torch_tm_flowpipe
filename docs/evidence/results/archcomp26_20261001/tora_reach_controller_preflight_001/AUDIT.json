@@ -1,0 +1,291 @@
+{
+  "kind": "point_controller_preflight_only",
+  "sample_points": [
+    [
+      -0.76,
+      -0.44,
+      0.525,
+      -0.29000000000000004
+    ],
+    [
+      -0.77,
+      -0.45,
+      0.51,
+      -0.3
+    ],
+    [
+      -0.77,
+      -0.45,
+      0.51,
+      -0.28
+    ],
+    [
+      -0.77,
+      -0.45,
+      0.54,
+      -0.3
+    ],
+    [
+      -0.77,
+      -0.45,
+      0.54,
+      -0.28
+    ],
+    [
+      -0.77,
+      -0.43,
+      0.51,
+      -0.3
+    ],
+    [
+      -0.77,
+      -0.43,
+      0.51,
+      -0.28
+    ],
+    [
+      -0.77,
+      -0.43,
+      0.54,
+      -0.3
+    ],
+    [
+      -0.77,
+      -0.43,
+      0.54,
+      -0.28
+    ],
+    [
+      -0.75,
+      -0.45,
+      0.51,
+      -0.3
+    ],
+    [
+      -0.75,
+      -0.45,
+      0.51,
+      -0.28
+    ],
+    [
+      -0.75,
+      -0.45,
+      0.54,
+      -0.3
+    ],
+    [
+      -0.75,
+      -0.45,
+      0.54,
+      -0.28
+    ],
+    [
+      -0.75,
+      -0.43,
+      0.51,
+      -0.3
+    ],
+    [
+      -0.75,
+      -0.43,
+      0.51,
+      -0.28
+    ],
+    [
+      -0.75,
+      -0.43,
+      0.54,
+      -0.3
+    ],
+    [
+      -0.75,
+      -0.43,
+      0.54,
+      -0.28
+    ],
+    [
+      -0.765,
+      -0.445,
+      0.5175000000000001,
+      -0.295
+    ],
+    [
+      -0.755,
+      -0.435,
+      0.5325,
+      -0.28500000000000003
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    [
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ]
+  ],
+  "models": {
+    "nn_tora_sigmoid": {
+      "mat_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_prep_001/nn_tora_sigmoid.mat",
+      "old_onnx_path": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_sigmoid.onnx",
+      "mat_activations": [
+        "sigmoid",
+        "sigmoid",
+        "sigmoid",
+        "sigmoid"
+      ],
+      "old_onnx_ops": [
+        "Gemm",
+        "Sigmoid",
+        "Gemm",
+        "Sigmoid",
+        "Gemm",
+        "Sigmoid",
+        "Gemm",
+        "Sigmoid"
+      ],
+      "layers": [
+        {
+          "layer": 1,
+          "weight_shape": [
+            20,
+            4
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 2,
+          "weight_shape": [
+            20,
+            20
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 3,
+          "weight_shape": [
+            20,
+            20
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 4,
+          "weight_shape": [
+            1,
+            20
+          ],
+          "bias_shape": [
+            1
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        }
+      ],
+      "forward": {
+        "points": 22,
+        "max_abs_error": 1.1102230246251565e-16,
+        "center_mat": 0.461650623936015,
+        "center_onnx": 0.4616506239360151
+      }
+    },
+    "nn_tora_relu_tanh": {
+      "mat_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_prep_001/nn_tora_relu_tanh.mat",
+      "old_onnx_path": "/srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Tora_Heterogeneous/nn_tora_relu_tanh.onnx",
+      "mat_activations": [
+        "relu",
+        "relu",
+        "relu",
+        "tanh"
+      ],
+      "old_onnx_ops": [
+        "Gemm",
+        "Relu",
+        "Gemm",
+        "Relu",
+        "Gemm",
+        "Relu",
+        "Gemm",
+        "Tanh"
+      ],
+      "layers": [
+        {
+          "layer": 1,
+          "weight_shape": [
+            20,
+            4
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 2,
+          "weight_shape": [
+            20,
+            20
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 3,
+          "weight_shape": [
+            20,
+            20
+          ],
+          "bias_shape": [
+            20
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        },
+        {
+          "layer": 4,
+          "weight_shape": [
+            1,
+            20
+          ],
+          "bias_shape": [
+            1
+          ],
+          "weight_elementwise_equal": true,
+          "bias_elementwise_equal": true
+        }
+      ],
+      "forward": {
+        "points": 22,
+        "max_abs_error": 9.020562075079397e-17,
+        "center_mat": -0.047366557782876205,
+        "center_onnx": -0.047366557782876184
+      }
+    }
+  }
+}

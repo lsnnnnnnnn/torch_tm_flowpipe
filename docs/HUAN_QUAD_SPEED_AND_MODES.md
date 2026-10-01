@@ -1,7 +1,7 @@
 # Huan QUAD speed and mode audit
 
-Status: **evidence-backed draft; profiling/ablation experiments remain paused**
-Date: 2026-09-30
+Status: **evidence-backed draft; 40-step mode ablation and Huan phase diagnostic completed**
+Date: 2026-10-01
 
 ## Plain-language answer
 
@@ -224,9 +224,72 @@ That explains a major
 within-P3 improvement, not the remaining P3-versus-Huan gap.
 
 Huan's archived metrics do not expose a matching full-run phase breakdown.
-Until a bounded matched profile exists, the gap cannot be apportioned among
-order, validation, SR, Python/kernel scheduling, observer cost, preload, or
-allocator behavior.
+The new bounded early-prefix profile below narrows the local cost centers,
+but it cannot apportion the completed-run gap among order, validation, SR,
+Python/kernel scheduling, observer cost, preload, or allocator behavior.
+
+## New 40-step strict/parity ablation (2026-10-01)
+
+The user resumed experiments while prohibiting new hash checks and SHA-256
+calculations. We did not restart the archived 1,000-step job. Two fresh
+processes used the archived Huan batch-chunk engine, all 1,024 initial boxes,
+working order 2, `box`/`same-slope`, control period 0.1 s, and ODE step 0.005 s.
+The diagnostic config differs from the archived 50-period config only in
+`steps: 2` and an absolute spelling of the same ONNX path. Existing compiled
+CUDA modules were loaded directly; JIT building was disabled for both runs.
+This bypasses this round's binary-content qualification, so these are
+diagnostic measurements under the recorded file paths, not a new formal
+reproduction of the published 75-second campaign.
+
+| One run per mode, 40 plant steps | Parity | Strict |
+|---|---:|---:|
+| Internal loop | 1.412598 s | 1.504988 s |
+| Driver call | 2.841967 s | 2.970675 s |
+| Whole process | 5.61 s | 5.70 s |
+| Live boxes at both controller updates | 1,024 | 1,024 |
+| Reported broken boxes | 0 | 0 |
+| Mean per-box sum of 16 endpoint widths | 6.213007919 | 6.237998456 |
+| Union endpoint width of `x3` | 0.821940975 | 0.824510142 |
+
+Strict is 0.092390 s (6.54%) slower in the internal 40-step loop and has a
+0.024991 (0.40%) larger mean summed endpoint width in this single short
+sample. The whole-process difference is only 0.09 s (1.60%) because startup
+dominates this shortened run. At control update 0, the reported widths agree;
+at update 1, the mean `x3` input-hull widths are 0.169481192 (parity) and
+0.170740534 (strict). All 16 strict endpoint union intervals contain the
+corresponding parity interval. These observations do not isolate a particular
+strict charge, establish statistical timing stability, or predict the
+1,000-step outcome. Both shortened runs print `FALSIFIED` because the unchanged
+target check is now applied at **t=0.2 s**; neither is a T=5 property verdict.
+
+The original logs, config diff, launcher, metrics, process timings, and a
+Chinese summary are in
+[`results/huan_quad_stage_a_40_20261001`](evidence/results/huan_quad_stage_a_40_20261001/SUMMARY.md).
+
+An independent third process profiled the same 40-step parity contract. It
+wrapped five sequential driver calls with CUDA synchronization at entry and
+exit, forwarding the original arguments and return values. Its complete
+control-step metrics and final hull match the uninstrumented parity process
+numerically, field by field. The measured synchronous call totals were:
+
+| Huan call family | Calls | Synchronous wall |
+|---|---:|---:|
+| Plant `advance_sparse` | 40 | 1.051305 s |
+| Controller `crown_bounds` | 2 | 0.316279 s |
+| State `prune_state` | 40 | 0.015192 s |
+| `inject_controls_s` | 2 | 0.005563 s |
+| `hull_ranges_s` | 5 | 0.001926 s |
+
+The profiled process recorded 1.405465 s on the original internal clock and
+5.54 s for the whole process. Three of the five hull calls happen after the
+internal clock stops, and explicit synchronization perturbs scheduling.
+Therefore the call totals are a **40-step diagnostic decomposition**, not
+additive full-run shares or a prediction for 1,000 steps. They do establish
+that, at this early prefix, plant advancement and CROWN controller bounds
+account for most of the instrumented calls; observer hull and injection are
+small. The current P3 full run has a different validation/order contract and
+much longer SR history, so this early-prefix profile alone cannot apportion
+the roughly 20-fold completed-run time gap.
 
 ## Portable optimization ledger
 
@@ -236,24 +299,25 @@ allocator behavior.
 | Direct trig reuse within one immutable validation plan | Reused entry must have identical operation, source slot, order, tables, and owner generation | 1,000 observer and 101 controller/transfer/terminal PT files are byte-identical; final plant/SR snapshots audit equal; about 2.056x wall improvement over prior P3 | Implemented and retained |
 | Kernel preload | Same kernels/build identity; no fallback hidden by preload | Availability present, benefit not isolated | Profile/ablate later; no speed claim now |
 | Cache release policy | Never release live tensors; numerical state signatures unchanged | Huan runner asserts allocated bytes unchanged | Low-priority allocator experiment after matched profile |
+| Remove completed P3 diagnostic full-state signatures from a clean timing arm | Preserve numerical state, the original prune and ordered CUDA graph eviction; compare tensors directly outside the timed window | Frozen step rows show 19 nonempty-eviction regions totaling 191.723381 s and 981 other regions totaling 1.229124 s. A separate no-hash P3 entry has now completed the different 2026 paper-equation QUAD contract, but it did not run a matched signed-versus-clean performance pair | Candidate not yet quantified. The 191.723381 s is an upper bound on the mixed historical region, not a measured removable time or an explanation of the new wall time |
 | Reduce observer/export overhead | Exported geometry and acceptance/status must remain identical; solver state immutable | Observer is 75.13 s in current P3; new plotting path works entirely from saved output | Future accepted-step streaming can be profiled independently; plotting must remain outside solver timing |
 | Lower order/validation | Must be declared as a different algorithm contract and still close the full benchmark | Huan parity P2/RHS1 completes; Huan strict first rejects at 597; our corrected strict P2/validation3 first rejects at 800; current P3/validation4 completes | Not an implementation-equivalent optimization and cannot be presented as one |
 | Omit strict tails/roundoff charges | None: would change the guarantee contract | Parity is a faithful compatibility mode, while strict evidence shows real missing-roundoff counterexamples | Never use as a hidden acceleration |
 
 ## Minimum future ablation plan
 
-Experiments remain paused. When the user explicitly resumes them, the first
-action is a read-only recheck of the native matched initial-cover QUAD job's
-terminal state; no old job is restarted. After that gate, the smallest interpretable Huan/P3
-study is a pair of fresh-process 40-step diagnostic arms, not another full
+The user resumed experiments on 2026-10-01. The original native QUAD job was
+rechecked read-only as a timeout, and no old job was restarted. The two new
+strict/parity arms above are a first one-factor mode comparison, not another full
 1,000-step launch and not evidence that may be extrapolated to a full run:
 
-1. Run a qualification/profile arm on the same saved-input stage with the
-   existing detailed instrumentation, matching timing boundaries, and the
-   existing full output/plant/SR/host-state equivalence checks.
-2. Run a clean performance arm with reference hashing, comparison, and log I/O
+1. Run a qualification/profile arm on the same saved-input stage with
+   matching timing boundaries and full output/plant/SR/host-state comparisons
+   on numerical arrays. The entire arm must avoid content hashing.
+2. Run a clean performance arm with direct numerical comparison and log I/O
    outside the timed solver window, while retaining real pruning and graph
-   eviction. Compare it only with the matched qualification arm.
+   eviction. Compare it only with the matched qualification arm; neither arm
+   may compute a content digest.
 3. Separate algorithm variants (P2/P3 and validation level) from
    implementation-equivalent changes.
 4. For Huan strict diagnostics, toggle one existing charge at a time only in a
@@ -284,3 +348,25 @@ study is a pair of fresh-process 40-step diagnostic arms, not another full
   are false.
 
 These gaps are retained as unknowns; no missing source or result is inferred.
+
+The exact 19-step trigger, call chain, and permitted clean-arm change are
+recorded in the [P3 no-hash optimization audit](evidence/results/huan_quad_stage_a_40_20261001/P3_OPTIMIZATION_AUDIT_NOHASH.md).
+
+## New 2026 paper-equation diagnostic (separate contract)
+
+The isolated [no-hash P3 runner](../tools/archcomp26_quad_paper_p3_nohash.py)
+subsequently completed the **2026 paper equations** for all 1,024 boxes and
+1,000 ODE steps, with 50 controller updates and no rejected lane-step. Its
+single outer wall time was 1,357.555 s and its T=5 `x3` endpoint union was
+`[0.9584732146312492,1.0256989633476477]`, inside the stated endpoint
+target. The runner preserves P3/point2/validation4, the repaired strict
+boundary and full host K20 symbolic-remainder path, and trig reuse; it records
+`end_to_end_strict_certificate=false`. The full [run summary and receipts](evidence/results/archcomp26_20261001/quad_paper_p3_nohash_v1/SUMMARY.md)
+specify the actual copied source and precompiled modules by path/size without
+calculating digests. Its graph-prune wrapper omits the old diagnostic full-state
+signature and retains graph cleanup. Because the plant equation changed and
+there was no same-input signed-versus-clean pair, 1,357.555 s versus the old
+1,533.752 s cannot be attributed to signature removal or called a measured
+speedup. The paper-equation Huan and Xiangru P2 parity runs use still different
+arithmetic/order contracts; their 94.583 s and 108.018 s single samples are
+not matched performance controls for this P3 result.

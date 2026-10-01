@@ -1,0 +1,43 @@
+# ARCH-COMP 2026 Single Pendulum, two physical states and one full initial box.
+# The t and u1 rows are execution helpers: t'=1, u1'=0 between 0.05 s updates.
+run_attack: false
+num_vars: 4
+num_nn_input: 2
+num_nn_output: 1
+steps: 20
+step_size: 0.05
+ode_step_size: 0.01
+ode_order: 2
+cut_off_threshold: 1.0e-06
+remainder_estimation:
+- -0.01
+- 0.01
+initial_set:
+- name: x1
+  interval: [1, 1.175]
+- name: x2
+  interval: [0, 0.2]
+- name: t
+  interval: [0, 0]
+- name: u1
+  interval: [0, 0]
+dynamics_expressions:
+- x2
+- 2 * sin(x1) + 8 * u1
+- '1'
+- '0'
+# The official property is x1 in [0,1] for every t in the closed window.
+constraints_safe:
+- -x1
+- x1 - 1
+constraints_safe_from: 0.5
+constraints_safe_until: 1.0
+model_dir: /srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_prep_001/controller_single_pendulum.onnx
+input_shape: [-1, 2]
+output_T_shape: [-1, 1, 2]
+output_c_shape: [-1, 1]
+output_scale: 1
+output_offset: 0
+bound_opts:
+  activation_bound_option: same-slope
+sr_queue: 1000
