@@ -32,6 +32,7 @@
 | 新 Attitude Control P3 / Huan / Xiangru / 原生，修正 unsafe | 固定 2026 规格的 unsafe 盒要求 `-0.7≤x4≤-0.6`；旧 checker 误写成 `x4≥-0.4` 与 `x4≤-0.6`，实际是空集。四个新隔离 profile 各完成 30/30 控制期、60/60 小段。单次 wall 依次为 13.017036 / 7.094217 / 6.933376 / 6.281498 s。原生显式打印 `VERIFIED`；三 GPU 入口的修正 checker 均未打印 Unsafe/Unknown。四方各自保存的全部 60 个六维 tube 盒均与官方危险集不相交；原生 `x4` 全时上界为 `-0.710800050132425`，低于危险下界 `-0.7`。见[合同与旧错误](ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md)、[原生扫描](evidence/results/archcomp26_20261001/native_attitude_avoid_full30_001/SCAN.json)、[P3 全程记录](evidence/results/archcomp26_20261001/p3_attitude_avoid_v1/full30_001/payload/RESULT.json)和[Huan 全程记录](evidence/results/archcomp26_20261001/author_attitude_avoid_v1/huan_full30_001/payload/RESULT.json)。 | **修正后四方单次全程数值结果**。旧 `VERIFIED` 不能证明官方性质；Huan/Xiangru 共享驱动且保存区间相同，安全结论依赖作者边界与保存盒扫描；仍缺独立端到端证明与稳定计时。 |
 | 新 Docking P3 / Huan / Xiangru / Flow* native | 官方完整初盒 `[70,106]²×[-0.28,0.28]²`、原始四态输入/两力输出、40 个 1 s 控制期，四方各完成 400 个 0.1 s 数值小步；单次外层 wall 分别 17.412 / 12.699 / 12.668 / 9.139 s。非线性全时安全裕量 `q=√(vx²+vy²)-0.2-0.002054√(sx²+sy²)≤0` 的首个小步保守上界四方均约 `+0.016083`，全程 checker 均为 `UNKNOWN`。原生外层 `RESULT` 如实记录 `failed/exit 2`，同时保存 40/40 周期、400 tubes、40 RPC；末时绝对区间、原始记录和接口核对见[三方 GPU 摘要](evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md)与[原生摘要](evidence/results/archcomp26_20261001/native_docking_full40_001/SUMMARY.md)。 | **四方完整数值时域，性质未决**；q 盒与不安全侧相交不是实际轨迹反例，四条单次 wall 不能排名。原生退出码因性质未知，不能改写为作者 `VERIFIED`；没有独立端到端浮点 NNCS 证明。 |
 | 新 NAV standard / robust Huan 首盒首周期 | 固定官方 point/set ONNX、作者可执行状态顺序 `[x,y,speed,heading]` 与输出顺序 `[speed_rate,heading_rate]`；分别取 640/25 初始分块的首盒，仅运行 30 期中的首个 `0.2 s` 周期。两个新 ID 各 20/20 小步接受，保存 tube 均与障碍盒分离，进程 wall 4.142439 / 4.417727 s。见[NAV 执行合同与短程证据](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)。 | **仅短前缀**；未覆盖其余分块、`t=6` 终点到达或全程性质，不能给完整时间与四方宽度。论文状态文字和网络层宽与官方可执行材料仍须作为来源冲突注明。 |
+| 旧 NAV standard / robust Huan 完整运行的合同复核 | [逐项比对](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md#旧-huan-全程记录与当前可执行合同逐项比对)确认旧 point/set 模型与固定官方 2026 副本直接字节相同，旧方程、接口、初集 640/25 分区、0.2×30 时域与两项性质均与作者可执行 profile 相同。旧结果各 600/600 小步、384,000/15,000 盒步接受、exit 0；原始作者输出均 `VERIFIED`，driver wall 14.718815 / 11.655595 s。 | **可按原始资格引用的历史同合同全程证据**，不计为本轮 98 条新尝试，不重复运行。robust 本地镜像缺逐步范围，旧两条均无独立端到端浮点 NNCS 证书；历史 wall 不能当本轮同资源排名。 |
 | Balancing/CartPole 来源审计 | Balancing 论文写五特征控制器而固定 ONNX/MATLAB 是四原态，论文闭窗 `[8,10]` 与实例规格 `8<t≤10` 不同。见[逐项审计](ARCHCOMP26_DOCKING_BALANCING_SOURCE_CONTRACT_20261001.md)。 | **未启动新数值**；仓库四原态 profile 需单独命名，不能冒充未解决的论文五特征执行。 |
 | 旧 QUAD 作者合同 | Huan parity 5 次完整运行、旧 P3 完整一次、native 6 小时超时仅到 600 步；另有 40 步 parity/strict 新诊断，但使用旧模型。见[速度与模式分析](HUAN_QUAD_SPEED_AND_MODES.md)。 | **历史机制/回归证据**；合同与数值保证不同，不构成 2026 四方同合同对比。 |
 | 其余 2026 cell | 除上述新尝试外，更多共同合同和方法支持仍需逐项落实；旧 14 项成绩不能平移。 | **待运行或待预检**；保留全部行和变体，不用空白代替失败记录。 |
@@ -280,7 +281,7 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 
 ## 3. Airplane — discrete (`airplane-discrete`)
 
-**本轮合同审计：** 论文给出 forward Euler 总规则，但固定官方 Airplane 目录没有离散转移程序；旧参与者 C++ 是连续积分入口。`NN(X_k)` 在 Euler 更新前执行可以作为显式命名的新四方比较约定，尚不能称为已核实的官方 2026 离散提交顺序。见[入口与缺件表](ARCHCOMP26_AIRPLANE_2026_ENTRY_AUDIT.md)；本轮未启动数值运行。下方表格仍是旧冻结模板。
+**本轮合同审计：** 论文给出 forward Euler 总规则、20 次转移及 `k=0..20` 共 21 个性质检查索引；固定官方 Airplane 目录没有离散转移程序，旧参与者 C++ 是连续积分入口。[离散执行门](ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md)逐项列出完整初盒、12 态同步更新和四方现有入口。`NN(X_k)` 在 Euler 更新前执行可以作为显式命名的新四方比较约定，尚不能称为已核实的官方 2026 离散提交顺序；若要求忠实复现，具体缺参与者离散执行源码或等价的控制应用顺序记录。本轮未启动数值运行。下方表格仍是旧冻结模板。
 
 ### 模型、控制器、初始集合与性质
 
@@ -401,6 +402,8 @@ Huan/Xiangru 完整终点保持空值，不能以第 200 步幸存盒取代全�
 - 未决：The report says both that the unsafe set should be avoided and that the goal is to show the specification does not hold; freeze checker polarity before execution.
 
 ## 5. Balancing — reach (`balancing-reach`)
+
+**本轮来源冲突：** [执行门](ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md)区分论文 `f(x1,x2,sin(x3),cos(x3),x4)` 五特征控制器与固定官方 ONNX 的四原态输入。论文忠实主合同仍缺五输入模型，或作者给出的五到四映射与执行源码。固定仓库四原态版本可单列为 `balancing-fixed-repo-raw4` 新比较 profile，需全初盒、500 个 `0.02 s` 控制期和 `[8,10]`/`(8,10]` 全时窗 checker；旧一秒小盒记录不能代用。下方表格仍是旧冻结模板。
 
 ### 模型、控制器、初始集合与性质
 
@@ -989,7 +992,7 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 
 ## 14. TORA — reach-sigmoid (`tora-reach-sigmoid`)
 
-**本轮来源冲突：** 该格尚未尝试；官方、论文与旧代码的控制器/动力学差异见[专项审计](ARCHCOMP26_TORA_REACH_SOURCE_CONFLICT_20261001.md)。用户选择未返回前不以旧配置代作新结果。下方表格仍是旧冻结模板。
+**本轮来源冲突：** 该格尚未尝试；[reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)已逐元素核对官方 `.txt` 与 `.mat` 参数，也确认旧 ONNX 的对应关系。sigmoid 仍有论文三层 sigmoid 加 tanh 输出、官方四层 sigmoid、旧四层 sigmoid 三种控制合同；旧 `22(f−0.5)` 与官方 `11f` 对同一初点产生不同输入。用户尚未选定主合同和“5 秒内到达”的判定口径，旧 500 步不可代作新结果。下方表格仍是旧冻结模板。
 
 ### 模型、控制器、初始集合与性质
 
@@ -1050,7 +1053,7 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 
 ## 15. TORA — reach-tanh (`tora-reach-tanh`)
 
-**本轮来源冲突：** 该格尚未尝试；官方、论文与旧代码的控制器/动力学差异见[专项审计](ARCHCOMP26_TORA_REACH_SOURCE_CONFLICT_20261001.md)。用户选择未返回前不以旧配置代作新结果。下方表格仍是旧冻结模板。
+**本轮来源冲突：** 该格尚未尝试；[reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)已逐元素核对官方 `.txt` 与 `.mat` 参数，也确认旧 ONNX 的对应关系。tanh 实例在论文字面“三层 sigmoid 加 tanh 输出”和官方/旧可执行“三层 ReLU 加 tanh 输出”之间仍有控制器差异；二者都用 `11f`。用户尚未选定主合同和“5 秒内到达”的判定口径，旧 500 步不可代作新结果。下方表格仍是旧冻结模板。
 
 ### 模型、控制器、初始集合与性质
 
@@ -1190,4 +1193,4 @@ P3 新版首控制期的早期单盒预检均未进入 plant advance：严格控
 
 ## 最终发布门
 
-当前实际阻断是：独立的 16×4 无哈希工作矩阵已有 24 个完整数值时域方法格，另有 29 格未尝试；ACC participant-order、Single Pendulum 两物理态、修正危险集的 Attitude 与 Docking 均有四方全程数值记录。Docking 四方性质仍 `UNKNOWN`，原生外层 exit 2 因性质未决；Single Pendulum 还缺官方三态 MATLAB 执行材料。DP less 完成 native、Huan、Xiangru，P3 移植在后续步骤失败或性质未决；论文方程 QUAD 完成 P3、Huan、Xiangru，native 长作业仍在运行；Airplane continuous 四方完整初盒入口均在资源构建/首小步拒绝；P3 两次独立 smoke 分别为四阶表整数编码阻断和严格同阶验证首步拒绝，原生三次分别使用 order 6、order 3 和加宽余项 order 3，均在首段 `UNCOMPLETED_SAFE`、零已接受 tube。其余实例仍需合同审计、运行和失败记录。除了 ACC 在明确 participant-order 合同下有四方各 5 次后续独立进程计时，多数方法格没有足够重复；算法与资源路径不同，仍无稳定四方排名。保存区间、作者 `VERIFIED` 与可视化都不是独立端到端浮点 NNCS 证明；MATLAB 脚本尚无实际执行记录，native octagon 等相关性投影也未补齐。
+当前实际阻断是：独立的 16×4 无哈希工作矩阵已有 24 个完整数值时域方法格、2 格仅短前缀，另有 27 格未尝试；ACC participant-order、Single Pendulum 两物理态、修正危险集的 Attitude 与 Docking 均有四方全程数值记录。Docking 四方性质仍 `UNKNOWN`，原生外层 exit 2 因性质未决；Single Pendulum 还缺官方三态 MATLAB 执行材料。DP less 完成 native、Huan、Xiangru，P3 移植在后续步骤失败或性质未决；论文方程 QUAD 完成 P3、Huan、Xiangru，native 长作业仍在运行；Airplane continuous 四方完整初盒入口均在资源构建/首小步拒绝；P3 两次独立 smoke 分别为四阶表整数编码阻断和严格同阶验证首步拒绝，原生三次分别使用 order 6、order 3 和加宽余项 order 3，均在首段 `UNCOMPLETED_SAFE`、零已接受 tube。其余实例仍需合同审计、运行和失败记录。除了 ACC 在明确 participant-order 合同下有四方各 5 次后续独立进程计时，多数方法格没有足够重复；算法与资源路径不同，仍无稳定四方排名。保存区间、作者 `VERIFIED` 与可视化都不是独立端到端浮点 NNCS 证明；MATLAB 脚本尚无实际执行记录，native octagon 等相关性投影也未补齐。

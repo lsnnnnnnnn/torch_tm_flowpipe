@@ -49,4 +49,22 @@
 
 保存轨迹的[独立 standard 审计](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json)与[robust 审计](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/INDEPENDENT_SAVED_RANGE_AUDIT.json)逐行确认步号连续、每条区间有限且上下界有序、障碍投影分离。结果只支持**该两盒在已保存首周期 tube 上的数值观察**；完整 640/25 分块、30 周期与最终到达性质都未由新作业覆盖。
 
-成本评估：两次短 smoke 的进程时间包含 Python/CUDA/网络初始化，不可线性乘以 640/25 和 30 推算全盒用时。已有旧作者合同完整 Huan 记录分别完成标准 `640×600`、robust `25×600` lane-substeps；旧记录的 driver wall 分别约 14.72 s 和 11.66 s，见[先前审计的历史证据范围](ARCHCOMP26_NAV_PAPER_SOURCE_CONTRACT_20261001.md)。它们可用于判断这种配置在同类环境可执行，但不是本轮新主表成绩，也不能由短 smoke 推出当前完整作业时间或证明强度。若需新的全盒成绩，应以独立新 ID 执行并检查所有分块和性质；用户要求先核对既有状态，因此本次没有重复启动该历史全时域实验。
+## 旧 Huan 全程记录与当前可执行合同逐项比对
+
+2026-10-02 只读重查服务器旧运行的 `contracts/nav_{standard,robust}.yaml`、两份 `*_boxes.json`、旧 ONNX 文件与固定官方 2026 ONNX 副本；对模型做直接逐字节比较，**没有计算文件摘要**。旧进程参数、600 步接受状态与作者 checker 输出取自本地保存的原始 `result.json`、`*_watch/process.json`、`*_watch/stdout.log`。官方要求由上文 README、`dynamics.m` 与作者闭环例界定；不能把下表中的数值调参误称为官方强制值。
+
+| 字段 | 旧 standard / robust Huan 全程记录 | 对当前固定官方加作者可执行 profile 的判定 |
+| --- | --- | --- |
+| 模型文件 | 旧路径分别为 `ARCH-COMP2024/benchmarks/NAV/networks/nn-nav-point.onnx`、`nn-nav-set.onnx`；各自与服务器 `nav_prep_001/official_nn-nav-{point,set}.onnx` **直接字节相同**。 | 同一固定 2026 point/set 模型内容；路径年份差异不改变模型。作者仓库 Git LFS 模型另未比较。 |
+| 状态、网络输入及输出 | 旧 YAML 为七变量 `[x1,x2,x3,x4,t,u1,u2]`；网络取前四维原序，输出写入 `u1,u2`，无列置换，输出 scale=1、offset=0。 | 对应 `[x,y,speed,heading]` → `[speed_rate,heading_rate]`；与作者可执行训练/验证入口一致。论文文字的 `[x,y,heading,speed]` 是已注明的来源冲突。 |
+| 动力学 | `x1'=x3 cos(x4), x2'=x3 sin(x4), x3'=u1, x4'=u2`；附加 `t'=1,u1'=u2'=0` 用于采样保持。 | 四物理态 RHS 与固定官方 `dynamics.m` 相同；附加三态不改变物理 plant。 |
+| 初集与分区 | 两者均 `x1,x2∈[2.9,3.1],x3=x4=0`；保存分区台账分别恰有 `40×16=640`、`5×5=25` 个笛卡尔盒，坐标连续覆盖初集。 | 与官方初集及论文报告的 CROWN-Reach 分区相同。 |
+| 采样、总时域 | 旧 YAML 均 `steps=30,step_size=.2`；旧进程各记录 600/600 个 ODE 小步。 | 与官方 `T=6`、0.2 秒采样一致。 |
+| 性质 | 旧 YAML 全时障碍为 `x1,x2∈[1,2]`，末时目标为 `x1,x2∈[-.5,.5]`；旧 driver 的 unsafe group 在流管小步上判断，target group 在最终状态判断。 | 与固定官方性质相同；本轮 `t=.2` smoke 暂不检查只在 `t=6` 定义的终点目标。 |
+| 数值设置和控制器传输 | 旧 Huan `h=.01`、order 4、cutoff `1e-6`、余项 `[-.1,.1]`、SR queue 1000；保存 argv 为 `sparse`、`strict`、CROWN `box`/`same-slope`、`rpc-float32`、`native` 输入布局。 | 本轮短 smoke 继承这些旧设置。它们是明确数值 profile，不是官方 plant/性质的额外规定。 |
+
+旧 standard 原始 [result](<../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_huan/result.json>)、[watch 输出](<../../../../results/archcomp_review_20260923/evidence_v1/suite_v1/nav_standard_huan_watch/stdout.log>)记录 640 盒 × 600 小步，384,000/384,000 接受、exit 0、`VERIFIED`，`T=6` 保存末端 hull 的 `(x1,x2)` 分别为 `[-0.0880373374786,-0.00771573664868]` 与 `[0.0889568833234,0.353429667069]`。旧 robust 原始 [result](<../../../../results/archcomp_review_20260923/evidence_v2/timing_v1/nav_robust_r2_huan/result.json>)、[watch 输出](<../../../../results/archcomp_review_20260923/evidence_v2/timing_v1/nav_robust_r2_huan_watch/stdout.log>)记录 25 盒 × 600 小步，15,000/15,000 接受、exit 0、`VERIFIED`，末端 `(x1,x2)` 为 `[0.107480570599,0.19778359055]` 与 `[-0.063191845023,-0.0483889391416]`。旧 standard 保存有范围文件，robust 本地镜像只有结果/输出而无逐小步范围；此处没有独立重算两条旧记录的全时避障。两条 `result.json` 均明示 `end_to_end_strict_certificate=false`。
+
+**结论：** 在已查的模型、物理动力学、接口、初集、分区、采样、时域、性质和数值设置上，旧 Huan 两条完整运行与当前命名的作者可执行 profile **没有实质合同差异**。旧结果可作为该 profile 的历史全程证据按原始资格引用；不为填新矩阵重复启动 640/25 全盒 Huan 作业，也不把旧 14.72/11.66 秒视为本轮统一资源的正式排名时间。尚缺的是 robust 历史逐步范围的本地副本、旧两条运行的独立端到端浮点 NNCS 证书，以及其它方法在同一 profile 下的完整可比数据；这些缺口不等于需要重跑已完成的 Huan 全程。
+
+成本评估：两次短 smoke 的进程时间包含 Python/CUDA/网络初始化，不可线性乘以 640/25 和 30 推算全盒用时。旧记录的 driver wall 分别约 14.72 s 和 11.66 s；它们可用于判断同一合同在历史环境可执行，不能由此推断当前完整作业时间或证明强度。本轮没有重复启动历史全时域实验。

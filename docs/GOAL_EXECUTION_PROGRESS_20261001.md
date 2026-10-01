@@ -130,7 +130,13 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 ## 10 月 2 日补记：NAV 作者执行顺序与首周期 smoke
 
 - [NAV 作者执行合同补充审计](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md)从控制器作者训练脚本和 CORA 闭环例确认：网络原序输入为 `[x,y,speed,heading]`，输出为 `[speed_rate,heading_rate]`；固定官方方程同此顺序。论文文字写 `[x,y,heading,speed]`，隐藏层也写 `64/64`，而固定官方 ONNX 为 `64/32`。新尝试按固定官方 ONNX 与作者可执行顺序显式命名；仍不声称作者仓库 Git LFS 模型与官方模型的内容身份已比对。
-- 新的 Huan standard 和 robust 各取历史分区台账**首盒**，用固定官方 point/set ONNX 跑首个 `0.2 s` 周期，GPU 2 / CPU 10–13、无 TCP RPC 端口。两个独立 ID [`nav_author_standard_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/RESULT.json) 和 [`nav_author_robust_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) 均接受 20/20 个 `0.01 s` 小步，保存 tube 与官方障碍盒分离，进程 wall 分别为 4.142439 s 与 4.417727 s。各自独立读回的区间检查与配置在[运行档案](evidence/results/archcomp26_20261001/nav_author_smoke_v1/README.md)；**未覆盖 640/25 全部分块、余下 29 期及 `t=6` 终点目标**。旧全程结果还需逐项核对合同后决定是否需要新全初集运行。
+- 新的 Huan standard 和 robust 各取历史分区台账**首盒**，用固定官方 point/set ONNX 跑首个 `0.2 s` 周期，GPU 2 / CPU 10–13、无 TCP RPC 端口。两个独立 ID [`nav_author_standard_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_standard_huan_smoke1_001/RESULT.json) 和 [`nav_author_robust_huan_smoke1_001`](evidence/results/archcomp26_20261001/nav_author_robust_huan_smoke1_001/RESULT.json) 均接受 20/20 个 `0.01 s` 小步，保存 tube 与官方障碍盒分离，进程 wall 分别为 4.142439 s 与 4.417727 s。各自独立读回的区间检查与配置在[运行档案](evidence/results/archcomp26_20261001/nav_author_smoke_v1/README.md)；**未覆盖 640/25 全部分块、余下 29 期及 `t=6` 终点目标**。[旧 Huan 全程合同逐项比对](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md#旧-huan-全程记录与当前可执行合同逐项比对)确认两条历史结果在模型内容、方程、初集分区、采样、性质与数值设置上同合同，故不重复启动全盒作业；历史证据和本轮新 attempt 索引仍分开。
 - [Unicycle 执行门](ARCHCOMP26_UNICYCLE_EXECUTION_GATE_20261002.md)明确了阻断：2026 论文只在速度导数加入 `w`，固定官方 MATLAB 右端没有 `w`，旧四方在朝向和速度两导数均加入同一个常值 `w`。论文未定 `w` 是轨迹常值还是可随时间变化，也未冻结“10 秒内到达”的检查语义；没有开启新 Unicycle 数值尝试，旧成绩不移入新格。
 
 当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **98 条**新尝试：24 格完整数值时域、1 格运行中、5 格早停、5 格失败、**2 格仅短前缀**、27 格未尝试。两条 NAV smoke 只使 Huan 两格变成“仅短前缀”，没有增加完整结果数。
+
+## 10 月 2 日补记：离散 Airplane 与 TORA reach 启动门
+
+- [Airplane discrete 执行门](ARCHCOMP26_AIRPLANE_DISCRETE_EXECUTION_GATE_20261002.md)核对论文的同步 forward Euler、12 态完整初盒、20 次 `0.1 s` 转移和 `k=0..20` 共 21 个安全检查索引。四方现有 Airplane 程序都推进连续 ODE，不能充当离散成绩。`x_k` 先取控制、再同步 Euler 可作为**新命名的四方共同比较合同**；若要求忠实复现 2026 参与者离散提交，仍缺离散转移及控制应用顺序的执行源码或等价权威记录。此审计未启动作业。
+- [TORA 两个 reach 执行门](ARCHCOMP26_TORA_REACH_EXECUTION_GATE_20261002.md)直接逐元素核对了固定官方 `.txt` 和 `.mat` 的各 961 个控制器参数，并沿用此前 `.mat` 与旧 ONNX 的数值预检。模型文件已到位，问题是合同：sigmoid 的论文/官方/旧三种激活与缩放组合不同，tanh 的论文与官方激活不同；“5 秒内到达”也要确定用终点包含作为充分证据，还是要求完整时间窗判定。未选定前不把旧四方 500 步运行填为新版成绩。
+- [Balancing/CartPole 执行门](ARCHCOMP26_BALANCING_EXECUTION_GATE_20261002.md)核对论文五特征 `f(x1,x2,sin x3,cos x3,x4)` 与固定仓库 ONNX 四原态输入 `[x1,x2,x3,x4]` 的冲突。论文忠实主合同仍缺五输入控制器或作者权威的五到四映射；固定仓库四输入版本已明确命名 `balancing-fixed-repo-raw4`，可单列准备四方入口与全初盒、10 秒性质窗检查，不能用旧一秒小盒诊断替代。
