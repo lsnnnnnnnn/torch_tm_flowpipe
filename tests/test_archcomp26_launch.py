@@ -150,11 +150,27 @@ def test_second_process_fails_closed_before_audit_or_spawn(tmp_path):
             lock_path,
             expected_identity=expected_identity,
             expected_uid=os.getuid(),
-        ):
-            pass
+        ) as lock_handle:
+            assert lock_handle is None
     finally:
         release.set()
         _stop(holder)
+
+
+def test_context_never_exposes_a_descriptor_that_can_release_the_lock(tmp_path):
+    context = multiprocessing.get_context("spawn")
+    lock_path = tmp_path / "campaign.lock"
+    expected_identity = _provision_lock(lock_path)
+
+    with exclusive_campaign_lock(
+        lock_path,
+        expected_identity=expected_identity,
+        expected_uid=os.getuid(),
+    ) as lock_handle:
+        assert lock_handle is None
+        with pytest.raises(TypeError):
+            os.close(lock_handle)
+        _assert_launch_is_busy(context, lock_path, expected_identity)
 
 
 def test_lock_covers_child_exit_through_terminal_file_and_directory_fsync(

@@ -97,7 +97,7 @@ def exclusive_campaign_lock(
     *,
     expected_identity: tuple[int, int],
     expected_uid: int | None = None,
-) -> Iterator[int]:
+) -> Iterator[None]:
     """Hold the pre-provisioned, identity-bound lock without path traversal."""
     path = Path(lock_path)
     owner = os.geteuid() if expected_uid is None else expected_uid
@@ -151,7 +151,7 @@ def exclusive_campaign_lock(
             _check_lock_file(path_stat, owner)
             if (path_stat.st_dev, path_stat.st_ino) != expected_identity:
                 raise CampaignLockError("campaign lock path changed during acquisition")
-            yield descriptor
+            yield
         finally:
             path_error = None
             if locked:
