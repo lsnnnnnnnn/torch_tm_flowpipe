@@ -2,7 +2,7 @@
 
 来源：`benchmarks/archcomp26/manifest.json` 与 `docs/evidence/archcomp26_nohash_attempts_20261001.json`。仅按路径归属，不做内容摘要；与历史冻结的 `benchmarks/archcomp26/execution_matrix.json` 独立。
 
-16 个实例 × 4 种方法 = 64 个单元；本轮索引 101 条尝试。完成 24；运行中 1；早停 6；失败 5；仅短前缀 2；未尝试 26。
+16 个实例 × 4 种方法 = 64 个单元；本轮索引 103 条尝试。完成 25；运行中 1；早停 6；失败 4；仅短前缀 2；未尝试 26。
 
 | 实例 | P3 GPU | Huan | Xiangru | FlowStar native |
 | --- | --- | --- | --- | --- |
@@ -12,7 +12,7 @@
 | attitude-control-avoid | 完成 | 完成 | 完成 | 完成 |
 | balancing-reach | 未尝试 | 早停 | 未尝试 | 未尝试 |
 | docking-constraint | 完成 | 完成 | 完成 | 完成 |
-| double-pendulum-less-robust | 失败 | 完成 | 完成 | 完成 |
+| double-pendulum-less-robust | 完成 | 完成 | 完成 | 完成 |
 | double-pendulum-more-robust | 未尝试 | 早停 | 早停 | 早停 |
 | nav-standard | 未尝试 | 仅短前缀 | 未尝试 | 未尝试 |
 | nav-robust | 未尝试 | 仅短前缀 | 未尝试 | 未尝试 |

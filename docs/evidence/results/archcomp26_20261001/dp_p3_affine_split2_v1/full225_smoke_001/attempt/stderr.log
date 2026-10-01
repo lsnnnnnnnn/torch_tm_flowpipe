@@ -1,0 +1,17 @@
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split2_v1/full225_smoke_001/source/archcomp26_dp_p3_nohash.py", line 516, in <module>
+    main()
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split2_v1/full225_smoke_001/source/archcomp26_dp_p3_nohash.py", line 512, in main
+    execute(args)
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split2_v1/full225_smoke_001/source/archcomp26_dp_p3_nohash.py", line 469, in execute
+    code = driver.main()
+           ^^^^^^^^^^^^^
+  File "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py", line 1545, in main
+    end_of_time_s(st, eng)
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/quad_targeted_recovery_20260927/strict_endpoint.py", line 27, in end_of_time_s
+    raise ValueError('strict endpoint requires all active, finite, ordered leaves')
+ValueError: strict endpoint requires all active, finite, ordered leaves
+/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/tempfile.py:934: ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/tmplo84xgn_'>
+  _warnings.warn(warn_message, ResourceWarning)

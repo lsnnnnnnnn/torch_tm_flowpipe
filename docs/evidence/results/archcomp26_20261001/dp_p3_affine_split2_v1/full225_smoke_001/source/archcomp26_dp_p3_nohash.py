@@ -230,7 +230,7 @@ def prepare_runtime(controller_residual=True, envelope="interval"):
     from archcomp26_dp_affine_controller import (
         affine_residual_interval, partitioned_affine_residual_interval,
     )
-    if envelope not in ("interval", "affine", "affine-split2", "affine-split4"):
+    if envelope not in ("interval", "affine", "affine-split2"):
         raise ValueError("unknown DP controller envelope")
     layers = load_controller(MODEL, torch, "cuda:0")
     endpoint = load_python("archcomp26_dp_strict_endpoint", ENDPOINT)
@@ -258,14 +258,10 @@ def prepare_runtime(controller_residual=True, envelope="interval"):
     def capture_crown_bounds(model, config, lower, upper, input_layout="native"):
         T, L, U = original_crown_bounds(model, config, lower, upper, input_layout=input_layout)
         hull = torch.stack((lower, upper), dim=-1)
-        if envelope in ("affine", "affine-split2", "affine-split4"):
-            if envelope == "affine":
-                network, residual, layer_diagnostics = affine_residual_interval(hull, T, layers)
-            else:
-                parts = 2 if envelope == "affine-split2" else 4
-                network, residual, layer_diagnostics = partitioned_affine_residual_interval(
-                    hull, T, layers, parts=parts
-                )
+        if envelope in ("affine", "affine-split2"):
+            evaluator = (affine_residual_interval if envelope == "affine"
+                         else partitioned_affine_residual_interval)
+            network, residual, layer_diagnostics = evaluator(hull, T, layers)
             linear = None
         else:
             network, linear, residual = residual_interval(hull, T, layers)
@@ -511,7 +507,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--mode", choices=("smoke", "batch-smoke", "full"), required=True)
-    parser.add_argument("--controller-envelope", choices=("interval", "affine", "affine-split2", "affine-split4"), default="interval")
+    parser.add_argument("--controller-envelope", choices=("interval", "affine", "affine-split2"), default="interval")
     args = parser.parse_args()
     execute(args)
 

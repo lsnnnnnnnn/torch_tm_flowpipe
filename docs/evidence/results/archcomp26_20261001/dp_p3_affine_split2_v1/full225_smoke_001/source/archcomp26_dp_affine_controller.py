@@ -105,30 +105,23 @@ def affine_residual_interval(hull, T, layers):
     return affine_network, residual, diagnostics
 
 
-def partitioned_affine_residual_interval(hull, T, layers, parts=2):
-    """Tighten one global T residual over a complete parts^4 input partition."""
-    from itertools import product
+def partitioned_affine_residual_interval(hull, T, layers):
+    """Tighten one global T residual over a complete 2^4 input partition."""
     import torch
     from flowstar_gpu import interval as iv
 
-    if parts not in (2, 4):
-        raise ValueError("DP controller partition count must be 2 or 4")
     network, whole, layers_diagnostics = affine_residual_interval(hull, T, layers)
     low, high = hull[..., 0], hull[..., 1]
-    boundaries = [low] + [low + (high - low) * (cut / parts)
-                          for cut in range(1, parts)] + [high]
-    if not all(bool((torch.isfinite(boundaries[cut])
-                     & (boundaries[cut - 1] <= boundaries[cut])).all())
-               for cut in range(1, parts + 1)):
-        raise FloatingPointError("DP controller boundaries failed to partition input box")
+    midpoint = low + (high - low) * 0.5
+    if not bool((torch.isfinite(midpoint) & (low <= midpoint) & (midpoint <= high)).all()):
+        raise FloatingPointError("DP controller midpoint failed to partition input box")
 
     joined = None
     cover_low, cover_high = None, None
-    for cell in product(range(parts), repeat=4):
+    for mask in range(16):
         part = hull.clone()
         for dim in range(4):
-            part[:, dim, 0] = boundaries[cell[dim]][:, dim]
-            part[:, dim, 1] = boundaries[cell[dim] + 1][:, dim]
+            part[:, dim, 1 - ((mask >> dim) & 1)] = midpoint[:, dim]
         iv.assert_valid(part, "DP controller partition")
         cover_low = part[..., 0] if cover_low is None else torch.minimum(cover_low, part[..., 0])
         cover_high = part[..., 1] if cover_high is None else torch.maximum(cover_high, part[..., 1])
@@ -149,7 +142,7 @@ def partitioned_affine_residual_interval(hull, T, layers, parts=2):
     tight_width = tight[..., 1] - tight[..., 0]
     diagnostics = {
         "whole_layers": layers_diagnostics,
-        "subboxes_per_input_box": parts ** 4,
+        "subboxes_per_input_box": 16,
         "global_T_reused": True,
         "whole_width_max": float(whole_width.max().item()),
         "union_width_max": float((joined[..., 1] - joined[..., 0]).max().item()),

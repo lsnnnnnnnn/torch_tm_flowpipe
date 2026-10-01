@@ -2045,6 +2045,45 @@
       "property_checks": 0,
       "author_property_verdict": "UNKNOWN/incomplete",
       "reason": "numerical step rejected before t=0.495 s; exact internal solver cause not captured"
+    },
+    {
+      "instance": "double-pendulum-less-robust-continuous",
+      "method": "pytorch_gpu_p3_port",
+      "role": "full 225-box diagnostic with directed affine controller residual on 2^4 complete input subboxes",
+      "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split2_v1/full225_smoke_001",
+      "local_summary": "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md",
+      "status": "incomplete_unknown_and_failed_contraction",
+      "initial_boxes": 225,
+      "control_periods_requested": 20,
+      "ode_substeps_requested": 100,
+      "observed_substeps": 85,
+      "accepted_lane_substeps": 19121,
+      "wall_s": 31.549819692038,
+      "four_way_ranking_eligible": false,
+      "end_to_end_floating_point_nn_certificate": "not established",
+      "first_saved_tube_outside_safe_substep": 75,
+      "first_rejected_ode_substep": 84,
+      "reason": "strict endpoint stopped after 85-step prefix; safety undecidable from step 75 and contraction failed from step 84"
+    },
+    {
+      "instance": "double-pendulum-less-robust-continuous",
+      "method": "pytorch_gpu_p3_port",
+      "role": "full 225-box diagnostic with directed affine controller residual on 4^4 complete input subboxes",
+      "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split4_v1/full225_smoke_001",
+      "local_summary": "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md",
+      "status": "completed",
+      "initial_boxes": 225,
+      "control_periods_requested": 20,
+      "ode_substeps_requested": 100,
+      "observed_substeps": 100,
+      "accepted_lane_substeps": 22500,
+      "wall_s": 74.27408490795642,
+      "four_way_ranking_eligible": false,
+      "end_to_end_floating_point_nn_certificate": "not established",
+      "control_periods_completed": 20,
+      "ode_substeps": 100,
+      "complete_numerical_run": true,
+      "independent_saved_interval_scan": "100 x 225 finite ordered saved tube intervals; all four physical coordinates within [-1.7,2]; minimum interval-to-boundary margin 0.09391984804150355"
     }
   ]
 }

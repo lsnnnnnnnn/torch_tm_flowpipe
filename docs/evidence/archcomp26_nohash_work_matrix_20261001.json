@@ -10,12 +10,12 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 101,
+  "attempt_count": 103,
   "status_counts": {
-    "completed": 24,
+    "completed": 25,
     "running": 1,
     "early_stopped": 6,
-    "failed": 5,
+    "failed": 4,
     "not_attempted": 26,
     "short_prefix_only": 2
   },
@@ -826,16 +826,16 @@
     {
       "instance_id": "double-pendulum-less-robust",
       "method": "pytorch_gpu",
-      "work_status": "failed",
-      "attempt_count": 4,
-      "selected_attempt_number": 10,
-      "selected_attempt_status": "incomplete_unknown_and_failed_contraction",
-      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_v1/full225_001",
-      "selected_wall_s": null,
+      "work_status": "completed",
+      "attempt_count": 6,
+      "selected_attempt_number": 103,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split4_v1/full225_smoke_001",
+      "selected_wall_s": 74.27408490795642,
       "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
       "attempts": [
         {
           "index": 3,
@@ -864,6 +864,20 @@
           "role": "full 225-box diagnostic with directed affine ReLU controller residual",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_v1/full225_001",
           "local_summary": null
+        },
+        {
+          "index": 102,
+          "status": "incomplete_unknown_and_failed_contraction",
+          "role": "full 225-box diagnostic with directed affine controller residual on 2^4 complete input subboxes",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split2_v1/full225_smoke_001",
+          "local_summary": "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md"
+        },
+        {
+          "index": 103,
+          "status": "completed",
+          "role": "full 225-box diagnostic with directed affine controller residual on 4^4 complete input subboxes",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_affine_split4_v1/full225_smoke_001",
+          "local_summary": "docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md"
         }
       ]
     },

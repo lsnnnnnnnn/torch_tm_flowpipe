@@ -145,7 +145,13 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 
 - 新隔离 [Huan raw4 入口](../tools/archcomp26_balancing_raw4_huan_nohash.py)先完成 CPU 模型预检：固定四输入、一输出 Gemm/Tanh 图可读取，未初始化 CUDA。第一次一期 smoke 的性质窗 `[8,10]` 与其 0.02 秒前缀不相交，驱动在 ODE 前明确失败；第二次一期 smoke 关闭不适用的性质检查，全初盒 4/4 小步接受。其原始收据把零次检查误标 `VERIFIED_BY_SAVED_BOX_CHECKS`，原文件保留，并在[审计勘误](evidence/results/archcomp26_20261001/balancing_fixed_raw4_huan/AUDIT.md)明确改读为**性质不适用**。
 - 同一新命名 profile 的 500 期独立作业在第 99 个 ODE 内步拒绝，前 98/2000 计划小步接受，最后有效流管到 `t=0.49 s`；外层 wall 8.218304 s。`[8,10]` 性质窗未进入，0 次检查，结论 **UNKNOWN/incomplete**。原始记录没有内部拒绝状态码，不从流管变宽推测原因。论文五特征控制器仍缺，不把这次早停当作论文主合同成绩或完整性能样本。
-- 当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 **101 条**新尝试：64 格中 24 格完整数值时域、1 格原生论文方程 QUAD 运行中、6 格早停、5 格失败、2 格仅短前缀、26 格未尝试；两条旧 NAV 同合同全程证据仍单列在索引外。
+- 加入上述 Balancing 三条尝试时，[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)有 **101 条**新尝试：64 格中 24 格完整数值时域、1 格原生论文方程 QUAD 运行中、6 格早停、5 格失败、2 格仅短前缀、26 格未尝试；两条旧 NAV 同合同全程证据仍单列在索引外。
+
+## 10 月 2 日补记：Double Pendulum less 的第四方完整数值运行
+
+- P3 的新[有向仿射分区审计](ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md)保持官方四态 ODE、225 初盒、20 期、100 小步、全时 `[-1.7,2]^4` 安全带及原 P3 数值阶数。控制器 residual 使用原全局仿射图 `T`；每维二分的 16 个闭子盒完整覆盖输入盒，首次性质未决/收缩失败分别推迟到小步 75/84，仍未完成。随后独立的每维四分 256 子盒尝试完成 **100/100 小步、22,500/22,500 盒步接受、broken=0**；逐条保存 tube 的独立读回确认 22,500 个四态盒均在安全带内，最小盒裕量 **+0.093919848**。外层 wall **74.274085 s** 包含逐盒观察写盘，不能与其它三方单次 wall 做稳定排名。
+- 这使 DP less 在原生、Huan、Xiangru 和 P3 四方都有同初集、同 1 秒时域的完整数值记录。先前 P3 失败尝试保持原始状态，不被成功尝试覆盖；控制器 residual 的局部有向包含论证不等于 P3 七变量 plant、倒数/三角、余项、端点与性质组合的端到端浮点证明，`end_to_end_strict_certificate=false` 保留。当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **103 条**尝试、**25 格**完整数值时域、1 格运行中、6 格早停、4 格失败、2 格仅短前缀、26 格未尝试。
+- 已从四方**保存的全量数值数据**生成[DP less 四方绝对宽度汇总](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md)、16 行[终点统计 CSV](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/endpoint_stats.csv)、1,600 行[逐步 tube union CSV](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/tube_union.csv)及[四态叠加图](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/fourway_tube_union.png)。Huan/Xiangru 的保存区间直接相同；P3 在第四物理态的 `T=1` endpoint union 宽为 0.799090015，原生为 1.016584896，两作者为 1.109787875；每盒平均宽度的次序并不一致，不能用单一 union 宽度宣布优劣。PDF/MATLAB `.m` 同目录，脚本未在 MATLAB/Octave 实跑。
 
 ### 仍需外部材料或明确选择的字段
 
