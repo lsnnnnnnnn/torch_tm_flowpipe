@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/bin/bash",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/tools/run_archcomp26_airplane_native_fullbox_pair.sh"
+  ],
+  "contract_label": "airplane-2026-fullbox-order3-remainder1-diagnostic-v1",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_build_002/archcomp/airplane",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "airplane-continuous",
+  "method": "native",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "AIRPLANE_BINARY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_build_002/archcomp/airplane/airplane_fullbox_order3_remainder1_smoke1",
+    "AIRPLANE_CPUSET": "10-13",
+    "AIRPLANE_MODEL": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/controller_airplane.onnx",
+    "AIRPLANE_NATIVE_AS": "34359738368",
+    "AIRPLANE_OVERLAY": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_dp_less_rpc_overlay_preflight_001/rpc_overlay",
+    "AIRPLANE_RUN_DIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_order3_rem1_smoke1_001",
+    "AIRPLANE_SERVER_PYTHON": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "AIRPLANE_WORKDIR": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_build_002/archcomp/airplane",
+    "CUDA_VISIBLE_DEVICES": "2",
+    "OMP_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+  },
+  "started_utc": "2026-10-01T19:46:15.306067+00:00",
+  "timeout_s": 600.0
+}

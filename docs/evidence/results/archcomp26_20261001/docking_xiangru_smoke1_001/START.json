@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/archcomp26_docking_author_nohash.py",
+    "--backend",
+    "xiangru",
+    "--mode",
+    "smoke1",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_xiangru_smoke1_001/detail"
+  ],
+  "contract_label": "docking-2026-paper-fullbox-radial-v1",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "docking-constraint",
+  "method": "xiangru",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1"
+  },
+  "started_utc": "2026-10-01T17:55:25.587407+00:00",
+  "timeout_s": 1800.0
+}

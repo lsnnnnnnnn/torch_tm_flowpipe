@@ -1,0 +1,15 @@
+{
+  "schema": "archcomp26-airplane-initial-full-box-v1",
+  "source": "fixed official 2026 benchmarks/Airplane/specifications.txt at commit d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26",
+  "scope": "one unsplit physical initial box; no numeric run",
+  "state_order": ["sx", "sy", "sz", "vx", "vy", "vz", "phi", "theta", "psi", "r", "p", "q"],
+  "boxes": [
+    {
+      "lane": 0,
+      "bounds": [[0, 0], [0, 0], [0, 0], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], [0, 0], [0, 0], [0, 0]]
+    }
+  ],
+  "auxiliary_clock_initial": [0, 0],
+  "auxiliary_control_initial": [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
+  "note": "Auxiliary values describe a proposed continuous implementation layout, not additional official physical initial dimensions."
+}

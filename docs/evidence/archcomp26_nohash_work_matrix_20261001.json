@@ -10,13 +10,13 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 79,
+  "attempt_count": 96,
   "status_counts": {
-    "completed": 20,
+    "completed": 24,
     "running": 1,
     "early_stopped": 5,
-    "failed": 1,
-    "not_attempted": 37,
+    "failed": 5,
+    "not_attempted": 29,
     "short_prefix_only": 0
   },
   "methods": [
@@ -317,62 +317,122 @@
     {
       "instance_id": "airplane-continuous",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "failed",
+      "attempt_count": 2,
+      "selected_attempt_number": 93,
+      "selected_attempt_status": "incomplete_rejected_first_substep",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_smoke1_001",
+      "selected_wall_s": 12.5000836038962,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "attempts": [
+        {
+          "index": 92,
+          "status": "failed_before_plant_advance",
+          "role": "official full initial box, one-period working-P3/validation-P4 entry smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_order3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md"
+        },
+        {
+          "index": 93,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, one-period working/validation-P3 solution_order smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md"
+        }
+      ]
     },
     {
       "instance_id": "airplane-continuous",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "failed",
+      "attempt_count": 2,
+      "selected_attempt_number": 81,
+      "selected_attempt_status": "incomplete_rejected_first_substep",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_huan_smoke1_001",
+      "selected_wall_s": 6.7849218137562275,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "attempts": [
+        {
+          "index": 80,
+          "status": "failed_before_ode",
+          "role": "official full initial box, order-6 one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md"
+        },
+        {
+          "index": 81,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, order-3 one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "airplane-continuous",
       "method": "xiangru",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "failed",
+      "attempt_count": 1,
+      "selected_attempt_number": 82,
+      "selected_attempt_status": "incomplete_rejected_first_substep",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_xiangru_smoke1_001",
+      "selected_wall_s": 6.98543097358197,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "attempts": [
+        {
+          "index": 82,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, order-3 one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_xiangru_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "airplane-continuous",
       "method": "flowstar_native",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
+      "work_status": "failed",
+      "attempt_count": 3,
+      "selected_attempt_number": 96,
+      "selected_attempt_status": "incomplete_rejected_first_substep",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_order3_rem1_smoke1_001",
+      "selected_wall_s": 3.925655512139201,
+      "selected_property_verdict": "UNKNOWN_NO_ACCEPTED_TUBE",
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Diagnostic attempt did not finish the requested horizon; no comparable result.",
+      "attempts": [
+        {
+          "index": 94,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, one-period historical order6 numerical smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_order6_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md"
+        },
+        {
+          "index": 95,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, one-period order3 diagnostic with remainder [-0.01,0.01]",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_order3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md"
+        },
+        {
+          "index": 96,
+          "status": "incomplete_rejected_first_substep",
+          "role": "official full initial box, one-period order3 wider-remainder [-1,1] parameter diagnostic",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_airplane_fullbox_order3_rem1_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "airplane-discrete",
@@ -617,62 +677,129 @@
     {
       "instance_id": "docking-constraint",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 89,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_p3_full40_001",
+      "selected_wall_s": 17.411771160550416,
+      "selected_property_verdict": "Unknown.",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 88,
+          "status": "completed_short_prefix",
+          "role": "official full initial box, one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_p3_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        },
+        {
+          "index": 89,
+          "status": "completed",
+          "role": "official full initial box, full 40-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_p3_full40_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "docking-constraint",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 3,
+      "selected_attempt_number": 85,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_huan_full40_001",
+      "selected_wall_s": 12.698838666081429,
+      "selected_property_verdict": "Unknown.",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 83,
+          "status": "failed_before_plant_advance",
+          "role": "official full initial box, one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_huan_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        },
+        {
+          "index": 84,
+          "status": "completed_short_prefix",
+          "role": "official full initial box, one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_huan_smoke1_002",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        },
+        {
+          "index": 85,
+          "status": "completed",
+          "role": "official full initial box, full 40-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_huan_full40_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "docking-constraint",
       "method": "xiangru",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 87,
+      "selected_attempt_status": "completed",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_xiangru_full40_001",
+      "selected_wall_s": 12.66812906973064,
+      "selected_property_verdict": "Unknown.",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 86,
+          "status": "completed_short_prefix",
+          "role": "official full initial box, one-period smoke",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_xiangru_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        },
+        {
+          "index": 87,
+          "status": "completed",
+          "role": "official full initial box, full 40-period attempt",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/docking_xiangru_full40_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "docking-constraint",
       "method": "flowstar_native",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
-      "complete_numerical_run": false,
+      "work_status": "completed",
+      "attempt_count": 2,
+      "selected_attempt_number": 91,
+      "selected_attempt_status": "completed_numeric_unknown_property",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_docking_full40_001",
+      "selected_wall_s": 9.139415808022022,
+      "selected_property_verdict": "UNKNOWN",
+      "complete_numerical_run": true,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof.",
+      "attempts": [
+        {
+          "index": 90,
+          "status": "completed_short_prefix",
+          "role": "official full initial box, one-period plumbing smoke with unknown property",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_docking_smoke1_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_docking_smoke1_001/SUMMARY.md"
+        },
+        {
+          "index": 91,
+          "status": "completed_numeric_unknown_property",
+          "role": "official full initial box, full 40-period numerical attempt with unknown property",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_docking_full40_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_docking_full40_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "double-pendulum-less-robust",
@@ -707,7 +834,7 @@
           "status": "incomplete_failed_contraction",
           "role": "full 225-box diagnostic with directed interval NN residual",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_p3_port_v1/full225_001",
-          "local_summary": "../ARCHCOMP26_DP_P3_DIRECTED_DIAGNOSTIC_20261001.md"
+          "local_summary": "docs/ARCHCOMP26_DP_P3_DIRECTED_DIAGNOSTIC_20261001.md"
         },
         {
           "index": 10,
@@ -1202,7 +1329,7 @@
           "status": "completed",
           "role": "paper two-state full closed-window contract",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_huan_full20_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
         }
       ]
     },
@@ -1232,7 +1359,7 @@
           "status": "completed",
           "role": "paper two-state full closed-window contract",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/single_pendulum_two_state_xiangru_full20_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/single_pendulum_prep_001/SUMMARY.md"
         }
       ]
     },
@@ -1262,7 +1389,7 @@
           "status": "completed",
           "role": "paper two-state full closed-window contract",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_sp_two_state_full20_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/native_sp_two_state_full20_001/SUMMARY.md"
         }
       ]
     },
@@ -1315,14 +1442,14 @@
           "status": "completed_short_prefix",
           "role": "new 2026 one-period 12-box plumbing smoke with raw ONNX output offset once in plant",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/huan_smoke1_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
         },
         {
           "index": 29,
           "status": "incomplete_unknown",
           "role": "new 2026 T20 full contract attempted; driver observed all steps but some lanes terminated",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/huan_full20_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
         }
       ]
     },
@@ -1345,14 +1472,14 @@
           "status": "completed_short_prefix",
           "role": "new 2026 one-period 12-box plumbing smoke with raw ONNX output offset once in plant",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/xiangru_smoke1_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
         },
         {
           "index": 30,
           "status": "incomplete_unknown",
           "role": "new 2026 T20 full contract attempted; driver observed all steps but some lanes terminated",
           "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/author_tora_remain_v1/xiangru_full20_001",
-          "local_summary": "../../../../../results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
+          "local_summary": "docs/evidence/results/archcomp26_20261001/author_tora_remain_v1/SUMMARY.md"
         }
       ]
     },

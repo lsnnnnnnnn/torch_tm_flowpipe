@@ -1,0 +1,3 @@
+# Docking native one-period plumbing smoke
+
+Independent new run at `/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_docking_smoke1_001`, using the fixed 2026 full initial box and model. The untouched outer `RESULT.json` is `failed`, exit 2, wall **4.025295520201325 s**. Flow* completed 1/1 control period and saved 10/10 full-time tubes; the paired server served 1 controller RPC on port 5104. The native radial interval checker returned `UNKNOWN` from the first tube (`q.upper=+0.016082965472827226`). This is a plumbing diagnostic only, not a 40 s property result. See the separate `../native_docking_full40_001/SUMMARY.md` for the new full run.

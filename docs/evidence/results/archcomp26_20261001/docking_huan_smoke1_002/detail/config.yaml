@@ -1,0 +1,65 @@
+run_attack: false
+num_vars: 7
+num_nn_input: 4
+num_nn_output: 2
+steps: 1
+step_size: 1.0
+ode_step_size: 0.1
+ode_order: 3
+cut_off_threshold: 1.0e-06
+remainder_estimation:
+- -0.01
+- 0.01
+sr_queue: 1000
+initial_set:
+- name: sx
+  interval:
+  - 70.0
+  - 106.0
+- name: sy
+  interval:
+  - 70.0
+  - 106.0
+- name: vx
+  interval:
+  - -0.28
+  - 0.28
+- name: vy
+  interval:
+  - -0.28
+  - 0.28
+- name: t
+  interval: &id001
+  - 0.0
+  - 0.0
+- name: Fx
+  interval: *id001
+- name: Fy
+  interval: *id001
+dynamics_expressions:
+- vx
+- vy
+- 2*0.001027*vy+3*0.001027^2*sx+Fx/12
+- -2*0.001027*vx+Fy/12
+- '1'
+- '0'
+- '0'
+constraints_safe:
+- sqrt(vx^2+vy^2)-0.2-0.002054*sqrt(sx^2+sy^2)
+refine_specs: false
+model_dir: /srv/local/shengenli/CROWN-Reach/ARCH-COMP2024/benchmarks/Docking/model.onnx
+input_shape:
+- -1
+- 4
+output_T_shape:
+- -1
+- 2
+- 4
+output_c_shape:
+- -1
+- 2
+output_scale: 1
+output_offset: 0
+bound_opts:
+  activation_bound_option: same-slope
+split_vars: []

@@ -1,0 +1,128 @@
+{
+  "schema": "archcomp26-airplane-continuous-fullbox-cpu-preflight-v1",
+  "source_spec": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/specifications.txt",
+  "source_dynamics": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/dynamics.m",
+  "source_controller": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/controller_airplane.onnx",
+  "generated_config": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_fullbox_20261002/config.yaml",
+  "source_point_config_used_only_for_ode_and_checker_comparison": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_fullbox_20261002/source_point_config.yaml",
+  "physical_state_order": [
+    "x",
+    "y",
+    "z",
+    "u",
+    "v",
+    "w",
+    "phi",
+    "theta",
+    "psi",
+    "r",
+    "p",
+    "q"
+  ],
+  "physical_initial_box": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "auxiliary_initial_intervals": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "full_initial_box_count": 1,
+  "control_period_s": 0.1,
+  "control_periods": 20,
+  "ode_substep_s": 0.01,
+  "ode_substeps": 200,
+  "controller_input": {
+    "name": "sequential_1_input",
+    "shape": [
+      "N",
+      12
+    ]
+  },
+  "controller_output": {
+    "name": "dense_4",
+    "shape": [
+      "N",
+      6
+    ]
+  },
+  "ode_components_parsed": 19,
+  "safe_constraints_parsed": 8,
+  "initial_safe_check": "y=0 and phi/theta/psi in [0,1], inside closed [-1,1]",
+  "checked_property": "y,phi,theta,psi in [-1,1] for all t in [0,2]",
+  "gpu_initialized": false,
+  "numerical_run_started": false,
+  "content_digest_performed": false
+}

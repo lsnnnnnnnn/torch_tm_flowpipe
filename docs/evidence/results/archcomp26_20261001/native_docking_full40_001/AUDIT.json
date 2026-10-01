@@ -1,0 +1,96 @@
+{
+  "schema": "archcomp26-native-docking-saved-audit-v1",
+  "remote_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/native_docking_full40_001",
+  "counts": {
+    "physical_boxes": 1,
+    "completed_periods": 40,
+    "period_substeps": 10,
+    "saved_tube_segments": 400,
+    "saved_safety_segments": 400,
+    "controller_rpc_calls": 40
+  },
+  "outer_result": {
+    "ended_utc": "2026-10-01T18:53:21.105618+00:00",
+    "exit_code": 2,
+    "failure": "nonzero_exit",
+    "pid": 3422797,
+    "status": "failed",
+    "timed_out": false,
+    "wall_s": 9.139415808022022
+  },
+  "native_property_status": "UNKNOWN",
+  "initial_margin": [
+    -0.5079082336541199,
+    -0.0073558285335368345
+  ],
+  "first_unknown_substep": 1,
+  "first_unknown_time_interval_s": [
+    0.0,
+    0.1
+  ],
+  "first_tube_margin": [
+    -0.5079917515719394,
+    0.016082965472827226
+  ],
+  "last_tube_margin": [
+    -0.8351270211223452,
+    8.954347227371573
+  ],
+  "maximum_tube_margin_upper": 8.954347227371573,
+  "box_certified_safe_segments": 0,
+  "box_unknown_segments": 400,
+  "box_lower_positive_segments": 0,
+  "endpoint_t40": {
+    "sx": {
+      "lo": -56.10811233900303,
+      "hi": 217.47556332674057,
+      "width": 273.5836756657436
+    },
+    "sy": {
+      "lo": -54.04233135534693,
+      "hi": 219.8138264025062,
+      "width": 273.8561577578531
+    },
+    "vx": {
+      "lo": -6.512224614228157,
+      "hi": 5.880721649716058,
+      "width": 12.392946263944214
+    },
+    "vy": {
+      "lo": -6.433739482845608,
+      "hi": 5.9554995887926525,
+      "width": 12.389239071638261
+    }
+  },
+  "tube_union_t0_t40": {
+    "sx": {
+      "lo": -56.10811233900303,
+      "hi": 217.47556332778632,
+      "width": 273.58367566678936
+    },
+    "sy": {
+      "lo": -54.04233135676655,
+      "hi": 219.8138264025062,
+      "width": 273.8561577592728
+    },
+    "vx": {
+      "lo": -6.512224614228157,
+      "hi": 5.880721649716058,
+      "width": 12.392946263944214
+    },
+    "vy": {
+      "lo": -6.433739482845608,
+      "hi": 5.9554995887926525,
+      "width": 12.389239071638261
+    }
+  },
+  "max_abs_next_rpc_vs_saved_prior_endpoint": 2.5380902446414666e-07,
+  "slope_check_all_40": {
+    "saved_rpc_count": 40,
+    "checked_count": 40,
+    "max_abs_slope_difference": 0.0,
+    "mismatch": [],
+    "all_exact_equal": true
+  },
+  "qualification": "Flow* interval plant tube and radial box checker are saved; CROWN converted graph bounds are not an independent end-to-end float32 ONNX certificate; positive q upper is uncertainty, not an unsafe witness"
+}

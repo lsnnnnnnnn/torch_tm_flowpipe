@@ -1,0 +1,39 @@
+{
+  "argv": [
+    "/usr/bin/taskset",
+    "-c",
+    "14-17",
+    "/usr/bin/prlimit",
+    "--as=34359738368",
+    "--",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/bin/python",
+    "-B",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_prep_20261002/archcomp26_airplane_continuous_p3_nohash.py",
+    "--mode",
+    "smoke1",
+    "--output",
+    "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_smoke1_001/payload"
+  ],
+  "contract_label": "airplane-continuous-2026-one-full-box-order3-solution-order-diagnostic",
+  "cwd": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_prep_20261002",
+  "environment_policy": "inherit with recorded selected variables and explicit overrides",
+  "host": {
+    "machine": "x86_64",
+    "name": "huan-c4140-server-3",
+    "release": "7.0.0-29-generic",
+    "system": "Linux"
+  },
+  "instance": "airplane-continuous",
+  "method": "p3",
+  "schema": "archcomp26-nohash-run-v1",
+  "selected_environment": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_solution_order_prep_20261002"
+  },
+  "started_utc": "2026-10-01T19:40:50.550074+00:00",
+  "timeout_s": 300.0
+}

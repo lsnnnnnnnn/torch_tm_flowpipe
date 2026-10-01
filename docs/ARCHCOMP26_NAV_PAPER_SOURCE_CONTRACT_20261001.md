@@ -1,5 +1,7 @@
 # ARCH-COMP 2026 NAV: paper and source contract audit
 
+2026-10-02 update: The controller authors' training and closed-loop NAV source was located after this audit. See [the author execution contract addendum](ARCHCOMP26_NAV_AUTHOR_EXECUTION_CONTRACT_20261002.md) for the now-supported executable axis order and CPU-only diagnostic. The unresolved-axis conclusion below records the evidence available on 2026-10-01.
+
 Audit date: 2026-10-01. This is a source audit and execution preflight, not a new NAV numerical result. No content digest or SHA-256 check was run for this audit. The 2026 benchmark sources were read at official commit `d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26`; the saved paper was read and its formula page visually checked.
 
 ## Fixed official contract

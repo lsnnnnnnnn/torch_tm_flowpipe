@@ -1,0 +1,139 @@
+{
+  "schema": "archcomp26-native-airplane-fullbox-smoke-audit-v1",
+  "full_initial_box": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "runs": [
+    {
+      "run_dir": "native_airplane_fullbox_order6_smoke1_001",
+      "order": 6,
+      "remainder_estimation": "[-0.01,0.01]",
+      "ode_step_s": 0.01,
+      "control_period_s": 0.1,
+      "outer_status": "failed",
+      "outer_exit_code": 2,
+      "outer_wall_s": 4.877420932985842,
+      "outer_timeout_s": 600.0,
+      "native_address_limit_bytes": 34359738368,
+      "controller_rpc_calls": 1,
+      "accepted_flowpipe_segments": 0,
+      "flowstar_status_code": 4,
+      "flowstar_status_name": "UNCOMPLETED_SAFE",
+      "property_samples": 0,
+      "property_verdict": "UNKNOWN_NO_ACCEPTED_TUBE"
+    },
+    {
+      "run_dir": "native_airplane_fullbox_order3_smoke1_001",
+      "order": 3,
+      "remainder_estimation": "[-0.01,0.01]",
+      "ode_step_s": 0.01,
+      "control_period_s": 0.1,
+      "outer_status": "failed",
+      "outer_exit_code": 2,
+      "outer_wall_s": 3.925545511767268,
+      "outer_timeout_s": 600.0,
+      "native_address_limit_bytes": 34359738368,
+      "controller_rpc_calls": 1,
+      "accepted_flowpipe_segments": 0,
+      "flowstar_status_code": 4,
+      "flowstar_status_name": "UNCOMPLETED_SAFE",
+      "property_samples": 0,
+      "property_verdict": "UNKNOWN_NO_ACCEPTED_TUBE"
+    },
+    {
+      "run_dir": "native_airplane_fullbox_order3_rem1_smoke1_001",
+      "order": 3,
+      "remainder_estimation": "[-1,1]",
+      "ode_step_s": 0.01,
+      "control_period_s": 0.1,
+      "outer_status": "failed",
+      "outer_exit_code": 2,
+      "outer_wall_s": 3.925655512139201,
+      "outer_timeout_s": 600.0,
+      "native_address_limit_bytes": 34359738368,
+      "controller_rpc_calls": 1,
+      "accepted_flowpipe_segments": 0,
+      "flowstar_status_code": 4,
+      "flowstar_status_name": "UNCOMPLETED_SAFE",
+      "property_samples": 0,
+      "property_verdict": "UNKNOWN_NO_ACCEPTED_TUBE"
+    }
+  ],
+  "conclusion": "All three independent profiles complete one controller RPC but accept zero Flow* substeps; no numerical tube or property verdict for the first period or T=2 exists.",
+  "source_level_failure_condition": "With an empty invariant, saved Flowpipe::advance(Real,Symbolic_Remainder) can return 0 when a computed Picard remainder is not contained in the preset remainder estimate (Continuous.cpp lines 2363-2372). No per-variable computed remainder was logged."
+}

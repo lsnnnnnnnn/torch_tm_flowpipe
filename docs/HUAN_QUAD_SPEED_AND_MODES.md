@@ -1,7 +1,7 @@
 # Huan QUAD speed and mode audit
 
-Status: **evidence-backed draft; 40-step mode ablation and Huan phase diagnostic completed**
-Date: 2026-10-01
+Status: **evidence-backed draft; 40-step mode, Huan phase, and isolated P3 observer diagnostics completed**
+Date: 2026-10-02
 
 ## Plain-language answer
 
@@ -300,7 +300,7 @@ the roughly 20-fold completed-run time gap.
 | Kernel preload | Same kernels/build identity; no fallback hidden by preload | Availability present, benefit not isolated | Profile/ablate later; no speed claim now |
 | Cache release policy | Never release live tensors; numerical state signatures unchanged | Huan runner asserts allocated bytes unchanged | Low-priority allocator experiment after matched profile |
 | Remove completed P3 diagnostic full-state signatures from a clean timing arm | Preserve numerical state, the original prune and ordered CUDA graph eviction; compare tensors directly outside the timed window | Frozen step rows show 19 nonempty-eviction regions totaling 191.723381 s and 981 other regions totaling 1.229124 s. A separate no-hash P3 entry has now completed the different 2026 paper-equation QUAD contract, but it did not run a matched signed-versus-clean performance pair | Candidate not yet quantified. The 191.723381 s is an upper bound on the mixed historical region, not a measured removable time or an explanation of the new wall time |
-| Reduce observer/export overhead | Exported geometry and acceptance/status must remain identical; solver state immutable | Observer is 75.13 s in current P3; new plotting path works entirely from saved output | Future accepted-step streaming can be profiled independently; plotting must remain outside solver timing |
+| Reduce observer/export overhead | Keep solver arithmetic and accepted/status path identical; if output is suppressed, compare direct numerical arrays outside the solver clock | Frozen observer region was 75.13 s but mixed bounds, synchronization and export. A separate old-author-contract, non-JIT/no-hash 40-step P3 on/off pair has direct-equal final 1,024×12 tube/endpoint/status arrays and a single 0.230546 s driver-time difference | Small short-prefix diagnostic only; retaining the observer preserves useful evidence. No full-run speed claim or immediate deletion recommendation |
 | Lower order/validation | Must be declared as a different algorithm contract and still close the full benchmark | Huan parity P2/RHS1 completes; Huan strict first rejects at 597; our corrected strict P2/validation3 first rejects at 800; current P3/validation4 completes | Not an implementation-equivalent optimization and cannot be presented as one |
 | Omit strict tails/roundoff charges | None: would change the guarantee contract | Parity is a faithful compatibility mode, while strict evidence shows real missing-roundoff counterexamples | Never use as a hidden acceleration |
 
@@ -370,3 +370,16 @@ there was no same-input signed-versus-clean pair, 1,357.555 s versus the old
 speedup. The paper-equation Huan and Xiangru P2 parity runs use still different
 arithmetic/order contracts; their 94.583 s and 108.018 s single samples are
 not matched performance controls for this P3 result.
+
+## New isolated old-author P3 observer pair (2026-10-02)
+
+The separate [raw 40-step pair and direct-value comparison](evidence/results/huan_quad_stage_a_40_20261001/observer_pair_v1/SUMMARY.md) use the **old author QUAD equations** from the saved Stage A `quad_40.yaml`, directly compared byte for byte, including the old x2/x4/x5 expressions. The P3 working / P2 ODE point / P4 validation route, 1,024 initial boxes, controller, precompiled CUDA modules, SR queue, and working graph eviction are common to both arms. This is not the 2026 paper-equation QUAD contract. The first `observer_on_001` attempt stopped at 0/40 steps when a guard caught auto_LiRPA's import-time `@torch.jit.script`; its failure receipt remains in the evidence directory. Both successful arms use an isolated Python identity decorator so TorchScript compiles are not run. Content digest constructors and CUDA extension builds are guarded to fail.
+
+| New single process | Coverage | Driver internal elapsed | Outer process wall | Bracketed per-step observer region |
+| --- | --- | ---: | ---: | ---: |
+| `observer_on_002` | 40/40 substeps; 40,960/40,960 lane-steps accepted | 53.554101 s | 60.379012 s | 0.182725 s |
+| `observer_off_002` | 40/40 substeps; 40,960/40,960 lane-steps accepted | 53.323556 s | 60.028937 s | 0 s |
+
+The off arm removes only the 40 per-step physical whole-step/endpoint range evaluations, pooled 12-state union calculation, and their JSON values. It retains per-step acceptance/status/SR records and the driver's controller-input and terminal range calls; each arm also computes a common terminal direct-value snapshot **after** the driver clock. Direct comparison found identical 40-step acceptance/status/SR-length records, two controller records, final hull/mean width, and final 1,024×12 tube, endpoint and status arrays. It did not compare every intermediate plant/SR tensor. `broken=0` in both. The common t=0.2 x3 hull is `[-0.27693202339139644,0.543910762761349]`; applying the T=5 target at t=0.2 prints `FALSIFIED` and says nothing about the full-horizon target.
+
+The one-pair on−off driver difference is **0.230546 s**, with a **0.350075 s** outer wall difference. The 0.182725 s bracketed region includes GPU synchronization and transfer, not just arithmetic bounds. These times have no repetitions or randomized order and use a non-JIT controller path unlike the frozen P3 result. They cannot estimate late-history observer cost or a 1,000-step speedup. Both new arms already omit the old diagnostic `mathematical_signature()`, so this is **not** a signed-versus-clean working-prune measurement. On the evidence available, disabling per-step observer export is not a worthwhile full-run change: it removes the evidence needed for flowpipe inspection for a small early-prefix saving. A lower-overhead streaming approach would first need a matched later-prefix profile and direct numerical qualification; no long experiment was started here.

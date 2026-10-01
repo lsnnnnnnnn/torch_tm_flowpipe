@@ -19,11 +19,13 @@ INSTANCE_ALIASES = {
 METHOD_ALIASES = {"pytorch_gpu_p3_port": "pytorch_gpu"}
 STATUS = {
     "completed": "completed",
+    "completed_numeric_unknown_property": "completed",
     "running": "running",
     "incomplete_unknown": "early_stopped",
     "early_stopped_checker_unsafe": "early_stopped",
     "failed_before_plant_advance": "failed",
     "failed_before_ode": "failed",
+    "incomplete_rejected_first_substep": "failed",
     "incomplete_failed_contraction": "failed",
     "incomplete_unknown_and_failed_contraction": "failed",
     "completed_short_prefix": "short_prefix_only",
@@ -153,7 +155,7 @@ def main():
         lines.append("| " + " | ".join([instance] + [LABELS[by_key[instance, method]["work_status"]] for method in methods]) + " |")
     lines += [
         "",
-        "“完成”仅表示所选尝试记录了完整数值时域；“早停”包含 native DP more 的 UNKNOWN 和 Huan/Xiangru DP more 的 checker Unsafe；“失败”包括 P3 DP less 诊断以及入口装载失败。较早 smoke 和各尝试原始状态保存在 JSON。",
+        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN 和 Huan/Xiangru DP more 的 checker Unsafe；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败。较早 smoke 和各尝试原始状态保存在 JSON。",
         "",
         "所有 64 个单元在本索引中均不具备四方法排名资格。重复次数按各条 attempt 计，不能从完成状态推断计时资格；保存的数值结果不构成端到端浮点 NNCS 证明。标为运行中的尝试尚无终点时间或宽度；DP more 早停没有完整 T=0.4 结果。",
         "",

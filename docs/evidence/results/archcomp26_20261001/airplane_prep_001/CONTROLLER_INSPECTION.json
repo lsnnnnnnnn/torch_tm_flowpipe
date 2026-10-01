@@ -1,0 +1,15 @@
+{
+  "schema": "archcomp26-airplane-controller-inspection-v1",
+  "source": "fixed official 2026 benchmarks/Airplane/controller_airplane.onnx at commit d55dcc39f6496720adbf8ffdb7ff8c6e04bb8f26",
+  "local_file": "controller_airplane.onnx",
+  "byte_count": 55199,
+  "inspection": "onnx.load and onnx.checker.check_model in existing remote nncs_env; no content digest",
+  "opset": 9,
+  "input": {"name": "sequential_1_input", "shape": ["N", 12], "onnx_element_type": "FLOAT"},
+  "output": {"name": "dense_4", "shape": ["N", 6], "onnx_element_type": "FLOAT"},
+  "layers": [12, 100, 100, 20, 6],
+  "operators": {"MatMul": 4, "Add": 4, "Relu": 3},
+  "explicit_graph_preprocessing": "none observed before first MatMul",
+  "historical_server_model_comparison": "direct cmp -s exit 0 against CROWN-Reach-GPU/ARCH-COMP2024/benchmarks/Airplane/controller_airplane.onnx",
+  "qualification": "The direct byte comparison says the selected files matched at inspection time; it is not a content-bound run receipt."
+}

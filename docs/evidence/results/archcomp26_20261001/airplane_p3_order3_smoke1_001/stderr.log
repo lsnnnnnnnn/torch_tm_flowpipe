@@ -1,0 +1,32 @@
+/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/nncs_env/lib/python3.11/site-packages/onnx2pytorch/convert/model.py:167: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if not self.experimental and inputs[0].shape[self.batch_dim] > 1:
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_fullbox_prep_20261002/archcomp26_airplane_continuous_p3_nohash.py", line 130, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_p3_fullbox_prep_20261002/archcomp26_airplane_continuous_p3_nohash.py", line 113, in main
+    return airplane.run(run_args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/run.py", line 157, in run
+    driver_code = driver.main()
+                  ^^^^^^^^^^^^^
+  File "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py", line 1446, in main
+    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/run.py", line 103, in observed
+    state, accepted = original_advance(*call_args, **call_kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py", line 2022, in advance_sparse
+    v_eng = validation_engine_for_order(eng, validation_order)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py", line 1669, in validation_engine_for_order
+    tables = build_tables(eng.tables.n, order)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/monomials.py", line 284, in build_tables
+    keys2 = _radix_encode(exps, radix)  # [T2] keys of the product basis
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/monomials.py", line 100, in _radix_encode
+    raise ValueError(f"radix encoding overflow: {radix}^{nvars} >= 2^63")
+ValueError: radix encoding overflow: 9^20 >= 2^63
+/srv/local/shengenli/miniforge3/envs/py11/lib/python3.11/tempfile.py:934: ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/tmp/tmp1jwvrodu'>
+  _warnings.warn(warn_message, ResourceWarning)

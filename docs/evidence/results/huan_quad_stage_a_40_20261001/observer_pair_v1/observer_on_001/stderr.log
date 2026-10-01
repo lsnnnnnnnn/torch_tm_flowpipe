@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py", line 484, in <module>
+    main()
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py", line 480, in main
+    raise SystemExit(execute(parser.parse_args()))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py", line 410, in execute
+    driver_return = driver.main()
+                    ^^^^^^^^^^^^^
+  File "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py", line 1013, in main
+    lirpa_model = build_crown(
+                  ^^^^^^^^^^^^
+  File "/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py", line 273, in build_crown
+    from auto_LiRPA import BoundedModule
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/__init__.py", line 17, in <module>
+    from .bound_general import BoundedModule
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_general.py", line 27, in <module>
+    from .bound_op_map import bound_op_map
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_op_map.py", line 17, in <module>
+    from .bound_ops import *
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_ops.py", line 17, in <module>
+    from .operators import *
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/__init__.py", line 17, in <module>
+    from .base import *
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/base.py", line 25, in <module>
+    from ..perturbations import *
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/perturbations.py", line 22, in <module>
+    from .utils import logger, eyeC
+  File "/srv/local/shengenli/auto_LiRPA/auto_LiRPA/utils.py", line 452, in <module>
+    @torch.jit.script
+     ^^^^^^^^^^^^^^^^
+  File "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py", line 57, in prohibited
+    raise RuntimeError("content digest or CUDA extension build disabled in this run")
+RuntimeError: content digest or CUDA extension build disabled in this run

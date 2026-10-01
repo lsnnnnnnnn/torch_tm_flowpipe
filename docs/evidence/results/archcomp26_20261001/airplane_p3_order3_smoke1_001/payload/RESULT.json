@@ -1,0 +1,11 @@
+{
+  "schema": "archcomp26-airplane-continuous-fullbox-result-v1",
+  "status": "exception",
+  "backend": "p3",
+  "mode": "smoke1",
+  "error_type": "ValueError",
+  "error": "radix encoding overflow: 9^20 >= 2^63",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/run.py\", line 157, in run\n    driver_code = driver.main()\n                  ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1446, in main\n    st, ok = advance_sparse(st, code, eng, sched, settings, rem_est, sr)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/run.py\", line 103, in observed\n    state, accepted = original_advance(*call_args, **call_kwargs)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py\", line 2022, in advance_sparse\n    v_eng = validation_engine_for_order(eng, validation_order)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/sparse_exec.py\", line 1669, in validation_engine_for_order\n    tables = build_tables(eng.tables.n, order)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/monomials.py\", line 284, in build_tables\n    keys2 = _radix_encode(exps, radix)  # [T2] keys of the product basis\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine_quad_normalization_center/src/flowstar_gpu/monomials.py\", line 100, in _radix_encode\n    raise ValueError(f\"radix encoding overflow: {radix}^{nvars} >= 2^63\")\nValueError: radix encoding overflow: 9^20 >= 2^63\n",
+  "observed_substeps": 0,
+  "wall_s": 12.602028320543468
+}

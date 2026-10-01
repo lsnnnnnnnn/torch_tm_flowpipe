@@ -105,3 +105,24 @@ Double Pendulum 旧 native 300 秒作业超时。只读审计发现其二进制�
 - **TORA remain / P3**：独立一期 smoke 后，新全程尝试完成 12 初盒 × 20 控制期 × 10 小步 = 2400/2400 盒步接受，外层 wall **10.411001 s**。对保存的 2400 条范围独立扫描，四态全时 tube 均在 `[-2,2]^4`，无拒绝、首越界或终点超出同段 tube；作者 checker 无失败输出。末端四态绝对 `lo/hi/width` 与原始收据见[新 P3 摘要](evidence/results/archcomp26_20261001/p3_tora_remain_v1/SUMMARY.md)。原生也完整，Huan/Xiangru 仍是 `t≤18.4` 共同安全前缀；[四方绝对区间和空值表](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/SUMMARY.md)区分了这两类结局。失败进程 wall 不和完整时间排名；P3 的安全数值记录不等于独立端到端 NNCS 浮点证书。
 
 最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)由 **79 条**新尝试重算：**20 格**记录完整数值时域、1 格论文方程 QUAD 原生仍在运行、5 格早停、1 格失败，37 格尚未尝试。先前 53 条是上一阶段快照。
+
+TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261001/tora_remain_fourway_common_prefix_20261002/plots/SUMMARY.md)已从新运行原始范围逐步重画，提供 PNG/PDF/MATLAB `.m` 与几何 JSON。原生/P3 展示完整 200 步；Huan/Xiangru 只画 184 步合格前缀，后续标为未知，不把幸存盒延伸到 T=20。
+
+## 10 月 2 日接续：Airplane 全初盒阻断与 Docking 四方全程
+
+- **Airplane continuous**：按固定官方完整 12 态初盒、20×0.1 s 合同另立入口，旧点初盒结果没有复用。order-6 Huan 一周期预检在任何 ODE 小步之前，19 变量六阶单项式配对构建期间 RSS 超过 54,006,540 KiB，252.247 s 后只终止该子进程组；order-3 诊断 profile 的 Huan/Xiangru 均在首个 0.01 s 小步拒绝唯一全初盒，分别 6.785/6.985 s、0 个接受步。未启动完整 T=2，也没有性质结论；内部首步拒绝子类未记录。原始记录和两种阶数差异见[三次尝试摘要](evidence/results/archcomp26_20261001/airplane_continuous_order3_fullbox_20261002/SUMMARY.md)。
+- **Airplane continuous P3**：六输出严格注入的 CPU 预检通过且未初始化 GPU；两个新独立完整初盒、一周期 smoke 均未得到可接受流管。默认工作 P3/验证 P4 在首步前的单项式表编码遇到 `9^20 >= 2^63` 限制，外层 wall 13.758 s、0 个数值段；另立严格同阶 `solution_order` P3 profile 越过该入口阻断，但唯一全盒在首个 0.01 s 小步 `accepted=false`，外层 wall 12.500 s、0/10 接受。首拒立即停止，未启动 T=2 full，也没有性质结论；内部拒绝子类没有记录。两次原始记录和方法区别见[P3 摘要](evidence/results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md)及[入口审计](ARCHCOMP26_AIRPLANE_P3_NATIVE_ENTRY_AUDIT_20261002.md)。
+- **Airplane continuous Flow* native**：同一官方单完整初盒另立三次一期 smoke，依次为历史 order 6 / remainder `[-0.01,0.01]`、order 3 / 同余项、order 3 / 加宽余项 `[-1,1]`。三次均各完成一次 12→6 控制 RPC，但首个 0.01 s 段 `UNCOMPLETED_SAFE`（状态 4）、0/10 接受，外层原始状态各为 `failed/exit2`，wall 4.877421/3.925546/3.925656 s；性质无任何已接受 tube 可检查，日志末尾的 `UNKNOWN` 不可改写为安全或真实反例。加宽余项只是参数诊断，不是完整官方结果。原始记录与来源级首拒说明见[原生三次摘要](evidence/results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md)。
+- **Docking P3/Huan/Xiangru**：官方单完整初盒、40×1 s、每期 10 个数值小步，三个新 full run 各 400/400 接受，外层 wall 分别 17.411771/12.698839/12.668129 s。三方对非线性全时约束的 checker 均为 `Unknown.`；首段保守安全裕量 `q` 上界约 +0.016083，不能当作实际轨迹越界反例或安全证书。先前 Huan 一次 smoke 因公共模块导入路径缺失在数值推进前失败，保留该记录，随后新 smoke 成功；七次尝试及末端四态绝对区间见[三方原始证据摘要](evidence/results/archcomp26_20261001/DOCKING_FULLBOX_3METHODS_SUMMARY.md)。原生新入口由独立工作继续。
+
+当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)登记 **89 条**新尝试：64 个方法单元中 **23 格**有完整数值时域、1 格原生论文方程 QUAD 运行中、5 格早停、3 格失败、32 格尚未尝试。这里的“完整”只指数值覆盖，Docking 性质仍未知；上述 79 条/20 格是上一阶段快照。
+
+**Docking / 原生第四方法** 在独立一期 smoke 和全时域新目录中运行。full 走完 40/40 期、400/400 段、40 RPC，外层 wall 9.139416 s；原始 `RESULT` 仍是 `failed/exit 2`，因为原生性质 checker 返回 `UNKNOWN`。逐段保守径向安全裕量 `q` 的 400 个区间都跨零，首段上界 +0.016082965、末段最大上界 +8.954347227；区间相交不等于实际轨迹反例。40 次 CROWN 调用的上下仿射斜率逐元素相同，保存范围与 400 条性质记录独立核对；见[原生 Docking 摘要](evidence/results/archcomp26_20261001/native_docking_full40_001/SUMMARY.md)。四方法现在都有完整数值时域，但没有一家证明全时安全或独立浮点 NNCS 证书。
+
+**旧作者 QUAD / P3 观测器成对消融** 使用旧 x2/x4/x5 方程、同一 1,024 盒与 40 小步，两个隔离无 JIT/无内容摘要新进程各接受 40,960/40,960 盒步；终步 1,024×12 的 tube、endpoint、status 数组和控制记录直接逐值一致。每步 observer 开/关的 driver 时间为 53.554101/53.323556 s，只有一对样本，不能外推全程加速；首次 on 入口被 TorchScript 守卫在 0 步前拦截也保留。见[成对原始记录](evidence/results/huan_quad_stage_a_40_20261001/observer_pair_v1/SUMMARY.md)与[速度模式报告](HUAN_QUAD_SPEED_AND_MODES.md)。当前证据不支持为省去短前缀约 0.23 s 而删除绘图所需的逐步 observer。
+
+加入 Airplane P3 前的矩阵快照对应 **91 条**新尝试：**24 格**完整数值时域、1 格原生论文方程 QUAD 仍运行、5 格早停、3 格失败、31 格尚未尝试。此“完成”包括原生 Docking 的数值完成/性质未知/外层 exit 2，三者在 attempt 记录中分开表示。上面的 89 条/23 格为更早快照。
+
+加入两个 Airplane P3 新 smoke 后，当时矩阵为 **93 条**新尝试：64 格中 **24 格**完整数值时域、1 格论文方程 QUAD 原生仍运行、5 格早停、**4 格失败**、**30 格未尝试**。P3 连续 Airplane 格归类为入口/首小步失败，旧单点成绩没有填入。
+
+再加入三次 Airplane Flow* native 完整初盒新 smoke 后，最新[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **96 条**新尝试：64 格中 **24 格**完整数值时域、1 格论文方程 QUAD 原生仍运行、5 格早停、**5 格失败**、**29 格未尝试**。Airplane continuous 四方方法单元均已有实际失败尝试，但均没有完整 T=2 数值流管或全时性质结论；上面的 93 条为此前快照。

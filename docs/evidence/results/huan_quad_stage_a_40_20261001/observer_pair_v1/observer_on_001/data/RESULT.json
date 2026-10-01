@@ -1,0 +1,13 @@
+{
+  "status": "exception",
+  "mode": "observer_on",
+  "completed_substeps": 0,
+  "error_type": "RuntimeError",
+  "error": "content digest or CUDA extension build disabled in this run",
+  "traceback": "Traceback (most recent call last):\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py\", line 410, in execute\n    driver_return = driver.main()\n                    ^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 1013, in main\n    lirpa_model = build_crown(\n                  ^^^^^^^^^^^^\n  File \"/srv/local/shengenli/xiangru_adoption_20260907T032448Z/xiangru_upstream/src/flowstar_gpu/integrations/crown_reach.py\", line 273, in build_crown\n    from auto_LiRPA import BoundedModule\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/__init__.py\", line 17, in <module>\n    from .bound_general import BoundedModule\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_general.py\", line 27, in <module>\n    from .bound_op_map import bound_op_map\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_op_map.py\", line 17, in <module>\n    from .bound_ops import *\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/bound_ops.py\", line 17, in <module>\n    from .operators import *\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/__init__.py\", line 17, in <module>\n    from .base import *\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/operators/base.py\", line 25, in <module>\n    from ..perturbations import *\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/perturbations.py\", line 22, in <module>\n    from .utils import logger, eyeC\n  File \"/srv/local/shengenli/auto_LiRPA/auto_LiRPA/utils.py\", line 452, in <module>\n    @torch.jit.script\n     ^^^^^^^^^^^^^^^^\n  File \"/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/p3_quad_old_stage_a_40_nohash_observer_v1/runner.py\", line 57, in prohibited\n    raise RuntimeError(\"content digest or CUDA extension build disabled in this run\")\nRuntimeError: content digest or CUDA extension build disabled in this run\n",
+  "accepted_lane_substeps": 0,
+  "wall_s": 2.0090821404010057,
+  "cuda_peak_allocated_bytes": 0,
+  "cuda_peak_reserved_bytes": 0,
+  "peak_rss_kb": 563104
+}
