@@ -14,7 +14,7 @@ receipt; preflight also requires their repository URL, commit, schema, and
 zero-mismatch receipt fields to agree before an external source identity can
 support a resolved contract.
 
-`execution_matrix.json` is the machine-readable 16-by-4 result index. Its v5
+`execution_matrix.json` is the machine-readable 16-by-4 result index. Its v6
 comparison campaign freezes a hash-bound five-round balanced rotation,
 host/hardware identity, CPU/GPU, timeout, exclusive-host/device memory budgets,
 and the versioned timing
@@ -28,13 +28,16 @@ self-declared: its exact run/watch paths, COMMAND SHA-256, recorded `timeout`
 terminal status, and frozen terminal RESULT SHA-256 from the handoff snapshot
 are code-fixed, and the known-replacement inventory is currently empty because
 the prepared 24-hour replacement was never launched. It is campaign-specific,
-has a validity window no longer than 24 hours, and must still be unexpired at
-launch as well as precede the first formal process. A running matrix has exactly
+has a validity window no longer than 24 hours, and must be checked before and
+remain unexpired at each process launch. Every attempt-ledger entry binds the
+complete audit artifact pointer used for that attempt, so rotating the current
+audit cannot invalidate historical results. A running matrix has exactly
 one hash-bound active-run receipt and lock-acquisition artifact, and exclusive-host
 mode rejects multiple declared running cells. Those JSON objects are evidence,
 not mutual exclusion. `torch_tm_flowpipe.archcomp26_launch` now supplies and
 tests only the non-blocking POSIX-flock primitive. It requires a pre-provisioned
-0600 file and a separately frozen device/inode identity, never creates or
+0600 file and a separately frozen device/inode/owner/mode/link identity in the
+campaign launch guard, never creates or
 unlinks the lock, and opens every absolute-path component through verified
 directory descriptors without following symlinks. Real spawned-process tests
 show that a contender cannot reach audit/spawn while the lock is held and that
@@ -65,14 +68,18 @@ executable-plan, and campaign gates as a terminal run. Production preflight
 hard-codes the exact 16 instance IDs and four method IDs, so synchronously
 deleting rows from the manifest, matrix, and schedule cannot shrink the scope.
 
-The v5 matrix deliberately keeps timing, property, certificate, width, and raw
+The v6 matrix deliberately keeps timing, property, certificate, width, and raw
 sample evidence out of the 64-cell index. A terminal cell must instead bind an
-`archcomp26-cell-result-v4` record conforming to
+`archcomp26-cell-result-v5` record conforming to
 `result_record.schema.json`. That record preserves every launch attempt through
-a hash-bound `archcomp26-attempt-ledger-v1`: its recorded order is hash chained,
+a hash-bound `archcomp26-attempt-ledger-v2`: its recorded order is hash chained,
 and its invocation/slot/attempt index, outcome, timing-inclusion decision, and
-artifact set must exactly equal the result samples. Thus a failed retry cannot
-be omitted from one side only. Attempt indices must be contiguous from zero;
+artifact set must exactly agree with the result samples. Every entry separately
+binds the complete prelaunch-audit pointer that was fresh before that attempt.
+Result identity hashes only the frozen
+campaign configuration; it deliberately excludes the mutable current-audit and
+active-run pointers. Thus a failed retry cannot be omitted from one side only.
+Attempt indices must be contiguous from zero;
 zero or more failed attempts may precede the sole first completion, and no
 attempt may follow it. That first completion is the only sample allowed into
 timing, preventing fastest-run selection. JSON hashing alone cannot detect a
@@ -143,7 +150,7 @@ third-party schema runtime.
 
 Every method-specific applicability decision is tagged. Discrete cells must
 mark ODE integration and remainder fields `not_applicable`; bare nulls never
-mean N/A. The v5 structure can record `adaptive` step/call modes, but launch and
+mean N/A. The v6 structure can record `adaptive` step/call modes, but launch and
 terminal validation remain fail-closed for them until a reproducible adaptive
 policy/result contract is added. Property early stop is separately represented
 as `early_stopped` with pass/fail outcomes and never counts as a completed

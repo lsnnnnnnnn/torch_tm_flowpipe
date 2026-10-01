@@ -45,7 +45,7 @@ def test_archcomp26_manifest_has_exact_scope_and_pause_gate():
     assert tuple(manifest["methods"]) == METHODS
     assert manifest["execution_matrix"] == {
         "path": "benchmarks/archcomp26/execution_matrix.json",
-        "schema_version": "archcomp26-execution-matrix-v5",
+        "schema_version": "archcomp26-execution-matrix-v6",
         "status": "all_cells_not_started",
     }
     contract_schema = manifest["instance_contract_record"]
@@ -135,10 +135,17 @@ def test_execution_matrix_explicitly_has_all_64_not_started_cells():
     assert matrix["comparison_campaign"]["active_run_receipt"] == {
         "path": None, "sha256": None,
     }
+    assert matrix["comparison_campaign"]["launch_guard"]["lock_identity"] == {
+        "device": None,
+        "inode": None,
+        "owner_uid": None,
+        "mode": 0o600,
+        "nlink": 1,
+    }
     assert matrix["comparison_campaign"]["timeout_s"] is None
     result_schema = matrix["result_record_contract"]
     result_schema_path = ROOT / result_schema["path"]
-    assert result_schema["schema_version"] == "archcomp26-cell-result-v4"
+    assert result_schema["schema_version"] == "archcomp26-cell-result-v5"
     assert hashlib.sha256(result_schema_path.read_bytes()).hexdigest() == (
         result_schema["sha256"]
     )

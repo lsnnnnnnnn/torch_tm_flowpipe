@@ -11,6 +11,7 @@ import pytest
 from torch_tm_flowpipe.archcomp26_preflight import (
     _validate_controller_update_trace,
     _validate_widths,
+    campaign_configuration_sha256,
     preflight_reasons,
     validate_matrix,
 )
@@ -222,7 +223,7 @@ def synthetic_campaign(manifest):
         },
         "active_run_receipt": {"path": None, "sha256": None},
         "launch_guard": {
-            "schema_version": "archcomp26-atomic-launch-guard-v1",
+            "schema_version": "archcomp26-atomic-launch-guard-v2",
             "protocol": "posix-flock-exclusive-nonblocking-v1",
             "lock_path": (
                 "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/"
@@ -234,6 +235,13 @@ def synthetic_campaign(manifest):
             "wrapper_sha256": hashlib.sha256(
                 b"# synthetic atomic launch guard fixture\n"
             ).hexdigest(),
+            "lock_identity": {
+                "device": 101,
+                "inode": 202,
+                "owner_uid": 303,
+                "mode": 0o600,
+                "nlink": 1,
+            },
         },
         "timing_boundary": {
             "version": "total_configuration_v2",
@@ -575,7 +583,7 @@ def completed_result_record(
         "runtime", "measurement_plan",
     )
     return {
-        "schema_version": "archcomp26-cell-result-v4",
+        "schema_version": "archcomp26-cell-result-v5",
         "instance_id": instance_id,
         "method": method,
         "contract_identity": {
@@ -583,7 +591,9 @@ def completed_result_record(
             "cell_plan_sha256": canonical_sha256({
                 name: cell[name] for name in plan_fields
             }),
-            "campaign_sha256": canonical_sha256(synthetic_campaign(manifest)),
+            "campaign_configuration_sha256": campaign_configuration_sha256(
+                synthetic_campaign(manifest)
+            ),
         },
         "measurement_plan": cell["measurement_plan"],
         "run": {
@@ -717,11 +727,14 @@ def bind_completed_result(
             "invocation_id": sample["process_identity"]["invocation_id"],
             "outcome": sample["outcome"],
             "artifact": copy.deepcopy(sample["artifact"]),
+            "prelaunch_audit": copy.deepcopy(
+                matrix["comparison_campaign"]["prelaunch_audit"]
+            ),
         }
         entries.append(entry)
         previous_hash = canonical_sha256(entry)
     attempt_ledger = {
-        "schema_version": "archcomp26-attempt-ledger-v1",
+        "schema_version": "archcomp26-attempt-ledger-v2",
         "campaign_id": matrix["comparison_campaign"]["campaign_id"],
         "instance_id": instance_id,
         "method": method,
@@ -735,7 +748,7 @@ def bind_completed_result(
     }
     result_path = Path("results") / f"{instance_id}-{method}.json"
     cell["result_record"] = {
-        "schema_version": "archcomp26-cell-result-v4",
+        "schema_version": "archcomp26-cell-result-v5",
         "path": result_path.as_posix(),
         "sha256": write_json(tmp_path / result_path, result),
     }
@@ -748,16 +761,19 @@ def bind_active_run_receipt(tmp_path, matrix, instance_id, method="pytorch_gpu")
     invocation_id = f"{instance_id}:{method}:active"
     started_at = "2026-01-01T00:00:00Z"
     lock = {
-        "schema_version": "archcomp26-campaign-lock-v1",
+        "schema_version": "archcomp26-campaign-lock-v2",
         "campaign_id": matrix["comparison_campaign"]["campaign_id"],
         "host_identity": matrix["comparison_campaign"]["host_identity"],
         "instance_id": instance_id,
         "method": method,
         "invocation_id": invocation_id,
-        "acquired_at_utc": "2025-12-31T23:59:59Z",
+        "acquired_at_utc": "2025-12-31T23:58:59Z",
         "lock_path": matrix["comparison_campaign"]["launch_guard"]["lock_path"],
         "protocol": matrix["comparison_campaign"]["launch_guard"]["protocol"],
         "wrapper_pid": 4241,
+        "lock_identity": copy.deepcopy(
+            matrix["comparison_campaign"]["launch_guard"]["lock_identity"]
+        ),
     }
     lock_path = Path("campaign/active.lock.json")
     lock_link = {
@@ -765,7 +781,7 @@ def bind_active_run_receipt(tmp_path, matrix, instance_id, method="pytorch_gpu")
         "sha256": write_json(tmp_path / lock_path, lock),
     }
     receipt = {
-        "schema_version": "archcomp26-active-run-v1",
+        "schema_version": "archcomp26-active-run-v2",
         "campaign_id": matrix["comparison_campaign"]["campaign_id"],
         "instance_id": instance_id,
         "method": method,
@@ -775,9 +791,9 @@ def bind_active_run_receipt(tmp_path, matrix, instance_id, method="pytorch_gpu")
         "invocation_id": invocation_id,
         "pid": 4242,
         "started_at_utc": started_at,
-        "prelaunch_audit_sha256": matrix["comparison_campaign"][
-            "prelaunch_audit"
-        ]["sha256"],
+        "prelaunch_audit": copy.deepcopy(
+            matrix["comparison_campaign"]["prelaunch_audit"]
+        ),
         "lock_artifact": lock_link,
     }
     receipt_path = Path("campaign/active-run.json")
@@ -785,6 +801,28 @@ def bind_active_run_receipt(tmp_path, matrix, instance_id, method="pytorch_gpu")
         "path": receipt_path.as_posix(),
         "sha256": write_json(tmp_path / receipt_path, receipt),
     }
+
+
+def install_followup_audit(tmp_path, matrix):
+    checked_at = "2026-01-01T01:00:00Z"
+    scan = synthetic_process_scan()
+    scan["checked_at_utc"] = checked_at
+    scan_path = Path("campaign/process-scan-followup.json")
+    scan_link = {
+        "path": scan_path.as_posix(),
+        "sha256": write_json(tmp_path / scan_path, scan),
+    }
+    audit = synthetic_prelaunch_audit()
+    audit["checked_at_utc"] = checked_at
+    audit["valid_until_utc"] = "2026-01-02T01:00:00Z"
+    audit["process_scan_artifact"] = scan_link
+    audit_path = Path("campaign/prelaunch-audit-followup.json")
+    audit_link = {
+        "path": audit_path.as_posix(),
+        "sha256": write_json(tmp_path / audit_path, audit),
+    }
+    matrix["comparison_campaign"]["prelaunch_audit"] = audit_link
+    return audit_link
 
 
 def test_current_matrix_is_structurally_valid_and_paused():
@@ -802,6 +840,7 @@ def test_current_matrix_is_structurally_valid_and_paused():
         "binary_identity_missing",
         "runtime_timeout_missing",
         "runtime_budget_missing",
+        "comparison_campaign_lock_identity_missing",
     } <= set(reasons)
 
 
@@ -815,13 +854,13 @@ def test_partial_nested_override_is_rejected():
     assert any("incomplete override" in error for error in errors)
 
 
-def test_v4_default_shape_cannot_be_weakened_or_crash_validation():
+def test_v6_default_shape_cannot_be_weakened_or_crash_validation():
     manifest, matrix = inputs()
     broken = copy.deepcopy(matrix)
     broken["required_cell_fields"].remove("numerics")
     broken["cell_defaults"].pop("numerics")
     errors = validate_matrix(manifest, broken)
-    assert "required_cell_fields do not match the v5 cell contract" in errors
+    assert "required_cell_fields do not match the v6 cell contract" in errors
 
     broken = copy.deepcopy(matrix)
     broken["cell_defaults"]["numerics"]["integration"].pop("step_size")
@@ -948,7 +987,7 @@ def test_launch_stays_fail_closed_without_atomic_wrapper(tmp_path):
     assert "comparison_campaign_atomic_launcher_unavailable" in reasons
 
 
-def test_prelaunch_audit_binds_readable_evidence_and_precedes_first_run(tmp_path):
+def test_prelaunch_audit_binds_readable_evidence(tmp_path):
     manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
         tmp_path, "acc-safe-distance", "full_execution_contract_v1"
     )
@@ -962,6 +1001,12 @@ def test_prelaunch_audit_binds_readable_evidence_and_precedes_first_run(tmp_path
     )
     terminal_path.write_bytes(original_terminal)
 
+
+def test_historical_results_survive_current_audit_rotation(tmp_path):
+    manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+
     cell["run"] = {
         "status": "completed", "failure_category": None, "failure_detail": None,
     }
@@ -971,17 +1016,59 @@ def test_prelaunch_audit_binds_readable_evidence_and_precedes_first_run(tmp_path
     result_path = bind_completed_result(
         tmp_path, matrix, cell, "acc-safe-distance", result
     )
-    audit_link = matrix["comparison_campaign"]["prelaunch_audit"]
-    audit_path = tmp_path / audit_link["path"]
-    audit = json.loads(audit_path.read_text(encoding="utf-8"))
-    audit["checked_at_utc"] = "2026-01-01T00:00:00Z"
-    audit_link["sha256"] = write_json(audit_path, audit)
-    result["contract_identity"]["campaign_sha256"] = canonical_sha256(
+    ledger_path = tmp_path / result["attempt_ledger"]["path"]
+    original_result = (tmp_path / result_path).read_bytes()
+    original_ledger = ledger_path.read_bytes()
+    original_configuration = campaign_configuration_sha256(
         matrix["comparison_campaign"]
     )
+    install_followup_audit(tmp_path, matrix)
+    matrix["comparison_campaign"]["active_run_receipt"] = {
+        "path": "campaign/next-active.json",
+        "sha256": "0" * 64,
+    }
+    assert campaign_configuration_sha256(
+        matrix["comparison_campaign"]
+    ) == original_configuration
+    matrix["comparison_campaign"]["active_run_receipt"] = {
+        "path": None, "sha256": None,
+    }
+    assert validate_matrix(manifest, matrix, root=tmp_path) == []
+    assert (tmp_path / result_path).read_bytes() == original_result
+    assert ledger_path.read_bytes() == original_ledger
+
+    changed = copy.deepcopy(matrix["comparison_campaign"])
+    changed["timeout_s"] = 2.0
+    assert campaign_configuration_sha256(changed) != original_configuration
+
+
+def test_attempt_ledger_rejects_audit_not_fresh_for_attempt(tmp_path):
+    manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    cell["run"] = {
+        "status": "completed", "failure_category": None, "failure_detail": None,
+    }
+    result = completed_result_record(
+        manifest, cell, "acc-safe-distance", evidence_sha
+    )
+    result_path = bind_completed_result(
+        tmp_path, matrix, cell, "acc-safe-distance", result
+    )
+    followup_link = install_followup_audit(tmp_path, matrix)
+    ledger_path = tmp_path / result["attempt_ledger"]["path"]
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    ledger["entries"][0]["prelaunch_audit"] = followup_link
+    previous_hash = None
+    for entry in ledger["entries"]:
+        entry["previous_entry_sha256"] = previous_hash
+        previous_hash = canonical_sha256(entry)
+    ledger["head_sha256"] = previous_hash
+    result["attempt_ledger"]["sha256"] = write_json(ledger_path, ledger)
     cell["result_record"]["sha256"] = write_json(tmp_path / result_path, result)
+
     errors = validate_matrix(manifest, matrix, root=tmp_path)
-    assert any("audit must precede the first formal launch" in error for error in errors)
+    assert any("receipt is not fresh at launch" in error for error in errors)
 
 
 def test_launch_preflight_rejects_expired_or_semantically_false_audit(tmp_path):
@@ -993,6 +1080,14 @@ def test_launch_preflight_rejects_expired_or_semantically_false_audit(tmp_path):
     reasons = preflight_reasons(
         manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path,
         now_utc=expired,
+    )
+    assert "comparison_campaign_prelaunch_audit_stale_or_invalid" in reasons
+    audit_check_time = datetime(
+        2025, 12, 31, 23, 59, 0, tzinfo=timezone.utc
+    )
+    reasons = preflight_reasons(
+        manifest, matrix, "acc-safe-distance", "pytorch_gpu", root=tmp_path,
+        now_utc=audit_check_time,
     )
     assert "comparison_campaign_prelaunch_audit_stale_or_invalid" in reasons
 
@@ -2094,6 +2189,67 @@ def test_running_state_cannot_bypass_pause_contract_or_plan(tmp_path):
         manifest, matrix, root=tmp_path, now_utc=SYNTHETIC_LAUNCH_NOW
     )
     assert any("permits at most one running cell" in error for error in errors)
+
+
+def test_active_receipt_proves_lock_audit_spawn_order(tmp_path):
+    manifest, matrix, _, cell, _ = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    cell["run"] = {
+        "status": "running", "failure_category": None, "failure_detail": None,
+    }
+    matrix["cells"]["acc-safe-distance"]["pytorch_gpu"] = cell
+    matrix["status"] = "running"
+    bind_active_run_receipt(tmp_path, matrix, "acc-safe-distance")
+
+    receipt_link = matrix["comparison_campaign"]["active_run_receipt"]
+    receipt_path = tmp_path / receipt_link["path"]
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    lock_link = receipt["lock_artifact"]
+    lock_path = tmp_path / lock_link["path"]
+    lock = json.loads(lock_path.read_text(encoding="utf-8"))
+    lock["acquired_at_utc"] = "2025-12-31T23:59:30Z"
+    lock_link["sha256"] = write_json(lock_path, lock)
+    receipt_link["sha256"] = write_json(receipt_path, receipt)
+
+    errors = validate_matrix(
+        manifest, matrix, root=tmp_path, now_utc=SYNTHETIC_LAUNCH_NOW
+    )
+    assert any("lock/audit/spawn order is invalid" in error for error in errors)
+
+
+def test_active_receipt_cannot_overlap_prior_exclusive_host_sample(tmp_path):
+    manifest, matrix, _, cell, evidence_sha = synthetic_inputs(
+        tmp_path, "acc-safe-distance", "full_execution_contract_v1"
+    )
+    manifest["execution_policy"]["experiments_paused"] = False
+    running_cell = copy.deepcopy(cell)
+    cell["run"] = {
+        "status": "completed", "failure_category": None, "failure_detail": None,
+    }
+    result = completed_result_record(
+        manifest, cell, "acc-safe-distance", evidence_sha
+    )
+    bind_completed_result(
+        tmp_path, matrix, cell, "acc-safe-distance", result
+    )
+
+    running_cell["run"] = {
+        "status": "running", "failure_category": None, "failure_detail": None,
+    }
+    matrix["cells"]["acc-safe-distance"]["huan"] = running_cell
+    matrix["status"] = "running"
+    bind_active_run_receipt(tmp_path, matrix, "acc-safe-distance", method="huan")
+
+    errors = validate_matrix(
+        manifest, matrix, root=tmp_path, now_utc=SYNTHETIC_LAUNCH_NOW
+    )
+    assert any(
+        "active process overlaps prior process receipts despite exclusive_host"
+        in error
+        for error in errors
+    )
 
 
 def test_code_fixed_shared_profile_cannot_be_weakened(tmp_path):

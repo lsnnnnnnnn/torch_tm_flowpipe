@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "archcomp26-cell-result-v4",
+  "$id": "archcomp26-cell-result-v5",
   "title": "ARCH-COMP26 four-way cell result",
   "description": "Authoritative per-cell evidence record. Cross-field and file-hash checks are enforced by torch_tm_flowpipe.archcomp26_preflight without a third-party schema dependency.",
   "type": "object",
@@ -20,7 +20,7 @@
     "attempt_ledger"
   ],
   "properties": {
-    "schema_version": {"const": "archcomp26-cell-result-v4"},
+    "schema_version": {"const": "archcomp26-cell-result-v5"},
     "instance_id": {"type": "string", "minLength": 1},
     "method": {
       "enum": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"]
@@ -28,11 +28,14 @@
     "contract_identity": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["instance_contract_sha256", "cell_plan_sha256", "campaign_sha256"],
+      "required": ["instance_contract_sha256", "cell_plan_sha256", "campaign_configuration_sha256"],
       "properties": {
         "instance_contract_sha256": {"$ref": "#/$defs/sha256"},
         "cell_plan_sha256": {"$ref": "#/$defs/sha256"},
-        "campaign_sha256": {"$ref": "#/$defs/sha256"}
+        "campaign_configuration_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "SHA-256 of frozen campaign configuration; mutable audit and active-run pointers are excluded."
+        }
       }
     },
     "measurement_plan": {"$ref": "#/$defs/measurement_plan"},

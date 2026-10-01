@@ -1,12 +1,12 @@
 {
-  "schema_version": "archcomp26-execution-matrix-v5",
+  "schema_version": "archcomp26-execution-matrix-v6",
   "source_manifest": "benchmarks/archcomp26/manifest.json",
   "merge_semantics": "shallow_override_of_complete_cell_defaults",
   "status": "not_started",
   "result_record_contract": {
     "path": "benchmarks/archcomp26/result_record.schema.json",
-    "schema_version": "archcomp26-cell-result-v4",
-    "sha256": "b78f26c997fda7fa45f3804e07ea251ee0419109deb43f7c2fcafff745cb2751"
+    "schema_version": "archcomp26-cell-result-v5",
+    "sha256": "40d746d4a7f0cef1a62c291d0f2efab73b2ced4b6563f29522dc921003e1659b"
   },
   "methods": ["pytorch_gpu", "huan", "xiangru", "flowstar_native"],
   "comparison_campaign": {
@@ -21,13 +21,20 @@
     "prelaunch_audit": {"path": null, "sha256": null},
     "active_run_receipt": {"path": null, "sha256": null},
     "launch_guard": {
-      "schema_version": "archcomp26-atomic-launch-guard-v1",
+      "schema_version": "archcomp26-atomic-launch-guard-v2",
       "protocol": "posix-flock-exclusive-nonblocking-v1",
       "lock_path": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/.archcomp26/launch.lock",
       "hold_scope": "fresh_audit_through_terminal_fsync_v1",
       "wrapper_module": "torch_tm_flowpipe.archcomp26_launch",
       "wrapper_path": "src/torch_tm_flowpipe/archcomp26_launch.py",
-      "wrapper_sha256": null
+      "wrapper_sha256": null,
+      "lock_identity": {
+        "device": null,
+        "inode": null,
+        "owner_uid": null,
+        "mode": 384,
+        "nlink": 1
+      }
     },
     "timing_boundary": {
       "version": "total_configuration_v2",

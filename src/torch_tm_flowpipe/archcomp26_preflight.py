@@ -16,8 +16,8 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "benchmarks/archcomp26/manifest.json"
-MATRIX_SCHEMA = "archcomp26-execution-matrix-v5"
-RESULT_SCHEMA = "archcomp26-cell-result-v4"
+MATRIX_SCHEMA = "archcomp26-execution-matrix-v6"
+RESULT_SCHEMA = "archcomp26-cell-result-v5"
 INSTANCE_SCHEMA = "archcomp26-instance-contract-v1"
 OFFICIAL_ASSETS_SCHEMA = "archcomp26-official-assets-v1"
 OFFICIAL_ASSETS_AUDIT_SCHEMA = "archcomp26-official-assets-audit-v1"
@@ -26,9 +26,9 @@ PRELAUNCH_AUDIT_SCHEMA = "archcomp26-prelaunch-audit-v1"
 NATIVE_LAUNCH_SCHEMA = "archcomp26-native-job-launch-v1"
 NATIVE_TERMINAL_SCHEMA = "archcomp26-native-job-terminal-v1"
 PROCESS_SCAN_SCHEMA = "archcomp26-process-scan-v1"
-ACTIVE_RUN_SCHEMA = "archcomp26-active-run-v1"
-CAMPAIGN_LOCK_SCHEMA = "archcomp26-campaign-lock-v1"
-ATTEMPT_LEDGER_SCHEMA = "archcomp26-attempt-ledger-v1"
+ACTIVE_RUN_SCHEMA = "archcomp26-active-run-v2"
+CAMPAIGN_LOCK_SCHEMA = "archcomp26-campaign-lock-v2"
+ATTEMPT_LEDGER_SCHEMA = "archcomp26-attempt-ledger-v2"
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 EXPECTED_INSTANCE_IDS = (
     "acc-safe-distance",
@@ -262,6 +262,10 @@ CAMPAIGN_SHAPE = {
         "schema_version": None, "protocol": None, "lock_path": None,
         "hold_scope": None, "wrapper_module": None, "wrapper_path": None,
         "wrapper_sha256": None,
+        "lock_identity": {
+            "device": None, "inode": None, "owner_uid": None,
+            "mode": None, "nlink": None,
+        },
     },
     "timing_boundary": {
         "version": None, "start_event": None, "stop_event": None,
@@ -296,6 +300,20 @@ def _canonical_sha256(value: Any) -> str:
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+CAMPAIGN_CONFIGURATION_FIELDS = (
+    "schema_version", "campaign_id", "host_identity", "hardware_identity",
+    "cpu_thread_budget", "gpu_device_budget", "timeout_s", "resource_limits",
+    "launch_guard", "timing_boundary", "rotation",
+)
+
+
+def campaign_configuration_sha256(campaign: Mapping[str, Any]) -> str:
+    """Hash only frozen campaign configuration, never mutable run pointers."""
+    return _canonical_sha256({
+        name: campaign.get(name) for name in CAMPAIGN_CONFIGURATION_FIELDS
+    })
 
 
 def _is_sha256(value: Any) -> bool:
@@ -728,7 +746,7 @@ def _validate_prelaunch_audit(
         current = now_utc or datetime.now(timezone.utc)
         if current.tzinfo is None:
             current = current.replace(tzinfo=timezone.utc)
-        if not checked_at <= current < valid_until:
+        if not checked_at < current < valid_until:
             errors.append(
                 "comparison_campaign.prelaunch_audit: receipt is not fresh at launch"
             )
@@ -1007,7 +1025,7 @@ def _active_run_receipt(
     fields = {
         "schema_version", "campaign_id", "instance_id", "method",
         "role", "index", "attempt_index", "invocation_id", "pid",
-        "started_at_utc", "prelaunch_audit_sha256", "lock_artifact",
+        "started_at_utc", "prelaunch_audit", "lock_artifact",
     }
     shape = _exact_keys(receipt, fields, label)
     errors.extend(shape)
@@ -1034,10 +1052,26 @@ def _active_run_receipt(
         errors.append(f"{label}: pid is invalid")
     if _parse_utc(receipt["started_at_utc"]) is None:
         errors.append(f"{label}: started_at_utc is invalid")
-    audit_sha = _dotted(campaign, "prelaunch_audit.sha256")
-    if not _is_sha256(audit_sha) \
-            or receipt["prelaunch_audit_sha256"] != audit_sha:
+    audit_link = receipt["prelaunch_audit"]
+    audit_label = f"{label}.prelaunch_audit"
+    audit_errors = _validate_artifact(audit_link, root, audit_label)
+    errors.extend(audit_errors)
+    if audit_link != campaign.get("prelaunch_audit"):
         errors.append(f"{label}: prelaunch audit identity mismatch")
+    audit_checked: datetime | None = None
+    audit_path, _ = _bound_file(
+        root,
+        audit_link.get("path") if isinstance(audit_link, Mapping) else None,
+        audit_link.get("sha256") if isinstance(audit_link, Mapping) else None,
+        audit_label,
+    )
+    if audit_path is not None and not audit_errors:
+        try:
+            audit_receipt = _load(audit_path)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            errors.append(f"{audit_label}: cannot load: {error}")
+        else:
+            audit_checked = _parse_utc(audit_receipt.get("checked_at_utc"))
     lock_label = f"{label}.lock_artifact"
     lock_link = receipt["lock_artifact"]
     lock_errors = _validate_artifact(lock_link, root, lock_label)
@@ -1057,7 +1091,7 @@ def _active_run_receipt(
             lock_fields = {
                 "schema_version", "campaign_id", "host_identity", "instance_id",
                 "method", "invocation_id", "acquired_at_utc", "lock_path",
-                "protocol", "wrapper_pid",
+                "protocol", "wrapper_pid", "lock_identity",
             }
             lock_shape = _exact_keys(lock, lock_fields, lock_label)
             errors.extend(lock_shape)
@@ -1072,13 +1106,19 @@ def _active_run_receipt(
                     "invocation_id": receipt["invocation_id"],
                     "lock_path": _dotted(campaign, "launch_guard.lock_path"),
                     "protocol": _dotted(campaign, "launch_guard.protocol"),
+                    "lock_identity": _dotted(
+                        campaign, "launch_guard.lock_identity"
+                    ),
                 }
                 if any(lock.get(name) != value for name, value in expected_identity.items()):
                     errors.append(f"{lock_label}: lock identity mismatch")
                 acquired = _parse_utc(lock.get("acquired_at_utc"))
                 started = _parse_utc(receipt["started_at_utc"])
-                if acquired is None or started is None or acquired > started:
-                    errors.append(f"{lock_label}: lock was not acquired before spawn")
+                if acquired is None or started is None or audit_checked is None \
+                        or not acquired < audit_checked < started:
+                    errors.append(
+                        f"{lock_label}: lock/audit/spawn order is invalid"
+                    )
                 if not _is_non_negative_int(lock.get("wrapper_pid")) \
                         or lock["wrapper_pid"] <= 0:
                     errors.append(f"{lock_label}: wrapper_pid is invalid")
@@ -1143,7 +1183,7 @@ def _validate_campaign_structure(
     errors.extend(active_errors)
     guard = campaign["launch_guard"]
     expected_guard = {
-        "schema_version": "archcomp26-atomic-launch-guard-v1",
+        "schema_version": "archcomp26-atomic-launch-guard-v2",
         "protocol": "posix-flock-exclusive-nonblocking-v1",
         "lock_path": SERVER_RESEARCH_ROOT + "/.archcomp26/launch.lock",
         "hold_scope": "fresh_audit_through_terminal_fsync_v1",
@@ -1155,6 +1195,35 @@ def _validate_campaign_structure(
             "comparison_campaign.launch_guard: does not match the fixed atomic "
             "launch protocol"
         )
+    lock_identity = guard["lock_identity"]
+    lock_identity_errors = _exact_keys(
+        lock_identity, {"device", "inode", "owner_uid", "mode", "nlink"},
+        "comparison_campaign.launch_guard.lock_identity",
+    )
+    errors.extend(lock_identity_errors)
+    if not lock_identity_errors:
+        frozen = [
+            lock_identity[name] for name in ("device", "inode", "owner_uid")
+        ]
+        if any(value is None for value in frozen) and any(
+            value is not None for value in frozen
+        ):
+            errors.append(
+                "comparison_campaign.launch_guard.lock_identity: partial identity"
+            )
+        for name, value in zip(("device", "inode", "owner_uid"), frozen):
+            if value is not None and (
+                not _is_non_negative_int(value) or name == "inode" and value == 0
+            ):
+                errors.append(
+                    "comparison_campaign.launch_guard.lock_identity."
+                    f"{name}: expected null or a non-negative integer"
+                )
+        if lock_identity["mode"] != 0o600 or lock_identity["nlink"] != 1:
+            errors.append(
+                "comparison_campaign.launch_guard.lock_identity: "
+                "mode/nlink must be 0600/1"
+            )
     wrapper_sha = guard.get("wrapper_sha256")
     if wrapper_sha is not None:
         _, guard_errors = _bound_file(
@@ -1215,6 +1284,15 @@ def _campaign_reasons(
             reasons.append(f"comparison_campaign_{name}_missing")
     if not _is_sha256(_dotted(campaign, "launch_guard.wrapper_sha256")):
         reasons.append("comparison_campaign_atomic_launcher_unavailable")
+    if any(
+        not _is_non_negative_int(
+            _dotted(campaign, f"launch_guard.lock_identity.{name}")
+        )
+        or name == "inode"
+        and _dotted(campaign, f"launch_guard.lock_identity.{name}") == 0
+        for name in ("device", "inode", "owner_uid")
+    ):
+        reasons.append("comparison_campaign_lock_identity_missing")
     audit = campaign["prelaunch_audit"]
     if audit["path"] is None or audit["sha256"] is None:
         reasons.append("comparison_campaign_prelaunch_audit_missing")
@@ -2593,7 +2671,7 @@ def _validate_attempt_ledger(
     root: Path,
     label: str,
     *,
-    campaign_id: Any,
+    campaign: Mapping[str, Any],
     instance_id: str,
     method: str,
 ) -> list[str]:
@@ -2621,7 +2699,7 @@ def _validate_attempt_ledger(
     if ledger["schema_version"] != ATTEMPT_LEDGER_SCHEMA:
         errors.append(f"{label}: wrong schema_version")
     if (
-        ledger["campaign_id"] != campaign_id
+        ledger["campaign_id"] != campaign.get("campaign_id")
         or ledger["instance_id"] != instance_id
         or ledger["method"] != method
     ):
@@ -2633,6 +2711,7 @@ def _validate_attempt_ledger(
     entry_fields = {
         "sequence", "previous_entry_sha256", "role", "index", "attempt_index",
         "included_in_timing", "invocation_id", "outcome", "artifact",
+        "prelaunch_audit",
     }
     ledger_by_invocation: dict[str, Mapping[str, Any]] = {}
     previous_hash: str | None = None
@@ -2667,6 +2746,9 @@ def _validate_attempt_ledger(
         errors.extend(_validate_artifact(
             entry["artifact"], root, f"{entry_label}.artifact"
         ))
+        errors.extend(_validate_artifact(
+            entry["prelaunch_audit"], root, f"{entry_label}.prelaunch_audit"
+        ))
         previous_hash = _canonical_sha256(entry)
     if ledger["head_sha256"] != previous_hash:
         errors.append(f"{label}: head_sha256 does not bind the final entry")
@@ -2694,6 +2776,21 @@ def _validate_attempt_ledger(
         if any(entry.get(name) != value for name, value in expected.items()):
             errors.append(
                 f"{label}: entry for invocation {invocation!r} disagrees with sample"
+            )
+        started = _parse_utc(_dotted(sample, "process_identity.started_at_utc"))
+        if started is not None:
+            audit_errors = _validate_prelaunch_audit(
+                {
+                    "campaign_id": campaign.get("campaign_id"),
+                    "prelaunch_audit": entry.get("prelaunch_audit"),
+                },
+                root,
+                require_fresh=True,
+                now_utc=started,
+            )
+            errors.extend(
+                f"{label}: prelaunch audit for invocation {invocation!r}: {error}"
+                for error in audit_errors
             )
     attempts_by_slot: dict[tuple[str, int], list[Mapping[str, Any]]] = {}
     for entry in entries:
@@ -2780,7 +2877,8 @@ def _validate_result_record(
     identity = record["contract_identity"]
     identity_errors = _exact_keys(
         identity, {
-            "instance_contract_sha256", "cell_plan_sha256", "campaign_sha256",
+            "instance_contract_sha256", "cell_plan_sha256",
+            "campaign_configuration_sha256",
         },
         f"{prefix}.result_record.contract_identity",
     )
@@ -2793,8 +2891,11 @@ def _validate_result_record(
             errors.append(f"{prefix}.result_record: instance contract identity mismatch")
         if identity["cell_plan_sha256"] != expected_plan:
             errors.append(f"{prefix}.result_record: cell plan identity mismatch")
-        if identity["campaign_sha256"] != _canonical_sha256(campaign):
-            errors.append(f"{prefix}.result_record: campaign identity mismatch")
+        if identity["campaign_configuration_sha256"] \
+                != campaign_configuration_sha256(campaign):
+            errors.append(
+                f"{prefix}.result_record: campaign configuration identity mismatch"
+            )
     if record["measurement_plan"] != cell["measurement_plan"]:
         errors.append(f"{prefix}.result_record: measurement plan mismatch")
 
@@ -3206,7 +3307,7 @@ def _validate_result_record(
     errors.extend(_validate_attempt_ledger(
         record["attempt_ledger"], samples, root,
         f"{prefix}.result_record.attempt_ledger",
-        campaign_id=campaign.get("campaign_id"),
+        campaign=campaign,
         instance_id=instance_row["id"], method=method,
     ))
     plan = cell["measurement_plan"]
@@ -3905,7 +4006,7 @@ def validate_matrix(
     manifest_matrix = manifest.get("execution_matrix", {})
     if matrix.get("schema_version") != MATRIX_SCHEMA \
             or manifest_matrix.get("schema_version") != MATRIX_SCHEMA:
-        errors.append("matrix schema_version does not match the v5 contract")
+        errors.append("matrix schema_version does not match the v6 contract")
     if matrix.get("source_manifest") != "benchmarks/archcomp26/manifest.json":
         errors.append("matrix source_manifest is not the canonical manifest")
     result_contract = matrix.get("result_record_contract")
@@ -3957,7 +4058,7 @@ def validate_matrix(
     required = matrix.get("required_cell_fields")
     expected_required = list(CELL_DEFAULT_SHAPE)
     if not isinstance(required, list) or required != expected_required:
-        errors.append("required_cell_fields do not match the v5 cell contract")
+        errors.append("required_cell_fields do not match the v6 cell contract")
         return errors
     default_shape_errors = _shape_errors(
         defaults, CELL_DEFAULT_SHAPE, "cell_defaults"
@@ -4226,6 +4327,18 @@ def validate_matrix(
                 "comparison_campaign.active_run_receipt: active receipt is outside "
                 "the runtime timeout window"
             )
+        if started is not None:
+            overlapping = [
+                identity
+                for _, finished, identity in campaign_process_receipts
+                if finished > started
+            ]
+            if overlapping:
+                errors.append(
+                    "comparison_campaign.active_run_receipt: active process "
+                    "overlaps prior process receipts despite exclusive_host: "
+                    f"{sorted(overlapping)!r}"
+                )
         audit_link = _dotted(
             matrix.get("comparison_campaign", {}), "prelaunch_audit"
         )
@@ -4243,7 +4356,7 @@ def validate_matrix(
             checked_at = _parse_utc(audit_receipt.get("checked_at_utc"))
             valid_until = _parse_utc(audit_receipt.get("valid_until_utc"))
             if checked_at is None or valid_until is None \
-                    or not checked_at <= started < valid_until:
+                    or not checked_at < started < valid_until:
                 errors.append(
                     "comparison_campaign.active_run_receipt: prelaunch audit did "
                     "not precede the active process"
@@ -4295,33 +4408,6 @@ def validate_matrix(
                     f"despite exclusive_host between {previous[2]!r} and "
                     f"{current[2]!r}"
                 )
-    formal_starts = [
-        item[1]
-        for receipts in campaign_rotation_receipts.values()
-        for item in receipts
-    ]
-    audit_link = matrix.get("comparison_campaign", {}).get("prelaunch_audit")
-    if formal_starts and isinstance(audit_link, Mapping):
-        audit_path, _ = _bound_file(
-            root, audit_link.get("path"), audit_link.get("sha256"),
-            "comparison_campaign.prelaunch_audit",
-        )
-        if audit_path is not None:
-            try:
-                audit_receipt = _load(audit_path)
-            except (OSError, ValueError, json.JSONDecodeError):
-                audit_receipt = {}
-            checked_at = _parse_utc(audit_receipt.get("checked_at_utc"))
-            valid_until = _parse_utc(audit_receipt.get("valid_until_utc"))
-            first_formal_start = min(formal_starts)
-            if checked_at is not None:
-                audit_age = (first_formal_start - checked_at).total_seconds()
-                if audit_age <= 0 or audit_age > 24 * 60 * 60 \
-                        or valid_until is None or first_formal_start >= valid_until:
-                    errors.append(
-                        "comparison_campaign.prelaunch_audit: audit must precede "
-                        "the first formal launch by no more than 24 hours"
-                    )
     statuses = [
         _dotted(resolve_cell(matrix, instance, method), "run.status")
         for instance in instance_ids
