@@ -50,3 +50,7 @@ for k = 0,...,19:
 3. **两种路径都需要的运行凭据**：固定 2026 模型实际加载路径、四方法对 `12→6` 及输出次序的检查、共同初集覆盖、离散映射表达式、每步端点/状态、控制器包络与舍入策略、性质判定和停止原因。这些可直接记录为文本与小数据，不要求内容摘要校验。现有 `discrete_execution_contract_v1` 的离散字段列表见[manifest](../benchmarks/archcomp26/manifest.json)；旧启动器的身份门并非本次无摘要实验的现成入口。
 
 截至本审计，没有证据支持填写四方离散成绩；已经确定的是一份可实施的**新**比较约定及其与官方复现身份的界线。
+
+## 后续有界入口诊断
+
+此审计之后，按上面的新命名约定执行了两个**四方方法之外**的 CPU directed 区间诊断。[原始一步](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_interval_smoke1_001/AUDIT.md)在 `k=1` 因精确零角速度经过通用外舍入而触及闭带外一个浮点格；保留其原始记录。[精确零恒等式诊断](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001/AUDIT.md)在固定动力学代数上证明首步角度导数为零后，得到 `k=1` 安全端点，随后 `k=2` 外包络显著越带而首个 `Unknown` 即停。该结果只给 **1/20** 次转移的安全端点前缀，不是 P3/Huan/Xiangru/native 任何一方的完整离散运行，也不解决参与者实际控制/转移顺序的来源缺件。

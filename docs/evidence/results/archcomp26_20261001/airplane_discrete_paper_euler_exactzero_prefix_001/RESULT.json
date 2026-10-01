@@ -1,0 +1,175 @@
+{
+  "schema": "archcomp26-airplane-paper-euler-exact-zero-prefix-nohash-v1",
+  "recorded_utc": "2026-10-01T23:32:40.592428+00:00",
+  "profile": "airplane-discrete/paper-Euler-controller-first/exact-zero-identity-diagnostic",
+  "method": "CPU directed interval arithmetic; outside four benchmark methods",
+  "qualification": "diagnostic prefix only; not participant discrete implementation or independent floating-point certificate",
+  "source": {
+    "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/controller_airplane.onnx",
+    "dynamics": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/dynamics.m",
+    "specification": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/specifications.txt",
+    "interval_engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine/src/flowstar_gpu/interval.py",
+    "transcendental_engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine/src/flowstar_gpu/transcendental.py"
+  },
+  "state_order": [
+    "sx",
+    "sy",
+    "sz",
+    "vx",
+    "vy",
+    "vz",
+    "phi",
+    "theta",
+    "psi",
+    "r",
+    "p",
+    "q"
+  ],
+  "control_order": [
+    "Fx",
+    "Fy",
+    "Fz",
+    "Mx",
+    "My",
+    "Mz"
+  ],
+  "initial": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "full_initial_box_unsplit": true,
+  "step_exact_rational": "1/10",
+  "step_float64_enclosure": [
+    0.09999999999999999,
+    0.10000000000000002
+  ],
+  "maximum_transfers": 20,
+  "property_check_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "accepted_safe_endpoint_prefix": 1,
+  "attempted_transfer_count": 2,
+  "controller_call_count": 2,
+  "first_stopped_index": 2,
+  "stop_reason": "endpoint_box_not_contained_in_closed_property_band",
+  "status": "stopped_at_first_unknown_or_failure",
+  "last_accepted_endpoint": [
+    [
+      -0.0841470984807898,
+      0.3257617821355045
+    ],
+    [
+      -0.08414709848078979,
+      0.31453676396724295
+    ],
+    [
+      -0.08414709848078976,
+      0.18414709848078986
+    ],
+    [
+      -19.802151351422328,
+      15.623170353268089
+    ],
+    [
+      -10.780470059212643,
+      15.073233851161062
+    ],
+    [
+      -24.00488741236583,
+      17.660530457956924
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      -1.4344281446724945,
+      1.7246373101473567
+    ],
+    [
+      -1.9691169149702015,
+      1.5885012483534415
+    ],
+    [
+      -2.2033776481174336,
+      2.918873859746459
+    ]
+  ],
+  "events_file": "EVENTS.jsonl",
+  "wall_s": 0.046345459297299385,
+  "torch_version": "2.5.1+cu121"
+}

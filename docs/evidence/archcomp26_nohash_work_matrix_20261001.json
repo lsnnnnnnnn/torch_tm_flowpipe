@@ -10,14 +10,14 @@
   "instance_count": 16,
   "method_count": 4,
   "cell_count": 64,
-  "attempt_count": 103,
+  "attempt_count": 105,
   "status_counts": {
     "completed": 25,
     "running": 1,
     "early_stopped": 6,
     "failed": 4,
-    "not_attempted": 26,
-    "short_prefix_only": 2
+    "not_attempted": 24,
+    "short_prefix_only": 4
   },
   "methods": [
     "pytorch_gpu",
@@ -960,17 +960,25 @@
     {
       "instance_id": "double-pendulum-more-robust",
       "method": "pytorch_gpu",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
-      "selected_property_verdict": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 1,
+      "selected_attempt_number": 104,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001",
+      "selected_wall_s": 7.385546431876719,
+      "selected_property_verdict": "Unknown.",
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "attempts": [
+        {
+          "index": 104,
+          "status": "completed_short_prefix",
+          "role": "full 225-box first-control-period diagnostic; stop after four 0.005 s plant substeps",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "double-pendulum-more-robust",
@@ -1075,7 +1083,7 @@
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Only a short plumbing prefix is recorded; no full-horizon result.",
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
       "attempts": [
         {
           "index": 97,
@@ -1143,7 +1151,7 @@
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "Only a short plumbing prefix is recorded; no full-horizon result.",
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
       "attempts": [
         {
           "index": 98,
@@ -1583,17 +1591,25 @@
     {
       "instance_id": "tora-reach-sigmoid",
       "method": "huan",
-      "work_status": "not_attempted",
-      "attempt_count": 0,
-      "selected_attempt_number": null,
-      "selected_attempt_status": null,
-      "selected_run_dir": null,
-      "selected_wall_s": null,
+      "work_status": "short_prefix_only",
+      "attempt_count": 1,
+      "selected_attempt_number": 105,
+      "selected_attempt_status": "completed_short_prefix",
+      "selected_run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag",
+      "selected_wall_s": 5.345882668159902,
       "selected_property_verdict": null,
       "complete_numerical_run": false,
       "four_way_ranking_eligible": false,
-      "qualification_note": "No new attempt in this index; historical frozen runs are excluded.",
-      "attempts": []
+      "qualification_note": "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage.",
+      "attempts": [
+        {
+          "index": 105,
+          "status": "completed_short_prefix",
+          "role": "official 2026 four-sigmoid MAT with internal u=11f; full initial box, one 0.5 s control period diagnostic",
+          "run_dir": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag",
+          "local_summary": "docs/evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md"
+        }
+      ]
     },
     {
       "instance_id": "tora-reach-sigmoid",

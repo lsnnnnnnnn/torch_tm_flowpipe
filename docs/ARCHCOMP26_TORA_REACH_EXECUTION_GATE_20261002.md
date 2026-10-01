@@ -25,3 +25,7 @@
 1. **用户须为两个变体分别选定主合同。** sigmoid 有“论文三 sigmoid + tanh、`11f`”“官方四 sigmoid、`11f`”“旧四 sigmoid、`22(f-0.5)`”三种不同系统；tanh 有“论文三 sigmoid + tanh、`11f`”与“官方/旧三 ReLU + tanh、`11f`”两种。若选择论文文字，必须显式标记为从官方权重改激活构造的新控制器。现有对 QUAD 论文方程的决定不涵盖 TORA 网络。其他合同可作为单列对照。
 2. **须确定性质收据口径。** 若以 `R(5)⊆G` 为充分证明标准，可沿用终点 checker，但不能把未证实终点包含说成整个窗内不可能到达；若要完整判断“窗内到达”，须先固定时间量词及跨时段 checker。无需为已确定的 ODE、初盒或 0.5 s 采样再做来源选择。
 3. 选定后用[显式参数构造器](../tools/archcomp26_tora_reach_controller_nohash.py)由官方 `.mat` 构造**同一份**输出已是 plant `u` 的 float64 ONNX 给四方，关闭旧入口的额外缩放；先做 CPU 前向与接口预检，再用全初盒、10 期、500 小步分别取得四方的新 `START/RESULT`、接受计数、tube/endpoint、checker 和进程时间。失败前缀不得作为完整计时或性质结果。保持现有旧任务和收据不动。
+
+## 后续独立短程诊断
+
+在此执行门之后，仅对明确命名的官方文件 `tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag` 做了一次[完整初盒一期 Huan 诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)：由固定 `.mat` 构造四层 sigmoid 加图内 `u=11f` 的 ONNX，外部缩放设为 1/0，50/50 个 0.01 秒数值小步接受。其范围、日志、配置与独立扫描均单列，未检查 `T=5` 目标，未重跑旧 500 步或 tanh，也未选择论文主表网络合同。

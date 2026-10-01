@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Isolated DP P3 diagnostic using existing CUDA libraries, with no digests or builds.
+"""Isolated DP less P3 diagnostic using existing CUDA libraries, with no digests or builds.
 
 This ports the 2026-09-30 QUAD numerical ingredients to the 7-variable DP
 contract. It does not inherit the QUAD-only 1024-lane qualification receipts.

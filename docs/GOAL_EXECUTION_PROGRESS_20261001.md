@@ -153,6 +153,20 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 - 这使 DP less 在原生、Huan、Xiangru 和 P3 四方都有同初集、同 1 秒时域的完整数值记录。先前 P3 失败尝试保持原始状态，不被成功尝试覆盖；控制器 residual 的局部有向包含论证不等于 P3 七变量 plant、倒数/三角、余项、端点与性质组合的端到端浮点证明，`end_to_end_strict_certificate=false` 保留。当前[无哈希工作矩阵](evidence/archcomp26_nohash_work_matrix_20261001.md)为 **103 条**尝试、**25 格**完整数值时域、1 格运行中、6 格早停、4 格失败、2 格仅短前缀、26 格未尝试。
 - 已从四方**保存的全量数值数据**生成[DP less 四方绝对宽度汇总](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md)、16 行[终点统计 CSV](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/endpoint_stats.csv)、1,600 行[逐步 tube union CSV](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/tube_union.csv)及[四态叠加图](evidence/results/archcomp26_20261001/dp_less_fourway_split4_20261002/fourway_tube_union.png)。Huan/Xiangru 的保存区间直接相同；P3 在第四物理态的 `T=1` endpoint union 宽为 0.799090015，原生为 1.016584896，两作者为 1.109787875；每盒平均宽度的次序并不一致，不能用单一 union 宽度宣布优劣。PDF/MATLAB `.m` 同目录，脚本未在 MATLAB/Octave 实跑。
 
+## 10 月 2 日补记：DP more 首周期与独立数值点诊断
+
+- 固定官方 more-robust ONNX、官方四态 ODE 和完整 `5×5×3×3=225` 初盒的新[P3 首控制期诊断](evidence/results/archcomp26_20261001/dp_more_p3_firstperiod_interval_20261002_001/SUMMARY.md)只运行 `T=0.02`，4 个 0.005 s 小步、900/900 盒步均数值接受。作者驱动打印 `Step 0`、`Unknown.`；原始 JSONL 独立重扫的四步安全盒数依次为 `[225,225,181,120]`，第 3 步首次有 44 盒的 `θ̇₁` 上界超过 1.5，第 4 步增至 105 盒。首例 lane 6 保存区间 `[0.9912745512752368,1.5106057605641459]` 只表示区间无法证明安全，非实际轨迹反例。未启动 P3 `T=0.4` 全程，也未重复旧 Huan/Xiangru/原生区间作业。当前矩阵由 **104 条**尝试重算：25 格完整、1 格运行中、6 格早停、4 格失败、**3 格仅短前缀**、25 格未尝试。
+- 另用固定官方 ONNX 对初点 `(1.3)^4` 作[独立数值点轨迹重放](evidence/results/archcomp26_20261001/dp_more_point_candidate_20261002/SUMMARY.md)。按每 0.02 s float32 控制后持值、官方 ODE 积分，DOP853 估计 `θ̇₁=-1.5` 的下穿在 `t=0.3245365091`；`t=0.325` 网格值为 `-1.5014798296`，`t=0.36` 值为 `-1.6082814694`，且位于已保存的 Huan lane 224 endpoint 区间内。两档 RK4 固定步积分与 DOP853 的保存端点差小于 `1.05e-14`。这是可能违反安全性质的**数值候选**，没有经过严格误差界和控制器浮点语义的端到端验证，不称为严格反例，也不作为第五种 flowpipe 方法计入四方索引。
+- 已将 103 条截点的可编辑 [DOCX](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx)和同名 [PDF](evidence/results/archcomp26_20261001/stage_report/ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.pdf) 更新到 DP less 四方完整数值记录和六幅图；Word 导出的 17 页 PDF 已逐页目视检查，避免替代排版器漏中文。新 DP more 诊断晚于该固定阶段快照，先记在本进展和 Markdown 完整草稿中。
+
+## 10 月 2 日补记：Airplane 离散命名约定的有界入口
+
+- 对已明确命名、但尚非参与者官方执行身份的 `paper-Euler-controller-first` 约定，使用固定 12→6 ONNX、完整 12 维单盒和 12 态同步 Euler 映射做了[首次一步 CPU 区间诊断](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_interval_smoke1_001/AUDIT.md)。`k=1` 的 `sy` 包络在安全带内；三个角度因通用外舍入各比精确 `[0,1]` 多一个极小浮点格，原始 checker 为 `Unknown`。固定 MATLAB 动力学的 `p=q=r=0` 使首步角度导数代数上确为零；保留原始结果后，[第二次新诊断](evidence/results/archcomp26_20261001/airplane_discrete_paper_euler_exactzero_prefix_001/AUDIT.md)只对该精确零恒等式特殊处理。`k=1` 四个安全坐标均在闭带，随后 `k=2` 包络大幅越带，首次实质性 `Unknown` 即停；安全端点前缀只有 **1/20 次转移**。两次均是四方方法之外的 CPU 区间入口，不给 Airplane 离散主表四格填成绩、证书或完整运行时间。参与者真实的离散控制取样与转移顺序仍缺。
+
+## 10 月 2 日补记：TORA reach-sigmoid 官方文件 profile 的一期结果
+
+- 为避免把旧 `u=22(f−0.5)` 成绩误认成 2026 官方 `u=11f`，另建唯一[TORA 官方文件一期 Huan 诊断](evidence/results/archcomp26_20261001/tora_reach_sigmoid_official2026_mat_u11_firstperiod_diag/SUMMARY.md)。固定 `.mat` 四层 sigmoid 经显式构造后，ONNX 图内 `Mul(11)+Add(0)`，外部 `output_scale=1/output_offset=0`，完整单初盒的一个 0.5 秒控制期、50/50 ODE 小步全部接受。原始 `START/RESULT`、50 条范围、日志与独立有限/有序扫描均保存；`T=0.5` 末端 `x1∈[-0.8850144075,-0.8573825037]`、`x2∈[-0.0066841850,0.0219011293]`，外层单次 wall `5.345883 s`。没有判定 5 秒内到达目标，没有启动旧 500 步或 tanh，且没有速度排名资格。由于论文和官方网络激活冲突，仍须用户选主合同；本结果按官方文件 profile 单列。纳入此短前缀后工作矩阵为 **105 条**尝试、25 格完整、1 格运行中、6 格早停、4 格失败、**4 格仅短前缀**、24 格未尝试。
+
 ### 仍需外部材料或明确选择的字段
 
 | 实例 | 具体缺件或选择 | 在此之前可独立推进的工作 |
@@ -161,7 +175,7 @@ TORA remain 的[四方 t–x4 保存流管图](evidence/results/archcomp26_20261
 | Single Pendulum 官方三态 | 第三状态的初值和三态 MATLAB 闭环执行入口；现有四方仅是明确命名的两物理态加辅助时钟合同。 | 保留两态 profile 的四方结果及图。 |
 | Airplane discrete | 参与者离散转移与控制更新次序的源码或权威记录。 | 可单列实施已明示的 `paper-Euler-controller-first` 四方比较约定。 |
 | Balancing 论文五特征 | 五输入控制器文件，或作者明确的五特征到固定四输入模型映射/执行源码。 | 可单列实施 `balancing-fixed-repo-raw4`。 |
-| TORA reach 两变体 | 各自选择论文字面或官方可执行激活、输出缩放，以及“5 秒内到达”的判定口径。 | 已核对模型参数与显式构造器；旧成绩保留为不同合同对照。 |
+| TORA reach 两变体 | 各自选择论文字面或官方可执行激活、输出缩放，以及“5 秒内到达”的判定口径。 | 已核对模型参数与显式构造器；官方文件 sigmoid `u=11f` 仅有 Huan 一期诊断，旧成绩保留为不同合同对照。 |
 | NAV standard/robust | 决定新版主表采用论文文字状态/层宽，还是已核实的官方模型加作者可执行顺序。 | 旧 Huan 全程同合同证据已复核，无需重跑；新首周期 smoke 已单列。 |
 | Unicycle | 扰动仅加速度还是沿旧代码同时加朝向，以及 `w` 是轨迹常值还是随时间变化；还需 reach 时间量词。 | 固定 ONNX 与旧模型已直接对比，可复用模型文件。 |
 

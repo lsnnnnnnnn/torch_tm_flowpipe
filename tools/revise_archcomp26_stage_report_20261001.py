@@ -23,6 +23,7 @@ BASE = STAGE / "ARCHCOMP26_STAGE_REPORT_DRAFT_PRE_ACC_ATTITUDE_20261001.docx"
 OUTPUT = STAGE / "ARCHCOMP26_STAGE_REPORT_DRAFT_20261001.docx"
 PLOTS = RESULTS / "plots/nohash_saved_20261001"
 WIDTHS = RESULTS / "acc_fourway_saved_ranges_20261001/acc_t5_endpoint_and_full_tube_wide.csv"
+DP_LESS_FOURWAY = RESULTS / "dp_less_fourway_split4_20261002"
 
 
 def _find(doc: Document, prefix: str):
@@ -171,10 +172,10 @@ def main() -> None:
                     run.text = run.text.replace("2026-10-01", "2026-10-02")
     updates = {
         "目标是在同一 benchmark 合同下": (
-            "目标是在同一 benchmark 合同下，比较 PyTorch/GPU、Huan、Xiangru 和 Flow* native 对 16 个非 VCAS 实例的完整性、全进程时间及绝对 flowpipe 宽度；计划矩阵为 16×4，共 64 个 cell。当前有 24 个方法单元的完整数值时域记录，其中 ACC participant-order、两物理态 Single Pendulum、修正危险盒的 Attitude 与 Docking 各有四方完整时域记录；Docking 性质未决，四方矩阵仍未完成。"
+            "目标是在同一 benchmark 合同下，比较 PyTorch/GPU、Huan、Xiangru 和 Flow* native 对 16 个非 VCAS 实例的完整性、全进程时间及绝对 flowpipe 宽度；计划矩阵为 16×4，共 64 个 cell。截至 103 条新尝试，25 个方法单元有完整数值时域记录，其中 DP less、ACC participant-order、两物理态 Single Pendulum、修正危险盒的 Attitude 与 Docking 各有四方完整时域记录；Docking 性质未决，四方矩阵仍未完成。"
         ),
         "Single Pendulum 两物理态": (
-            "两物理态 Single Pendulum 的四方各完成 1×100 子步，P3 的 50 个性质窗口安全事件与保存 tube 均在带内；这不是官方三物理态 MATLAB 复现。TORA remain 原生与 P3 各完成 12×200，Huan/Xiangru 仅有 t≤18.4 的共同全盒接受且保存 tube 安全前缀。DP more 三方未完成 T=0.4，P3 的 DP less 未完成 225 盒全程。ACC 四方各完成完整初盒的 50 控制期，并额外各有 1+5 次独立新进程计时；修正官方 unsafe 盒后的 Attitude 四方各完成 30 期、60 小段。Docking 四方各完成 40 期、400 小段，但全时非线性安全性质均为 Unknown；Airplane continuous 全初盒四方入口均未得到首个接受小步。保存区间、作者 checker 输出和图均不构成独立端到端浮点 NNCS 证明。"
+            "两物理态 Single Pendulum 的四方各完成 1×100 子步，P3 的 50 个性质窗口安全事件与保存 tube 均在带内；这不是官方三物理态 MATLAB 复现。TORA remain 原生与 P3 各完成 12×200，Huan/Xiangru 仅有 t≤18.4 的共同全盒接受且保存 tube 安全前缀。DP less 的 P3 定向仿射四分控制 residual 新作业完成 225 盒、20 期、100 小步；DP more 三方仍未完成 T=0.4。ACC 四方各完成完整初盒的 50 控制期，并额外各有 1+5 次独立新进程计时；修正官方 unsafe 盒后的 Attitude 四方各完成 30 期、60 小段。Docking 四方各完成 40 期、400 小段，但全时非线性安全性质均为 Unknown；Airplane continuous 全初盒四方入口均未得到首个接受小步。保存区间、作者 checker 输出和图均不构成独立端到端浮点 NNCS 证明。"
         ),
         "正式时间目标为": (
             "正式时间目标为 1 次冷启动及 5 次独立进程 steady。ACC participant-order 四方另有各 1 次首轮和 5 次后续独立新进程；其余完整方法单元只有单次样本。该共享主机 campaign 的中位数仅作描述，不给稳定速度排名。各方法数值引擎、观察器和冷启动构成不同；TORA Huan/Xiangru 的失败进程耗时不能与完整时间排名。"
@@ -189,11 +190,17 @@ def main() -> None:
             "ACC 在明确命名的 participant-order 合同下已有四方单次完整数值记录，但没有稳定四方速度排名。保存区间、图和作者 checker verdict 不是独立端到端浮点证明。TORA Huan/Xiangru 的区间出带不是独立实际轨迹反例；失败进程时间也不是 T=20 完成时间。路径与配置只作来源说明，未与记录内容绑定；旧冻结证据仍仅为历史参照。"
         ),
         "“全程”表示本轮一个方法": (
-            "“全程”表示本轮一个方法完成目标数值时域，并不自动表示性质已证明；“诊断”表示短程入口尝试；“早停”或“未知”表示未完成。ACC、两物理态 Single Pendulum、Attitude 修正后、Docking 各四方及 TORA 原生/P3 等共 24 格有完整记录，距离 64 格矩阵仍有缺口。Docking 原生的 outer RESULT 是 failed/exit 2，原因是 checker Unknown，数值仍完成 400 段。ACC 另有 24 次独立新进程 campaign；其计时中位数不构成稳定速度排名。TORA Huan/Xiangru 虽记录至第 200 小步，但部分盒步拒绝，故列为“未知·前缀”。"
+            "“全程”表示本轮一个方法完成目标数值时域，并不自动表示性质已证明；“诊断”表示短程入口尝试；“早停”或“未知”表示未完成。DP less、ACC、两物理态 Single Pendulum、Attitude 修正后、Docking 各四方及 TORA 原生/P3 等共 25 格有完整记录，距离 64 格矩阵仍有缺口。Docking 原生的 outer RESULT 是 failed/exit 2，原因是 checker Unknown，数值仍完成 400 段。ACC 另有 24 次独立新进程 campaign；其计时中位数不构成稳定速度排名。TORA Huan/Xiangru 虽记录至第 200 小步，但部分盒步拒绝，故列为“未知·前缀”。"
         ),
     }
     for old, new in updates.items():
         _find(doc, old).text = new
+    _find(doc, "新版首控制期的早期单盒").text = (
+        "早期 P3 入口发现控制输出的原始 CROWN 上下界相差约一个 binary64 ULP；整盒有向 residual 运行在 225 盒全程的第 48 小步首次性质未决，第 56 小步收缩失败。每维二分、16 子盒诊断分别推迟至第 75 与 84 小步，仍未完成。后来每维四分、256 个闭子盒的新独立尝试完成 100/100 小步及 22,500/22,500 盒步；这项成功单列，不覆盖早期失败记录。"
+    )
+    _find(doc, "DP less：P3 的 225 盒").text = (
+        "DP less：四方数值时域现已齐全；仍需统一资源与计时边界的重复测量，并建立完整浮点 NNCS 保证链。P3 新运行的 256 控制子盒 residual 改变了计算成本，不能拿单次 wall 作稳定速度排名。"
+    )
 
     # The historical baseline caveat is stated in the abstract and appendix;
     # the standalone sentence otherwise occupies an entire Word page.
@@ -254,6 +261,10 @@ def main() -> None:
         evidence._tbl.insert(insert_at + 1, row._tr)
         insert_at += 1
     for row in evidence.rows:
+        if row.cells[0].text.startswith("DP less · P3 移植诊断"):
+            row.cells[0].text = "DP less · P3 分区 residual · 新 2026"
+            row.cells[1].text = "225 盒 × 20 期 × 5 子步；22,500/22,500 盒步接受"
+            row.cells[2].text = "新四分 residual 作业完成 T=1，全部保存 tube 在 Safe 带内；早期失败诊断仍单列。无稳定速度排名或端到端证书。"
         if row.cells[0].text.startswith(("Single Pendulum 两物理态", "TORA remain")):
             for cell in row.cells:
                 _border(cell)
@@ -262,6 +273,14 @@ def main() -> None:
     coverage = doc.tables[5]
     for row in coverage.rows[1:]:
         name = row.cells[0].text
+        if name == "double-pendulum-less-robust":
+            row.cells[1].text = "全程·分区 residual"
+        if name == "quad-reach":
+            row.cells[4].text = "运行中"
+        if name == "balancing-reach":
+            row.cells[2].text = "早停·仓库四输入"
+        if name in ("nav-standard", "nav-robust"):
+            row.cells[2].text = "首盒首周期"
         if name == "single-pendulum-reach":
             row.cells[1].text = "全程"
         if name == "acc-safe-distance":
@@ -303,7 +322,7 @@ def main() -> None:
     _campaign_table(doc, anchor)
     _insert(anchor, "11.2  ACC 四方保存 tube 的 t–margin 图", "Heading 2", page_break=True)
     _figure(anchor, PLOTS / "acc_four_method_t_safe_distance_margin_tube.png",
-            "图 4  ACC 四方每期 whole-tube 盒的保守 safe-distance margin；虚线为全时 margin=0 边界。",
+            "图 5  ACC 四方每期 whole-tube 盒的保守 safe-distance margin；虚线为全时 margin=0 边界。",
             "图源为各方 50 期保存范围，不是 CSV 的全时 union，也不是独立浮点 NN 证明。图源路径、大小和方法配置见 plots/nohash_saved_20261001 的 geometry 与 render 收据；MATLAB 脚本未实跑。")
 
     _insert(anchor, "12  Attitude Control · 修正危险盒后的四方全程", "Heading 1", page_break=True)
@@ -314,12 +333,20 @@ def main() -> None:
     _insert(anchor, "固定 2026 合同以一盒 [70,106]²×[−0.28,0.28]² 覆盖四态 (sx,sy,vx,vy)，控制器原始四态输入、两力输出，1 s 保持并更新 40 期。四方各记录 400 个 0.1 s 全时 tube；外层进程 wall 为 P3 17.411771 s、Huan 12.698839 s、Xiangru 12.668129 s、原生 9.139416 s，均只有一个完整进程样本。原生 wrapper 的原始状态是 failed/exit 2，原因是全时性质 UNKNOWN；数值日志独立显示 40/40 期、400 tubes、40 RPC，不可把外层状态改写成 VERIFIED。")
     _insert(anchor, "全时安全性质为 q=√(vx²+vy²)−0.2−0.002054√(sx²+sy²)≤0。初盒 q 上界约 −0.007356；首段 [0,0.1] 的四方保守 q 上界均约 +0.016083。四方的 400 段保存 tube 盒检查均不能证明 q≤0；盒与 q>0 侧相交不构成实际轨迹反例。原生末段最大 q 上界 +8.954347，其余三方约 +8.806 至 +8.808。四方末时绝对区间、原生上下仿射斜率一致性与原始 RESULT 见 DOCKING_FULLBOX_3METHODS_SUMMARY.md、native_docking_full40_001/SUMMARY.md。")
     _figure(anchor, PLOTS / "docking_fullbox_4method_q_upper.png",
-            "图 5  Docking 四方保存 tube 的 q 上界；绿色为 q≤0 安全区域，内框放大第一秒。",
+            "图 6  Docking 四方保存 tube 的 q 上界；绿色为 q≤0 安全区域，内框放大第一秒。",
             "每条曲线来自完整初盒保存的 400 个区间，不是轨迹或安全证明。原生外层 exit 2 与四方 Unknown 均保留；图源与 MATLAB 脚本在 plots/nohash_saved_20261001，MATLAB 未实跑。")
 
     _insert(anchor, "14  Airplane continuous · 完整初盒四方入口阻断", "Heading 1")
     _insert(anchor, "固定官方连续版把 (u,v,w,phi,theta,psi) 六维设为 [0,1]，其余六物理态为零，且只给一个未分割初盒；控制器 12 输入、6 输出，20 个 0.1 s 周期至 T=2。全时要求 y、phi、theta、psi∈[−1,1]。旧点初盒的四方成绩不覆盖该盒。Huan 的 order 6 一期尝试在零 ODE 小步前因 19 变量六阶单项式配对表导致 RSS 超过 54,006,540 KiB 而停；独立 order 3 诊断中 Huan/Xiangru 均在首个 0.01 s 小步拒绝唯一全初盒，接受数为零。三次外层 wall 分别为 252.247、6.785、6.985 s，均非完整 T=2 性能样本。")
     _insert(anchor, "P3 严格 solution_plus_one 首次新 smoke 在建验证 P4 表时发生 64 位整数编码溢出，0 段接受，wall 13.757866 s；另一新 run 使用引擎现有的严格同阶 solution_order 验证，首个 0.01 s 小步 accepted=false，0/10 段接受，wall 12.500084 s。Flow* native 独立 order 6 和 order 3 smoke 均在首个 0.01 s 小步返回 status 4=UNCOMPLETED_SAFE，0 flowpipes，外层 failed/exit 2；wall 分别为 4.877421 和 3.925546 s。order 3 把先验 remainder 从 [−0.01,0.01] 扩至 [−1,1] 的额外诊断仍在首步返回 status 4，这个改参结果不属于官方基线。均没有全时 tube 或性质结论，失败时间不能作完整性能比较；P3 内部拒绝细因未记录。原始摘要见 airplane_continuous_order3_fullbox_20261002/SUMMARY.md、AIRPLANE_P3_FULLBOX_SMOKES_20261002.md 与 native_airplane_fullbox_smokes_20261002/SUMMARY.md。")
+
+    anchor = _find(doc, "当前未完成项")
+    _insert(anchor, "DP less 四方保存数值流管", "Heading 2")
+    _insert(anchor, "P3 的每维四分有向仿射控制 residual 仍使用原全局仿射图，并对 256 个覆盖输入盒的闭子盒 residual 取并后与独立保守界相交。新 run 完成 225 初盒 × 20 期 × 5 小步，22,500 个盒步均 accepted，外层 wall 74.274085 s。对 22,500 条保存 tube 的四物理态逐项扫描，均处于全时安全带 [−1.7,2]，最小盒裕量 +0.093919848；这是保存数值区间的安全检查，不是独立端到端浮点证明。")
+    _insert(anchor, "四方法在 T=1 的第四物理态 endpoint union 宽为 P3 0.799090015、native 1.016584896、Huan/Xiangru 1.109787875；逐盒平均宽度并非同一次序。下图使用四方完整 225 盒保存 tube 的逐时刻 union，绿色安全带是全时性质，黑色初集位于 t=0；没有插值缺失步。P3 分区 residual 的计算成本与其它方法不同，单次 wall 不能给速度排名。四方绝对 lo/hi、16 行终点统计和 1600 行逐步范围见 dp_less_fourway_split4_20261002/SUMMARY.md、endpoint_stats.csv 与 tube_union.csv。")
+    _figure(anchor, DP_LESS_FOURWAY / "fourway_tube_union.png",
+            "图 4  DP less 四方法完整 225 盒四态 tube union 与全时安全带。",
+            "P3 四分 residual 的 100 个小步覆盖全部初盒；Huan/Xiangru 保存数组相同。图是区间外包络而非轨迹或端到端证明；同目录提供 PDF 与 MATLAB 脚本，MATLAB 未实跑。")
 
     # Small provenance index without repeating large source tables.
     anchor = _find(doc, "DP 绘图源与输出")
@@ -342,6 +369,8 @@ def main() -> None:
         "results/archcomp26_20261001/AIRPLANE_P3_FULLBOX_SMOKES_20261002.md",
         "results/archcomp26_20261001/native_airplane_fullbox_smokes_20261002/SUMMARY.md",
         "results/huan_quad_stage_a_40_20261001/observer_pair_v1/SUMMARY.md",
+        "results/archcomp26_20261001/dp_less_fourway_split4_20261002/SUMMARY.md",
+        "output/flowstar_latest_20260930/repo/docs/ARCHCOMP26_DP_P3_PARTITION_DIAGNOSTIC_20261002.md",
         "output/flowstar_latest_20260930/repo/docs/ARCHCOMP26_ATTITUDE_CONTROL_CONTRACT_20261001.md",
     ):
         _insert(anchor, path, "Note")
@@ -365,8 +394,8 @@ def main() -> None:
     redundant = _find(doc, "图、MATLAB 脚本和本报告在本轮均未进行内容摘要校验")
     redundant._element.getparent().remove(redundant._element)
 
-    assert len(doc.inline_shapes) == 5
-    assert "24 个方法单元" in _find(doc, "目标是在同一 benchmark 合同下").text
+    assert len(doc.inline_shapes) == 6
+    assert "25 个方法单元" in _find(doc, "目标是在同一 benchmark 合同下").text
     assert all(row.cells[1].text == "全程" for row in coverage.rows[1:2])
     doc.save(OUTPUT)
     print(OUTPUT)

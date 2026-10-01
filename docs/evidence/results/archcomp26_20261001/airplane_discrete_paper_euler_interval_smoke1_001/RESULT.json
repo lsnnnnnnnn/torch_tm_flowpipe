@@ -1,0 +1,237 @@
+{
+  "schema": "archcomp26-airplane-paper-euler-controller-first-interval-smoke-nohash-v1",
+  "recorded_utc": "2026-10-01T23:17:49.367676+00:00",
+  "profile": "airplane-discrete/paper-Euler-controller-first",
+  "method": "CPU directed interval arithmetic on fixed ONNX and MATLAB equations; no P3/Huan/Xiangru/native solver",
+  "scope": "one full 12D initial box, one synchronous forward-Euler transfer x0->x1",
+  "status": "first_transfer_property_unknown",
+  "qualification": "diagnostic only; no four-method benchmark row, full 20-transfer claim, or independently established floating-point certificate",
+  "source": {
+    "model": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/controller_airplane.onnx",
+    "dynamics": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/dynamics.m",
+    "specification": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/runs/archcomp26_20261001/airplane_prep_001/specifications.txt",
+    "interval_engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine/src/flowstar_gpu/interval.py",
+    "transcendental_engine": "/srv/local/shengenli/flowstar_acceleration_20260921T153643Z/engine/src/flowstar_gpu/transcendental.py"
+  },
+  "state_order": [
+    "sx",
+    "sy",
+    "sz",
+    "vx",
+    "vy",
+    "vz",
+    "phi",
+    "theta",
+    "psi",
+    "r",
+    "p",
+    "q"
+  ],
+  "control_order": [
+    "Fx",
+    "Fy",
+    "Fz",
+    "Mx",
+    "My",
+    "Mz"
+  ],
+  "step_exact_rational": "1/10",
+  "step_float64_enclosure": [
+    0.09999999999999999,
+    0.10000000000000002
+  ],
+  "initial": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "control_interval": [
+    [
+      -197.1800425294152,
+      146.23170353268074
+    ],
+    [
+      -107.80470059212634,
+      139.89086752680257
+    ],
+    [
+      -240.34080070538448,
+      165.60530457956904
+    ],
+    [
+      -19.691169149702006,
+      15.885012483534407
+    ],
+    [
+      -22.03377648117432,
+      29.188738597464575
+    ],
+    [
+      -14.344281446724937,
+      17.24637310147356
+    ]
+  ],
+  "derivative_interval": [
+    [
+      -0.8414709848078975,
+      3.2576178213550433
+    ],
+    [
+      -0.8414709848078974,
+      3.1453676396724277
+    ],
+    [
+      -0.8414709848078972,
+      1.8414709848078978
+    ],
+    [
+      -198.0215135142232,
+      146.23170353268083
+    ],
+    [
+      -107.80470059212638,
+      140.73233851161055
+    ],
+    [
+      -240.04887412365815,
+      166.60530457956912
+    ],
+    [
+      -3.5e-323,
+      3.5e-323
+    ],
+    [
+      -1.5e-323,
+      1.5e-323
+    ],
+    [
+      -3.5e-323,
+      3.5e-323
+    ],
+    [
+      -14.344281446724937,
+      17.24637310147356
+    ],
+    [
+      -19.691169149702006,
+      15.885012483534407
+    ],
+    [
+      -22.03377648117432,
+      29.188738597464575
+    ]
+  ],
+  "endpoint_k1": [
+    [
+      -0.0841470984807898,
+      0.3257617821355045
+    ],
+    [
+      -0.08414709848078979,
+      0.31453676396724295
+    ],
+    [
+      -0.08414709848078976,
+      0.18414709848078986
+    ],
+    [
+      -19.802151351422328,
+      15.623170353268089
+    ],
+    [
+      -10.780470059212643,
+      15.073233851161062
+    ],
+    [
+      -24.00488741236583,
+      17.660530457956924
+    ],
+    [
+      -1.5e-323,
+      1.0000000000000002
+    ],
+    [
+      -1e-323,
+      1.0000000000000002
+    ],
+    [
+      -1.5e-323,
+      1.0000000000000002
+    ],
+    [
+      -1.4344281446724945,
+      1.7246373101473567
+    ],
+    [
+      -1.9691169149702015,
+      1.5885012483534415
+    ],
+    [
+      -2.2033776481174336,
+      2.918873859746459
+    ]
+  ],
+  "checked_indices": [
+    0,
+    1
+  ],
+  "property_k0_inside": true,
+  "property_k1_coordinate_inside": {
+    "sy": true,
+    "phi": false,
+    "theta": false,
+    "psi": false
+  },
+  "cos_theta_k0": [
+    0.5403023058681393,
+    1.0
+  ],
+  "controller_point_values_checked": 18,
+  "wall_s": 0.037324500270187855,
+  "torch_version": "2.5.1+cu121"
+}

@@ -72,7 +72,7 @@ def main():
             if work_status == "completed" and attempt.get("complete_numerical_run") is not True:
                 raise ValueError(f"completion without full-run flag: {instance}/{method}")
             if work_status == "short_prefix_only":
-                limitation = "Only a short plumbing prefix is recorded; no full-horizon result."
+                limitation = "Only a short numerical prefix is recorded; no full-horizon result. Inspect the attempt for initial-set coverage."
             elif work_status == "completed":
                 limitation = "At least one complete numerical run; repeated attempts, if any, are in the attempt index. No end-to-end NNCS proof."
             elif work_status == "running":
@@ -156,7 +156,7 @@ def main():
         lines.append("| " + " | ".join([instance] + [LABELS[by_key[instance, method]["work_status"]] for method in methods]) + " |")
     lines += [
         "",
-        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN、Huan/Xiangru DP more 的 checker Unsafe 和 Balancing raw4 的数值拒绝；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败；“仅短前缀”不覆盖完整初集与时域。较早 smoke 和各尝试原始状态保存在 JSON。",
+        "“完成”仅表示所选尝试记录了完整数值时域，包括 Docking 原生数值完成但性质 UNKNOWN/外层 exit 2 的独立状态；“早停”包含 native DP more 的 UNKNOWN、Huan/Xiangru DP more 的 checker Unsafe 和 Balancing raw4 的数值拒绝；“失败”包括 P3 DP less 诊断、Airplane 完整初盒首步拒绝及入口/资源失败；“仅短前缀”未覆盖完整时域，其中 DP more P3 首周期覆盖全部 225 初盒、4 个小步但性质 Unknown，TORA reach-sigmoid Huan 官方文件 profile 覆盖完整初盒一期、50 小步但未检查 5 秒目标。较早 smoke 和各尝试原始状态保存在 JSON。",
         "Balancing Huan 的早停属于明确命名的固定仓库四原态 `balancing-fixed-repo-raw4` profile；论文五特征控制器仍缺，不可把此状态当作论文主合同结果。",
         "",
         "所有 64 个单元在本索引中均不具备四方法排名资格。重复次数按各条 attempt 计，不能从完成状态推断计时资格；保存的数值结果不构成端到端浮点 NNCS 证明。标为运行中的尝试尚无终点时间或宽度；DP more 早停没有完整 T=0.4 结果。",

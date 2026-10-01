@@ -1,0 +1,83 @@
+{
+  "status": "completed",
+  "driver_return": 0,
+  "expected_substeps": 4,
+  "completed_substeps": 4,
+  "accepted_lane_substeps": 900,
+  "all_lanes_accepted": true,
+  "whole_tube_inside_safe_box": false,
+  "per_substep_accepted": [
+    225,
+    225,
+    225,
+    225
+  ],
+  "per_substep_inside_safe_box": [
+    225,
+    225,
+    181,
+    120
+  ],
+  "trig_counters": {
+    "exec_calls": 6,
+    "completed_execs": 6,
+    "failed_execs": 0,
+    "trig_calls": 90,
+    "original_bodies": 72,
+    "reuse_hits": 18,
+    "ineligible_calls": 60,
+    "outside_exec_forwarded": 0
+  },
+  "trig_plan": {
+    "trig_calls": 15,
+    "eligible_direct_calls": 5,
+    "unique_direct_plans": 2,
+    "potential_reuse_hits": 3,
+    "interval_coefficients": true,
+    "order": 4
+  },
+  "controller_audit": [
+    {
+      "period": 0,
+      "envelope": "interval",
+      "crown_bias_inversion_count": 8,
+      "crown_bias_min_gap": -8.881784197001252e-16,
+      "directed_residual_width_max": 1.8001910679174644,
+      "directed_residual_width_median": 1.1351929346435963,
+      "directed_network_first_lane": [
+        [
+          -4.9973849133492045,
+          -4.08032954502438
+        ],
+        [
+          -5.102630923138578,
+          -4.0704065789651045
+        ]
+      ],
+      "directed_linear_first_lane": [
+        [
+          -2.9589101737509567,
+          -2.698197979807589
+        ],
+        [
+          -4.386974442753829,
+          -3.8044888235776804
+        ]
+      ],
+      "directed_residual_first_lane": [
+        [
+          -2.2991869335416157,
+          -1.1214193712734235
+        ],
+        [
+          -1.2981420995608972,
+          0.31656786378872415
+        ]
+      ],
+      "affine_layer_diagnostics": null
+    }
+  ],
+  "wall_s": 6.3765505803748965,
+  "timing_scope": "driver plus full per-lane tube/endpoint diagnostic observation and JSONL writes",
+  "end_to_end_strict_certificate": false
+}
